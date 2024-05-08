@@ -1,0 +1,26 @@
+.table-responsive .dataTables_paginate {
+    padding-bottom: 20px !important;
+}
+.table-responsive .dataTables_paginate .pagination .paginate_button {
+    padding: 0 !important;
+    margin-left: 0 !important;
+}
+.table-responsive .page-item.active .page-link {
+    color: #fff !important;
+}
+.table-responsive select.form-control:not([size]):not([multiple]) {
+    width: 50px !important;
+    border-radius: 5px;
+    font-weight: 700;
+    color: #f31818;
+}
+.table-responsive div.dataTables_wrapper div.dataTables_length label {
+    font-weight: 700 !important;
+}
+.table-responsive .dataTables_filter input {
+    border-radius: 5px !important;
+}
+.table-responsive .dataTables_filter input:focus {
+    border: 2px solid blueviolet !important;
+}
+/*# sourceMappingURL=datatables.css.map */
