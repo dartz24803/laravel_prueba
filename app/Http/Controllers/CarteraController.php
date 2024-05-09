@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CarteraModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Exception;
 
 class CarteraController extends Controller
@@ -20,11 +21,11 @@ class CarteraController extends Controller
     }
     public function index()
     {
-        /*
-        $header = view('header');
-        $view = view('cartera');
-        return view($header.$view);*/
-        return view('cartera');
+        if (session('usuario')) {
+            return view('cartera');
+        }else{
+            return redirect('Login');
+        }
     }
     public function listar()
     {
