@@ -9,6 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Prueba</title>
+    <link rel="icon" type="image/png" href="{{ asset('img/favicon.png') }}" sizes="16x16">
     <link href="{{ asset('css/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
@@ -33,6 +34,7 @@
         <line x1="21" y1="12" x2="9" y2="12"></line>
     </svg> <span>Salir</span>
 </a>
+@include('nav')
 <div class="container-fluid">
     <h6 class="text-gray-800 font-weight-bold mb-3">
         REGISTRO DE CARTERAS

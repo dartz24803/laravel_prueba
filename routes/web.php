@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CarteraController;
 use App\Http\Controllers\Login;
+use App\Http\Controllers\Inicio;
+use App\Http\Middleware\NoCache;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,19 +16,16 @@ use App\Http\Controllers\Login;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::middleware('auth')->group(function () {
-});
-    /*Route::get('/CarteraController', function () {
-        return view('cartera');
-    });*/
+
+Route::middleware([NoCache::class])->group(function () {
     Route::get('/Cartera', [CarteraController::class, 'index'])->name('cartera');
-    Route::get('/Welcome', [CarteraController::class, 'index'])->name('welcome');
-    Route::get('/NHExtorno', [CarteraController::class, 'index'])->name('nhextorno');
+    Route::get('/Inicio', [Inicio::class, 'index'])->name('inicio');
+});
 Route::post('/Carteralistar', [CarteraController::class, 'listar']);
 Route::post('registraryeditarCartera', [CarteraController::class, 'registraryeditar']);
 Route::get('buscarCartera', [CarteraController::class, 'buscar']);
 Route::get('eliminarCartera', [CarteraController::class, 'eliminar']);
 //LOGIN
-Route::get('/Login', [Login::class, 'index'])->name('login');
+Route::get('/', [Login::class, 'index'])->name('login');
 Route::post('IngresarLogin', [Login::class, 'ingresar'])->name('IngresarLogin');
 Route::get('DestruirSesion', [Login::class, 'logout']);

@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CarteraModel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Exception;
 
-class CarteraController extends Controller
+class Inicio extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,16 +14,17 @@ class CarteraController extends Controller
     public function __construct(Request $request)
     {
         $this->request = $request;
-        $this->modelo = new CarteraModel();
+        //$this->modelo = new CarteraModel();
     }
     public function index()
     {
         if (session('usuario')) {
-            return view('cartera');
+            return view('inicio');
         }else{
             return redirect('/');
         }
     }
+    /*
     public function listar()
     {
         $datos = $this->modelo->orderBy('id_cartera', 'DESC')->get();
@@ -52,9 +50,6 @@ class CarteraController extends Controller
         );
         return response()->json($results);
     }
-    /**
-     * Show the form for creating a new resource.
-     */
     public function registraryeditar(Request $request)
     {
         $respuesta = array();
@@ -101,5 +96,5 @@ class CarteraController extends Controller
             //$respuesta['error'] = "Problemas al realizar Operación!";
         }
         return response()->json($respuesta);
-    }
+    }*/
 }

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+    <link rel="icon" type="image/png" href="{{ asset('img/favicon.png') }}" sizes="16x16">
     <!--===============================================================================================-->	
     <link rel="stylesheet" href="{{ asset('login_files/css_archivos/login.css') }}">
     <!--===============================================================================================-->	
