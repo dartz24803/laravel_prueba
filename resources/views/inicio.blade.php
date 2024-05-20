@@ -4,11 +4,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Essential</title>
+    <title>ZZZZZZZZ</title>
     <!-- Custom fonts for this template-->
     <script>
         ruta = '<?= base_path(); ?>'
     </script>
+    <link href="{{ asset('css/structure.css') }}" rel="stylesheet" type="text/css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <!--Datatables-->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
@@ -17,11 +18,87 @@
     <!--datatables js y css personalizado-->
     <!-- <link rel="stylesheet" href="<?php echo base_path() ?>/resources/css/datatables.css"> -->
 </head>
-<body class="alt-menu sidebar-noneoverflow">
+<style>
+        #demo_vertical::-ms-clear,
+        #demo_vertical2::-ms-clear {
+            display: none;
+        }
+
+        input#demo_vertical {
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+
+        input#demo_vertical2 {
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+
+        .widget-content-area {
+            border-radius: 6px;
+        }
+
+        .daterangepicker.dropdown-menu {
+            z-index: 1059;
+        }
+
+        .flatpickr-calendar.open {
+            display: inline-block;
+            z-index: 10000;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 0.625rem;
+        }
+    </style>
+    <style>
+        .t-rotate270 {
+            -webkit-transform: rotate(270deg);
+            transform: rotate(270deg)
+        }
+    </style>
+    <style>
+        .widget-content-area {
+            border-radius: 6px;
+        }
+
+        .daterangepicker.dropdown-menu {
+            z-index: 1059;
+        }
+    </style>
+    <script>
+        moment.locale('es');
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LHENKPE6DM"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-LHENKPE6DM');
+    </script>
+</head>
+
+
+<body class="alt-menu" data-spy="scroll" data-target="#navSection" data-offset="140">
+
+
     <!-- BEGIN LOADER -->
-    <div id="load_screen"> <div class="loader"> <div class="loader-content">
-        <div class="spinner-grow align-self-center"></div>
-    </div></div></div>
+    <div id="load_screen">
+        <div class="loader">
+            <div class="loader-content">
+                <div class="spinner-grow align-self-center">
+
+                </div>
+            </div>
+        </div>
+    </div>
     <!--  END LOADER -->
     <!--  BEGIN NAVBAR  -->
     <div class="header-container fixed-top">
@@ -114,4 +191,76 @@
                 </li>
             </ul>
         </header>
+    </div>
+    <style>
+    img.navbar-logo.ajuste {
+        width: 150px;
+        height: 47px;
+    }
+
+    #sidebar .theme-brand li.theme-logo img {
+        width: 40px;
+        border-radius: 5px;
+    }
+
+    p.romperpalabra {
+        word-break: break-all;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .heading span {
+        color: #00b1f4;
+        font-weight: bold;
+    }
+
+    .menu:not(.menu-heading):hover {
+        border: 1.5px solid #ffa700;
+        border-radius: 15px;
+        font-weight: bold;
+    }
+
+    #accordionExample>.menu.active {
+        border: 1.5px solid #ffa700;
+        border-radius: 15px;
+        font-weight: bold;
+    }
+
+    #accordionExample>.active .active #icono_active2 {
+        content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23ffa700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-disc'><circle cx='12' cy='12' r='10'></circle><circle cx='12' cy='12' r='3'></circle></svg>");
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .tooltip-inner {
+        font-family: Century;
+        font-size: 1rem;
+        background-color: white !important;
+        color: #515365;
+        border-radius: 5px ;
+        border: 1px solid #ffa700;
+        text-align: justify;
+        line-height: 3;
+        margin-bottom: 10px;
+        max-width: 100%;
+        padding: 0.5rem;
+    }
+    .tooltip.show.bs-tooltip-right .arrow::before {
+        border-right-color: #ffa700 !important;
+    }
+    .cLcbjv {
+        display: none;
+    }
+</style>
+<!--  BEGIN MAIN CONTAINER  -->
+<div class="main-container sidebar-closed sbar-open" id="container">
+    <div class="overlay"></div>
+    <div class="cs-overlay"></div>
+    <div class="search-overlay"></div>
+
+    <!--  BEGIN SIDEBAR  -->
+    <div class="sidebar-wrapper sidebar-theme">
+        <nav id="sidebar">
+
+        </nav>
     </div>
