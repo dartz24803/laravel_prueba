@@ -61,7 +61,7 @@ $.ajaxSetup({
           var Password = document.getElementById("Password").value;
           
           //var tipoacc = document.getElementById("tipoacc").value;
-          var urlsistemas = "{{ url('Cartera')}}";
+          var urlsistemas = "{{ url('Inicio')}}";
           //console.log(urlsistemas);
           var url = "{{ url('IngresarLogin') }}";
           $.ajax({
