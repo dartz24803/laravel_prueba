@@ -1,27 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Essential</title>
+    <title>ZZZZZZZZ</title>
     <!-- Custom fonts for this template-->
-    <script>
-        ruta = '<?= base_path(); ?>'
-    </script>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
+    {{-- <link href="{{ asset('css/bootstrap/bootstrap.min.css') }} " rel="stylesheet" type="text/css" /> --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-    <!--Datatables-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous" />
+    <!-- Enlace a Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">    <!--Datatables-->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
-    <!--datatables js y css personalizado-->
+    <link href="{{ asset('css/structure.css') }}" rel="stylesheet" type="text/css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <!-- <link rel="stylesheet" href="<?php echo base_path() ?>/resources/css/datatables.css"> -->
+<style>
+    #demo_vertical::-ms-clear,
+    #demo_vertical2::-ms-clear {
+        display: none;
+    }
+
+    input#demo_vertical {
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+    input#demo_vertical2 {
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+    .widget-content-area {
+        border-radius: 6px;
+    }
+
+    .daterangepicker.dropdown-menu {
+        z-index: 1059;
+    }
+
+    .flatpickr-calendar.open {
+        display: inline-block;
+        z-index: 10000;
+    }
+
+    p {
+        margin-top: 0;
+        margin-bottom: 0.625rem;
+    }
+</style>
+    <style>
+        .t-rotate270 {
+            -webkit-transform: rotate(270deg);
+            transform: rotate(270deg)
+        }
+    </style>
+    <style>
+        .widget-content-area {
+            border-radius: 6px;
+        }
+
+        .daterangepicker.dropdown-menu {
+            z-index: 1059;
+        }
+    </style>
+    <script>
+        //moment.locale('es');
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LHENKPE6DM"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-LHENKPE6DM');
+    </script>
 </head>
-<body class="alt-menu sidebar-noneoverflow">
+
+
+<body class="alt-menu " data-spy="scroll" data-target="#navSection" data-offset="140">
     <!-- BEGIN LOADER -->
-    <div id="load_screen"> <div class="loader"> <div class="loader-content">
-        <div class="spinner-grow align-self-center"></div>
-    </div></div></div>
+    <div id="load_screen">
+        <div class="loader">
+            <div class="loader-content">
+                <div class="spinner-grow align-self-center">
+
+                </div>
+            </div>
+        </div>
+    </div>
     <!--  END LOADER -->
     <!--  BEGIN NAVBAR  -->
     <div class="header-container fixed-top">
@@ -33,6 +117,12 @@
                 </svg>
             </a>
             <ul class="navbar-item flex-row ml-auto">
+                <li class="nav-item align-self-center" id="theme-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-moon">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </li>
+
                 <li class="nav-item dropdown notification-dropdown">
                     <a href="javascript:void(0);" class="nav-link dropdown-toggle" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">
