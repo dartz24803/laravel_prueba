@@ -33,4 +33,5 @@ Route::post('IngresarLogin', [Login::class, 'ingresar'])->name('IngresarLogin');
 Route::get('DestruirSesion', [Login::class, 'logout']);
 //REGISTRO FOTOGRAFICO
 Route::post('/ReporteFotograficoListar', [ReporteFotografico::class, 'listar']);
+Route::get('/modalRegistrarReporteFotografico', [ReporteFotografico::class, 'modalRegistrarReporteFotografico'])->name('modal_registrar');
 
