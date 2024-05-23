@@ -133,18 +133,6 @@
                         </div>
                     </a>
                 </li>
-                <li class="menu" id="reportefoto">
-                    <a id="reporte_foto" href="{{ url('/ReporteFotografico')}}" class="dropdown-toggle">
-                        <div class="">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera">
-                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                                <circle cx="12" cy="13" r="4"></circle>
-                            </svg>
-                            <span id="icono_active"></span>
-                            <span id="icono_active2"> Reporte fotográfico</span>
-                        </div>
-                    </a>
-                </li>
                 <li class="menu" id="tienda">
                     <a href="#rtienda" id="htienda" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
@@ -164,7 +152,7 @@
 
                     <ul class="collapse submenu list-unstyled" id="rtienda" data-parent="#accordionExample">
                         <li id="reportefoto">
-                            <a id="reporte_foto" href="">
+                            <a id="reporte_foto" href="{{ url('/ReporteFotografico')}}">
                                 <p class="romperpalabra"><span id="icono_active2"></span> Reporte fotográfico</p>
                             </a>
                         </li>

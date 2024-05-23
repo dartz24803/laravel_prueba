@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>ZZZZZZZZ</title>
+    <title> La Número 1 | Intranet</title>
     <!-- Custom fonts for this template-->
     <link rel="icon" type="image/png" href="{{ asset('img/favicon.png') }}" sizes="16x16">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -189,7 +189,7 @@
                                 </a>
                             </div>
                         <div class="dropdown-item">
-                            <a href="">
+                            <a href="{{ url('DestruirSesion') }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out">
                                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                                     <polyline points="16 17 21 12 16 7"></polyline>
