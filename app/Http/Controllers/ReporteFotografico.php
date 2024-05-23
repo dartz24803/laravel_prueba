@@ -4,20 +4,32 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ReporteFotograficoModel;
+use App\Models\AreaModel;
+use App\Models\BaseModel;
+use App\Models\CodigosReporteFotograficoModel;
 
 class ReporteFotografico extends Controller
 {
     protected $request;
     protected $modelo;
+    protected $modeloarea;
+    protected $modelobase;
+    protected $modelocodigos;
     public function __construct(Request $request)
     {
         $this->request = $request;
         $this->modelo = new ReporteFotograficoModel();
+        $this->modeloarea = new AreaModel();
+        $this->modelobase = new BaseModel();
+        $this->modelocodigos = new CodigosReporteFotograficoModel();
     }
 
     public function index(){
         if (session('usuario')) {
-            return view('reportefotografico');
+            $list_area = $this->modeloarea->listar();
+            $list_bases = $this->modelobase->listar();
+            $list_codigos = $this->modelocodigos->listar();
+            return view('tienda.reportefotografico', compact('list_area', 'list_bases', 'list_codigos'));
         }else{
             return redirect('/');
         }
@@ -90,8 +102,8 @@ class ReporteFotografico extends Controller
     public function modalRegistrarReporteFotografico()
     {
             // Lógica para obtener los datos necesarios
-            //$listCodigos = Tienda::listarCodigosRF();
+            $list_codigos = $this->modelocodigos->listar();
             // Retorna la vista con los datos
-            return view('modal_registrar');
+            return view('tienda.modal_registrar', compact('list_codigos'));
     }
 }

@@ -15,9 +15,9 @@
             <div class="form-group col-lg-12">
                 <select class="form-control basic_i" name="codigo" id="codigo">
                     <option value="0">Seleccionar</option>
-                    <?php //foreach($list_codigos as $list){ ?>
-                        <option value="<?php //echo $list['descripcion']; ?>"><?php //echo $list['descripcion'];?></option>
-                    <?php //} ?>
+                    <?php foreach($list_codigos as $list){ ?>
+                        <option value="<?php echo $list['descripcion']; ?>"><?php echo $list['descripcion'];?></option>
+                    <?php } ?>
                 </select>
             </div>
         </div>

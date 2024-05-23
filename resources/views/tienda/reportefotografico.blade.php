@@ -36,34 +36,34 @@
                             <label>Base: </label>
                             <select class="form-control basic" id="base" name="base" onchange="Reporte_Fotografico_Listar();"<?= $disabled ?>>
                                 <option value="0">TODOS</option>
-                                    <?php //foreach ($list_bases as $list) { ?>
-                                        <option value="<?php// echo $list['cod_base']; ?>" 
+                                    <?php foreach ($list_bases as $list) { ?>
+                                        <option value="<?php echo $list['cod_base']; ?>" 
                                         <?php /*if ($list['cod_base'] == $base) {
                                             echo "selected";
                                         }*/ ?>>
-                                    <?php //echo $list['cod_base']; ?>
+                                    <?php echo $list['cod_base']; ?>
                                 </option>
-                                <?php //} ?>
+                                <?php } ?>
                             </select>
                         </div>
                         <div class="form-group col-md-4">
                             <label>Area: </label>
                             <select class="form-control basic" id="area" name="area" onchange="Reporte_Fotografico_Listar();">
                                 <option value="0" selected>TODOS</option>
-                                <?php //foreach($list_area as $list){ ?>
-                                    <option value="<?php //echo $list['id_area']; ?>"><?php //echo $list['nom_area']; ?></option>
-                                <?php //} ?>
+                                <?php foreach($list_area as $list){ ?>
+                                    <option value="<?php echo $list['id_area']; ?>"><?php echo $list['nom_area']; ?></option>
+                                <?php } ?>
                             </select>
                         </div>
                         <div class="form-group col-md-4">
                             <label>Codigo: </label>
                             <select class="form-control basic" id="codigo_filtro" name="codigo_filtro" onchange="Reporte_Fotografico_Listar();">
                                 <option value="0">TODOS</option>
-                                    <?php //foreach ($list_codigos as $list) { ?>
-                                        <option value="<?php //echo $list['descripcion']; ?>">
-                                    <?php //echo $list['descripcion']; ?>
-                                </option>
-                                <?php //} ?>
+                                <?php foreach ($list_codigos as $list) { ?>
+                                    <option value="<?php echo $list['descripcion']; ?>">
+                                        <?php echo $list['descripcion']; ?>
+                                    </option>
+                                <?php } ?>
                             </select>
                         </div>
                     </div>
