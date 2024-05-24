@@ -5,6 +5,7 @@ use App\Http\Controllers\CarteraController;
 use App\Http\Controllers\Login;
 use App\Http\Controllers\Inicio;
 use App\Http\Middleware\NoCache;
+use App\Http\Controllers\ReporteFotografico;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,7 @@ use App\Http\Middleware\NoCache;
 Route::middleware([NoCache::class])->group(function () {
     Route::get('/Cartera', [CarteraController::class, 'index'])->name('cartera');
     Route::get('/Inicio', [Inicio::class, 'index'])->name('inicio');
+    Route::get('/ReporteFotografico', [ReporteFotografico::class, 'index'])->name('reportefotografico');
 });
 Route::post('/Carteralistar', [CarteraController::class, 'listar']);
 Route::post('registraryeditarCartera', [CarteraController::class, 'registraryeditar']);
@@ -29,3 +31,7 @@ Route::get('eliminarCartera', [CarteraController::class, 'eliminar']);
 Route::get('/', [Login::class, 'index'])->name('login');
 Route::post('IngresarLogin', [Login::class, 'ingresar'])->name('IngresarLogin');
 Route::get('DestruirSesion', [Login::class, 'logout']);
+//REGISTRO FOTOGRAFICO
+Route::post('/ReporteFotograficoListar', [ReporteFotografico::class, 'listar']);
+Route::get('/modalRegistrarReporteFotografico', [ReporteFotografico::class, 'modalRegistrarReporteFotografico'])->name('modal_registrar');
+

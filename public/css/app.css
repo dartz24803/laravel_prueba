@@ -1,0 +1,19 @@
+/* Estilos para el tema claro (día) */
+body.light-theme {
+    background-color: #f1f2f3;
+    color: black;
+}
+
+.header.light-theme {
+    background-color: #f1f2f3;
+}
+
+/* Estilos para el tema oscuro */
+body.dark-theme {
+    background-color: black;
+    color: white;
+}
+
+.header.dark-theme {
+    background-color: darkgray;
+}
