@@ -1,0 +1,128 @@
+html, body{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+canvas {
+  z-index: 2;
+}
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.result-container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  position: fixed;
+  bottom: 0px;
+  z-index: 10;
+
+}
+
+video,canvas {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.result-estado {
+	background-color: rgba(0,0,0,0);
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+	position: fixed;
+	bottom: 37px;
+	/* left: calc(50% - 120px); */
+	z-index: 2;
+	color: white;
+	padding: 15px 20px;
+	width: 100%;
+  z-index: 10;
+
+}
+
+#aqui{
+  font-size: 20px;
+  color: white;
+  font-weight: 900;
+  z-index: 2;
+
+}
+
+.result-take {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  position: fixed;
+  top: 80px;
+  z-index: 5;
+
+}
+.result-container > div {
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  margin: 5px 0;
+  color: white;
+  text-transform: capitalize;
+  z-index: 2;
+
+}
+#age {
+  background:rgba(0,174,236,255);
+  z-index: 2;
+
+}
+#emotion {
+  background: rgba(244,132,52,255);
+  z-index: 2;
+
+}
+#gender {
+  background: rgba(165,207,62,255);
+  z-index: 2;
+
+}
+
+video {
+  width: 100%;
+  z-index: 1;
+}
+
+header {
+  background: #42a5f5;
+  color: white;
+  width: 100%;
+  font-size: 2rem;
+  position: fixed;
+  top: 0px;
+  text-align: center;
+  z-index: 2;
+}
+
+#boton{
+    background-color: #049cdc;
+    color: white;
+    font-size: 16px;
+    border-radius: 30px;
+    border: none;
+    padding: 15px 20px;
+    text-align: center;
+    box-shadow: 0 5px 10px 0 rgb(0 0 0 / 20%);
+    position: fixed;
+    z-index: 5;
+}
