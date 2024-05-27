@@ -1,5 +1,11 @@
 @include('header')
 @include('navbar')
+<?php
+/*
+use Illuminate\Support\Facades\Session;
+print_r(Session::get('usuario')->id);
+*/
+?>
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
         <div class="page-header">
@@ -13,7 +19,7 @@
                     <div class="col-lg-12 d-flex justify-content-end">
                         <?php //adm y coord de tienda registran
                         //if($_SESSION['usuario'][0]['id_puesto'] == 29 || $_SESSION['usuario'][0]['id_puesto'] == 161 || $_SESSION['usuario'][0]['id_puesto'] == 197 || $_SESSION['usuario'][0]['id_usuario'] == 139){ ?>
-                        <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg_metalikas="{{ url('modalRegistrarReporteFotografico') }}">
+                        <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistrar" app_reg_metalikas="{{ url('modalRegistrarReporteFotografico') }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square">
                                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="12" y1="8" x2="12" y2="16"></line>
@@ -31,13 +37,15 @@
                             $disabled = '';
                         } else {
                             $disabled = 'disabled';
-                        } */?>
+                        }
+                        AÑADIR SELECT 2
+                        */?>
                         <div class="form-group col-md-4">
                             <label>Base: </label>
                             <select class="form-control basic" id="base" name="base" onchange="Reporte_Fotografico_Listar();"<?= $disabled ?>>
                                 <option value="0">TODOS</option>
                                     <?php foreach ($list_bases as $list) { ?>
-                                        <option value="<?php echo $list['cod_base']; ?>" 
+                                        <option value="<?php echo $list['cod_base']; ?>"
                                         <?php /*if ($list['cod_base'] == $base) {
                                             echo "selected";
                                         }*/ ?>>
@@ -69,19 +77,19 @@
                     </div>
                     <div class="table-responsive mb-4 mt-4" id="lista">
                         <table id="table_rf" class="table table-bordered" style="width:100%">
-                            <thead class="table-dark">
+                            <thead>
                                 <tr>
                                     <th> Orden</th>
-                                    <th class="text-center">base</th>
-                                    <th class="text-center">codigo</th>
-                                    <th class="text-center">categoría</th>
-                                    <th class="text-center">area</th>
-                                    <th class="text-center">fecha</th>
-                                    <th class="text-center no-content">foto</th>
+                                    <th class="text-center">Base</th>
+                                    <th class="text-center">Codigo</th>
+                                    <th class="text-center">Categoría</th>
+                                    <th class="text-center">Area</th>
+                                    <th class="text-center">Fecha</th>
+                                    <th class="text-center no-content">Foto</th>
                                     <th class="no-content"></th>
                                 </tr>
                             </thead>
-                        
+
                             <tbody class="text-center">
                             </tbody>
                         </table>
@@ -91,6 +99,7 @@
         </div>
     </div>
 </div>
+@include('tienda.ReporteFotografico.modal_registrar')
 <script>
     $(document).ready(function() {
         $("#tienda").addClass('active');
@@ -98,78 +107,66 @@
         $("#reporte_foto").addClass('active');
         Reporte_Fotografico_Listar();
     });
-/*
+
+    /**Listar */
     function Reporte_Fotografico_Listar() {
         //Cargando();
-
         var base = $('#base').val();
         var area = $('#area').val();
         var codigo = $('#codigo_filtro').val();
-        var url = "{{ url('ReporteFotograficoListar') }}";
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: {
-                'base': base,
-                'area': area,
-                'codigo': codigo
+        $('#table_rf').DataTable({
+            "aProcessing": true,
+            "aServerSide": true,
+            dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-6'i><'col-sm-12 col-md-6'p>>",
+            "ajax": {
+                url: "{{ url('ReporteFotograficoListar') }}",
+                type: "post",
+                data: {
+                    base: base,
+                    area: area,
+                    codigo: codigo
+                }
             },
-            success: function(data) {
-                $('#lista').html(data);
-            }
+            "bDestroy": true,
+            "responsive": true,
+            "bInfo": true,
+            "iDisplayLength": 25,
+            "order": [[0, "desc"]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+            "pagingType": "simple_numbers",
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            // Ordenar por la primera columna de forma descendente
+            "columnDefs": [{
+                "targets": 0, // La primera columna
+                "visible": false, // Ocultar la primera columna
+                "searchable": false // No permitir buscar en la primera columna
+            }],
         });
-    }*/
-    /**Listar */
-function Reporte_Fotografico_Listar() {
-    $('#table_rf').DataTable({
-        "aProcessing": true,
-        "aServerSide": true,
-        dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-            "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-sm-12 col-md-6'i><'col-sm-12 col-md-6'p>>",
-        "ajax": {
-            url: "{{ url('ReporteFotograficoListar') }}",
-            type: "post"
-        },
-        "bDestroy": true,
-        "responsive": true,
-        "bInfo": true,
-        "iDisplayLength": 25,
-        "order": [[0, "desc"]],
-        "language": {
-            "sProcessing": "Procesando...",
-            "sLengthMenu": "Mostrar _MENU_ registros",
-            "sZeroRecords": "No se encontraron resultados",
-            "sEmptyTable": "Ningún dato disponible en esta tabla",
-            "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-            "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-            "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-            "sInfoPostFix": "",
-            "sSearch": "Buscar:",
-            "sUrl": "",
-            "sInfoThousands": ",",
-            "sLoadingRecords": "Cargando...",
-            "oPaginate": {
-                "sFirst": "Primero",
-                "sLast": "Último",
-                "sNext": "Siguiente",
-                "sPrevious": "Anterior"
-            },
-            "oAria": {
-                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-            }
-        },
-        "pagingType": "simple_numbers",
-        "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-        // Ordenar por la primera columna de forma descendente
-        "columnDefs": [{
-            "targets": 0, // La primera columna
-            "visible": false, // Ocultar la primera columna
-            "searchable": false // No permitir buscar en la primera columna
-        }],
-    });
-}
+    }
 </script>
 @include('footer')
