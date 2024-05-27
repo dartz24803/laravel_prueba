@@ -157,22 +157,26 @@ body.gu-unselectable .media.el-drag-ex-2 {
 
 .parent.ex-2 #left-events .f-icon-fill, body.gu-unselectable .media.el-drag-ex-2 .f-icon-fill {
   display: none !important;
-  color: #e2a03f; }
+  color: #e7515a;
+  fill: rgba(231, 81, 90, 0.419608); }
 
 .parent.ex-2 #left-events .f-icon-line, body.gu-unselectable .media.el-drag-ex-2 .f-icon-line {
   display: block !important;
-  color: #888ea8;
-  width: 17px; }
+  color: #e2a03f;
+  width: 17px;
+  fill: rgba(226, 160, 63, 0.419608); }
 
 .parent.ex-2 #right-events .f-icon-fill, body.gu-unselectable .media.el-drag-ex-2 .f-icon-fill {
   display: block !important;
-  color: #e2a03f;
+  color: #e7515a;
+  fill: rgba(231, 81, 90, 0.419608);
   display: block !important;
   width: 17px; }
 
 .parent.ex-2 #right-events .f-icon-line, body.gu-unselectable .media.el-drag-ex-2 .f-icon-line {
   display: none !important;
-  color: #e2a03f; }
+  color: #e7515a;
+  fill: rgba(231, 81, 90, 0.419608); }
 
 .parent.ex-3 .dragula {
   background-color: transparent;
@@ -228,7 +232,7 @@ body.gu-unselectable .media.el-drag-ex-3.gu-mirror img {
 
 .parent.ex-3 .dragula .media .media-body h5 span.comment-topic, body.gu-unselectable .media.el-drag-ex-3.gu-mirror .media-body h5 span.comment-topic {
   font-weight: 600;
-  color: #5c1ac3;
+  color: #805dca;
   font-size: 13px; }
 
 .parent.ex-3 .dragula .media .media-body p.meta-time, body.gu-unselectable .media.el-drag-ex-3.gu-mirror .media-body p.meta-time {

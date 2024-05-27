@@ -88,18 +88,6 @@ a.demo-gallery__img--main {
 .img-5, .img-6, .img-7 {
   width: 33.333333%; }
 
-
-
-  /****************/
-  .img-8, .img-9, .img-10 {
-    width: 33.333333%; }
-  
-  .img-11 {
-    width: 66.666667%; }
-  
-  .img-12, .img-13, .img-14 {
-    width: 33.333333%; }
-
 @media (max-width: 767px) {
   .img-1 {
     width: 100%; }
@@ -110,25 +98,8 @@ a.demo-gallery__img--main {
   .img-5, .img-6 {
     width: 50%; }
   .img-7 {
-    width: 100%; } 
-  
-/****************/
-.img-8 {
-  width: 100%; }
-.img-9, .img-10 {
-  width: 50%; }
-.img-11 {
-  width: 100%; }
-.img-12, .img-13 {
-  width: 50%; }
-.img-14 {
-  width: 100%; }   
-}
+    width: 100%; } }
 
 @media (max-width: 575px) {
   .img-1, .img-2, .img-3, .img-4, .img-5, .img-6, .img-7 {
-    width: 100%; } 
-
-  .img-8, .img-9, .img-10, .img-11, .img-12, .img-13, .img-14 {
-    width: 100%; } 
-}
+    width: 100%; } }

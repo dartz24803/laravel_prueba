@@ -448,9 +448,7 @@ a.pswp__share--download:hover {
 /* pswp__ui--fit class is added when main image "fits" between top bar and bottom bar (caption) */
 .pswp__ui--fit .pswp__top-bar,
 .pswp__ui--fit .pswp__caption {
-  background-color: rgba(244, 124, 40.3, 0.9);
-
-}
+  background-color: rgba(0, 0, 0, 0.3); }
 
 /* pswp__ui--idle class is added when mouse isn't moving for several seconds (JS option timeToIdle) */
 .pswp__ui--idle .pswp__top-bar {

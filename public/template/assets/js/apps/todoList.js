@@ -288,7 +288,7 @@ function editDropdown() {
   })
 }
 
-/*function todoItem() {
+function todoItem() {
   $('.todo-item .todo-content').on('click', function(event) {
     event.preventDefault();
    
@@ -300,8 +300,7 @@ function editDropdown() {
     
     $('#todoShowListItem').modal('show');
   });
-}*/
-
+}
 var $btns = $('.list-actions').click(function() {
   if (this.id == 'all-list') {
     var $el = $('.' + this.id).fadeIn();
