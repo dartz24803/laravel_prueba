@@ -7,6 +7,8 @@ use App\Models\ReporteFotograficoModel;
 use App\Models\AreaModel;
 use App\Models\BaseModel;
 use App\Models\CodigosReporteFotograficoModel;
+use App\Models\ReporteFotograficoArchivoTemporalModel;
+use Illuminate\Support\Facades\Session;
 
 class ReporteFotografico extends Controller
 {
@@ -15,6 +17,8 @@ class ReporteFotografico extends Controller
     protected $modeloarea;
     protected $modelobase;
     protected $modelocodigos;
+    protected $modeloarchivotmp;
+
     public function __construct(Request $request)
     {
         $this->request = $request;
@@ -22,6 +26,7 @@ class ReporteFotografico extends Controller
         $this->modeloarea = new AreaModel();
         $this->modelobase = new BaseModel();
         $this->modelocodigos = new CodigosReporteFotograficoModel();
+        $this->modeloarchivotmp = new ReporteFotograficoArchivoTemporalModel();
     }
 
     public function index(){
@@ -29,7 +34,7 @@ class ReporteFotografico extends Controller
             $list_area = $this->modeloarea->listar();
             $list_bases = $this->modelobase->listar();
             $list_codigos = $this->modelocodigos->listar();
-            return view('tienda.reportefotografico', compact('list_area', 'list_bases', 'list_codigos'));
+            return view('tienda.ReporteFotografico.reportefotografico', compact('list_area', 'list_bases', 'list_codigos'));
         }else{
             return redirect('/');
         }
@@ -40,15 +45,18 @@ class ReporteFotografico extends Controller
         return view('reportefotograficolistar', $datos);
     }
 */
-    public function listar()
+    public function listar(Request $request)
     {
-        $datos = $this->modelo->listar();
+        $base= $request->input("base");
+        $area= $request->input("area");
+        $codigo= $request->input("codigo");
+        $datos = $this->modelo->listar($base,$area,$codigo);
         $data = array();
         foreach ($datos as $row) {
             $sub_array = array();
             $sub_array[] = $row['id'];
             $sub_array[] = $row['base'];
-            $sub_array[] = $row['codigo_rf']; 
+            $sub_array[] = $row['codigo_rf'];
             if($row['letra_id'] == 'A')
             { $categoria = 'ALMACÉN'; }
             else if($row['letra_id'] == 'H')
@@ -65,7 +73,7 @@ class ReporteFotografico extends Controller
             { $categoria = 'FACHADA';}
             else if($row['letra_id'] == 'C')
             { $categoria = 'CAJA';}
-            else{ $categoria = 'PERSONAS';} 
+            else{ $categoria = 'PERSONAS';}
             $sub_array[] = $categoria;
             $sub_array[] = $row['areas'];
             $sub_array[] = $row['fecha_rf'];
@@ -99,11 +107,82 @@ class ReporteFotografico extends Controller
         );
         return response()->json($results);
     }
+
     public function modalRegistrarReporteFotografico()
     {
             // Lógica para obtener los datos necesarios
             $list_codigos = $this->modelocodigos->listar();
             // Retorna la vista con los datos
-            return view('tienda.modal_registrar', compact('list_codigos'));
+            return view('tienda.ReporteFotografico.modal_registrar', compact('list_codigos'));
+    }
+
+    public function Previsualizacion_Captura2(){
+        $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id)->delete();
+        $data = $this->modeloarchivotmp->contador_archivos_rf();
+
+        if (Session::get('usuario')) {
+            $max_fotos = 10;
+            // $max_fotos = 3;
+            $fotos_subidas = 0;
+            if($data<1){
+                for ($i = 1; $i <= $max_fotos; $i++) {
+                    $foto_key = "photo" . $i;
+                    $ftp_server = "lanumerounocloud.com";
+                    $ftp_usuario = "intranet@lanumerounocloud.com";
+                    $ftp_pass = "Intranet2022@";
+                    $con_id = ftp_connect($ftp_server);
+                    $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+
+                    if ((!$con_id) || (!$lr)) {
+                        echo "No se pudo conectar al servidor FTP";
+                    } else {
+                        echo "Conexión FTP establecida";
+                        /*$file_path = 'REPORTE_FOTOGRAFICO/temporal_rf_'.Session::get('usuario')->id. "_" . $i .'.jpg';
+                        if($file_path){
+                        }*/
+                        ftp_delete($con_id, 'REPORTE_FOTOGRAFICO/temporal_rf_'.Session::get('usuario')->id. "_" . $i .'.jpg');
+                        $nombre_soli = "temporal_rf_" . Session::get('usuario')->id . "_" . $i;
+                        $path = $_FILES[$foto_key]["name"];
+                        $source_file = $_FILES[$foto_key]['tmp_name'];
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $nombre = $nombre_soli . "." . strtolower($ext);
+
+                        ftp_pasv($con_id, true);
+                        $subio = ftp_put($con_id, "REPORTE_FOTOGRAFICO/" . $nombre, $source_file, FTP_BINARY);
+
+                        if ($subio) {
+                            $dato = [
+                                'ruta' => $nombre,
+                                'id_usuario' => Session::get('usuario')->id,
+                            ];
+                            $this->modeloarchivotmp->insert($dato);
+                            echo "Foto $i subida correctamente<br>";
+                            $fotos_subidas++;
+                        } else {
+                            echo "Error al subir la foto $i<br>";
+                        }
+                    }
+                }
+            }else{
+                echo "error";
+            }
+        } else {
+            redirect('');
+        }
+    }
+
+    public function obtenerImagenes() {
+        $imagenes = $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id);
+
+        $data = array();
+        foreach ($imagenes as $imagen) {
+            $data[] = array(
+                'ruta' => $imagen['ruta'],
+                'id' => $imagen['id']
+            );
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($data);
     }
 }

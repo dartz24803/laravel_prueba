@@ -23,7 +23,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="{{ asset('css/structure.css') }}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <!-- <link rel="stylesheet" href="<?php echo base_path() ?>/resources/css/datatables.css"> -->
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- <link rel="stylesheet" href="<?php //echo base_path() ?>/resources/css/datatables.css"> -->
 <style>
     #demo_vertical::-ms-clear,
     #demo_vertical2::-ms-clear {
@@ -209,10 +212,48 @@
             </div>
         </div>
     </div>
-    <div id="ModalUpdate" data-backdrop="static" data-keyboard="false" class="modal animated fadeInRight custo-fadeInRight bd-example-modal-lg scrollpagina" tabindex="-1" role="dialog" aria-labelledby="ModalUpdate" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
+    <script>
+        function Cargando() {
+            $(document)
+                .ajaxStart(function() {
+                    $.blockUI({
+                        message: '<svg> ... </svg>',
+                        fadeIn: 800,
+                        overlayCSS: {
+                            backgroundColor: '#1b2024',
+                            opacity: 0.8,
+                            zIndex: 1200,
+                            cursor: 'wait'
+                        },
+                        css: {
+                            border: 0,
+                            color: '#fff',
+                            zIndex: 1201,
+                            padding: 0,
+                            backgroundColor: 'transparent'
+                        }
+                    });
+                })
+                .ajaxStop(function() {
+                    $.blockUI({
+                        message: '<svg> ... </svg>',
+                        fadeIn: 800,
+                        timeout: 100,
+                        overlayCSS: {
+                            backgroundColor: '#1b2024',
+                            opacity: 0.8,
+                            zIndex: 1200,
+                            cursor: 'wait'
+                        },
+                        css: {
+                            border: 0,
+                            color: '#fff',
+                            zIndex: 1201,
+                            padding: 0,
+                            backgroundColor: 'transparent'
+                        }
+                    });
+                });
+        }
 
-            </div>
-        </div>
-    </div>
+    </script>
