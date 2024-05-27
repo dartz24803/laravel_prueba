@@ -6,6 +6,7 @@ use App\Http\Controllers\Login;
 use App\Http\Controllers\Inicio;
 use App\Http\Middleware\NoCache;
 use App\Http\Controllers\ReporteFotografico;
+use App\Http\Controllers\OldController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,4 +35,5 @@ Route::get('DestruirSesion', [Login::class, 'logout']);
 //REGISTRO FOTOGRAFICO
 Route::post('/ReporteFotograficoListar', [ReporteFotografico::class, 'listar']);
 Route::get('/modalRegistrarReporteFotografico', [ReporteFotografico::class, 'modalRegistrarReporteFotografico'])->name('modal_registrar');
-
+//PRUEBA INDEX antiguo
+Route::get('old', [OldController::class, 'index'])->name('old');
