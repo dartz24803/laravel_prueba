@@ -125,8 +125,7 @@ class ReporteFotografico extends Controller
             // $max_fotos = 3;
             $fotos_subidas = 0;
             if($data<1){
-                for ($i = 1; $i <= $max_fotos; $i++) {
-                    $foto_key = "photo" . $i;
+                    $foto_key = "photo1";
                     $ftp_server = "lanumerounocloud.com";
                     $ftp_usuario = "intranet@lanumerounocloud.com";
                     $ftp_pass = "Intranet2022@";
@@ -137,11 +136,8 @@ class ReporteFotografico extends Controller
                         echo "No se pudo conectar al servidor FTP";
                     } else {
                         echo "Conexión FTP establecida";
-                        /*$file_path = 'REPORTE_FOTOGRAFICO/temporal_rf_'.Session::get('usuario')->id. "_" . $i .'.jpg';
-                        if($file_path){
-                        }*/
-                        ftp_delete($con_id, 'REPORTE_FOTOGRAFICO/temporal_rf_'.Session::get('usuario')->id. "_" . $i .'.jpg');
-                        $nombre_soli = "temporal_rf_" . Session::get('usuario')->id . "_" . $i;
+                        ftp_delete($con_id, 'REPORTE_FOTOGRAFICO/temporal_rf_'.Session::get('usuario')->id. "_1" .'.jpg');
+                        $nombre_soli = "temporal_rf_" . Session::get('usuario')->id . "_1";
                         $path = $_FILES[$foto_key]["name"];
                         $source_file = $_FILES[$foto_key]['tmp_name'];
                         $ext = pathinfo($path, PATHINFO_EXTENSION);
@@ -156,13 +152,12 @@ class ReporteFotografico extends Controller
                                 'id_usuario' => Session::get('usuario')->id,
                             ];
                             $this->modeloarchivotmp->insert($dato);
-                            echo "Foto $i subida correctamente<br>";
+                            echo "Foto subida correctamente<br>";
                             $fotos_subidas++;
                         } else {
-                            echo "Error al subir la foto $i<br>";
+                            echo "Error al subir la foto<br>";
                         }
                     }
-                }
             }else{
                 echo "error";
             }
@@ -172,8 +167,7 @@ class ReporteFotografico extends Controller
     }
 
     public function obtenerImagenes() {
-        $imagenes = $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id);
-
+        $imagenes = $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id)->get();
         $data = array();
         foreach ($imagenes as $imagen) {
             $data[] = array(
@@ -185,4 +179,14 @@ class ReporteFotografico extends Controller
         header('Content-Type: application/json');
         echo json_encode($data);
     }
+
+    public function Delete_Imagen_Temporal(Request $request){
+        if (Session::get('usuario')) {
+            $id = $request->input('id');
+            $this->modeloarchivotmp->where('id', $id)->delete();
+        }else{
+            redirect('');
+        }
+    }
+
 }

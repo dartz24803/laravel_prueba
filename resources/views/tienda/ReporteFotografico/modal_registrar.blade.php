@@ -51,9 +51,9 @@
 </div>
 
 <script>
-    /*$(document).ready(function() {
+    $(document).ready(function() {
         cargarImagenes();
-    });*/
+    });
     function Registrar_Reporte_Fotografico() {
         Cargando();
 
@@ -252,9 +252,9 @@
     }
 
     function Delete_Imagen_Temporal(id) {
-        var url = "<?php //echo site_url(); ?>Tienda/Delete_Imagen_Temporal";
+        var url = "{{ url('Delete_Imagen_Temporal') }}";
 
-        Swal({
+        swal.fire({
             title: '¿Realmente desea eliminar la foto?',
             text: "El registro será eliminado permanentemente",
             type: 'warning',
