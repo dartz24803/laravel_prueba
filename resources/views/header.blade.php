@@ -212,6 +212,15 @@
             </div>
         </div>
     </div>
+    <!--slide.-->
+    <div id="ModalUpdate" data-backdrop="static" data-keyboard="false" class="modal animated fadeInRight custo-fadeInRight bd-example-modal-lg scrollpagina" tabindex="-1" role="dialog" aria-labelledby="ModalUpdate" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script>
         function Cargando() {
             $(document)
@@ -255,5 +264,10 @@
                     });
                 });
         }
+        
+        $("#ModalUpdate").on("show.bs.modal", function(e) {
+            var link = $(e.relatedTarget);
+            $(this).find(".modal-content").load(link.attr("app_elim"));
+        });
 
     </script>

@@ -9,6 +9,7 @@ use App\Models\BaseModel;
 use App\Models\CodigosReporteFotograficoModel;
 use App\Models\ReporteFotograficoArchivoTemporalModel;
 use Illuminate\Support\Facades\Session;
+use Exception;
 
 class ReporteFotografico extends Controller
 {
@@ -88,7 +89,7 @@ class ReporteFotografico extends Controller
                 <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
             </svg>
             </a>
-            <a class="btn btn-danger" onClick="eliminar(' . $row['id'] . ')" title="Eliminar">
+            <a class="btn btn-danger" onClick="Delete_Reporte_Fotografico(' . $row['id'] . ')" title="Eliminar">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
                 <polyline points="3 6 5 6 21 6"></polyline>
                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -108,21 +109,18 @@ class ReporteFotografico extends Controller
         return response()->json($results);
     }
 
-    public function modalRegistrarReporteFotografico()
+    public function ModalUpdatedReporteFotografico()
     {
             // Lógica para obtener los datos necesarios
             $list_codigos = $this->modelocodigos->listar();
             // Retorna la vista con los datos
-            return view('tienda.ReporteFotografico.modal_registrar', compact('list_codigos'));
+            return view('tienda.ReporteFotografico.modal_editar', compact('list_codigos'));
     }
 
     public function Previsualizacion_Captura2(){
-        $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id)->delete();
         $data = $this->modeloarchivotmp->contador_archivos_rf();
 
         if (Session::get('usuario')) {
-            $max_fotos = 10;
-            // $max_fotos = 3;
             $fotos_subidas = 0;
             if($data<1){
                     $foto_key = "photo1";
@@ -136,8 +134,8 @@ class ReporteFotografico extends Controller
                         echo "No se pudo conectar al servidor FTP";
                     } else {
                         echo "Conexión FTP establecida";
-                        ftp_delete($con_id, 'REPORTE_FOTOGRAFICO/temporal_rf_'.Session::get('usuario')->id. "_1" .'.jpg');
-                        $nombre_soli = "temporal_rf_" . Session::get('usuario')->id . "_1";
+                        //ftp_delete($con_id, 'REPORTE_FOTOGRAFICO/temporal_rf_'.Session::get('usuario')->id. "_1" .'.jpg');
+                        $nombre_soli = "temporal_rf_" . Session::get('usuario')->id_usuario . "_1";
                         $path = $_FILES[$foto_key]["name"];
                         $source_file = $_FILES[$foto_key]['tmp_name'];
                         $ext = pathinfo($path, PATHINFO_EXTENSION);
@@ -149,7 +147,7 @@ class ReporteFotografico extends Controller
                         if ($subio) {
                             $dato = [
                                 'ruta' => $nombre,
-                                'id_usuario' => Session::get('usuario')->id,
+                                'id_usuario' => Session::get('usuario')->id_usuario,
                             ];
                             $this->modeloarchivotmp->insert($dato);
                             echo "Foto subida correctamente<br>";
@@ -167,7 +165,7 @@ class ReporteFotografico extends Controller
     }
 
     public function obtenerImagenes() {
-        $imagenes = $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id)->get();
+        $imagenes = $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id_usuario)->get();
         $data = array();
         foreach ($imagenes as $imagen) {
             $data[] = array(
@@ -189,4 +187,58 @@ class ReporteFotografico extends Controller
         }
     }
 
+    public function Registrar_Reporte_Fotografico(Request $request){
+        if (Session::get('usuario')) {
+            $data = $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id_usuario)->get();
+            //print_r($data);
+            
+            if(!empty($data)){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+
+                if ((!$con_id) || (!$lr)) {
+                    echo "No se pudo conectar al servidor FTP";
+                } else {
+                    echo "Conexión FTP establecida";
+                    $nombre_actual = "REPORTE_FOTOGRAFICO/".$data[0]['ruta'];
+                    $nuevo_nombre = "REPORTE_FOTOGRAFICO/Evidencia_".date('Y-m-d H:m')."_captura.jpg";
+                    ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
+                    $nombre = basename($nuevo_nombre);
+                    $dato['foto'] = $nombre;
+                    $dato = [
+                        'base' => 'B08',
+                        'foto' => $nombre,
+                        'codigo' => $request->input("codigo"),
+                        'estado' => '1',
+                        'fec_reg' => now(),
+                        'user_reg' => Session::get('usuario')->id_usuario,
+                    ];
+                    echo "Foto subida correctamente";
+                    $this->modelo->insert($dato);
+                }
+            }else{
+                echo "error";
+            }
+        }else{
+            redirect('');
+        }
+    }
+
+    public function Delete_Reporte_Fotografico(Request $request)
+    {
+        $id = $request->input('id');
+        $respuesta = array();
+        try {
+            $this->modelo->where('id', $id)->delete();
+            $respuesta['error'] = "";
+            $respuesta['ok'] = "Se Elimino Correctamente";
+        } catch (Exception $e) {
+            $respuesta['error']=$e->getMessage();
+            //$respuesta['error'] = "Problemas al realizar Operación!";
+        }
+        return response()->json($respuesta);
+    }
 }
