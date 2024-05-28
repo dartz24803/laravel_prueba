@@ -7,6 +7,7 @@ use App\Http\Controllers\Inicio;
 use App\Http\Middleware\NoCache;
 use App\Http\Controllers\ReporteFotografico;
 use App\Http\Controllers\OldController;
+use App\Http\Controllers\TrackingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,5 +41,8 @@ Route::get('/obtenerImagenes', [ReporteFotografico::class, 'obtenerImagenes']);
 Route::delete('/Delete_Imagen_Temporal', [ReporteFotografico::class, 'Delete_Imagen_Temporal']);
 //PRUEBA INDEX antiguo
 Route::get('old', [OldController::class, 'index'])->name('old');
-
-
+//TRACKING
+Route::controller(TrackingController::class)->group(function(){
+    Route::get('tracking', 'index')->name('tracking');
+    Route::get('tracking/create', 'create')->name('tracking.create');
+});

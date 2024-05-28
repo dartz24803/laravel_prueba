@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class BaseModel extends Model
 {
@@ -40,4 +41,13 @@ class BaseModel extends Model
         return $this->select('cod_base')->where('estado',1)->distinct()->orderBy("cod_base",'ASC')->get()->toArray();
     }
 
+    public function get_list_base_tracking()
+    {
+        $sql = "SELECT cod_base FROM base 
+                WHERE estado=1 AND (cod_base='CD' OR (cod_base LIKE 'B%' AND CHAR_LENGTH(cod_base)=3))
+                GROUP BY cod_base
+                ORDER BY cod_base ASC";
+        $query = DB::select($sql);
+        return $query;
+    }
 }
