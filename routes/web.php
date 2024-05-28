@@ -35,7 +35,11 @@ Route::post('IngresarLogin', [Login::class, 'ingresar'])->name('IngresarLogin');
 Route::get('DestruirSesion', [Login::class, 'logout']);
 //REGISTRO FOTOGRAFICO
 Route::post('/ReporteFotograficoListar', [ReporteFotografico::class, 'listar']);
-Route::get('/ModalUpdatedReporteFotografico', [ReporteFotografico::class, 'ModalUpdatedReporteFotografico'])->name('modal_editar');
+//Route::get('/ModalUpdatedReporteFotografico', [ReporteFotografico::class, 'ModalUpdatedReporteFotografico'])->name('modal_editar');
+Route::controller(ReporteFotografico::class)->group(function(){
+    Route::get('ReporteFotografico/ModalUpdatedReporteFotografico', 'ModalUpdatedReporteFotografico')->name('tienda.ReporteFotografico.modal_editar');
+    Route::get('ReporteFotografico/ModalRegistrarReporteFotografico', 'ModalRegistroReporteFotografico')->name('tienda.ReporteFotografico.modal_registro');
+});
 Route::post('/Previsualizacion_Captura2', [ReporteFotografico::class, 'Previsualizacion_Captura2']);
 Route::get('/obtenerImagenes', [ReporteFotografico::class, 'obtenerImagenes']);
 Route::delete('/Delete_Imagen_Temporal', [ReporteFotografico::class, 'Delete_Imagen_Temporal']);
