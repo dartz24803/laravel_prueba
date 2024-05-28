@@ -1,6 +1,3 @@
-<div id="ModalRegistrar" data-backdrop="static" data-keyboard="false" class="modal animated fadeInUp custo-fadeInUp bd-example-modal-lg scrollpagina" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
             <!-- Formulario Mantenimiento -->
             <form id="formulario_insert" method="POST" enctype="multipart/form-data" class="needs-validation">
                 <div class="modal-header">
@@ -43,20 +40,17 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary mt-3" onclick="Registrar_Reporte_Fotografico();" type="button">Guardar</button>
-                    <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
+                    <button class="btn mt-3" data-dismiss="modal" id="modal_close"><i class="flaticon-cancel-12"></i> Cancelar</button>
                 </div>
             </form>
-        </div>
-    </div>
-</div>
-
 <script>
     $(document).ready(function() {
         cargarImagenes();
     });
     function Registrar_Reporte_Fotografico() {
         //Cargando();
-
+        $("#ModalRegistro .close").click()
+/*
         var dataString = new FormData(document.getElementById('formulario_insert'));
         var url = "{{ url('Registrar_Reporte_Fotografico') }}";
 
@@ -80,13 +74,13 @@
                             'Haga clic en el botón!',
                             'success'
                         ).then(function() {
+                            $("#ModalRegistro .close").click()
                             Reporte_Fotografico_Listar();
-                            $("#ModalRegistrar .close").click()
                         });
                     }
                 }
             });
-        }
+        }*/
     }
 
     function Valida_Registrar() {

@@ -109,6 +109,15 @@ class ReporteFotografico extends Controller
         return response()->json($results);
     }
 
+    public function ModalRegistroReporteFotografico()
+    {
+        $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id_usuario)->delete();
+        // Lógica para obtener los datos necesarios
+        $list_codigos = $this->modelocodigos->listar();
+        // Retorna la vista con los datos
+        return view('tienda.ReporteFotografico.modal_registrar', compact('list_codigos'));
+    }
+    
     public function ModalUpdatedReporteFotografico()
     {
             // Lógica para obtener los datos necesarios

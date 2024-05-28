@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
     <title> La Número 1 | Intranet</title>
@@ -220,7 +221,6 @@
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script>
         function Cargando() {
             $(document)
@@ -265,9 +265,16 @@
                 });
         }
         
-        $("#ModalUpdate").on("show.bs.modal", function(e) {
-            var link = $(e.relatedTarget);
-            $(this).find(".modal-content").load(link.attr("app_elim"));
+        $(document).ready(function() {
+            $("#ModalRegistro").on("show.bs.modal", function(e) {
+                var link = $(e.relatedTarget);
+                $(this).find(".modal-content").load(link.attr("app_reg_metalikas"));
+            });
+                
+            $("#ModalUpdate").on("show.bs.modal", function(e) {
+                var link = $(e.relatedTarget);
+                $(this).find(".modal-content").load(link.attr("app_elim"));
+            });
         });
 
     </script>

@@ -70,6 +70,6 @@
     }
 
     $('.basic_i').select2({
-        dropdownParent: $('#ModalUpdated')
+        dropdownParent: $('#ModalUpdate')
     });
 </script>
