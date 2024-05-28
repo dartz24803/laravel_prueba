@@ -84,7 +84,7 @@ class ReporteFotografico extends Controller
             </a>
             </div>';
             $sub_array[] = '<div class="btn-group" role="group" aria-label="Button group">
-            <a class="btn btn-success" onClick="editar(' . $row['id'] . ')" title="Actualizar">
+            <a class="btn btn-success" href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="'. route("tienda.ReporteFotografico.modal_editar", $row['id']).'">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                 <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
             </svg>
@@ -118,12 +118,13 @@ class ReporteFotografico extends Controller
         return view('tienda.ReporteFotografico.modal_registrar', compact('list_codigos'));
     }
     
-    public function ModalUpdatedReporteFotografico()
+    public function ModalUpdatedReporteFotografico($id)
     {
+            $get_id = $this->modelo->where('id', $id)->get();
             // Lógica para obtener los datos necesarios
             $list_codigos = $this->modelocodigos->listar();
             // Retorna la vista con los datos
-            return view('tienda.ReporteFotografico.modal_editar', compact('list_codigos'));
+            return view('tienda.ReporteFotografico.modal_editar', compact('list_codigos','get_id'));
     }
 
     public function Previsualizacion_Captura2(){
@@ -242,6 +243,24 @@ class ReporteFotografico extends Controller
         $respuesta = array();
         try {
             $this->modelo->where('id', $id)->delete();
+            $respuesta['error'] = "";
+            $respuesta['ok'] = "Se Elimino Correctamente";
+        } catch (Exception $e) {
+            $respuesta['error']=$e->getMessage();
+            //$respuesta['error'] = "Problemas al realizar Operación!";
+        }
+        return response()->json($respuesta);
+    }
+
+    public function Update_Registro_Fotografico(Request $request)
+    {
+        $id = $request->input('id');
+        $respuesta = array();
+        try {
+            $dato = [
+                'codigo' => $request->input('codigo_e'),
+            ];
+            $this->modelo->where('id', $id)->update($dato);
             $respuesta['error'] = "";
             $respuesta['ok'] = "Se Elimino Correctamente";
         } catch (Exception $e) {

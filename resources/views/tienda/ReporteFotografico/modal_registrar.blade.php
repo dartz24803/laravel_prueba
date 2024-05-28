@@ -40,7 +40,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary mt-3" onclick="Registrar_Reporte_Fotografico();" type="button">Guardar</button>
-                    <button class="btn mt-3" data-dismiss="modal" id="modal_close"><i class="flaticon-cancel-12"></i> Cancelar</button>
+                    <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
                 </div>
             </form>
 <script>
@@ -49,8 +49,7 @@
     });
     function Registrar_Reporte_Fotografico() {
         //Cargando();
-        $("#ModalRegistro .close").click()
-/*
+
         var dataString = new FormData(document.getElementById('formulario_insert'));
         var url = "{{ url('Registrar_Reporte_Fotografico') }}";
 
@@ -80,7 +79,7 @@
                     }
                 }
             });
-        }*/
+        }
     }
 
     function Valida_Registrar() {
