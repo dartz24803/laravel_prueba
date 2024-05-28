@@ -52,7 +52,8 @@
         </div>
     </div>
 
-    <div class="modal-footer"> 
+    <div class="modal-footer">
+        @csrf
         <button class="btn btn-primary" type="button" onclick="Insert_Tracking();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
@@ -63,7 +64,7 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario_insert'));
-        var url = "";
+        var url = "{{ route('tracking.store') }}";
 
         if (Valida_Insert_Tracking()) {
             $.ajax({
@@ -122,4 +123,3 @@
         return true;
     }
 </script>
-  
