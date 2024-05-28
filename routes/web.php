@@ -51,5 +51,7 @@ Route::get('old', [OldController::class, 'index'])->name('old');
 //TRACKING
 Route::controller(TrackingController::class)->group(function(){
     Route::get('tracking', 'index')->name('tracking');
+    Route::post('tracking/list', 'list')->name('tracking.list');
     Route::get('tracking/create', 'create')->name('tracking.create');
+    Route::post('tracking', 'store')->name('tracking.store');
 });

@@ -17,6 +17,11 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('template/plugins/table/datatable/datatables.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('template/plugins/table/datatable/dt-global_style.css') }}">
     <!-- END PAGE LEVEL CUSTOM STYLES -->
+    <!-- BEGIN THEME GLOBAL STYLES -->
+    <link href="{{ asset('template/plugins/sweetalerts/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('template/plugins/sweetalerts/sweetalert.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('template/assets/css/components/custom-sweetalert.css') }}" rel="stylesheet" type="text/css" />
+    <!-- END THEME GLOBAL STYLES -->
 </head>
 <body class="alt-menu sidebar-noneoverflow">
     <!-- BEGIN LOADER -->
@@ -1518,11 +1523,14 @@
     <!-- END MAIN CONTAINER -->
     
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
-    <script src="{{ asset('template/assets/js/libs/jquery-3.1.1.min.js') }}"></script>
     <script src="{{ asset('template/bootstrap/js/popper.min.js') }}"></script>
     <script src="{{ asset('template/bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('template/plugins/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('template/assets/js/app.js') }}"></script>
+    <script src="{{ asset('template/plugins/blockui/jquery.blockUI.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/blockui/custom-blockui.js') }}"></script>
+    <script src="{{ asset('template/plugins/sweetalerts/sweetalert2.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/sweetalerts/custom-sweetalert.js') }}"></script>
     
     <script>
         $(document).ready(function() {
@@ -1533,60 +1541,6 @@
     <!-- END GLOBAL MANDATORY SCRIPTS -->
     <!-- BEGIN PAGE LEVEL CUSTOM SCRIPTS -->
     <script src="{{ asset('template/plugins/table/datatable/datatables.js') }}"></script>
-    <script>        
-        /* Create an array with the values of all the input boxes in a column */
-        $.fn.dataTable.ext.order['dom-text'] = function  ( settings, col )
-        {
-            return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
-                return $('input', td).val();
-            } );
-        }         
-        /* Create an array with the values of all the input boxes in a column, parsed as numbers */
-        $.fn.dataTable.ext.order['dom-text-numeric'] = function  ( settings, col )
-        {
-            return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
-                return $('input', td).val() * 1;
-            } );
-        }         
-        /* Create an array with the values of all the select options in a column */
-        $.fn.dataTable.ext.order['dom-select'] = function  ( settings, col )
-        {
-            return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
-                return $('select', td).val();
-            } );
-        }         
-        /* Create an array with the values of all the checkboxes in a column */
-        $.fn.dataTable.ext.order['dom-checkbox'] = function  ( settings, col )
-        {
-            return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
-                return $('input', td).prop('checked') ? '1' : '0';
-            } );
-        }         
-        /* Initialise the table with the required column ordering data types */
-        $(document).ready(function() {
-            $('#example').DataTable( {
-                "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
-        "<'table-responsive'tr>" +
-        "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
-                "columns": [
-                    null,
-                    { "orderDataType": "dom-text-numeric" },
-                    { "orderDataType": "dom-text", type: 'string' },
-                    { "orderDataType": "dom-select" }
-                ],
-                "oLanguage": {
-                    "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
-                    "sInfo": "Showing page _PAGE_ of _PAGES_",
-                    "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                    "sSearchPlaceholder": "Search...",
-                   "sLengthMenu": "Results :  _MENU_",
-                },
-                "stripeClasses": [],
-                "lengthMenu": [7, 10, 20, 50],
-                "pageLength": 7 
-            } );
-        } );
-    </script>
     <!-- END PAGE LEVEL CUSTOM SCRIPTS -->
 </body>
 </html>
