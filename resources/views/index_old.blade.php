@@ -4,22 +4,19 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
-    <title>CORK Admin - Multipurpose Bootstrap Dashboard Template </title>
-    <link rel="icon" type="image/x-icon" href="{{ asset('template/assets/img/favicon.ico') }}"/>
+    <title>La Número 1 | Intranet</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('template/assets/img/favicon.png') }}"/>
     <link href="{{ asset('template/assets/css/loader.css') }}" rel="stylesheet" type="text/css" />
     <script src="{{ asset('template/assets/js/loader.js') }}"></script>
-
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
     <link href="{{ asset('template/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('template/assets/css/plugins.css') }}" rel="stylesheet" type="text/css" />
     <!-- END GLOBAL MANDATORY STYLES -->
-
-    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
-    <link href="{{ asset('template/plugins/apex/apexcharts.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('template/assets/css/dashboard/dash_1.css') }}" rel="stylesheet" type="text/css" />
-    <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
-
+    <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
+    <link rel="stylesheet" type="text/css" href="{{ asset('template/plugins/table/datatable/datatables.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('template/plugins/table/datatable/dt-global_style.css') }}">
+    <!-- END PAGE LEVEL CUSTOM STYLES -->
 </head>
 <body class="alt-menu sidebar-noneoverflow">
     <!-- BEGIN LOADER -->
@@ -27,7 +24,7 @@
         <div class="spinner-grow align-self-center"></div>
     </div></div></div>
     <!--  END LOADER -->
-
+    
     <!--  BEGIN NAVBAR  -->
     <div class="header-container fixed-top">
         <header class="header navbar navbar-expand-sm expand-header">
@@ -218,6 +215,69 @@
     </div>
     <!--  END NAVBAR  -->
 
+    <!--  BEGIN MODAL  -->
+    <div id="ModalRegistro" data-backdrop="static" data-keyboard="false" class="modal animated fadeInUp custo-fadeInUp bd-example-modal-lg scrollpagina" tabindex="-1" role="dialog" aria-labelledby="ModalRegistro" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('template/docs/js/jquery-3.2.1.min.js') }}"></script>
+
+    <script>
+        function Cargando() {
+            $(document)
+            .ajaxStart(function() {
+                $.blockUI({
+                    message: '<svg> ... </svg>',
+                    fadeIn: 800,
+                    overlayCSS: {
+                        backgroundColor: '#1b2024',
+                        opacity: 0.8,
+                        zIndex: 1200,
+                        cursor: 'wait'
+                    },
+                    css: {
+                        border: 0,
+                        color: '#fff',
+                        zIndex: 1201,
+                        padding: 0,
+                        backgroundColor: 'transparent'
+                    }
+                });
+            })
+            .ajaxStop(function() {
+                $.blockUI({
+                    message: '<svg> ... </svg>',
+                    fadeIn: 800,
+                    timeout: 100,
+                    overlayCSS: {
+                        backgroundColor: '#1b2024',
+                        opacity: 0.8,
+                        zIndex: 1200,
+                        cursor: 'wait'
+                    },
+                    css: {
+                        border: 0,
+                        color: '#fff',
+                        zIndex: 1201,
+                        padding: 0,
+                        backgroundColor: 'transparent'
+                    }
+                });
+            });
+        }
+
+        $(document).ready(function() {
+            $("#ModalRegistro").on("show.bs.modal", function(e) {
+                var link = $(e.relatedTarget);
+                $(this).find(".modal-content").load(link.attr("app_reg"));
+            });
+        });
+    </script>
+    <!-- END MODAL  -->
+
     <!--  BEGIN MAIN CONTAINER  -->
     <div class="main-container sidebar-closed sbar-open" id="container">
 
@@ -242,8 +302,8 @@
                 </ul>
 
                 <ul class="list-unstyled menu-categories" id="accordionExample">
-                    <li class="menu active">
-                        <a href="#dashboard" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
+                    <li class="menu">
+                        <a href="#dashboard" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                             <div class="">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                                 <span>Dashboard</span>
@@ -252,8 +312,8 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
                             </div>
                         </a>
-                        <ul class="collapse submenu recent-submenu mini-recent-submenu list-unstyled show" id="dashboard" data-parent="#accordionExample">
-                            <li class="active">
+                        <ul class="collapse submenu list-unstyled" id="dashboard" data-parent="#accordionExample">
+                            <li>
                                 <a href="index.html"> Analytics </a>
                             </li>
                             <li>
@@ -421,7 +481,6 @@
                         </ul>
                     </li>
 
-
                     <li class="menu">
                         <a href="#elements" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                             <div class="">
@@ -521,8 +580,8 @@
                         </a>
                     </li>
 
-                    <li class="menu">
-                        <a href="#datatables" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <li class="menu active">
+                        <a href="#datatables" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
                             <div class="">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
                                 <span>DataTables</span>
@@ -531,7 +590,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
                             </div>
                         </a>
-                        <ul class="collapse submenu list-unstyled" id="datatables" data-parent="#accordionExample">
+                        <ul class="collapse submenu recent-submenu mini-recent-submenu list-unstyled show" id="datatables" data-parent="#accordionExample">
                             <li>
                                 <a href="table_dt_basic.html"> Basic </a>
                             </li>
@@ -559,7 +618,7 @@
                             <li>
                                 <a href="table_dt_html5.html"> HTML5 Export </a>
                             </li>
-                            <li>
+                            <li class="active">
                                 <a href="table_dt_live_dom_ordering.html"> Live DOM ordering </a>
                             </li>
                             <li>
@@ -819,565 +878,652 @@
 
         </div>
         <!--  END SIDEBAR  -->
-        
+
         <!--  BEGIN CONTENT AREA  -->
-        <div id="content" class="main-content">
+        @yield('content')
+        <!--<div id="content" class="main-content">
             <div class="layout-px-spacing">
 
-                <div class="row layout-top-spacing">
-
-                    <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
-                        <div class="widget widget-one">
-                            <div class="widget-heading">
-                                <h6 class="">Statistics</h6>
-
-                                <div class="task-action">
-                                    <div class="dropdown">
-                                        <a class="dropdown-toggle" href="#" role="button" id="pendingTask" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                                        </a>
-
-                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="pendingTask" style="will-change: transform;">
-                                            <a class="dropdown-item" href="javascript:void(0);">View</a>
-                                            <a class="dropdown-item" href="javascript:void(0);">Download</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                            </div>
-                            <div class="w-chart">
-
-                                <div class="w-chart-section total-visits-content">
-                                    <div class="w-detail">
-                                        <p class="w-title">Total Visits</p>
-                                        <p class="w-stats">423,964</p>
-                                    </div>
-                                    <div class="w-chart-render-one">
-                                        <div id="total-users"></div>
-                                    </div>
-                                </div>
-                                
-                                
-                                <div class="w-chart-section paid-visits-content">
-                                    <div class="w-detail">
-                                        <p class="w-title">Paid Visits</p>
-                                        <p class="w-stats">7,929</p>
-                                    </div>
-                                    <div class="w-chart-render-one">
-                                        <div id="paid-visits"></div>
-                                    </div>
-                                </div>
-                                
-                            </div>
+                <div class="page-header">
+                    <div class="page-title">
+                        <h3>Live Dom Ordering</h3>
+                    </div>
+                </div>
+                
+                <div class="row" id="cancel-row">
+                    <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                        <div class="widget-content widget-content-area br-6">
+                            <table id="example" class="table table-hover" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Age</th>
+                                        <th>Position</th>
+                                        <th>Office</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Tiger Nixon</td>
+                                        <td><input type="text" id="row-1-age" class="form-control" name="row-1-age" value="61"></td>
+                                        <td><input type="text" id="row-1-position" class="form-control" name="row-1-position" value="System Architect"></td>
+                                        <td><select size="1" id="row-1-office" class="form-control" name="row-1-office">
+                                            <option value="Edinburgh" selected="selected">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Garrett Winters</td>
+                                        <td><input type="text" id="row-2-age" class="form-control" name="row-2-age" value="63"></td>
+                                        <td><input type="text" id="row-2-position" class="form-control" name="row-2-position" value="Accountant"></td>
+                                        <td><select size="1" id="row-2-office" class="form-control" name="row-2-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo" selected="selected">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ashton Cox</td>
+                                        <td><input type="text" id="row-3-age" class="form-control" name="row-3-age" value="66"></td>
+                                        <td><input type="text" id="row-3-position" class="form-control" name="row-3-position" value="Junior Technical Author"></td>
+                                        <td><select size="1" id="row-3-office" class="form-control" name="row-3-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco" selected="selected">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cedric Kelly</td>
+                                        <td><input type="text" id="row-4-age" class="form-control" name="row-4-age" value="22"></td>
+                                        <td><input type="text" id="row-4-position" class="form-control" name="row-4-position" value="Senior Javascript Developer"></td>
+                                        <td><select size="1" id="row-4-office" class="form-control" name="row-4-office">
+                                            <option value="Edinburgh" selected="selected">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Airi Satou</td>
+                                        <td><input type="text" id="row-5-age" class="form-control" name="row-5-age" value="33"></td>
+                                        <td><input type="text" id="row-5-position" class="form-control" name="row-5-position" value="Accountant"></td>
+                                        <td><select size="1" id="row-5-office" class="form-control" name="row-5-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo" selected="selected">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Brielle Williamson</td>
+                                        <td><input type="text" id="row-6-age" class="form-control" name="row-6-age" value="61"></td>
+                                        <td><input type="text" id="row-6-position" class="form-control" name="row-6-position" value="Integration Specialist"></td>
+                                        <td><select size="1" id="row-6-office" class="form-control" name="row-6-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York" selected="selected">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Herrod Chandler</td>
+                                        <td><input type="text" id="row-7-age" class="form-control" name="row-7-age" value="59"></td>
+                                        <td><input type="text" id="row-7-position" class="form-control" name="row-7-position" value="Sales Assistant"></td>
+                                        <td><select size="1" id="row-7-office" class="form-control" name="row-7-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco" selected="selected">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Rhona Davidson</td>
+                                        <td><input type="text" id="row-8-age" class="form-control" name="row-8-age" value="55"></td>
+                                        <td><input type="text" id="row-8-position" class="form-control" name="row-8-position" value="Integration Specialist"></td>
+                                        <td><select size="1" id="row-8-office" class="form-control" name="row-8-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo" selected="selected">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Colleen Hurst</td>
+                                        <td><input type="text" id="row-9-age" class="form-control" name="row-9-age" value="39"></td>
+                                        <td><input type="text" id="row-9-position" class="form-control" name="row-9-position" value="Javascript Developer"></td>
+                                        <td><select size="1" id="row-9-office" class="form-control" name="row-9-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco" selected="selected">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sonya Frost</td>
+                                        <td><input type="text" id="row-10-age" class="form-control" name="row-10-age" value="23"></td>
+                                        <td><input type="text" id="row-10-position" class="form-control" name="row-10-position" value="Software Engineer"></td>
+                                        <td><select size="1" id="row-10-office" class="form-control" name="row-10-office">
+                                            <option value="Edinburgh" selected="selected">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jena Gaines</td>
+                                        <td><input type="text" id="row-11-age" class="form-control" name="row-11-age" value="30"></td>
+                                        <td><input type="text" id="row-11-position" class="form-control" name="row-11-position" value="Office Manager"></td>
+                                        <td><select size="1" id="row-11-office" class="form-control" name="row-11-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London" selected="selected">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Quinn Flynn</td>
+                                        <td><input type="text" id="row-12-age" class="form-control" name="row-12-age" value="22"></td>
+                                        <td><input type="text" id="row-12-position" class="form-control" name="row-12-position" value="Support Lead"></td>
+                                        <td><select size="1" id="row-12-office" class="form-control" name="row-12-office">
+                                            <option value="Edinburgh" selected="selected">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Charde Marshall</td>
+                                        <td><input type="text" id="row-13-age" class="form-control" name="row-13-age" value="36"></td>
+                                        <td><input type="text" id="row-13-position" class="form-control" name="row-13-position" value="Regional Director"></td>
+                                        <td><select size="1" id="row-13-office" class="form-control" name="row-13-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco" selected="selected">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Haley Kennedy</td>
+                                        <td><input type="text" id="row-14-age" class="form-control" name="row-14-age" value="43"></td>
+                                        <td><input type="text" id="row-14-position" class="form-control" name="row-14-position" value="Senior Marketing Designer"></td>
+                                        <td><select size="1" id="row-14-office" class="form-control" name="row-14-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London" selected="selected">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tatyana Fitzpatrick</td>
+                                        <td><input type="text" id="row-15-age" class="form-control" name="row-15-age" value="19"></td>
+                                        <td><input type="text" id="row-15-position" class="form-control" name="row-15-position" value="Regional Director"></td>
+                                        <td><select size="1" id="row-15-office" class="form-control" name="row-15-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London" selected="selected">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Michael Silva</td>
+                                        <td><input type="text" id="row-16-age" class="form-control" name="row-16-age" value="66"></td>
+                                        <td><input type="text" id="row-16-position" class="form-control" name="row-16-position" value="Marketing Designer"></td>
+                                        <td><select size="1" id="row-16-office" class="form-control" name="row-16-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London" selected="selected">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Paul Byrd</td>
+                                        <td><input type="text" id="row-17-age" class="form-control" name="row-17-age" value="64"></td>
+                                        <td><input type="text" id="row-17-position" class="form-control" name="row-17-position" value="Chief Financial Officer (CFO)"></td>
+                                        <td><select size="1" id="row-17-office" class="form-control" name="row-17-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York" selected="selected">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Gloria Little</td>
+                                        <td><input type="text" id="row-18-age" class="form-control" name="row-18-age" value="59"></td>
+                                        <td><input type="text" id="row-18-position" class="form-control" name="row-18-position" value="Systems Administrator"></td>
+                                        <td><select size="1" id="row-18-office" class="form-control" name="row-18-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York" selected="selected">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bradley Greer</td>
+                                        <td><input type="text" id="row-19-age" class="form-control" name="row-19-age" value="41"></td>
+                                        <td><input type="text" id="row-19-position" class="form-control" name="row-19-position" value="Software Engineer"></td>
+                                        <td><select size="1" id="row-19-office" class="form-control" name="row-19-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London" selected="selected">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Dai Rios</td>
+                                        <td><input type="text" id="row-20-age" class="form-control" name="row-20-age" value="35"></td>
+                                        <td><input type="text" id="row-20-position" class="form-control" name="row-20-position" value="Personnel Lead"></td>
+                                        <td><select size="1" id="row-20-office" class="form-control" name="row-20-office">
+                                            <option value="Edinburgh" selected="selected">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jenette Caldwell</td>
+                                        <td><input type="text" id="row-21-age" class="form-control" name="row-21-age" value="30"></td>
+                                        <td><input type="text" id="row-21-position" class="form-control" name="row-21-position" value="Development Lead"></td>
+                                        <td><select size="1" id="row-21-office" class="form-control" name="row-21-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York" selected="selected">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Yuri Berry</td>
+                                        <td><input type="text" id="row-22-age" class="form-control" name="row-22-age" value="40"></td>
+                                        <td><input type="text" id="row-22-position" class="form-control" name="row-22-position" value="Chief Marketing Officer (CMO)"></td>
+                                        <td><select size="1" id="row-22-office" class="form-control" name="row-22-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York" selected="selected">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Caesar Vance</td>
+                                        <td><input type="text" id="row-23-age" class="form-control" name="row-23-age" value="21"></td>
+                                        <td><input type="text" id="row-23-position" class="form-control" name="row-23-position" value="Pre-Sales Support"></td>
+                                        <td><select size="1" id="row-23-office" class="form-control" name="row-23-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York" selected="selected">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Doris Wilder</td>
+                                        <td><input type="text" id="row-24-age" class="form-control" name="row-24-age" value="23"></td>
+                                        <td><input type="text" id="row-24-position" class="form-control" name="row-24-position" value="Sales Assistant"></td>
+                                        <td><select size="1" id="row-24-office" class="form-control" name="row-24-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Angelica Ramos</td>
+                                        <td><input type="text" id="row-25-age" class="form-control" name="row-25-age" value="47"></td>
+                                        <td><input type="text" id="row-25-position" class="form-control" name="row-25-position" value="Chief Executive Officer (CEO)"></td>
+                                        <td><select size="1" id="row-25-office" class="form-control" name="row-25-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London" selected="selected">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Gavin Joyce</td>
+                                        <td><input type="text" id="row-26-age" class="form-control" name="row-26-age" value="42"></td>
+                                        <td><input type="text" id="row-26-position" class="form-control" name="row-26-position" value="Developer"></td>
+                                        <td><select size="1" id="row-26-office" class="form-control" name="row-26-office">
+                                            <option value="Edinburgh" selected="selected">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jennifer Chang</td>
+                                        <td><input type="text" id="row-27-age" class="form-control" name="row-27-age" value="28"></td>
+                                        <td><input type="text" id="row-27-position" class="form-control" name="row-27-position" value="Regional Director"></td>
+                                        <td><select size="1" id="row-27-office" class="form-control" name="row-27-office">
+                                            <option value="Edinburgh">
+                                                Edinburgh
+                                            </option>
+                                            <option value="London">
+                                                London
+                                            </option>
+                                            <option value="New York">
+                                                New York
+                                            </option>
+                                            <option value="San Francisco">
+                                                San Francisco
+                                            </option>
+                                            <option value="Tokyo">
+                                                Tokyo
+                                            </option>
+                                        </select></td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Age</th>
+                                        <th>Position</th>
+                                        <th>Office</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
                     </div>
-
-                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-                        <div class="widget widget-card-four">
-                            <div class="widget-content">
-                                <div class="w-header">
-                                    <div class="w-info">
-                                        <h6 class="value">Expenses</h6>
-                                    </div>
-                                    <div class="task-action">
-                                        <div class="dropdown">
-                                            <a class="dropdown-toggle" href="#" role="button" id="pendingTask" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                                            </a>
-
-                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="pendingTask" style="will-change: transform;">
-                                                <a class="dropdown-item" href="javascript:void(0);">This Week</a>
-                                                <a class="dropdown-item" href="javascript:void(0);">Last Week</a>
-                                                <a class="dropdown-item" href="javascript:void(0);">Last Month</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="w-content">
-
-                                    <div class="w-info">
-                                        <p class="value">$ 45,141 <span>this week</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trending-up"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg></p>
-                                    </div>
-                                    
-                                </div>
-
-                                <div class="w-progress-stats">                                            
-                                    <div class="progress">
-                                        <div class="progress-bar bg-gradient-secondary" role="progressbar" style="width: 57%" aria-valuenow="57" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-
-                                    <div class="">
-                                        <div class="w-icon">
-                                            <p>57%</p>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-                        <div class="widget widget-account-invoice-two">
-                            <div class="widget-content">
-                                <div class="account-box">
-                                    <div class="info">
-                                        <div class="inv-title">
-                                            <h5 class="">Total Balance</h5>
-                                        </div>
-                                        <div class="inv-balance-info">
-
-                                            <p class="inv-balance">$ 41,741.42</p>
-                                            
-                                            <span class="inv-stats balance-credited">+ 2453</span>
-                                            
-                                        </div>
-                                    </div>
-                                    <div class="acc-action">
-                                        <div class="">
-                                            <a href="javascript:void(0);"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></a>
-                                            <a href="javascript:void(0);"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></a>
-                                        </div>
-                                        <a href="javascript:void(0);">Upgrade</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
-                        <div class="widget widget-chart-three">
-                            <div class="widget-heading">
-                                <div class="">
-                                    <h5 class="">Unique Visitors</h5>
-                                </div>
-
-                                <div class="dropdown ">
-                                    <a class="dropdown-toggle" href="#" role="button" id="uniqueVisitors" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                                    </a>
-
-                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="uniqueVisitors">
-                                        <a class="dropdown-item" href="javascript:void(0);">View</a>
-                                        <a class="dropdown-item" href="javascript:void(0);">Update</a>
-                                        <a class="dropdown-item" href="javascript:void(0);">Download</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="widget-content">
-                                <div id="uniqueVisits"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-                        <div class="widget widget-activity-five">
-
-                            <div class="widget-heading">
-                                <h5 class="">Activity Log</h5>
-
-                                <div class="task-action">
-                                    <div class="dropdown">
-                                        <a class="dropdown-toggle" href="#" role="button" id="pendingTask" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                                        </a>
-
-                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="pendingTask" style="will-change: transform;">
-                                            <a class="dropdown-item" href="javascript:void(0);">View All</a>
-                                            <a class="dropdown-item" href="javascript:void(0);">Mark as Read</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="widget-content">
-
-                                <div class="w-shadow-top"></div>
-
-                                <div class="mt-container mx-auto">
-                                    <div class="timeline-line">
-                                        
-                                        <div class="item-timeline timeline-new">
-                                            <div class="t-dot">
-                                                <div class="t-secondary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
-                                            </div>
-                                            <div class="t-content">
-                                                <div class="t-uppercontent">
-                                                    <h5>New project created : <a href="javscript:void(0);"><span>[Cork Admin Template]</span></a></h5>
-                                                </div>
-                                                <p>27 Feb, 2020</p>
-                                            </div>
-                                        </div>
-
-                                        <div class="item-timeline timeline-new">
-                                            <div class="t-dot">
-                                                <div class="t-success"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
-                                            </div>
-                                            <div class="t-content">
-                                                <div class="t-uppercontent">
-                                                    <h5>Mail sent to <a href="javascript:void(0);">HR</a> and <a href="javascript:void(0);">Admin</a></h5>
-                                                </div>
-                                                <p>28 Feb, 2020</p>
-                                            </div>
-                                        </div>
-
-                                        <div class="item-timeline timeline-new">
-                                            <div class="t-dot">
-                                                <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                                            </div>
-                                            <div class="t-content">
-                                                <div class="t-uppercontent">
-                                                    <h5>Server Logs Updated</h5>
-                                                </div>
-                                                <p>27 Feb, 2020</p>
-                                            </div>
-                                        </div>
-
-                                        <div class="item-timeline timeline-new">
-                                            <div class="t-dot">
-                                                <div class="t-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                                            </div>
-                                            <div class="t-content">
-                                                <div class="t-uppercontent">
-                                                    <h5>Task Completed : <a href="javscript:void(0);"><span>[Backup Files EOD]</span></a></h5>
-                                                </div>
-                                                <p>01 Mar, 2020</p>
-                                            </div>
-                                        </div>
-
-                                        <div class="item-timeline timeline-new">
-                                            <div class="t-dot">
-                                                <div class="t-warning"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg></div>
-                                            </div>
-                                            <div class="t-content">
-                                                <div class="t-uppercontent">
-                                                    <h5>Documents Submitted from <a href="javascript:void(0);">Sara</a></h5>
-                                                    <span class=""></span>
-                                                </div>
-                                                <p>10 Mar, 2020</p>
-                                            </div>
-                                        </div>
-
-                                        <div class="item-timeline timeline-new">
-                                            <div class="t-dot">
-                                                <div class="t-dark"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-server"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6" y2="6"></line><line x1="6" y1="18" x2="6" y2="18"></line></svg></div>
-                                            </div>
-                                            <div class="t-content">
-                                                <div class="t-uppercontent">
-                                                    <h5>Server rebooted successfully</h5>
-                                                    <span class=""></span>
-                                                </div>
-                                                <p>06 Apr, 2020</p>
-                                            </div>
-                                        </div>                                      
-                                    </div>                                    
-                                </div>
-
-                                <div class="w-shadow-bottom"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-                        <div class="widget-four">
-                            <div class="widget-heading">
-                                <h5 class="">Visitors by Browser</h5>
-                            </div>
-                            <div class="widget-content">
-                                <div class="vistorsBrowser">
-                                    <div class="browser-list">
-                                        <div class="w-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chrome"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle><line x1="21.17" y1="8" x2="12" y2="8"></line><line x1="3.95" y1="6.06" x2="8.54" y2="14"></line><line x1="10.88" y1="21.94" x2="15.46" y2="14"></line></svg>
-                                        </div>
-                                        <div class="w-browser-details">
-                                            <div class="w-browser-info">
-                                                <h6>Chrome</h6>
-                                                <p class="browser-count">65%</p>
-                                            </div>
-                                            <div class="w-browser-stats">
-                                                <div class="progress">
-                                                    <div class="progress-bar bg-gradient-primary" role="progressbar" style="width: 65%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="browser-list">
-                                        <div class="w-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-compass"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
-                                        </div>
-                                        <div class="w-browser-details">
-                                            
-                                            <div class="w-browser-info">
-                                                <h6>Safari</h6>
-                                                <p class="browser-count">25%</p>
-                                            </div>
-
-                                            <div class="w-browser-stats">
-                                                <div class="progress">
-                                                    <div class="progress-bar bg-gradient-danger" role="progressbar" style="width: 35%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="browser-list">
-                                        <div class="w-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-globe"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                                        </div>
-                                        <div class="w-browser-details">
-                                            
-                                            <div class="w-browser-info">
-                                                <h6>Others</h6>
-                                                <p class="browser-count">15%</p>
-                                            </div>
-
-                                            <div class="w-browser-stats">
-                                                <div class="progress">
-                                                    <div class="progress-bar bg-gradient-warning" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-                                    
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12">
-                        <div class="row widget-statistic">
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 layout-spacing">
-                                <div class="widget widget-one_hybrid widget-followers">
-                                    <div class="widget-heading">
-                                        <div class="w-title">
-                                            <div class="w-icon">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                                            </div>
-                                            <div class="">
-                                                <p class="w-value">31.6K</p>
-                                                <h5 class="">Followers</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="widget-content">    
-                                        <div class="w-chart">
-                                            <div id="hybrid_followers"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 layout-spacing">
-                                <div class="widget widget-one_hybrid widget-referral">
-                                    <div class="widget-heading">
-                                        <div class="w-title">
-                                            <div class="w-icon">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                                            </div>
-                                            <div class="">
-                                                <p class="w-value">1,900</p>
-                                                <h5 class="">Referral</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="widget-content">    
-                                        <div class="w-chart">
-                                            <div id="hybrid_followers1"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 layout-spacing">
-                                <div class="widget widget-one_hybrid widget-engagement">
-                                    <div class="widget-heading">
-                                        <div class="w-title">
-                                            <div class="w-icon">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-circle"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                                            </div>
-                                            <div class="">
-                                                <p class="w-value">18.2%</p>
-                                                <h5 class="">Engagement</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="widget-content">    
-                                        <div class="w-chart">
-                                            <div id="hybrid_followers3"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-                        <div class="widget widget-card-one">
-                            <div class="widget-content">
-
-                                <div class="media">
-                                    <div class="w-img">
-                                        <img src="{{ asset('template/assets/img/90x90.jpg') }}" alt="avatar">
-                                    </div>
-                                    <div class="media-body">
-                                        <h6>Jimmy Turner</h6>
-                                        <p class="meta-date-time">Monday, Nov 18</p>
-                                    </div>
-                                </div>
-
-                                <p>"Duis aute irure dolor" in reprehenderit in voluptate velit esse cillum "dolore eu fugiat" nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
-
-                                <div class="w-action">
-                                    <div class="card-like">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-thumbs-up"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
-                                        <span>551 Likes</span>
-                                    </div>
-
-                                    <div class="read-more">
-                                        <a href="javascript:void(0);">Read More <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-                        <div class="widget widget-card-two">
-                            <div class="widget-content">
-
-                                <div class="media">
-                                    <div class="w-img">
-                                        <img src="{{ asset('template/assets/img/90x90.jpg') }}" alt="avatar">
-                                    </div>
-                                    <div class="media-body">
-                                        <h6>Dev Summit - New York</h6>
-                                        <p class="meta-date-time">Bronx, NY</p>
-                                    </div>
-                                </div>
-
-                                <div class="card-bottom-section">
-                                    <h5>4 Members Going</h5>
-                                    <div class="img-group">
-                                        <img src="{{ asset('template/assets/img/90x90.jpg') }}" alt="avatar">
-                                        <img src="{{ asset('template/assets/img/90x90.jpg') }}" alt="avatar">
-                                        <img src="{{ asset('template/assets/img/90x90.jpg') }}" alt="avatar">
-                                        <img src="{{ asset('template/assets/img/90x90.jpg') }}" alt="avatar">
-                                    </div>
-                                    <a href="javascript:void(0);" class="btn">View Details</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-                        <div class="widget widget-five">
-
-                            <div class="widget-heading">
-
-                                <a href="javascript:void(0)" class="task-info">
-
-                                    <div class="usr-avatar">
-                                        <span>FD</span>
-                                    </div>
-
-                                    <div class="w-title">
-
-                                        <h5>Figma Design</h5>
-                                        <span>Design Reset</span>
-                                        
-                                    </div>
-
-                                </a>
-
-                                <div class="task-action">
-                                    <div class="dropdown">
-                                        <a class="dropdown-toggle" href="#" role="button" id="pendingTask" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                                        </a>
-
-                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="pendingTask" style="will-change: transform;">
-                                            <a class="dropdown-item" href="javascript:void(0);">View Project</a>
-                                            <a class="dropdown-item" href="javascript:void(0);">Edit Project</a>
-                                            <a class="dropdown-item" href="javascript:void(0);">Mark as Done</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                            </div>
-                            
-                            
-                            <div class="widget-content">
-
-                                <p>Doloribus nisi vel suscipit modi, optio ex repudiandae voluptatibus officiis commodi. Nesciunt quas aut neque incidunt!</p>
-
-                                <div class="progress-data">
-
-                                    <div class="progress-info">
-                                        <div class="task-count"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg><p>5 Tasks</p></div>
-                                        <div class="progress-stats"><p>86.2%</p></div>
-                                    </div>
-                                    
-                                    <div class="progress">
-                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 65%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    
-                                </div>
-
-                                <div class="meta-info">
-
-                                    <div class="due-time">
-                                        <p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> 3 Days Left</p>
-                                    </div>
-                                    
-
-                                    <div class="avatar--group">
-
-                                        <div class="avatar translateY-axis more-group">
-                                            <span class="avatar-title">+6</span>
-                                        </div>
-                                        <div class="avatar translateY-axis">
-                                            <img alt="avatar" src="{{ asset('template/assets/img/90x90.jpg') }}"/>
-                                        </div>
-                                        <div class="avatar translateY-axis">
-                                            <img alt="avatar" src="{{ asset('template/assets/img/90x90.jpg') }}"/>
-                                        </div>
-                                        <div class="avatar translateY-axis">
-                                            <img alt="avatar" src="{{ asset('template/assets/img/90x90.jpg') }}"/>
-                                        </div>
-                                        
-                                    </div>
-
-                                </div>
-                                
-                                
-                            </div>
-
-                        </div>
-
-                    </div>
-
                 </div>
 
             </div>
-        </div>
+        </div>-->
         <!--  END CONTENT AREA  -->
-
     </div>
     <!-- END MAIN CONTAINER -->
-
+    
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
     <script src="{{ asset('template/assets/js/libs/jquery-3.1.1.min.js') }}"></script>
     <script src="{{ asset('template/bootstrap/js/popper.min.js') }}"></script>
     <script src="{{ asset('template/bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('template/plugins/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('template/assets/js/app.js') }}"></script>
+    
     <script>
         $(document).ready(function() {
             App.init();
@@ -1385,11 +1531,62 @@
     </script>
     <script src="{{ asset('template/assets/js/custom.js') }}"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
-
-    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
-    <script src="{{ asset('template/plugins/apex/apexcharts.min.js') }}"></script>
-    <script src="{{ asset('template/assets/js/dashboard/dash_1.js') }}"></script>
-    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
-
+    <!-- BEGIN PAGE LEVEL CUSTOM SCRIPTS -->
+    <script src="{{ asset('template/plugins/table/datatable/datatables.js') }}"></script>
+    <script>        
+        /* Create an array with the values of all the input boxes in a column */
+        $.fn.dataTable.ext.order['dom-text'] = function  ( settings, col )
+        {
+            return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
+                return $('input', td).val();
+            } );
+        }         
+        /* Create an array with the values of all the input boxes in a column, parsed as numbers */
+        $.fn.dataTable.ext.order['dom-text-numeric'] = function  ( settings, col )
+        {
+            return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
+                return $('input', td).val() * 1;
+            } );
+        }         
+        /* Create an array with the values of all the select options in a column */
+        $.fn.dataTable.ext.order['dom-select'] = function  ( settings, col )
+        {
+            return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
+                return $('select', td).val();
+            } );
+        }         
+        /* Create an array with the values of all the checkboxes in a column */
+        $.fn.dataTable.ext.order['dom-checkbox'] = function  ( settings, col )
+        {
+            return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
+                return $('input', td).prop('checked') ? '1' : '0';
+            } );
+        }         
+        /* Initialise the table with the required column ordering data types */
+        $(document).ready(function() {
+            $('#example').DataTable( {
+                "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
+        "<'table-responsive'tr>" +
+        "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                "columns": [
+                    null,
+                    { "orderDataType": "dom-text-numeric" },
+                    { "orderDataType": "dom-text", type: 'string' },
+                    { "orderDataType": "dom-select" }
+                ],
+                "oLanguage": {
+                    "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                    "sInfo": "Showing page _PAGE_ of _PAGES_",
+                    "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                    "sSearchPlaceholder": "Search...",
+                   "sLengthMenu": "Results :  _MENU_",
+                },
+                "stripeClasses": [],
+                "lengthMenu": [7, 10, 20, 50],
+                "pageLength": 7 
+            } );
+        } );
+    </script>
+    <!-- END PAGE LEVEL CUSTOM SCRIPTS -->
 </body>
 </html>

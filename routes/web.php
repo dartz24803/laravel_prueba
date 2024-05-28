@@ -7,6 +7,7 @@ use App\Http\Controllers\Inicio;
 use App\Http\Middleware\NoCache;
 use App\Http\Controllers\ReporteFotografico;
 use App\Http\Controllers\OldController;
+use App\Http\Controllers\TrackingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,5 +43,8 @@ Route::post('/Delete_Reporte_Fotografico', [ReporteFotografico::class, 'Delete_R
 Route::post('/Registrar_Reporte_Fotografico', [ReporteFotografico::class, 'Registrar_Reporte_Fotografico']);
 //PRUEBA INDEX antiguo
 Route::get('old', [OldController::class, 'index'])->name('old');
-
-
+//TRACKING
+Route::controller(TrackingController::class)->group(function(){
+    Route::get('tracking', 'index')->name('tracking');
+    Route::get('tracking/create', 'create')->name('tracking.create');
+});
