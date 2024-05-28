@@ -34,10 +34,12 @@ Route::post('IngresarLogin', [Login::class, 'ingresar'])->name('IngresarLogin');
 Route::get('DestruirSesion', [Login::class, 'logout']);
 //REGISTRO FOTOGRAFICO
 Route::post('/ReporteFotograficoListar', [ReporteFotografico::class, 'listar']);
-Route::get('/modalRegistrarReporteFotografico', [ReporteFotografico::class, 'modalRegistrarReporteFotografico'])->name('modal_registrar');
+Route::get('/ModalUpdatedReporteFotografico', [ReporteFotografico::class, 'ModalUpdatedReporteFotografico'])->name('modal_editar');
 Route::post('/Previsualizacion_Captura2', [ReporteFotografico::class, 'Previsualizacion_Captura2']);
 Route::get('/obtenerImagenes', [ReporteFotografico::class, 'obtenerImagenes']);
 Route::delete('/Delete_Imagen_Temporal', [ReporteFotografico::class, 'Delete_Imagen_Temporal']);
+Route::post('/Delete_Reporte_Fotografico', [ReporteFotografico::class, 'Delete_Reporte_Fotografico']);
+Route::post('/Registrar_Reporte_Fotografico', [ReporteFotografico::class, 'Registrar_Reporte_Fotografico']);
 //PRUEBA INDEX antiguo
 Route::get('old', [OldController::class, 'index'])->name('old');
 

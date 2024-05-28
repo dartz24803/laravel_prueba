@@ -5,7 +5,7 @@
             <form id="formulario_insert" method="POST" enctype="multipart/form-data" class="needs-validation">
                 <div class="modal-header">
                     <h5 class="modal-title">Registrar Reporte Fotografico</h5>
-                    <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistrar">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
                             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -55,10 +55,10 @@
         cargarImagenes();
     });
     function Registrar_Reporte_Fotografico() {
-        Cargando();
+        //Cargando();
 
         var dataString = new FormData(document.getElementById('formulario_insert'));
-        var url = "<?php //echo site_url(); ?>Tienda/Registrar_Reporte_Fotografico";
+        var url = "{{ url('Registrar_Reporte_Fotografico') }}";
 
         if (Valida_Registrar()) {
             $.ajax({
@@ -69,7 +69,7 @@
                 contentType: false,
                 success: function(data) {
                     if (data === "error") {
-                    Swal(
+                    swal.fire(
                         'Error!',
                         'Debe tomar una fotografía.',
                         'error'
@@ -81,7 +81,7 @@
                             'success'
                         ).then(function() {
                             Reporte_Fotografico_Listar();
-                            $("#ModalRegistro .close").click()
+                            $("#ModalRegistrar .close").click()
                         });
                     }
                 }
@@ -91,7 +91,7 @@
 
     function Valida_Registrar() {
         if ($('#codigo').val() == '0') {
-            Swal(
+            swal.fire(
                 'Ups!',
                 'Debe ingresar codigo.',
                 'warning'
@@ -204,7 +204,7 @@
                 contentType: false,
                 success: function(response) {
                     if (response === "error") {
-                        Swal({
+                        swal.fire({
                             title: 'Error',
                             text: "Solo puede tomar una foto!",
                             type: 'error',
@@ -266,13 +266,13 @@
         }).then((result) => {
             if (result.value) {
                 $.ajax({
-                    type: "POST",
+                    type: "DELETE",
                     url: url,
                     data: {
                         'id': id
                     },
                     success: function() {
-                        Swal(
+                        swal.fire(
                             'Eliminado!',
                             'La imagen ha sido eliminado satisfactoriamente.',
                             'success'
@@ -288,10 +288,10 @@
     $(document).on("click", ".img_post", function () {
         window.open($(this).attr("src"), 'popUpWindow', "height=" + this.naturalHeight + ",width=" + this.naturalWidth + ",resizable=yes,toolbar=yes,menubar=no");
     });
-
+/*
     $('.basic_i').select2({
         dropdownParent: $('#ModalRegistrar')
-    });
+    });*/
 </script>
 <style>
     .select2-container--default .select2-results > .select2-results__options {

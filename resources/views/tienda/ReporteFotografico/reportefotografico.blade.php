@@ -13,6 +13,14 @@ print_r(Session::get('usuario')->id);
                 <h3>Reporte Fotográfico</h3>
             </div>
         </div>
+        <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('ModalUpdatedReporteFotografico') }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+            Editar
+        </a>
         <div class="row" id="cancel-row">
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
@@ -167,6 +175,55 @@ print_r(Session::get('usuario')->id);
                 "searchable": false // No permitir buscar en la primera columna
             }],
         });
+    }
+
+    /**EDITAR */
+    function editar(id) {
+        $('#ModalUpdated').modal('show');
+        /*$.post(ruta + "/Area/buscar", { id: id_area },
+            function (data) {
+                $('#ModalUpdated').modal('show');
+                $('#area_id').val(data.data[0].id_area);
+                $('#descripcion_area').val(data.data[0].descripcion_area);
+            },
+            "json"
+        );*/
+    }
+    
+    function Delete_Reporte_Fotografico(id) {
+        //Cargando();
+
+        var id = id;
+        var url = "{{ url('Delete_Reporte_Fotografico') }}";
+        swal.fire({
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        'id': id
+                    },
+                    success: function() {
+                        swal.fire(
+                            'Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            Reporte_Fotografico_Listar()
+                        });
+                    }
+                });
+            }
+        })
     }
 </script>
 @include('footer')
