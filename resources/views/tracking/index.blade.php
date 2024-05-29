@@ -647,8 +647,8 @@
 
     <script>
         $(document).ready(function() {
-            //$("#trackings").addClass('active');
-            //$("#a_trackings").attr('aria-expanded','true');
+            $("#li_trackings").addClass('active');
+            $("#a_trackings").attr('aria-expanded','true');
 
             Lista_Tracking();  
         });
