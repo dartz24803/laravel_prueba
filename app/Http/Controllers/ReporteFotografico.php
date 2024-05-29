@@ -190,6 +190,7 @@ class ReporteFotografico extends Controller
     }
 
     public function obtenerImagenes() {
+        //obtener imagenes por usuario
         if (Session::get('usuario')) {
             $imagenes = $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id_usuario)->get();
             $data = array();
@@ -221,6 +222,7 @@ class ReporteFotografico extends Controller
             $data = $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id_usuario)->get();
             //print_r($data);
             
+            //si hay foto procede a registrar
             if(!$data->isEmpty()){                
                 $ftp_server = "lanumerounocloud.com";
                 $ftp_usuario = "intranet@lanumerounocloud.com";
@@ -231,11 +233,13 @@ class ReporteFotografico extends Controller
                 if ((!$con_id) || (!$lr)) {
                     echo "No se pudo conectar al servidor FTP";
                 } else {
+                    //validacion de codigo, q vaya con datos
                     $validator = Validator::make($request->all(), [
                         'codigo' => 'required'
                     ], [
                         'codigo.required' => 'Codigo: Campo obligatorio',
                     ]);
+                    //alerta de validacion
                     if ($validator->fails()) {
                         $respuesta['error'] = $validator->errors()->get('codigo');
                     }else{
@@ -243,6 +247,7 @@ class ReporteFotografico extends Controller
                         $nuevo_nombre = "REPORTE_FOTOGRAFICO/Evidencia_".date('Y-m-d H:m')."_captura.jpg";
                         ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
                         $nombre = basename($nuevo_nombre);
+                        //llenar array con datos para bd
                         $dato['foto'] = $nombre;
                         $dato = [
                             'base' => 'B08',
@@ -260,7 +265,6 @@ class ReporteFotografico extends Controller
                 $respuesta['error'] = "Debe tomar una fotografía";
             }
             return response()->json($respuesta);
-
         }else{
             redirect('');
         }
@@ -268,20 +272,24 @@ class ReporteFotografico extends Controller
 
     public function Delete_Reporte_Fotografico(Request $request)
     {
-        $id = $request->input('id');
-        $respuesta = array();
-        try {
-            $this->modelo->where('id', $id)->delete();
-            $respuesta['error'] = "";
-            $respuesta['ok'] = "Se Elimino Correctamente";
-        } catch (Exception $e) {
-            $respuesta['error']=$e->getMessage();
+        if (Session::get('usuario')) {
+            $id = $request->input('id');
+            $respuesta = array();
+            try {
+                $this->modelo->where('id', $id)->delete();
+                $respuesta['error'] = "";
+            } catch (Exception $e) {
+                $respuesta['error']=$e->getMessage();
+            }
+            return response()->json($respuesta);
+        }else{
+            redirect('');
         }
-        return response()->json($respuesta);
     }
 
     public function Update_Registro_Fotografico(Request $request)
     {
+        //verificar sesión
         if (Session::get('usuario')) {
             $id = $request->input('id');
             $respuesta = array();
@@ -290,6 +298,7 @@ class ReporteFotografico extends Controller
             ], [
                 'codigo_e.required' => 'Codigo: Campo obligatorio',
             ]);
+            //verificar validacion de select
             if ($validator->fails()) {
                 $respuesta['error'] = $validator->errors()->get('codigo_e');
             }else{
@@ -297,6 +306,7 @@ class ReporteFotografico extends Controller
                     $dato = [
                         'codigo' => $request->input('codigo_e'),
                     ];
+                    //actualizar codigo
                     $this->modelo->where('id', $id)->update($dato);
                     $respuesta['error'] = "";
                     $respuesta['ok'] = "Se Elimino Correctamente";
