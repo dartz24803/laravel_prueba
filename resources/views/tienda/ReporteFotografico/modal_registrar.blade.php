@@ -14,7 +14,7 @@
                         <label for="my-input">Codigo : <span class="text-danger">*</span></label>
                         <div class="form-group col-lg-12">
                             <select class="form-control basic_i" name="codigo" id="codigo" style="width: 100%;">
-                                <option value="0">Seleccionar</option>
+                                <option value="">Seleccionar</option>
                                 <?php foreach($list_codigos as $list){ ?>
                                     <option value="<?php echo $list['descripcion']; ?>"><?php echo $list['descripcion'];?></option>
                                 <?php } ?>
@@ -53,21 +53,14 @@
         var dataString = new FormData(document.getElementById('formulario_insert'));
         var url = "{{ url('Registrar_Reporte_Fotografico') }}";
 
-        if (Valida_Registrar()) {
             $.ajax({
                 url: url,
                 data: dataString,
                 type: "POST",
                 processData: false,
                 contentType: false,
-                success: function(data) {
-                    if (data === "error") {
-                    swal.fire(
-                        'Error!',
-                        'Debe tomar una fotografía.',
-                        'error'
-                    ).then(function() { });
-                    } else {
+                success: function(data) { 
+                    if (data.error == ""){
                         swal.fire(
                             'Registro Exitoso!',
                             'Haga clic en el botón!',
@@ -76,12 +69,18 @@
                             $("#ModalRegistro .close").click()
                             Reporte_Fotografico_Listar();
                         });
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: data.error,
+                            icon: 'error',
+                            showConfirmButton: true,
+                        })
                     }
                 }
             });
-        }
     }
-
+/*
     function Valida_Registrar() {
         if ($('#codigo').val() == '0') {
             swal.fire(
@@ -92,7 +91,7 @@
             return false
         }
         return true;
-    }
+    }*/
     var video = document.getElementById('video');
     var boton = document.getElementById('boton_camara');
     var div_tomar_foto = document.getElementById('div_tomar_foto');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CarteraModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Exception;
 
 class CarteraController extends Controller
@@ -57,27 +58,38 @@ class CarteraController extends Controller
      */
     public function registraryeditar(Request $request)
     {
-        $respuesta = array();
-        $id = $request->input('id_cartera');
-        $data = [
-            'codigo' => $request->input('codigo'),
-            'ruc' => $request->input('ruc'),
-            'razon_social' => $request->input('razon_social'),
-            'nombre_comercial' => $request->input('nombre_comercial'),
-        ];
-        if (empty($id)) {
-            if ($this->modelo->insert($data)) {
-                $respuesta['error'] = "";
-                $respuesta['ok'] = "Datos guardados correctamente";
+        $validator = Validator::make($request->all(), [
+            'codigo' => 'required|min:2'
+        ], [
+            'codigo.required' => 'Codigo: Campo obligatorio',
+            'codigo.min' => 'Codigo: Debe ser mayor a 2 caracteres'
+        ]);
+
+        if ($validator->fails()) {
+            $respuesta['error'] = $validator->errors()->get('codigo');
+        }else{
+            $respuesta = array();
+            $id = $request->input('id_cartera');
+            $data = [
+                'codigo' => $request->input('codigo'),
+                'ruc' => $request->input('ruc'),
+                'razon_social' => $request->input('razon_social'),
+                'nombre_comercial' => $request->input('nombre_comercial'),
+            ];
+            if (empty($id)) {
+                if ($this->modelo->insert($data)) {
+                    $respuesta['error'] = "";
+                    $respuesta['ok'] = "Datos guardados correctamente";
+                } else {
+                    $respuesta["error"] = "Problemas al realizar Operación";
+                }
             } else {
-                $respuesta["error"] = "Problemas al realizar Operación";
-            }
-        } else {
-            if ($this->modelo->where('id_cartera', $id)->update($data)) {
-                $respuesta['error'] = "";
-                $respuesta['ok'] = "Datos Actualizados correctamente";
-            } else {
-                $respuesta["error"] = "Problemas al realizar Operación";
+                if ($this->modelo->where('id_cartera', $id)->update($data)) {
+                    $respuesta['error'] = "";
+                    $respuesta['ok'] = "Datos Actualizados correctamente";
+                } else {
+                    $respuesta["error"] = "Problemas al realizar Operación";
+                }
             }
         }
         return response()->json($respuesta);

@@ -217,7 +217,6 @@
             if (result.value) {
                 $.get("{{ url('eliminarCartera') }}", { id: id_cartera },
                     function (data, textStatus, jqXHR) {
-                        console.log(data);
                         if (data.error == "") {
                             $('#table_carteras').DataTable().ajax.reload();
                             Swal.fire({

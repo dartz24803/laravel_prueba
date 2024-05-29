@@ -8,6 +8,7 @@ use App\Models\AreaModel;
 use App\Models\BaseModel;
 use App\Models\CodigosReporteFotograficoModel;
 use App\Models\ReporteFotograficoArchivoTemporalModel;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use Exception;
 
@@ -202,7 +203,7 @@ class ReporteFotografico extends Controller
             $data = $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id_usuario)->get();
             //print_r($data);
             
-            if(!empty($data)){
+            if(!$data->isEmpty()){                
                 $ftp_server = "lanumerounocloud.com";
                 $ftp_usuario = "intranet@lanumerounocloud.com";
                 $ftp_pass = "Intranet2022@";
@@ -212,26 +213,36 @@ class ReporteFotografico extends Controller
                 if ((!$con_id) || (!$lr)) {
                     echo "No se pudo conectar al servidor FTP";
                 } else {
-                    echo "Conexión FTP establecida";
-                    $nombre_actual = "REPORTE_FOTOGRAFICO/".$data[0]['ruta'];
-                    $nuevo_nombre = "REPORTE_FOTOGRAFICO/Evidencia_".date('Y-m-d H:m')."_captura.jpg";
-                    ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
-                    $nombre = basename($nuevo_nombre);
-                    $dato['foto'] = $nombre;
-                    $dato = [
-                        'base' => 'B08',
-                        'foto' => $nombre,
-                        'codigo' => $request->input("codigo"),
-                        'estado' => '1',
-                        'fec_reg' => now(),
-                        'user_reg' => Session::get('usuario')->id_usuario,
-                    ];
-                    echo "Foto subida correctamente";
-                    $this->modelo->insert($dato);
+                    $validator = Validator::make($request->all(), [
+                        'codigo' => 'required'
+                    ], [
+                        'codigo.required' => 'Codigo: Campo obligatorio',
+                    ]);
+                    if ($validator->fails()) {
+                        $respuesta['error'] = $validator->errors()->get('codigo');
+                    }else{
+                        $nombre_actual = "REPORTE_FOTOGRAFICO/".$data[0]['ruta'];
+                        $nuevo_nombre = "REPORTE_FOTOGRAFICO/Evidencia_".date('Y-m-d H:m')."_captura.jpg";
+                        ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
+                        $nombre = basename($nuevo_nombre);
+                        $dato['foto'] = $nombre;
+                        $dato = [
+                            'base' => 'B08',
+                            'foto' => $nombre,
+                            'codigo' => $request->input("codigo"),
+                            'estado' => '1',
+                            'fec_reg' => now(),
+                            'user_reg' => Session::get('usuario')->id_usuario,
+                        ];
+                        $this->modelo->insert($dato);
+                        $respuesta['error'] = "";
+                    }
                 }
             }else{
-                echo "error";
+                $respuesta['error'] = "Debe tomar una fotografía";
             }
+            return response()->json($respuesta);
+
         }else{
             redirect('');
         }
@@ -256,16 +267,25 @@ class ReporteFotografico extends Controller
     {
         $id = $request->input('id');
         $respuesta = array();
-        try {
-            $dato = [
-                'codigo' => $request->input('codigo_e'),
-            ];
-            $this->modelo->where('id', $id)->update($dato);
-            $respuesta['error'] = "";
-            $respuesta['ok'] = "Se Elimino Correctamente";
-        } catch (Exception $e) {
-            $respuesta['error']=$e->getMessage();
-            //$respuesta['error'] = "Problemas al realizar Operación!";
+        $validator = Validator::make($request->all(), [
+            'codigo_e' => 'required'
+        ], [
+            'codigo_e.required' => 'Codigo: Campo obligatorio',
+        ]);
+        if ($validator->fails()) {
+            $respuesta['error'] = $validator->errors()->get('codigo');
+        }else{
+            try {
+                $dato = [
+                    'codigo' => $request->input('codigo_e'),
+                ];
+                $this->modelo->where('id', $id)->update($dato);
+                $respuesta['error'] = "";
+                $respuesta['ok'] = "Se Elimino Correctamente";
+            } catch (Exception $e) {
+                $respuesta['error']=$e->getMessage();
+                //$respuesta['error'] = "Problemas al realizar Operación!";
+            }
         }
         return response()->json($respuesta);
     }
