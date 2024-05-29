@@ -75,7 +75,7 @@
                 contentType: false,
                 success:function (data) {
                     swal.fire(
-                        'Registro Exitoso!',
+                        '¡Registro Exitoso!',
                         'Haga clic en el botón!',
                         'success'
                     ).then(function() {
@@ -90,7 +90,7 @@
     function Valida_Insert_Tracking() {
         if ($('#n_requerimiento').val().trim() === '') {
             Swal(
-                'Ups!',
+                '¡Ups!',
                 'Debe ingresar n° de requerimiento.',
                 'warning'
             ).then(function() { });
@@ -98,7 +98,7 @@
         }
         if ($('#semana').val().trim() === '') {
             Swal(
-                'Ups!',
+                '¡Ups!',
                 'Debe ingresar semana.',
                 'warning'
             ).then(function() { });
@@ -106,7 +106,7 @@
         }
         if ($('#desde').val() === '0') {
             Swal(
-                'Ups!',
+                '¡Ups!',
                 'Debe seleccionar desde donde se hará el envío.',
                 'warning'
             ).then(function() { });
@@ -114,7 +114,7 @@
         }
         if ($('#hacia').val() === '0') {
             Swal(
-                'Ups!',
+                '¡Ups!',
                 'Debe seleccionar hacia donde se hará el envío.',
                 'warning'
             ).then(function() { });

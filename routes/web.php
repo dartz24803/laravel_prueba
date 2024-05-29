@@ -54,4 +54,6 @@ Route::controller(TrackingController::class)->group(function(){
     Route::post('tracking/list', 'list')->name('tracking.list');
     Route::get('tracking/create', 'create')->name('tracking.create');
     Route::post('tracking', 'store')->name('tracking.store');
+    Route::post('tracking/salida_mercaderia', 'insert_salida_mercaderia')->name('tracking.salida_mercaderia');
+    Route::get('tracking/{id}/detalle_transporte', 'detalle_transporte')->name('tracking.detalle_transporte');
 });
