@@ -43,13 +43,39 @@ class Tracking extends Model
         'user_eli'
     ];
 
-    public function get_list_tracking(){
-        $sql = "SELECT tr.id,tr.n_requerimiento,tr.desde,tr.hacia,'' AS proceso,
-                '' AS fecha,'' AS hora,
-                '' AS estado
-                FROM tracking tr
-                WHERE tr.estado=1";
-        $query = DB::select($sql);
-        return $query;
+    public function get_list_tracking($id=null){
+        if(isset($id)){
+            $sql = "SELECT tr.*,mp.ultimo_id AS id_detalle,de.id_estado
+                    FROM tracking tr
+                    LEFT JOIN (SELECT MAX(id) AS ultimo_id,id_tracking
+                    FROM tracking_detalle_proceso
+                    GROUP BY id_tracking) mp ON tr.id=mp.id_tracking
+                    LEFT JOIN tracking_detalle_proceso dp ON mp.ultimo_id=dp.id
+                    LEFT JOIN (SELECT MAX(id) AS ultimo_id,id_detalle
+                    FROM tracking_detalle_estado
+                    GROUP BY id_detalle) me ON mp.ultimo_id=me.id_detalle
+                    LEFT JOIN tracking_detalle_estado de ON me.ultimo_id=de.id
+                    WHERE tr.id=$id";
+            $query = DB::select($sql);
+            return $query[0];
+        }else{
+            $sql = "SELECT tr.id,tr.n_requerimiento,tr.desde,tr.hacia,tp.descripcion AS proceso,
+                    DATE_FORMAT(de.fecha,'%d-%m-%Y') AS fecha,DATE_FORMAT(de.fecha,'%H:%i') AS hora,
+                    te.descripcion AS estado,de.id_estado
+                    FROM tracking tr
+                    LEFT JOIN (SELECT MAX(id) AS ultimo_id,id_tracking
+                    FROM tracking_detalle_proceso
+                    GROUP BY id_tracking) mp ON tr.id=mp.id_tracking
+                    LEFT JOIN tracking_detalle_proceso dp ON mp.ultimo_id=dp.id
+                    LEFT JOIN tracking_proceso tp ON dp.id_proceso=tp.id
+                    LEFT JOIN (SELECT MAX(id) AS ultimo_id,id_detalle
+                    FROM tracking_detalle_estado
+                    GROUP BY id_detalle) me ON mp.ultimo_id=me.id_detalle
+                    LEFT JOIN tracking_detalle_estado de ON me.ultimo_id=de.id
+                    LEFT JOIN tracking_estado te ON de.id_estado=te.id
+                    WHERE tr.estado=1";
+            $query = DB::select($sql);
+            return $query;
+        }
     }
 }

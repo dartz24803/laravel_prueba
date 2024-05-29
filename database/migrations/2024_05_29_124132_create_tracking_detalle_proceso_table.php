@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('tracking_detalle_proceso', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_detalle')->nullable()->default(0);
-            $table->integer('id_estado')->nullable()->default(0);
+            $table->integer('id_tracking')->nullable()->default(0);
+            $table->integer('id_proceso')->nullable()->default(0);
             $table->dateTime('fecha')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
