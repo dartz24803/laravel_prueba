@@ -273,7 +273,7 @@ class ReporteFotografico extends Controller
             'codigo_e.required' => 'Codigo: Campo obligatorio',
         ]);
         if ($validator->fails()) {
-            $respuesta['error'] = $validator->errors()->get('codigo');
+            $respuesta['error'] = $validator->errors()->get('codigo_e');
         }else{
             try {
                 $dato = [

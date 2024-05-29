@@ -12,7 +12,7 @@
         <div class="form-group col-md-12">
             <label for="my-input">Codigo : <span class="text-danger">*</span></label>
             <select class="form-control basic_i" name="codigo_e" id="codigo_e">
-                <option value="0">Seleccionar</option>
+                <option value="">Seleccionar</option>
                 <?php foreach($list_codigos as $list){ ?>
                     <option value="<?php echo $list['descripcion']; ?>" 
                     <?php if ($list['descripcion'] == $get_id[0]['codigo']){ echo "selected"; } ?>>
@@ -39,14 +39,14 @@
         var dataString = new FormData(document.getElementById('formulario_update'));
         var url = 'Update_Registro_Fotografico';
 
-        if (Valida_Registrar()) {
-            $.ajax({
-                url: url,
-                data: dataString,
-                type: "POST",
-                processData: false,
-                contentType: false,
-                success: function(data) {
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                if (data.error == ""){
                     swal.fire(
                         'Actualización Exitosa!',
                         'Haga clic en el botón!',
@@ -55,21 +55,16 @@
                         Reporte_Fotografico_Listar();
                         $("#ModalUpdate .close").click()
                     });
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: data.error,
+                        icon: 'error',
+                        showConfirmButton: true,
+                    })
                 }
-            });
-        }
-    }
-
-    function Valida_Registrar() {
-        if ($('#codigo_e').val() == '') {
-            swal.fire(
-                'Ups!',
-                'Debe ingresar codigo.',
-                'warning'
-            ).then(function() {});
-            return false
-        }
-        return true;
+            }
+        });
     }
 /*
     $('.basic_i').select2({

@@ -80,18 +80,7 @@
                 }
             });
     }
-/*
-    function Valida_Registrar() {
-        if ($('#codigo').val() == '0') {
-            swal.fire(
-                'Ups!',
-                'Debe ingresar codigo.',
-                'warning'
-            ).then(function() { });
-            return false
-        }
-        return true;
-    }*/
+    
     var video = document.getElementById('video');
     var boton = document.getElementById('boton_camara');
     var div_tomar_foto = document.getElementById('div_tomar_foto');
