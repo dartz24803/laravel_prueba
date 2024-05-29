@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\ReporteFotograficoModel;
+use App\Models\ReporteFotografico;
 use App\Models\AreaModel;
 use App\Models\BaseModel;
-use App\Models\CodigosReporteFotograficoModel;
-use App\Models\ReporteFotograficoArchivoTemporalModel;
+use App\Models\CodigosReporteFotografico;
+use App\Models\ReporteFotograficoArchivoTemporal;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use Exception;
 
-class ReporteFotografico extends Controller
+class ReporteFotograficoController extends Controller
 {
     //variables a usar
     protected $request;
@@ -26,11 +26,11 @@ class ReporteFotografico extends Controller
     {
         //constructor con variables
         $this->request = $request;
-        $this->modelo = new ReporteFotograficoModel();
+        $this->modelo = new ReporteFotografico();
         $this->modeloarea = new AreaModel();
         $this->modelobase = new BaseModel();
-        $this->modelocodigos = new CodigosReporteFotograficoModel();
-        $this->modeloarchivotmp = new ReporteFotograficoArchivoTemporalModel();
+        $this->modelocodigos = new CodigosReporteFotografico();
+        $this->modeloarchivotmp = new ReporteFotograficoArchivoTemporal();
     }
 
     public function index(){
