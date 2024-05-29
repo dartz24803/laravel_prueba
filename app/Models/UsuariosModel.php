@@ -13,8 +13,18 @@ class UsuariosModel extends Model
     protected $table = 'users';
 
     protected $fillable = [
+        'usuario_apater',
+        'usuario_amater',
+        'usuario_nombres',
         'usuario_codigo',
         'usuario_password',
+        'estado',
+        'fec_reg',
+        'user_reg',
+        'fec_act',
+        'user_act',
+        'fec_eli',
+        'user_eli'
     ];
 
     public function buscar($id)

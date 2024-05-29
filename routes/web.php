@@ -32,7 +32,7 @@ Route::get('eliminarCartera', [CarteraController::class, 'eliminar']);
 //LOGIN
 Route::get('/', [Login::class, 'index'])->name('login');
 Route::post('IngresarLogin', [Login::class, 'ingresar'])->name('IngresarLogin');
-Route::get('DestruirSesion', [Login::class, 'logout']);
+Route::get('DestruirSesion', [Login::class, 'logout'])->name('DestruirSesion');
 //REGISTRO FOTOGRAFICO
 Route::post('/ReporteFotograficoListar', [ReporteFotografico::class, 'listar']);
 //Route::get('/ModalUpdatedReporteFotografico', [ReporteFotografico::class, 'ModalUpdatedReporteFotografico'])->name('modal_editar');
