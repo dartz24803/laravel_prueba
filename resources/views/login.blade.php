@@ -14,7 +14,9 @@
     <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/f1a67fab04.js" crossorigin="anonymous"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link href="{{ asset('template/plugins/sweetalerts/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('template/plugins/sweetalerts/sweetalert.css')}}" rel="stylesheet" type="text/css" />
     <script src="{{ asset('js/jquery/jquery.min.js') }}"></script>
     <title>.:: La numero 1 ::.</title>
 </head>
@@ -79,8 +81,26 @@ $.ajaxSetup({
                 document.getElementById("resultado").style.display = 'block';
               }
               else{
+                let timerInterval;
+                Swal.fire({
+                  title: "Bienvenido!",
+                  html: "Que tenga un buen día!",
+                  timer: 2000,
+                  timerProgressBar: true,
+                  didOpen: () => {
+                    Swal.showLoading();
+                    const timer = Swal.getPopup().querySelector("b");
+                    timerInterval = setInterval(() => {
+                      timer.textContent = `${Swal.getTimerLeft()}`;
+                    }, 100);
+                  },
+                  willClose: () => {
+                    clearInterval(timerInterval);
+                  }
+                }).then((result) => {
                   document.getElementById("resultado").style.display = 'none';
                   location.href = urlsistemas;
+                });
               }
             }
           });

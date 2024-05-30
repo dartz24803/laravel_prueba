@@ -8,6 +8,7 @@ use App\Http\Middleware\NoCache;
 use App\Http\Controllers\ReporteFotograficoController;
 use App\Http\Controllers\OldController;
 use App\Http\Controllers\TrackingController;
+use App\Http\Controllers\ReporteFotograficoAdmController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,7 @@ Route::middleware([NoCache::class])->group(function () {
     Route::get('/Cartera', [CarteraController::class, 'index'])->name('cartera');
     Route::get('/Inicio', [Inicio::class, 'index'])->name('inicio');
     Route::get('/ReporteFotografico', [ReporteFotograficoController::class, 'index'])->name('reportefotografico');
+    Route::get('/ReporteFotograficoAdm', [ReporteFotograficoAdmController::class, 'index'])->name('administracion.tienda.ReporteFotografico.reportefotograficoadm');
 });
 Route::post('/Carteralistar', [CarteraController::class, 'listar']);
 Route::post('registraryeditarCartera', [CarteraController::class, 'registraryeditar']);
