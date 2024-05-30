@@ -185,7 +185,7 @@
                     </a>
                     <ul class="collapse submenu list-unstyled" id="rccvtabla" data-parent="#accordionExample">
                         <li id="rfa">
-                            <a href="{{ url('ReporteFotograficoAdm')}}" data-toggle="tooltip" data-placement="right" data-html="true">
+                            <a href="{{ url('/ReporteFotograficoAdm')}}" data-toggle="tooltip" data-placement="right" data-html="true">
                                 <p class="romperpalabra"><span id="icono_active2"></span> Reporte Fotográfico</p>
                             </a>
                         </li>

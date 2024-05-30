@@ -25,12 +25,16 @@ Route::middleware([NoCache::class])->group(function () {
     Route::get('/Cartera', [CarteraController::class, 'index'])->name('cartera');
     Route::get('/Inicio', [Inicio::class, 'index'])->name('inicio');
     Route::get('/ReporteFotografico', [ReporteFotograficoController::class, 'index'])->name('reportefotografico');
-    Route::get('/ReporteFotograficoAdm', [ReporteFotograficoAdmController::class, 'index'])->name('administracion.tienda.ReporteFotografico.reportefotograficoadm');
+    Route::get('/ReporteFotograficoAdm', [ReporteFotograficoAdmController::class, 'index'])->name('tienda.administracion.ReporteFotografico.reportefotograficoadm');
 });
-Route::post('/Carteralistar', [CarteraController::class, 'listar']);
-Route::post('registraryeditarCartera', [CarteraController::class, 'registraryeditar']);
-Route::get('buscarCartera', [CarteraController::class, 'buscar']);
-Route::get('eliminarCartera', [CarteraController::class, 'eliminar']);
+Route::post('/ReporteFotograficoAdmListar', [ReporteFotograficoAdmController::class, 'listar']);
+Route::controller(ReporteFotograficoAdmController::class)->group(function(){
+    Route::get('ReporteFotograficoAdmController/ModalUpdatedReporteFotograficoAdm/{id}', 'ModalUpdatedReporteFotograficoAdm')->name('tienda.administracion.ReporteFotografico.modal_editar');
+    Route::get('ReporteFotograficoAdmController/ModalRegistrarReporteFotograficoAdm', 'ModalRegistroReporteFotograficoAdm')->name('tienda.administracion.ReporteFotografico.modal_registro');
+});
+Route::post('/Registrar_Reporte_Fotografico_Adm', [ReporteFotograficoAdmController::class, 'Registrar_Reporte_Fotografico_Adm']);
+Route::post('/Update_Registro_Fotografico_Adm', [ReporteFotograficoAdmController::class, 'Update_Registro_Fotografico_Adm'])->name('Update_Registro_Fotografico_Adm');
+Route::post('/Delete_Reporte_Fotografico_Adm', [ReporteFotograficoAdmController::class, 'Delete_Reporte_Fotografico_Adm']);
 //LOGIN
 Route::get('/', [Login::class, 'index'])->name('login');
 Route::post('IngresarLogin', [Login::class, 'ingresar'])->name('IngresarLogin');
@@ -59,3 +63,30 @@ Route::controller(TrackingController::class)->group(function(){
     Route::post('tracking/salida_mercaderia', 'insert_salida_mercaderia')->name('tracking.salida_mercaderia');
     Route::get('tracking/{id}/detalle_transporte', 'detalle_transporte')->name('tracking.detalle_transporte');
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//

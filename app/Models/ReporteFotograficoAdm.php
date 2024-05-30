@@ -28,11 +28,11 @@ class ReporteFotograficoAdm extends Model
 
     public function listar()
     {
-        return $this->select('reporte_fotografico_adm.*')
-        ->leftJoin('area', 'reporte_fotografico_adm.area', '=', 'area.id_area')
-        ->where('reporte_fotografico_adm.estado', 1)
-        ->get()
-        ->toArray();
+        $query = "SELECT *,rfa.fec_reg AS fecha_registro FROM reporte_fotografico_adm rfa LEFT JOIN area a ON  rfa.area=a.id_area WHERE rfa.estado = 1;";
+        $result = DB::select($query);
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
     }
+
 
 }

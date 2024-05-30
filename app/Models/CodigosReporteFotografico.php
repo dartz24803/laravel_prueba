@@ -27,4 +27,9 @@ class CodigosReporteFotografico extends Model
     {
         return $this->select('descripcion')->distinct()->get()->toArray();
     }
+    
+    public function listar_tipos()
+    {
+        return $this->select('tipo')->distinct()->get()->toArray();
+    }
 }

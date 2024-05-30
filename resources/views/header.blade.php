@@ -22,10 +22,7 @@
     <link href="{{ asset('css/structure.css') }}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-    
-    <link href="{{ asset('template/plugins/sweetalerts/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('template/plugins/sweetalerts/sweetalert.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('template/assets/css/components/custom-sweetalert.css')}}" rel="stylesheet" type="text/css" />
+
     <!-- <link rel="stylesheet" href="<?php //echo base_path() ?>/resources/css/datatables.css"> -->
 <style>
     #demo_vertical::-ms-clear,
