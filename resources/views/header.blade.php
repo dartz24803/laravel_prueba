@@ -13,18 +13,21 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    
+
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" />
     <!--datatables js y css personalizado-->
     <link rel="stylesheet" href="{{ asset('css/datatables.css') }}">
-    
+
     <link href="{{ asset('css/structure.css') }}" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     <!-- <link rel="stylesheet" href="<?php //echo base_path() ?>/resources/css/datatables.css"> -->
 <style>
+    a{
+        text-decoration: none;
+    }
     #demo_vertical::-ms-clear,
     #demo_vertical2::-ms-clear {
         display: none;
@@ -261,13 +264,13 @@
                     });
                 });
         }
-        
+
         $(document).ready(function() {
             $("#ModalRegistro").on("show.bs.modal", function(e) {
                 var link = $(e.relatedTarget);
                 $(this).find(".modal-content").load(link.attr("app_reg_metalikas"));
             });
-                
+
             $("#ModalUpdate").on("show.bs.modal", function(e) {
                 var link = $(e.relatedTarget);
                 $(this).find(".modal-content").load(link.attr("app_elim"));
