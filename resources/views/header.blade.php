@@ -20,14 +20,13 @@
     <link rel="stylesheet" href="{{ asset('css/datatables.css') }}">
 
     <link href="{{ asset('css/structure.css') }}" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 
     <!-- <link rel="stylesheet" href="<?php //echo base_path() ?>/resources/css/datatables.css"> -->
 <style>
     a{
         text-decoration: none;
-        font-family: Century;
     }
     #demo_vertical::-ms-clear,
     #demo_vertical2::-ms-clear {
