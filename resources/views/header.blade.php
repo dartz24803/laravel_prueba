@@ -27,6 +27,7 @@
 <style>
     a{
         text-decoration: none;
+        font-family: Century;
     }
     #demo_vertical::-ms-clear,
     #demo_vertical2::-ms-clear {
