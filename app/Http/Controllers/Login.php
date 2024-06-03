@@ -21,7 +21,7 @@ class Login extends Controller
         return view('login');
     }
 
-    
+
 	public function ingresar(Request $request)
     {
         $usuario = $request->input('Usuario');
@@ -29,8 +29,9 @@ class Login extends Controller
         // $usuario = '70451069';
         // $password = '123456';
 
-        $sesionlnu = UsuariosModel::where('usuario_codigo', $usuario)->first();
 
+        //$sesionlnu = $this->UsuariosModel->login($usuario);
+        $sesionlnu = $this->UsuariosModel->where('usuario_codigo', $usuario)->first();
         if ($sesionlnu) {
             if (password_verify($password, $sesionlnu->usuario_password)) {
                 $request->session()->put('usuario', $sesionlnu);
@@ -38,20 +39,20 @@ class Login extends Controller
                 //return $sesionlnu;
             } else {
                 return "error";
-                $request->session()->flush();            
+                $request->session()->flush();
             }
         } else {
             return "error";
-            $request->session()->flush();        
+            $request->session()->flush();
         }
     }
-    
+
 	public function Recuperar_Password(){
-        return view('login/recuperar_contrasenia'); 
+        return view('login/recuperar_contrasenia');
     }
-    
+
 	public function logout(Request $request){
-        $request->session()->flush();        
+        $request->session()->flush();
         return redirect('/');
    }
 }

@@ -4,7 +4,7 @@
 
 use Illuminate\Support\Facades\Session;
 $base = Session::get('usuario')->centro_labores;
-
+// print_r(Session::get('usuario'));
 ?>
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
