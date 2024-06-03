@@ -1,10 +1,10 @@
 @include('header')
 @include('navbar')
 <?php
-/*
+
 use Illuminate\Support\Facades\Session;
-print_r(Session::get('usuario')->id);
-*/
+$base = Session::get('usuario')->centro_labores;
+
 ?>
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
@@ -33,22 +33,22 @@ print_r(Session::get('usuario')->id);
                         <?php
                         //Cada coordinador le debe aparecer su base respectivamente definido
                         $disabled = '';
-                        /*if ($base == 'OFC') {
+                        if ($base == 'OFC') {
                             $disabled = '';
                         } else {
                             $disabled = 'disabled';
                         }
-                        AÑADIR SELECT 2
-                        */?>
+                        //AÑADIR SELECT 2
+                        ?>
                         <div class="form-group col-md-4">
                             <label>Base: </label>
                             <select class="form-control basic" id="base" name="base" onchange="Reporte_Fotografico_Listar();"<?= $disabled ?>>
                                 <option value="0">TODOS</option>
                                     <?php foreach ($list_bases as $list) { ?>
                                         <option value="<?php echo $list['cod_base']; ?>"
-                                        <?php /*if ($list['cod_base'] == $base) {
+                                        <?php if ($list['cod_base'] == $base) {
                                             echo "selected";
-                                        }*/ ?>>
+                                        } ?>>
                                     <?php echo $list['cod_base']; ?>
                                 </option>
                                 <?php } ?>
@@ -168,19 +168,6 @@ print_r(Session::get('usuario')->id);
         });
     }
 
-    /**EDITAR */
-    function editar(id) {
-        $('#ModalUpdated').modal('show');
-        /*$.post(ruta + "/Area/buscar", { id: id_area },
-            function (data) {
-                $('#ModalUpdated').modal('show');
-                $('#area_id').val(data.data[0].id_area);
-                $('#descripcion_area').val(data.data[0].descripcion_area);
-            },
-            "json"
-        );*/
-    }
-    
     function Delete_Reporte_Fotografico(id) {
         //Cargando();
 

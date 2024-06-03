@@ -127,7 +127,7 @@ class ReporteFotograficoController extends Controller
             redirect('');
         }
     }
-    
+
     public function ModalUpdatedReporteFotografico($id)
     {
         if (Session::get('usuario')) {
@@ -147,7 +147,7 @@ class ReporteFotograficoController extends Controller
         $data = $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id_usuario)->get();
 
         if (Session::get('usuario')) {
-            //si esta vacío 
+            //si esta vacío
             if($data->isEmpty()){
                 $foto_key = "photo1";
                 $ftp_server = "lanumerounocloud.com";
@@ -221,9 +221,9 @@ class ReporteFotograficoController extends Controller
         if (Session::get('usuario')) {
             $data = $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id_usuario)->get();
             //print_r($data);
-            
+
             //si hay foto procede a registrar
-            if(!$data->isEmpty()){                
+            if(!$data->isEmpty()){
                 $ftp_server = "lanumerounocloud.com";
                 $ftp_usuario = "intranet@lanumerounocloud.com";
                 $ftp_pass = "Intranet2022@";
@@ -250,7 +250,7 @@ class ReporteFotograficoController extends Controller
                         //llenar array con datos para bd
                         $dato['foto'] = $nombre;
                         $dato = [
-                            'base' => 'B08',
+                            'base' => Session::get('usuario')->centro_labores,
                             'foto' => $nombre,
                             'codigo' => $request->input("codigo"),
                             'estado' => '1',
