@@ -89,6 +89,13 @@
             </div>
         </div>
     </div>
+    <div id="ModalUpdate" data-backdrop="static" data-keyboard="false" class="modal animated fadeInRight custo-fadeInRight bd-example-modal-lg scrollpagina" tabindex="-1" role="dialog" aria-labelledby="ModalUpdate" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
 
     <script src="{{ asset('template/docs/js/jquery-3.2.1.min.js') }}"></script>
 
@@ -141,6 +148,10 @@
                 var link = $(e.relatedTarget);
                 $(this).find(".modal-content").load(link.attr("app_reg"));
             });
+            $("#ModalUpdate").on("show.bs.modal", function(e) {
+                var link = $(e.relatedTarget);
+                $(this).find(".modal-content").load(link.attr("app_elim"));
+            });
         });
     </script>
     <!-- END MODAL  -->
@@ -155,6 +166,11 @@
             content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23ffa700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-disc'><circle cx='12' cy='12' r='10'></circle><circle cx='12' cy='12' r='3'></circle></svg>");
             display: inline-block;
             vertical-align: middle;
+        }
+        .menu:not(.menu-heading):hover {
+            border: 1.5px solid #ffa700;
+            border-radius: 15px;
+            font-weight: bold;
         }
     </style>
     <!--  BEGIN MAIN CONTAINER  -->
@@ -232,6 +248,11 @@
                                     <p class="romperpalabra"><span id="icono_active2"></span> Reporte fotográfico</p>
                                 </a>
                             </li>
+                            <li id="cuadrocontrolvisual">
+                                <a id="hrpreorden" href="{{ url('Cuadro_Control_Visual_Vista')}}">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Cuadro Control Visual</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     <!-- Administrables  -->
@@ -263,6 +284,11 @@
                             <li id="rfa">
                                 <a href="{{ url('/ReporteFotograficoAdm')}}" data-toggle="tooltip" data-placement="right" data-html="true">
                                     <p class="romperpalabra"><span id="icono_active2"></span> Reporte Fotográfico</p>
+                                </a>
+                            </li>
+                            <li id="ccv">
+                                <a href="{{ url('/TablaCuadroControlVisual') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Horarios <br>• Cuadro de Control Visual <br>• Programación Diaria">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Cuadro de Control Visual</p>
                                 </a>
                             </li>
                         </ul>

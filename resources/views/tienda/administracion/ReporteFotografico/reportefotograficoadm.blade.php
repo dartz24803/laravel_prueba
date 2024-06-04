@@ -1,5 +1,5 @@
-@include('header')
-@include('navbar')
+@extends('layouts.plantilla')
+@section('content')
 <?php
 /*
 use Illuminate\Support\Facades\Session;
@@ -18,7 +18,7 @@ print_r(Session::get('usuario')->id);
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
                     <div class="col-lg-12 d-flex justify-content-end">
-                        <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg_metalikas="{{ route('tienda.administracion.ReporteFotografico.modal_registro')}}">
+                        <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('tienda.administracion.ReporteFotografico.modal_registro')}}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square">
                                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="12" y1="8" x2="12" y2="16"></line>
@@ -27,6 +27,7 @@ print_r(Session::get('usuario')->id);
                             Registrar
                         </button>
                     </div>
+                    @csrf
                     <div class="table-responsive mb-4 mt-4">
                         <table id="table_rfa" class="table table-hover" style="width:100%">
                             <thead>
@@ -59,6 +60,8 @@ print_r(Session::get('usuario')->id);
     /**Listar */
     function Reporte_Fotografico_Adm_Listar() {
         //Cargando();
+        var csrfToken = $('input[name="_token"]').val();
+
         $('#table_rfa').DataTable({
             "aProcessing": true,
             "aServerSide": true,
@@ -68,6 +71,9 @@ print_r(Session::get('usuario')->id);
             "ajax": {
                 url: "{{ url('ReporteFotograficoAdmListar') }}",
                 type: "post",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
             },
             "bDestroy": true,
             "responsive": true,
@@ -111,6 +117,7 @@ print_r(Session::get('usuario')->id);
     
     function Delete_Reporte_Fotografico_Adm(id) {
         //Cargando();
+        var csrfToken = $('input[name="_token"]').val();
 
         var id = id;
         var url = "{{ url('Delete_Reporte_Fotografico_Adm') }}";
@@ -128,6 +135,9 @@ print_r(Session::get('usuario')->id);
                 $.ajax({
                     type: "POST",
                     url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
                     data: {
                         'id': id
                     },
@@ -145,4 +155,4 @@ print_r(Session::get('usuario')->id);
         })
     }
 </script>
-@include('footer')
+@endsection

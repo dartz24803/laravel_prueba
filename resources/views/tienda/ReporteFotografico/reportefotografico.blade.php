@@ -19,7 +19,7 @@ $base = Session::get('usuario')->centro_labores;
                         <div class="col-lg-12 d-flex justify-content-end">
                             <?php //adm y coord de tienda registran
                             //if($_SESSION['usuario'][0]['id_puesto'] == 29 || $_SESSION['usuario'][0]['id_puesto'] == 161 || $_SESSION['usuario'][0]['id_puesto'] == 197 || $_SESSION['usuario'][0]['id_usuario'] == 139){ ?>
-                            <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg_metalikas="{{ route('tienda.ReporteFotografico.modal_registro')}}">
+                            <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('tienda.ReporteFotografico.modal_registro')}}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square">
                                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                                     <line x1="12" y1="8" x2="12" y2="16"></line>
@@ -75,6 +75,7 @@ $base = Session::get('usuario')->centro_labores;
                                 </select>
                             </div>
                         </div>
+                        @csrf
                         <div class="table-responsive mb-4 mt-4" id="lista">
                             <table id="table_rf" class="table table-bordered" style="width:100%">
                                 <thead>
@@ -110,6 +111,7 @@ $base = Session::get('usuario')->centro_labores;
         /**Listar */
         function Reporte_Fotografico_Listar() {
             //Cargando();
+            var csrfToken = $('input[name="_token"]').val();
             var base = $('#base').val();
             var area = $('#area').val();
             var codigo = $('#codigo_filtro').val();
@@ -122,6 +124,9 @@ $base = Session::get('usuario')->centro_labores;
                 "ajax": {
                     url: "{{ url('ReporteFotograficoListar') }}",
                     type: "post",
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
                     data: {
                         base: base,
                         area: area,

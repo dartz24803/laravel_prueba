@@ -39,6 +39,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    @csrf
                     <button class="btn btn-primary mt-3" onclick="Registrar_Reporte_Fotografico();" type="button">Guardar</button>
                     <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
                 </div>
@@ -49,6 +50,7 @@
     });
     function Registrar_Reporte_Fotografico() {
         //Cargando();
+        var csrfToken = $('input[name="_token"]').val();
 
         var dataString = new FormData(document.getElementById('formulario_insert'));
         var url = "{{ url('Registrar_Reporte_Fotografico') }}";
@@ -57,6 +59,9 @@
                 url: url,
                 data: dataString,
                 type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 processData: false,
                 contentType: false,
                 success: function(data) { 
