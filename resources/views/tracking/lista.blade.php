@@ -41,7 +41,7 @@
                             </svg>
                         </a>
                     @elseif($list->id_estado==4)
-                        <a href="javascript:void(0);" title="Llegada a tienda" onclick="Insert_Llegada_Tienda('<?= $list['id']; ?>');">
+                        <a href="javascript:void(0);" title="Llegada a tienda" onclick="Insert_Llegada_Tienda('{{ $list->id }}');">
                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle text-dark">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <polyline points="12 16 16 12 12 8"></polyline>
@@ -49,7 +49,7 @@
                             </svg>
                         </a>
                     @elseif($list->id_estado==5)
-                        <a href="javascript:void(0);" title="Confirmación de llegada" onclick="Insert_Confirmacion_Llegada('<?= $list['id']; ?>');">
+                        <a href="javascript:void(0);" title="Confirmación de llegada" onclick="Insert_Confirmacion_Llegada('{{ $list->id }}');">
                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle text-dark">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <polyline points="12 16 16 12 12 8"></polyline>
@@ -57,7 +57,7 @@
                             </svg>
                         </a>
                     @elseif($list->id_estado==7)
-                        <a href="javascript:void(0);" title="Verificación de fardos" onclick="Verificacion_Fardos('<?= $list['id']; ?>');">
+                        <a href="javascript:void(0);" title="Verificación de fardos" onclick="Verificacion_Fardos('{{ $list->id }}');">
                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning">
                                 <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
                                 <line x1="12" y1="9" x2="12" y2="13"></line>
@@ -65,7 +65,7 @@
                             </svg>
                         </a>
                     @elseif($list->id_estado==8)
-                        <a href="javascript:void(0);" title="Cierre inspección de fardos" onclick="Insert_Cierre_Inspeccion_Fardos('<?= $list['id']; ?>');">
+                        <a href="javascript:void(0);" title="Cierre inspección de fardos" onclick="Insert_Cierre_Inspeccion_Fardos('{{ $list->id }}');">
                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock text-success">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <polyline points="12 6 12 12 16 14"></polyline>
@@ -119,7 +119,7 @@
         Cargando();
 
         var url = "{{ route('tracking.salida_mercaderia') }}";
-        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        var csrfToken = $('input[name="_token"]').val();
 
         Swal({
             title: '¿Realmente desea cambiar el estado?',
@@ -135,19 +135,132 @@
                     type: "POST",
                     url: url,
                     data: {'id':id},
-                        headers: {
+                    headers: {
                         'X-CSRF-TOKEN': csrfToken
                     },
                     success: function() {
                         Swal(
                             '¡Cambio de estado exitoso!',
-                            'Haga clic en el botón!',
+                            '¡Haga clic en el botón!',
                             'success'
                         ).then(function() {
                             Lista_Tracking();
                         });
                     }
                 });
+            }
+        })
+    }
+
+    function Insert_Llegada_Tienda(id) {
+        Cargando();
+
+        var url = "{{ route('tracking.llegada_tienda') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            title: '¿Realmente desea cambiar el estado?',
+            text: "El cambio será permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {'id':id},
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function() {
+                        Swal(
+                            '¡Cambio de estado exitoso!',
+                            '¡Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            Lista_Tracking();
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+    function Insert_Confirmacion_Llegada(id) {
+        Cargando();
+
+        var url = "{{ route('tracking.confirmacion_llegada') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            title: '¿Realmente desea cambiar el estado?',
+            text: "El cambio será permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {'id':id},
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function() {
+                        Swal(
+                            '¡Cambio de estado exitoso!',
+                            '¡Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            Lista_Tracking();
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+    function Verificacion_Fardos(id) {
+        Cargando();
+
+        var url = "{{ route('tracking.verificacion_fardos') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            title: '¿El fardo llegó en buenas condiciones?',
+            text: "El cambio será permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {'id':id},
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function() {
+                        Swal(
+                            '¡Cambio de estado exitoso!',
+                            '¡Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            Lista_Tracking();
+                        });
+                    }
+                });
+            }else{
+                window.location = "{{ route('tracking.verificacion_fardos_vista', ':id') }}".replace(':id', id);
             }
         })
     }
