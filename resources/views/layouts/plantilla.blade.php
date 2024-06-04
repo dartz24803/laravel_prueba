@@ -145,6 +145,18 @@
     </script>
     <!-- END MODAL  -->
 
+    <style>
+        #accordionExample>.menu.active {
+            border: 1.5px solid #ffa700;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+        #accordionExample>.active .active #icono_active2 {
+            content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23ffa700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-disc'><circle cx='12' cy='12' r='10'></circle><circle cx='12' cy='12' r='3'></circle></svg>");
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
     <!--  BEGIN MAIN CONTAINER  -->
     <div class="main-container sidebar-closed sbar-open" id="container">
 
