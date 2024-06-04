@@ -209,8 +209,8 @@
                         </a>
                     </li>
 
-                    <li class="menu">
-                        <a href="#invoice" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <li class="menu" id="tienda">
+                        <a href="#rtienda" id="htienda" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                             <div class="">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart">
                                     <circle cx="9" cy="21" r="1"></circle>
@@ -220,13 +220,51 @@
                                 <span>Tienda</span>
                             </div>
                             <div>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
                             </div>
                         </a>
-                        <ul class="collapse submenu list-unstyled" id="invoice" data-parent="#accordionExample">
-                            <li>
-                                <a href="{{ route('reportefotografico') }}"> Reporte fotográfico </a>
-                            </li>                         
+    
+                        <ul class="collapse submenu list-unstyled" id="rtienda" data-parent="#accordionExample">
+                            <li id="reportefoto">
+                                <a id="reporte_foto" href="{{ url('/ReporteFotografico')}}">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Reporte fotográfico</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- Administrables  -->
+                    <li class="menu menu-heading">
+                        <div class="heading">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle">
+                                <circle cx="12" cy="12" r="10"></circle>
+                            </svg>
+                            <span>ADMINISTRACION</span>
+                        </div>
+                    </li>
+                    <li class="menu" id="ccvtabla">
+                        <a href="#rccvtabla" id="hccvtabla" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                            <div class="">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
+                                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                                </svg>
+                                <span>Tienda</span>
+                            </div>
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </div>
+                        </a>
+                        <ul class="collapse submenu list-unstyled" id="rccvtabla" data-parent="#accordionExample">
+                            <li id="rfa">
+                                <a href="{{ url('/ReporteFotograficoAdm')}}" data-toggle="tooltip" data-placement="right" data-html="true">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Reporte Fotográfico</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 </ul>
