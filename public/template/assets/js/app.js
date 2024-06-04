@@ -41,6 +41,38 @@ var App = function() {
 
     var toggleFunction = {
         sidebar: function($recentSubmenu) {
+            // sidebar abierto por defecto
+            $(document).ready(function() {
+                $(Selector.mainContainer).removeClass("sbar-open");
+                if($(window).width() > 517){
+                    $(Selector.mainContainer).removeClass("sidebar-closed");
+                }
+                $(Selector.mainHeader).removeClass('expand-header');
+                $('.overlay').removeClass('show');
+                $('html,body').removeClass('sidebar-noneoverflow');
+                getSidebar = $('.sidebar-wrapper');
+                if ($recentSubmenu === true) {
+                    if ($('.collapse.submenu').hasClass('show')) {
+                        $('.submenu.show').addClass('mini-recent-submenu');
+                        getSidebar.find('.collapse.submenu').removeClass('show');
+                        getSidebar.find('.collapse.submenu').removeClass('show');
+                        $('.collapse.submenu').parents('li.menu').find('.dropdown-toggle').attr('aria-expanded', 'false');
+                    } else {
+                            if ($('.collapse.submenu').hasClass('recent-submenu')) {
+                                getSidebar.find('.collapse.submenu.recent-submenu').addClass('show');
+                                $('.collapse.submenu.recent-submenu').parents('.menu').find('.dropdown-toggle').attr('aria-expanded', 'true');
+                                $('.submenu').removeClass('mini-recent-submenu');
+
+                            } else {
+                                $('li.active .submenu').addClass('recent-submenu');
+                                getSidebar.find('.collapse.submenu.recent-submenu').addClass('show');
+                                $('.collapse.submenu.recent-submenu').parents('.menu').find('.dropdown-toggle').attr('aria-expanded', 'true');
+                                $('.submenu').removeClass('mini-recent-submenu');
+                            }
+                    }
+                }
+            });
+
             $('.sidebarCollapse').on('click', function (sidebar) {
                 sidebar.preventDefault();
                 getSidebar = $('.sidebar-wrapper');
@@ -156,6 +188,7 @@ var App = function() {
     }
 
     var _mobileResolution = {
+        
         onRefresh: function() {
             var windowWidth = window.innerWidth;
             if ( windowWidth <= MediaSize.md ) {
