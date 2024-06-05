@@ -9,7 +9,7 @@ use App\Http\Controllers\ReporteFotograficoController;
 use App\Http\Controllers\OldController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\ReporteFotograficoAdmController;
-
+use App\Http\Controllers\TablaCuadroControlVisualController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -67,4 +67,18 @@ Route::controller(TrackingController::class)->group(function(){
     Route::post('tracking/confirmacion_llegada', 'insert_confirmacion_llegada')->name('tracking.confirmacion_llegada');
     Route::post('tracking/verificacion_fardos', 'insert_verificacion_fardos')->name('tracking.verificacion_fardos');
     Route::get('tracking/{id}/verificacion_fardos', 'verificacion_fardos')->name('tracking.verificacion_fardos_vista');
+});
+
+
+
+
+
+
+
+
+
+
+
+Route::controller(TablaCuadroControlVisualController::class)->group(function(){
+    Route::get('TablaCuadroControlVisual', 'index')->name('TablaCuadroControlVisual');
 });

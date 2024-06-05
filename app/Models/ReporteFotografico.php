@@ -54,36 +54,17 @@ class ReporteFotografico extends Model
             $parte3 = " AND rf.codigo = '$codigo'";
         }
 
-        $query = "SELECT
-                    rf.id,
-                    rf.base,
-                    rf.foto,
-                    rf.estado,
-                    rf.codigo AS codigo_rf,
-                    rf.fec_reg AS fecha_rf,
-                    COALESCE((SELECT GROUP_CONCAT(DISTINCT a.nom_area SEPARATOR ', ')
-                            FROM reporte_fotografico_adm rfa
-                            LEFT JOIN area a ON rfa.area = a.id_area
-                            WHERE rfa.tipo = crf.tipo), NULL) AS areas,
-                    CASE
-                        WHEN CHAR_LENGTH(rf.codigo) = 3 THEN SUBSTRING(rf.codigo, 2, 1)
-                        WHEN CHAR_LENGTH(rf.codigo) = 4 THEN SUBSTRING(rf.codigo, 3, 1)
-                        ELSE NULL
-                    END AS letra_id
-                FROM
-                    reporte_fotografico rf
-                LEFT JOIN
-                    codigos_reporte_fotografico crf ON CONVERT(rf.codigo USING utf8mb4) = CONVERT(crf.descripcion USING utf8mb4)
-                WHERE
-                    rf.estado = 1 $parte1 $parte2 $parte3
-                GROUP BY
-                    rf.id,
-                    rf.base,
-                    rf.foto,
-                    rf.codigo,
-                    rf.fec_reg,
-                    rf.estado,
-                    crf.tipo;";
+        $query = "SELECT rf.*,crf.tipo,
+                COALESCE(
+                    (SELECT GROUP_CONCAT(DISTINCT a.nom_area SEPARATOR ', ')
+                    FROM reporte_fotografico_adm rfa
+                    LEFT JOIN area a ON rfa.area = a.id_area
+                    WHERE rfa.tipo COLLATE utf8mb4_general_ci = crf.tipo COLLATE utf8mb4_general_ci), 
+                    NULL
+                ) AS areas
+            FROM reporte_fotografico rf
+            LEFT JOIN codigos_reporte_fotografico crf ON rf.codigo COLLATE utf8mb4_general_ci = crf.descripcion COLLATE utf8mb4_general_ci
+            WHERE rf.estado = 1 $parte1 $parte2 $parte3;";
 
         $result = DB::select($query);
 
