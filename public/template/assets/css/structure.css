@@ -725,12 +725,11 @@ code {
   margin-left: 54px; }
 
 #sidebar .theme-brand {
-  background-color: #4361ee;
+  background-color: black;
   padding: 0.9px 12px 0.9px 24px;
   border-bottom: 1px solid #ebedf2;
   border-radius: 6px 6px 0 0;
-  justify-content: space-between;
-  background-image: linear-gradient(to right, #304aca 0%, #4361ee 86%); }
+  justify-content: space-between; }
 
 .sidebar-closed #sidebar .theme-brand {
   padding: 9.14px 5px; }
