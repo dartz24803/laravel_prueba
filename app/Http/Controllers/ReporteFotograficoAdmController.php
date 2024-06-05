@@ -7,7 +7,7 @@ use App\Models\ReporteFotograficoAdm;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use App\Models\CodigosReporteFotografico;
-use App\Models\AreaModel;
+use App\Models\Area;
 use Exception;
 
 class ReporteFotograficoAdmController extends Controller
@@ -24,7 +24,7 @@ class ReporteFotograficoAdmController extends Controller
         $this->request = $request;
         $this->modelo = new ReporteFotograficoAdm();
         $this->modelocodigos = new CodigosReporteFotografico();
-        $this->modeloarea = new AreaModel();
+        $this->modeloarea = new Area();
     }
 
     public function index(){

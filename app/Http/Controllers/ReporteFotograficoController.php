@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ReporteFotografico;
-use App\Models\AreaModel;
-use App\Models\BaseModel;
+use App\Models\Area;
+use App\Models\Base;
 use App\Models\CodigosReporteFotografico;
 use App\Models\ReporteFotograficoArchivoTemporal;
 use Illuminate\Support\Facades\Validator;
@@ -27,8 +27,8 @@ class ReporteFotograficoController extends Controller
         $this->middleware('verificar.sesion.usuario');
         $this->request = $request;
         $this->modelo = new ReporteFotografico();
-        $this->modeloarea = new AreaModel();
-        $this->modelobase = new BaseModel();
+        $this->modeloarea = new Area();
+        $this->modelobase = new Base();
         $this->modelocodigos = new CodigosReporteFotografico();
         $this->modeloarchivotmp = new ReporteFotograficoArchivoTemporal();
     }
