@@ -43,7 +43,7 @@
 
 <script>
     function Update_Registro_Fotografico_Adm() {
-        //Cargando();
+        Cargando();
         var csrfToken = $('input[name="_token"]').val();
 
         var dataString = new FormData(document.getElementById('formulario_update'));
@@ -101,9 +101,9 @@
         }
         return true;
     }
-            
+*/   
     $('.basic_i').select2({
         dropdownParent: $('#ModalUpdate')
-    });*/
+    });
 
 </script>

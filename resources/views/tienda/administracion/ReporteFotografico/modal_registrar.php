@@ -38,7 +38,7 @@
 
 <script>
     function Registrar_Reporte_Fotografico_Adm() {
-        //Cargando();
+        Cargando();
         var csrfToken = $('input[name="_token"]').val();
 
         var dataString = new FormData(document.getElementById('formulario_insert'));
@@ -96,10 +96,10 @@
         }
         return true;
     }
-
+*/
     $('.basic_i').select2({
         dropdownParent: $('#ModalRegistro')
-    });*/
+    });
 </script>
 <style>
     .select2-container--default .select2-results > .select2-results__options {

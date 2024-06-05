@@ -59,7 +59,7 @@ print_r(Session::get('usuario')->id);
 
     /**Listar */
     function Reporte_Fotografico_Adm_Listar() {
-        //Cargando();
+        Cargando();
         var csrfToken = $('input[name="_token"]').val();
 
         $('#table_rfa').DataTable({
