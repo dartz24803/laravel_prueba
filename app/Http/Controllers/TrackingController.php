@@ -48,37 +48,40 @@ class TrackingController extends Controller
 
     public function store(Request $request)
     {
-        $tracking = new Tracking();
-        $tracking->n_requerimiento = $request->n_requerimiento;
-        $tracking->n_guia_remision = $request->n_requerimiento;
-        $tracking->semana = $request->semana;
-        $tracking->desde = $request->desde;
-        $tracking->hacia = $request->hacia;
-        $tracking->estado = 1;
-        $tracking->fec_reg = now();
-        $tracking->save();
+        $tracking = Tracking::create([
+            'n_requerimiento' => $request->n_requerimiento,
+            'n_guia_remision' => $request->n_requerimiento,
+            'semana' => $request->semana,
+            'desde' => $request->desde,
+            'hacia' => $request->hacia,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
 
-        $tracking_dp = new TrackingDetalleProceso();
-        $tracking_dp->id_tracking = $tracking->id;
-        $tracking_dp->id_proceso = 1;
-        $tracking_dp->fecha = now();
-        $tracking_dp->estado = 1;
-        $tracking_dp->fec_reg = now();
-        $tracking_dp->user_reg = session('usuario')->id;
-        $tracking_dp->fec_act = now();
-        $tracking_dp->user_act = session('usuario')->id;
-        $tracking_dp->save();
+        $tracking_dp = TrackingDetalleProceso::create([
+            'id_tracking' => $tracking->id,
+            'id_proceso' => 1,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
 
-        $tracking_de = new TrackingDetalleEstado();
-        $tracking_de->id_detalle = $tracking_dp->id;
-        $tracking_de->id_estado = 1;
-        $tracking_de->fecha = now();
-        $tracking_de->estado = 1;
-        $tracking_de->fec_reg = now();
-        $tracking_de->user_reg = session('usuario')->id;
-        $tracking_de->fec_act = now();
-        $tracking_de->user_act = session('usuario')->id;
-        $tracking_de->save();
+        TrackingDetalleEstado::create([
+            'id_detalle' => $tracking_dp->id,
+            'id_estado' => 1,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
 
         $list_detalle = TrackingGuiaRemisionDetalle::where('n_guia_remision', $request->n_requerimiento)->get();
 
@@ -131,16 +134,16 @@ class TrackingController extends Controller
             $mail->CharSet = 'UTF-8';
             $mail->send();
 
-            $tracking_de = new TrackingDetalleEstado();
-            $tracking_de->id_detalle = $tracking_dp->id;
-            $tracking_de->id_estado = 2;
-            $tracking_de->fecha = now();
-            $tracking_de->estado = 1;
-            $tracking_de->fec_reg = now();
-            $tracking_de->user_reg = session('usuario')->id;
-            $tracking_de->fec_act = now();
-            $tracking_de->user_act = session('usuario')->id;
-            $tracking_de->save();
+            TrackingDetalleEstado::create([
+                'id_detalle' => $tracking_dp->id,
+                'id_estado' => 2,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id
+            ]);
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
@@ -149,17 +152,16 @@ class TrackingController extends Controller
     public function insert_salida_mercaderia(Request $request)
     {
         $get_id = Tracking::get_list_tracking($request->id);
-
-        $tracking_de = new TrackingDetalleEstado();
-        $tracking_de->id_detalle = $get_id->id_detalle;
-        $tracking_de->id_estado = 3;
-        $tracking_de->fecha = now();
-        $tracking_de->estado = 1;
-        $tracking_de->fec_reg = now();
-        $tracking_de->user_reg = session('usuario')->id;
-        $tracking_de->fec_act = now();
-        $tracking_de->user_act = session('usuario')->id;
-        $tracking_de->save();
+        TrackingDetalleEstado::create([
+            'id_detalle' => $get_id->id_detalle,
+            'id_estado' => 3,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
     }
 
     public function detalle_transporte($id)
