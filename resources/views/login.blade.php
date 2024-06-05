@@ -99,7 +99,11 @@ $.ajaxSetup({
                   }
                 }).then((result) => {
                   document.getElementById("resultado").style.display = 'none';
-                  location.href = urlsistemas;
+                  @if(session('redirect_url'))
+                    location.href = "{{ session('redirect_url') }}";
+                  @else
+                    location.href = urlsistemas;
+                  @endif
                 });
               }
             }

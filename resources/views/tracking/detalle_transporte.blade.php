@@ -240,7 +240,7 @@
                 ).then(function() {});
                 return false;
             }
-            if ($('#transporte').val() === '1') {
+            /*if ($('#transporte').val() === '1') {
                 if ($('#nombre_transporte').val() === '') {
                     Swal(
                         'Ups!',
@@ -257,7 +257,7 @@
                     ).then(function() {});
                     return false;
                 }
-            }
+            }*/
             return true;
         }
     </script>

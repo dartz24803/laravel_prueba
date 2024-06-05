@@ -229,7 +229,7 @@
     function Verificacion_Fardos(id) {
         Cargando();
 
-        var url = "{{ route('tracking.verificacion_fardos') }}";
+        var url = "{{ route('tracking.cierre_inspeccion_fardos') }}";
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({
@@ -260,7 +260,7 @@
                     }
                 });
             }else{
-                window.location = "{{ route('tracking.verificacion_fardos_vista', ':id') }}".replace(':id', id);
+                window.location = "{{ route('tracking.verificacion_fardos', ':id') }}".replace(':id', id);
             }
         })
     }

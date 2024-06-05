@@ -6,7 +6,6 @@ use App\Http\Controllers\Login;
 use App\Http\Controllers\Inicio;
 use App\Http\Middleware\NoCache;
 use App\Http\Controllers\ReporteFotograficoController;
-use App\Http\Controllers\OldController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\ReporteFotograficoAdmController;
 
@@ -52,8 +51,6 @@ Route::delete('/Delete_Imagen_Temporal', [ReporteFotograficoController::class, '
 Route::post('/Delete_Reporte_Fotografico', [ReporteFotograficoController::class, 'Delete_Reporte_Fotografico']);
 Route::post('/Registrar_Reporte_Fotografico', [ReporteFotograficoController::class, 'Registrar_Reporte_Fotografico']);
 Route::post('/Update_Registro_Fotografico', [ReporteFotograficoController::class, 'Update_Registro_Fotografico'])->name('Update_Registro_Fotografico');
-//PRUEBA INDEX antiguo
-Route::get('old', [OldController::class, 'index'])->name('old');
 //TRACKING
 Route::controller(TrackingController::class)->group(function(){
     Route::get('tracking', 'index')->name('tracking');
@@ -65,6 +62,6 @@ Route::controller(TrackingController::class)->group(function(){
     Route::post('tracking/mercaderia_transito', 'insert_mercaderia_transito')->name('tracking.mercaderia_transito');
     Route::post('tracking/llegada_tienda', 'insert_llegada_tienda')->name('tracking.llegada_tienda');
     Route::post('tracking/confirmacion_llegada', 'insert_confirmacion_llegada')->name('tracking.confirmacion_llegada');
-    Route::post('tracking/verificacion_fardos', 'insert_verificacion_fardos')->name('tracking.verificacion_fardos');
-    Route::get('tracking/{id}/verificacion_fardos', 'verificacion_fardos')->name('tracking.verificacion_fardos_vista');
+    Route::post('tracking/cierre_inspeccion_fardos', 'insert_cierre_inspeccion_fardos')->name('tracking.cierre_inspeccion_fardos');
+    Route::get('tracking/{id}/verificacion_fardos', 'verificacion_fardos')->name('tracking.verificacion_fardos');
 });

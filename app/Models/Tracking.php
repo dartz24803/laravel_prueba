@@ -45,7 +45,8 @@ class Tracking extends Model
 
     public function get_list_tracking($id=null){
         if(isset($id)){
-            $sql = "SELECT tr.*,mp.ultimo_id AS id_detalle,de.id_estado
+            $sql = "SELECT tr.*,IFNULL(tr.importe_transporte,0) AS importe_formateado,
+                    mp.ultimo_id AS id_detalle,de.id_estado
                     FROM tracking tr
                     LEFT JOIN (SELECT MAX(id) AS ultimo_id,id_tracking
                     FROM tracking_detalle_proceso
