@@ -34,7 +34,7 @@
         cargarImagenes();
     });*/
     function Update_Registro_Fotografico() {
-        //Cargando();
+        Cargando();
         var csrfToken = $('input[name="_token"]').val();
 
         var dataString = new FormData(document.getElementById('formulario_update'));
@@ -70,8 +70,8 @@
             }
         });
     }
-/*
+
     $('.basic_i').select2({
         dropdownParent: $('#ModalUpdate')
-    });*/
+    });
 </script>

@@ -13,16 +13,13 @@ class Inicio extends Controller
     protected $modelo;
     public function __construct(Request $request)
     {
+        $this->middleware('verificar.sesion.usuario');
         $this->request = $request;
         //$this->modelo = new CarteraModel();
     }
     public function index()
     {
-        if (session('usuario')) {
-            return view('inicio');
-        }else{
-            return redirect('/');
-        }
+        return view('inicio');
     }
     /*
     public function listar()

@@ -49,7 +49,7 @@
         cargarImagenes();
     });
     function Registrar_Reporte_Fotografico() {
-        //Cargando();
+        Cargando();
         var csrfToken = $('input[name="_token"]').val();
 
         var dataString = new FormData(document.getElementById('formulario_insert'));
@@ -167,7 +167,7 @@
     var fotos_tomadas = 0; // Contador para el número de fotos tomadas
 
     function Tomar_Foto() {
-        //Cargando();
+        Cargando();
 
         var dataString = new FormData(document.getElementById('formulario_insert'));
         var url = "{{ url('Previsualizacion_Captura2') }}";

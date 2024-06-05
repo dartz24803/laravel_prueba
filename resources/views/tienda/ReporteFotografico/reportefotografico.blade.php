@@ -110,7 +110,7 @@ $base = Session::get('usuario')->centro_labores;
 
         /**Listar */
         function Reporte_Fotografico_Listar() {
-            //Cargando();
+            Cargando();
             var csrfToken = $('input[name="_token"]').val();
             var base = $('#base').val();
             var area = $('#area').val();
@@ -174,7 +174,7 @@ $base = Session::get('usuario')->centro_labores;
         }
 
         function Delete_Reporte_Fotografico(id) {
-            //Cargando();
+            Cargando();
 
             var id = id;
             var url = "{{ url('Delete_Reporte_Fotografico') }}";
