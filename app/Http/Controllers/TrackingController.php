@@ -18,86 +18,71 @@ class TrackingController extends Controller
 
     public function __construct()
     {
+        $this->middleware('verificar.sesion.usuario');
         $this->modelo = new Tracking();
         $this->modelobase = new BaseModel();
     }
 
     public function index()
     {
-        if (session('usuario')) {
-            return view('tracking.index');
-        }else{
-            return redirect('/');
-        }
+        return view('tracking.index');
     }
 
     public function list()
     {
-        if (session('usuario')) {
-            $list_tracking = $this->modelo->get_list_tracking();
-            return view('tracking.lista', compact('list_tracking'));
-        }else{
-            return redirect('/');
-        }
+        $list_tracking = $this->modelo->get_list_tracking();
+        return view('tracking.lista', compact('list_tracking'));
     }
 
     public function create()
     {
-        if (session('usuario')) {
-            $list_base = $this->modelobase->get_list_base_tracking();
-            return view('tracking.modal_registrar', compact('list_base'));
-        }else{
-            return redirect('/');
-        }
+        $list_base = $this->modelobase->get_list_base_tracking();
+        return view('tracking.modal_registrar', compact('list_base'));
     }
 
     public function store(Request $request)
     {
-        if (session('usuario')) {
-            $tracking = new Tracking();
-            $tracking->n_requerimiento = $request->n_requerimiento;
-            $tracking->semana = $request->semana;
-            $tracking->desde = $request->desde;
-            $tracking->hacia = $request->hacia;
-            $tracking->estado = 1;
-            $tracking->fec_reg = now();
-            $tracking->save();
+        $tracking = new Tracking();
+        $tracking->n_requerimiento = $request->n_requerimiento;
+        $tracking->semana = $request->semana;
+        $tracking->desde = $request->desde;
+        $tracking->hacia = $request->hacia;
+        $tracking->estado = 1;
+        $tracking->fec_reg = now();
+        $tracking->save();
 
-            $tracking_dp = new TrackingDetalleProceso();
-            $tracking_dp->id_tracking = $tracking->id;
-            $tracking_dp->id_proceso = 1;
-            $tracking_dp->fecha = now();
-            $tracking_dp->estado = 1;
-            $tracking_dp->fec_reg = now();
-            $tracking_dp->user_reg = session('usuario')->id;
-            $tracking_dp->fec_act = now();
-            $tracking_dp->user_act = session('usuario')->id;
-            $tracking_dp->save();
+        $tracking_dp = new TrackingDetalleProceso();
+        $tracking_dp->id_tracking = $tracking->id;
+        $tracking_dp->id_proceso = 1;
+        $tracking_dp->fecha = now();
+        $tracking_dp->estado = 1;
+        $tracking_dp->fec_reg = now();
+        $tracking_dp->user_reg = session('usuario')->id;
+        $tracking_dp->fec_act = now();
+        $tracking_dp->user_act = session('usuario')->id;
+        $tracking_dp->save();
 
-            $tracking_de = new TrackingDetalleEstado();
-            $tracking_de->id_detalle = $tracking_dp->id;
-            $tracking_de->id_estado = 1;
-            $tracking_de->fecha = now();
-            $tracking_de->estado = 1;
-            $tracking_de->fec_reg = now();
-            $tracking_de->user_reg = session('usuario')->id;
-            $tracking_de->fec_act = now();
-            $tracking_de->user_act = session('usuario')->id;
-            $tracking_de->save();
+        $tracking_de = new TrackingDetalleEstado();
+        $tracking_de->id_detalle = $tracking_dp->id;
+        $tracking_de->id_estado = 1;
+        $tracking_de->fecha = now();
+        $tracking_de->estado = 1;
+        $tracking_de->fec_reg = now();
+        $tracking_de->user_reg = session('usuario')->id;
+        $tracking_de->fec_act = now();
+        $tracking_de->user_act = session('usuario')->id;
+        $tracking_de->save();
 
-            $tracking_de = new TrackingDetalleEstado();
-            $tracking_de->id_detalle = $tracking_dp->id;
-            $tracking_de->id_estado = 2;
-            $tracking_de->fecha = now();
-            $tracking_de->estado = 1;
-            $tracking_de->fec_reg = now();
-            $tracking_de->user_reg = session('usuario')->id;
-            $tracking_de->fec_act = now();
-            $tracking_de->user_act = session('usuario')->id;
-            $tracking_de->save();
-        }else{
-            return redirect('/');
-        }
+        $tracking_de = new TrackingDetalleEstado();
+        $tracking_de->id_detalle = $tracking_dp->id;
+        $tracking_de->id_estado = 2;
+        $tracking_de->fecha = now();
+        $tracking_de->estado = 1;
+        $tracking_de->fec_reg = now();
+        $tracking_de->user_reg = session('usuario')->id;
+        $tracking_de->fec_act = now();
+        $tracking_de->user_act = session('usuario')->id;
+        $tracking_de->save();
     }
 
     public function insert_salida_mercaderia(Request $request)
@@ -118,12 +103,8 @@ class TrackingController extends Controller
 
     public function detalle_transporte($id)
     {
-        if (session('usuario')) {
-            $get_id = $this->modelo->get_list_tracking($id);
-            return view('tracking.detalle_transporte', compact('get_id'));
-        }else{
-            return redirect('/');
-        }
+        $get_id = $this->modelo->get_list_tracking($id);
+        return view('tracking.detalle_transporte', compact('get_id'));
     }
 
     public function insert_mercaderia_transito(Request $request)
@@ -280,11 +261,7 @@ class TrackingController extends Controller
 
     public function verificacion_fardos($id)
     {
-        if (session('usuario')) {
-            $get_id = $this->modelo->get_list_tracking($id);
-            return view('tracking.verificacion_fardos', compact('get_id'));
-        }else{
-            return redirect('/');
-        }
+        $get_id = $this->modelo->get_list_tracking($id);
+        return view('tracking.verificacion_fardos', compact('get_id'));
     }
 }
