@@ -59,27 +59,10 @@ class ReporteFotograficoController extends Controller
                 $sub_array = array();
                 $sub_array[] = $row['id'];
                 $sub_array[] = $row['base'];
-                $sub_array[] = $row['codigo_rf'];
-                if($row['letra_id'] == 'A')
-                { $categoria = 'ALMACÉN'; }
-                else if($row['letra_id'] == 'H')
-                { $categoria = 'HOMBRE';}
-                else if($row['letra_id'] == 'I')
-                { $categoria = 'INFANTIL';}
-                else if($row['letra_id'] == 'M')
-                { $categoria = 'MUJER';}
-                else if($row['letra_id'] == 'P')
-                { $categoria = 'PROBADORES';}
-                else if($row['letra_id'] == 'S')
-                { $categoria = 'SERVICIOS';}
-                else if($row['letra_id'] == 'F')
-                { $categoria = 'FACHADA';}
-                else if($row['letra_id'] == 'C')
-                { $categoria = 'CAJA';}
-                else{ $categoria = 'PERSONAS';}
-                $sub_array[] = $categoria;
+                $sub_array[] = $row['codigo'];
+                $sub_array[] = $row['tipo'];
                 $sub_array[] = $row['areas'];
-                $sub_array[] = $row['fecha_rf'];
+                $sub_array[] = $row['fec_reg'];
                 $sub_array[] = '<div class="btn-group" role="group" aria-label="Button group">
                 <a class="btn btn-success" title="Ver evidencia" href="https://lanumerounocloud.com/intranet/REPORTE_FOTOGRAFICO/'.$row['foto'].'" target="_blank">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye text-success"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>

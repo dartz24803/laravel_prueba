@@ -13,7 +13,7 @@ class TablaCuadroControlVisualController extends Controller
             // $list_bases = $this->modelobase->listar();
             // $list_codigos = $this->modelocodigos->listar();
             //enviar listas a la vista
-            return view('tienda.administracion.ReporteFotografico.tabla_ccv');
+            return view('tienda.administracion.CuadroControlVisual.tabla_ccv');
         }else{
             return redirect('/');
         }

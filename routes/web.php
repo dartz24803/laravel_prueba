@@ -8,7 +8,7 @@ use App\Http\Middleware\NoCache;
 use App\Http\Controllers\ReporteFotograficoController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\ReporteFotograficoAdmController;
-
+use App\Http\Controllers\TablaCuadroControlVisualController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -64,4 +64,18 @@ Route::controller(TrackingController::class)->group(function(){
     Route::post('tracking/confirmacion_llegada', 'insert_confirmacion_llegada')->name('tracking.confirmacion_llegada');
     Route::post('tracking/cierre_inspeccion_fardos', 'insert_cierre_inspeccion_fardos')->name('tracking.cierre_inspeccion_fardos');
     Route::get('tracking/{id}/verificacion_fardos', 'verificacion_fardos')->name('tracking.verificacion_fardos');
+});
+
+
+
+
+
+
+
+
+
+
+
+Route::controller(TablaCuadroControlVisualController::class)->group(function(){
+    Route::get('TablaCuadroControlVisual', 'index')->name('TablaCuadroControlVisual');
 });
