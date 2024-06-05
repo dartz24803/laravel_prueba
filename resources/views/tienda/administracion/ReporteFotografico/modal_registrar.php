@@ -39,6 +39,7 @@
 <script>
     function Registrar_Reporte_Fotografico_Adm() {
         //Cargando();
+        var csrfToken = $('input[name="_token"]').val();
 
         var dataString = new FormData(document.getElementById('formulario_insert'));
         var url = "Registrar_Reporte_Fotografico_Adm";
@@ -48,6 +49,9 @@
                 url: url,
                 data: dataString,
                 type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 processData: false,
                 contentType: false,
                 success: function(data) {

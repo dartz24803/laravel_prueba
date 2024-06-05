@@ -35,6 +35,7 @@
     });*/
     function Update_Registro_Fotografico() {
         //Cargando();
+        var csrfToken = $('input[name="_token"]').val();
 
         var dataString = new FormData(document.getElementById('formulario_update'));
         var url = 'Update_Registro_Fotografico';
@@ -43,6 +44,9 @@
             url: url,
             data: dataString,
             type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             processData: false,
             contentType: false,
             success: function(data) {

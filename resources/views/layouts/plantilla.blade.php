@@ -89,6 +89,13 @@
             </div>
         </div>
     </div>
+    <div id="ModalUpdate" data-backdrop="static" data-keyboard="false" class="modal animated fadeInRight custo-fadeInRight bd-example-modal-lg scrollpagina" tabindex="-1" role="dialog" aria-labelledby="ModalUpdate" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
 
     <script src="{{ asset('template/docs/js/jquery-3.2.1.min.js') }}"></script>
 
@@ -141,10 +148,31 @@
                 var link = $(e.relatedTarget);
                 $(this).find(".modal-content").load(link.attr("app_reg"));
             });
+            $("#ModalUpdate").on("show.bs.modal", function(e) {
+                var link = $(e.relatedTarget);
+                $(this).find(".modal-content").load(link.attr("app_elim"));
+            });
         });
     </script>
     <!-- END MODAL  -->
 
+    <style>
+        #accordionExample>.menu.active {
+            border: 1.5px solid #ffa700;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+        #accordionExample>.active .active #icono_active2 {
+            content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23ffa700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-disc'><circle cx='12' cy='12' r='10'></circle><circle cx='12' cy='12' r='3'></circle></svg>");
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .menu:not(.menu-heading):hover {
+            border: 1.5px solid #ffa700;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+    </style>
     <!--  BEGIN MAIN CONTAINER  -->
     <div class="main-container sidebar-closed sbar-open" id="container">
 
@@ -197,8 +225,8 @@
                         </a>
                     </li>
 
-                    <li class="menu">
-                        <a href="#invoice" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <li class="menu" id="tienda">
+                        <a href="#rtienda" id="htienda" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                             <div class="">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart">
                                     <circle cx="9" cy="21" r="1"></circle>
@@ -208,13 +236,61 @@
                                 <span>Tienda</span>
                             </div>
                             <div>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
                             </div>
                         </a>
-                        <ul class="collapse submenu list-unstyled" id="invoice" data-parent="#accordionExample">
-                            <li>
-                                <a href="{{ route('reportefotografico') }}"> Reporte fotográfico </a>
-                            </li>                         
+    
+                        <ul class="collapse submenu list-unstyled" id="rtienda" data-parent="#accordionExample">
+                            <li id="reportefoto">
+                                <a id="reporte_foto" href="{{ url('/ReporteFotografico')}}">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Reporte fotográfico</p>
+                                </a>
+                            </li>
+                            <li id="cuadrocontrolvisual">
+                                <a id="hrpreorden" href="{{ url('Cuadro_Control_Visual_Vista')}}">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Cuadro Control Visual</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- Administrables  -->
+                    <li class="menu menu-heading">
+                        <div class="heading">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle">
+                                <circle cx="12" cy="12" r="10"></circle>
+                            </svg>
+                            <span>ADMINISTRACION</span>
+                        </div>
+                    </li>
+                    <li class="menu" id="ccvtabla">
+                        <a href="#rccvtabla" id="hccvtabla" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                            <div class="">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
+                                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                                </svg>
+                                <span>Tienda</span>
+                            </div>
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </div>
+                        </a>
+                        <ul class="collapse submenu list-unstyled" id="rccvtabla" data-parent="#accordionExample">
+                            <li id="rfa">
+                                <a href="{{ url('/ReporteFotograficoAdm')}}" data-toggle="tooltip" data-placement="right" data-html="true">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Reporte Fotográfico</p>
+                                </a>
+                            </li>
+                            <li id="ccv">
+                                <a href="{{ url('/TablaCuadroControlVisual') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Horarios <br>• Cuadro de Control Visual <br>• Programación Diaria">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Cuadro de Control Visual</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 </ul>
