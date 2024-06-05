@@ -22,4 +22,8 @@ class TablaCuadroControlVisualController extends Controller
             //enviar listas a la vista
             return view('tienda.administracion.CuadroControlVisual.tabla_ccv');
     }
+
+    public function Horarios_Cuadro_Control(){
+        return view('tienda.administracion.CuadroControlVisual.Horarios.index');
+    }
 }

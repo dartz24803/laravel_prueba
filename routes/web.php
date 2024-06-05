@@ -30,27 +30,28 @@ Route::post('/ReporteFotograficoAdmListar', [ReporteFotograficoAdmController::cl
 Route::controller(ReporteFotograficoAdmController::class)->group(function(){
     Route::get('ReporteFotograficoAdmController/ModalUpdatedReporteFotograficoAdm/{id}', 'ModalUpdatedReporteFotograficoAdm')->name('tienda.administracion.ReporteFotografico.modal_editar');
     Route::get('ReporteFotograficoAdmController/ModalRegistrarReporteFotograficoAdm', 'ModalRegistroReporteFotograficoAdm')->name('tienda.administracion.ReporteFotografico.modal_registro');
+    Route::post('/Registrar_Reporte_Fotografico_Adm', 'Registrar_Reporte_Fotografico_Adm');
+    Route::post('/Update_Registro_Fotografico_Adm', 'Update_Registro_Fotografico_Adm')->name('Update_Registro_Fotografico_Adm');
+    Route::post('/Delete_Reporte_Fotografico_Adm', 'Delete_Reporte_Fotografico_Adm');
 });
-Route::post('/Registrar_Reporte_Fotografico_Adm', [ReporteFotograficoAdmController::class, 'Registrar_Reporte_Fotografico_Adm']);
-Route::post('/Update_Registro_Fotografico_Adm', [ReporteFotograficoAdmController::class, 'Update_Registro_Fotografico_Adm'])->name('Update_Registro_Fotografico_Adm');
-Route::post('/Delete_Reporte_Fotografico_Adm', [ReporteFotograficoAdmController::class, 'Delete_Reporte_Fotografico_Adm']);
-//LOGIN
-Route::get('/', [Login::class, 'index'])->name('login');
-Route::post('IngresarLogin', [Login::class, 'ingresar'])->name('IngresarLogin');
-Route::get('DestruirSesion', [Login::class, 'logout'])->name('DestruirSesion');
-//REGISTRO FOTOGRAFICO
-Route::post('/ReporteFotograficoListar', [ReporteFotograficoController::class, 'listar']);
-//Route::get('/ModalUpdatedReporteFotografico', [ReporteFotografico::class, 'ModalUpdatedReporteFotografico'])->name('modal_editar');
+//----------------------------LOGIN-------------------------//
+Route::controller(Login::class)->group(function(){
+    Route::get('/', 'index')->name('login');
+    Route::post('IngresarLogin', 'ingresar')->name('IngresarLogin');
+    Route::get('DestruirSesion', 'logout')->name('DestruirSesion');
+});
+//---------------------REGISTRO FOTOGRAFICO--------------------------//
 Route::controller(ReporteFotograficoController::class)->group(function(){
+    Route::post('/ReporteFotograficoListar', 'listar');
     Route::get('ReporteFotografico/ModalUpdatedReporteFotografico/{id}', 'ModalUpdatedReporteFotografico')->name('tienda.ReporteFotografico.modal_editar');
     Route::get('ReporteFotografico/ModalRegistrarReporteFotografico', 'ModalRegistroReporteFotografico')->name('tienda.ReporteFotografico.modal_registro');
+    Route::post('/Previsualizacion_Captura2', 'Previsualizacion_Captura2');
+    Route::get('/obtenerImagenes', 'obtenerImagenes');
+    Route::delete('/Delete_Imagen_Temporal', 'Delete_Imagen_Temporal');
+    Route::post('/Delete_Reporte_Fotografico', 'Delete_Reporte_Fotografico');
+    Route::post('/Registrar_Reporte_Fotografico', 'Registrar_Reporte_Fotografico');
+    Route::post('/Update_Registro_Fotografico', 'Update_Registro_Fotografico')->name('Update_Registro_Fotografico');
 });
-Route::post('/Previsualizacion_Captura2', [ReporteFotograficoController::class, 'Previsualizacion_Captura2']);
-Route::get('/obtenerImagenes', [ReporteFotograficoController::class, 'obtenerImagenes']);
-Route::delete('/Delete_Imagen_Temporal', [ReporteFotograficoController::class, 'Delete_Imagen_Temporal']);
-Route::post('/Delete_Reporte_Fotografico', [ReporteFotograficoController::class, 'Delete_Reporte_Fotografico']);
-Route::post('/Registrar_Reporte_Fotografico', [ReporteFotograficoController::class, 'Registrar_Reporte_Fotografico']);
-Route::post('/Update_Registro_Fotografico', [ReporteFotograficoController::class, 'Update_Registro_Fotografico'])->name('Update_Registro_Fotografico');
 //TRACKING
 Route::controller(TrackingController::class)->group(function(){
     Route::get('tracking', 'index')->name('tracking');
