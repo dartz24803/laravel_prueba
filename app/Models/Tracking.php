@@ -43,7 +43,7 @@ class Tracking extends Model
         'user_eli'
     ];
 
-    public function get_list_tracking($id=null){
+    public static function get_list_tracking($id=null){
         if(isset($id)){
             $sql = "SELECT tr.*,IFNULL(tr.importe_transporte,0) AS importe_formateado,
                     mp.ultimo_id AS id_detalle,de.id_estado

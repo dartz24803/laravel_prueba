@@ -27,7 +27,7 @@ class TrackingDetalleEstado extends Model
         'user_eli'
     ];
 
-    function get_list_tracking_detalle_estado($id_detalle,$id_estado){
+    public static function get_list_tracking_detalle_estado($id_detalle,$id_estado){
         $sql = "SELECT CONCAT(DATE_FORMAT(fecha, '%d'),' ', 
                 CASE MONTH(fecha) WHEN 1 THEN 'ENERO' WHEN 2 THEN 'FEBRERO' WHEN 3 THEN 'MARZO'
                 WHEN 4 THEN 'ABRIL' WHEN 5 THEN 'MAYO' WHEN 6 THEN 'JUNIO' WHEN 7 THEN 'JULIO'

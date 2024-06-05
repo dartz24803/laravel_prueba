@@ -4,12 +4,11 @@
             <th width="17%">N° requerimiento</th>
             <th width="10%">Desde</th>
             <th width="10%">Hacia</th>
-            <th width="10%">Proceso</th>
+            <th width="16%">Proceso</th>
             <th width="10%">Fecha</th>
             <th width="10%">Hora</th>
             <th width="27%">Estado</th>
             <th width="10%" class="no-content"></th>
-            <th width="6%" class="no-content"></th>
         </tr>
     </thead>
 
@@ -77,18 +76,6 @@
                             <line x1="1" y1="10" x2="23" y2="10"></line>
                         </svg>
                     @endif
-                </td>
-                <td class="text-center">
-                    <div class="btn-group dropleft" role="group"> 
-                        <a id="btnDropLeft" type="button" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="btnDropLeft" style="padding:0;">
-                            <a href="javascript:void(0);" class="dropdown-item">
-                                Ver
-                            </a>
-                        </div>
-                    </div>
                 </td>
             </tr>
         @endforeach
@@ -261,6 +248,43 @@
                 });
             }else{
                 window.location = "{{ route('tracking.verificacion_fardos', ':id') }}".replace(':id', id);
+            }
+        })
+    }
+
+    function Insert_Cierre_Inspeccion_Fardos(id) {
+        Cargando();
+
+        var url = "{{ route('tracking.cierre_inspeccion_fardos') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            title: '¿Realmente desea cambiar el estado?',
+            text: "El cambio será permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {'id':id,'validacion':1},
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function() {
+                        Swal(
+                            '¡Cambio de estado exitoso!',
+                            '¡Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            Lista_Tracking();
+                        });
+                    }
+                });
             }
         })
     }

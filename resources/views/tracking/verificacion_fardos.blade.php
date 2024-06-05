@@ -44,6 +44,7 @@
                                 <canvas id="canvas" width="640" height="480" style="max-width:95%;"></canvas>
                             </div>
                             
+                            @csrf
                             <div id="lista_archivo">
                             </div>
     
@@ -64,17 +65,21 @@
             $("#li_trackings").addClass('active');
             $("#a_trackings").attr('aria-expanded','true');
 
-            //Lista_Archivo();
+            Lista_Archivo();
         });
 
         function Lista_Archivo(){
             Cargando();
 
-            var url = "";
+            var url = "{{ route('tracking.list_archivo_inspf') }}";
+            var csrfToken = $('input[name="_token"]').val();
 
             $.ajax({
                 url: url,
                 type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 success:function (resp) {
                     $('#lista_archivo').html(resp);  
                 }
@@ -165,7 +170,7 @@
             Cargando();
 
             var dataString = new FormData(document.getElementById('formulario'));
-            var url = "";
+            var url = "{{ route('tracking.previsualizacion_captura') }}";
             var video = document.getElementById('video');
             var div_canvas = document.getElementById('div_canvas');
             var canvas = document.getElementById('canvas');
@@ -186,7 +191,7 @@
                     success: function(response) {
                         if (response == "error") {
                             Swal({
-                                title: 'Carga Denegada',
+                                title: '¡Carga Denegada!',
                                 text: "¡No se puede tomar más de 3 capturas!",
                                 type: 'error',
                                 showCancelButton: false,
@@ -205,7 +210,7 @@
             Cargando();
 
             var dataString = new FormData(document.getElementById('formulario'));
-            var url = "";
+            var url = "{{ route('tracking.reporte_inspeccion_fardo') }}";
 
             if (Valida_Insert_Reporte_Inspeccion_Fardo()) {
                 $.ajax({
