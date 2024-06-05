@@ -173,6 +173,10 @@
             border-radius: 15px;
             font-weight: bold;
         }
+        img.navbar-logo.ajuste {
+            width: 150px;
+            height: 47px;
+        }
     </style>
     <!--  BEGIN MAIN CONTAINER  -->
     <div class="main-container sidebar-closed sbar-open" id="container">
@@ -189,11 +193,13 @@
                 <ul class="navbar-nav theme-brand flex-row  text-center">
                     <li class="nav-item theme-logo">
                         <a href="{{ route('inicio') }}">
-                            <img src="{{ asset('template/assets/img/90x90.jpg') }}" class="navbar-logo" alt="logo">
+                            <img src="{{ asset('login_files/img/la_numerouno.png') }}" class="navbar-logo" alt="logo">
                         </a>
                     </li>
                     <li class="nav-item theme-text">
-                        <a href="{{ route('inicio') }}" class="nav-link"> CORK </a>
+                        <a class="nav-link">
+                            <img src="{{ asset('login_files/img/grupo.png') }}" class="navbar-logo ajuste" alt="logo">
+                        </a>
                     </li>
                 </ul>
 

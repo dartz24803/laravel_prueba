@@ -44,7 +44,7 @@ var App = function() {
             // sidebar abierto por defecto
             $(document).ready(function() {
                 $(Selector.mainContainer).removeClass("sbar-open");
-                if($(window).width() > 517){
+                if($(window).width() > 1200){
                     $(Selector.mainContainer).removeClass("sidebar-closed");
                 }
                 $(Selector.mainHeader).removeClass('expand-header');
