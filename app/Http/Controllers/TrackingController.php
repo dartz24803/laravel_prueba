@@ -1012,6 +1012,50 @@ class TrackingController extends Controller
             }
         }
 
+        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
+
+        //ENVÍO DE WHATSAPP
+        /*$curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://graph.facebook.com/v19.0/238326042708442/messages',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS =>'{
+                "messaging_product": "whatsapp",
+                "to": "51956897977",
+                "type": "template",
+                "template": {
+                    "name": "confirmacion_pago_mercaderia",
+                    "language": {
+                        "code": "es_MX"
+                    },
+                    "components": [
+                        {
+                            "type": "body",
+                            "parameters": [
+                                {
+                                    "type": "text",
+                                    "text": "'.$get_id->desde.'"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer EAAKZBi44f9U8BO2GfSXEpkvkZCVGxxvGjVLQ7KpsPA9yksGvjx5Au6535ZBukULZAwCN4s1m0TmZAzSt61O3f2pJP1sZBhcKvINSi4yCgtZB2EqdvBodkrMG4n4FALzkx0yvZCFgkQaC3AfDvLqWgMuZCHoMkdM5EgXy58TLGDS7a7TZBwLIcA9UV80VeuSHQmSnts',
+                'Content-Type: application/json'
+            ),
+        ));
+        curl_exec($curl);
+        curl_close($curl);*/
+        //END
+
         $tracking_dp = TrackingDetalleProceso::create([
             'id_tracking' => $request->id,
             'id_proceso' => 5,
@@ -1036,7 +1080,6 @@ class TrackingController extends Controller
         ]);
 
         //ENVÍO DE CORREO
-        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
         $list_archivo = TrackingArchivo::where('id_tracking', $request->id)->where('tipo', 1)->get();
 
         $mail = new PHPMailer(true);
@@ -1059,7 +1102,7 @@ class TrackingController extends Controller
             $mail->Subject = "MERCADERÍA PAGADA: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.")";
         
             $mail->Body =  '<FONT SIZE=3>
-                                Hola '.$get_id->desde.', se ha realizado el pago a la agencia
+                                Hola '.$get_id->desde.', se ha pagado a la agencia
                             </FONT SIZE>';
         
             $mail->CharSet = 'UTF-8';
@@ -1113,6 +1156,49 @@ class TrackingController extends Controller
     public function insert_conteo_mercaderia(Request $request)
     {
         $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
+
+        //ENVÍO DE WHATSAPP
+        /*$curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://graph.facebook.com/v19.0/238326042708442/messages',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS =>'{
+                "messaging_product": "whatsapp",
+                "to": "51956897977",
+                "type": "template",
+                "template": {
+                    "name": "conteo_mercaderia",
+                    "language": {
+                        "code": "es_MX"
+                    },
+                    "components": [
+                        {
+                            "type": "body",
+                            "parameters": [
+                                {
+                                    "type": "text",
+                                    "text": "'.$get_id->desde.'"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer EAAKZBi44f9U8BO2GfSXEpkvkZCVGxxvGjVLQ7KpsPA9yksGvjx5Au6535ZBukULZAwCN4s1m0TmZAzSt61O3f2pJP1sZBhcKvINSi4yCgtZB2EqdvBodkrMG4n4FALzkx0yvZCFgkQaC3AfDvLqWgMuZCHoMkdM5EgXy58TLGDS7a7TZBwLIcA9UV80VeuSHQmSnts',
+                'Content-Type: application/json'
+            ),
+        ));
+        curl_exec($curl);
+        curl_close($curl);*/
+        //END
+
         TrackingDetalleEstado::create([
             'id_detalle' => $get_id->id_detalle,
             'id_estado' => 13,
