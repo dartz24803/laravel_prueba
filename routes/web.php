@@ -83,7 +83,8 @@ Route::controller(TrackingController::class)->group(function(){
 
 
 
-
+//CUADRO CONTROL VISUAL ADMINISTRACION
 Route::controller(TablaCuadroControlVisualController::class)->group(function(){
     Route::get('TablaCuadroControlVisual', 'index')->name('TablaCuadroControlVisual');
+    Route::get('Horarios_Cuadro_Control', 'Horarios_Cuadro_Control')->name('Horarios_Cuadro_Control');
 });
