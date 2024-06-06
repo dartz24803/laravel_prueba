@@ -838,4 +838,19 @@ class TrackingController extends Controller
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
     }
+
+    public function insert_conteo_mercaderia(Request $request)
+    {
+        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
+        TrackingDetalleEstado::create([
+            'id_detalle' => $get_id->id_detalle,
+            'id_estado' => 13,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
+    }
 }
