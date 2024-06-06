@@ -207,7 +207,7 @@
                     </li>
                     <li class="nav-item theme-text">
                         <a class="nav-link">
-                            <img src="{{ asset('login_files/img/grupo-LaNumero.png') }}" class="navbar-logo ajuste1" alt="logo">
+                            <img src="{{ asset('login_files/img/Grupo-LaNumero.png') }}" class="navbar-logo ajuste1" alt="logo">
                             <img src="{{ asset('login_files/img/1.png') }}" class="navbar-logo ajuste2" alt="logo">
                         </a>
                     </li>
