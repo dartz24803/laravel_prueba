@@ -48,14 +48,14 @@
                                     <label class="control-label text-bold">Paquetes: </label>
                                 </div>
                                 <div class="form-group col-lg-2">
-                                    <input type="text" class="form-control" name="paquetes" id="paquetes" placeholder="Paquetes" onkeypress="return soloNumeros(event);">
+                                    <input type="text" class="form-control" name="paquetes" id="paquetes" placeholder="Paquetes" onkeypress="return solo_Numeros(event);">
                                 </div>
     
                                 <div class="form-group col-lg-1">
                                     <label class="control-label text-bold">Sobres: </label>
                                 </div>
                                 <div class="form-group col-lg-2">
-                                    <input type="text" class="form-control" name="sobres" id="sobres" placeholder="Sobres" onkeypress="return soloNumeros(event);">
+                                    <input type="text" class="form-control" name="sobres" id="sobres" placeholder="Sobres" onkeypress="return solo_Numeros(event);">
                                 </div>
                             </div>
     
@@ -64,14 +64,14 @@
                                     <label class="control-label text-bold">Fardos: </label>
                                 </div>
                                 <div class="form-group col-lg-2">
-                                    <input type="text" class="form-control" name="fardos" id="fardos" placeholder="Fardos" onkeypress="return soloNumeros(event);">
+                                    <input type="text" class="form-control" name="fardos" id="fardos" placeholder="Fardos" onkeypress="return solo_Numeros(event);">
                                 </div>
     
                                 <div class="form-group col-lg-1">
                                     <label class="control-label text-bold">Caja: </label>
                                 </div>
                                 <div class="form-group col-lg-2">
-                                    <input type="text" class="form-control" name="caja" id="caja" placeholder="Caja" onkeypress="return soloNumeros(event);">
+                                    <input type="text" class="form-control" name="caja" id="caja" placeholder="Caja" onkeypress="return solo_Numeros(event);">
                                 </div>
     
                                 <div class="form-group col-lg-1">
