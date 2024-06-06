@@ -90,7 +90,8 @@ var App = function() {
                         if ($(Selector.mainContainer).hasClass('sidebar-closed')) {
                             if($(window).width() > 1200){
                                 $('#sidebar_logo1').hide();
-                            }                            if ($('.collapse.submenu').hasClass('recent-submenu')) {
+                            }                            
+                            if ($('.collapse.submenu').hasClass('recent-submenu')) {
                                 getSidebar.find('.collapse.submenu.recent-submenu').addClass('show');
                                 $('.collapse.submenu.recent-submenu').parents('.menu').find('.dropdown-toggle').attr('aria-expanded', 'true');
                                 $('.submenu').removeClass('mini-recent-submenu');
