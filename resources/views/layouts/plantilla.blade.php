@@ -184,8 +184,12 @@
             height: 50px;
         }
         #sidebar .theme-brand li.theme-logo img {
-            width: 40px;
+            position: relative;
+            width: 44px;
             border-radius: 5px;
+            height: 2.8rem;
+            top: -2px;
+            left: 2px;
         }
     </style>
     <!--  BEGIN MAIN CONTAINER  -->
@@ -200,7 +204,7 @@
             
             <nav id="sidebar">
                 <ul class="navbar-nav theme-brand flex-row  text-center">
-                    <li id="sidebar_logo1" class="nav-item theme-logo">
+                    <li id="sidebar_logo1" class="nav-item theme-logo text-center">
                         <a>
                             <img src="{{ asset('login_files/img/1.png') }}" class="navbar-logo" alt="logo">
                         </a>
@@ -227,7 +231,10 @@
                     </li>
 
                     <li class="menu menu-heading">
-                        <div class="heading"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg><span>MÓDULOS</span></div>
+                        <div class="heading">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                            <span>MÓDULOS</span>
+                        </div>
                     </li>
 
                     <li class="menu" id="li_trackings">
@@ -275,9 +282,7 @@
                     <!-- Administrables  -->
                     <li class="menu menu-heading">
                         <div class="heading">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle">
-                                <circle cx="12" cy="12" r="10"></circle>
-                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
                             <span>ADMINISTRACION</span>
                         </div>
                     </li>
