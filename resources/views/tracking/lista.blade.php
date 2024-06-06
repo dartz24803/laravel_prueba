@@ -77,6 +77,13 @@
                                 <line x1="1" y1="10" x2="23" y2="10"></line>
                             </svg>
                         </a>
+                    @elseif($list->id_estado==12)
+                        <a href="javascript:void(0);" title="Conteo de mercadería" onclick="Insert_Conteo_Mercaderia('{{ $list->id }}');">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock text-success">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </a>
                     @endif
                 </td>
             </tr>
@@ -258,6 +265,43 @@
         Cargando();
 
         var url = "{{ route('tracking.cierre_inspeccion_fardos') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            title: '¿Realmente desea cambiar el estado?',
+            text: "El cambio será permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {'id':id,'validacion':1},
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function() {
+                        Swal(
+                            '¡Cambio de estado exitoso!',
+                            '¡Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            Lista_Tracking();
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+    function Insert_Conteo_Mercaderia(id) {
+        Cargando();
+
+        var url = "{{ route('tracking.conteo_mercaderia') }}";
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({

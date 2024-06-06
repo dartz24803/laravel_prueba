@@ -71,6 +71,7 @@ Route::controller(TrackingController::class)->group(function(){
     Route::post('tracking/reporte_inspeccion_fardo', 'insert_reporte_inspeccion_fardo')->name('tracking.reporte_inspeccion_fardo');
     Route::get('tracking/{id}/pago_transporte', 'pago_transporte')->name('tracking.pago_transporte');
     Route::post('tracking/confirmacion_pago_transporte', 'insert_confirmacion_pago_transporte')->name('tracking.confirmacion_pago_transporte');
+    Route::post('tracking/conteo_mercaderia', 'insert_conteo_mercaderia')->name('tracking.conteo_mercaderia');
 });
 
 
