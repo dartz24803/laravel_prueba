@@ -43,8 +43,8 @@ class Tracking extends Model
         'user_eli'
     ];
 
-    public static function get_list_tracking($id=null){
-        if(isset($id)){
+    public static function get_list_tracking($dato=null){
+        if(isset($dato['id'])){
             $sql = "SELECT tr.*,IFNULL(tr.importe_transporte,0) AS importe_formateado,
                     mp.ultimo_id AS id_detalle,de.id_estado
                     FROM tracking tr
@@ -56,7 +56,7 @@ class Tracking extends Model
                     FROM tracking_detalle_estado
                     GROUP BY id_detalle) me ON mp.ultimo_id=me.id_detalle
                     LEFT JOIN tracking_detalle_estado de ON me.ultimo_id=de.id
-                    WHERE tr.id=$id";
+                    WHERE tr.id=".$dato['id'];
             $query = DB::select($sql);
             return $query[0];
         }else{

@@ -20,18 +20,18 @@ class TrackingArchivoTemporal extends Model
         'archivo'
     ];
 
-    public static function get_list_tracking_archivo_temporal($id=null,$tipo=null){
+    public static function get_list_tracking_archivo_temporal($dato){
         $id_usuario = session('usuario')->id;
-        if(isset($id)){
+        if(isset($dato['id'])){
             $sql = "SELECT *,SUBSTRING_INDEX(archivo,'/',-1) AS nom_archivo
                     FROM tracking_archivo_temporal
-                    WHERE id=$id";
+                    WHERE id=".$dato['id'];
             $query = DB::select($sql);
             return $query[0];
         }else{
             $sql = "SELECT *,SUBSTRING_INDEX(archivo,'/',-1) AS nom_archivo 
                     FROM tracking_archivo_temporal
-                    WHERE id_usuario=$id_usuario AND tipo=$tipo";
+                    WHERE id_usuario=$id_usuario AND tipo=".$dato['tipo'];
             $query = DB::select($sql);
             return $query;
         }

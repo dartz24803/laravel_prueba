@@ -221,8 +221,8 @@
                     contentType: false,
                     success: function(data) {
                         swal.fire(
-                            'Cambio de estado exitoso!',
-                            'Haga clic en el botón!',
+                            '!Cambio de estado exitoso!',
+                            '!Haga clic en el botón!',
                             'success'
                         ).then(function() {
                             window.location = "{{ route('tracking') }}";

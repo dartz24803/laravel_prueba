@@ -27,14 +27,14 @@ class TrackingDetalleEstado extends Model
         'user_eli'
     ];
 
-    public static function get_list_tracking_detalle_estado($id_detalle,$id_estado){
+    public static function get_list_tracking_detalle_estado($dato){
         $sql = "SELECT CONCAT(DATE_FORMAT(fecha, '%d'),' ', 
                 CASE MONTH(fecha) WHEN 1 THEN 'ENERO' WHEN 2 THEN 'FEBRERO' WHEN 3 THEN 'MARZO'
                 WHEN 4 THEN 'ABRIL' WHEN 5 THEN 'MAYO' WHEN 6 THEN 'JUNIO' WHEN 7 THEN 'JULIO'
                 WHEN 8 THEN 'AGOSTO' WHEN 9 THEN 'SEPTIEMBRE' WHEN 10 THEN 'OCTUBRE' WHEN 11 THEN 'NOVIEMBRE'
                 WHEN 12 THEN 'DICIEMBRE' END, ' DEL ',DATE_FORMAT(fecha, '%Y')) AS fecha_formateada,fecha
                 FROM tracking_detalle_estado
-                WHERE id_detalle=$id_detalle AND id_estado=$id_estado
+                WHERE id_detalle=".$dato['id_detalle']." AND id_estado=".$dato['id_estado']."
                 ORDER BY id DESC
                 LIMIT 1";
         $query = DB::select($sql);

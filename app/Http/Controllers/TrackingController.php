@@ -151,7 +151,7 @@ class TrackingController extends Controller
 
     public function insert_salida_mercaderia(Request $request)
     {
-        $get_id = Tracking::get_list_tracking($request->id);
+        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
         TrackingDetalleEstado::create([
             'id_detalle' => $get_id->id_detalle,
             'id_estado' => 3,
@@ -166,26 +166,26 @@ class TrackingController extends Controller
 
     public function detalle_transporte($id)
     {
-        $get_id = Tracking::get_list_tracking($id);
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
         return view('tracking.detalle_transporte', compact('get_id'));
     }
 
     public function insert_mercaderia_transito(Request $request)
     {
-        $tracking = Tracking::findOrfail($request->id);
-        $tracking->guia_transporte = $request->guia_transporte;
-        $tracking->peso = $request->peso;
-        $tracking->paquetes = $request->paquetes;
-        $tracking->sobres = $request->sobres;
-        $tracking->fardos = $request->fardos;
-        $tracking->caja = $request->caja;
-        $tracking->transporte = $request->transporte;
-        $tracking->nombre_transporte = $request->nombre_transporte;
-        $tracking->importe_transporte = $request->importe_transporte;
-        $tracking->factura_transporte = $request->factura_transporte;
-        $tracking->fec_act = now();
-        $tracking->user_act = session('usuario')->id;
-        $tracking->save();
+        Tracking::findOrFail($request->id)->update([
+            'guia_transporte' => $request->guia_transporte,
+            'peso' => $request->peso,
+            'paquetes' => $request->paquetes,
+            'sobres' => $request->sobres,
+            'fardos' => $request->fardos,
+            'caja' => $request->caja,
+            'transporte' => $request->transporte,
+            'nombre_transporte' => $request->nombre_transporte,
+            'importe_transporte' => $request->importe_transporte,
+            'factura_transporte' => $request->factura_transporte,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
 
         if($_FILES["archivo_transporte"]["name"] != ""){
             $dato['tipo'] = 1;
@@ -206,13 +206,12 @@ class TrackingController extends Controller
                 ftp_pasv($con_id,true); 
                 $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
                 if($subio){
-                    $dato['archivo'] = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
-
-                    $tracking_a = new TrackingArchivo();
-                    $tracking_a->id_tracking = $request->id;
-                    $tracking_a->tipo = 1;
-                    $tracking_a->archivo = $dato['archivo'];
-                    $tracking_a->save();
+                    $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
+                    TrackingArchivo::create([
+                        'id_tracking' => $request->id,
+                        'tipo' => 1,
+                        'archivo' => $archivo
+                    ]);
                 }else{
                     echo "Archivo no subido correctamente";
                 }
@@ -221,72 +220,71 @@ class TrackingController extends Controller
             }
         }
 
-        $tracking_dp = new TrackingDetalleProceso();
-        $tracking_dp->id_tracking = $request->id;
-        $tracking_dp->id_proceso = 2;
-        $tracking_dp->fecha = now();
-        $tracking_dp->estado = 1;
-        $tracking_dp->fec_reg = now();
-        $tracking_dp->user_reg = session('usuario')->id;
-        $tracking_dp->fec_act = now();
-        $tracking_dp->user_act = session('usuario')->id;
-        $tracking_dp->save();
+        $tracking_dp = TrackingDetalleProceso::create([
+            'id_tracking' => $request->id,
+            'id_proceso' => 2,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
 
-        $tracking_de = new TrackingDetalleEstado();
-        $tracking_de->id_detalle = $tracking_dp->id;
-        $tracking_de->id_estado = 4;
-        $tracking_de->fecha = now();
-        $tracking_de->estado = 1;
-        $tracking_de->fec_reg = now();
-        $tracking_de->user_reg = session('usuario')->id;
-        $tracking_de->fec_act = now();
-        $tracking_de->user_act = session('usuario')->id;
-        $tracking_de->save();
+        TrackingDetalleEstado::create([
+            'id_detalle' => $tracking_dp->id,
+            'id_estado' => 4,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
     }
 
     public function insert_llegada_tienda(Request $request)
     {
-        $tracking_dp = new TrackingDetalleProceso();
-        $tracking_dp->id_tracking = $request->id;
-        $tracking_dp->id_proceso = 3;
-        $tracking_dp->fecha = now();
-        $tracking_dp->estado = 1;
-        $tracking_dp->fec_reg = now();
-        $tracking_dp->user_reg = session('usuario')->id;
-        $tracking_dp->fec_act = now();
-        $tracking_dp->user_act = session('usuario')->id;
-        $tracking_dp->save();
+        $tracking_dp = TrackingDetalleProceso::create([
+            'id_tracking' => $request->id,
+            'id_proceso' => 3,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
 
-        $tracking_de = new TrackingDetalleEstado();
-        $tracking_de->id_detalle = $tracking_dp->id;
-        $tracking_de->id_estado = 5;
-        $tracking_de->fecha = now();
-        $tracking_de->estado = 1;
-        $tracking_de->fec_reg = now();
-        $tracking_de->user_reg = session('usuario')->id;
-        $tracking_de->fec_act = now();
-        $tracking_de->user_act = session('usuario')->id;
-        $tracking_de->save();
+        TrackingDetalleEstado::create([
+            'id_detalle' => $tracking_dp->id,
+            'id_estado' => 5,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
     }
 
     public function insert_confirmacion_llegada(Request $request)
     {
-        $get_id = Tracking::get_list_tracking($request->id);
-
-        $tracking_de = new TrackingDetalleEstado();
-        $tracking_de->id_detalle = $get_id->id_detalle;
-        $tracking_de->id_estado = 6;
-        $tracking_de->fecha = now();
-        $tracking_de->estado = 1;
-        $tracking_de->fec_reg = now();
-        $tracking_de->user_reg = session('usuario')->id;
-        $tracking_de->fec_act = now();
-        $tracking_de->user_act = session('usuario')->id;
-        $tracking_de->save();
+        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
+        TrackingDetalleEstado::create([
+            'id_detalle' => $get_id->id_detalle,
+            'id_estado' => 6,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
 
         //ENVÍO DE CORREO
-        $estado_5 = TrackingDetalleEstado::get_list_tracking_detalle_estado($get_id->id_detalle,5);
-        $estado_6 = TrackingDetalleEstado::get_list_tracking_detalle_estado($get_id->id_detalle,6);
+        $estado_5 = TrackingDetalleEstado::get_list_tracking_detalle_estado(['id_detalle'=>$get_id->id_detalle,'id_estado'=>5]);
+        $estado_6 = TrackingDetalleEstado::get_list_tracking_detalle_estado(['id_detalle'=>$get_id->id_detalle,'id_estado'=>6]);
         $list_archivo = TrackingArchivo::where('id_tracking', $request->id)->where('tipo', 1)->get();
 
         $fecha1 = new \DateTime($estado_5->fecha);
@@ -397,16 +395,16 @@ class TrackingController extends Controller
             }
             $mail->send();
 
-            $tracking_de = new TrackingDetalleEstado();
-            $tracking_de->id_detalle = $get_id->id_detalle;
-            $tracking_de->id_estado = 7;
-            $tracking_de->fecha = now();
-            $tracking_de->estado = 1;
-            $tracking_de->fec_reg = now();
-            $tracking_de->user_reg = session('usuario')->id;
-            $tracking_de->fec_act = now();
-            $tracking_de->user_act = session('usuario')->id;
-            $tracking_de->save();
+            TrackingDetalleEstado::create([
+                'id_detalle' => $get_id->id_detalle,
+                'id_estado' => 7,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id
+            ]);
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
@@ -414,63 +412,63 @@ class TrackingController extends Controller
 
     public function insert_cierre_inspeccion_fardos(Request $request)
     {
-        $get_id = Tracking::get_list_tracking($request->id);
+        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
 
         if($get_id->transporte==2 || ($get_id->transporte==1 && $get_id->importe_transporte>0)){
-            $tracking_dp = new TrackingDetalleProceso();
-            $tracking_dp->id_tracking = $request->id;
-            $tracking_dp->id_proceso = 6;
-            $tracking_dp->fecha = now();
-            $tracking_dp->estado = 1;
-            $tracking_dp->fec_reg = now();
-            $tracking_dp->user_reg = session('usuario')->id;
-            $tracking_dp->fec_act = now();
-            $tracking_dp->user_act = session('usuario')->id;
-            $tracking_dp->save();
+            $tracking_dp = TrackingDetalleProceso::create([
+                'id_tracking' => $request->id,
+                'id_proceso' => 6,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id
+            ]);
 
-            $tracking_de = new TrackingDetalleEstado();
-            $tracking_de->id_detalle = $tracking_dp->id;
-            $tracking_de->id_estado = 12;
-            $tracking_de->fecha = now();
-            $tracking_de->estado = 1;
-            $tracking_de->fec_reg = now();
-            $tracking_de->user_reg = session('usuario')->id;
-            $tracking_de->fec_act = now();
-            $tracking_de->user_act = session('usuario')->id;
-            $tracking_de->save();
+            TrackingDetalleEstado::create([
+                'id_detalle' => $tracking_dp->id,
+                'id_estado' => 12,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id
+            ]);
         }else{
             if($request->validacion==1){
                 $id_detalle = $get_id->id_detalle;
             }else{
-                $tracking_dp = new TrackingDetalleProceso();
-                $tracking_dp->id_tracking = $request->id;
-                $tracking_dp->id_proceso = 4;
-                $tracking_dp->fecha = now();
-                $tracking_dp->estado = 1;
-                $tracking_dp->fec_reg = now();
-                $tracking_dp->user_reg = session('usuario')->id;
-                $tracking_dp->fec_act = now();
-                $tracking_dp->user_act = session('usuario')->id;
-                $tracking_dp->save();
+                $tracking_dp = TrackingDetalleProceso::create([
+                    'id_tracking' => $request->id,
+                    'id_proceso' => 4,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id
+                ]);
                 $id_detalle = $tracking_dp->id;
             }
 
-            $tracking_de = new TrackingDetalleEstado();
-            $tracking_de->id_detalle = $id_detalle;
-            $tracking_de->id_estado = 9;
-            $tracking_de->fecha = now();
-            $tracking_de->estado = 1;
-            $tracking_de->fec_reg = now();
-            $tracking_de->user_reg = session('usuario')->id;
-            $tracking_de->fec_act = now();
-            $tracking_de->user_act = session('usuario')->id;
-            $tracking_de->save();
+            TrackingDetalleEstado::create([
+                'id_detalle' => $id_detalle,
+                'id_estado' => 9,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id
+            ]);
         }
     }
 
     public function verificacion_fardos($id)
     {
-        $list_archivo = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(null,2);
+        $list_archivo = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['tipo'=>2]);
         if(count($list_archivo)>0){
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
@@ -487,19 +485,19 @@ class TrackingController extends Controller
             }
         }
 
-        $get_id = Tracking::get_list_tracking($id);
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
         return view('tracking.verificacion_fardos', compact('get_id'));
     }
 
     public function list_archivo_inspf()
     {
-        $list_archivo = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(null,2);
+        $list_archivo = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['tipo'=>2]);
         return view('tracking.lista_archivo_inspf', compact('list_archivo'));
     }
 
     public function previsualizacion_captura()
     {
-        $valida = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(null,2);
+        $valida = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['tipo'=>2]);
 
         if(count($valida)==3){
             echo "error";
@@ -519,16 +517,16 @@ class TrackingController extends Controller
                     $nombre_soli = "temporal_inpsf_".session('usuario')->id."_".$fecha;
                     $nombre = $nombre_soli.".".strtolower($ext);
 
-                    $dato['archivo'] = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
+                    $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
 
                     ftp_pasv($con_id,true); 
                     $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
                     if($subio){
-                        $tracking_at = new TrackingArchivoTemporal();
-                        $tracking_at->id_usuario = session('usuario')->id;
-                        $tracking_at->tipo = 2;
-                        $tracking_at->archivo = $dato['archivo'];
-                        $tracking_at->save();
+                        TrackingArchivoTemporal::create([
+                            'id_usuario' => session('usuario')->id,
+                            'tipo' => 2,
+                            'archivo' => $archivo
+                        ]);
                     }else{
                         echo "Archivo no subido correctamente";
                     }
@@ -541,7 +539,7 @@ class TrackingController extends Controller
 
     public function delete_archivo_temporal_inspf($id)
     {
-        $get_id = TrackingArchivoTemporal::get_list_tracking_archivo_temporal($id);
+        $get_id = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['id'=>$id]);
         if($get_id->archivo!=""){
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
@@ -551,7 +549,7 @@ class TrackingController extends Controller
             if($con_id && $lr){
                 $file_to_delete = "TRACKING/".$get_id->nom_archivo;
                 if (ftp_delete($con_id, $file_to_delete)) {
-                    TrackingArchivoTemporal::where('id', $id)->delete();
+                    TrackingArchivoTemporal::destroy($id);
                 }
             }
         }
@@ -559,11 +557,11 @@ class TrackingController extends Controller
 
     public function insert_reporte_inspeccion_fardo(Request $request)
     {
-        $tracking = Tracking::findOrfail($request->id);
-        $tracking->observacion_inspf = $request->observacion_inspf;
-        $tracking->fec_act = now();
-        $tracking->user_act = session('usuario')->id;
-        $tracking->save();
+        Tracking::findOrFail($request->id)->update([
+            'observacion_inspf' => $request->observacion_inspf,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
 
         if($_FILES["archivo_inspf"]["name"] != ""){
             $ftp_server = "lanumerounocloud.com";
@@ -579,16 +577,16 @@ class TrackingController extends Controller
                 $nombre_soli = "Evidencia_".$request->id."_0";
                 $nombre = $nombre_soli.".".strtolower($ext);
 
-                $dato['archivo'] = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
+                $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
 
                 ftp_pasv($con_id,true); 
                 $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
                 if($subio){
-                    $tracking_a = new TrackingArchivo();
-                    $tracking_a->id_tracking = $request->id;
-                    $tracking_a->tipo = 2;
-                    $tracking_a->archivo = $dato['archivo'];
-                    $tracking_a->save();
+                    TrackingArchivo::create([
+                        'id_tracking' => $request->id,
+                        'tipo' => 2,
+                        'archivo' => $archivo
+                    ]);
                 }else{
                     echo "Archivo no subido correctamente";
                 }
@@ -597,7 +595,7 @@ class TrackingController extends Controller
             }
         }
 
-        $list_archivo = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(null,2);
+        $list_archivo = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['tipo'=>2]);
 
         if(count($list_archivo)>0){
             $ftp_server = "lanumerounocloud.com";
@@ -611,13 +609,13 @@ class TrackingController extends Controller
                     $nombre_actual = "TRACKING/".$list->nom_archivo;
                     $nuevo_nombre = "TRACKING/Evidencia_".$request->id."_".$i.".jpg";
                     ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
-                    $dato['archivo'] = "https://lanumerounocloud.com/intranet/".$nuevo_nombre;
+                    $archivo = "https://lanumerounocloud.com/intranet/".$nuevo_nombre;
 
-                    $tracking_a = new TrackingArchivo();
-                    $tracking_a->id_tracking = $request->id;
-                    $tracking_a->tipo = 2;
-                    $tracking_a->archivo = $dato['archivo'];
-                    $tracking_a->save();
+                    TrackingArchivo::create([
+                        'id_tracking' => $request->id,
+                        'tipo' => 2,
+                        'archivo' => $archivo
+                    ]);
 
                     $i++;
                 }
@@ -625,19 +623,19 @@ class TrackingController extends Controller
             TrackingArchivoTemporal::where('id_usuario', session('usuario')->id)->where('tipo', 2)->delete();
         }
 
-        $tracking_dp = new TrackingDetalleProceso();
-        $tracking_dp->id_tracking = $request->id;
-        $tracking_dp->id_proceso = 4;
-        $tracking_dp->fecha = now();
-        $tracking_dp->estado = 1;
-        $tracking_dp->fec_reg = now();
-        $tracking_dp->user_reg = session('usuario')->id;
-        $tracking_dp->fec_act = now();
-        $tracking_dp->user_act = session('usuario')->id;
-        $tracking_dp->save();
+        $tracking_dp = TrackingDetalleProceso::create([
+            'id_tracking' => $request->id,
+            'id_proceso' => 4,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
 
         //ENVÍO DE CORREO
-        $get_id = Tracking::get_list_tracking($request->id);
+        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
         $list_archivo = TrackingArchivo::where('id_tracking', $request->id)->where('tipo', 2)->get();
 
         $mail = new PHPMailer(true);
@@ -673,16 +671,16 @@ class TrackingController extends Controller
             }
             $mail->send();
 
-            $tracking_de = new TrackingDetalleEstado();
-            $tracking_de->id_detalle = $tracking_dp->id;
-            $tracking_de->id_estado = 8;
-            $tracking_de->fecha = now();
-            $tracking_de->estado = 1;
-            $tracking_de->fec_reg = now();
-            $tracking_de->user_reg = session('usuario')->id;
-            $tracking_de->fec_act = now();
-            $tracking_de->user_act = session('usuario')->id;
-            $tracking_de->save();
+            TrackingDetalleEstado::create([
+                'id_detalle' => $tracking_dp->id,
+                'id_estado' => 8,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id
+            ]);
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
