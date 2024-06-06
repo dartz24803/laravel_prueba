@@ -20,6 +20,9 @@ class TrackingProcesoSeeder extends Seeder
             ['descripcion'=>'INSPECCIÓN'],
             ['descripcion'=>'PAGO DE MERCADERÍA'],
             ['descripcion'=>'INSPECCIÓN DE MERCADERÍA'],
+            ['descripcion'=>'DIFERENCIAS'],
+            ['descripcion'=>'DEVOLUCIÓN'],
+            ['descripcion'=>'FIN'],
         ];
 
         foreach ($list_tracking_proceso as $list) {

@@ -84,6 +84,14 @@
                                 <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
                         </a>
+                    @elseif($list->id_estado==13)
+                        <a href="javascript:void(0);" title="Reporte de mercadería" onclick="Reporte_Mercaderia('{{ $list->id }}');">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                        </a>
                     @endif
                 </td>
             </tr>
@@ -331,6 +339,45 @@
                         });
                     }
                 });
+            }
+        })
+    }
+
+    function Reporte_Mercaderia(id) {
+        Cargando();
+
+        var url = "{{ route('tracking.mercaderia_entregada') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            title: '¿La mercadería llegó en buenas condiciones?',
+            text: "El cambio será permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {'id':id},
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function() {
+                        Swal(
+                            '¡Cambio de estado exitoso!',
+                            '¡Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            Lista_Tracking();
+                        });
+                    }
+                });
+            }else{
+                window.location = "{{ route('tracking.reporte_mercaderia', ':id') }}".replace(':id', id);
             }
         })
     }

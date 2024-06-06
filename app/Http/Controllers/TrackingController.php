@@ -853,4 +853,35 @@ class TrackingController extends Controller
             'user_act' => session('usuario')->id
         ]);
     }
+
+    public function insert_mercaderia_entregada(Request $request)
+    {
+        $tracking_dp = TrackingDetalleProceso::create([
+            'id_tracking' => $request->id,
+            'id_proceso' => 9,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
+
+        TrackingDetalleEstado::create([
+            'id_detalle' => $tracking_dp->id,
+            'id_estado' => 19,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
+    }
+
+    public function reporte_mercaderia($id)
+    {
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
+        return view('tracking.reporte_mercaderia', compact('get_id'));
+    }
 }
