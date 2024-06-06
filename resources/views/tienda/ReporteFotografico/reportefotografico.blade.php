@@ -209,4 +209,9 @@ $base = Session::get('usuario')->centro_labores;
             })
         }
     </script>
+    <style>
+        #table_rf_length, #table_rf_info{
+            padding: 1rem;
+        }
+    </style>
 @endsection

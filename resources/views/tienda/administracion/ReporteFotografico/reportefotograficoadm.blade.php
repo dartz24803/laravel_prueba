@@ -155,4 +155,9 @@ print_r(Session::get('usuario')->id);
         })
     }
 </script>
+<style>
+    #table_rfa_length, #table_rfa_info{
+        margin-left: 1rem;
+    }
+</style>
 @endsection

@@ -173,9 +173,19 @@
             border-radius: 15px;
             font-weight: bold;
         }
-        img.navbar-logo.ajuste {
-            width: 150px;
-            height: 47px;
+        img.navbar-logo.ajuste1 {
+            width: 140px;
+            height: 45px;
+        }
+        img.navbar-logo.ajuste2 {
+            position: relative;
+            left: -1rem;
+            width: 50px;
+            height: 50px;
+        }
+        #sidebar .theme-brand li.theme-logo img {
+            width: 40px;
+            border-radius: 5px;
         }
     </style>
     <!--  BEGIN MAIN CONTAINER  -->
@@ -189,16 +199,16 @@
         <div class="sidebar-wrapper sidebar-theme">
             
             <nav id="sidebar">
-
                 <ul class="navbar-nav theme-brand flex-row  text-center">
-                    <li class="nav-item theme-logo">
-                        <a href="{{ route('inicio') }}">
-                            <img src="{{ asset('login_files/img/la_numerouno.png') }}" class="navbar-logo" alt="logo">
+                    <li id="sidebar_logo1" class="nav-item theme-logo">
+                        <a>
+                            <img src="{{ asset('login_files/img/1.png') }}" class="navbar-logo" alt="logo">
                         </a>
                     </li>
                     <li class="nav-item theme-text">
                         <a class="nav-link">
-                            <img src="{{ asset('login_files/img/grupo.png') }}" class="navbar-logo ajuste" alt="logo">
+                            <img src="{{ asset('login_files/img/Grupo-LaNumero.png') }}" class="navbar-logo ajuste1" alt="logo">
+                            <img src="{{ asset('login_files/img/1.png') }}" class="navbar-logo ajuste2" alt="logo">
                         </a>
                     </li>
                 </ul>
