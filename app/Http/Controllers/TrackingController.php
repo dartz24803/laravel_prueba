@@ -188,7 +188,6 @@ class TrackingController extends Controller
         ]);
 
         if($_FILES["archivo_transporte"]["name"] != ""){
-            $dato['tipo'] = 1;
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
             $ftp_pass = "Intranet2022@";
@@ -674,6 +673,160 @@ class TrackingController extends Controller
             TrackingDetalleEstado::create([
                 'id_detalle' => $tracking_dp->id,
                 'id_estado' => 8,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id
+            ]);
+        }catch(Exception $e) {
+            echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+        }
+    }
+
+    public function pago_transporte($id)
+    {
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
+        return view('tracking.pago_transporte', compact('get_id'));
+    }
+
+    public function insert_confirmacion_pago_transporte(Request $request)
+    {
+        Tracking::findOrFail($request->id)->update([
+            'nombre_transporte' => $request->nombre_transporte,
+            'importe_transporte' => $request->importe_transporte,
+            'factura_transporte' => $request->factura_transporte,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
+
+        if($_FILES["archivo_transporte"]["name"] != ""){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                //ELIMINAR ARCHIVO SI ES QUE EXISTE
+                if($request->archivo_transporte_actual!=""){
+                    $get_id = TrackingArchivo::get_list_tracking_archivo(['id_tracking'=>$request->id,'tipo'=>1]);
+                    $file_to_delete = "TRACKING/".$get_id->nom_archivo;
+                    if (ftp_delete($con_id, $file_to_delete)) {
+                        TrackingArchivo::where('id_tracking', $request->id)->where('tipo', 1)->delete();
+                    }
+                }
+                //
+                $path = $_FILES["archivo_transporte"]["name"];
+                $source_file = $_FILES['archivo_transporte']['tmp_name'];
+
+                $fecha = date('YmdHis');
+                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                $nombre_soli = "Factura_".$request->id."_".$fecha;
+                $nombre = $nombre_soli.".".strtolower($ext);
+
+                ftp_pasv($con_id,true); 
+                $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
+                if($subio){
+                    $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
+                    TrackingArchivo::create([
+                        'id_tracking' => $request->id,
+                        'tipo' => 1,
+                        'archivo' => $archivo
+                    ]);
+                }else{
+                    echo "Archivo no subido correctamente";
+                }
+            }else{
+                echo "No se conecto";
+            }
+        }
+
+        $tracking_dp = TrackingDetalleProceso::create([
+            'id_tracking' => $request->id,
+            'id_proceso' => 5,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
+
+        //PASAR PARA CONFIRMACIÓN DE PAGO DE TRANSPORTE
+        TrackingDetalleEstado::create([
+            'id_detalle' => $tracking_dp->id,
+            'id_estado' => 10,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
+
+        //ENVÍO DE CORREO
+        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
+        $list_archivo = TrackingArchivo::where('id_tracking', $request->id)->where('tipo', 1)->get();
+
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->SMTPDebug = 0;
+            $mail->isSMTP();
+            $mail->Host       =  'mail.lanumero1.com.pe';
+            $mail->SMTPAuth   =  true;
+            $mail->Username   =  'intranet@lanumero1.com.pe';
+            $mail->Password   =  'lanumero1$1';
+            $mail->SMTPSecure =  'tls';
+            $mail->Port     =  587; 
+            $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
+
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
+
+            $mail->isHTML(true);
+
+            $mail->Subject = "MERCADERÍA PAGADA: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.")";
+        
+            $mail->Body =  '<FONT SIZE=3>
+                                Hola '.$get_id->desde.', se ha realizado el pago a la agencia
+                            </FONT SIZE>';
+        
+            $mail->CharSet = 'UTF-8';
+            foreach($list_archivo as $list){
+                $archivo_contenido = file_get_contents($list->archivo);
+                $nombre_archivo = basename($list->archivo);
+                $mail->addStringAttachment($archivo_contenido, $nombre_archivo);
+            }
+            $mail->send();
+
+            //PASAR PARA MERCADERÍA PAGADA
+            TrackingDetalleEstado::create([
+                'id_detalle' => $tracking_dp->id,
+                'id_estado' => 11,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id
+            ]);
+
+            //PASAR PARA INSPECCIÓN DE MERCADERÍA
+            $tracking_dp = TrackingDetalleProceso::create([
+                'id_tracking' => $request->id,
+                'id_proceso' => 6,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id
+            ]);
+
+            TrackingDetalleEstado::create([
+                'id_detalle' => $tracking_dp->id,
+                'id_estado' => 12,
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
