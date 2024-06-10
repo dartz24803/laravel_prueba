@@ -18,14 +18,14 @@
                 <select class="form-control" name="basese" id="basese" disabled>
                     <option value="0">Seleccione</option>
                     <?php foreach ($list_base as $list) { ?>
-                        <option value="<?php echo $list['cod_base']; ?>" 
+                        <option value="<?php echo $list['cod_base']; ?>"
                         <?php if ($list['cod_base'] == $get_id[0]['cod_base']){ echo "selected"; } ?>>
                             <?php echo $list['cod_base']; ?>
                         </option>
                     <?php } ?>
                 </select>
             </div>
-            
+
             <div class="form-group col-lg-2">
                 <label>Puesto:</label>
             </div>
@@ -60,7 +60,7 @@
                     <option value="3" <?php if($get_id[0]['t_refrigerio_h']==3){ echo "selected"; } ?>>Con almuerzo y break</option>
                 </select>
             </div>
-            
+
             <div class="form-group col-md-2">
                 <label>Entrada:</label>
             </div>
@@ -129,17 +129,21 @@
             $('#break2e').hide();
         }
     });
-    
+
     function Update_Horarios_Cuadro_Control() {
         Cargando();
 
         var dataString = $("#formulario_update").serialize();
-        var url = "<?php echo site_url(); ?>Tienda/Update_Horarios_Cuadro_Control";
-        
+        var url = "{{ url('Update_Horarios_Cuadro_Control') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
         if (Valida_Horarios_Cuadro_Control('e')) {
             $.ajax({
                 type: "POST",
                 url: url,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 data: dataString,
                 success: function(data) {
                     swal.fire(

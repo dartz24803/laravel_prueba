@@ -53,6 +53,7 @@
     function Delete_Horarios_Cuadro_Control(id) {
         Cargando();
 
+        var csrfToken = $('input[name="_token"]').val();
         var url = "{{ url('Delete_Horarios_Cuadro_Control') }}";
 
         Swal({
@@ -69,6 +70,9 @@
                 $.ajax({
                     type: "POST",
                     url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
                     data: {
                         'id': id
                     },

@@ -18,7 +18,7 @@
                 <select class="form-control" name="basese" id="basese" disabled>
                     <option value="0">Seleccione</option>
                     <?php foreach ($list_base as $list) { ?>
-                        <option value="<?php echo $list['cod_base']; ?>" 
+                        <option value="<?php echo $list['cod_base']; ?>"
                         <?php if ($list['cod_base'] == $get_id[0]['cod_base']) { echo "selected"; } ?>>
                             <?php echo $list['cod_base']; ?>
                         </option>
@@ -33,7 +33,7 @@
                 <input type="text" name="puesto" id="puesto" class="form-control" value="<?php echo $get_id[0]['puesto']; ?>" disabled>
             </div>
         </div>
-        
+
         <div class="col-md-12 row">
             <div class="form-group col-lg-2">
                 <label>Día:</label>
@@ -91,7 +91,7 @@
                 <input type="time" name="fin_refria" id="fin_refria" class="form-control" value="<?php echo $get_id[0]['fin_refri']?>">
             </div>
         </div>
-        
+
         <div class="col-md-12 row" id="break2a">
             <div class="form-group col-md-2">
                 <label>Inicio break:</label>
@@ -134,12 +134,16 @@
         Cargando();
 
         var dataString = $("#formulario_agregar").serialize();
-        var url = "<?php echo site_url(); ?>Tienda/Agregar_Horarios_Cuadro_Control";
-        
+        var url = "{{ url('Agregar_Horarios_Cuadro_Control') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
         if (Valida_Horarios_Cuadro_Control('a')) {
             $.ajax({
                 type: "POST",
                 url: url,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 data: dataString,
                 success: function(data) {
                     swal.fire(

@@ -14,6 +14,8 @@ class HorariosCuadroControl extends Model
 
     protected $table = 'horarios_cuadro_control';
 
+    protected $primaryKey = 'id_horarios_cuadro_control';
+
     protected $fillable = [
         'cod_base',
         'id_puesto',
@@ -52,5 +54,18 @@ class HorariosCuadroControl extends Model
             WHERE $parte hc.estado=1";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
+    }
+
+    public function contador_x_puesto_y_base($cod_base, $puesto){
+        $sql = "SELECT COUNT(DISTINCT puesto) AS contador FROM horarios_cuadro_control
+                WHERE cod_base='".$cod_base."' AND puesto LIKE '".$puesto.'%'."'
+                GROUP BY cod_base";
+        $result = $this->db->query($sql);
+        if ($result) {
+            $row = $result->row();
+            return $row->contador+1;
+        } else {
+            return 0;
+        }
     }
 }

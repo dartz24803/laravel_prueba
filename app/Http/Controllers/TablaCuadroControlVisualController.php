@@ -61,19 +61,20 @@ class TablaCuadroControlVisualController extends Controller
         return view('tienda.administracion.CuadroControlVisual.Horarios.puesto', compact('list_puesto'));
     }
 
-    public function Modal_Update_Horarios_Cuadro_Control(){
+    public function Modal_Update_Horarios_Cuadro_Control($id){
         // Lógica para obtener los datos necesarios
+        $get_id = $this->modelo->where('id_horarios_cuadro_control', $id)->get();
         $list_base = $this->modelobase->listar();
         $list_dia = $this->modelodiasemana->get();
         $list_puestos = $this->modelopuestos->get();
         // Retorna la vista con los datos
-        return view('tienda.administracion.CuadroControlVisual.Horarios.modal_editar', compact('list_base', 'list_dia'));
+        return view('tienda.administracion.CuadroControlVisual.Horarios.modal_editar', compact('get_id', 'list_base', 'list_dia'));
     }
 
     public function Insert_Horarios_Cuadro_Control(Request $request){
         $dato['cod_base'] = $request->input("cod_base");
         $dato['id_puesto'] = $request->input("puesto");
-        $get_id = $this->modelo->get_id_puesto($dato['id_puesto']);
+        $get_id = $this->modelo->where('id_puesto', $dato['id_puesto'])->get();
         $puesto = $get_id[0]['nom_puesto'];
         $valor = $this->modelo->contador_x_puesto_y_base($dato['cod_base'], $puesto);
         $dato['puesto'] = $puesto.' '.$valor;
@@ -85,6 +86,47 @@ class TablaCuadroControlVisualController extends Controller
         $dato['fin_refri']= $request->input("fin_refri");
         $dato['ini_refri2']= $request->input("ini_refri2");
         $dato['fin_refri2']= $request->input("fin_refri2");
+        $this->modelo->insert($dato);
+    }
+
+    public function Update_Horarios_Cuadro_Control(Request $request){
+        $id = $request->input("id");
+        $dato['t_refrigerio_h'] = $request->input("t_refrigerio_he");
+        $dato['hora_entrada']= $request->input("hora_entradae");
+        $dato['hora_salida']= $request->input("hora_salidae");
+        $dato['ini_refri']= $request->input("ini_refrie");
+        $dato['fin_refri']= $request->input("fin_refrie");
+        $dato['ini_refri2']= $request->input("ini_refri2e");
+        $dato['fin_refri2']= $request->input("fin_refri2e");
+        $this->modelo->where('id_horarios_cuadro_control', $id)->update($dato);
+    }
+
+    public function Delete_Horarios_Cuadro_Control(Request $request){
+        $id = $request->input("id");
+        $this->modelo->where('id_horarios_cuadro_control', $id)->delete();
+    }
+
+    public function Modal_Agregar_Horarios_Cuadro_Control($id){
+        $get_id = $this->modelo->where('id_horarios_cuadro_control', $id)->get();
+        $list_base = $this->modelobase->listar();
+        $list_dia = $this->modelodiasemana->get();
+        return view('tienda.administracion.CuadroControlVisual.Horarios.modal_agregar_horario', compact('get_id','list_base','list_dia'));
+    }
+
+    public function Agregar_Horarios_Cuadro_Control(Request $request){
+        $id= $request->input("id");
+        $get_id = $this->modelo->where('id_horarios_cuadro_control', $id)->get();
+        $dato['cod_base'] = $get_id[0]['cod_base'];
+        $dato['id_puesto'] = $get_id[0]['id_puesto'];
+        $dato['puesto'] = $get_id[0]['puesto'];
+        $dato['dia'] = $request->input("dia_na");
+        $dato['t_refrigerio_h'] = $request->input("t_refrigerio_ha");
+        $dato['hora_entrada']= $request->input("hora_entradaa");
+        $dato['hora_salida']= $request->input("hora_salidaa");
+        $dato['ini_refri']= $request->input("ini_refria");
+        $dato['fin_refri']= $request->input("fin_refria");
+        $dato['ini_refri2']= $request->input("ini_refri2a");
+        $dato['fin_refri2']= $request->input("fin_refri2a");
         $this->modelo->insert($dato);
     }
 }
