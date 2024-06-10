@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <div class="col-md-12 row" id="break1" style="display: none;"> 
+        <div class="col-md-12 row" id="break1" style="display: none;">
             <div class="form-group col-md-2">
                 <label>Inicio Almuerzo:</label>
             </div>
@@ -86,7 +86,7 @@
             </div>
         </div>
 
-        <div class="col-md-12 row" id="break2" style="display: none;"> 
+        <div class="col-md-12 row" id="break2" style="display: none;">
             <div class="form-group col-md-2">
                 <label>Inicio Break:</label>
             </div>
@@ -113,10 +113,10 @@
         Cargando();
 
         var cod_base = $('#cod_base').val();
-        var url = "<?= site_url() ?>Tienda/Traer_Puesto_Horario";
+        var url = "{{ url('Traer_Puesto_Horario') }}";
 
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: url,
             data: {'cod_base':cod_base},
             success: function(data) {
@@ -129,7 +129,7 @@
         Cargando();
 
         var dataString = $("#formulario_insert").serialize();
-        var url = "<?php echo site_url(); ?>Tienda/Insert_Horarios_Cuadro_Control";
+        var url = "{{ url('Insert_Horarios_Cuadro_Control') }}";
 
         if (Valida_Horarios_Cuadro_Control('')) {
             $.ajax({
@@ -142,9 +142,7 @@
                         'Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        <?php if($validador!=1){ ?>
-                            Lista_Horarios_Cuadro_Control();
-                        <?php } ?>
+                        Lista_Horarios_Cuadro_Control();
                         $("#ModalRegistro .close").click();
                     });
                 }

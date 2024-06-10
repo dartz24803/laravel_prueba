@@ -1,11 +1,11 @@
 @extends('layouts.plantilla')
 
 @section('content')
-<?php 
+<?php
 
 use Illuminate\Support\Facades\Session;
 $id_puesto = Session::get('usuario')->id_puesto;
-$id_usuario = Session::get('usuario')->id_usuario; 
+$id_usuario = Session::get('usuario')->id_usuario;
 ?>
 
 <div id="content" class="main-content">
@@ -15,7 +15,7 @@ $id_usuario = Session::get('usuario')->id_usuario;
                 <div class="statbox widget box box-shadow">
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs mb-3 mt-3" id="simpletab" role="tablist">
-                            <?php if ($id_puesto == 19 || $id_puesto == 20 || $id_puesto == 21 || 
+                            <?php if ($id_puesto == 19 || $id_puesto == 20 || $id_puesto == 21 ||
                             $id_puesto == 22 || $id_puesto == 133 || Session::get('usuario')->id_nivel == 1){ ?>
                                 <li class="nav-item">
                                     <a id="a_hcc" class="nav-link" onclick="Horarios_Cuadro_Control();" style="cursor: pointer;">Horarios</a>
@@ -28,7 +28,7 @@ $id_usuario = Session::get('usuario')->id_usuario;
                                 </li>
                             <?php } ?>
                         </ul>
-                        
+
                         <div class="row" id="cancel-row">
                             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
                                 <div id="div_conf_tienda" class="widget-content widget-content-area">
@@ -38,7 +38,7 @@ $id_usuario = Session::get('usuario')->id_usuario;
                     </div>
                 </div>
             </div>
-        </div>    
+        </div>
     </div>
 </div>
 
@@ -48,26 +48,26 @@ $id_usuario = Session::get('usuario')->id_usuario;
         $("#hccvtabla").attr('aria-expanded','true');
         $("#ccv").addClass('active');
 
-        Horarios_Cuadro_Control();  
+        Horarios_Cuadro_Control();
     });
-    
-    function Horarios_Cuadro_Control(){ 
+
+    function Horarios_Cuadro_Control(){
         Cargando();
 
         var url="{{ url('Horarios_Cuadro_Control')}}";
 
         $.ajax({
             url: url,
-            type:"POST",
+            type:"GET",
             success:function (resp) {
-                $('#div_conf_tienda').html(resp);  
+                $('#div_conf_tienda').html(resp);
                 $("#a_hcc").addClass('active');
                 $("#a_ccv").removeClass('active');
                 $("#a_pd").removeClass('active');
             }
         });
     }
-    
+
     function Cuadro_Control_Visual(){
         Cargando();
 
@@ -77,7 +77,7 @@ $id_usuario = Session::get('usuario')->id_usuario;
             url: url,
             type:"POST",
             success:function (resp) {
-                $('#div_conf_tienda').html(resp);  
+                $('#div_conf_tienda').html(resp);
                 $("#a_hcc").removeClass('active');
                 $("#a_ccv").addClass('active');
                 $("#a_pd").removeClass('active');
@@ -94,7 +94,7 @@ $id_usuario = Session::get('usuario')->id_usuario;
             url: url,
             type:"POST",
             success:function (resp) {
-                $('#div_conf_tienda').html(resp);  
+                $('#div_conf_tienda').html(resp);
                 $("#a_hcc").removeClass('active');
                 $("#a_ccv").removeClass('active');
                 $("#a_pd").addClass('active');

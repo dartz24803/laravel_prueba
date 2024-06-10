@@ -89,4 +89,11 @@ Route::controller(TrackingController::class)->group(function(){
 Route::controller(TablaCuadroControlVisualController::class)->group(function(){
     Route::get('TablaCuadroControlVisual', 'index')->name('TablaCuadroControlVisual');
     Route::get('Horarios_Cuadro_Control', 'Horarios_Cuadro_Control')->name('Horarios_Cuadro_Control');
+    Route::get('ReporteFotografico/ModalUpdatedReporteFotografico/{id}', 'ModalUpdatedReporteFotografico')->name('tienda.ReporteFotografico.modal_editar');
+    Route::get('/Modal_Horarios_Cuadro_Control', 'Modal_Horarios_Cuadro_Control')->name('tienda.administracion.CuadroControlVisual.Horarios.modal_registrar');
+    Route::get('/Traer_Puesto_Horario', 'Traer_Puesto_Horario');
+    Route::post('/Delete_Reporte_Fotografico', 'Delete_Reporte_Fotografico');
+    Route::post('/Insert_Horarios_Cuadro_Control', 'Insert_Horarios_Cuadro_Control');
+    Route::post('/Lista_Horarios_Cuadro_Control', 'Lista_Horarios_Cuadro_Control');
+    Route::post('/Update_Registro_Fotografico', 'Update_Registro_Fotografico')->name('Update_Registro_Fotografico');
 });
