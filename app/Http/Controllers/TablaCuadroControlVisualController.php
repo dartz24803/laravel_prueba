@@ -7,6 +7,7 @@ use App\Models\HorariosCuadroControl;
 use App\Models\Base;
 use App\Models\DiaSemana;
 use App\Models\Puestos;
+use Illuminate\Support\Facades\Session;
 
 class TablaCuadroControlVisualController extends Controller
 {
@@ -74,11 +75,12 @@ class TablaCuadroControlVisualController extends Controller
     public function Insert_Horarios_Cuadro_Control(Request $request){
         $dato['cod_base'] = $request->input("cod_base");
         $dato['id_puesto'] = $request->input("puesto");
-        $get_id = $this->modelo->where('id_puesto', $dato['id_puesto'])->get();
-        $puesto = $get_id[0]['nom_puesto'];
-        $valor = $this->modelo->contador_x_puesto_y_base($dato['cod_base'], $puesto);
-        $dato['puesto'] = $puesto.' '.$valor;
         $dato['dia'] = $request->input("dia");
+        $get_id = $this->modelopuestos->where('id_puesto', $dato['id_puesto'])->get();
+        $puesto = $get_id[0]['nom_puesto'];
+        $valor = $this->modelo->contador_x_puesto_y_base($dato['cod_base'], $puesto, $dato['dia']);
+        $dato['puesto'] = $puesto.''.$valor;
+        //print_r($dato['puesto']);
         $dato['t_refrigerio_h'] = $request->input("t_refrigerio_h");
         $dato['hora_entrada']= $request->input("hora_entrada");
         $dato['hora_salida']= $request->input("hora_salida");
@@ -86,6 +88,9 @@ class TablaCuadroControlVisualController extends Controller
         $dato['fin_refri']= $request->input("fin_refri");
         $dato['ini_refri2']= $request->input("ini_refri2");
         $dato['fin_refri2']= $request->input("fin_refri2");
+        $dato['estado']= 1;
+        $dato['fec_reg']= now();
+        $dato['user_reg']= Session::get('usuario')->id_usuario;
         $this->modelo->insert($dato);
     }
 
