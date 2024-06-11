@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\HorariosCuadroControl;
 use App\Models\Base;
 use App\Models\DiaSemana;
-use App\Models\Puestos;
+use App\Models\Puesto;
 use Illuminate\Support\Facades\Session;
 use App\Models\Cuadro_Control_Visual_Horario;
 use App\Models\UsuariosModel;
@@ -28,7 +28,7 @@ class TablaCuadroControlVisualController extends Controller
         $this->modelo = new HorariosCuadroControl();
         $this->modelobase = new Base();
         $this->modelodiasemana = new DiaSemana();
-        $this->modelopuestos = new Puestos();
+        $this->modelopuestos = new Puesto();
         $this->modeloccvh = new Cuadro_Control_Visual_Horario();
         $this->modelousuarios = new UsuariosModel();
     }
