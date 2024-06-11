@@ -6,26 +6,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class Puestos extends Model
+class Puesto extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
-
     protected $table = 'puesto';
+
+    public $timestamps = false;
 
     protected $fillable = [
         'id_direccion',
-        'cod_puesto',
-        'nom_puesto',
-        'nom_puesto_ant',
         'id_gerencia',
         'id_departamento',
         'id_area',
+        'nom_puesto',
         'proposito',
         'id_nivel',
         'id_sede_laboral',
-        'flag_ant',
         'perfil_infosap',
         'estado',
         'fec_reg',
