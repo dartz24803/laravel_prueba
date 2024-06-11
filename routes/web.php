@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CarteraController;
+use App\Http\Controllers\FuncionTemporalController;
 use App\Http\Controllers\Login;
 use App\Http\Controllers\Inicio;
 use App\Http\Middleware\NoCache;
@@ -52,7 +53,7 @@ Route::controller(ReporteFotograficoController::class)->group(function(){
     Route::post('/Registrar_Reporte_Fotografico', 'Registrar_Reporte_Fotografico');
     Route::post('/Update_Registro_Fotografico', 'Update_Registro_Fotografico')->name('Update_Registro_Fotografico');
 });
-//TRACKING
+//LOGÍSTICA - TRACKING
 Route::controller(TrackingController::class)->group(function(){
     Route::get('tracking', 'index')->name('tracking');
     Route::post('tracking/list', 'list')->name('tracking.list');
@@ -74,6 +75,11 @@ Route::controller(TrackingController::class)->group(function(){
     Route::post('tracking/conteo_mercaderia', 'insert_conteo_mercaderia')->name('tracking.conteo_mercaderia');
     Route::post('tracking/mercaderia_entregada', 'insert_mercaderia_entregada')->name('tracking.mercaderia_entregada');
     Route::get('tracking/{id}/reporte_mercaderia', 'reporte_mercaderia')->name('tracking.reporte_mercaderia');
+});
+//TIENDA - FUNCIÓN TEMPORAL
+Route::controller(FuncionTemporalController::class)->group(function(){
+    Route::get('funcion_temporal', 'index')->name('funcion_temporal');
+    Route::post('funcion_temporal/list', 'list')->name('funcion_temporal.list');
 });
 
 

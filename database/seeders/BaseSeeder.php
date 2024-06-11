@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\BaseModel;
+use App\Models\Base;
 
 class BaseSeeder extends Seeder
 {
@@ -58,16 +58,16 @@ class BaseSeeder extends Seeder
 
         // Crear y guardar registros usando el método save
         foreach ($list_base as $list) {
-            $base = new BaseModel();
-            $base->cod_base = $list['cod_base'];
-            $base->nom_base = $list['nom_base'];
-            $base->id_empresa = $list['id_empresa'];
-            $base->id_departamento = $list['id_departamento'];
-            $base->id_provincia = $list['id_provincia'];
-            $base->id_distrito = $list['id_distrito'];
-            $base->direccion = $list['direccion'];
-            $base->estado = $list['estado'];
-            $base->save();
+            Base::create([
+                'cod_base' => $list['cod_base'],
+                'nom_base' => $list['nom_base'],
+                'id_empresa' => $list['id_empresa'],
+                'id_departamento' => $list['id_departamento'],
+                'id_provincia' => $list['id_provincia'],
+                'id_distrito' => $list['id_distrito'],
+                'direccion' => $list['direccion'],
+                'estado' => $list['estado'],
+            ]);
         }
     }
 }

@@ -256,7 +256,7 @@
                         </a>
     
                         <ul class="collapse submenu list-unstyled" id="rlogisticas" data-parent="#accordionExample">
-                            <li id="reportefoto">
+                            <li>
                                 <a id="trackings" href="{{ route('tracking') }}">
                                     <p class="romperpalabra"><span id="icono_active2"></span> Tracking</p>
                                 </a>
@@ -282,14 +282,19 @@
                         </a>
     
                         <ul class="collapse submenu list-unstyled" id="rtienda" data-parent="#accordionExample">
-                            <li id="reportefoto">
-                                <a id="reporte_foto" href="{{ url('/ReporteFotografico')}}">
-                                    <p class="romperpalabra"><span id="icono_active2"></span> Reporte fotográfico</p>
-                                </a>
-                            </li>
                             <li id="cuadrocontrolvisual">
                                 <a id="hrpreorden" href="{{ url('Cuadro_Control_Visual_Vista')}}">
                                     <p class="romperpalabra"><span id="icono_active2"></span> Cuadro Control Visual</p>
+                                </a>
+                            </li>
+                            <li>
+                                <a id="funciones_temporales" href="{{ route('funcion_temporal') }}">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Funciones temporales</p>
+                                </a>
+                            </li>
+                            <li id="reportefoto">
+                                <a id="reporte_foto" href="{{ url('/ReporteFotografico')}}">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Reporte fotográfico</p>
                                 </a>
                             </li>
                         </ul>

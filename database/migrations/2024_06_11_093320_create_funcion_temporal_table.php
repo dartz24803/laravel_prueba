@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id('id_usuario');
-            $table->string('usuario_apater', '100')->nullable();
-            $table->string('usuario_amater', '100')->nullable();
-            $table->string('usuario_nombres', '100')->nullable();
-            $table->string('usuario_codigo', '100')->nullable();
-            $table->string('usuario_password')->nullable();
+        Schema::create('funcion_temporal', function (Blueprint $table) {
+            $table->id();
+            $table->integer('id_usuario')->default(0)->nullable();
+            $table->string('base', 20)->nullable();
+            $table->integer('id_tipo')->default(0)->nullable();
+            $table->integer('select_tarea')->default(0)->nullable();
+            $table->string('tarea', 200)->nullable();
+            $table->date('fecha')->nullable();
+            $table->time('hora_inicio')->nullable();
+            $table->time('hora_fin')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
@@ -25,7 +28,6 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            //$table->rememberToken();
             //$table->timestamps();
         });
     }
@@ -35,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('funcion_temporal');
     }
 };
