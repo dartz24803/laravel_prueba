@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('usuario_nombres', '100')->nullable();
             $table->string('usuario_codigo', '100')->nullable();
             $table->string('usuario_password')->nullable();
+            $table->integer('id_puesto')->default(0)->nullable();
+            $table->string('centro_labores', 10)->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();

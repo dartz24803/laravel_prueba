@@ -11,6 +11,7 @@ class FuncionTemporal extends Model
     use HasFactory;
 
     protected $table = 'funcion_temporal';
+    protected $primaryKey = 'id_funcion';
 
     public $timestamps = false;
 
@@ -46,9 +47,9 @@ class FuncionTemporal extends Model
                 $parte = "ft.id_usuario=".$dato['id_asignado']." AND";
             }*/
 
-            $sql = "SELECT ft.id,ft.fec_reg AS orden,ft.base,
+            $sql = "SELECT ft.id_funcion,ft.fec_reg AS orden,ft.base,
                     LOWER(CONCAT(SUBSTRING_INDEX(us.usuario_nombres,' ',1),' ',us.usuario_apater)) AS 
-                    nom_usuario, /*c.nom_cargo*/ '' AS puesto_asignado, 
+                    nom_usuario,pa.nom_puesto AS puesto_asignado, 
                     CASE WHEN ft.id_tipo=1 THEN 'Función' WHEN ft.id_tipo=2 THEN 'Tarea' 
                     ELSE '' END AS nom_tipo,
                     CASE WHEN ft.id_tipo = 2 AND ft.select_tarea = 19 THEN LOWER(ft.tarea)
@@ -70,8 +71,7 @@ class FuncionTemporal extends Model
                     LEFT JOIN users us ON ft.id_usuario=us.id_usuario
                     LEFT JOIN puesto pu ON ft.tarea=pu.id_puesto
                     LEFT JOIN tareas_funcion_temporal tft ON ft.select_tarea=tft.id
-                    LEFT JOIN users u ON ft.id_usuario=u.id_usuario
-                    /*LEFT JOIN cargo c ON u.id_cargo=c.id_cargo*/
+                    LEFT JOIN puesto pa ON us.id_puesto=pa.id_puesto
                     WHERE $parte ft.estado=1
                     ORDER BY ft.fec_reg DESC";
             $query = DB::select($sql);

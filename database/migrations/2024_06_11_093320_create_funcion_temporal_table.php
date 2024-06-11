@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('funcion_temporal', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_funcion');
             $table->integer('id_usuario')->default(0)->nullable();
             $table->string('base', 20)->nullable();
             $table->integer('id_tipo')->default(0)->nullable();

@@ -6,12 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class UsuariosModel extends Model
+class Usuario extends Model
 {
     use HasFactory;
-    public $timestamps = false;
 
     protected $table = 'users';
+    protected $primaryKey = 'id_usuario';
+
+    public $timestamps = false;
 
     protected $fillable = [
         'usuario_apater',
@@ -19,6 +21,8 @@ class UsuariosModel extends Model
         'usuario_nombres',
         'usuario_codigo',
         'usuario_password',
+        'id_puesto',
+        'centro_labores',
         'estado',
         'fec_reg',
         'user_reg',
@@ -93,5 +97,16 @@ class UsuariosModel extends Model
         $result = DB::select($query);
         // Convertir el resultado a un array
         return json_decode(json_encode($result), true);
+    }
+
+    public static function get_list_usuario_ft(){
+        $sql = "SELECT id_usuario,CASE WHEN (usuario_apater='' OR usuario_apater IS NULL) AND 
+                (usuario_amater='' OR usuario_amater IS NULL) THEN usuario_nombres ELSE
+                CONCAT(usuario_nombres,' ',usuario_apater,' ',usuario_amater) END AS nom_usuario  
+                FROM users 
+                WHERE estado=1
+                ORDER BY usuario_nombres ASC";
+        $query = DB::select($sql);
+        return $query;
     }
 }

@@ -45,4 +45,14 @@ class Puesto extends Model
 
         return json_decode(json_encode($result), true);
     }
+
+    public static function get_list_puesto_ft()
+    {
+        $sql = "SELECT id_puesto,nom_puesto 
+                FROM puesto 
+                WHERE (id_area=14 OR id_puesto=36) AND estado=1
+                ORDER BY nom_puesto ASC";
+        $query = DB::select($sql);
+        return $query;
+    }
 }

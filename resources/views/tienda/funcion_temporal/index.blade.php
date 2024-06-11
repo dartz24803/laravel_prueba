@@ -14,7 +14,7 @@
                     <div class="widget-content widget-content-area br-6">
                         <div class="toolbar d-flex mt-3">
                             <div class="col-lg-12 d-flex justify-content-end">
-                                <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('tracking.create') }}">
+                                <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('funcion_temporal.create') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
                                     Registrar
                                 </button>
@@ -60,5 +60,63 @@
                 }
             });
         }
+
+        
+    function Tipo_Funcion_Temporal(v) {
+        Cargando();
+
+        var id_tipo = $('#id_tipo'+v).val();
+
+        if(id_tipo=="1" || id_tipo=="2"){
+            var url = "{{ route('funcion_temporal.tipo_funcion') }}";
+            var csrfToken = $('input[name="_token"]').val();
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {'id_tipo':id_tipo,'v':v},
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function(data) {
+                    $('#div_tipo'+v).html(data);
+                }
+            });
+        }else{
+            $('#div_tipo'+v).html('');
+        }
+    }
+
+    function Tarea_Otros(v){
+        Cargando();
+
+        var select_tarea = $('#select_tarea'+v).val();
+
+        if(select_tarea=="19"){
+            $('.esconder'+v).show();
+        }else{
+            $('.esconder'+v).hide();
+            $('#tarea'+v).val('');
+        }
+    }
+
+    function Delete_Funcion_Temporal(id){
+        Cargando();
+
+        var url = "{{ route('funcion_temporal.destroy', ':id') }}".replace(':id', id);
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "DELETE",
+            url: url,
+            data: {'id_funcion':id},
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function() {
+                Lista_Funcion_Temporal();       
+            }
+        });
+    }
     </script>
 @endsection

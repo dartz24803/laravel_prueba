@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\UsuariosModel;
+use App\Models\Usuario;
 use Exception;
 
 class Login extends Controller
@@ -13,7 +13,7 @@ class Login extends Controller
     public function __construct(Request $request)
     {
         $this->request = $request;
-        $this->UsuariosModel = new UsuariosModel();
+        $this->UsuariosModel = new Usuario();
     }
 
     public function index()

@@ -80,6 +80,13 @@ Route::controller(TrackingController::class)->group(function(){
 Route::controller(FuncionTemporalController::class)->group(function(){
     Route::get('funcion_temporal', 'index')->name('funcion_temporal');
     Route::post('funcion_temporal/list', 'list')->name('funcion_temporal.list');
+    Route::get('funcion_temporal/create', 'create')->name('funcion_temporal.create');
+    Route::post('funcion_temporal', 'store')->name('funcion_temporal.store');
+    Route::post('funcion_temporal/tipo_funcion', 'tipo_funcion')->name('funcion_temporal.tipo_funcion');
+    Route::get('funcion_temporal/{id}', 'show')->name('funcion_temporal.show');
+    Route::get('funcion_temporal/{id}/edit', 'edit')->name('funcion_temporal.edit');
+    Route::put('funcion_temporal/{id}', 'update')->name('funcion_temporal.update');
+    Route::delete('funcion_temporal/{id}', 'destroy')->name('funcion_temporal.destroy');
 });
 
 
