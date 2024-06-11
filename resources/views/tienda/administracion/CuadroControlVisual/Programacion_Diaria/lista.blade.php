@@ -13,11 +13,11 @@
         
         <?php foreach ($list_programacion_diaria as $list) {  ?>
             <tr class="text-left">
-                <td><?php echo $list['centro_labores']; ?></td>
-                <td><?php echo $list['puesto']; ?></td>
+                <td class="text-center"><?php echo $list['centro_labores']; ?></td>
+                <td class="text-center"><?php echo $list['puesto']; ?></td>
                 <td class="text-center"><?php echo $list['nom_dia']; ?></td>
-                <td><?php echo $list['horario']; ?></td>
-                <td><?php echo $list['colaborador']; ?></td>
+                <td class="text-center"><?php echo $list['horario']; ?></td>
+                <td class="text-center"><?php echo $list['colaborador']; ?></td>
             </tr>
         <?php } ?>
     </tbody>

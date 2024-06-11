@@ -28,21 +28,6 @@ class UsuariosModel extends Model
         'user_eli'
     ];
 
-    public function buscar($id)
-    {
-        return $this->where('id_usuario', $id)->get()->toArray();
-    }
-
-    public function listar()
-    {
-        return $this->orderBy("id_usuario",'DESC')->get()->toArray();
-    }
-
-    public function buscar_codigo($id_usuario)
-    {
-        return $this->where('id_usuario', $id_usuario)->get()->toArray();
-    }
-
     public function login($usuario){
         $query = "SELECT u.id_usuario, u.usuario_nombres, u.usuario_apater, u.usuario_amater, u.usuario_codigo,
         u.id_nivel, u.usuario_email, u.centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,
@@ -94,4 +79,15 @@ class UsuariosModel extends Model
         // Convertir el resultado a un array
         return json_decode(json_encode($result), true);
     }
+
+    function get_list_colaborador_programacion_diaria($base,$id_puesto){
+        $sql = "SELECT id_usuario,CONCAT(usuario_nombres,' ',usuario_apater,' ',usuario_amater) AS colaborador
+                FROM users 
+                WHERE centro_labores='$base' AND id_puesto=$id_puesto AND estado=1
+                ORDER BY usuario_apater,usuario_amater,usuario_nombres";
+        $result = DB::select($sql);
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
+    }
+    
 }
