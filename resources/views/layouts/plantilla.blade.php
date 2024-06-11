@@ -237,16 +237,31 @@
                         </div>
                     </li>
 
-                    <li class="menu" id="li_trackings">
-                        <a href="{{ route('tracking') }}" id="a_trackings" aria-expanded="false" class="dropdown-toggle">
+                    <li class="menu" id="logisticas">
+                        <a href="#rlogisticas" id="hlogisticas" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                             <div class="">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
-                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-truck">
+                                    <rect x="1" y="3" width="15" height="13"></rect>
+                                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
                                 </svg>
-                                <span>Tracking</span>
+                                <span>Logística</span>
+                            </div>
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
                             </div>
                         </a>
+    
+                        <ul class="collapse submenu list-unstyled" id="rlogisticas" data-parent="#accordionExample">
+                            <li id="reportefoto">
+                                <a id="trackings" href="{{ route('tracking') }}">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Tracking</p>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
                     <li class="menu" id="tienda">

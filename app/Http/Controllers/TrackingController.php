@@ -27,7 +27,7 @@ class TrackingController extends Controller
             if(session('redirect_url')){
                 session()->forget('redirect_url');
             }
-            return view('tracking.index');
+            return view('logistica.tracking.index');
         }else{
             session(['redirect_url' => 'http'.(isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']]);
             return redirect('/');
@@ -37,13 +37,13 @@ class TrackingController extends Controller
     public function list()
     {
         $list_tracking = Tracking::get_list_tracking();
-        return view('tracking.lista', compact('list_tracking'));
+        return view('logistica.tracking.lista', compact('list_tracking'));
     }
 
     public function create()
     {
         $list_base = Base::get_list_base_tracking();
-        return view('tracking.modal_registrar', compact('list_base'));
+        return view('logistica.tracking.modal_registrar', compact('list_base'));
     }
 
     public function store(Request $request)
@@ -262,7 +262,7 @@ class TrackingController extends Controller
     public function detalle_transporte($id)
     {
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        return view('tracking.detalle_transporte', compact('get_id'));
+        return view('logistica.tracking.detalle_transporte', compact('get_id'));
     }
 
     public function insert_mercaderia_transito(Request $request)
@@ -754,13 +754,13 @@ class TrackingController extends Controller
         }
 
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        return view('tracking.verificacion_fardos', compact('get_id'));
+        return view('logistica.tracking.verificacion_fardos', compact('get_id'));
     }
 
     public function list_archivo_inspf()
     {
         $list_archivo = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['tipo'=>2]);
-        return view('tracking.lista_archivo_inspf', compact('list_archivo'));
+        return view('logistica.tracking.lista_archivo_inspf', compact('list_archivo'));
     }
 
     public function previsualizacion_captura()
@@ -958,7 +958,7 @@ class TrackingController extends Controller
     public function pago_transporte($id)
     {
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        return view('tracking.pago_transporte', compact('get_id'));
+        return view('logistica.tracking.pago_transporte', compact('get_id'));
     }
 
     public function insert_confirmacion_pago_transporte(Request $request)
@@ -1239,6 +1239,6 @@ class TrackingController extends Controller
     public function reporte_mercaderia($id)
     {
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        return view('tracking.reporte_mercaderia', compact('get_id'));
+        return view('logistica.tracking.reporte_mercaderia', compact('get_id'));
     }
 }
