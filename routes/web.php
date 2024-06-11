@@ -100,6 +100,7 @@ Route::controller(FuncionTemporalController::class)->group(function(){
 
 //CUADRO CONTROL VISUAL ADMINISTRACION
 Route::controller(TablaCuadroControlVisualController::class)->group(function(){
+    //---------------------Administrable horarios---------------------------------------------//
     Route::get('TablaCuadroControlVisual', 'index')->name('TablaCuadroControlVisual');
     Route::get('Horarios_Cuadro_Control', 'Horarios_Cuadro_Control')->name('Horarios_Cuadro_Control');
     Route::get('Modal_Update_Horarios_Cuadro_Control/{id}', 'Modal_Update_Horarios_Cuadro_Control')->name('tienda.administracion.CuadroControlVisual.Horarios.modal_editar');
@@ -111,4 +112,15 @@ Route::controller(TablaCuadroControlVisualController::class)->group(function(){
     Route::post('/Insert_Horarios_Cuadro_Control', 'Insert_Horarios_Cuadro_Control');
     Route::post('/Lista_Horarios_Cuadro_Control', 'Lista_Horarios_Cuadro_Control');
     Route::post('/Update_Horarios_Cuadro_Control', 'Update_Horarios_Cuadro_Control')->name('Update_Horarios_Cuadro_Control');
+    //------------------------------Administrable CCV------------------------------------//
+    Route::get('Cuadro_Control_Visual', 'Cuadro_Control_Visual')->name('Cuadro_Control_Visual');
+    Route::post('/Lista_Cuadro_Control_Visual', 'Lista_Cuadro_Control_Visual');
+    Route::post('/Insert_Cuadro_Control_Visual_Horario', 'Insert_Cuadro_Control_Visual_Horario');
+    //-----------------------Administrable Programacion diaria----------------------------//
+    Route::get('Programacion_Diaria', 'Programacion_Diaria')->name('Programacion_Diaria');
+    Route::post('/Lista_Programacion_Diaria', 'Lista_Programacion_Diaria');
+    Route::post('/Insert_Programacion_Diaria', 'Insert_Programacion_Diaria');
+    Route::get('/Modal_Programacion_Diaria', 'Modal_Programacion_Diaria')->name('tienda.administracion.CuadroControlVisual.Programacion_Diaria.modal_registrar');
+    Route::get('/Traer_Colaborador_Programacion_Diaria', 'Traer_Colaborador_Programacion_Diaria');
+    Route::get('/Traer_Horario_Programacion_Diaria', 'Traer_Horario_Programacion_Diaria');
 });

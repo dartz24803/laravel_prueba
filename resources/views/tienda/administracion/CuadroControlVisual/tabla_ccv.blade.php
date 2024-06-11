@@ -75,7 +75,7 @@ $id_usuario = Session::get('usuario')->id_usuario;
 
         $.ajax({
             url: url,
-            type:"POST",
+            type:"GET",
             success:function (resp) {
                 $('#div_conf_tienda').html(resp);
                 $("#a_hcc").removeClass('active');
@@ -92,7 +92,7 @@ $id_usuario = Session::get('usuario')->id_usuario;
 
         $.ajax({
             url: url,
-            type:"POST",
+            type:"GET",
             success:function (resp) {
                 $('#div_conf_tienda').html(resp);
                 $("#a_hcc").removeClass('active');

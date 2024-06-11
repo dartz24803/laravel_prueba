@@ -178,10 +178,10 @@
         Cargando();
 
         var cod_base = $('#cod_base').val();
-        var url = "<?= site_url() ?>Tienda/Traer_Puesto_Horario";
+        var url = "{{ url('Traer_Puesto_Horario') }}";
 
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: url,
             data: {'cod_base':cod_base},
             success: function(data) {
@@ -203,10 +203,10 @@
 
         var cod_base = $('#cod_base').val();
         var id_puesto = $('#id_puesto').val();
-        var url = "<?= site_url() ?>Tienda/Traer_Colaborador_Programacion_Diaria";
+        var url = "{{ url('Traer_Colaborador_Programacion_Diaria') }}";
 
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: url,
             data: {'cod_base':cod_base,'id_puesto':id_puesto},
             success: function(data) {
@@ -220,10 +220,10 @@
 
         var cod_base = $('#cod_base').val();
         var id_puesto = $('#id_puesto').val();
-        var url = "<?= site_url() ?>Tienda/Traer_Horario_Programacion_Diaria";
+        var url = "{{ url('Traer_Horario_Programacion_Diaria') }}";
 
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: url,
             data: {'cod_base':cod_base,'id_puesto':id_puesto,'dia':num},
             success: function(data) {
@@ -245,13 +245,17 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario_horario'));
-        var url = "<?php echo site_url(); ?>Tienda/Insert_Programacion_Diaria";
+        var url = "{{ url('Insert_Programacion_Diaria') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
         if (Valida_Programacion_Diaria()) {
             $.ajax({
                 url: url,
                 data: dataString,
                 type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 processData: false,
                 contentType: false,
                 success: function(data) {
@@ -261,7 +265,7 @@
                         'success'
                     ).then(function() {
                         Lista_Programacion_Diaria();
-                        $("#ModalRegistroSlide .close").click()
+                        $("#ModalRegistro .close").click()
                     });
                 }
             });

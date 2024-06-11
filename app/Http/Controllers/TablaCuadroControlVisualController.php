@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\HorariosCuadroControl;
 use App\Models\Base;
 use App\Models\DiaSemana;
-use App\Models\Puestos;
+use App\Models\Puesto;
 use Illuminate\Support\Facades\Session;
+use App\Models\Cuadro_Control_Visual_Horario;
+use App\Models\UsuariosModel;
 
 class TablaCuadroControlVisualController extends Controller
 {
@@ -16,6 +18,8 @@ class TablaCuadroControlVisualController extends Controller
     protected $modelobase;
     protected $modelodiasemana;
     protected $modelopuestos;
+    protected $modeloccvh;
+    protected $modelousuarios;
 
     public function __construct(Request $request){
         //constructor con variables
@@ -24,18 +28,17 @@ class TablaCuadroControlVisualController extends Controller
         $this->modelo = new HorariosCuadroControl();
         $this->modelobase = new Base();
         $this->modelodiasemana = new DiaSemana();
-        $this->modelopuestos = new Puestos();
+        $this->modelopuestos = new Puesto();
+        $this->modeloccvh = new Cuadro_Control_Visual_Horario();
+        $this->modelousuarios = new UsuariosModel();
     }
 
+    //parte superior de pestañas
     public function index(){
-        //retornar vista si esta logueado
-        // $list_area = $this->modeloarea->listar();
-        // $list_bases = $this->modelobase->listar();
-        // $list_codigos = $this->modelocodigos->listar();
-        //enviar listas a la vista
         return view('tienda.administracion.CuadroControlVisual.tabla_ccv');
     }
 
+    //adm horarios
     public function Horarios_Cuadro_Control(){
         $list_bases = $this->modelobase->listar();
         return view('tienda.administracion.CuadroControlVisual.Horarios.index', compact('list_bases'));
@@ -133,5 +136,122 @@ class TablaCuadroControlVisualController extends Controller
         $dato['ini_refri2']= $request->input("ini_refri2a");
         $dato['fin_refri2']= $request->input("fin_refri2a");
         $this->modelo->insert($dato);
+    }
+    
+    //ADM CUADRO CONTROL VISUAL
+    public function Cuadro_Control_Visual(){
+        $list_bases = $this->modelobase->listar();
+        return view('tienda.administracion.CuadroControlVisual.Cuadro_Control_Visual.index', compact('list_bases'));
+    }
+    
+    public function Lista_Cuadro_Control_Visual(Request $request){
+        $base= $request->input("base");
+        $list_cuadro_control_visual = $this->modelo->get_list_c_cuadro_control_visual($base);
+        return view('tienda.administracion.CuadroControlVisual.Cuadro_Control_Visual.lista', compact('list_cuadro_control_visual'));
+    }
+    
+    public function Insert_Cuadro_Control_Visual_Horario(Request $request){
+        $dato['id_usuario']= $request->input("id_usuario"); 
+        $dato['horario']= $request->input("id_horario");
+        $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
+        $dato['dia'] = $get_id[0]['dia'];
+        $dato['fec_reg'] = now();
+        $dato['user_reg'] = Session::get('usuario')->id_usuario;
+        //print_r($dato);
+        $this->modeloccvh->insert($dato);
+    }
+
+    //ADM PROGRAMACION DIARIA
+    public function Programacion_Diaria(){
+        $list_bases = $this->modelobase->listar();
+        return view('tienda.administracion.CuadroControlVisual.Programacion_Diaria.index', compact('list_bases'));
+    }
+    
+    public function Lista_Programacion_Diaria(Request $request){
+        $base= $request->input("base");
+        $list_programacion_diaria = $this->modelo->get_list_programacion_diaria($base);
+        return view('tienda.administracion.CuadroControlVisual.Programacion_Diaria.lista', compact('list_programacion_diaria'));
+    }
+    
+    public function Modal_Programacion_Diaria(){
+        // Lógica para obtener los datos necesarios
+        $list_base = $this->modelobase->listar();
+        // Retorna la vista con los datos
+        return view('tienda.administracion.CuadroControlVisual.Programacion_Diaria.modal_registrar', compact('list_base'));
+    }
+
+    public function Traer_Colaborador_Programacion_Diaria(Request $request){
+        $base = $request->input("cod_base");
+        $id_puesto = $request->input("id_puesto");
+        $dato['list_colaborador'] = $this->modelousuarios->get_list_colaborador_programacion_diaria($base,$id_puesto);
+        return view('Tienda.administracion.CuadroControlVisual.Programacion_Diaria.usuario', $dato);
+    }
+
+    public function Traer_Horario_Programacion_Diaria(Request $request){
+        $base = $request->input("cod_base");
+        $id_puesto = $request->input("id_puesto");
+        $dia = $request->input("dia");
+        $dato['list_horario'] = $this->modelo->get_list_horario_programacion_diaria($base,$id_puesto,$dia);
+        return view('Tienda.Administracion.CuadroControlVisual.Programacion_Diaria.horario', $dato);
+    }
+    //test insert
+    public function Insert_Programacion_Diaria(Request $request){
+        $dato['id_usuario']= $request->input("id_usuario");
+
+        $data['ch_lunes']= $request->input("ch_dia_laborado_lu");
+        if($data['ch_lunes']==1){
+            $dato['horario']= $request->input("id_horario_lu");
+            $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
+            $dato['dia'] = $get_id[0]['dia'];
+            $this->modeloccvh->insert($dato);
+        }
+
+        $data['ch_martes']= $request->input("ch_dia_laborado_ma");
+        if($data['ch_martes']==1){
+            $dato['horario']= $request->input("id_horario_ma");
+            $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
+            $dato['dia'] = $get_id[0]['dia'];
+            $this->modeloccvh->insert($dato);
+        }
+
+        $data['ch_miercoles']= $request->input("ch_dia_laborado_mi");
+        if($data['ch_miercoles']==1){
+            $dato['horario']= $request->input("id_horario_mi");
+            $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
+            $dato['dia'] = $get_id[0]['dia'];
+            $this->modeloccvh->insert($dato);
+        }
+
+        $data['ch_jueves']= $request->input("ch_dia_laborado_ju");
+        if($data['ch_jueves']==1){
+            $dato['horario']= $request->input("id_horario_ju");
+            $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
+            $dato['dia'] = $get_id[0]['dia'];
+            $this->modeloccvh->insert($dato);
+        }
+
+        $data['ch_viernes']= $request->input("ch_dia_laborado_vi");
+        if($data['ch_viernes']==1){
+            $dato['horario']= $request->input("id_horario_vi");
+            $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
+            $dato['dia'] = $get_id[0]['dia'];
+            $this->modeloccvh->insert($dato);
+        }
+
+        $data['ch_sabado']= $request->input("ch_dia_laborado_sa");
+        if($data['ch_sabado']==1){
+            $dato['horario']= $request->input("id_horario_sa");
+            $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
+            $dato['dia'] = $get_id[0]['dia'];
+            $this->modeloccvh->insert($dato);
+        }
+
+        $data['ch_domingo']= $request->input("ch_dia_laborado_do");
+        if($data['ch_domingo']==1){
+            $dato['horario']= $request->input("id_horario_do");
+            $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
+            $dato['dia'] = $get_id[0]['dia'];
+            $this->modeloccvh->insert($dato);
+        }
     }
 }

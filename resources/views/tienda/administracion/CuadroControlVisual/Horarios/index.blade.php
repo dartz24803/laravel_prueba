@@ -90,3 +90,8 @@
         })
     }
 </script>
+<style>
+    #zero-config_length, #zero-config_info{
+        padding: 1rem;
+    }
+</style>
