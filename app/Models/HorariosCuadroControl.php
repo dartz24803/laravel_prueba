@@ -56,14 +56,15 @@ class HorariosCuadroControl extends Model
         return json_decode(json_encode($result), true);
     }
 
-    public function contador_x_puesto_y_base($cod_base, $puesto){
+    public function contador_x_puesto_y_base($cod_base, $puesto, $dia){
         $sql = "SELECT COUNT(DISTINCT puesto) AS contador FROM horarios_cuadro_control
-                WHERE cod_base='".$cod_base."' AND puesto LIKE '".$puesto.'%'."'
-                GROUP BY cod_base";
-        $result = $this->db->query($sql);
-        if ($result) {
-            $row = $result->row();
-            return $row->contador+1;
+                WHERE cod_base='".$cod_base."' AND puesto LIKE '".$puesto.'%'."' and estado = 1 and dia = $dia
+                GROUP BY cod_base;";
+        $result = DB::select($sql);
+        //print_r($result[0]);
+        if (!empty($result)) {
+            // Accede al primer elemento del array y luego al campo 'contador'
+            return $result[0]->contador + 1;
         } else {
             return 0;
         }

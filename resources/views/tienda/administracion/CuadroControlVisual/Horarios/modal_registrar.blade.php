@@ -103,6 +103,7 @@
         </div>
     </div>
     <div class="modal-footer">
+        @csrf
         <button class="btn btn-primary" type="button" onclick="Insert_Horarios_Cuadro_Control();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
@@ -114,10 +115,14 @@
 
         var cod_base = $('#cod_base').val();
         var url = "{{ url('Traer_Puesto_Horario') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({
             type: "GET",
             url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             data: {'cod_base':cod_base},
             success: function(data) {
                 $('#puesto').html(data);
