@@ -69,10 +69,10 @@
                     </select>
                 </div>
 
-                <div class="form-group col-lg-2 esconder">
+                <div class="form-group col-lg-2 escondere" @if ($get_id->select_tarea!="19") style="display: none;" @endif>
                     <label class="control-label text-bold">Tarea: </label>
                 </div>
-                <div class="form-group col-lg-10 esconder">
+                <div class="form-group col-lg-10 escondere" @if ($get_id->select_tarea!="19") style="display: none;" @endif>
                     <input type="text" class="form-control" id="tareae" name="tareae" placeholder="Ingresar tarea" value="{{ $get_id->tarea }}">
                 </div>
             @endif
