@@ -323,14 +323,14 @@
                             </div>
                         </a>
                         <ul class="collapse submenu list-unstyled" id="rccvtabla" data-parent="#accordionExample">
-                            <li id="rfa">
-                                <a href="{{ url('/ReporteFotograficoAdm')}}" data-toggle="tooltip" data-placement="right" data-html="true">
-                                    <p class="romperpalabra"><span id="icono_active2"></span> Reporte Fotográfico</p>
-                                </a>
-                            </li>
                             <li id="ccv">
                                 <a href="{{ url('/TablaCuadroControlVisual') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Horarios <br>• Cuadro de Control Visual <br>• Programación Diaria">
                                     <p class="romperpalabra"><span id="icono_active2"></span> Cuadro de Control Visual</p>
+                                </a>
+                            </li>
+                            <li id="rfa">
+                                <a href="{{ url('/ReporteFotograficoAdm')}}" data-toggle="tooltip" data-placement="right" data-html="true">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Reporte Fotográfico</p>
                                 </a>
                             </li>
                         </ul>
