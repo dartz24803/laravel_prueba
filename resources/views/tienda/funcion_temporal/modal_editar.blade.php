@@ -12,7 +12,7 @@
                 <label class="control-label text-bold">Colaborador: </label>
             </div>
             <div class="form-group col-lg-10">
-                <select class="form-control basic" name="id_usuarioe" id="id_usuarioe">
+                <select class="form-control basicm" name="id_usuarioe" id="id_usuarioe">
                     <option value="0">Seleccione</option>
                     @foreach ($list_usuario as $list)
                         <option value="{{ $list->id_usuario }}"
@@ -43,7 +43,7 @@
                     <label class="control-label text-bold">Función: </label> 
                 </div>
                 <div class="form-group col-lg-10">
-                    <select class="form-control basic" id="tareae" name="tareae">
+                    <select class="form-control basicm" id="tareae" name="tareae">
                         <option value="0">Seleccione</option> 
                         @foreach ($list_puesto as $list)
                             <option value="{{ $list->id_puesto }}"
@@ -58,7 +58,7 @@
                     <label class="control-label text-bold">Tipo de tarea: </label>
                 </div>
                 <div class="form-group col-lg-10">
-                    <select class="form-control basic" id="select_tareae" name="select_tareae" onchange="Tarea_Otros('e');">
+                    <select class="form-control basicm" id="select_tareae" name="select_tareae" onchange="Tarea_Otros('e');">
                         <option value="0">Seleccione</option>
                         @foreach ($list_tarea as $list)
                             <option value="{{ $list->id }}"
@@ -113,11 +113,7 @@
 </form>
 
 <script>
-    var ss = $(".basic").select2({
-        tags: true,
-    });
-
-    $('.basic').select2({
+    $('.basicm').select2({
         dropdownParent: $('#ModalUpdate')
     });
 

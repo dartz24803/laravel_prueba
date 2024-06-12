@@ -84,12 +84,16 @@ class Usuario extends Model
         return json_decode(json_encode($result), true);
     }
 
-    public static function get_list_usuario_ft(){
+    public static function get_list_usuario_ft($dato=null){
+        $parte = "";
+        if(isset($dato['base'])){
+            $parte = "centro_labores='".$dato['base']."' AND";
+        }
         $sql = "SELECT id_usuario,CASE WHEN (usuario_apater='' OR usuario_apater IS NULL) AND 
                 (usuario_amater='' OR usuario_amater IS NULL) THEN usuario_nombres ELSE
                 CONCAT(usuario_nombres,' ',usuario_apater,' ',usuario_amater) END AS nom_usuario  
                 FROM users 
-                WHERE estado=1
+                WHERE $parte estado=1
                 ORDER BY usuario_nombres ASC";
         $query = DB::select($sql);
         return $query;
