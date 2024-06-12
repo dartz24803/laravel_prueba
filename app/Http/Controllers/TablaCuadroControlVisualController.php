@@ -9,7 +9,7 @@ use App\Models\DiaSemana;
 use App\Models\Puesto;
 use Illuminate\Support\Facades\Session;
 use App\Models\Cuadro_Control_Visual_Horario;
-use App\Models\UsuariosModel;
+use App\Models\Usuario;
 
 class TablaCuadroControlVisualController extends Controller
 {
@@ -30,7 +30,7 @@ class TablaCuadroControlVisualController extends Controller
         $this->modelodiasemana = new DiaSemana();
         $this->modelopuestos = new Puesto();
         $this->modeloccvh = new Cuadro_Control_Visual_Horario();
-        $this->modelousuarios = new UsuariosModel();
+        $this->modelousuarios = new Usuario();
     }
 
     //parte superior de pestañas

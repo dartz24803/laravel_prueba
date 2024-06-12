@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class Inicio extends Controller
+class InicioController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +19,7 @@ class Inicio extends Controller
     }
     public function index()
     {
-        return view('inicio');
+        return view('layouts.plantilla');
     }
     /*
     public function listar()

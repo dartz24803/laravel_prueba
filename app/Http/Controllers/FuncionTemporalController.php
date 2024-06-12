@@ -8,6 +8,14 @@ use App\Models\Puesto;
 use App\Models\TareasFuncionTemporal;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Illuminate\Support\Facades\Log;
 
 class FuncionTemporalController extends Controller
 {
@@ -185,5 +193,96 @@ class FuncionTemporalController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+    }
+
+    /*public function excel()
+    {
+        $list_funcion_temporal = FuncionTemporal::get_list_funcion_temporal();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getStyle("A1:F1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:F1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Función Temporal');
+
+        $sheet->setAutoFilter('A1:F1');
+
+        $sheet->getColumnDimension('A')->setWidth(15);
+        $sheet->getColumnDimension('B')->setWidth(25);
+        $sheet->getColumnDimension('C')->setWidth(15);
+        $sheet->getColumnDimension('D')->setWidth(60);
+        $sheet->getColumnDimension('E')->setWidth(15);
+        $sheet->getColumnDimension('F')->setWidth(20);
+
+        $sheet->getStyle('A1:F1')->getFont()->setBold(true);  
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:F1")->getFill()
+        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+        ->getStartColor()->setARGB('C8C8C8');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle("A1:F1")->applyFromArray($styleThinBlackBorderOutline);
+
+        $sheet->setCellValue("A1", 'Base');     
+        $sheet->setCellValue("B1", 'Colaborador');           
+        $sheet->setCellValue("C1", 'Tipo');             
+        $sheet->setCellValue("D1", 'Actividad');             
+        $sheet->setCellValue("E1", 'Fecha');             
+        $sheet->setCellValue("F1", 'Horario');       
+
+        $contador=1;
+        
+        foreach($list_funcion_temporal as $list){
+            $contador++;
+
+            $sheet->getStyle("A{$contador}:F{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("B{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("D{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("F{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:F{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:F{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+
+            $sheet->setCellValue("A{$contador}", $list['base']);
+            $sheet->setCellValue("B{$contador}", ucwords($list['nom_usuario']));
+            $sheet->setCellValue("C{$contador}", $list['nom_tipo']);
+            $sheet->setCellValue("D{$contador}", ucfirst($list['actividad']));
+            $sheet->setCellValue("E{$contador}", Date::PHPToExcel($list['fecha']));
+            $sheet->getStyle("E{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+            $sheet->setCellValue("F{$contador}", $list['horario']);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename ='Función Temporal';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output'); 
+    }*/
+
+    public function excel()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'Hello World !');
+        
+        $writer = new Xlsx($spreadsheet);
+        $filename ='Función Temporal';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output'); 
     }
 }

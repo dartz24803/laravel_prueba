@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CarteraController;
 use App\Http\Controllers\FuncionTemporalController;
 use App\Http\Controllers\Login;
-use App\Http\Controllers\Inicio;
+use App\Http\Controllers\InicioController;
 use App\Http\Middleware\NoCache;
 use App\Http\Controllers\ReporteFotograficoController;
 use App\Http\Controllers\TrackingController;
@@ -23,7 +23,7 @@ use App\Http\Controllers\TablaCuadroControlVisualController;
 
 Route::middleware([NoCache::class])->group(function () {
     Route::get('/Cartera', [CarteraController::class, 'index'])->name('cartera');
-    Route::get('/Inicio', [Inicio::class, 'index'])->name('inicio');
+    Route::get('/Inicio', [InicioController::class, 'index'])->name('inicio');
     Route::get('/ReporteFotografico', [ReporteFotograficoController::class, 'index'])->name('reportefotografico');
     Route::get('/ReporteFotograficoAdm', [ReporteFotograficoAdmController::class, 'index'])->name('tienda.administracion.ReporteFotografico.reportefotograficoadm');
 });
@@ -87,6 +87,24 @@ Route::controller(FuncionTemporalController::class)->group(function(){
     Route::get('funcion_temporal/{id}/edit', 'edit')->name('funcion_temporal.edit');
     Route::put('funcion_temporal/{id}', 'update')->name('funcion_temporal.update');
     Route::delete('funcion_temporal/{id}', 'destroy')->name('funcion_temporal.destroy');
+    Route::get('funcion_temporal/excel', 'excel')->name('funcion_temporal.excel');
+});
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+Route::get('excel', function(){
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setCellValue('A1', 'Hello World !');
+    
+    $writer = new Xlsx($spreadsheet);
+    $filename ='Función Temporal';
+    if (ob_get_contents()) ob_end_clean();
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+    header('Cache-Control: max-age=0');
+    $writer->save('php://output'); 
 });
 
 

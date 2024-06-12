@@ -118,5 +118,9 @@
             }
         });
     }
+
+    function Excel_Funcion_Temporal() {
+        window.location = "{{ route('funcion_temporal.excel') }}";
+    }
     </script>
 @endsection
