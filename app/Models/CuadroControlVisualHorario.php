@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Cuadro_Control_Visual_Horario extends Model
+class CuadroControlVisualHorario extends Model
 {
     use HasFactory;
 

@@ -105,4 +105,95 @@ class Usuario extends Model
         return json_decode(json_encode($result), true);
     }
     
+    
+    //obtener horarios x base actual
+    function get_horarios_x_base_hoy($base=null){
+        $parte = "";
+        if ($base!='0') {
+            $parte = " AND t.base = '$base'";
+        }
+        $sql = "SELECT hd.id_horario, t.base, hd.dia, hd.nom_dia, hd.hora_entrada, hd.hora_descanso_e, hd.hora_descanso_s, hd.hora_salida 
+                FROM horario_dia hd LEFT JOIN turno t ON hd.id_turno=t.id_turno 
+                WHERE hd.dia = IF(DAYOFWEEK(CURDATE()) = 1, 7, DAYOFWEEK(CURDATE()) - 1) AND hd.id_turno>0 $parte;";
+        $query = $this->db->query($sql)->result_Array();
+        return $query;
+    }
+    //lista con hora de entrada y salida
+    function get_list_cuadro_control_visual($base){
+        $sql = "SELECT u.id_usuario,u.usuario_nombres,u.usuario_apater,u.usuario_amater,u.centro_labores,
+                u.num_celp,u.usuario_codigo,u.foto,p.nom_puesto,
+                (SELECT CASE WHEN hcc.t_refrigerio_h=1 
+                THEN CONCAT(hcc.hora_entrada,' ',hcc.hora_salida,' - ',hcc.ini_refri,' ',hcc.fin_refri) 
+                WHEN hcc.t_refrigerio_h=2 THEN CONCAT(hcc.hora_entrada,' ',hcc.hora_salida) 
+                WHEN hcc.t_refrigerio_h=3 THEN CONCAT(hcc.hora_entrada,' ',hcc.hora_salida,' - ',
+                hcc.ini_refri,' ',hcc.fin_refri,' - ',hcc.ini_refri2,' ',hcc.fin_refri2) END
+                FROM cuadro_control_visual_horario ccvh
+                LEFT JOIN horarios_cuadro_control hcc ON ccvh.horario=hcc.id_horarios_cuadro_control
+                WHERE ccvh.id_usuario=u.id_usuario AND ccvh.dia=((DAYOFWEEK(CURDATE()) + 5) % 7 + 1)
+                ORDER BY id_cuadro_control_visual_horario DESC
+                LIMIT 1) AS horario,
+                (SELECT hcc.hora_entrada FROM cuadro_control_visual_horario ccvh
+                LEFT JOIN horarios_cuadro_control hcc ON ccvh.horario=hcc.id_horarios_cuadro_control
+                WHERE ccvh.id_usuario=u.id_usuario AND ccvh.dia=((DAYOFWEEK(CURDATE()) + 5) % 7 + 1)
+                ORDER BY id_cuadro_control_visual_horario DESC
+                LIMIT 1) AS hora_entrada,
+                (SELECT hcc.hora_salida FROM cuadro_control_visual_horario ccvh
+                LEFT JOIN horarios_cuadro_control hcc ON ccvh.horario=hcc.id_horarios_cuadro_control
+                WHERE ccvh.id_usuario=u.id_usuario AND ccvh.dia=((DAYOFWEEK(CURDATE()) + 5) % 7 + 1)
+                ORDER BY id_cuadro_control_visual_horario DESC
+                LIMIT 1) AS hora_salida,
+                (SELECT hcc.ini_refri FROM cuadro_control_visual_horario ccvh
+                LEFT JOIN horarios_cuadro_control hcc ON ccvh.horario=hcc.id_horarios_cuadro_control
+                WHERE ccvh.id_usuario=u.id_usuario AND ccvh.dia=((DAYOFWEEK(CURDATE()) + 5) % 7 + 1)
+                ORDER BY id_cuadro_control_visual_horario DESC
+                LIMIT 1) AS ini_refri,
+                (SELECT hcc.fin_refri FROM cuadro_control_visual_horario ccvh
+                LEFT JOIN horarios_cuadro_control hcc ON ccvh.horario=hcc.id_horarios_cuadro_control
+                WHERE ccvh.id_usuario=u.id_usuario AND ccvh.dia=((DAYOFWEEK(CURDATE()) + 5) % 7 + 1)
+                ORDER BY id_cuadro_control_visual_horario DESC
+                LIMIT 1) AS fin_refri,
+                (SELECT hcc.ini_refri2 FROM cuadro_control_visual_horario ccvh
+                LEFT JOIN horarios_cuadro_control hcc ON ccvh.horario=hcc.id_horarios_cuadro_control
+                WHERE ccvh.id_usuario=u.id_usuario AND ccvh.dia=((DAYOFWEEK(CURDATE()) + 5) % 7 + 1)
+                ORDER BY id_cuadro_control_visual_horario DESC
+                LIMIT 1) AS ini_refri2,
+                (SELECT hcc.fin_refri2 FROM cuadro_control_visual_horario ccvh
+                LEFT JOIN horarios_cuadro_control hcc ON ccvh.horario=hcc.id_horarios_cuadro_control
+                WHERE ccvh.id_usuario=u.id_usuario AND ccvh.dia=((DAYOFWEEK(CURDATE()) + 5) % 7 + 1)
+                ORDER BY id_cuadro_control_visual_horario DESC
+                LIMIT 1) AS fin_refri2,
+                (SELECT ccve.estado FROM cuadro_control_visual_estado ccve 
+                WHERE ccve.id_usuario = u.id_usuario AND DATE(fec_reg) = CURDATE() 
+                ORDER BY fec_reg DESC 
+                LIMIT 1) AS estado
+                FROM users u
+                LEFT JOIN puesto p ON p.id_puesto = u.id_puesto
+                WHERE u.centro_labores = '$base' AND u.estado = 1 AND NOT u.usuario_nombres LIKE 'Base%';";
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+    
+    function contador_presentes_ccv($base=null){
+        $sql = "SELECT COUNT(*) AS contador_presentes_ccv
+                FROM users u
+                LEFT JOIN puesto p ON p.id_puesto = u.id_puesto
+                LEFT JOIN cuadro_control_visual_estado ccve ON ccve.id_usuario = u.id_usuario AND DATE(ccve.fec_reg) = CURDATE()
+                WHERE
+                    u.centro_labores = '$base'
+                    AND u.estado = 1
+                    AND NOT u.usuario_nombres LIKE 'Base%'
+                    AND ccve.estado = 1
+                    AND p.nom_puesto = 'VENDEDOR'";
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+    
+    function contador_total_x_bases($base=null){
+        $sql = "SELECT COUNT(*) AS contador_total_x_bases FROM users u LEFT JOIN puesto p ON p.id_puesto = u.id_puesto 
+                WHERE u.centro_labores = '$base'
+                AND u.estado = 1
+                AND NOT u.usuario_nombres LIKE 'Base%'";
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
 }
