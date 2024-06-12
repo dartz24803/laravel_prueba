@@ -26,22 +26,22 @@ class FuncionTemporalController extends Controller
 
     public function index()
     {
-        return view('tienda.funcion_temporal.index');
+        $list_usuario = Usuario::get_list_usuario_ft();
+        return view('tienda.funcion_temporal.index', compact('list_usuario'));
     }
 
-    public function list()
+    public function list(Request $request)
     {
-        $list_funcion_temporal = FuncionTemporal::get_list_funcion_temporal();
+        $list_funcion_temporal = FuncionTemporal::get_list_funcion_temporal(['id_usuario'=>$request->id_usuario]);
         return view('tienda.funcion_temporal.lista', compact('list_funcion_temporal'));
     }
 
     public function create()
     {
-        $list_usuario = Usuario::get_list_usuario_ft();
+        $list_usuario = Usuario::get_list_usuario_ft(['base'=>session('usuario')->centro_labores]);
         return view('tienda.funcion_temporal.modal_registrar', compact('list_usuario'));
     }
-
-    
+ 
     public function tipo_funcion(Request $request)
     {
         $id_tipo = $request->id_tipo;
@@ -118,7 +118,7 @@ class FuncionTemporalController extends Controller
     public function edit($id_funcion)
     {
         $get_id = FuncionTemporal::findOrFail($id_funcion);
-        $list_usuario = Usuario::get_list_usuario_ft();
+        $list_usuario = Usuario::get_list_usuario_ft(['base'=>session('usuario')->centro_labores]);
         if($get_id->id_tipo=="1"){
             $list_puesto = Puesto::get_list_puesto_ft();
             return view('tienda.funcion_temporal.modal_editar', compact('get_id', 'list_usuario', 'list_puesto'));
@@ -176,7 +176,7 @@ class FuncionTemporalController extends Controller
     public function show($id_funcion)
     {
         $get_id = FuncionTemporal::findOrFail($id_funcion);
-        $list_usuario = Usuario::get_list_usuario_ft();
+        $list_usuario = Usuario::get_list_usuario_ft(['base'=>session('usuario')->centro_labores]);
         if($get_id->id_tipo=="1"){
             $list_puesto = Puesto::get_list_puesto_ft();
             return view('tienda.funcion_temporal.modal_ver', compact('get_id', 'list_usuario', 'list_puesto'));

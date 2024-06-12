@@ -12,7 +12,7 @@
                 <label class="control-label text-bold">Colaborador: </label>
             </div>
             <div class="form-group col-lg-10">
-                <select class="form-control basic" name="id_usuario" id="id_usuario">
+                <select class="form-control basicm" name="id_usuario" id="id_usuario">
                     <option value="0">Seleccione</option>
                     @foreach ($list_usuario as $list)
                         <option value="{{ $list->id_usuario }}">{{ $list->nom_usuario }}</option>
@@ -71,11 +71,7 @@
 </form>
 
 <script>
-    var ss = $(".basic").select2({
-        tags: true,
-    });
-
-    $('.basic').select2({
+    $('.basicm').select2({
         dropdownParent: $('#ModalRegistro')
     });
 

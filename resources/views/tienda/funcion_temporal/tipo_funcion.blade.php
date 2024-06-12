@@ -3,7 +3,7 @@
         <label class="control-label text-bold">Función: </label> 
     </div>
     <div class="form-group col-lg-10">
-        <select class="form-control basic" id="tarea{{ $v }}" name="tarea{{ $v }}">
+        <select class="form-control basicm" id="tarea{{ $v }}" name="tarea{{ $v }}">
             <option value="0">Seleccione</option> 
             @foreach ($list_puesto as $list)
                 <option value="{{ $list->id_puesto }}">{{ $list->nom_puesto }}</option>
@@ -15,7 +15,7 @@
         <label class="control-label text-bold">Tipo de tarea: </label>
     </div>
     <div class="form-group col-lg-10">
-        <select class="form-control basic" id="select_tarea{{ $v }}" name="select_tarea{{ $v }}" onchange="Tarea_Otros('{{ $v }}');">
+        <select class="form-control basicm" id="select_tarea{{ $v }}" name="select_tarea{{ $v }}" onchange="Tarea_Otros('{{ $v }}');">
             <option value="0">Seleccione</option>
             @foreach ($list_tarea as $list)
                 <option value="{{ $list->id }}">{{ $list->descripcion }}</option>
@@ -32,16 +32,12 @@
 @endif
 
 <script>
-    var ss = $(".basic").select2({
-        tags: true,
-    });
-
     @if ($v=="e")
-        $('.basic').select2({
+        $('.basicm').select2({
             dropdownParent: $('#ModalUpdate')
         });
     @else
-        $('.basic').select2({
+        $('.basicm').select2({
             dropdownParent: $('#ModalRegistro')
         });
     @endif
