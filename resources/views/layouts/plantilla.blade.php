@@ -13,6 +13,10 @@
     <link href="{{ asset('template/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('template/assets/css/plugins.css') }}" rel="stylesheet" type="text/css" />
     <!-- END GLOBAL MANDATORY STYLES -->
+
+    <link href="{{ asset('template/assets/css/scrollspyNav.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('template/assets/css/components/tabs-accordian/custom-tabs.css') }}" rel="stylesheet" type="text/css" />
+
     <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
     <link rel="stylesheet" type="text/css" href="{{ asset('template/plugins/table/datatable/datatables.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('template/plugins/table/datatable/dt-global_style.css') }}">
@@ -350,6 +354,11 @@
                             </div>
                         </a>
                         <ul class="collapse submenu list-unstyled" id="rccvtabla" data-parent="#accordionExample">
+                            <li id="conf_administradores">
+                                <a href="{{ route('administrador_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Supervisión de tienda <br>• Seguimiento al coordinador">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Administrador</p>
+                                </a>
+                            </li>
                             <li id="ccv">
                                 <a href="{{ url('/TablaCuadroControlVisual') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Horarios <br>• Cuadro de Control Visual <br>• Programación Diaria">
                                     <p class="romperpalabra"><span id="icono_active2"></span> Cuadro de Control Visual</p>
@@ -1024,10 +1033,12 @@
     </script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/custom-select2.js') }}"></script>
+    <script src="{{ asset('template/plugins/highlight/highlight.pack.js') }}"></script>
     <script src="{{ asset('template/assets/js/custom.js') }}"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
     <!-- BEGIN PAGE LEVEL CUSTOM SCRIPTS -->
     <script src="{{ asset('template/plugins/table/datatable/datatables.js') }}"></script>
     <!-- END PAGE LEVEL CUSTOM SCRIPTS -->
+    <script src="{{ asset('template/assets/js/scrollspyNav.js') }}"></script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdministradorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CarteraController;
 use App\Http\Controllers\FuncionTemporalController;
@@ -71,7 +72,7 @@ Route::controller(TrackingController::class)->group(function(){
 //TIENDA - FUNCIÓN TEMPORAL
 Route::controller(FuncionTemporalController::class)->group(function(){
     Route::get('funcion_temporal', 'index')->name('funcion_temporal');
-    Route::post('funcion_temporal/list', 'list')->name('funcion_temporal.list');
+    Route::get('funcion_temporal/{id}/list', 'list')->name('funcion_temporal.list');
     Route::get('funcion_temporal/create', 'create')->name('funcion_temporal.create');
     Route::post('funcion_temporal', 'store')->name('funcion_temporal.store');
     Route::post('funcion_temporal/tipo_funcion', 'tipo_funcion')->name('funcion_temporal.tipo_funcion');
@@ -80,6 +81,17 @@ Route::controller(FuncionTemporalController::class)->group(function(){
     Route::put('funcion_temporal/{id}', 'update')->name('funcion_temporal.update');
     Route::delete('funcion_temporal/{id}', 'destroy')->name('funcion_temporal.destroy');
     Route::get('funcion_temporal/{id}/excel', 'excel')->name('funcion_temporal.excel');
+});
+//TIENDA - ADMINISTRADOR
+Route::controller(AdministradorController::class)->group(function(){
+    Route::get('administrador_conf', 'index_conf')->name('administrador_conf');
+    Route::get('administrador_conf_st', 'index_conf_st')->name('administrador_conf_st');
+    Route::get('administrador_conf_st/list', 'list_conf_st')->name('administrador_conf_st.list');
+    Route::get('administrador_conf_st/{id}/create', 'create_conf_st')->name('administrador_conf_st.create');
+    Route::post('administrador_conf_st', 'store_conf_st')->name('administrador_conf_st.store');
+    Route::get('administrador_conf_st/{id}/edit', 'edit_conf_st')->name('administrador_conf_st.edit');
+    Route::put('administrador_conf_st/{id}', 'update_conf_st')->name('administrador_conf_st.update');
+    Route::delete('administrador_conf_st/{id}', 'destroy_conf_st')->name('administrador_conf_st.destroy');
 });
 
 

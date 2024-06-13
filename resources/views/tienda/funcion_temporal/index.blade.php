@@ -10,7 +10,7 @@
             </div>
             
             <div class="row" id="cancel-row">
-                <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
                     <div class="widget-content widget-content-area br-6">
                         <div class="toolbar d-flex mt-3">
                             <div class="form-group col-lg-5">
@@ -56,84 +56,97 @@
         function Lista_Funcion_Temporal(){
             Cargando();
 
-            var url = "{{ route('funcion_temporal.list') }}";
-            var csrfToken = $('input[name="_token"]').val();
             var id_usuario = $('#id_asignado').val();
+            var url = "{{ route('funcion_temporal.list', ':id') }}".replace(':id', id_usuario);
 
             $.ajax({
                 url: url,
-                type: "POST",
+                type: "GET",
                 data: {'id_usuario':id_usuario},
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken
-                },
                 success:function (resp) {
                     $('#lista_funcion_temporal').html(resp);  
                 }
             });
         }
-
         
-    function Tipo_Funcion_Temporal(v) {
-        Cargando();
+        function Tipo_Funcion_Temporal(v) {
+            Cargando();
 
-        var id_tipo = $('#id_tipo'+v).val();
+            var id_tipo = $('#id_tipo'+v).val();
 
-        if(id_tipo=="1" || id_tipo=="2"){
-            var url = "{{ route('funcion_temporal.tipo_funcion') }}";
+            if(id_tipo=="1" || id_tipo=="2"){
+                var url = "{{ route('funcion_temporal.tipo_funcion') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {'id_tipo':id_tipo,'v':v},
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(data) {
+                        $('#div_tipo'+v).html(data);
+                    }
+                });
+            }else{
+                $('#div_tipo'+v).html('');
+            }
+        }
+
+        function Tarea_Otros(v){
+            Cargando();
+
+            var select_tarea = $('#select_tarea'+v).val();
+
+            if(select_tarea=="19"){
+                $('.esconder'+v).show();
+            }else{
+                $('.esconder'+v).hide();
+                $('#tarea'+v).val('');
+            }
+        }
+
+        function Delete_Funcion_Temporal(id){
+            Cargando();
+
+            var url = "{{ route('funcion_temporal.destroy', ':id') }}".replace(':id', id);
             var csrfToken = $('input[name="_token"]').val();
 
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: {'id_tipo':id_tipo,'v':v},
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                success: function(data) {
-                    $('#div_tipo'+v).html(data);
+            Swal({
+                title: '¿El fardo llegó en buenas condiciones?',
+                text: "El cambio será permanentemente",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Si',
+                cancelButtonText: 'No',
+                padding: '2em'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: url,
+                        data: {'id_funcion':id},
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        success: function() {
+                            Swal(
+                                '¡Eliminado!',
+                                'El registro ha sido eliminado satisfactoriamente.',
+                                'success'
+                            ).then(function() {
+                                Lista_Funcion_Temporal();
+                            });
+                        }
+                    });
                 }
-            });
-        }else{
-            $('#div_tipo'+v).html('');
+            })
         }
-    }
 
-    function Tarea_Otros(v){
-        Cargando();
-
-        var select_tarea = $('#select_tarea'+v).val();
-
-        if(select_tarea=="19"){
-            $('.esconder'+v).show();
-        }else{
-            $('.esconder'+v).hide();
-            $('#tarea'+v).val('');
+        function Excel_Funcion_Temporal() {
+            var id_usuario = $('#id_asignado').val();
+            window.location = "{{ route('funcion_temporal.excel', ':id') }}".replace(':id', id_usuario);
         }
-    }
-
-    function Delete_Funcion_Temporal(id){
-        Cargando();
-
-        var url = "{{ route('funcion_temporal.destroy', ':id') }}".replace(':id', id);
-        var csrfToken = $('input[name="_token"]').val();
-
-        $.ajax({
-            type: "DELETE",
-            url: url,
-            data: {'id_funcion':id},
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
-            success: function() {
-                Lista_Funcion_Temporal();       
-            }
-        });
-    }
-
-    function Excel_Funcion_Temporal() {
-        var id_usuario = $('#id_asignado').val();
-        window.location = "{{ route('funcion_temporal.excel', ':id') }}".replace(':id', id_usuario);
-    }
     </script>
 @endsection

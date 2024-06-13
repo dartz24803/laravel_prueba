@@ -28,9 +28,9 @@ class FuncionTemporalController extends Controller
         return view('tienda.funcion_temporal.index', compact('list_usuario'));
     }
 
-    public function list(Request $request)
+    public function list($id_usuario)
     {
-        $list_funcion_temporal = FuncionTemporal::get_list_funcion_temporal(['id_usuario'=>$request->id_usuario]);
+        $list_funcion_temporal = FuncionTemporal::get_list_funcion_temporal(['id_usuario'=>$id_usuario]);
         return view('tienda.funcion_temporal.lista', compact('list_funcion_temporal'));
     }
 
@@ -188,8 +188,8 @@ class FuncionTemporalController extends Controller
     {
         FuncionTemporal::findOrFail($id_funcion)->update([
             'estado' => 2,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
         ]);
     }
 
