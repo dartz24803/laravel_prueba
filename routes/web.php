@@ -10,16 +10,6 @@ use App\Http\Controllers\ReporteFotograficoController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\ReporteFotograficoAdmController;
 use App\Http\Controllers\TablaCuadroControlVisualController;
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
 Route::middleware([NoCache::class])->group(function () {
     Route::get('/Cartera', [CarteraController::class, 'index'])->name('cartera');
@@ -87,28 +77,8 @@ Route::controller(FuncionTemporalController::class)->group(function(){
     Route::get('funcion_temporal/{id}/edit', 'edit')->name('funcion_temporal.edit');
     Route::put('funcion_temporal/{id}', 'update')->name('funcion_temporal.update');
     Route::delete('funcion_temporal/{id}', 'destroy')->name('funcion_temporal.destroy');
-    Route::get('funcion_temporal/excel', 'excel')->name('funcion_temporal.excel');
+    Route::get('funcion_temporal/{id}/excel', 'excel')->name('funcion_temporal.excel');
 });
-
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
-Route::get('excel', function(){
-    $spreadsheet = new Spreadsheet();
-    $sheet = $spreadsheet->getActiveSheet();
-    $sheet->setCellValue('A1', 'Hello World !');
-    
-    $writer = new Xlsx($spreadsheet);
-    $filename ='Función Temporal';
-    if (ob_get_contents()) ob_end_clean();
-    header('Content-Type: application/vnd.ms-excel');
-    header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
-    header('Cache-Control: max-age=0');
-    $writer->save('php://output'); 
-});
-
-
-
 
 
 
