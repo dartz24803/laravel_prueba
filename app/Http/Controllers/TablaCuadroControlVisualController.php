@@ -79,13 +79,23 @@ class TablaCuadroControlVisualController extends Controller
     public function Insert_Horarios_Cuadro_Control(Request $request){
         //validacion de codigo, q vaya con datos
         $validator = Validator::make($request->all(), [
-            'cod_base' => 'not_in:0'
+            'cod_base' => 'not_in:0',
+            'puesto' => 'not_in:0',
+            'dia' => 'not_in:0',
+            't_refrigerio_h' => 'not_in:0',
+            'hora_entrada' => 'required',
+            'hora_salida' => 'required'
         ], [
             'cod_base.not_in' => 'Base: Campo obligatorio',
+            'puesto.not_in' => 'Puesto: Campo obligatorio',
+            'dia.not_in' => 'Dia: Campo obligatorio',
+            't_refrigerio_h.not_in' => 'Tipo de refrigerio: Campo obligatorio',
+            'hora_entrada.required' => 'Hora entrada: Campo obligatorio',
+            'hora_salida.required' => 'Hora salida: Campo obligatorio',
         ]);
         //alerta de validacion
         if ($validator->fails()) {
-            $respuesta['error'] = $validator->errors()->get('cod_base');
+            $respuesta['error'] = $validator->errors()->all();
         }else{
             $dato['cod_base'] = $request->input("cod_base");
             $dato['id_puesto'] = $request->input("puesto");
@@ -105,24 +115,38 @@ class TablaCuadroControlVisualController extends Controller
             $dato['estado']= 1;
             $dato['fec_reg']= now();
             $dato['user_reg']= Session::get('usuario')->id_usuario;
-            print_r($dato);
-            // $this->modelo->insert($dato);
+            $this->modelo->insert($dato);
         }
         return response()->json($respuesta);
     }
 
     public function Update_Horarios_Cuadro_Control(Request $request){
-        $id = $request->input("id");
-        $dato['t_refrigerio_h'] = $request->input("t_refrigerio_he");
-        $dato['hora_entrada']= $request->input("hora_entradae");
-        $dato['hora_salida']= $request->input("hora_salidae");
-        $dato['ini_refri']= $request->input("ini_refrie");
-        $dato['fin_refri']= $request->input("fin_refrie");
-        $dato['ini_refri2']= $request->input("ini_refri2e");
-        $dato['fin_refri2']= $request->input("fin_refri2e");
-        $dato['fec_act']= now();
-        $dato['user_act']= Session::get('usuario')->id_usuario;
-        $this->modelo->where('id_horarios_cuadro_control', $id)->update($dato);
+        //validacion de codigo, q vaya con datos
+        $validator = Validator::make($request->all(), [
+            't_refrigerio_he' => 'not_in:0',
+            'hora_entradae' => 'required',
+            'hora_salidae' => 'required'
+        ], [
+            't_refrigerio_h.not_in' => 'Tipo de refrigerio: Campo obligatorio',
+            'hora_entradae.required' => 'Hora entrada: Campo obligatorio',
+            'hora_salidae.required' => 'Hora salida: Campo obligatorio',
+        ]);
+        //alerta de validacion
+        if ($validator->fails()) {
+            $respuesta['error'] = $validator->errors()->all();
+        }else{
+            $id = $request->input("id");
+            $dato['t_refrigerio_h'] = $request->input("t_refrigerio_he");
+            $dato['hora_entrada']= $request->input("hora_entradae");
+            $dato['hora_salida']= $request->input("hora_salidae");
+            $dato['ini_refri']= $request->input("ini_refrie");
+            $dato['fin_refri']= $request->input("fin_refrie");
+            $dato['ini_refri2']= $request->input("ini_refri2e");
+            $dato['fin_refri2']= $request->input("fin_refri2e");
+            $dato['fec_act']= now();
+            $dato['user_act']= Session::get('usuario')->id_usuario;
+            $this->modelo->where('id_horarios_cuadro_control', $id)->update($dato);
+        }
     }
 
     public function Delete_Horarios_Cuadro_Control(Request $request){

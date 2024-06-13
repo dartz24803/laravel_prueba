@@ -152,18 +152,11 @@
                             $("#ModalRegistro .close").click();
                         });
                     }else{
-                        Swal.fire({
-                            title: 'Error!',
-                            text: data.error,
-                            icon: 'error',
-                            showConfirmButton: true,
-                        })
-                        /*
-                        Swal(
-                            'Error!',
-                            data.error,
+                        Swal.fire(
+                            '¡Ups!',
+                            data.error[0],
                             'error'
-                        )*/
+                        );
                     }
                 }
             });

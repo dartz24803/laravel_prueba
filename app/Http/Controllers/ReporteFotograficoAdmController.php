@@ -97,8 +97,7 @@ class ReporteFotograficoAdmController extends Controller
         ]);
         //alerta de validacion
         if ($validator->fails()) {
-            $respuesta['error'] = $validator->errors()->get('codigo');
-            $respuesta['error'] = $validator->errors()->get('area');
+            $respuesta['error'] = $validator->errors()->all();
         }else{
             $dato = [
                 'area' => $request->input("area"),
@@ -138,8 +137,7 @@ class ReporteFotograficoAdmController extends Controller
         ]);
         //alerta de validacion
         if ($validator->fails()) {
-            $respuesta['error'] = $validator->errors()->get('codigo_e');
-            $respuesta['error'] = $validator->errors()->get('area_e');
+            $respuesta['error'] = $validator->errors()->all();
         }else{
             $id = $request->input("id");
             $dato = [
