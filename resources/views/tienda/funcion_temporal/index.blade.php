@@ -132,7 +132,8 @@
     }
 
     function Excel_Funcion_Temporal() {
-        window.location = "{{ route('funcion_temporal.excel') }}";
+        var id_usuario = $('#id_asignado').val();
+        window.location = "{{ route('funcion_temporal.excel', ':id') }}".replace(':id', id_usuario);
     }
     </script>
 @endsection

@@ -10,12 +10,10 @@ use App\Models\Usuario;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-use Illuminate\Support\Facades\Log;
 
 class FuncionTemporalController extends Controller
 {
@@ -195,9 +193,9 @@ class FuncionTemporalController extends Controller
         ]);
     }
 
-    /*public function excel()
+    public function excel($id_usuario)
     {
-        $list_funcion_temporal = FuncionTemporal::get_list_funcion_temporal();
+        $list_funcion_temporal = FuncionTemporal::get_list_funcion_temporal(['id_usuario'=>$id_usuario]);
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -252,13 +250,13 @@ class FuncionTemporalController extends Controller
             $sheet->getStyle("A{$contador}:F{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
             $sheet->getStyle("A{$contador}:F{$contador}")->applyFromArray($styleThinBlackBorderOutline);
 
-            $sheet->setCellValue("A{$contador}", $list['base']);
-            $sheet->setCellValue("B{$contador}", ucwords($list['nom_usuario']));
-            $sheet->setCellValue("C{$contador}", $list['nom_tipo']);
-            $sheet->setCellValue("D{$contador}", ucfirst($list['actividad']));
-            $sheet->setCellValue("E{$contador}", Date::PHPToExcel($list['fecha']));
+            $sheet->setCellValue("A{$contador}", $list->base);
+            $sheet->setCellValue("B{$contador}", ucwords($list->nom_usuario));
+            $sheet->setCellValue("C{$contador}", $list->nom_tipo);
+            $sheet->setCellValue("D{$contador}", ucfirst($list->actividad));
+            $sheet->setCellValue("E{$contador}", Date::PHPToExcel($list->fecha));
             $sheet->getStyle("E{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
-            $sheet->setCellValue("F{$contador}", $list['horario']);
+            $sheet->setCellValue("F{$contador}", $list->horario);
         }
 
         $writer = new Xlsx($spreadsheet);
@@ -268,21 +266,6 @@ class FuncionTemporalController extends Controller
         header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
         header('Cache-Control: max-age=0');
 
-        $writer->save('php://output'); 
-    }*/
-
-    public function excel()
-    {
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A1', 'Hello World !');
-        
-        $writer = new Xlsx($spreadsheet);
-        $filename ='Función Temporal';
-        if (ob_get_contents()) ob_end_clean();
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
-        header('Cache-Control: max-age=0');
         $writer->save('php://output'); 
     }
 }
