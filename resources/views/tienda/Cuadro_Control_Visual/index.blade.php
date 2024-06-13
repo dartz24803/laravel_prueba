@@ -13,8 +13,8 @@ $base = Session::get('usuario')->centro_labores;
             </div>
         </div>
         <div class="row" id="cancel-row">
-            <div class="col-xl-12 col-lg-12 col-sm-12">
-                <div class="widget-content widget-content-area br-6">
+            <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
+                <div class="widget-content widget-content-area br-6 p-2">
                     <div class="toolbar d-flex">
                         <?php
                         //Cada coordinador le debe aparecer su base respectivamente definido
