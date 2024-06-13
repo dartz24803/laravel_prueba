@@ -18,7 +18,7 @@
 
                             <div class="row" id="cancel-row">
                                 <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
-                                    <div id="div_conf_tienda" class="widget-content widget-content-area p-3">
+                                    <div id="div_administrador_conf" class="widget-content widget-content-area p-3">
                                     </div>
                                 </div>
                             </div>
@@ -47,9 +47,25 @@
                 url: url,
                 type: "GET",
                 success:function (resp) {
-                    $('#div_conf_tienda').html(resp);  
+                    $('#div_administrador_conf').html(resp);  
                     $("#a_st").addClass('active');
                     $("#a_sc").removeClass('active');
+                }
+            });
+        }
+
+        function Seguimiento_Coordinador(){
+            Cargando();
+
+            var url="{{ route('administrador_conf_sc') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_administrador_conf').html(resp);  
+                    $("#a_st").removeClass('active');
+                    $("#a_sc").addClass('active');
                 }
             });
         }
