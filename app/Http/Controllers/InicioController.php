@@ -19,7 +19,7 @@ class InicioController extends Controller
     }
     public function index()
     {
-        return view('layouts.plantilla');
+        return view('inicio');
     }
     /*
     public function listar()
