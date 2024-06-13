@@ -162,20 +162,37 @@ class TablaCuadroControlVisualController extends Controller
     }
 
     public function Agregar_Horarios_Cuadro_Control(Request $request){
-        $id= $request->input("id");
-        $get_id = $this->modelo->where('id_horarios_cuadro_control', $id)->get();
-        $dato['cod_base'] = $get_id[0]['cod_base'];
-        $dato['id_puesto'] = $get_id[0]['id_puesto'];
-        $dato['puesto'] = $get_id[0]['puesto'];
-        $dato['dia'] = $request->input("dia_na");
-        $dato['t_refrigerio_h'] = $request->input("t_refrigerio_ha");
-        $dato['hora_entrada']= $request->input("hora_entradaa");
-        $dato['hora_salida']= $request->input("hora_salidaa");
-        $dato['ini_refri']= $request->input("ini_refria");
-        $dato['fin_refri']= $request->input("fin_refria");
-        $dato['ini_refri2']= $request->input("ini_refri2a");
-        $dato['fin_refri2']= $request->input("fin_refri2a");
-        $this->modelo->insert($dato);
+        //validacion de codigo, q vaya con datos
+        $validator = Validator::make($request->all(), [
+            'dia_na' => 'not_in:0',
+            't_refrigerio_ha' => 'not_in:0',
+            'hora_entradaa' => 'required',
+            'hora_salidaa' => 'required'
+        ], [
+            'dia_na.not_in' => 'Dia: Campo obligatorio',
+            't_refrigerio_ha.not_in' => 'Tipo de refrigerio: Campo obligatorio',
+            'hora_entradaa.required' => 'Hora entrada: Campo obligatorio',
+            'hora_salidaa.required' => 'Hora salida: Campo obligatorio',
+        ]);
+        //alerta de validacion
+        if ($validator->fails()) {
+            $respuesta['error'] = $validator->errors()->all();
+        }else{
+            $id= $request->input("id");
+            $get_id = $this->modelo->where('id_horarios_cuadro_control', $id)->get();
+            $dato['cod_base'] = $get_id[0]['cod_base'];
+            $dato['id_puesto'] = $get_id[0]['id_puesto'];
+            $dato['puesto'] = $get_id[0]['puesto'];
+            $dato['dia'] = $request->input("dia_na");
+            $dato['t_refrigerio_h'] = $request->input("t_refrigerio_ha");
+            $dato['hora_entrada']= $request->input("hora_entradaa");
+            $dato['hora_salida']= $request->input("hora_salidaa");
+            $dato['ini_refri']= $request->input("ini_refria");
+            $dato['fin_refri']= $request->input("fin_refria");
+            $dato['ini_refri2']= $request->input("ini_refri2a");
+            $dato['fin_refri2']= $request->input("fin_refri2a");
+            $this->modelo->insert($dato);
+        }
     }
     
     //ADM CUADRO CONTROL VISUAL
@@ -236,62 +253,77 @@ class TablaCuadroControlVisualController extends Controller
     }
     //test insert
     public function Insert_Programacion_Diaria(Request $request){
-        $dato['id_usuario']= $request->input("id_usuario");
+        //validacion de codigo, q vaya con datos
+        $validator = Validator::make($request->all(), [
+            'cod_base' => 'not_in:0',
+            'id_puesto' => 'not_in:0',
+            'id_usuario' => 'not_in:0',
+        ], [
+            'cod_base.not_in' => 'Base: Campo obligatorio',
+            'id_puesto.not_in' => 'Puesto: Campo obligatorio',
+            'id_usuario.not_in' => 'Seleccione un colaborador!',
+        ]);
+        //alerta de validacion
+        if ($validator->fails()) {
+            $respuesta['error'] = $validator->errors()->all();
+        }else{
+            $dato['id_usuario']= $request->input("id_usuario");
 
-        $data['ch_lunes']= $request->input("ch_dia_laborado_lu");
-        if($data['ch_lunes']==1){
-            $dato['horario']= $request->input("id_horario_lu");
-            $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
-            $dato['dia'] = $get_id[0]['dia'];
-            $this->modeloccvh->insert($dato);
-        }
+            $data['ch_lunes']= $request->input("ch_dia_laborado_lu");
+            if($data['ch_lunes']==1){
+                $dato['horario']= $request->input("id_horario_lu");
+                $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
+                $dato['dia'] = $get_id[0]['dia'];
+                $this->modeloccvh->insert($dato);
+            }
 
-        $data['ch_martes']= $request->input("ch_dia_laborado_ma");
-        if($data['ch_martes']==1){
-            $dato['horario']= $request->input("id_horario_ma");
-            $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
-            $dato['dia'] = $get_id[0]['dia'];
-            $this->modeloccvh->insert($dato);
-        }
+            $data['ch_martes']= $request->input("ch_dia_laborado_ma");
+            if($data['ch_martes']==1){
+                $dato['horario']= $request->input("id_horario_ma");
+                $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
+                $dato['dia'] = $get_id[0]['dia'];
+                $this->modeloccvh->insert($dato);
+            }
 
-        $data['ch_miercoles']= $request->input("ch_dia_laborado_mi");
-        if($data['ch_miercoles']==1){
-            $dato['horario']= $request->input("id_horario_mi");
-            $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
-            $dato['dia'] = $get_id[0]['dia'];
-            $this->modeloccvh->insert($dato);
-        }
+            $data['ch_miercoles']= $request->input("ch_dia_laborado_mi");
+            if($data['ch_miercoles']==1){
+                $dato['horario']= $request->input("id_horario_mi");
+                $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
+                $dato['dia'] = $get_id[0]['dia'];
+                $this->modeloccvh->insert($dato);
+            }
 
-        $data['ch_jueves']= $request->input("ch_dia_laborado_ju");
-        if($data['ch_jueves']==1){
-            $dato['horario']= $request->input("id_horario_ju");
-            $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
-            $dato['dia'] = $get_id[0]['dia'];
-            $this->modeloccvh->insert($dato);
-        }
+            $data['ch_jueves']= $request->input("ch_dia_laborado_ju");
+            if($data['ch_jueves']==1){
+                $dato['horario']= $request->input("id_horario_ju");
+                $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
+                $dato['dia'] = $get_id[0]['dia'];
+                $this->modeloccvh->insert($dato);
+            }
 
-        $data['ch_viernes']= $request->input("ch_dia_laborado_vi");
-        if($data['ch_viernes']==1){
-            $dato['horario']= $request->input("id_horario_vi");
-            $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
-            $dato['dia'] = $get_id[0]['dia'];
-            $this->modeloccvh->insert($dato);
-        }
+            $data['ch_viernes']= $request->input("ch_dia_laborado_vi");
+            if($data['ch_viernes']==1){
+                $dato['horario']= $request->input("id_horario_vi");
+                $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
+                $dato['dia'] = $get_id[0]['dia'];
+                $this->modeloccvh->insert($dato);
+            }
 
-        $data['ch_sabado']= $request->input("ch_dia_laborado_sa");
-        if($data['ch_sabado']==1){
-            $dato['horario']= $request->input("id_horario_sa");
-            $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
-            $dato['dia'] = $get_id[0]['dia'];
-            $this->modeloccvh->insert($dato);
-        }
+            $data['ch_sabado']= $request->input("ch_dia_laborado_sa");
+            if($data['ch_sabado']==1){
+                $dato['horario']= $request->input("id_horario_sa");
+                $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
+                $dato['dia'] = $get_id[0]['dia'];
+                $this->modeloccvh->insert($dato);
+            }
 
-        $data['ch_domingo']= $request->input("ch_dia_laborado_do");
-        if($data['ch_domingo']==1){
-            $dato['horario']= $request->input("id_horario_do");
-            $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
-            $dato['dia'] = $get_id[0]['dia'];
-            $this->modeloccvh->insert($dato);
+            $data['ch_domingo']= $request->input("ch_dia_laborado_do");
+            if($data['ch_domingo']==1){
+                $dato['horario']= $request->input("id_horario_do");
+                $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
+                $dato['dia'] = $get_id[0]['dia'];
+                $this->modeloccvh->insert($dato);
+            }
         }
     }
 }

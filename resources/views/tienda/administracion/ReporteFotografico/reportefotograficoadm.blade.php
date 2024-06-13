@@ -16,7 +16,7 @@ print_r(Session::get('usuario')->id);
         </div>
         <div class="row" id="cancel-row">
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                <div class="widget-content widget-content-area br-6">
+                <div class="widget-content widget-content-area br-6 p-2">
                     <div class="col-lg-12 d-flex justify-content-end">
                         <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('tienda.administracion.ReporteFotografico.modal_registro')}}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square">
@@ -155,9 +155,4 @@ print_r(Session::get('usuario')->id);
         })
     }
 </script>
-<style>
-    #table_rfa_length, #table_rfa_info{
-        margin-left: 1rem;
-    }
-</style>
 @endsection
