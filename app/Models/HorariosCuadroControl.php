@@ -118,6 +118,6 @@ class HorariosCuadroControl extends Model
                 FROM horarios_cuadro_control 
                 WHERE cod_base='$base' AND id_puesto=$id_puesto AND dia='$dia' AND estado=1";
         $result = DB::select($sql);
-        return json_decode(json_encode($result), true);;
+        return json_decode(json_encode($result), true);
     }
 }

@@ -51,4 +51,9 @@ class Base extends Model
         $query = DB::select($sql);
         return $query;
     }
+    
+    //listar bases para select en ccv
+    function listar_bases_b(){
+        return $this->select('id_base','cod_base')->where('cod_base','LIKE', 'B%')->orderBy("cod_base",'ASC')->get()->toArray();
+    }
 }

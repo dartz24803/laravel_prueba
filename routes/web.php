@@ -10,6 +10,7 @@ use App\Http\Controllers\ReporteFotograficoController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\ReporteFotograficoAdmController;
 use App\Http\Controllers\TablaCuadroControlVisualController;
+use App\Http\Controllers\CuadroControlVisualController;
 
 Route::middleware([NoCache::class])->group(function () {
     Route::get('/Cartera', [CarteraController::class, 'index'])->name('cartera');
@@ -111,4 +112,12 @@ Route::controller(TablaCuadroControlVisualController::class)->group(function(){
     Route::get('/Modal_Programacion_Diaria', 'Modal_Programacion_Diaria')->name('tienda.administracion.CuadroControlVisual.Programacion_Diaria.modal_registrar');
     Route::get('/Traer_Colaborador_Programacion_Diaria', 'Traer_Colaborador_Programacion_Diaria');
     Route::get('/Traer_Horario_Programacion_Diaria', 'Traer_Horario_Programacion_Diaria');
+});
+//CUADRO CONTROL VISUAL
+Route::controller(CuadroControlVisualController::class)->group(function(){
+    //------------------------------CCV------------------------------------//
+    Route::get('Cuadro_Control_Visual_Vista', 'Cuadro_Control_Visual_Vista')->name('Cuadro_Control_Visual_Vista');
+    Route::post('Lista_Cuadro_Control_Visual_Vista', 'Lista_Cuadro_Control_Visual_Vista');
+    Route::post('/Insert_Cuadro_Control_Visual_Estado', 'Insert_Cuadro_Control_Visual_Estado');
+    Route::post('/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
 });
