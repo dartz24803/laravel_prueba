@@ -10,6 +10,7 @@ use App\Models\Puesto;
 use Illuminate\Support\Facades\Session;
 use App\Models\CuadroControlVisualHorario;
 use App\Models\Usuario;
+use Illuminate\Support\Facades\Validator;
 
 class TablaCuadroControlVisualController extends Controller
 {
@@ -76,25 +77,38 @@ class TablaCuadroControlVisualController extends Controller
     }
 
     public function Insert_Horarios_Cuadro_Control(Request $request){
-        $dato['cod_base'] = $request->input("cod_base");
-        $dato['id_puesto'] = $request->input("puesto");
-        $dato['dia'] = $request->input("dia");
-        $get_id = $this->modelopuestos->where('id_puesto', $dato['id_puesto'])->get();
-        $puesto = $get_id[0]['nom_puesto'];
-        $valor = $this->modelo->contador_x_puesto_y_base($dato['cod_base'], $puesto, $dato['dia']);
-        $dato['puesto'] = $puesto.''.$valor;
-        //print_r($dato['puesto']);
-        $dato['t_refrigerio_h'] = $request->input("t_refrigerio_h");
-        $dato['hora_entrada']= $request->input("hora_entrada");
-        $dato['hora_salida']= $request->input("hora_salida");
-        $dato['ini_refri']= $request->input("ini_refri");
-        $dato['fin_refri']= $request->input("fin_refri");
-        $dato['ini_refri2']= $request->input("ini_refri2");
-        $dato['fin_refri2']= $request->input("fin_refri2");
-        $dato['estado']= 1;
-        $dato['fec_reg']= now();
-        $dato['user_reg']= Session::get('usuario')->id_usuario;
-        $this->modelo->insert($dato);
+        //validacion de codigo, q vaya con datos
+        $validator = Validator::make($request->all(), [
+            'cod_base' => 'not_in:0'
+        ], [
+            'cod_base.not_in' => 'Base: Campo obligatorio',
+        ]);
+        //alerta de validacion
+        if ($validator->fails()) {
+            $respuesta['error'] = $validator->errors()->get('cod_base');
+        }else{
+            $dato['cod_base'] = $request->input("cod_base");
+            $dato['id_puesto'] = $request->input("puesto");
+            $dato['dia'] = $request->input("dia");
+            $get_id = $this->modelopuestos->where('id_puesto', $dato['id_puesto'])->get();
+            $puesto = $get_id[0]['nom_puesto'];
+            $valor = $this->modelo->contador_x_puesto_y_base($dato['cod_base'], $puesto, $dato['dia']);
+            $dato['puesto'] = $puesto.''.$valor;
+            //print_r($dato['puesto']);
+            $dato['t_refrigerio_h'] = $request->input("t_refrigerio_h");
+            $dato['hora_entrada']= $request->input("hora_entrada");
+            $dato['hora_salida']= $request->input("hora_salida");
+            $dato['ini_refri']= $request->input("ini_refri");
+            $dato['fin_refri']= $request->input("fin_refri");
+            $dato['ini_refri2']= $request->input("ini_refri2");
+            $dato['fin_refri2']= $request->input("fin_refri2");
+            $dato['estado']= 1;
+            $dato['fec_reg']= now();
+            $dato['user_reg']= Session::get('usuario')->id_usuario;
+            print_r($dato);
+            // $this->modelo->insert($dato);
+        }
+        return response()->json($respuesta);
     }
 
     public function Update_Horarios_Cuadro_Control(Request $request){
@@ -106,6 +120,8 @@ class TablaCuadroControlVisualController extends Controller
         $dato['fin_refri']= $request->input("fin_refrie");
         $dato['ini_refri2']= $request->input("ini_refri2e");
         $dato['fin_refri2']= $request->input("fin_refri2e");
+        $dato['fec_act']= now();
+        $dato['user_act']= Session::get('usuario')->id_usuario;
         $this->modelo->where('id_horarios_cuadro_control', $id)->update($dato);
     }
 

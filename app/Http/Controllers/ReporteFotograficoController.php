@@ -247,6 +247,8 @@ class ReporteFotograficoController extends Controller
             try {
                 $dato = [
                     'codigo' => $request->input('codigo_e'),
+                    'fec_act' => now(),
+                    'user_act' => Session::get('usuario')->id_usuario,
                 ];
                 //actualizar codigo
                 $this->modelo->where('id', $id)->update($dato);
