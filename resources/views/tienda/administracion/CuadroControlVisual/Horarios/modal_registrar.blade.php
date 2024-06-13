@@ -136,25 +136,33 @@
         var dataString = $("#formulario_insert").serialize();
         var url = "{{ url('Insert_Horarios_Cuadro_Control') }}";
 
-        if (Valida_Horarios_Cuadro_Control('')) {
+        //if (Valida_Horarios_Cuadro_Control('')) {
             $.ajax({
                 type: "POST",
                 url: url,
                 data: dataString,
                 success: function(data) {
-                    swal.fire(
-                        'Registro Exitoso!',
-                        'Haga clic en el botón!',
-                        'success'
-                    ).then(function() {
-                        Lista_Horarios_Cuadro_Control();
-                        $("#ModalRegistro .close").click();
-                    });
+                    if (data.error == ""){
+                        swal.fire(
+                            'Registro Exitoso!',
+                            'Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            Lista_Horarios_Cuadro_Control();
+                            $("#ModalRegistro .close").click();
+                        });
+                    }else{
+                        Swal.fire(
+                            '¡Ups!',
+                            data.error[0],
+                            'error'
+                        );
+                    }
                 }
             });
-        }
+        //}
     }
-
+/*
     function Valida_Horarios_Cuadro_Control(v) {
         if ($('#cod_base' + v).val().trim() === '0') {
             Swal(
@@ -283,7 +291,7 @@
             }
         }
         return true;
-    }
+    }*/
 
     function Tipo_Refrigerio_Horario(){
         var break1 = $("#break1");

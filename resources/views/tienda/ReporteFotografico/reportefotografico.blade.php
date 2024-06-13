@@ -15,7 +15,7 @@ $base = Session::get('usuario')->centro_labores;
             </div>
             <div class="row" id="cancel-row">
                 <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                    <div class="widget-content widget-content-area br-6">
+                    <div class="widget-content widget-content-area br-6 p-2">
                         <div class="col-lg-12 d-flex justify-content-end">
                             <?php //adm y coord de tienda registran
                             //if($_SESSION['usuario'][0]['id_puesto'] == 29 || $_SESSION['usuario'][0]['id_puesto'] == 161 || $_SESSION['usuario'][0]['id_puesto'] == 197 || $_SESSION['usuario'][0]['id_usuario'] == 139){ ?>
@@ -209,9 +209,4 @@ $base = Session::get('usuario')->centro_labores;
             })
         }
     </script>
-    <style>
-        #table_rf_length, #table_rf_info{
-            padding: 1rem;
-        }
-    </style>
 @endsection

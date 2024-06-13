@@ -70,12 +70,11 @@
                         $("#ModalUpdate .close").click()
                     });
                 } else {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: data.error,
-                        icon: 'error',
-                        showConfirmButton: true,
-                    })
+                    Swal.fire(
+                        '¡Ups!',
+                        data.error[0],
+                        'error'
+                    );
                 }
                 }
             });

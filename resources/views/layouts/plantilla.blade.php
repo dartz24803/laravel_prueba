@@ -222,8 +222,8 @@
                 </ul>
 
                 <ul class="list-unstyled menu-categories" id="accordionExample">
-                    <li class="menu" id="inicios">
-                        <a href="{{ route('inicio') }}" aria-expanded="false" class="dropdown-toggle">
+                    <li class="menu" id="inicio">
+                        <a id="hinicio" href="{{ route('inicio') }}" aria-expanded="false" class="dropdown-toggle">
                             <div class="">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home">
                                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -1001,7 +1001,6 @@
     
     <script>
         $(document).ready(function() {
-            $("#inicios").addClass('active');
             App.init();
         });
     </script>

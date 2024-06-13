@@ -192,7 +192,7 @@ class ReporteFotograficoController extends Controller
                 ]);
                 //alerta de validacion
                 if ($validator->fails()) {
-                    $respuesta['error'] = $validator->errors()->get('codigo');
+                    $respuesta['error'] = $validator->errors()->all();
                 }else{
                     $nombre_actual = "REPORTE_FOTOGRAFICO/".$data[0]['ruta'];
                     $nuevo_nombre = "REPORTE_FOTOGRAFICO/Evidencia_".date('Y-m-d H:m')."_captura.jpg";
@@ -242,11 +242,13 @@ class ReporteFotograficoController extends Controller
         ]);
         //verificar validacion de select
         if ($validator->fails()) {
-            $respuesta['error'] = $validator->errors()->get('codigo_e');
+            $respuesta['error'] = $validator->errors()->all();
         }else{
             try {
                 $dato = [
                     'codigo' => $request->input('codigo_e'),
+                    'fec_act' => now(),
+                    'user_act' => Session::get('usuario')->id_usuario,
                 ];
                 //actualizar codigo
                 $this->modelo->where('id', $id)->update($dato);

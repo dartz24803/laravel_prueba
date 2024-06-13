@@ -178,6 +178,12 @@ $hora_actual = $fecha_actual->format('H:i');
                                 $texto = 'white';
                                 $estilo = 'style="background-color: #68f76d; color: white"';
                                 $badge = 'PRESENTE';
+                                if ($list['ini_refri'] < $hora_actual && $hora_actual < $list['fin_refri']) {
+                                    $color = '#ffa700';
+                                    $texto = 'black';
+                                    $estilo = 'style="background-color: #ffa700; color: white"';
+                                    $badge = 'ALMUERZO';
+                                }
                             } else if ($list['estado'] == 2 || ($list['ini_refri2'] < $hora_actual && $hora_actual < $list['fin_refri2'])) {
                                 $color = '#f7cd11';
                                 $texto = 'black';
