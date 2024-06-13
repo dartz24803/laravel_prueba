@@ -92,4 +92,15 @@ class AdministradorController extends Controller
             'user_eli' => session('usuario')->id_usuario
         ]);
     }
+
+    public function index_conf_sc()
+    {
+        return view('tienda.administracion.administrador.seguimiento_coordinador.index');
+    }
+
+    public function create_conf_sc($validador=null)
+    {
+        $validador = $validador;
+        return view('tienda.administracion.administrador.seguimiento_coordinador.modal_registrar', compact('validador'));
+    }
 }
