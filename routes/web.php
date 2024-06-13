@@ -11,6 +11,7 @@ use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\ReporteFotograficoAdmController;
 use App\Http\Controllers\TablaCuadroControlVisualController;
 use App\Http\Controllers\CuadroControlVisualController;
+use App\Http\Controllers\AsistenciaController;
 
 Route::middleware([NoCache::class])->group(function () {
     Route::get('/Cartera', [CarteraController::class, 'index'])->name('cartera');
@@ -120,4 +121,39 @@ Route::controller(CuadroControlVisualController::class)->group(function(){
     Route::post('Lista_Cuadro_Control_Visual_Vista', 'Lista_Cuadro_Control_Visual_Vista');
     Route::post('/Insert_Cuadro_Control_Visual_Estado', 'Insert_Cuadro_Control_Visual_Estado');
     Route::post('/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//ASISTENCIA
+Route::controller(AsistenciaController::class)->group(function(){
+    //------------------------------CCV------------------------------------//
+    Route::get('Reporte_Control_Asistencia', 'index')->name('Reporte_Control_Asistencia');
+    // Route::post('Lista_Cuadro_Control_Visual_Vista', 'Lista_Cuadro_Control_Visual_Vista');
+    // Route::post('/Insert_Cuadro_Control_Visual_Estado', 'Insert_Cuadro_Control_Visual_Estado');
+    // Route::post('/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
 });
