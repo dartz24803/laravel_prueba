@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Base;
+use App\Models\ContenidoSeguimientoCoordinador;
 use App\Models\ContenidoSupervisionTienda;
 use Illuminate\Http\Request;
 
@@ -100,6 +102,9 @@ class AdministradorController extends Controller
 
     public function create_conf_sc($validador=null)
     {
+        $list_base = Base::get_list_base_administrador_sc();
+        //$dato['list_dia_semana'] = $this->Model_Tienda->get_combo_dia_semana();
+        //$dato['list_mes'] = $this->Model_Tienda->get_combo_mes();
         $validador = $validador;
         return view('tienda.administracion.administrador.seguimiento_coordinador.modal_registrar', compact('validador'));
     }

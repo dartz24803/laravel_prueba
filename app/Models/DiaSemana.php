@@ -9,9 +9,9 @@ class DiaSemana extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
-
     protected $table = 'dia_semana';
+
+    public $timestamps = false;
 
     protected $fillable = [
         'nombre',

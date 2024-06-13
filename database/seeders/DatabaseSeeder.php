@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             BaseSeeder::class,
             TrackingProcesoSeeder::class,
             TrackingEstadoSeeder::class,
+            DiaSemanaSeeder::class,
+            MesSeeder::class,
         ]);
     }
 }

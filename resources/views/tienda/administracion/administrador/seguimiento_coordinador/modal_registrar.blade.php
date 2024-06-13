@@ -7,14 +7,128 @@
     </div>
                 
     <div class="modal-body" style="max-height:700px; overflow:auto;">
-        <div class="col-md-12 row">
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Base:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <select class="form-control multivalue" name="bases[]" id="bases" multiple="multiple">
+                </select>
+            </div>
+
+            <div class="form-group col-lg-6">
+                <input type="checkbox" name="todos" id="todos" value="1">
+                <label for="todos">Seleccionar todas las bases</label>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Área:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <select class="form-control" name="id_area" id="id_area">
+                    <option value="0">Seleccione</option>
+                </select>
+            </div>
+
+            <div class="form-group col-lg-2">
+                <label>Periocidad:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <select class="form-control" name="id_periocidad" id="id_periocidad" onchange="Periocidad();">
+                    <option value="0">Seleccione</option>
+                    <option value="1">Diario</option>
+                    <option value="2">Semanal</option>
+                    <option value="3">Quincenal</option>
+                    <option value="4">Mensual</option>
+                    <option value="5">Anual</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2 div_semanal">
+                <label>Día 1:</label>
+            </div>
+            <div class="form-group col-lg-4 div_semanal">
+                <select class="form-control" name="nom_dia_1" id="nom_dia_1">
+                    <option value="0">Seleccione</option>
+                </select>
+            </div>
+
+            <div class="form-group col-lg-2 div_semanal">
+                <label>Día 2:</label>
+            </div>
+            <div class="form-group col-lg-4 div_semanal">
+                <select class="form-control" name="nom_dia_2" id="nom_dia_2">
+                    <option value="0">Seleccione</option>
+                </select>
+            </div>
+
+            <div class="form-group col-lg-2 div_semanal">
+                <label>Día 3:</label>
+            </div>
+            <div class="form-group col-lg-4 div_semanal">
+                <select class="form-control" name="nom_dia_3" id="nom_dia_3">
+                    <option value="0">Seleccione</option>
+                </select>
+            </div>
+
+            <div class="form-group col-lg-2 div_quincenal">
+                <label>Día 1:</label>
+            </div>
+            <div class="form-group col-lg-4 div_quincenal">
+                <select class="form-control" name="dia_1" id="dia_1">
+                    <option value="0">Seleccione</option>
+                    <?php $i=1; while($i<=28){ ?>
+                        <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                    <?php $i++; } ?>
+                </select>
+            </div>
+
+            <div class="form-group col-lg-2 div_quincenal">
+                <label>Día 2:</label>
+            </div>
+            <div class="form-group col-lg-4 div_quincenal">
+                <select class="form-control" name="dia_2" id="dia_2">
+                    <option value="0">Seleccione</option>
+                    <?php $i=1; while($i<=28){ ?>
+                        <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                    <?php $i++; } ?>
+                </select>
+            </div>
+
+            <div class="form-group col-lg-2 div_anual">
+                <label>Mes:</label>
+            </div>
+            <div class="form-group col-lg-4 div_anual">
+                <select class="form-control" name="mes" id="mes">
+                    <option value="0">Seleccione</option>
+                </select>
+            </div>
+
+            <div class="form-group col-lg-2 div_mensual">
+                <label>Día:</label>
+            </div>
+            <div class="form-group col-lg-4 div_mensual">
+                <select class="form-control" name="dia" id="dia">
+                    <option value="0">Seleccione</option>
+                    <?php $i=1; while($i<=28){ ?>
+                        <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                    <?php $i++; } ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="form-group col-lg-2">
                 <label>Descripción:</label>
             </div>
             <div class="form-group col-lg-10">
-                <input type="text" class="form-control" id="descripcion" name="descripcion" placeholder="Ingresar Descripción">
+                <input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Ingresar Descripción">
             </div>
-        </div>  	           	                	        
+        </div>   
     </div>
 
     <div class="modal-footer">
