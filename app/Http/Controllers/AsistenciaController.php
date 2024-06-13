@@ -27,7 +27,7 @@ class AsistenciaController extends Controller
 
     //parte superior de pestañas
     public function index(){
-        $list_asistencia = $this->modelo->buscar_reporte_control_asistencia(06,2024,'OFC',76244986,0,1,1,'2024-06-13','2024-06-13');
+        $list_asistencia = $this->modelo->buscar_reporte_control_asistencia('06','2024','OFC','76244986','1','2024-06-13','2024-06-13');
         print_r($list_asistencia);
         return view('rrhh.Asistencia.reporte.index');
     }
