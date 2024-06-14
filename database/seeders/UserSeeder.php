@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\UsuariosModel;
+use App\Models\Usuario;
 
 class UserSeeder extends Seeder
 {
@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $usuario = new UsuariosModel();
+        $usuario = new Usuario();
         $usuario->usuario_apater = 'SANTE';
         $usuario->usuario_amater = 'BARRERA';
         $usuario->usuario_nombres = 'FIDEL';
