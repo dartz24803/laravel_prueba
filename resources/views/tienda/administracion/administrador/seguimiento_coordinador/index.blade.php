@@ -8,30 +8,91 @@
 </div>
 
 @csrf
-<div class="table-responsive mb-4 mt-4" id="lista_c_supervision_tienda">
+<div class="table-responsive mb-4 mt-4" id="lista_c_seguimiento_coordinador">
 </div>
 
 <script>
-    Lista_C_Supervision_Tienda();
+    Lista_C_Seguimiento_Coordinador();
 
-    function Lista_C_Supervision_Tienda(){
+    function Lista_C_Seguimiento_Coordinador(){
         Cargando();
 
-        var url = "{{ route('administrador_conf_st.list') }}";
+        var url = "{{ route('administrador_conf_sc.list') }}";
 
         $.ajax({
             url: url,
             type: "GET",
             success:function (resp) {
-                $('#lista_c_supervision_tienda').html(resp);  
+                $('#lista_c_seguimiento_coordinador').html(resp);  
             }
         });
     }
 
-    function Delete_C_Supervision_Tienda(id) {
+    
+    function Periocidad(v){
+        var id_periocidad = $("#id_periocidad"+v).val();
+
+        if(id_periocidad==2){
+            $(".div_semanal"+v).show();
+            $(".div_quincenal"+v).hide();
+            $("#dia_1"+v).val(0);
+            $("#dia_2"+v).val(0);
+            $(".div_mensual"+v).hide();
+            $("#dia"+v).val(0);
+            $(".div_anual"+v).hide();
+            $("#mes"+v).val(0);
+        }else if(id_periocidad==3){
+            $(".div_quincenal"+v).show();
+            $(".div_semanal"+v).hide();
+            $("#nom_dia_1"+v).val(0);
+            $("#nom_dia_2"+v).val(0);
+            $("#nom_dia_3"+v).val(0);
+            $(".div_mensual"+v).hide();
+            $("#dia"+v).val(0);
+            $(".div_anual"+v).hide();
+            $("#mes"+v).val(0);
+        }else if(id_periocidad==4){
+            $(".div_mensual"+v).show();
+            $(".div_semanal"+v).hide();
+            $("#nom_dia_1"+v).val(0);
+            $("#nom_dia_2"+v).val(0);
+            $("#nom_dia_3"+v).val(0);
+            $(".div_quincenal"+v).hide();
+            $("#dia_1"+v).val(0);
+            $("#dia_2"+v).val(0);
+            $(".div_anual"+v).hide();
+            $("#mes"+v).val(0);
+            $("#dia"+v).val(0);
+        }else if(id_periocidad==5){
+            $(".div_mensual"+v).show();
+            $(".div_semanal"+v).hide();
+            $("#nom_dia_1"+v).val(0);
+            $("#nom_dia_2"+v).val(0);
+            $("#nom_dia_3"+v).val(0);
+            $(".div_quincenal"+v).hide();
+            $("#dia_1"+v).val(0);
+            $("#dia_2"+v).val(0);
+            $("#dia"+v).val(0);
+            $(".div_anual"+v).show();
+        }else{
+            $(".div_semanal"+v).hide();
+            $("#nom_dia_1"+v).val(0);
+            $("#nom_dia_2"+v).val(0);
+            $("#nom_dia_3"+v).val(0);
+            $(".div_quincenal"+v).hide();
+            $("#dia_1"+v).val(0);
+            $("#dia_2"+v).val(0);
+            $(".div_mensual"+v).hide();
+            $("#dia"+v).val(0);
+            $(".div_anual"+v).hide();
+            $("#mes"+v).val(0);
+        }
+    }
+
+    function Delete_C_Seguimiento_Coordinador(id) {
         Cargando();
 
-        var url = "{{ route('administrador_conf_st.destroy', ':id') }}".replace(':id', id);
+        var url = "{{ route('administrador_conf_sc.destroy', ':id') }}".replace(':id', id);
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({
@@ -57,7 +118,7 @@
                             'El registro ha sido eliminado satisfactoriamente.',
                             'success'
                         ).then(function() {
-                            Lista_C_Supervision_Tienda();
+                            Lista_C_Seguimiento_Coordinador();
                         });    
                     }
                 });

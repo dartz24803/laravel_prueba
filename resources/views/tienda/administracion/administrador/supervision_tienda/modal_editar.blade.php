@@ -1,4 +1,4 @@
-<form id="formularioe"  method="POST" enctype="multipart/form-data" class="needs-validation">
+<form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title">Editar Supervisión de tienda:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -7,7 +7,7 @@
     </div> 
 
     <div class="modal-body" style="max-height:700px; overflow:auto;">
-        <div class="col-md-12 row">
+        <div class="row">
             <div class="form-group col-lg-2">
                 <label>Descripción:</label>
             </div>
@@ -41,7 +41,7 @@
             success: function(data) {
                 if(data=="error"){
                     Swal({
-                        title: 'Actualización Denegada',
+                        title: '¡Actualización Denegada!',
                         text: "¡El registro ya existe!",
                         type: 'error',
                         showCancelButton: false,
@@ -50,8 +50,8 @@
                     });
                 }else{
                     swal.fire(
-                        'Actualización Exitosa!',
-                        'Haga clic en el botón!',
+                        '¡Actualización Exitosa!',
+                        '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
                         Lista_C_Supervision_Tienda();

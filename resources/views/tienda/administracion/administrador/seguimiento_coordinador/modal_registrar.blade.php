@@ -1,4 +1,4 @@
-<form id="formulario"  method="POST" enctype="multipart/form-data" class="needs-validation">
+<form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title">Registrar Nuevo Seguimiento al coordinador:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -13,6 +13,9 @@
             </div>
             <div class="form-group col-lg-4">
                 <select class="form-control multivalue" name="bases[]" id="bases" multiple="multiple">
+                    @foreach ($list_base as $list)
+                        <option value="{{ $list->cod_base }}">{{ $list->cod_base }}</option>
+                    @endforeach
                 </select>
             </div>
 
@@ -29,6 +32,9 @@
             <div class="form-group col-lg-4">
                 <select class="form-control" name="id_area" id="id_area">
                     <option value="0">Seleccione</option>
+                    @foreach ($list_area as $list)
+                        <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
+                    @endforeach
                 </select>
             </div>
 
@@ -36,7 +42,7 @@
                 <label>Periocidad:</label>
             </div>
             <div class="form-group col-lg-4">
-                <select class="form-control" name="id_periocidad" id="id_periocidad" onchange="Periocidad();">
+                <select class="form-control" name="id_periocidad" id="id_periocidad" onchange="Periocidad('');">
                     <option value="0">Seleccione</option>
                     <option value="1">Diario</option>
                     <option value="2">Semanal</option>
@@ -48,75 +54,93 @@
         </div>
 
         <div class="row">
-            <div class="form-group col-lg-2 div_semanal">
+            <div class="form-group col-lg-2 div_semanal" style="display: none;">
                 <label>Día 1:</label>
             </div>
-            <div class="form-group col-lg-4 div_semanal">
+            <div class="form-group col-lg-4 div_semanal" style="display: none;">
                 <select class="form-control" name="nom_dia_1" id="nom_dia_1">
                     <option value="0">Seleccione</option>
+                    @foreach ($list_dia_semana as $list)
+                        <option value="{{ $list->id }}">{{ $list->nombre }}</option>
+                    @endforeach
                 </select>
             </div>
 
-            <div class="form-group col-lg-2 div_semanal">
+            <div class="form-group col-lg-2 div_semanal" style="display: none;">
                 <label>Día 2:</label>
             </div>
-            <div class="form-group col-lg-4 div_semanal">
+            <div class="form-group col-lg-4 div_semanal" style="display: none;">
                 <select class="form-control" name="nom_dia_2" id="nom_dia_2">
                     <option value="0">Seleccione</option>
+                    @foreach ($list_dia_semana as $list)
+                        <option value="{{ $list->id }}">{{ $list->nombre }}</option>
+                    @endforeach
                 </select>
             </div>
 
-            <div class="form-group col-lg-2 div_semanal">
+            <div class="form-group col-lg-2 div_semanal" style="display: none;">
                 <label>Día 3:</label>
             </div>
-            <div class="form-group col-lg-4 div_semanal">
+            <div class="form-group col-lg-4 div_semanal" style="display: none;">
                 <select class="form-control" name="nom_dia_3" id="nom_dia_3">
                     <option value="0">Seleccione</option>
+                    @foreach ($list_dia_semana as $list)
+                        <option value="{{ $list->id }}">{{ $list->nombre }}</option>
+                    @endforeach
                 </select>
             </div>
 
-            <div class="form-group col-lg-2 div_quincenal">
+            <div class="form-group col-lg-2 div_quincenal" style="display: none;">
                 <label>Día 1:</label>
             </div>
-            <div class="form-group col-lg-4 div_quincenal">
+            <div class="form-group col-lg-4 div_quincenal" style="display: none;">
                 <select class="form-control" name="dia_1" id="dia_1">
                     <option value="0">Seleccione</option>
-                    <?php $i=1; while($i<=28){ ?>
-                        <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
-                    <?php $i++; } ?>
+                    @php $i=1; @endphp
+                    @while ($i<=28)
+                        <option value="{{ $i }}">{{ $i }}</option>
+                        @php $i++; @endphp
+                    @endwhile
                 </select>
             </div>
 
-            <div class="form-group col-lg-2 div_quincenal">
+            <div class="form-group col-lg-2 div_quincenal" style="display: none;">
                 <label>Día 2:</label>
             </div>
-            <div class="form-group col-lg-4 div_quincenal">
+            <div class="form-group col-lg-4 div_quincenal" style="display: none;">
                 <select class="form-control" name="dia_2" id="dia_2">
                     <option value="0">Seleccione</option>
-                    <?php $i=1; while($i<=28){ ?>
-                        <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
-                    <?php $i++; } ?>
+                    @php $i=1; @endphp
+                    @while ($i<=28)
+                        <option value="{{ $i }}">{{ $i }}</option>
+                        @php $i++; @endphp
+                    @endwhile
                 </select>
             </div>
 
-            <div class="form-group col-lg-2 div_anual">
+            <div class="form-group col-lg-2 div_anual" style="display: none;">
                 <label>Mes:</label>
             </div>
-            <div class="form-group col-lg-4 div_anual">
+            <div class="form-group col-lg-4 div_anual" style="display: none;">
                 <select class="form-control" name="mes" id="mes">
                     <option value="0">Seleccione</option>
+                    @foreach ($list_mes as $list)
+                        <option value="{{ $list->id_mes }}">{{ $list->nom_mes }}</option>
+                    @endforeach
                 </select>
             </div>
 
-            <div class="form-group col-lg-2 div_mensual">
+            <div class="form-group col-lg-2 div_mensual" style="display: none;">
                 <label>Día:</label>
             </div>
-            <div class="form-group col-lg-4 div_mensual">
+            <div class="form-group col-lg-4 div_mensual" style="display: none;">
                 <select class="form-control" name="dia" id="dia">
                     <option value="0">Seleccione</option>
-                    <?php $i=1; while($i<=28){ ?>
-                        <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
-                    <?php $i++; } ?>
+                    @php $i=1; @endphp
+                    @while ($i<=28)
+                        <option value="{{ $i }}">{{ $i }}</option>
+                        @php $i++; @endphp
+                    @endwhile
                 </select>
             </div>
         </div>
@@ -133,17 +157,26 @@
 
     <div class="modal-footer">
         @csrf
-        <button class="btn btn-primary" type="button" onclick="Insert_C_Supervision_Tienda();">Guardar</button>
+        <input type="hidden" name="dummy_field" value="0">
+        <button class="btn btn-primary" type="button" onclick="Insert_C_Seguimiento_Coordinador();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
-    function Insert_C_Supervision_Tienda() {
+    var ss = $(".multivalue").select2({
+        tags: true
+    });
+
+    $('.multivalue').select2({
+        dropdownParent: $('#ModalRegistro')
+    });
+
+    function Insert_C_Seguimiento_Coordinador() {
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario'));
-        var url = "{{ route('administrador_conf_st.store') }}";
+        var url = "{{ route('administrador_conf_sc.store') }}";
 
         $.ajax({
             url: url,
@@ -154,7 +187,7 @@
             success: function(data) {
                 if(data=="error"){
                     Swal({
-                        title: 'Registro Denegado',
+                        title: '¡Registro Denegado!',
                         text: "¡El registro ya existe!",
                         type: 'error',
                         showCancelButton: false,
@@ -163,12 +196,12 @@
                     });
                 }else{
                     swal.fire(
-                        'Registro Exitoso!',
-                        'Haga clic en el botón!',
+                        '¡Registro Exitoso!',
+                        '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
                         @if ($validador!=1)
-                            Lista_C_Supervision_Tienda();
+                            Lista_C_Seguimiento_Coordinador();
                         @endif
                         $("#ModalRegistro .close").click();
                     })
