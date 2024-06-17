@@ -1,22 +1,31 @@
-<table id="tabla_js" class="table" style="width:100%">
+<table id="tabla_js" class="table table-hover" style="width:100%">
     <thead>
         <tr class="text-center">
-            <th width="90%">Descripción</th>
+            <th width="10%">Base</th>
+            <th width="20%">Área</th>
+            <th width="10%">Periocidad</th>
+            <th width="10%">Día(s)</th>
+            <th width="40%">Descripción</th>
             <th width="10%" class="no-content"></th>
         </tr>
     </thead>
+
     <tbody>
-        @foreach ($list_c_supervision_tienda as $list)
+        @foreach ($list_c_seguimiento_coordinador as $list)
             <tr class="text-center">
+                <td>{{ $list->base }}</td>
+                <td class="text-left">{{ $list->nom_area }}</td>
+                <td>{{ $list->periocidad }}</td>
+                <td class="text-left">{{ $list->dia }}</td>
                 <td class="text-left">{{ $list->descripcion }}</td>
-                <td>
-                    <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('administrador_conf_st.edit', $list->id) }}">
+                <td class="text-center">
+                    <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('administrador_conf_sc.edit', $list->id) }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                         </svg>
                     </a>
 
-                    <a href="javascript:void(0);" title="Eliminar" onclick="Delete_C_Supervision_Tienda('{{ $list->id }}')">
+                    <a href="javascript:void(0);" title="Eliminar" onclick="Delete_C_Seguimiento_Coordinador('{{ $list->id }}')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
                             <polyline points="3 6 5 6 21 6"></polyline>
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -27,7 +36,7 @@
             </tr>
         @endforeach
     </tbody>
-</table>    
+</table> 
 
 <script>
     $(document).ready(function() {
@@ -35,6 +44,7 @@
             "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
             "<'table-responsive'tr>" +
             "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+            responsive: true,
             "oLanguage": {
                 "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
                 "sInfo": "Mostrando página _PAGE_ de _PAGES_",
