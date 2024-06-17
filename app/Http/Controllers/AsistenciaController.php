@@ -105,9 +105,9 @@ class AsistenciaController extends Controller
             $n_documento=$num_doc;
 
             if($id_puesto==29 || $id_puesto==161 || $id_puesto==197){
-                return view('rrhh.Asistencia.reporte.listarct', compact('fecha_inicio','fecha_fin','list_asistencia','list_colaborador','n_doc'));
+                return view('rrhh.Asistencia.reporte.listarct', compact('fecha_inicio','fecha_fin','list_asistencia','list_colaborador','n_documento'));
             }else{
-                return view('rrhh.Asistencia.reporte.listar', compact('fecha_inicio','fecha_fin','list_asistencia','list_colaborador','n_doc'));
+                return view('rrhh.Asistencia.reporte.listar', compact('fecha_inicio','fecha_fin','list_asistencia','list_colaborador','n_documento'));
             }
     }
 }
