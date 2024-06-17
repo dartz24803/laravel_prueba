@@ -172,7 +172,7 @@ Route::controller(CuadroControlVisualController::class)->group(function(){
 Route::controller(AsistenciaController::class)->group(function(){
     //------------------------------CCV------------------------------------//
     Route::get('Reporte_Control_Asistencia', 'index')->name('Reporte_Control_Asistencia');
-    // Route::post('Lista_Cuadro_Control_Visual_Vista', 'Lista_Cuadro_Control_Visual_Vista');
+    Route::post('Buscar_Reporte_Control_Asistencia', 'Buscar_Reporte_Control_Asistencia');
     // Route::post('/Insert_Cuadro_Control_Visual_Estado', 'Insert_Cuadro_Control_Visual_Estado');
     // Route::post('/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
 });

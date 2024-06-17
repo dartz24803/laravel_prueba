@@ -11,6 +11,7 @@ use App\Models\Gerencia;
 use App\Models\Mes;
 use App\Models\Anio;
 use Illuminate\Support\Facades\Session;
+use DateTime;
 
 class AsistenciaController extends Controller
 {
@@ -66,5 +67,47 @@ class AsistenciaController extends Controller
         /*
         $list_asistencia = $this->modelo->buscar_reporte_control_asistencia('06','2024','OFC','76244986','1','2024-06-13','2024-06-13');
         print_r($list_asistencia);*/
+    }
+
+    public function Buscar_Reporte_Control_Asistencia(Request $request){
+            $id_puesto = Session::get('usuario')->id_puesto;
+            $cod_mes = $request->input("cod_mes");
+            $cod_anio = $request->input("cod_anio");
+            $cod_base = $request->input("cod_base");
+            $num_doc = $request->input("num_doc");
+            $area = $request->input("area");
+            $estado = $request->input("estado");
+            $tipo = $request->input("tipo");
+            $finicio = $request->input("finicio");
+            $ffin = $request->input("ffin");
+            //echo date('Y-m-01'); // first day of this month
+            $year=date('Y');
+            if($tipo==1){
+                $year=$cod_anio;
+                $fecha_inicio = strtotime("01-$cod_mes-$year");
+                $L = new DateTime("$year-$cod_mes-01");
+                $fecha_fin = $L->format( 'Y-m-t' );
+                $timestamp = strtotime($fecha_fin);
+                $fecha_fin = strtotime(date("d-m-Y", $timestamp ));
+            }else{
+                $fecha_inicio = strtotime(date("d-m-Y", strtotime($request->input("finicio"))));
+                $fecha_fin = strtotime(date("d-m-Y", strtotime($request->input("ffin"))));
+
+            }
+
+            $list_asistencia = $this->modelo->buscar_reporte_control_asistencia($cod_mes,$cod_anio,$cod_base,$num_doc,$tipo,$finicio,$ffin);
+
+            if($num_doc!=0){
+                $list_colaborador = $this->modelo->get_list_usuario_xnum_doc($num_doc);
+            }else{
+                $list_colaborador = $this->modelo->get_list_usuarios_x_baset($cod_base,$area,$estado);
+            }
+            $n_documento=$num_doc;
+
+            if($id_puesto==29 || $id_puesto==161 || $id_puesto==197){
+                return view('rrhh.Asistencia.reporte.listarct', compact('fecha_inicio','fecha_fin','list_asistencia','list_colaborador','n_doc'));
+            }else{
+                return view('rrhh.Asistencia.reporte.listar', compact('fecha_inicio','fecha_fin','list_asistencia','list_colaborador','n_doc'));
+            }
     }
 }

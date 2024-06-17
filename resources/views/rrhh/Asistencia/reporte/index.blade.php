@@ -42,7 +42,7 @@
 
 <?php
     use Illuminate\Support\Facades\Session;
-    $sesion= Session::get('usuario')->id_usuario;
+    $sesion= Session::get('usuario');
     $id_nivel=Session::get('usuario')->id_nivel;
     $desvinculacion=Session::get('usuario')->desvinculacion;
     $estado=Session::get('usuario')->estado;
@@ -248,6 +248,348 @@
             div2.style.display = "block";
             div3.style.display = "block";
         }
+
+    }
+
+
+    function Edit_asistencia_diaria(t) {
+        Cargando();
+        var dataString = new FormData(document.getElementById('formulario_asistencia_diaria'));
+        var url = "{{ url('Update_Asistencia_Diaria') }}"
+        if (Valida_edit_asistencia_diaria()) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: dataString,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        if(t==2){
+                            fecha=$('#fecham').val();
+                            num_doc=$('#num_docm').val();
+                            var url = "{{ url('Busqueda_Marcaciones_Todo') }}"
+                            $.ajax({
+                                type: "POST",
+                                url: url,
+                                data: {
+                                    'fecha': fecha,
+                                    'num_doc': num_doc
+                                },
+                                success: function(data) {
+                                    $('#busqueda_marcaciones').html(data);
+                                    $('#ModalUpdate').modal('hide');
+                                    Buscar_Reporte_Asistencia();
+                                }
+                            });
+
+
+                        }else{
+                            $('#ModalUpdate').modal('hide');
+                            //BuscarAsistencia();
+                            Buscar_Reporte_Asistencia();
+                        }
+
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Delete_Marcacion_Todo(id) {
+        Cargando();
+
+        var id = id;
+        var url = "{{ url('Delete_Asistencia_Diaria') }}";
+        Swal({
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        'id_asistencia_remota': id
+                    },
+                    success: function() {
+                        Swal(
+                            'Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            fecha=$('#fecham').val();
+                            num_doc=$('#num_docm').val();
+                            var url = "{{ url('Busqueda_Marcaciones_Todo') }}"
+                            $.ajax({
+                                type: "POST",
+                                url: url,
+                                data: {
+                                    'fecha': fecha,
+                                    'num_doc': num_doc
+                                },
+                                success: function(data) {
+                                    $('#busqueda_marcaciones').html(data);
+                                    Buscar_Reporte_Asistencia();
+                                }
+                            });
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+    function Reg_asistencia_diaria(t) {
+        var dataString = new FormData(document.getElementById('formulario_asistencia_diariareg'));
+        var url = "{{ url('Insert_Asistencia_Diaria') }}"
+        if (Valida_Reg_asistencia_diaria()) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: dataString,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    if(data=="error"){
+                        swal.fire(
+                            'Registro Denegado!',
+                            'El registro ya existe o el usuario no fue encontrado!',
+                            'error'
+                        ).then(function() {
+                        });
+                    }else{
+                        swal.fire(
+                            'Registro Exitoso!',
+                            'Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            $('#ModalUpdate').modal('hide');
+                            if(t==1){
+                                Buscar_Reporte_Asistencia();
+                            }else{
+                                fecha=$('#fecham').val();
+                                num_doc=$('#num_docm').val();
+                                var url = "{{ url('Busqueda_Marcaciones_Todo') }}"
+                                $.ajax({
+                                    type: "POST",
+                                    url: url,
+                                    data: {
+                                        'fecha': fecha,
+                                        'num_doc': num_doc
+                                    },
+                                    success: function(data) {
+                                        $('#busqueda_marcaciones').html(data);
+                                        Buscar_Reporte_Asistencia();
+                                    }
+                                });
+                            }
+
+                        });
+                    }
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Buscar_Reporte_Asistencia() {
+        //var id_gerencia = $('#id_gerencia').val();
+        //var id_area = $('#id_area').val();
+        Cargando();
+        var cod_mes = $('#cod_mes').val();
+        var cod_anio = $('#cod_anio').val();
+        var cod_base = $('#cod_base').val();
+        var num_doc = $('#num_doc').val();
+        var area = $('#id_area').val();
+        var id_puesto = $('#id_puesto').val();
+        if(id_puesto == 29){
+            var estado=1;
+        }else{
+            if ($('#estadosi').is(":checked")){
+                var estado=1;
+            }
+
+            if ($('#estadono').is(":checked")){
+                var estado=3;
+            }
+        }
+        if ($('#tipo1').is(":checked")){
+            var tipo=1;
+        }if ($('#tipo2').is(":checked")){
+            var tipo=2;
+        }
+        var finicio = $('#finicio').val();
+        var ffin = $('#ffin').val();
+
+
+        var url = "{{ url('Buscar_Reporte_Control_Asistencia')}}";
+        if(tipo==2){
+            var ini = moment(finicio);
+            var fin = moment(ffin);
+
+            if (ini.isAfter(fin) == true) {
+                msgDate = 'La Fecha de Inicio no debe ser mayor a la de Fecha de Fin. <br> Porfavor corrígelo. ';
+                inputFocus = '#hora_salida_hoy';
+                bootbox.alert(msgDate)
+                var input = $(inputFocus).parent();
+                $(input).addClass("has-error");
+                $(input).on("change", function() {
+                    if ($(input).hasClass("has-error")) {
+                        $(input).removeClass("has-error");
+                    }
+                });
+            } else {
+                var f1 = finicio;
+                var f2=ffin;
+                if(restaFechas(f1,f2)>31){
+                    msgDate = 'Solo se permite busquedas de hasta 31 días';
+                    inputFocus = '#hora_salida_hoy';
+                    bootbox.alert(msgDate)
+                    var input = $(inputFocus).parent();
+                    $(input).addClass("has-error");
+                    $(input).on("change", function() {
+                        if ($(input).hasClass("has-error")) {
+                            $(input).removeClass("has-error");
+                        }
+                    });
+                }else{
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: {
+                            'cod_mes': cod_mes,
+                            'cod_anio': cod_anio,
+                            'cod_base': cod_base,
+                            'num_doc': num_doc,
+                            'area': area,
+                            'estado': estado,
+                            'tipo': tipo,
+                            'finicio': finicio,
+                            'ffin': ffin
+                        },
+                        success: function(data) {
+                            $('#lista_colaborador').html(data);
+                        }
+                    });
+                }
+
+
+            }
+        }else{
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    'cod_mes': cod_mes,
+                    'cod_anio': cod_anio,
+                    'cod_base': cod_base,
+                    'num_doc': num_doc,
+                    'area': area,
+                    'estado': estado,
+                    'tipo': tipo,
+                    'finicio': finicio,
+                    'ffin': ffin
+                },
+                success: function(data) {
+                    $('#lista_colaborador').html(data);
+                }
+            });
+        }
+
+
+
+    }
+
+    function Excel_Reporte_Asistencia() {
+        //var id_gerencia = $('#id_gerencia').val();
+        //var id_area = $('#id_area').val();
+        Cargando();
+        var cod_mes = $('#cod_mes').val();
+        var cod_anio = $('#cod_anio').val();
+        var cod_base = $('#cod_base').val();
+        var num_doc = $('#num_doc').val();
+        var area = $('#id_area').val();
+        if ($('#estadosi').is(":checked")){
+            var estado=1;
+        }if ($('#estadono').is(":checked")){
+            var estado=3;
+        }
+        if ($('#tipo1').is(":checked")){
+            var tipo=1;
+        }if ($('#tipo2').is(":checked")){
+            var tipo=2;
+        }
+        var finicio = $('#finicio').val();
+        var ffin = $('#ffin').val();
+
+        var url = "{{ url('Buscar_Reporte_Control_Asistencia') }}";
+        if(tipo==2){
+            var ini = moment(finicio);
+            var fin = moment(ffin);
+
+            if (ini.isAfter(fin) == true) {
+                msgDate = 'La Fecha de Inicio no debe ser mayor a la de Fecha de Fin. <br> Porfavor corrígelo. ';
+                inputFocus = '#hora_salida_hoy';
+                bootbox.alert(msgDate)
+                var input = $(inputFocus).parent();
+                $(input).addClass("has-error");
+                $(input).on("change", function() {
+                    if ($(input).hasClass("has-error")) {
+                        $(input).removeClass("has-error");
+                    }
+                });
+            } else {
+                var f1 = finicio;
+                var f2=ffin;
+                if(restaFechas(f1,f2)>31){
+                    msgDate = 'Solo se permite busquedas de hasta 31 días';
+                    inputFocus = '#hora_salida_hoy';
+                    bootbox.alert(msgDate)
+                    var input = $(inputFocus).parent();
+                    $(input).addClass("has-error");
+                    $(input).on("change", function() {
+                        if ($(input).hasClass("has-error")) {
+                            $(input).removeClass("has-error");
+                        }
+                    });
+                }else{
+                    //window.location = "<?php //echo site_url(); ?>Asistencia/Excel_Reporte_Asistencia/"+cod_mes+"/"+cod_anio+"/"+cod_base+"/"+num_doc+"/"+area+"/"+estado+"/"+tipo+"/"+finicio+"/"+ffin;
+                }
+
+
+            }
+        }else{
+            //window.location = "<?php //echo site_url(); ?>Asistencia/Excel_Reporte_Asistencia/"+cod_mes+"/"+cod_anio+"/"+cod_base+"/"+num_doc+"/"+area+"/"+estado+"/"+tipo+"/"+finicio+"/"+ffin;
+        }
+
 
     }
 </script>
