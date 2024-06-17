@@ -44,14 +44,14 @@ class Base extends Model
 
     public static function get_list_base_tracking()
     {
-        $sql = "SELECT cod_base FROM base 
+        $sql = "SELECT cod_base FROM base
                 WHERE estado=1 AND (cod_base='CD' OR (cod_base LIKE 'B%' AND CHAR_LENGTH(cod_base)=3))
                 GROUP BY cod_base
                 ORDER BY cod_base ASC";
         $query = DB::select($sql);
         return $query;
     }
-    
+
     //listar bases para select en ccv
     function listar_bases_b(){
         return $this->select('id_base','cod_base')->where('cod_base','LIKE', 'B%')->orderBy("cod_base",'ASC')->get()->toArray();
