@@ -54,14 +54,14 @@
                                 $parte = explode("--", $list_asistencia[$posicion]['ingreso']);
                                 echo $parte[0];
                                 ?>
-                                <a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Update_Asistencia') ?>/<?php echo $parte[1]; ?>/<?php echo $cadenaConvert; ?>" >
+                                <a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Asistencia/Modal_Update_Asistencia/' .$parte[1]/ .$cadenaConvert) }}" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a>
                                 <?php
                                 }else{?>
-                                    <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
+                                    <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Asistencia/Modal_Reg_Asistencia/' echo date('d-m-Y',$i);/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                         </svg>
@@ -73,13 +73,13 @@
                             <td> <?php if($list_asistencia[$posicion]['salidasabado']!=null){
                                     $parte = explode("--", $list_asistencia[$posicion]['salidasabado']);
                                     echo $parte[0];
-                                    ?><a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Update_Asistencia') ?>/<?php echo $parte[1]; ?>/<?php echo $cadenaConvert; ?>" >
+                                    ?><a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Asistencia/Modal_Update_Asistencia/' .$parte[1]/ .$cadenaConvert) }}" >
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                         </svg>
                                     </a><?php
                                 }else{?>
-                                    <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
+                                    <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Modal_Reg_Asistencia/' .date('d-m-Y',$i);/ .$list['num_doc'];/ .$cadenaConvert/1) }}" >
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                         </svg>
@@ -88,7 +88,7 @@
                             </td>
                             <td> <?php if($list_asistencia[$posicion]['ingreso']!=null && $list_asistencia[$posicion]['salidasabado']!=null){ if($n_documento!=0){$d=$d+1;}  echo "1"; }else{echo "0"; } ?> </td>
                             <td>
-                                <a href="javascript:void(0);" title="Detalle" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="<?= site_url('Asistencia/Modal_Marcaciones_Todo') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>" >
+                                <a href="javascript:void(0);" title="Detalle" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="{{ url('Modal_Marcaciones_Todo/'.date('d-m-Y',$i); / .$list['num_doc']; / .$cadenaConvert) }}" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye text-success">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle></svg>
@@ -105,14 +105,14 @@
                                 $parte = explode("--", $list_asistencia[$posicion]['ingreso']);
                                 echo $parte[0];
                                 ?>
-                                <a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Update_Asistencia') ?>/<?php echo $parte[1]; ?>/<?php echo $cadenaConvert; ?>" >
+                                <a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Asistencia/Modal_Update_Asistencia') ?>/ .$parte[1]/ .$cadenaConvert) }}" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a>
                                 <?php
                                 }else{?>
-                                    <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
+                                    <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Asistencia/Modal_Reg_Asistenci/' .date('d-m-Y',$i)/ .$list['num_doc']/<?php echo $cadenaConvert; ?>/1" >
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                         </svg>
@@ -122,13 +122,13 @@
                             <td> <?php if($list_asistencia[$posicion]['idescanso']!=null){
                                 $parte = explode("--", $list_asistencia[$posicion]['idescanso']);
                                 echo $parte[0];
-                                ?><a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Update_Asistencia') ?>/<?php echo $parte[1]; ?>/<?php echo $cadenaConvert; ?>" >
+                                ?><a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Asistencia/Modal_Update_Asistencia') ?>/<?php echo $parte[1]; ?>/<?php echo $cadenaConvert; ?>" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a><?php
                             }else{?>
-                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
+                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
@@ -138,13 +138,13 @@
                             <td> <?php if($list_asistencia[$posicion]['fdescanso']!=null){
                                 $parte = explode("--", $list_asistencia[$posicion]['fdescanso']);
                                 echo $parte[0];
-                                ?><a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Update_Asistencia') ?>/<?php echo $parte[1]; ?>/<?php echo $cadenaConvert; ?>" >
+                                ?><a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Asistencia/Modal_Update_Asistencia') ?>/<?php echo $parte[1]; ?>/<?php echo $cadenaConvert; ?>" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a><?php
                             }else{?>
-                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
+                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
@@ -154,13 +154,13 @@
                             <td> <?php if($list_asistencia[$posicion]['salida']!=null){
                                 $parte = explode("--", $list_asistencia[$posicion]['salida']);
                                 echo $parte[0];
-                                ?><a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Update_Asistencia') ?>/<?php echo $parte[1]; ?>/<?php echo $cadenaConvert; ?>" >
+                                ?><a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Asistencia/Modal_Update_Asistencia') ?>/<?php echo $parte[1]; ?>/<?php echo $cadenaConvert; ?>" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a><?php
                             }else{?>
-                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
+                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
@@ -172,7 +172,7 @@
                             $list_asistencia[$posicion]['fdescanso']!=null && $list_asistencia[$posicion]['salida']!=null || $nombredia=="Domingo"){
                                 if(date("Y-m-d",$i)>=$list['fec_inicio']){$d=$d+1; echo "1";}else{echo "0";}   }else{echo "0"; } ?> </td>
                             <td>
-                                <a href="javascript:void(0);" title="Detalle" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="<?= site_url('Asistencia/Modal_Marcaciones_Todo') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>" >
+                                <a href="javascript:void(0);" title="Detalle" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="{{ url('Asistencia/Modal_Marcaciones_Todo') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye text-success">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle></svg>
@@ -189,7 +189,7 @@
                             <td> <?php echo $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']; ?></td>
                             <td> <?PHP  echo $nombredia." ".$numeroDia." de ".$nombreMes." de ".$anio; ?> </td>
                             <td>
-                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
+                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
@@ -200,7 +200,7 @@
                             <td>
                             </td>
                             <td>
-                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
+                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
@@ -208,7 +208,7 @@
                             </td>
                             <td>0</td>
                             <td>
-                                <a href="javascript:void(0);" title="Detalle" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="<?= site_url('Asistencia/Modal_Marcaciones_Todo') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>" >
+                                <a href="javascript:void(0);" title="Detalle" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="{{ url('Asistencia/Modal_Marcaciones_Todo') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye text-success">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle></svg>
@@ -221,28 +221,28 @@
                             <td> <?php echo $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']; ?></td>
                             <td> <?PHP  echo $nombredia." ".$numeroDia." de ".$nombreMes." de ".$anio; ?> </td>
                             <td>
-                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
+                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a>
                             </td>
                             <td>
-                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
+                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a>
                             </td>
                             <td>
-                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
+                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a>
                             </td>
                             <td>
-                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
+                                <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
@@ -251,7 +251,7 @@
                             <td><?php if($nombredia=="Domingo"){
                                 if(date("Y-m-d",$i)>=$list['fec_inicio']){$d=$d+1; echo "1";}else{echo "0";}  }else{echo "0"; } ?></td>
                             <td>
-                                <a href="javascript:void(0);" title="Detalle" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="<?= site_url('Asistencia/Modal_Marcaciones_Todo') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>" >
+                                <a href="javascript:void(0);" title="Detalle" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="{{ url('Asistencia/Modal_Marcaciones_Todo') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye text-success">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle></svg>
