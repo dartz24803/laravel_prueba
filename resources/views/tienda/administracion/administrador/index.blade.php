@@ -7,7 +7,7 @@
                 <div id="tabsSimple" class="col-lg-12 col-12 layout-spacing">
                     <div class="statbox widget box box-shadow">
                         <div class="widget-content widget-content-area simple-tab">
-                            <ul class="nav nav-tabs ml-3 mb-3 mt-3" id="simpletab" role="tablist">
+                            <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                                 <li class="nav-item">
                                     <a id="a_st" class="nav-link" onclick="Supervision_Tienda();" style="cursor: pointer;">Supervisión de tienda</a>
                                 </li>

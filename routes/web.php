@@ -93,7 +93,7 @@ Route::controller(AdministradorController::class)->group(function(){
     Route::put('administrador_conf_st/{id}', 'update_conf_st')->name('administrador_conf_st.update');
     Route::delete('administrador_conf_st/{id}', 'destroy_conf_st')->name('administrador_conf_st.destroy');
     Route::get('administrador_conf_sc', 'index_conf_sc')->name('administrador_conf_sc');
-    Route::get('administrador_conf_sc/list', 'list_conf_sc')->name('administrador_conf_sc.list');
+    Route::post('administrador_conf_sc/list', 'list_conf_sc')->name('administrador_conf_sc.list');
     Route::get('administrador_conf_sc/{id}/create', 'create_conf_sc')->name('administrador_conf_sc.create');
     Route::post('administrador_conf_sc', 'store_conf_sc')->name('administrador_conf_sc.store');
     Route::get('administrador_conf_sc/{id}/edit', 'edit_conf_sc')->name('administrador_conf_sc.edit');

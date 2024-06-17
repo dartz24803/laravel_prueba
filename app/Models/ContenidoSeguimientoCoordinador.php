@@ -35,11 +35,11 @@ class ContenidoSeguimientoCoordinador extends Model
         'user_eli'
     ];
 
-    public static function get_list_c_seguimiento_coordinador(){
+    public static function get_list_c_seguimiento_coordinador($dato){
         $parte_b = "";
         $parte_a = "";
         $parte_p = "";
-        /*if($dato['base']!="0"){
+        if($dato['base']!="0"){
             $parte_b = "cs.base='".$dato['base']."' AND";
         }
         if($dato['id_area']!="0"){
@@ -47,7 +47,7 @@ class ContenidoSeguimientoCoordinador extends Model
         }
         if($dato['id_periocidad']!="0"){
             $parte_p = "cs.id_periocidad=".$dato['id_periocidad']." AND";
-        }*/
+        }
         $sql = "SELECT cs.id,cs.base,ar.nom_area,CASE WHEN cs.id_periocidad=1 THEN 'Diario'
                 WHEN cs.id_periocidad=2 THEN 'Semanal' WHEN cs.id_periocidad=3 THEN 'Quincenal'
                 WHEN cs.id_periocidad=4 THEN 'Mensual'

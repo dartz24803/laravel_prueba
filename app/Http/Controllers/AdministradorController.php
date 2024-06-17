@@ -100,12 +100,14 @@ class AdministradorController extends Controller
 
     public function index_conf_sc()
     {
-        return view('tienda.administracion.administrador.seguimiento_coordinador.index');
+        $list_base = Base::get_list_base_administrador_sc();
+        $list_area = Area::select('id_area','nom_area')->where('estado',1)->orderBy('nom_area','ASC')->get();
+        return view('tienda.administracion.administrador.seguimiento_coordinador.index', compact('list_base','list_area'));
     }
 
-    public function list_conf_sc()
+    public function list_conf_sc(Request $request)
     {
-        $list_c_seguimiento_coordinador = ContenidoSeguimientoCoordinador::get_list_c_seguimiento_coordinador();
+        $list_c_seguimiento_coordinador = ContenidoSeguimientoCoordinador::get_list_c_seguimiento_coordinador(['base'=>$request->base,'id_area'=>$request->area,'id_periocidad'=>$request->periocidad]);
         return view('tienda.administracion.administrador.seguimiento_coordinador.lista', compact('list_c_seguimiento_coordinador'));
     }
 

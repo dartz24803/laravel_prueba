@@ -20,6 +20,7 @@
     <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
     <link rel="stylesheet" type="text/css" href="{{ asset('template/plugins/table/datatable/datatables.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('template/plugins/table/datatable/dt-global_style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('template/table-responsive/responsive.dataTables.min.css') }}">
     <!-- END PAGE LEVEL CUSTOM STYLES -->
     <!-- BEGIN THEME GLOBAL STYLES -->
     <link rel="stylesheet" type="text/css" href="{{ asset('template/plugins/select2/select2.min.css') }}">
@@ -1038,6 +1039,7 @@
     <!-- END GLOBAL MANDATORY SCRIPTS -->
     <!-- BEGIN PAGE LEVEL CUSTOM SCRIPTS -->
     <script src="{{ asset('template/plugins/table/datatable/datatables.js') }}"></script>
+    <script src="{{ asset('template/table-responsive/datatables.responsive.min.js') }}"></script>
     <!-- END PAGE LEVEL CUSTOM SCRIPTS -->
     <script src="{{ asset('template/assets/js/scrollspyNav.js') }}"></script>
 </body>
