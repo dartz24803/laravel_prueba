@@ -1,7 +1,8 @@
 <?php
-    $sesion =  $_SESSION['usuario'][0];
-    $id_nivel=$_SESSION['usuario'][0]['id_nivel'];
-    $id_puesto=$_SESSION['usuario'][0]['id_puesto'];
+    use Illuminate\Support\Facades\Session;
+    $sesion =  Session::get('usuario');
+    $id_nivel = Session::get('usuario')->id_nivel;
+    $id_puesto = Session::get('usuario')->id_puesto;
 
 ?>
 <table id="multi-column-orderingg" class="table table-hover" style="width:100%">
@@ -16,7 +17,7 @@
             <th>Inicio Descanso</th>
             <th>Fin Descanso</th>
             <th>Salida</th>
-            
+
             <th>Día Laborado</th>
             <th>Acciones</th>
         </tr>
@@ -29,7 +30,7 @@
                     $busq_modulo = in_array($list['num_doc']."-".date("d-m-Y",$i), array_column($list_asistencia, 'validador'));
                     $posicion = array_search($list['num_doc']."-".date("d-m-Y",$i), array_column($list_asistencia, 'validador'));
                     $cadenaConvert = str_replace(" ", "-", $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']);
-                    ?><tr><?php 
+                    ?><tr><?php
                             $fecha = date("d-m-Y",$i);
                             $numeroDia = date('d', strtotime($fecha));
                             $dia = date('l', strtotime($fecha));
@@ -42,7 +43,7 @@
                             $meses_EN = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
                             $nombreMes = str_replace($meses_EN, $meses_ES, $mes);
                     if ($busq_modulo == true) {
-                        if($nombredia=="Sábado"){?> 
+                        if($nombredia=="Sábado"){?>
                             <td><?php echo $no; ?></td>
                             <td> <?php echo $list['centro_labores']; ?> </td>
                             <td> <?php echo $list['num_doc']; ?> </td>
@@ -58,8 +59,8 @@
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a>
-                                <?php 
-                                }else{?> 
+                                <?php
+                                }else{?>
                                     <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
@@ -77,13 +78,13 @@
                                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                         </svg>
                                     </a><?php
-                                }else{?> 
+                                }else{?>
                                     <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                         </svg>
                                     </a>
-                                <?php } ?> 
+                                <?php } ?>
                             </td>
                             <td> <?php if($list_asistencia[$posicion]['ingreso']!=null && $list_asistencia[$posicion]['salidasabado']!=null){ if($n_documento!=0){$d=$d+1;}  echo "1"; }else{echo "0"; } ?> </td>
                             <td>
@@ -93,7 +94,7 @@
                                     <circle cx="12" cy="12" r="3"></circle></svg>
                                 </a>
                             </td>
-                        <?php }else{?> 
+                        <?php }else{?>
                             <td><?php echo $no; ?></td>
                             <td> <?php echo $list['centro_labores']; ?> </td>
                             <td> <?php echo $list['num_doc']; ?> </td>
@@ -109,8 +110,8 @@
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a>
-                                <?php 
-                                }else{?> 
+                                <?php
+                                }else{?>
                                     <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
@@ -126,13 +127,13 @@
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a><?php
-                            }else{?> 
+                            }else{?>
                                 <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a>
-                                <?php } ?> 
+                                <?php } ?>
                             </td>
                             <td> <?php if($list_asistencia[$posicion]['fdescanso']!=null){
                                 $parte = explode("--", $list_asistencia[$posicion]['fdescanso']);
@@ -142,13 +143,13 @@
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a><?php
-                            }else{?> 
+                            }else{?>
                                 <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a>
-                                <?php } ?> 
+                                <?php } ?>
                             </td>
                             <td> <?php if($list_asistencia[$posicion]['salida']!=null){
                                 $parte = explode("--", $list_asistencia[$posicion]['salida']);
@@ -158,17 +159,17 @@
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a><?php
-                            }else{?> 
+                            }else{?>
                                 <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a>
-                                <?php } ?> 
+                                <?php } ?>
                             </td>
-                            
-                            <td> <?php if($list_asistencia[$posicion]['ingreso']!=null && $list_asistencia[$posicion]['idescanso']!=null && 
-                            $list_asistencia[$posicion]['fdescanso']!=null && $list_asistencia[$posicion]['salida']!=null || $nombredia=="Domingo"){ 
+
+                            <td> <?php if($list_asistencia[$posicion]['ingreso']!=null && $list_asistencia[$posicion]['idescanso']!=null &&
+                            $list_asistencia[$posicion]['fdescanso']!=null && $list_asistencia[$posicion]['salida']!=null || $nombredia=="Domingo"){
                                 if(date("Y-m-d",$i)>=$list['fec_inicio']){$d=$d+1; echo "1";}else{echo "0";}   }else{echo "0"; } ?> </td>
                             <td>
                                 <a href="javascript:void(0);" title="Detalle" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="<?= site_url('Asistencia/Modal_Marcaciones_Todo') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>" >
@@ -178,10 +179,10 @@
                                 </a>
                             </td>
                         <?php } ?>
-                            
+
                     <?php }
                     else{
-                        if($nombredia=="Sábado"){?> 
+                        if($nombredia=="Sábado"){?>
                             <td><?php echo $no; ?></td>
                             <td><?php echo $list['centro_labores'] ?></td>
                             <td> <?php echo $list['num_doc']; ?> </td>
@@ -192,7 +193,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
-                                </a> 
+                                </a>
                             </td>
                             <td>
                             </td>
@@ -203,7 +204,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
-                                </a>     
+                                </a>
                             </td>
                             <td>0</td>
                             <td>
@@ -213,7 +214,7 @@
                                     <circle cx="12" cy="12" r="3"></circle></svg>
                                 </a>
                             </td>
-                        <?php }else{?> 
+                        <?php }else{?>
                             <td><?php echo $no; ?></td>
                             <td><?php echo $list['centro_labores'] ?></td>
                             <td> <?php echo $list['num_doc']; ?> </td>
@@ -224,28 +225,28 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
-                                </a> 
+                                </a>
                             </td>
                             <td>
                                 <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
-                                </a> 
+                                </a>
                             </td>
                             <td>
                                 <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
-                                </a> 
+                                </a>
                             </td>
                             <td>
                                 <a href="javascript:void(0);"  title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Asistencia/Modal_Reg_Asistencia') ?>/<?php echo date("d-m-Y",$i); ?>/<?php echo $list['num_doc']; ?>/<?php echo $cadenaConvert; ?>/1" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
-                                </a>     
+                                </a>
                             </td>
                             <td><?php if($nombredia=="Domingo"){
                                 if(date("Y-m-d",$i)>=$list['fec_inicio']){$d=$d+1; echo "1";}else{echo "0";}  }else{echo "0"; } ?></td>
@@ -258,7 +259,7 @@
                             </td>
                         <?php } }
                     ?>
-                    
+
                 </tr><?php $no=$no+1; $n=$n-1;
                     if($n==0){
                         $p=$no;
