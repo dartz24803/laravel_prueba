@@ -184,6 +184,7 @@
                                     </div>
                                 </div>
 
+                                @csrf
                                 <div class="table-responsive mb-4 mt-4" id="lista_colaborador">
                                 </div>
                             </div>
@@ -430,6 +431,7 @@
         var num_doc = $('#num_doc').val();
         var area = $('#id_area').val();
         var id_puesto = $('#id_puesto').val();
+        var csrfToken = $('input[name="_token"]').val();
         if(id_puesto == 29){
             var estado=1;
         }else{
@@ -507,6 +509,9 @@
             $.ajax({
                 type: "POST",
                 url: url,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 data: {
                     'cod_mes': cod_mes,
                     'cod_anio': cod_anio,
