@@ -314,6 +314,11 @@
                         </a>
     
                         <ul class="collapse submenu list-unstyled" id="rtienda" data-parent="#accordionExample">
+                            <li>
+                                <a id="administradores" href="{{ route('administrador') }}">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Administrador</p>
+                                </a>
+                            </li>
                             <li id="cuadrocontrolvisual">
                                 <a id="hrpreorden" href="{{ url('Cuadro_Control_Visual_Vista')}}">
                                     <p class="romperpalabra"><span id="icono_active2"></span> Cuadro Control Visual</p>

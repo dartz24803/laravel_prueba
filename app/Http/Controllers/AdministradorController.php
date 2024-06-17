@@ -9,6 +9,7 @@ use App\Models\ContenidoSeguimientoCoordinador;
 use App\Models\ContenidoSupervisionTienda;
 use App\Models\DiaSemana;
 use App\Models\Mes;
+use App\Models\SupervisionTienda;
 use Illuminate\Http\Request;
 
 class AdministradorController extends Controller
@@ -100,7 +101,7 @@ class AdministradorController extends Controller
 
     public function index_conf_sc()
     {
-        $list_base = Base::get_list_base_administrador_sc();
+        $list_base = Base::get_list_base_administrador();
         $list_area = Area::select('id_area','nom_area')->where('estado',1)->orderBy('nom_area','ASC')->get();
         return view('tienda.administracion.administrador.seguimiento_coordinador.index', compact('list_base','list_area'));
     }
@@ -113,7 +114,7 @@ class AdministradorController extends Controller
 
     public function create_conf_sc($validador=null)
     {
-        $list_base = Base::get_list_base_administrador_sc();
+        $list_base = Base::get_list_base_administrador();
         $list_area = Area::select('id_area','nom_area')->where('estado',1)->orderBy('nom_area','ASC')->get();
         $list_dia_semana = DiaSemana::all();
         $list_mes = Mes::select('id_mes','nom_mes')->get();
@@ -158,7 +159,7 @@ class AdministradorController extends Controller
         $request->validate($rules, $messages);
 
         if($request->todos=="1"){
-            $list_base = Base::get_list_base_administrador_sc();
+            $list_base = Base::get_list_base_administrador();
             foreach($list_base as $list){
                 ContenidoSeguimientoCoordinador::create([
                     'base' => $list->cod_base,
@@ -206,7 +207,7 @@ class AdministradorController extends Controller
     public function edit_conf_sc($id)
     {
         $get_id = ContenidoSeguimientoCoordinador::findOrFail($id);
-        $list_base = Base::get_list_base_administrador_sc();
+        $list_base = Base::get_list_base_administrador();
         $list_area = Area::select('id_area','nom_area')->where('estado',1)->orderBy('nom_area','ASC')->get();
         $list_dia_semana = DiaSemana::all();
         $list_mes = Mes::select('id_mes','nom_mes')->get();
@@ -273,5 +274,22 @@ class AdministradorController extends Controller
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario
         ]);
+    }
+
+    public function index()
+    {
+        return view('tienda.administrador.index');
+    }
+
+    public function index_st()
+    {
+        $list_base = Base::get_list_base_administrador();
+        return view('tienda.administrador.supervision_tienda.index', compact('list_base'));
+    }
+
+    public function list_st(Request $request)
+    {
+        $list_supervision_tienda = SupervisionTienda::get_list_supervision_tienda(['base'=>$request->base]);
+        return view('tienda.administrador.supervision_tienda.lista', compact('list_supervision_tienda'));
     }
 }
