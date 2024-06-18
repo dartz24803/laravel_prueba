@@ -27,7 +27,7 @@ class Asistencia extends Model
         if($num_doc!=0){
             if (strlen($num_doc>8)){$num_doc=substr($num_doc, 0,-1);}else{$num_doc=$num_doc;}
             $doc_iclock=" and LPAD(ar.emp_code,8,'0') like '%".$num_doc."%'";
-            $doc_ar=" and u.num_doc = '%".$num_doc."%' ";
+            $doc_ar=" and u.num_doc = '.$num_doc.' ";
         }else{
             if($cod_base!="" && $cod_base!="0"){
                 //$base_iclock=" and ar.terminal_alias = '".$cod_base."' ";
