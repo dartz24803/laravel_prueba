@@ -160,7 +160,7 @@ class Asistencia extends Model
                                         LEFT JOIN lanumerouno.horario_dia hd ON
                                         ( u.id_horario = hd.id_horario AND hd.dia = CASE DAYNAME( DATE_FORMAT(ar.punch_time, '%Y-%m-%d') ) WHEN 'Monday' THEN 1 WHEN 'Tuesday' THEN 2 WHEN 'Wednesday' THEN 3 WHEN 'Thursday' THEN 4 WHEN 'Friday' THEN 5 WHEN 'Saturday' THEN 6 WHEN 'Sunday' THEN 7 END)
                                     ) $fecha $base_iclock $doc_iclock
-                            ) limit 31
+                            ) LIMIT 31
                         ) todo
         ";
         $sql=" SELECT
