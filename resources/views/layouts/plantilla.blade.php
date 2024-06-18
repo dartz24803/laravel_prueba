@@ -100,10 +100,24 @@
             </div>
         </div>
     </div>
+
+    <div id="ModalRegistroGrande" data-backdrop="static" data-keyboard="false" class="modal animated fadeInUp custo-fadeInUp bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="ModalRegistroGrande" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+
     <div id="ModalUpdate" data-backdrop="static" data-keyboard="false" class="modal animated fadeInRight custo-fadeInRight bd-example-modal-lg scrollpagina" tabindex="-1" role="dialog" aria-labelledby="ModalUpdate" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
+            </div>
+        </div>
+    </div>
 
+    <div id="ModalUpdateGrande" data-backdrop="static" data-keyboard="false" class="modal animated fadeInUp custo-fadeInUp bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="ModalUpdateGrande" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
             </div>
         </div>
     </div>
@@ -159,9 +173,17 @@
                 var link = $(e.relatedTarget);
                 $(this).find(".modal-content").load(link.attr("app_reg"));
             });
+            $("#ModalRegistroGrande").on("show.bs.modal", function(e) {
+                var link = $(e.relatedTarget);
+                $(this).find(".modal-content").load(link.attr("app_reg_grande"));
+            });
             $("#ModalUpdate").on("show.bs.modal", function(e) {
                 var link = $(e.relatedTarget);
                 $(this).find(".modal-content").load(link.attr("app_elim"));
+            });
+            $("#ModalUpdateGrande").on("show.bs.modal", function(e) {
+                var link = $(e.relatedTarget);
+                $(this).find(".modal-content").load(link.attr("app_upd_grande"));
             });
         });
     </script>

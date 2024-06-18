@@ -1,6 +1,68 @@
 @extends('layouts.plantilla')
 
 @section('content')
+    <style>
+        .radio-buttons {
+            display: flex;
+            flex-direction: column;
+            color: white;
+        }
+
+        .radio-button {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .radio-button input[type="radio"] {
+            display: none;
+        }
+
+        .radio-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #aaa;
+            position: relative;
+            margin-right: 10px;
+        }
+
+        .radio-circle::before {
+            content: "";
+            display: block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ddd;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .radio-button input[type="radio"]:checked + .radio-circle::before {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .radio-button.radio-button-si input[type="radio"]:checked + .radio-circle::before {
+            background-color: #88DC65;
+        }
+
+        .radio-button.radio-button-si input[type="radio"]:checked + .radio-circle {
+            border-color: #88DC65;
+        }
+
+        .radio-button.radio-button-no input[type="radio"]:checked + .radio-circle::before {
+            background-color: #FF0000;
+        }
+
+        .radio-button.radio-button-no input[type="radio"]:checked + .radio-circle {
+            border-color: #FF0000;
+        }
+    </style>
+
     <div id="content" class="main-content">
         <div class="layout-px-spacing">
             <div class="row layout-top-spacing">

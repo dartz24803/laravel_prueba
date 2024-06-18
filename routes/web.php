@@ -107,6 +107,17 @@ Route::controller(AdministradorController::class)->group(function(){
     Route::get('administrador', 'index')->name('administrador');
     Route::get('administrador_st', 'index_st')->name('administrador_st');
     Route::post('administrador_st/list', 'list_st')->name('administrador_st.list');
+    Route::get('administrador_st/create', 'create_st')->name('administrador_st.create');
+    Route::post('administrador_st/previsualizacion_captura', 'previsualizacion_captura_st')->name('administrador_st.previsualizacion_captura');
+    Route::post('administrador_st', 'store_st')->name('administrador_st.store');
+    Route::get('administrador_st/{id}/edit', 'edit_st')->name('administrador_st.edit');
+    Route::put('administrador_st/previsualizacion_captura', 'previsualizacion_captura_st')->name('administrador_st.previsualizacion_captura_put');
+    Route::put('administrador_st/{id}', 'update_st')->name('administrador_st.update');
+    Route::get('administrador_st/{id}/download', 'download_st')->name('administrador_st.download');
+    Route::delete('administrador_st/{id}/evidencia', 'destroy_evidencia_st')->name('administrador_st.destroy_evidencia');
+    Route::get('administrador_st/{id}/show', 'show_st')->name('administrador_st.show');
+    Route::delete('administrador_st/{id}', 'destroy_st')->name('administrador_st.destroy');
+    Route::get('administrador_st/{id}/evidencia', 'evidencia_st')->name('administrador_st.evidencia');
 });
 
 

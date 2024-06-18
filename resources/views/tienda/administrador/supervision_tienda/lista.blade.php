@@ -24,7 +24,7 @@
                     @if ($list->v_evidencia>0)
                         <a href="javascript:void(0);" data-toggle="modal" 
                         data-target="#ModalUpdate" 
-                        app_elim="#">
+                        app_elim="{{ route('administrador_st.evidencia', $list->id) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye text-success">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                 <circle cx="12" cy="12" r="3"></circle>
@@ -40,14 +40,14 @@
                         <div class="dropdown-menu" aria-labelledby="btnDropLeft" style="padding:0;">
                             <a href="javascript:void(0);" class="dropdown-item" data-toggle="modal" 
                             data-target="#ModalUpdate" 
-                            app_elim="#">
+                            app_elim="{{ route('administrador_st.show', $list->id) }}">
                                 Ver
                             </a>
                             @if (session('usuario')->id_puesto!=311)
                                 @if (date('Y-m-d')==$list->orden)
                                     <a href="javascript:void(0);" class="dropdown-item" data-toggle="modal" 
-                                    data-target="#ModalUpdateSlide" 
-                                    app_upd_slide="#">
+                                    data-target="#ModalUpdateGrande" 
+                                    app_upd_grande="{{ route('administrador_st.edit', $list->id) }}">
                                         Editar
                                     </a>
 
