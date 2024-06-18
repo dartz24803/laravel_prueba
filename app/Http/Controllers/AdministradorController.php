@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\ArchivoSupervisionTienda;
 use App\Models\Area;
 use App\Models\Base;
 use App\Models\ContenidoSeguimientoCoordinador;
 use App\Models\ContenidoSupervisionTienda;
+use App\Models\DetalleSupervisionTienda;
 use App\Models\DiaSemana;
 use App\Models\Mes;
 use App\Models\SupervisionTienda;
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
 
 class AdministradorController extends Controller
 {
@@ -291,5 +294,306 @@ class AdministradorController extends Controller
     {
         $list_supervision_tienda = SupervisionTienda::get_list_supervision_tienda(['base'=>$request->base]);
         return view('tienda.administrador.supervision_tienda.lista', compact('list_supervision_tienda'));
+    }
+
+    public function create_st()
+    {
+        $list_contenido = ContenidoSupervisionTienda::select('id','descripcion')->orderBy('descripcion','ASC')->get();
+        return view('tienda.administrador.supervision_tienda.modal_registrar', compact('list_contenido'));
+    }
+
+    public function previsualizacion_captura_st()
+    {
+        if($_FILES["photo"]["name"] != ""){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                if(file_exists('https://lanumerounocloud.com/intranet/SUPERVISION_TIENDA/temporal_st_'.session('usuario')->id_usuario.'.jpg')){
+                    ftp_delete($con_id, 'SUPERVISION_TIENDA/temporal_st_'.session('usuario')->id_usuario.'.jpg');
+                }
+
+                $path = $_FILES["photo"]["name"];
+                $source_file = $_FILES['photo']['tmp_name'];
+
+                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                $nombre_soli = "temporal_st_".session('usuario')->id_usuario;
+                $nombre = $nombre_soli.".".strtolower($ext);
+
+                ftp_pasv($con_id,true); 
+                $subio = ftp_put($con_id,"SUPERVISION_TIENDA/".$nombre,$source_file,FTP_BINARY);
+                if (!$subio) {
+                    echo "Archivo no subido correctamente";
+                }
+            }else{
+                echo "No se conecto";
+            }
+        }
+    }
+
+    public function store_st(Request $request)
+    {
+        $valida = SupervisionTienda::where('base', $request->base)->where('fecha', $request->fecha)->where('estado', 1)->exists();
+
+        if($valida){
+            echo "error";
+        }else{
+            $supervision_tienda = SupervisionTienda::create([
+                'base' => $request->base,
+                'fecha' => $request->fecha,
+                'observacion' => addslashes($request->observacion),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+
+            $list_contenido = ContenidoSupervisionTienda::select('id','descripcion')->orderBy('descripcion','ASC')->get();
+            foreach($list_contenido as $list){
+                if($request->input('radio_'.$list['id'])==null){
+                    $valor = 2;
+                }else{
+                    $valor = $request->input('radio_'.$list['id']);
+                }
+                DetalleSupervisionTienda::create([
+                    'id_supervision_tienda' => $supervision_tienda->id,
+                    'id_contenido' => $list['id'],
+                    'valor' => $valor,
+                ]);
+            }
+
+            if($_FILES["archivos"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    for($count = 0; $count<count($_FILES["archivos"]["name"]); $count++){
+                        $path = $_FILES["archivos"]["name"][$count];
+
+                        if(pathinfo($path, PATHINFO_EXTENSION)=='JPG' || 
+                        pathinfo($path, PATHINFO_EXTENSION)=='jpg' ||
+                        pathinfo($path, PATHINFO_EXTENSION)=='PNG' ||
+                        pathinfo($path, PATHINFO_EXTENSION)=='png' ||
+                        pathinfo($path, PATHINFO_EXTENSION)=='JPEG' ||
+                        pathinfo($path, PATHINFO_EXTENSION)=='jpeg'){
+                            $source_file = $_FILES['archivos']['tmp_name'][$count];
+
+                            $fecha = date('YmdHis');
+                            $ext = pathinfo($path, PATHINFO_EXTENSION);
+                            $nombre_soli="Evidencia_".$supervision_tienda->id."_".$fecha."_".$count;
+                            $nombre = $nombre_soli.".".strtolower($ext);
+
+                            $archivo = "https://lanumerounocloud.com/intranet/SUPERVISION_TIENDA/".$nombre;
+    
+                            ftp_pasv($con_id,true); 
+                            $subio = ftp_put($con_id,"SUPERVISION_TIENDA/".$nombre,$source_file,FTP_BINARY);
+                            if ($subio) {
+                                ArchivoSupervisionTienda::create([
+                                    'id_supervision_tienda' => $supervision_tienda->id,
+                                    'archivo' => $archivo,
+                                ]);
+                            }else{
+                                echo "Archivo no subido correctamente";
+                            }
+                        }
+                    }
+                }else{
+                    echo "No se conecto";
+                }
+            }
+
+            if($request->captura=="1"){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    $nombre_actual = "SUPERVISION_TIENDA/temporal_st_".session('usuario')->id_usuario.".jpg";
+                    $nuevo_nombre = "SUPERVISION_TIENDA/Evidencia_".$supervision_tienda->id."_".date('YmdHis')."_captura.jpg";
+                    ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
+                    $archivo = "https://lanumerounocloud.com/intranet/".$nuevo_nombre;
+                    
+                    ArchivoSupervisionTienda::create([
+                        'id_supervision_tienda' => $supervision_tienda->id,
+                        'archivo' => $archivo,
+                    ]);
+                }else{
+                    echo "No se conecto";
+                }
+            }
+        }
+    }
+
+    public function edit_st($id)
+    {
+        $get_id = SupervisionTienda::findOrFail($id);
+        $list_contenido = ContenidoSupervisionTienda::select('id','descripcion')->orderBy('descripcion','ASC')->get();
+        $list_detalle = DetalleSupervisionTienda::select('id_contenido','valor')->where('id_supervision_tienda',$id)->get();
+        $list_archivo = ArchivoSupervisionTienda::select('id','archivo')->where('id_supervision_tienda',$id)->get();
+        return view('tienda.administrador.supervision_tienda.modal_editar', compact('get_id','list_contenido','list_detalle','list_archivo'));
+    }
+
+    public function download_st($id)
+    {
+        $get_id = ArchivoSupervisionTienda::findOrFail($id);
+
+        // URL del archivo
+        $url = $get_id->archivo;
+
+        // Crear un cliente Guzzle
+        $client = new Client();
+
+        // Realizar la solicitud GET para obtener el archivo
+        $response = $client->get($url);
+
+        // Obtener el contenido del archivo
+        $content = $response->getBody()->getContents();
+
+        // Obtener el nombre del archivo desde la URL
+        $filename = basename($url);
+
+        // Devolver el contenido del archivo en la respuesta
+        return response($content, 200)
+                    ->header('Content-Type', $response->getHeaderLine('Content-Type'))
+                    ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+    }
+
+    public function destroy_evidencia_st($id)
+    {
+        $get_id = ArchivoSupervisionTienda::findOrFail($id);
+
+        $ftp_server = "lanumerounocloud.com";
+        $ftp_usuario = "intranet@lanumerounocloud.com";
+        $ftp_pass = "Intranet2022@";
+        $con_id = ftp_connect($ftp_server);
+        $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+        if($con_id && $lr){
+            $file_to_delete = "SUPERVISION_TIENDA/".basename($get_id->archivo);
+            
+            if(ftp_delete($con_id, $file_to_delete)){
+                ArchivoSupervisionTienda::where('id', $id)->delete();
+            }else{
+                echo "Error al eliminar el archivo.";
+            }
+        }else{
+            echo "No se conecto";
+        }
+    }
+
+    public function update_st(Request $request, $id)
+    {
+        SupervisionTienda::findOrFail($id)->update([
+            'observacion' => addslashes($request->observacione),
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        DetalleSupervisionTienda::where('id_supervision_tienda', $id)->delete();
+
+        $list_contenido = ContenidoSupervisionTienda::select('id','descripcion')->orderBy('descripcion','ASC')->get();
+        foreach($list_contenido as $list){
+            if($request->input('radioe_'.$list['id'])==null){
+                $valor = 2;
+            }else{
+                $valor = $request->input('radioe_'.$list['id']);
+            }
+            DetalleSupervisionTienda::create([
+                'id_supervision_tienda' => $id,
+                'id_contenido' => $list['id'],
+                'valor' => $valor,
+            ]);
+        }
+
+        if($_FILES["archivose"]["name"] != ""){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                for($count = 0; $count<count($_FILES["archivose"]["name"]); $count++){
+                    $path = $_FILES["archivose"]["name"][$count];
+
+                    if(pathinfo($path, PATHINFO_EXTENSION)=='JPG' || 
+                    pathinfo($path, PATHINFO_EXTENSION)=='jpg' ||
+                    pathinfo($path, PATHINFO_EXTENSION)=='PNG' ||
+                    pathinfo($path, PATHINFO_EXTENSION)=='png' ||
+                    pathinfo($path, PATHINFO_EXTENSION)=='JPEG' ||
+                    pathinfo($path, PATHINFO_EXTENSION)=='jpeg'){
+                        $source_file = $_FILES['archivose']['tmp_name'][$count];
+
+                        $fecha = date('YmdHis');
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $nombre_soli="Evidencia_".$id."_".$fecha."_".$count;
+                        $nombre = $nombre_soli.".".strtolower($ext);
+
+                        $archivo = "https://lanumerounocloud.com/intranet/SUPERVISION_TIENDA/".$nombre;
+    
+                        ftp_pasv($con_id,true); 
+                        $subio = ftp_put($con_id,"SUPERVISION_TIENDA/".$nombre,$source_file,FTP_BINARY);
+                        if($subio){
+                            ArchivoSupervisionTienda::create([
+                                'id_supervision_tienda' => $id,
+                                'archivo' => $archivo,
+                            ]);
+                        }else{
+                            echo "Archivo no subido correctamente";
+                        }
+                    }
+                }
+            }else{
+                echo "No se conecto";
+            }
+        }
+
+        if($request->capturae=="1"){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                $nombre_actual = "SUPERVISION_TIENDA/temporal_st_".session('usuario')->id_usuario.".jpg";
+                $nuevo_nombre = "SUPERVISION_TIENDA/Evidencia_".$id."_".date('YmdHis')."_captura.jpg";
+                ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
+                $archivo = "https://lanumerounocloud.com/intranet/".$nuevo_nombre;
+                ArchivoSupervisionTienda::create([
+                    'id_supervision_tienda' => $id,
+                    'archivo' => $archivo,
+                ]);
+            }else{
+                echo "No se conecto";
+            }
+        }
+    }
+
+    public function show_st($id)
+    {
+        $get_id = SupervisionTienda::findOrFail($id);
+        $list_contenido = ContenidoSupervisionTienda::select('id','descripcion')->orderBy('descripcion','ASC')->get();
+        $list_detalle = DetalleSupervisionTienda::select('id_contenido','valor')->where('id_supervision_tienda',$id)->get();
+        $list_archivo = ArchivoSupervisionTienda::select('id','archivo')->where('id_supervision_tienda',$id)->get();
+        return view('tienda.administrador.supervision_tienda.modal_ver', compact('get_id','list_contenido','list_detalle','list_archivo'));
+    }
+
+    public function destroy_st($id)
+    {
+        SupervisionTienda::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function evidencia_st($id)
+    {
+        $list_archivo = ArchivoSupervisionTienda::select('id','archivo')->where('id_supervision_tienda',$id)->get();
+        return view('tienda.administrador.supervision_tienda.modal_evidencia', compact('list_archivo'));
     }
 }
