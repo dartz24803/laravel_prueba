@@ -28,8 +28,8 @@
     <link href="{{ asset('template/plugins/sweetalerts/sweetalert.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('template/assets/css/components/custom-sweetalert.css') }}" rel="stylesheet" type="text/css" />
     <!-- END THEME GLOBAL STYLES -->
-    <script src="<?php echo base_url(); ?>assets/momentjs/moment.js"></script>
-    <script src="<?php echo base_url(); ?>assets/momentjs/moment-with-locales.js"></script>
+    <script src="{{ asset('js/momentjs/moment.js') }}"></script>
+    <script src="{{ asset('js/momentjs/moment-with-locales.js') }}"></script>
     <script>
         moment.locale('es');
     </script>
