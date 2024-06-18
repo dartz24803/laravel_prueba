@@ -13,9 +13,9 @@ class Asistencia extends Model
 
     public function buscar_reporte_control_asistencia($cod_mes,$cod_anio,$cod_base,$num_doc,$tipo,$finicio,$ffin){
         if($tipo==1){
-            $fecha=" WHERE DATE_FORMAT(ar.punch_time,'%m') = '".$cod_mes."' AND DATE_FORMAT(ar.punch_time,'%Y') = '".$cod_anio."'";
+            $fecha=" AND DATE_FORMAT(ar.punch_time,'%m') = '".$cod_mes."' AND DATE_FORMAT(ar.punch_time,'%Y') = '".$cod_anio."'";
         }else{
-            $fecha=" WHERE DATE_FORMAT(ar.punch_time,'%Y-%m-%d') BETWEEN '".$finicio."' and '".$ffin."'";
+            $fecha=" AND DATE_FORMAT(ar.punch_time,'%Y-%m-%d') BETWEEN '".$finicio."' and '".$ffin."'";
         }
 
         $base_iclock="";
@@ -31,7 +31,7 @@ class Asistencia extends Model
         }else{
             if($cod_base!="" && $cod_base!="0"){
                 //$base_iclock=" and ar.terminal_alias = '".$cod_base."' ";
-                $base_ar=" and u.centro_labores = '".$cod_base."' ";
+                $base_ar="WHERE u.centro_labores = '".$cod_base."' ";
             }
         }
 
