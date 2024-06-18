@@ -304,8 +304,7 @@ class AdministradorController extends Controller
 
     public function previsualizacion_captura_st()
     {
-        echo "Si llego";
-        /*if($_FILES["photo"]["name"] != ""){
+        if($_FILES["photo"]["name"] != ""){
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
             $ftp_pass = "Intranet2022@";
@@ -331,7 +330,7 @@ class AdministradorController extends Controller
             }else{
                 echo "No se conecto";
             }
-        }*/
+        }
     }
 
     public function store_st(Request $request)
