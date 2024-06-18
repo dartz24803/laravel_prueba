@@ -30,6 +30,7 @@ class Asistencia extends Model
             //$doc_iclock="WHERE ar.emp_code = ".$num_doc." ";
             $doc_ar="AND u.num_doc = '.$num_doc.' ";
         }else{
+            $fecha="WHERE DATE_FORMAT(ar.punch_time,'%m') = '".$cod_mes."' AND DATE_FORMAT(ar.punch_time,'%Y') = '".$cod_anio."'";
             if($cod_base!="" && $cod_base!="0"){
                 //$base_iclock=" and ar.terminal_alias = '".$cod_base."' ";
                 $base_ar="WHERE u.centro_labores = '".$cod_base."' ";
@@ -177,6 +178,7 @@ class Asistencia extends Model
             FROM ($vista) AS a
             group by a.num_doc,nombres,validador,fecha,fecha2,ingreso,idescanso,fdescanso,salida,salidasabado order by fecha2 desc
         ";
+        // print_r($vista);
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }
