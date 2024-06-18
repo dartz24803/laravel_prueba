@@ -96,7 +96,7 @@ class AsistenciaController extends Controller
             }
 
             $list_asistencia = $this->modelo->buscar_reporte_control_asistencia($cod_mes,$cod_anio,$cod_base,$num_doc,$tipo,$finicio,$ffin);
-            print_r($list_asistencia);
+            //print_r($list_asistencia);
             if($num_doc!=0){
                 $list_colaborador = $this->modelo->get_list_usuario_xnum_doc($num_doc);
             }else{
