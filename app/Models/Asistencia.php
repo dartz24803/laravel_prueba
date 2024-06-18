@@ -27,7 +27,7 @@ class Asistencia extends Model
         if($num_doc!=0){
             if (strlen($num_doc>8)){$num_doc=substr($num_doc, 0,-1);}else{$num_doc=$num_doc;}
             $doc_iclock=" and LPAD(ar.emp_code,8,'0') like '%".$num_doc."%'";
-            $doc_ar=" and u.num_doc = '%".$num_doc."%' ";
+            $doc_ar=" and u.num_doc = '.$num_doc.' ";
         }else{
             if($cod_base!="" && $cod_base!="0"){
                 //$base_iclock=" and ar.terminal_alias = '".$cod_base."' ";
@@ -160,7 +160,7 @@ class Asistencia extends Model
                                         LEFT JOIN lanumerouno.horario_dia hd ON
                                         ( u.id_horario = hd.id_horario AND hd.dia = CASE DAYNAME( DATE_FORMAT(ar.punch_time, '%Y-%m-%d') ) WHEN 'Monday' THEN 1 WHEN 'Tuesday' THEN 2 WHEN 'Wednesday' THEN 3 WHEN 'Thursday' THEN 4 WHEN 'Friday' THEN 5 WHEN 'Saturday' THEN 6 WHEN 'Sunday' THEN 7 END)
                                     ) $fecha $base_iclock $doc_iclock
-                            )
+                            ) LIMIT 31
                         ) todo
         ";
         $sql=" SELECT
