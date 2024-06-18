@@ -27,11 +27,11 @@ class Asistencia extends Model
         if($num_doc!=0){
             if (strlen($num_doc>8)){$num_doc=substr($num_doc, 0,-1);}else{$num_doc=$num_doc;}
             $doc_iclock="WHERE LPAD(ar.emp_code,8,'0') like '%".$num_doc."%'";
-            $doc_ar=" and u.num_doc = '.$num_doc.' ";
+            $doc_ar="where u.num_doc = '.$num_doc.' ";
         }else{
             if($cod_base!="" && $cod_base!="0"){
                 //$base_iclock=" and ar.terminal_alias = '".$cod_base."' ";
-                $base_ar="WHERE u.centro_labores = '".$cod_base."' ";
+                $base_ar=" and u.centro_labores = '".$cod_base."' ";
             }
         }
 
@@ -103,7 +103,7 @@ class Asistencia extends Model
                                 LEFT JOIN lanumerouno.gerencia g ON (u.id_gerencia = g.id_gerencia)
                                 LEFT JOIN zkbiotime.iclock_transaction b ON (LPAD(CONVERT(b.emp_code USING utf8), 8,'0') = u.usuario_codigo  )
                                 LEFT JOIN lanumerouno.horario_dia hd ON ( u.id_horario = hd.id_horario AND hd.dia = CASE DAYNAME(  DATE_FORMAT(ar.punch_time, '%Y-%m-%d')) WHEN 'Monday' THEN 1 WHEN 'Tuesday' THEN 2 WHEN 'Wednesday' THEN 3 WHEN 'Thursday' THEN 4 WHEN 'Friday' THEN 5 WHEN 'Saturday' THEN 6 WHEN 'Sunday' THEN 7 END )
-                                $base_ar $doc_ar $fecha
+                                $doc_ar $base_ar $fecha
                             )
                             UNION
                             (
@@ -159,7 +159,7 @@ class Asistencia extends Model
                                         )
                                         LEFT JOIN lanumerouno.horario_dia hd ON
                                         ( u.id_horario = hd.id_horario AND hd.dia = CASE DAYNAME( DATE_FORMAT(ar.punch_time, '%Y-%m-%d') ) WHEN 'Monday' THEN 1 WHEN 'Tuesday' THEN 2 WHEN 'Wednesday' THEN 3 WHEN 'Thursday' THEN 4 WHEN 'Friday' THEN 5 WHEN 'Saturday' THEN 6 WHEN 'Sunday' THEN 7 END)
-                                    ) $base_iclock $doc_iclock $fecha
+                                    ) $doc_iclock $base_iclock $fecha
                             ) LIMIT 31
                         ) todo
         ";
