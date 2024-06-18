@@ -28,6 +28,11 @@
     <link href="{{ asset('template/plugins/sweetalerts/sweetalert.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('template/assets/css/components/custom-sweetalert.css') }}" rel="stylesheet" type="text/css" />
     <!-- END THEME GLOBAL STYLES -->
+    <script src="<?php echo base_url(); ?>assets/momentjs/moment.js"></script>
+    <script src="<?php echo base_url(); ?>assets/momentjs/moment-with-locales.js"></script>
+    <script>
+        moment.locale('es');
+    </script>
 </head>
 <body class="alt-menu sidebar-noneoverflow">
     <!-- BEGIN LOADER -->
@@ -1041,6 +1046,8 @@
     <script src="{{ asset('template/plugins/select2/custom-select2.js') }}"></script>
     <script src="{{ asset('template/plugins/highlight/highlight.pack.js') }}"></script>
     <script src="{{ asset('template/assets/js/custom.js') }}"></script>
+
+    <script src="https://momentjs.com/downloads/moment.min.js"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
     <!-- BEGIN PAGE LEVEL CUSTOM SCRIPTS -->
     <script src="{{ asset('template/plugins/table/datatable/datatables.js') }}"></script>
