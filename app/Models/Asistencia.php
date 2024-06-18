@@ -26,7 +26,7 @@ class Asistencia extends Model
         $doc_ar="";
         if($num_doc!=0){
             if (strlen($num_doc>8)){$num_doc=substr($num_doc, 0,-1);}else{$num_doc=$num_doc;}
-            $doc_iclock="WHERE LPAD(ar.emp_code,8,'0') LIKE %'".$num_doc."%'";
+            $doc_iclock="WHERE LPAD(ar.emp_code,8,'0') LIKE '%".$num_doc."%'";
             //$doc_iclock="WHERE ar.emp_code = ".$num_doc." ";
             $doc_ar="AND u.num_doc = '.$num_doc.' ";
         }else{
