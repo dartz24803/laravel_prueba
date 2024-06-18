@@ -18,7 +18,7 @@ class TrackingController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('verificar.sesion.usuario')->except('index');
+        $this->middleware('verificar.sesion.usuario')->except(['index','detalle_operacion_diferencia']);
     }
 
     public function index()
@@ -1213,6 +1213,8 @@ class TrackingController extends Controller
 
     public function insert_mercaderia_entregada(Request $request)
     {
+        //ALERTA 9.3
+
         $tracking_dp = TrackingDetalleProceso::create([
             'id_tracking' => $request->id,
             'id_proceso' => 9,
@@ -1226,7 +1228,7 @@ class TrackingController extends Controller
 
         TrackingDetalleEstado::create([
             'id_detalle' => $tracking_dp->id,
-            'id_estado' => 19,
+            'id_estado' => 20,
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
@@ -1240,5 +1242,271 @@ class TrackingController extends Controller
     {
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
         return view('logistica.tracking.reporte_mercaderia', compact('get_id'));
+    }
+
+    public function insert_reporte_mercaderia(Request $request)
+    {
+        $rules = [
+            'diferencia' => 'required_without:devolucion|boolean',
+            'devolucion' => 'required_without:diferencia|boolean',
+        ];
+        $messages = [
+            'diferencia.required_without' => 'Al menos una opción debe estar seleccionada.',
+            'devolucion.required_without' => 'Al menos una opción debe estar seleccionada.',
+        ];
+        $request->validate($rules, $messages);
+
+        Tracking::findOrFail($request->id)->update([
+            'diferencia' => $request->diferencia,
+            'devolucion' => $request->devolucion,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
+
+        if($request->diferencia=="1"){
+            $tracking_dp = TrackingDetalleProceso::create([
+                'id_tracking' => $request->id,
+                'id_proceso' => 7,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id
+            ]);
+    
+            TrackingDetalleEstado::create([
+                'id_detalle' => $tracking_dp->id,
+                'id_estado' => 14,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id
+            ]);
+        }
+
+        if($request->devolucion=="1"){
+            $tracking_dp = TrackingDetalleProceso::create([
+                'id_tracking' => $request->id,
+                'id_proceso' => 8,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id
+            ]);
+    
+            TrackingDetalleEstado::create([
+                'id_detalle' => $tracking_dp->id,
+                'id_estado' => 16,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id
+            ]);
+        }
+    }
+
+    public function cuadre_diferencia($id)
+    {
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
+        return view('logistica.tracking.cuadre_diferencia', compact('get_id'));
+    }
+
+    public function insert_reporte_diferencia(Request $request)
+    {
+        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
+
+        //ALERTA 9.1. 
+
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->SMTPDebug = 0;
+            $mail->isSMTP();
+            $mail->Host       =  'mail.lanumero1.com.pe';
+            $mail->SMTPAuth   =  true;
+            $mail->Username   =  'intranet@lanumero1.com.pe';
+            $mail->Password   =  'lanumero1$1';
+            $mail->SMTPSecure =  'tls';
+            $mail->Port     =  587; 
+            $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
+
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
+
+            $mail->isHTML(true);
+
+            $mail->Subject = "DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.")";
+        
+            $mail->Body =  '<FONT SIZE=3>
+                                Hola '.$get_id->desde.'-'.$get_id->hacia.', regularizar los sobrantes-faltantes indicados.<br><br>
+                                Se envia el reporte de la salida de Mercaderia, de la guía de remisión '.$request->n_requerimiento.'.<br><br>
+                                <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
+                                    <thead>
+                                        <tr align="center" style="background-color:#0093C6;">
+                                            <th width="15%"><b>Estilo</b></th>
+                                            <th width="15%"><b>Col_Tal</b></th>
+                                            <th width="15%"><b>Bulto</b></th>
+                                            <th width="10%"><b>Enviado</b></th>
+                                            <th width="10%"><b>Recibido</b></th>
+                                            <th width="10%"><b>Dif</b></th>
+                                            <th width="25%"><b>Orden de Regularización</b></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>';
+                                //foreach($list_detalle as $list){
+            $mail->Body .=  '            <tr align="left">
+                                            <td>1</td>
+                                            <td>2</td>
+                                            <td>3</td>
+                                            <td>4</td>
+                                            <td>5</td>
+                                            <td>6</td>
+                                            <td>7</td>
+                                        </tr>';
+                                //}
+            $mail->Body .=  '        </tbody>
+                                </table><br>
+                                <a href="'.route('tracking.detalle_operacion_diferencia', $request->id).'" 
+                                title="Detalle Operación de Diferencias"
+                                target="_blank" 
+                                style="background-color: red;
+                                color: white;
+                                border: 1px solid transparent;
+                                padding: 7px 12px;
+                                font-size: 13px;
+                                text-decoration: none !important;
+                                border-radius: 10px;">
+                                    Detalle de Operación de Diferencias
+                                </a><br>
+                            </FONT SIZE>';
+        
+            $mail->CharSet = 'UTF-8';
+            $mail->send();
+
+            TrackingDetalleEstado::create([
+                'id_detalle' => $get_id->id_detalle,
+                'id_estado' => 15,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id
+            ]);
+        }catch(Exception $e) {
+            echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+        }
+    }
+
+    public function detalle_operacion_diferencia($id)
+    {
+        if (session('usuario')) {
+            if(session('redirect_url')){
+                session()->forget('redirect_url');
+            }
+            $get_id = Tracking::get_list_tracking(['id'=>$id]);
+            return view('logistica.tracking.detalle_operacion_diferencia', compact('get_id'));
+        }else{
+            session(['redirect_url' => 'http'.(isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']]);
+            return redirect('/');
+        }
+    }
+
+    public function insert_diferencia_regularizada(Request $request)
+    {
+        $rules = [
+            'guia_diferencia' => 'required|max:20',
+        ];
+        $messages = [
+            'guia_diferencia.required' => 'Debe ingresar Nro. Gr.',
+            'guia_diferencia.max' => 'Nro. Gr debe tener como máximo 20 carácteres.',
+        ];
+        $request->validate($rules, $messages);
+
+        Tracking::findOrFail($request->id)->update([
+            'guia_diferencia' => $request->guia_diferencia,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
+
+        //ALERTA 9.1.1.
+
+        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
+
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->SMTPDebug = 0;
+            $mail->isSMTP();
+            $mail->Host       =  'mail.lanumero1.com.pe';
+            $mail->SMTPAuth   =  true;
+            $mail->Username   =  'intranet@lanumero1.com.pe';
+            $mail->Password   =  'lanumero1$1';
+            $mail->SMTPSecure =  'tls';
+            $mail->Port     =  587; 
+            $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
+
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
+
+            $mail->isHTML(true);
+
+            $mail->Subject = "REGULARIZADO - DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.")";
+        
+            $mail->Body =  '<FONT SIZE=3>
+                                Hola '.$get_id->desde.'-'.$get_id->hacia.', '.$get_id->hacia.'-'.$get_id->desde.' 
+                                acaba de regularizar con la GR '.$request->guia_diferencia.'. 
+                                El archivo ya se encuentra en su carpeta.
+                            </FONT SIZE>';
+        
+            $mail->CharSet = 'UTF-8';
+            $mail->send();
+
+            TrackingDetalleEstado::create([
+                'id_detalle' => $get_id->id_detalle,
+                'id_estado' => 16,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id
+            ]);
+
+            if($get_id->devolucion=="1"){
+                //
+            }else{
+                //ALERTA 9.3
+
+                $tracking_dp = TrackingDetalleProceso::create([
+                    'id_tracking' => $request->id,
+                    'id_proceso' => 9,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id
+                ]);
+        
+                TrackingDetalleEstado::create([
+                    'id_detalle' => $tracking_dp->id,
+                    'id_estado' => 20,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id
+                ]);
+            }
+        }catch(Exception $e) {
+            echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+        }
     }
 }
