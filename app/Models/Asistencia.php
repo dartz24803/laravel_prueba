@@ -104,7 +104,7 @@ class Asistencia extends Model
                                 LEFT JOIN lanumerouno.gerencia g ON (u.id_gerencia = g.id_gerencia)
                                 LEFT JOIN zkbiotime.iclock_transaction b ON (LPAD(CONVERT(b.emp_code USING utf8), 8,'0') = u.usuario_codigo  )
                                 LEFT JOIN lanumerouno.horario_dia hd ON ( u.id_horario = hd.id_horario AND hd.dia = CASE DAYNAME(  DATE_FORMAT(ar.punch_time, '%Y-%m-%d')) WHEN 'Monday' THEN 1 WHEN 'Tuesday' THEN 2 WHEN 'Wednesday' THEN 3 WHEN 'Thursday' THEN 4 WHEN 'Friday' THEN 5 WHEN 'Saturday' THEN 6 WHEN 'Sunday' THEN 7 END )
-                                $base_ar $doc_ar $fecha LIMIT 31
+                                $base_ar $doc_ar $fecha LIMIT 120
                             )
                             UNION
                             (
