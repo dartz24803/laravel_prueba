@@ -5,7 +5,7 @@
         <div class="layout-px-spacing">
             <div class="page-header">
                 <div class="page-title">
-                    <h3>Reporte de mercadería</h3>
+                    <h3>Detalle de Operación de Diferencias</h3>
                 </div>
             </div>
             
@@ -15,28 +15,23 @@
                         <form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
                             <div class="row">
                                 <div class="form-group col-lg-12">
-                                    <label class="control-label text-bold">Nro. Req.: {{ $get_id->n_requerimiento }}</label>
+                                    <label class="control-label text-bold">Ingrese el nro de la Guía de Remisión con la que se ha regularizado la mercadería:</label>
                                 </div>
                             </div>
     
                             <div class="row">
-                                <div class="form-group col-lg-12">
-                                    <input type="checkbox" name="diferencia" id="diferencia" value="1">
-                                    <label class="control-label text-bold" for="diferencia">Existen diferencias</label>
+                                <div class="form-group col-lg-1">
+                                    <label class="control-label text-bold">Nro. GR: </label>
                                 </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="form-group col-lg-12">
-                                    <input type="checkbox" name="devolucion" id="devolucion" value="1">
-                                    <label class="control-label text-bold" for="devolucion">Mercadería para devolución</label>
+                                <div class="form-group col-lg-2">
+                                    <input type="text" class="form-control" name="guia_diferencia" id="guia_diferencia" placeholder="Nro. GR">
                                 </div>
                             </div>
     
                             <div class="modal-footer mt-3">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $get_id->id }}">
-                                <button class="btn btn-primary" type="button" onclick="Insert_Reporte_Mercaderia();">Guardar</button>
+                                <button class="btn btn-primary" type="button" onclick="Insert_Diferencia_Regularizada();">Guardar</button>
                                 <a class="btn" href="{{ route('tracking') }}">Cancelar</a>
                             </div>
                         </form>
@@ -52,11 +47,11 @@
             $("#a_trackings").attr('aria-expanded','true');
         });
 
-        function Insert_Reporte_Mercaderia() {
+        function Insert_Diferencia_Regularizada() {
             Cargando();
 
             var dataString = new FormData(document.getElementById('formulario'));
-            var url = "{{ route('tracking.insert_reporte_mercaderia') }}";
+            var url = "{{ route('tracking.insert_diferencia_regularizada') }}";
 
             $.ajax({
                 url: url,

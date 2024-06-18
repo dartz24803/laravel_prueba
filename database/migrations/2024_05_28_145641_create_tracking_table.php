@@ -32,6 +32,9 @@ return new class extends Migration
             $table->decimal('importe_transporte', 10, 2)->nullable()->default(0);
             $table->string('factura_transporte', 20)->nullable();
             $table->string('observacion_inspf', 1000)->nullable();
+            $table->integer('diferencia')->nullable()->default(0);
+            $table->string('guia_diferencia', 20)->nullable();
+            $table->integer('devolucion')->nullable()->default(0);
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();

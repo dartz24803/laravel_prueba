@@ -76,7 +76,7 @@
                 success:function (data) {
                     swal.fire(
                         '¡Registro Exitoso!',
-                        'Haga clic en el botón!',
+                        '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
                         Lista_Tracking();

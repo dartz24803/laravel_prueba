@@ -27,6 +27,7 @@ class TrackingEstadoSeeder extends Seeder
             ['id_proceso'=>'5','descripcion'=>'MERCADERÍA PAGADA'],
             ['id_proceso'=>'6','descripcion'=>'INSPECCIÓN DE MERCADERÍA'],
             ['id_proceso'=>'6','descripcion'=>'CONTEO DE MERCADERÍA'],
+            ['id_proceso'=>'7','descripcion'=>'SOLICITUD DE DIFERENCIA'],
             ['id_proceso'=>'7','descripcion'=>'REPORTE DE DIFERENCIAS'],
             ['id_proceso'=>'7','descripcion'=>'DIFERENCIAS REGULARIZADAS'],
             ['id_proceso'=>'8','descripcion'=>'SOLICITUD DE DEVOLUCIÓN'],
