@@ -431,7 +431,7 @@
         var dias = Math.floor(dif / (1000 * 60 * 60 * 24));
         return parseFloat(dias)+parseFloat(1);
     }
-    
+
     function Buscar_Reporte_Asistencia() {
         //var id_gerencia = $('#id_gerencia').val();
         //var id_area = $('#id_area').val();
@@ -497,6 +497,9 @@
                     $.ajax({
                         type: "POST",
                         url: url,
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
                         data: {
                             'cod_mes': cod_mes,
                             'cod_anio': cod_anio,
