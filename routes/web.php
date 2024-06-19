@@ -74,6 +74,10 @@ Route::controller(TrackingController::class)->group(function(){
     Route::post('tracking/reporte_diferencia', 'insert_reporte_diferencia')->name('tracking.insert_reporte_diferencia');
     Route::get('tracking/{id}/detalle_operacion_diferencia', 'detalle_operacion_diferencia')->name('tracking.detalle_operacion_diferencia');
     Route::post('tracking/diferencia_regularizada', 'insert_diferencia_regularizada')->name('tracking.insert_diferencia_regularizada');
+    Route::get('tracking/{id}/solicitud_devolucion', 'solicitud_devolucion')->name('tracking.solicitud_devolucion');
+    Route::post('tracking/reporte_devolucion', 'insert_reporte_devolucion')->name('tracking.insert_reporte_devolucion');
+    Route::get('tracking/{id}/evaluacion_devolucion', 'evaluacion_devolucion')->name('tracking.evaluacion_devolucion');
+    Route::post('tracking/autorizacion_devolucion', 'insert_autorizacion_devolucion')->name('tracking.insert_autorizacion_devolucion');
 });
 //TIENDA - FUNCIÓN TEMPORAL
 Route::controller(FuncionTemporalController::class)->group(function(){
@@ -119,6 +123,20 @@ Route::controller(AdministradorController::class)->group(function(){
     Route::get('administrador_st/{id}/show', 'show_st')->name('administrador_st.show');
     Route::delete('administrador_st/{id}', 'destroy_st')->name('administrador_st.destroy');
     Route::get('administrador_st/{id}/evidencia', 'evidencia_st')->name('administrador_st.evidencia');
+
+    Route::get('administrador_sc', 'index_sc')->name('administrador_sc');
+    Route::post('administrador_sc/list', 'list_sc')->name('administrador_sc.list');
+    Route::get('administrador_sc/create', 'create_sc')->name('administrador_sc.create');
+    Route::post('administrador_sc/previsualizacion_captura', 'previsualizacion_captura_sc')->name('administrador_sc.previsualizacion_captura');
+    Route::post('administrador_sc', 'store_sc')->name('administrador_sc.store');
+    Route::get('administrador_sc/{id}/edit', 'edit_sc')->name('administrador_sc.edit');
+    Route::put('administrador_sc/previsualizacion_captura', 'previsualizacion_captura_sc')->name('administrador_sc.previsualizacion_captura_put');
+    Route::put('administrador_sc/{id}', 'update_sc')->name('administrador_sc.update');
+    Route::get('administrador_sc/{id}/download', 'download_sc')->name('administrador_sc.download');
+    Route::delete('administrador_sc/{id}/evidencia', 'destroy_evidencia_sc')->name('administrador_sc.destroy_evidencia');
+    Route::get('administrador_sc/{id}/show', 'show_sc')->name('administrador_sc.show');
+    Route::delete('administrador_sc/{id}', 'destroy_sc')->name('administrador_sc.destroy');
+    Route::get('administrador_sc/{id}/evidencia', 'evidencia_sc')->name('administrador_sc.evidencia');
 });
 
 

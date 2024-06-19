@@ -34,6 +34,9 @@ class Tracking extends Model
         'importe_transporte',
         'factura_transporte',
         'observacion_inspf',
+        'diferencia',
+        'guia_diferencia',
+        'devolucion',
         'estado',
         'fec_reg',
         'user_reg',
@@ -66,7 +69,9 @@ class Tracking extends Model
         }else{
             $sql = "SELECT tr.id,tr.n_requerimiento,tr.desde,tr.hacia,tp.descripcion AS proceso,
                     DATE_FORMAT(de.fecha,'%d-%m-%Y') AS fecha,DATE_FORMAT(de.fecha,'%H:%i') AS hora,
-                    te.descripcion AS estado,de.id_estado
+                    CASE WHEN tr.devolucion=1 AND de.id_estado IN (14,15,16) 
+                    THEN CONCAT(te.descripcion,' (PENDIENTE DEVOLUCIÓN)') ELSE te.descripcion END AS estado,
+                    de.id_estado
                     FROM tracking tr
                     LEFT JOIN (SELECT MAX(id) AS ultimo_id,id_tracking
                     FROM tracking_detalle_proceso

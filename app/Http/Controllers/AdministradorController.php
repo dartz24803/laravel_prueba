@@ -11,6 +11,7 @@ use App\Models\ContenidoSupervisionTienda;
 use App\Models\DetalleSupervisionTienda;
 use App\Models\DiaSemana;
 use App\Models\Mes;
+use App\Models\SeguimientoCoordinador;
 use App\Models\SupervisionTienda;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
@@ -595,5 +596,17 @@ class AdministradorController extends Controller
     {
         $list_archivo = ArchivoSupervisionTienda::select('id','archivo')->where('id_supervision_tienda',$id)->get();
         return view('tienda.administrador.supervision_tienda.modal_evidencia', compact('list_archivo'));
+    }
+
+    public function index_sc()
+    {
+        $list_base = Base::get_list_base_administrador();
+        return view('tienda.administrador.seguimiento_coordinador.index', compact('list_base'));
+    }
+
+    public function list_sc(Request $request)
+    {
+        $list_seguimiento_coordinador = SeguimientoCoordinador::get_list_seguimiento_coordinador(['base'=>$request->base]);
+        return view('tienda.administrador.seguimiento_coordinador.lista', compact('list_seguimiento_coordinador'));
     }
 }

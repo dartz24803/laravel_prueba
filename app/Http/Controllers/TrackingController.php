@@ -13,6 +13,7 @@ use App\Models\TrackingArchivoTemporal;
 use App\Models\TrackingDetalleEstado;
 use App\Models\TrackingDetalleProceso;
 use App\Models\TrackingGuiaRemisionDetalle;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 class TrackingController extends Controller
 {
@@ -1228,7 +1229,7 @@ class TrackingController extends Controller
 
         TrackingDetalleEstado::create([
             'id_detalle' => $tracking_dp->id,
-            'id_estado' => 20,
+            'id_estado' => 21,
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
@@ -1263,7 +1264,7 @@ class TrackingController extends Controller
             'user_act' => session('usuario')->id
         ]);
 
-        if($request->diferencia=="1"){
+        if(($request->diferencia=="1" && $request->devolucion=="1") || $request->diferencia=="1"){
             $tracking_dp = TrackingDetalleProceso::create([
                 'id_tracking' => $request->id,
                 'id_proceso' => 7,
@@ -1285,9 +1286,7 @@ class TrackingController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id
             ]);
-        }
-
-        if($request->devolucion=="1"){
+        }else{
             $tracking_dp = TrackingDetalleProceso::create([
                 'id_tracking' => $request->id,
                 'id_proceso' => 8,
@@ -1301,7 +1300,7 @@ class TrackingController extends Controller
     
             TrackingDetalleEstado::create([
                 'id_detalle' => $tracking_dp->id,
-                'id_estado' => 16,
+                'id_estado' => 17,
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
@@ -1479,10 +1478,29 @@ class TrackingController extends Controller
             ]);
 
             if($get_id->devolucion=="1"){
-                //
+                $tracking_dp = TrackingDetalleProceso::create([
+                    'id_tracking' => $request->id,
+                    'id_proceso' => 8,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id
+                ]);
+        
+                TrackingDetalleEstado::create([
+                    'id_detalle' => $tracking_dp->id,
+                    'id_estado' => 17,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id
+                ]);
             }else{
                 //ALERTA 9.3
-
                 $tracking_dp = TrackingDetalleProceso::create([
                     'id_tracking' => $request->id,
                     'id_proceso' => 9,
@@ -1496,7 +1514,7 @@ class TrackingController extends Controller
         
                 TrackingDetalleEstado::create([
                     'id_detalle' => $tracking_dp->id,
-                    'id_estado' => 20,
+                    'id_estado' => 21,
                     'fecha' => now(),
                     'estado' => 1,
                     'fec_reg' => now(),
@@ -1508,5 +1526,89 @@ class TrackingController extends Controller
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
+    }
+
+    public function solicitud_devolucion($id)
+    {
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
+        return view('logistica.tracking.solicitud_devolucion', compact('get_id'));
+    }
+
+    public function insert_reporte_devolucion(Request $request  )
+    {
+        //ALERTA 9.2
+        //MENSAJE 7
+
+        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
+
+        TrackingDetalleEstado::create([
+            'id_detalle' => $get_id->id_detalle,
+            'id_estado' => 18,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
+    }
+
+    public function evaluacion_devolucion($id)
+    {
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
+        return view('logistica.tracking.evaluacion_devolucion', compact('get_id'));
+    }
+
+    public function insert_autorizacion_devolucion(Request $request)
+    {
+        //MENSAJE 8
+
+        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
+
+        TrackingDetalleEstado::create([
+            'id_detalle' => $get_id->id_detalle,
+            'id_estado' => 19,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
+
+        //ALERTA 9.2.1.
+        TrackingDetalleEstado::create([
+            'id_detalle' => $get_id->id_detalle,
+            'id_estado' => 20,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
+
+        //ALERTA 9.3
+        $tracking_dp = TrackingDetalleProceso::create([
+            'id_tracking' => $request->id,
+            'id_proceso' => 9,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
+
+        TrackingDetalleEstado::create([
+            'id_detalle' => $tracking_dp->id,
+            'id_estado' => 21,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id
+        ]);
     }
 }
