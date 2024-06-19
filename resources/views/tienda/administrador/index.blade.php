@@ -119,7 +119,7 @@
         function Seguimiento_Coordinador(){
             Cargando();
 
-            var url="{{ route('administrador_conf_sc') }}";
+            var url="{{ route('administrador_sc') }}";
 
             $.ajax({
                 url: url,

@@ -188,6 +188,66 @@
 </form>
 
 <script>
+    function Periocidad(v){
+        var id_periocidad = $("#id_periocidad"+v).val();
+
+        if(id_periocidad==2){
+            $(".div_semanal"+v).show();
+            $(".div_quincenal"+v).hide();
+            $("#dia_1"+v).val(0);
+            $("#dia_2"+v).val(0);
+            $(".div_mensual"+v).hide();
+            $("#dia"+v).val(0);
+            $(".div_anual"+v).hide();
+            $("#mes"+v).val(0);
+        }else if(id_periocidad==3){
+            $(".div_quincenal"+v).show();
+            $(".div_semanal"+v).hide();
+            $("#nom_dia_1"+v).val(0);
+            $("#nom_dia_2"+v).val(0);
+            $("#nom_dia_3"+v).val(0);
+            $(".div_mensual"+v).hide();
+            $("#dia"+v).val(0);
+            $(".div_anual"+v).hide();
+            $("#mes"+v).val(0);
+        }else if(id_periocidad==4){
+            $(".div_mensual"+v).show();
+            $(".div_semanal"+v).hide();
+            $("#nom_dia_1"+v).val(0);
+            $("#nom_dia_2"+v).val(0);
+            $("#nom_dia_3"+v).val(0);
+            $(".div_quincenal"+v).hide();
+            $("#dia_1"+v).val(0);
+            $("#dia_2"+v).val(0);
+            $(".div_anual"+v).hide();
+            $("#mes"+v).val(0);
+            $("#dia"+v).val(0);
+        }else if(id_periocidad==5){
+            $(".div_mensual"+v).show();
+            $(".div_semanal"+v).hide();
+            $("#nom_dia_1"+v).val(0);
+            $("#nom_dia_2"+v).val(0);
+            $("#nom_dia_3"+v).val(0);
+            $(".div_quincenal"+v).hide();
+            $("#dia_1"+v).val(0);
+            $("#dia_2"+v).val(0);
+            $("#dia"+v).val(0);
+            $(".div_anual"+v).show();
+        }else{
+            $(".div_semanal"+v).hide();
+            $("#nom_dia_1"+v).val(0);
+            $("#nom_dia_2"+v).val(0);
+            $("#nom_dia_3"+v).val(0);
+            $(".div_quincenal"+v).hide();
+            $("#dia_1"+v).val(0);
+            $("#dia_2"+v).val(0);
+            $(".div_mensual"+v).hide();
+            $("#dia"+v).val(0);
+            $(".div_anual"+v).hide();
+            $("#mes"+v).val(0);
+        }
+    }
+
     function Update_C_Seguimiento_Coordinador() {
         Cargando();
 
