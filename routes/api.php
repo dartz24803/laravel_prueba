@@ -8,4 +8,4 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 });*/
 
-Route::post('tracking_token', [TrackingTokenController::class, 'store'])->name('tracking.store');
+Route::post('tracking_token', [TrackingTokenController::class, 'store'])->name('tracking_token.store');
