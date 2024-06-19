@@ -2,8 +2,8 @@
 
 @section('content')
 <?php 
-$id_puesto = Session::get('usuario')->id_puesto;
-$base = Session::get('usuario')->centro_labores; 
+$id_puesto = Session('usuario')->id_puesto;
+$base = Session('usuario')->centro_labores; 
 ?>
 <div id="content" class="main-content">
     <div class="layout-px-spacing">

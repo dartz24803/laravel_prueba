@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ReporteFotograficoAdm;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Session;
 use App\Models\CodigosReporteFotografico;
 use App\Models\Area;
 use Exception;
@@ -104,9 +103,9 @@ class ReporteFotograficoAdmController extends Controller
                 'tipo' => $request->input("codigo"),
                 'estado' => '1',
                 'fec_reg' => now(),
-                'user_reg' => Session::get('usuario')->id_usuario,
+                'user_reg' => Session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => Session::get('usuario')->id_usuario,
+                'user_act' => Session('usuario')->id_usuario,
             ];
             $this->modelo->insert($dato);
             $respuesta['error'] = "";
@@ -145,9 +144,9 @@ class ReporteFotograficoAdmController extends Controller
                 'tipo' => $request->input("codigo_e"),
                 'estado' => '1',
                 'fec_reg' => now(),
-                'user_reg' => Session::get('usuario')->id_usuario,
+                'user_reg' => Session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => Session::get('usuario')->id_usuario,
+                'user_act' => Session('usuario')->id_usuario,
             ];
             $this->modelo->where('id', $id)->update($dato);
             $respuesta['error'] = "";

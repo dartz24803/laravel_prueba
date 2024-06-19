@@ -9,7 +9,6 @@ use App\Models\Base;
 use App\Models\CodigosReporteFotografico;
 use App\Models\ReporteFotograficoArchivoTemporal;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Session;
 use Exception;
 
 class ReporteFotograficoController extends Controller
@@ -91,7 +90,7 @@ class ReporteFotograficoController extends Controller
 
     public function ModalRegistroReporteFotografico(){
         // Lógica para obtener los datos necesarios
-        $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id_usuario)->delete();
+        $this->modeloarchivotmp->where('id_usuario', Session('usuario')->id_usuario)->delete();
         $list_codigos = $this->modelocodigos->listar();
         // Retorna la vista con los datos
         return view('tienda.ReporteFotografico.modal_registrar', compact('list_codigos'));
@@ -108,7 +107,7 @@ class ReporteFotograficoController extends Controller
     public function Previsualizacion_Captura2(){
         //contador de archivos temporales para validar si tomó foto o no
         //$data = $this->modeloarchivotmp->contador_archivos_rf();
-        $data = $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id_usuario)->get();
+        $data = $this->modeloarchivotmp->where('id_usuario', Session('usuario')->id_usuario)->get();
 
         //si esta vacío
         if($data->isEmpty()){
@@ -123,7 +122,7 @@ class ReporteFotograficoController extends Controller
                 echo "No se pudo conectar al servidor FTP";
             } else {
                 //ftp_delete($con_id, 'REPORTE_FOTOGRAFICO/temporal_rf_'.Session::get('usuario')->id. "_1" .'.jpg');
-                $nombre_soli = "temporal_rf_" . Session::get('usuario')->id_usuario . "_1";
+                $nombre_soli = "temporal_rf_" . Session('usuario')->id_usuario . "_1";
                 $path = $_FILES[$foto_key]["name"];
                 $source_file = $_FILES[$foto_key]['tmp_name'];
                 $ext = pathinfo($path, PATHINFO_EXTENSION);
@@ -135,7 +134,7 @@ class ReporteFotograficoController extends Controller
                 if ($subio) {
                     $dato = [
                         'ruta' => $nombre,
-                        'id_usuario' => Session::get('usuario')->id_usuario,
+                        'id_usuario' => Session('usuario')->id_usuario,
                     ];
                     $this->modeloarchivotmp->insert($dato);
                     $respuesta['error'] = "";
@@ -151,7 +150,7 @@ class ReporteFotograficoController extends Controller
 
     public function obtenerImagenes() {
         //obtener imagenes por usuario
-        $imagenes = $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id_usuario)->get();
+        $imagenes = $this->modeloarchivotmp->where('id_usuario', Session('usuario')->id_usuario)->get();
         $data = array();
         foreach ($imagenes as $imagen) {
             $data[] = array(
@@ -170,7 +169,7 @@ class ReporteFotograficoController extends Controller
     }
 
     public function Registrar_Reporte_Fotografico(Request $request){
-        $data = $this->modeloarchivotmp->where('id_usuario', Session::get('usuario')->id_usuario)->get();
+        $data = $this->modeloarchivotmp->where('id_usuario', Session('usuario')->id_usuario)->get();
         //print_r($data);
 
         //si hay foto procede a registrar
@@ -201,12 +200,12 @@ class ReporteFotograficoController extends Controller
                     //llenar array con datos para bd
                     $dato['foto'] = $nombre;
                     $dato = [
-                        'base' => Session::get('usuario')->centro_labores,
+                        'base' => Session('usuario')->centro_labores,
                         'foto' => $nombre,
                         'codigo' => $request->input("codigo"),
                         'estado' => '1',
                         'fec_reg' => now(),
-                        'user_reg' => Session::get('usuario')->id_usuario,
+                        'user_reg' => Session('usuario')->id_usuario,
                     ];
                     $this->modelo->insert($dato);
                     $respuesta['error'] = "";
@@ -248,7 +247,7 @@ class ReporteFotograficoController extends Controller
                 $dato = [
                     'codigo' => $request->input('codigo_e'),
                     'fec_act' => now(),
-                    'user_act' => Session::get('usuario')->id_usuario,
+                    'user_act' => Session('usuario')->id_usuario,
                 ];
                 //actualizar codigo
                 $this->modelo->where('id', $id)->update($dato);

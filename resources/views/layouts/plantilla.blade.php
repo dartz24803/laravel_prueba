@@ -320,6 +320,23 @@
                                     <p class="romperpalabra"><span id="icono_active2"></span> Asistencia</p>
                                 </a>
                             </li>
+                            <?php if(
+                            session('usuario')->nivel_jerarquico==2 || 
+                            session('usuario')->nivel_jerarquico==3 || 
+                            session('usuario')->nivel_jerarquico==4 || 
+                            session('usuario')->nivel_jerarquico==5 || 
+                            session('usuario')->nivel_jerarquico==6 || 
+                            session('usuario')->nivel_jerarquico==7 || 
+                            $id_puesto==195){
+                                $amonestaciones2 = "<br>• Recibidas";
+                            }else{
+                                $amonestaciones2 = "";
+                            }?> 
+                            <li id="amonestaciones">
+                                <a href="{{ url('Amonestacion') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Emitidas <?= $amonestaciones2 ?>">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Amonestaciones</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 

@@ -1,8 +1,7 @@
 <?php
-    use Illuminate\Support\Facades\Session;
-    $sesion =  Session::get('usuario');
-    $id_nivel = Session::get('usuario')->id_nivel;
-    $id_puesto = Session::get('usuario')->id_puesto;
+    $sesion =  Session('usuario');
+    $id_nivel = Session('usuario')->id_nivel;
+    $id_puesto = Session('usuario')->id_puesto;
 
 ?>
 <table id="multi-column-orderingg" class="table table-hover" style="width:100%">

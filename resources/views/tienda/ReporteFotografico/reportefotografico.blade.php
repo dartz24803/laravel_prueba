@@ -2,8 +2,7 @@
 
 @section('content')
 <?php
-use Illuminate\Support\Facades\Session;
-$base = Session::get('usuario')->centro_labores;
+$base = Session('usuario')->centro_labores;
 // print_r(Session::get('usuario'));
 ?>
     <div id="content" class="main-content">

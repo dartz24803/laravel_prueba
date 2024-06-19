@@ -41,18 +41,17 @@
 </style>
 
 <?php
-    use Illuminate\Support\Facades\Session;
-    $sesion= Session::get('usuario');
-    $id_nivel=Session::get('usuario')->id_nivel;
-    $desvinculacion=Session::get('usuario')->desvinculacion;
-    $estado=Session::get('usuario')->estado;
-    $id_puesto=Session::get('usuario')->id_puesto;
-    $id_cargo=Session::get('usuario')->id_cargo;
-    $usuario_codigo=Session::get('usuario')->usuario_codigo;
-    $centro_labores=Session::get('usuario')->centro_labores;
-    $acceso=Session::get('usuario')->acceso;
-    $induccion=Session::get('usuario')->induccion;
-    $nom_area=Session::get('usuario')->nom_area;
+    $sesion= Session('usuario');
+    $id_nivel=Session('usuario')->id_nivel;
+    $desvinculacion=Session('usuario')->desvinculacion;
+    $estado=Session('usuario')->estado;
+    $id_puesto=Session('usuario')->id_puesto;
+    $id_cargo=Session('usuario')->id_cargo;
+    $usuario_codigo=Session('usuario')->usuario_codigo;
+    $centro_labores=Session('usuario')->centro_labores;
+    $acceso=Session('usuario')->acceso;
+    $induccion=Session('usuario')->induccion;
+    $nom_area=Session('usuario')->nom_area;
 ?>
 
 <div id="content" class="main-content">

@@ -7,7 +7,6 @@ use App\Models\HorariosCuadroControl;
 use App\Models\Base;
 use App\Models\DiaSemana;
 use App\Models\Puesto;
-use Illuminate\Support\Facades\Session;
 use App\Models\CuadroControlVisualHorario;
 use App\Models\Usuario;
 use Illuminate\Support\Facades\Validator;
@@ -114,7 +113,7 @@ class TablaCuadroControlVisualController extends Controller
             $dato['fin_refri2']= $request->input("fin_refri2");
             $dato['estado']= 1;
             $dato['fec_reg']= now();
-            $dato['user_reg']= Session::get('usuario')->id_usuario;
+            $dato['user_reg']= Session('usuario')->id_usuario;
             $this->modelo->insert($dato);
         }
         return response()->json($respuesta);
@@ -144,7 +143,7 @@ class TablaCuadroControlVisualController extends Controller
             $dato['ini_refri2']= $request->input("ini_refri2e");
             $dato['fin_refri2']= $request->input("fin_refri2e");
             $dato['fec_act']= now();
-            $dato['user_act']= Session::get('usuario')->id_usuario;
+            $dato['user_act']= Session('usuario')->id_usuario;
             $this->modelo->where('id_horarios_cuadro_control', $id)->update($dato);
         }
     }
@@ -213,7 +212,7 @@ class TablaCuadroControlVisualController extends Controller
         $get_id = $this->modelo->where('id_horarios_cuadro_control', $dato['horario'])->get();
         $dato['dia'] = $get_id[0]['dia'];
         $dato['fec_reg'] = now();
-        $dato['user_reg'] = Session::get('usuario')->id_usuario;
+        $dato['user_reg'] = Session('usuario')->id_usuario;
         //print_r($dato);
         $this->modeloccvh->insert($dato);
     }

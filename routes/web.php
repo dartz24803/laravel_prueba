@@ -13,6 +13,7 @@ use App\Http\Controllers\ReporteFotograficoAdmController;
 use App\Http\Controllers\TablaCuadroControlVisualController;
 use App\Http\Controllers\CuadroControlVisualController;
 use App\Http\Controllers\AsistenciaController;
+use App\Http\Controllers\AmonestacionController;
 
 Route::middleware([NoCache::class])->group(function () {
     Route::get('/Cartera', [CarteraController::class, 'index'])->name('cartera');
@@ -193,5 +194,16 @@ Route::controller(AsistenciaController::class)->group(function(){
     Route::get('Reporte_Control_Asistencia', 'index')->name('Reporte_Control_Asistencia');
     Route::post('Buscar_Reporte_Control_Asistencia', 'Buscar_Reporte_Control_Asistencia');
     // Route::post('/Insert_Cuadro_Control_Visual_Estado', 'Insert_Cuadro_Control_Visual_Estado');
+    // Route::post('/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
+});
+//AMONESTACION
+Route::controller(AmonestacionController::class)->group(function(){
+    //------------------------------CCV------------------------------------//
+    Route::get('Amonestacion', 'Amonestacion')->name('Amonestacion');
+    Route::get('Amonestaciones_Emitidas', 'Amonestaciones_Emitidas')->name('Amonestaciones_Emitidas');
+    Route::get('Amonestaciones_Recibidas', 'Amonestaciones_Recibidas')->name('Amonestaciones_Recibidas');
+    Route::post('Lista_Amonestaciones_Emitidas', 'Lista_Amonestaciones_Emitidas')->name('Lista_Amonestaciones_Emitidas');
+    Route::post('Buscar_Reporte_Control_Asistencia', 'Buscar_Reporte_Control_Asistencia');
+    Route::get('/Modal_Amonestacion', 'Modal_Amonestacion');
     // Route::post('/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
 });
