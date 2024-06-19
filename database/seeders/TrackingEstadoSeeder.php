@@ -31,6 +31,7 @@ class TrackingEstadoSeeder extends Seeder
             ['id_proceso'=>'7','descripcion'=>'REPORTE DE DIFERENCIAS'],
             ['id_proceso'=>'7','descripcion'=>'DIFERENCIAS REGULARIZADAS'],
             ['id_proceso'=>'8','descripcion'=>'SOLICITUD DE DEVOLUCIÓN'],
+            ['id_proceso'=>'8','descripcion'=>'REPORTE DE DEVOLUCIÓN'],
             ['id_proceso'=>'8','descripcion'=>'AUTORIZACIÓN DE DEVOLUCIÓN'],
             ['id_proceso'=>'8','descripcion'=>'CIERRE DE INCONFORMIDADES DE DEVOLUCIÓN'],
             ['id_proceso'=>'9','descripcion'=>'MERCADERÍA ENTREGADA'],
