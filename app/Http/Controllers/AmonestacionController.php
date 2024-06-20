@@ -220,22 +220,18 @@ class AmonestacionController extends Controller
         ];
         $this->modelo->where('id_amonestacion', $id_amonestacion)->update($dato);
     }
-/*
-    public function Aprobacion_Amonestacion(){
-        if ($this->session->userdata('usuario')) {
-            $dato['id_amonestacion']= $this->input->post("id_amonestacion");
-            $dato['tipo']= $this->input->post("tipo");
-            if($dato['tipo']==1){
-                $dato['estado_amonestacion']=2;
-            }else{
-                $dato['estado_amonestacion']=3;
-            }
-            $this->Model_Corporacion->aprobacion_amonestacion($dato);
+
+    public function Aprobacion_Amonestacion(Request $request){
+        $dato['id_amonestacion']= $request->input("id_amonestacion");
+        $dato['tipo']= $request->input("tipo");
+        if($dato['tipo']==1){
+            $dato['estado_amonestacion']=2;
         }else{
-            redirect('');
+            $dato['estado_amonestacion']=3;
         }
+        $this->modelo->aprobacion_amonestacion($dato);
     }
-*/
+
     public function Modal_Documento_Amonestacion($id_amonestacion){
         $get_id = $this->modelo->get_list_amonestacion($id_amonestacion);
         $url = $this->modeloconfig->where('descrip_config', 'Documentos_Amonestacion')->where('estado', 1)->get();
@@ -310,11 +306,13 @@ class AmonestacionController extends Controller
             'list_colaborador' => $list_colaborador,
             'list_tipo_amonestacion' => $list_tipo_amonestacion,
         ];
+        $tmp = base_path('vendor/mpdf');
 
         // Crear una instancia de Mpdf con las configuraciones necesarias
         $mpdf = new \Mpdf\Mpdf([
             'format' => 'A4',
             'default_font' => 'gothic',
+            'tempDir' => $tmp, // Ruta absoluta del nuevo directorio temporal
         ]);
 
         // Generar el contenido HTML

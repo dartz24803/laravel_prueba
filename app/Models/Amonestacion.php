@@ -153,7 +153,7 @@ class Amonestacion extends Model
         return json_decode(json_encode($query), true);
     }
     
-    public function update_amonestacion($dato) {
+    function update_amonestacion($dato) {
         $id_usuario = session('usuario')->id_usuario;
         $id_puesto = session('usuario')->id_puesto;
         $estado = $dato['documento'] != "" ? $dato['estado_amonestacion'] : null;
@@ -176,5 +176,24 @@ class Amonestacion extends Model
                 'fec_act' => now(),
                 'user_act' => $id_usuario
             ]);
+    }
+
+    function aprobacion_amonestacion($dato){
+        $id_usuario= session('usuario')->id_usuario;
+        $fec_aprobacion = null;
+        if($dato['tipo']==1){
+            $fec_aprobacion=now();
+        }
+
+        DB::table('amonestacion')
+            ->where('id_amonestacion', $dato['id_amonestacion'])
+            ->update([
+                'estado_amonestacion' => $dato['estado_amonestacion'],
+                'id_revisor' => $id_usuario,
+                'fec_aprobacion' => $fec_aprobacion,
+                'fec_act' => now(),
+                'user_act' => $id_usuario,
+            ]);
+
     }
 }

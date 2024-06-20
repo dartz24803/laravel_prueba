@@ -228,4 +228,5 @@ Route::controller(AmonestacionController::class)->group(function(){
     Route::get('/Modal_Documento_Amonestacion/{id}', 'Modal_Documento_Amonestacion');
     Route::get('Pdf_Amonestacion/{id}','Pdf_Amonestacion');
     Route::post('/Update_Documento_Amonestacion', 'Update_Documento_Amonestacion');
+    Route::post('Aprobacion_Amonestacion', 'Aprobacion_Amonestacion');
 });
