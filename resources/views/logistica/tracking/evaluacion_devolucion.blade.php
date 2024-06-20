@@ -1,6 +1,13 @@
 @extends('layouts.plantilla')
 
 @section('content')
+    <style>
+        input[type=radio]:checked{
+            border-color: #00B1F4 !important;
+            background-color: #00B1F4 !important;
+        }
+    </style>
+
     <div id="content" class="main-content">
         <div class="layout-px-spacing">
             <div class="page-header">
@@ -20,16 +27,40 @@
                             </div>
     
                             <div class="row">
-                                <div class="form-group col-lg-12">
-                                    <input type="checkbox" name="diferencia" id="diferencia" value="1">
-                                    <label class="control-label text-bold" for="diferencia">Existen diferencias</label>
+                                <div class="form-group col-lg-12 mb-0">
+                                    <label class="control-label text-bold">Devolución:</label>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <label class="new-control new-radio radio-ln1">
+                                        <input type="radio" class="new-control-input" name="evaluacion" value="1">
+                                        <span class="new-control-indicator"></span>Si
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <label class="new-control new-radio radio-ln1">
+                                      <input type="radio" class="new-control-input" name="evaluacion" value="2">
+                                      <span class="new-control-indicator"></span>No
+                                    </label>
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="form-group col-lg-12">
-                                    <input type="checkbox" name="devolucion" id="devolucion" value="1">
-                                    <label class="control-label text-bold" for="devolucion">Mercadería para devolución</label>
+                                    <label class="control-label text-bold" for="explicacion">Explicación:</label>
+                                    <input type="text" class="form-control" name="explicacion" id="explicacion" placeholder="Explicación">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-lg-12">
+                                    <label class="control-label text-bold" for="proceder">Proceder:</label>
+                                    <input type="text" class="form-control" name="proceder" id="proceder" placeholder="Proceder">
                                 </div>
                             </div>
     

@@ -27,6 +27,7 @@
     <link href="{{ asset('template/plugins/sweetalerts/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('template/plugins/sweetalerts/sweetalert.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('template/assets/css/components/custom-sweetalert.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('template/assets/css/forms/theme-checkbox-radio.css') }}">
     <!-- END THEME GLOBAL STYLES -->
     <script src="{{ asset('js/momentjs/moment.js') }}"></script>
     <script src="{{ asset('js/momentjs/moment-with-locales.js') }}"></script>
@@ -339,7 +340,7 @@
                             session('usuario')->nivel_jerarquico==5 || 
                             session('usuario')->nivel_jerarquico==6 || 
                             session('usuario')->nivel_jerarquico==7 || 
-                            $id_puesto==195){
+                            session('usuario')->id_puesto==195){
                                 $amonestaciones2 = "<br>• Recibidas";
                             }else{
                                 $amonestaciones2 = "";
