@@ -9,8 +9,8 @@
     @if (count($list_archivo)>0)
         <div class="row ml-2 mr-2">
             @foreach ($list_archivo as $list)
-                <div id="i_{{ $list->id }}" class="col-lg-3">
-                    <div id="lista_escogida">
+                <div class="col-lg-3">
+                    <div>
                         <img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar_support" 
                         alt="Evidencia" 
                         src="{{ $list->archivo }}">

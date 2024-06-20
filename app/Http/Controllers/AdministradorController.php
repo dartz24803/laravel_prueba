@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\ArchivoSeguimientoCoordinador;
 use App\Models\ArchivoSupervisionTienda;
 use App\Models\Area;
 use App\Models\Base;
 use App\Models\ContenidoSeguimientoCoordinador;
 use App\Models\ContenidoSupervisionTienda;
+use App\Models\DetalleSeguimientoCoordinador;
 use App\Models\DetalleSupervisionTienda;
 use App\Models\DiaSemana;
 use App\Models\Mes;
@@ -354,19 +356,19 @@ class AdministradorController extends Controller
 
             $list_contenido = ContenidoSupervisionTienda::select('id','descripcion')->orderBy('descripcion','ASC')->get();
             foreach($list_contenido as $list){
-                if($request->input('radio_'.$list['id'])==null){
+                if($request->input('radio_'.$list->id)==null){
                     $valor = 2;
                 }else{
-                    $valor = $request->input('radio_'.$list['id']);
+                    $valor = $request->input('radio_'.$list->id);
                 }
                 DetalleSupervisionTienda::create([
                     'id_supervision_tienda' => $supervision_tienda->id,
-                    'id_contenido' => $list['id'],
+                    'id_contenido' => $list->id,
                     'valor' => $valor,
                 ]);
             }
 
-            if($_FILES["archivos"]["name"] != ""){
+            if($request->hasFile('archivos') && count($request->file('archivos'))>0){
                 $ftp_server = "lanumerounocloud.com";
                 $ftp_usuario = "intranet@lanumerounocloud.com";
                 $ftp_pass = "Intranet2022@";
@@ -499,19 +501,19 @@ class AdministradorController extends Controller
 
         $list_contenido = ContenidoSupervisionTienda::select('id','descripcion')->orderBy('descripcion','ASC')->get();
         foreach($list_contenido as $list){
-            if($request->input('radioe_'.$list['id'])==null){
+            if($request->input('radioe_'.$list->id)==null){
                 $valor = 2;
             }else{
-                $valor = $request->input('radioe_'.$list['id']);
+                $valor = $request->input('radioe_'.$list->id);
             }
             DetalleSupervisionTienda::create([
                 'id_supervision_tienda' => $id,
-                'id_contenido' => $list['id'],
+                'id_contenido' => $list->id,
                 'valor' => $valor,
             ]);
         }
 
-        if($_FILES["archivose"]["name"] != ""){
+        if($request->hasFile('archivose') && count($request->file('archivose'))>0){
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
             $ftp_pass = "Intranet2022@";
@@ -608,5 +610,250 @@ class AdministradorController extends Controller
     {
         $list_seguimiento_coordinador = SeguimientoCoordinador::get_list_seguimiento_coordinador(['base'=>$request->base]);
         return view('tienda.administrador.seguimiento_coordinador.lista', compact('list_seguimiento_coordinador'));
+    }
+
+    public function valida_sc()
+    {
+        $list_contenido = ContenidoSeguimientoCoordinador::get_list_contenido_seguimiento_coordinador(['fecha'=>date('Y-m-d')]);
+
+        if(count($list_contenido)>0){
+            echo "Si";
+        }else{
+            echo "No";
+        }
+    }
+
+    public function create_sc()
+    {
+        $list_contenido = ContenidoSeguimientoCoordinador::get_list_contenido_seguimiento_coordinador(['fecha'=>date('Y-m-d')]);
+        return view('tienda.administrador.seguimiento_coordinador.modal_registrar', compact('list_contenido'));
+    }
+
+    public function store_sc(Request $request)
+    {
+        $valida = SeguimientoCoordinador::where('base', $request->base)->where('fecha', $request->fecha)->where('estado', 1)->exists();
+
+        if($valida){
+            echo "error";
+        }else{
+            $list_contenido = ContenidoSeguimientoCoordinador::get_list_contenido_seguimiento_coordinador(['fecha'=>date('Y-m-d')]);
+
+            if(count($list_contenido)>0){
+                $seguimiento_coordinador = SeguimientoCoordinador::create([
+                    'base' => $request->base,
+                    'fecha' => $request->fecha,
+                    'observacion' => addslashes($request->observacion),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+
+                foreach($list_contenido as $list){
+                    if($request->input('radio_'.$list->id)==null){
+                        $valor = 2;
+                    }else{
+                        $valor = $request->input('radio_'.$list->id);
+                    }
+                    DetalleSeguimientoCoordinador::create([
+                        'id_seguimiento_coordinador' => $seguimiento_coordinador->id,
+                        'id_contenido' => $list->id,
+                        'valor' => $valor,
+                    ]);
+                }
+
+                if($request->hasFile('archivos') && count($request->file('archivos'))>0){
+                    $ftp_server = "lanumerounocloud.com";
+                    $ftp_usuario = "intranet@lanumerounocloud.com";
+                    $ftp_pass = "Intranet2022@";
+                    $con_id = ftp_connect($ftp_server);
+                    $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                    if($con_id && $lr){
+                        for($count = 0; $count<count($_FILES["archivos"]["name"]); $count++){
+                            $path = $_FILES["archivos"]["name"][$count];
+    
+                            if(pathinfo($path, PATHINFO_EXTENSION)=='JPG' || 
+                            pathinfo($path, PATHINFO_EXTENSION)=='jpg' ||
+                            pathinfo($path, PATHINFO_EXTENSION)=='PNG' ||
+                            pathinfo($path, PATHINFO_EXTENSION)=='png' ||
+                            pathinfo($path, PATHINFO_EXTENSION)=='JPEG' ||
+                            pathinfo($path, PATHINFO_EXTENSION)=='jpeg'){
+                                $source_file = $_FILES['archivos']['tmp_name'][$count];
+        
+                                $fecha = date('YmdHis');
+                                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                                $nombre_soli="Evidencia_".$seguimiento_coordinador->id."_".$fecha."_".$count;
+                                $nombre = $nombre_soli.".".strtolower($ext);
+        
+                                $archivo = "https://lanumerounocloud.com/intranet/SEGUIMIENTO_COORDINADOR/".$nombre;
+            
+                                ftp_pasv($con_id,true); 
+                                $subio = ftp_put($con_id,"SEGUIMIENTO_COORDINADOR/".$nombre,$source_file,FTP_BINARY);
+                                if($subio){
+                                    ArchivoSeguimientoCoordinador::create([
+                                        'id_seguimiento_coordinador' => $seguimiento_coordinador->id,
+                                        'archivo' => $archivo,
+                                    ]);
+                                }else{
+                                    echo "Archivo no subido correctamente";
+                                }
+                            }
+                        }
+                    }else{
+                        echo "No se conecto";
+                    }
+                }
+            }else{
+                echo "sin_contenido";
+            }
+        }
+    }
+
+    public function edit_sc($id)
+    {
+        $get_id = SeguimientoCoordinador::findOrFail($id);
+        $list_contenido = ContenidoSeguimientoCoordinador::get_list_contenido_seguimiento_coordinador(['fecha'=>date('Y-m-d')]);
+        $list_detalle = DetalleSeguimientoCoordinador::select('id_contenido','valor')->where('id_seguimiento_coordinador',$id)->get();
+        $list_archivo = ArchivoSeguimientoCoordinador::select('id','archivo')->where('id_seguimiento_coordinador',$id)->get();
+        return view('tienda.administrador.seguimiento_coordinador.modal_editar', compact('get_id','list_contenido','list_detalle','list_archivo'));
+    }
+
+    public function download_sc($id)
+    {
+        $get_id = ArchivoSeguimientoCoordinador::findOrFail($id);
+
+        // URL del archivo
+        $url = $get_id->archivo;
+
+        // Crear un cliente Guzzle
+        $client = new Client();
+
+        // Realizar la solicitud GET para obtener el archivo
+        $response = $client->get($url);
+
+        // Obtener el contenido del archivo
+        $content = $response->getBody()->getContents();
+
+        // Obtener el nombre del archivo desde la URL
+        $filename = basename($url);
+
+        // Devolver el contenido del archivo en la respuesta
+        return response($content, 200)
+                ->header('Content-Type', $response->getHeaderLine('Content-Type'))
+                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+    }
+
+    public function destroy_evidencia_sc($id)
+    {
+        $get_id = ArchivoSeguimientoCoordinador::findOrFail($id);
+
+        $ftp_server = "lanumerounocloud.com";
+        $ftp_usuario = "intranet@lanumerounocloud.com";
+        $ftp_pass = "Intranet2022@";
+        $con_id = ftp_connect($ftp_server);
+        $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+        if($con_id && $lr){
+            $file_to_delete = "SEGUIMIENTO_COORDINADOR/".basename($get_id->archivo);
+            
+            if(ftp_delete($con_id, $file_to_delete)){
+                ArchivoSeguimientoCoordinador::where('id', $id)->delete();
+            }else{
+                echo "Error al eliminar el archivo.";
+            }
+        }else{
+            echo "No se conecto";
+        }
+    }
+
+    public function update_sc(Request $request, $id)
+    {
+        SeguimientoCoordinador::findOrFail($id)->update([
+            'observacion' => addslashes($request->observacione),
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        DetalleSeguimientoCoordinador::where('id_seguimiento_coordinador', $id)->delete();
+
+        $list_contenido = ContenidoSeguimientoCoordinador::get_list_contenido_seguimiento_coordinador(['fecha'=>date('Y-m-d')]);
+        foreach($list_contenido as $list){
+            if($request->input('radioe_'.$list->id)==null){
+                $valor = 2;
+            }else{
+                $valor = $request->input('radioe_'.$list->id);
+            }
+            DetalleSeguimientoCoordinador::create([
+                'id_seguimiento_coordinador' => $id,
+                'id_contenido' => $list->id,
+                'valor' => $valor,
+            ]);
+        }
+
+        if($request->hasFile('archivose') && count($request->file('archivose'))>0){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                for($count = 0; $count<count($_FILES["archivose"]["name"]); $count++){
+                    $path = $_FILES["archivose"]["name"][$count];
+
+                    if(pathinfo($path, PATHINFO_EXTENSION)=='JPG' || 
+                    pathinfo($path, PATHINFO_EXTENSION)=='jpg' ||
+                    pathinfo($path, PATHINFO_EXTENSION)=='PNG' ||
+                    pathinfo($path, PATHINFO_EXTENSION)=='png' ||
+                    pathinfo($path, PATHINFO_EXTENSION)=='JPEG' ||
+                    pathinfo($path, PATHINFO_EXTENSION)=='jpeg'){
+                        $source_file = $_FILES['archivose']['tmp_name'][$count];
+
+                        $fecha = date('YmdHis');
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $nombre_soli="Evidencia_".$request->id."_".$fecha."_".$count;
+                        $nombre = $nombre_soli.".".strtolower($ext);
+
+                        $archivo = "https://lanumerounocloud.com/intranet/SEGUIMIENTO_COORDINADOR/".$nombre;
+    
+                        ftp_pasv($con_id,true); 
+                        $subio = ftp_put($con_id,"SEGUIMIENTO_COORDINADOR/".$nombre,$source_file,FTP_BINARY);
+                        if($subio){
+                            ArchivoSeguimientoCoordinador::create([
+                                'id_seguimiento_coordinador' => $id,
+                                'archivo' => $archivo,
+                            ]);
+                        }else{
+                            echo "Archivo no subido correctamente";
+                        }
+                    }
+                }
+            }else{
+                echo "No se conecto";
+            }
+        }
+    }
+
+    public function show_sc($id)
+    {
+        $get_id = SeguimientoCoordinador::findOrFail($id);
+        $list_contenido = ContenidoSeguimientoCoordinador::get_list_contenido_seguimiento_coordinador(['fecha'=>date('Y-m-d')]);
+        $list_detalle = DetalleSeguimientoCoordinador::select('id_contenido','valor')->where('id_seguimiento_coordinador',$id)->get();
+        $list_archivo = ArchivoSeguimientoCoordinador::select('id','archivo')->where('id_seguimiento_coordinador',$id)->get();
+        return view('tienda.administrador.seguimiento_coordinador.modal_ver', compact('get_id','list_contenido','list_detalle','list_archivo'));
+    }
+
+    public function destroy_sc($id)
+    {
+        SeguimientoCoordinador::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function evidencia_sc($id)
+    {
+        $list_archivo = ArchivoSeguimientoCoordinador::select('id','archivo')->where('id_seguimiento_coordinador',$id)->get();
+        return view('tienda.administrador.seguimiento_coordinador.modal_evidencia', compact('list_archivo'));
     }
 }

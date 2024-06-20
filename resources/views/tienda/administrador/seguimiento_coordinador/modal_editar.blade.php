@@ -9,7 +9,7 @@
 
 <form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
-        <h5 class="modal-title">Editar supervisión de tienda:</h5>
+        <h5 class="modal-title">Editar seguimiento al coordinador:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
@@ -21,6 +21,8 @@
                 <tr>
                     <td><label class="control-label text-bold">Si</label></td>
                     <td><label class="control-label text-bold">No</label></td>
+                    <td><label class="control-label text-bold">Tarea</label></td>
+                    <td><label class="control-label text-bold">Periocidad</label></td>
                 </tr>
                 @foreach ($list_contenido as $list)
                     <tr>
@@ -43,7 +45,7 @@
                                 </label>
                             </div>
                         </td>
-                        <td>
+                        <td> 
                             <div class="radio-buttons">
                                 <label class="radio-button radio-button-no">
                                     <input type="radio" name="radioe_{{ $list->id }}" value="2"
@@ -65,44 +67,33 @@
                         <td>
                             <label class="control-label text-bold">{{ $list->descripcion }}</label>
                         </td>
+                        <td class="text-center">
+                            <label class="control-label text-bold">{{ $list->periocidad }}</label>
+                        </td>
                     </tr>
                 @endforeach
             </table>
         </div>
 
         <div class="row ml-2 mr-2">
-            <div class="form-group col-lg-12">
+            <div class="form-group col-md-12">
                 <label class="control-label text-bold">Observación: </label>
                 <textarea class="form-control" name="observacione" id="observacione" rows="5" placeholder="Observación">{{ $get_id->observacion }}</textarea>
             </div>  
         </div>
 
         <div class="row ml-2 mr-2">
-             <div class="form-group col-lg-12">
+             <div class="form-group col-md-12">
                 <label class="control-label text-bold">Evidencia(s): </label>
             </div>
-            <div class="form-group col-lg-12">
+            <div class="form-group col-md-12">
                 <input type="file" class="form-control" name="archivose[]" id="archivose" multiple>
             </div>
         </div>
 
-        <div class="row d-flex justify-content-center mb-2 mt-2">
-            <button type="button" class="btn btn-secondary" id="boton_camarae" onclick="Activar_Camarae();">Activar cámara</button>
-        </div>
-        <div class="row d-flex justify-content-center mb-2" id="div_camarae" style="display:none !important;">
-            <video id="videoe" autoplay style="max-width: 95%;"></video>
-        </div>
-        <div class="row d-flex justify-content-center mb-2 mt-2" id="div_tomar_fotoe" style="display:none !important;">
-            <button type="button" class="btn btn-info" onclick="Tomar_Fotoe();">Tomar foto</button>
-        </div>
-        <div class="row d-flex justify-content-center" id="div_canvase" style="display:none !important;">
-            <canvas id="canvase" width="640" height="480" style="max-width:95%;"></canvas>
-            <p class="mt-2">Recuerda que puedes tomar otra foto presionando nuevamente <mark style="background-color:#2196F3;color:white;">Tomar foto</mark> o guardar el registro presionando <mark style=background-color:#1B55E2;color:white;>Guardar</mark></p>
-        </div>
-
         @if (count($list_archivo)>0)
             <div class="row ml-2 mr-2">
-                <label class="control-label text-bold">Evidencia(s) actual(es): <a href="#" title="Estos archivos sirven como evidencia de la supervisión de tienda" class="anchor-tooltip tooltiped"><div class="divdea">?</div></a></label>
+                <label class="control-label text-bold">Evidencia(s) actual(es): <a href="#" title="Estos archivos sirven como evidencia del seguimiento al coordinador" class="anchor-tooltip tooltiped"><div class="divdea">?</div></a></label>
             </div>
             <div class="row ml-2 mr-2">
                 @foreach ($list_archivo as $list)
@@ -130,14 +121,13 @@
                     </div>
                 @endforeach
             </div>
-        @endif	 	           	                	        
+        @endif         	                	        
     </div>
 
     <div class="modal-footer">
         @csrf
         @method('PUT')
-        <input type="hidden" id="capturae" name="capturae" value="0">
-        <button class="btn btn-primary" type="button" onclick="Update_Supervision_Tienda();">Guardar</button>
+        <button class="btn btn-primary" type="button" onclick="Update_Seguimiento_Coordinador();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
@@ -154,116 +144,6 @@
         allowedFileExtensions: ['jpg','png','jpeg','JPG','PNG','JPEG'],
     });
 
-    var video = document.getElementById('videoe');
-    var boton = document.getElementById('boton_camarae');
-    var div_tomar_foto = document.getElementById('div_tomar_fotoe'); 
-    var div = document.getElementById('div_camarae'); 
-    var isCameraOn = false;
-    var stream = null;
-
-    function Activar_Camarae(){
-        var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-        if(screenWidth<1000){
-            if(!isCameraOn){
-                //Pedir permiso para acceder a la cámara
-                navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: {
-                            exact: "environment"
-                        }
-                    }
-                })
-                .then(function (newStream){
-                    stream = newStream;
-                    // Mostrar el stream de la cámara en el elemento de video
-                    video.srcObject = stream;
-                    video.play();
-                    isCameraOn = true;
-                    boton.textContent = "Desactivar cámara";
-                    div_tomar_foto.style.cssText = "display: block;";
-                    div.style.cssText = "display: block;";
-                })
-                .catch(function (error){
-                    console.error('Error al acceder a la cámara:', error);
-                });
-            }else{
-                //Detener la reproducción  del stream y liberar la cámara
-                if(stream){
-                    stream.getTracks().forEach(function (track){
-                        track.stop();
-                    });
-                    video.srcObject = null;
-                    isCameraOn = false;
-                    boton.textContent = "Activar cámara";
-                    div_tomar_foto.style.cssText = "display: none !important;";
-                    div.style.cssText = "display: none !important;";
-                }
-            }
-        }else{
-            if(!isCameraOn){
-                //Pedir permiso para acceder a la cámara
-                navigator.mediaDevices.getUserMedia({
-                    video: true
-                })
-                .then(function (newStream){
-                    stream = newStream;
-                    // Mostrar el stream de la cámara en el elemento de video
-                    video.srcObject = stream;
-                    video.play();
-                    isCameraOn = true;
-                    boton.textContent = "Desactivar cámara";
-                    div_tomar_foto.style.cssText = "display: block;";
-                    div.style.cssText = "display: block;";
-                })
-                .catch(function (error){
-                    console.error('Error al acceder a la cámara:', error);
-                });
-            }else{
-                //Detener la reproducción  del stream y liberar la cámara
-                if(stream){
-                    stream.getTracks().forEach(function (track){
-                        track.stop();
-                    });
-                    video.srcObject = null;
-                    isCameraOn = false;
-                    boton.textContent = "Activar cámara";
-                    div_tomar_foto.style.cssText = "display: none !important;";
-                    div.style.cssText = "display: none !important;";
-                }
-            }
-        }
-    }
-
-    function Tomar_Fotoe(){
-        Cargando();
-
-        var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('administrador_st.previsualizacion_captura_put') }}";
-        var video = document.getElementById('videoe');
-        var div_canvas = document.getElementById('div_canvase');
-        var canvas = document.getElementById('canvase');
-        var context = canvas.getContext('2d');
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        canvas.toBlob(function(blob) {
-            // Crea un formulario para enviar la imagen al servidor
-            dataString.append('photo', blob, 'photo.jpg');
-
-            // Realiza la solicitud AJAX
-            $.ajax({
-                url: url,
-                data: dataString,
-                type: 'POST',
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    div_canvas.style.cssText = "display: block;";
-                    $('#capturae').val('1');
-                }
-            });
-        }, 'image/jpeg');
-    }
-
     $(".img_post").click(function () {
         var popupWidth = this.naturalWidth;
         var popupHeight = this.naturalHeight;
@@ -279,7 +159,7 @@
     function Delete_Evidencia(id){
         Cargando();
 
-        var url = "{{ route('administrador_st.destroy_evidencia', ':id') }}".replace(':id', id);
+        var url = "{{ route('administrador_sc.destroy_evidencia', ':id') }}".replace(':id', id);
         var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({
@@ -295,11 +175,11 @@
         });
     }
 
-    function Update_Supervision_Tienda() {
+    function Update_Seguimiento_Coordinador() {
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('administrador_st.update', $get_id->id) }}";
+        var url = "{{ route('administrador_sc.update', $get_id->id) }}";
 
         $.ajax({
             url: url,
@@ -313,7 +193,7 @@
                     '¡Haga clic en el botón!',
                     'success'
                 ).then(function() {
-                    Lista_Supervision_Tienda();
+                    Lista_Seguimiento_Coordinador();
                     $("#ModalUpdateGrande .close").click();                            
                 });
             },
