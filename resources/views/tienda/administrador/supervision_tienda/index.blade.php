@@ -73,7 +73,7 @@
     }
 
     function Descargar_Evidencia(id){
-        window.location.replace("{{ route('administrador_st.download', ':id') }}".replace(':id', id));
+        window.location.replace("{{ route('administrador_sc.download', ':id') }}".replace(':id', id));
     }
 
     function Delete_Supervision_Tienda(id) {

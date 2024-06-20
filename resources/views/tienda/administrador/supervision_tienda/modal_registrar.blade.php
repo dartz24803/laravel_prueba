@@ -243,6 +243,15 @@
                         $("#ModalRegistroGrande .close").click();
                     });
                 }
+            },
+            error:function(xhr) {
+                var errors = xhr.responseJSON.errors;
+                var firstError = Object.values(errors)[0][0];
+                Swal.fire(
+                    '¡Ups!',
+                    firstError,
+                    'warning'
+                );
             }
         });
     }

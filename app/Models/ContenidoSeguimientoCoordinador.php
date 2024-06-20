@@ -80,4 +80,22 @@ class ContenidoSeguimientoCoordinador extends Model
         $query = DB::select($sql);
         return $query;
     }
+
+    public static function get_list_contenido_seguimiento_coordinador($dato){
+        $centro_labores = session('usuario')->centro_labores;
+        $sql = "SELECT id,descripcion,CASE WHEN id_periocidad=1 THEN 'Diario'
+                WHEN id_periocidad=2 THEN 'Semanal' WHEN id_periocidad=3 THEN 'Quincenal'
+                WHEN id_periocidad=4 THEN 'Mensual' WHEN id_periocidad=5 THEN 'Anual' ELSE '' END periocidad
+                FROM contenido_seguimiento_coordinador
+                WHERE base='$centro_labores' AND (id_periocidad=1 || 
+                (id_periocidad=2 AND (((DAYOFWEEK('".$dato['fecha']."') + 5) % 7 + 1)=nom_dia_1 OR 
+                ((DAYOFWEEK('".$dato['fecha']."') + 5) % 7 + 1)=nom_dia_2) OR 
+                ((DAYOFWEEK('".$dato['fecha']."') + 5) % 7 + 1)=nom_dia_3) ||
+                (id_periocidad=3 AND (dia_1=DAY('".$dato['fecha']."') OR dia_2=DAY('".$dato['fecha']."'))) || 
+                (id_periocidad=4 AND dia=DAY('".$dato['fecha']."')) ||
+                (id_periocidad=5 AND dia=DAY('".$dato['fecha']."') AND mes=MONTH('".$dato['fecha']."'))) AND 
+                estado=1";
+        $query = DB::select($sql);
+        return $query;
+    } 
 }

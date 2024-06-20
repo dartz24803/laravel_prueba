@@ -19,8 +19,18 @@ return new class extends Migration
             $table->string('usuario_codigo', '100')->nullable();
             $table->string('usuario_password')->nullable();
             $table->integer('id_nivel')->default(0)->nullable();
+            $table->string('emailp',150)->nullable();
+            $table->string('num_celp',15)->nullable();
+            $table->integer('id_area')->default(0)->nullable();
             $table->integer('id_puesto')->default(0)->nullable();
+            $table->integer('id_cargo')->default(0)->nullable();
+            $table->integer('urladm')->default(0)->nullable();
             $table->string('centro_labores', 10)->nullable();
+            $table->integer('acceso')->default(0)->nullable();
+            $table->date('ini_funciones')->nullable();
+            $table->integer('desvinculacion')->default(0)->nullable();
+            $table->integer('induccion')->default(0)->nullable();
+            $table->integer('datos_completos')->default(0)->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();

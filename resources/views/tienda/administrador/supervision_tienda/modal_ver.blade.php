@@ -17,7 +17,7 @@
                     <td>
                         <div class="radio-buttons">
                             <label class="radio-button radio-button-si">
-                                <input type="radio" name="radioe_{{ $list->id }}" value="1" 
+                                <input type="radio" value="1" 
                                 @if ($list_detalle->pluck('id_contenido')->contains($list->id))
                                     @php
                                         $posicion = $list_detalle->search(function($item) use ($list) {
@@ -36,7 +36,7 @@
                     <td>
                         <div class="radio-buttons">
                             <label class="radio-button radio-button-no">
-                                <input type="radio" name="radioe_{{ $list->id }}" value="2"
+                                <input type="radio" value="2"
                                 @if ($list_detalle->pluck('id_contenido')->contains($list->id))
                                     @php
                                         $posicion = $list_detalle->search(function($item) use ($list) {
@@ -63,7 +63,7 @@
     <div class="row ml-2 mr-2">
         <div class="form-group col-lg-12">
             <label class="control-label text-bold">Observación: </label>
-            <textarea class="form-control" name="observacione" id="observacione" rows="5" placeholder="Observación" disabled>{{ $get_id->observacion }}</textarea>
+            <textarea class="form-control" rows="5" placeholder="Observación" disabled>{{ $get_id->observacion }}</textarea>
         </div>  
     </div>
 
@@ -73,8 +73,8 @@
         </div>
         <div class="row ml-2 mr-2">
             @foreach ($list_archivo as $list)
-                <div id="i_{{ $list->id }}" class="col-lg-3">
-                    <div id="lista_escogida">
+                <div class="col-lg-3">
+                    <div>
                         <img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar_support" 
                         alt="Evidencia" 
                         src="{{ $list->archivo }}">
