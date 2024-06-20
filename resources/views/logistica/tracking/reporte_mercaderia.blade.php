@@ -18,18 +18,22 @@
                                     <label class="control-label text-bold">Nro. Req.: {{ $get_id->n_requerimiento }}</label>
                                 </div>
                             </div>
-    
+
                             <div class="row">
-                                <div class="form-group col-lg-12">
-                                    <input type="checkbox" name="diferencia" id="diferencia" value="1">
-                                    <label class="control-label text-bold" for="diferencia">Existen diferencias</label>
+                                <div class="col-lg-12">
+                                    <label class="new-control new-checkbox checkbox-ln1">
+                                        <input type="checkbox" class="new-control-input" name="diferencia" id="diferencia" value="1">
+                                        <span class="new-control-indicator"></span>Existen diferencias
+                                    </label>
                                 </div>
                             </div>
 
                             <div class="row">
-                                <div class="form-group col-lg-12">
-                                    <input type="checkbox" name="devolucion" id="devolucion" value="1">
-                                    <label class="control-label text-bold" for="devolucion">Mercadería para devolución</label>
+                                <div class="col-lg-12">
+                                    <label class="new-control new-checkbox checkbox-ln1">
+                                      <input type="checkbox" class="new-control-input" name="devolucion" id="devolucion" value="1">
+                                      <span class="new-control-indicator"></span>Mercadería para devolución
+                                    </label>
                                 </div>
                             </div>
     

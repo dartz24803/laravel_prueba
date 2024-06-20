@@ -1343,7 +1343,7 @@ class TrackingController extends Controller
             $mail->Subject = "DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.")";
         
             $mail->Body =  '<FONT SIZE=3>
-                                Hola '.$get_id->desde.'-'.$get_id->hacia.', regularizar los sobrantes-faltantes indicados.<br><br>
+                                Hola '.$get_id->desde.'-'.$get_id->hacia.', regularizar los sobrantes y/o faltantes indicados.<br><br>
                                 Se envia el reporte de la salida de Mercaderia, de la guía de remisión '.$request->n_requerimiento.'.<br><br>
                                 <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                     <thead>
@@ -1458,8 +1458,8 @@ class TrackingController extends Controller
             $mail->Subject = "REGULARIZADO - DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.")";
         
             $mail->Body =  '<FONT SIZE=3>
-                                Hola '.$get_id->desde.'-'.$get_id->hacia.', '.$get_id->hacia.'-'.$get_id->desde.' 
-                                acaba de regularizar con la GR '.$request->guia_diferencia.'. 
+                                Hola '.$get_id->desde.', '.$get_id->hacia.' acaba de regularizar con la 
+                                GR '.$request->guia_diferencia.'. 
                                 El archivo ya se encuentra en su carpeta.
                             </FONT SIZE>';
         
@@ -1534,23 +1534,52 @@ class TrackingController extends Controller
         return view('logistica.tracking.solicitud_devolucion', compact('get_id'));
     }
 
-    public function insert_reporte_devolucion(Request $request  )
+    public function insert_reporte_devolucion(Request $request)
     {
         //ALERTA 9.2
-        //MENSAJE 7
 
         $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
 
-        TrackingDetalleEstado::create([
-            'id_detalle' => $get_id->id_detalle,
-            'id_estado' => 18,
-            'fecha' => now(),
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id
-        ]);
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->SMTPDebug = 0;
+            $mail->isSMTP();
+            $mail->Host       =  'mail.lanumero1.com.pe';
+            $mail->SMTPAuth   =  true;
+            $mail->Username   =  'intranet@lanumero1.com.pe';
+            $mail->Password   =  'lanumero1$1';
+            $mail->SMTPSecure =  'tls';
+            $mail->Port     =  587; 
+            $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
+
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
+
+            $mail->isHTML(true);
+
+            $mail->Subject = "SOLICITUD DE DEVOLUCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.")";
+        
+            $mail->Body =  '<FONT SIZE=3>
+                                Hola Andrea, se ha encontrado mercadería para devolución. 
+                                Nro. Req. + Marca del producto + Estilo + Tipo de falla + Cantidad
+                            </FONT SIZE>';
+        
+            $mail->CharSet = 'UTF-8';
+            $mail->send();
+
+            TrackingDetalleEstado::create([
+                'id_detalle' => $get_id->id_detalle,
+                'id_estado' => 18,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id
+            ]);
+        }catch(Exception $e) {
+            echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+        }
     }
 
     public function evaluacion_devolucion($id)
@@ -1561,20 +1590,77 @@ class TrackingController extends Controller
 
     public function insert_autorizacion_devolucion(Request $request)
     {
-        //MENSAJE 8
+        $rules = [
+            'evaluacion' => 'required',
+            'explicacion' => 'required',
+            'proceder' => 'required',
+        ];
+        $messages = [
+            'evaluacion.required' => 'Debe seleccionar una opción en devolución.',
+            'explicacion.required' => 'Debe ingresar explicación.',
+            'proceder.required' => 'Debe ingresar como se procederá.',
+        ];
+        $request->validate($rules, $messages);
 
-        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
-
-        TrackingDetalleEstado::create([
-            'id_detalle' => $get_id->id_detalle,
-            'id_estado' => 19,
-            'fecha' => now(),
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+        Tracking::findOrFail($request->id)->update([
+            'evaluacion' => $request->evaluacion,
+            'explicacion' => $request->explicacion,
+            'proceder' => $request->proceder,
             'fec_act' => now(),
             'user_act' => session('usuario')->id
         ]);
+
+        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
+
+        if($request->evaluacion=="1"){
+            $asunto = "APROBADA";
+            $contenido = "autoriza";
+        }else{
+            $asunto = "DENEGADA";
+            $contenido = "deniega";
+        }
+
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->SMTPDebug = 0;
+            $mail->isSMTP();
+            $mail->Host       =  'mail.lanumero1.com.pe';
+            $mail->SMTPAuth   =  true;
+            $mail->Username   =  'intranet@lanumero1.com.pe';
+            $mail->Password   =  'lanumero1$1';
+            $mail->SMTPSecure =  'tls';
+            $mail->Port     =  587; 
+            $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
+
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
+
+            $mail->isHTML(true);
+
+            $mail->Subject = "DEVOLUCIÓN ".$asunto.": RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.")";
+        
+            $mail->Body =  '<FONT SIZE=3>
+                                Hola '.$get_id->hacia.', se '.$contenido.' la devolución para el Nro. Req.<br><br>
+                                Explicación:<br>'.$request->explicacion.'<br><br>
+                                Proceder:<br>'.$request->proceder.'<br>
+                            </FONT SIZE>';
+        
+            $mail->CharSet = 'UTF-8';
+            $mail->send();
+
+            TrackingDetalleEstado::create([
+                'id_detalle' => $get_id->id_detalle,
+                'id_estado' => 19,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id
+            ]);
+        }catch(Exception $e) {
+            echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+        }
 
         //ALERTA 9.2.1.
         TrackingDetalleEstado::create([
