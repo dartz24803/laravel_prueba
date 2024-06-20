@@ -13,7 +13,13 @@
                 <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
                     <div class="widget-content widget-content-area br-6 p-3">
                         <form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
-                            <div class="table-responsive mt-4">
+                            <div class="row">
+                                <div class="form-group col-lg-12">
+                                    <label class="control-label text-bold">Nro. Req.: {{ $get_id->n_requerimiento }}</label>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
                                 <table id="tabla_js" class="table" style="width:100%">
                                     <thead>
                                         <tr class="text-center">
@@ -27,14 +33,16 @@
                                     </thead>
                                 
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>2</td>
-                                            <td>3</td>
-                                            <td>4</td>
-                                            <td>5</td>
-                                            <td>6</td>
-                                        </tr>
+                                        @foreach ($list_diferencia as $list)
+                                            <tr class="text-center">
+                                                <td>{{ $list->Estilo }}</td>
+                                                <td>{{ $list->Col_Tal }}</td>
+                                                <td>{{ $list->Enviado }}</td>
+                                                <td>{{ $list->Recibido }}</td>
+                                                <td>{{ $list->Recibido-$list->Enviado }}</td>
+                                                <td>{{ $list->Observacion }}</td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

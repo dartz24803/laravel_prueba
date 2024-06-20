@@ -13,7 +13,7 @@ use App\Models\TrackingArchivoTemporal;
 use App\Models\TrackingDetalleEstado;
 use App\Models\TrackingDetalleProceso;
 use App\Models\TrackingGuiaRemisionDetalle;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
+use Illuminate\Support\Facades\DB;
 
 class TrackingController extends Controller
 {
@@ -1314,12 +1314,14 @@ class TrackingController extends Controller
     public function cuadre_diferencia($id)
     {
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        return view('logistica.tracking.cuadre_diferencia', compact('get_id'));
+        $list_diferencia = DB::connection('sqlsrv')->select('EXEC usp_web_ver_dif_bultos_x_req ?', [2987]);
+        return view('logistica.tracking.cuadre_diferencia', compact('get_id','list_diferencia'));
     }
 
     public function insert_reporte_diferencia(Request $request)
     {
         $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
+        $list_diferencia = DB::connection('sqlsrv')->select('EXEC usp_web_ver_dif_bultos_x_req ?', [2987]);
 
         //ALERTA 9.1. 
 
@@ -1348,27 +1350,27 @@ class TrackingController extends Controller
                                 <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                     <thead>
                                         <tr align="center" style="background-color:#0093C6;">
-                                            <th width="15%"><b>Estilo</b></th>
-                                            <th width="15%"><b>Col_Tal</b></th>
-                                            <th width="15%"><b>Bulto</b></th>
+                                            <th width="20%"><b>Estilo</b></th>
+                                            <th width="20%"><b>Col_Tal</b></th>
+                                            <th width="10%"><b>Bulto</b></th>
                                             <th width="10%"><b>Enviado</b></th>
                                             <th width="10%"><b>Recibido</b></th>
                                             <th width="10%"><b>Dif</b></th>
-                                            <th width="25%"><b>Orden de Regularización</b></th>
+                                            <th width="20%"><b>Orden de Regularización</b></th>
                                         </tr>
                                     </thead>
                                     <tbody>';
-                                //foreach($list_detalle as $list){
+                                foreach($list_diferencia as $list){
             $mail->Body .=  '            <tr align="left">
-                                            <td>1</td>
-                                            <td>2</td>
-                                            <td>3</td>
-                                            <td>4</td>
-                                            <td>5</td>
-                                            <td>6</td>
-                                            <td>7</td>
+                                            <td>'.$list->Estilo.'</td>
+                                            <td>'.$list->Col_Tal.'</td>
+                                            <td>'.$list->Bulto.'</td>
+                                            <td>'.$list->Enviado.'</td>
+                                            <td>'.$list->Recibido.'</td>
+                                            <td>'.($list->Recibido-$list->Enviado).'</td>
+                                            <td>'.$list->Observacion.'</td>
                                         </tr>';
-                                //}
+                                }
             $mail->Body .=  '        </tbody>
                                 </table><br>
                                 <a href="'.route('tracking.detalle_operacion_diferencia', $request->id).'" 
@@ -1388,7 +1390,7 @@ class TrackingController extends Controller
             $mail->CharSet = 'UTF-8';
             $mail->send();
 
-            TrackingDetalleEstado::create([
+            /*TrackingDetalleEstado::create([
                 'id_detalle' => $get_id->id_detalle,
                 'id_estado' => 15,
                 'fecha' => now(),
@@ -1397,7 +1399,7 @@ class TrackingController extends Controller
                 'user_reg' => session('usuario')->id,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id
-            ]);
+            ]);*/
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
