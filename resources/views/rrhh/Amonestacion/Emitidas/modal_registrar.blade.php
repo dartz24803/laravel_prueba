@@ -153,7 +153,8 @@
                             cadena[2],
                             'success'
                         ).then(function() {
-                            window.location.reload();
+                            $("#ModalRegistro .close").click()
+                            Lista_Amonestaciones_Emitidas();
                         });
                     }if (insertados<1 && denegados>0) {
                         swal.fire(
@@ -168,52 +169,9 @@
                             'Haga clic en el botón!',
                             'success'
                         ).then(function() {
-                            window.location.reload();
+                            $("#ModalRegistro .close").click()
+                            Lista_Amonestaciones_Emitidas();
                         });  
-                    }
-                    
-                }
-            });
-        }else{
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
-        }
-    }
-/*
-    function Update_Amonestacion() {
-        Cargando();
-        var dataString = new FormData(document.getElementById('formulario_amonestacione'));
-        var url = "<?php echo site_url(); ?>Corporacion/Update_Amonestacion";
-
-        if (Valida_Amonestacion('2')) {
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: dataString,
-                processData: false,
-                contentType: false,
-                success: function(data) {
-                    if(data=="error"){
-                        swal.fire(
-                            'Actualización Denegada!',
-                            '¡Existe un registro con los mismos datos o con el mismo tipo de amonestación!',
-                            'error'
-                        ).then(function() {
-                        }); 
-                    }else{
-                       swal.fire(
-                            'Actualización Exitosa!',
-                            'Haga clic en el botón!',
-                            'success'
-                        ).then(function() {
-                            window.location.reload();
-                        }); 
                     }
                 }
             });
@@ -289,129 +247,4 @@
         return true;
     }
 
-    function Delete_Amonestacion(id) {
-        var id = id;
-        var url = "<?php echo site_url(); ?>Corporacion/Delete_Amonestacion";
-        Swal({
-            //title: '¿Realmente quieres eliminar el registro de '+ nombre +'?',
-            title: '¿Realmente desea eliminar el registro?',
-            text: "El registro será eliminado permanentemente",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Si',
-            cancelButtonText: 'No',
-        }).then((result) => {
-            if (result.value) {
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    data: {
-                        'id_amonestacion': id
-                    },
-                    success: function() {
-                        Swal(
-                            'Eliminado!',
-                            'El registro ha sido eliminado satisfactoriamente.',
-                            'success'
-                        ).then(function() {
-                            window.location.reload();
-                        });
-                    }
-                });
-            }
-        })
-    }
-
-    function Aprobacion_Amonestacion(id,t) {
-        var id = id;
-        text="";
-        if(t==1){
-            text="aprobar";
-            titulo="Aprobado";
-        }else{
-            text="rechazar";
-            titulo="Rechazado";
-        }
-        var url = "<?php echo site_url(); ?>Corporacion/Aprobacion_Amonestacion";
-        Swal({
-            //title: '¿Realmente quieres eliminar el registro de '+ nombre +'?',
-            title: '¿Esta seguro que desea '+text+' la amonestación?',
-            text: "",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Si',
-            cancelButtonText: 'No',
-        }).then((result) => {
-            if (result.value) {
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    data: {
-                        'id_amonestacion': id,'tipo':t
-                    },
-                    success: function() {
-                        Swal(
-                            titulo+'!',
-                            'El registro ha sido '+titulo+' satisfactoriamente.',
-                            'success'
-                        ).then(function() {
-                            window.location.reload();
-                        });
-                    }
-                });
-            }
-        })
-    }
-
-    function Update_Documento_Amonestacion() {
-        Cargando();
-        var dataString = new FormData(document.getElementById('formulario_documento'));
-        var url = "<?php echo site_url(); ?>Corporacion/Update_Documento_Amonestacion";
-
-        if (Valida_Documento_Amonestacion()) {
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: dataString,
-                processData: false,
-                contentType: false,
-                success: function(data) {
-                    swal.fire(
-                        'Actualización Exitosa!',
-                        'Haga clic en el botón!',
-                        'success'
-                    ).then(function() {
-                        window.location.reload();
-                    }); 
-                }
-            });
-        }else{
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
-        }
-    }
-
-    function Valida_Documento_Amonestacion() {
-        
-        if ($('#documento_bd').val() === '') {
-            if ($('#documentoe').val() === '') {
-                msgDate = 'Debe adjuntar documento.';
-                inputFocus = '#documentoe';
-                return false;
-            }
-        }
-
-        return true;
-    }
-    */
 </script>

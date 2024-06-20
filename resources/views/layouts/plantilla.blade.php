@@ -123,6 +123,14 @@
         </div>
     </div>
 
+    <div id="ModalUpdateSlide" data-backdrop="static" data-keyboard="false" class="modal animated fadeInRight custo-fadeInRight bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="ModalUpdateSlide" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+
     <script src="{{ asset('template/docs/js/jquery-3.2.1.min.js') }}"></script>
 
     <script>
@@ -185,6 +193,10 @@
             $("#ModalUpdateGrande").on("show.bs.modal", function(e) {
                 var link = $(e.relatedTarget);
                 $(this).find(".modal-content").load(link.attr("app_upd_grande"));
+            });
+            $("#ModalUpdateSlide").on("show.bs.modal", function(e) {
+                var link = $(e.relatedTarget);
+                $(this).find(".modal-content").load(link.attr("app_upd_slide"));
             });
         });
     </script>

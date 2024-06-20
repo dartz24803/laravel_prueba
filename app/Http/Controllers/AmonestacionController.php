@@ -67,17 +67,13 @@ class AmonestacionController extends Controller
     }
 
     public function Modal_Amonestacion(){
-            //$menu_gestion_pendiente=explode(",",$_SESSION['usuario'][0]['grupo_puestos']);
-            //$mostrar_menu=in_array($_SESSION['usuario'][0]['id_puesto'],$menu_gestion_pendiente);
             
             if(session('usuario')->id_nivel==1 || session('usuario')->id_nivel==2
             || session('usuario')->id_puesto==133){
                 $dato['puestos_jefes'] = $this->modelopuesto->list_puestos_jefes();
-                //$dato['list_colaborador'] = $this->Model_Corporacion->get_list_colaborador();
                 $list_responsables = $this->modelousuarios->list_usuarios_responsables($dato);
             }else{
                 $dato['id_area']=$_SESSION['usuario'][0]['id_area'];
-                //$dato['list_colaborador'] = $this->Model_Corporacion->get_list_colaborador_xarea($dato);
             }
             
             $list_colaborador = $this->modelousuarios->get_list_colaborador();
@@ -89,164 +85,148 @@ class AmonestacionController extends Controller
             return view('rrhh.Amonestacion.Emitidas.modal_registrar', compact('list_responsables','list_colaborador','list_tipo_amonestacion','list_gravedad_amonestacion','list_motivo_amonestacion'));
         }
 
-    public function Insert_Amonestacion(){
-        if ($this->session->userdata('usuario')) {
-            $dato['id_solicitante']=$this->input->post("id_solicitante");
-            $dato['fecha']= $this->input->post("fecha");
-            $dato['tipo']= $this->input->post("tipo");
-            $dato['id_gravedad_amonestacion']= $this->input->post("id_gravedad_amonestacion");
-            $dato['motivo']= $this->input->post("motivo");
-            $dato['detalle']= $this->input->post("detalle");
-            $dato['estado_amonestacion']= $this->input->post("estado_amonestacion");
-            $dato['mod']=1;
+    public function Insert_Amonestacion(Request $request){
+        $dato['id_solicitante'] = $request->input("id_solicitante");
+        $dato['fecha'] = $request->input("fecha");
+        $dato['tipo'] = $request->input("tipo");
+        $dato['id_gravedad_amonestacion'] = $request->input("id_gravedad_amonestacion");
+        $dato['motivo'] = $request->input("motivo");
+        $dato['detalle'] = $request->input("detalle");
+        $dato['estado_amonestacion'] = $request->input("estado_amonestacion");
+        //$dato['mod'] = 1;
+        $dato['estado_amonestacion'] = 2;
+        $dato['id_revisor'] = session('usuario')->id_usuario;
+        $dato['fec_aprobacion'] = now();
+        $dato['estado'] = 1;
+        $dato['fec_reg'] = now();
+        $dato['user_reg'] = session('usuario')->id_usuario;
+        
+        $lista_maestra= $request->input("id_usuario");
+        
+        $ico= count($lista_maestra);
+        $data['usuarios']="";
+        $co = 0;
+        $insertados=0;
+        $denegados=0;
+        $lista_colab_error="";
+        $lista_colab_tipo="";
+        do{
+            $dato['id_colaborador']=$lista_maestra[$co];
             
-            $lista_maestra= $this->input->post("id_usuario");
-            
-            $ico= count($lista_maestra);
-            $dato['usuarios']="";
-            $co = 0;
-            $insertados=0;
-            $denegados=0;
-            $lista_colab_error="";
-            $lista_colab_tipo="";
-            do{
-                $dato['id_colaborador']=$lista_maestra[$co];
-                
-                $co=$co + 1;
-                //$valida=count($this->Model_Corporacion->valida_amonestacion($dato));
-                $colab=$this->Model_Corporacion->get_data_usuario_activo_xid($dato['id_colaborador']);
-                /*if($valida<1){
-                    $valida_tipo=count($this->Model_Corporacion->valida_tipo_amonestacion_colaborador($dato));
-                    $max=1;
-                    if($dato['tipo']==1){
-                        $max=2;
+            $co=$co + 1;
+            //$valida=count($this->Model_Corporacion->valida_amonestacion($dato));
+            //$colab=$this->modelousuarios->where('id_usuario', $data['id_colaborador'])->where('estado',1)->get();
+            /*if($valida<1){
+                $valida_tipo=count($this->Model_Corporacion->valida_tipo_amonestacion_colaborador($dato));
+                $max=1;
+                if($dato['tipo']==1){
+                    $max=2;
+                }
+                if($valida_tipo<$max){*/
+                    $anio=date('Y');
+                    $totalRows_t = count($this->modelo->whereYear('fec_reg',$anio)->get());
+                    $aniof=substr($anio, 2,2);
+                    if($totalRows_t<9){
+                        $codigofinal="A".$aniof."0000".($totalRows_t+1);
                     }
-                    if($valida_tipo<$max){*/
-                        $anio=date('Y');
-                        $totalRows_t = count($this->Model_Corporacion->cant_amonestacion($anio));
-                        $aniof=substr($anio, 2,2);
-                        if($totalRows_t<9){
-                            $codigofinal="A".$aniof."0000".($totalRows_t+1);
-                        }
-                        if($totalRows_t>8 && $totalRows_t<99){
-                                $codigofinal="A".$aniof."000".($totalRows_t+1);
-                        }
-                        if($totalRows_t>98 && $totalRows_t<999){
-                            $codigofinal="A".$aniof."00".($totalRows_t+1);
-                        }
-                        if($totalRows_t>998 && $totalRows_t<9999){
-                            $codigofinal="A".$aniof."0".($totalRows_t+1);
-                        }
-                        if($totalRows_t>9998)
-                        {
-                            $codigofinal="A".$aniof.($totalRows_t+1);
-                        }
-                        $dato['cod_amonestacion']=$codigofinal;
-                        $this->Model_Corporacion->insert_amonestacion($dato);
-                        $insertados++;
-                    /*}else{
-                        $lista_colab_tipo=$lista_colab_tipo.$colab[0]['usuario_nombres']." ".$colab[0]['usuario_apater']." ".$colab[0]['usuario_amater']."<br>";
-                        $denegados++;
-                    }*/
+                    if($totalRows_t>8 && $totalRows_t<99){
+                            $codigofinal="A".$aniof."000".($totalRows_t+1);
+                    }
+                    if($totalRows_t>98 && $totalRows_t<999){
+                        $codigofinal="A".$aniof."00".($totalRows_t+1);
+                    }
+                    if($totalRows_t>998 && $totalRows_t<9999){
+                        $codigofinal="A".$aniof."0".($totalRows_t+1);
+                    }
+                    if($totalRows_t>9998)
+                    {
+                        $codigofinal="A".$aniof.($totalRows_t+1);
+                    }
+                    $dato['cod_amonestacion']=$codigofinal;
+                    //print_r($dato);
+                    $this->modelo->insert($dato);
+                    $insertados++;
                 /*}else{
-                    $lista_colab_error=$lista_colab_error.$colab[0]['usuario_nombres']." ".$colab[0]['usuario_apater']." ".$colab[0]['usuario_amater']."<br>";
+                    $lista_colab_tipo=$lista_colab_tipo.$colab[0]['usuario_nombres']." ".$colab[0]['usuario_apater']." ".$colab[0]['usuario_amater']."<br>";
                     $denegados++;
                 }*/
-            }while($co < $ico);
-            $titulo="";
-            if($lista_colab_error!="" || $lista_colab_tipo!=""){
-                $titulo="<h4>Colaboradores no registrados por:</h4>";
-            }
-            if($lista_colab_error!=""){
-                $lista_colab_error='<span><u>Duplicados</u></span><h6>'.$lista_colab_error.'</h6><br>';
-            }
-            if($lista_colab_tipo!=""){
-                $lista_colab_tipo='<span><u>Tipo de amonestación existente</u></span><h6>'.$lista_colab_tipo.'</h6><br>';
-            }
-            echo $insertados."-".$denegados.'-'.$titulo.$lista_colab_error.$lista_colab_tipo;
-        }else{
-            redirect(''); 
+            /*}else{
+                $lista_colab_error=$lista_colab_error.$colab[0]['usuario_nombres']." ".$colab[0]['usuario_apater']." ".$colab[0]['usuario_amater']."<br>";
+                $denegados++;
+            }*/
+        }while($co < $ico);
+        $titulo="";
+        if($lista_colab_error!="" || $lista_colab_tipo!=""){
+            $titulo="<h4>Colaboradores no registrados por:</h4>";
         }
+        if($lista_colab_error!=""){
+            $lista_colab_error='<span><u>Duplicados</u></span><h6>'.$lista_colab_error.'</h6><br>';
+        }
+        if($lista_colab_tipo!=""){
+            $lista_colab_tipo='<span><u>Tipo de amonestación existente</u></span><h6>'.$lista_colab_tipo.'</h6><br>';
+        }
+        echo $insertados."-".$denegados.'-'.$titulo.$lista_colab_error.$lista_colab_tipo;
     }
 
     public function Modal_Update_Amonestacion($id_amonestacion,$modal){
-        if ($this->session->userdata('usuario')) {
-            $dato['get_id'] = $this->Model_Corporacion->get_list_amonestacion($id_amonestacion);
-            //$dato['list_colaborador'] = $this->Model_Corporacion->get_list_colaborador();
-            $dato['list_tipo_amonestacion'] = $this->Model_Corporacion->list_tipo_amonestacion();
-            $dato['list_gravedad_amonestacion'] = $this->Model_Corporacion->get_list_gravedad_amonestacion();
-            $dato['id_gravedad_amonestacion']=$dato['get_id'][0]['id_gravedad_amonestacion'];
-            $dato['list_motivo_amonestacion'] = $this->Model_Corporacion->get_list_motivo_amonestacion();
+            $get_id = $this->modelo->get_list_amonestacion($id_amonestacion);
+
+            $dato['id_gravedad_amonestacion']=$get_id[0]['id_gravedad_amonestacion'];
+            
+            $list_tipo_amonestacion = $this->modelotipoa->where('estado',1)->get();
+            $list_gravedad_amonestacion = $this->modelogravedada->where('estado',1)->get();
+            $list_motivo_amonestacion = $this->modelomotivoa->where('estado',1)->get();
             //$dato['list_motivo_amonestacion'] = $this->Model_Corporacion->get_list_motivo_amonestacion_xgravedad($dato);
 
-            $dato['get_user'] = $this->Model_Corporacion->get_list_colaborador($dato['get_id'][0]['id_solicitante']);
-            $dato['id_area']=$dato['get_user'][0]['id_area'];
+            $get_user = $this->modelousuarios->get_list_colaborador($get_id[0]['id_solicitante']);
+            $dato['id_area']=$get_user[0]['id_area'];
 
-            if($_SESSION['usuario'][0]['id_nivel']==1 || $_SESSION['usuario'][0]['id_nivel']==2 ||
-            $_SESSION['usuario'][0]['id_puesto']==133){
-                $dato['puestos_jefes'] = $this->Model_Corporacion->list_puestos_jefes();
-                //$dato['list_colaborador'] = $this->Model_Corporacion->get_list_colaborador();
-                $dato['list_responsables'] = $this->Model_Corporacion->list_usuarios_responsables($dato);
+            if(session('usuario')->id_nivel==1 || session('usuario')->id_nivel==2 || session('usuario')->id_puesto==133){
+                $dato['puestos_jefes'] = $this->modelopuesto->list_puestos_jefes();
+                $list_responsables = $this->modelousuarios->list_usuarios_responsables($dato);
             }else{
-                $dato['id_area']=$_SESSION['usuario'][0]['id_area'];
+                $dato['id_area'] = session('usuario')->id_area;
                 
             }
-            //$dato['list_colaborador'] = $this->Model_Corporacion->get_list_colaborador_xarea($dato);
-            $dato['list_colaborador'] = $this->Model_Corporacion->get_list_colaborador();
-            $dato['modal']=$modal;
-            $this->load->view('Recursos_Humanos/Amonestacion/modal_editar',$dato); 
-            
-              
-        }else{
-            redirect('');
-        }
+            $list_colaborador = $this->modelousuarios->get_list_colaborador();
+            //$dato['modal']=$modal;
+            return view('rrhh.Amonestacion.Emitidas.modal_editar', compact('list_responsables','list_colaborador','list_tipo_amonestacion','list_gravedad_amonestacion','list_motivo_amonestacion','modal','get_id'));
     }
 
-    public function Update_Amonestacion(){
-        if ($this->session->userdata('usuario')) {
-            $id_puesto=$_SESSION['usuario'][0]['id_puesto'];
-            $dato['id_amonestacion']= $this->input->post("id_amonestacion");
-            $dato['estado_amonestacion_bd']= $this->input->post("estado_amonestacion_bd");
-            $dato['modal']= $this->input->post("modal");
+    public function Update_Amonestacion(Request $request){
+            $id_puesto = session('usuario')->id_puesto;
+           //$id_amonestacion = $request->input("id_amonestacion");
+            $dato['id_amonestacion'] = $request->input("id_amonestacion");
+            $estado_amonestacion_bd = $request->input("estado_amonestacion_bd");
+            $modal= $request->input("modal");
             
-            if($dato['modal']!=2){
-                if($_SESSION['usuario'][0]['id_nivel']==1 || $id_puesto==23 || $id_puesto==128 || $dato['estado_amonestacion_bd']==1){
-                    $dato['id_solicitante']= $this->input->post("id_solicitantee");
-                    $dato['fecha']= $this->input->post("fechae");
-                    $dato['id_colaborador']= $this->input->post("id_usuarioe");
-                    $dato['tipo']= $this->input->post("tipoe");
-                    $dato['id_gravedad_amonestacion']= $this->input->post("id_gravedad_amonestacione");
-                    $dato['motivo']= $this->input->post("motivoe");
-                    $dato['detalle']= $this->input->post("detallee");
-                    $dato['documento']= $this->input->post("documento");
-                    $dato['estado_amonestacion']= $this->input->post("estado_amonestacion");
+            if($modal!=2){
+                if(session('usuario')->id_nivel==1 || $id_puesto==23 || $id_puesto==128 || $estado_amonestacion_bd==1){
+                    $dato['id_solicitante']= $request->input("id_solicitantee");
+                    $dato['fecha']= $request->input("fechae");
+                    $dato['id_colaborador']= $request->input("id_usuarioe");
+                    $dato['tipo']= $request->input("tipoe");
+                    $dato['id_gravedad_amonestacion']= $request->input("id_gravedad_amonestacione");
+                    $dato['motivo']= $request->input("motivoe");
+                    $dato['detalle']= $request->input("detallee");
+                    $dato['documento']= $request->input("documento");
+                    $dato['estado_amonestacion']= $request->input("estado_amonestacion");
+                    $dato['fec_act']= now();
+                    $dato['user_act']= session('usuario')->id_usuario;
                     
-                    $dato['mod']=2;
-                    /*$cant=count($this->Model_Corporacion->valida_amonestacion($dato));
-                    if($cant>0){
-                        echo "error";
-                    }else{
-                        $cant=count($this->Model_Corporacion->valida_tipo_amonestacion_colaborador($dato));
-                        if($cant>0){
-                            echo "error";
-                        }else{*/
-                            $this->Model_Corporacion->update_amonestacion($dato);
-                        /*}
-                    }  */
+                    //print_r($dato);
+                    $this->modelo->Update_Amonestacion($dato);
                 }else{
-                    if($dato['estado_amonestacion_bd']==3){
-                        $dato['estado_amonestacion']=$dato['estado_amonestacion_bd'];
+                    if($estado_amonestacion_bd==3){
+                        $dato['estado_amonestacion']=$estado_amonestacion_bd;
                     }else{
-                        $dato['estado_amonestacion']= $this->input->post("estado_amonestacion");
+                        $dato['estado_amonestacion']= $request->input("estado_amonestacion");
                     }
-                    $dato['estado_amonestacion']= $this->input->post("estado_amonestacion");
-                    $this->Model_Corporacion->update_amonestacion_estado($dato);
+                    $dato['estado_amonestacion']= $request->input("estado_amonestacion");
+                    //print_r($dato);
+                    $this->modelo->Update_amonestacion($dato);
                 }
             }
-            
-        }else{
-            redirect('');
-        }
     }
 
     public function Delete_Amonestacion(){
