@@ -328,7 +328,7 @@
                             session('usuario')->nivel_jerarquico==5 || 
                             session('usuario')->nivel_jerarquico==6 || 
                             session('usuario')->nivel_jerarquico==7 || 
-                            $id_puesto==195){
+                            session('usuario')->id_puesto==195){
                                 $amonestaciones2 = "<br>• Recibidas";
                             }else{
                                 $amonestaciones2 = "";
