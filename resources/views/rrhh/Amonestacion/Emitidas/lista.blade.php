@@ -61,7 +61,7 @@
                                 <a class="dropdown-item" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('Modal_Update_Amonestacion/' . $list['id_amonestacion']. '/1') }}" style="cursor:pointer;">Editar</a>
                             <?php } ?>
                             <a class="dropdown-item" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('Modal_Update_Amonestacion/' . $list['id_amonestacion']. '/2') }}" style="cursor:pointer;">Detalle</a>
-                            <?php if(($id_nivel==2 || $id_puesto==22 || $id_puesto==209 || $id_puesto==133 || $id_nivel==1) && $list['estado_amonestacion']==1){ ?>
+                            <?php if(($id_nivel==2 || $id_puesto==22 || $id_puesto==209 || $id_puesto==133 || $id_nivel==1 || session('usuario')->id_usuario==139) && $list['estado_amonestacion']==1){ ?>
                                 <a class="dropdown-item" onclick="Aprobacion_Amonestacion('<?php echo $list['id_amonestacion']; ?>','1')" style="cursor:pointer;">Aprobar</a>
                                 <a class="dropdown-item" onclick="Aprobacion_Amonestacion('<?php echo $list['id_amonestacion']; ?>','3')" style="cursor:pointer;">Rechazar</a>
                             <?php } ?>
@@ -100,6 +100,7 @@
             "pageLength": 10
         });
     });
+
     function Delete_Amonestacion(id) {
         var id = id;
         var url = "{{ url('Delete_Amonestacion') }}";
@@ -130,6 +131,54 @@
                         Swal(
                             'Eliminado!',
                             'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            Lista_Amonestaciones_Emitidas();
+                        });
+                    }
+                });
+            }
+        })
+    }
+    
+    function Aprobacion_Amonestacion(id,t) {
+        var id = id;
+        text="";
+        if(t==1){
+            text="aprobar";
+            titulo="Aprobado";
+        }else{
+            text="rechazar";
+            titulo="Rechazado";
+        }
+        var url = "{{ url('Aprobacion_Amonestacion') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            //title: '¿Realmente quieres eliminar el registro de '+ nombre +'?',
+            title: '¿Esta seguro que desea '+text+' la amonestación?',
+            text: "",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    data: {
+                        'id_amonestacion': id,'tipo':t
+                    },
+                    success: function() {
+                        Swal(
+                            titulo+'!',
+                            'El registro ha sido '+titulo+' satisfactoriamente.',
                             'success'
                         ).then(function() {
                             Lista_Amonestaciones_Emitidas();
