@@ -10,7 +10,6 @@ use App\Models\Area;
 use App\Models\Gerencia;
 use App\Models\Mes;
 use App\Models\Anio;
-use Illuminate\Support\Facades\Session;
 use DateTime;
 
 class AsistenciaController extends Controller
@@ -42,9 +41,9 @@ class AsistenciaController extends Controller
         //$dato['list_asistencia'] = $this->Model_Asistencia->get_list_asistencia_biotime();
         $id_gerencia=0;
 
-        $id_area = Session::get('usuario')->id_area;
-        $id_puesto = Session::get('usuario')->id_puesto;
-        $centro_labores = Session::get('usuario')->centro_labores;
+        $id_area = Session('usuario')->id_area;
+        $id_puesto = Session('usuario')->id_puesto;
+        $centro_labores = Session('usuario')->centro_labores;
         $cod_base=0;
         $num_doc=0;
         $list_base = $this->modelobase->select('cod_base')->where('estado',1)->groupBy('cod_base')->orderBy('cod_base', 'ASC')->get();
@@ -70,7 +69,7 @@ class AsistenciaController extends Controller
     }
 
     public function Buscar_Reporte_Control_Asistencia(Request $request){
-            $id_puesto = Session::get('usuario')->id_puesto;
+            $id_puesto = Session('usuario')->id_puesto;
             $cod_mes = $request->input("cod_mes");
             $cod_anio = $request->input("cod_anio");
             $cod_base = $request->input("cod_base");

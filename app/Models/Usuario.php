@@ -35,54 +35,21 @@ class Usuario extends Model
 
     public function login($usuario){
         $query = "SELECT u.id_usuario, u.usuario_nombres, u.usuario_apater, u.usuario_amater, u.usuario_codigo,
-        u.id_nivel, u.usuario_email, u.centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,
-        u.desvinculacion, u.ini_funciones,u.fec_reg,s.nom_situacion_laboral,
-        u.usuario_password,u.estado, n.nom_nivel, p.nom_puesto,SUBSTRING(nom_puesto,1,14) AS parte_nom_puesto, a.nom_area, u.id_area,
-        DATE_FORMAT(u.fec_nac, '%M %d,%Y') as fec_nac, u.usuario_codigo,u.id_gerencia,
-        u.urladm,u.foto,u.foto_nombre, u.acceso, u.id_cargo, pe.id_puesto_evaluador, u.directorio,
-        pps.estado as estadopps, pps.registro_masivo, pps.id_puesto_permitido,
-        (SELECT GROUP_CONCAT(puestos) FROM area
-        WHERE estado=1 AND orden!='') AS grupo_puestos,
-        (SELECT COUNT(*) FROM asignacion_jefatura aj
-        WHERE aj.id_puesto_jefe=u.id_puesto and aj.estado=1) as puestos_asignados,
-        CASE WHEN (SELECT count(*) FROM area ar
-        WHERE CONCAT(',', ar.puestos, ',') like CONCAT('%',u.id_puesto, '%'))>0 THEN 'SI' ELSE 'NO' END AS encargado_p,
-        CASE WHEN (SELECT count(*) FROM invitado_calendario i
-        WHERE i.id_usuario=u.id_usuario and i.estado=1)>0 THEN 'SI' ELSE 'NO' END AS calendario_l,
-        (SELECT h.fec_inicio FROM historico_colaborador h
-        WHERE h.id_historico_colaborador=(SELECT MAX(h2.id_historico_colaborador) FROM historico_colaborador h2 WHERE h2.id_usuario=u.id_usuario and h2.estado=1) and h.estado=1) as fec_inicio,
-        CASE WHEN (SELECT COUNT(1) FROM entrenamiento en
-        LEFT JOIN solicitud_puesto sp ON en.id_solicitud_puesto=sp.id
-        WHERE sp.id_usuario=u.id_usuario AND en.estado_e=1 AND en.estado=1)>0 THEN
-        (SELECT sp.id_puesto_aspirado FROM entrenamiento en
-        LEFT JOIN solicitud_puesto sp ON en.id_solicitud_puesto=sp.id
-        WHERE sp.id_usuario=u.id_usuario AND en.estado_e=1 AND en.estado=1
-        ORDER BY en.id DESC
-        LIMIT 1) ELSE (CASE WHEN u.fec_asignacionjr=CURDATE() THEN u.id_puestojr
-        ELSE u.id_puesto END) END AS id_puesto,
-        CASE WHEN u.urladm=1 THEN (select r.url_config from config r
-        where r.descrip_config='Foto_Postulante' and r.estado=1) else
-        (select r.url_config from config r
-        where r.descrip_config='Foto_colaborador' and r.estado=1) end as url_foto,p.id_nivel as nivel_jerarquico,
-        case when (select count(*) from asignacion_visita av
-        where av.id_puesto_inspector=u.id_puesto and av.estado=1)>0 then 1 else 0 end as reg_visita_produccion,
-        visualizar_amonestacion(u.id_puesto) AS visualizar_amonestacion,
-        visualizar_mi_equipo(u.id_puesto) AS visualizar_mi_equipo,
-        visualizar_responsable_area(u.id_puesto) AS visualizar_responsable_area,
-        visualizar_asistencia_manual(u.id_usuario) AS visualizar_asistencia_manual,
-        sl.descripcion AS sede_laboral
+        u.id_nivel, u.centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,u.id_puesto,u.acceso,
+        u.ini_funciones,u.fec_reg,u.usuario_password,u.estado, n.nom_nivel, p.nom_puesto, a.nom_area, u.id_area,
+        (SELECT GROUP_CONCAT(puestos) FROM area WHERE estado=1 AND orden!='') AS grupo_puestos,
+        CASE WHEN u.urladm=1 THEN (select r.url_config from config r where r.descrip_config='Foto_Postulante' 
+        and r.estado=1) else (select r.url_config from config r where r.descrip_config='Foto_colaborador' 
+        and r.estado=1) end as url_foto,p.id_nivel as nivel_jerarquico,u.desvinculacion,u.id_cargo,
+        pps.registro_masivo, visualizar_amonestacion(u.id_puesto) AS visualizar_amonestacion
         FROM users u
+        LEFT JOIN permiso_papeletas_salida pps ON u.id_puesto=pps.id_puesto_jefe AND pps.estado=1
         LEFT JOIN nivel n ON u.id_nivel=n.id_nivel
         LEFT JOIN puesto p ON u.id_puesto=p.id_puesto
-        LEFT JOIN puesto_evaluador pe ON u.id_puesto=pe.id_puesto
         LEFT JOIN area a ON u.id_area=a.id_area
-        LEFT JOIN situacion_laboral s ON u.id_situacion_laboral=s.id_situacion_laboral
-        LEFT JOIN permiso_papeletas_salida pps ON u.id_puesto=pps.id_puesto_jefe AND pps.estado=1
-        LEFT JOIN sede_laboral sl ON p.id_sede_laboral=sl.id
         WHERE u.usuario_codigo='$usuario' AND u.estado IN (1,4) AND u.desvinculacion IN (0)";
         $result = DB::select($query);
-        // Convertir el resultado a un array
-        return json_decode(json_encode($result), true);
+        return $result;
     }
 
     public static function get_list_usuario_ft($dato=null){
@@ -222,6 +189,50 @@ class Usuario extends Model
                 (SELECT h.fec_fin h FROM historico_colaborador h where u.id_usuario=h.id_usuario and h.estado in (1,3) ORDER BY h.fec_inicio DESC,h.fec_fin DESC limit 1)as fec_fin
                 FROM users u
                 WHERE u.id_nivel<>8 $base $carea $id_estado";
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    public function list_usuarios_responsables($dato){
+        $sql = "SELECT 	u.id_usuario, u.usuario_nombres, u.usuario_apater, u.usuario_amater, u.usuario_codigo, 
+                u.id_nivel, u.usuario_email, u.centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,
+                u.desvinculacion, u.ini_funciones,u.fec_reg,
+                u.usuario_password,u.estado, n.nom_nivel, p.nom_puesto, u.id_area,
+                DATE_FORMAT(u.fec_nac, '%M %d,%Y') as fec_nac, u.usuario_codigo,u.id_gerencia,
+                u.foto, u.acceso, u.id_puesto, u.id_cargo, u.directorio
+                
+                FROM users u
+                left join nivel n on n.id_nivel=u.id_nivel
+                left join puesto p on p.id_puesto=u.id_puesto
+                
+                WHERE  u.estado IN (1,4) and u.desvinculacion IN (0) and u.id_nivel<>8 and u.id_puesto in (".$dato['puestos_jefes'][0]['puestos'].")";
+                
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+    
+    function get_list_colaborador($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "SELECT u.*, n.nom_nacionalidad, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo
+                    from users u
+                    LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
+                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
+                    LEFT JOIN area a on a.id_area=u.id_area
+                    LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN cargo c on c.id_cargo=u.id_cargo
+                    where u.estado=1 and id_usuario =".$id_usuario;
+        }
+        else
+        {
+            $sql = "SELECT u.*,  n.nom_nacionalidad, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo
+                    from users u
+                    LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
+                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
+                    LEFT JOIN area a on a.id_area=u.id_area
+                    LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN cargo c on c.id_cargo=u.id_cargo
+                    where u.estado=1 and u.id_nivel<>8";
+        }
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }

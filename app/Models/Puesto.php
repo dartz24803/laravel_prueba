@@ -55,4 +55,11 @@ class Puesto extends Model
         $query = DB::select($sql);
         return $query;
     }
+    
+    public function list_puestos_jefes(){
+                
+        $sql = "SELECT GROUP_CONCAT(puestos) as puestos FROM area WHERE estado=1 AND orden IS NOT NULL and puestos <>''";
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
 }

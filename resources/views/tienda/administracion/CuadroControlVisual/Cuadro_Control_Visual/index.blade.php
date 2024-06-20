@@ -1,7 +1,5 @@
 <?php 
-use Illuminate\Support\Facades\Session;
-
-$base = Session::get('usuario')->base;
+$base = Session('usuario')->base;
 
 //Cada coordinador le debe aparecer su base respectivamente definido
 $disabled = '';

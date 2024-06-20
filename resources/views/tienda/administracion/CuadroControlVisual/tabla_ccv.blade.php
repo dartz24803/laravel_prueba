@@ -3,9 +3,8 @@
 @section('content')
 <?php
 
-use Illuminate\Support\Facades\Session;
-$id_puesto = Session::get('usuario')->id_puesto;
-$id_usuario = Session::get('usuario')->id_usuario;
+$id_puesto = Session('usuario')->id_puesto;
+$id_usuario = Session('usuario')->id_usuario;
 ?>
 
 <div id="content" class="main-content">
@@ -16,7 +15,7 @@ $id_usuario = Session::get('usuario')->id_usuario;
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs mb-3 mt-3" id="simpletab" role="tablist">
                             <?php if ($id_puesto == 19 || $id_puesto == 20 || $id_puesto == 21 ||
-                            $id_puesto == 22 || $id_puesto == 133 || Session::get('usuario')->id_nivel == 1){ ?>
+                            $id_puesto == 22 || $id_puesto == 133 || Session('usuario')->id_nivel == 1){ ?>
                                 <li class="nav-item">
                                     <a id="a_hcc" class="nav-link" onclick="Horarios_Cuadro_Control();" style="cursor: pointer;">Horarios</a>
                                 </li>

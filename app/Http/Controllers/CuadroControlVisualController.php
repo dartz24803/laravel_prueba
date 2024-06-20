@@ -9,7 +9,6 @@ use App\Models\Usuario;
 use App\Models\HorarioDia;
 use App\Models\AsignacionCargoCap;
 use App\Models\CuadroControlVisualEstado;
-use Illuminate\Support\Facades\Session;
 
 class CuadroControlVisualController extends Controller
 {
@@ -52,7 +51,7 @@ class CuadroControlVisualController extends Controller
         $dato['id_usuario'] = $request->input("id_usuario");
         $dato['estado']= $request->input('estado');
         $dato['fec_reg'] = now();
-        $dato['user_reg'] = Session::get('usuario')->id_usuario;
+        $dato['user_reg'] = Session('usuario')->id_usuario;
         $this->modeloccve->insert($dato);
     }
 
@@ -60,7 +59,7 @@ class CuadroControlVisualController extends Controller
         $dato['id_usuario'] = $request->input("id_usuario");
         $dato['estado'] = $request->input('estado');
         $dato['fec_reg'] = now();
-        $dato['user_reg'] = Session::get('usuario')->id_usuario;
+        $dato['user_reg'] = Session('usuario')->id_usuario;
         $valida = $this->modeloccve->validar_presente($dato['id_usuario']);
         if($valida == 0){
             $this->modeloccve->insert($dato);

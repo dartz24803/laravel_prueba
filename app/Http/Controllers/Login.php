@@ -31,10 +31,11 @@ class Login extends Controller
 
 
         //$sesionlnu = $this->UsuariosModel->login($usuario);
-        $sesionlnu = $this->UsuariosModel->where('usuario_codigo', $usuario)->first();
+        $sesionlnu = $this->UsuariosModel->login($usuario);
+        $user = $sesionlnu[0];
         if ($sesionlnu) {
-            if (password_verify($password, $sesionlnu->usuario_password)) {
-                $request->session()->put('usuario', $sesionlnu);
+            if (password_verify($password, $user->usuario_password)) {
+                $request->session()->put('usuario', $user);
                 //return ('CarteraController');
                 //return $sesionlnu;
             } else {
