@@ -310,7 +310,7 @@ class AmonestacionController extends Controller
             'list_colaborador' => $list_colaborador,
             'list_tipo_amonestacion' => $list_tipo_amonestacion,
         ];
-        $tmp = base_path('vendor\mpdf');
+        $tmp = base_path('vendor/mpdf');
 
         // Crear una instancia de Mpdf con las configuraciones necesarias
         $mpdf = new \Mpdf\Mpdf([
