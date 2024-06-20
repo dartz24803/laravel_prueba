@@ -58,9 +58,9 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="btnDropLeft" style="padding:0;">
                             <?php if($list['estado_amonestacion']==1 || $id_nivel==1 || $id_nivel==2 || $id_puesto==22 || $id_puesto==209 || $id_puesto==133 || $mostrar_menu==true){?>
-                                <a class="dropdown-item" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('Modal_Update_Amonestacion/' . $list['id_amonestacion'] /1) }}" style="cursor:pointer;">Editar</a>
+                                <a class="dropdown-item" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('Modal_Update_Amonestacion/' . $list['id_amonestacion']. '/1') }}" style="cursor:pointer;">Editar</a>
                             <?php } ?>
-                            <a class="dropdown-item" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('Corporacion/Modal_Update_Amonestacion/' . $list['id_amonestacion'] /2) }}" style="cursor:pointer;">Detalle</a>
+                            <a class="dropdown-item" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('Modal_Update_Amonestacion/' . $list['id_amonestacion']. '/2') }}" style="cursor:pointer;">Detalle</a>
                             <?php if(($id_nivel==2 || $id_puesto==22 || $id_puesto==209 || $id_puesto==133 || $id_nivel==1) && $list['estado_amonestacion']==1){ ?>
                                 <a class="dropdown-item" onclick="Aprobacion_Amonestacion('<?php echo $list['id_amonestacion']; ?>','1')" style="cursor:pointer;">Aprobar</a>
                                 <a class="dropdown-item" onclick="Aprobacion_Amonestacion('<?php echo $list['id_amonestacion']; ?>','3')" style="cursor:pointer;">Rechazar</a>
@@ -68,7 +68,7 @@
                             <?php if($list['estado_amonestacion']==2 && ($nivel_jerarquico==1 || $nivel_jerarquico==2 || $nivel_jerarquico==3 || 
                             $nivel_jerarquico==4 || $id_nivel==1 || $id_puesto==22 || $id_puesto==209 || $nivel_jerarquico==5 || $id_puesto==133)){ ?> 
                                 <a class="dropdown-item" href="{{ url('Pdf_Amonestacion/' . $list['id_amonestacion']) }}" target="_blank" style="cursor:pointer;">PDF</a>
-                                <a class="dropdown-item" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Corporacion/Modal_Documento_Amonestacion/' . $list['id_amonestacion']) }}" style="cursor:pointer;">Cargar Documento</a>
+                                <a class="dropdown-item" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Modal_Documento_Amonestacion/' . $list['id_amonestacion']) }}" style="cursor:pointer;">Cargar Documento</a>
                             <?php } ?>
                             <?php if($list['documento']!=""){ ?> 
                                 <a class="dropdown-item" data-toggle="modal" data-target="#Modal_IMG" data-imagen="<?php echo $url[0]['url_config'].$list['documento']; ?>" data-title="Documento Adjuntado" style="cursor:pointer;">Documento Adjuntado</a>

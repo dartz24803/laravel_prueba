@@ -6,8 +6,8 @@
     }
 </style>
 <?php 
-$id_nivel=$_SESSION['usuario'][0]['id_nivel'];
-$id_puesto=$_SESSION['usuario'][0]['id_puesto'];
+$id_nivel=session('usuario')->id_nivel;
+$id_puesto=session('usuario')->id_puesto;
 ?>
 <form id="formulario_amonestacione" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
@@ -26,8 +26,7 @@ $id_puesto=$_SESSION['usuario'][0]['id_puesto'];
                 </div>
             </div>
             
-            <?php if($_SESSION['usuario'][0]['id_nivel']==2 || $_SESSION['usuario'][0]['id_nivel']==1 ||
-            $_SESSION['usuario'][0]['id_puesto']==133){?> 
+            <?php if(session('usuario')->id_nivel==2 || session('usuario')->id_nivel==1 || session('usuario')->id_puesto==133){?> 
                 <div class="form-group col-md-8">
                     <label class="col-sm-12 control-label text-bold">Solicitante: </label>
                     <div class="col-md">
@@ -135,4 +134,109 @@ $id_puesto=$_SESSION['usuario'][0]['id_puesto'];
     $('.basic').select2({
         dropdownParent: $('#ModalUpdateSlide')
     });
+    
+    function Update_Amonestacion() {
+        Cargando();
+        var dataString = new FormData(document.getElementById('formulario_amonestacione'));
+        var url = "{{ url('Update_Amonestacion')}}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_Amonestacion('2')) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: dataString,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    if(data=="error"){
+                        swal.fire(
+                            'Actualización Denegada!',
+                            '¡Existe un registro con los mismos datos o con el mismo tipo de amonestación!',
+                            'error'
+                        ).then(function() {
+                        }); 
+                    }else{
+                       swal.fire(
+                            'Actualización Exitosa!',
+                            'Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            $("#ModalUpdateSlide .close").click()
+                            Lista_Amonestaciones_Emitidas();
+                        }); 
+                    }
+                }
+            });
+        }else{
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+    
+    function Valida_Amonestacion(t) {
+        v="";
+        if(t==2){
+            v="e";
+        }
+        if ($('#fecha'+v).val() === '') {
+            msgDate = 'Debe ingresar fecha.';
+            inputFocus = '#fecha'+v;
+            return false;
+        }
+        if(t==2){
+            if($('#id_usuario'+v).val() == '0') {
+                msgDate = 'Debe seleccionar colaborador';
+                inputFocus = '#id_usuario'+v;
+                return false;
+            }
+        }else{
+            if($('#id_usuario'+v).val() == '') {
+                msgDate = 'Debe seleccionar al menos un colaborador';
+                inputFocus = '#id_usuario'+v;
+                return false;
+            }
+        }
+        if($('#nivel'+v).val()==2){
+            if($('#id_solicitante'+v).val() == '0') {
+                msgDate = 'Debe seleccionar solicitante';
+                inputFocus = '#id_solicitante'+v;
+                return false;
+            }
+        }
+        if($('#tipo'+v).val() == '') {
+            msgDate = 'Debe ingresar tipo de amonestación';
+            inputFocus = '#tipo'+v;
+            return false;
+        }
+        if($('#id_gravedad_amonestacion'+v).val() == '') {
+            msgDate = 'Debe seleccionar gravedad de amonestación';
+            inputFocus = '#id_gravedad_amonestacion'+v;
+            return false;
+        }
+        if($('#motivo'+v).val() == '') {
+            msgDate = 'Debe ingresar motivo de amonestación';
+            inputFocus = '#motivo'+v;
+            return false;
+        }
+        if(t==2){
+            if($('#documento').val() != ''){
+                if($('#estado_amonestacion').val() == '0') {
+                    msgDate = 'Debe seleccionar estado';
+                    inputFocus = '#estado_amonestacion';
+                    return false;
+                }
+            }  
+        }
+        return true;
+    }
 </script>

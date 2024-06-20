@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Session;
 class Amonestacion extends Model
 {
     use HasFactory;
-    
+
+    public $timestamps = false;
+
     protected $table = 'amonestacion';
 
     protected $primaryKey = 'id_amonestacion';
@@ -149,5 +151,30 @@ class Amonestacion extends Model
         }
         $query = DB::select($sql);
         return json_decode(json_encode($query), true);
+    }
+    
+    public function update_amonestacion($dato) {
+        $id_usuario = session('usuario')->id_usuario;
+        $id_puesto = session('usuario')->id_puesto;
+        $estado = $dato['documento'] != "" ? $dato['estado_amonestacion'] : null;
+
+        if (session('usuario')->id_nivel == 1 || $id_puesto == 23) {
+            $estado = '2';
+        }
+
+        DB::table('amonestacion')
+            ->where('id_amonestacion', $dato['id_amonestacion'])
+            ->update([
+                'id_solicitante' => $dato['id_solicitante'],
+                'fecha' => $dato['fecha'],
+                'id_colaborador' => $dato['id_colaborador'],
+                'tipo' => $dato['tipo'],
+                'id_gravedad_amonestacion' => $dato['id_gravedad_amonestacion'],
+                'motivo' => $dato['motivo'],
+                'detalle' => $dato['detalle'],
+                'estado_amonestacion' => $estado,
+                'fec_act' => now(),
+                'user_act' => $id_usuario
+            ]);
     }
 }

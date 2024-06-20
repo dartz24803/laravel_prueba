@@ -223,5 +223,8 @@ Route::controller(AmonestacionController::class)->group(function(){
     Route::post('Lista_Amonestaciones_Emitidas', 'Lista_Amonestaciones_Emitidas')->name('Lista_Amonestaciones_Emitidas');
     Route::post('Buscar_Reporte_Control_Asistencia', 'Buscar_Reporte_Control_Asistencia');
     Route::get('/Modal_Amonestacion', 'Modal_Amonestacion');
+    Route::get('/Modal_Update_Amonestacion/{id}/{num}', 'Modal_Update_Amonestacion');
+    Route::post('/Insert_Amonestacion', 'Insert_Amonestacion');
+    Route::post('/Update_Amonestacion', 'Update_Amonestacion');
     // Route::post('/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
 });
