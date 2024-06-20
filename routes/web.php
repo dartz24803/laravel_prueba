@@ -216,7 +216,7 @@ Route::controller(AsistenciaController::class)->group(function(){
 });
 //AMONESTACION
 Route::controller(AmonestacionController::class)->group(function(){
-    //------------------------------CCV------------------------------------//
+    //------------------------------AMONESTACIONES------------------------------------//
     Route::get('Amonestacion', 'Amonestacion')->name('Amonestacion');
     Route::get('Amonestaciones_Emitidas', 'Amonestaciones_Emitidas')->name('Amonestaciones_Emitidas');
     Route::get('Amonestaciones_Recibidas', 'Amonestaciones_Recibidas')->name('Amonestaciones_Recibidas');
@@ -226,5 +226,8 @@ Route::controller(AmonestacionController::class)->group(function(){
     Route::get('/Modal_Update_Amonestacion/{id}/{num}', 'Modal_Update_Amonestacion');
     Route::post('/Insert_Amonestacion', 'Insert_Amonestacion');
     Route::post('/Update_Amonestacion', 'Update_Amonestacion');
-    // Route::post('/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
+    Route::post('/Delete_Amonestacion', 'Delete_Amonestacion');
+    Route::get('/Modal_Documento_Amonestacion/{id}', 'Modal_Documento_Amonestacion');
+    Route::get('Pdf_Amonestacion/{id}','Pdf_Amonestacion');
+    Route::post('/Update_Documento_Amonestacion', 'Update_Documento_Amonestacion');
 });

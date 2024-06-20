@@ -5,7 +5,6 @@
         display: inline-block;
     }
 </style>
-<link href="<?=base_url() ?>template/fileinput/css/fileinput.min.css" rel="stylesheet">
 
 <form id="formulario_documento" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
@@ -54,12 +53,59 @@
         <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
-<script src="<?= base_url() ?>template/fileinput/js/fileinput.min.js"></script>
 <script>
+    $(document).ready(function() {
+        $(".file").fileinput();
+    });
+
     var ss = $(".basic").select2({
         tags: true
     });
     $('.basic').select2({
         dropdownParent: $('#ModalUpdate')
     });
+
+    function Update_Documento_Amonestacion() {
+        Cargando();
+        var dataString = new FormData(document.getElementById('formulario_documento'));
+        var url = "{{ url('Update_Documento_Amonestacion') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_Documento_Amonestacion()) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: dataString,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $("#ModalUpdate .close").click()
+                        Lista_Amonestaciones_Emitidas();
+                    }); 
+                }
+            });
+        }
+    }
+    
+    function Valida_Documento_Amonestacion() {
+        if ($('#documento_bd').val() === '') {
+            if ($('#documentoe').val() === '') {
+                Swal(
+                    'Ups!',
+                    'Debe adjuntar documento.',
+                    'warning'
+                ).then(function() { });
+                return false;
+            }
+        }
+        return true;
+    }
 </script>

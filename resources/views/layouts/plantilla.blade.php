@@ -133,6 +133,8 @@
 
     <script src="{{ asset('template/docs/js/jquery-3.2.1.min.js') }}"></script>
 
+    <link href="{{ asset('template/fileinput/css/fileinput.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('template/fileinput/js/fileinput.min.js') }}"></script>
     <script>
         function Cargando() {
             $(document)

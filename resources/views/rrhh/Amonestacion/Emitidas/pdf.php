@@ -65,7 +65,6 @@
           padding-right: 10px;
           padding-bottom: 5px;
           margin: 0 0 10px 0;
-          /*background: url(<?php echo base_url() ?>assets/especiales/dimension.png);*/
         }
         .imgaenperfil{
           width: 200px; height:150px; padding-right:10px;border-radius:40px;object-fit: cover;
