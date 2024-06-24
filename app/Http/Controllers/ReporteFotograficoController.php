@@ -224,10 +224,21 @@ class ReporteFotograficoController extends Controller
         return response()->json($respuesta);
     }
 
-    public function Imagenes_Reporte_Fotografico(){
+    public function Imagenes_Reporte_Fotografico(Request $request){
         $list_area = $this->modeloarea->listar();
         $list_bases = $this->modelobase->listar();
         $list_codigos = $this->modelocodigos->listar();
+        $base= $request->input("base");
+        $area= $request->input("area");
+        $codigo= $request->input("codigo");
         return view('tienda.ReporteFotografico.imagenes_rf.index',  compact('list_area', 'list_bases', 'list_codigos'));
+    }
+
+    public function Listar_Imagenes_Reporte_Fotografico(Request $request){
+        $base= $request->input("base");
+        $area= $request->input("area");
+        $codigo= $request->input("codigo");
+        $list_rf = $this->modelo->listar($base,$area,$codigo);
+        return view('tienda.ReporteFotografico.imagenes_rf.listar',  compact('list_rf'));
     }
 }

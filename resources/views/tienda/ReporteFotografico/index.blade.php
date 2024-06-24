@@ -6,7 +6,7 @@
     <div class="layout-px-spacing">
         <div class="page-header">
             <div class="page-title">
-                <h3>Reporte fotgrafico</h3>
+                <h3>Reporte fotografico</h3>
             </div>
         </div>
 

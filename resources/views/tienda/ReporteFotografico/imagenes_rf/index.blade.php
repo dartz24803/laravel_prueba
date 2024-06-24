@@ -15,17 +15,16 @@ $base = Session('usuario')->centro_labores;
     } ?>
     <div class="form-group col-md-4">
         <label>Base: </label>
-        <select class="form-control basic" id="base" name="base" onchange="Reporte_Fotografico_Listar();"<?= $disabled ?>>
+        <select class="form-control basic" id="base" name="base" onchange="Reporte_Fotografico_Listar();" <?= $disabled ?>>
             <option value="0" <?= $selected ?>>TODOS</option>
-                <?php foreach ($list_bases as $list) { ?>
-                    <option value="<?php echo $list['cod_base']; ?>"
-                    <?php
-                        if ($list['cod_base'] == $base && $list['cod_base'] != 'OFC') {
-                            echo "selected";
-                        }
-                    ?>>
-                <?php echo $list['cod_base']; ?>
-            </option>
+            <?php foreach ($list_bases as $list) { ?>
+                <option value="<?php echo $list['cod_base']; ?>" <?php
+                                                                    if ($list['cod_base'] == $base && $list['cod_base'] != 'OFC') {
+                                                                        echo "selected";
+                                                                    }
+                                                                    ?>>
+                    <?php echo $list['cod_base']; ?>
+                </option>
             <?php } ?>
         </select>
     </div>
@@ -33,7 +32,7 @@ $base = Session('usuario')->centro_labores;
         <label>Area: </label>
         <select class="form-control basic" id="area" name="area" onchange="Reporte_Fotografico_Listar();">
             <option value="0" selected>TODOS</option>
-            <?php foreach($list_area as $list){ ?>
+            <?php foreach ($list_area as $list) { ?>
                 <option value="<?php echo $list['id_area']; ?>"><?php echo $list['nom_area']; ?></option>
             <?php } ?>
         </select>
@@ -51,7 +50,7 @@ $base = Session('usuario')->centro_labores;
     </div>
 </div>
 @csrf
-<div class="table-responsive mb-4 mt-4" id="lista">
+<div id="lista" class="ml-2 row">
 </div>
 <script>
     Imagenes_Listar();
@@ -59,11 +58,11 @@ $base = Session('usuario')->centro_labores;
     function Imagenes_Listar(){
         Cargando();
         var csrfToken = $('input[name="_token"]').val();
-/*
+
         var base = $('#base').val();
         var area = $('#area').val();
         var codigo = $('#codigo_filtro').val();
-        var url = "{{ url('Reporte_Fotografico_Listar') }}";
+        var url = "{{ url('Listar_Imagenes_Reporte_Fotografico') }}";
 
         $.ajax({
             url: url,
@@ -79,6 +78,6 @@ $base = Session('usuario')->centro_labores;
             success: function(data) {
                 $('#lista').html(data);
             }
-        });*/
+        });
     }
 </script>
