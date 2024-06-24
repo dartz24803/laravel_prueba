@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('area', function (Blueprint $table) {
-            $table->id('id_area');
-            $table->integer('id_direccion');
-            $table->string('cod_area', 10);
-            $table->string('nom_area', 50);
-            $table->integer('id_gerencia');
-            $table->integer('id_departamento');
-            $table->string('puestos', 255);
-            $table->string('orden', 2);
+        Schema::create('sub_gerencia', function (Blueprint $table) {
+            $table->id('id_sub_gerencia');
+            $table->unsignedBigInteger('id_direccion');
+            $table->unsignedBigInteger('id_gerencia');
+            $table->string('nom_sub_gerencia', 100)->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
@@ -27,6 +23,8 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
+            $table->foreign('id_direccion','sub_fk_id_dir')->references('id_direccion')->on('direccion');
+            $table->foreign('id_gerencia','sub_fk_id_ger')->references('id_gerencia')->on('gerencia');
             //$table->timestamps();
         });
     }
@@ -36,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('area');
+        Schema::dropIfExists('sub_gerencia');
     }
 };

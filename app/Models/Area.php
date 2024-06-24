@@ -15,12 +15,11 @@ class Area extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_area',
         'id_direccion',
-        'cod_area',
-        'nom_area',
         'id_gerencia',
         'id_departamento',
+        'cod_area',
+        'nom_area',
         'puestos',
         'orden',
         'estado',
