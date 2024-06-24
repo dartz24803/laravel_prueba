@@ -37,8 +37,7 @@ Route::controller(Login::class)->group(function(){
 });
 //---------------------REGISTRO FOTOGRAFICO--------------------------//
 Route::controller(ReporteFotograficoController::class)->group(function(){
-    Route::post('/ReporteFotograficoListar', 'listar');
-    Route::get('ReporteFotografico/ModalUpdatedReporteFotografico/{id}', 'ModalUpdatedReporteFotografico')->name('tienda.ReporteFotografico.modal_editar');
+    Route::get('Modal_Update_Registro_Fotografico/{id}', 'ModalUpdatedReporteFotografico')->name('tienda.ReporteFotografico.modal_editar');
     Route::get('ReporteFotografico/ModalRegistrarReporteFotografico', 'ModalRegistroReporteFotografico')->name('tienda.ReporteFotografico.modal_registro');
     Route::post('/Previsualizacion_Captura2', 'Previsualizacion_Captura2');
     Route::get('/obtenerImagenes', 'obtenerImagenes');
@@ -46,6 +45,9 @@ Route::controller(ReporteFotograficoController::class)->group(function(){
     Route::post('/Delete_Reporte_Fotografico', 'Delete_Reporte_Fotografico');
     Route::post('/Registrar_Reporte_Fotografico', 'Registrar_Reporte_Fotografico');
     Route::post('/Update_Registro_Fotografico', 'Update_Registro_Fotografico')->name('Update_Registro_Fotografico');
+    Route::get('Reporte_Fotografico', 'Reporte_Fotografico');
+    Route::post('/Reporte_Fotografico_Listar', 'Reporte_Fotografico_Listar');
+    Route::get('Imagenes_Reporte_Fotografico', 'Imagenes_Reporte_Fotografico');
 });
 //LOGÍSTICA - TRACKING
 Route::controller(TrackingController::class)->group(function(){

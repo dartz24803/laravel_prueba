@@ -59,12 +59,12 @@ class ReporteFotografico extends Model
                     (SELECT GROUP_CONCAT(DISTINCT a.nom_area SEPARATOR ', ')
                     FROM reporte_fotografico_adm rfa
                     LEFT JOIN area a ON rfa.area = a.id_area
-                    WHERE rfa.tipo COLLATE utf8mb4_general_ci = crf.tipo COLLATE utf8mb4_general_ci), 
+                    WHERE rfa.tipo COLLATE utf8mb4_general_ci = crf.tipo COLLATE utf8mb4_general_ci),
                     NULL
                 ) AS areas
             FROM reporte_fotografico rf
             LEFT JOIN codigos_reporte_fotografico crf ON rf.codigo COLLATE utf8mb4_general_ci = crf.descripcion COLLATE utf8mb4_general_ci
-            WHERE rf.estado = 1 $parte1 $parte2 $parte3;";
+            WHERE rf.estado = 1 $parte1 $parte2 $parte3 ORDER BY rf.fec_reg ASC;";
 
         $result = DB::select($query);
 

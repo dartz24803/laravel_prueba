@@ -33,59 +33,24 @@ class ReporteFotograficoController extends Controller
     }
 
     public function index(){
+        //enviar listas a la vista
+        return view('tienda.ReporteFotografico.index');
+    }
+
+    public function Reporte_Fotografico(Request $request){
         //retornar vista si esta logueado
         $list_area = $this->modeloarea->listar();
         $list_bases = $this->modelobase->listar();
         $list_codigos = $this->modelocodigos->listar();
-        //enviar listas a la vista
-        return view('tienda.ReporteFotografico.reportefotografico', compact('list_area', 'list_bases', 'list_codigos'));
+        return view('tienda.ReporteFotografico.tabla_rf.reportefotografico', compact('list_area', 'list_bases', 'list_codigos'));
     }
 
-    public function listar(Request $request){
+    public function Reporte_Fotografico_Listar(Request $request){
         $base= $request->input("base");
         $area= $request->input("area");
         $codigo= $request->input("codigo");
-        $datos = $this->modelo->listar($base,$area,$codigo);
-        $data = array();
-        //listar cada fila de la tabla
-        foreach ($datos as $row) {
-            $sub_array = array();
-            $sub_array[] = $row['id'];
-            $sub_array[] = $row['base'];
-            $sub_array[] = $row['codigo'];
-            $sub_array[] = $row['tipo'];
-            $sub_array[] = $row['areas'];
-            $sub_array[] = $row['fec_reg'];
-            $sub_array[] = '<div class="btn-group" role="group" aria-label="Button group">
-            <a class="btn btn-success" title="Ver evidencia" href="https://lanumerounocloud.com/intranet/REPORTE_FOTOGRAFICO/'.$row['foto'].'" target="_blank">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye text-success"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-            </a>
-            </div>';
-            $sub_array[] = '<div class="btn-group" role="group" aria-label="Button group">
-            <a class="btn btn-success" href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="'. route("tienda.ReporteFotografico.modal_editar", $row['id']).'">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
-                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-            </svg>
-            </a>
-            <a class="btn btn-danger" onClick="Delete_Reporte_Fotografico(' . $row['id'] . ')" title="Eliminar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
-                <polyline points="3 6 5 6 21 6"></polyline>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                <line x1="10" y1="11" x2="10" y2="17"></line>
-                <line x1="14" y1="11" x2="14" y2="17"></line>
-            </svg>
-            </a>
-        </div>';
-            $data[] = $sub_array;
-        }
-        $results = array(
-            "draw" => 1,
-            "recordsTotal" => count($data),
-            "recordsFiltered" => count($data),
-            "data" => $data
-        );
-        //retornar resultados para el datatable
-        return response()->json($results);
+        $list = $this->modelo->listar($base,$area,$codigo);
+        return view('tienda.ReporteFotografico.tabla_rf.listar', compact('list'));
     }
 
     public function ModalRegistroReporteFotografico(){
@@ -93,7 +58,7 @@ class ReporteFotograficoController extends Controller
         $this->modeloarchivotmp->where('id_usuario', Session('usuario')->id_usuario)->delete();
         $list_codigos = $this->modelocodigos->listar();
         // Retorna la vista con los datos
-        return view('tienda.ReporteFotografico.modal_registrar', compact('list_codigos'));
+        return view('tienda.ReporteFotografico.tabla_rf.modal_registrar', compact('list_codigos'));
     }
 
     public function ModalUpdatedReporteFotografico($id){
@@ -101,7 +66,7 @@ class ReporteFotograficoController extends Controller
         $get_id = $this->modelo->where('id', $id)->get();
         $list_codigos = $this->modelocodigos->listar();
         // Retorna la vista con los datos
-        return view('tienda.ReporteFotografico.modal_editar', compact('list_codigos','get_id'));
+        return view('tienda.ReporteFotografico.tabla_rf.modal_editar', compact('list_codigos','get_id'));
     }
 
     public function Previsualizacion_Captura2(){
@@ -217,8 +182,7 @@ class ReporteFotograficoController extends Controller
         return response()->json($respuesta);
     }
 
-    public function Delete_Reporte_Fotografico(Request $request)
-    {
+    public function Delete_Reporte_Fotografico(Request $request){
         $id = $request->input('id');
         $respuesta = array();
         try {
@@ -258,5 +222,12 @@ class ReporteFotograficoController extends Controller
             }
         }
         return response()->json($respuesta);
+    }
+
+    public function Imagenes_Reporte_Fotografico(){
+        $list_area = $this->modeloarea->listar();
+        $list_bases = $this->modelobase->listar();
+        $list_codigos = $this->modelocodigos->listar();
+        return view('tienda.ReporteFotografico.imagenes_rf.index',  compact('list_area', 'list_bases', 'list_codigos'));
     }
 }
