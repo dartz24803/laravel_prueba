@@ -453,8 +453,8 @@
                             </div>
                         </a>
                         <ul class="collapse submenu list-unstyled" id="rconf_rrhhs" data-parent="#accordionExample">
-                            <li id="conf_administradores">
-                                <a href="#" data-toggle="tooltip" data-placement="right" data-html="true" title="• Supervisión de tienda <br>• Seguimiento al coordinador">
+                            <li id="conf_colaboradores">
+                                <a href="{{ route('colaborador_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                                     <p class="romperpalabra"><span id="icono_active2"></span> Colaboradores</p>
                                 </a>
                             </li>

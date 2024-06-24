@@ -11,14 +11,14 @@ class Gerencia extends Model
     use HasFactory;
 
     protected $table = 'gerencia';
-
     protected $primaryKey = 'id_gerencia';
 
+    public $timestamps = false;
+
     protected $fillable = [
-        'cod_gerencia',
         'id_direccion',
+        'cod_gerencia',
         'nom_gerencia',
-        'nom_gerencia_ant',
         'digitos_cuenta',
         'digitos_cci',
         'estado',
