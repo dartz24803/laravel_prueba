@@ -16,10 +16,10 @@ return new class extends Migration
             $table->unsignedBigInteger('id_direccion');
             $table->unsignedBigInteger('id_gerencia');
             $table->unsignedBigInteger('id_departamento');
-            $table->string('cod_area', 10);
-            $table->string('nom_area', 50);
-            $table->string('puestos', 255);
-            $table->string('orden', 2);
+            $table->string('cod_area', 10)->nullable();
+            $table->string('nom_area', 50)->nullable();
+            $table->string('puestos', 255)->nullable();
+            $table->string('orden', 2)->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
