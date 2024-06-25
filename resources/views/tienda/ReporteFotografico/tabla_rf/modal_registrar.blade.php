@@ -31,7 +31,7 @@
                     <div class="row d-flex justify-content-center mb-2 mt-2" id="div_tomar_foto" style="display:none !important;">
                         <button type="button" class="btn btn-info" onclick="Tomar_Foto();">Tomar foto</button>
                     </div>
-                    <div class="row d-flex justify-content-center text-center" id="div_canvas" style="display:none !important;">
+                    <div class="row d-flex justify-content-center text-center" id="div_canvas" style="display:block !important;">
                         <canvas id="canvas" width="640" height="480" style="max-width:95%;"></canvas>
                     </div>
 
@@ -44,6 +44,7 @@
                     <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
                 </div>
             </form>
+<script src="https://cdn.rawgit.com/exif-js/exif-js/master/exif.js"></script>
 <script>
     $(document).ready(function() {
         cargarImagenes();
@@ -165,7 +166,7 @@
         }
     }
     var fotos_tomadas = 0; // Contador para el número de fotos tomadas
-
+/*
     function Tomar_Foto() {
         Cargando();
 
@@ -205,6 +206,88 @@
                         cargarImagenes();
                     }
                 }
+            });
+        }, 'image/jpeg');
+    }*/
+    function Tomar_Foto() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_insert'));
+        var url = "{{ url('Previsualizacion_Captura2') }}";
+        var video = document.getElementById('video');
+        var div_canvas = document.getElementById('div_canvas');
+        var canvas = document.getElementById('canvas');
+        var context = canvas.getContext('2d');
+
+        // Tomar la foto
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Convertir el canvas a Blob
+        canvas.toBlob(function(blob) {
+            // Leer los metadatos EXIF de la imagen
+            EXIF.getData(blob, function() {
+                var orientation = EXIF.getTag(this, 'Orientation') || 1;
+
+                // Rotar el canvas según la orientación EXIF
+                var rotatedCanvas = document.createElement('canvas');
+                var rotatedContext = rotatedCanvas.getContext('2d');
+
+                switch (orientation) {
+                    case 3:
+                        rotatedCanvas.width = canvas.width;
+                        rotatedCanvas.height = canvas.height;
+                        rotatedContext.rotate(Math.PI);
+                        rotatedContext.drawImage(canvas, -canvas.width, -canvas.height);
+                        break;
+                    case 6:
+                        rotatedCanvas.width = canvas.height;
+                        rotatedCanvas.height = canvas.width;
+                        rotatedContext.rotate(Math.PI / 2);
+                        rotatedContext.drawImage(canvas, 0, -canvas.height);
+                        break;
+                    case 8:
+                        rotatedCanvas.width = canvas.height;
+                        rotatedCanvas.height = canvas.width;
+                        rotatedContext.rotate(-Math.PI / 2);
+                        rotatedContext.drawImage(canvas, -canvas.width, 0);
+                        break;
+                    default:
+                        rotatedCanvas.width = canvas.width;
+                        rotatedCanvas.height = canvas.height;
+                        rotatedContext.drawImage(canvas, 0, 0);
+                        break;
+                }
+
+                // Convertir el canvas rotado a Blob y enviarlo al servidor
+                rotatedCanvas.toBlob(function(rotatedBlob) {
+                    dataString.append('photo' + (fotos_tomadas + 1), rotatedBlob, 'photo' + (fotos_tomadas + 1) + '.jpg');
+
+                    // Realiza la solicitud AJAX
+                    $.ajax({
+                        url: url,
+                        data: dataString,
+                        type: 'POST',
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            if (response === "error") {
+                                swal.fire({
+                                    title: 'Error',
+                                    text: "Solo puede tomar una foto!",
+                                    type: 'error',
+                                    showCancelButton: false,
+                                    timer: 2000
+                                });
+                            }
+                            if (response.error === "") {
+                                // div_canvas.style.cssText = "display: block;";
+                                $('#captura').val('1');
+                                fotos_tomadas++; // Incrementa el contador de fotos tomadas
+                                cargarImagenes();
+                            }
+                        }
+                    });
+                }, 'image/jpeg');
             });
         }, 'image/jpeg');
     }

@@ -15,7 +15,7 @@ $base = Session('usuario')->centro_labores;
     } ?>
     <div class="form-group col-md-4">
         <label>Base: </label>
-        <select class="form-control basic" id="base" name="base" onchange="Reporte_Fotografico_Listar();" <?= $disabled ?>>
+        <select class="form-control basic" id="base" name="base" onchange="Imagenes_Listar();" <?= $disabled ?>>
             <option value="0" <?= $selected ?>>TODOS</option>
             <?php foreach ($list_bases as $list) { ?>
                 <option value="<?php echo $list['cod_base']; ?>" <?php
@@ -30,7 +30,7 @@ $base = Session('usuario')->centro_labores;
     </div>
     <div class="form-group col-md-4">
         <label>Area: </label>
-        <select class="form-control basic" id="area" name="area" onchange="Reporte_Fotografico_Listar();">
+        <select class="form-control basic" id="area" name="area" onchange="Imagenes_Listar();">
             <option value="0" selected>TODOS</option>
             <?php foreach ($list_area as $list) { ?>
                 <option value="<?php echo $list['id_area']; ?>"><?php echo $list['nom_area']; ?></option>
@@ -39,7 +39,7 @@ $base = Session('usuario')->centro_labores;
     </div>
     <div class="form-group col-md-4">
         <label>Codigo: </label>
-        <select class="form-control basic" id="codigo_filtro" name="codigo_filtro" onchange="Reporte_Fotografico_Listar();">
+        <select class="form-control basic" id="codigo_filtro" name="codigo_filtro" onchange="Imagenes_Listar();">
             <option value="0">TODOS</option>
             <?php foreach ($list_codigos as $list) { ?>
                 <option value="<?php echo $list['descripcion']; ?>">
@@ -50,7 +50,7 @@ $base = Session('usuario')->centro_labores;
     </div>
 </div>
 @csrf
-<div id="lista" class="ml-2 row">
+<div id="lista" class="p-2 row">
 </div>
 <script>
     Imagenes_Listar();

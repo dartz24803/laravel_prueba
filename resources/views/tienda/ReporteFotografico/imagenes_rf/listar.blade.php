@@ -4,7 +4,7 @@
         <img src="https://lanumerounocloud.com/intranet/REPORTE_FOTOGRAFICO/<?= $row['foto'] ?>" class="card-img-top" alt="...">
         <div class="card-body">
             <h5 class="card-title"><?= $row['codigo'] ?></h5>
-            <p class="card-text"><?= $row['tipo'] ?></p>
+            <p class="card-text"><?= $row['fec_reg'] ?></p>
             <a href="{{ url('Modal_Detalle/')}}" class="btn btn-primary">Detalles</a>
         </div>
     </div>
