@@ -29,16 +29,16 @@
                         </div>
                     </div>
                     <div class="row d-flex justify-content-center mb-2" id="div_camara" style="display:none !important;">
-                        <video id="video" autoplay style="max-width: 95%;"></video>
+                        <video id="video" autoplay style="max-width: 55%;"></video>
                     </div>
                     <div class="row d-flex justify-content-center mb-2 mt-2" id="div_tomar_foto" style="display:none !important;">
                         <button type="button" class="btn btn-info" onclick="Tomar_Foto();">Tomar foto</button>
                     </div>
                     <div class="row d-flex justify-content-center text-center" id="div_canvas" style="display:none !important;">
-                        <canvas id="canvas" width="640" height="480" style="max-width:95%;"></canvas>
+                        <canvas id="canvas" style="max-width:95%;"></canvas>
                     </div>
 
-                    <div id="imagen-container" class="d-flex justify-content-center ml-4">
+                    <div id="imagen-container" class="d-flex justify-content-center">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -164,7 +164,6 @@
             }
         }
     }
-    var fotos_tomadas = 0; // Contador para el número de fotos tomadas
 
     function Tomar_Foto() {
         Cargando();
@@ -179,7 +178,7 @@
 
         canvas.toBlob(function(blob) {
             // Crea un formulario para enviar la imagen al servidor
-            dataString.append('photo' + (fotos_tomadas + 1), blob, 'photo' + (fotos_tomadas + 1) + '.jpg');
+            dataString.append('photo1', blob, 'photo1.jpg');
 
             // Realiza la solicitud AJAX
             $.ajax({
@@ -208,74 +207,6 @@
             });
         }, 'image/jpeg');
     }
-/*
-    function Tomar_Foto() {
-        Cargando();
-
-        var dataString = new FormData(document.getElementById('formulario_insert'));
-        var url = "{{ url('Previsualizacion_Captura2') }}";
-        var video = document.getElementById('video');
-        var div_canvas = document.getElementById('div_canvas');
-        var canvas = document.getElementById('canvas');
-        var context = canvas.getContext('2d');
-        var orientation = parseInt(document.querySelector('input[name="orientation"]:checked').value, 10);
-
-        // Guardar las dimensiones originales
-        var width = canvas.width;
-        var height = canvas.height;
-
-        // Crear un canvas temporal para rotar la imagen
-        var tempCanvas = document.createElement('canvas');
-        var tempContext = tempCanvas.getContext('2d');
-        
-        // Ajustar las dimensiones del canvas temporal según la rotación
-        if (orientation === 90 || orientation === -90) {
-            tempCanvas.width = height;
-            tempCanvas.height = width;
-        } else {
-            tempCanvas.width = width;
-            tempCanvas.height = height;
-        }
-
-        // Rotar la imagen según la orientación seleccionada
-        tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
-        tempContext.rotate(orientation * Math.PI / 180);
-        tempContext.drawImage(video, -width / 2, -height / 2, width, height);
-
-        // Dibujar la imagen rotada en el canvas original
-        context.clearRect(0, 0, width, height);
-        context.drawImage(tempCanvas, 0, 0);
-
-        canvas.toBlob(function(blob) {
-            // Crea un formulario para enviar la imagen al servidor
-            dataString.append('photo1', blob, 'photo1.jpg');
-
-            // Realiza la solicitud AJAX
-            $.ajax({
-                url: url,
-                data: dataString,
-                type: 'POST',
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    if (response === "error") {
-                        swal.fire({
-                            title: 'Error',
-                            text: "Solo puede tomar una foto!",
-                            type: 'error',
-                            showCancelButton: false,
-                            timer: 2000
-                        });
-                    }
-                    if(response.error === "") {
-                        $('#captura').val('1');
-                        //fotos_tomadas++;
-                        cargarImagenes();
-                    }
-                }
-            });
-        }, 'image/jpeg');
-    }*/
 
 
     function cargarImagenes() {
@@ -289,7 +220,7 @@
                 if (data.length > 0) {
                     $.each(data, function(index, imagen) {
                         var timestamp = new Date().getTime();
-                        var imgElement = $('<img id="foto" loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar_support" src="https://lanumerounocloud.com/intranet/REPORTE_FOTOGRAFICO/' + imagen.ruta + '?v=' + timestamp + '" width=240" height="120" alt="Foto">');
+                        var imgElement = $('<img id="foto" loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar_support" src="https://lanumerounocloud.com/intranet/REPORTE_FOTOGRAFICO/' + imagen.ruta + '?v=' + timestamp + '" alt="Foto">');
                         var deleteButton = $('<a href="javascript:void(0);" title="Eliminar" onClick="Delete_Imagen_Temporal(' + imagen.id + ')"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></a>');
                         var container = $('<div class="image-item mr-4"></div>'); // Contenedor para la imagen y el botón de eliminar
                         container.append(imgElement);
@@ -371,5 +302,9 @@
     }
     .select2-hidden-accessible {
         position: static !important;
+    }
+
+    #foto{
+        width: 55% !important;
     }
 </style>

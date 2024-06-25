@@ -196,4 +196,30 @@ class Amonestacion extends Model
             ]);
 
     }
+    
+    function get_list_amonestaciones_recibidas(){
+        $id_usuario = session('session')->id_usuario;
+        $sql = "SELECT i.*,concat(u.usuario_nombres,' ',u.usuario_apater,' ',u.usuario_amater) as colaborador,
+            concat(s.usuario_nombres,' ',s.usuario_apater,' ',s.usuario_amater) as solicitante,
+            concat(r.usuario_nombres,' ',r.usuario_apater,' ',r.usuario_amater) as revisor,
+            g.nom_gravedad_amonestacion,
+            case when i.estado_amonestacion=1 then 'Por Iniciar'
+            when i.estado_amonestacion=2 then 'Aprobado'
+            when i.estado_amonestacion=3 then 'Rechazado'
+            when i.estado_amonestacion=4 then 'Aceptado' 
+            when i.estado_amonestacion=5 then 'No Aceptado' end as desc_estado_amonestacion,
+            date_format(i.fecha, '%d/%m/%Y') as fecha_amonestacion,a.nom_tipo_amonestacion,
+            m.nom_motivo_amonestacion,s.id_area,
+            CASE WHEN i.documento!='' THEN 'Si' ELSE 'No' END AS v_documento
+            FROM amonestacion i 
+            left join users u on i.id_colaborador=u.id_usuario
+            left join users s on i.id_solicitante=s.id_usuario
+            left join users r on i.id_revisor=r.id_usuario
+            left join tipo_amonestacion a on i.tipo=a.id_tipo_amonestacion
+            left join motivo_amonestacion m on i.motivo=m.id_motivo_amonestacion
+            left join gravedad_amonestacion g on i.id_gravedad_amonestacion=g.id_gravedad_amonestacion
+            where i.estado=1 and i.id_colaborador=$id_usuario and i.estado_amonestacion in (2,4)";
+        $query = DB::select($sql);
+        return json_decode(json_encode($query), true);
+    }
 }
