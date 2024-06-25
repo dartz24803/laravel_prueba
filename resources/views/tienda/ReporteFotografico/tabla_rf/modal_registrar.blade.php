@@ -198,9 +198,6 @@
                         });
                     }
                     if(response.error === "") {
-                        // div_canvas.style.cssText = "display: block;";
-                        $('#captura').val('1');
-                        fotos_tomadas++; // Incrementa el contador de fotos tomadas
                         cargarImagenes();
                     }
                 }
