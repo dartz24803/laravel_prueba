@@ -34,8 +34,8 @@
                     <div class="row d-flex justify-content-center mb-2 mt-2" id="div_tomar_foto" style="display:none !important;">
                         <button type="button" class="btn btn-info" onclick="Tomar_Foto();">Tomar foto</button>
                     </div>
-                    <div class="row d-flex justify-content-center text-center" id="div_canvas" style="display:none !important;">
-                        <canvas id="canvas" style="max-width:95%;"></canvas>
+                    <div id="div_canvas" style="display:block !important;">
+                        <canvas id="canvas"></canvas>
                     </div>
 
                     <div id="imagen-container" class="d-flex justify-content-center">
@@ -174,6 +174,11 @@
         var div_canvas = document.getElementById('div_canvas');
         var canvas = document.getElementById('canvas');
         var context = canvas.getContext('2d');
+
+        // Ajusta el tamaño del canvas al tamaño del video
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         canvas.toBlob(function(blob) {
@@ -301,7 +306,4 @@
         position: static !important;
     }
 
-    #foto{
-        width: 55% !important;
-    }
 </style>
