@@ -57,9 +57,9 @@ class TrackingController extends Controller
             'hacia' => $request->hacia,
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         $tracking_dp = TrackingDetalleProceso::create([
@@ -68,9 +68,9 @@ class TrackingController extends Controller
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         //ENVÍO DE WHATSAPP
@@ -125,9 +125,9 @@ class TrackingController extends Controller
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         //ENVÍO DE CORREO
@@ -188,9 +188,9 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id,
+                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id
+                'user_act' => session('usuario')->id_usuario
             ]);
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
@@ -254,9 +254,9 @@ class TrackingController extends Controller
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
     }
 
@@ -280,7 +280,7 @@ class TrackingController extends Controller
             'importe_transporte' => $request->importe_transporte,
             'factura_transporte' => $request->factura_transporte,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         if($_FILES["archivo_transporte"]["name"] != ""){
@@ -321,9 +321,9 @@ class TrackingController extends Controller
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         TrackingDetalleEstado::create([
@@ -332,9 +332,9 @@ class TrackingController extends Controller
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
     }
 
@@ -390,9 +390,9 @@ class TrackingController extends Controller
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         TrackingDetalleEstado::create([
@@ -401,9 +401,9 @@ class TrackingController extends Controller
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
     }
 
@@ -459,9 +459,9 @@ class TrackingController extends Controller
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         //ENVÍO DE CORREO
@@ -583,9 +583,9 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id,
+                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id
+                'user_act' => session('usuario')->id_usuario
             ]);
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
@@ -646,9 +646,9 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id,
+                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id
+                'user_act' => session('usuario')->id_usuario
             ]);
 
             TrackingDetalleEstado::create([
@@ -657,9 +657,9 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id,
+                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id
+                'user_act' => session('usuario')->id_usuario
             ]);
         }else{
             if($request->validacion==1){
@@ -672,9 +672,9 @@ class TrackingController extends Controller
                     'fecha' => now(),
                     'estado' => 1,
                     'fec_reg' => now(),
-                    'user_reg' => session('usuario')->id,
+                    'user_reg' => session('usuario')->id_usuario,
                     'fec_act' => now(),
-                    'user_act' => session('usuario')->id
+                    'user_act' => session('usuario')->id_usuario
                 ]);
                 $id_detalle = $tracking_dp->id;
                 $tipo_mensaje = "cierre_inspeccion_fardo_directo";
@@ -728,9 +728,9 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id,
+                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id
+                'user_act' => session('usuario')->id_usuario
             ]);
         }
     }
@@ -792,7 +792,7 @@ class TrackingController extends Controller
                     $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
                     if($subio){
                         TrackingArchivoTemporal::create([
-                            'id_usuario' => session('usuario')->id,
+                            'id_usuario' => session('usuario')->id_usuario,
                             'tipo' => 2,
                             'archivo' => $archivo
                         ]);
@@ -829,7 +829,7 @@ class TrackingController extends Controller
         Tracking::findOrFail($request->id)->update([
             'observacion_inspf' => $request->observacion_inspf,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         if($_FILES["archivo_inspf"]["name"] != ""){
@@ -898,9 +898,9 @@ class TrackingController extends Controller
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         //ENVÍO DE CORREO
@@ -946,9 +946,9 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id,
+                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id
+                'user_act' => session('usuario')->id_usuario
             ]);
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
@@ -969,7 +969,7 @@ class TrackingController extends Controller
             'importe_transporte' => $request->importe_transporte,
             'factura_transporte' => $request->factura_transporte,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         if($_FILES["archivo_transporte"]["name"] != ""){
@@ -1063,9 +1063,9 @@ class TrackingController extends Controller
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         //PASAR PARA CONFIRMACIÓN DE PAGO DE TRANSPORTE
@@ -1075,9 +1075,9 @@ class TrackingController extends Controller
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         //ENVÍO DE CORREO
@@ -1121,9 +1121,9 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id,
+                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id
+                'user_act' => session('usuario')->id_usuario
             ]);
 
             //PASAR PARA INSPECCIÓN DE MERCADERÍA
@@ -1133,9 +1133,9 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id,
+                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id
+                'user_act' => session('usuario')->id_usuario
             ]);
 
             TrackingDetalleEstado::create([
@@ -1144,9 +1144,9 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id,
+                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id
+                'user_act' => session('usuario')->id_usuario
             ]);
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
@@ -1206,9 +1206,9 @@ class TrackingController extends Controller
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
     }
 
@@ -1222,9 +1222,9 @@ class TrackingController extends Controller
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         TrackingDetalleEstado::create([
@@ -1233,9 +1233,9 @@ class TrackingController extends Controller
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
     }
 
@@ -1261,7 +1261,7 @@ class TrackingController extends Controller
             'diferencia' => $request->diferencia,
             'devolucion' => $request->devolucion,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         if(($request->diferencia=="1" && $request->devolucion=="1") || $request->diferencia=="1"){
@@ -1271,9 +1271,9 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id,
+                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id
+                'user_act' => session('usuario')->id_usuario
             ]);
     
             TrackingDetalleEstado::create([
@@ -1282,9 +1282,9 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id,
+                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id
+                'user_act' => session('usuario')->id_usuario
             ]);
         }else{
             $tracking_dp = TrackingDetalleProceso::create([
@@ -1293,9 +1293,9 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id,
+                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id
+                'user_act' => session('usuario')->id_usuario
             ]);
     
             TrackingDetalleEstado::create([
@@ -1304,9 +1304,9 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id,
+                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id
+                'user_act' => session('usuario')->id_usuario
             ]);
         }
     }
@@ -1346,7 +1346,6 @@ class TrackingController extends Controller
         
             $mail->Body =  '<FONT SIZE=3>
                                 Hola '.$get_id->desde.'-'.$get_id->hacia.', regularizar los sobrantes y/o faltantes indicados.<br><br>
-                                Se envia el reporte de la salida de Mercaderia, de la guía de remisión '.$request->n_requerimiento.'.<br><br>
                                 <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                     <thead>
                                         <tr align="center" style="background-color:#0093C6;">
@@ -1390,16 +1389,16 @@ class TrackingController extends Controller
             $mail->CharSet = 'UTF-8';
             $mail->send();
 
-            /*TrackingDetalleEstado::create([
+            TrackingDetalleEstado::create([
                 'id_detalle' => $get_id->id_detalle,
                 'id_estado' => 15,
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id,
+                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id
-            ]);*/
+                'user_act' => session('usuario')->id_usuario
+            ]);
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
@@ -1433,7 +1432,7 @@ class TrackingController extends Controller
         Tracking::findOrFail($request->id)->update([
             'guia_diferencia' => $request->guia_diferencia,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         //ALERTA 9.1.1.
@@ -1474,9 +1473,9 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id,
+                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id
+                'user_act' => session('usuario')->id_usuario
             ]);
 
             if($get_id->devolucion=="1"){
@@ -1486,9 +1485,9 @@ class TrackingController extends Controller
                     'fecha' => now(),
                     'estado' => 1,
                     'fec_reg' => now(),
-                    'user_reg' => session('usuario')->id,
+                    'user_reg' => session('usuario')->id_usuario,
                     'fec_act' => now(),
-                    'user_act' => session('usuario')->id
+                    'user_act' => session('usuario')->id_usuario
                 ]);
         
                 TrackingDetalleEstado::create([
@@ -1497,9 +1496,9 @@ class TrackingController extends Controller
                     'fecha' => now(),
                     'estado' => 1,
                     'fec_reg' => now(),
-                    'user_reg' => session('usuario')->id,
+                    'user_reg' => session('usuario')->id_usuario,
                     'fec_act' => now(),
-                    'user_act' => session('usuario')->id
+                    'user_act' => session('usuario')->id_usuario
                 ]);
             }else{
                 //ALERTA 9.3
@@ -1509,9 +1508,9 @@ class TrackingController extends Controller
                     'fecha' => now(),
                     'estado' => 1,
                     'fec_reg' => now(),
-                    'user_reg' => session('usuario')->id,
+                    'user_reg' => session('usuario')->id_usuario,
                     'fec_act' => now(),
-                    'user_act' => session('usuario')->id
+                    'user_act' => session('usuario')->id_usuario
                 ]);
         
                 TrackingDetalleEstado::create([
@@ -1520,9 +1519,9 @@ class TrackingController extends Controller
                     'fecha' => now(),
                     'estado' => 1,
                     'fec_reg' => now(),
-                    'user_reg' => session('usuario')->id,
+                    'user_reg' => session('usuario')->id_usuario,
                     'fec_act' => now(),
-                    'user_act' => session('usuario')->id
+                    'user_act' => session('usuario')->id_usuario
                 ]);
             }
         }catch(Exception $e) {
@@ -1575,9 +1574,9 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id,
+                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id
+                'user_act' => session('usuario')->id_usuario
             ]);
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
@@ -1609,7 +1608,7 @@ class TrackingController extends Controller
             'explicacion' => $request->explicacion,
             'proceder' => $request->proceder,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
@@ -1656,9 +1655,9 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id,
+                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id
+                'user_act' => session('usuario')->id_usuario
             ]);
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
@@ -1671,9 +1670,9 @@ class TrackingController extends Controller
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         //ALERTA 9.3
@@ -1683,9 +1682,9 @@ class TrackingController extends Controller
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
 
         TrackingDetalleEstado::create([
@@ -1694,9 +1693,9 @@ class TrackingController extends Controller
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
-            'user_reg' => session('usuario')->id,
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id
+            'user_act' => session('usuario')->id_usuario
         ]);
     }
 }
