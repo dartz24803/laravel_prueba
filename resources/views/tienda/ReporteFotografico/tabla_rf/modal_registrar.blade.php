@@ -34,7 +34,7 @@
                     <div class="row d-flex justify-content-center mb-2 mt-2" id="div_tomar_foto" style="display:none !important;">
                         <button type="button" class="btn btn-info" onclick="Tomar_Foto();">Tomar foto</button>
                     </div>
-                    <div id="div_canvas" style="display:block !important;">
+                    <div id="div_canvas" style="display:none !important;">
                         <canvas id="canvas"></canvas>
                     </div>
 
