@@ -64,7 +64,7 @@ class ReporteFotografico extends Model
                 ) AS areas
             FROM reporte_fotografico rf
             LEFT JOIN codigos_reporte_fotografico crf ON rf.codigo COLLATE utf8mb4_general_ci = crf.descripcion COLLATE utf8mb4_general_ci
-            WHERE rf.estado = 1 $parte1 $parte2 $parte3 ORDER BY rf.fec_reg ASC;";
+            WHERE rf.estado = 1 $parte1 $parte2 $parte3 ORDER BY rf.fec_reg DESC;";
 
         $result = DB::select($query);
 

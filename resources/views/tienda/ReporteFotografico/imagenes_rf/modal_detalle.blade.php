@@ -9,19 +9,19 @@
     </button>
 </div>
 <div class="modal-body text-center" style="max-height:450px; overflow:auto;">
-    <div class="p-5 mb-5">
-        <img id="foto_<?= $get_id[0]['id'] ?>" src="https://lanumerounocloud.com/intranet/REPORTE_FOTOGRAFICO/<?= $get_id[0]['foto'] ?>" class="card-img-top" alt="Evidencia" style="width: 35rem;">
+    <div class="mb-4">
+        <img id="foto_<?= $get_id[0]['id'] ?>" src="https://lanumerounocloud.com/intranet/REPORTE_FOTOGRAFICO/<?= $get_id[0]['foto'] ?>" class="card-img-top" alt="Evidencia" style="width: 22rem;">
     </div>
     <div class="col-sm-12 row p-4 d-flex align-items-center">
-        <div class="col-md-4">
+        <div class="col-sm-4">
             <span class="badge badge-dark" style="font-size: 3rem;"><?= $get_id[0]['base'] ?></span>
         </div>
-        <div class="col-md-4">
+        <div class="col-sm-4">
             <span><?= $get_id[0]['tipo'] ?></span><br>
             <span><?= $get_id[0]['fec_reg'] ?></span>
         </div>
-        <div class="col-md-4">
-            <div class="col-sm-12 d-flex justify-content-around">
+        <div class="col-sm-4">
+            <div class="d-flex justify-content-center align-items-center">
                 <label for="my-input">Orientacion de foto: </label>
                 <div class="form-check">
                     <button class="btn btn-warning" value="90" name="orientation" id="rotateButton">
@@ -39,12 +39,11 @@
     <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
 </div>
 <script>
-    let rotationAngle_<?= $get_id[0]['id'] ?> = 0;
+    var rotationAngle_<?= $get_id[0]['id'] ?> = 0;
 
     document.getElementById("rotateButton").addEventListener("click", function() {
         rotationAngle_<?= $get_id[0]['id'] ?> += 90;
         document.getElementById('foto_' + <?= $get_id[0]['id'] ?>).style.transform = "rotate(" + rotationAngle_<?= $get_id[0]['id'] ?> + "deg)";
-        console.log(rotationAngle_<?= $get_id[0]['id'] ?>);
     });
 </script>
 <style>
@@ -55,7 +54,7 @@
         color: red;
     }
     .modal-content{
-        height: 55rem;
+        height: 40rem;
     }
 
     .modal-body{
