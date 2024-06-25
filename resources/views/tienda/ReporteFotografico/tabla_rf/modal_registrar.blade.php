@@ -306,4 +306,7 @@
         position: static !important;
     }
 
+    #foto{
+        width: 11rem;
+    }
 </style>
