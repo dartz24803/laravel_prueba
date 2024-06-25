@@ -66,6 +66,11 @@ class AmonestacionController extends Controller
         return view('rrhh.Amonestacion.Recibidas.index');
     }
 
+    public function Lista_Amonestaciones_Recibidas(){
+        $list_recibidas = $this->modelo->get_list_amonestaciones_recibidas();
+        return view('rrhh.Amonestacion.Recibidas.lista', compact('list_recibidas'));
+    }
+
     public function Modal_Amonestacion(){
         if(session('usuario')->id_nivel==1 || session('usuario')->id_nivel==2
         || session('usuario')->id_puesto==133){
