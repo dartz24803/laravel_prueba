@@ -50,6 +50,7 @@ Route::controller(ReporteFotograficoController::class)->group(function(){
     Route::post('/Reporte_Fotografico_Listar', 'Reporte_Fotografico_Listar');
     Route::get('Imagenes_Reporte_Fotografico', 'Imagenes_Reporte_Fotografico');
     Route::post('/Listar_Imagenes_Reporte_Fotografico', 'Listar_Imagenes_Reporte_Fotografico');
+    Route::get('Modal_Detalle_RF/{id}', 'Modal_Detalle_RF');
 });
 //LOGÍSTICA - TRACKING
 Route::controller(TrackingController::class)->group(function(){

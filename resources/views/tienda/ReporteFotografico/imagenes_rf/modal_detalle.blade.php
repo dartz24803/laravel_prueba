@@ -1,0 +1,68 @@
+
+<div class="modal-header bg-primary">
+    <h5 class="modal-title"></h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+    </button>
+</div>
+<div class="modal-body text-center" style="max-height:450px; overflow:auto;">
+    <div class="p-5 mb-5">
+        <img id="foto_<?= $get_id[0]['id'] ?>" src="https://lanumerounocloud.com/intranet/REPORTE_FOTOGRAFICO/<?= $get_id[0]['foto'] ?>" class="card-img-top" alt="Evidencia" style="width: 35rem;">
+    </div>
+    <div class="col-sm-12 row p-4 d-flex align-items-center">
+        <div class="col-md-4">
+            <span class="badge badge-dark" style="font-size: 3rem;"><?= $get_id[0]['base'] ?></span>
+        </div>
+        <div class="col-md-4">
+            <span><?= $get_id[0]['tipo'] ?></span><br>
+            <span><?= $get_id[0]['fec_reg'] ?></span>
+        </div>
+        <div class="col-md-4">
+            <div class="col-sm-12 d-flex justify-content-around">
+                <label for="my-input">Orientacion de foto: </label>
+                <div class="form-check">
+                    <button class="btn btn-warning" value="90" name="orientation" id="rotateButton">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rotate-cw"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group d-flex justify-content-center">
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
+</div>
+<script>
+    let rotationAngle_<?= $get_id[0]['id'] ?> = 0;
+
+    document.getElementById("rotateButton").addEventListener("click", function() {
+        rotationAngle_<?= $get_id[0]['id'] ?> += 90;
+        document.getElementById('foto_' + <?= $get_id[0]['id'] ?>).style.transform = "rotate(" + rotationAngle_<?= $get_id[0]['id'] ?> + "deg)";
+        console.log(rotationAngle_<?= $get_id[0]['id'] ?>);
+    });
+</script>
+<style>
+    .select2-container--default .select2-results > .select2-results__options {
+        height: 5rem;
+    }
+    .select2-results__option {
+        color: red;
+    }
+    .modal-content{
+        height: 55rem;
+    }
+
+    .modal-body{
+        max-height: none !important;
+        height: 40rem;
+    }
+    .select2-hidden-accessible {
+        position: static !important;
+    }
+</style>

@@ -2,7 +2,7 @@
 $base = Session('usuario')->centro_labores;
 // print_r(Session::get('usuario'));
 ?>
-<div class="toolbar d-flex">
+<div class="toolbar d-flex mt-4">
     <?php
     //Cada coordinador le debe aparecer su base respectivamente definido
     $disabled = '';
@@ -80,4 +80,5 @@ $base = Session('usuario')->centro_labores;
             }
         });
     }
+    $('.basic').select2({});
 </script>

@@ -94,4 +94,5 @@ $base = Session('usuario')->centro_labores;
             }
         });
     }
+    $('.basic').select2({});
 </script>

@@ -241,4 +241,12 @@ class ReporteFotograficoController extends Controller
         $list_rf = $this->modelo->listar($base,$area,$codigo);
         return view('tienda.ReporteFotografico.imagenes_rf.listar',  compact('list_rf'));
     }
+
+    public function Modal_Detalle_RF($id){
+        $get_id = ReporteFotografico::leftJoin('codigos_reporte_fotografico', 'reporte_fotografico.codigo', '=', 'codigos_reporte_fotografico.descripcion')
+        ->select('reporte_fotografico.*', 'codigos_reporte_fotografico.*') // selecciona los campos que necesitas
+        ->where('reporte_fotografico.id', $id)
+        ->get();
+        return view('tienda.ReporteFotografico.imagenes_rf.modal_detalle', compact('get_id'));
+    }
 }

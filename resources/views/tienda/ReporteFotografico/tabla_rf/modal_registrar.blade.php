@@ -350,7 +350,7 @@
     });
 
     $('.basic_i').select2({
-        dropdownParent: $('#ModalRegistrar')
+        dropdownParent: $('#ModalRegistro')
     });
     
 </script>

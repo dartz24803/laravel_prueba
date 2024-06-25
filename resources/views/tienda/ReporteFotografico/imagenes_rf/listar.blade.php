@@ -5,7 +5,7 @@
         <div class="card-body">
             <h5 class="card-title"><?= $row['codigo'] ?></h5>
             <p class="card-text"><?= $row['fec_reg'] ?></p>
-            <a href="{{ url('Modal_Detalle/')}}" class="btn btn-primary">Detalles</a>
+            <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Modal_Detalle_RF/'.$row['id'])}}" class="btn btn-primary">Detalles</a>
         </div>
     </div>
 <?php } ?>
