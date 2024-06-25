@@ -50,7 +50,7 @@ $base = Session('usuario')->centro_labores;
     </div>
 </div>
 @csrf
-<div id="lista" class="p-2 row">
+<div id="lista" class="p-2 row ml-2">
 </div>
 <script>
     Imagenes_Listar();
