@@ -101,7 +101,7 @@
         function Area(){
             Cargando();
 
-            var url="{{ route('colaborador_conf_ge') }}";
+            var url="{{ route('colaborador_conf_ar') }}";
 
             $.ajax({
                 url: url,

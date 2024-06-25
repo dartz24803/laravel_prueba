@@ -145,6 +145,7 @@ Route::controller(AdministradorController::class)->group(function(){
 Route::controller(ColaboradorConfController::class)->group(function(){
     Route::get('colaborador_conf', 'index')->name('colaborador_conf');
     Route::post('colaborador_conf/traer_gerencia', 'traer_gerencia')->name('colaborador_conf.traer_gerencia');
+    Route::post('colaborador_conf/traer_sub_gerencia', 'traer_sub_gerencia')->name('colaborador_conf.traer_sub_gerencia');
     Route::get('colaborador_conf_di', 'index_di')->name('colaborador_conf_di');
     Route::get('colaborador_conf_di/list', 'list_di')->name('colaborador_conf_di.list');
     Route::get('colaborador_conf_di/create', 'create_di')->name('colaborador_conf_di.create');
@@ -166,6 +167,14 @@ Route::controller(ColaboradorConfController::class)->group(function(){
     Route::get('colaborador_conf_sg/{id}/edit', 'edit_sg')->name('colaborador_conf_sg.edit');
     Route::put('colaborador_conf_sg/{id}', 'update_sg')->name('colaborador_conf_sg.update');
     Route::delete('colaborador_conf_sg/{id}', 'destroy_sg')->name('colaborador_conf_sg.destroy');
+    Route::get('colaborador_conf_ar', 'index_ar')->name('colaborador_conf_ar');
+    Route::get('colaborador_conf_ar/list', 'list_ar')->name('colaborador_conf_ar.list');
+    Route::get('colaborador_conf_ar/create', 'create_ar')->name('colaborador_conf_ar.create');
+    Route::post('colaborador_conf_ar/traer_puesto_ar', 'traer_puesto_ar')->name('colaborador_conf_ar.traer_puesto');
+    Route::post('colaborador_conf_ar', 'store_ar')->name('colaborador_conf_ar.store');
+    Route::get('colaborador_conf_ar/{id}/edit', 'edit_ar')->name('colaborador_conf_ar.edit');
+    Route::put('colaborador_conf_ar/{id}', 'update_ar')->name('colaborador_conf_ar.update');
+    Route::delete('colaborador_conf_ar/{id}', 'destroy_ar')->name('colaborador_conf_ar.destroy');
 });
 
 
