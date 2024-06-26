@@ -48,9 +48,9 @@ class Area extends Model
                 FROM puesto pu
                 WHERE FIND_IN_SET(pu.id_puesto,ar.puestos)) AS puestos,ar.orden
                 FROM area ar
-                LEFT JOIN direccion di ON ar.id_direccion=di.id_direccion
-                LEFT JOIN gerencia ge ON ar.id_gerencia=ge.id_gerencia
-                LEFT JOIN sub_gerencia dc ON ar.id_departamento=dc.id_sub_gerencia
+                INNER JOIN direccion di ON ar.id_direccion=di.id_direccion
+                INNER JOIN gerencia ge ON ar.id_gerencia=ge.id_gerencia
+                INNER JOIN sub_gerencia dc ON ar.id_departamento=dc.id_sub_gerencia
                 WHERE ar.estado=1";
         $query = DB::select($sql);
         return $query;
