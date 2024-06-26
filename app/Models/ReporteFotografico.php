@@ -72,4 +72,27 @@ class ReporteFotografico extends Model
         return json_decode(json_encode($result), true);
     }
 
+    public function listar_imagenes($base, $categoria)
+    {
+        if($base==0){
+            $parte1 = "";
+        }else{
+            $parte1 = " AND rf.base = '$base'";
+        }
+
+        if($categoria==0){
+            $parte2 = "";
+        }else{
+            $parte2 = " AND crf.tipo = '$categoria'";
+        }
+
+        $query = "select rf.*,crf.descripcion,crf.tipo from reporte_fotografico rf 
+        left join codigos_reporte_fotografico crf ON rf.codigo = crf.descripcion
+        where rf.estado=1 $parte1 $parte2 ORDER BY rf.fec_reg DESC;";
+
+        $result = DB::select($query);
+
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
+    }
 }
