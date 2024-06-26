@@ -15,6 +15,7 @@ class TrackingGuiaRemisionDetalle extends Model
 
     protected $fillable = [
         'n_guia_remision',
+        'sku',
         'color',
         'estilo',
         'talla',

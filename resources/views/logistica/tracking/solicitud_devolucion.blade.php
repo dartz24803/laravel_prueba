@@ -20,43 +20,47 @@
                             </div>
     
                             <div class="row">
-                                <div class="form-group col-lg-1">
-                                    <label class="control-label text-bold">Nombre de empresa: </label>
-                                </div>
-                                <div class="form-group col-lg-5">
-                                    <input type="text" class="form-control" name="nombre_transporte" id="nombre_transporte" placeholder="Nombre de empresa" value="{{ $get_id->nombre_transporte }}">
-                                </div>
-    
-                                <div class="form-group col-lg-1">
-                                    <label class="control-label text-bold">Importe a pagar: </label>
-                                </div>
-                                <div class="form-group col-lg-2">
-                                    <input type="text" class="form-control" name="importe_transporte" id="importe_transporte" placeholder="Importe a pagar" value="{{ $get_id->importe_transporte }}" onkeypress="return solo_Numeros_Punto(event);">
-                                </div>
-    
-                                <div class="form-group col-lg-1">
-                                    <label class="control-label text-bold">N° Factura: </label>
-                                </div>
-                                <div class="form-group col-lg-2">
-                                    <input type="text" class="form-control" name="factura_transporte" id="factura_transporte" placeholder="N° Factura" value="{{ $get_id->factura_transporte }}">
-                                </div>
-                            </div>
-    
-                            <div class="row">
-                                <div class="form-group col-lg-2">
-                                    <label class="control-label text-bold">PDF de factura: </label>
-                                    @if ($get_id->archivo_transporte!="")
-                                        <a href="javascript:void(0);" title="Descargar" onclick="Descargar_Pdf_Factura();">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download-cloud text-dark">
-                                                <polyline points="8 17 12 21 16 17"></polyline>
-                                                <line x1="12" y1="12" x2="12" y2="21"></line>
-                                                <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"></path>
-                                            </svg>
-                                        </a>
-                                    @endif
-                                </div>
-                                <div class="form-group col-lg-10">
-                                    <input type="file" class="form-control-file" name="archivo_transporte" id="archivo_transporte" onchange="Valida_Factura_Transporte();">
+                                <div class="table-responsive mt-4" id="lista_tracking">
+                                    <table id="tabla_js" class="table" style="width:100%">
+                                        <thead>
+                                            <tr class="text-center">
+                                                <th>Devolución</th>
+                                                <th>SKU</th>
+                                                <th>Descripción</th>
+                                                <th>Cantidad</th>
+                                                <th>Ingreso de detalle</th>
+                                                <th>Especificación</th>
+                                            </tr>
+                                        </thead>
+                                    
+                                        <tbody>
+                                            @foreach ($list_guia_remision as $list)
+                                                <tr class="text-center">
+                                                    <td>
+                                                        <div class="custom-control custom-checkbox custom-control-inline">
+                                                            <input type="checkbox" id="devolucion_{{ $list->id }}" name="devolucion_{{ $list->id }}" class="custom-control-input" onclick="Ingreso_Detalle('{{ $list->id }}');">
+                                                            <label class="custom-control-label" for="devolucion_{{ $list->id }}"></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>{{ $list->sku }}</td>
+                                                    <td class="text-left">{{ $list->descripcion }}</td>
+                                                    <td>{{ $list->cantidad }}</td>
+                                                    <td id="td_id_{{ $list->id }}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-slash text-danger">
+                                                            <circle cx="12" cy="12" r="10"></circle>
+                                                            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                                                        </svg>
+                                                    </td>
+                                                    <td id="td_es_{{ $list->id }}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye-off text-success">
+                                                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                                                        </svg>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
     
@@ -79,6 +83,16 @@
             $("#li_trackings").addClass('active');
             $("#a_trackings").attr('aria-expanded','true');
         });
+
+        function Ingreso_Detalle(id){
+            if($("#devolucion_"+id).is(':checked')){
+                $("#td_id_"+id).html('<button class="btn btn-primary btn-sm">Abrir</button>');
+                $("#td_es_"+id).html('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical text-dark"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>');
+            }else{
+                $("#td_id_"+id).html('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-slash text-danger"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>');
+                $("#td_es_"+id).html('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye-off text-success"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>');
+            }
+        }
 
         function solo_Numeros_Punto(e) {
             var key = event.which || event.keyCode;

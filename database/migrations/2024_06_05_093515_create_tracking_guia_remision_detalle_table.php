@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('tracking_guia_remision_detalle', function (Blueprint $table) {
             $table->id();
-            $table->string('n_guia_remision', 20);
-            $table->string('color', 200);
-            $table->string('estilo', 200);
-            $table->string('talla', 20);
-            $table->string('descripcion', 1000);
-            $table->integer('cantidad');
+            $table->string('n_guia_remision', 20)->nullable();
+            $table->string('sku', 20)->nullable();
+            $table->string('color', 200)->nullable();
+            $table->string('estilo', 200)->nullable();
+            $table->string('talla', 20)->nullable();
+            $table->string('descripcion', 1000)->nullable();
+            $table->integer('cantidad')->default(0)->nullable();
             //$table->timestamps();
         });
     }
