@@ -20,6 +20,18 @@
                                 <li class="nav-item">
                                     <a id="a_ar" class="nav-link" onclick="Area();" style="cursor: pointer;">Área</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a id="a_ni" class="nav-link" onclick="Nivel_Jerarquico();" style="cursor: pointer;">Nivel Jerárquico</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a id="a_se" class="nav-link" onclick="Sede_Laboral();" style="cursor: pointer;">Sede Laboral</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a id="a_pu" class="nav-link" onclick="Puesto();" style="cursor: pointer;">Puesto</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a id="a_ca" class="nav-link" onclick="Cargo();" style="cursor: pointer;">Cargo</a>
+                                </li>
                             </ul>
 
                             <div class="row" id="cancel-row">
@@ -58,6 +70,10 @@
                     $("#a_ge").removeClass('active');
                     $("#a_de").removeClass('active');
                     $("#a_ar").removeClass('active');
+                    $("#a_ni").removeClass('active');
+                    $("#a_se").removeClass('active');
+                    $("#a_pu").removeClass('active');
+                    $("#a_ca").removeClass('active');
                 }
             });
         }
@@ -76,6 +92,10 @@
                     $("#a_ge").addClass('active');
                     $("#a_de").removeClass('active');
                     $("#a_ar").removeClass('active');
+                    $("#a_ni").removeClass('active');
+                    $("#a_se").removeClass('active');
+                    $("#a_pu").removeClass('active');
+                    $("#a_ca").removeClass('active');
                 }
             });
         }
@@ -94,6 +114,10 @@
                     $("#a_ge").removeClass('active');
                     $("#a_de").addClass('active');
                     $("#a_ar").removeClass('active');
+                    $("#a_ni").removeClass('active');
+                    $("#a_se").removeClass('active');
+                    $("#a_pu").removeClass('active');
+                    $("#a_ca").removeClass('active');
                 }
             });
         }
@@ -112,6 +136,98 @@
                     $("#a_ge").removeClass('active');
                     $("#a_de").removeClass('active');
                     $("#a_ar").addClass('active');
+                    $("#a_ni").removeClass('active');
+                    $("#a_se").removeClass('active');
+                    $("#a_pu").removeClass('active');
+                    $("#a_ca").removeClass('active');
+                }
+            });
+        }
+
+        function Nivel_Jerarquico(){
+            Cargando();
+
+            var url="{{ route('colaborador_conf_ni') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_colaborador_conf').html(resp);  
+                    $("#a_di").removeClass('active');
+                    $("#a_ge").removeClass('active');
+                    $("#a_de").removeClass('active');
+                    $("#a_ar").removeClass('active');
+                    $("#a_ni").addClass('active');
+                    $("#a_se").removeClass('active');
+                    $("#a_pu").removeClass('active');
+                    $("#a_ca").removeClass('active');
+                }
+            });
+        }
+
+        function Sede_Laboral(){
+            Cargando();
+
+            var url="{{ route('colaborador_conf_se') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_colaborador_conf').html(resp);  
+                    $("#a_di").removeClass('active');
+                    $("#a_ge").removeClass('active');
+                    $("#a_de").removeClass('active');
+                    $("#a_ar").removeClass('active');
+                    $("#a_ni").removeClass('active');
+                    $("#a_se").addClass('active');
+                    $("#a_pu").removeClass('active');
+                    $("#a_ca").removeClass('active');
+                }
+            });
+        }
+
+        function Puesto(){
+            Cargando();
+
+            var url="{{ route('colaborador_conf_pu') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_colaborador_conf').html(resp);  
+                    $("#a_di").removeClass('active');
+                    $("#a_ge").removeClass('active');
+                    $("#a_de").removeClass('active');
+                    $("#a_ar").removeClass('active');
+                    $("#a_ni").removeClass('active');
+                    $("#a_se").removeClass('active');
+                    $("#a_pu").addClass('active');
+                    $("#a_ca").removeClass('active');
+                }
+            });
+        }
+
+        function Cargo(){
+            Cargando();
+
+            var url="{{ route('colaborador_conf_ca') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_colaborador_conf').html(resp);  
+                    $("#a_di").removeClass('active');
+                    $("#a_ge").removeClass('active');
+                    $("#a_de").removeClass('active');
+                    $("#a_ar").removeClass('active');
+                    $("#a_ni").removeClass('active');
+                    $("#a_se").removeClass('active');
+                    $("#a_pu").removeClass('active');
+                    $("#a_ca").addClass('active');
                 }
             });
         }

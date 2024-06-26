@@ -1532,7 +1532,8 @@ class TrackingController extends Controller
     public function solicitud_devolucion($id)
     {
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        return view('logistica.tracking.solicitud_devolucion', compact('get_id'));
+        $list_guia_remision = TrackingGuiaRemisionDetalle::select('id','sku','descripcion','cantidad')->where('n_guia_remision',$get_id->n_guia_remision)->get();
+        return view('logistica.tracking.solicitud_devolucion', compact('get_id','list_guia_remision'));
     }
 
     public function insert_reporte_devolucion(Request $request)

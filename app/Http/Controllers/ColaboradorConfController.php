@@ -404,4 +404,464 @@ class ColaboradorConfController extends Controller
             'user_eli' => session('usuario')->id_usuario
         ]);
     }
+
+    public function index_ni()
+    {
+        return view('rrhh.administracion.colaborador.area.index');
+    }
+
+    public function list_ni()
+    {
+        $list_area = Area::select('area.id_area','direccion.direccion','gerencia.nom_gerencia','sub_gerencia.nom_sub_gerencia','area.nom_area','area.cod_area','area.orden')
+                                    ->join('direccion','direccion.id_direccion','=','area.id_direccion')
+                                    ->join('gerencia','gerencia.id_gerencia','=','area.id_gerencia')
+                                    ->join('sub_gerencia','sub_gerencia.id_sub_gerencia','=','area.id_departamento')
+                                    ->where('area.estado', 1)->get();
+        return view('rrhh.administracion.colaborador.area.lista', compact('list_area'));
+    }
+
+    public function create_ni()
+    {
+        $list_direccion = Direccion::select('id_direccion','direccion')->where('estado', 1)->get();
+        return view('rrhh.administracion.colaborador.area.modal_registrar', compact('list_direccion'));
+    }
+
+    public function store_ni(Request $request)
+    {
+        $request->validate([
+            'id_direccion' => 'gt:0',
+            'id_gerencia' => 'gt:0',
+            'id_sub_gerencia' => 'gt:0',
+            'nom_area' => 'required',
+            'cod_area' => 'required',
+        ],[
+            'id_direccion.gt' => 'Debe seleccionar dirección.',
+            'id_gerencia.gt' => 'Debe seleccionar gerencia.',
+            'id_sub_gerencia.gt' => 'Debe seleccionar departamento.',
+            'nom_area.required' => 'Debe ingresar descripción.',
+            'cod_area.required' => 'Debe ingresar código.',
+        ]);
+
+        $valida = Area::where('id_direccion', $request->id_direccion)
+                        ->where('id_gerencia', $request->id_gerencia)
+                        ->where('id_departamento', $request->id_sub_gerencia)
+                        ->where('nom_area', $request->nom_area)->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Area::create([
+                'id_direccion' => $request->id_direccion,
+                'id_gerencia' => $request->id_gerencia,
+                'id_departamento' => $request->id_sub_gerencia,
+                'nom_area' => $request->nom_area,
+                'cod_area' => $request->cod_area,
+                'orden' => $request->orden,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_ni($id)
+    {
+        $get_id = Area::findOrFail($id);
+        $list_direccion = Direccion::select('id_direccion','direccion')->where('estado', 1)->get();
+        $list_gerencia = Gerencia::select('id_gerencia','nom_gerencia')->where('id_direccion',$get_id->id_direccion)->where('estado', 1)->get();
+        $list_sub_gerencia = SubGerencia::select('id_sub_gerencia','nom_sub_gerencia')->where('id_gerencia',$get_id->id_gerencia)->where('estado', 1)->get();
+        return view('rrhh.administracion.colaborador.area.modal_editar', compact('get_id','list_direccion','list_gerencia','list_sub_gerencia'));
+    }
+
+    public function update_ni(Request $request, $id)
+    {
+        $request->validate([
+            'id_direccione' => 'gt:0',
+            'id_gerenciae' => 'gt:0',
+            'id_sub_gerenciae' => 'gt:0',
+            'nom_areae' => 'required',
+            'cod_areae' => 'required',
+        ],[
+            'id_direccione.gt' => 'Debe seleccionar dirección.',
+            'id_gerenciae.gt' => 'Debe seleccionar gerencia.',
+            'id_sub_gerenciae.gt' => 'Debe seleccionar departamento.',
+            'nom_areae.required' => 'Debe ingresar descripción.',
+            'cod_areae.required' => 'Debe ingresar código.',
+        ]);
+
+        $valida = Area::where('id_direccion', $request->id_direccione)
+                                ->where('id_gerencia', $request->id_gerenciae)
+                                ->where('id_departamento', $request->id_sub_gerenciae)
+                                ->where('nom_area', $request->nom_areae)->where('estado', 1)
+                                ->where('id_area', '!=', $id)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Area::findOrFail($id)->update([
+                'id_direccion' => $request->id_direccione,
+                'id_gerencia' => $request->id_gerenciae,
+                'id_departamento' => $request->id_sub_gerenciae,
+                'nom_area' => $request->nom_areae,
+                'cod_area' => $request->cod_areae,
+                'orden' => $request->ordene,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_ni($id)
+    {
+        Area::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function index_se()
+    {
+        return view('rrhh.administracion.colaborador.area.index');
+    }
+
+    public function list_se()
+    {
+        $list_area = Area::select('area.id_area','direccion.direccion','gerencia.nom_gerencia','sub_gerencia.nom_sub_gerencia','area.nom_area','area.cod_area','area.orden')
+                                    ->join('direccion','direccion.id_direccion','=','area.id_direccion')
+                                    ->join('gerencia','gerencia.id_gerencia','=','area.id_gerencia')
+                                    ->join('sub_gerencia','sub_gerencia.id_sub_gerencia','=','area.id_departamento')
+                                    ->where('area.estado', 1)->get();
+        return view('rrhh.administracion.colaborador.area.lista', compact('list_area'));
+    }
+
+    public function create_se()
+    {
+        $list_direccion = Direccion::select('id_direccion','direccion')->where('estado', 1)->get();
+        return view('rrhh.administracion.colaborador.area.modal_registrar', compact('list_direccion'));
+    }
+
+    public function store_se(Request $request)
+    {
+        $request->validate([
+            'id_direccion' => 'gt:0',
+            'id_gerencia' => 'gt:0',
+            'id_sub_gerencia' => 'gt:0',
+            'nom_area' => 'required',
+            'cod_area' => 'required',
+        ],[
+            'id_direccion.gt' => 'Debe seleccionar dirección.',
+            'id_gerencia.gt' => 'Debe seleccionar gerencia.',
+            'id_sub_gerencia.gt' => 'Debe seleccionar departamento.',
+            'nom_area.required' => 'Debe ingresar descripción.',
+            'cod_area.required' => 'Debe ingresar código.',
+        ]);
+
+        $valida = Area::where('id_direccion', $request->id_direccion)
+                        ->where('id_gerencia', $request->id_gerencia)
+                        ->where('id_departamento', $request->id_sub_gerencia)
+                        ->where('nom_area', $request->nom_area)->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Area::create([
+                'id_direccion' => $request->id_direccion,
+                'id_gerencia' => $request->id_gerencia,
+                'id_departamento' => $request->id_sub_gerencia,
+                'nom_area' => $request->nom_area,
+                'cod_area' => $request->cod_area,
+                'orden' => $request->orden,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_se($id)
+    {
+        $get_id = Area::findOrFail($id);
+        $list_direccion = Direccion::select('id_direccion','direccion')->where('estado', 1)->get();
+        $list_gerencia = Gerencia::select('id_gerencia','nom_gerencia')->where('id_direccion',$get_id->id_direccion)->where('estado', 1)->get();
+        $list_sub_gerencia = SubGerencia::select('id_sub_gerencia','nom_sub_gerencia')->where('id_gerencia',$get_id->id_gerencia)->where('estado', 1)->get();
+        return view('rrhh.administracion.colaborador.area.modal_editar', compact('get_id','list_direccion','list_gerencia','list_sub_gerencia'));
+    }
+
+    public function update_se(Request $request, $id)
+    {
+        $request->validate([
+            'id_direccione' => 'gt:0',
+            'id_gerenciae' => 'gt:0',
+            'id_sub_gerenciae' => 'gt:0',
+            'nom_areae' => 'required',
+            'cod_areae' => 'required',
+        ],[
+            'id_direccione.gt' => 'Debe seleccionar dirección.',
+            'id_gerenciae.gt' => 'Debe seleccionar gerencia.',
+            'id_sub_gerenciae.gt' => 'Debe seleccionar departamento.',
+            'nom_areae.required' => 'Debe ingresar descripción.',
+            'cod_areae.required' => 'Debe ingresar código.',
+        ]);
+
+        $valida = Area::where('id_direccion', $request->id_direccione)
+                                ->where('id_gerencia', $request->id_gerenciae)
+                                ->where('id_departamento', $request->id_sub_gerenciae)
+                                ->where('nom_area', $request->nom_areae)->where('estado', 1)
+                                ->where('id_area', '!=', $id)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Area::findOrFail($id)->update([
+                'id_direccion' => $request->id_direccione,
+                'id_gerencia' => $request->id_gerenciae,
+                'id_departamento' => $request->id_sub_gerenciae,
+                'nom_area' => $request->nom_areae,
+                'cod_area' => $request->cod_areae,
+                'orden' => $request->ordene,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_se($id)
+    {
+        Area::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function index_pu()
+    {
+        return view('rrhh.administracion.colaborador.puesto.index');
+    }
+
+    public function list_pu()
+    {
+        $list_area = Area::select('area.id_area','direccion.direccion','gerencia.nom_gerencia','sub_gerencia.nom_sub_gerencia','area.nom_area','area.cod_area','area.orden')
+                                    ->join('direccion','direccion.id_direccion','=','area.id_direccion')
+                                    ->join('gerencia','gerencia.id_gerencia','=','area.id_gerencia')
+                                    ->join('sub_gerencia','sub_gerencia.id_sub_gerencia','=','area.id_departamento')
+                                    ->where('area.estado', 1)->get();
+        return view('rrhh.administracion.colaborador.puesto.lista', compact('list_area'));
+    }
+
+    public function create_pu()
+    {
+        $list_direccion = Direccion::select('id_direccion','direccion')->where('estado', 1)->get();
+        return view('rrhh.administracion.colaborador.puesto.modal_registrar', compact('list_direccion'));
+    }
+
+    public function store_pu(Request $request)
+    {
+        $request->validate([
+            'id_direccion' => 'gt:0',
+            'id_gerencia' => 'gt:0',
+            'id_sub_gerencia' => 'gt:0',
+            'nom_area' => 'required',
+            'cod_area' => 'required',
+        ],[
+            'id_direccion.gt' => 'Debe seleccionar dirección.',
+            'id_gerencia.gt' => 'Debe seleccionar gerencia.',
+            'id_sub_gerencia.gt' => 'Debe seleccionar departamento.',
+            'nom_area.required' => 'Debe ingresar descripción.',
+            'cod_area.required' => 'Debe ingresar código.',
+        ]);
+
+        $valida = Area::where('id_direccion', $request->id_direccion)
+                        ->where('id_gerencia', $request->id_gerencia)
+                        ->where('id_departamento', $request->id_sub_gerencia)
+                        ->where('nom_area', $request->nom_area)->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Area::create([
+                'id_direccion' => $request->id_direccion,
+                'id_gerencia' => $request->id_gerencia,
+                'id_departamento' => $request->id_sub_gerencia,
+                'nom_area' => $request->nom_area,
+                'cod_area' => $request->cod_area,
+                'orden' => $request->orden,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_pu($id)
+    {
+        $get_id = Area::findOrFail($id);
+        $list_direccion = Direccion::select('id_direccion','direccion')->where('estado', 1)->get();
+        $list_gerencia = Gerencia::select('id_gerencia','nom_gerencia')->where('id_direccion',$get_id->id_direccion)->where('estado', 1)->get();
+        $list_sub_gerencia = SubGerencia::select('id_sub_gerencia','nom_sub_gerencia')->where('id_gerencia',$get_id->id_gerencia)->where('estado', 1)->get();
+        return view('rrhh.administracion.colaborador.puesto.modal_editar', compact('get_id','list_direccion','list_gerencia','list_sub_gerencia'));
+    }
+
+    public function update_pu(Request $request, $id)
+    {
+        $request->validate([
+            'id_direccione' => 'gt:0',
+            'id_gerenciae' => 'gt:0',
+            'id_sub_gerenciae' => 'gt:0',
+            'nom_areae' => 'required',
+            'cod_areae' => 'required',
+        ],[
+            'id_direccione.gt' => 'Debe seleccionar dirección.',
+            'id_gerenciae.gt' => 'Debe seleccionar gerencia.',
+            'id_sub_gerenciae.gt' => 'Debe seleccionar departamento.',
+            'nom_areae.required' => 'Debe ingresar descripción.',
+            'cod_areae.required' => 'Debe ingresar código.',
+        ]);
+
+        $valida = Area::where('id_direccion', $request->id_direccione)
+                                ->where('id_gerencia', $request->id_gerenciae)
+                                ->where('id_departamento', $request->id_sub_gerenciae)
+                                ->where('nom_area', $request->nom_areae)->where('estado', 1)
+                                ->where('id_area', '!=', $id)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Area::findOrFail($id)->update([
+                'id_direccion' => $request->id_direccione,
+                'id_gerencia' => $request->id_gerenciae,
+                'id_departamento' => $request->id_sub_gerenciae,
+                'nom_area' => $request->nom_areae,
+                'cod_area' => $request->cod_areae,
+                'orden' => $request->ordene,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_pu($id)
+    {
+        Area::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function index_ca()
+    {
+        return view('rrhh.administracion.colaborador.area.index');
+    }
+
+    public function list_ca()
+    {
+        $list_area = Area::select('area.id_area','direccion.direccion','gerencia.nom_gerencia','sub_gerencia.nom_sub_gerencia','area.nom_area','area.cod_area','area.orden')
+                                    ->join('direccion','direccion.id_direccion','=','area.id_direccion')
+                                    ->join('gerencia','gerencia.id_gerencia','=','area.id_gerencia')
+                                    ->join('sub_gerencia','sub_gerencia.id_sub_gerencia','=','area.id_departamento')
+                                    ->where('area.estado', 1)->get();
+        return view('rrhh.administracion.colaborador.area.lista', compact('list_area'));
+    }
+
+    public function create_ca()
+    {
+        $list_direccion = Direccion::select('id_direccion','direccion')->where('estado', 1)->get();
+        return view('rrhh.administracion.colaborador.area.modal_registrar', compact('list_direccion'));
+    }
+
+    public function store_ca(Request $request)
+    {
+        $request->validate([
+            'id_direccion' => 'gt:0',
+            'id_gerencia' => 'gt:0',
+            'id_sub_gerencia' => 'gt:0',
+            'nom_area' => 'required',
+            'cod_area' => 'required',
+        ],[
+            'id_direccion.gt' => 'Debe seleccionar dirección.',
+            'id_gerencia.gt' => 'Debe seleccionar gerencia.',
+            'id_sub_gerencia.gt' => 'Debe seleccionar departamento.',
+            'nom_area.required' => 'Debe ingresar descripción.',
+            'cod_area.required' => 'Debe ingresar código.',
+        ]);
+
+        $valida = Area::where('id_direccion', $request->id_direccion)
+                        ->where('id_gerencia', $request->id_gerencia)
+                        ->where('id_departamento', $request->id_sub_gerencia)
+                        ->where('nom_area', $request->nom_area)->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Area::create([
+                'id_direccion' => $request->id_direccion,
+                'id_gerencia' => $request->id_gerencia,
+                'id_departamento' => $request->id_sub_gerencia,
+                'nom_area' => $request->nom_area,
+                'cod_area' => $request->cod_area,
+                'orden' => $request->orden,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_ca($id)
+    {
+        $get_id = Area::findOrFail($id);
+        $list_direccion = Direccion::select('id_direccion','direccion')->where('estado', 1)->get();
+        $list_gerencia = Gerencia::select('id_gerencia','nom_gerencia')->where('id_direccion',$get_id->id_direccion)->where('estado', 1)->get();
+        $list_sub_gerencia = SubGerencia::select('id_sub_gerencia','nom_sub_gerencia')->where('id_gerencia',$get_id->id_gerencia)->where('estado', 1)->get();
+        return view('rrhh.administracion.colaborador.area.modal_editar', compact('get_id','list_direccion','list_gerencia','list_sub_gerencia'));
+    }
+
+    public function update_ca(Request $request, $id)
+    {
+        $request->validate([
+            'id_direccione' => 'gt:0',
+            'id_gerenciae' => 'gt:0',
+            'id_sub_gerenciae' => 'gt:0',
+            'nom_areae' => 'required',
+            'cod_areae' => 'required',
+        ],[
+            'id_direccione.gt' => 'Debe seleccionar dirección.',
+            'id_gerenciae.gt' => 'Debe seleccionar gerencia.',
+            'id_sub_gerenciae.gt' => 'Debe seleccionar departamento.',
+            'nom_areae.required' => 'Debe ingresar descripción.',
+            'cod_areae.required' => 'Debe ingresar código.',
+        ]);
+
+        $valida = Area::where('id_direccion', $request->id_direccione)
+                                ->where('id_gerencia', $request->id_gerenciae)
+                                ->where('id_departamento', $request->id_sub_gerenciae)
+                                ->where('nom_area', $request->nom_areae)->where('estado', 1)
+                                ->where('id_area', '!=', $id)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Area::findOrFail($id)->update([
+                'id_direccion' => $request->id_direccione,
+                'id_gerencia' => $request->id_gerenciae,
+                'id_departamento' => $request->id_sub_gerenciae,
+                'nom_area' => $request->nom_areae,
+                'cod_area' => $request->cod_areae,
+                'orden' => $request->ordene,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_ca($id)
+    {
+        Area::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
 }

@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             TrackingEstadoSeeder::class,
             DiaSemanaSeeder::class,
             MesSeeder::class,
+            NivelJerarquicoSeeder::class,
+            SedeLaboralSeeder::class,
         ]);
     }
 }
