@@ -198,7 +198,7 @@ class Amonestacion extends Model
     }
     
     function get_list_amonestaciones_recibidas(){
-        $id_usuario = session('session')->id_usuario;
+        $id_usuario = session('usuario')->id_usuario;
         $sql = "SELECT i.*,concat(u.usuario_nombres,' ',u.usuario_apater,' ',u.usuario_amater) as colaborador,
             concat(s.usuario_nombres,' ',s.usuario_apater,' ',s.usuario_amater) as solicitante,
             concat(r.usuario_nombres,' ',r.usuario_apater,' ',r.usuario_amater) as revisor,
