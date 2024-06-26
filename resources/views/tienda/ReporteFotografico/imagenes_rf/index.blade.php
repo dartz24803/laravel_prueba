@@ -13,7 +13,7 @@ $base = Session('usuario')->centro_labores;
     } else {
         $disabled = 'disabled';
     } ?>
-    <div class="form-group col-md-4">
+    <div class="form-group col-md-6">
         <label>Base: </label>
         <select class="form-control basic" id="base" name="base" onchange="Imagenes_Listar();" <?= $disabled ?>>
             <option value="0" <?= $selected ?>>TODOS</option>
@@ -28,7 +28,7 @@ $base = Session('usuario')->centro_labores;
             <?php } ?>
         </select>
     </div>
-    <div class="form-group col-md-4">
+    <div class="form-group col-md-6">
         <label>Categorias: </label>
         <select class="form-control basic" id="categoria_filtro" name="categoria_filtro" onchange="Imagenes_Listar();">
             <option value="0">TODOS</option>
