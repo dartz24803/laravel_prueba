@@ -29,23 +29,18 @@ $base = Session('usuario')->centro_labores;
         </select>
     </div>
     <div class="form-group col-md-4">
-        <label>Area: </label>
-        <select class="form-control basic" id="area" name="area" onchange="Imagenes_Listar();">
-            <option value="0" selected>TODOS</option>
-            <?php foreach ($list_area as $list) { ?>
-                <option value="<?php echo $list['id_area']; ?>"><?php echo $list['nom_area']; ?></option>
-            <?php } ?>
-        </select>
-    </div>
-    <div class="form-group col-md-4">
-        <label>Codigo: </label>
-        <select class="form-control basic" id="codigo_filtro" name="codigo_filtro" onchange="Imagenes_Listar();">
+        <label>Categorias: </label>
+        <select class="form-control basic" id="categoria_filtro" name="categoria_filtro" onchange="Imagenes_Listar();">
             <option value="0">TODOS</option>
-            <?php foreach ($list_codigos as $list) { ?>
-                <option value="<?php echo $list['descripcion']; ?>">
-                    <?php echo $list['descripcion']; ?>
-                </option>
-            <?php } ?>
+            <option value="ALMACÉN">ALMACÉN</option>
+            <option value="CAJA">CAJA</option>
+            <option value="FACHADA">FACHADA</option>
+            <option value="HOMBRE">HOMBRE</option>
+            <option value="INFANTIL">INFANTIL</option>
+            <option value="MUJER">MUJER</option>
+            <option value="PROBADORES">PROBADORES</option>
+            <option value="SERVICIOS">SERVICIOS</option>
+            <option value="PERSONAS">PERSONAS</option>
         </select>
     </div>
 </div>
@@ -60,8 +55,7 @@ $base = Session('usuario')->centro_labores;
         var csrfToken = $('input[name="_token"]').val();
 
         var base = $('#base').val();
-        var area = $('#area').val();
-        var codigo = $('#codigo_filtro').val();
+        var categoria = $('#categoria_filtro').val();
         var url = "{{ url('Listar_Imagenes_Reporte_Fotografico') }}";
 
         $.ajax({
@@ -69,8 +63,7 @@ $base = Session('usuario')->centro_labores;
             type: 'POST',
             data: {
                 'base': base,
-                'area': area,
-                'codigo': codigo
+                'categoria': categoria
             },
             headers: {
                 'X-CSRF-TOKEN': csrfToken
