@@ -301,11 +301,7 @@ class ColaboradorConfController extends Controller
 
     public function list_ar()
     {
-        $list_area = Area::select('area.id_area','direccion.direccion','gerencia.nom_gerencia','sub_gerencia.nom_sub_gerencia','area.nom_area','area.cod_area','area.orden')
-                                    ->join('direccion','direccion.id_direccion','=','area.id_direccion')
-                                    ->join('gerencia','gerencia.id_gerencia','=','area.id_gerencia')
-                                    ->join('sub_gerencia','sub_gerencia.id_sub_gerencia','=','area.id_departamento')
-                                    ->where('area.estado', 1)->get();
+        $list_area = Area::get_list_area();
         return view('rrhh.administracion.colaborador.area.lista', compact('list_area'));
     }
 
@@ -317,8 +313,8 @@ class ColaboradorConfController extends Controller
     
     public function traer_puesto_ar(Request $request)
     {
-        $list_puesto = SubGerencia::select('id_sub_gerencia','nom_sub_gerencia')->where('id_gerencia',$request->id_gerencia)->where('estado',1)->get();
-        return view('rrhh.administracion.colaborador.area.puesto',compact('list_puesto'));
+        $list_puesto = Puesto::select('id_puesto','nom_puesto')->where('id_gerencia',$request->id_gerencia)->where('estado',1)->get();
+        return view('rrhh.administracion.colaborador.area.puestos',compact('list_puesto'));
     }
 
     public function store_ar(Request $request)
@@ -344,12 +340,17 @@ class ColaboradorConfController extends Controller
         if($valida){
             echo "error";
         }else{
+            $puestos = "";
+            if(is_array($request->puestos) && count($request->puestos)>0){
+                $puestos = implode(",",$request->puestos);
+            }
             Area::create([
                 'id_direccion' => $request->id_direccion,
                 'id_gerencia' => $request->id_gerencia,
                 'id_departamento' => $request->id_sub_gerencia,
                 'nom_area' => $request->nom_area,
                 'cod_area' => $request->cod_area,
+                'puestos' => $puestos,
                 'orden' => $request->orden,
                 'estado' => 1,
                 'fec_reg' => now(),
@@ -366,7 +367,8 @@ class ColaboradorConfController extends Controller
         $list_direccion = Direccion::select('id_direccion','direccion')->where('estado', 1)->get();
         $list_gerencia = Gerencia::select('id_gerencia','nom_gerencia')->where('id_direccion',$get_id->id_direccion)->where('estado', 1)->get();
         $list_sub_gerencia = SubGerencia::select('id_sub_gerencia','nom_sub_gerencia')->where('id_gerencia',$get_id->id_gerencia)->where('estado', 1)->get();
-        return view('rrhh.administracion.colaborador.area.modal_editar', compact('get_id','list_direccion','list_gerencia','list_sub_gerencia'));
+        $list_puesto = Puesto::select('id_puesto','nom_puesto')->where('id_gerencia',$get_id->id_gerencia)->where('estado',1)->get();
+        return view('rrhh.administracion.colaborador.area.modal_editar', compact('get_id','list_direccion','list_gerencia','list_sub_gerencia','list_puesto'));
     }
 
     public function update_ar(Request $request, $id)
@@ -393,12 +395,17 @@ class ColaboradorConfController extends Controller
         if($valida){
             echo "error";
         }else{
+            $puestos = "";
+            if(is_array($request->puestose) && count($request->puestose)>0){
+                $puestos = implode(",",$request->puestose);
+            }
             Area::findOrFail($id)->update([
                 'id_direccion' => $request->id_direccione,
                 'id_gerencia' => $request->id_gerenciae,
                 'id_departamento' => $request->id_sub_gerenciae,
                 'nom_area' => $request->nom_areae,
                 'cod_area' => $request->cod_areae,
+                'puestos' => $puestos,
                 'orden' => $request->ordene,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario

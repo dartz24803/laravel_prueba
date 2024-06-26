@@ -26,7 +26,7 @@
                 <label>Gerencia:</label>
             </div>
             <div class="form-group col-lg-10">
-                <select class="form-control" name="id_gerenciae" id="id_gerenciae" onchange="Traer_Sub_Gerencia('e');">
+                <select class="form-control" name="id_gerenciae" id="id_gerenciae" onchange="Traer_Sub_Gerencia('e'); Traer_Puesto('e');">
                     <option value="0">Seleccione</option>
                     @foreach ($list_gerencia as $list)
                         <option value="{{ $list->id_gerencia }}" @if ($list->id_gerencia==$get_id->id_gerencia) selected @endif>{{ $list->nom_gerencia }}</option>
@@ -73,6 +73,13 @@
             </div>
             <div class="form-group col-lg-10">
                 <select class="form-control multivalue" name="puestose[]" id="puestose" multiple="multiple">
+                    @php $base_array = explode(",",$get_id->puestos) @endphp
+                    @foreach ($list_puesto as $list)
+                        <option value="{{ $list->id_puesto }}"
+                        @php if(in_array($list->id_puesto,$base_array)){ echo "selected"; } @endphp>
+                            {{ $list->nom_puesto }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
         </div>

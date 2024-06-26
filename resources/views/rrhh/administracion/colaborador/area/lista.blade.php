@@ -19,7 +19,7 @@
                 <td class="text-left">{{ $list->nom_sub_gerencia }}</td>
                 <td class="text-left">{{ $list->nom_area }}</td>
                 <td>{{ $list->cod_area }}</td>
-                <td class="text-left"></td>
+                <td class="text-left">{{ $list->puestos }}</td>
                 <td>{{ $list->orden }}</td>
                 <td>
                     <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('colaborador_conf_ar.edit', $list->id_area) }}">
