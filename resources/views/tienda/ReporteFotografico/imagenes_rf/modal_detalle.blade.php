@@ -57,7 +57,7 @@
         color: red;
     }
     .modal-content{
-        height: 40rem;
+        height: 50rem;
     }
 
     .modal-body{
