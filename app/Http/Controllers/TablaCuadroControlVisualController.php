@@ -149,8 +149,13 @@ class TablaCuadroControlVisualController extends Controller
     }
 
     public function Delete_Horarios_Cuadro_Control(Request $request){
-        $id = $request->input("id");
-        $this->modelo->where('id_horarios_cuadro_control', $id)->delete();
+        $id_amonestacion = $request->input("id_amonestacion");
+        $dato = [
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario,
+        ];
+        $this->modelo->where('id_amonestacion', $id_amonestacion)->update($dato);
     }
 
     public function Modal_Agregar_Horarios_Cuadro_Control($id){
