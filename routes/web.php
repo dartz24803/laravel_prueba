@@ -146,6 +146,8 @@ Route::controller(ColaboradorConfController::class)->group(function(){
     Route::get('colaborador_conf', 'index')->name('colaborador_conf');
     Route::post('colaborador_conf/traer_gerencia', 'traer_gerencia')->name('colaborador_conf.traer_gerencia');
     Route::post('colaborador_conf/traer_sub_gerencia', 'traer_sub_gerencia')->name('colaborador_conf.traer_sub_gerencia');
+    Route::post('colaborador_conf/traer_area', 'traer_area')->name('colaborador_conf.traer_area');
+    Route::post('colaborador_conf/traer_puesto', 'traer_puesto')->name('colaborador_conf.traer_puesto');
     Route::get('colaborador_conf_di', 'index_di')->name('colaborador_conf_di');
     Route::get('colaborador_conf_di/list', 'list_di')->name('colaborador_conf_di.list');
     Route::get('colaborador_conf_di/create', 'create_di')->name('colaborador_conf_di.create');
@@ -175,6 +177,34 @@ Route::controller(ColaboradorConfController::class)->group(function(){
     Route::get('colaborador_conf_ar/{id}/edit', 'edit_ar')->name('colaborador_conf_ar.edit');
     Route::put('colaborador_conf_ar/{id}', 'update_ar')->name('colaborador_conf_ar.update');
     Route::delete('colaborador_conf_ar/{id}', 'destroy_ar')->name('colaborador_conf_ar.destroy');
+    Route::get('colaborador_conf_ni', 'index_ni')->name('colaborador_conf_ni');
+    Route::get('colaborador_conf_ni/list', 'list_ni')->name('colaborador_conf_ni.list');
+    Route::get('colaborador_conf_ni/create', 'create_ni')->name('colaborador_conf_ni.create');
+    Route::post('colaborador_conf_ni', 'store_ni')->name('colaborador_conf_ni.store');
+    Route::get('colaborador_conf_ni/{id}/edit', 'edit_ni')->name('colaborador_conf_ni.edit');
+    Route::put('colaborador_conf_ni/{id}', 'update_ni')->name('colaborador_conf_ni.update');
+    Route::delete('colaborador_conf_ni/{id}', 'destroy_ni')->name('colaborador_conf_ni.destroy');
+    Route::get('colaborador_conf_se', 'index_se')->name('colaborador_conf_se');
+    Route::get('colaborador_conf_se/list', 'list_se')->name('colaborador_conf_se.list');
+    Route::get('colaborador_conf_se/create', 'create_se')->name('colaborador_conf_se.create');
+    Route::post('colaborador_conf_se', 'store_se')->name('colaborador_conf_se.store');
+    Route::get('colaborador_conf_se/{id}/edit', 'edit_se')->name('colaborador_conf_se.edit');
+    Route::put('colaborador_conf_se/{id}', 'update_se')->name('colaborador_conf_se.update');
+    Route::delete('colaborador_conf_se/{id}', 'destroy_se')->name('colaborador_conf_se.destroy');
+    Route::get('colaborador_conf_pu', 'index_pu')->name('colaborador_conf_pu');
+    Route::get('colaborador_conf_pu/list', 'list_pu')->name('colaborador_conf_pu.list');
+    Route::get('colaborador_conf_pu/create', 'create_pu')->name('colaborador_conf_pu.create');
+    Route::post('colaborador_conf_pu', 'store_pu')->name('colaborador_conf_pu.store');
+    Route::get('colaborador_conf_pu/{id}/edit', 'edit_pu')->name('colaborador_conf_pu.edit');
+    Route::put('colaborador_conf_pu/{id}', 'update_pu')->name('colaborador_conf_pu.update');
+    Route::delete('colaborador_conf_pu/{id}', 'destroy_pu')->name('colaborador_conf_pu.destroy');
+    Route::get('colaborador_conf_ca', 'index_ca')->name('colaborador_conf_ca');
+    Route::get('colaborador_conf_ca/list', 'list_ca')->name('colaborador_conf_ca.list');
+    Route::get('colaborador_conf_ca/create', 'create_ca')->name('colaborador_conf_ca.create');
+    Route::post('colaborador_conf_ca', 'store_ca')->name('colaborador_conf_ca.store');
+    Route::get('colaborador_conf_ca/{id}/edit', 'edit_ca')->name('colaborador_conf_ca.edit');
+    Route::put('colaborador_conf_ca/{id}', 'update_ca')->name('colaborador_conf_ca.update');
+    Route::delete('colaborador_conf_ca/{id}', 'destroy_ca')->name('colaborador_conf_ca.destroy');
 });
 
 

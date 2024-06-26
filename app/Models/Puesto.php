@@ -11,6 +11,7 @@ class Puesto extends Model
     use HasFactory;
 
     protected $table = 'puesto';
+    protected $primaryKey = 'id_puesto';
 
     public $timestamps = false;
 
