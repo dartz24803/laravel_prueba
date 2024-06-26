@@ -117,7 +117,12 @@ class ReporteFotograficoAdmController extends Controller
         $id = $request->input('id');
         $respuesta = array();
         try {
-            $this->modelo->where('id', $id)->delete();
+            $dato = [
+                'estado' => 2,
+                'fec_eli' => now(),
+                'user_eli' => session('usuario')->id_usuario,
+            ];
+            $this->modelo->where('id', $id)->update($dato);
             $respuesta['error'] = "";
         } catch (Exception $e) {
             $respuesta['error']=$e->getMessage();

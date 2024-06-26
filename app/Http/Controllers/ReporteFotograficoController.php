@@ -159,7 +159,7 @@ class ReporteFotograficoController extends Controller
                     $respuesta['error'] = $validator->errors()->all();
                 }else{
                     $nombre_actual = "REPORTE_FOTOGRAFICO/".$data[0]['ruta'];
-                    $nuevo_nombre = "REPORTE_FOTOGRAFICO/Evidencia_".date('Y-m-d H:m')."_captura.jpg";
+                    $nuevo_nombre = "REPORTE_FOTOGRAFICO/Evidencia_".date('Y-m-d H:m:s')."_".Session('usuario')->id_usuario."_".Session('usuario')->centro_labores."_captura.jpg";
                     ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
                     $nombre = basename($nuevo_nombre);
                     //llenar array con datos para bd
@@ -186,7 +186,12 @@ class ReporteFotograficoController extends Controller
         $id = $request->input('id');
         $respuesta = array();
         try {
-            $this->modelo->where('id', $id)->delete();
+            $dato = [
+                'estado' => 2,
+                'fec_eli' => now(),
+                'user_eli' => session('usuario')->id_usuario,
+            ];
+            $this->modelo->where('id', $id)->update($dato);
             $respuesta['error'] = "";
         } catch (Exception $e) {
             $respuesta['error']=$e->getMessage();

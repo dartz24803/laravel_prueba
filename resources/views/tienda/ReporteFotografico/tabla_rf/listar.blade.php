@@ -91,7 +91,7 @@
 
     function Delete_Reporte_Fotografico(id) {
         Cargando();
-
+        var csrfToken = $('input[name="_token"]').val();
         var id = id;
         var url = "{{ url('Delete_Reporte_Fotografico') }}";
         swal.fire({
@@ -108,6 +108,9 @@
                 $.ajax({
                     type: "POST",
                     url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
                     data: {
                         'id': id
                     },
