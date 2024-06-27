@@ -45,14 +45,14 @@ class ReporteFotografico extends Model
         }else{
             $parte2 = " AND crf.tipo = '$categoria'";
         }
-
+        //borrar codigo=10
         $query = "select rf.id,rf.base,rf.foto,crf.descripcion,rfa.categoria,rf.fec_reg, GROUP_CONCAT(a.nom_area ORDER BY rfd.id DESC SEPARATOR ', ') as areas from reporte_fotografico rf 
             left join codigos_reporte_fotografico crf ON rf.codigo = crf.id
             left join reporte_fotografico_adm rfa ON crf.tipo = rfa.id
             LEFT JOIN reporte_fotografico_detalle rfd ON rfa.id = rfd.id_reporte_fotografico_adm
             LEFT JOIN area a ON rfd.id_area = a.id_area
-            where rf.estado=1 $parte1 $parte2 AND rf.codigo='10'
-            GROUP BY rf.id,rf.base,rf.foto,crf.descripcion,rfa.categoria,rf.fec_reg;";
+            where rf.estado=1 $parte1 $parte2 
+            GROUP BY rf.id,rf.base,rf.foto,crf.descripcion,rfa.categoria,rf.fec_reg ORDER BY fec_reg DESC;";
 
         $result = DB::select($query);
 
@@ -60,8 +60,7 @@ class ReporteFotografico extends Model
         return json_decode(json_encode($result), true);
     }
 
-    public function listar_imagenes($base, $categoria)
-    {
+    public function listar_imagenes($base, $categoria){
         if($base==0){
             $parte1 = "";
         }else{

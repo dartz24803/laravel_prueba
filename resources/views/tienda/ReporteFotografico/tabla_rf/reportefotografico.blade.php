@@ -44,7 +44,7 @@ $base = Session('usuario')->centro_labores;
     </div>
     <div class="form-group col-md-6">
         <label>Categoria: </label>
-        <select class="form-control basic_i" id="categoria_filtro" name="categoria_filtro" onchange="Reporte_Fotografico_Listar();">
+        <select class="form-control basic" id="categoria_filtro" name="categoria_filtro" onchange="Reporte_Fotografico_Listar();">
             <option value="0">TODOS</option>
             <?php foreach($list_categorias as $list){ ?>
                 <option value="<?php echo $list['id']; ?>"><?php echo $list['categoria']; ?></option>

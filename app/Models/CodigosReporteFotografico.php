@@ -16,6 +16,7 @@ class CodigosReporteFotografico extends Model
         'id',
         'descripcion',
         'tipo',
+        'base',
         'estado',
         'fec_reg',
         'user_reg',
@@ -30,7 +31,21 @@ class CodigosReporteFotografico extends Model
     }
 
     public function listar(){
-        return $this->select('descripcion')->distinct()->get()->toArray();
+        $base = session('usuario')->centro_labores;
+        if($base=='OFC'){
+            $parte1 = "";
+        }else{
+            $parte1 = " AND crf.base = '$base'";
+        }
+
+
+        $query = "select crf.id,crf.descripcion,crf.base,rfa.categoria from codigos_reporte_fotografico crf 
+        LEFT JOIN reporte_fotografico_adm rfa ON crf.tipo=rfa.id where crf.estado=1 $parte1 ";
+
+        $result = DB::select($query);
+
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
     }
     
     public function listar_tipos(){
