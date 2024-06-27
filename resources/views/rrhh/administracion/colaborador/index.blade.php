@@ -27,6 +27,9 @@
                                     <a id="a_se" class="nav-link" onclick="Sede_Laboral();" style="cursor: pointer;">Sede Laboral</a>
                                 </li>
                                 <li class="nav-item">
+                                    <a id="a_co" class="nav-link" onclick="Competencia();" style="cursor: pointer;">Competencia</a>
+                                </li>
+                                <li class="nav-item">
                                     <a id="a_pu" class="nav-link" onclick="Puesto();" style="cursor: pointer;">Puesto</a>
                                 </li>
                                 <li class="nav-item">
@@ -72,6 +75,7 @@
                     $("#a_ar").removeClass('active');
                     $("#a_ni").removeClass('active');
                     $("#a_se").removeClass('active');
+                    $("#a_co").removeClass('active');
                     $("#a_pu").removeClass('active');
                     $("#a_ca").removeClass('active');
                 }
@@ -94,6 +98,7 @@
                     $("#a_ar").removeClass('active');
                     $("#a_ni").removeClass('active');
                     $("#a_se").removeClass('active');
+                    $("#a_co").removeClass('active');
                     $("#a_pu").removeClass('active');
                     $("#a_ca").removeClass('active');
                 }
@@ -116,6 +121,7 @@
                     $("#a_ar").removeClass('active');
                     $("#a_ni").removeClass('active');
                     $("#a_se").removeClass('active');
+                    $("#a_co").removeClass('active');
                     $("#a_pu").removeClass('active');
                     $("#a_ca").removeClass('active');
                 }
@@ -138,6 +144,7 @@
                     $("#a_ar").addClass('active');
                     $("#a_ni").removeClass('active');
                     $("#a_se").removeClass('active');
+                    $("#a_co").removeClass('active');
                     $("#a_pu").removeClass('active');
                     $("#a_ca").removeClass('active');
                 }
@@ -160,6 +167,7 @@
                     $("#a_ar").removeClass('active');
                     $("#a_ni").addClass('active');
                     $("#a_se").removeClass('active');
+                    $("#a_co").removeClass('active');
                     $("#a_pu").removeClass('active');
                     $("#a_ca").removeClass('active');
                 }
@@ -182,6 +190,30 @@
                     $("#a_ar").removeClass('active');
                     $("#a_ni").removeClass('active');
                     $("#a_se").addClass('active');
+                    $("#a_co").removeClass('active');
+                    $("#a_pu").removeClass('active');
+                    $("#a_ca").removeClass('active');
+                }
+            });
+        }
+
+        function Competencia(){
+            Cargando();
+
+            var url="{{ route('colaborador_conf_co') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_colaborador_conf').html(resp);  
+                    $("#a_di").removeClass('active');
+                    $("#a_ge").removeClass('active');
+                    $("#a_de").removeClass('active');
+                    $("#a_ar").removeClass('active');
+                    $("#a_ni").removeClass('active');
+                    $("#a_se").removeClass('active');
+                    $("#a_co").addClass('active');
                     $("#a_pu").removeClass('active');
                     $("#a_ca").removeClass('active');
                 }
@@ -204,6 +236,7 @@
                     $("#a_ar").removeClass('active');
                     $("#a_ni").removeClass('active');
                     $("#a_se").removeClass('active');
+                    $("#a_co").removeClass('active');
                     $("#a_pu").addClass('active');
                     $("#a_ca").removeClass('active');
                 }
@@ -226,6 +259,7 @@
                     $("#a_ar").removeClass('active');
                     $("#a_ni").removeClass('active');
                     $("#a_se").removeClass('active');
+                    $("#a_co").removeClass('active');
                     $("#a_pu").removeClass('active');
                     $("#a_ca").addClass('active');
                 }

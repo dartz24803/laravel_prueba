@@ -191,6 +191,13 @@ Route::controller(ColaboradorConfController::class)->group(function(){
     Route::get('colaborador_conf_se/{id}/edit', 'edit_se')->name('colaborador_conf_se.edit');
     Route::put('colaborador_conf_se/{id}', 'update_se')->name('colaborador_conf_se.update');
     Route::delete('colaborador_conf_se/{id}', 'destroy_se')->name('colaborador_conf_se.destroy');
+    Route::get('colaborador_conf_co', 'index_co')->name('colaborador_conf_co');
+    Route::get('colaborador_conf_co/list', 'list_co')->name('colaborador_conf_co.list');
+    Route::get('colaborador_conf_co/create', 'create_co')->name('colaborador_conf_co.create');
+    Route::post('colaborador_conf_co', 'store_co')->name('colaborador_conf_co.store');
+    Route::get('colaborador_conf_co/{id}/edit', 'edit_co')->name('colaborador_conf_co.edit');
+    Route::put('colaborador_conf_co/{id}', 'update_co')->name('colaborador_conf_co.update');
+    Route::delete('colaborador_conf_co/{id}', 'destroy_co')->name('colaborador_conf_co.destroy');
     Route::get('colaborador_conf_pu', 'index_pu')->name('colaborador_conf_pu');
     Route::get('colaborador_conf_pu/list', 'list_pu')->name('colaborador_conf_pu.list');
     Route::get('colaborador_conf_pu/create', 'create_pu')->name('colaborador_conf_pu.create');

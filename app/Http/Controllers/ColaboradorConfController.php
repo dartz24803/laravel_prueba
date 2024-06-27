@@ -577,6 +577,87 @@ class ColaboradorConfController extends Controller
         ]);
     }
 
+    public function index_co()
+    {
+        return view('rrhh.administracion.colaborador.competencia.index');
+    }
+
+    public function list_co()
+    {
+        $list_competencia = Competencia::select('id_competencia','nom_competencia','def_competencia')->where('estado', 1)->get();
+        return view('rrhh.administracion.colaborador.competencia.lista', compact('list_competencia'));
+    }
+
+    public function create_co()
+    {
+        return view('rrhh.administracion.colaborador.competencia.modal_registrar');
+    }
+
+    public function store_co(Request $request)
+    {
+        $request->validate([
+            'nom_competencia' => 'required',
+            'def_competencia' => 'required',
+        ],[
+            'nom_competencia.required' => 'Debe ingresar nombre.',
+            'def_competencia.required' => 'Debe ingresar definición.',
+        ]);
+
+        $valida = Competencia::where('nom_competencia', $request->nom_competencia)->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Competencia::create([
+                'nom_competencia' => $request->nom_competencia,
+                'def_competencia' => $request->def_competencia,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_co($id)
+    {
+        $get_id = Competencia::findOrFail($id);
+        return view('rrhh.administracion.colaborador.competencia.modal_editar', compact('get_id'));
+    }
+
+    public function update_co(Request $request, $id)
+    {
+        $request->validate([
+            'nom_competenciae' => 'required',
+            'def_competenciae' => 'required',
+        ],[
+            'nom_competenciae.required' => 'Debe ingresar nombre.',
+            'def_competenciae.required' => 'Debe ingresar definición.',
+        ]);
+
+        $valida = Competencia::where('nom_competencia', $request->nom_competenciae)->where('estado', 1)
+                                ->where('id_competencia', '!=', $id)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Competencia::findOrFail($id)->update([
+                'nom_competencia' => $request->nom_competenciae,
+                'def_competencia' => $request->def_competenciae,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_co($id)
+    {
+        Competencia::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
     public function index_pu()
     {
         return view('rrhh.administracion.colaborador.puesto.index');
