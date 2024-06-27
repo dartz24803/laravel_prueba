@@ -30,17 +30,11 @@ $base = Session('usuario')->centro_labores;
     </div>
     <div class="form-group col-md-6">
         <label>Categorias: </label>
-        <select class="form-control basic" id="categoria_filtro" name="categoria_filtro" onchange="Imagenes_Listar();">
+        <select class="form-control basic_i" id="categoria_filtro" name="categoria_filtro" onchange="Imagenes_Listar();">
             <option value="0">TODOS</option>
-            <option value="ALMACÉN">ALMACÉN</option>
-            <option value="CAJA">CAJA</option>
-            <option value="FACHADA">FACHADA</option>
-            <option value="HOMBRE">HOMBRE</option>
-            <option value="INFANTIL">INFANTIL</option>
-            <option value="MUJER">MUJER</option>
-            <option value="PROBADORES">PROBADORES</option>
-            <option value="SERVICIOS">SERVICIOS</option>
-            <option value="PERSONAS">PERSONAS</option>
+            <?php foreach($list_categorias as $list){ ?>
+                <option value="<?php echo $list['id']; ?>"><?php echo $list['categoria']; ?></option>
+            <?php } ?>
         </select>
     </div>
 </div>

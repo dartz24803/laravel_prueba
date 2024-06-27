@@ -17,18 +17,24 @@ use App\Http\Controllers\AmonestacionController;
 use App\Http\Controllers\ColaboradorConfController;
 
 Route::middleware([NoCache::class])->group(function () {
-    Route::get('/Cartera', [CarteraController::class, 'index'])->name('cartera');
     Route::get('/Inicio', [InicioController::class, 'index'])->name('inicio');
-    Route::get('/ReporteFotografico', [ReporteFotograficoController::class, 'index'])->name('reportefotografico');
-    Route::get('/ReporteFotograficoAdm', [ReporteFotograficoAdmController::class, 'index'])->name('tienda.administracion.ReporteFotografico.reportefotograficoadm');
 });
 Route::post('/ReporteFotograficoAdmListar', [ReporteFotograficoAdmController::class, 'listar']);
 Route::controller(ReporteFotograficoAdmController::class)->group(function(){
+    Route::get('/ReporteFotograficoAdm',  'index')->name('tienda.administracion.ReporteFotografico.reportefotograficoadm');
     Route::get('ReporteFotograficoAdmController/ModalUpdatedReporteFotograficoAdm/{id}', 'ModalUpdatedReporteFotograficoAdm')->name('tienda.administracion.ReporteFotografico.modal_editar');
     Route::get('ReporteFotograficoAdmController/ModalRegistrarReporteFotograficoAdm', 'ModalRegistroReporteFotograficoAdm')->name('tienda.administracion.ReporteFotografico.modal_registro');
     Route::post('/Registrar_Reporte_Fotografico_Adm', 'Registrar_Reporte_Fotografico_Adm');
     Route::post('/Update_Registro_Fotografico_Adm', 'Update_Registro_Fotografico_Adm')->name('Update_Registro_Fotografico_Adm');
     Route::post('/Delete_Reporte_Fotografico_Adm', 'Delete_Reporte_Fotografico_Adm');
+    Route::get('Tabla_RF','Tabla_RF');
+    Route::get('Codigos_Reporte_Fotografico', 'Codigos_Reporte_Fotografico');
+    Route::post('/Codigos_Reporte_Fotografico_Listar', 'Codigos_Reporte_Fotografico_Listar');
+    Route::get('ModalRegistroCodigosReporteFotograficoAdm', 'ModalRegistroCodigosReporteFotograficoAdm');
+    Route::post('Registrar_Codigo_Reporte_Fotografico_Adm','Registrar_Codigo_Reporte_Fotografico_Adm');
+    Route::get('ModalUpdatedCodigoReporteFotograficoAdm/{id}','ModalUpdatedCodigoReporteFotograficoAdm');
+    Route::post('Update_Codigo_Registro_Fotografico_Adm','Update_Codigo_Registro_Fotografico_Adm');
+    Route::post('Delete_Codigo_Reporte_Fotografico_Adm','Delete_Codigo_Reporte_Fotografico_Adm');
 });
 //----------------------------LOGIN-------------------------//
 Route::controller(Login::class)->group(function(){
@@ -38,6 +44,7 @@ Route::controller(Login::class)->group(function(){
 });
 //---------------------REGISTRO FOTOGRAFICO--------------------------//
 Route::controller(ReporteFotograficoController::class)->group(function(){
+    Route::get('/ReporteFotografico', 'index')->name('reportefotografico');
     Route::get('Modal_Update_Registro_Fotografico/{id}', 'ModalUpdatedReporteFotografico')->name('tienda.ReporteFotografico.modal_editar');
     Route::get('ReporteFotografico/ModalRegistrarReporteFotografico', 'ModalRegistroReporteFotografico')->name('tienda.ReporteFotografico.modal_registro');
     Route::post('/Previsualizacion_Captura2', 'Previsualizacion_Captura2');

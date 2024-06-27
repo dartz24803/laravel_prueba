@@ -14,9 +14,9 @@
             <select class="form-control basic_i" name="codigo_e" id="codigo_e">
                 <option value="">Seleccionar</option>
                 <?php foreach($list_codigos as $list){ ?>
-                    <option value="<?php echo $list['descripcion']; ?>" 
-                    <?php if ($list['descripcion'] == $get_id[0]['codigo']){ echo "selected"; } ?>>
-                        <?php echo $list['descripcion']; ?>
+                    <option value="<?php echo $list['id']; ?>" 
+                    <?php if ($list['id'] == $get_id[0]['codigo']){ echo "selected"; } ?>>
+                        <?php echo $list['descripcion'].' - '.$list['base'].' - '.$list['categoria'] ?>
                     </option>
                 <?php } ?>
             </select>
@@ -75,3 +75,12 @@
         dropdownParent: $('#ModalUpdate')
     });
 </script>
+<style>
+    .modal-content{
+        height: 19rem;
+    }
+    .modal-body{
+        max-height: none !important;
+        height: 10rem;
+    }
+</style>

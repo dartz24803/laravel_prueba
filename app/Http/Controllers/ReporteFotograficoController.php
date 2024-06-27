@@ -8,6 +8,7 @@ use App\Models\Area;
 use App\Models\Base;
 use App\Models\CodigosReporteFotografico;
 use App\Models\ReporteFotograficoArchivoTemporal;
+use App\Models\ReporteFotograficoAdm;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 
@@ -20,6 +21,7 @@ class ReporteFotograficoController extends Controller
     protected $modelobase;
     protected $modelocodigos;
     protected $modeloarchivotmp;
+    protected $modelorfa;
 
     public function __construct(Request $request){
         //constructor con variables
@@ -30,6 +32,7 @@ class ReporteFotograficoController extends Controller
         $this->modelobase = new Base();
         $this->modelocodigos = new CodigosReporteFotografico();
         $this->modeloarchivotmp = new ReporteFotograficoArchivoTemporal();
+        $this->modelorfa = new ReporteFotograficoAdm();
     }
 
     public function index(){
@@ -39,17 +42,15 @@ class ReporteFotograficoController extends Controller
 
     public function Reporte_Fotografico(Request $request){
         //retornar vista si esta logueado
-        $list_area = $this->modeloarea->listar();
         $list_bases = $this->modelobase->listar();
-        $list_codigos = $this->modelocodigos->listar();
-        return view('tienda.ReporteFotografico.tabla_rf.reportefotografico', compact('list_area', 'list_bases', 'list_codigos'));
+        $list_categorias = $this->modelorfa->where('estado',1)->get();
+        return view('tienda.ReporteFotografico.tabla_rf.reportefotografico', compact('list_categorias', 'list_bases'));
     }
 
     public function Reporte_Fotografico_Listar(Request $request){
         $base= $request->input("base");
-        $area= $request->input("area");
-        $codigo= $request->input("codigo");
-        $list = $this->modelo->listar($base,$area,$codigo);
+        $categoria= $request->input("categoria");
+        $list = $this->modelo->listar($base,$categoria);
         return view('tienda.ReporteFotografico.tabla_rf.listar', compact('list'));
     }
 
@@ -230,25 +231,25 @@ class ReporteFotograficoController extends Controller
     }
 
     public function Imagenes_Reporte_Fotografico(Request $request){
-        $list_area = $this->modeloarea->listar();
         $list_bases = $this->modelobase->listar();
-        $list_codigos = $this->modelocodigos->listar();
+        $list_categorias = $this->modelorfa->where('estado',1)->get();
         $base= $request->input("base");
         $area= $request->input("area");
         $codigo= $request->input("codigo");
-        return view('tienda.ReporteFotografico.imagenes_rf.index',  compact('list_area', 'list_bases', 'list_codigos'));
+        return view('tienda.ReporteFotografico.imagenes_rf.index',  compact('list_categorias', 'list_bases'));
     }
 
     public function Listar_Imagenes_Reporte_Fotografico(Request $request){
         $base= $request->input("base");
         $categoria= $request->input("categoria");
-        $list_rf = $this->modelo->listar_imagenes($base, $categoria);
+        $list_rf = $this->modelo->listar($base, $categoria);
+        //print_r($list_rf[0]);
         return view('tienda.ReporteFotografico.imagenes_rf.listar',  compact('list_rf'));
     }
 
     public function Modal_Detalle_RF($id){
-        $get_id = ReporteFotografico::leftJoin('codigos_reporte_fotografico', 'reporte_fotografico.codigo', '=', 'codigos_reporte_fotografico.descripcion')
-        ->select('reporte_fotografico.*', 'codigos_reporte_fotografico.descripcion', 'codigos_reporte_fotografico.tipo') // selecciona los campos que necesitas
+        $get_id = ReporteFotografico::leftJoin('codigos_reporte_fotografico', 'reporte_fotografico.codigo', '=', 'codigos_reporte_fotografico.id')
+        ->select('reporte_fotografico.id', 'reporte_fotografico.foto', 'reporte_fotografico.base', 'reporte_fotografico.fec_reg', 'codigos_reporte_fotografico.descripcion') 
         ->where('reporte_fotografico.id', $id)
         ->get();
         return view('tienda.ReporteFotografico.imagenes_rf.modal_detalle', compact('get_id'));

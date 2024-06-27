@@ -1,4 +1,4 @@
-
+<?php //print_r($get_id[0]);?>
 <div class="modal-header bg-primary">
     <h5 class="modal-title"></h5>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -18,7 +18,7 @@
             <span class="badge badge-dark" style="font-size: 2rem; padding: 0.8rem"><?= $get_id[0]['base'] ?></span>
         </div>
         <div class="col-sm-4">
-            <span><?= $get_id[0]['tipo'] ?></span><br>
+            <span><?= $get_id[0]['descripcion'] ?></span><br>
             <span><?= $get_id[0]['fec_reg'] ?></span>
         </div>
         <div class="col-sm-4">

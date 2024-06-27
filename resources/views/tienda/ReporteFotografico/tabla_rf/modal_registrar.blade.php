@@ -18,7 +18,7 @@
                             <select class="basic_i" name="codigo" id="codigo" style="width: min-content;">
                                 <option value="0">Selec.</option>
                                 <?php foreach($list_codigos as $list){ ?>
-                                    <option value="<?php echo $list['descripcion']; ?>"><?php echo $list['descripcion'];?></option>
+                                    <option value="<?php echo $list['id']; ?>"><?php echo $list['descripcion'].' - '.$list['base'].' - '.$list['categoria'] ?></option>
                                 <?php } ?>
                             </select>
                         </div>

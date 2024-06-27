@@ -5,7 +5,7 @@ $base = Session('usuario')->centro_labores;
 <div class="col-lg-12 d-flex justify-content-end">
     <?php //adm, coord y aux de tienda registran
     if(session('usuario')->id_puesto == 29 || session('usuario')->id_puesto == 30 || session('usuario')->id_puesto == 311 || session('usuario')->id_puesto == 161 || session('usuario')->id_puesto == 197 || session('usuario')->id_usuario == 139){ ?>
-    <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('tienda.ReporteFotografico.modal_registro')}}">
+    <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ url('ModalRegistroCodigosReporteFotograficoAdm')}}">
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square">
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
             <line x1="12" y1="8" x2="12" y2="16"></line>
@@ -28,7 +28,7 @@ $base = Session('usuario')->centro_labores;
     } ?>
     <div class="form-group col-md-6">
         <label>Base: </label>
-        <select class="form-control basic" id="base_filtro" name="base_filtro" onchange="Reporte_Fotografico_Listar();"<?= $disabled ?>>
+        <select class="form-control basic" id="base" name="base" onchange="Codigos_Reporte_Fotografico_Listar();"<?= $disabled ?>>
             <option value="0" <?= $selected ?>>TODOS</option>
                 <?php foreach ($list_bases as $list) { ?>
                     <option value="<?php echo $list['cod_base']; ?>"
@@ -43,8 +43,8 @@ $base = Session('usuario')->centro_labores;
         </select>
     </div>
     <div class="form-group col-md-6">
-        <label>Categoria: </label>
-        <select class="form-control basic" id="categoria_filtro" name="categoria_filtro" onchange="Reporte_Fotografico_Listar();">
+        <label>Categorias: </label>
+        <select class="form-control basic_i" id="categoria_filtro" name="categoria_filtro" onchange="Codigos_Reporte_Fotografico_Listar();">
             <option value="0">TODOS</option>
             <?php foreach($list_categorias as $list){ ?>
                 <option value="<?php echo $list['id']; ?>"><?php echo $list['categoria']; ?></option>
@@ -56,22 +56,22 @@ $base = Session('usuario')->centro_labores;
 <div class="table-responsive mb-4 mt-4" id="lista">
 </div>
 <script>
-    Reporte_Fotografico_Listar();
+    Codigos_Reporte_Fotografico_Listar();
 
-    function Reporte_Fotografico_Listar(){
+    function Codigos_Reporte_Fotografico_Listar(){
         Cargando();
         var csrfToken = $('input[name="_token"]').val();
 
-        var base = $('#base_filtro').val();
+        var base = $('#base').val();
         var categoria = $('#categoria_filtro').val();
-        var url = "{{ url('Reporte_Fotografico_Listar') }}";
+        var url = "{{ url('Codigos_Reporte_Fotografico_Listar') }}";
 
         $.ajax({
             url: url,
             type: 'POST',
             data: {
                 'base': base,
-                'categoria': categoria,
+                'categoria': categoria
             },
             headers: {
                 'X-CSRF-TOKEN': csrfToken
