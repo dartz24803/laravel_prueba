@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Area;
+use App\Models\Cargo;
+use App\Models\Competencia;
+use App\Models\CompetenciaPuesto;
 use App\Models\Direccion;
+use App\Models\FuncionesPuesto;
 use App\Models\Gerencia;
 use App\Models\NivelJerarquico;
 use App\Models\Organigrama;
@@ -40,6 +44,12 @@ class ColaboradorConfController extends Controller
     {
         $list_area = Area::select('id_area','nom_area')->where('id_departamento',$request->id_sub_gerencia)->where('estado',1)->get();
         return view('rrhh.administracion.colaborador.area',compact('list_area'));
+    }
+
+    public function traer_puesto(Request $request)
+    {
+        $list_puesto = Puesto::select('id_puesto','nom_puesto')->where('id_area',$request->id_area)->where('estado',1)->get();
+        return view('rrhh.administracion.colaborador.puesto',compact('list_puesto'));
     }
 
     public function index_di()
@@ -301,11 +311,7 @@ class ColaboradorConfController extends Controller
 
     public function list_ar()
     {
-        $list_area = Area::select('area.id_area','direccion.direccion','gerencia.nom_gerencia','sub_gerencia.nom_sub_gerencia','area.nom_area','area.cod_area','area.orden')
-                                    ->join('direccion','direccion.id_direccion','=','area.id_direccion')
-                                    ->join('gerencia','gerencia.id_gerencia','=','area.id_gerencia')
-                                    ->join('sub_gerencia','sub_gerencia.id_sub_gerencia','=','area.id_departamento')
-                                    ->where('area.estado', 1)->get();
+        $list_area = Area::get_list_area();
         return view('rrhh.administracion.colaborador.area.lista', compact('list_area'));
     }
 
@@ -317,8 +323,8 @@ class ColaboradorConfController extends Controller
     
     public function traer_puesto_ar(Request $request)
     {
-        $list_puesto = SubGerencia::select('id_sub_gerencia','nom_sub_gerencia')->where('id_gerencia',$request->id_gerencia)->where('estado',1)->get();
-        return view('rrhh.administracion.colaborador.area.puesto',compact('list_puesto'));
+        $list_puesto = Puesto::select('id_puesto','nom_puesto')->where('id_gerencia',$request->id_gerencia)->where('estado',1)->get();
+        return view('rrhh.administracion.colaborador.area.puestos',compact('list_puesto'));
     }
 
     public function store_ar(Request $request)
@@ -344,12 +350,17 @@ class ColaboradorConfController extends Controller
         if($valida){
             echo "error";
         }else{
+            $puestos = "";
+            if(is_array($request->puestos) && count($request->puestos)>0){
+                $puestos = implode(",",$request->puestos);
+            }
             Area::create([
                 'id_direccion' => $request->id_direccion,
                 'id_gerencia' => $request->id_gerencia,
                 'id_departamento' => $request->id_sub_gerencia,
                 'nom_area' => $request->nom_area,
                 'cod_area' => $request->cod_area,
+                'puestos' => $puestos,
                 'orden' => $request->orden,
                 'estado' => 1,
                 'fec_reg' => now(),
@@ -366,7 +377,8 @@ class ColaboradorConfController extends Controller
         $list_direccion = Direccion::select('id_direccion','direccion')->where('estado', 1)->get();
         $list_gerencia = Gerencia::select('id_gerencia','nom_gerencia')->where('id_direccion',$get_id->id_direccion)->where('estado', 1)->get();
         $list_sub_gerencia = SubGerencia::select('id_sub_gerencia','nom_sub_gerencia')->where('id_gerencia',$get_id->id_gerencia)->where('estado', 1)->get();
-        return view('rrhh.administracion.colaborador.area.modal_editar', compact('get_id','list_direccion','list_gerencia','list_sub_gerencia'));
+        $list_puesto = Puesto::select('id_puesto','nom_puesto')->where('id_gerencia',$get_id->id_gerencia)->where('estado',1)->get();
+        return view('rrhh.administracion.colaborador.area.modal_editar', compact('get_id','list_direccion','list_gerencia','list_sub_gerencia','list_puesto'));
     }
 
     public function update_ar(Request $request, $id)
@@ -393,12 +405,17 @@ class ColaboradorConfController extends Controller
         if($valida){
             echo "error";
         }else{
+            $puestos = "";
+            if(is_array($request->puestose) && count($request->puestose)>0){
+                $puestos = implode(",",$request->puestose);
+            }
             Area::findOrFail($id)->update([
                 'id_direccion' => $request->id_direccione,
                 'id_gerencia' => $request->id_gerenciae,
                 'id_departamento' => $request->id_sub_gerenciae,
                 'nom_area' => $request->nom_areae,
                 'cod_area' => $request->cod_areae,
+                'puestos' => $puestos,
                 'orden' => $request->ordene,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
@@ -567,6 +584,87 @@ class ColaboradorConfController extends Controller
         ]);
     }
 
+    public function index_co()
+    {
+        return view('rrhh.administracion.colaborador.competencia.index');
+    }
+
+    public function list_co()
+    {
+        $list_competencia = Competencia::select('id_competencia','nom_competencia','def_competencia')->where('estado', 1)->get();
+        return view('rrhh.administracion.colaborador.competencia.lista', compact('list_competencia'));
+    }
+
+    public function create_co()
+    {
+        return view('rrhh.administracion.colaborador.competencia.modal_registrar');
+    }
+
+    public function store_co(Request $request)
+    {
+        $request->validate([
+            'nom_competencia' => 'required',
+            'def_competencia' => 'required',
+        ],[
+            'nom_competencia.required' => 'Debe ingresar nombre.',
+            'def_competencia.required' => 'Debe ingresar definición.',
+        ]);
+
+        $valida = Competencia::where('nom_competencia', $request->nom_competencia)->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Competencia::create([
+                'nom_competencia' => $request->nom_competencia,
+                'def_competencia' => $request->def_competencia,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_co($id)
+    {
+        $get_id = Competencia::findOrFail($id);
+        return view('rrhh.administracion.colaborador.competencia.modal_editar', compact('get_id'));
+    }
+
+    public function update_co(Request $request, $id)
+    {
+        $request->validate([
+            'nom_competenciae' => 'required',
+            'def_competenciae' => 'required',
+        ],[
+            'nom_competenciae.required' => 'Debe ingresar nombre.',
+            'def_competenciae.required' => 'Debe ingresar definición.',
+        ]);
+
+        $valida = Competencia::where('nom_competencia', $request->nom_competenciae)->where('estado', 1)
+                                ->where('id_competencia', '!=', $id)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Competencia::findOrFail($id)->update([
+                'nom_competencia' => $request->nom_competenciae,
+                'def_competencia' => $request->def_competenciae,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_co($id)
+    {
+        Competencia::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
     public function index_pu()
     {
         return view('rrhh.administracion.colaborador.puesto.index');
@@ -719,25 +817,154 @@ class ColaboradorConfController extends Controller
         ]);
     }
 
+    public function detalle_pu($id)
+    {
+        $get_id = Puesto::findOrFail($id);
+        $list_competencia = Competencia::select('id_competencia','nom_competencia')->where('estado',1)->get();
+        return view('rrhh.administracion.colaborador.puesto.modal_detalle', compact('get_id','list_competencia'));
+    }
+
+    public function list_funcion_pu(Request $request)
+    {
+        $list_funcion = FuncionesPuesto::select('id_funcion','nom_funcion')
+                                        ->where('id_puesto',$request->id_puesto)
+                                        ->where('estado',1)->get();
+        return view('rrhh.administracion.colaborador.puesto.lista_funcion', compact('list_funcion'));
+    }
+
+    public function list_competencia_pu(Request $request)
+    {
+        $list_competencia = CompetenciaPuesto::select('competencia_puesto.id_competencia_puesto','competencia.nom_competencia')
+                                                ->join('competencia','competencia.id_competencia','=','competencia_puesto.id_competencia')
+                                                ->where('competencia_puesto.id_puesto',$request->id_puesto)
+                                                ->where('competencia_puesto.estado',1)->get();
+        return view('rrhh.administracion.colaborador.puesto.lista_competencia', compact('list_competencia'));
+    }
+
+    public function update_proposito_pu(Request $request, $id)
+    {
+        $request->validate([
+            'propositod' => 'required',
+            'propositod' => 'max:250',
+        ],[
+            'propositod.required' => 'Debe ingresar propósito.',
+            'propositod.max' => 'El propósito debe tener como máximo 250 carácteres.',
+        ]);
+
+        Puesto::findOrFail($id)->update([
+            'proposito' => $request->propositod,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function insert_funcion_pu(Request $request, $id)
+    {
+        $request->validate([
+            'nom_funciond' => 'required',
+        ],[
+            'nom_funciond.required' => 'Debe ingresar función.',
+        ]);
+
+        FuncionesPuesto::create([
+            'id_puesto' => $id,
+            'nom_funcion' => $request->nom_funciond,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function edit_funcion_pu($id)
+    {
+        $get_id = FuncionesPuesto::findOrFail($id);
+        return view('rrhh.administracion.colaborador.puesto.editar_funcion',compact('get_id'));
+    }
+
+    public function update_funcion_pu(Request $request, $id)
+    {
+        $request->validate([
+            'nom_funciond' => 'required',
+        ],[
+            'nom_funciond.required' => 'Debe ingresar función.',
+        ]);
+
+        FuncionesPuesto::findOrFail($id)->update([
+            'nom_funcion' => $request->nom_funciond,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function delete_funcion_pu($id)
+    {
+        FuncionesPuesto::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function insert_competencia_pu(Request $request, $id)
+    {
+        $request->validate([
+            'id_competenciad' => 'gt:0',
+        ],[
+            'id_competenciad.gt' => 'Debe seleccionar competencia.',
+        ]);
+
+        $valida = CompetenciaPuesto::where('id_puesto', $id)
+                                    ->where('id_competencia', $request->id_competenciad)
+                                    ->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            CompetenciaPuesto::create([
+                'id_puesto' => $id,
+                'id_competencia' => $request->id_competenciad,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function delete_competencia_pu($id)
+    {
+        CompetenciaPuesto::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
     public function index_ca()
     {
-        return view('rrhh.administracion.colaborador.area.index');
+        return view('rrhh.administracion.colaborador.cargo.index');
     }
 
     public function list_ca()
     {
-        $list_area = Area::select('area.id_area','direccion.direccion','gerencia.nom_gerencia','sub_gerencia.nom_sub_gerencia','area.nom_area','area.cod_area','area.orden')
-                                    ->join('direccion','direccion.id_direccion','=','area.id_direccion')
-                                    ->join('gerencia','gerencia.id_gerencia','=','area.id_gerencia')
-                                    ->join('sub_gerencia','sub_gerencia.id_sub_gerencia','=','area.id_departamento')
-                                    ->where('area.estado', 1)->get();
-        return view('rrhh.administracion.colaborador.area.lista', compact('list_area'));
+        $list_cargo = Cargo::select('cargo.id_cargo','direccion.direccion','gerencia.nom_gerencia',
+                                'sub_gerencia.nom_sub_gerencia','area.nom_area','puesto.nom_puesto',
+                                'cargo.nom_cargo')
+                                ->join('direccion','direccion.id_direccion','=','cargo.id_direccion')
+                                ->join('gerencia','gerencia.id_gerencia','=','cargo.id_gerencia')
+                                ->join('sub_gerencia','sub_gerencia.id_sub_gerencia','=','cargo.id_departamento')
+                                ->join('area','area.id_area','=','cargo.id_area')
+                                ->join('puesto','puesto.id_puesto','=','cargo.id_puesto')
+                                ->where('cargo.estado', 1)->get();
+        return view('rrhh.administracion.colaborador.cargo.lista', compact('list_cargo'));
     }
 
     public function create_ca()
     {
         $list_direccion = Direccion::select('id_direccion','direccion')->where('estado', 1)->get();
-        return view('rrhh.administracion.colaborador.area.modal_registrar', compact('list_direccion'));
+        return view('rrhh.administracion.colaborador.cargo.modal_registrar', compact('list_direccion'));
     }
 
     public function store_ca(Request $request)
@@ -746,30 +973,33 @@ class ColaboradorConfController extends Controller
             'id_direccion' => 'gt:0',
             'id_gerencia' => 'gt:0',
             'id_sub_gerencia' => 'gt:0',
-            'nom_area' => 'required',
-            'cod_area' => 'required',
+            'id_area' => 'gt:0',
+            'id_puesto' => 'gt:0',
+            'nom_cargo' => 'required',
         ],[
             'id_direccion.gt' => 'Debe seleccionar dirección.',
             'id_gerencia.gt' => 'Debe seleccionar gerencia.',
             'id_sub_gerencia.gt' => 'Debe seleccionar departamento.',
-            'nom_area.required' => 'Debe ingresar descripción.',
-            'cod_area.required' => 'Debe ingresar código.',
+            'id_area.gt' => 'Debe seleccionar área.',
+            'id_puesto.gt' => 'Debe seleccionar puesto.',
+            'nom_cargo.required' => 'Debe ingresar descripción.',
         ]);
 
-        $valida = Area::where('id_direccion', $request->id_direccion)
+        $valida = Cargo::where('id_direccion', $request->id_direccion)
                         ->where('id_gerencia', $request->id_gerencia)
                         ->where('id_departamento', $request->id_sub_gerencia)
-                        ->where('nom_area', $request->nom_area)->where('estado', 1)->exists();
+                        ->where('id_area', $request->id_area)->where('id_puesto', $request->id_puesto)
+                        ->where('nom_cargo', $request->nom_cargo)->where('estado', 1)->exists();
         if($valida){
             echo "error";
         }else{
-            Area::create([
+            Cargo::create([
                 'id_direccion' => $request->id_direccion,
                 'id_gerencia' => $request->id_gerencia,
                 'id_departamento' => $request->id_sub_gerencia,
-                'nom_area' => $request->nom_area,
-                'cod_area' => $request->cod_area,
-                'orden' => $request->orden,
+                'id_area' => $request->id_area,
+                'id_puesto' => $request->id_puesto,
+                'nom_cargo' => $request->nom_cargo,
                 'estado' => 1,
                 'fec_reg' => now(),
                 'user_reg' => session('usuario')->id_usuario,
@@ -781,11 +1011,13 @@ class ColaboradorConfController extends Controller
 
     public function edit_ca($id)
     {
-        $get_id = Area::findOrFail($id);
+        $get_id = Cargo::findOrFail($id);
         $list_direccion = Direccion::select('id_direccion','direccion')->where('estado', 1)->get();
         $list_gerencia = Gerencia::select('id_gerencia','nom_gerencia')->where('id_direccion',$get_id->id_direccion)->where('estado', 1)->get();
         $list_sub_gerencia = SubGerencia::select('id_sub_gerencia','nom_sub_gerencia')->where('id_gerencia',$get_id->id_gerencia)->where('estado', 1)->get();
-        return view('rrhh.administracion.colaborador.area.modal_editar', compact('get_id','list_direccion','list_gerencia','list_sub_gerencia'));
+        $list_area = Area::select('id_area','nom_area')->where('id_departamento',$get_id->id_departamento)->where('estado', 1)->get();
+        $list_puesto = Puesto::select('id_puesto','nom_puesto')->where('id_area',$get_id->id_area)->where('estado',1)->get();
+        return view('rrhh.administracion.colaborador.cargo.modal_editar', compact('get_id','list_direccion','list_gerencia','list_sub_gerencia','list_area','list_puesto'));
     }
 
     public function update_ca(Request $request, $id)
@@ -794,31 +1026,35 @@ class ColaboradorConfController extends Controller
             'id_direccione' => 'gt:0',
             'id_gerenciae' => 'gt:0',
             'id_sub_gerenciae' => 'gt:0',
-            'nom_areae' => 'required',
-            'cod_areae' => 'required',
+            'id_areae' => 'gt:0',
+            'id_puestoe' => 'gt:0',
+            'nom_cargoe' => 'required',
         ],[
             'id_direccione.gt' => 'Debe seleccionar dirección.',
             'id_gerenciae.gt' => 'Debe seleccionar gerencia.',
             'id_sub_gerenciae.gt' => 'Debe seleccionar departamento.',
-            'nom_areae.required' => 'Debe ingresar descripción.',
-            'cod_areae.required' => 'Debe ingresar código.',
+            'id_areae.gt' => 'Debe seleccionar área.',
+            'id_puestoe.gt' => 'Debe seleccionar puesto.',
+            'nom_cargoe.required' => 'Debe ingresar descripción.',
         ]);
 
-        $valida = Area::where('id_direccion', $request->id_direccione)
-                                ->where('id_gerencia', $request->id_gerenciae)
-                                ->where('id_departamento', $request->id_sub_gerenciae)
-                                ->where('nom_area', $request->nom_areae)->where('estado', 1)
-                                ->where('id_area', '!=', $id)->exists();
+        $valida = Cargo::where('id_direccion', $request->id_direccione)
+                        ->where('id_gerencia', $request->id_gerenciae)
+                        ->where('id_departamento', $request->id_sub_gerenciae)
+                        ->where('id_area', $request->id_areae)
+                        ->where('id_puesto', $request->id_puestoe)
+                        ->where('nom_cargo', $request->nom_cargoe)->where('estado', 1)
+                        ->where('id_cargo', '!=', $id)->exists();
         if($valida){
             echo "error";
         }else{
-            Area::findOrFail($id)->update([
+            Cargo::findOrFail($id)->update([
                 'id_direccion' => $request->id_direccione,
                 'id_gerencia' => $request->id_gerenciae,
                 'id_departamento' => $request->id_sub_gerenciae,
-                'nom_area' => $request->nom_areae,
-                'cod_area' => $request->cod_areae,
-                'orden' => $request->ordene,
+                'id_area' => $request->id_areae,
+                'id_puesto' => $request->id_puestoe,
+                'nom_cargo' => $request->nom_cargoe,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
@@ -827,7 +1063,7 @@ class ColaboradorConfController extends Controller
 
     public function destroy_ca($id)
     {
-        Area::findOrFail($id)->update([
+        Cargo::findOrFail($id)->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario

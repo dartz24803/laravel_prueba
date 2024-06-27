@@ -1,6 +1,6 @@
 <form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
-        <h5 class="modal-title">Editar departamento:</h5>
+        <h5 class="modal-title">Editar cargo:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
@@ -26,7 +26,7 @@
                 <label>Gerencia:</label>
             </div>
             <div class="form-group col-lg-10">
-                <select class="form-control" name="id_gerenciae" id="id_gerenciae" onchange="Traer_Sub_Gerencia('e'); Traer_Puesto('e');">
+                <select class="form-control" name="id_gerenciae" id="id_gerenciae" onchange="Traer_Sub_Gerencia('e');">
                     <option value="0">Seleccione</option>
                     @foreach ($list_gerencia as $list)
                         <option value="{{ $list->id_gerencia }}" @if ($list->id_gerencia==$get_id->id_gerencia) selected @endif>{{ $list->nom_gerencia }}</option>
@@ -40,7 +40,7 @@
                 <label>Departamento:</label>
             </div>
             <div class="form-group col-lg-10">
-                <select class="form-control" name="id_sub_gerenciae" id="id_sub_gerenciae">
+                <select class="form-control" name="id_sub_gerenciae" id="id_sub_gerenciae" onchange="Traer_Area('e');">
                     <option value="0">Seleccione</option>
                     @foreach ($list_sub_gerencia as $list)
                         <option value="{{ $list->id_sub_gerencia }}" @if ($list->id_sub_gerencia==$get_id->id_departamento) selected @endif>{{ $list->nom_sub_gerencia }}</option>
@@ -51,34 +51,27 @@
 
         <div class="row">
             <div class="form-group col-lg-2">
-                <label>Descripción:</label>
+                <label>Área:</label>
             </div>
             <div class="form-group col-lg-10">
-                <input type="text" class="form-control" id="nom_areae" name="nom_areae" placeholder="Ingresar Descripción" value="{{ $get_id->nom_area }}">
+                <select class="form-control" name="id_areae" id="id_areae" onchange="Traer_Puesto('e');">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_area as $list)
+                        <option value="{{ $list->id_area }}" @if ($list->id_area==$get_id->id_area) selected @endif>{{ $list->nom_area }}</option>
+                    @endforeach
+                </select>
             </div>
-        </div>  	 
+        </div>
         
         <div class="row">
             <div class="form-group col-lg-2">
-                <label>Código:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="text" class="form-control" id="cod_areae" name="cod_areae" placeholder="Ingresar Código" value="{{ $get_id->cod_area }}">
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Puestos:</label>
+                <label>Puesto:</label>
             </div>
             <div class="form-group col-lg-10">
-                <select class="form-control multivalue" name="puestose[]" id="puestose" multiple="multiple">
-                    @php $base_array = explode(",",$get_id->puestos) @endphp
+                <select class="form-control" name="id_puestoe" id="id_puestoe">
+                    <option value="0">Seleccione</option>
                     @foreach ($list_puesto as $list)
-                        <option value="{{ $list->id_puesto }}"
-                        @php if(in_array($list->id_puesto,$base_array)){ echo "selected"; } @endphp>
-                            {{ $list->nom_puesto }}
-                        </option>
+                        <option value="{{ $list->id_puesto }}" @if ($list->id_puesto==$get_id->id_puesto) selected @endif>{{ $list->nom_puesto }}</option>
                     @endforeach
                 </select>
             </div>
@@ -86,10 +79,10 @@
 
         <div class="row">
             <div class="form-group col-lg-2">
-                <label>Orden:</label>
+                <label>Descripción:</label>
             </div>
-            <div class="form-group col-lg-4">
-                <input type="text" class="form-control" id="ordene" name="ordene" placeholder="Ingresar Orden" value="{{ $get_id->orden }}" onkeypress="return solo_Numeros(event);">
+            <div class="form-group col-lg-10">
+                <input type="text" class="form-control" id="nom_cargoe" name="nom_cargoe" placeholder="Ingresar Descripción" value="{{ $get_id->nom_cargo }}">
             </div>
         </div>
     </div>
@@ -97,21 +90,17 @@
     <div class="modal-footer">
         @csrf
         @method('PUT')
-        <button class="btn btn-primary" type="button" onclick="Update_Area();">Guardar</button>
+        <button class="btn btn-primary" type="button" onclick="Update_Cargo();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
-    $('.multivalue').select2({
-        dropdownParent: $('#ModalUpdate')
-    });
-
-    function Update_Area() {
+    function Update_Cargo() {
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('colaborador_conf_ar.update', $get_id->id_area) }}";
+        var url = "{{ route('colaborador_conf_ca.update', $get_id->id_cargo) }}";
 
         $.ajax({
             url: url,
@@ -135,7 +124,7 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Lista_Area();
+                        Lista_Cargo();
                         $("#ModalUpdate .close").click();
                     });  
                 }

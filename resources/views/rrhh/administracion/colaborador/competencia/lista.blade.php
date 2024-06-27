@@ -1,34 +1,24 @@
 <table id="tabla_js" class="table" style="width:100%">
     <thead>
         <tr class="text-center">
-            <th>Dirección</th>
-            <th>Gerencia</th>
-            <th>Departamento</th>
-            <th>Área</th>
-            <th>Código</th>
-            <th>Puestos</th>
-            <th>Orden</th>
-            <th class="no-content"></th>
+            <th width="20%">Nombre</th>
+            <th width="70%">Definición</th>
+            <th width="10%" class="no-content"></th>
         </tr>
     </thead>
     <tbody>
-        @foreach ($list_area as $list)
+        @foreach ($list_competencia as $list)
             <tr class="text-center">
-                <td class="text-left">{{ $list->direccion }}</td>
-                <td class="text-left">{{ $list->nom_gerencia }}</td>
-                <td class="text-left">{{ $list->nom_sub_gerencia }}</td>
-                <td class="text-left">{{ $list->nom_area }}</td>
-                <td>{{ $list->cod_area }}</td>
-                <td class="text-left">{{ $list->puestos }}</td>
-                <td>{{ $list->orden }}</td>
+                <td class="text-left">{{ $list->nom_competencia }}</td>
+                <td class="text-left">{{ $list->def_competencia }}</td>
                 <td>
-                    <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('colaborador_conf_ar.edit', $list->id_area) }}">
+                    <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('colaborador_conf_co.edit', $list->id_competencia) }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                         </svg>
                     </a>
 
-                    <a href="javascript:void(0);" title="Eliminar" onclick="Delete_Area('{{ $list->id_area }}')">
+                    <a href="javascript:void(0);" title="Eliminar" onclick="Delete_Competencia('{{ $list->id_competencia }}')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
                             <polyline points="3 6 5 6 21 6"></polyline>
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>

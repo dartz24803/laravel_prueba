@@ -1,0 +1,2 @@
+<input type="text" class="form-control" id="nom_funciond" name="nom_funciond" placeholder="Ingresar función" value="{{ $get_id->nom_funcion }}">
+<input type="hidden" id="id_funcion" name="id_funcion" value="{{ $get_id->id_funcion }}">

@@ -26,7 +26,7 @@
                 <label>Gerencia:</label>
             </div>
             <div class="form-group col-lg-10">
-                <select class="form-control" name="id_gerencia" id="id_gerencia" onchange="Traer_Sub_Gerencia('');"><!-- Traer_Puesto('');-->
+                <select class="form-control" name="id_gerencia" id="id_gerencia" onchange="Traer_Sub_Gerencia(''); Traer_Puesto('');">
                     <option value="0">Seleccione</option>
                 </select>
             </div>

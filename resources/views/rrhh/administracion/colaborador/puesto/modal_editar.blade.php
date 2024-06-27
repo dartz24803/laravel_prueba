@@ -108,10 +108,6 @@
 </form>
 
 <script>
-    $('.multivalue').select2({
-        dropdownParent: $('#ModalUpdate')
-    });
-
     function Update_Puesto() {
         Cargando();
 

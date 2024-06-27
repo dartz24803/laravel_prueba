@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_departamento');
             $table->unsignedBigInteger('id_area');
             $table->string('nom_puesto',200)->nullable();
-            $table->text('proposito')->nullable();
+            $table->string('proposito',250)->nullable();
             $table->unsignedBigInteger('id_nivel');
             $table->unsignedBigInteger('id_sede_laboral');
             $table->string('perfil_infosap',5)->nullable();
