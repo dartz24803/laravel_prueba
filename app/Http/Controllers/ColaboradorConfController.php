@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Area;
+use App\Models\Competencia;
+use App\Models\CompetenciaPuesto;
 use App\Models\Direccion;
+use App\Models\FuncionesPuesto;
 use App\Models\Gerencia;
 use App\Models\NivelJerarquico;
 use App\Models\Organigrama;
@@ -720,6 +723,131 @@ class ColaboradorConfController extends Controller
     public function destroy_pu($id)
     {
         Puesto::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function detalle_pu($id)
+    {
+        $get_id = Puesto::findOrFail($id);
+        $list_competencia = Competencia::select('id_competencia','nom_competencia')->where('estado',1)->get();
+        return view('rrhh.administracion.colaborador.puesto.modal_detalle', compact('get_id','list_competencia'));
+    }
+
+    public function list_funcion_pu(Request $request)
+    {
+        $list_funcion = FuncionesPuesto::select('id_funcion','nom_funcion')
+                                        ->where('id_puesto',$request->id_puesto)
+                                        ->where('estado',1)->get();
+        return view('rrhh.administracion.colaborador.puesto.lista_funcion', compact('list_funcion'));
+    }
+
+    public function list_competencia_pu(Request $request)
+    {
+        $list_competencia = CompetenciaPuesto::select('competencia_puesto.id_competencia_puesto','competencia.nom_competencia')
+                                                ->join('competencia','competencia.id_competencia','=','competencia_puesto.id_competencia')
+                                                ->where('competencia_puesto.id_puesto',$request->id_puesto)
+                                                ->where('competencia_puesto.estado',1)->get();
+        return view('rrhh.administracion.colaborador.puesto.lista_competencia', compact('list_competencia'));
+    }
+
+    public function update_proposito_pu(Request $request, $id)
+    {
+        $request->validate([
+            'propositod' => 'required',
+            'propositod' => 'max:250',
+        ],[
+            'propositod.required' => 'Debe ingresar propósito.',
+            'propositod.max' => 'El propósito debe tener como máximo 250 carácteres.',
+        ]);
+
+        Puesto::findOrFail($id)->update([
+            'proposito' => $request->propositod,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function insert_funcion_pu(Request $request, $id)
+    {
+        $request->validate([
+            'nom_funciond' => 'required',
+        ],[
+            'nom_funciond.required' => 'Debe ingresar función.',
+        ]);
+
+        FuncionesPuesto::create([
+            'id_puesto' => $id,
+            'nom_funcion' => $request->nom_funciond,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function edit_funcion_pu($id)
+    {
+        $get_id = FuncionesPuesto::findOrFail($id);
+        return view('rrhh.administracion.colaborador.puesto.editar_funcion',compact('get_id'));
+    }
+
+    public function update_funcion_pu(Request $request, $id)
+    {
+        $request->validate([
+            'nom_funciond' => 'required',
+        ],[
+            'nom_funciond.required' => 'Debe ingresar función.',
+        ]);
+
+        FuncionesPuesto::findOrFail($id)->update([
+            'nom_funcion' => $request->nom_funciond,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function delete_funcion_pu($id)
+    {
+        FuncionesPuesto::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function insert_competencia_pu(Request $request, $id)
+    {
+        $request->validate([
+            'id_competenciad' => 'gt:0',
+        ],[
+            'id_competenciad.gt' => 'Debe seleccionar competencia.',
+        ]);
+
+        $valida = CompetenciaPuesto::where('id_puesto', $id)
+                                    ->where('id_competencia', $request->id_competenciad)
+                                    ->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            CompetenciaPuesto::create([
+                'id_puesto' => $id,
+                'id_competencia' => $request->id_competenciad,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function delete_competencia_pu($id)
+    {
+        CompetenciaPuesto::findOrFail($id)->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario
