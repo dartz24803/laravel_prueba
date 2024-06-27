@@ -86,7 +86,7 @@
 
         function Ingreso_Detalle(id){
             if($("#devolucion_"+id).is(':checked')){
-                $("#td_id_"+id).html('<button class="btn btn-primary btn-sm">Abrir</button>');
+                $("#td_id_"+id).html('<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route("tracking.modal_solicitud_devolucion", ":id") }}">Abrir</button>'.replace(':id', id));
                 $("#td_es_"+id).html('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical text-dark"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>');
             }else{
                 $("#td_id_"+id).html('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-slash text-danger"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>');
@@ -94,41 +94,13 @@
             }
         }
 
-        function solo_Numeros_Punto(e) {
+        function solo_Numeros(e) {
             var key = event.which || event.keyCode;
-            if ((key >= 48 && key <= 57) || key == 46) {
-                if (key == 46 && event.target.value.indexOf('.') !== -1) {
-                    return false;
-                }
+            if (key >= 48 && key <= 57) {
                 return true;
             } else {
                 return false;
             }
-        }
-
-        function Valida_Factura_Transporte(){
-            var archivoInput = document.getElementById('archivo_transporte');
-            var archivoRuta = archivoInput.value;
-            var extPermitidas = /(.pdf)$/i;
-
-            if(!extPermitidas.exec(archivoRuta)){
-                Swal({
-                    title: 'Registro Denegado',
-                    text: "Asegurese de ingresar archivos con extensiones .pdf.",
-                    type: 'error',
-                    showCancelButton: false,
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'OK',
-                });
-                archivoInput.value = ''; 
-                return false;
-            }else{
-                return true;         
-            }
-        }
-
-        function Descargar_Pdf_Factura(id){
-            window.open('{{ $get_id->archivo_transporte }}', '_blank');
         }
 
         function Insert_Reporte_Devolucion() {

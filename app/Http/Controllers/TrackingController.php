@@ -12,6 +12,7 @@ use App\Models\TrackingArchivo;
 use App\Models\TrackingArchivoTemporal;
 use App\Models\TrackingDetalleEstado;
 use App\Models\TrackingDetalleProceso;
+use App\Models\TrackingDevolucionTemporal;
 use App\Models\TrackingGuiaRemisionDetalle;
 use Illuminate\Support\Facades\DB;
 
@@ -758,15 +759,19 @@ class TrackingController extends Controller
         return view('logistica.tracking.verificacion_fardos', compact('get_id'));
     }
 
-    public function list_archivo_inspf()
+    public function list_archivo(Request $request)
     {
-        $list_archivo = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['tipo'=>2]);
-        return view('logistica.tracking.lista_archivo_inspf', compact('list_archivo'));
+        if($request->tipo=="3"){
+            $list_archivo = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['id_producto'=>$request->id_producto]);
+        }else{
+            $list_archivo = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['tipo'=>$request->tipo]);
+        }
+        return view('logistica.tracking.lista_archivo', compact('list_archivo'));
     }
 
-    public function previsualizacion_captura()
+    public function previsualizacion_captura(Request $request)
     {
-        $valida = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['tipo'=>2]);
+        $valida = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['tipo'=>$request->tipo]);
 
         if(count($valida)==3){
             echo "error";
@@ -783,7 +788,7 @@ class TrackingController extends Controller
 
                     $fecha = date('YmdHis');
                     $ext = pathinfo($path, PATHINFO_EXTENSION);
-                    $nombre_soli = "temporal_inpsf_".session('usuario')->id."_".$fecha;
+                    $nombre_soli = "temporal_inpsf_".session('usuario')->id_usuario."_".$fecha;
                     $nombre = $nombre_soli.".".strtolower($ext);
 
                     $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
@@ -791,11 +796,20 @@ class TrackingController extends Controller
                     ftp_pasv($con_id,true); 
                     $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
                     if($subio){
-                        TrackingArchivoTemporal::create([
-                            'id_usuario' => session('usuario')->id_usuario,
-                            'tipo' => 2,
-                            'archivo' => $archivo
-                        ]);
+                        if($request->tipo=="3"){
+                            TrackingArchivoTemporal::create([
+                                'id_usuario' => session('usuario')->id_usuario,
+                                'tipo' => $request->tipo,
+                                'id_producto' => $request->id_producto,
+                                'archivo' => $archivo
+                            ]);
+                        }else{
+                            TrackingArchivoTemporal::create([
+                                'id_usuario' => session('usuario')->id_usuario,
+                                'tipo' => $request->tipo,
+                                'archivo' => $archivo
+                            ]);
+                        }
                     }else{
                         echo "Archivo no subido correctamente";
                     }
@@ -806,7 +820,7 @@ class TrackingController extends Controller
         }
     }
 
-    public function delete_archivo_temporal_inspf($id)
+    public function delete_archivo_temporal($id)
     {
         $get_id = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['id'=>$id]);
         if($get_id->archivo!=""){
@@ -1534,6 +1548,34 @@ class TrackingController extends Controller
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
         $list_guia_remision = TrackingGuiaRemisionDetalle::select('id','sku','descripcion','cantidad')->where('n_guia_remision',$get_id->n_guia_remision)->get();
         return view('logistica.tracking.solicitud_devolucion', compact('get_id','list_guia_remision'));
+    }
+
+    public function modal_solicitud_devolucion($id)
+    {
+        $get_producto = TrackingGuiaRemisionDetalle::findOrFail($id);
+        $get_id = TrackingDevolucionTemporal::where('id_usuario',session('usuario')->id_usuario)
+                                            ->where('id_producto',$id)->first();
+        return view('logistica.tracking.modal_solicitud_devolucion', compact('get_producto','get_id'));
+    }
+
+    public function insert_devolucion_temporal(Request $request,$id)
+    {
+        $request->validate([
+            'tipo_falla' => 'required',
+            'cantidad' => 'gt:0',
+        ],[
+            'tipo_falla.required' => 'Debe ingresar tipo de falla.',
+            'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
+        ]);
+
+        TrackingDevolucionTemporal::where('id_usuario',session('usuario')->id_usuario)
+                                    ->where('id_producto',$request->id_producto)->delete();
+        TrackingDevolucionTemporal::create([
+            'id_usuario' => session('usuario')->id_usuario,
+            'id_producto' => $id,
+            'tipo_falla' => $request->tipo_falla,
+            'cantidad' => $request->cantidad
+        ]);
     }
 
     public function insert_reporte_devolucion(Request $request)

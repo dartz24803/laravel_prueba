@@ -71,12 +71,13 @@
         function Lista_Archivo(){
             Cargando();
 
-            var url = "{{ route('tracking.list_archivo_inspf') }}";
+            var url = "{{ route('tracking.list_archivo') }}";
             var csrfToken = $('input[name="_token"]').val();
 
             $.ajax({
                 url: url,
                 type: "POST",
+                data: {'tipo':2},
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
                 },
@@ -172,7 +173,6 @@
             var dataString = new FormData(document.getElementById('formulario'));
             var url = "{{ route('tracking.previsualizacion_captura') }}";
             var video = document.getElementById('video');
-            var div_canvas = document.getElementById('div_canvas');
             var canvas = document.getElementById('canvas');
             var context = canvas.getContext('2d');
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -180,6 +180,7 @@
             canvas.toBlob(function(blob) {
                 // Crea un formulario para enviar la imagen al servidor
                 dataString.append('photo', blob, 'photo.jpg');
+                dataString.append('tipo', 2);
 
                 // Realiza la solicitud AJAX
                 $.ajax({

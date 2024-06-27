@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tracking_archivo_temporal', function (Blueprint $table) {
+        Schema::create('tracking_devolucion_temporal', function (Blueprint $table) {
             $table->id();
             $table->integer('id_usuario')->nullable();
-            $table->integer('tipo')->nullable();
             $table->integer('id_producto')->nullable();
-            $table->string('archivo', 100);
+            $table->text('tipo_falla')->nullable();
+            $table->integer('cantidad')->nullable();
             //$table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tracking_archivo_temporal');
+        Schema::dropIfExists('tracking_devolucion_temporal');
     }
 };

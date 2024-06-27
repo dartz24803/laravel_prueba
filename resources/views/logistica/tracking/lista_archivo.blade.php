@@ -47,7 +47,7 @@
     function Delete_Archivo(id) {
         Cargando();
 
-        var url = "{{ route('tracking.delete_archivo_temporal_inspf', ':id') }}".replace(':id', id);
+        var url = "{{ route('tracking.delete_archivo_temporal', ':id') }}".replace(':id', id);
         var csrfToken = $('input[name="_token"]').val();
         var file_col = $('#i_'+id);
 
