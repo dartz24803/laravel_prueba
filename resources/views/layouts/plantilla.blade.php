@@ -430,7 +430,7 @@
                                 </a>
                             </li>
                             <li id="rfa">
-                                <a href="{{ url('/ReporteFotograficoAdm')}}" data-toggle="tooltip" data-placement="right" data-html="true">
+                                <a href="{{ url('/Tabla_RF')}}" data-toggle="tooltip" data-placement="right" data-html="true">
                                     <p class="romperpalabra"><span id="icono_active2"></span> Reporte Fotográfico</p>
                                 </a>
                             </li>

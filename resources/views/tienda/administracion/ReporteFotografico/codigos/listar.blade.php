@@ -5,9 +5,6 @@
             <th class="text-center">Base</th>
             <th class="text-center">Codigo</th>
             <th class="text-center">Categoría</th>
-            <th class="text-center">Area</th>
-            <th class="text-center">Fecha</th>
-            <th class="text-center no-content">Foto</th>
             <th class="no-content"></th>
         </tr>
     </thead>
@@ -15,19 +12,10 @@
     <tbody>
         <?php foreach ($list as $row) {  ?>
             <tr>
-                <td class="text-center">
-                    <?= $row['id'];?>
-                </td>
-                <td class="text-center"><?= $row['base']; ?></td>
+                <td class="text-center"><?= $row['id'];?></td>
+                <td class="text-center"><?= $row['base'];?></td>
                 <td class="text-center"><?= $row['descripcion']; ?></td>
-                <td class="text-center"><?= $row['categoria']; ?></td>
-                <td class="text-center"><?= $row['areas']; ?></td>
-                <td class="text-center"><?= $row['fec_reg']; ?></td>
-                <td class="text-center">
-                    <a title="Ver evidencia" href="https://lanumerounocloud.com/intranet/REPORTE_FOTOGRAFICO/<?= $row['foto']; ?>" target="_blank">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye text-success"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                    </a>
-                </td>
+                <td class="text-center"><?= $row['categoria'];?></td>
                 <td class="text-center">
                 <?php if (session('usuario')->id_puesto != 311 &&
                 (session('usuario')->id_puesto == 15 || session('usuario')->id_puesto == 131 ||
@@ -35,12 +23,12 @@
                 session('usuario')->id_puesto == 12 ||
                 session('usuario')->centro_labores == "OFC" ||
                 session('usuario')->id_puesto == 128 || session('usuario')->id_usuario == 139)){ ?>
-                    <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Modal_Update_Registro_Fotografico/' . $row['id']) }}">
+                    <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('ModalUpdatedCodigoReporteFotograficoAdm/' . $row['id']) }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                         </svg>
                     </a>
-                    <a href="javascript:void(0);" class="" title="Eliminar" onclick="Delete_Reporte_Fotografico('<?php echo $row['id']; ?>')" id="delete" role="button">
+                    <a href="javascript:void(0);" class="" title="Eliminar" onclick="Delete_Codigo_Reporte_Fotografico_Adm('<?php echo $row['id']; ?>')" id="delete" role="button">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
                             <polyline points="3 6 5 6 21 6"></polyline>
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -79,11 +67,11 @@
         }],
     });
 
-    function Delete_Reporte_Fotografico(id) {
+    function Delete_Codigo_Reporte_Fotografico_Adm(id) {
         Cargando();
         var csrfToken = $('input[name="_token"]').val();
         var id = id;
-        var url = "{{ url('Delete_Reporte_Fotografico') }}";
+        var url = "{{ url('Delete_Codigo_Reporte_Fotografico_Adm') }}";
         swal.fire({
             title: '¿Realmente desea eliminar el registro?',
             text: "El registro será eliminado permanentemente",
@@ -110,7 +98,7 @@
                             'El registro ha sido eliminado satisfactoriamente.',
                             'success'
                         ).then(function() {
-                            Reporte_Fotografico_Listar()
+                            Codigos_Reporte_Fotografico_Listar()
                         });
                     }
                 });

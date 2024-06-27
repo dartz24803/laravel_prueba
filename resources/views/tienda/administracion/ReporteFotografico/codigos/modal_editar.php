@@ -1,3 +1,6 @@
+<?php
+$base = Session('usuario')->centro_labores;
+?>
 <!-- Formulario Mantenimiento -->
 <form id="formulario_update" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
@@ -10,44 +13,52 @@
         </button>
     </div>
     <div class="modal-body row" style="max-height:450px; overflow:auto;">
-        <div class="form-group col-md-6">
-            <label for="my-input">Tipo : <span class="text-danger">*</span></label>
-            <select class="form-control basic_i" name="codigo_e" id="codigo_e">
-                <option value="">Seleccionar</option>
-                <?php foreach($list_tipos as $list){ ?>
-                    <option value="<?php echo $list['tipo']; ?>"
-                    <?php if ($list['tipo'] == $get_id[0]['tipo']){ echo "selected"; } ?>>
-                        <?php echo $list['tipo']; ?>
-                    </option>
+        <div class="form-group col-md-4">
+            <label>Base: </label>
+            <select class="form-control basic" id="bases_e" name="bases_e">
+                <option value="0">TODOS</option>
+                    <?php foreach ($list_bases as $list) { ?>
+                        <option value="<?php echo $list['cod_base']; ?>"
+                        <?php
+                        if($get_id[0]['base'] == $list['cod_base']){
+                            echo 'selected';
+                        }
+                        ?>>
+                    <?php echo $list['cod_base']; ?>
+                </option>
                 <?php } ?>
             </select>
         </div>
-        <div class="form-group col-md-6">
-            <label>Area: </label>
-            <select class="form-control basic_i" id="area_e" name="area_e">
-                <option value="" selected>Seleccionar</option>
-                <?php foreach($list_area as $list){ ?>
-                    <option value="<?php echo $list['id_area']; ?>"
-                    <?php if($list['id_area'] == $get_id[0]['area']){ echo "selected"; }; ?>>
-                    <?php echo $list['nom_area']; ?></option>
+        <div class="form-group col-md-4">
+            <label for="my-input">Codigo : <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="codigo_e" name="codigo_e" value="<?= $get_id[0]['descripcion']; ?>">
+        </div>
+        <div class="form-group col-md-4">
+            <label>Categorias: </label>
+            <select class="form-control basic_i" id="categoria_e" name="categoria_e">
+                <option value="">--Seleccione--</option>
+                <?php foreach($list_categorias as $list){ ?>
+                    <option value="<?php echo $list['id']; ?>" <?php if($list['id'] == $get_id[0]['tipo']){ echo "selected"; } ?>>
+                        <?php echo $list['categoria']; ?>
+                    </option>
                 <?php } ?>
             </select>
         </div>
     </div>
     <div class="modal-footer">
         <input name="id" id="id" type="hidden" value="<?= $get_id[0]['id']; ?>">
-        <button class="btn btn-primary mt-3" onclick="Update_Registro_Fotografico_Adm();" type="button">Guardar</button>
+        <button class="btn btn-primary mt-3" onclick="Update_Codigo_Registro_Fotografico_Adm();" type="button">Guardar</button>
         <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
-    function Update_Registro_Fotografico_Adm() {
+    function Update_Codigo_Registro_Fotografico_Adm() {
         Cargando();
         var csrfToken = $('input[name="_token"]').val();
 
         var dataString = new FormData(document.getElementById('formulario_update'));
-        var url = "Update_Registro_Fotografico_Adm";
+        var url = "Update_Codigo_Registro_Fotografico_Adm";
 
         //if (Valida_Registrar()) {
             $.ajax({
@@ -66,7 +77,7 @@
                         'Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Reporte_Fotografico_Adm_Listar();
+                        Codigos_Reporte_Fotografico_Listar();
                         $("#ModalUpdate .close").click()
                     });
                 } else {

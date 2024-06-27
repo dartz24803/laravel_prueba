@@ -11,18 +11,12 @@
     </div>
     <div class="modal-body row" style="max-height:450px; overflow:auto;">
         <div class="form-group col-md-6">
-            <label for="my-input">Tipos : <span class="text-danger">*</span></label>
-            <select class="form-control basic_i" name="codigo" id="codigo">
-                <option value="">Seleccionar</option>
-                <?php foreach($list_tipos as $list){ ?>
-                    <option value="<?php echo $list['tipo']; ?>"><?php echo $list['tipo'];?></option>
-                <?php } ?>
-            </select>
+            <label for="my-input">Categoría : <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="codigo" name="codigo">
         </div>
         <div class="form-group col-md-6">
             <label>Area: </label>
-            <select class="form-control basic_i" id="area" name="area">
-                <option value="" selected>Seleccionar</option>
+            <select class="form-control basic_i" id="area" name="area[]" multiple>
                 <?php foreach($list_area as $list){ ?>
                     <option value="<?php echo $list['id_area']; ?>"><?php echo $list['nom_area']; ?></option>
                 <?php } ?>
@@ -102,7 +96,7 @@
 </script>
 <style>
     .select2-container--default .select2-results > .select2-results__options {
-        height: 3rem;
+        height: 5rem;
     }
     .select2-results__option {
         color: red;

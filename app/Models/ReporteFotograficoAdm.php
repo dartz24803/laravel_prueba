@@ -28,7 +28,14 @@ class ReporteFotograficoAdm extends Model
 
     public function listar()
     {
-        $query = "SELECT *,rfa.fec_reg AS fecha_registro FROM reporte_fotografico_adm rfa LEFT JOIN area a ON  rfa.area=a.id_area WHERE rfa.estado = 1;";
+        $query = "SELECT rfa.id,rfa.categoria,rfa.fec_reg, GROUP_CONCAT(a.nom_area ORDER BY rfd.id DESC SEPARATOR ', ') as detalles
+            FROM reporte_fotografico_adm rfa 
+            LEFT JOIN reporte_fotografico_detalle rfd 
+            ON rfa.id = rfd.id_reporte_fotografico_adm
+            LEFT JOIN area a
+            ON rfd.id_area = a.id_area
+            WHERE rfa.estado='1'
+            GROUP BY rfa.id,rfa.categoria,rfa.fec_reg;";
         $result = DB::select($query);
         // Convertir el resultado a un array
         return json_decode(json_encode($result), true);

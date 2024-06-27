@@ -32,39 +32,27 @@ class ReporteFotografico extends Model
         return $this->where('id', $id)->get()->toArray();
     }*/
 
-    public function listar($base, $area, $codigo)
-    {
-
+    public function listar($base, $categoria){
+        
         if($base==0){
             $parte1 = "";
         }else{
             $parte1 = " AND rf.base = '$base'";
         }
-        if($area==0){
+        
+        if($categoria==0){
             $parte2 = "";
         }else{
-            $parte2 = " AND EXISTS (SELECT 1
-                                   FROM reporte_fotografico_adm rfa
-                                   WHERE rfa.tipo = crf.tipo
-                                   AND rfa.area = $area)";
-        }
-        if($codigo==0){
-            $parte3 = "";
-        }else{
-            $parte3 = " AND rf.codigo = '$codigo'";
+            $parte2 = " AND crf.tipo = '$categoria'";
         }
 
-        $query = "SELECT rf.*,crf.tipo,
-                COALESCE(
-                    (SELECT GROUP_CONCAT(DISTINCT a.nom_area SEPARATOR ', ')
-                    FROM reporte_fotografico_adm rfa
-                    LEFT JOIN area a ON rfa.area = a.id_area
-                    WHERE rfa.tipo COLLATE utf8mb4_general_ci = crf.tipo COLLATE utf8mb4_general_ci),
-                    NULL
-                ) AS areas
-            FROM reporte_fotografico rf
-            LEFT JOIN codigos_reporte_fotografico crf ON rf.codigo COLLATE utf8mb4_general_ci = crf.descripcion COLLATE utf8mb4_general_ci
-            WHERE rf.estado = 1 $parte1 $parte2 $parte3 ORDER BY rf.fec_reg DESC;";
+        $query = "select rf.id,rf.base,rf.foto,crf.descripcion,rfa.categoria,rf.fec_reg, GROUP_CONCAT(a.nom_area ORDER BY rfd.id DESC SEPARATOR ', ') as areas from reporte_fotografico rf 
+            left join codigos_reporte_fotografico crf ON rf.codigo = crf.id
+            left join reporte_fotografico_adm rfa ON crf.tipo = rfa.id
+            LEFT JOIN reporte_fotografico_detalle rfd ON rfa.id = rfd.id_reporte_fotografico_adm
+            LEFT JOIN area a ON rfd.id_area = a.id_area
+            where rf.estado=1 $parte1 $parte2 AND rf.codigo='10'
+            GROUP BY rf.id,rf.base,rf.foto,crf.descripcion,rfa.categoria,rf.fec_reg;";
 
         $result = DB::select($query);
 
