@@ -1,21 +1,21 @@
-<form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
+<form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
-        <h5 class="modal-title">Editar puesto:</h5>
+        <h5 class="modal-title">Registrar nuevo cargo:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
-    </div> 
-
+    </div>
+                
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row">
             <div class="form-group col-lg-2">
                 <label>Dirección:</label>
             </div>
             <div class="form-group col-lg-10">
-                <select class="form-control" name="id_direccione" id="id_direccione" onchange="Traer_Gerencia('e');">
+                <select class="form-control" name="id_direccion" id="id_direccion" onchange="Traer_Gerencia('');">
                     <option value="0">Seleccione</option>
                     @foreach ($list_direccion as $list)
-                        <option value="{{ $list->id_direccion }}" @if ($list->id_direccion==$get_id->id_direccion) selected @endif>{{ $list->direccion }}</option>
+                        <option value="{{ $list->id_direccion }}">{{ $list->direccion }}</option>
                     @endforeach
                 </select>
             </div>
@@ -26,11 +26,8 @@
                 <label>Gerencia:</label>
             </div>
             <div class="form-group col-lg-10">
-                <select class="form-control" name="id_gerenciae" id="id_gerenciae" onchange="Traer_Sub_Gerencia('e');">
+                <select class="form-control" name="id_gerencia" id="id_gerencia" onchange="Traer_Sub_Gerencia('');">
                     <option value="0">Seleccione</option>
-                    @foreach ($list_gerencia as $list)
-                        <option value="{{ $list->id_gerencia }}" @if ($list->id_gerencia==$get_id->id_gerencia) selected @endif>{{ $list->nom_gerencia }}</option>
-                    @endforeach
                 </select>
             </div>
         </div>  
@@ -40,51 +37,30 @@
                 <label>Departamento:</label>
             </div>
             <div class="form-group col-lg-10">
-                <select class="form-control" name="id_sub_gerenciae" id="id_sub_gerenciae" onchange="Traer_Area('e');">
+                <select class="form-control" name="id_sub_gerencia" id="id_sub_gerencia" onchange="Traer_Area('');">
                     <option value="0">Seleccione</option>
-                    @foreach ($list_sub_gerencia as $list)
-                        <option value="{{ $list->id_sub_gerencia }}" @if ($list->id_sub_gerencia==$get_id->id_departamento) selected @endif>{{ $list->nom_sub_gerencia }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>  
-
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Área:</label>
-            </div>
-            <div class="form-group col-lg-10">
-                <select class="form-control" name="id_areae" id="id_areae">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_area as $list)
-                        <option value="{{ $list->id_area }}" @if ($list->id_area==$get_id->id_area) selected @endif>{{ $list->nom_area }}</option>
-                    @endforeach
                 </select>
             </div>
         </div>
 
         <div class="row">
             <div class="form-group col-lg-2">
-                <label>Nivel Jerárquico:</label>
+                <label>Área:</label>
             </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" name="id_nivele" id="id_nivele">
+            <div class="form-group col-lg-10">
+                <select class="form-control" name="id_area" id="id_area" onchange="Traer_Puesto('');">
                     <option value="0">Seleccione</option>
-                    @foreach ($list_nivel as $list)
-                        <option value="{{ $list->id_nivel }}" @if ($list->id_nivel==$get_id->id_nivel) selected @endif>{{ $list->nom_nivel }}</option>
-                    @endforeach
                 </select>
             </div>
+        </div>
 
+        <div class="row">
             <div class="form-group col-lg-2">
-                <label>Sede Laboral:</label>
+                <label>Puesto:</label>
             </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" name="id_sede_laborale" id="id_sede_laborale">
+            <div class="form-group col-lg-10">
+                <select class="form-control" name="id_puesto" id="id_puesto">
                     <option value="0">Seleccione</option>
-                    @foreach ($list_sede_laboral as $list)
-                        <option value="{{ $list->id }}" @if ($list->id==$get_id->id_sede_laboral) selected @endif>{{ $list->descripcion }}</option>
-                    @endforeach
                 </select>
             </div>
         </div>
@@ -94,25 +70,24 @@
                 <label>Descripción:</label>
             </div>
             <div class="form-group col-lg-10">
-                <input type="text" class="form-control" id="nom_puestoe" name="nom_puestoe" placeholder="Ingresar Descripción" value="{{ $get_id->nom_puesto }}">
+                <input type="text" class="form-control" id="nom_cargo" name="nom_cargo" placeholder="Ingresar Descripción">
             </div>
         </div>
     </div>
 
     <div class="modal-footer">
         @csrf
-        @method('PUT')
-        <button class="btn btn-primary" type="button" onclick="Update_Puesto();">Guardar</button>
+        <button class="btn btn-primary" type="button" onclick="Insert_Cargo();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
-    function Update_Puesto() {
+    function Insert_Cargo() {
         Cargando();
 
-        var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('colaborador_conf_pu.update', $get_id->id_puesto) }}";
+        var dataString = new FormData(document.getElementById('formulario'));
+        var url = "{{ route('colaborador_conf_ca.store') }}";
 
         $.ajax({
             url: url,
@@ -123,7 +98,7 @@
             success: function(data) {
                 if(data=="error"){
                     Swal({
-                        title: '¡Actualización Denegada!',
+                        title: '¡Registro Denegado!',
                         text: "¡El registro ya existe!",
                         type: 'error',
                         showCancelButton: false,
@@ -132,13 +107,13 @@
                     });
                 }else{
                     swal.fire(
-                        '¡Actualización Exitosa!',
+                        '¡Registro Exitoso!',
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Lista_Puesto();
-                        $("#ModalUpdate .close").click();
-                    });  
+                        Lista_Cargo();
+                        $("#ModalRegistro .close").click();
+                    })
                 }
             },
             error:function(xhr) {

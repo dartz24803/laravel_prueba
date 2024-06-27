@@ -1,6 +1,6 @@
 <form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
-        <h5 class="modal-title">Editar puesto:</h5>
+        <h5 class="modal-title">Editar cargo:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
@@ -54,7 +54,7 @@
                 <label>Área:</label>
             </div>
             <div class="form-group col-lg-10">
-                <select class="form-control" name="id_areae" id="id_areae">
+                <select class="form-control" name="id_areae" id="id_areae" onchange="Traer_Puesto('e');">
                     <option value="0">Seleccione</option>
                     @foreach ($list_area as $list)
                         <option value="{{ $list->id_area }}" @if ($list->id_area==$get_id->id_area) selected @endif>{{ $list->nom_area }}</option>
@@ -62,28 +62,16 @@
                 </select>
             </div>
         </div>
-
+        
         <div class="row">
             <div class="form-group col-lg-2">
-                <label>Nivel Jerárquico:</label>
+                <label>Puesto:</label>
             </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" name="id_nivele" id="id_nivele">
+            <div class="form-group col-lg-10">
+                <select class="form-control" name="id_puestoe" id="id_puestoe">
                     <option value="0">Seleccione</option>
-                    @foreach ($list_nivel as $list)
-                        <option value="{{ $list->id_nivel }}" @if ($list->id_nivel==$get_id->id_nivel) selected @endif>{{ $list->nom_nivel }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="form-group col-lg-2">
-                <label>Sede Laboral:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" name="id_sede_laborale" id="id_sede_laborale">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_sede_laboral as $list)
-                        <option value="{{ $list->id }}" @if ($list->id==$get_id->id_sede_laboral) selected @endif>{{ $list->descripcion }}</option>
+                    @foreach ($list_puesto as $list)
+                        <option value="{{ $list->id_puesto }}" @if ($list->id_puesto==$get_id->id_puesto) selected @endif>{{ $list->nom_puesto }}</option>
                     @endforeach
                 </select>
             </div>
@@ -94,7 +82,7 @@
                 <label>Descripción:</label>
             </div>
             <div class="form-group col-lg-10">
-                <input type="text" class="form-control" id="nom_puestoe" name="nom_puestoe" placeholder="Ingresar Descripción" value="{{ $get_id->nom_puesto }}">
+                <input type="text" class="form-control" id="nom_cargoe" name="nom_cargoe" placeholder="Ingresar Descripción" value="{{ $get_id->nom_cargo }}">
             </div>
         </div>
     </div>
@@ -102,17 +90,17 @@
     <div class="modal-footer">
         @csrf
         @method('PUT')
-        <button class="btn btn-primary" type="button" onclick="Update_Puesto();">Guardar</button>
+        <button class="btn btn-primary" type="button" onclick="Update_Cargo();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
-    function Update_Puesto() {
+    function Update_Cargo() {
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('colaborador_conf_pu.update', $get_id->id_puesto) }}";
+        var url = "{{ route('colaborador_conf_ca.update', $get_id->id_cargo) }}";
 
         $.ajax({
             url: url,
@@ -136,7 +124,7 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Lista_Puesto();
+                        Lista_Cargo();
                         $("#ModalUpdate .close").click();
                     });  
                 }
