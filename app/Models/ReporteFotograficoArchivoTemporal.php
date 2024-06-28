@@ -11,7 +11,7 @@ class ReporteFotograficoArchivoTemporal extends Model
     use HasFactory;
     public $timestamps = false;
 
-    protected $table = 'reporte_fotografico_archivo_temporal';
+    protected $table = 'reporte_fotografico_archivo_temporal_new';
 
     protected $fillable = [
         'id',

@@ -11,7 +11,7 @@ class ReporteFotograficoDetalle extends Model
 
     public $timestamps = false;
 
-    protected $table = 'reporte_fotografico_detalle';
+    protected $table = 'reporte_fotografico_detalle_new';
 
     protected $fillable = [
         'id_reporte_fotografico_adm',

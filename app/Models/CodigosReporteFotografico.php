@@ -10,7 +10,7 @@ class CodigosReporteFotografico extends Model
     use HasFactory;
     public $timestamps = false;
 
-    protected $table = 'codigos_reporte_fotografico';
+    protected $table = 'codigos_reporte_fotografico_new';
 
     protected $fillable = [
         'id',
@@ -39,15 +39,15 @@ class CodigosReporteFotografico extends Model
         }
 
 
-        $query = "select crf.id,crf.descripcion,crf.base,rfa.categoria from codigos_reporte_fotografico crf 
-        LEFT JOIN reporte_fotografico_adm rfa ON crf.tipo=rfa.id where crf.estado=1 $parte1 ";
+        $query = "select crf.id,crf.descripcion,crf.base,rfa.categoria from codigos_reporte_fotografico_new crf
+        LEFT JOIN reporte_fotografico_adm_new rfa ON crf.tipo=rfa.id where crf.estado=1 $parte1 ";
 
         $result = DB::select($query);
 
         // Convertir el resultado a un array
         return json_decode(json_encode($result), true);
     }
-    
+
     public function listar_tipos(){
         return $this->select('tipo')->distinct()->get()->toArray();
     }
@@ -65,8 +65,8 @@ class CodigosReporteFotografico extends Model
             $parte3 = " AND crf.tipo = '$codigo'";
         }
 
-        $query = "select crf.id,crf.descripcion,crf.base,rfa.categoria from codigos_reporte_fotografico crf 
-        LEFT JOIN reporte_fotografico_adm rfa ON crf.tipo=rfa.id where crf.estado=1 $parte1 $parte3 ";
+        $query = "select crf.id,crf.descripcion,crf.base,rfa.categoria from codigos_reporte_fotografico_new crf
+        LEFT JOIN reporte_fotografico_adm_new rfa ON crf.tipo=rfa.id where crf.estado=1 $parte1 $parte3 ";
 
         $result = DB::select($query);
 
