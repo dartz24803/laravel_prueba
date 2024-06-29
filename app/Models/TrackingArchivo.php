@@ -17,6 +17,7 @@ class TrackingArchivo extends Model
     protected $fillable = [
         'id_tracking',
         'tipo',
+        'id_producto',
         'archivo'
     ];
 
