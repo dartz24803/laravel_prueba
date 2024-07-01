@@ -82,6 +82,9 @@
         transform: scale(1.25); /* Efecto de zoom */
         cursor: pointer;
     }
+    img{
+        max-width: 100%;
+    }
 </style>
 <script>
     $(document).ready(function() {
