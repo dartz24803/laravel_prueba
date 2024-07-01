@@ -68,7 +68,7 @@
                 },
                 processData: false,
                 contentType: false,
-                success: function(data) { 
+                success: function(data) {
                     if (data.error == ""){
                         swal.fire(
                             'Registro Exitoso!',
@@ -79,17 +79,16 @@
                             Reporte_Fotografico_Listar();
                         });
                     } else {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: data.error,
-                            icon: 'error',
-                            showConfirmButton: true,
-                        })
+                        Swal.fire(
+                            '¡Ups!',
+                            data.error[0],
+                            'error'
+                        );
                     }
                 }
             });
     }
-    
+
     var video = document.getElementById('video');
     var boton = document.getElementById('boton_camara');
     var div_tomar_foto = document.getElementById('div_tomar_foto');
@@ -285,7 +284,7 @@
     $('.basic_i').select2({
         dropdownParent: $('#ModalRegistro')
     });
-    
+
 </script>
 <style>
     .select2-container--default .select2-results > .select2-results__options {

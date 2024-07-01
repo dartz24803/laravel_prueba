@@ -151,9 +151,9 @@ class ReporteFotograficoController extends Controller
             } else {
                 //validacion de codigo, q vaya con datos
                 $validator = Validator::make($request->all(), [
-                    'codigo' => 'required'
+                    'codigo' => 'not_in:0'
                 ], [
-                    'codigo.required' => 'Codigo: Campo obligatorio',
+                    'codigo.not_in' => 'Codigo: Campo obligatorio',
                 ]);
                 //alerta de validacion
                 if ($validator->fails()) {
@@ -178,7 +178,7 @@ class ReporteFotograficoController extends Controller
                 }
             }
         }else{
-            $respuesta['error'] = "Debe tomar una fotografía";
+            $respuesta['error'][0] = "Debe tomar una fotografía";
         }
         return response()->json($respuesta);
     }
