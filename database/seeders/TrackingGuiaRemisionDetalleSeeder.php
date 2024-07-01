@@ -24,7 +24,7 @@ class TrackingGuiaRemisionDetalleSeeder extends Seeder
             ['n_guia_remision'=>'00002','color'=>'Color 00002 - 3','estilo'=>'Estilo 00002 - 3','talla'=>'Talla 00002 - 3','descripcion'=>'Descripción 00002 - 3','cantidad'=>'30'],
             ['n_guia_remision'=>'00002','color'=>'Color 00002 - 4','estilo'=>'Estilo 00002 - 4','talla'=>'Talla 00002 - 4','descripcion'=>'Descripción 00002 - 4','cantidad'=>'40'],
             ['n_guia_remision'=>'00002','color'=>'Color 00002 - 5','estilo'=>'Estilo 00002 - 5','talla'=>'Talla 00002 - 5','descripcion'=>'Descripción 00002 - 5','cantidad'=>'50'],
-            ['n_guia_remision'=>'00002','color'=>'Color 00002 - 1','estilo'=>'Estilo 00003 - 1','talla'=>'Talla 00003 - 1','descripcion'=>'Descripción 00003 - 1','cantidad'=>'10'],
+            ['n_guia_remision'=>'00002','color'=>'Color 00003 - 1','estilo'=>'Estilo 00003 - 1','talla'=>'Talla 00003 - 1','descripcion'=>'Descripción 00003 - 1','cantidad'=>'10'],
             ['n_guia_remision'=>'00003','color'=>'Color 00003 - 2','estilo'=>'Estilo 00003 - 2','talla'=>'Talla 00003 - 2','descripcion'=>'Descripción 00003 - 1','cantidad'=>'20'],
             ['n_guia_remision'=>'00003','color'=>'Color 00003 - 3','estilo'=>'Estilo 00003 - 3','talla'=>'Talla 00003 - 3','descripcion'=>'Descripción 00003 - 3','cantidad'=>'30'],
             ['n_guia_remision'=>'00003','color'=>'Color 00003 - 4','estilo'=>'Estilo 00003 - 4','talla'=>'Talla 00003 - 4','descripcion'=>'Descripción 00003 - 4','cantidad'=>'40'],

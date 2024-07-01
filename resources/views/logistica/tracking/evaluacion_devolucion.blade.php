@@ -27,40 +27,33 @@
                             </div>
     
                             <div class="row">
-                                <div class="form-group col-lg-12 mb-0">
-                                    <label class="control-label text-bold">Devolución:</label>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <label class="new-control new-radio radio-ln1">
-                                        <input type="radio" class="new-control-input" name="evaluacion" value="1">
-                                        <span class="new-control-indicator"></span>Si
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <label class="new-control new-radio radio-ln1">
-                                      <input type="radio" class="new-control-input" name="evaluacion" value="2">
-                                      <span class="new-control-indicator"></span>No
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="form-group col-lg-12">
-                                    <label class="control-label text-bold" for="explicacion">Explicación:</label>
-                                    <input type="text" class="form-control" name="explicacion" id="explicacion" placeholder="Explicación">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="form-group col-lg-12">
-                                    <label class="control-label text-bold" for="proceder">Proceder:</label>
-                                    <input type="text" class="form-control" name="proceder" id="proceder" placeholder="Proceder">
+                                <div class="table-responsive mt-4" id="lista_tracking">
+                                    <table id="tabla_js" class="table" style="width:100%">
+                                        <thead>
+                                            <tr class="text-center">
+                                                <th>SKU</th>
+                                                <th>Descripción</th>
+                                                <th>Cantidad</th>
+                                                <th>Detalle</th>
+                                            </tr>
+                                        </thead>
+                                    
+                                        <tbody>
+                                            @foreach ($list_devolucion as $list)
+                                                <tr class="text-center">
+                                                    <td>{{ $list->sku }}</td>
+                                                    <td class="text-left">{{ $list->descripcion }}</td>
+                                                    <td>{{ $list->cantidad }}</td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ModalUpdate" 
+                                                        app_elim="{{ route("tracking.modal_evaluacion_devolucion", $list->id) }}">
+                                                            Abrir
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
     
@@ -83,11 +76,11 @@
             $("#a_trackings").attr('aria-expanded','true');
         });
 
-        function Insert_Autorizacion_Devolucion() {
+        function Insert_Autorizacion_Devolucion() { 
             Cargando();
 
             var dataString = new FormData(document.getElementById('formulario'));
-            var url = "{{ route('tracking.insert_autorizacion_devolucion') }}";
+            var url = "{{ route('tracking.insert_autorizacion_devolucion', $get_id->id) }}";
 
             $.ajax({
                 url: url,
@@ -96,13 +89,24 @@
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                    swal.fire(
-                        '¡Registro Exitoso!',
-                        '¡Haga clic en el botón!',
-                        'success'
-                    ).then(function() {
-                        window.location = "{{ route('tracking') }}";
-                    });
+                    if(data=="error"){
+                        Swal({
+                            title: '¡Registro Denegado!',
+                            text: "¡Debe evaluar todas las devoluciones!",
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    }else{
+                        swal.fire(
+                            '¡Registro Exitoso!',
+                            '¡Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            window.location = "{{ route('tracking') }}";
+                        });
+                    }
                 },
                 error:function(xhr) {
                     var errors = xhr.responseJSON.errors;

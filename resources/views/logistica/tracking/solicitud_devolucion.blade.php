@@ -29,7 +29,6 @@
                                                 <th>Descripción</th>
                                                 <th>Cantidad</th>
                                                 <th>Ingreso de detalle</th>
-                                                <th>Especificación</th>
                                             </tr>
                                         </thead>
                                     
@@ -38,7 +37,7 @@
                                                 <tr class="text-center">
                                                     <td>
                                                         <div class="custom-control custom-checkbox custom-control-inline">
-                                                            <input type="checkbox" id="devolucion_{{ $list->id }}" name="devolucion_{{ $list->id }}" class="custom-control-input" onclick="Ingreso_Detalle('{{ $list->id }}');">
+                                                            <input type="checkbox" id="devolucion_{{ $list->id }}" name="devolucion[]" value="{{ $list->id }}" class="custom-control-input" onclick="Ingreso_Detalle('{{ $list->id }}');">
                                                             <label class="custom-control-label" for="devolucion_{{ $list->id }}"></label>
                                                         </div>
                                                     </td>
@@ -51,12 +50,6 @@
                                                             <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
                                                         </svg>
                                                     </td>
-                                                    <td id="td_es_{{ $list->id }}">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye-off text-success">
-                                                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                                                            <line x1="1" y1="1" x2="23" y2="23"></line>
-                                                        </svg>
-                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -66,8 +59,6 @@
     
                             <div class="modal-footer mt-3">
                                 @csrf
-                                <input type="hidden" name="id" value="{{ $get_id->id }}">
-                                <input type="hidden" name="archivo_transporte_actual" value="{{ $get_id->archivo_transporte }}">
                                 <button class="btn btn-primary" type="button" onclick="Insert_Reporte_Devolucion();">Guardar</button>
                                 <a class="btn" href="{{ route('tracking') }}">Cancelar</a>
                             </div>
@@ -87,10 +78,8 @@
         function Ingreso_Detalle(id){
             if($("#devolucion_"+id).is(':checked')){
                 $("#td_id_"+id).html('<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route("tracking.modal_solicitud_devolucion", ":id") }}">Abrir</button>'.replace(':id', id));
-                $("#td_es_"+id).html('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical text-dark"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>');
             }else{
                 $("#td_id_"+id).html('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-slash text-danger"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>');
-                $("#td_es_"+id).html('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye-off text-success"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>');
             }
         }
 
@@ -107,7 +96,7 @@
             Cargando();
 
             var dataString = new FormData(document.getElementById('formulario'));
-            var url = "{{ route('tracking.insert_reporte_devolucion') }}";
+            var url = "{{ route('tracking.insert_reporte_devolucion', $get_id->id) }}";
 
             $.ajax({
                 url: url,
@@ -116,13 +105,33 @@
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                    swal.fire(
-                        '¡Cambio de estado exitoso!',
-                        '¡Haga clic en el botón!',
-                        'success'
-                    ).then(function() {
-                        window.location = "{{ route('tracking') }}";
-                    });
+                    if(data=="error"){
+                        Swal({
+                            title: '¡Registro Denegado!',
+                            text: "¡Debe completar los datos de los ítem(s) seleccionados!",
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    }else{
+                        swal.fire(
+                            '¡Cambio de estado exitoso!',
+                            '¡Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            window.location = "{{ route('tracking') }}";
+                        });
+                    }
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
                 }
             });
         }

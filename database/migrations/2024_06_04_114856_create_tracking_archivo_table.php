@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('id_tracking')->nullable()->default(0);
             $table->integer('tipo')->nullable()->default(0);
+            $table->integer('id_producto')->nullable()->default(0);
             $table->string('archivo', 100)->nullable();
             //$table->timestamps();
         });

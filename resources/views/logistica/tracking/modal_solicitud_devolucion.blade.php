@@ -1,4 +1,4 @@
-<form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
+<form id="formulariod" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title">Ingreso de detalle</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -158,7 +158,7 @@
     function Tomar_Foto(){
         Cargando();
 
-        var dataString = new FormData(document.getElementById('formulario'));
+        var dataString = new FormData(document.getElementById('formulariod'));
         var url = "{{ route('tracking.previsualizacion_captura') }}";
         var video = document.getElementById('video');
         var canvas = document.getElementById('canvas');
@@ -199,7 +199,7 @@
     function Insert_Devolucion_Temporal(){
         Cargando();
 
-        var dataString = new FormData(document.getElementById('formulario'));
+        var dataString = new FormData(document.getElementById('formulariod'));
         var url = "{{ route('tracking.insert_devolucion_temporal', $get_producto->id) }}";
 
         $.ajax({
@@ -209,13 +209,24 @@
             processData: false,
             contentType: false,
             success:function (data) {
-                swal.fire(
-                    '¡Registro Exitoso!',
-                    '¡Haga clic en el botón!',
-                    'success'
-                ).then(function() {
-                    $("#ModalUpdate .close").click();
-                });
+                if(data=="error"){
+                    Swal({
+                        title: '¡Registro Denegado!',
+                        text: "¡Debe ingresar cantidad disponible!",
+                        type: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
+                    });
+                }else{
+                    swal.fire(
+                        '¡Registro Exitoso!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $("#ModalUpdate .close").click();
+                    });
+                }
             },
             error:function(xhr) {
                 var errors = xhr.responseJSON.errors;
