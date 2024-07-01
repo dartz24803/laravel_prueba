@@ -2,7 +2,7 @@
 $base = Session('usuario')->centro_labores;
 // print_r(Session::get('usuario'));
 ?>
-<div class="col-lg-12 d-flex justify-content-end">
+<div class="col-lg-12 d-flex justify-content-end mb-4 mt-2">
     <?php //adm, coord y aux de tienda registran
     if(session('usuario')->id_puesto == 29 || session('usuario')->id_puesto == 30 || session('usuario')->id_puesto == 311 || session('usuario')->id_puesto == 161 || session('usuario')->id_puesto == 197 || session('usuario')->id_usuario == 139){ ?>
     <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('tienda.ReporteFotografico.modal_registro')}}">

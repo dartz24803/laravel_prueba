@@ -14,7 +14,7 @@
                                         <h3 style="color: #8fa1b7; font-weight: bold">DEPARTAMENTOS</h3>
                                     </div>
                                 </div>
-                                <div class="container">
+                                <!-- <div class="container">
                                     <div class="row layout-top-spacing">
                                         <div class="col-md-3">
                                             <div class="zoom-card" style="width: 7rem;">
@@ -27,7 +27,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Agrega más cards aquí según sea necesario -->
                                         <div class="col-md-3">
                                             <div class="zoom-card" style="width: 7rem;">
                                                 <div class="card text-center border-0 rounded_z" style="background-color: #00b1f4;">
@@ -55,14 +54,14 @@
                                                 <div class="card text-center border-0 rounded_z" style="background-color: #00ba8e;">
                                                     <div class="card-body text-center">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="39" height="39" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                                                        <!-- <img class="card-img-top" src="{{ asset('public/inicio/sticker.png') }}" alt="Card image cap"> -->
                                                     </div>
                                                 </div>
                                                 <p class="card-text text-center text-dark mt-1">Caja y Control interno</p>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
+                                <img src="{{ asset('/inicio/Estamos-trabajando.png') }}" alt="">
                             </div>
                         </div>
                     </div>

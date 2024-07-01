@@ -118,3 +118,17 @@
         })
     }
 </script>
+<style>
+    .dataTables_length{
+        margin-top: 3rem;
+    }
+    .dataTables_filter{
+        margin-bottom: 1rem;
+    }
+    .dataTables_info{
+        margin-top: 2rem;
+    }
+    #tabla-rf_paginate{
+        margin-top: 2rem;
+    }
+</style>

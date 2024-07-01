@@ -41,7 +41,7 @@
         <div class="spinner-grow align-self-center"></div>
     </div></div></div>
     <!--  END LOADER -->
-    
+
     <!--  BEGIN NAVBAR  -->
     <div class="header-container fixed-top">
         <header class="header navbar navbar-expand-sm expand-header">
@@ -248,7 +248,7 @@
 
         <!--  BEGIN SIDEBAR  -->
         <div class="sidebar-wrapper sidebar-theme">
-            
+
             <nav id="sidebar">
                 <ul class="navbar-nav theme-brand flex-row  text-center">
                     <li id="sidebar_logo1" class="nav-item theme-logo text-center">
@@ -266,7 +266,7 @@
 
                 <ul class="list-unstyled menu-categories" id="accordionExample">
                     <li class="menu" id="inicio">
-                        <a id="hinicio" href="{{ route('inicio') }}" aria-expanded="false" class="dropdown-toggle">
+                        <a id="hinicio" href="{{ url('inicio') }}" aria-expanded="false" class="dropdown-toggle">
                             <div class="">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home">
                                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -301,7 +301,7 @@
                                 </svg>
                             </div>
                         </a>
-    
+
                         <ul class="collapse submenu list-unstyled" id="rlogisticas" data-parent="#accordionExample">
                             <li>
                                 <a id="trackings" href="{{ route('tracking') }}">
@@ -336,17 +336,17 @@
                                 </a>
                             </li>
                             <?php if(
-                            session('usuario')->nivel_jerarquico==2 || 
-                            session('usuario')->nivel_jerarquico==3 || 
-                            session('usuario')->nivel_jerarquico==4 || 
-                            session('usuario')->nivel_jerarquico==5 || 
-                            session('usuario')->nivel_jerarquico==6 || 
-                            session('usuario')->nivel_jerarquico==7 || 
+                            session('usuario')->nivel_jerarquico==2 ||
+                            session('usuario')->nivel_jerarquico==3 ||
+                            session('usuario')->nivel_jerarquico==4 ||
+                            session('usuario')->nivel_jerarquico==5 ||
+                            session('usuario')->nivel_jerarquico==6 ||
+                            session('usuario')->nivel_jerarquico==7 ||
                             session('usuario')->id_puesto==195){
                                 $amonestaciones2 = "<br>• Recibidas";
                             }else{
                                 $amonestaciones2 = "";
-                            }?> 
+                            }?>
                             <li id="amonestaciones">
                                 <a href="{{ url('Amonestacion') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Emitidas <?= $amonestaciones2 ?>">
                                     <p class="romperpalabra"><span id="icono_active2"></span> Amonestaciones</p>
@@ -354,9 +354,9 @@
                             </li>
                         </ul>
                     </li>
-                    <?php if(session('usuario')->centro_labores=="OFC" || session('usuario')->id_puesto=="29" || session('usuario')->id_puesto=="161" || 
+                    <?php if(session('usuario')->centro_labores=="OFC" || session('usuario')->id_puesto=="29" || session('usuario')->id_puesto=="161" ||
                     session('usuario')->id_puesto=="197" || session('usuario')->id_puesto=="128" || session('usuario')->id_puesto=="251" || session('usuario')->id_puesto=="41" ||
-                    session('usuario')->id_puesto=="66" || session('usuario')->id_puesto=="73" || session('usuario')->id_puesto=="158" || session('usuario')->id_puesto=="12" || 
+                    session('usuario')->id_puesto=="66" || session('usuario')->id_puesto=="73" || session('usuario')->id_puesto=="158" || session('usuario')->id_puesto=="12" ||
                     session('usuario')->id_puesto=="155" || session('usuario')->id_puesto=="9" || session('usuario')->id_puesto=="19" || session('usuario')->id_puesto=="21" ||
                     session('usuario')->id_puesto=="131" || session('usuario')->id_puesto=="68" || session('usuario')->id_puesto=="72" || session('usuario')->id_puesto=="15" ||
                     session('usuario')->id_puesto=="27" || session('usuario')->id_puesto=="148" || session('usuario')->id_puesto=="76" || session('usuario')->id_puesto=="311")
@@ -377,7 +377,7 @@
                                     </svg>
                                 </div>
                             </a>
-        
+
                             <ul class="collapse submenu list-unstyled" id="rtienda" data-parent="#accordionExample">
                                 <li>
                                     <a id="administradores" href="{{ route('administrador') }}">
@@ -410,16 +410,16 @@
                         </div>
                     </li>
                     <?php if (
-                        session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 102 || session('usuario')->id_puesto == 80 || 
-                        session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 23 || 
-                        session('usuario')->id_puesto == 75 || session('usuario')->id_puesto == 7 || session('usuario')->id_puesto == 133 || 
-                        session('usuario')->id_puesto == 138 || session('usuario')->id_puesto == 83 || session('usuario')->id_puesto == 145 || 
-                        session('usuario')->id_puesto == 40 || session('usuario')->id_puesto == 164 || session('usuario')->id_puesto == 148 || 
-                        session('usuario')->id_puesto == 153 || session('usuario')->id_puesto == 157 || session('usuario')->id_puesto == 6 || 
-                        session('usuario')->id_puesto == 12 || session('usuario')->id_puesto == 19 || session('usuario')->id_puesto == 23 || 
-                        session('usuario')->id_puesto == 38 || session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 111 || 
-                        session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 137 || session('usuario')->id_puesto == 164 || 
-                        session('usuario')->id_puesto == 158 || session('usuario')->id_puesto == 9 || session('usuario')->id_puesto == 128 || 
+                        session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 102 || session('usuario')->id_puesto == 80 ||
+                        session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 23 ||
+                        session('usuario')->id_puesto == 75 || session('usuario')->id_puesto == 7 || session('usuario')->id_puesto == 133 ||
+                        session('usuario')->id_puesto == 138 || session('usuario')->id_puesto == 83 || session('usuario')->id_puesto == 145 ||
+                        session('usuario')->id_puesto == 40 || session('usuario')->id_puesto == 164 || session('usuario')->id_puesto == 148 ||
+                        session('usuario')->id_puesto == 153 || session('usuario')->id_puesto == 157 || session('usuario')->id_puesto == 6 ||
+                        session('usuario')->id_puesto == 12 || session('usuario')->id_puesto == 19 || session('usuario')->id_puesto == 23 ||
+                        session('usuario')->id_puesto == 38 || session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 111 ||
+                        session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 137 || session('usuario')->id_puesto == 164 ||
+                        session('usuario')->id_puesto == 158 || session('usuario')->id_puesto == 9 || session('usuario')->id_puesto == 128 ||
                         session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 10
                     ) { ?>
                         <li class="menu" id="ccvtabla">
@@ -491,7 +491,7 @@
         <!--  END CONTENT AREA  -->
     </div>
     <!-- END MAIN CONTAINER -->
-    
+
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
     <script src="{{ asset('template/bootstrap/js/popper.min.js') }}"></script>
     <script src="{{ asset('template/bootstrap/js/bootstrap.min.js') }}"></script>
@@ -501,7 +501,7 @@
     <script src="{{ asset('template/plugins/blockui/custom-blockui.js') }}"></script>
     <script src="{{ asset('template/plugins/sweetalerts/sweetalert2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/sweetalerts/custom-sweetalert.js') }}"></script>
-    
+
     <script>
         $(document).ready(function() {
             App.init();
