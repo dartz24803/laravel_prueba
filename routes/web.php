@@ -17,7 +17,7 @@ use App\Http\Controllers\AmonestacionController;
 use App\Http\Controllers\ColaboradorConfController;
 
 Route::middleware([NoCache::class])->group(function () {
-    Route::get('/Inicio', [InicioController::class, 'index'])->name('inicio');
+    Route::get('Home', [InicioController::class, 'index'])->name('inicio');
 });
 Route::post('/ReporteFotograficoAdmListar', [ReporteFotograficoAdmController::class, 'listar']);
 Route::controller(ReporteFotograficoAdmController::class)->group(function(){
@@ -97,7 +97,7 @@ Route::controller(TrackingController::class)->group(function(){
     Route::post('tracking/{id}/evaluacion_temporal', 'insert_evaluacion_temporal')->name('tracking.insert_evaluacion_temporal');
     Route::post('tracking/{id}/autorizacion_devolucion', 'insert_autorizacion_devolucion')->name('tracking.insert_autorizacion_devolucion');
 });
-//TIENDA - FUNCIÓN TEMPORAL 
+//TIENDA - FUNCIÓN TEMPORAL
 Route::controller(FuncionTemporalController::class)->group(function(){
     Route::get('funcion_temporal', 'index')->name('funcion_temporal');
     Route::get('funcion_temporal/{id}/list', 'list')->name('funcion_temporal.list');
