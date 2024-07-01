@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tracking', function (Blueprint $table) {
+        Schema::create('tracking', function (Blueprint $table) { 
             $table->id();
             $table->string('n_requerimiento', 10)->nullable();
             $table->string('n_guia_remision', 20)->nullable();
@@ -35,9 +35,6 @@ return new class extends Migration
             $table->integer('diferencia')->nullable()->default(0);
             $table->string('guia_diferencia', 20)->nullable();
             $table->integer('devolucion')->nullable()->default(0);
-            $table->integer('evaluacion')->nullable()->default(0);
-            $table->text('explicacion')->nullable();
-            $table->text('proceder')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();

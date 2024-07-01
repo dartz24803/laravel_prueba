@@ -14,6 +14,7 @@ use App\Models\TrackingDetalleEstado;
 use App\Models\TrackingDetalleProceso;
 use App\Models\TrackingDevolucion;
 use App\Models\TrackingDevolucionTemporal;
+use App\Models\TrackingEvaluacionTemporal;
 use App\Models\TrackingGuiaRemisionDetalle;
 use Illuminate\Support\Facades\DB;
 
@@ -295,9 +296,8 @@ class TrackingController extends Controller
                 $path = $_FILES["archivo_transporte"]["name"];
                 $source_file = $_FILES['archivo_transporte']['tmp_name'];
 
-                $fecha = date('YmdHis');
                 $ext = pathinfo($path, PATHINFO_EXTENSION);
-                $nombre_soli = "Factura_".$request->id."_".$fecha;
+                $nombre_soli = "Factura_".$request->id."_".date('YmdHis');
                 $nombre = $nombre_soli.".".strtolower($ext);
 
                 ftp_pasv($con_id,true); 
@@ -787,9 +787,8 @@ class TrackingController extends Controller
                     $path = $_FILES["photo"]["name"];
                     $source_file = $_FILES['photo']['tmp_name'];
 
-                    $fecha = date('YmdHis');
                     $ext = pathinfo($path, PATHINFO_EXTENSION);
-                    $nombre_soli = "temporal_".session('usuario')->id_usuario."_".$fecha;
+                    $nombre_soli = "temporal_".session('usuario')->id_usuario."_".date('YmdHis');
                     $nombre = $nombre_soli.".".strtolower($ext);
 
                     $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
@@ -1006,9 +1005,8 @@ class TrackingController extends Controller
                 $path = $_FILES["archivo_transporte"]["name"];
                 $source_file = $_FILES['archivo_transporte']['tmp_name'];
 
-                $fecha = date('YmdHis');
                 $ext = pathinfo($path, PATHINFO_EXTENSION);
-                $nombre_soli = "Factura_".$request->id."_".$fecha;
+                $nombre_soli = "Factura_".$request->id."_".date('YmdHis');
                 $nombre = $nombre_soli.".".strtolower($ext);
 
                 ftp_pasv($con_id,true); 
@@ -1726,77 +1724,149 @@ class TrackingController extends Controller
             if(session('redirect_url')){
                 session()->forget('redirect_url');
             }
+            TrackingEvaluacionTemporal::where('id_usuario', session('usuario')->id_usuario)->delete();
             $get_id = Tracking::get_list_tracking(['id'=>$id]);
-            return view('logistica.tracking.evaluacion_devolucion', compact('get_id'));
+            $list_devolucion = TrackingDevolucion::select('tracking_devolucion.id','tracking_guia_remision_detalle.sku',
+                                                    'tracking_guia_remision_detalle.descripcion',
+                                                    'tracking_devolucion.cantidad')
+                                                    ->join('tracking_guia_remision_detalle','tracking_guia_remision_detalle.id','=','tracking_devolucion.id_producto')
+                                                    ->where('tracking_devolucion.id_tracking',$id)
+                                                    ->where('tracking_devolucion.estado',1)->get();
+            return view('logistica.tracking.evaluacion_devolucion', compact('get_id','list_devolucion'));
         }else{
             session(['redirect_url' => 'http'.(isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']]);
             return redirect('/');
         }
     }
 
-    public function insert_autorizacion_devolucion(Request $request)
+    public function modal_evaluacion_devolucion($id)
     {
-        $rules = [
-            'evaluacion' => 'required',
-            'explicacion' => 'required',
-            'proceder' => 'required',
-        ];
-        $messages = [
-            'evaluacion.required' => 'Debe seleccionar una opción en devolución.',
-            'explicacion.required' => 'Debe ingresar explicación.',
-            'proceder.required' => 'Debe ingresar como se procederá.',
-        ];
-        $request->validate($rules, $messages);
+        $get_devolucion = TrackingDevolucion::findOrFail($id);
+        $list_archivo = TrackingArchivo::select('archivo')->where('id_producto',$get_devolucion->id_producto)->where('tipo',3)->get();
+        $get_id = TrackingEvaluacionTemporal::where('id_usuario',session('usuario')->id_usuario)
+                                            ->where('id_devolucion',$id)->first();
+        return view('logistica.tracking.modal_evaluacion_devolucion', compact('get_devolucion','list_archivo','get_id'));
+    }
 
-        Tracking::findOrFail($request->id)->update([
-            'evaluacion' => $request->evaluacion,
-            'explicacion' => $request->explicacion,
-            'proceder' => $request->proceder,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
+    public function insert_evaluacion_temporal(Request $request,$id)
+    {
+        $request->validate([
+            'aprobacion' => 'required',
+            'sustento_respuesta' => 'required',
+            'forma_proceder' => 'required',
+        ],[
+            'aprobacion.required' => 'Debe seleccionar aprobación.',
+            'sustento_respuesta.required' => 'Debe ingresar sustento de respuesta.',
+            'forma_proceder.required' => 'Debe ingresar forma de proceder.',
         ]);
 
-        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
+        TrackingEvaluacionTemporal::create([
+            'id_usuario' => session('usuario')->id_usuario,
+            'id_devolucion' => $id,
+            'aprobacion' => $request->aprobacion,
+            'sustento_respuesta' => $request->sustento_respuesta,
+            'forma_proceder' => $request->forma_proceder
+        ]);
+    }
 
-        if($request->evaluacion=="1"){
-            $asunto = "APROBADA";
-            $contenido = "autoriza";
-        }else{
-            $asunto = "DENEGADA";
-            $contenido = "deniega";
-        }
+    public function insert_autorizacion_devolucion(Request $request,$id)
+    {
+        $valida_t = TrackingEvaluacionTemporal::where('id_usuario',session('usuario')->id_usuario)->count();
+        $valida = TrackingDevolucion::where('id_tracking',$id)->count();
 
-        $mail = new PHPMailer(true);
+        if($valida_t==$valida){
+            $list_evaluacion = TrackingEvaluacionTemporal::where('id_usuario',session('usuario')->id_usuario)->get();
 
-        try {
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host       =  'mail.lanumero1.com.pe';
-            $mail->SMTPAuth   =  true;
-            $mail->Username   =  'intranet@lanumero1.com.pe';
-            $mail->Password   =  'lanumero1$1';
-            $mail->SMTPSecure =  'tls';
-            $mail->Port     =  587; 
-            $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
+            foreach($list_evaluacion as $list){
+                TrackingDevolucion::findOrFail($list->id_devolucion)->update([
+                    'aprobacion' => $list->aprobacion,
+                    'sustento_respuesta' => $list->sustento_respuesta,
+                    'forma_proceder' => $list->forma_proceder,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+            }
+            TrackingEvaluacionTemporal::where('id_usuario', session('usuario')->id_usuario)->delete();
 
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
+            $get_id = Tracking::get_list_tracking(['id'=>$id]);
+            $list_evaluacion = TrackingDevolucion::select('tracking_guia_remision_detalle.sku','tracking_guia_remision_detalle.descripcion',
+                                                    'tracking_devolucion.cantidad','tracking_devolucion.sustento_respuesta',
+                                                    DB::raw('CASE WHEN tracking_devolucion.aprobacion=1 THEN "Aprobada" 
+                                                    WHEN tracking_devolucion.aprobacion=2 THEN "Denegada" ELSE "" END AS devolucion'),
+                                                    'tracking_devolucion.forma_proceder')
+                                                    ->join('tracking_guia_remision_detalle','tracking_guia_remision_detalle.id','=','tracking_devolucion.id_producto')
+                                                    ->where('tracking_devolucion.id_tracking',$id)
+                                                    ->where('tracking_devolucion.estado',1)->get();
 
-            $mail->isHTML(true);
-
-            $mail->Subject = "DEVOLUCIÓN ".$asunto.": RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.")";
-        
-            $mail->Body =  '<FONT SIZE=3>
-                                Hola '.$get_id->hacia.', se '.$contenido.' la devolución para el Nro. Req.<br><br>
-                                Explicación:<br>'.$request->explicacion.'<br><br>
-                                Proceder:<br>'.$request->proceder.'<br>
-                            </FONT SIZE>';
-        
-            $mail->CharSet = 'UTF-8';
-            $mail->send();
-
+            $mail = new PHPMailer(true);
+    
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Port     =  587; 
+                $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
+    
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
+    
+                $mail->isHTML(true);
+    
+                $mail->Subject = "RESPUESTA A SOLICITUD DE DEVOLUCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.")";
+            
+                $mail->Body =  '<FONT SIZE=3>
+                                    Hola '.$get_id->hacia.' - '.$get_id->desde.', a continuación respuesta de la solicitud de 
+                                    devolución:<br><br>
+                                    <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
+                                        <thead>
+                                            <tr align="center" style="background-color:#0093C6;">
+                                                <th width="10%"><b>SKU</b></th>
+                                                <th width="22%"><b>Descripción</b></th>
+                                                <th width="6%"><b>Cant.</b></th>
+                                                <th width="10%"><b>Devolución</b></th>
+                                                <th width="26%"><b>Motivo</b></th>
+                                                <th width="26%"><b>Forma de proceder</b></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>';
+                                            foreach($list_evaluacion as $list){
+                $mail->Body .=  '               <tr align="left">
+                                                    <td align="center">'.$list->sku.'</td>
+                                                    <td>'.$list->descripcion.'</td>
+                                                    <td align="center">'.$list->cantidad.'</td>
+                                                    <td align="center">'.$list->devolucion.'</td>
+                                                    <td>'.$list->sustento_respuesta.'</td>
+                                                    <td>'.$list->forma_proceder.'</td>
+                                                </tr>';
+                                }
+                $mail->Body .=  '       </tbody>
+                                    </table>
+                                </FONT SIZE>';
+            
+                $mail->CharSet = 'UTF-8';
+                $mail->send(); 
+    
+                TrackingDetalleEstado::create([
+                    'id_detalle' => $get_id->id_detalle,
+                    'id_estado' => 19,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+            }catch(Exception $e) {
+                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+            }
+    
+            //ALERTA 9.2.1.
             TrackingDetalleEstado::create([
                 'id_detalle' => $get_id->id_detalle,
-                'id_estado' => 19,
+                'id_estado' => 20,
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
@@ -1804,43 +1874,31 @@ class TrackingController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
-        }catch(Exception $e) {
-            echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+    
+            //ALERTA 9.3
+            $tracking_dp = TrackingDetalleProceso::create([
+                'id_tracking' => $id,
+                'id_proceso' => 9,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+    
+            TrackingDetalleEstado::create([
+                'id_detalle' => $tracking_dp->id,
+                'id_estado' => 21,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }else{
+            echo "error";
         }
-
-        //ALERTA 9.2.1.
-        TrackingDetalleEstado::create([
-            'id_detalle' => $get_id->id_detalle,
-            'id_estado' => 20,
-            'fecha' => now(),
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
-
-        //ALERTA 9.3
-        $tracking_dp = TrackingDetalleProceso::create([
-            'id_tracking' => $request->id,
-            'id_proceso' => 9,
-            'fecha' => now(),
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
-
-        TrackingDetalleEstado::create([
-            'id_detalle' => $tracking_dp->id,
-            'id_estado' => 21,
-            'fecha' => now(),
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
     }
 }

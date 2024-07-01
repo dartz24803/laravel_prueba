@@ -11,13 +11,16 @@ class TrackingDevolucion extends Model
 
     protected $table = 'tracking_devolucion';
 
-    public $timestamps = false;
+    public $timestamps = false; 
 
     protected $fillable = [
         'id_tracking',
         'id_producto',
         'tipo_falla',
         'cantidad',
+        'aprobacion',
+        'sustento_respuesta',
+        'forma_proceder',
         'estado',
         'fec_reg',
         'user_reg',

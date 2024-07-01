@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tracking_devolucion', function (Blueprint $table) {
+        Schema::create('tracking_devolucion', function (Blueprint $table) { 
             $table->id();
             $table->unsignedBigInteger('id_tracking');
             $table->unsignedBigInteger('id_producto');
             $table->text('tipo_falla')->nullable();
             $table->integer('cantidad')->nullable();
+            $table->integer('aprobacion')->nullable();
+            $table->text('sustento_respuesta')->nullable();
+            $table->text('forma_proceder')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();

@@ -93,9 +93,11 @@ Route::controller(TrackingController::class)->group(function(){
     Route::post('tracking/{id}/devolucion_temporal', 'insert_devolucion_temporal')->name('tracking.insert_devolucion_temporal');
     Route::post('tracking/{id}/reporte_devolucion', 'insert_reporte_devolucion')->name('tracking.insert_reporte_devolucion');
     Route::get('tracking/{id}/evaluacion_devolucion', 'evaluacion_devolucion')->name('tracking.evaluacion_devolucion');
-    Route::post('tracking/autorizacion_devolucion', 'insert_autorizacion_devolucion')->name('tracking.insert_autorizacion_devolucion');
+    Route::get('tracking/{id}/modal_evaluacion_devolucion', 'modal_evaluacion_devolucion')->name('tracking.modal_evaluacion_devolucion');
+    Route::post('tracking/{id}/evaluacion_temporal', 'insert_evaluacion_temporal')->name('tracking.insert_evaluacion_temporal');
+    Route::post('tracking/{id}/autorizacion_devolucion', 'insert_autorizacion_devolucion')->name('tracking.insert_autorizacion_devolucion');
 });
-//TIENDA - FUNCIÓN TEMPORAL
+//TIENDA - FUNCIÓN TEMPORAL 
 Route::controller(FuncionTemporalController::class)->group(function(){
     Route::get('funcion_temporal', 'index')->name('funcion_temporal');
     Route::get('funcion_temporal/{id}/list', 'list')->name('funcion_temporal.list');
