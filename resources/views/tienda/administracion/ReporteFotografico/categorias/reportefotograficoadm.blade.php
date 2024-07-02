@@ -37,9 +37,10 @@
         $('#table_rfa').DataTable({
             "aProcessing": true,
             "aServerSide": true,
-            dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-                "<'row'<'col-sm-12'tr>>" +
-                "<'row'<'col-sm-12 col-md-6'i><'col-sm-12 col-md-6'p>>",
+            "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
+            "<'table-responsive'tr>" +
+            "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+            responsive: true,
             "ajax": {
                 url: "{{ url('ReporteFotograficoAdmListar') }}",
                 type: "post",
