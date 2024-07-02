@@ -20,7 +20,7 @@ $base = Session('usuario')->centro_labores;
     //Cada coordinador le debe aparecer su base respectivamente definido
     $disabled = '';
     $selected = '';
-    if ($base == 'OFC' || Session('usuario')->id_puesto == 251) {
+    if ($base == 'OFC' || Session('usuario')->id_puesto == 251 || Session('usuario')->id_puesto == 131 || || Session('usuario')->id_puesto == 144) {
         $disabled = '';
         $selected = 'selected';
     } else {
