@@ -506,6 +506,23 @@
         $(document).ready(function() {
             App.init();
         });
+        //BOTON FLOTANTE SOPORTE
+        (function () {
+            var options = {
+                whatsapp: "+51 956 897 977", // WhatsApp number
+                email: "sistemaslanumerouno@gmail.com", // Email
+                call_to_action: "Soporte", // Call to action
+                button_color: "#00b1f4", // Color of button
+                email_color: "#E74339", // Email button color
+                position: "right", // Position may be 'right' or 'left'
+                order: "whatsapp,email", // Order of buttons
+                pre_filled_message: "Hola, Necesito soporte.", // WhatsApp pre-filled message
+            };
+            var proto = document.location.protocol, host = "getbutton.io", url = proto + "//static." + host;
+            var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = url + '/widget-send-button/js/init.js';
+            s.onload = function () { WhWidgetSendButton.init(host, proto, options); };
+            var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
+        })();
     </script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/custom-select2.js') }}"></script>

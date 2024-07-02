@@ -56,6 +56,10 @@
 </table>
 <script>
     var tabla = $('#tabla-rf').DataTable({
+        "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
+        "<'table-responsive'tr>" +
+        "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+        responsive: true,
         "order": [
             [0, "desc"]
         ],
@@ -118,17 +122,3 @@
         })
     }
 </script>
-<style>
-    .dataTables_length{
-        margin-top: 3rem;
-    }
-    .dataTables_filter{
-        margin-bottom: 1rem;
-    }
-    .dataTables_info{
-        margin-top: 2rem;
-    }
-    #tabla-rf_paginate{
-        margin-top: 2rem;
-    }
-</style>
