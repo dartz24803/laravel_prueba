@@ -8,7 +8,7 @@
                 <div class="statbox widget box box-shadow">
                     <div class="widget-content widget-content-area simple-tab" style="background-color: #f0f3f3;">
                         <div class="row" id="cancel-row">
-                            <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
+                            <div id="container" class="col-xl-12 col-lg-12 col-sm-12 layout-spacing" style="background-image: url('{{ asset('inicio/NEW.Intranet-Icono-Fondo.jpg') }}');">
                                 <div class="page-header d-flex justify-content-center">
                                     <div class="page-title">
                                         <h3 style="color: #8fa1b7; font-weight: bold">DEPARTAMENTOS</h3>
@@ -19,7 +19,7 @@
                                         <!-- Logo Logistica-->
                                         <div class="col-md-12 mb-4 offset-md-6">
                                             <div class="zoom-card" style="width: 7rem;">
-                                                <div class="card text-center border-0 rounded_z" style="background-color: #fea701;">
+                                                <div class="card text-center border-0 rounded_z" style="background-color: #fea701;height:7rem">
                                                     <div class="card-body text-center">
                                                         <img src="{{ asset('inicio/NEW.Intranet-Icono-Logistica.png')}}" alt="">
                                                     </div>
@@ -63,7 +63,7 @@
                                         <!-- Logo Interna-->
                                         <div class="col-md-3 d-flex align-items-center justify-content-center">
                                             <div class="zoom-card" style="width: 7rem;">
-                                                <div class="card text-center border-0 rounded_z" style="background-color: #00ba8e;">
+                                                <div class="card text-center border-0 rounded_z" style="background-color: #00ba8e;height:7rem">
                                                     <div class="card-body text-center">
                                                         <img src="{{ asset('inicio/NEW.Intranet-Icono-Interna.png')}}" alt="">
                                                     </div>
@@ -82,7 +82,7 @@
                                         <!-- Logo Finanzas-->
                                         <div class="col-md-3 d-flex justify-content-center align-items-end">
                                             <div class="zoom-card" style="width: 7rem;">
-                                                <div class="card text-center border-0 rounded_z" style="background-color: #00b1f4;">
+                                                <div class="card text-center border-0 rounded_z" style="background-color: #00b1f4;height:7rem">
                                                     <div class="card-body text-center">
                                                         <img src="{{ asset('inicio/NEW.Intranet-Icono-Finanzas.png')}}" alt="">
                                                         <p class="card-text text-center text-white">Finanzas</p>
@@ -209,6 +209,11 @@
     .zoom-card-2:hover {
         transform: scale(1.05); /* Efecto de zoom */
         cursor: pointer;
+    }
+    #container {
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
     }
 </style>
 <script>
