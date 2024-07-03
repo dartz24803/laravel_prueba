@@ -1,10 +1,3 @@
-<style>
-    input[disabled] {
-        background-color: white !important;
-        color: black;
-    }
-</style>
-
 <form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title">Ingreso de personal</h5>

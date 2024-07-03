@@ -1,9 +1,7 @@
 <table id="tabla_js" class="table table-hover" style="width:100%">
     <thead class="text-center">
         <tr>
-            @if (session('usuario')->id_nivel==1 || session('usuario')->id_puesto==23)
-                <th class="no-content"></th>
-            @endif
+            <th class="no-content"></th>
             <th>Base</th>
             <th>Fecha</th>
             <th>Ingreso P</th>
