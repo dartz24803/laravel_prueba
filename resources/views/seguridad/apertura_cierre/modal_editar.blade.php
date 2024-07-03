@@ -184,6 +184,10 @@
         var div_canvas = document.getElementById('div_canvase');
         var canvas = document.getElementById('canvase');
         var context = canvas.getContext('2d');
+        
+        // Ajusta el tamaño del canvas al tamaño del video
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         canvas.toBlob(function(blob) {
