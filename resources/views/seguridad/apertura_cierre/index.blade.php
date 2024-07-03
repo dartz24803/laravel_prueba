@@ -1,6 +1,13 @@
 @extends('layouts.plantilla')
 
 @section('content')
+    <style>
+        input[disabled] {
+            background-color: white !important;
+            color: black;
+        }
+    </style>
+
     <div id="content" class="main-content">
         <div class="layout-px-spacing">
             <div class="page-header">
@@ -13,15 +20,22 @@
                 <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
                     <div class="widget-content widget-content-area br-6">
                         <div class="toolbar d-md-flex align-items-md-center mt-3">
-                            <div class="form-group col-lg-2">
-                                <label>Base:</label>
-                                <select class="form-control" id="cod_baseb" name="cod_baseb" onchange="Lista_Apertura_Cierre();">
-                                    <option value="0">TODOS</option>
-                                    @foreach ($list_base as $list)
-                                        <option value="{{ $list->cod_base }}">{{ $list->cod_base }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            @if (session('usuario')->id_nivel=="1")
+                                <div class="form-group col-lg-2">
+                                    <label>Base:</label>
+                                    <select class="form-control" id="cod_baseb" name="cod_baseb" onchange="Lista_Apertura_Cierre();">
+                                        <option value="0">TODOS</option>
+                                        @foreach ($list_base as $list)
+                                            <option value="{{ $list->cod_base }}">{{ $list->cod_base }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @else
+                                <div class="form-group col-lg-2">
+                                    <label>Base:</label>
+                                    <input type="text" class="form-control" name="cod_baseb" id="cod_baseb" value="{{ session('usuario')->centro_labores }}" disabled>
+                                </div>
+                            @endif
 
                             <div class="form-group col-lg-3 col-xl-2">
                                 <label>Fecha Inicio:</label>
