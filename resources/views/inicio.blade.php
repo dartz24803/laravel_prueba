@@ -8,21 +8,19 @@
                 <div class="statbox widget box box-shadow">
                     <div class="widget-content widget-content-area simple-tab" style="background-color: #f0f3f3;">
                         <div class="row" id="cancel-row">
-                            <div id="container" class="col-xl-12 col-lg-12 col-sm-12 layout-spacing" style="background-image: url('{{ asset('inicio/NEW.Intranet-Icono-Fondo.jpg') }}');">
+                            <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
                                 <div class="page-header d-flex justify-content-center">
                                     <div class="page-title">
                                         <h2 style="color: #8fa1b7; font-weight: bold">DEPARTAMENTOS</h2>
                                     </div>
                                 </div>
-                                <div class="container">
+                                <div class="container" id="container" style="background-image: url('{{ asset('inicio/NEW.Intranet-Icono-Fondo2.jpg') }}');">
                                     <div class="row layout-top-spacing">
                                         <!-- Logo Logistica-->
                                         <div id="logo_logistica" class="col-md-12">
                                             <div class="zoom-card" style="width: 7rem;">
-                                                <div class="card text-center border-0 rounded_z" style="background-color: #fea701;height:7rem">
-                                                    <div class="card-body text-center">
-                                                        <img src="{{ asset('inicio/NEW.Intranet-Icono-Logistica.png')}}" alt="">
-                                                    </div>
+                                                <div class="card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701;height:7rem">
+                                                    <img class="imagen_1"  src="{{ asset('inicio/NEW.Intranet-Icono-Logistica.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Logística</p>
                                                 </div>
                                             </div>
@@ -30,10 +28,8 @@
                                         <!-- Logo Comercial-->
                                         <div id="logo_comercial" class="col-md-4 d-flex justify-content-end">
                                             <div class="zoom-card mb-4" style="width: 8rem">
-                                                <div class="card text-center border-0 rounded_z" style="background-color: #ff295c; height: 8rem">
-                                                    <div class="card-body text-center">
-                                                        <img src="{{ asset('inicio/NEW.Intranet-Icono-Comercial.png')}}" alt="">
-                                                    </div>
+                                                <div class="card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #ff295c; height: 8rem">
+                                                    <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Comercial.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Comercial</p>
                                                 </div>
                                             </div>
@@ -41,10 +37,8 @@
                                         <!-- Logo Talento Humano-->
                                         <div id="logo_talento_humano" class="col-md-2 d-flex justify-content-end">
                                             <div class="zoom-card" style="width: 8rem; margin-top: -2rem;">
-                                                <div class="card text-center border-0 rounded_z" style="background-color: #00b1f4; height:8rem;">
-                                                    <div class="card-body text-center">
-                                                        <img src="{{ asset('inicio/NEW.Intranet-Icono-TalentoHumano.png')}}" alt="">
-                                                    </div>
+                                                <div class="card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00b1f4; height:8rem;">
+                                                    <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-TalentoHumano.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Talento Humano</p>
                                                 </div>
                                             </div>
@@ -52,73 +46,61 @@
                                         <!-- Logo Infraestructura-->
                                         <div id="logo_infraestructura" class="col-md-3">
                                             <div class="zoom-card" style="width: 8rem;">
-                                                <div class="card text-center border-0 rounded_z" style="background-color: #00ba8e; height: 7rem;">
-                                                    <div class="card-body text-center">
-                                                        <img src="{{ asset('inicio/NEW.Intranet-Icono-Infraestructuras.png')}}" alt="">
-                                                    </div>
+                                                <div class="card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e; height: 8rem;">
+                                                    <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Infraestructuras.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Infraestructura</p>
                                                 </div>
                                             </div>
                                         </div>
                                         <!-- Logo Interna-->
                                         <div id="logo_interna" class="col-md-3 d-flex justify-content-center">
-                                            <div class="zoom-card" style="width: 6rem;">
-                                                <div class="card text-center border-0 rounded_z" style="background-color: #00ba8e;height:6rem">
-                                                    <div class="card-body text-center">
-                                                        <img src="{{ asset('inicio/NEW.Intranet-Icono-Interna.png')}}" alt="">
-                                                    </div>
+                                            <div class="zoom-card" style="width: 7rem;">
+                                                <div class="card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e;height:7rem">
+                                                    <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Interna.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Interna</p>
                                                 </div>
                                             </div>
                                         </div>
                                         <!-- Logo central LN1-->
-                                        <div id="logo_central" class="col-md-5 zoom-card-2 d-flex justify-content-start">
+                                        <div id="logo_central" class="col-md-4 zoom-card-2 d-flex justify-content-center">
                                             <div class="card text-center border-0 rounded_z" style="background-color: #00b1f4;">
                                                 <div class="card-body text-center">
-                                                    <img src="{{ asset('/inicio/logo_ln1.png') }}" alt="La número 1" style="width: 20rem; height: 6rem">
+                                                    <img src="{{ asset('/inicio/logo_ln1.png') }}" alt="La número 1" style="height: 6rem">
                                                 </div>
                                             </div>
                                         </div>
                                         <!-- Logo Finanzas-->
-                                        <div id="logo_finanzas" class="col-md-2 d-flex justify-content-start align-items-end">
+                                        <div id="logo_finanzas" class="col-md-3 d-flex justify-content-center align-items-end">
                                             <div class="zoom-card" style="width: 7rem;">
-                                                <div class="card text-center border-0 rounded_z" style="background-color: #00b1f4;height:7rem">
-                                                    <div class="card-body text-center">
-                                                        <img src="{{ asset('inicio/NEW.Intranet-Icono-Finanzas.png')}}" alt="">
-                                                        <p class="card-text text-center text-white">Finanzas</p>
-                                                    </div>
+                                                <div class="card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00b1f4;height:7rem">
+                                                    <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Finanzas.png')}}" alt="">
+                                                    <p class="card-text text-center text-white">Finanzas</p>
                                                 </div>
                                             </div>
                                         </div>
                                         <!-- Logo Seguridad y Salud-->
                                         <div id="logo_seguridad" class="col-md-5 d-flex justify-content-end">
                                             <div class="zoom-card" style="width: 8rem;">
-                                                <div class="card text-center border-0 rounded_z" style="background-color: #00b1f4; height:8rem">
-                                                    <div class="card-body text-center">
-                                                        <img src="{{ asset('inicio/NEW.Intranet-Icono-SeguridadSalud.png')}}" alt="">
-                                                        <p class="card-text text-center text-white">Seguridad y Salud</p>
-                                                    </div>
+                                                <div class="card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00b1f4; height:8rem">
+                                                    <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-SeguridadSalud.png')}}" alt="">
+                                                    <p class="card-text text-center text-white">Seguridad y Salud</p>
                                                 </div>
                                             </div>
                                         </div>
                                         <!-- Logo Caja y Control-->
                                         <div id="logo_caja" class="col-md-2 d-flex justify-content-center">
                                             <div class="zoom-card" style="width: 7rem;">
-                                                <div class="card text-center border-0 rounded_z" style="background-color: #fea701; height: 7rem;">
-                                                    <div class="card-body text-center">
-                                                        <img src="{{ asset('inicio/NEW.Intranet-Icono-CajaControlInterno.png')}}" alt="">
-                                                        <p class="card-text text-center text-white">Caja y Control Interno</p>
-                                                    </div>
+                                                <div class="card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701; height: 7rem;">
+                                                    <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-CajaControlInterno.png')}}" alt="">
+                                                    <p class="card-text text-center text-white">Caja y Control Interno</p>
                                                 </div>
                                             </div>
                                         </div>
                                         <!-- Logo Manufactura-->
                                         <div id="logo_manufactura" class="col-md-2 d-flex align-items-start">
                                             <div class="zoom-card" style="width: 8rem;">
-                                                <div class="card text-center border-0 rounded_z" style="background-color: #00ba8e; height: 8rem">
-                                                    <div class="card-body text-center">
-                                                        <img src="{{ asset('inicio/NEW.Intranet-Icono-Manufactura.png')}}" alt="">
-                                                    </div>
+                                                <div class="card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e; height: 8rem">
+                                                    <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Manufactura.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Manufactura</p>
                                                 </div>
                                             </div>
@@ -126,10 +108,8 @@
                                         <!-- Logo Tiendas-->
                                         <div id="logo_tiendas" class="col-md-3 d-flex justify-content-center">
                                             <div class="zoom-card" style="width: 8rem; margin-top: 2rem;">
-                                                <div class="card text-center border-0 rounded_z" style="background-color: #ff295c;height: 8rem">
-                                                    <div class="card-body text-center">
-                                                        <img src="{{ asset('inicio/NEW.Intranet-Icono-Tiendas.png')}}" alt="">
-                                                    </div>
+                                                <div class="card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #ff295c;height: 8rem">
+                                                    <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Tiendas.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Tiendas</p>
                                                 </div>
                                             </div>
@@ -213,31 +193,34 @@
     #container {
         background-position: center;
         background-repeat: no-repeat;
-        background-size: 155rem 70rem;
-    }
-    img{
-        mix-blend-mode:hard-light;
+        background-size: 150rem 75rem;
     }
     #logo_logistica{
         margin-left: 40.5rem;
-        margin-top: 1rem;
+        margin-top: 0rem;
+        height: 9rem;
     }
     #logo_comercial{
         margin-left: 2rem;
         margin-top: -2rem;
-        height: 11rem;
+        height: 10rem;
     }
     #logo_talento_humano{
         margin-top: -1rem;
     }
     #logo_infraestructura{
         margin-left: 13rem;
+        margin-top: -1rem
     }
     #logo_interna{
         margin-left: 8rem;
     }
     #logo_central{
         margin-top: -1.5rem;
+        margin-left: 1rem;
+    }
+    #logo_finanzas{
+        margin-left: -1.2rem;
     }
     #logo_seguridad{
         margin-left: -3rem;
@@ -251,7 +234,23 @@
         margin-top: 2.5rem;
     }
     #logo_tiendas{
-        margin-left: -1rem;
+        margin-left: -3rem;
+    }
+    .imagen_1{
+        mix-blend-mode: multiply;
+        position: absolute;
+        filter: brightness(88%);
+    }
+    .card-text{
+        z-index: 9;
+        transition: opacity 0.5s ease; /* Transición para el texto */
+    }
+    .zoom-card:hover .imagen_1{
+        filter: none;
+        mix-blend-mode: unset;
+    }
+    .zoom-card:hover .card-text{
+        opacity: 0;
     }
 </style>
 <script>
