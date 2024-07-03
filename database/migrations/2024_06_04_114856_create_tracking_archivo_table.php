@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('tracking_archivo', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_tracking')->nullable()->default(0);
-            $table->integer('tipo')->nullable()->default(0);
-            $table->integer('id_producto')->nullable()->default(0);
+            $table->unsignedBigInteger('id_tracking');
+            $table->integer('tipo')->nullable();
+            $table->integer('id_producto')->nullable();
             $table->string('archivo', 100)->nullable();
+            $table->foreign('id_tracking','tarc_fk_id_tra')->references('id')->on('tracking');
             //$table->timestamps();
         });
     }

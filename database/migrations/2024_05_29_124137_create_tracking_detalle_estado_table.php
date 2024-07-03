@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('tracking_detalle_estado', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_detalle')->nullable()->default(0);
-            $table->integer('id_estado')->nullable()->default(0);
+            $table->unsignedBigInteger('id_detalle');
+            $table->unsignedBigInteger('id_estado');
             $table->dateTime('fecha')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
@@ -23,6 +23,8 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
+            $table->foreign('id_detalle','tdest_fk_id_det')->references('id')->on('tracking_detalle_proceso');
+            $table->foreign('id_estado','tdest_fk_id_est')->references('id')->on('tracking_estado');
             //$table->timestamps();
         });
     }
