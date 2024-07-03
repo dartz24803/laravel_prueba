@@ -245,7 +245,8 @@
     .card-text{
         z-index: 9;
         transition: opacity 0.5s ease; /* Transición para el texto */
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Sombra de texto */
+        font-weight: bold;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Sombra de texto */
     }
     .zoom-card:hover .imagen_1{
         filter: none;
