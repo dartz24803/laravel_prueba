@@ -42,7 +42,7 @@ class ReporteFotograficoController extends Controller
 
     public function Reporte_Fotografico(Request $request){
         //retornar vista si esta logueado
-        $list_bases = $this->modelobase->listar();
+        $list_bases = $this->modelobase->get_list_bases_tienda();
         $list_categorias = $this->modelorfa->where('estado',1)->get();
         return view('tienda.ReporteFotografico.tabla_rf.reportefotografico', compact('list_categorias', 'list_bases'));
     }
