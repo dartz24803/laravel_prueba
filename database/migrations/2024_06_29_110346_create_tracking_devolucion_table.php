@@ -27,8 +27,8 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            $table->foreign('id_tracking','tra_fk_id_tra')->references('id')->on('tracking');
-            $table->foreign('id_producto','tra_fk_id_pro')->references('id')->on('tracking_guia_remision_detalle');
+            $table->foreign('id_tracking','tdev_fk_id_tra')->references('id')->on('tracking');
+            $table->foreign('id_producto','tdev_fk_id_pro')->references('id')->on('tracking_guia_remision_detalle');
             //$table->timestamps();
         });
     }

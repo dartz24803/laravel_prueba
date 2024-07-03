@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('tracking_estado', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_proceso')->nullable()->default(0);
+            $table->unsignedBigInteger('id_proceso');
             $table->string('descripcion', 100)->nullable();
+            $table->foreign('id_proceso','test_fk_id_pro')->references('id')->on('tracking_proceso');
             //$table->timestamps();
         });
     }
