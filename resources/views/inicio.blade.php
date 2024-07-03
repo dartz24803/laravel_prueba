@@ -193,12 +193,12 @@
     #container {
         background-position: center;
         background-repeat: no-repeat;
-        background-size: 135rem auto;
+        background-size: 140rem auto;
     }
     #logo_logistica{
         margin-left: 39.5rem;
-        margin-top: 4rem;
-        height: 9rem;
+        margin-top: 6rem;
+        height: 7rem;
     }
     #logo_comercial{
         margin-left: 4rem;
@@ -245,6 +245,7 @@
     .card-text{
         z-index: 9;
         transition: opacity 0.5s ease; /* Transición para el texto */
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Sombra de texto */
     }
     .zoom-card:hover .imagen_1{
         filter: none;
