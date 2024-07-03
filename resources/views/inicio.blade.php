@@ -5,8 +5,9 @@
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing" id="cancel-row">
             <div id="tabsSimple" class="col-lg-12 col-12 layout-spacing">
-                <div class="statbox widget box box-shadow">
-                    <div class="widget-content widget-content-area simple-tab" style="background-color: #f0f3f3;">
+                <div class="statbox widget box box-shadow row">
+                    <div class="col-md-2"></div>
+                    <div class="widget-content widget-content-area simple-tab col-md-8" style="background-color: #f0f3f3;">
                         <div class="row" id="cancel-row">
                             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
                                 <div class="page-header d-flex justify-content-center">
@@ -116,51 +117,41 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- <img src="{{ asset('/inicio/Estamos-trabajando.png') }}" alt="" style="max-width: 100%;"> -->
+                            </div>
+                            <!-- End layout spacing -->
+                            <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+                            
+                            <!-- <img src="{{ asset('/inicio/Estamos-trabajando.png') }}" alt="" style="max-width: 100%;"> -->
+                            <div class="col-md-12 footer">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="icon d-flex align-items-center justify-content-center">
+                                            <i class="bx bxs-navigation"></i>
+                                            <a href="https://www.lanumero1.com.pe" target="_blank">www.lanumero1.com.pe</a>
+                                        </div>
+                                    </div>
+                            
+                                    <div class="col-lg-5 d-block d-sm-flex justify-content-around offset-1">
+                                        <div class="icon d-flex align-items-center py-1 py-lg-0">
+                                            <i class="bx bxl-facebook-square"></i>
+                                            <a href="https://www.facebook.com/Lanumero1.peru" target="_blank">Lanumero1.peru</a>
+                                        </div>
+                            
+                                        <div class="icon d-flex align-items-center py-1 py-lg-0 px-sm-3">
+                                            <i class="bx bxl-instagram"></i>
+                                            <a href="https://www.instagram.com/lanumero1moda" target="_blank">lanumero1moda</a>
+                                        </div>
+                            
+                                        <div class="icon d-flex align-items-center py-1 py-lg-0">
+                                            <i class="bx bxl-tiktok"></i>
+                                            <a href="https://www.tiktok.com/@lanumero1.peru" target="_blank">lanumero1.peru</a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
-    <style>
-        .icon i{
-            color: #00b1f4;
-            font-size: 25px;
-        }
-        @media screen and (min-width: 2000px) {
-            .footer{
-                margin-top: 5%;
-            }
-        }
-    </style>
-    
-    <div class="layout-px-spacing footer">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="icon d-flex align-items-center py-1 py-lg-0">
-                    <i class="bx bxs-navigation"></i>
-                    <a href="https://www.lanumero1.com.pe" target="_blank">www.lanumero1.com.pe</a>
-                </div>
-            </div>
-    
-            <div class="col-lg-6 d-block d-sm-flex justify-content-lg-end">
-                <div class="icon d-flex align-items-center py-1 py-lg-0">
-                    <i class="bx bxl-facebook-square"></i>
-                    <a href="https://www.facebook.com/Lanumero1.peru" target="_blank">Lanumero1.peru</a>
-                </div>
-    
-                <div class="icon d-flex align-items-center py-1 py-lg-0 px-sm-3">
-                    <i class="bx bxl-instagram"></i>
-                    <a href="https://www.instagram.com/lanumero1moda" target="_blank">lanumero1moda</a>
-                </div>
-    
-                <div class="icon d-flex align-items-center py-1 py-lg-0">
-                    <i class="bx bxl-tiktok"></i>
-                    <a href="https://www.tiktok.com/@lanumero1.peru" target="_blank">lanumero1.peru</a>
+                    <div class="col-md-2"></div>
                 </div>
             </div>
         </div>
