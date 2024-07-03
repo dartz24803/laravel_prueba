@@ -11,11 +11,11 @@ class Base extends Model
     use HasFactory;
 
     protected $table = 'base';
+    protected $primaryKey = 'id_base';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'id_base',
         'cod_base',
         'nom_base',
         'id_empresa',
@@ -31,6 +31,15 @@ class Base extends Model
         'fec_eli',
         'user_eli'
     ];
+
+    public static function get_list_bases_tienda()
+    {
+        $sql = "SELECT cod_base FROM base 
+                WHERE id_base IN (2,3,4,5,6,7,8,9,10,31,13,27,33,14,37)
+                ORDER BY cod_base";
+        $query = DB::select($sql);
+        return $query;
+    }
 
     public function buscar($id)
     {

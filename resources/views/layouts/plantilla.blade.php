@@ -354,6 +354,31 @@
                             </li>
                         </ul>
                     </li>
+
+                    <li class="menu" id="seguridades">
+                        <a href="#rseguridades" id="hseguridades" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                            <div class="">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shield">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                </svg>
+                                <span>Seguridad</span>
+                            </div>
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </div>
+                        </a>
+
+                        <ul class="collapse submenu list-unstyled" id="rseguridades" data-parent="#accordionExample">
+                            <li>
+                                <a id="aperturas_cierres" href="{{ route('apertura_cierre') }}">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Apertura y cierre</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
                     <?php if(session('usuario')->centro_labores=="OFC" || session('usuario')->id_puesto=="29" || session('usuario')->id_puesto=="161" ||
                     session('usuario')->id_puesto=="197" || session('usuario')->id_puesto=="128" || session('usuario')->id_puesto=="251" || session('usuario')->id_puesto=="41" ||
                     session('usuario')->id_puesto=="66" || session('usuario')->id_puesto=="73" || session('usuario')->id_puesto=="158" || session('usuario')->id_puesto=="12" ||
