@@ -17,7 +17,7 @@
                                 <div class="container">
                                     <div class="row layout-top-spacing">
                                         <!-- Logo Logistica-->
-                                        <div class="col-md-12 mb-4 offset-md-6">
+                                        <div id="logo_logistica" class="col-md-12">
                                             <div class="zoom-card" style="width: 7rem;">
                                                 <div class="card text-center border-0 rounded_z" style="background-color: #fea701;height:7rem">
                                                     <div class="card-body text-center">
@@ -28,7 +28,7 @@
                                             </div>
                                         </div>
                                         <!-- Logo Comercial-->
-                                        <div class="col-md-3 d-flex justify-content-end mb-1" style="margin-left: 2rem;">
+                                        <div id="logo_comercial" class="col-md-4 d-flex justify-content-end" style="margin-left: 2rem">
                                             <div class="zoom-card mb-4" style="width: 8rem">
                                                 <div class="card text-center border-0 rounded_z" style="background-color: #ff295c; height: 8rem">
                                                     <div class="card-body text-center">
@@ -39,8 +39,8 @@
                                             </div>
                                         </div>
                                         <!-- Logo Talento Humano-->
-                                        <div class="col-md-3 d-flex justify-content-center">
-                                            <div class="zoom-card" style="width: 8rem; margin-top: -4rem;">
+                                        <div class="col-md-2 d-flex justify-content-end">
+                                            <div class="zoom-card" style="width: 8rem; margin-top: -2rem;">
                                                 <div class="card text-center border-0 rounded_z" style="background-color: #00b1f4; height:8rem;">
                                                     <div class="card-body text-center">
                                                         <img src="{{ asset('inicio/NEW.Intranet-Icono-TalentoHumano.png')}}" alt="">
@@ -50,7 +50,7 @@
                                             </div>
                                         </div>
                                         <!-- Logo Infraestructura-->
-                                        <div class="col-md-3 offset-md-2">
+                                        <div id="logo_infraestructura" class="col-md-3">
                                             <div class="zoom-card" style="width: 8rem;">
                                                 <div class="card text-center border-0 rounded_z" style="background-color: #00ba8e; height: 7rem;">
                                                     <div class="card-body text-center">
@@ -61,7 +61,7 @@
                                             </div>
                                         </div>
                                         <!-- Logo Interna-->
-                                        <div class="col-md-3 d-flex align-items-center justify-content-center">
+                                        <div id="logo_interna" class="col-md-3 d-flex justify-content-center">
                                             <div class="zoom-card" style="width: 7rem;">
                                                 <div class="card text-center border-0 rounded_z" style="background-color: #00ba8e;height:7rem">
                                                     <div class="card-body text-center">
@@ -72,7 +72,7 @@
                                             </div>
                                         </div>
                                         <!-- Logo central LN1-->
-                                        <div class="col-md-6 zoom-card-2 d-flex justify-content-center">
+                                        <div class="col-md-5 zoom-card-2 d-flex justify-content-center">
                                             <div class="card text-center border-0 rounded_z" style="background-color: #00b1f4;">
                                                 <div class="card-body text-center">
                                                     <img src="{{ asset('/inicio/logo_ln1.png') }}" alt="La número 1" style="width: 20rem; height: 6rem">
@@ -80,7 +80,7 @@
                                             </div>
                                         </div>
                                         <!-- Logo Finanzas-->
-                                        <div class="col-md-3 d-flex justify-content-center align-items-end">
+                                        <div class="col-md-2 d-flex justify-content-center align-items-end">
                                             <div class="zoom-card" style="width: 7rem;">
                                                 <div class="card text-center border-0 rounded_z" style="background-color: #00b1f4;height:7rem">
                                                     <div class="card-body text-center">
@@ -213,7 +213,20 @@
     #container {
         background-position: center;
         background-repeat: no-repeat;
-        background-size: cover;
+        background-size: 150rem 70rem;
+    }
+    img{
+        mix-blend-mode:hard-light;
+    }
+    #logo_logistica{
+        margin-left: 40.5rem;
+        margin-top: 2rem;
+    }
+    #logo_infraestructura{
+        margin-left: 13rem;
+    }
+    #logo_interna{
+        margin-left: 8rem;
     }
 </style>
 <script>
