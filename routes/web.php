@@ -241,17 +241,15 @@ Route::controller(ColaboradorConfController::class)->group(function(){
 Route::controller(AperturaCierreTiendaController::class)->group(function(){
     Route::get('apertura_cierre', 'index')->name('apertura_cierre');
     Route::post('apertura_cierre/list', 'list')->name('apertura_cierre.list');
+    Route::get('apertura_cierre/valida_modal', 'valida_modal')->name('apertura_cierre.valida_modal');
     Route::get('apertura_cierre/create', 'create')->name('apertura_cierre.create');
     Route::post('apertura_cierre/previsualizacion_captura', 'previsualizacion_captura')->name('apertura_cierre.previsualizacion_captura');
     Route::post('apertura_cierre', 'store')->name('apertura_cierre.store');
     Route::get('apertura_cierre/{id}/edit', 'edit')->name('apertura_cierre.edit');
+    Route::put('apertura_cierre/previsualizacion_captura', 'previsualizacion_captura')->name('apertura_cierre.previsualizacion_captura_put');
     Route::put('apertura_cierre/{id}', 'update')->name('apertura_cierre.update');
-    /*Route::post('funcion_temporal/tipo_funcion', 'tipo_funcion')->name('funcion_temporal.tipo_funcion');
-    Route::get('funcion_temporal/{id}', 'show')->name('funcion_temporal.show');
-    Route::get('funcion_temporal/{id}/edit', 'edit')->name('funcion_temporal.edit');
-    Route::put('funcion_temporal/{id}', 'update')->name('funcion_temporal.update');
-    Route::delete('funcion_temporal/{id}', 'destroy')->name('funcion_temporal.destroy');
-    Route::get('funcion_temporal/{id}/excel', 'excel')->name('funcion_temporal.excel');*/
+    Route::get('apertura_cierre/{id}/archivo', 'archivo')->name('apertura_cierre.archivo');
+    Route::get('apertura_cierre/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel')->name('apertura_cierre.excel');
 });
 
 

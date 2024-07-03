@@ -5,7 +5,7 @@
     }
 </style>
 
-<form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
+<form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title">{{ $titulo }}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -39,41 +39,70 @@
             </div>
 
             <div class="form-group col-lg-2">
-                <button type="button" class="btn btn-secondary" id="boton_camara" onclick="Activar_Camara();">
+                <button type="button" class="btn btn-secondary" id="boton_camarae" onclick="Activar_Camarae();">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                 </button>
             </div>
-        </div> 
+        </div>
 
-        <div class="row d-flex justify-content-center mb-2 mt-2" id="div_tomar_foto" style="display:none !important;">
-            <button type="button" class="btn btn-info" onclick="Tomar_Foto();">Tomar foto</button>
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Observaciones:</label>
+            </div>
+            <div class="form-group col-lg-10">
+                <select class="form-control multivalue" name="observacionese[]" id="observacionese" multiple="multiple">
+                    @foreach ($list_observacion as $list)
+                        <option value="{{ $list->id }}">{{ $list->descripcion }}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
-        <div class="row d-flex justify-content-center mb-2" id="div_camara" style="display:none !important;">
-            <video id="video" autoplay style="max-width: 95%;"></video>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <input type="checkbox" name="otrose" id="otrose" value="1" onclick="Otra_Observacion('e')">
+                <label for="otrose">Otros</label>
+            </div>
+            <div class="form-group col-lg-10">
+                <input type="text" class="form-control" name="otra_observacione" id="otra_observacione" 
+                placeholder="Otros" style="display: none;">
+            </div>
         </div>
-        <div class="row d-flex justify-content-center text-center" id="div_canvas" style="display:none !important;">
+
+        <div class="row d-flex justify-content-center mb-2 mt-2" id="div_tomar_fotoe" style="display:none !important;">
+            <button type="button" class="btn btn-info" onclick="Tomar_Fotoe();">Tomar foto</button>
+        </div>
+        <div class="row d-flex justify-content-center mb-4" id="div_camarae" style="display:none !important;">
+            <video id="videoe" autoplay style="max-width: 95%;"></video>
+        </div>
+        <div class="row d-flex justify-content-center text-center mb-4" id="div_canvase" style="display:none !important;">
             <p class="mt-2">Recuerda que puedes tomar otra foto presionando nuevamente <mark style="background-color:#2196F3;color:white;">Tomar foto</mark> o guardar el registro presionando <mark style=background-color:#1B55E2;color:white;>Guardar</mark></p>
-            <canvas id="canvas" width="640" height="480" style="max-width:95%;"></canvas>
+            <canvas id="canvase" width="640" height="480" style="max-width:95%;"></canvas>
         </div>
     </div>
 
     <div class="modal-footer">
         @csrf
-        <input type="hidden" id="captura" name="captura" value="0">
-        <!--<button class="btn btn-primary" type="button" onclick="Insert_Apertura_Cierre();">Guardar</button>-->
+        @method('PUT')
+        <input type="hidden" id="capturae" name="capturae">
+        <button id="boton_disablede" class="btn btn-primary" type="button" onclick="Update_Apertura_Cierre();" disabled>Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
-    var video = document.getElementById('video');
-    var boton = document.getElementById('boton_camara');
-    var div_tomar_foto = document.getElementById('div_tomar_foto'); 
-    var div = document.getElementById('div_camara'); 
+    $('.multivalue').select2({
+        dropdownParent: $('#ModalUpdate')
+    });
+
+    var video = document.getElementById('videoe');
+    var boton = document.getElementById('boton_camarae');
+    var div_tomar_foto = document.getElementById('div_tomar_fotoe'); 
+    var div = document.getElementById('div_camarae'); 
     var isCameraOn = false;
     var stream = null;
 
-    function Activar_Camara(){
+    function Activar_Camarae(){
         var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
         if(screenWidth<1000){
             if(!isCameraOn){
@@ -146,14 +175,14 @@
         }
     }
 
-    function Tomar_Foto(){
+    function Tomar_Fotoe(){
         Cargando();
 
-        var dataString = new FormData(document.getElementById('formulario'));
-        var url = "{{ route('apertura_cierre.previsualizacion_captura') }}";
-        var video = document.getElementById('video');
-        var div_canvas = document.getElementById('div_canvas');
-        var canvas = document.getElementById('canvas');
+        var dataString = new FormData(document.getElementById('formularioe'));
+        var url = "{{ route('apertura_cierre.previsualizacion_captura_put') }}";
+        var video = document.getElementById('videoe');
+        var div_canvas = document.getElementById('div_canvase');
+        var canvas = document.getElementById('canvase');
         var context = canvas.getContext('2d');
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
@@ -170,17 +199,18 @@
                 contentType: false,
                 success: function(response) {
                     div_canvas.style.cssText = "display: block;";
-                    $('#captura').val('1');
+                    $('#boton_disablede').prop('disabled', false);
+                    $('#capturae').val('1');
                 }
             });
         }, 'image/jpeg');
     }
 
-    function Insert_Apertura_Cierre(){
+    function Update_Apertura_Cierre(){
         Cargando();
 
-        var dataString = new FormData(document.getElementById('formulario'));
-        var url = "{{ route('apertura_cierre.store') }}";
+        var dataString = new FormData(document.getElementById('formularioe'));
+        var url = "{{ route('apertura_cierre.update', $get_id->id_apertura_cierre) }}";
 
         $.ajax({
             url: url,
@@ -189,25 +219,14 @@
             processData: false,
             contentType: false,
             success:function (data) {
-                if(data=="error"){
-                    Swal({
-                        title: '¡Registro Denegado!',
-                        text: "¡El registro ya existe!",
-                        type: 'error',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK',
-                    });
-                }else{
-                    swal.fire(
-                        '¡Registro Exitoso!',
-                        '¡Haga clic en el botón!',
-                        'success'
-                    ).then(function() {
-                        Lista_Apertura_Cierre();
-                        $("#ModalRegistro .close").click();
-                    });
-                }
+                swal.fire(
+                    '¡Actualización Exitosa!',
+                    '¡Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                    Lista_Apertura_Cierre();
+                    $("#ModalUpdate .close").click();
+                });
             },
             error:function(xhr) {
                 var errors = xhr.responseJSON.errors;

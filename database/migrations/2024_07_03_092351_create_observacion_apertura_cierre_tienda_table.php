@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('archivos_apertura_cierre_tienda', function (Blueprint $table) {
+        Schema::create('observacion_apertura_cierre_tienda', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_apertura_cierre');
             $table->integer('tipo_apertura')->nullable();
-            $table->string('archivo');
-            $table->foreign('id_apertura_cierre','arc_fk_id_ape')->references('id_apertura_cierre')->on('apertura_cierre_tienda');
+            $table->unsignedBigInteger('id_observacion');
+            $table->foreign('id_apertura_cierre','obs_fk_id_ape')->references('id_apertura_cierre')->on('apertura_cierre_tienda');
+            $table->foreign('id_observacion','obs_fk_id_obs')->references('id')->on('c_observacion_apertura_cierre_tienda');
             //$table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('archivos_apertura_cierre_tienda');
+        Schema::dropIfExists('observacion_apertura_cierre_tienda');
     }
 };

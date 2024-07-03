@@ -42,7 +42,8 @@ class AperturaCierreTienda extends Model
     public static function get_list_apertura_cierre_tienda($dato)
     {
         if(isset($dato['id_apertura_cierre'])){
-            $sql = "SELECT CASE WHEN apertura IS NULL AND cierre IS NULL AND salida IS NULL THEN '2'
+            $sql = "SELECT id_apertura_cierre,cod_base,CASE WHEN apertura IS NULL AND cierre IS NULL AND 
+                    salida IS NULL THEN '2'
                     WHEN apertura IS NOT NULL AND cierre IS NULL AND salida IS NULL THEN '3'
                     WHEN apertura IS NOT NULL AND cierre IS NOT NULL AND salida IS NULL THEN '4'
                     ELSE '0' END AS tipo_apertura 
@@ -53,40 +54,81 @@ class AperturaCierreTienda extends Model
         }else{
             $parte = "";
             if($dato['cod_base']!="0"){
-                $parte = "AND cod_base='".$dato['cod_base']."'";
+                $parte = "AND ac.cod_base='".$dato['cod_base']."'";
             }
-            $sql = "SELECT id_apertura_cierre,cod_base,
-                    CONCAT( (CASE WHEN DAYNAME(fecha)='Monday' THEN 'Lunes'
-                    WHEN DAYNAME(fecha)='Tuesday' THEN 'Martes' WHEN DAYNAME(fecha)='Wednesday' THEN 'Miércoles' 
-                    WHEN DAYNAME(fecha)='Thursday' THEN 'Jueves' WHEN DAYNAME(fecha)='Friday' THEN 'Viernes'
-                    WHEN DAYNAME(fecha)='Saturday' THEN 'Sábado' WHEN DAYNAME(fecha)='Sunday' THEN 'Domingo' 
-                    ELSE '' END) ,' ',LPAD(DAY(fecha),2,'0'),' de ', (CASE WHEN MONTH(fecha)=1 THEN 'Enero' 
-                    WHEN MONTH(fecha)=2 THEN 'Febrero' WHEN MONTH(fecha)=3 THEN 'Marzo' 
-                    WHEN MONTH(fecha)=4 THEN 'Abril' WHEN MONTH(fecha)=5 THEN 'Mayo' 
-                    WHEN MONTH(fecha)=6 THEN 'Junio' WHEN MONTH(fecha)=7 THEN 'Julio' 
-                    WHEN MONTH(fecha)=8 THEN 'Agosto' WHEN MONTH(fecha)=9 THEN 'Septiembre' 
-                    WHEN MONTH(fecha)=10 THEN 'Octubre' WHEN MONTH(fecha)=11 THEN 'Noviembre' 
-                    WHEN MONTH(fecha)=12 THEN 'Diciembre' ELSE '' END),' de ',YEAR(fecha)) AS fecha,ingreso,
-                    apertura,cierre,salida,obs_ingreso,obs_apertura,obs_cierre,obs_salida,estado,
-                    DATE_FORMAT(ingreso_horario,'%H:%i') AS ingreso_programado,
-                    DATE_FORMAT(ingreso,'%H:%i') AS ingreso_real,
-                    TIMESTAMPDIFF(MINUTE, ingreso_horario, ingreso) AS ingreso_diferencia,
-                    DATE_FORMAT(apertura_horario,'%H:%i') AS apertura_programada,
-                    DATE_FORMAT(apertura,'%H:%i') AS apertura_real,
-                    TIMESTAMPDIFF(MINUTE, apertura_horario, apertura) AS apertura_diferencia,
-                    DATE_FORMAT(cierre_horario,'%H:%i') AS cierre_programado,
-                    DATE_FORMAT(cierre,'%H:%i') AS cierre_real,
-                    TIMESTAMPDIFF(MINUTE, cierre_horario, cierre) AS cierre_diferencia,
-                    DATE_FORMAT(salida_horario,'%H:%i') AS salida_programada,
-                    DATE_FORMAT(salida,'%H:%i') AS salida_real,
-                    TIMESTAMPDIFF(MINUTE, salida_horario, salida) AS salida_diferencia,
-                    CASE WHEN apertura IS NULL AND cierre IS NULL AND salida IS NULL THEN '2'
-                    WHEN apertura IS NOT NULL AND cierre IS NULL AND salida IS NULL THEN '3'
-                    WHEN apertura IS NOT NULL AND cierre IS NOT NULL AND salida IS NULL THEN '4'
-                    ELSE '0' END AS tipo_apertura
-                    FROM apertura_cierre_tienda
-                    WHERE (fecha BETWEEN '".$dato['fec_ini']."' AND '".$dato['fec_fin']."') $parte AND 
-                    estado=1";
+            $sql = "SELECT ac.id_apertura_cierre,ac.cod_base,
+                    CONCAT( (CASE WHEN DAYNAME(ac.fecha)='Monday' THEN 'Lunes'
+                    WHEN DAYNAME(ac.fecha)='Tuesday' THEN 'Martes' 
+                    WHEN DAYNAME(ac.fecha)='Wednesday' THEN 'Miércoles' 
+                    WHEN DAYNAME(ac.fecha)='Thursday' THEN 'Jueves' 
+                    WHEN DAYNAME(ac.fecha)='Friday' THEN 'Viernes'
+                    WHEN DAYNAME(ac.fecha)='Saturday' THEN 'Sábado' 
+                    WHEN DAYNAME(ac.fecha)='Sunday' THEN 'Domingo' 
+                    ELSE '' END) ,' ',LPAD(DAY(ac.fecha),2,'0'),' de ', 
+                    (CASE WHEN MONTH(ac.fecha)=1 THEN 'Enero' 
+                    WHEN MONTH(ac.fecha)=2 THEN 'Febrero' WHEN MONTH(ac.fecha)=3 THEN 'Marzo' 
+                    WHEN MONTH(ac.fecha)=4 THEN 'Abril' WHEN MONTH(ac.fecha)=5 THEN 'Mayo' 
+                    WHEN MONTH(ac.fecha)=6 THEN 'Junio' WHEN MONTH(ac.fecha)=7 THEN 'Julio' 
+                    WHEN MONTH(ac.fecha)=8 THEN 'Agosto' WHEN MONTH(ac.fecha)=9 THEN 'Septiembre' 
+                    WHEN MONTH(ac.fecha)=10 THEN 'Octubre' WHEN MONTH(ac.fecha)=11 THEN 'Noviembre' 
+                    WHEN MONTH(ac.fecha)=12 THEN 'Diciembre' ELSE '' END),' de ',YEAR(ac.fecha)) AS fecha,
+                    DATE_FORMAT(ac.ingreso_horario,'%H:%i') AS ingreso_programado,
+                    DATE_FORMAT(ac.ingreso,'%H:%i') AS ingreso_real,
+                    TIMESTAMPDIFF(MINUTE, ac.ingreso, ac.ingreso_horario) AS ingreso_diferencia,
+                    CONCAT(CASE WHEN (SELECT COUNT(1) FROM observacion_apertura_cierre_tienda oa
+                    INNER JOIN c_observacion_apertura_cierre_tienda co ON co.id=oa.id_observacion
+                    WHERE oa.id_apertura_cierre=ac.id_apertura_cierre AND oa.tipo_apertura=1)>0 THEN 
+                    (SELECT GROUP_CONCAT(co.descripcion SEPARATOR ', ') 
+                    FROM observacion_apertura_cierre_tienda oa
+                    INNER JOIN c_observacion_apertura_cierre_tienda co ON co.id=oa.id_observacion
+                    WHERE oa.id_apertura_cierre=ac.id_apertura_cierre AND oa.tipo_apertura=1) ELSE '' END,
+                    CASE WHEN ac.obs_ingreso IS NOT NULL THEN CONCAT(', ',ac.obs_ingreso) 
+                    ELSE '' END) AS obs_ingreso,
+                    DATE_FORMAT(ac.apertura_horario,'%H:%i') AS apertura_programada,
+                    DATE_FORMAT(ac.apertura,'%H:%i') AS apertura_real,
+                    TIMESTAMPDIFF(MINUTE, ac.apertura, ac.apertura_horario) AS apertura_diferencia,
+                    CONCAT(CASE WHEN (SELECT COUNT(1) FROM observacion_apertura_cierre_tienda oa
+                    INNER JOIN c_observacion_apertura_cierre_tienda co ON co.id=oa.id_observacion
+                    WHERE oa.id_apertura_cierre=ac.id_apertura_cierre AND oa.tipo_apertura=2)>0 THEN 
+                    (SELECT GROUP_CONCAT(co.descripcion SEPARATOR ', ') 
+                    FROM observacion_apertura_cierre_tienda oa
+                    INNER JOIN c_observacion_apertura_cierre_tienda co ON co.id=oa.id_observacion
+                    WHERE oa.id_apertura_cierre=ac.id_apertura_cierre AND oa.tipo_apertura=2) ELSE '' END,
+                    CASE WHEN ac.obs_apertura IS NOT NULL THEN CONCAT(', ',ac.obs_apertura) 
+                    ELSE '' END) AS obs_apertura,
+                    DATE_FORMAT(ac.cierre_horario,'%H:%i') AS cierre_programado,
+                    DATE_FORMAT(ac.cierre,'%H:%i') AS cierre_real,
+                    TIMESTAMPDIFF(MINUTE, ac.cierre, ac.cierre_horario) AS cierre_diferencia,
+                    CONCAT(CASE WHEN (SELECT COUNT(1) FROM observacion_apertura_cierre_tienda oa
+                    INNER JOIN c_observacion_apertura_cierre_tienda co ON co.id=oa.id_observacion
+                    WHERE oa.id_apertura_cierre=ac.id_apertura_cierre AND oa.tipo_apertura=3)>0 THEN 
+                    (SELECT GROUP_CONCAT(co.descripcion SEPARATOR ', ') 
+                    FROM observacion_apertura_cierre_tienda oa
+                    INNER JOIN c_observacion_apertura_cierre_tienda co ON co.id=oa.id_observacion
+                    WHERE oa.id_apertura_cierre=ac.id_apertura_cierre AND oa.tipo_apertura=3) ELSE '' END,
+                    CASE WHEN ac.obs_cierre IS NOT NULL THEN CONCAT(', ',ac.obs_cierre) 
+                    ELSE '' END) AS obs_cierre,
+                    DATE_FORMAT(ac.salida_horario,'%H:%i') AS salida_programada,
+                    DATE_FORMAT(ac.salida,'%H:%i') AS salida_real,
+                    TIMESTAMPDIFF(MINUTE, ac.salida, ac.salida_horario) AS salida_diferencia,
+                    CONCAT(CASE WHEN (SELECT COUNT(1) FROM observacion_apertura_cierre_tienda oa
+                    INNER JOIN c_observacion_apertura_cierre_tienda co ON co.id=oa.id_observacion
+                    WHERE oa.id_apertura_cierre=ac.id_apertura_cierre AND oa.tipo_apertura=4)>0 THEN 
+                    (SELECT GROUP_CONCAT(co.descripcion SEPARATOR ', ') 
+                    FROM observacion_apertura_cierre_tienda oa
+                    INNER JOIN c_observacion_apertura_cierre_tienda co ON co.id=oa.id_observacion
+                    WHERE oa.id_apertura_cierre=ac.id_apertura_cierre AND oa.tipo_apertura=4) ELSE '' END,
+                    CASE WHEN ac.obs_salida IS NOT NULL THEN CONCAT(', ',ac.obs_salida) 
+                    ELSE '' END) AS obs_salida,
+                    CASE WHEN ac.apertura IS NULL AND ac.cierre IS NULL AND ac.salida IS NULL THEN '2'
+                    WHEN ac.apertura IS NOT NULL AND ac.cierre IS NULL AND ac.salida IS NULL THEN '3'
+                    WHEN ac.apertura IS NOT NULL AND ac.cierre IS NOT NULL AND ac.salida IS NULL THEN '4'
+                    ELSE '0' END AS tipo_apertura,ac.fecha AS fecha_v,
+                    (SELECT COUNT(1) FROM archivos_apertura_cierre_tienda aa
+                    WHERE aa.id_apertura_cierre=ac.id_apertura_cierre) AS archivos
+                    FROM apertura_cierre_tienda ac
+                    WHERE (ac.fecha BETWEEN '".$dato['fec_ini']."' AND '".$dato['fec_fin']."') $parte AND 
+                    ac.estado=1";
             $query = DB::select($sql);
             return $query;
         }

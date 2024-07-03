@@ -43,7 +43,31 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                 </button>
             </div>
-        </div> 
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Observaciones:</label>
+            </div>
+            <div class="form-group col-lg-10">
+                <select class="form-control multivalue" name="observaciones[]" id="observaciones" multiple="multiple">
+                    @foreach ($list_observacion as $list)
+                        <option value="{{ $list->id }}">{{ $list->descripcion }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <input type="checkbox" name="otros" id="otros" value="1" onclick="Otra_Observacion('')">
+                <label for="otros">Otros</label>
+            </div>
+            <div class="form-group col-lg-10">
+                <input type="text" class="form-control" name="otra_observacion" id="otra_observacion" 
+                placeholder="Otros" style="display: none;">
+            </div>
+        </div>
 
         <div class="row d-flex justify-content-center mb-2 mt-2" id="div_tomar_foto" style="display:none !important;">
             <button type="button" class="btn btn-info" onclick="Tomar_Foto();">Tomar foto</button>
@@ -59,13 +83,17 @@
 
     <div class="modal-footer">
         @csrf
-        <input type="hidden" id="captura" name="captura" value="0">
-        <button class="btn btn-primary" type="button" onclick="Insert_Apertura_Cierre();">Guardar</button>
+        <input type="hidden" id="captura" name="captura">
+        <button id="boton_disabled" class="btn btn-primary" type="button" onclick="Insert_Apertura_Cierre();" disabled>Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
+    $('.multivalue').select2({
+        dropdownParent: $('#ModalRegistro')
+    });
+
     var video = document.getElementById('video');
     var boton = document.getElementById('boton_camara');
     var div_tomar_foto = document.getElementById('div_tomar_foto'); 
@@ -170,6 +198,7 @@
                 contentType: false,
                 success: function(response) {
                     div_canvas.style.cssText = "display: block;";
+                    $('#boton_disabled').prop('disabled', false);
                     $('#captura').val('1');
                 }
             });
