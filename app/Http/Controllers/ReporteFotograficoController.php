@@ -160,7 +160,7 @@ class ReporteFotograficoController extends Controller
                     $respuesta['error'] = $validator->errors()->all();
                 }else{
                     $nombre_actual = "REPORTE_FOTOGRAFICO/".$data[0]['ruta'];
-                    $nuevo_nombre = "REPORTE_FOTOGRAFICO/Evidencia_".date('Y-m-d H:m:s')."_".Session('usuario')->id_usuario."_".Session('usuario')->centro_labores."_captura.jpg";
+                    $nuevo_nombre = "REPORTE_FOTOGRAFICO/Evidencia_".date('Y-m-d H:i:s')."_".Session('usuario')->id_usuario."_".Session('usuario')->centro_labores."_captura.jpg";
                     ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
                     $nombre = basename($nuevo_nombre);
                     //llenar array con datos para bd
