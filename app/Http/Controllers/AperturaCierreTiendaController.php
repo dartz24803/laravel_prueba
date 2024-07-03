@@ -239,6 +239,9 @@ class AperturaCierreTiendaController extends Controller
 
     public function archivo($id)
     {
+        $get_id = AperturaCierreTienda::select('cod_base',DB::raw('DATE_FORMAT(fecha,"%d/%m/%Y") AS fecha_v'))
+                                        ->where('id_apertura_cierre',$id)
+                                        ->first();
         $list_archivo = ArchivosAperturaCierreTienda::select('archivo','tipo_apertura',
                                                     DB::raw('CASE WHEN tipo_apertura=1 THEN "INGRESO DE PERSONAL" 
                                                     WHEN tipo_apertura=2 THEN "APERTURA DE TIENDA" 
@@ -246,7 +249,7 @@ class AperturaCierreTiendaController extends Controller
                                                     WHEN tipo_apertura=4 THEN "SALIDA DE PERSONAL" 
                                                     ELSE "" END AS titulo'))
                                                     ->where('id_apertura_cierre',$id)->get();
-        return view('seguridad.apertura_cierre.modal_archivo', compact('list_archivo'));
+        return view('seguridad.apertura_cierre.modal_archivo', compact('get_id','list_archivo'));
     }
 
     public function excel($cod_base,$fec_ini,$fec_fin)
