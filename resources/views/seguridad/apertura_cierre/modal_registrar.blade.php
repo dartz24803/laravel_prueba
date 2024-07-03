@@ -77,7 +77,7 @@
         </div>
         <div class="row d-flex justify-content-center text-center" id="div_canvas" style="display:none !important;">
             <p class="mt-2">Recuerda que puedes tomar otra foto presionando nuevamente <mark style="background-color:#2196F3;color:white;">Tomar foto</mark> o guardar el registro presionando <mark style=background-color:#1B55E2;color:white;>Guardar</mark></p>
-            <canvas id="canvas" width="640" height="480" style="max-width:95%;"></canvas>
+            <canvas id="canvas" style="max-width:95%;"></canvas>
         </div>
     </div>
 

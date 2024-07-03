@@ -77,7 +77,7 @@
         </div>
         <div class="row d-flex justify-content-center text-center mb-4" id="div_canvase" style="display:none !important;">
             <p class="mt-2">Recuerda que puedes tomar otra foto presionando nuevamente <mark style="background-color:#2196F3;color:white;">Tomar foto</mark> o guardar el registro presionando <mark style=background-color:#1B55E2;color:white;>Guardar</mark></p>
-            <canvas id="canvase" width="640" height="480" style="max-width:95%;"></canvas>
+            <canvas id="canvase" style="max-width:95%;"></canvas>
         </div>
     </div>
 
@@ -184,7 +184,7 @@
         var div_canvas = document.getElementById('div_canvase');
         var canvas = document.getElementById('canvase');
         var context = canvas.getContext('2d');
-        
+
         // Ajusta el tamaño del canvas al tamaño del video
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
