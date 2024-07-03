@@ -161,21 +161,23 @@ class TrackingController extends Controller
                                 <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                     <thead>
                                         <tr align="center" style="background-color:#0093C6;">
+                                            <th width="10%"><b>SKU</b></th>
                                             <th width="18%"><b>Color</b></th>
-                                            <th width="18%"><b>Estilo</b></th>
-                                            <th width="18%"><b>Talla</b></th>
-                                            <th width="36%"><b>Descripción</b></th>
+                                            <th width="15%"><b>Estilo</b></th>
+                                            <th width="15%"><b>Talla</b></th>
+                                            <th width="32%"><b>Descripción</b></th>
                                             <th width="10%"><b>Cantidad</b></th>
                                         </tr>
                                     </thead>
                                     <tbody>';
                                 foreach($list_detalle as $list){
             $mail->Body .=  '            <tr align="left">
+                                            <td align="center">'.$list->sku.'</td>
                                             <td>'.$list->color.'</td>
                                             <td>'.$list->estilo.'</td>
                                             <td>'.$list->talla.'</td>
                                             <td>'.$list->descripcion.'</td>
-                                            <td style="text-align:center;">'.$list->cantidad.'</td>
+                                            <td align="center">'.$list->cantidad.'</td>
                                         </tr>';
                                 }
             $mail->Body .=  '        </tbody>
@@ -1772,7 +1774,7 @@ class TrackingController extends Controller
     public function insert_autorizacion_devolucion(Request $request,$id)
     {
         $valida_t = TrackingEvaluacionTemporal::where('id_usuario',session('usuario')->id_usuario)->count();
-        $valida = TrackingDevolucion::where('id_tracking',$id)->count();
+        $valida = TrackingDevolucion::where('id_tracking',$id)->where('estado',1)->count();
 
         if($valida_t==$valida){
             $list_evaluacion = TrackingEvaluacionTemporal::where('id_usuario',session('usuario')->id_usuario)->get();
