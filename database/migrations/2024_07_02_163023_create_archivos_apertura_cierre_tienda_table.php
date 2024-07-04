@@ -16,6 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_apertura_cierre');
             $table->integer('tipo_apertura')->nullable();
             $table->string('archivo');
+            $table->dateTime('fecha')->nullable();
+            $table->integer('usuario')->nullable();
             $table->foreign('id_apertura_cierre','aactie_fk_id_ape')->references('id_apertura_cierre')->on('apertura_cierre_tienda');
             //$table->timestamps();
         });

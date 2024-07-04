@@ -153,7 +153,9 @@ class AperturaCierreTiendaController extends Controller
                     ArchivosAperturaCierreTienda::create([
                         'id_apertura_cierre' => $apertura->id_apertura_cierre,
                         'tipo_apertura' => 1,
-                        'archivo' => $archivo
+                        'archivo' => $archivo,
+                        'fecha' => now(),
+                        'usuario' => session('usuario')->id_usuario
                     ]);
                 }else{
                     echo "No se conecto";
@@ -234,7 +236,9 @@ class AperturaCierreTiendaController extends Controller
                 ArchivosAperturaCierreTienda::create([
                     'id_apertura_cierre' => $id,
                     'tipo_apertura' => $get_id->tipo_apertura,
-                    'archivo' => $archivo
+                    'archivo' => $archivo,
+                    'fecha' => now(),
+                    'usuario' => session('usuario')->id_usuario
                 ]);
             }else{
                 echo "No se conecto";
@@ -441,5 +445,33 @@ class AperturaCierreTiendaController extends Controller
         header('Cache-Control: max-age=0');
 
         $writer->save('php://output'); 
+    }
+
+    public function index_img()
+    {
+        $list_base = Base::get_list_bases_tienda();
+        return view('seguridad.apertura_cierre.imagen.index', compact('list_base'));
+    }
+
+    public function list_img(Request $request)
+    {
+        $list_archivo = ArchivosAperturaCierreTienda::get_list_archivos_apertura_cierre_tienda(['cod_base'=>$request->cod_base,'fec_ini'=>$request->fec_ini,'fec_fin'=>$request->fec_fin]);
+        return view('seguridad.apertura_cierre.imagen.lista', compact('list_archivo'));
+    }
+
+    public function show_img($id)
+    {
+        $get_id = ArchivosAperturaCierreTienda::select('archivos_apertura_cierre_tienda.id',
+                                                'archivos_apertura_cierre_tienda.archivo',
+                                                'apertura_cierre_tienda.cod_base',
+                                                DB::raw('CASE WHEN archivos_apertura_cierre_tienda.tipo_apertura=1 THEN "Ingreso de personal"
+                                                WHEN archivos_apertura_cierre_tienda.tipo_apertura=2 THEN "Apertura de tienda"
+                                                WHEN archivos_apertura_cierre_tienda.tipo_apertura=3 THEN "Cierre de tienda"
+                                                WHEN archivos_apertura_cierre_tienda.tipo_apertura=4 THEN "Salida de personal" 
+                                                ELSE "" END AS tipo_apertura'),
+                                                DB::raw('DATE_FORMAT(archivos_apertura_cierre_tienda.fecha,"%d/%m/%Y %H:%i:%s") AS fecha'))
+                                                ->join('apertura_cierre_tienda','apertura_cierre_tienda.id_apertura_cierre','=','archivos_apertura_cierre_tienda.id_apertura_cierre')
+                                                ->where('archivos_apertura_cierre_tienda.id',$id)->first();                                          
+        return view('seguridad.apertura_cierre.imagen.modal_detalle', compact('get_id'));
     }
 }

@@ -252,6 +252,9 @@ Route::controller(AperturaCierreTiendaController::class)->group(function(){
     Route::put('apertura_cierre_reg/{id}', 'update_reg')->name('apertura_cierre_reg.update');
     Route::get('apertura_cierre_reg/{id}/archivo', 'archivo_reg')->name('apertura_cierre_reg.archivo');
     Route::get('apertura_cierre_reg/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_reg')->name('apertura_cierre_reg.excel');
+    Route::get('apertura_cierre_img', 'index_img')->name('apertura_cierre_img');
+    Route::post('apertura_cierre_img/list', 'list_img')->name('apertura_cierre_img.list');
+    Route::get('apertura_cierre_img/{id}/show', 'show_img')->name('apertura_cierre_img.show');
 });
 
 

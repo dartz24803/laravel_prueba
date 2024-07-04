@@ -64,13 +64,13 @@
         function Imagen(){
             Cargando();
 
-            var url="{{ route('apertura_cierre_reg') }}";
+            var url="{{ route('apertura_cierre_img') }}";
 
             $.ajax({
                 url: url,
                 type: "GET",
                 success:function (resp) {
-                    $('#div_apertura_cierre_tienda').html('Imagen');  
+                    $('#div_apertura_cierre_tienda').html(resp);  
                     $("#a_reg").removeClass('active');
                     $("#a_img").addClass('active');
                 }
