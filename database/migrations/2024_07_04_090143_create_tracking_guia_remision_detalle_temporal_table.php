@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tracking_guia_remision_detalle_temporal', function (Blueprint $table) {
+            $table->string('n_requerimiento', 10)->nullable();
             $table->string('n_guia_remision',20)->nullable();
             $table->string('sku',20)->nullable();
             $table->string('color',200)->nullable();

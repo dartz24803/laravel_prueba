@@ -14,6 +14,7 @@ class TrackingGuiaRemisionDetalleTemporal extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'n_requerimiento',
         'n_guia_remision',
         'sku',
         'color',
