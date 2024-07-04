@@ -13,7 +13,7 @@ $base = Session('usuario')->centro_labores;
     } else {
         $disabled = 'disabled';
     } ?>
-    <div class="form-group col-md-6">
+    <div class="form-group col-md-4">
         <label>Base: </label>
         <select class="form-control basic" id="base" name="base" onchange="Imagenes_Listar();" <?= $disabled ?>>
             <option value="0" <?= $selected ?>>TODOS</option>
@@ -28,7 +28,7 @@ $base = Session('usuario')->centro_labores;
             <?php } ?>
         </select>
     </div>
-    <div class="form-group col-md-6">
+    <div class="form-group col-md-4">
         <label>Categorias: </label>
         <select class="form-control basic_i" id="categoria_filtro" name="categoria_filtro" onchange="Imagenes_Listar();">
             <option value="0">TODOS</option>
@@ -36,6 +36,10 @@ $base = Session('usuario')->centro_labores;
                 <option value="<?php echo $list['id']; ?>"><?php echo $list['categoria']; ?></option>
             <?php } ?>
         </select>
+    </div>
+    <div class="form-group col-md-4">
+        <label>Fecha: </label>
+        <input type="date" class="form-control" id="fecha_filtro" name="fecha_filtro" onchange="Imagenes_Listar();" max="{{$today}}">
     </div>
 </div>
 @csrf
@@ -50,6 +54,7 @@ $base = Session('usuario')->centro_labores;
 
         var base = $('#base').val();
         var categoria = $('#categoria_filtro').val();
+        var fecha = $('#fecha_filtro').val();
         var url = "{{ url('Listar_Imagenes_Reporte_Fotografico') }}";
 
         $.ajax({
@@ -57,7 +62,8 @@ $base = Session('usuario')->centro_labores;
             type: 'POST',
             data: {
                 'base': base,
-                'categoria': categoria
+                'categoria': categoria,
+                'fecha' : fecha,
             },
             headers: {
                 'X-CSRF-TOKEN': csrfToken
