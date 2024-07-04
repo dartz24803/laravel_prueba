@@ -28,17 +28,22 @@ class AperturaCierreTiendaController extends Controller
 
     public function index()
     {
-        $list_base = Base::get_list_bases_tienda();
-        return view('seguridad.apertura_cierre.index', compact('list_base'));
+        return view('seguridad.apertura_cierre.index');
     }
 
-    public function list(Request $request)
+    public function index_reg()
+    {
+        $list_base = Base::get_list_bases_tienda();
+        return view('seguridad.apertura_cierre.registro.index', compact('list_base'));
+    }
+
+    public function list_reg(Request $request)
     {
         $list_apertura_cierre_tienda = AperturaCierreTienda::get_list_apertura_cierre_tienda(['cod_base'=>$request->cod_base,'fec_ini'=>$request->fec_ini,'fec_fin'=>$request->fec_fin]);
-        return view('seguridad.apertura_cierre.lista', compact('list_apertura_cierre_tienda'));
+        return view('seguridad.apertura_cierre.registro.lista', compact('list_apertura_cierre_tienda'));
     }
 
-    public function valida_modal()
+    public function valida_modal_reg()
     {
         $valida = TiendaMarcacionDia::select('tienda_marcacion_dia.hora_ingreso')
                                     ->join('tienda_marcacion','tienda_marcacion.id_tienda_marcacion','=','tienda_marcacion_dia.id_tienda_marcacion')
@@ -51,7 +56,7 @@ class AperturaCierreTiendaController extends Controller
         }
     }
 
-    public function create()
+    public function create_reg()
     {
         $get_hora = TiendaMarcacionDia::select('tienda_marcacion_dia.hora_ingreso')
                                         ->join('tienda_marcacion','tienda_marcacion.id_tienda_marcacion','=','tienda_marcacion_dia.id_tienda_marcacion')
@@ -60,10 +65,10 @@ class AperturaCierreTiendaController extends Controller
                                         ->where('tienda_marcacion_dia.dia',date('j'))
                                         ->first();
         $list_observacion = CObservacionAperturaCierreTienda::select('id','descripcion')->get();                                        
-        return view('seguridad.apertura_cierre.modal_registrar', compact('get_hora','list_observacion'));
+        return view('seguridad.apertura_cierre.registro.modal_registrar', compact('get_hora','list_observacion'));
     }
 
-    public function previsualizacion_captura()
+    public function previsualizacion_captura_reg()
     {
         if($_FILES["photo"]["name"] != ""){
             $ftp_server = "lanumerounocloud.com";
@@ -94,7 +99,7 @@ class AperturaCierreTiendaController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store_reg(Request $request)
     {
         $valida = AperturaCierreTienda::where('fecha', date('Y-m-d'))
                                         ->where('cod_base', session('usuario')->centro_labores)
@@ -157,7 +162,7 @@ class AperturaCierreTiendaController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit_reg($id)
     {
         $get_id = AperturaCierreTienda::get_list_apertura_cierre_tienda(['id_apertura_cierre'=>$id]);
         if($get_id->tipo_apertura=="2"){
@@ -177,10 +182,10 @@ class AperturaCierreTiendaController extends Controller
                                         ->where('tienda_marcacion_dia.dia',date('j'))
                                         ->first();
         $list_observacion = CObservacionAperturaCierreTienda::select('id','descripcion')->get();
-        return view('seguridad.apertura_cierre.modal_editar', compact('get_id','get_hora','titulo','list_observacion'));
+        return view('seguridad.apertura_cierre.registro.modal_editar', compact('get_id','get_hora','titulo','list_observacion'));
     }
 
-    public function update(Request $request, $id){
+    public function update_reg(Request $request, $id){
         $get_id = AperturaCierreTienda::get_list_apertura_cierre_tienda(['id_apertura_cierre'=>$id]);
         if($get_id->tipo_apertura=="2"){
             $minuscula = "apertura";
@@ -237,7 +242,7 @@ class AperturaCierreTiendaController extends Controller
         }
     }
 
-    public function archivo($id)
+    public function archivo_reg($id)
     {
         $get_id = AperturaCierreTienda::select('cod_base',DB::raw('DATE_FORMAT(fecha,"%d/%m/%Y") AS fecha_v'))
                                         ->where('id_apertura_cierre',$id)
@@ -249,10 +254,10 @@ class AperturaCierreTiendaController extends Controller
                                                     WHEN tipo_apertura=4 THEN "SALIDA DE PERSONAL" 
                                                     ELSE "" END AS titulo'))
                                                     ->where('id_apertura_cierre',$id)->get();
-        return view('seguridad.apertura_cierre.modal_archivo', compact('get_id','list_archivo'));
+        return view('seguridad.apertura_cierre.registro.modal_archivo', compact('get_id','list_archivo'));
     }
 
-    public function excel($cod_base,$fec_ini,$fec_fin)
+    public function excel_reg($cod_base,$fec_ini,$fec_fin)
     {
         $list_funcion_temporal = AperturaCierreTienda::get_list_apertura_cierre_tienda(['cod_base'=>$cod_base,'fec_ini'=>$fec_ini,'fec_fin'=>$fec_fin]);
 

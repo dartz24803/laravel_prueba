@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TrackingGuiaRemisionDetalle extends Model
+class TrackingGuiaRemisionDetalleTemporal extends Model
 {
     use HasFactory;
 
-    protected $table = 'tracking_guia_remision_detalle';
+    protected $table = 'tracking_guia_remision_detalle_temporal';
 
     public $timestamps = false;
 
