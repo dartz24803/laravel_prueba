@@ -18,7 +18,7 @@
                 <td class="text-center">
                     <?= $row['id'];?>
                 </td>
-                <td class="text-center"><?= $row['foto']; ?></td>
+                <td class="text-center"><?= $row['base']; ?></td>
                 <td class="text-center"><?= $row['descripcion']; ?></td>
                 <td class="text-center"><?= $row['categoria']; ?></td>
                 <td class="text-center"><?= $row['areas']; ?></td>

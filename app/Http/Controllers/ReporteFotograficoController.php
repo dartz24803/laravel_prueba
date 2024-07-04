@@ -231,7 +231,7 @@ class ReporteFotograficoController extends Controller
     }
 
     public function Imagenes_Reporte_Fotografico(Request $request){
-        $list_bases = $this->modelobase->listar();
+        $list_bases = $this->modelobase->get_list_bases_tienda();
         $list_categorias = $this->modelorfa->where('estado',1)->get();
         $base= $request->input("base");
         $area= $request->input("area");
