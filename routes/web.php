@@ -241,16 +241,17 @@ Route::controller(ColaboradorConfController::class)->group(function(){
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS
 Route::controller(AperturaCierreTiendaController::class)->group(function(){
     Route::get('apertura_cierre', 'index')->name('apertura_cierre');
-    Route::post('apertura_cierre/list', 'list')->name('apertura_cierre.list');
-    Route::get('apertura_cierre/valida_modal', 'valida_modal')->name('apertura_cierre.valida_modal');
-    Route::get('apertura_cierre/create', 'create')->name('apertura_cierre.create');
-    Route::post('apertura_cierre/previsualizacion_captura', 'previsualizacion_captura')->name('apertura_cierre.previsualizacion_captura');
-    Route::post('apertura_cierre', 'store')->name('apertura_cierre.store');
-    Route::get('apertura_cierre/{id}/edit', 'edit')->name('apertura_cierre.edit');
-    Route::put('apertura_cierre/previsualizacion_captura', 'previsualizacion_captura')->name('apertura_cierre.previsualizacion_captura_put');
-    Route::put('apertura_cierre/{id}', 'update')->name('apertura_cierre.update');
-    Route::get('apertura_cierre/{id}/archivo', 'archivo')->name('apertura_cierre.archivo');
-    Route::get('apertura_cierre/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel')->name('apertura_cierre.excel');
+    Route::get('apertura_cierre_reg', 'index_reg')->name('apertura_cierre_reg');
+    Route::post('apertura_cierre_reg/list', 'list_reg')->name('apertura_cierre_reg.list');
+    Route::get('apertura_cierre_reg/valida_modal', 'valida_modal_reg')->name('apertura_cierre_reg.valida_modal');
+    Route::get('apertura_cierre_reg/create', 'create_reg')->name('apertura_cierre_reg.create');
+    Route::post('apertura_cierre_reg/previsualizacion_captura', 'previsualizacion_captura_reg')->name('apertura_cierre_reg.previsualizacion_captura');
+    Route::post('apertura_cierre_reg', 'store_reg')->name('apertura_cierre_reg.store');
+    Route::get('apertura_cierre_reg/{id}/edit', 'edit_reg')->name('apertura_cierre_reg.edit');
+    Route::put('apertura_cierre_reg/previsualizacion_captura', 'previsualizacion_captura_reg')->name('apertura_cierre_reg.previsualizacion_captura_put');
+    Route::put('apertura_cierre_reg/{id}', 'update_reg')->name('apertura_cierre_reg.update');
+    Route::get('apertura_cierre_reg/{id}/archivo', 'archivo_reg')->name('apertura_cierre_reg.archivo');
+    Route::get('apertura_cierre_reg/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_reg')->name('apertura_cierre_reg.excel');
 });
 
 

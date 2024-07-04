@@ -28,7 +28,7 @@
                 <td>
                     @if ($list->tipo_apertura!="0" && $list->fecha_v==date('Y-m-d'))
                         <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
-                        app_elim="{{ route('apertura_cierre.edit', $list->id_apertura_cierre) }}">
+                        app_elim="{{ route('apertura_cierre_reg.edit', $list->id_apertura_cierre) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical">
                                 <circle cx="12" cy="12" r="1"></circle>
                                 <circle cx="12" cy="5" r="1"></circle>
@@ -39,7 +39,7 @@
 
                     @if ($list->archivos>0)
                         <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
-                        app_elim="{{ route('apertura_cierre.archivo', $list->id_apertura_cierre) }}">
+                        app_elim="{{ route('apertura_cierre_reg.archivo', $list->id_apertura_cierre) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye text-success">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                 <circle cx="12" cy="12" r="3"></circle>
@@ -54,25 +54,25 @@
                 <td>
                     <span class="badge badge-@php if($list->ingreso_diferencia>0){ echo "success"; }else{ echo "danger"; } @endphp">{{ $list->ingreso_diferencia }}</span>
                 </td>
-                <td>{{ $list->obs_ingreso }}</td>
+                <td class="text-left">{{ $list->obs_ingreso }}</td>
                 <td>{{ $list->apertura_programada }}</td>
                 <td>{{ $list->apertura_real }}</td>
                 <td>
                     <span class="badge badge-@php if($list->apertura_diferencia>0){ echo "success"; }else{ echo "danger"; } @endphp">{{ $list->apertura_diferencia }}</span>
                 </td>
-                <td>{{ $list->obs_apertura }}</td>
+                <td class="text-left">{{ $list->obs_apertura }}</td>
                 <td>{{ $list->cierre_programado }}</td>
                 <td>{{ $list->cierre_real }}</td>
                 <td>
                     <span class="badge badge-@php if($list->cierre_diferencia>0){ echo "success"; }else{ echo "danger"; } @endphp">{{ $list->cierre_diferencia }}</span>
                 </td>
-                <td>{{ $list->obs_cierre }}</td>
+                <td class="text-left">{{ $list->obs_cierre }}</td>
                 <td>{{ $list->salida_programada }}</td>
                 <td>{{ $list->salida_real }}</td>
                 <td>
                     <span class="badge badge-@php if($list->salida_diferencia>0){ echo "success"; }else{ echo "danger"; } @endphp">{{ $list->salida_diferencia }}</span>
                 </td>
-                <td>{{ $list->obs_salida }}</td>
+                <td class="text-left">{{ $list->obs_salida }}</td>
             </tr>
         @endforeach
     </tbody>

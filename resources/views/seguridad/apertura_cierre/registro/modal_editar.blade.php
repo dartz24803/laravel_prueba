@@ -172,7 +172,7 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('apertura_cierre.previsualizacion_captura_put') }}";
+        var url = "{{ route('apertura_cierre_reg.previsualizacion_captura_put') }}";
         var video = document.getElementById('videoe');
         var div_canvas = document.getElementById('div_canvase');
         var canvas = document.getElementById('canvase');
@@ -207,7 +207,7 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('apertura_cierre.update', $get_id->id_apertura_cierre) }}";
+        var url = "{{ route('apertura_cierre_reg.update', $get_id->id_apertura_cierre) }}";
 
         $.ajax({
             url: url,

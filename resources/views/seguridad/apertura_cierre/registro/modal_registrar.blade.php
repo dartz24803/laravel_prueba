@@ -171,7 +171,7 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario'));
-        var url = "{{ route('apertura_cierre.previsualizacion_captura') }}";
+        var url = "{{ route('apertura_cierre_reg.previsualizacion_captura') }}";
         var video = document.getElementById('video');
         var div_canvas = document.getElementById('div_canvas');
         var canvas = document.getElementById('canvas');
@@ -206,7 +206,7 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario'));
-        var url = "{{ route('apertura_cierre.store') }}";
+        var url = "{{ route('apertura_cierre_reg.store') }}";
 
         $.ajax({
             url: url,
