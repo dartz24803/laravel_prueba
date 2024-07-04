@@ -32,7 +32,7 @@ class ReporteFotografico extends Model
         return $this->where('id', $id)->get()->toArray();
     }*/
 
-    public function listar($base, $categoria){
+    public function listar($base, $categoria, $fecha){
 
         if($base==0){
             $parte1 = "";
@@ -45,13 +45,19 @@ class ReporteFotografico extends Model
         }else{
             $parte2 = " AND crf.tipo = '$categoria'";
         }
+        
+        if($fecha==''){
+            $parte3 = "";
+        }else{
+            $parte3 = " AND DATE(rf.fec_reg) = '$fecha'";
+        }
         //borrar codigo=10
         $query = "select rf.id,rf.base,rf.foto,crf.descripcion,rfa.categoria,rf.fec_reg, GROUP_CONCAT(a.nom_area ORDER BY rfd.id DESC SEPARATOR ', ') as areas from reporte_fotografico_new rf
             left join codigos_reporte_fotografico_new crf ON rf.codigo = crf.id
             left join reporte_fotografico_adm_new rfa ON crf.tipo = rfa.id
             LEFT JOIN reporte_fotografico_detalle_new rfd ON rfa.id = rfd.id_reporte_fotografico_adm
             LEFT JOIN area a ON rfd.id_area = a.id_area
-            where rf.estado=1 $parte1 $parte2
+            where rf.estado=1 $parte1 $parte2 $parte3
             GROUP BY rf.id,rf.base,rf.foto,crf.descripcion,rfa.categoria,rf.fec_reg ORDER BY fec_reg DESC;";
 
         $result = DB::select($query);

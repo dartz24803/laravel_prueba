@@ -43,14 +43,16 @@ class ReporteFotograficoController extends Controller
     public function Reporte_Fotografico(Request $request){
         //retornar vista si esta logueado
         $list_bases = $this->modelobase->get_list_bases_tienda();
+        $today = date('Y-m-d');
         $list_categorias = $this->modelorfa->where('estado',1)->get();
-        return view('tienda.ReporteFotografico.tabla_rf.reportefotografico', compact('list_categorias', 'list_bases'));
+        return view('tienda.ReporteFotografico.tabla_rf.reportefotografico', compact('list_categorias', 'list_bases', 'today'));
     }
 
     public function Reporte_Fotografico_Listar(Request $request){
-        $base= $request->input("base");
-        $categoria= $request->input("categoria");
-        $list = $this->modelo->listar($base,$categoria);
+        $base = $request->input("base");
+        $categoria = $request->input("categoria");
+        $fecha = $request->input("fecha");
+        $list = $this->modelo->listar($base,$categoria,$fecha);
         return view('tienda.ReporteFotografico.tabla_rf.listar', compact('list'));
     }
 
@@ -231,18 +233,20 @@ class ReporteFotograficoController extends Controller
     }
 
     public function Imagenes_Reporte_Fotografico(Request $request){
-        $list_bases = $this->modelobase->listar();
+        $list_bases = $this->modelobase->get_list_bases_tienda();
         $list_categorias = $this->modelorfa->where('estado',1)->get();
+        $today = date('Y-m-d');
         $base= $request->input("base");
         $area= $request->input("area");
         $codigo= $request->input("codigo");
-        return view('tienda.ReporteFotografico.imagenes_rf.index',  compact('list_categorias', 'list_bases'));
+        return view('tienda.ReporteFotografico.imagenes_rf.index',  compact('list_categorias', 'list_bases', 'today'));
     }
 
     public function Listar_Imagenes_Reporte_Fotografico(Request $request){
         $base= $request->input("base");
         $categoria= $request->input("categoria");
-        $list_rf = $this->modelo->listar($base, $categoria);
+        $fecha = $request->input("fecha");
+        $list_rf = $this->modelo->listar($base, $categoria, $fecha);
         //print_r($list_rf[0]);
         return view('tienda.ReporteFotografico.imagenes_rf.listar',  compact('list_rf'));
     }
