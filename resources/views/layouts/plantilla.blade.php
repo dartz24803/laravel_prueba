@@ -44,19 +44,23 @@
 
     <!--  BEGIN NAVBAR  -->
     <div class="header-container fixed-top">
-        <header class="header navbar navbar-expand-sm expand-header">
-            <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></a>
+        <header class="header navbar navbar-expand-sm expand-header d-flex justify-content-around" style="background: black; height:5rem;">       
+            <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></a>
 
+            <a class="col-md-5 offset-5">
+                <img src="{{ asset('login_files/img/Grupo-LaNumero.png') }}" class="navbar-logo ajuste1" alt="logo">
+                <img src="{{ asset('login_files/img/1.png') }}" class="navbar-logo ajuste2" alt="logo">
+            </a>     
             <ul class="navbar-item flex-row ml-auto">
                 <li class="nav-item dropdown notification-dropdown">
                     <a href="javascript:void(0);" class="nav-link dropdown-toggle" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><!--<span class="badge badge-success"></span>-->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><!--<span class="badge badge-success"></span>-->
                     </a>
                     <div class="dropdown-menu position-absolute" aria-labelledby="notificationDropdown">
                         <div class="notification-scroll">
                             <div class="dropdown-item">
                                 <div class="media">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-slash">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-slash">
                                         <circle cx="12" cy="12" r="10"></circle>
                                         <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
                                     </svg>
@@ -71,7 +75,7 @@
 
                 <li class="nav-item dropdown user-profile-dropdown  order-lg-0 order-1">
                     <a href="javascript:void(0);" class="nav-link dropdown-toggle user" id="userProfileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     </a>
                     <div class="dropdown-menu position-absolute" aria-labelledby="userProfileDropdown">
                         <div class="user-profile-section">
@@ -549,6 +553,11 @@
             var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
         })();
     </script>
+    <style>
+    div[id^="gb-widget-"] {
+        /* Estilos que deseas aplicar */
+    }
+    </style>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/custom-select2.js') }}"></script>
     <script src="{{ asset('template/plugins/highlight/highlight.pack.js') }}"></script>
