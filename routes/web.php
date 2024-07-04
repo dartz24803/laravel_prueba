@@ -68,6 +68,7 @@ Route::controller(TrackingController::class)->group(function(){
     Route::delete('tracking/{id}/delete_archivo_temporal', 'delete_archivo_temporal')->name('tracking.delete_archivo_temporal');
     //FIN SUBIDA ARCHIVOS
     Route::get('tracking', 'index')->name('tracking');
+    Route::get('tracking/iniciar_tracking', 'iniciar_tracking')->name('tracking.iniciar_tracking');
     Route::post('tracking/list', 'list')->name('tracking.list');
     Route::get('tracking/create', 'create')->name('tracking.create');
     Route::post('tracking', 'store')->name('tracking.store');
