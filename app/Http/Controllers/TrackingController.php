@@ -160,34 +160,7 @@ class TrackingController extends Controller
             }
         }*/
 
-        $mail = new PHPMailer(true);
-
-        try {
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host       =  'mail.lanumero1.com.pe';
-            $mail->SMTPAuth   =  true;
-            $mail->Username   =  'intranet@lanumero1.com.pe';
-            $mail->Password   =  'lanumero1$1';
-            $mail->SMTPSecure =  'tls';
-            $mail->Port     =  587; 
-            $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
-
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
-
-            $mail->isHTML(true);
-
-            $mail->Subject = "Prueba";
-        
-            $mail->Body =  '<FONT SIZE=3>
-                                Hola Prueba
-                            </FONT SIZE>';
-        
-            $mail->CharSet = 'UTF-8';
-            $mail->send();
-        }catch(Exception $e) {
-            echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-        }
+        echo "Si funciona";
     }
 
     public function index()
