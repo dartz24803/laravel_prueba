@@ -14,6 +14,7 @@ use App\Http\Controllers\TablaCuadroControlVisualController;
 use App\Http\Controllers\CuadroControlVisualController;
 use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\AmonestacionController;
+use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
 use App\Http\Controllers\ColaboradorConfController;
 
@@ -237,6 +238,24 @@ Route::controller(ColaboradorConfController::class)->group(function(){
     Route::get('colaborador_conf_ca/{id}/edit', 'edit_ca')->name('colaborador_conf_ca.edit');
     Route::put('colaborador_conf_ca/{id}', 'update_ca')->name('colaborador_conf_ca.update');
     Route::delete('colaborador_conf_ca/{id}', 'destroy_ca')->name('colaborador_conf_ca.destroy');
+});
+//SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
+Route::controller(AperturaCierreTiendaConfController::class)->group(function(){
+    Route::get('apertura_cierre_conf', 'index')->name('apertura_cierre_conf');
+    Route::get('apertura_cierre_conf_ho', 'index_ho')->name('apertura_cierre_conf_ho');
+    Route::get('apertura_cierre_conf_ho/list', 'list_ho')->name('apertura_cierre_conf_ho.list');
+    Route::get('apertura_cierre_conf_ho/create', 'create_ho')->name('apertura_cierre_conf_ho.create');
+    Route::post('apertura_cierre_conf_ho', 'store_ho')->name('apertura_cierre_conf_ho.store');
+    Route::get('apertura_cierre_conf_ho/{id}/edit', 'edit_ho')->name('apertura_cierre_conf_ho.edit');
+    Route::put('apertura_cierre_conf_ho/{id}', 'update_ho')->name('apertura_cierre_conf_ho.update');
+    Route::delete('apertura_cierre_conf_ho/{id}', 'destroy_ho')->name('apertura_cierre_conf_ho.destroy');
+    Route::get('apertura_cierre_conf_ob', 'index_ob')->name('apertura_cierre_conf_ob');
+    Route::get('apertura_cierre_conf_ob/list', 'list_ob')->name('apertura_cierre_conf_ob.list');
+    Route::get('apertura_cierre_conf_ob/create', 'create_ob')->name('apertura_cierre_conf_ob.create');
+    Route::post('apertura_cierre_conf_ob', 'store_ob')->name('apertura_cierre_conf_ob.store');
+    Route::get('apertura_cierre_conf_ob/{id}/edit', 'edit_ob')->name('apertura_cierre_conf_ob.edit');
+    Route::put('apertura_cierre_conf_ob/{id}', 'update_ob')->name('apertura_cierre_conf_ob.update');
+    Route::delete('apertura_cierre_conf_ob/{id}', 'destroy_ob')->name('apertura_cierre_conf_ob.destroy');
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS
 Route::controller(AperturaCierreTiendaController::class)->group(function(){
