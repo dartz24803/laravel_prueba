@@ -31,20 +31,25 @@
           </label>
         </div>
 
-        <div class="padre">
-            <div class="hijo" ><img class="medio1" src="{{ asset('login_files/img/LN14.png')}}" alt="IMG"></div>
-            <div class="hijo" ><img class="medio3" src="{{ asset('login_files/img/GANGA3_2.png')}}" alt="IMG"></div>
-        </div>
-
         <form class="form1" id="frm_login" name="frm_login" action="{{ route('IngresarLogin')}}" method="post">
-            <input type="text" class="un" id="Usuario" name="Usuario" align="center" placeholder="USUARIO">
-            <input type="password" class="pass" id="Password"  name="Password"  align="center" placeholder="CONTRASEÑA">
+            <div class="col-md-12" style="display: flex; justify-content: center;">
+                <strong><label for="Usuario" style="color: #888ea8;">USUARIO</label></strong>
+            </div>
+            <input type="text" class="un" id="Usuario" name="Usuario" align="center">
+            <div class="col-md-12" style="display: flex; justify-content: center;">
+                <strong><label for="Password" style="color: #888ea8;">CONTRASEÑA</label></strong>
+            </div>
+            <input type="password" class="pass" id="Password"  name="Password"  align="center">
 
 
+            <center style="background-color: white;"><br><div class="forgot-password"><a style="color:#F07D00" >¿Olvidaste&nbsp;tu&nbsp;contraseña?</a></div></center><br>
+            <center style="background-color: white;"><span class="txt1" role="alert" id="resultado" style="color:red;"></span></center>
             <button type="submit" class="submit" value="Login" name="login" id="submit" align="center">INGRESAR</button>
-            <center><br><div class="forgot-password"><u><a style="color:#F07D00" >¿Olvidaste&nbsp;tu&nbsp;contraseña?</a></u></div></center>
-            <center><span class="txt1" role="alert" id="resultado" style="color:red;"></span></center>
         </form>
+        <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#ffa700" stroke="#ffa700" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#ffa700" stroke="#ffa700" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg>
+        </div>
       </div>
   </body>
 </html>
