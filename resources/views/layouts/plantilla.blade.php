@@ -44,13 +44,13 @@
 
     <!--  BEGIN NAVBAR  -->
     <div class="header-container fixed-top">
-        <header class="header navbar navbar-expand-sm expand-header d-flex justify-content-around" style="background: black; height:5rem;">       
+        <header class="header navbar navbar-expand-sm expand-header d-flex justify-content-around" style="background: black; height:5rem;">
             <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></a>
 
             <a class="col-md-5 offset-5">
                 <img src="{{ asset('login_files/img/Grupo-LaNumero.png') }}" class="navbar-logo ajuste1" alt="logo">
                 <img src="{{ asset('login_files/img/1.png') }}" class="navbar-logo ajuste2" alt="logo">
-            </a>     
+            </a>
             <ul class="navbar-item flex-row ml-auto">
                 <li class="nav-item dropdown notification-dropdown">
                     <a href="javascript:void(0);" class="nav-link dropdown-toggle" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -388,7 +388,9 @@
                     session('usuario')->id_puesto=="66" || session('usuario')->id_puesto=="73" || session('usuario')->id_puesto=="158" || session('usuario')->id_puesto=="12" ||
                     session('usuario')->id_puesto=="155" || session('usuario')->id_puesto=="9" || session('usuario')->id_puesto=="19" || session('usuario')->id_puesto=="21" ||
                     session('usuario')->id_puesto=="131" || session('usuario')->id_puesto=="68" || session('usuario')->id_puesto=="72" || session('usuario')->id_puesto=="15" ||
-                    session('usuario')->id_puesto=="27" || session('usuario')->id_puesto=="148" || session('usuario')->id_puesto=="76" || session('usuario')->id_puesto=="311")
+                    session('usuario')->id_puesto=="27" || session('usuario')->id_puesto=="148" || session('usuario')->id_puesto=="76" || session('usuario')->id_puesto=="311"||
+                    Session('usuario')->id_puesto == 144
+                    )
                     { ?>
                         <li class="menu" id="tienda">
                             <a href="#rtienda" id="htienda" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
