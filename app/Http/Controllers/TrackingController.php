@@ -24,7 +24,7 @@ class TrackingController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('verificar.sesion.usuario')->except(['index','detalle_operacion_diferencia','evaluacion_devolucion']);
+        $this->middleware('verificar.sesion.usuario')->except(['index','detalle_operacion_diferencia','evaluacion_devolucion','iniciar_tracking']);
     }
 
     public function iniciar_tracking()
