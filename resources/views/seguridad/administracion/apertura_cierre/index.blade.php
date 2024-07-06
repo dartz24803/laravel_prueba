@@ -9,7 +9,7 @@
                         <div class="widget-content widget-content-area simple-tab">
                             <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                                 <li class="nav-item">
-                                    <a id="a_hor" class="nav-link" style="cursor: pointer;" href="#">Horarios programados</a><!--onclick="Horario_Programado();" -->
+                                    <a id="a_hor" class="nav-link" onclick="Horario_Programado();" style="cursor: pointer;" href="#">Horarios programados</a>
                                 </li>
                                 <li class="nav-item">
                                     <a id="a_obs" class="nav-link" onclick="Observacion();" style="cursor: pointer;">Observaciones</a>
@@ -35,7 +35,7 @@
             $("#hconf_seguridades").attr('aria-expanded', 'true');
             $("#conf_aperturas_cierres").addClass('active');
 
-            Observacion();
+            Horario_Programado();
         });
         
         function Horario_Programado(){

@@ -28,105 +28,22 @@
         });
     }
 
-    function Activar_Dia(v,dia){
-        if(!$('#ch_'+dia+v).is(":checked")){
-            $("#hora_ingreso_"+dia+v).prop('disabled', true);
-            $("#hora_apertura_"+dia+v).prop('disabled', true);
-            $("#hora_cierre_"+dia+v).prop('disabled', true);
-            $("#hora_salida_"+dia+v).prop('disabled', true);
+    function Activar_Dia(v){
+        if(!$('#ch_'+v).is(":checked")){
+            $("#hora_ingreso_"+v).prop('disabled', true);
+            $("#hora_ingreso_"+v).val('');
+            $("#hora_apertura_"+v).prop('disabled', true);
+            $("#hora_apertura_"+v).val('');
+            $("#hora_cierre_"+v).prop('disabled', true);
+            $("#hora_cierre_"+v).val('');
+            $("#hora_salida_"+v).prop('disabled', true);
+            $("#hora_salida_"+v).val('');
         }else{
-            $("#hora_ingreso_"+dia+v).prop('disabled', false);
-            $("#hora_apertura_"+dia+v).prop('disabled', false);
-            $("#hora_cierre_"+dia+v).prop('disabled', false);
-            $("#hora_salida_"+dia+v).prop('disabled', false);
+            $("#hora_ingreso_"+v).prop('disabled', false);
+            $("#hora_apertura_"+v).prop('disabled', false);
+            $("#hora_cierre_"+v).prop('disabled', false);
+            $("#hora_salida_"+v).prop('disabled', false);
         }
-        /*if(id==1){
-            if(!$('#ch_lunes').is(":checked")){
-                $("#hora_ingreso_l").prop('disabled', true);
-                $("#hora_apertura_l").prop('disabled', true);
-                $("#hora_cierre_l").prop('disabled', true);
-                $("#hora_salida_l").prop('disabled', true);
-                
-            }else{
-                $("#hora_ingreso_l").prop('disabled', false);
-                $("#hora_apertura_l").prop('disabled', false);
-                $("#hora_cierre_l").prop('disabled', false);
-                $("#hora_salida_l").prop('disabled', false);
-            }
-        }else if(id==2){
-            if(!$('#ch_martes').is(":checked")){
-                $("#hora_ingreso_ma").prop('disabled', true);
-                $("#hora_apertura_ma").prop('disabled', true);
-                $("#hora_cierre_ma").prop('disabled', true);
-                $("#hora_salida_ma").prop('disabled', true);
-            }else{
-                $("#hora_ingreso_ma").prop('disabled', false);
-                $("#hora_apertura_ma").prop('disabled', false);
-                $("#hora_cierre_ma").prop('disabled', false);
-                $("#hora_salida_ma").prop('disabled', false);
-            }
-        }else if(id==3){
-            if(!$('#ch_miercoles').is(":checked")){
-                $("#hora_ingreso_mi").prop('disabled', true);
-                $("#hora_apertura_mi").prop('disabled', true);
-                $("#hora_cierre_mi").prop('disabled', true);
-                $("#hora_salida_mi").prop('disabled', true);
-            }else{
-                $("#hora_ingreso_mi").prop('disabled', false);
-                $("#hora_apertura_mi").prop('disabled', false);
-                $("#hora_cierre_mi").prop('disabled', false);
-                $("#hora_salida_mi").prop('disabled', false);
-            }
-        }else if(id==4){
-            if(!$('#ch_jueves').is(":checked")){
-                $("#hora_ingreso_ju").prop('disabled', true);
-                $("#hora_apertura_ju").prop('disabled', true);
-                $("#hora_cierre_ju").prop('disabled', true);
-                $("#hora_salida_ju").prop('disabled', true);
-            }else{
-                $("#hora_ingreso_ju").prop('disabled', false);
-                $("#hora_apertura_ju").prop('disabled', false);
-                $("#hora_cierre_ju").prop('disabled', false);
-                $("#hora_salida_ju").prop('disabled', false);
-            }
-        }else if(id==5){
-            if(!$('#ch_viernes').is(":checked")){
-                $("#hora_ingreso_v").prop('disabled', true);
-                $("#hora_apertura_v").prop('disabled', true);
-                $("#hora_cierre_v").prop('disabled', true);
-                $("#hora_salida_v").prop('disabled', true);
-            }else{
-                $("#hora_ingreso_v").prop('disabled', false);
-                $("#hora_apertura_v").prop('disabled', false);
-                $("#hora_cierre_v").prop('disabled', false);
-                $("#hora_salida_v").prop('disabled', false);
-            }
-        }else if(id==6){
-            if(!$('#ch_sabado').is(":checked")){
-                $("#hora_ingreso_s").prop('disabled', true);
-                $("#hora_apertura_s").prop('disabled', true);
-                $("#hora_cierre_s").prop('disabled', true);
-                $("#hora_salida_s").prop('disabled', true);
-            }else{
-                $("#hora_ingreso_s").prop('disabled', false);
-                $("#hora_apertura_s").prop('disabled', false);
-                $("#hora_cierre_s").prop('disabled', false);
-                $("#hora_salida_s").prop('disabled', false);
-            }
-        }else if(id==7){
-            if(!$('#ch_domingo').is(":checked")){
-                $("#hora_ingreso_d").prop('disabled', true);
-                $("#hora_apertura_d").prop('disabled', true);
-                $("#hora_cierre_d").prop('disabled', true);
-                $("#hora_salida_d").prop('disabled', true);
-            }else{
-                $("#hora_ingreso_d").prop('disabled', false);
-                $("#hora_apertura_d").prop('disabled', false);
-                $("#hora_cierre_d").prop('disabled', false);
-                $("#hora_salida_d").prop('disabled', false);
-            }
-        }*/
-
     }
 
     function Delete_Horario_Programado(id) {
