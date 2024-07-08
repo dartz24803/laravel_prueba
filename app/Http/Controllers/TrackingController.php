@@ -177,9 +177,7 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
             ]);
     
             TrackingDetalleEstado::create([
@@ -188,9 +186,7 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
             ]);
         }
     }
