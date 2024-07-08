@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('id_provincia', 4)->nullable();
             $table->string('id_distrito', 6)->nullable();
             $table->string('direccion', 200)->nullable();
+            $table->integer('tiempo_llegada')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();

@@ -24,7 +24,7 @@
         <div class="row">
             <div class="form-group col-lg-2 n-chk d-flex align-items-center">
                 <label class="new-control new-checkbox new-checkbox-rounded checkbox-primary">
-                    <input type="checkbox" class="new-control-input" id="ch_lu" name="ch_lu" value="1" onclick="Activar_Dia('','lu')">
+                    <input type="checkbox" class="new-control-input" id="ch_lu" name="ch_lu" value="1" onclick="Activar_Dia('lu')">
                     <span class="new-control-indicator"></span> &nbsp; &nbsp; &nbsp;  Lunes
                 </label>
             </div>
@@ -57,7 +57,7 @@
         <div class="row">
             <div class="form-group col-lg-2 n-chk d-flex align-items-center">
                 <label class="new-control new-checkbox new-checkbox-rounded checkbox-primary">
-                    <input type="checkbox" class="new-control-input" id="ch_ma" name="ch_ma" value="1" onclick="Activar_Dia('','ma')">
+                    <input type="checkbox" class="new-control-input" id="ch_ma" name="ch_ma" value="1" onclick="Activar_Dia('ma')">
                     <span class="new-control-indicator"></span> &nbsp; &nbsp; &nbsp;  Martes
                 </label>
             </div>
@@ -90,7 +90,7 @@
         <div class="row">
             <div class="form-group col-lg-2 n-chk d-flex align-items-center">
                 <label class="new-control new-checkbox new-checkbox-rounded checkbox-primary">
-                    <input type="checkbox" class="new-control-input" id="ch_mi" name="ch_mi" value="1" onclick="Activar_Dia('','mi')">
+                    <input type="checkbox" class="new-control-input" id="ch_mi" name="ch_mi" value="1" onclick="Activar_Dia('mi')">
                     <span class="new-control-indicator"></span> &nbsp; &nbsp; &nbsp;  Miércoles
                 </label>
             </div>
@@ -123,7 +123,7 @@
         <div class="row">
             <div class="form-group col-lg-2 n-chk d-flex align-items-center">
                 <label class="new-control new-checkbox new-checkbox-rounded checkbox-primary">
-                    <input type="checkbox" class="new-control-input" id="ch_ju" name="ch_ju" value="1" onclick="Activar_Dia('','ju')">
+                    <input type="checkbox" class="new-control-input" id="ch_ju" name="ch_ju" value="1" onclick="Activar_Dia('ju')">
                     <span class="new-control-indicator"></span> &nbsp; &nbsp; &nbsp;  Jueves
                 </label>
             </div>
@@ -156,7 +156,7 @@
         <div class="row">
             <div class="form-group col-lg-2 n-chk d-flex align-items-center">
                 <label class="new-control new-checkbox new-checkbox-rounded checkbox-primary">
-                    <input type="checkbox" class="new-control-input" id="ch_vi" name="ch_vi" value="1" onclick="Activar_Dia('','vi')">
+                    <input type="checkbox" class="new-control-input" id="ch_vi" name="ch_vi" value="1" onclick="Activar_Dia('vi')">
                     <span class="new-control-indicator"></span> &nbsp; &nbsp; &nbsp;  Viernes
                 </label>
             </div>
@@ -189,7 +189,7 @@
         <div class="row">
             <div class="form-group col-lg-2 n-chk d-flex align-items-center">
                 <label class="new-control new-checkbox new-checkbox-rounded checkbox-primary">
-                    <input type="checkbox" class="new-control-input" id="ch_sa" name="ch_sa" value="1" onclick="Activar_Dia('','sa')">
+                    <input type="checkbox" class="new-control-input" id="ch_sa" name="ch_sa" value="1" onclick="Activar_Dia('sa')">
                     <span class="new-control-indicator"></span> &nbsp; &nbsp; &nbsp;  Sábado
                 </label>
             </div>
@@ -222,7 +222,7 @@
         <div class="row">
             <div class="form-group col-lg-2 n-chk d-flex align-items-center">
                 <label class="new-control new-checkbox new-checkbox-rounded checkbox-primary">
-                    <input type="checkbox" class="new-control-input" id="ch_do" name="ch_do" value="1" onclick="Activar_Dia('','do')">
+                    <input type="checkbox" class="new-control-input" id="ch_do" name="ch_do" value="1" onclick="Activar_Dia('do')">
                     <span class="new-control-indicator"></span> &nbsp; &nbsp; &nbsp;  Domingo
                 </label>
             </div>
@@ -289,8 +289,8 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        //Lista_Horario_Programado();
-                        //$("#ModalRegistroGrande .close").click();
+                        Lista_Horario_Programado();
+                        $("#ModalRegistroGrande .close").click();
                     })
                 }
             },

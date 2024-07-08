@@ -20,7 +20,7 @@ return new class extends Migration
             $table->time('hora_apertura')->nullable();
             $table->time('hora_cierre')->nullable();
             $table->time('hora_salida')->nullable();
-            $table->foreign('id_tienda_marcacion','tmar_fk_id_tie')->references('id_tienda_marcacion')->on('tienda_marcacion');
+            $table->foreign('id_tienda_marcacion','tmdia_fk_id_tie')->references('id_tienda_marcacion')->on('tienda_marcacion');
             //$table->timestamps();
         });
     }

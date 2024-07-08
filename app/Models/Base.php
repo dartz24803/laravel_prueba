@@ -23,6 +23,7 @@ class Base extends Model
         'id_provincia',
         'id_distrito',
         'direccion',
+        'tiempo_llegada',
         'estado',
         'fec_reg',
         'user_reg',

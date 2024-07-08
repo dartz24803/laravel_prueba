@@ -24,12 +24,12 @@ class TrackingController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('verificar.sesion.usuario')->except(['index','detalle_operacion_diferencia','evaluacion_devolucion','iniciar_tracking']);
+        $this->middleware('verificar.sesion.usuario')->except(['index','detalle_operacion_diferencia','evaluacion_devolucion','iniciar_tracking','llegada_tienda_automatico']);
     }
 
     public function iniciar_tracking()
     {
-        /*TrackingGuiaRemisionDetalleTemporal::truncate();
+        TrackingGuiaRemisionDetalleTemporal::truncate();
         TrackingTemporal::truncate();
         $list_tracking = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['T']);
         foreach($list_tracking as $list){
@@ -47,6 +47,7 @@ class TrackingController extends Controller
         $list_guia = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['G']);
         foreach($list_guia as $list){
             TrackingGuiaRemisionDetalleTemporal::create([
+                'n_requerimiento' => $list->n_requerimiento,
                 'n_guia_remision' => $list->n_guia_remision,
                 'sku' => $list->sku,
                 'color' => $list->color,
@@ -58,96 +59,21 @@ class TrackingController extends Controller
         }
         DB::statement('CALL insert_tracking()');
 
-        $list_tracking = Tracking::select('id','n_requerimiento','n_guia_remision','semana','hacia')
-                                    ->where('iniciar',0)->get();
+        $list_tracking = Tracking::select('tracking.id','tracking.n_requerimiento','tracking.semana',DB::raw('base.cod_base AS hacia'))
+                                    ->join('base','base.id_base','=','tracking.id_origen_hacia')
+                                    ->where('tracking.iniciar',0)->get();
 
         foreach($list_tracking as $tracking){
-            Tracking::findOrFail($tracking->id)->update([
-                'iniciar' => 1,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
+            if($tracking->n_requerimiento=="3148"){
+                Tracking::findOrFail($tracking->id)->update([
+                    'iniciar' => 1,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
 
-            $tracking_dp = TrackingDetalleProceso::create([
-                'id_tracking' => $tracking->id,
-                'id_proceso' => 1,
-                'fecha' => now(),
-                'estado' => 1,
-                'fec_reg' => now(),
-                'user_reg' => session('usuario')->id_usuario,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
-    
-            //ALERTA 1
-            TrackingDetalleEstado::create([
-                'id_detalle' => $tracking_dp->id,
-                'id_estado' => 1,
-                'fecha' => now(),
-                'estado' => 1,
-                'fec_reg' => now(),
-                'user_reg' => session('usuario')->id_usuario,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
-    
-            //MENSAJE 1
-            $list_detalle = TrackingGuiaRemisionDetalle::where('n_guia_remision', $tracking->n_guia_remision)->get();
-    
-            $mail = new PHPMailer(true);
-    
-            try {
-                $mail->SMTPDebug = 0;
-                $mail->isSMTP();
-                $mail->Host       =  'mail.lanumero1.com.pe';
-                $mail->SMTPAuth   =  true;
-                $mail->Username   =  'intranet@lanumero1.com.pe';
-                $mail->Password   =  'lanumero1$1';
-                $mail->SMTPSecure =  'tls';
-                $mail->Port     =  587; 
-                $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
-    
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
-    
-                $mail->isHTML(true);
-    
-                $mail->Subject = "SDM-SEM".$tracking->semana."-".substr(date('Y'),-2)." RQ-".$tracking->n_requerimiento." (".$tracking->hacia.")";
-            
-                $mail->Body =  '<FONT SIZE=3>
-                                    Buen día '.$tracking->hacia.'.<br><br>
-                                    Se envia el reporte de la salida de Mercaderia, de la guía de remisión '.$tracking->n_requerimiento.'.<br><br>
-                                    <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
-                                        <thead>
-                                            <tr align="center" style="background-color:#0093C6;">
-                                                <th width="10%"><b>SKU</b></th>
-                                                <th width="18%"><b>Color</b></th>
-                                                <th width="15%"><b>Estilo</b></th>
-                                                <th width="15%"><b>Talla</b></th>
-                                                <th width="32%"><b>Descripción</b></th>
-                                                <th width="10%"><b>Cantidad</b></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>';
-                                    foreach($list_detalle as $list){
-                $mail->Body .=  '            <tr align="left">
-                                                <td align="center">'.$list->sku.'</td>
-                                                <td>'.$list->color.'</td>
-                                                <td>'.$list->estilo.'</td>
-                                                <td>'.$list->talla.'</td>
-                                                <td>'.$list->descripcion.'</td>
-                                                <td align="center">'.$list->cantidad.'</td>
-                                            </tr>';
-                                    }
-                $mail->Body .=  '        </tbody>
-                                    </table>
-                                </FONT SIZE>';
-            
-                $mail->CharSet = 'UTF-8';
-                $mail->send();
-    
-                TrackingDetalleEstado::create([
-                    'id_detalle' => $tracking_dp->id,
-                    'id_estado' => 2,
+                $tracking_dp = TrackingDetalleProceso::create([
+                    'id_tracking' => $tracking->id,
+                    'id_proceso' => 1,
                     'fecha' => now(),
                     'estado' => 1,
                     'fec_reg' => now(),
@@ -155,12 +81,118 @@ class TrackingController extends Controller
                     'fec_act' => now(),
                     'user_act' => session('usuario')->id_usuario
                 ]);
-            }catch(Exception $e) {
-                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+        
+                //ALERTA 1
+                TrackingDetalleEstado::create([
+                    'id_detalle' => $tracking_dp->id,
+                    'id_estado' => 1,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+        
+                //MENSAJE 1
+                $list_detalle = TrackingGuiaRemisionDetalle::where('n_requerimiento', $tracking->n_requerimiento)->get();
+        
+                $mail = new PHPMailer(true);
+        
+                try {
+                    $mail->SMTPDebug = 0;
+                    $mail->isSMTP();
+                    $mail->Host       =  'mail.lanumero1.com.pe';
+                    $mail->SMTPAuth   =  true;
+                    $mail->Username   =  'intranet@lanumero1.com.pe';
+                    $mail->Password   =  'lanumero1$1';
+                    $mail->SMTPSecure =  'tls';
+                    $mail->Port     =  587; 
+                    $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
+        
+                    $mail->addAddress('dpalomino@lanumero1.com.pe');
+        
+                    $mail->isHTML(true);
+        
+                    $mail->Subject = "SDM-SEM".$tracking->semana."-".substr(date('Y'),-2)." RQ-".$tracking->n_requerimiento." (".$tracking->hacia.")";
+                
+                    $mail->Body =  '<FONT SIZE=3>
+                                        Buen día '.$tracking->hacia.'.<br><br>
+                                        Se envia el reporte de la salida de Mercaderia, de la guía de remisión '.$tracking->n_requerimiento.'.<br><br>
+                                        <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
+                                            <thead>
+                                                <tr align="center" style="background-color:#0093C6;">
+                                                    <th width="10%"><b>SKU</b></th>
+                                                    <th width="18%"><b>Color</b></th>
+                                                    <th width="15%"><b>Estilo</b></th>
+                                                    <th width="15%"><b>Talla</b></th>
+                                                    <th width="32%"><b>Descripción</b></th>
+                                                    <th width="10%"><b>Cantidad</b></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>';
+                                        foreach($list_detalle as $list){
+                    $mail->Body .=  '            <tr align="left">
+                                                    <td align="center">'.$list->sku.'</td>
+                                                    <td>'.$list->color.'</td>
+                                                    <td>'.$list->estilo.'</td>
+                                                    <td>'.$list->talla.'</td>
+                                                    <td>'.$list->descripcion.'</td>
+                                                    <td align="center">'.$list->cantidad.'</td>
+                                                </tr>';
+                                        }
+                    $mail->Body .=  '        </tbody>
+                                        </table>
+                                    </FONT SIZE>';
+                
+                    $mail->CharSet = 'UTF-8';
+                    $mail->send();
+        
+                    TrackingDetalleEstado::create([
+                        'id_detalle' => $tracking_dp->id,
+                        'id_estado' => 2,
+                        'fecha' => now(),
+                        'estado' => 1,
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+                }catch(Exception $e) {
+                    echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+                }
             }
-        }*/
+        }
+    }
 
-        echo "Si funciona";
+    public function llegada_tienda_automatico()
+    {
+        $list_tracking = Tracking::get_list_tracking(['llegada_tienda'=>1]);
+
+        foreach($list_tracking as $tracking){
+            //ALERTA 3
+            $tracking_dp = TrackingDetalleProceso::create([
+                'id_tracking' => $tracking->id,
+                'id_proceso' => 3,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+    
+            TrackingDetalleEstado::create([
+                'id_detalle' => $tracking_dp->id,
+                'id_estado' => 5,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
     }
 
     public function index()
