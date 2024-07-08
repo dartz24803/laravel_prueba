@@ -115,6 +115,8 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
+            /*EN PRODUCCIÓN ES NECESARIO ESTO
+            'trust_server_certificate' => true,*/
         ],
 
     ],
