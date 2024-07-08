@@ -3,7 +3,7 @@
 	src: url('../fonts/BebasKai.otf');
   }
 body {
-    background-color: 	#f0f3f3;
+    background-color: 	#fafafa;
     font-family: 'Poppins', sans-serif;
     overflow-x:hidden;
     overflow-y:hidden;
@@ -11,13 +11,13 @@ body {
 
 
 .main {
-    background: linear-gradient(to bottom, rgb(48, 48, 48) 50%, white 50%);
-    width: 390px;
-    height: 510px;
+    background: linear-gradient(to bottom, #302f30 50%, white 50%);
+    width: 450px;
+    height: 550px;
     margin: 7em auto;
     border-radius: 1.5em;
     box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
-    border: 2px solid rgb(48, 48, 48);
+    /*border: 2px solid rgb(48, 48, 48);*/
 }
 
 
@@ -44,7 +44,7 @@ img.pequena{
     margin-left: auto;
     margin-right: auto;
     display: block;
-    padding-top: 55px;
+    padding-top: 0px;
     padding-bottom: 45px;
   }
 
@@ -108,7 +108,7 @@ img.pequena{
 .un {
 text-align: center !important;
 width: 76%;
-color: #464345;
+color: #5e5c5d;
 font-weight: 700;
 font-size: 14px;
 letter-spacing: 1px;
@@ -120,13 +120,14 @@ outline: none;
 box-sizing: border-box;
 border: 2px solid rgba(0, 0, 0, 0.02);
 margin-bottom: 50px;
-margin-left: 45px;
+margin-left: 55px;
 text-align: left;
 margin-bottom: 27px;
+margin-top: 0.5rem;
 }
 
 form.form1 {
-    padding-top: 20px;
+    padding-top: 30px;
     background-color: white;
 }
 
@@ -146,33 +147,37 @@ font-family: 'Poppins' !important;
 box-sizing: border-box;
 border: 2px solid rgba(0, 0, 0, 0.02);
 margin-bottom: 50px;
-margin-left: 45px;
+margin-left: 55px;
 text-align: left;
-margin-bottom: 20px;
+margin-bottom: 22px;
+margin-top: 0.5rem;
 }
-
-
-.un:focus, .pass:focus {
-    border: 2px solid rgba(0, 0, 0, 0.18) !important;
-
+.pass:-webkit-autofill,
+/* Estilo cuando el campo se autocompleta */
+.un:-webkit-autofill {
+    color: #888ea8 !important; /* Cambia el color del texto cuando se autocompleta */
+    background-color: #fff4d9 !important; /* Cambia el color de fondo cuando se autocompleta */
+    transition: background-color 5000s ease-in-out 0s;
+    transition: color 5000s ease-in-out 0s, background-color 5000s ease-in-out 0s;
 }
 
 .submit {
-    width: 76%;
+    width: 50%;
     cursor: pointer;
     border-radius: 3em;
     color: #fff;
-    background-color: black;
-    border: 2px solid black;
+    background-color: #302f30;
+    border: 2px solid #302f30;
     padding-left: 40px;
     padding-right: 40px;
     padding-bottom: 10px;
     padding-top: 10px;
     letter-spacing: 1px;
-    margin-left: 45px;
-    font-size: 19px;
+    margin-left: 115px;
+    font-size: 15px;
     outline: none;
     box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
+    font-weight: 600;
 }
 
 .forgot {
@@ -189,6 +194,7 @@ a {
 
 @media (max-width: 600px) {
     .main {
+        margin-top:0;
         border-radius: 1.5em;
         width: 340px;
         height: 510px;
@@ -216,6 +222,7 @@ a {
 }
 .submit {
   width: 72%!important;
+  margin-left: 55px;
   }
 }
 
