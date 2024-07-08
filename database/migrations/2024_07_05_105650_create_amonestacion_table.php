@@ -32,6 +32,9 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
+            $table->foreign('id_solicitante')->references('id_usuario')->on('users');
+            $table->foreign('id_colaborador')->references('id_usuario')->on('users');
+            $table->foreign('id_gravedad_amonestacion')->references('id_gravedad_amonestacion')->on('gravedad_amonestacion');
             //$table->timestamps();
         });
     }
