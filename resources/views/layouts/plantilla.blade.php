@@ -581,8 +581,8 @@
         })();
     </script>
     <style>
-    div[id^="gb-widget-"] {
-        /* Estilos que deseas aplicar */
+    .dkuywW{
+        display:none;
     }
     </style>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
