@@ -44,7 +44,7 @@
             </svg>
         </div>
     </div>
-    <img class="pequena" src="{{ asset('login_files/img/grupo.png')}}" alt="IMG">
+    <img class="pequena" src="{{ asset('inicio/Grupo-LN1.png')}}" alt="IMG">
         <div class="padre2">
           <label class="hijo2 bienvenido">
             <h2 class="lines-effect">
