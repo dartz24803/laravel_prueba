@@ -582,7 +582,7 @@
     </script>
     <style>
     .dkuywW{
-        display:none;
+        display:none !important;
     }
     </style>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
