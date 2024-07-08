@@ -70,6 +70,7 @@ Route::controller(TrackingController::class)->group(function(){
     //FIN SUBIDA ARCHIVOS
     Route::get('tracking', 'index')->name('tracking');
     Route::get('tracking/iniciar_tracking', 'iniciar_tracking')->name('tracking.iniciar_tracking');
+    Route::get('tracking/llegada_tienda_automatico', 'llegada_tienda_automatico')->name('tracking.llegada_tienda_automatico');
     Route::post('tracking/list', 'list')->name('tracking.list');
     Route::get('tracking/create', 'create')->name('tracking.create');
     Route::post('tracking', 'store')->name('tracking.store');
