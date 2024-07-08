@@ -44,12 +44,11 @@
 
     <!--  BEGIN NAVBAR  -->
     <div class="header-container fixed-top">
-        <header class="header navbar navbar-expand-sm expand-header d-flex justify-content-around" style="background: black; height:5rem;">
+        <header class="header navbar navbar-expand-sm expand-header d-flex justify-content-around" style="background: #302f30; height:5rem;">
             <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></a>
 
             <a class="col-md-5 offset-5">
-                <img src="{{ asset('login_files/img/Grupo-LaNumero.png') }}" class="navbar-logo ajuste1" alt="logo">
-                <img src="{{ asset('login_files/img/1.png') }}" class="navbar-logo ajuste2" alt="logo">
+                <img src="{{ asset('inicio/Grupo-LN1.png') }}" class="navbar-logo ajuste1" alt="logo">
             </a>
             <ul class="navbar-item flex-row ml-auto">
                 <li class="nav-item dropdown notification-dropdown">
@@ -147,7 +146,7 @@
                     message: '<svg> ... </svg>',
                     fadeIn: 800,
                     overlayCSS: {
-                        backgroundColor: '#1b2024',
+                        backgroundColor: '#302f30',
                         opacity: 0.8,
                         zIndex: 1200,
                         cursor: 'wait'
@@ -167,7 +166,7 @@
                     fadeIn: 800,
                     timeout: 100,
                     overlayCSS: {
-                        backgroundColor: '#1b2024',
+                        backgroundColor: '#302f30',
                         opacity: 0.8,
                         zIndex: 1200,
                         cursor: 'wait'
@@ -260,7 +259,7 @@
                             <img src="{{ asset('login_files/img/1.png') }}" class="navbar-logo" alt="logo">
                         </a>
                     </li>
-                    <li class="nav-item theme-text">
+                    <li class="nav-item theme-text" style="margin-top: 8px; margin-bottom: 8px">
                         <a class="nav-link">
                             <img src="{{ asset('login_files/img/Grupo-LaNumero.png') }}" class="navbar-logo ajuste1" alt="logo">
                             <img src="{{ asset('login_files/img/1.png') }}" class="navbar-logo ajuste2" alt="logo">

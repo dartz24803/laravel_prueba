@@ -19,7 +19,7 @@ html {
   min-height: 100%; }
 
 body {
-  color: #888ea8;
+  color: #fafafa;
   height: 100%;
   font-size: 0.875rem;
   background: #f1f2f3;
@@ -199,7 +199,7 @@ code {
   max-width: 58.333333%;
   margin-left: 80px; }
 
-/* 
+/*
 =====================
     Navigation Bar
 =====================
@@ -751,7 +751,7 @@ code {
 .navbar .navbar-item .nav-item.cs-toggle .nav-link span {
   color: #888ea8; }
 
-/* 
+/*
 ===============
     Sidebar
 ===============
@@ -783,7 +783,7 @@ code {
   margin-left: 54px; }
 
 #sidebar .theme-brand {
-  background-color: #303030;
+  background-color: #302f30;
   padding: 0.9px 12px 0.9px 24px;
   border-bottom: 1px solid #ebedf2;
   border-radius: 6px 6px 0 0;
@@ -798,7 +798,7 @@ code {
   padding: 0.9px 12px 0.9px 24px; }
 
 #sidebar .theme-brand li.theme-logo {
-  align-self: center; 
+  align-self: center;
 
 
 }
@@ -1107,7 +1107,7 @@ code {
   -webkit-animation-name: e-fadeInUp;
   animation-name: e-fadeInUp; }
 
-/*  
+/*
     ======================
         MEDIA QUERIES
     ======================

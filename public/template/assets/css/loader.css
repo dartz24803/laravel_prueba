@@ -9,7 +9,7 @@
 	===============================
 */
 div#load_screen {
-  background: #ecefff;
+  background: #fafafa;
   opacity: 1;
   position: fixed;
   z-index: 999999;
@@ -27,4 +27,4 @@ div#load_screen {
     align-self: center; }
 
 .spinner-grow {
-  color: #304aca; }
+  color: #ffa404; }

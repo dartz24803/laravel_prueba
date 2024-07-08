@@ -29,7 +29,7 @@ class Login extends Controller
         // $usuario = '70451069';
         // $password = '123456';
 
-
+        //animacion carga cambiar color
         //$sesionlnu = $this->UsuariosModel->login($usuario);
         $sesionlnu = $this->UsuariosModel->login($usuario);
         if ($sesionlnu) {

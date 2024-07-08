@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('dia')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
+            $table->foreign('id_usuario')->references('id_usuario')->on('users');
             //$table->timestamps();
         });
     }

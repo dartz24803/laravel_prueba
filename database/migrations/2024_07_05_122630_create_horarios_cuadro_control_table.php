@@ -31,6 +31,7 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
+            $table->foreign('id_puesto')->references('id_puesto')->on('puesto');
             //$table->timestamps();
         });
     }

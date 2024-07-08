@@ -1,24 +1,19 @@
 @extends('layouts.plantilla')
 
 @section('content')
+<!-- cuadro en menu;animacion menu lateral  -->
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing" id="cancel-row">
             <div id="tabsSimple" class="col-lg-12 col-12 layout-spacing">
                 <div class="statbox widget box box-shadow row">
-                    <div class="col-md-2" style="background-color: #f0f3f3;"></div>
-                    <div class="widget-content widget-content-area simple-tab col-md-8" style="background-color: #f0f3f3;">
+                    <div class="widget-content simple-tab col-md-10" style="background-color: #f0f3f3;">
                         <div class="row" id="cancel-row">
                             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
-                                <div class="page-header d-flex justify-content-center">
-                                    <div class="page-title">
-                                        <h2 style="color: #8fa1b7; font-weight: bold">DEPARTAMENTOS</h2>
-                                    </div>
-                                </div>
                                 <div class="container" id="container" style="background-image: url('{{ asset('inicio/NEW.Intranet-Icono-Fondo2.jpg') }}');">
                                     <div class="row layout-top-spacing">
                                         <!-- Logo Logistica-->
-                                        <div id="logo_logistica" class="col-md-12">
+                                        <div id="logo_logistica" class="col-md-8">
                                             <div class="" style="width: 6rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701;height:6rem">
                                                     <img class="imagen_1"  src="{{ asset('inicio/NEW.Intranet-Icono-Logistica.png')}}" alt="">
@@ -64,9 +59,39 @@
                                         </div>
                                         <!-- Logo central LN1-->
                                         <div id="logo_central" class="col-md-4 zoom-card-2 d-flex justify-content-center">
-                                            <div class="card text-center border-0 rounded_z" style="background-color: #00b1f4;">
+                                            <!-- <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                                                <ol class="carousel-indicators">
+                                                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                                                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                                                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                                                </ol>
+                                                <div class="carousel-inner">
+                                                    <div class="carousel-item active">
+                                                    <img src="{{ asset('/inicio/LN1-Isotipo.png') }}" alt="La número 1" style="height: 10rem">
+                                                    </div>
+                                                    <div class="carousel-item">
+                                                        <div class="carousel-caption d-none d-md-block">
+                                                            <h5>AAAA</h5>
+                                                            <p>AAAA</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="carousel-item">
+                                                        <div class="carousel-caption d-none d-md-block">
+                                                            <h5>ZZZZZZ</h5>
+                                                            <p>ZZZZZZ</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="carousel-item">
+                                                        <div class="carousel-caption d-none d-md-block">
+                                                            <h5>TTT</h5>
+                                                            <p>TTT</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+                                            <div class="card text-center border-0 rounded_z" style="background-color: #f1f3f5;">
                                                 <div class="card-body text-center">
-                                                    <img src="{{ asset('/inicio/logo_ln1.png') }}" alt="La número 1" style="height: 6rem">
+                                                    <img src="{{ asset('/inicio/LN1-Isotipo.png') }}" alt="La número 1" style="height: 10rem">
                                                 </div>
                                             </div>
                                         </div>
@@ -120,7 +145,7 @@
                             </div>
                             <!-- End layout spacing -->
                             <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-                            
+
                             <!-- <img src="{{ asset('/inicio/Estamos-trabajando.png') }}" alt="" style="max-width: 100%;"> -->
                             <div class="col-md-12 footer">
                                 <div class="row">
@@ -130,18 +155,18 @@
                                             <a href="https://www.lanumero1.com.pe" target="_blank"><strong>www.lanumero1.com.pe</strong></a>
                                         </div>
                                     </div>
-                            
+
                                     <div class="col-lg-5 d-block d-sm-flex justify-content-around offset-1">
                                         <div class="icon d-flex align-items-center py-1 py-lg-0">
                                             <i class="bx bxl-facebook-square"></i>
                                             <a href="https://www.facebook.com/Lanumero1.peru" target="_blank"><strong>Lanumero1.peru</strong></a>
                                         </div>
-                            
+
                                         <div class="icon d-flex align-items-center py-1 py-lg-0 px-sm-3">
                                             <i class="bx bxl-instagram"></i>
                                             <a href="https://www.instagram.com/lanumero1moda" target="_blank"><strong>lanumero1moda</strong></a>
                                         </div>
-                            
+
                                         <div class="icon d-flex align-items-center py-1 py-lg-0">
                                             <i class="bx bxl-tiktok"></i>
                                             <a href="https://www.tiktok.com/@lanumero1.peru" target="_blank"><strong>lanumero1.peru</strong></a>
@@ -193,7 +218,7 @@
     img{
         max-width: 100%;
     }
-    
+
     .zoom-card-2 {
         transition: transform 1s; /* Animación de transición suave */
     }
@@ -272,13 +297,13 @@
     }
     .carousel-control-prev,
     .carousel-control-next {
-        background-color: gray; 
-        border-radius: 50%; 
-        padding: 10px; 
+        background-color: gray;
+        border-radius: 50%;
+        padding: 10px;
         height: 3rem;
         margin-top: 17rem;
     }
-    
+
     /* Keyframes for sliding out */
     @keyframes sliderOutSection {
         0% {
