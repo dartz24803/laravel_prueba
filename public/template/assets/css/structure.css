@@ -1068,9 +1068,9 @@ code {
   */
   #sidebar .theme-brand {
     border-radius: 0;
-    background-color: #4361ee;
+    /*background-color: #4361ee;*/
     padding: 7px 12px 7px 24px;
-    border-color: #4361ee; }
+    /*border-color: #4361ee;*/ }
   .sidebar-closed #sidebar .theme-brand {
     padding: 7px 12px 7px 24px; }
   .main-container:not(.sbar-open) .sidebar-wrapper {
