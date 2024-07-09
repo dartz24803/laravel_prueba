@@ -35,6 +35,15 @@
                                 <li class="nav-item">
                                     <a id="a_ca" class="nav-link" onclick="Cargo();" style="cursor: pointer;">Cargo</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a id="datacorp" class="nav-link" onclick="Index_Datacorp();" style="cursor: pointer;">Datacorp</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a id="paginas_web" class="nav-link" onclick="Listar_Paginas_Web();" style="cursor: pointer;">Páginas web</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a id="programas" class="nav-link" onclick="Listar_Programas();" style="cursor: pointer;">Programas</a>
+                                </li>
                             </ul>
 
                             <div class="row" id="cancel-row">
@@ -78,6 +87,9 @@
                     $("#a_co").removeClass('active');
                     $("#a_pu").removeClass('active');
                     $("#a_ca").removeClass('active');
+                    $("#datacorp").removeClass('active');
+                    $("#paginas_web").removeClass('active');
+                    $("#programas").removeClass('active');
                 }
             });
         }
@@ -101,6 +113,9 @@
                     $("#a_co").removeClass('active');
                     $("#a_pu").removeClass('active');
                     $("#a_ca").removeClass('active');
+                    $("#datacorp").removeClass('active');
+                    $("#paginas_web").removeClass('active');
+                    $("#programas").removeClass('active');
                 }
             });
         }
@@ -124,6 +139,9 @@
                     $("#a_co").removeClass('active');
                     $("#a_pu").removeClass('active');
                     $("#a_ca").removeClass('active');
+                    $("#datacorp").removeClass('active');
+                    $("#paginas_web").removeClass('active');
+                    $("#programas").removeClass('active');
                 }
             });
         }
@@ -170,6 +188,9 @@
                     $("#a_co").removeClass('active');
                     $("#a_pu").removeClass('active');
                     $("#a_ca").removeClass('active');
+                    $("#datacorp").removeClass('active');
+                    $("#paginas_web").removeClass('active');
+                    $("#programas").removeClass('active');
                 }
             });
         }
@@ -193,6 +214,9 @@
                     $("#a_co").removeClass('active');
                     $("#a_pu").removeClass('active');
                     $("#a_ca").removeClass('active');
+                    $("#datacorp").removeClass('active');
+                    $("#paginas_web").removeClass('active');
+                    $("#programas").removeClass('active');
                 }
             });
         }
@@ -216,6 +240,9 @@
                     $("#a_co").addClass('active');
                     $("#a_pu").removeClass('active');
                     $("#a_ca").removeClass('active');
+                    $("#datacorp").removeClass('active');
+                    $("#paginas_web").removeClass('active');
+                    $("#programas").removeClass('active');
                 }
             });
         }
@@ -239,6 +266,9 @@
                     $("#a_co").removeClass('active');
                     $("#a_pu").addClass('active');
                     $("#a_ca").removeClass('active');
+                    $("#datacorp").removeClass('active');
+                    $("#paginas_web").removeClass('active');
+                    $("#programas").removeClass('active');
                 }
             });
         }
@@ -262,8 +292,84 @@
                     $("#a_co").removeClass('active');
                     $("#a_pu").removeClass('active');
                     $("#a_ca").addClass('active');
+                    $("#datacorp").removeClass('active');
+                    $("#paginas_web").removeClass('active');
+                    $("#programas").removeClass('active');
                 }
             });
         }
+        
+        function Index_Datacorp(){
+            Cargando();
+
+            var url="{{ url('Index_Datacorp') }}";
+
+            $.ajax({
+                url: url,
+                type:"GET",
+                success:function (resp) {
+                    $('#div_colaborador_conf').html(resp);  
+                    $("#datacorp").addClass('active');
+                    $("#paginas_web").removeClass('active');
+                    $("#programas").removeClass('active');
+                    $("#a_di").removeClass('active');
+                    $("#a_ge").removeClass('active');
+                    $("#a_de").removeClass('active');
+                    $("#a_ar").removeClass('active');
+                    $("#a_ni").removeClass('active');
+                    $("#a_se").removeClass('active');
+                    $("#a_co").removeClass('active');
+                    $("#a_pu").removeClass('active');
+                    $("#a_ca").removeClass('active');
+                }
+            });
+        }
+
+        function Listar_Paginas_Web(){
+            Cargando();
+
+            var url="{{ url('Listar_Paginas_Web') }}";
+
+            $.ajax({
+                url: url,
+                type:"POST",
+                success:function (resp) {
+                    $('#div_colaborador_conf').html(resp);  
+                    $("#paginas_web").addClass('active');
+                    $("#datacorp").removeClass('active');
+                    $("#programas").removeClass('active');
+                    $("#a_dir").removeClass('active')
+                    $("#a_ger").removeClass('active');
+                    $("#a_dep").removeClass('active');
+                    $("#a_are").removeClass('active');
+                    $("#a_pue").removeClass('active');
+                    $("#a_car").removeClass('active');
+                }
+            });
+        }
+        
+        function Listar_Programas(){
+            Cargando();
+
+            var url="{{ url('Listar_Programas') }}";
+
+            $.ajax({
+                url: url,
+                type:"POST",
+                success:function (resp) {
+                    $('#div_colaborador_conf').html(resp);  
+                    $("#paginas_web").removeClass('active');
+                    $("#datacorp").removeClass('active');
+                    $("#programas").addClass('active');
+                    $("#a_dir").removeClass('active')
+                    $("#a_ger").removeClass('active');
+                    $("#a_dep").removeClass('active');
+                    $("#a_are").removeClass('active');
+                    $("#a_pue").removeClass('active');
+                    $("#a_car").removeClass('active');
+                }
+            });
+        }
+
     </script>
 @endsection
