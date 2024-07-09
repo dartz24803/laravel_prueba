@@ -1073,7 +1073,7 @@ class ColaboradorConfController extends Controller
 
     //DATACORP
     public function Index_Datacorp(){
-        return view('rrhh.administracion.colaborador.datacorp.index');
+        return view('rrhh.administracion.colaborador.Datacorp.index');
     }
 
     public function Listar_Accesos_Datacorp(){
