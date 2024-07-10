@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('base', 100)->nullable();
             $table->string('foto', 100)->nullable();
-            $table->integer('codigo')->nullable();
+            $table->unsignedBigInteger('codigo')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();

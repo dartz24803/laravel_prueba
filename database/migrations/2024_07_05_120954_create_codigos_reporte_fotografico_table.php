@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('codigos_reporte_fotografico', function (Blueprint $table) {
+        Schema::create('codigos_reporte_fotografico_new', function (Blueprint $table) {
             $table->id();
             $table->string('descripcion', 100)->nullable();
             $table->string('tipo', 100)->nullable();
