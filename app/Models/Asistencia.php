@@ -103,9 +103,9 @@ class Asistencia extends Model
                                 LEFT JOIN lanumerouno.users u ON (ar.user_reg = u.id_usuario)
                                 LEFT JOIN lanumerouno.area a ON (u.id_area = a.id_area)
                                 LEFT JOIN lanumerouno.gerencia g ON (u.id_gerencia = g.id_gerencia)
-                                LEFT JOIN zkbiotime.iclock_transaction b ON (LPAD(CONVERT(b.emp_code USING utf8), 8,'0') = u.usuario_codigo  )
+                                LEFT JOIN zkbiotime.iclock_transaction b ON (LPAD(CONVERT(b.emp_code USING utf8), 8,'0') = u.usuario_codigo  )    
                                 LEFT JOIN lanumerouno.horario_dia hd ON ( u.id_horario = hd.id_horario AND hd.dia = CASE DAYNAME(  DATE_FORMAT(ar.punch_time, '%Y-%m-%d')) WHEN 'Monday' THEN 1 WHEN 'Tuesday' THEN 2 WHEN 'Wednesday' THEN 3 WHEN 'Thursday' THEN 4 WHEN 'Friday' THEN 5 WHEN 'Saturday' THEN 6 WHEN 'Sunday' THEN 7 END )
-                                $base_ar $doc_ar $fecha LIMIT 120
+                                $fecha $base_ar $doc_ar
                             )
                             UNION
                             (
@@ -161,13 +161,14 @@ class Asistencia extends Model
                                         )
                                         LEFT JOIN lanumerouno.horario_dia hd ON
                                         ( u.id_horario = hd.id_horario AND hd.dia = CASE DAYNAME( DATE_FORMAT(ar.punch_time, '%Y-%m-%d') ) WHEN 'Monday' THEN 1 WHEN 'Tuesday' THEN 2 WHEN 'Wednesday' THEN 3 WHEN 'Thursday' THEN 4 WHEN 'Friday' THEN 5 WHEN 'Saturday' THEN 6 WHEN 'Sunday' THEN 7 END)
-                                    ) $base_iclock $doc_iclock $fecha
-                            ) LIMIT 31
+                                    ) $fecha $base_iclock $doc_iclock
+                            )
                         ) todo
         ";
-        $sql=" SELECT
-            a.num_doc,CONCAT(a.usuario_nombres,' ',a.usuario_apater,' ',a.usuario_amater) as nombres, CONCAT(a.num_doc,'-',DATE_FORMAT(a.punch_time,'%d-%m-%Y')) as validador, DATE_FORMAT(a.punch_time,'%d/%m/%Y') as fecha,DATE_FORMAT(a.punch_time,'%d-%m-%Y') as fecha2,
-
+        //echo $vista;
+        $sql=" SELECT 
+            a.num_doc,CONCAT(a.usuario_nombres,' ',a.usuario_apater,' ',a.usuario_amater) as nombres, CONCAT(a.num_doc,'-',DATE_FORMAT(a.punch_time,'%d-%m-%Y')) as validador, DATE_FORMAT(a.punch_time,'%d/%m/%Y') as fecha,DATE_FORMAT(a.punch_time,'%d-%m-%Y') as fecha2, 
+            
             (SELECT CONCAT(DATE_FORMAT(t.punch_time,'%H:%i:%s'),'--',t.id_asistencia_remota) FROM ($vista) t WHERE a.num_doc = t.num_doc and DATE_FORMAT(t.punch_time,'%Y-%m-%d')=DATE_FORMAT(a.punch_time,'%Y-%m-%d') ORDER BY t.punch_time ASC LIMIT 1) as ingreso,
             (SELECT CONCAT(DATE_FORMAT(t.punch_time,'%H:%i:%s'),'--',t.id_asistencia_remota) FROM ($vista) t WHERE a.num_doc = t.num_doc and DATE_FORMAT(t.punch_time,'%Y-%m-%d')=DATE_FORMAT(a.punch_time,'%Y-%m-%d') ORDER BY t.punch_time ASC LIMIT 1, 1) as idescanso,
             (SELECT CONCAT(DATE_FORMAT(t.punch_time,'%H:%i:%s'),'--',t.id_asistencia_remota) FROM ($vista) t WHERE a.num_doc = t.num_doc and DATE_FORMAT(t.punch_time,'%Y-%m-%d')=DATE_FORMAT(a.punch_time,'%Y-%m-%d') ORDER BY t.punch_time ASC LIMIT 2, 1) as fdescanso,
