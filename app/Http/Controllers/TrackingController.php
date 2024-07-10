@@ -194,16 +194,16 @@ class TrackingController extends Controller
 
     public function getAccessToken(){
         $client = new GoogleClient();
-        $client->setAuthConfig('DIRCREDENCIALES/service-account.json');
+        $client->setAuthConfig(base_path('firebase_credentials.json'));
         $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
         $accessToken = $client->fetchAccessTokenWithAssertion()["access_token"];
         return $accessToken;
     }
 
-    public function prueba_notification()
+    public function prueba_notificacion()
     {
         $fields["message"] = array(
-            'token' => '',
+            'token' => 'chNPE4RTT_2cFK_7F4dqb7:APA91bEKdqd-TCGBpDLW9jP4-usTv9GS3DrmmpMuodZc5EOwo1tppYT3j8ZEA9qYsgyFn-08QbQUWaeb8deFLSIUSpk5wgl5XeWIX17QRirnqTFO6EaqhqC2uHSMkdPbv1vTtz_ZC40X',
             'notification' => [
                 'title' => 'Prueba title',
                 'body' => 'Prueba body',
@@ -213,7 +213,8 @@ class TrackingController extends Controller
 
         $url = 'https://fcm.googleapis.com/v1/projects/786895561540/messages:send';            
         $accessToken = $this->getAccessToken();
-        $headers = array( "Authorization: Bearer ".$accessToken,"content-type: application/json;UTF-8");
+
+        $headers = array("Authorization: Bearer ".$accessToken,"content-type: application/json;UTF-8");
 
         // Open curl connection
         $curl = curl_init();
