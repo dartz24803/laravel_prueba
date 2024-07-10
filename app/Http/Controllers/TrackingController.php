@@ -19,6 +19,10 @@ use App\Models\TrackingGuiaRemisionDetalle;
 use App\Models\TrackingGuiaRemisionDetalleTemporal;
 use App\Models\TrackingTemporal;
 use Illuminate\Support\Facades\DB;
+use GuzzleHttp\Client;
+use NotificationChannels\Fcm\FcmChannel;
+use NotificationChannels\Fcm\FcmMessage;
+use NotificationChannels\Fcm\Resources\Notification as FcmNotification;
 
 class TrackingController extends Controller
 {
@@ -190,6 +194,33 @@ class TrackingController extends Controller
             ]);
         }
     }
+
+    /*public function prueba_notification()
+    {
+        $client = new Client();
+        
+        $serverKey = 'YOUR_FIREBASE_SERVER_KEY';
+        $deviceToken = 'TOKEN_DEL_DISPOSITIVO_DESTINO';
+
+        $title = 'Título de la Notificación';
+        $body = 'Cuerpo del mensaje de la notificación';
+
+        $response = $client->post('https://fcm.googleapis.com/fcm/send', [
+            'headers' => [
+                'Authorization' => 'key=' . $serverKey,
+                'Content-Type' => 'application/json',
+            ],
+            'json' => [
+                'to' => $deviceToken,
+                'notification' => [
+                    'title' => $title,
+                    'body' => $body,
+                ],
+            ],
+        ]);
+
+        return $response->getBody()->getContents();
+    }*/
 
     public function index()
     {
