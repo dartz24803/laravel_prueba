@@ -18,7 +18,7 @@ use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
-
+use App\Http\Controllers\ComunicadoController;
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
 });
@@ -394,4 +394,14 @@ Route::controller(AmonestacionController::class)->group(function(){
     Route::get('Pdf_Amonestacion/{id}','Pdf_Amonestacion');
     Route::post('/Update_Documento_Amonestacion', 'Update_Documento_Amonestacion');
     Route::post('Aprobacion_Amonestacion', 'Aprobacion_Amonestacion');
+});
+Route::controller(ComunicadoController::class)->group(function(){
+    Route::get('Comunicado', 'Index')->name('Comunicado');
+    Route::get('Cargar_Slider_Rrhh', 'Cargar_Slider_Rrhh')->name('Cargar_Slider_Rrhh');
+    Route::post('Lista_Slider_Rrhh', 'Lista_Slider_Rrhh')->name('Lista_Slider_Rrhh');
+    Route::get('/Modal_Slider_Rrhh', 'Modal_Slider_Rrhh');
+    Route::get('/Modal_Update_Slider_Rrhh/{id}', 'Modal_Update_Slider_Rrhh');
+    Route::post('/Insert_Slider_Rrhh', 'Insert_Slider_Rrhh');
+    Route::post('/Update_Slider_Rrhh', 'Update_Slider_Rrhh');
+    Route::post('/Delete_Slider_Rrhh', 'Delete_Slider_Rrhh');
 });

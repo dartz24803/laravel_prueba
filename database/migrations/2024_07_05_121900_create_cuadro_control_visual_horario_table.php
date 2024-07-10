@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('cuadro_control_visual_horario', function (Blueprint $table) {
-            $table->increments('id_cuadro_control_visual_horario');
-            $table->integer('id_usuario')->nullable();
+            $table->id('id_cuadro_control_visual_horario');
+            $table->unsignedBigInteger('id_usuario')->nullable();
             $table->integer('horario')->nullable();
             $table->integer('dia')->nullable();
             $table->dateTime('fec_reg')->nullable();

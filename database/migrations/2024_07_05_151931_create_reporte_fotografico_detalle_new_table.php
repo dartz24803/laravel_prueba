@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reporte_fotografico_detalle_new', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->integer('id_reporte_fotografico_adm')->nullable();
-            $table->integer('id_area')->nullable();
+            $table->unsignedBigInteger('id_area')->nullable();
             $table->foreign('id_area')->references('id_area')->on('area');
             //$table->timestamps();
         });

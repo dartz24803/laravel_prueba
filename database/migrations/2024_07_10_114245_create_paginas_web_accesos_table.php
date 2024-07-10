@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('paginas_web_accesos', function (Blueprint $table) {
             $table->id(); // Crea una columna 'id' que es auto incremental y clave primaria
-            $table->integer('area')->nullable();
-            $table->integer('puesto')->nullable();
+            $table->unsignedBigInteger('area')->nullable();
+            $table->unsignedBigInteger('puesto')->nullable();
             $table->string('pagina_acceso', 255)->nullable();
             $table->integer('estado')->nullable();
             $table->integer('user_reg')->nullable();

@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('cuadro_control_visual_estado', function (Blueprint $table) {
-            $table->increments('id_cuadro_control_visual_estado');
-            $table->integer('id_usuario')->nullable();
+            $table->id('id_cuadro_control_visual_estado');
+            $table->unsignedBigInteger('id_usuario')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();

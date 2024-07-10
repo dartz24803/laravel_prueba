@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('datacorp_accesos', function (Blueprint $table) {
             $table->id();
-            $table->integer('area')->nullable();
-            $table->integer('puesto')->nullable();
+            $table->unsignedBigInteger('area')->nullable();
+            $table->unsignedBigInteger('puesto')->nullable();
             $table->string('carpeta_acceso', 100)->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable(); 
