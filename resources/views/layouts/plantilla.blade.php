@@ -355,6 +355,15 @@
                                     <p class="romperpalabra"><span id="icono_active2"></span> Amonestaciones</p>
                                 </a>
                             </li>
+                            <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2 || 
+                            session('usuario')->id_puesto == 133 || session('usuario')->id_puesto == 22 || session('usuario')->id_puesto == 21 || session('usuario')->id_puesto == 278 || 
+                            session('usuario')->id_puesto == 279 || session('usuario')->id_puesto == 310) { ?>
+                                <li id="recomunicados">
+                                    <a id="hcomunicados" href="{{ url('Comunicado') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Slider RRHH <br>• Anuncios Intranet">
+                                        <p class="romperpalabra"><span id="icono_active2"></span> Comunicados</p>
+                                    </a>
+                                </li>
+                            <?php } ?>
                         </ul>
                     </li>
 
