@@ -15,6 +15,8 @@ use App\Models\Puesto;
 use App\Models\SedeLaboral;
 use App\Models\SubGerencia;
 use App\Models\DatacorpAccesos;
+use App\Models\PaginasWebAccesos;
+use App\Models\ProgramaAccesos;
 use Illuminate\Http\Request;
 
 class ColaboradorConfController extends Controller
@@ -1178,6 +1180,231 @@ class ColaboradorConfController extends Controller
     public function Delete_Datacorp(Request $request){
         //print_r($request->input('id'));
         DatacorpAccesos::findOrFail($request->id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+    
+    //PAGINAS
+    public function Index_Paginas_Web(){
+        return view('rrhh.administracion.colaborador.Paginas_web.index');
+    }
+
+    public function Listar_Accesos_Pagina(){
+        $list = PaginasWebAccesos::join('area', 'paginas_web_accesos.area', '=', 'area.id_area')
+                ->join('puesto', 'paginas_web_accesos.puesto', '=', 'puesto.id_puesto')
+                ->where('paginas_web_accesos.estado', 1)
+                ->select('paginas_web_accesos.*', 'area.*', 'puesto.*')
+                ->get();
+        return view('rrhh.administracion.colaborador.Paginas_web.lista', compact('list'));
+    }
+
+    public function Modal_Registrar_Pagina(){
+        $list_area = Area::select('*')
+            ->where('estado', 1)
+            ->orderBy('nom_area', 'ASC')
+            ->get();
+        return view('rrhh.administracion.colaborador.Paginas_web.modal_registrar', compact('list_area'));
+    }
+
+    public function Registrar_Pagina(Request $request){
+        $request->validate([
+            'id_area' => 'not_in:0',
+            'id_puesto' => 'not_in:0',
+            'pagina_acceso' => 'required',
+        ],[
+            'id_area.not_in' => 'Debe seleccionar area.',
+            'id_puesto.not_in' => 'Debe seleccionar puesto.',
+            'pagina_acceso.required' => 'Debe ingresar pagina de acceso.',
+        ]);
+
+        $valida = PaginasWebAccesos::where('area', $request->id_area)
+                        ->where('puesto', $request->id_puesto)
+                        ->where('pagina_acceso', $request->carpeta_acceso)
+                        ->where('estado', 1)->exists();
+        //alerta de validacion
+        if ($valida) {
+            echo "error";
+        }else{
+            PaginasWebAccesos::create([
+                'area' => $request->id_area,
+                'puesto' => $request->id_puesto,
+                'pagina_acceso' => $request->pagina_acceso,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function Modal_Update_Pagina($id){
+            $list_area = Area::select('*')
+                ->where('estado', 1)
+                ->orderBy('nom_area', 'ASC')
+                ->get();
+            $get_id = PaginasWebAccesos::select('*')
+                    ->where('estado', 1)
+                    ->where('id', $id)
+                    ->get();
+            $list_puesto = Puesto::select('id_puesto', 'nom_puesto')
+                            ->where('id_area', $get_id[0]['area'])
+                            ->where('estado', 1)
+                            ->get();
+            //print_r($list_puesto);
+            return view('rrhh.administracion.colaborador.Paginas_web.modal_editar', compact('list_area','get_id','list_puesto'));
+    }
+
+    public function Update_Pagina(Request $request){
+        $request->validate([
+            'id_area_e' => 'not_in:0',
+            'id_puesto_e' => 'not_in:0',
+            'pagina_acceso_e' => 'required',
+        ],[
+            'id_area_e.not_in' => 'Debe seleccionar area.',
+            'id_puesto_e.not_in' => 'Debe seleccionar puesto.',
+            'pagina_acceso_e.required' => 'Debe ingresar pagina de acceso.',
+        ]);
+
+        $valida = PaginasWebAccesos::where('area', $request->id_area_e)
+                        ->where('puesto', $request->id_puesto_e)
+                        ->where('pagina_acceso', $request->pagina_acceso_e)
+                        ->where('estado', 1)->exists();
+        //alerta de validacion
+        if ($valida) {
+            echo "error";
+        }else{
+            PaginasWebAccesos::findOrFail($request->id)->update([
+                'area' => $request->id_area_e,
+                'puesto' => $request->id_puesto_e,
+                'pagina_acceso' => $request->pagina_acceso_e,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function Delete_Pagina(Request $request){
+        //print_r($request->input('id'));
+        PaginasWebAccesos::findOrFail($request->id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+    
+    //PROGRAMAS
+    public function Index_Programas(){
+        return view('rrhh.administracion.colaborador.Programas.index');
+    }
+
+    public function Listar_Accesos_Programa(){
+        $list = ProgramaAccesos::join('area', 'programas_accesos.area', '=', 'area.id_area')
+                ->join('puesto', 'programas_accesos.puesto', '=', 'puesto.id_puesto')
+                ->where('programas_accesos.estado', 1)
+                ->select('programas_accesos.*', 'area.*', 'puesto.*')
+                //->orderBy('datacorp_accesos.fec_reg', 'DESC')
+                ->get();
+        return view('rrhh.administracion.colaborador.Programas.lista', compact('list'));
+    }
+
+    public function Modal_Registrar_Programa(){
+        $list_area = Area::select('*')
+            ->where('estado', 1)
+            ->orderBy('nom_area', 'ASC')
+            ->get();
+        return view('rrhh.administracion.colaborador.Programas.modal_registrar', compact('list_area'));
+    }
+
+    public function Registrar_Programa(Request $request){
+        $request->validate([
+            'id_area' => 'not_in:0',
+            'id_puesto' => 'not_in:0',
+            'programa' => 'required',
+        ],[
+            'id_area.not_in' => 'Debe seleccionar area.',
+            'id_puesto.not_in' => 'Debe seleccionar puesto.',
+            'programa.required' => 'Debe ingresar programa de acceso.',
+        ]);
+
+        $valida = ProgramaAccesos::where('area', $request->id_area)
+                        ->where('puesto', $request->id_puesto)
+                        ->where('programa', $request->programa)
+                        ->where('estado', 1)->exists();
+        //alerta de validacion
+        if ($valida) {
+            echo "error";
+        }else{
+            ProgramaAccesos::create([
+                'area' => $request->id_area,
+                'puesto' => $request->id_puesto,
+                'programa' => $request->programa,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function Modal_Update_Programa($id){
+            $list_area = Area::select('*')
+                ->where('estado', 1)
+                ->orderBy('nom_area', 'ASC')
+                ->get();
+            $get_id = ProgramaAccesos::select('*')
+                    ->where('estado', 1)
+                    ->where('id', $id)
+                    ->get();
+            $list_puesto = Puesto::select('id_puesto', 'nom_puesto')
+                            ->where('id_area', $get_id[0]['area'])
+                            ->where('estado', 1)
+                            ->get();
+            //print_r($list_puesto);
+            return view('rrhh.administracion.colaborador.Programas.modal_editar', compact('list_area','get_id','list_puesto'));
+    }
+
+    public function Update_Programa(Request $request){
+        $request->validate([
+            'id_area_e' => 'not_in:0',
+            'id_puesto_e' => 'not_in:0',
+            'programa_e' => 'required',
+        ],[
+            'id_area_e.not_in' => 'Debe seleccionar area.',
+            'id_puesto_e.not_in' => 'Debe seleccionar puesto.',
+            'programa_e.required' => 'Debe ingresar programa de acceso.',
+        ]);
+
+        $valida = ProgramaAccesos::where('area', $request->id_area_e)
+                        ->where('puesto', $request->id_puesto_e)
+                        ->where('programa', $request->programa_e)
+                        ->where('estado', 1)->exists();
+        //alerta de validacion
+        if ($valida) {
+            echo "error";
+        }else{
+            ProgramaAccesos::findOrFail($request->id)->update([
+                'area' => $request->id_area_e,
+                'puesto' => $request->id_puesto_e,
+                'programa' => $request->programa_e,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function Delete_Programa(Request $request){
+        //print_r($request->input('id'));
+        ProgramaAccesos::findOrFail($request->id)->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario

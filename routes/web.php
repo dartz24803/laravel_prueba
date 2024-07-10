@@ -251,6 +251,20 @@ Route::controller(ColaboradorConfController::class)->group(function(){
     Route::post('Registrar_Datacorp', 'Registrar_Datacorp');
     Route::post('Update_Datacorp', 'Update_Datacorp');
     Route::post('/Delete_Datacorp', 'Delete_Datacorp');
+    Route::get('Index_Paginas_Web', 'Index_Paginas_Web');
+    Route::post('Listar_Accesos_Pagina','Listar_Accesos_Pagina');
+    Route::get('Modal_Registrar_Pagina', 'Modal_Registrar_Pagina');
+    Route::get('Modal_Update_Pagina/{id}', 'Modal_Update_Pagina');
+    Route::post('Registrar_Pagina', 'Registrar_Pagina');
+    Route::post('Update_Pagina', 'Update_Pagina');
+    Route::post('/Delete_Pagina', 'Delete_Pagina');
+    Route::get('Index_Programas', 'Index_Programas');
+    Route::post('Listar_Accesos_Programa','Listar_Accesos_Programa');
+    Route::get('Modal_Registrar_Programa', 'Modal_Registrar_Programa');
+    Route::get('Modal_Update_Programa/{id}', 'Modal_Update_Programa');
+    Route::post('Registrar_Programa', 'Registrar_Programa');
+    Route::post('Update_Programa', 'Update_Programa');
+    Route::post('/Delete_Programa', 'Delete_Programa');
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function(){
