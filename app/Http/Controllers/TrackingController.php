@@ -195,32 +195,47 @@ class TrackingController extends Controller
         }
     }
 
-    /*public function prueba_notification()
-    {
-        $client = new Client();
-        
-        $serverKey = 'YOUR_FIREBASE_SERVER_KEY';
-        $deviceToken = 'TOKEN_DEL_DISPOSITIVO_DESTINO';
-
-        $title = 'Título de la Notificación';
-        $body = 'Cuerpo del mensaje de la notificación';
-
-        $response = $client->post('https://fcm.googleapis.com/fcm/send', [
-            'headers' => [
-                'Authorization' => 'key=' . $serverKey,
-                'Content-Type' => 'application/json',
-            ],
-            'json' => [
-                'to' => $deviceToken,
-                'notification' => [
-                    'title' => $title,
-                    'body' => $body,
-                ],
-            ],
-        ]);
-
-        return $response->getBody()->getContents();
+    /*public function getAccessToken(){
+        $client = new Google\Client();
+        $client->setAuthConfig('DIRCREDENCIALES/service-account.json');
+        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+        $accessToken = $client->fetchAccessTokenWithAssertion()["access_token"];
+        return $accessToken;
     }*/
+
+    public function prueba_notification()
+    {
+        //API V1 (NEW)
+        $fields["message"] = array(
+            'token' => '',
+            'notification' => [
+                'title' => 'Prueba title',
+                'body' => 'Prueba body',
+                //'image' => '',
+            ],
+        );
+
+        //API V1 (NEW)
+        $url = 'https://fcm.googleapis.com/v1/projects/786895561540/messages:send';            
+        $accessToken = $this->getAccessToken();
+        $headers = array( "Authorization: Bearer ".$accessToken,"content-type: application/json;UTF-8");
+
+        // Open curl connection
+        $curl = curl_init();
+        // Set the url, number of POST vars, POST data
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($fields));
+        $result = curl_exec($curl);
+        if ($result === FALSE) {
+            die('Curl failed: ' . curl_error($curl));
+        }
+        curl_close($curl);
+    }
 
     public function index()
     {
