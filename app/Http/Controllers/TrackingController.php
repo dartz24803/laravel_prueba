@@ -18,11 +18,8 @@ use App\Models\TrackingEvaluacionTemporal;
 use App\Models\TrackingGuiaRemisionDetalle;
 use App\Models\TrackingGuiaRemisionDetalleTemporal;
 use App\Models\TrackingTemporal;
+use Google\Client as GoogleClient;
 use Illuminate\Support\Facades\DB;
-use GuzzleHttp\Client;
-use NotificationChannels\Fcm\FcmChannel;
-use NotificationChannels\Fcm\FcmMessage;
-use NotificationChannels\Fcm\Resources\Notification as FcmNotification;
 
 class TrackingController extends Controller
 {
@@ -195,32 +192,46 @@ class TrackingController extends Controller
         }
     }
 
-    /*public function prueba_notification()
+    public function getAccessToken(){
+        $client = new GoogleClient();
+        $client->setAuthConfig(base_path('firebase_credentials.json'));
+        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+        $accessToken = $client->fetchAccessTokenWithAssertion()["access_token"];
+        return $accessToken;
+    }
+
+    public function prueba_notificacion()
     {
-        $client = new Client();
-        
-        $serverKey = 'YOUR_FIREBASE_SERVER_KEY';
-        $deviceToken = 'TOKEN_DEL_DISPOSITIVO_DESTINO';
-
-        $title = 'Título de la Notificación';
-        $body = 'Cuerpo del mensaje de la notificación';
-
-        $response = $client->post('https://fcm.googleapis.com/fcm/send', [
-            'headers' => [
-                'Authorization' => 'key=' . $serverKey,
-                'Content-Type' => 'application/json',
+        $fields["message"] = array(
+            'token' => 'chNPE4RTT_2cFK_7F4dqb7:APA91bEKdqd-TCGBpDLW9jP4-usTv9GS3DrmmpMuodZc5EOwo1tppYT3j8ZEA9qYsgyFn-08QbQUWaeb8deFLSIUSpk5wgl5XeWIX17QRirnqTFO6EaqhqC2uHSMkdPbv1vTtz_ZC40X',
+            'notification' => [
+                'title' => 'Prueba title',
+                'body' => 'Prueba body',
+                //'image' => '',
             ],
-            'json' => [
-                'to' => $deviceToken,
-                'notification' => [
-                    'title' => $title,
-                    'body' => $body,
-                ],
-            ],
-        ]);
+        );
 
-        return $response->getBody()->getContents();
-    }*/
+        $url = 'https://fcm.googleapis.com/v1/projects/786895561540/messages:send';            
+        $accessToken = $this->getAccessToken();
+
+        $headers = array("Authorization: Bearer ".$accessToken,"content-type: application/json;UTF-8");
+
+        // Open curl connection
+        $curl = curl_init();
+        // Set the url, number of POST vars, POST data
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($fields));
+        $result = curl_exec($curl);
+        if ($result === FALSE) {
+            die('Curl failed: ' . curl_error($curl));
+        }
+        curl_close($curl);
+    }
 
     public function index()
     {
