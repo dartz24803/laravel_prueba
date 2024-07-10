@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('amonestacion', function (Blueprint $table) {
-            $table->increments('id_amonestacion');
+            $table->id('id_amonestacion');
             $table->string('cod_amonestacion', 30)->nullable();
             $table->date('fecha')->nullable();
-            $table->integer('id_solicitante')->nullable();
-            $table->integer('id_colaborador')->nullable();
-            $table->integer('id_revisor')->nullable();
+            $table->unsignedBigInteger('id_solicitante')->nullable();
+            $table->unsignedBigInteger('id_colaborador')->nullable();
+            $table->unsignedBigInteger('id_revisor')->nullable();
             $table->string('tipo', 255)->nullable();
-            $table->integer('id_gravedad_amonestacion')->nullable();
+            $table->unsignedBigInteger('id_gravedad_amonestacion')->nullable();
             $table->string('motivo', 250)->nullable();
             $table->text('detalle')->nullable();
             $table->dateTime('fec_aprobacion')->nullable();
@@ -34,8 +34,8 @@ return new class extends Migration
             $table->integer('user_eli')->nullable();
             $table->foreign('id_solicitante')->references('id_usuario')->on('users');
             $table->foreign('id_colaborador')->references('id_usuario')->on('users');
-            $table->foreign('id_colaborador')->references('id_usuario')->on('users');
-            $table->foreign('id_revisor')->references('id_revisor')->on('gravedad_amonestacion');
+            // $table->foreign('id_revisor')->references('id_revisor')->on('users');
+            $table->foreign('id_gravedad_amonestacion')->references('id_gravedad_amonestacion')->on('gravedad_amonestacion');
             //$table->timestamps();
         });
     }

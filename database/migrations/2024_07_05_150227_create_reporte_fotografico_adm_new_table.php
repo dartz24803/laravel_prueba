@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reporte_fotografico_adm_new', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->string('categoria', 11)->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();

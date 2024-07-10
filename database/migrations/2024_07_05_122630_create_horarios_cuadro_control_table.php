@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('horarios_cuadro_control', function (Blueprint $table) {
-            $table->increments('id_horarios_cuadro_control');
+            $table->id('id_horarios_cuadro_control');
             $table->string('cod_base', 11)->nullable();
-            $table->integer('id_puesto')->nullable();
+            $table->unsignedBigInteger('id_puesto')->nullable();
             $table->string('puesto', 255)->nullable();
             $table->string('dia', 11)->nullable();
             $table->integer('t_refrigerio_h')->nullable();
@@ -31,6 +31,7 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
+            $table->foreign('id_puesto')->references('id_puesto')->on('puesto');
             //$table->timestamps();
         });
     }
