@@ -2,7 +2,7 @@
     <thead>
         <tr class="text-center">
             <th>Estilo</th>
-            <th>Categoría</th>
+            <th>Usuario</th>
             <th>Tipo de Prenda</th>
             <th>Descripción</th>
             <th>SKU</th>

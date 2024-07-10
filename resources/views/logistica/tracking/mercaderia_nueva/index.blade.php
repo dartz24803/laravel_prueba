@@ -46,7 +46,7 @@
         .toggle-switch .toggle-input:checked+.toggle-label::before {
             transform: translateX(16px);
         }
-        
+
         input[disabled] {
             background-color: white !important;
             color: black;
@@ -66,9 +66,12 @@
                     <div class="widget-content widget-content-area br-6">
                         <div class="toolbar d-md-flex mt-3">
                             <div class="form-group col-lg-2">
-                                <label>Categoría:</label>
+                                <label>Usuario:</label>
                                 <select class="form-control" id="cod_baseb" name="cod_baseb" onchange="Lista_Mercaderia_Nueva();">
                                     <option value="0">TODOS</option>
+                                    @foreach ($list_usuario as $list)
+                                        <option value="{{ $list->par_codusuario }}">{{ $list->par_desusuario }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 
@@ -76,6 +79,9 @@
                                 <label>Tipo de prenda:</label>
                                 <select class="form-control" id="cod_baseb" name="cod_baseb" onchange="Lista_Mercaderia_Nueva();">
                                     <option value="0">TODOS</option>
+                                    @foreach ($list_tipo_prenda as $list)
+                                        <option value="{{ $list->sfa_codigo }}">{{ $list->sfa_descrip }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 
