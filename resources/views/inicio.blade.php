@@ -234,12 +234,12 @@
     #logo_logistica{
         margin-left: 39.5rem;
         margin-top: 6rem;
-        height: 7rem;
+        height: 9rem;
     }
     #logo_comercial{
         margin-left: 4rem;
         margin-top: -2rem;
-        height: 10rem;
+        height: 8rem;
     }
     #logo_talento_humano{
         margin-top: -4rem;
@@ -254,6 +254,7 @@
     #logo_central{
         margin-top: -1.5rem;
         margin-left: 3rem;
+        height: 10rem;
     }
     #logo_finanzas{
         margin-left: -2.5rem;
@@ -280,7 +281,7 @@
     }
     .card-text{
         z-index: 9;
-        transition: opacity 0.5s ease; /* Transición para el texto */
+        transition: opacity 1s ease; /* Transición para el texto */
         font-weight: bold;
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Sombra de texto */
     }
