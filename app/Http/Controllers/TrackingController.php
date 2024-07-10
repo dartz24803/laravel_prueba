@@ -201,11 +201,10 @@ class TrackingController extends Controller
         $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
         $accessToken = $client->fetchAccessTokenWithAssertion()["access_token"];
         return $accessToken;
-    }*/
+    }
 
     public function prueba_notification()
     {
-        //API V1 (NEW)
         $fields["message"] = array(
             'token' => '',
             'notification' => [
@@ -215,7 +214,6 @@ class TrackingController extends Controller
             ],
         );
 
-        //API V1 (NEW)
         $url = 'https://fcm.googleapis.com/v1/projects/786895561540/messages:send';            
         $accessToken = $this->getAccessToken();
         $headers = array( "Authorization: Bearer ".$accessToken,"content-type: application/json;UTF-8");
@@ -235,7 +233,7 @@ class TrackingController extends Controller
             die('Curl failed: ' . curl_error($curl));
         }
         curl_close($curl);
-    }
+    }*/
 
     public function index()
     {
