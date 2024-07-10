@@ -159,7 +159,7 @@
     function Insert_Salida_Mercaderia(id) {
         Cargando();
 
-        var url = "{{ route('tracking.salida_mercaderia') }}";
+        var url = "{{ route('tracking.salida_mercaderia', ':id') }}".replace(':id', id);
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({
@@ -196,7 +196,7 @@
     function Insert_Llegada_Tienda(id) {
         Cargando();
 
-        var url = "{{ route('tracking.llegada_tienda') }}";
+        var url = "{{ route('tracking.llegada_tienda', ':id') }}".replace(':id', id);
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({
@@ -233,7 +233,7 @@
     function Insert_Confirmacion_Llegada(id) {
         Cargando();
 
-        var url = "{{ route('tracking.confirmacion_llegada') }}";
+        var url = "{{ route('tracking.confirmacion_llegada', ':id') }}".replace(':id', id);
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({

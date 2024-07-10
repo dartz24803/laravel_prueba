@@ -174,6 +174,14 @@ class TrackingController extends Controller
 
         foreach($list_tracking as $tracking){
             //ALERTA 3
+            $dato = [
+                'id_tracking' => $tracking->id,
+                'token' => 'chNPE4RTT_2cFK_7F4dqb7:APA91bEKdqd-TCGBpDLW9jP4-usTv9GS3DrmmpMuodZc5EOwo1tppYT3j8ZEA9qYsgyFn-08QbQUWaeb8deFLSIUSpk5wgl5XeWIX17QRirnqTFO6EaqhqC2uHSMkdPbv1vTtz_ZC40X',
+                'titulo' => 'LLEGADA A TIENDA',
+                'contenido' => 'Hola '.$tracking->hacia.' confirma que tu mercadería haya llegado a tienda',
+            ];
+            $this->sendNotification($dato);
+
             $tracking_dp = TrackingDetalleProceso::create([
                 'id_tracking' => $tracking->id,
                 'id_proceso' => 3,
@@ -388,11 +396,19 @@ class TrackingController extends Controller
         }
     }
 
-    public function insert_salida_mercaderia(Request $request)
+    public function insert_salida_mercaderia(Request $request,$id)
     {
-        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
-
         //ALERTA 2
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
+
+        $dato = [
+            'id_tracking' => $id,
+            'token' => 'chNPE4RTT_2cFK_7F4dqb7:APA91bEKdqd-TCGBpDLW9jP4-usTv9GS3DrmmpMuodZc5EOwo1tppYT3j8ZEA9qYsgyFn-08QbQUWaeb8deFLSIUSpk5wgl5XeWIX17QRirnqTFO6EaqhqC2uHSMkdPbv1vTtz_ZC40X',
+            'titulo' => 'SALIDA DE MERCADERÍA',
+            'contenido' => 'Hola '.$get_id->hacia.' tu requerimiento n° '.$get_id->n_requerimiento.' está en camino',
+        ];
+        $this->sendNotification($dato);
+
         TrackingDetalleEstado::create([
             'id_detalle' => $get_id->id_detalle,
             'id_estado' => 3,
@@ -411,9 +427,17 @@ class TrackingController extends Controller
         return view('logistica.tracking.detalle_transporte', compact('get_id'));
     }
 
-    public function insert_mercaderia_transito(Request $request)
+    public function insert_mercaderia_transito(Request $request,$id)
     {
-        Tracking::findOrFail($request->id)->update([
+        $request->validate([
+            'peso' => 'required',
+            'transporte' => 'gt:0'
+        ],[
+            'peso.required' => 'Debe ingresar peso.',
+            'transporte.gt' => 'Debe seleccionar transporte.',
+        ]);
+
+        Tracking::findOrFail($id)->update([
             'guia_transporte' => $request->guia_transporte,
             'peso' => $request->peso,
             'paquetes' => $request->paquetes,
@@ -439,7 +463,7 @@ class TrackingController extends Controller
                 $source_file = $_FILES['archivo_transporte']['tmp_name'];
 
                 $ext = pathinfo($path, PATHINFO_EXTENSION);
-                $nombre_soli = "Factura_".$request->id."_".date('YmdHis');
+                $nombre_soli = "Factura_".$id."_".date('YmdHis');
                 $nombre = $nombre_soli.".".strtolower($ext);
 
                 ftp_pasv($con_id,true); 
@@ -447,7 +471,7 @@ class TrackingController extends Controller
                 if($subio){
                     $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
                     TrackingArchivo::create([
-                        'id_tracking' => $request->id,
+                        'id_tracking' => $id,
                         'tipo' => 1,
                         'archivo' => $archivo
                     ]);
@@ -460,7 +484,7 @@ class TrackingController extends Controller
         }
 
         $tracking_dp = TrackingDetalleProceso::create([
-            'id_tracking' => $request->id,
+            'id_tracking' => $id,
             'id_proceso' => 2,
             'fecha' => now(),
             'estado' => 1,
@@ -482,13 +506,21 @@ class TrackingController extends Controller
         ]);
     }
 
-    public function insert_llegada_tienda(Request $request)
+    public function insert_llegada_tienda(Request $request,$id)
     {
-        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
-
         //ALERTA 3
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
+
+        $dato = [
+            'id_tracking' => $id,
+            'token' => 'chNPE4RTT_2cFK_7F4dqb7:APA91bEKdqd-TCGBpDLW9jP4-usTv9GS3DrmmpMuodZc5EOwo1tppYT3j8ZEA9qYsgyFn-08QbQUWaeb8deFLSIUSpk5wgl5XeWIX17QRirnqTFO6EaqhqC2uHSMkdPbv1vTtz_ZC40X',
+            'titulo' => 'LLEGADA A TIENDA',
+            'contenido' => 'Hola '.$get_id->hacia.' confirma que tu mercadería haya llegado a tienda',
+        ];
+        $this->sendNotification($dato);
+
         $tracking_dp = TrackingDetalleProceso::create([
-            'id_tracking' => $request->id,
+            'id_tracking' => $id,
             'id_proceso' => 3,
             'fecha' => now(),
             'estado' => 1,
@@ -510,11 +542,19 @@ class TrackingController extends Controller
         ]);
     }
 
-    public function insert_confirmacion_llegada(Request $request)
+    public function insert_confirmacion_llegada(Request $request,$id)
     {
-        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
-
         //ALERTA 4
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
+
+        $dato = [
+            'id_tracking' => $id,
+            'token' => 'chNPE4RTT_2cFK_7F4dqb7:APA91bEKdqd-TCGBpDLW9jP4-usTv9GS3DrmmpMuodZc5EOwo1tppYT3j8ZEA9qYsgyFn-08QbQUWaeb8deFLSIUSpk5wgl5XeWIX17QRirnqTFO6EaqhqC2uHSMkdPbv1vTtz_ZC40X',
+            'titulo' => 'CONFIRMACIÓN DE LLEGADA',
+            'contenido' => 'Hola '.$get_id->desde.', se ha confirmado que la mercadería llegó a tienda',
+        ];
+        $this->sendNotification($dato);
+
         TrackingDetalleEstado::create([
             'id_detalle' => $get_id->id_detalle,
             'id_estado' => 6,
@@ -529,7 +569,7 @@ class TrackingController extends Controller
         //MENSAJE 2
         $estado_5 = TrackingDetalleEstado::get_list_tracking_detalle_estado(['id_detalle'=>$get_id->id_detalle,'id_estado'=>5]);
         $estado_6 = TrackingDetalleEstado::get_list_tracking_detalle_estado(['id_detalle'=>$get_id->id_detalle,'id_estado'=>6]);
-        $list_archivo = TrackingArchivo::where('id_tracking', $request->id)->where('tipo', 1)->get();
+        $list_archivo = TrackingArchivo::where('id_tracking', $id)->where('tipo', 1)->get();
 
         $fecha1 = new \DateTime($estado_5->fecha);
         $fecha2 = new \DateTime($estado_6->fecha);
