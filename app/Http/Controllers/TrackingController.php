@@ -18,6 +18,7 @@ use App\Models\TrackingEvaluacionTemporal;
 use App\Models\TrackingGuiaRemisionDetalle;
 use App\Models\TrackingGuiaRemisionDetalleTemporal;
 use App\Models\TrackingTemporal;
+use App\Models\TrackingToken;
 use Google\Client as GoogleClient;
 use Illuminate\Support\Facades\DB;
 
@@ -202,35 +203,38 @@ class TrackingController extends Controller
 
     public function prueba_notificacion()
     {
-        $fields["message"] = array(
-            'token' => 'chNPE4RTT_2cFK_7F4dqb7:APA91bEKdqd-TCGBpDLW9jP4-usTv9GS3DrmmpMuodZc5EOwo1tppYT3j8ZEA9qYsgyFn-08QbQUWaeb8deFLSIUSpk5wgl5XeWIX17QRirnqTFO6EaqhqC2uHSMkdPbv1vTtz_ZC40X',
-            'notification' => [
-                'title' => 'Prueba title',
-                'body' => 'Prueba body',
-                //'image' => '',
-            ],
-        );
-
         $url = 'https://fcm.googleapis.com/v1/projects/786895561540/messages:send';            
         $accessToken = $this->getAccessToken();
-
         $headers = array("Authorization: Bearer ".$accessToken,"content-type: application/json;UTF-8");
 
-        // Open curl connection
-        $curl = curl_init();
-        // Set the url, number of POST vars, POST data
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $list_token = TrackingToken::select('token')->get();
 
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($fields));
-        $result = curl_exec($curl);
-        if ($result === FALSE) {
-            die('Curl failed: ' . curl_error($curl));
+        foreach($list_token as $list){
+            $fields["message"] = array(
+                'token' => $list->token,
+                'notification' => [
+                    'title' => 'Prueba en producción',
+                    'body' => 'Texto productivo',
+                    //'image' => '',
+                ],
+            );
+    
+            // Open curl connection
+            $curl = curl_init();
+            // Set the url, number of POST vars, POST data
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_POST, true);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($fields));
+            $result = curl_exec($curl);
+            if ($result === FALSE) {
+                die('Curl failed: ' . curl_error($curl));
+            }
+            curl_close($curl);
         }
-        curl_close($curl);
     }
 
     public function index()
