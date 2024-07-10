@@ -351,6 +351,9 @@
     .carousel-item-prev.carousel-item-right {
         animation: sliderOutSection 2s forwards;
     }
+    .widget{
+        border: none !important;
+    }
 </style>
 <script>
     $(document).ready(function() {

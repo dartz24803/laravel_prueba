@@ -14,6 +14,7 @@ use App\Models\Organigrama;
 use App\Models\Puesto;
 use App\Models\SedeLaboral;
 use App\Models\SubGerencia;
+use App\Models\DatacorpAccesos;
 use Illuminate\Http\Request;
 
 class ColaboradorConfController extends Controller
@@ -1064,6 +1065,119 @@ class ColaboradorConfController extends Controller
     public function destroy_ca($id)
     {
         Cargo::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    //DATACORP
+    public function Index_Datacorp(){
+        return view('rrhh.administracion.colaborador.Datacorp.index');
+    }
+
+    public function Listar_Accesos_Datacorp(){
+        $list = DatacorpAccesos::join('area', 'datacorp_accesos.area', '=', 'area.id_area')
+                ->join('puesto', 'datacorp_accesos.puesto', '=', 'puesto.id_puesto')
+                ->where('datacorp_accesos.estado', 1)
+                ->select('datacorp_accesos.*', 'area.*', 'puesto.*')
+                //->orderBy('datacorp_accesos.fec_reg', 'DESC')
+                ->get();
+        return view('rrhh.administracion.colaborador.Datacorp.lista', compact('list'));
+    }
+
+    public function Modal_Registrar_Datacorp(){
+        $list_area = Area::select('*')
+            ->where('estado', 1)
+            ->orderBy('nom_area', 'ASC')
+            ->get();
+        return view('rrhh.administracion.colaborador.Datacorp.modal_registrar', compact('list_area'));
+    }
+
+    public function Registrar_Datacorp(Request $request){
+        $request->validate([
+            'id_area' => 'not_in:0',
+            'id_puesto' => 'not_in:0',
+            'carpeta_acceso' => 'required',
+        ],[
+            'id_area.not_in' => 'Debe seleccionar area.',
+            'id_puesto.not_in' => 'Debe seleccionar puesto.',
+            'carpeta_acceso.required' => 'Debe ingresar carpeta de acceso.',
+        ]);
+
+        $valida = DatacorpAccesos::where('area', $request->id_area)
+                        ->where('puesto', $request->id_puesto)
+                        ->where('carpeta_acceso', $request->carpeta_acceso)
+                        ->where('estado', 1)->exists();
+        //alerta de validacion
+        if ($valida) {
+            echo "error";
+        }else{
+            DatacorpAccesos::create([
+                'area' => $request->id_area,
+                'puesto' => $request->id_puesto,
+                'carpeta_acceso' => $request->carpeta_acceso,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function Modal_Update_Datacorp($id){
+            $list_area = Area::select('*')
+                ->where('estado', 1)
+                ->orderBy('nom_area', 'ASC')
+                ->get();
+            $get_id = DatacorpAccesos::select('*')
+                    ->where('estado', 1)
+                    ->where('id', $id)
+                    ->get();
+            $list_puesto = Puesto::select('id_puesto', 'nom_puesto')
+                            ->where('id_area', $get_id[0]['area'])
+                            ->where('estado', 1)
+                            ->get();
+            //print_r($list_puesto);
+            return view('rrhh.administracion.colaborador.Datacorp.modal_editar', compact('list_area','get_id','list_puesto'));
+    }
+
+    public function Update_Datacorp(Request $request){
+        $request->validate([
+            'id_area_e' => 'not_in:0',
+            'id_puesto_e' => 'not_in:0',
+            'carpeta_acceso_e' => 'required',
+        ],[
+            'id_area_e.not_in' => 'Debe seleccionar area.',
+            'id_puesto_e.not_in' => 'Debe seleccionar puesto.',
+            'carpeta_acceso_e.required' => 'Debe ingresar carpeta de acceso.',
+        ]);
+
+        $valida = DatacorpAccesos::where('area', $request->id_area_e)
+                        ->where('puesto', $request->id_puesto_e)
+                        ->where('carpeta_acceso', $request->carpeta_acceso_e)
+                        ->where('estado', 1)->exists();
+        //alerta de validacion
+        if ($valida) {
+            echo "error";
+        }else{
+            DatacorpAccesos::findOrFail($request->id)->update([
+                'area' => $request->id_area_e,
+                'puesto' => $request->id_puesto_e,
+                'carpeta_acceso' => $request->carpeta_acceso_e,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function Delete_Datacorp(Request $request){
+        //print_r($request->input('id'));
+        DatacorpAccesos::findOrFail($request->id)->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario

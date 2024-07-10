@@ -197,7 +197,7 @@ a {
         margin-top:0;
         border-radius: 1.5em;
         width: 340px;
-        height: 510px;
+        height: 525px;
     }
 
     img.medio3 {
@@ -214,15 +214,15 @@ a {
     display: block;
 }
 .un {
-  margin-left: 38px;
+  margin-left: 35px;
 }
 
 .pass {
-  margin-left: 38px;
+  margin-left: 35px;
 }
 .submit {
   width: 72%!important;
-  margin-left: 55px;
+  margin-left: 45px;
   }
 }
 
@@ -240,7 +240,7 @@ a {
   .main {
       border-radius: 1.5em;
       width: 280px;
-      height: 445px;
+      height: 500px;
     }
 
   img.medio3 {

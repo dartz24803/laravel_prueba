@@ -16,6 +16,7 @@ use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\AmonestacionController;
 use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
+use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
 
 Route::middleware([NoCache::class])->group(function () {
@@ -239,6 +240,13 @@ Route::controller(ColaboradorConfController::class)->group(function(){
     Route::get('colaborador_conf_ca/{id}/edit', 'edit_ca')->name('colaborador_conf_ca.edit');
     Route::put('colaborador_conf_ca/{id}', 'update_ca')->name('colaborador_conf_ca.update');
     Route::delete('colaborador_conf_ca/{id}', 'destroy_ca')->name('colaborador_conf_ca.destroy');
+    Route::get('Index_Datacorp', 'Index_Datacorp');
+    Route::post('Listar_Accesos_Datacorp','Listar_Accesos_Datacorp');
+    Route::get('Modal_Registrar_Datacorp', 'Modal_Registrar_Datacorp');
+    Route::get('Modal_Update_Datacorp/{id}', 'Modal_Update_Datacorp');
+    Route::post('Registrar_Datacorp', 'Registrar_Datacorp');
+    Route::post('Update_Datacorp', 'Update_Datacorp');
+    Route::post('/Delete_Datacorp', 'Delete_Datacorp');
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function(){
@@ -339,10 +347,9 @@ Route::controller(CuadroControlVisualController::class)->group(function(){
 
 
 
-
-
-
-
+Route::controller(PuestoController::class)->group(function(){
+    Route::get('Traer_Puesto_Cargo_Colaborador', 'Traer_Puesto_Cargo_Colaborador');
+});
 //ASISTENCIA
 Route::controller(AsistenciaController::class)->group(function(){
     //------------------------------CCV------------------------------------//
