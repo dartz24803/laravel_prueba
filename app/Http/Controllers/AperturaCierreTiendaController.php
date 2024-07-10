@@ -48,8 +48,7 @@ class AperturaCierreTiendaController extends Controller
         $valida = TiendaMarcacionDia::select('tienda_marcacion_dia.hora_ingreso')
                                     ->join('tienda_marcacion','tienda_marcacion.id_tienda_marcacion','=','tienda_marcacion_dia.id_tienda_marcacion')
                                     ->where('tienda_marcacion.cod_base',session('usuario')->centro_labores)
-                                    ->where('tienda_marcacion.estado',1)
-                                    ->where('tienda_marcacion_dia.dia',date('j'))
+                                    ->where('tienda_marcacion_dia.dia',date('N'))
                                     ->exists();
         if(!$valida){
             echo "error";
@@ -62,7 +61,7 @@ class AperturaCierreTiendaController extends Controller
                                         ->join('tienda_marcacion','tienda_marcacion.id_tienda_marcacion','=','tienda_marcacion_dia.id_tienda_marcacion')
                                         ->where('tienda_marcacion.cod_base',session('usuario')->centro_labores)
                                         ->where('tienda_marcacion.estado',1)
-                                        ->where('tienda_marcacion_dia.dia',date('j'))
+                                        ->where('tienda_marcacion_dia.dia',date('N'))
                                         ->first();
         $list_observacion = CObservacionAperturaCierreTienda::select('id','descripcion')->get();                                        
         return view('seguridad.apertura_cierre.registro.modal_registrar', compact('get_hora','list_observacion'));
@@ -112,7 +111,7 @@ class AperturaCierreTiendaController extends Controller
                                         ->join('tienda_marcacion','tienda_marcacion.id_tienda_marcacion','=','tienda_marcacion_dia.id_tienda_marcacion')
                                         ->where('tienda_marcacion.cod_base',session('usuario')->centro_labores)
                                         ->where('tienda_marcacion.estado',1)
-                                        ->where('tienda_marcacion_dia.dia',date('j'))
+                                        ->where('tienda_marcacion_dia.dia',date('N'))
                                         ->first();
 
             $apertura = AperturaCierreTienda::create([
@@ -181,7 +180,7 @@ class AperturaCierreTiendaController extends Controller
                                         ->join('tienda_marcacion','tienda_marcacion.id_tienda_marcacion','=','tienda_marcacion_dia.id_tienda_marcacion')
                                         ->where('tienda_marcacion.cod_base',$get_id->cod_base)
                                         ->where('tienda_marcacion.estado',1)
-                                        ->where('tienda_marcacion_dia.dia',date('j'))
+                                        ->where('tienda_marcacion_dia.dia',date('N'))
                                         ->first();
         $list_observacion = CObservacionAperturaCierreTienda::select('id','descripcion')->get();
         return view('seguridad.apertura_cierre.registro.modal_editar', compact('get_id','get_hora','titulo','list_observacion'));
@@ -200,7 +199,7 @@ class AperturaCierreTiendaController extends Controller
                                         ->join('tienda_marcacion','tienda_marcacion.id_tienda_marcacion','=','tienda_marcacion_dia.id_tienda_marcacion')
                                         ->where('tienda_marcacion.cod_base',session('usuario')->centro_labores)
                                         ->where('tienda_marcacion.estado',1)
-                                        ->where('tienda_marcacion_dia.dia',date('j'))
+                                        ->where('tienda_marcacion_dia.dia',date('N'))
                                         ->first();
 
         AperturaCierreTienda::findOrFail($id)->update([

@@ -2100,4 +2100,24 @@ class TrackingController extends Controller
             echo "error";
         }
     }
+    //MERCADERIA NUEVA
+    public function mercaderia_nueva()
+    {
+        $list_usuario = DB::connection('sqlsrv')->table('vw_usuarios')
+                        ->select('par_codusuario','par_desusuario')->orderBy('par_desusuario','ASC')->get();
+        $list_tipo_prenda = DB::connection('sqlsrv')->table('tge_sub_familias')
+                            ->select('sfa_codigo','sfa_descrip')->orderBy('sfa_descrip','ASC')->get();
+        return view('logistica.tracking.mercaderia_nueva.index', compact('list_usuario','list_tipo_prenda'));
+    }
+
+    public function list_mercaderia_nueva()
+    {
+        $list_tracking = Tracking::get_list_tracking();
+        return view('logistica.tracking.mercaderia_nueva.lista', compact('list_tracking'));
+    }
+
+    public function modal_mercaderia_nueva($id)
+    {
+        return view('logistica.tracking.mercaderia_nueva.modal_editar', compact('id'));
+    }
 }
