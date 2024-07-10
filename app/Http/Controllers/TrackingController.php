@@ -288,52 +288,6 @@ class TrackingController extends Controller
             'user_act' => session('usuario')->id_usuario
         ]);
 
-        //ENVÍO DE WHATSAPP
-        /*$curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://graph.facebook.com/v19.0/238326042708442/messages',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>'{
-                "messaging_product": "whatsapp",
-                "to": "51956897977",
-                "type": "template",
-                "template": {
-                    "name": "mercaderia_por_salir",
-                    "language": {
-                        "code": "es_MX"
-                    },
-                    "components": [
-                        {
-                            "type": "body",
-                            "parameters": [
-                                {
-                                    "type": "text",
-                                    "text": "'.$request->hacia.'"
-                                },
-                                {
-                                    "type": "text",
-                                    "text": "'.$request->n_requerimiento.'"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer EAAKZBi44f9U8BO2GfSXEpkvkZCVGxxvGjVLQ7KpsPA9yksGvjx5Au6535ZBukULZAwCN4s1m0TmZAzSt61O3f2pJP1sZBhcKvINSi4yCgtZB2EqdvBodkrMG4n4FALzkx0yvZCFgkQaC3AfDvLqWgMuZCHoMkdM5EgXy58TLGDS7a7TZBwLIcA9UV80VeuSHQmSnts',
-                'Content-Type: application/json'
-            ),
-        ));
-        curl_exec($curl);
-        curl_close($curl);*/
-        //END
-
         TrackingDetalleEstado::create([
             'id_detalle' => $tracking_dp->id,
             'id_estado' => 1,
@@ -412,59 +366,13 @@ class TrackingController extends Controller
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
-        //END
     }
 
     public function insert_salida_mercaderia(Request $request)
     {
         $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
 
-        //ENVÍO DE WHATSAPP
-        /*$curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://graph.facebook.com/v19.0/238326042708442/messages',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>'{
-                "messaging_product": "whatsapp",
-                "to": "51956897977",
-                "type": "template",
-                "template": {
-                    "name": "salida_mercaderia",
-                    "language": {
-                        "code": "es_MX"
-                    },
-                    "components": [
-                        {
-                            "type": "body",
-                            "parameters": [
-                                {
-                                    "type": "text",
-                                    "text": "'.$get_id->hacia.'"
-                                },
-                                {
-                                    "type": "text",
-                                    "text": "'.$get_id->n_requerimiento.'"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer EAAKZBi44f9U8BO2GfSXEpkvkZCVGxxvGjVLQ7KpsPA9yksGvjx5Au6535ZBukULZAwCN4s1m0TmZAzSt61O3f2pJP1sZBhcKvINSi4yCgtZB2EqdvBodkrMG4n4FALzkx0yvZCFgkQaC3AfDvLqWgMuZCHoMkdM5EgXy58TLGDS7a7TZBwLIcA9UV80VeuSHQmSnts',
-                'Content-Type: application/json'
-            ),
-        ));
-        curl_exec($curl);
-        curl_close($curl);*/
-        //END
-
+        //ALERTA 2
         TrackingDetalleEstado::create([
             'id_detalle' => $get_id->id_detalle,
             'id_estado' => 3,
@@ -558,48 +466,7 @@ class TrackingController extends Controller
     {
         $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
 
-        //ENVÍO DE WHATSAPP
-        /*$curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://graph.facebook.com/v19.0/238326042708442/messages',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>'{
-                "messaging_product": "whatsapp",
-                "to": "51956897977",
-                "type": "template",
-                "template": {
-                    "name": "llegada_tienda",
-                    "language": {
-                        "code": "es_MX"
-                    },
-                    "components": [
-                        {
-                            "type": "body",
-                            "parameters": [
-                                {
-                                    "type": "text",
-                                    "text": "'.$get_id->hacia.'"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer EAAKZBi44f9U8BO2GfSXEpkvkZCVGxxvGjVLQ7KpsPA9yksGvjx5Au6535ZBukULZAwCN4s1m0TmZAzSt61O3f2pJP1sZBhcKvINSi4yCgtZB2EqdvBodkrMG4n4FALzkx0yvZCFgkQaC3AfDvLqWgMuZCHoMkdM5EgXy58TLGDS7a7TZBwLIcA9UV80VeuSHQmSnts',
-                'Content-Type: application/json'
-            ),
-        ));
-        curl_exec($curl);
-        curl_close($curl);*/
-        //END
-
+        //ALERTA 3
         $tracking_dp = TrackingDetalleProceso::create([
             'id_tracking' => $request->id,
             'id_proceso' => 3,
@@ -627,48 +494,7 @@ class TrackingController extends Controller
     {
         $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
 
-        //ENVÍO DE WHATSAPP
-        /*$curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://graph.facebook.com/v19.0/238326042708442/messages',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>'{
-                "messaging_product": "whatsapp",
-                "to": "51956897977",
-                "type": "template",
-                "template": {
-                    "name": "confirmacion_llegada",
-                    "language": {
-                        "code": "es_MX"
-                    },
-                    "components": [
-                        {
-                            "type": "body",
-                            "parameters": [
-                                {
-                                    "type": "text",
-                                    "text": "'.$get_id->desde.'"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer EAAKZBi44f9U8BO2GfSXEpkvkZCVGxxvGjVLQ7KpsPA9yksGvjx5Au6535ZBukULZAwCN4s1m0TmZAzSt61O3f2pJP1sZBhcKvINSi4yCgtZB2EqdvBodkrMG4n4FALzkx0yvZCFgkQaC3AfDvLqWgMuZCHoMkdM5EgXy58TLGDS7a7TZBwLIcA9UV80VeuSHQmSnts',
-                'Content-Type: application/json'
-            ),
-        ));
-        curl_exec($curl);
-        curl_close($curl);*/
-        //END
-
+        //ALERTA 4
         TrackingDetalleEstado::create([
             'id_detalle' => $get_id->id_detalle,
             'id_estado' => 6,
@@ -680,7 +506,7 @@ class TrackingController extends Controller
             'user_act' => session('usuario')->id_usuario
         ]);
 
-        //ENVÍO DE CORREO
+        //MENSAJE 2
         $estado_5 = TrackingDetalleEstado::get_list_tracking_detalle_estado(['id_detalle'=>$get_id->id_detalle,'id_estado'=>5]);
         $estado_6 = TrackingDetalleEstado::get_list_tracking_detalle_estado(['id_detalle'=>$get_id->id_detalle,'id_estado'=>6]);
         $list_archivo = TrackingArchivo::where('id_tracking', $request->id)->where('tipo', 1)->get();
@@ -806,7 +632,6 @@ class TrackingController extends Controller
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
-        //END
     }
 
     public function insert_cierre_inspeccion_fardos(Request $request)
@@ -814,47 +639,7 @@ class TrackingController extends Controller
         $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
 
         if($get_id->transporte==2 || ($get_id->transporte==1 && $get_id->importe_transporte>0)){
-            //ENVÍO DE WHATSAPP
-            /*$curl = curl_init();
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://graph.facebook.com/v19.0/238326042708442/messages',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS =>'{
-                    "messaging_product": "whatsapp",
-                    "to": "51956897977",
-                    "type": "template",
-                    "template": {
-                        "name": "inspeccion_mercaderia",
-                        "language": {
-                            "code": "es_MX"
-                        },
-                        "components": [
-                            {
-                                "type": "body",
-                                "parameters": [
-                                    {
-                                        "type": "text",
-                                        "text": "'.$get_id->desde.'"
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                }',
-                CURLOPT_HTTPHEADER => array(
-                    'Authorization: Bearer EAAKZBi44f9U8BO2GfSXEpkvkZCVGxxvGjVLQ7KpsPA9yksGvjx5Au6535ZBukULZAwCN4s1m0TmZAzSt61O3f2pJP1sZBhcKvINSi4yCgtZB2EqdvBodkrMG4n4FALzkx0yvZCFgkQaC3AfDvLqWgMuZCHoMkdM5EgXy58TLGDS7a7TZBwLIcA9UV80VeuSHQmSnts',
-                    'Content-Type: application/json'
-                ),
-            ));
-            curl_exec($curl);
-            curl_close($curl);*/
-            //END
+            //ALERTA 8
 
             $tracking_dp = TrackingDetalleProceso::create([
                 'id_tracking' => $request->id,
@@ -896,7 +681,7 @@ class TrackingController extends Controller
                 $tipo_mensaje = "cierre_inspeccion_fardo_directo";
             }
 
-            //ENVÍO DE WHATSAPP
+            //ALERTA 5 o 6
             /*$curl = curl_init();
             curl_setopt_array($curl, array(
                 CURLOPT_URL => 'https://graph.facebook.com/v19.0/238326042708442/messages',
@@ -936,7 +721,6 @@ class TrackingController extends Controller
             ));
             curl_exec($curl);
             curl_close($curl);*/
-            //END
 
             TrackingDetalleEstado::create([
                 'id_detalle' => $id_detalle,
@@ -1131,7 +915,7 @@ class TrackingController extends Controller
             'user_act' => session('usuario')->id_usuario
         ]);
 
-        //ENVÍO DE CORREO
+        //MENSAJE 3
         $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
         $list_archivo = TrackingArchivo::where('id_tracking', $request->id)->where('tipo', 2)->get();
 
@@ -1181,7 +965,6 @@ class TrackingController extends Controller
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
-        //END
     }
 
     public function pago_transporte($id)
@@ -1242,48 +1025,7 @@ class TrackingController extends Controller
 
         $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
 
-        //ENVÍO DE WHATSAPP
-        /*$curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://graph.facebook.com/v19.0/238326042708442/messages',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>'{
-                "messaging_product": "whatsapp",
-                "to": "51956897977",
-                "type": "template",
-                "template": {
-                    "name": "confirmacion_pago_mercaderia",
-                    "language": {
-                        "code": "es_MX"
-                    },
-                    "components": [
-                        {
-                            "type": "body",
-                            "parameters": [
-                                {
-                                    "type": "text",
-                                    "text": "'.$get_id->desde.'"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer EAAKZBi44f9U8BO2GfSXEpkvkZCVGxxvGjVLQ7KpsPA9yksGvjx5Au6535ZBukULZAwCN4s1m0TmZAzSt61O3f2pJP1sZBhcKvINSi4yCgtZB2EqdvBodkrMG4n4FALzkx0yvZCFgkQaC3AfDvLqWgMuZCHoMkdM5EgXy58TLGDS7a7TZBwLIcA9UV80VeuSHQmSnts',
-                'Content-Type: application/json'
-            ),
-        ));
-        curl_exec($curl);
-        curl_close($curl);*/
-        //END
-
+        //ALERTA 7
         $tracking_dp = TrackingDetalleProceso::create([
             'id_tracking' => $request->id,
             'id_proceso' => 5,
@@ -1307,7 +1049,7 @@ class TrackingController extends Controller
             'user_act' => session('usuario')->id_usuario
         ]);
 
-        //ENVÍO DE CORREO
+        //MENSAJE 4
         $list_archivo = TrackingArchivo::where('id_tracking', $request->id)->where('tipo', 1)->get();
 
         $mail = new PHPMailer(true);
@@ -1378,55 +1120,13 @@ class TrackingController extends Controller
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
-        //END
     }
 
     public function insert_conteo_mercaderia(Request $request)
     {
         $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
 
-        //ENVÍO DE WHATSAPP
-        /*$curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://graph.facebook.com/v19.0/238326042708442/messages',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>'{
-                "messaging_product": "whatsapp",
-                "to": "51956897977",
-                "type": "template",
-                "template": {
-                    "name": "conteo_mercaderia",
-                    "language": {
-                        "code": "es_MX"
-                    },
-                    "components": [
-                        {
-                            "type": "body",
-                            "parameters": [
-                                {
-                                    "type": "text",
-                                    "text": "'.$get_id->desde.'"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer EAAKZBi44f9U8BO2GfSXEpkvkZCVGxxvGjVLQ7KpsPA9yksGvjx5Au6535ZBukULZAwCN4s1m0TmZAzSt61O3f2pJP1sZBhcKvINSi4yCgtZB2EqdvBodkrMG4n4FALzkx0yvZCFgkQaC3AfDvLqWgMuZCHoMkdM5EgXy58TLGDS7a7TZBwLIcA9UV80VeuSHQmSnts',
-                'Content-Type: application/json'
-            ),
-        ));
-        curl_exec($curl);
-        curl_close($curl);*/
-        //END
-
+        //ALERTA 9
         TrackingDetalleEstado::create([
             'id_detalle' => $get_id->id_detalle,
             'id_estado' => 13,
@@ -1442,7 +1142,6 @@ class TrackingController extends Controller
     public function insert_mercaderia_entregada(Request $request)
     {
         //ALERTA 9.3
-
         $tracking_dp = TrackingDetalleProceso::create([
             'id_tracking' => $request->id,
             'id_proceso' => 9,
@@ -1550,8 +1249,9 @@ class TrackingController extends Controller
         $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
         $list_diferencia = DB::connection('sqlsrv')->select('EXEC usp_web_ver_dif_bultos_x_req ?', [2987]);
 
-        //ALERTA 9.1. 
+        //ALERTA 9.1
 
+        //MENSAJE 5
         $mail = new PHPMailer(true);
 
         try {
@@ -1662,8 +1362,9 @@ class TrackingController extends Controller
             'user_act' => session('usuario')->id_usuario
         ]);
 
-        //ALERTA 9.1.1.
+        //ALERTA 9.1.1
 
+        //MENSAJE 6
         $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
 
         $mail = new PHPMailer(true);
@@ -1873,6 +1574,7 @@ class TrackingController extends Controller
                 TrackingArchivoTemporal::where('id_usuario', session('usuario')->id_usuario)->where('tipo', 3)->delete();
             }
 
+            //MENSAJE 7
             $get_id = Tracking::get_list_tracking(['id'=>$id]);
     
             $mail = new PHPMailer(true);
@@ -2012,6 +1714,7 @@ class TrackingController extends Controller
                                                     ->where('tracking_devolucion.id_tracking',$id)
                                                     ->where('tracking_devolucion.estado',1)->get();
 
+            //MENSAJE 8
             $mail = new PHPMailer(true);
     
             try {
@@ -2077,7 +1780,7 @@ class TrackingController extends Controller
                 echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
             }
     
-            //ALERTA 9.2.1.
+            //ALERTA 9.2.1
             TrackingDetalleEstado::create([
                 'id_detalle' => $get_id->id_detalle,
                 'id_estado' => 20,
