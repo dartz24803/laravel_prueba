@@ -15,6 +15,7 @@ return new class extends Migration
             $table->increments('id');
             $table->integer('id_reporte_fotografico_adm')->nullable();
             $table->integer('id_area')->nullable();
+            $table->foreign('id_area')->references('id_area')->on('area');
             //$table->timestamps();
         });
     }

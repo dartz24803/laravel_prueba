@@ -15,6 +15,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('ruta', 100)->nullable();
             $table->integer('id_usuario')->nullable();
+            $table->foreign('id_usuario')->references('id_usuario')->on('users');
             //$table->timestamps();
         });
     }

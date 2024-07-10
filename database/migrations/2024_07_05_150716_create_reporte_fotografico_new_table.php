@@ -15,7 +15,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('base', 100)->nullable();
             $table->string('foto', 100)->nullable();
-            $table->string('codigo', 100)->nullable();
+            $table->integer('codigo')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
+            $table->foreign('codigo')->references('id')->on('codigos_reporte_fotografico_new');
             //$table->timestamps();
         });
     }
