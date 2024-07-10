@@ -17,6 +17,7 @@ use App\Models\TrackingDevolucionTemporal;
 use App\Models\TrackingEvaluacionTemporal;
 use App\Models\TrackingGuiaRemisionDetalle;
 use App\Models\TrackingGuiaRemisionDetalleTemporal;
+use App\Models\TrackingNotificacion;
 use App\Models\TrackingTemporal;
 use App\Models\TrackingToken;
 use Google\Client as GoogleClient;
@@ -201,39 +202,47 @@ class TrackingController extends Controller
         return $accessToken;
     }
 
-    public function prueba_notificacion()
+    public function sendNotification($dato)
     {
         $url = 'https://fcm.googleapis.com/v1/projects/786895561540/messages:send';            
         $accessToken = $this->getAccessToken();
         $headers = array("Authorization: Bearer ".$accessToken,"content-type: application/json;UTF-8");
 
-        $list_token = TrackingToken::select('token')->get();
+        $fields["message"] = array(
+            'token' => $dato['token'],
+            'notification' => [
+                'title' => $dato['titulo'],
+                'body' => $dato['contenido'],
+                //'image' => '',
+            ],
+        );
 
-        foreach($list_token as $list){
-            $fields["message"] = array(
-                'token' => $list->token,
-                'notification' => [
-                    'title' => 'Prueba en producción',
-                    'body' => 'Texto productivo',
-                    //'image' => '',
-                ],
-            );
-    
-            // Open curl connection
-            $curl = curl_init();
-            // Set the url, number of POST vars, POST data
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_POST, true);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($fields));
-            $result = curl_exec($curl);
-            if ($result === FALSE) {
-                die('Curl failed: ' . curl_error($curl));
-            }
-            curl_close($curl);
+        // Open curl connection
+        $curl = curl_init();
+        // Set the url, number of POST vars, POST data
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($fields));
+        $result = curl_exec($curl);
+        if ($result === FALSE) {
+            die('Curl failed: ' . curl_error($curl));
+        }
+        curl_close($curl);
+
+        $valida = TrackingNotificacion::where('id_tracking',$dato['id_tracking'])
+                                        ->where('titulo',$dato['titulo'])->exists();
+
+        if(!$valida){
+            TrackingNotificacion::create([
+                'id_tracking' => $dato['id_tracking'],
+                'titulo' => $dato['titulo'],
+                'contenido' => $dato['contenido'],
+                'fecha' => now()
+            ]);
         }
     }
 
@@ -268,8 +277,8 @@ class TrackingController extends Controller
             'n_requerimiento' => $request->n_requerimiento,
             'n_guia_remision' => $request->n_requerimiento,
             'semana' => $request->semana,
-            'desde' => $request->desde,
-            'hacia' => $request->hacia,
+            'id_origen_desde' => $request->id_origen_desde,
+            'id_origen_hacia' => $request->id_origen_hacia,
             'estado' => 1,
             'fec_reg' => now(),
             'user_reg' => session('usuario')->id_usuario,
@@ -299,7 +308,18 @@ class TrackingController extends Controller
             'user_act' => session('usuario')->id_usuario
         ]);
 
-        //ENVÍO DE CORREO
+        //ALERTA 1
+        $get_id = Tracking::get_list_tracking(['id'=>$tracking->id]);
+
+        $dato = [
+            'id_tracking' => $get_id->id,
+            'token' => 'chNPE4RTT_2cFK_7F4dqb7:APA91bEKdqd-TCGBpDLW9jP4-usTv9GS3DrmmpMuodZc5EOwo1tppYT3j8ZEA9qYsgyFn-08QbQUWaeb8deFLSIUSpk5wgl5XeWIX17QRirnqTFO6EaqhqC2uHSMkdPbv1vTtz_ZC40X',
+            'titulo' => 'MERCADERÍA POR SALIR',
+            'contenido' => 'Hola '.$get_id->hacia.' tu requerimiento n° '.$get_id->n_requerimiento.' está listo',
+        ];
+        $this->sendNotification($dato);
+
+        //MENSAJE 1
         $list_detalle = TrackingGuiaRemisionDetalle::where('n_guia_remision', $request->n_requerimiento)->get();
 
         $mail = new PHPMailer(true);
@@ -319,11 +339,11 @@ class TrackingController extends Controller
 
             $mail->isHTML(true);
 
-            $mail->Subject = "SDM-SEM".$request->semana."-".substr(date('Y'),-2)." RQ-".$request->n_requerimiento." (".$request->hacia.")";
+            $mail->Subject = "SDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.")";
         
             $mail->Body =  '<FONT SIZE=3>
-                                Buen día '.$request->hacia.'.<br><br>
-                                Se envia el reporte de la salida de Mercaderia, de la guía de remisión '.$request->n_requerimiento.'.<br><br>
+                                Buen día '.$get_id->hacia.'.<br><br>
+                                Se envia el reporte de la salida de Mercaderia, de la guía de remisión '.$get_id->n_requerimiento.'.<br><br>
                                 <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                     <thead>
                                         <tr align="center" style="background-color:#0093C6;">

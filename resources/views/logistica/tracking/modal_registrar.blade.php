@@ -30,10 +30,10 @@
                 <label class="control-label text-bold">Desde: </label>
             </div>
             <div class="form-group col-lg-4">
-                <select class="form-control" name="desde" id="desde">
+                <select class="form-control" name="id_origen_desde" id="id_origen_desde">
                     <option value="0">Seleccione</option>
                     @foreach ($list_base as $list)
-                        <option value="<?= $list->cod_base; ?>"><?= $list->cod_base; ?></option>
+                        <option value="<?= $list->id_base; ?>"><?= $list->cod_base; ?></option>
                     @endforeach
                 </select>
             </div>
@@ -42,10 +42,10 @@
                 <label class="control-label text-bold">Hacia: </label>
             </div>
             <div class="form-group col-lg-4">
-                <select class="form-control" name="hacia" id="hacia">
+                <select class="form-control" name="id_origen_hacia" id="id_origen_hacia">
                     <option value="0">Seleccione</option>
                     @foreach ($list_base as $list)
-                        <option value="<?= $list->cod_base; ?>"><?= $list->cod_base; ?></option>
+                        <option value="<?= $list->id_base; ?>"><?= $list->cod_base; ?></option>
                     @endforeach
                 </select>
             </div>
