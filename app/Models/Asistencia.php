@@ -12,29 +12,28 @@ class Asistencia extends Model
     public $timestamps = false;
 
     public function buscar_reporte_control_asistencia($cod_mes,$cod_anio,$cod_base,$num_doc,$tipo,$finicio,$ffin){
+        //$fecha=" WHERE DATE_FORMAT(ar.punch_time,'%m') = '".$cod_mes."' ";
         if($tipo==1){
-            $fecha=" AND DATE_FORMAT(ar.punch_time,'%m') = '".$cod_mes."' AND DATE_FORMAT(ar.punch_time,'%Y') = '".$cod_anio."'";
+            $fecha=" WHERE DATE_FORMAT(ar.punch_time,'%m') = '".$cod_mes."' AND DATE_FORMAT(ar.punch_time,'%Y') = '".$cod_anio."'";
         }else{
-            $fecha=" AND DATE_FORMAT(ar.punch_time,'%Y-%m-%d') BETWEEN '".$finicio."' and '".$ffin."'";
+            $fecha=" WHERE DATE_FORMAT(ar.punch_time,'%Y-%m-%d') BETWEEN '".$finicio."' and '".$ffin."'";
         }
-
+    
         $base_iclock="";
         $base_ar="";
-
+        
 
         $doc_iclock="";
         $doc_ar="";
         if($num_doc!=0){
             if (strlen($num_doc>8)){$num_doc=substr($num_doc, 0,-1);}else{$num_doc=$num_doc;}
-            $doc_iclock="WHERE LPAD(ar.emp_code,8,'0') LIKE '%".$num_doc."%'";
-            //$doc_iclock="WHERE ar.emp_code = ".$num_doc." ";
-            $doc_ar="AND u.num_doc = '.$num_doc.' ";
+            $doc_iclock=" and LPAD(ar.emp_code,8,'0') like '%".$num_doc."%'";
+            $doc_ar=" and u.num_doc = '%".$num_doc."%' ";
         }else{
-            $fecha="WHERE DATE_FORMAT(ar.punch_time,'%m') = '".$cod_mes."' AND DATE_FORMAT(ar.punch_time,'%Y') = '".$cod_anio."'";
             if($cod_base!="" && $cod_base!="0"){
                 //$base_iclock=" and ar.terminal_alias = '".$cod_base."' ";
-                $base_ar="WHERE u.centro_labores = '".$cod_base."' ";
-            }
+                $base_ar=" and u.centro_labores = '".$cod_base."' ";
+            }  
         }
 
         $vista = "SELECT
