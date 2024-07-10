@@ -2100,4 +2100,21 @@ class TrackingController extends Controller
             echo "error";
         }
     }
+    //MERCADERIA NUEVA
+    public function mercaderia_nueva()
+    {
+        $list_tracking = Tracking::get_list_tracking();
+        return view('logistica.tracking.mercaderia_nueva.index', compact('list_tracking'));
+    }
+
+    public function list_mercaderia_nueva()
+    {
+        $list_tracking = Tracking::get_list_tracking();
+        return view('logistica.tracking.mercaderia_nueva.lista', compact('list_tracking'));
+    }
+
+    public function modal_mercaderia_nueva($id)
+    {
+        return view('logistica.tracking.mercaderia_nueva.modal_editar', compact('id'));
+    }
 }
