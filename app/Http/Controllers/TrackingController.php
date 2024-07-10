@@ -18,11 +18,8 @@ use App\Models\TrackingEvaluacionTemporal;
 use App\Models\TrackingGuiaRemisionDetalle;
 use App\Models\TrackingGuiaRemisionDetalleTemporal;
 use App\Models\TrackingTemporal;
+use Google\Client as GoogleClient;
 use Illuminate\Support\Facades\DB;
-use GuzzleHttp\Client;
-use NotificationChannels\Fcm\FcmChannel;
-use NotificationChannels\Fcm\FcmMessage;
-use NotificationChannels\Fcm\Resources\Notification as FcmNotification;
 
 class TrackingController extends Controller
 {
@@ -195,8 +192,8 @@ class TrackingController extends Controller
         }
     }
 
-    /*public function getAccessToken(){
-        $client = new Google\Client();
+    public function getAccessToken(){
+        $client = new GoogleClient();
         $client->setAuthConfig('DIRCREDENCIALES/service-account.json');
         $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
         $accessToken = $client->fetchAccessTokenWithAssertion()["access_token"];
@@ -233,7 +230,7 @@ class TrackingController extends Controller
             die('Curl failed: ' . curl_error($curl));
         }
         curl_close($curl);
-    }*/
+    }
 
     public function index()
     {
