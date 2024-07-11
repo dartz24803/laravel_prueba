@@ -34,6 +34,7 @@
     <script>
         moment.locale('es');
     </script>
+    <link rel="stylesheet" href="{{ asset('css/modals.css') }}">
 </head>
 <body class="alt-menu sidebar-noneoverflow">
     <!-- BEGIN LOADER -->

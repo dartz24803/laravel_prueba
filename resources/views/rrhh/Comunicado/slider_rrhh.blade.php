@@ -1,4 +1,4 @@
-<div class="toolbar">
+<div class="toolbar mt-5">
     <div class="container" style="padding-left: 0px; padding-right: 0px;">
         <div class="row col-md-12">
             <div class="form-group col-md-2">
@@ -15,19 +15,22 @@
             <div class="col-sm">
                 <div align="left">
                     <?php
-                        $funcioncontrolador = Encryptor('encrypt', 'Slider_Vista_RRHH');
-                        $funcioncontrolador_tienda = Encryptor('encrypt', 'Slider_Vista_Tienda');
+                    use Illuminate\Support\Facades\Crypt;
+
+                    $funcioncontrolador = Crypt::encryptString('Slider_Vista_RRHH');
+                    $funcioncontrolador_tienda = Crypt::encryptString('Slider_Vista_Tienda');                    
                     ?>
+                    {{ $funcioncontrolador }}
                     <div id="btn_slide">
-                        <a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="<?= site_url('SliderRRHH/'.$funcioncontrolador) ?>">
+                        <a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="{{ url('SliderRRHH/'.$funcioncontrolador) }}">
                             Visualizar Slide OFC
-                        </a>    
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="col-sm">
                 <div align="right">
-                    <button type="button" class="btn btn-primary mb-2 mr-2" title="Registrar" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="<?= site_url('Recursos_Humanos/Modal_Slider_Rrhh') ?>" >
+                    <button type="button" class="btn btn-primary mb-2 mr-2" title="Registrar" data-toggle="modal" data-target="#ModalRegistroGrande" app_reg_grande="{{ url('Modal_Slider_Rrhh') }}" >
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
                         Registrar
                     </button>
@@ -36,7 +39,7 @@
         </div>
     </div>
 </div>
-
+@csrf
 <div class="table-responsive mb-4 mt-4" id="lista_slider_rrhh">
 </div>
 
@@ -47,11 +50,15 @@
         Cargando();
 
         var tipo = $('#base_sr').val();
-        var url = "<?php echo site_url(); ?>Recursos_Humanos/Lista_Slider_Rrhh";
-        
+        var url = "{{ url('Lista_Slider_Rrhh') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
         $.ajax({
             type: "POST",
             url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             data: {'tipo':tipo},
             success: function(data) {
                 $('#lista_slider_rrhh').html(data);
@@ -196,8 +203,8 @@
 
     function Delete_Slider_Rrhh(id) {
         Cargando();
-
-        var url = "<?php echo site_url(); ?>Recursos_Humanos/Delete_Slider_Rrhh";
+        var csrfToken = $('input[name="_token"]').val();
+        var url = "{{ url('Delete_Slider_Rrhh') }}";
 
         Swal({
             title: '¿Realmente desea eliminar el registro?',
@@ -212,6 +219,9 @@
                 $.ajax({
                     type: "POST",
                     url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
                     data: {'id_slide': id},
                     success: function() {
                         Swal(

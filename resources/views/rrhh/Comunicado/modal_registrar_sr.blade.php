@@ -100,14 +100,18 @@
 <script>
     function Insert_Slider_Rrhh() {
         Cargando();
+        var csrfToken = $('input[name="_token"]').val();
 
         var dataString = new FormData(document.getElementById('formulario'));
-        var url = "<?php echo site_url(); ?>Recursos_Humanos/Insert_Slider_Rrhh";
+        var url = "{{ url('Insert_Slider_Rrhh') }}";
 
-        if (Valida_Slider_Rrhh('')) {
+        //if (Valida_Slider_Rrhh('')) {
             $.ajax({
                 type: "POST",
                 url: url,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 data: dataString,
                 processData: false,
                 contentType: false,
@@ -128,11 +132,20 @@
                             'success'
                         ).then(function() {
                             Lista_Slider_Rrhh();
-                            $("#ModalRegistroSlide .close").click();
+                            $("#ModalRegistroGrande .close").click();
                         });
                     }
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
                 }
             });
-        }
+        //}
     }
 </script>
