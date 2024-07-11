@@ -18,6 +18,7 @@ class Slide extends Model
 
     protected $fillable = [
         'id_area',
+        'tipo',
         'base',
         'orden',
         'titulo',

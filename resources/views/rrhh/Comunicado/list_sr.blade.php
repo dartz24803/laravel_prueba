@@ -53,16 +53,14 @@
 <script>
     $(document).ready(function() {
         if('<?= $tipo ?>'=="2"){
-            <?php $encryptedString = Crypt::encryptString('Slider_Vista_Tienda'); ?>
-            $("#btn_slide").html('<a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="{{ url('SliderRRHH/'.$encryptedString) }}">Visualizar Slide Tienda</a>');
+            <?php $encryptedString = base64_encode('Slider_Vista_Tienda'); ?>
+            $("#btn_slide").html('<a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="{{ url('remap/'.$encryptedString) }}">Visualizar Slide Tienda</a>');
         }else{
             <?php
-            use Illuminate\Support\Facades\Crypt;
-
-            $funcion = Crypt::encryptString('Slider_Vista_RRHH');
-            $base = Crypt::encryptString($tipo);
+            $funcion = base64_encode('Slider_Vista_RRHH');
+            $base = base64_encode($tipo);
             ?>
-            $("#btn_slide").html('<a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="{{ url('SliderRRHH/'.$funcion.'__'.$base) }}">Visualizar Slide de Base <?php echo $tipo ?></a> ');
+            $("#btn_slide").html('<a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="{{ url('remap/'.$funcion.'__'.$base) }}">Visualizar Slide de Base <?php echo $tipo ?></a> ');
         }
 
         $('#tabla_js').DataTable({

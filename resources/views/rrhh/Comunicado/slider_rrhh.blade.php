@@ -15,14 +15,11 @@
             <div class="col-sm">
                 <div align="left">
                     <?php
-                    use Illuminate\Support\Facades\Crypt;
-
-                    $funcioncontrolador = Crypt::encryptString('Slider_Vista_RRHH');
-                    $funcioncontrolador_tienda = Crypt::encryptString('Slider_Vista_Tienda');                    
+                    $funcioncontrolador = base64_encode('Slider_Vista_RRHH');
+                    $funcioncontrolador_tienda = base64_encode('Slider_Vista_Tienda');
                     ?>
-                    {{ $funcioncontrolador }}
                     <div id="btn_slide">
-                        <a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="{{ url('SliderRRHH/'.$funcioncontrolador) }}">
+                        <a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="{{ url('Slider_Vista_RRHH/'.$funcioncontrolador) }}">
                             Visualizar Slide OFC
                         </a>
                     </div>
