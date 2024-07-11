@@ -19,6 +19,7 @@ use App\Http\Controllers\AperturaCierreTiendaController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
 use App\Http\Controllers\ComunicadoController;
+use App\Http\Controllers\SliderRRHH;
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
 });
@@ -404,4 +405,9 @@ Route::controller(ComunicadoController::class)->group(function(){
     Route::post('/Insert_Slider_Rrhh', 'Insert_Slider_Rrhh');
     Route::post('/Update_Slider_Rrhh', 'Update_Slider_Rrhh');
     Route::post('/Delete_Slider_Rrhh', 'Delete_Slider_Rrhh');
+});
+Route::controller(SliderRRHH::class)->group(function(){
+    Route::get('/SliderRRHH/{base}', 'Slider_Vista_RRHH')->name('slider_rrhh');
+    Route::get('/SliderRRHH', 'Slider_Vista_Tienda')->name('slider_tienda');
+    Route::get('/remap/{method}', 'remap');
 });

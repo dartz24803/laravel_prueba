@@ -32,7 +32,7 @@
                 <td class="text-center">
                     <a href="javascript:void(0);" title="Editar" 
                     data-toggle="modal" data-target="#ModalUpdateSlide" 
-                    app_upd_slide="<?= site_url('Recursos_Humanos/Modal_Update_Slider_Rrhh') ?>/<?= $list['id_slide']  ?>">
+                    app_upd_slide="{{ url('Modal_Update_Slider_Rrhh/' . $list['id_slide'])  }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                         </svg>
@@ -53,11 +53,14 @@
 <script>
     $(document).ready(function() {
         if('<?= $tipo ?>'=="2"){
-            $("#btn_slide").html('<a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="<?= site_url('SliderRRHH/'.Encryptor('encrypt', 'Slider_Vista_Tienda')) ?>">Visualizar Slide Tienda</a> ');
+            <?php $encryptedString = base64_encode('Slider_Vista_Tienda'); ?>
+            $("#btn_slide").html('<a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="{{ url('remap/'.$encryptedString) }}">Visualizar Slide Tienda</a>');
         }else{
-            <?php $funcion= Encryptor('encrypt', 'Slider_Vista_RRHH'); ?>;
-            <?php $base= Encryptor('encrypt', $tipo ); ?>;
-            $("#btn_slide").html('<a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="<?= site_url('SliderRRHH/'.$funcion.'__'.$base) ?>">Visualizar Slide de Base <?php echo $tipo ?></a> ');
+            <?php
+            $funcion = base64_encode('Slider_Vista_RRHH');
+            $base = base64_encode($tipo);
+            ?>
+            $("#btn_slide").html('<a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="{{ url('remap/'.$funcion.'__'.$base) }}">Visualizar Slide de Base <?php echo $tipo ?></a> ');
         }
 
         $('#tabla_js').DataTable({

@@ -135,12 +135,16 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "<?php echo site_url(); ?>Recursos_Humanos/Update_Slider_Rrhh";
+        var url = "{{ url('Update_Slider_Rrhh') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
-        if (Valida_Slider_Rrhh('e')) {
+        //if (Valida_Slider_Rrhh('e')) {
             $.ajax({
                 type: "POST",
                 url: url,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 data: dataString,
                 processData: false,
                 contentType: false,
@@ -153,8 +157,17 @@
                         Lista_Slider_Rrhh();
                         $("#ModalUpdateSlide .close").click();
                     });
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
                 }
             });
-        }
+        //}
     }
 </script>

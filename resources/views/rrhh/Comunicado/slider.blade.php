@@ -1,13 +1,11 @@
-<?php  $sesion =  $_SESSION['usuario'][0];?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Slider</title>
-    <link rel="icon" type="image/png" href="<?php echo base_url(); ?>template/assets/img/favicon.png" sizes="16x16">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/especiales/sliders/sliderstyle.css">
-    <script src="<?php echo base_url(); ?>template/assets/js/libs/jquery-3.1.1.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('css/sliderstyle.css') }}">
+    <script src="{{ asset('template/assets/js/libs/jquery-3.1.1.min.js') }}"></script>
 </head>
 <body>
 
