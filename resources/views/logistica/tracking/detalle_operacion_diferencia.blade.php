@@ -30,7 +30,6 @@
     
                             <div class="modal-footer mt-3">
                                 @csrf
-                                <input type="hidden" name="id" value="{{ $get_id->id }}">
                                 <button class="btn btn-primary" type="button" onclick="Insert_Diferencia_Regularizada();">Guardar</button>
                                 <a class="btn" href="{{ route('tracking') }}">Cancelar</a>
                             </div>
@@ -51,7 +50,7 @@
             Cargando();
 
             var dataString = new FormData(document.getElementById('formulario'));
-            var url = "{{ route('tracking.insert_diferencia_regularizada') }}";
+            var url = "{{ route('tracking.insert_diferencia_regularizada', $get_id->id) }}";
 
             $.ajax({
                 url: url,

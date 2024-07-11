@@ -175,7 +175,6 @@
                 $.ajax({
                     type: "POST",
                     url: url,
-                    data: {'id':id},
                     headers: {
                         'X-CSRF-TOKEN': csrfToken
                     },
@@ -212,7 +211,6 @@
                 $.ajax({
                     type: "POST",
                     url: url,
-                    data: {'id':id},
                     headers: {
                         'X-CSRF-TOKEN': csrfToken
                     },
@@ -249,7 +247,6 @@
                 $.ajax({
                     type: "POST",
                     url: url,
-                    data: {'id':id},
                     headers: {
                         'X-CSRF-TOKEN': csrfToken
                     },
@@ -270,7 +267,7 @@
     function Verificacion_Fardos(id) {
         Cargando();
 
-        var url = "{{ route('tracking.cierre_inspeccion_fardos') }}";
+        var url = "{{ route('tracking.cierre_inspeccion_fardos', ':id') }}".replace(':id', id);
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({
@@ -286,7 +283,6 @@
                 $.ajax({
                     type: "POST",
                     url: url,
-                    data: {'id':id},
                     headers: {
                         'X-CSRF-TOKEN': csrfToken
                     },
@@ -309,7 +305,7 @@
     function Insert_Cierre_Inspeccion_Fardos(id) {
         Cargando();
 
-        var url = "{{ route('tracking.cierre_inspeccion_fardos') }}";
+        var url = "{{ route('tracking.cierre_inspeccion_fardos', ':id') }}".replace(':id', id);
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({
@@ -325,7 +321,7 @@
                 $.ajax({
                     type: "POST",
                     url: url,
-                    data: {'id':id,'validacion':1},
+                    data: {'validacion':1},
                     headers: {
                         'X-CSRF-TOKEN': csrfToken
                     },
@@ -346,7 +342,7 @@
     function Insert_Conteo_Mercaderia(id) {
         Cargando();
 
-        var url = "{{ route('tracking.conteo_mercaderia') }}";
+        var url = "{{ route('tracking.conteo_mercaderia', ':id') }}".replace(':id', id);
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({
@@ -362,7 +358,6 @@
                 $.ajax({
                     type: "POST",
                     url: url,
-                    data: {'id':id,'validacion':1},
                     headers: {
                         'X-CSRF-TOKEN': csrfToken
                     },
@@ -383,7 +378,7 @@
     function Reporte_Mercaderia(id) {
         Cargando();
 
-        var url = "{{ route('tracking.mercaderia_entregada') }}";
+        var url = "{{ route('tracking.mercaderia_entregada', ':id') }}".replace(':id', id);
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({
@@ -399,7 +394,6 @@
                 $.ajax({
                     type: "POST",
                     url: url,
-                    data: {'id':id},
                     headers: {
                         'X-CSRF-TOKEN': csrfToken
                     },
