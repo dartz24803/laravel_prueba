@@ -49,7 +49,6 @@
 
                             <div class="modal-footer mt-3">
                                 @csrf
-                                <input type="hidden" name="id" value="{{ $get_id->id }}">
                                 <button class="btn btn-primary" type="button" onclick="Insert_Reporte_Diferencia();">Guardar</button>
                                 <a class="btn" href="{{ route('tracking') }}">Cancelar</a>
                             </div>
@@ -87,7 +86,7 @@
             Cargando();
 
             var dataString = new FormData(document.getElementById('formulario'));
-            var url = "{{ route('tracking.insert_reporte_diferencia') }}";
+            var url = "{{ route('tracking.insert_reporte_diferencia', $get_id->id) }}";
 
             $.ajax({
                 url: url,

@@ -54,10 +54,9 @@ class Base extends Model
 
     public static function get_list_base_tracking()
     {
-        $sql = "SELECT cod_base FROM base
-                WHERE estado=1 AND (cod_base='CD' OR (cod_base LIKE 'B%' AND CHAR_LENGTH(cod_base)=3))
-                GROUP BY cod_base
-                ORDER BY cod_base ASC";
+        $sql = "SELECT id_base,cod_base FROM base 
+                WHERE id_base IN (2,3,4,5,6,7,8,9,10,31,13,27,33,14,37,21)
+                ORDER BY cod_base";
         $query = DB::select($sql);
         return $query;
     }

@@ -201,64 +201,33 @@
             Cargando();
 
             var dataString = new FormData(document.getElementById('formulario'));
-            var url = "{{ route('tracking.mercaderia_transito') }}";
+            var url = "{{ route('tracking.mercaderia_transito', $get_id->id) }}";
 
-            if (Valida_Insert_Mercaderia_Transito()) {
-                $.ajax({
-                    url: url,
-                    data: dataString,
-                    type: "POST",
-                    processData: false,
-                    contentType: false,
-                    success: function(data) {
-                        swal.fire(
-                            '¡Cambio de estado exitoso!',
-                            '¡Haga clic en el botón!',
-                            'success'
-                        ).then(function() {
-                            window.location = "{{ route('tracking') }}";
-                        });
-                    }
-                });
-            }
-        }
-
-        function Valida_Insert_Mercaderia_Transito() {
-            if ($('#peso').val() === '') {
-                Swal(
-                    'Ups!',
-                    'Debe ingresar peso.',
-                    'warning'
-                ).then(function() {});
-                return false;
-            }
-            if ($('#transporte').val() === '0') {
-                Swal(
-                    'Ups!',
-                    'Debe seleccionar transporte.',
-                    'warning'
-                ).then(function() {});
-                return false;
-            }
-            /*if ($('#transporte').val() === '1') {
-                if ($('#nombre_transporte').val() === '') {
-                    Swal(
-                        'Ups!',
-                        'Debe ingresar nombre de empresa.',
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        '¡Cambio de estado exitoso!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        window.location = "{{ route('tracking') }}";
+                    });
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
                         'warning'
-                    ).then(function() {});
-                    return false;
+                    );
                 }
-                if ($('#importe_transporte').val() === '') {
-                    Swal(
-                        'Ups!',
-                        'Debe ingresar importe a pagar.',
-                        'warning'
-                    ).then(function() {});
-                    return false;
-                }
-            }*/
-            return true;
+            });
         }
     </script>
 @endsection
