@@ -86,6 +86,14 @@ class TrackingController extends Controller
                 ]);
         
                 //ALERTA 1
+                $dato = [
+                    'id_tracking' => $tracking->id,
+                    'token' => 'chNPE4RTT_2cFK_7F4dqb7:APA91bEKdqd-TCGBpDLW9jP4-usTv9GS3DrmmpMuodZc5EOwo1tppYT3j8ZEA9qYsgyFn-08QbQUWaeb8deFLSIUSpk5wgl5XeWIX17QRirnqTFO6EaqhqC2uHSMkdPbv1vTtz_ZC40X',
+                    'titulo' => 'MERCADERÍA POR SALIR',
+                    'contenido' => 'Hola '.$tracking->hacia.' tu requerimiento n° '.$tracking->n_requerimiento.' está listo',
+                ];
+                $this->sendNotification($dato);
+
                 TrackingDetalleEstado::create([
                     'id_detalle' => $tracking_dp->id,
                     'id_estado' => 1,
@@ -732,7 +740,7 @@ class TrackingController extends Controller
         }else{
             if($request->validacion==1){
                 $id_detalle = $get_id->id_detalle;
-                $tipo_mensaje = "cierre_inspeccion_fardo_indirecto";
+                $contenido_mensaje = 'Hola '.$get_id->desde.', se ha dado el cierre a las irregularidades de los fardos';
             }else{
                 $tracking_dp = TrackingDetalleProceso::create([
                     'id_tracking' => $id,
@@ -745,49 +753,17 @@ class TrackingController extends Controller
                     'user_act' => session('usuario')->id_usuario
                 ]);
                 $id_detalle = $tracking_dp->id;
-                $tipo_mensaje = "cierre_inspeccion_fardo_directo";
+                $contenido_mensaje = 'Hola '.$get_id->desde.', se ha dado el cierre a la verificación de fardos';
             }
 
             //ALERTA 5 o 6
-            /*$curl = curl_init();
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://graph.facebook.com/v19.0/238326042708442/messages',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS =>'{
-                    "messaging_product": "whatsapp",
-                    "to": "51956897977",
-                    "type": "template",
-                    "template": {
-                        "name": "'.$tipo_mensaje.'",
-                        "language": {
-                            "code": "es_MX"
-                        },
-                        "components": [
-                            {
-                                "type": "body",
-                                "parameters": [
-                                    {
-                                        "type": "text",
-                                        "text": "'.$get_id->desde.'"
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                }',
-                CURLOPT_HTTPHEADER => array(
-                    'Authorization: Bearer EAAKZBi44f9U8BO2GfSXEpkvkZCVGxxvGjVLQ7KpsPA9yksGvjx5Au6535ZBukULZAwCN4s1m0TmZAzSt61O3f2pJP1sZBhcKvINSi4yCgtZB2EqdvBodkrMG4n4FALzkx0yvZCFgkQaC3AfDvLqWgMuZCHoMkdM5EgXy58TLGDS7a7TZBwLIcA9UV80VeuSHQmSnts',
-                    'Content-Type: application/json'
-                ),
-            ));
-            curl_exec($curl);
-            curl_close($curl);*/
+            $dato = [
+                'id_tracking' => $id,
+                'token' => 'chNPE4RTT_2cFK_7F4dqb7:APA91bEKdqd-TCGBpDLW9jP4-usTv9GS3DrmmpMuodZc5EOwo1tppYT3j8ZEA9qYsgyFn-08QbQUWaeb8deFLSIUSpk5wgl5XeWIX17QRirnqTFO6EaqhqC2uHSMkdPbv1vTtz_ZC40X',
+                'titulo' => 'CIERRE DE INSPECCIÓN DE FARDOS',
+                'contenido' => $contenido_mensaje,
+            ];
+            $this->sendNotification($dato);
 
             TrackingDetalleEstado::create([
                 'id_detalle' => $id_detalle,
@@ -1040,9 +1016,21 @@ class TrackingController extends Controller
         return view('logistica.tracking.pago_transporte', compact('get_id'));
     }
 
-    public function insert_confirmacion_pago_transporte(Request $request)
+    public function insert_confirmacion_pago_transporte(Request $request, $id)
     {
-        Tracking::findOrFail($request->id)->update([
+        $request->validate([
+            'nombre_transporte' => 'required',
+            'importe_transporte' => 'gt:0',
+            'factura_transporte' => 'required',
+            'archivo_transporte' => 'required_without:archivo_transporte_actual',
+        ],[
+            'nombre_transporte.required' => 'Debe ingresar nombre de empresa.',
+            'importe_transporte.gt' => 'Debe ingresar importe a pagar.',
+            'factura_transporte.required' => 'Debe ingresar n° de factura.',
+            'archivo_transporte.required_without' => 'Debe ingresar PDF de factura.',
+        ]);
+
+        Tracking::findOrFail($id)->update([
             'nombre_transporte' => $request->nombre_transporte,
             'importe_transporte' => $request->importe_transporte,
             'factura_transporte' => $request->factura_transporte,
@@ -1059,10 +1047,10 @@ class TrackingController extends Controller
             if($con_id && $lr){
                 //ELIMINAR ARCHIVO SI ES QUE EXISTE
                 if($request->archivo_transporte_actual!=""){
-                    $get_id = TrackingArchivo::get_list_tracking_archivo(['id_tracking'=>$request->id,'tipo'=>1]);
+                    $get_id = TrackingArchivo::get_list_tracking_archivo(['id_tracking'=>$id,'tipo'=>1]);
                     $file_to_delete = "TRACKING/".$get_id->nom_archivo;
                     if (ftp_delete($con_id, $file_to_delete)) {
-                        TrackingArchivo::where('id_tracking', $request->id)->where('tipo', 1)->delete();
+                        TrackingArchivo::where('id_tracking', $id)->where('tipo', 1)->delete();
                     }
                 }
                 //
@@ -1070,7 +1058,7 @@ class TrackingController extends Controller
                 $source_file = $_FILES['archivo_transporte']['tmp_name'];
 
                 $ext = pathinfo($path, PATHINFO_EXTENSION);
-                $nombre_soli = "Factura_".$request->id."_".date('YmdHis');
+                $nombre_soli = "Factura_".$id."_".date('YmdHis');
                 $nombre = $nombre_soli.".".strtolower($ext);
 
                 ftp_pasv($con_id,true); 
@@ -1078,7 +1066,7 @@ class TrackingController extends Controller
                 if($subio){
                     $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
                     TrackingArchivo::create([
-                        'id_tracking' => $request->id,
+                        'id_tracking' => $id,
                         'tipo' => 1,
                         'archivo' => $archivo
                     ]);
@@ -1090,11 +1078,19 @@ class TrackingController extends Controller
             }
         }
 
-        $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
-
         //ALERTA 7
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
+
+        $dato = [
+            'id_tracking' => $id,
+            'token' => 'chNPE4RTT_2cFK_7F4dqb7:APA91bEKdqd-TCGBpDLW9jP4-usTv9GS3DrmmpMuodZc5EOwo1tppYT3j8ZEA9qYsgyFn-08QbQUWaeb8deFLSIUSpk5wgl5XeWIX17QRirnqTFO6EaqhqC2uHSMkdPbv1vTtz_ZC40X',
+            'titulo' => 'CONFIRMACIÓN DE PAGO A TRANSPORTE',
+            'contenido' => 'Hola '.$get_id->desde.', se ha pagado a la agencia',
+        ];
+        $this->sendNotification($dato);
+
         $tracking_dp = TrackingDetalleProceso::create([
-            'id_tracking' => $request->id,
+            'id_tracking' => $id,
             'id_proceso' => 5,
             'fecha' => now(),
             'estado' => 1,
@@ -1117,7 +1113,7 @@ class TrackingController extends Controller
         ]);
 
         //MENSAJE 4
-        $list_archivo = TrackingArchivo::where('id_tracking', $request->id)->where('tipo', 1)->get();
+        $list_archivo = TrackingArchivo::where('id_tracking', $id)->where('tipo', 1)->get();
 
         $mail = new PHPMailer(true);
 
@@ -1163,8 +1159,17 @@ class TrackingController extends Controller
             ]);
 
             //PASAR PARA INSPECCIÓN DE MERCADERÍA
+            //ALERTA 8
+            $dato = [
+                'id_tracking' => $id,
+                'token' => 'chNPE4RTT_2cFK_7F4dqb7:APA91bEKdqd-TCGBpDLW9jP4-usTv9GS3DrmmpMuodZc5EOwo1tppYT3j8ZEA9qYsgyFn-08QbQUWaeb8deFLSIUSpk5wgl5XeWIX17QRirnqTFO6EaqhqC2uHSMkdPbv1vTtz_ZC40X',
+                'titulo' => 'INSPECCIÓN DE MERCADERÍA',
+                'contenido' => 'Hola '.$get_id->desde.', se ha recepcionado la mercadería correcta',
+            ];
+            $this->sendNotification($dato);
+
             $tracking_dp = TrackingDetalleProceso::create([
-                'id_tracking' => $request->id,
+                'id_tracking' => $id,
                 'id_proceso' => 6,
                 'fecha' => now(),
                 'estado' => 1,
@@ -1530,27 +1535,7 @@ class TrackingController extends Controller
                 ]);
             }else{
                 //ALERTA 9.3
-                $tracking_dp = TrackingDetalleProceso::create([
-                    'id_tracking' => $id,
-                    'id_proceso' => 9,
-                    'fecha' => now(),
-                    'estado' => 1,
-                    'fec_reg' => now(),
-                    'user_reg' => session('usuario')->id_usuario,
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario
-                ]);
-        
-                TrackingDetalleEstado::create([
-                    'id_detalle' => $tracking_dp->id,
-                    'id_estado' => 21,
-                    'fecha' => now(),
-                    'estado' => 1,
-                    'fec_reg' => now(),
-                    'user_reg' => session('usuario')->id_usuario,
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario
-                ]);
+                $this->insert_mercaderia_entregada($id);
             }
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
@@ -1908,6 +1893,7 @@ class TrackingController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
 
+            //ALERTA 9.3
             $this->insert_mercaderia_entregada($id);
         }else{
             echo "error";

@@ -62,7 +62,6 @@
     
                             <div class="modal-footer mt-3">
                                 @csrf
-                                <input type="hidden" name="id" value="{{ $get_id->id }}">
                                 <input type="hidden" name="archivo_transporte_actual" value="{{ $get_id->archivo_transporte }}">
                                 <button class="btn btn-primary" type="button" onclick="Insert_Confirmacion_Pago_Transporte();">Guardar</button>
                                 <a class="btn" href="{{ route('tracking') }}">Cancelar</a>
@@ -121,72 +120,33 @@
             Cargando();
 
             var dataString = new FormData(document.getElementById('formulario'));
-            var url = "{{ route('tracking.confirmacion_pago_transporte') }}";
+            var url = "{{ route('tracking.confirmacion_pago_transporte', $get_id->id) }}";
 
-            if (Valida_Insert_Confirmacion_Pago_Transporte()) {
-                $.ajax({
-                    url: url,
-                    data: dataString,
-                    type: "POST",
-                    processData: false,
-                    contentType: false,
-                    success: function(data) {
-                        swal.fire(
-                            '¡Cambio de estado exitoso!',
-                            '¡Haga clic en el botón!',
-                            'success'
-                        ).then(function() {
-                            window.location = "{{ route('tracking') }}";
-                        });
-                    }
-                });
-            }
-        }
-
-        function Valida_Insert_Confirmacion_Pago_Transporte() {
-            if ($('#nombre_transporte').val() === '') {
-                Swal(
-                    'Ups!',
-                    'Debe ingresar nombre de empresa.',
-                    'warning'
-                ).then(function() {});
-                return false;
-            }
-            if ($('#importe_transporte').val() === '') {
-                Swal(
-                    'Ups!',
-                    'Debe ingresar importe a pagar.',
-                    'warning'
-                ).then(function() {});
-                return false;
-            }
-            if ($('#importe_transporte').val() === '0') {
-                Swal(
-                    'Ups!',
-                    'Debe ingresar importe a pagar mayor a 0.',
-                    'warning'
-                ).then(function() {});
-                return false;
-            }
-            if ($('#factura_transporte').val() === '') {
-                Swal(
-                    'Ups!',
-                    'Debe ingresar n° de factura.',
-                    'warning'
-                ).then(function() {});
-                return false;
-            }
-            @if($get_id->archivo_transporte=="")
-                if ($('#archivo_transporte').val() === '') {
-                    Swal(
-                        'Ups!',
-                        'Debe ingresar PDF de factura.',
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        '¡Cambio de estado exitoso!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        window.location = "{{ route('tracking') }}";
+                    });
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
                         'warning'
-                    ).then(function() {});
-                    return false;
+                    );
                 }
-            @endif
-            return true;
+            });
         }
     </script>
 @endsection
