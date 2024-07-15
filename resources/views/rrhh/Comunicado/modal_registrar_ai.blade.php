@@ -13,7 +13,7 @@
         <div class="row">
             <div class="form-group col-lg-2">
                 <label class="control-label text-bold">Base: </label>
-            </div>            
+            </div>
             <div class="form-group col-lg-4">
                 <select class="form-control" name="cod_base" id="cod_base">
                     <option value="0">Seleccione</option>
@@ -71,13 +71,17 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario'));
-        var url = "<?= site_url(); ?>Recursos_Humanos/Insert_Anuncio_Intranet";
+        var url = "{{ url('Insert_Anuncio_Intranet') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
         if (Valida_Anuncio_Intranet('')) {
             $.ajax({
                 url: url,
                 data:dataString,
                 type:"POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 processData: false,
                 contentType: false,
                 success: function(data) {
@@ -100,6 +104,15 @@
                             $("#ModalRegistro .close").click();
                         });
                     }
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
                 }
             });
         }

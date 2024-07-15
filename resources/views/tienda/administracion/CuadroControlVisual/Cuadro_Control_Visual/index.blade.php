@@ -1,5 +1,5 @@
-<?php 
-$base = Session('usuario')->base;
+<?php
+$base = Session('usuario')->centro_labores;
 
 //Cada coordinador le debe aparecer su base respectivamente definido
 $disabled = '';

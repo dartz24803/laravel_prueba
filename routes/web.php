@@ -405,9 +405,16 @@ Route::controller(ComunicadoController::class)->group(function(){
     Route::post('/Insert_Slider_Rrhh', 'Insert_Slider_Rrhh');
     Route::post('/Update_Slider_Rrhh', 'Update_Slider_Rrhh');
     Route::post('/Delete_Slider_Rrhh', 'Delete_Slider_Rrhh');
+    Route::get('/Cargar_Anuncio_Intranet', 'Cargar_Anuncio_Intranet');
+    Route::post('Lista_Anuncio_Intranet', 'Lista_Anuncio_Intranet');
+    Route::get('Modal_Anuncio_Intranet', 'Modal_Anuncio_Intranet');
+    Route::post('Insert_Anuncio_Intranet', 'Insert_Anuncio_Intranet');
+    Route::get('Modal_Update_Anuncio_Intranet/{id}', 'Modal_Update_Anuncio_Intranet');
+    Route::post('Update_Anuncio_Intranet', 'Update_Anuncio_Intranet');
+    Route::post('Delete_Anuncio_Intranet', 'Delete_Anuncio_Intranet');
 });
 Route::controller(SliderRRHH::class)->group(function(){
     Route::get('/SliderRRHH/{base}', 'Slider_Vista_RRHH')->name('slider_rrhh');
     Route::get('/SliderRRHH', 'Slider_Vista_Tienda')->name('slider_tienda');
-    Route::get('/remap/{method}', 'remap');
+    Route::get('/SliderRRHH/{method}', 'remap');
 });

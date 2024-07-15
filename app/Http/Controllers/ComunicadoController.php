@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Slide;
 use App\Models\Base;
 use App\Models\Config;
-
+use App\Models\BolsaTrabajo;
 class ComunicadoController extends Controller
 {
     /**
@@ -21,7 +21,7 @@ class ComunicadoController extends Controller
     public function index(){
         return view('rrhh.Comunicado.index');
     }
-    
+
     public function Cargar_Slider_Rrhh(){
         $list_base = Base::select('cod_base')
                         ->where('estado', 1)
@@ -30,7 +30,7 @@ class ComunicadoController extends Controller
         //print_r($list_base);
         return view("rrhh.Comunicado.slider_rrhh", compact('list_base'));
     }
-    
+
     public function Lista_Slider_Rrhh(Request $request){
         $dato['tipo']= $request->input("tipo");
         $dato['url'] = Config::where('descrip_config', 'Slide_Rrhh')
@@ -46,7 +46,7 @@ class ComunicadoController extends Controller
                     ->groupBy('cod_base')
                     ->orderBy('cod_base', 'ASC')
                     ->get();
-        return view('rrhh.Comunicado.modal_registrar_sr', compact('list_base'));   
+        return view('rrhh.Comunicado.modal_registrar_sr', compact('list_base'));
     }
 
     public function Insert_Slider_Rrhh(Request $request){
@@ -93,13 +93,13 @@ class ComunicadoController extends Controller
                     $ext = pathinfo($path, PATHINFO_EXTENSION);
                     $nombre_soli="Slide_".$fecha."_".rand(10,199);
                     $nombre = $nombre_soli.".".$ext;
-                    
+
                     ftp_pasv($con_id,true);
                     $subio = ftp_put($con_id,"slide/rrhh/".$nombre,$source_file,FTP_BINARY);
                     if($subio){
                         $archivoslide = "https://lanumerounocloud.com/intranet/slide/rrhh/".$nombre;
                         Slide::create([
-                            'id_area' => 11, 
+                            'id_area' => 11,
                             'base' => $request->input("tipo"),
                             'orden' => $request->input("orden"),
                             'entrada_slide' => $request->input("entrada_slide"),
@@ -185,7 +185,7 @@ class ComunicadoController extends Controller
                     $ext = pathinfo($path, PATHINFO_EXTENSION);
                     $nombre_soli="Slide_".$fecha."_".rand(10,199);
                     $nombre = $nombre_soli.".".$ext;
-                    
+
                     ftp_pasv($con_id,true);
                     $subio = ftp_put($con_id,"slide/rrhh/".$nombre,$source_file,FTP_BINARY);
                     if($subio){
@@ -225,7 +225,7 @@ class ComunicadoController extends Controller
         $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
         if($con_id && $lr){
             $file_to_delete = "slide/rrhh/".basename($get_file[0]['archivoslide']);
-            
+
             if (ftp_delete($con_id, $file_to_delete)) {
                 Slide::findOrFail($request->id_slide)->update([
                     'estado' => 2,
@@ -241,121 +241,56 @@ class ComunicadoController extends Controller
     }
 
     public function Cargar_Anuncio_Intranet(){
-        if ($this->session->userdata('usuario')) {
-            //NOTIFICACIÓN-NO BORRAR
-            $dato['list_noti'] = $this->Model_Corporacion->get_list_notificacion();
-            $dato['list_nav_evaluaciones'] = $this->Model_Corporacion->get_list_nav_evaluaciones();
-            $this->load->view("Recursos_Humanos/Comunicado/anuncio_intranet", $dato);
-        }else{
-            redirect('');
-        }
+        return view("rrhh.Comunicado.anuncio_intranet");
     }
 
     public function Lista_Anuncio_Intranet(){
-        if ($this->session->userdata('usuario')) {
-            $dato['list_anuncio_intranet'] = $this->Model_Recursos_Humanos->get_list_anuncio_intranet();
-            $this->load->view("Recursos_Humanos/Comunicado/lista_ai", $dato);
-        }else{
-            redirect('');
-        }
+        $list_anuncio_intranet = BolsaTrabajo::get_list_anuncio_intranet();
+        return view("rrhh.Comunicado.lista_ai", compact('list_anuncio_intranet'));
     }
-    
+
     public function Modal_Anuncio_Intranet(){
-        if ($this->session->userdata('usuario')) {
-            $dato['list_base'] = $this->Model_Recursos_Humanos->get_combo_base();
-            $this->load->view('Recursos_Humanos/Comunicado/modal_registrar_ai',$dato);   
-        }
-        else{
-            redirect('');
-        }
+        $list_base = Base::select('cod_base')
+                    ->where('estado',1)
+                    ->groupBy('cod_base')
+                    ->orderBy('cod_base', 'ASC')
+                    ->get();
+        return view('rrhh.Comunicado.modal_registrar_ai', compact('list_base'));
     }
 
-    public function Insert_Anuncio_Intranet(){
-        if ($this->session->userdata('usuario')) {
-            $dato['cod_base']= $this->input->post("cod_base"); 
-            $dato['orden']= $this->input->post("orden"); 
-            $dato['url']= $this->input->post("url"); 
-            $dato['imagen'] = "";
-            $dato['publicado']= $this->input->post("publicado"); 
+    public function Insert_Anuncio_Intranet(Request $request){
+        $request->validate([
+            'cod_base' => 'not_in:0',
+            'orden' => 'required',
+            'url' => 'required',
+            'imagen' => 'required',
+        ],[
+            'cod_base.not_in' => 'Debe seleccionar tipo.',
+            'orden.required' => 'Debe ingresar orden.',
+            'url.required' => 'Debe ingresar url.',
+            'imagen.required' => 'Debe ingresar imagen.',
+        ]);
 
-            $valida = $this->Model_Recursos_Humanos->valida_anuncio_intranet($dato);
+        $valida = BolsaTrabajo::select('id_bolsa_trabajo')
+                    ->where('estado', 1)
+                    ->where('orden',$request->orden)
+                    ->where('cod_base',$request->cod_base)
+                    ->exists();
 
-            if(count($valida)>0){
-                echo "error";
-            }else{
-                if($_FILES['imagen']['name']!=""){
-                    $ftp_server = "lanumerounocloud.com";
-                    $ftp_usuario = "intranet@lanumerounocloud.com";
-                    $ftp_pass = "Intranet2022@";
-                    $con_id = ftp_connect($ftp_server);
-                    $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
-                    if($con_id && $lr){
-                        if($_FILES['imagen']['name']!=""){
-                            $path = $_FILES['imagen']['name'];
-                            $temp = explode(".",$_FILES['imagen']['name']);
-                            $source_file = $_FILES['imagen']['tmp_name'];
-    
-                            $fecha=date('Y-m-d');
-                            $ext = pathinfo($path, PATHINFO_EXTENSION);
-                            $nombre_soli="BT_".$fecha."_".rand(10,199);
-                            $nombre = $nombre_soli.".".$ext;
-                            
-                            ftp_pasv($con_id,true);
-                            $subio = ftp_put($con_id,"Bolsa_Trabajo/".$nombre,$source_file,FTP_BINARY);
-                            if($subio){
-                                $dato['imagen'] = "https://lanumerounocloud.com/intranet/Bolsa_Trabajo/".$nombre;
-                                $this->Model_Recursos_Humanos->insert_anuncio_intranet($dato);
-                            }else{
-                                echo "Archivo no subido correctamente";
-                            }
-                        }
-                    }else{
-                        echo "No se conecto";
-                    }
-                }
-            }
+        if($valida){
+            echo "error";
         }else{
-            redirect('');
-        }
-    }
-
-    public function Modal_Update_Anuncio_Intranet($id_bolsa_trabajo){
-        if ($this->session->userdata('usuario')) {
-            $dato['get_id'] = $this->Model_Recursos_Humanos->get_list_anuncio_intranet($id_bolsa_trabajo);
-            $dato['list_base'] = $this->Model_Recursos_Humanos->get_combo_base();
-            $this->load->view('Recursos_Humanos/Comunicado//modal_editar_ai',$dato);
-        }else{
-            redirect('');
-        }
-    }
-
-    public function Update_Anuncio_Intranet(){
-        if ($this->session->userdata('usuario')) {
-            $dato['id_bolsa_trabajo']= $this->input->post("id_bolsa_trabajo"); 
-            $dato['cod_base']= $this->input->post("cod_basee"); 
-            $dato['orden']= $this->input->post("ordene"); 
-            $dato['url']= $this->input->post("urle"); 
-            $get_id = $this->Model_Recursos_Humanos->get_list_anuncio_intranet($dato['id_bolsa_trabajo']);
-            $dato['imagen'] = $get_id[0]['imagen'];
-            $dato['publicado']= $this->input->post("publicadoe"); 
-
-            $validar = $this->Model_Recursos_Humanos->valida_anuncio_intranet($dato);
-
-            if(count($validar)>0){
-                echo "error";
-            }else{
-                if($_FILES['imagene']['name']!=""){
-                    $ftp_server = "lanumerounocloud.com";
-                    $ftp_usuario = "intranet@lanumerounocloud.com";
-                    $ftp_pass = "Intranet2022@";
-                    $con_id = ftp_connect($ftp_server);
-                    $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
-                    if($con_id && $lr){
-                        ftp_delete($con_id, 'Bolsa_Trabajo/'.basename($dato['imagen']));
-
-                        $path = $_FILES['imagene']['name'];
-                        $temp = explode(".",$_FILES['imagene']['name']);
-                        $source_file = $_FILES['imagene']['tmp_name'];
+            if($_FILES['imagen']['name']!=""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    if($_FILES['imagen']['name']!=""){
+                        $path = $_FILES['imagen']['name'];
+                        $temp = explode(".",$_FILES['imagen']['name']);
+                        $source_file = $_FILES['imagen']['tmp_name'];
 
                         $fecha=date('Y-m-d');
                         $ext = pathinfo($path, PATHINFO_EXTENSION);
@@ -365,25 +300,113 @@ class ComunicadoController extends Controller
                         ftp_pasv($con_id,true);
                         $subio = ftp_put($con_id,"Bolsa_Trabajo/".$nombre,$source_file,FTP_BINARY);
                         if($subio){
-                            $dato['imagen'] = "https://lanumerounocloud.com/intranet/Bolsa_Trabajo/".$nombre;
+                            $imagen = "https://lanumerounocloud.com/intranet/Bolsa_Trabajo/".$nombre;
+                            BolsaTrabajo::create([
+                                'cod_base' => $request->cod_base,
+                                'orden' => $request->orden,
+                                'url' => $request->url,
+                                'imagen' => $imagen,
+                                'publicado' => $request->publicado,
+                                'estado' => 1,
+                                'fec_reg' => now(),
+                                'user_reg' => session('usuario')->id_usuario,
+                                'fec_act' => now(),
+                                'user_act' => session('usuario')->id_usuario,
+                            ]);
                         }else{
                             echo "Archivo no subido correctamente";
                         }
-                    }else{
-                        echo "No se conecto";
                     }
+                }else{
+                    echo "No se conecto";
                 }
-                $this->Model_Recursos_Humanos->update_anuncio_intranet($dato);
             }
-        }else{
-            redirect('');
         }
     }
-    
-    public function Delete_Anuncio_Intranet(){
-        if ($this->session->userdata('usuario')) {
-            $dato['id_bolsa_trabajo']= $this->input->post("id_bolsa_trabajo");
-            $get_file = $this->Model_Recursos_Humanos->get_list_anuncio_intranet($dato['id_bolsa_trabajo']);
+
+    public function Modal_Update_Anuncio_Intranet($id_bolsa_trabajo){
+        $get_id = BolsaTrabajo::where('id_bolsa_trabajo', $id_bolsa_trabajo)
+                                ->get();
+        $list_base = Base::select('cod_base')
+        ->where('estado',1)
+        ->groupBy('cod_base')
+        ->orderBy('cod_base', 'ASC')
+        ->get();
+        return view('rrhh.Comunicado.modal_editar_ai', compact('get_id', 'list_base'));
+    }
+
+    public function Update_Anuncio_Intranet(Request $request){
+        $id_bolsa_trabajo = $request->input("id_bolsa_trabajo");
+        $get_id = BolsaTrabajo::where('id_bolsa_trabajo', $id_bolsa_trabajo)
+                                ->get();
+        $dato['imagen'] = $get_id[0]['imagen'];
+
+        $request->validate([
+            'cod_basee' => 'not_in:0',
+            'ordene' => 'required',
+            'urle' => 'required',
+            'imagene' => 'required',
+        ],[
+            'cod_basee.not_in' => 'Debe seleccionar tipo.',
+            'ordene.required' => 'Debe ingresar orden.',
+            'urle.required' => 'Debe ingresar url.',
+            'imagene.required' => 'Debe ingresar imagen.',
+        ]);
+
+        $valida = BolsaTrabajo::select('id_bolsa_trabajo')
+                    ->where('estado', 1)
+                    ->where('orden',$request->ordene)
+                    ->where('cod_base',$request->cod_basee)
+                    ->exists();
+
+        if($valida){
+            echo "error";
+        }else{
+            if($_FILES['imagene']['name']!=""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    ftp_delete($con_id, 'Bolsa_Trabajo/'.basename($dato['imagen']));
+
+                    $path = $_FILES['imagene']['name'];
+                    $temp = explode(".",$_FILES['imagene']['name']);
+                    $source_file = $_FILES['imagene']['tmp_name'];
+
+                    $fecha=date('Y-m-d');
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $nombre_soli="BT_".$fecha."_".rand(10,199);
+                    $nombre = $nombre_soli.".".$ext;
+
+                    ftp_pasv($con_id,true);
+                    $subio = ftp_put($con_id,"Bolsa_Trabajo/".$nombre,$source_file,FTP_BINARY);
+                    if($subio){
+                        $imagen = "https://lanumerounocloud.com/intranet/Bolsa_Trabajo/".$nombre;
+                    }else{
+                        echo "Archivo no subido correctamente";
+                    }
+                }else{
+                    echo "No se conecto";
+                }
+            }
+            BolsaTrabajo::findOrFail($id_bolsa_trabajo)->update([
+                'cod_base' => $request->cod_basee,
+                'orden' => $request->ordene,
+                'url' => $request->urle,
+                'imagen' => $imagen,
+                'publicado' => $request->publicadoe,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function Delete_Anuncio_Intranet(Request $request){
+            $id_bolsa_trabajo = $request->input("id_bolsa_trabajo");
+            $get_file = BolsaTrabajo::where('id_bolsa_trabajo', $id_bolsa_trabajo)
+            ->get();
 
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
@@ -392,18 +415,18 @@ class ComunicadoController extends Controller
             $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
             if($con_id && $lr){
                 $file_to_delete = "Bolsa_Trabajo/".basename($get_file[0]['imagen']);
-                
+
                 if (ftp_delete($con_id, $file_to_delete)) {
-                    $this->Model_Recursos_Humanos->delete_anuncio_intranet($dato);
+                    BolsaTrabajo::findOrFail($id_bolsa_trabajo)->update([
+                        'estado' => 2,
+                        'fec_eli' => now(),
+                        'user_eli' => session('usuario')->id_usuario
+                    ]);
                 }else{
                     echo "Error al eliminar el archivo.";
                 }
             }else{
                 echo "No se conecto";
             }
-
-        }else{
-            redirect('');
-        }
     }
 }
