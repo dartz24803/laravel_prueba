@@ -1,7 +1,6 @@
 @extends('layouts.plantilla')
 
 @section('content')
-
     <style>
         .toggle-switch {
             position: relative;
@@ -66,6 +65,20 @@
                     <div class="widget-content widget-content-area br-6">
                         <div class="toolbar d-md-flex mt-3">
                             <div class="form-group col-lg-2">
+                                <label>Base:</label>
+                                @if (substr(session('usuario')->centro_labores, 0, 1)=='B' && strlen(session('usuario')->centro_labores)==3)
+                                    <input type="text" class="form-control" value="{{ session('usuario')->centro_labores }}" disabled>
+                                    <input type="hidden" name="cod_baseb" id="cod_baseb" value="{{ session('usuario')->centro_labores }}">
+                                @else
+                                    <select class="form-control" id="cod_baseb" name="cod_baseb" onchange="Lista_Mercaderia_Nueva();">
+                                        @foreach ($list_base as $list)
+                                            <option value="{{ $list->cod_base }}" @if ($list->cod_base=='B03') selected @endif>{{ $list->cod_base }}</option>
+                                        @endforeach
+                                    </select>
+                                @endif
+                            </div>
+
+                            <div class="form-group col-lg-2">
                                 <label>Usuario:</label>
                                 <select class="form-control" id="cod_baseb" name="cod_baseb" onchange="Lista_Mercaderia_Nueva();">
                                     <option value="0">TODOS</option>
@@ -85,7 +98,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-lg-8 mt-2 mt-lg-0 d-flex align-items-center justify-content-start">
+                            <div class="col-lg-6 mt-2 mt-lg-0 d-flex align-items-center justify-content-start">
                                 <div class="toggle-switch">
                                     <input class="toggle-input" id="toggle" type="checkbox" checked>
                                     <label class="toggle-label" for="toggle"></label>
@@ -120,12 +133,14 @@
         function Lista_Mercaderia_Nueva(){
             Cargando();
 
+            var cod_base = $('#cod_baseb').val();
             var url = "{{ route('tracking.list_mercaderia_nueva') }}";
             var csrfToken = $('input[name="_token"]').val();
 
             $.ajax({
                 url: url,
                 type: "POST",
+                data: {'cod_base':cod_base},
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
                 },

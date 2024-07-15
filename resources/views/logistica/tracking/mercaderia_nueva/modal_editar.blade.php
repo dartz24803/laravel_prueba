@@ -12,32 +12,35 @@
                 <label class="control-label text-bold">SKU: </label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" placeholder="SKU" value="{{ $id }}" disabled>
+                <input type="text" class="form-control" placeholder="SKU" value="{{ $sku }}" disabled>
             </div>
 
             <div class="form-group col-lg-2">
                 <label class="control-label text-bold">Cantidad Surtido: </label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="cantidad" id="cantidad" placeholder="Cantidad Surtido"
-                value="{{ $get_id->cantidad ?? '' }}" onkeypress="return solo_Numeros(event);">
+                <input type="text" class="form-control" name="cantidad" id="cantidad" placeholder="Cantidad Surtido" 
+                onkeypress="return solo_Numeros(event);">
             </div>
         </div>
     </div>
 
     <div class="modal-footer">
         @csrf
-        <!--<button class="btn btn-primary" type="button" onclick="Insert_Devolucion_Temporal();">Guardar</button>-->
+        <button class="btn btn-primary" type="button" onclick="Insert_Mercaderia_Surtida();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
-    function Insert_Devolucion_Temporal(){
+    function Insert_Mercaderia_Surtida(){
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulariod'));
-        var url = "{{ route('tracking.insert_devolucion_temporal', $id) }}";
+        var url = "{{ route('tracking.insert_mercaderia_surtida', $sku) }}";
+
+        var cod_base = $('#cod_baseb').val();
+        dataString.append('cod_base', cod_base);
 
         $.ajax({
             url: url,
@@ -61,6 +64,7 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
+                        Lista_Mercaderia_Nueva();
                         $("#ModalUpdate .close").click();
                     });
                 }
