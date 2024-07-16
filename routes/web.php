@@ -417,5 +417,5 @@ Route::controller(ComunicadoController::class)->group(function(){
 Route::controller(SliderRRHH::class)->group(function(){
     Route::get('/SliderRRHH/{base}', 'Slider_Vista_RRHH')->name('slider_rrhh');
     Route::get('/SliderRRHH', 'Slider_Vista_Tienda')->name('slider_tienda');
-    Route::get('/SliderRRHH/{method}', 'remap');
+    Route::get('/Slider/{method}', 'remap');
 });

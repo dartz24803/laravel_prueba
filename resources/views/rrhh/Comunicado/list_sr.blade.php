@@ -54,13 +54,13 @@
     $(document).ready(function() {
         if('<?= $tipo ?>'=="2"){
             <?php $encryptedString = base64_encode('Slider_Vista_Tienda'); ?>
-            $("#btn_slide").html('<a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="{{ url('remap/'.$encryptedString) }}">Visualizar Slide Tienda</a>');
+            $("#btn_slide").html('<a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="{{ url('Slider/'.$encryptedString) }}">Visualizar Slide Tienda</a>');
         }else{
             <?php
             $funcion = base64_encode('Slider_Vista_RRHH');
             $base = base64_encode($tipo);
             ?>
-            $("#btn_slide").html('<a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="{{ url('remap/'.$funcion.'__'.$base) }}">Visualizar Slide de Base <?php echo $tipo ?></a> ');
+            $("#btn_slide").html('<a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="{{ url('Slider/'.$funcion.'__'.$base) }}">Visualizar Slide de Base <?php echo $tipo ?></a> ');
         }
 
         $('#tabla_js').DataTable({
