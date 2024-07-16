@@ -49,7 +49,6 @@
     }
 </style>
 
-
 <div class="toolbar d-md-flex align-items-md-center mt-3">
     @if (session('usuario')->id_nivel=="1")
         <div class="form-group col-lg-2">

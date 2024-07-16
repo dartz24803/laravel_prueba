@@ -18,6 +18,7 @@ use App\Http\Controllers\AperturaCierreTiendaController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
 use App\Http\Controllers\ComunicadoController;
+use App\Http\Controllers\ControlCamaraController;
 use App\Http\Controllers\SliderRRHH;
 use App\Http\Controllers\Cumpleanios;
 Route::middleware([NoCache::class])->group(function () {
@@ -305,6 +306,24 @@ Route::controller(AperturaCierreTiendaController::class)->group(function(){
     Route::post('apertura_cierre_img/list', 'list_img')->name('apertura_cierre_img.list');
     Route::get('apertura_cierre_img/{id}/show', 'show_img')->name('apertura_cierre_img.show');
 });
+//SEGURIDAD - CONTROL DE CÁMARAS
+Route::controller(ControlCamaraController::class)->group(function(){
+    Route::get('control_camara', 'index')->name('control_camara');
+    Route::get('control_camara_reg', 'index_reg')->name('control_camara_reg');
+    Route::post('control_camara_reg/list', 'list_reg')->name('control_camara_reg.list');
+    Route::get('control_camara_reg/create', 'create_reg')->name('control_camara_reg.create');
+    /*Route::post('apertura_cierre_reg/previsualizacion_captura', 'previsualizacion_captura_reg')->name('apertura_cierre_reg.previsualizacion_captura');
+    Route::post('apertura_cierre_reg', 'store_reg')->name('apertura_cierre_reg.store');
+    Route::get('apertura_cierre_reg/{id}/edit', 'edit_reg')->name('apertura_cierre_reg.edit');
+    Route::put('apertura_cierre_reg/previsualizacion_captura', 'previsualizacion_captura_reg')->name('apertura_cierre_reg.previsualizacion_captura_put');
+    Route::put('apertura_cierre_reg/{id}', 'update_reg')->name('apertura_cierre_reg.update');
+    Route::get('apertura_cierre_reg/{id}/archivo', 'archivo_reg')->name('apertura_cierre_reg.archivo');
+    Route::get('apertura_cierre_reg/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_reg')->name('apertura_cierre_reg.excel');
+    Route::get('apertura_cierre_img', 'index_img')->name('apertura_cierre_img');
+    Route::post('apertura_cierre_img/list', 'list_img')->name('apertura_cierre_img.list');
+    Route::get('apertura_cierre_img/{id}/show', 'show_img')->name('apertura_cierre_img.show');*/
+});
+
 
 
 

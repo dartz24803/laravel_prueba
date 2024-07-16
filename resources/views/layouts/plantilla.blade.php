@@ -418,6 +418,11 @@
                                     <p class="romperpalabra"><span id="icono_active2"></span> Apertura y cierre</p>
                                 </a>
                             </li>
+                            <li>
+                                <a id="controles_camaras" href="{{ route('control_camara') }}">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Control de cámaras</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 
