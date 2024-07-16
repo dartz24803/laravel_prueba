@@ -333,9 +333,9 @@
         transition: transform 2s ease-in-out, opacity 2s ease-in-out;
         position: absolute;
         top: 0;
-        left: 0;
+        left: 0;/*
         width: 300px;
-        height: 100px;
+        height: 100px;*/
     }
     .carousel-item-next, .carousel-item-prev, .carousel-item.active {
         opacity: 1;
