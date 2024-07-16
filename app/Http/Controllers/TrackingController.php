@@ -8,6 +8,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use App\Models\Tracking;
 use App\Models\Base;
+use App\Models\MercaderiaSurtida;
 use App\Models\TrackingArchivo;
 use App\Models\TrackingArchivoTemporal;
 use App\Models\TrackingDetalleEstado;
@@ -19,7 +20,6 @@ use App\Models\TrackingGuiaRemisionDetalle;
 use App\Models\TrackingGuiaRemisionDetalleTemporal;
 use App\Models\TrackingNotificacion;
 use App\Models\TrackingTemporal;
-use App\Models\TrackingToken;
 use Google\Client as GoogleClient;
 use Illuminate\Support\Facades\DB;
 
@@ -269,7 +269,8 @@ class TrackingController extends Controller
             if(session('redirect_url')){
                 session()->forget('redirect_url');
             }
-            return view('logistica.tracking.index');
+            $list_mercaderia_nueva = MercaderiaSurtida::where('anio',date('Y'))->where('semana',date('W'))->exists();
+            return view('logistica.tracking.index', compact('list_mercaderia_nueva'));
         }else{
             session(['redirect_url' => 'http'.(isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']]);
             return redirect('/');
@@ -1903,21 +1904,54 @@ class TrackingController extends Controller
     //MERCADERIA NUEVA
     public function mercaderia_nueva()
     {
+        $list_base = Base::get_list_bases_tienda();
         $list_usuario = DB::connection('sqlsrv')->table('vw_usuarios')
                         ->select('par_codusuario','par_desusuario')->orderBy('par_desusuario','ASC')->get();
         $list_tipo_prenda = DB::connection('sqlsrv')->table('tge_sub_familias')
                             ->select('sfa_codigo','sfa_descrip')->orderBy('sfa_descrip','ASC')->get();
-        return view('logistica.tracking.mercaderia_nueva.index', compact('list_usuario','list_tipo_prenda'));
+        return view('logistica.tracking.mercaderia_nueva.index', compact('list_base','list_usuario','list_tipo_prenda'));
     }
 
-    public function list_mercaderia_nueva()
+    public function list_mercaderia_nueva(Request $request)
     {
-        $list_tracking = Tracking::get_list_tracking();
-        return view('logistica.tracking.mercaderia_nueva.lista', compact('list_tracking'));
+        $list_mercaderia_nueva = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?', [NULL,date('Y'),date('W'),$request->cod_base]);
+        return view('logistica.tracking.mercaderia_nueva.lista', compact('list_mercaderia_nueva'));
     }
 
-    public function modal_mercaderia_nueva($id)
+    public function modal_mercaderia_nueva($sku)
     {
-        return view('logistica.tracking.mercaderia_nueva.modal_editar', compact('id'));
+        return view('logistica.tracking.mercaderia_nueva.modal_editar', compact('sku'));
+    }
+
+    public function insert_mercaderia_surtida(Request $request,$sku)
+    {
+        $request->validate([
+            'cantidad' => 'gt:0',
+        ],[
+            'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
+        ]);
+
+        $resultados = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?', [$sku,date('Y'),date('W'),$request->cod_base]);
+        $get_id = $resultados[0];
+
+        if($request->cantidad>$get_id->cantidad){
+            echo "error";
+        }else{
+            MercaderiaSurtida::create([
+                'base' => $request->cod_base,
+                'anio' => date('Y'),
+                'semana' => date('W'),
+                'sku' => $sku,
+                'estilo' => $get_id->estilo,
+                'tipo_usuario' => $get_id->tipo_usuario,
+                'tipo_prenda' => $get_id->tipo_prenda,
+                'color' => $get_id->color,
+                'talla' => $get_id->talla,
+                'descripcion' => $get_id->decripcion,
+                'cantidad' => $request->cantidad,
+                'fecha' => now(),
+                'usuario' => session('usuario')->id_usuario
+            ]);
+        }
     }
 }

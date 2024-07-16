@@ -23,12 +23,12 @@
         <div class="row">
             <div class="form-group col-lg-2">
                 <label class="control-label text-bold">Base: </label>
-            </div>            
+            </div>
             <div class="form-group col-lg-4">
                 <select class="form-control" name="cod_basee" id="cod_basee">
                     <option value="0">Seleccione</option>
                     <?php foreach($list_base as $list){ ?>
-                        <option value="<?= $list['cod_base']; ?>" 
+                        <option value="<?= $list['cod_base']; ?>"
                         <?= ($get_id[0]['cod_base']==$list['cod_base']) ? "selected" : ""; ?>>
                             <?= $list['cod_base']; ?>
                         </option>
@@ -50,7 +50,7 @@
             </div>
             <div class="form-group col-lg-10">
                 <input type="text" class="form-control" id="urle" name="urle" placeholder="Url" value="<?= $get_id[0]['url']; ?>">
-            </div>        
+            </div>
         </div>
 
         <div class="row">
@@ -90,7 +90,7 @@
 
 <script>
     $(".img_post").click(function () {
-        window.open($(this).attr("src"), 'popUpWindow', 
+        window.open($(this).attr("src"), 'popUpWindow',
         "height=" + this.naturalHeight + ",width=" + this.naturalWidth + ",resizable=yes,toolbar=yes,menubar=no')");
     });
 
@@ -98,13 +98,17 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "<?= site_url(); ?>Recursos_Humanos/Update_Anuncio_Intranet";
+        var url = "{{ url('Update_Anuncio_Intranet') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
         if (Valida_Anuncio_Intranet('e')) {
             $.ajax({
                 url: url,
                 data:dataString,
                 type:"POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 processData: false,
                 contentType: false,
                 success: function(data) {
@@ -127,6 +131,15 @@
                             $("#ModalUpdate .close").click();
                         });
                     }
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
                 }
             });
         }

@@ -236,4 +236,54 @@ class Usuario extends Model
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }
+
+    static function get_list_proximos_cumpleanios_admin($dato){
+        $anio=date('Y');
+        $sql = "SELECT u.id_usuario,u.centro_labores,u.foto,u.usuario_nombres,u.usuario_apater,u.usuario_amater,u.fec_nac,u.foto_nombre,
+        CONCAT(YEAR(NOW()), '-', DATE_FORMAT(u.fec_nac, '%m-%d')) as cumpleanio,
+        (SELECT COUNT(*) FROM saludo_cumpleanio_historial i where i.id_cumpleaniero=u.id_usuario and year(i.fec_reg)='$anio' and i.estado=1) as cantidad,
+        p.nom_puesto
+        FROM users u
+        left join puesto p on u.id_puesto=p.id_puesto
+        WHERE u.estado=1 and DATE_FORMAT(u.fec_nac, '%m')='".$dato['cod_mes']."'
+        ORDER BY cumpleanio  ASC;";
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    static function get_list_usuario($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "SELECT u.*, p.nom_puesto, m.nom_mes, g.cod_genero, g.nom_genero,a.cod_area,a.nom_area,t.cod_tipo_documento,ge.nom_gerencia,
+                    u.usuario_email,(SELECT st.archivo FROM saludo_temporal st
+                    WHERE st.id_usuario=u.id_usuario
+                    LIMIT 1) AS archivo_saludo
+                    FROM users u
+                    left join area a on a.id_area=u.id_area
+                    left join puesto p on p.id_puesto=u.id_puesto
+                    left join mes m on m.id_mes=u.mes_nac
+                    left join genero g on g.id_genero=u.id_genero
+                    left join tipo_documento t on t.id_tipo_documento=u.id_tipo_documento
+                    left join gerencia ge on ge.id_gerencia = u.id_gerencia 
+                    WHERE u.id_usuario=$id_usuario";
+        }else{
+            $sql = "SELECT * FROM parentesco";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    static function get_list_saludo_cumpleanios($id_usuario){
+        $anio=date('Y');
+        $sql = "SELECT u.*,CONCAT(YEAR(NOW()), '-', DATE_FORMAT(a.fec_nac, '%m-%d')) as cumpleanio,
+        a.usuario_nombres,a.usuario_apater,a.usuario_amater,
+        concat(b.usuario_nombres,' ',b.usuario_apater) as saludado_por,
+        case when u.estado_registro=1 then 'Aprobado' when u.estado_registro=2 then 'Pendiente de aprobación' end as desc_estado_registro 
+        FROM saludo_cumpleanio_historial u 
+        left join users a on u.id_cumpleaniero=a.id_usuario
+        left join users b on u.id_usuario=b.id_usuario
+        where u.id_cumpleaniero='$id_usuario' and year(u.fec_reg)='$anio' and u.estado=1";
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
 }

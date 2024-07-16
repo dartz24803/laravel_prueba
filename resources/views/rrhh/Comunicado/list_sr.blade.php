@@ -54,16 +54,20 @@
     $(document).ready(function() {
         if('<?= $tipo ?>'=="2"){
             <?php $encryptedString = base64_encode('Slider_Vista_Tienda'); ?>
-            $("#btn_slide").html('<a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="{{ url('remap/'.$encryptedString) }}">Visualizar Slide Tienda</a>');
+            $("#btn_slide").html('<a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="{{ url('Slider/'.$encryptedString) }}">Visualizar Slide Tienda</a>');
         }else{
             <?php
             $funcion = base64_encode('Slider_Vista_RRHH');
             $base = base64_encode($tipo);
             ?>
-            $("#btn_slide").html('<a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="{{ url('remap/'.$funcion.'__'.$base) }}">Visualizar Slide de Base <?php echo $tipo ?></a> ');
+            $("#btn_slide").html('<a id="hslider" target="_blank" class="btn btn-primary mb-2 mr-2" title="Registrar" href="{{ url('Slider/'.$funcion.'__'.$base) }}">Visualizar Slide de Base <?php echo $tipo ?></a> ');
         }
 
         $('#tabla_js').DataTable({
+            "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
+            "<'table-responsive'tr>" +
+            "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+            responsive: true,
             "oLanguage": {
                 "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
                 "sInfo": "Mostrando página _PAGE_ de _PAGES_",

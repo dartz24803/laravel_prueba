@@ -9,14 +9,14 @@
         </tr>
     </thead>
     <tbody>
-        <?php foreach($list_anuncio_intranet as $list) {  ?>   
+        <?php foreach($list_anuncio_intranet as $list) {  ?>
             <tr>
                 <td><?= $list['cod_base']; ?></td>
                 <td><?= $list['orden']; ?></td>
                 <td><?= $list['url']; ?></td>
                 <td><?= $list['publicado']; ?></td>
                 <td class="text-center">
-                    <a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Recursos_Humanos/Modal_Update_Anuncio_Intranet') ?>/<?= $list['id_bolsa_trabajo']; ?>" >
+                    <a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Modal_Update_Anuncio_Intranet/'. $list['id_bolsa_trabajo']) }}" >
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                         </svg>
@@ -60,12 +60,12 @@
                     <div class="form-group col-sm-12">
                         <div id="datos_ajax"></div>
                         <input type="hidden" name="rutacarta" id="rutacarta">
-                            <div align="center" id="carta"></div>        
+                            <div align="center" id="carta"></div>
                         </div>
                     </div>
 
-                </div>       
-                <div class="modal-footer">      
+                </div>
+                <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
                 </div>
             </div>
@@ -76,6 +76,10 @@
 <script>
     $(document).ready(function() {
         $('#tabla_js').DataTable({
+            "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
+            "<'table-responsive'tr>" +
+            "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+            responsive: true,
             "oLanguage": {
                 "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
                 "sInfo": "Mostrando página _PAGE_ de _PAGES_",

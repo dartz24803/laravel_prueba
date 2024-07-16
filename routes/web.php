@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AdministradorController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CarteraController;
 use App\Http\Controllers\FuncionTemporalController;
 use App\Http\Controllers\Login;
 use App\Http\Controllers\InicioController;
@@ -20,6 +19,7 @@ use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
 use App\Http\Controllers\ComunicadoController;
 use App\Http\Controllers\SliderRRHH;
+use App\Http\Controllers\Cumpleanios;
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
 });
@@ -107,6 +107,7 @@ Route::controller(TrackingController::class)->group(function(){
     Route::get('tracking/mercaderia_nueva', 'mercaderia_nueva')->name('tracking.mercaderia_nueva');
     Route::post('tracking/list_mercaderia_nueva', 'list_mercaderia_nueva')->name('tracking.list_mercaderia_nueva');
     Route::get('tracking/{id}/modal_mercaderia_nueva', 'modal_mercaderia_nueva')->name('tracking.modal_mercaderia_nueva');
+    Route::post('tracking/{id}/mercaderia_surtida', 'insert_mercaderia_surtida')->name('tracking.insert_mercaderia_surtida');
 });
 //TIENDA - FUNCIÓN TEMPORAL
 Route::controller(FuncionTemporalController::class)->group(function(){
@@ -405,9 +406,25 @@ Route::controller(ComunicadoController::class)->group(function(){
     Route::post('/Insert_Slider_Rrhh', 'Insert_Slider_Rrhh');
     Route::post('/Update_Slider_Rrhh', 'Update_Slider_Rrhh');
     Route::post('/Delete_Slider_Rrhh', 'Delete_Slider_Rrhh');
+    Route::get('/Cargar_Anuncio_Intranet', 'Cargar_Anuncio_Intranet');
+    Route::post('Lista_Anuncio_Intranet', 'Lista_Anuncio_Intranet');
+    Route::get('Modal_Anuncio_Intranet', 'Modal_Anuncio_Intranet');
+    Route::post('Insert_Anuncio_Intranet', 'Insert_Anuncio_Intranet');
+    Route::get('Modal_Update_Anuncio_Intranet/{id}', 'Modal_Update_Anuncio_Intranet');
+    Route::post('Update_Anuncio_Intranet', 'Update_Anuncio_Intranet');
+    Route::post('Delete_Anuncio_Intranet', 'Delete_Anuncio_Intranet');
 });
 Route::controller(SliderRRHH::class)->group(function(){
     Route::get('/SliderRRHH/{base}', 'Slider_Vista_RRHH')->name('slider_rrhh');
     Route::get('/SliderRRHH', 'Slider_Vista_Tienda')->name('slider_tienda');
-    Route::get('/remap/{method}', 'remap');
+    Route::get('/Slider/{method}', 'remap');
+});
+
+Route::controller(Cumpleanios::class)->group(function(){
+    Route::get('/RecursosHumanos/Cumpleanios/index', 'index');
+    Route::get('/RecursosHumanos/Buscar_Cumpleanios', 'Buscar_Cumpleanios');
+    Route::get('/RecursosHumanos/Modal_Lista_Saludo_Cumpleanio/{id}', 'Modal_Lista_Saludo_Cumpleanio');
+    Route::post('/RecursosHumanos/Aprobar_Saludo_Cumpleanio', 'Aprobar_Saludo_Cumpleanio');
+    Route::get('/RecursosHumanos/List_Saludo_cumpleanio', 'List_Saludo_cumpleanio');
+    Route::get('/RecursosHumanos/Excel_Saludo_Cumpleanio/{id}', 'Excel_Saludo_Cumpleanio');
 });
