@@ -1,6 +1,5 @@
 <?php
 $base = Session('usuario')->centro_labores;
-// print_r(Session::get('usuario'));
 ?>
 <div class="toolbar d-flex mt-4">
     <?php
@@ -46,7 +45,7 @@ $base = Session('usuario')->centro_labores;
     </div>
     <div class="form-group col-md-4">
         <label>Fecha: </label>
-        <input type="date" class="form-control" id="fecha_filtro" name="fecha_filtro" onchange="Imagenes_Listar();" max="{{$today}}">
+        <input type="date" class="form-control" id="fecha_filtro" name="fecha_filtro" onchange="Imagenes_Listar();" max="{{$today}}" value="{{$today}}">
     </div>
 </div>
 @csrf
