@@ -64,25 +64,25 @@
                                                     <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
                                                     <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
                                                     <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                                                    <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
                                                 </ol>
                                                 <div class="carousel-inner">
                                                     <div class="carousel-item active">
-                                                    <img src="{{ asset('/inicio/LN1-Isotipo.png') }}" alt="La número 1" style="height: 10rem">
+                                                        <img src="{{ asset('/inicio/LN1-Isotipo.png') }}" alt="La número 1" style="height: 10rem">
                                                     </div>
                                                     <div class="carousel-item">
-                                                        <div class="carousel-caption d-none d-md-block">
-                                                            <h5>AAAA</h5>
-                                                            <p>AAAA</p>
+                                                        <div class="d-flex justify-content-center align-items-center">
+                                                            <h5 class="card-title">Special title treatment</h5>
                                                         </div>
                                                     </div>
                                                     <div class="carousel-item">
-                                                        <div class="carousel-caption d-none d-md-block">
+                                                        <div class="d-flex justify-content-center align-items-center">
                                                             <h5>ZZZZZZ</h5>
                                                             <p>ZZZZZZ</p>
                                                         </div>
                                                     </div>
                                                     <div class="carousel-item">
-                                                        <div class="carousel-caption d-none d-md-block">
+                                                        <div class="d-flex justify-content-center align-items-center">
                                                             <h5>TTT</h5>
                                                             <p>TTT</p>
                                                         </div>
@@ -333,9 +333,9 @@
         transition: transform 2s ease-in-out, opacity 2s ease-in-out;
         position: absolute;
         top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        left: 0;/*
+        width: 300px;
+        height: 100px;*/
     }
     .carousel-item-next, .carousel-item-prev, .carousel-item.active {
         opacity: 1;
