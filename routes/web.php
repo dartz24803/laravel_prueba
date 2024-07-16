@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AdministradorController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CarteraController;
 use App\Http\Controllers\FuncionTemporalController;
 use App\Http\Controllers\Login;
 use App\Http\Controllers\InicioController;
@@ -20,6 +19,7 @@ use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
 use App\Http\Controllers\ComunicadoController;
 use App\Http\Controllers\SliderRRHH;
+use App\Http\Controllers\Cumpleanios;
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
 });
@@ -418,4 +418,13 @@ Route::controller(SliderRRHH::class)->group(function(){
     Route::get('/SliderRRHH/{base}', 'Slider_Vista_RRHH')->name('slider_rrhh');
     Route::get('/SliderRRHH', 'Slider_Vista_Tienda')->name('slider_tienda');
     Route::get('/Slider/{method}', 'remap');
+});
+
+Route::controller(Cumpleanios::class)->group(function(){
+    Route::get('/RecursosHumanos/Cumpleanios/index', 'index');
+    Route::get('/RecursosHumanos/Buscar_Cumpleanios', 'Buscar_Cumpleanios');
+    Route::get('/RecursosHumanos/Modal_Lista_Saludo_Cumpleanio/{id}', 'Modal_Lista_Saludo_Cumpleanio');
+    Route::post('/RecursosHumanos/Aprobar_Saludo_Cumpleanio', 'Aprobar_Saludo_Cumpleanio');
+    Route::get('/RecursosHumanos/List_Saludo_cumpleanio', 'List_Saludo_cumpleanio');
+    Route::get('/RecursosHumanos/Excel_Saludo_Cumpleanio/{id}', 'Excel_Saludo_Cumpleanio');
 });

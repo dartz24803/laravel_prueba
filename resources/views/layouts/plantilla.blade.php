@@ -242,6 +242,23 @@
             top: -2px;
             left: 2px;
         }
+        
+        .tooltip-inner {
+            font-family: 'Nunito', sans-serif; 
+            font-size: 1rem;
+            background-color: white !important;
+            color: #515365;
+            border-radius: 5px ;
+            border: 1px solid #ffa700;
+            text-align: justify;
+            line-height: 3;
+            margin-bottom: 10px;
+            max-width: 100%;
+            padding: 0.5rem;
+        }
+        .tooltip.show.bs-tooltip-right .arrow::before {
+            border-right-color: #ffa700 !important;
+        }
     </style>
     <!--  BEGIN MAIN CONTAINER  -->
     <div class="main-container sidebar-closed sbar-open" id="container">
@@ -362,6 +379,18 @@
                                 <li id="recomunicados">
                                     <a id="hcomunicados" href="{{ url('Comunicado') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Slider RRHH <br>• Anuncios Intranet">
                                         <p class="romperpalabra"><span id="icono_active2"></span> Comunicados</p>
+                                    </a>
+                                </li>
+                            <?php } ?>
+                            <?php if (
+                                session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2 || 
+                                session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 133 || session('usuario')->id_puesto == 22 || session('usuario')->id_puesto == 146 || 
+                                session('usuario')->id_puesto == 21 || session('usuario')->id_puesto == 278 || session('usuario')->id_puesto == 279 || session('usuario')->id_puesto == 128 || 
+                                session('usuario')->id_puesto == 148 || session('usuario')->id_puesto == 310
+                            ) { ?>
+                                <li id="recumpleanio">
+                                    <a id="hcumpleanio" href="{{ url('RecursosHumanos/Cumpleanios/index') }}">
+                                        <p class="romperpalabra"><span id="icono_active2"></span> Cumpleaños</p>
                                     </a>
                                 </li>
                             <?php } ?>
@@ -612,5 +641,8 @@
     <script src="{{ asset('template/table-responsive/datatables.responsive.min.js') }}"></script>
     <!-- END PAGE LEVEL CUSTOM SCRIPTS -->
     <script src="{{ asset('template/assets/js/scrollspyNav.js') }}"></script>
+    <script>
+        $('[data-toggle="tooltip"]').tooltip();
+    </script>
 </body>
 </html>
