@@ -57,7 +57,8 @@ class AperturaCierreTienda extends Model
                 $parte = "AND ac.cod_base='".$dato['cod_base']."'";
             }
             $sql = "SELECT ac.id_apertura_cierre,ac.cod_base,
-                    CONCAT( (CASE WHEN DAYNAME(ac.fecha)='Monday' THEN 'Lunes'
+                    DATE_FORMAT(ac.fecha,'%d/%m/%Y') AS fecha,
+                    /*CONCAT( (CASE WHEN DAYNAME(ac.fecha)='Monday' THEN 'Lunes'
                     WHEN DAYNAME(ac.fecha)='Tuesday' THEN 'Martes' 
                     WHEN DAYNAME(ac.fecha)='Wednesday' THEN 'Miércoles' 
                     WHEN DAYNAME(ac.fecha)='Thursday' THEN 'Jueves' 
@@ -71,7 +72,7 @@ class AperturaCierreTienda extends Model
                     WHEN MONTH(ac.fecha)=6 THEN 'Junio' WHEN MONTH(ac.fecha)=7 THEN 'Julio' 
                     WHEN MONTH(ac.fecha)=8 THEN 'Agosto' WHEN MONTH(ac.fecha)=9 THEN 'Septiembre' 
                     WHEN MONTH(ac.fecha)=10 THEN 'Octubre' WHEN MONTH(ac.fecha)=11 THEN 'Noviembre' 
-                    WHEN MONTH(ac.fecha)=12 THEN 'Diciembre' ELSE '' END),' de ',YEAR(ac.fecha)) AS fecha,
+                    WHEN MONTH(ac.fecha)=12 THEN 'Diciembre' ELSE '' END),' de ',YEAR(ac.fecha)) AS fecha,*/
                     DATE_FORMAT(ac.ingreso_horario,'%H:%i') AS ingreso_programado,
                     DATE_FORMAT(ac.ingreso,'%H:%i') AS ingreso_real,
                     TIMESTAMPDIFF(MINUTE, ac.ingreso, ac.ingreso_horario) AS ingreso_diferencia,

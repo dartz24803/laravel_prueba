@@ -1,9 +1,54 @@
 <style>
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        height: 24px;
+        margin: 10px;
+    }
+
+    .toggle-switch .toggle-input {
+        display: none;
+    }
+
+    .toggle-switch .toggle-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 40px;
+        height: 24px;
+        background-color: gray;
+        border-radius: 34px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .toggle-switch .toggle-label::before {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        background-color: #fff;
+        box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s;
+    }
+
+    .toggle-switch .toggle-input:checked+.toggle-label {
+        background-color: #4CAF50;
+    }
+
+    .toggle-switch .toggle-input:checked+.toggle-label::before {
+        transform: translateX(16px);
+    }
+
     input[disabled] {
         background-color: white !important;
         color: black;
     }
 </style>
+
 
 <div class="toolbar d-md-flex align-items-md-center mt-3">
     @if (session('usuario')->id_nivel=="1")
@@ -33,7 +78,21 @@
         <input type="date" class="form-control" name="fecha_finb" id="fecha_finb" value="{{ date('Y-m-d') }}">
     </div>
 
+    <!--<div class="col-lg-6 mt-2 mt-lg-0 d-flex align-items-center justify-content-start">
+        <div class="toggle-switch">
+            <input class="toggle-input" id="toggle" type="checkbox" checked>
+            <label class="toggle-label" for="toggle"></label>
+            <span class="ml-5">Observación</span>
+        </div>
+    </div>-->
+
     <div class="col-lg-4 col-xl-6">
+        <div class="toggle-switch">
+            <input class="toggle-input" id="toggle" type="checkbox" checked>
+            <label class="toggle-label" for="toggle"></label>
+            <span class="ml-5">Observaciones</span>
+        </div>
+
         <button type="button" class="btn btn-primary mb-2 mb-sm-0 mb-md-2 mb-lg-0" onclick="Lista_Apertura_Cierre();" title="Buscar">
             Buscar
         </button>
