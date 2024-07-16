@@ -1,6 +1,5 @@
 <?php
 $base = Session('usuario')->centro_labores;
-// listar solo del dia;
 ?>
 <div class="toolbar d-flex mt-4">
     <?php
