@@ -258,4 +258,8 @@ class ReporteFotograficoController extends Controller
         ->get();
         return view('tienda.ReporteFotografico.imagenes_rf.modal_detalle', compact('get_id'));
     }
+
+    public function Reporte_Fotografico_Validar_Dia(){
+        
+    }
 }
