@@ -10,10 +10,10 @@ class TrackingTokenController extends Controller
 {
     public function store(Request $request)
     {
-        TrackingToken::create([
+        TrackingToken::upsert([
             'base' => $request->base,
             'token' => $request->token,
             'fecha' => now()
-        ]);
+        ], uniqueBy:['base'], update:['token','fecha']);
     }
 }
