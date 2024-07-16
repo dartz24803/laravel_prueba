@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tracking_token', function (Blueprint $table) {
             $table->id();
-            $table->string('base', 10)->nullable();
+            $table->string('base', 10)->unique();
             $table->string('token', 255)->nullable();
             $table->dateTime('fecha')->nullable();
             //$table->timestamps();

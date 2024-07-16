@@ -210,7 +210,8 @@ class TrackingController extends Controller
         }
     }
 
-    public function getAccessToken(){
+    public function getAccessToken()
+    {
         $client = new GoogleClient();
         $client->setAuthConfig(base_path('firebase_credentials.json'));
         $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
@@ -220,7 +221,7 @@ class TrackingController extends Controller
 
     public function sendNotification($dato)
     {
-        $url = 'https://fcm.googleapis.com/v1/projects/786895561540/messages:send';            
+        $url = 'https://fcm.googleapis.com/v1/projects/370214896421/messages:send';            
         $accessToken = $this->getAccessToken();
         $headers = array("Authorization: Bearer ".$accessToken,"content-type: application/json;UTF-8");
 
