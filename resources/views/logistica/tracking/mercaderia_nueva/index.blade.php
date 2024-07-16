@@ -55,8 +55,9 @@
     <div id="content" class="main-content">
         <div class="layout-px-spacing">
             <div class="page-header">
-                <div class="page-title">
+                <div class="page-title d-flex justify-content-between w-100">
                     <h3>Mercadería nueva</h3>
+                    <a href="{{ route('tracking') }}" class="btn btn-primary">Regresar</a>
                 </div>
             </div>
             
