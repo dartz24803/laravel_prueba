@@ -14,6 +14,6 @@ class TrackingTokenController extends Controller
             'base' => $request->base,
             'token' => $request->token,
             'fecha' => now()
-        ], uniqueBy:['base'], update:['token','fecha']);
+        ], ['base'], ['token','fecha']);
     }
 }
