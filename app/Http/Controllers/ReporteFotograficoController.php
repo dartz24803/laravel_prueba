@@ -27,7 +27,7 @@ class ReporteFotograficoController extends Controller
 
     public function __construct(Request $request){
         //constructor con variables
-        $this->middleware('verificar.sesion.usuario');
+        $this->middleware('verificar.sesion.usuario')->except(['validar_reporte_fotografico_dia_job']);;
         $this->request = $request;
         $this->modelo = new ReporteFotografico();
         $this->modeloarea = new Area();
@@ -263,6 +263,7 @@ class ReporteFotograficoController extends Controller
 
     public function validar_reporte_fotografico_dia_job(){
         // Ejecutar la consulta
+        
         $sql = "SELECT 
                     IFNULL(rfa.categoria, 'Sin categoría') AS categoria,
                     bases.base,
@@ -325,9 +326,9 @@ class ReporteFotograficoController extends Controller
                 $mail->setFrom('somosuno@lanumero1.com.pe','REPORTE FOTOGRAFICO CONTROL');
     
                 $mail->addAddress('pcardenas@lanumero1.com.pe');
-                /*$mail->addCC("acanales@lanumero1.com.pe");
-                $mail->addCC("dvilca@lanumero1.com.pe");
-                $mail->addCC("fclaverias@lanumero1.com.pe");*/
+                // $mail->addCC("acanales@lanumero1.com.pe");
+                // $mail->addCC("dvilca@lanumero1.com.pe");
+                // $mail->addCC("fclaverias@lanumero1.com.pe");
     
                 $mail->isHTML(true);
                 $mail->Subject = 'Reporte diario de bases con 0 fotos';
@@ -342,6 +343,5 @@ class ReporteFotograficoController extends Controller
         } else {
             return response()->json(['message' => 'No hay bases con 0 fotos hoy.']);
         }
-
     }
 }
