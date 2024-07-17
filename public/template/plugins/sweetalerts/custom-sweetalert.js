@@ -210,7 +210,7 @@ $('.widget-content .dynamic-queue').on('click', function () {
   }])
 
 })
-
+/*
 $('.widget-content .footer').on('click', function () {
   swal({
     type: 'error',
@@ -219,7 +219,7 @@ $('.widget-content .footer').on('click', function () {
     footer: '<a href>Why do I have this issue?</a>',
     padding: '2em'
   })
-})
+})*/
 
 $('.widget-content .RTL').on('click', function () {
   swal({
