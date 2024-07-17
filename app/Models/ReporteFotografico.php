@@ -93,24 +93,24 @@ class ReporteFotografico extends Model
     static function Reporte_Fotografico_Validar_Dia(){
         $sql = "SELECT 
                     IFNULL(rfa.categoria, 'Sin categoría') AS categoria,
-                    rf.base,
+                    bases.base,
                     IFNULL(COUNT(rf.id), 0) AS num_fotos
                 FROM 
-                    reporte_fotografico_new rf
+                    (SELECT DISTINCT base FROM reporte_fotografico_new) AS bases
+                CROSS JOIN 
+                    (SELECT * FROM reporte_fotografico_adm_new WHERE estado = 1) rfa
                 LEFT JOIN 
-                    codigos_reporte_fotografico_new crf ON rf.codigo = crf.id
+                    codigos_reporte_fotografico_new crf ON rfa.id = crf.tipo
                 LEFT JOIN 
-                    reporte_fotografico_adm_new rfa ON crf.tipo = rfa.id
-                WHERE 
-                    rf.estado = 1
-                    AND DATE(rf.fec_reg) = CURDATE()  -- Filtrar por el día de hoy
+                    reporte_fotografico_new rf ON crf.id = rf.codigo AND rf.estado = 1 AND DATE(rf.fec_reg) = CURDATE() AND bases.base = rf.base
                 GROUP BY 
                     rfa.categoria,
-                    rf.base
+                    bases.base
                 HAVING 
                     num_fotos < 3
                 ORDER BY 
-                    num_fotos ASC;";
+                    num_fotos ASC;
+                ";
         $result = DB::select($sql);
 
         // Convertir el resultado a un array
