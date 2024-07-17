@@ -37,7 +37,7 @@ class TrackingController extends Controller
 
     public function iniciar_tracking()
     {
-        TrackingGuiaRemisionDetalleTemporal::truncate();
+        //TrackingGuiaRemisionDetalleTemporal::truncate();
         TrackingTemporal::truncate();
         $list_tracking = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['T']);
         foreach($list_tracking as $list){
@@ -52,7 +52,7 @@ class TrackingController extends Controller
                 'bultos' => $list->bultos
             ]);
         }
-        $list_guia = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['G']);
+        /*$list_guia = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['G']);
         foreach($list_guia as $list){
             TrackingGuiaRemisionDetalleTemporal::create([
                 'n_requerimiento' => $list->n_requerimiento,
@@ -64,7 +64,7 @@ class TrackingController extends Controller
                 'descripcion' => $list->descripcion,
                 'cantidad' => $list->cantidad
             ]);
-        }
+        }*/
         DB::statement('CALL insert_tracking()');
 
         $list_tracking = Tracking::select('tracking.id','tracking.n_requerimiento','tracking.semana',DB::raw('base.cod_base AS hacia'))
