@@ -337,10 +337,10 @@ class ReporteFotograficoController extends Controller
                 $mail->send();
                 echo 'Correo enviado correctamente.';
             } catch (Exception $e) {
-                $this->error("Error al enviar el correo: {$mail->ErrorInfo}");
+                return response()->json(['error' => "Error al enviar el correo: {$mail->ErrorInfo}"], 500);
             }
         } else {
-            echo 'No hay bases con 0 fotos hoy.';
+            return response()->json(['message' => 'No hay bases con 0 fotos hoy.']);
         }
 
     }
