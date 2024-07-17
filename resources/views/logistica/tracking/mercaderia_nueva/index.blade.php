@@ -81,20 +81,20 @@
 
                             <div class="form-group col-lg-2">
                                 <label>Usuario:</label>
-                                <select class="form-control" id="cod_baseb" name="cod_baseb" onchange="Lista_Mercaderia_Nueva();">
+                                <select class="form-control" id="tipo_usuariob" name="tipo_usuariob" onchange="Lista_Mercaderia_Nueva();">
                                     <option value="0">TODOS</option>
                                     @foreach ($list_usuario as $list)
-                                        <option value="{{ $list->par_codusuario }}">{{ $list->par_desusuario }}</option>
+                                        <option value="{{ $list->par_desusuario }}">{{ $list->par_desusuario }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
                             <div class="form-group col-lg-2">
                                 <label>Tipo de prenda:</label>
-                                <select class="form-control" id="cod_baseb" name="cod_baseb" onchange="Lista_Mercaderia_Nueva();">
+                                <select class="form-control" id="tipo_prendab" name="tipo_prendab" onchange="Lista_Mercaderia_Nueva();">
                                     <option value="0">TODOS</option>
                                     @foreach ($list_tipo_prenda as $list)
-                                        <option value="{{ $list->sfa_codigo }}">{{ $list->sfa_descrip }}</option>
+                                        <option value="{{ $list->sfa_descrip }}">{{ $list->sfa_descrip }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -135,13 +135,15 @@
             Cargando();
 
             var cod_base = $('#cod_baseb').val();
+            var tipo_usuario = $('#tipo_usuariob').val();
+            var tipo_prenda = $('#tipo_prendab').val();
             var url = "{{ route('tracking.list_mercaderia_nueva') }}";
             var csrfToken = $('input[name="_token"]').val();
 
             $.ajax({
                 url: url,
                 type: "POST",
-                data: {'cod_base':cod_base},
+                data: {'cod_base':cod_base,'tipo_usuario':tipo_usuario,'tipo_prenda':tipo_prenda},
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
                 },
