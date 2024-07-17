@@ -1,6 +1,10 @@
 <style>
     .vibrate {
         animation: vibrate 0.1s infinite;
+        -webkit-animation: vibrate 0.1s infinite; /* Para Safari 4.0 - 8.0 */
+        -moz-animation: vibrate 0.1s infinite; /* Para Firefox 5.0 - 15.0 */
+        -o-animation: vibrate 0.1s infinite; /* Para Opera 12.0 */
+        -ms-animation: vibrate 0.1s infinite; /* Para Internet Explorer 10.0 */
     }
 
     @keyframes vibrate {
@@ -9,6 +13,38 @@
         50% { transform: translate(0, 1px); }
         75% { transform: translate(-1px, 0); }
         100% { transform: translate(0, -1px); }
+    }
+
+    @-webkit-keyframes vibrate {
+        0% { -webkit-transform: translate(0, 0); }
+        25% { -webkit-transform: translate(1px, 0); }
+        50% { -webkit-transform: translate(0, 1px); }
+        75% { -webkit-transform: translate(-1px, 0); }
+        100% { -webkit-transform: translate(0, -1px); }
+    }
+
+    @-moz-keyframes vibrate {
+        0% { -moz-transform: translate(0, 0); }
+        25% { -moz-transform: translate(1px, 0); }
+        50% { -moz-transform: translate(0, 1px); }
+        75% { -moz-transform: translate(-1px, 0); }
+        100% { -moz-transform: translate(0, -1px); }
+    }
+
+    @-o-keyframes vibrate {
+        0% { -o-transform: translate(0, 0); }
+        25% { -o-transform: translate(1px, 0); }
+        50% { -o-transform: translate(0, 1px); }
+        75% { -o-transform: translate(-1px, 0); }
+        100% { -o-transform: translate(0, -1px); }
+    }
+
+    @-ms-keyframes vibrate {
+        0% { -ms-transform: translate(0, 0); }
+        25% { -ms-transform: translate(1px, 0); }
+        50% { -ms-transform: translate(0, 1px); }
+        75% { -ms-transform: translate(-1px, 0); }
+        100% { -ms-transform: translate(0, -1px); }
     }
 </style>
 
