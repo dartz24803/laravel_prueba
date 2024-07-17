@@ -311,44 +311,37 @@ class ReporteFotograficoController extends Controller
 
             $emailBody .= '</tbody>';
             $emailBody .= '</table>';
+            $mail = new PHPMailer(true);
 
-            // Enviar correo con el detalle
-            $this->sendEmail($emailBody);
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Port     =  587;
+                $mail->setFrom('somosuno@lanumero1.com.pe','REPORTE FOTOGRAFICO CONTROL');
+    
+                $mail->addAddress('pcardenas@lanumero1.com.pe');
+                /*$mail->addCC("acanales@lanumero1.com.pe");
+                $mail->addCC("dvilca@lanumero1.com.pe");
+                $mail->addCC("fclaverias@lanumero1.com.pe");*/
+    
+                $mail->isHTML(true);
+                $mail->Subject = 'Reporte diario de bases con 0 fotos';
+                $mail->Body    = $emailBody;
+                $mail->CharSet = 'UTF-8';
+    
+                $mail->send();
+                echo 'Correo enviado correctamente.';
+            } catch (Exception $e) {
+                $this->error("Error al enviar el correo: {$mail->ErrorInfo}");
+            }
         } else {
-            $this->info('No hay bases con 0 fotos hoy.');
+            echo 'No hay bases con 0 fotos hoy.';
         }
 
-        return 0;
-    }
-
-    protected function sendEmail($emailBody){
-        $mail = new PHPMailer(true);
-
-        try {
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host       =  'mail.lanumero1.com.pe';
-            $mail->SMTPAuth   =  true;
-            $mail->Username   =  'intranet@lanumero1.com.pe';
-            $mail->Password   =  'lanumero1$1';
-            $mail->SMTPSecure =  'tls';
-            $mail->Port     =  587;
-            $mail->setFrom('somosuno@lanumero1.com.pe','REPORTE FOTOGRAFICO CONTROL');
-
-            $mail->addAddress('pcardenas@lanumero1.com.pe');
-            /*$mail->addCC("acanales@lanumero1.com.pe");
-            $mail->addCC("dvilca@lanumero1.com.pe");
-            $mail->addCC("fclaverias@lanumero1.com.pe");*/
-
-            $mail->isHTML(true);
-            $mail->Subject = 'Reporte diario de bases con 0 fotos';
-            $mail->Body    = $emailBody;
-            $mail->CharSet = 'UTF-8';
-
-            $mail->send();
-            $this->info('Correo enviado correctamente.');
-        } catch (Exception $e) {
-            $this->error("Error al enviar el correo: {$mail->ErrorInfo}");
-        }
     }
 }
