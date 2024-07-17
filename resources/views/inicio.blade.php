@@ -59,7 +59,7 @@
                                         </div>
                                         <!-- Logo central LN1-->
                                         <div id="logo_central" class="col-md-4 zoom-card-2 d-flex justify-content-center">
-                                            <!-- <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                                            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                                 <ol class="carousel-indicators">
                                                     <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
                                                     <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
@@ -72,7 +72,7 @@
                                                     </div>
                                                     <div class="carousel-item">
                                                         <div class="d-flex justify-content-center align-items-center">
-                                                            <h5 class="card-title">Special title treatment</h5>
+                                                            <h5 class="card-title"><br>Special title treatment</h5>
                                                         </div>
                                                     </div>
                                                     <div class="carousel-item">
@@ -88,12 +88,12 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div> -->
-                                            <div class="card text-center border-0 rounded_z" style="background-color: #f1f3f5;">
+                                            </div>
+                                            <!--<div class="card text-center border-0 rounded_z" style="background-color: #f1f3f5;">
                                                 <div class="card-body text-center">
                                                     <img src="{{ asset('/inicio/LN1-Isotipo.png') }}" alt="La número 1" style="height: 10rem">
                                                 </div>
-                                            </div>
+                                            </div>-->
                                         </div>
                                         <!-- Logo Finanzas-->
                                         <div id="logo_finanzas" class="col-md-3 d-flex justify-content-center align-items-end">
