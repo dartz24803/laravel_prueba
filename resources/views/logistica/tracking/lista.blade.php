@@ -1,27 +1,70 @@
+<style>
+    .vibrate {
+        animation: vibrate 0.1s infinite;
+        -webkit-animation: vibrate 0.1s infinite; /* Para Safari 4.0 - 8.0 */
+        -moz-animation: vibrate 0.1s infinite; /* Para Firefox 5.0 - 15.0 */
+        -o-animation: vibrate 0.1s infinite; /* Para Opera 12.0 */
+        -ms-animation: vibrate 0.1s infinite; /* Para Internet Explorer 10.0 */
+    }
+
+    @keyframes vibrate {
+        0% { transform: translate(0, 0); }
+        25% { transform: translate(1px, 0); }
+        50% { transform: translate(0, 1px); }
+        75% { transform: translate(-1px, 0); }
+        100% { transform: translate(0, -1px); }
+    }
+
+    @-webkit-keyframes vibrate {
+        0% { -webkit-transform: translate(0, 0); }
+        25% { -webkit-transform: translate(1px, 0); }
+        50% { -webkit-transform: translate(0, 1px); }
+        75% { -webkit-transform: translate(-1px, 0); }
+        100% { -webkit-transform: translate(0, -1px); }
+    }
+
+    @-moz-keyframes vibrate {
+        0% { -moz-transform: translate(0, 0); }
+        25% { -moz-transform: translate(1px, 0); }
+        50% { -moz-transform: translate(0, 1px); }
+        75% { -moz-transform: translate(-1px, 0); }
+        100% { -moz-transform: translate(0, -1px); }
+    }
+
+    @-o-keyframes vibrate {
+        0% { -o-transform: translate(0, 0); }
+        25% { -o-transform: translate(1px, 0); }
+        50% { -o-transform: translate(0, 1px); }
+        75% { -o-transform: translate(-1px, 0); }
+        100% { -o-transform: translate(0, -1px); }
+    }
+
+    @-ms-keyframes vibrate {
+        0% { -ms-transform: translate(0, 0); }
+        25% { -ms-transform: translate(1px, 0); }
+        50% { -ms-transform: translate(0, 1px); }
+        75% { -ms-transform: translate(-1px, 0); }
+        100% { -ms-transform: translate(0, -1px); }
+    }
+</style>
+
 <table id="tabla_js" class="table" style="width:100%">
     <thead>
         <tr class="text-center">
-            <th width="17%">N° requerimiento</th>
-            <th width="10%">Desde</th>
-            <th width="10%">Hacia</th>
-            <th width="16%">Proceso</th>
-            <th width="10%">Fecha</th>
-            <th width="10%">Hora</th>
-            <th width="27%">Estado</th>
-            <th width="10%" class="no-content"></th>
+            <th class="no-content"></th>
+            <th>N° requerimiento</th>
+            <th>Desde</th>
+            <th>Hacia</th>
+            <th>Proceso</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Estado</th>
         </tr>
     </thead>
 
     <tbody>
         @foreach ($list_tracking as $list)
             <tr class="text-center">
-                <td>{{ $list->n_requerimiento }}</td>
-                <td>{{ $list->desde }}</td>
-                <td>{{ $list->hacia }}</td>
-                <td class="text-left">{{ $list->proceso }}</td>
-                <td>{{ $list->fecha }}</td>
-                <td>{{ $list->hora }}</td>
-                <td class="text-left">{{ $list->estado }}</td>
                 <td>
                     @if ($list->id_estado == 2)
                         <a href="javascript:void(0);" title="Salida de mercadería" onclick="Insert_Salida_Mercaderia('{{ $list->id }}');">
@@ -33,7 +76,7 @@
                         </a>
                     @elseif($list->id_estado==3)
                         <a href="{{ route('tracking.detalle_transporte', $list->id) }}" title="Detalle de transporte">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning vibrate">
                                 <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
                                 <line x1="12" y1="9" x2="12" y2="13"></line>
                                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
@@ -57,7 +100,7 @@
                         </a>
                     @elseif($list->id_estado==7)
                         <a href="javascript:void(0);" title="Verificación de fardos" onclick="Verificacion_Fardos('{{ $list->id }}');">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning vibrate">
                                 <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
                                 <line x1="12" y1="9" x2="12" y2="13"></line>
                                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
@@ -86,7 +129,7 @@
                         </a>
                     @elseif($list->id_estado==13)
                         <a href="javascript:void(0);" title="Reporte de mercadería" onclick="Reporte_Mercaderia('{{ $list->id }}');">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning vibrate">
                                 <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
                                 <line x1="12" y1="9" x2="12" y2="13"></line>
                                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
@@ -104,7 +147,7 @@
                         </a>
                     @elseif($list->id_estado==15)
                         <a href="{{ route('tracking.detalle_operacion_diferencia', $list->id) }}" title="Detalle de operaciones de diferencias">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning vibrate">
                                 <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
                                 <line x1="12" y1="9" x2="12" y2="13"></line>
                                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
@@ -122,7 +165,7 @@
                         </a>
                     @elseif($list->id_estado==18)
                         <a href="{{ route('tracking.evaluacion_devolucion', $list->id) }}" title="Evaluación de devolución">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning vibrate">
                                 <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
                                 <line x1="12" y1="9" x2="12" y2="13"></line>
                                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
@@ -130,6 +173,13 @@
                         </a>
                     @endif
                 </td>
+                <td>{{ $list->n_requerimiento }}</td>
+                <td>{{ $list->desde }}</td>
+                <td>{{ $list->hacia }}</td>
+                <td class="text-left">{{ $list->proceso }}</td>
+                <td>{{ $list->fecha }}</td>
+                <td>{{ $list->hora }}</td>
+                <td class="text-left">{{ $list->estado }}</td>
             </tr>
         @endforeach
     </tbody>

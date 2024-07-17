@@ -31,13 +31,13 @@ class TrackingController extends Controller
     public function __construct()
     {
         $this->middleware('verificar.sesion.usuario')->except(['index','detalle_operacion_diferencia','evaluacion_devolucion','iniciar_tracking','llegada_tienda_automatico']);
-        $token = TrackingToken::where('base','B06')->first();
-        $this->token = $token->token;
+        //$token = TrackingToken::where('base','B06')->first();
+        $this->token = 'cNJ3S-QgScWZyciMPLUkuT:APA91bHkxMuAzdHPPM94yEWD3WkP9p24CnO6qZPhmKz6VsgFHRmmoM3BeprfjJlvFzr-AdlpcvdDvGbzhLlIW6-V0Bir0hhdBXDKIru8dqTomgz56QjFph-0vW5TinsoJm8vLgbT4Hei';
     }
 
     public function iniciar_tracking()
     {
-        /*TrackingGuiaRemisionDetalleTemporal::truncate();
+        //TrackingGuiaRemisionDetalleTemporal::truncate();
         TrackingTemporal::truncate();
         $list_tracking = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['T']);
         foreach($list_tracking as $list){
@@ -52,7 +52,7 @@ class TrackingController extends Controller
                 'bultos' => $list->bultos
             ]);
         }
-        $list_guia = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['G']);
+        /*$list_guia = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['G']);
         foreach($list_guia as $list){
             TrackingGuiaRemisionDetalleTemporal::create([
                 'n_requerimiento' => $list->n_requerimiento,
@@ -64,7 +64,7 @@ class TrackingController extends Controller
                 'descripcion' => $list->descripcion,
                 'cantidad' => $list->cantidad
             ]);
-        }
+        }*/
         DB::statement('CALL insert_tracking()');
 
         $list_tracking = Tracking::select('tracking.id','tracking.n_requerimiento','tracking.semana',DB::raw('base.cod_base AS hacia'))
@@ -176,7 +176,7 @@ class TrackingController extends Controller
             }catch(Exception $e) {
                 echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
             }
-        }*/
+        }
     }
 
     public function llegada_tienda_automatico()
@@ -1920,15 +1920,15 @@ class TrackingController extends Controller
     {
         $list_base = Base::get_list_bases_tienda();
         $list_usuario = DB::connection('sqlsrv')->table('vw_usuarios')
-                        ->select('par_codusuario','par_desusuario')->orderBy('par_desusuario','ASC')->get();
+                        ->select('par_desusuario')->orderBy('par_desusuario','ASC')->get();
         $list_tipo_prenda = DB::connection('sqlsrv')->table('tge_sub_familias')
-                            ->select('sfa_codigo','sfa_descrip')->orderBy('sfa_descrip','ASC')->get();
+                            ->select('sfa_descrip')->orderBy('sfa_descrip','ASC')->get();
         return view('logistica.tracking.mercaderia_nueva.index', compact('list_base','list_usuario','list_tipo_prenda'));
     }
 
     public function list_mercaderia_nueva(Request $request)
     {
-        $list_mercaderia_nueva = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?', [NULL,date('Y'),date('W'),$request->cod_base]);
+        $list_mercaderia_nueva = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?,?,?', ['',date('Y'),date('W'),$request->cod_base,$request->tipo_usuario,$request->tipo_prenda]);
         return view('logistica.tracking.mercaderia_nueva.lista', compact('list_mercaderia_nueva'));
     }
 
@@ -1945,7 +1945,7 @@ class TrackingController extends Controller
             'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
         ]);
 
-        $resultados = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?', [$sku,date('Y'),date('W'),$request->cod_base]);
+        $resultados = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?,?,?', [$sku,date('Y'),date('W'),$request->cod_base,'','']);
         $get_id = $resultados[0];
 
         if($request->cantidad>$get_id->cantidad){
