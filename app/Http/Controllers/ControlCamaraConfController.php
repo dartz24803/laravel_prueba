@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ControlCamaraRonda;
 use App\Models\Horas;
 use App\Models\Local;
+use App\Models\OcurrenciasCamaras;
 use App\Models\Sedes;
 use Illuminate\Http\Request;
 
@@ -250,6 +252,156 @@ class ControlCamaraConfController extends Controller
     public function destroy_lo($id)
     {
         Local::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function index_ro()
+    {
+        return view('seguridad.administracion.control_camara.ronda.index');
+    }
+
+    public function list_ro()
+    {
+        $list_ronda = ControlCamaraRonda::select('id','descripcion')->where('estado', 1)->get();
+        return view('seguridad.administracion.control_camara.ronda.lista', compact('list_ronda'));
+    }
+
+    public function create_ro()
+    {
+        return view('seguridad.administracion.control_camara.ronda.modal_registrar');
+    }
+
+    public function store_ro(Request $request)
+    {
+        $request->validate([
+            'descripcion' => 'required',
+        ],[
+            'descripcion.required' => 'Debe ingresar descripción.',
+        ]);
+
+        $valida = ControlCamaraRonda::where('descripcion', $request->descripcion)->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            ControlCamaraRonda::create([
+                'descripcion' => $request->descripcion,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_ro($id)
+    {
+        $get_id = ControlCamaraRonda::findOrFail($id);
+        return view('seguridad.administracion.control_camara.ronda.modal_editar', compact('get_id'));
+    }
+
+    public function update_ro(Request $request, $id)
+    {
+        $request->validate([
+            'descripcione' => 'required',
+        ],[
+            'descripcione.required' => 'Debe ingresar descripción.',
+        ]);
+
+        $valida = ControlCamaraRonda::where('descripcion', $request->descripcione)->where('estado', 1)
+                        ->where('id', '!=', $id)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            ControlCamaraRonda::findOrFail($id)->update([
+                'descripcion' => $request->descripcione,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_ro($id)
+    {
+        ControlCamaraRonda::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function index_oc()
+    {
+        return view('seguridad.administracion.control_camara.ocurrencia.index');
+    }
+
+    public function list_oc()
+    {
+        $list_ocurrencia = OcurrenciasCamaras::select('id_ocurrencias_camaras','descripcion')->where('estado', 1)->get();
+        return view('seguridad.administracion.control_camara.ocurrencia.lista', compact('list_ocurrencia'));
+    }
+
+    public function create_oc()
+    {
+        return view('seguridad.administracion.control_camara.ocurrencia.modal_registrar');
+    }
+
+    public function store_oc(Request $request)
+    {
+        $request->validate([
+            'descripcion' => 'required',
+        ],[
+            'descripcion.required' => 'Debe ingresar descripción.',
+        ]);
+
+        $valida = OcurrenciasCamaras::where('descripcion', $request->descripcion)->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            OcurrenciasCamaras::create([
+                'descripcion' => $request->descripcion,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_oc($id)
+    {
+        $get_id = OcurrenciasCamaras::findOrFail($id);
+        return view('seguridad.administracion.control_camara.ocurrencia.modal_editar', compact('get_id'));
+    }
+
+    public function update_oc(Request $request, $id)
+    {
+        $request->validate([
+            'descripcione' => 'required',
+        ],[
+            'descripcione.required' => 'Debe ingresar descripción.',
+        ]);
+
+        $valida = OcurrenciasCamaras::where('descripcion', $request->descripcione)->where('estado', 1)
+                        ->where('id_ocurrencias_camaras', '!=', $id)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            OcurrenciasCamaras::findOrFail($id)->update([
+                'descripcion' => $request->descripcione,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_oc($id)
+    {
+        OcurrenciasCamaras::findOrFail($id)->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario

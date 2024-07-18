@@ -1,6 +1,6 @@
 <form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
-        <h5 class="modal-title">Editar local:</h5>
+        <h5 class="modal-title">Editar ronda:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
@@ -20,17 +20,17 @@
     <div class="modal-footer">
         @csrf
         @method('PUT')
-        <button class="btn btn-primary" type="button" onclick="Update_Local();">Guardar</button>
+        <button class="btn btn-primary" type="button" onclick="Update_Ocurrencia();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
-    function Update_Local() {
+    function Update_Ocurrencia() {
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('control_camara_conf_lo.update', $get_id->id_local) }}";
+        var url = "{{ route('control_camara_conf_oc.update', $get_id->id_ocurrencias_camaras) }}";
 
         $.ajax({
             url: url,
@@ -54,7 +54,7 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Lista_Local();
+                        Lista_Ocurrencia();
                         $("#ModalUpdate .close").click();
                     });  
                 }

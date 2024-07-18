@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OcurrenciasCamaras extends Model
+class ControlCamaraRonda extends Model
 {
     use HasFactory;
 
-    protected $table = 'ocurrencias_camaras';
-    protected $primaryKey = 'id_ocurrencias_camaras';
+    protected $table = 'control_camara_ronda';
 
     public $timestamps = false;
 
