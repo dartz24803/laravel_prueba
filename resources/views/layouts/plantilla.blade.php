@@ -557,7 +557,7 @@
                         </ul>
                     </li>
 
-                    <li class="menu" id="conf_rseguridades">
+                    <li class="menu" id="conf_seguridades">
                         <a href="#rconf_seguridades" id="hconf_seguridades" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                             <div class="">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
@@ -577,6 +577,11 @@
                             <li id="conf_aperturas_cierres">
                                 <a href="{{ route('apertura_cierre_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                                     <p class="romperpalabra"><span id="icono_active2"></span> Apertura y cierre</p>
+                                </a>
+                            </li>
+                            <li id="conf_controles_camaras">
+                                <a href="{{ route('control_camara_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Control de cámaras</p>
                                 </a>
                             </li>
                         </ul>

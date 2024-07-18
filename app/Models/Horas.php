@@ -10,6 +10,7 @@ class Horas extends Model
     use HasFactory;
 
     protected $table = 'horas';
+    protected $primaryKey = 'id_hora';
 
     public $timestamps = false;
 
