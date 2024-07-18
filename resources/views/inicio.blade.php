@@ -6,8 +6,8 @@
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing" id="cancel-row">
             <div id="tabsSimple" class="col-lg-12 col-12 layout-spacing">
-                <!-- @csrf
-                <button onclick="ppp()">ppp</button> -->
+                @csrf
+                <button onclick="ppp()">ppp</button>
                 <div class="statbox widget box box-shadow row">
                     <div class="widget-content simple-tab col-md-10" style="background-color: #f0f3f3;">
                         <div class="row" id="cancel-row">
@@ -363,24 +363,24 @@
         $("#inicio").addClass('active');
         $("#hinicio").attr('aria-expanded','true');
     });
-    // function ppp(){
-    //     var url = "{{ url('ReporteFotografico/validar_reporte_fotografico_dia_job') }}";
-    //     var csrfToken = $('input[name="_token"]').val();
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: url,
-    //         headers: {
-    //             'X-CSRF-TOKEN': csrfToken
-    //         },
-    //         success: function(resp){
-    //             swal.fire(
-    //                 'Registro Exitoso!',
-    //                 'Haga clic en el botón!',
-    //                 'success'
-    //             ).then(function() {
-    //             });
-    //         }
-    //     });
-    // }
+    function ppp(){
+        var url = "{{ url('ReporteFotografico/validar_reporte_fotografico_dia_job') }}";
+        var csrfToken = $('input[name="_token"]').val();
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(resp){
+                swal.fire(
+                    'Registro Exitoso!',
+                    'Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                });
+            }
+        });
+    }
 </script>
 @endsection

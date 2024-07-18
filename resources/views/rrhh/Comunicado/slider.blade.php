@@ -57,7 +57,7 @@
                 if(isNaN(fadeOutTime)){fadeOutTime=defaultFadeOutTime; console.log("NOTICE: ----------- data-fadeout is missing, using default.");}
                 
                 console.log("Slide: "+currentSlideIndex+":\n Display time: "+timing+" millisec.\n Fadein: "+fadeInTime+" millisec.\n Fadeout: "+fadeOutTime+" millisec.");
-                thisSlide.animate({"opacity":1},fadeInTime);
+                //thisSlide.animate({"opacity":1},fadeInTime);
                 
                 // If this slide contains a video
                 if(slides.eq(currentSlideIndex).find("video").length > 0){
@@ -99,7 +99,7 @@
                         slides.eq(previousSlideIndex).find("video")[0].pause();
                     }
                     
-                    slides.eq(previousSlideIndex).animate({"opacity":0},fadeOutTime);
+                    //slides.eq(previousSlideIndex).animate({"opacity":0},fadeOutTime);
                     showSlide();
                 }, timing);
             }
