@@ -20,10 +20,10 @@ video {
     position: absolute;
     object-fit: cover;
 }
-/*
+
 .slide{
     opacity:0;
-}*/
+}
 
 .text{
     text-align: center;

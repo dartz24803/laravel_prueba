@@ -57,14 +57,14 @@ class SliderRRHH extends Controller{
 
     public function Slider_Vista_RRHH($base) {
         $slider = Slide::where('estado', 1)
-                    ->where('id_area', 11)
+                    ->where('id_area', '11')
                     ->where('base', $base)
                     ->get();
         return view("rrhh.Comunicado.slider", compact('slider'));
     }
     public function Slider_Vista_Tienda() {
         $slider = Slide::where('estado', 1)
-                ->where('id_area', 11)
+                ->where('id_area', '11')
                 ->whereIn('tipo', [2])
                 ->orderBy('orden', 'ASC')
                 ->get();

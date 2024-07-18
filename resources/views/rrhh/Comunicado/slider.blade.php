@@ -8,29 +8,28 @@
     <script src="{{ asset('template/assets/js/libs/jquery-3.1.1.min.js') }}"></script>
 </head>
 <body>
-
 <?php foreach($slider as $list) {  ?>
     <?php if($list['tipo_slide'] == 1){  ?>
-           <?php echo "<div class='slide' data-timing="{$list['duracion']}" data-fadein="{$list['entrada_slide']}" data-fadeout={$list['salida_slide']}>"; ?>
-           <?php echo '<img loading="lazy" src="'.$list['archivoslide'].'">'; ?>
-           <?php echo "<section class='text'>
+            <?php echo "<div class='slide' data-timing={$list['duracion']} data-fadein={$list['entrada_slide']} data-fadeout={$list['salida_slide']}>"; ?>
+            <?php echo '<img loading="lazy" src="'.$list['archivoslide'].'">'; ?>
+            <?php echo "<section class='text'>
                     <h1></h1>
                     <p></p>
                 </section>
                 </div>";?>
 
-      <?php  }elseif ($list['tipo_slide'] == 2){ ?>           
-      <?php echo "<div class='slide' data-timing="{$list['duracion']}" data-fadein="{$list['entrada_slide']}" data-fadeout={$list['salida_slide']}>"; ?>
-      <?php echo '<video loading="lazy" autoplay muted loop>
+        <?php  }elseif ($list['tipo_slide'] == 2){ ?>           
+        <?php echo "<div class='slide' data-timing={$list['duracion']} data-fadein={$list['entrada_slide']} data-fadeout={$list['salida_slide']}>"; ?>
+        <?php echo '<video loading="lazy" autoplay muted >
                     <source src="'.$list['archivoslide'].'" type="video/mp4">
-                   </video>'; 
-      ?>
-      <?php echo "<section class='text'>
+                    </video>'; 
+        ?>
+        <?php echo "<section class='text'>
                     <h1></h1>
                     <p></p>
                 </section>
                 </div>";
-      ?>
+        ?>
     <?php  }else{ ?>
         <?php echo ""; ?>
         <?php  } ?>
@@ -57,7 +56,7 @@
                 if(isNaN(fadeOutTime)){fadeOutTime=defaultFadeOutTime; console.log("NOTICE: ----------- data-fadeout is missing, using default.");}
                 
                 console.log("Slide: "+currentSlideIndex+":\n Display time: "+timing+" millisec.\n Fadein: "+fadeInTime+" millisec.\n Fadeout: "+fadeOutTime+" millisec.");
-                //thisSlide.animate({"opacity":1},fadeInTime);
+                thisSlide.animate({"opacity":1},fadeInTime);
                 
                 // If this slide contains a video
                 if(slides.eq(currentSlideIndex).find("video").length > 0){
@@ -99,7 +98,7 @@
                         slides.eq(previousSlideIndex).find("video")[0].pause();
                     }
                     
-                    //slides.eq(previousSlideIndex).animate({"opacity":0},fadeOutTime);
+                    slides.eq(previousSlideIndex).animate({"opacity":0},fadeOutTime);
                     showSlide();
                 }, timing);
             }
