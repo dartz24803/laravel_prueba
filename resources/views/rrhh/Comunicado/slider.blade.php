@@ -8,7 +8,12 @@
     <script src="{{ asset('template/assets/js/libs/jquery-3.1.1.min.js') }}"></script>
 </head>
 <body>
-<?php foreach($slider as $list) {  ?>
+<?php
+$totalDuration = 0; 
+?>
+<?php foreach($slider as $list) {  
+    $totalDuration += $list['duracion'];
+?>
     <?php if($list['tipo_slide'] == 1){  ?>
             <?php echo "<div class='slide' data-timing={$list['duracion']} data-fadein={$list['entrada_slide']} data-fadeout={$list['salida_slide']}>"; ?>
             <?php echo '<img loading="lazy" src="'.$list['archivoslide'].'">'; ?>
@@ -104,6 +109,12 @@
             }
             // Init
             showSlide();
+            
+            var totalDuration = <?php echo $totalDuration; ?> * 1000; // Convertir a milisegundos
+
+            setTimeout(function(){
+                location.reload();
+            }, totalDuration)
     </script>
 
 </body>
