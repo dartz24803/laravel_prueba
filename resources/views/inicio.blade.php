@@ -183,21 +183,24 @@
                     <div class="col-md-2">
                         <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img class="d-block w-100" src="{{ asset('login_files/img/slider1.png')}}" alt="First slide">
-                            </div>
-                            <div class="carousel-item">
-                                <img class="d-block w-100" src="{{ asset('login_files/img/slider1.png')}}" alt="Second slide">
-                            </div>
-                            <div class="carousel-item">
-                                <img class="d-block w-100" src="{{ asset('login_files/img/slider1.png')}}" alt="Third slide">
-                            </div>
+                                <div class="carousel-item active">
+                                    <img class="d-block w-100" src="{{ asset('inicio/NEW.Intranet-Slide-01Procesos.png')}}" alt="First slide">
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="d-block w-100" src="{{ asset('inicio/NEW.Intranet-Slide-02Manual.png')}}" alt="Second slide">
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="d-block w-100" src="{{ asset('inicio/NEW.Intranet-Slide-03Politica.png')}}" alt="Third slide">
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="d-block w-100" src="{{ asset('inicio/NEW.Intranet-Slide-04Instructivos.png')}}" alt="Third slide">
+                                </div>
                             </div>
                             <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             </a>
                             <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             </a>
                         </div>
                     </div>
