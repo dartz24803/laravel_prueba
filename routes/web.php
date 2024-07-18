@@ -325,6 +325,27 @@ Route::controller(ControlCamaraConfController::class)->group(function(){
     Route::get('control_camara_conf_ho/{id}/edit', 'edit_ho')->name('control_camara_conf_ho.edit');
     Route::put('control_camara_conf_ho/{id}', 'update_ho')->name('control_camara_conf_ho.update');
     Route::delete('control_camara_conf_ho/{id}', 'destroy_ho')->name('control_camara_conf_ho.destroy');
+    Route::get('control_camara_conf_lo', 'index_lo')->name('control_camara_conf_lo');
+    Route::get('control_camara_conf_lo/list', 'list_lo')->name('control_camara_conf_lo.list');
+    Route::get('control_camara_conf_lo/create', 'create_lo')->name('control_camara_conf_lo.create');
+    Route::post('control_camara_conf_lo', 'store_lo')->name('control_camara_conf_lo.store');
+    Route::get('control_camara_conf_lo/{id}/edit', 'edit_lo')->name('control_camara_conf_lo.edit');
+    Route::put('control_camara_conf_lo/{id}', 'update_lo')->name('control_camara_conf_lo.update');
+    Route::delete('control_camara_conf_lo/{id}', 'destroy_lo')->name('control_camara_conf_lo.destroy');
+    Route::get('control_camara_conf_ro', 'index_ro')->name('control_camara_conf_ro');
+    Route::get('control_camara_conf_ro/list', 'list_ro')->name('control_camara_conf_ro.list');
+    Route::get('control_camara_conf_ro/create', 'create_ro')->name('control_camara_conf_ro.create');
+    Route::post('control_camara_conf_ro', 'store_ro')->name('control_camara_conf_ro.store');
+    Route::get('control_camara_conf_ro/{id}/edit', 'edit_ro')->name('control_camara_conf_ro.edit');
+    Route::put('control_camara_conf_ro/{id}', 'update_ro')->name('control_camara_conf_ro.update');
+    Route::delete('control_camara_conf_ro/{id}', 'destroy_ro')->name('control_camara_conf_ro.destroy');
+    Route::get('control_camara_conf_oc', 'index_oc')->name('control_camara_conf_oc');
+    Route::get('control_camara_conf_oc/list', 'list_oc')->name('control_camara_conf_oc.list');
+    Route::get('control_camara_conf_oc/create', 'create_oc')->name('control_camara_conf_oc.create');
+    Route::post('control_camara_conf_oc', 'store_oc')->name('control_camara_conf_oc.store');
+    Route::get('control_camara_conf_oc/{id}/edit', 'edit_oc')->name('control_camara_conf_oc.edit');
+    Route::put('control_camara_conf_oc/{id}', 'update_oc')->name('control_camara_conf_oc.update');
+    Route::delete('control_camara_conf_oc/{id}', 'destroy_oc')->name('control_camara_conf_oc.destroy');
 });
 //SEGURIDAD - CONTROL DE CÁMARAS
 Route::controller(ControlCamaraController::class)->group(function(){

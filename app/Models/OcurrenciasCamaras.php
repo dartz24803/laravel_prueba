@@ -10,6 +10,7 @@ class OcurrenciasCamaras extends Model
     use HasFactory;
 
     protected $table = 'ocurrencias_camaras';
+    protected $primaryKey = 'id_ocurrencias_camaras';
 
     public $timestamps = false;
 

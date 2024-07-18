@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Local extends Model
+class ControlCamaraRonda extends Model
 {
     use HasFactory;
 
-    protected $table = 'local';
-    protected $primaryKey = 'id_local';
+    protected $table = 'control_camara_ronda';
 
     public $timestamps = false;
 
