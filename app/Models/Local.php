@@ -10,6 +10,7 @@ class Local extends Model
     use HasFactory;
 
     protected $table = 'local';
+    protected $primaryKey = 'id_local';
 
     public $timestamps = false;
 

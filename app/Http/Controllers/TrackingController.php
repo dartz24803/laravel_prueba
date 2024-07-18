@@ -31,8 +31,9 @@ class TrackingController extends Controller
     public function __construct()
     {
         $this->middleware('verificar.sesion.usuario')->except(['index','detalle_operacion_diferencia','evaluacion_devolucion','iniciar_tracking','llegada_tienda_automatico']);
-        //$token = TrackingToken::where('base','B06')->first();
-        $this->token = 'cNJ3S-QgScWZyciMPLUkuT:APA91bHkxMuAzdHPPM94yEWD3WkP9p24CnO6qZPhmKz6VsgFHRmmoM3BeprfjJlvFzr-AdlpcvdDvGbzhLlIW6-V0Bir0hhdBXDKIru8dqTomgz56QjFph-0vW5TinsoJm8vLgbT4Hei';
+        $token = TrackingToken::where('base','B06')->first();
+        $this->token = $token->token;
+        //$this->token = 'cNJ3S-QgScWZyciMPLUkuT:APA91bHkxMuAzdHPPM94yEWD3WkP9p24CnO6qZPhmKz6VsgFHRmmoM3BeprfjJlvFzr-AdlpcvdDvGbzhLlIW6-V0Bir0hhdBXDKIru8dqTomgz56QjFph-0vW5TinsoJm8vLgbT4Hei';
     }
 
     public function iniciar_tracking()

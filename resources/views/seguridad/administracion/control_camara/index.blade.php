@@ -14,6 +14,9 @@
                                 <li class="nav-item">
                                     <a id="a_hpro" class="nav-link" onclick="Hora_Programada();" style="cursor: pointer;">Hora Programada</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a id="a_loc" class="nav-link" onclick="Local();" style="cursor: pointer;">Local</a>
+                                </li>
                             </ul>
 
                             <div class="row" id="cancel-row">
@@ -50,6 +53,7 @@
                     $('#div_control_camara_conf').html(resp);  
                     $("#a_sed").addClass('active');
                     $("#a_hpro").removeClass('active');
+                    $("#a_loc").removeClass('active');
                 }
             });
         }
@@ -66,6 +70,24 @@
                     $('#div_control_camara_conf').html(resp);  
                     $("#a_sed").removeClass('active');
                     $("#a_hpro").addClass('active');
+                    $("#a_loc").removeClass('active');
+                }
+            });
+        }
+
+        function Local(){
+            Cargando();
+
+            var url="{{ route('control_camara_conf_lo') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_control_camara_conf').html(resp);  
+                    $("#a_sed").removeClass('active');
+                    $("#a_hpro").removeClass('active');
+                    $("#a_loc").addClass('active');
                 }
             });
         }

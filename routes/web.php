@@ -325,6 +325,13 @@ Route::controller(ControlCamaraConfController::class)->group(function(){
     Route::get('control_camara_conf_ho/{id}/edit', 'edit_ho')->name('control_camara_conf_ho.edit');
     Route::put('control_camara_conf_ho/{id}', 'update_ho')->name('control_camara_conf_ho.update');
     Route::delete('control_camara_conf_ho/{id}', 'destroy_ho')->name('control_camara_conf_ho.destroy');
+    Route::get('control_camara_conf_lo', 'index_lo')->name('control_camara_conf_lo');
+    Route::get('control_camara_conf_lo/list', 'list_lo')->name('control_camara_conf_lo.list');
+    Route::get('control_camara_conf_lo/create', 'create_lo')->name('control_camara_conf_lo.create');
+    Route::post('control_camara_conf_lo', 'store_lo')->name('control_camara_conf_lo.store');
+    Route::get('control_camara_conf_lo/{id}/edit', 'edit_lo')->name('control_camara_conf_lo.edit');
+    Route::put('control_camara_conf_lo/{id}', 'update_lo')->name('control_camara_conf_lo.update');
+    Route::delete('control_camara_conf_lo/{id}', 'destroy_lo')->name('control_camara_conf_lo.destroy');
 });
 //SEGURIDAD - CONTROL DE CÁMARAS
 Route::controller(ControlCamaraController::class)->group(function(){
