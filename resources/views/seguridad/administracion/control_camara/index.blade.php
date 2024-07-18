@@ -133,7 +133,7 @@
         function Tienda(){
             Cargando();
 
-            var url="{{ route('control_camara_conf_ro') }}";
+            var url="{{ route('control_camara_conf_ti') }}";
 
             $.ajax({
                 url: url,

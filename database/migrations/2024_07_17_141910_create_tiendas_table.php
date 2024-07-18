@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_tienda');
             $table->unsignedBigInteger('id_sede');
             $table->unsignedBigInteger('id_local');
+            $table->integer('ronda')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
