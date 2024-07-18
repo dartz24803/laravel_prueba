@@ -126,6 +126,7 @@ class TrackingController extends Controller
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
                 $mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
     
                 $mail->isHTML(true);
     
@@ -357,6 +358,7 @@ class TrackingController extends Controller
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
             $mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
 
             $mail->isHTML(true);
 
@@ -603,6 +605,7 @@ class TrackingController extends Controller
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
             $mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
 
             $mail->isHTML(true);
 
@@ -981,6 +984,7 @@ class TrackingController extends Controller
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
             $mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
 
             $mail->isHTML(true);
 
@@ -1134,6 +1138,7 @@ class TrackingController extends Controller
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
             $mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
 
             $mail->isHTML(true);
 
@@ -1369,6 +1374,7 @@ class TrackingController extends Controller
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
             $mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
 
             $mail->isHTML(true);
 
@@ -1496,6 +1502,7 @@ class TrackingController extends Controller
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
             $mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
 
             $mail->isHTML(true);
 
@@ -1694,6 +1701,7 @@ class TrackingController extends Controller
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
                 $mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
     
                 $mail->isHTML(true);
     
@@ -1838,6 +1846,7 @@ class TrackingController extends Controller
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
                 $mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
     
                 $mail->isHTML(true);
     

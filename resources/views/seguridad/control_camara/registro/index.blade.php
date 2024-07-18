@@ -1,3 +1,15 @@
+<style>
+    input[disabled] {
+        background-color: white !important;
+        color: black;
+    }
+
+    textarea[disabled] {
+        background-color: white !important;
+        color: black;
+    }
+</style>
+
 <div class="d-flex justify-content-end mt-3 w-100">
     <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('control_camara_reg.create') }}">
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square">
