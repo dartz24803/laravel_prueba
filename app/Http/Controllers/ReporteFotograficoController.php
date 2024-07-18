@@ -310,8 +310,30 @@ class ReporteFotograficoController extends Controller
         // Verificar si hay resultados
         if (count($results) > 0) {
             // Construir el cuerpo del correo con una tabla HTML
-            $emailBody = '<h2>Reporte diario de bases</h2>';
-            $emailBody .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
+            $emailBody = '<h2>Reporte diario de bases</h2>';// Construir el cuerpo del correo con una tabla HTML
+            $emailBody .= '<p>A continuación se presenta el detalle de las bases con 0 fotos hoy:</p>';
+            $emailBody .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 40%;">';
+            $emailBody .= '<thead>';
+            $emailBody .= '<tr>';
+            $emailBody .= '<th style="text-align: center;">Base</th>';
+            $emailBody .= '<th style="text-align: center;">Categoría</th>';
+            $emailBody .= '<th style="text-align: center;"># Fotos</th>';
+            $emailBody .= '</tr>';
+            $emailBody .= '</thead>';
+            $emailBody .= '<tbody>';
+
+            foreach ($results2 as $row) {
+                $emailBody .= '<tr>';
+                $emailBody .= '<td>' . $row->base . '</td>';
+                $emailBody .= '<td>' . $row->categoria . '</td>';
+                $emailBody .= '<td style="text-align: center; color: #fa5c5c">' . $row->num_fotos . '</td>';
+                $emailBody .= '</tr>';
+            }
+
+            $emailBody .= '</tbody>';
+            $emailBody .= '</table><br><br>';
+            $emailBody .= '<p>A continuación se presenta el detalle de las bases hoy:</p>';
+            $emailBody .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 40%;">';
             $emailBody .= '<thead>';
             $emailBody .= '<tr>';
             $emailBody .= '<th style="text-align: center;">Base</th>';
@@ -330,34 +352,11 @@ class ReporteFotograficoController extends Controller
             }
 
             $emailBody .= '</tbody>';
-            $emailBody .= '</table><br><br>';
-            // Verificar si hay resultados
-            if (count($results2) > 0) {
-                // Construir el cuerpo del correo con una tabla HTML
-                $emailBody .= '<p>A continuación se presenta el detalle de las bases con 0 fotos hoy:</p>';
-                $emailBody .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
-                $emailBody .= '<thead>';
-                $emailBody .= '<tr>';
-                $emailBody .= '<th style="text-align: center;">Base</th>';
-                $emailBody .= '<th style="text-align: center;">Categoría</th>';
-                $emailBody .= '<th style="text-align: center;"># Fotos</th>';
-                $emailBody .= '</tr>';
-                $emailBody .= '</thead>';
-                $emailBody .= '<tbody>';
-    
-                foreach ($results2 as $row) {
-                    $emailBody .= '<tr>';
-                    $emailBody .= '<td>' . $row->base . '</td>';
-                    $emailBody .= '<td>' . $row->categoria . '</td>';
-                    $emailBody .= '<td style="text-align: center;">' . $row->num_fotos . '</td>';
-                    $emailBody .= '</tr>';
-                    //dos tablas; general (x base y categoria) y luego ceros (todas las bases?)
-                    //reporte x base
-                }
-    
-                $emailBody .= '</tbody>';
-                $emailBody .= '</table>';
-            }
+            $emailBody .= '</table>';
+            
+                
+
+            
             $mail = new PHPMailer(true);
 
             try {
@@ -390,6 +389,6 @@ class ReporteFotograficoController extends Controller
             return response()->json(['message' => 'No hay bases con 0 fotos hoy.']);
         }
 
-
+        //$sql3 = "";
     }
 }
