@@ -10,12 +10,14 @@ class Tiendas extends Model
     use HasFactory;
 
     protected $table = 'tiendas';
+    protected $primaryKey = 'id_tienda';
 
     public $timestamps = false;
 
     protected $fillable = [
         'id_sede',
         'id_local',
+        'ronda',
         'estado',
         'fec_reg',
         'user_reg',
