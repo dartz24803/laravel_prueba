@@ -370,7 +370,7 @@ class ReporteFotograficoController extends Controller
                 $mail->Port     =  587;
                 $mail->setFrom('somosuno@lanumero1.com.pe','REPORTE FOTOGRAFICO CONTROL');
     
-                $mail->addAddress('pcardenas@lanumero1.com.pe');
+                $mail->addAddress('ogutierrez@lanumero1.com.pe');
                 // $mail->addCC("acanales@lanumero1.com.pe");
                 // $mail->addCC("dvilca@lanumero1.com.pe");
                 // $mail->addCC("fclaverias@lanumero1.com.pe");
