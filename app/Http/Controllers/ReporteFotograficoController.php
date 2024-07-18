@@ -321,13 +321,21 @@ class ReporteFotograficoController extends Controller
             $emailBody .= '</tr>';
             $emailBody .= '</thead>';
             $emailBody .= '<tbody>';
+            $previousBase = null;
 
             foreach ($results2 as $row) {
+                if ($previousBase !== null && $previousBase !== $row->base) {
+                    $emailBody .= '<tr>';
+                    $emailBody .= '<td colspan="3" style="padding: 1px 0;"></td>';
+                    $emailBody .= '</tr>';
+                }
                 $emailBody .= '<tr>';
                 $emailBody .= '<td>' . $row->base . '</td>';
                 $emailBody .= '<td>' . $row->categoria . '</td>';
                 $emailBody .= '<td style="text-align: center; color: #fa5c5c">' . $row->num_fotos . '</td>';
                 $emailBody .= '</tr>';
+
+                $previousBase = $row->base;
             }
 
             $emailBody .= '</tbody>';
@@ -342,19 +350,25 @@ class ReporteFotograficoController extends Controller
             $emailBody .= '</tr>';
             $emailBody .= '</thead>';
             $emailBody .= '<tbody>';
+            $previousBase2 = "";
 
             foreach ($results as $result) {
+                if ($previousBase2 !== null && $previousBase2 !== $result->base) {
+                    $emailBody .= '<tr>';
+                    $emailBody .= '<td colspan="3" style="padding: 1px 0;"></td>';
+                    $emailBody .= '</tr>';
+                }
                 $emailBody .= '<tr>';
                 $emailBody .= '<td>' . $result->base . '</td>';
                 $emailBody .= '<td>' . $result->categoria . '</td>';
                 $emailBody .= '<td style="text-align: center;">' . $result->num_fotos . '</td>';
                 $emailBody .= '</tr>';
+
+                $previousBase2 = $result->base;
             }
 
             $emailBody .= '</tbody>';
             $emailBody .= '</table>';
-            
-                
 
             
             $mail = new PHPMailer(true);
@@ -370,10 +384,11 @@ class ReporteFotograficoController extends Controller
                 $mail->Port     =  587;
                 $mail->setFrom('somosuno@lanumero1.com.pe','REPORTE FOTOGRAFICO CONTROL');
     
-                $mail->addAddress('ogutierrez@lanumero1.com.pe');
+                $mail->addAddress('pcardenas@lanumero1.com.pe');
                 // $mail->addCC("acanales@lanumero1.com.pe");
                 // $mail->addCC("dvilca@lanumero1.com.pe");
                 // $mail->addCC("fclaverias@lanumero1.com.pe");
+                // $mail->addCC("mponte@lanumero1.com.pe");
     
                 $mail->isHTML(true);
                 $mail->Subject = 'Reporte diario de bases con 0 fotos';
