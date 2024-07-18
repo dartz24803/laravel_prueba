@@ -89,31 +89,4 @@ class ReporteFotografico extends Model
         return json_decode(json_encode($result), true);
     }
 
-    //validar registros por dia base y categoria menos de 3
-    static function Reporte_Fotografico_Validar_Dia(){
-        $sql = "SELECT 
-                    IFNULL(rfa.categoria, 'Sin categoría') AS categoria,
-                    rf.base,
-                    IFNULL(COUNT(rf.id), 0) AS num_fotos
-                FROM 
-                    reporte_fotografico_new rf
-                LEFT JOIN 
-                    codigos_reporte_fotografico_new crf ON rf.codigo = crf.id
-                LEFT JOIN 
-                    reporte_fotografico_adm_new rfa ON crf.tipo = rfa.id
-                WHERE 
-                    rf.estado = 1
-                    AND DATE(rf.fec_reg) = CURDATE()  -- Filtrar por el día de hoy
-                GROUP BY 
-                    rfa.categoria,
-                    rf.base
-                HAVING 
-                    num_fotos < 3
-                ORDER BY 
-                    num_fotos ASC;";
-        $result = DB::select($sql);
-
-        // Convertir el resultado a un array
-        return json_decode(json_encode($result), true);
-    }
 }

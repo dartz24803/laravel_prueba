@@ -6,6 +6,8 @@
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing" id="cancel-row">
             <div id="tabsSimple" class="col-lg-12 col-12 layout-spacing">
+                @csrf
+                <button onclick="ppp()">ppp</button>
                 <div class="statbox widget box box-shadow row">
                     <div class="widget-content simple-tab col-md-10" style="background-color: #f0f3f3;">
                         <div class="row" id="cancel-row">
@@ -59,7 +61,7 @@
                                         </div>
                                         <!-- Logo central LN1-->
                                         <div id="logo_central" class="col-md-4 zoom-card-2 d-flex justify-content-center">
-                                            <!-- <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                                            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                                 <ol class="carousel-indicators">
                                                     <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
                                                     <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
@@ -72,7 +74,7 @@
                                                     </div>
                                                     <div class="carousel-item">
                                                         <div class="d-flex justify-content-center align-items-center">
-                                                            <h5 class="card-title">Special title treatment</h5>
+                                                            <h5 class="card-title"><br>Special title treatment</h5>
                                                         </div>
                                                     </div>
                                                     <div class="carousel-item">
@@ -88,12 +90,12 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div> -->
-                                            <div class="card text-center border-0 rounded_z" style="background-color: #f1f3f5;">
+                                            </div>
+                                            <!--<div class="card text-center border-0 rounded_z" style="background-color: #f1f3f5;">
                                                 <div class="card-body text-center">
                                                     <img src="{{ asset('/inicio/LN1-Isotipo.png') }}" alt="La número 1" style="height: 10rem">
                                                 </div>
-                                            </div>
+                                            </div>-->
                                         </div>
                                         <!-- Logo Finanzas-->
                                         <div id="logo_finanzas" class="col-md-3 d-flex justify-content-center align-items-end">
@@ -361,5 +363,24 @@
         $("#inicio").addClass('active');
         $("#hinicio").attr('aria-expanded','true');
     });
+    function ppp(){
+        var url = "{{ url('ReporteFotografico/validar_reporte_fotografico_dia_job') }}";
+        var csrfToken = $('input[name="_token"]').val();
+        $.ajax({
+            type: 'POST',
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(resp){
+                swal.fire(
+                    'Registro Exitoso!',
+                    'Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                });
+            }
+        });
+    }
 </script>
 @endsection

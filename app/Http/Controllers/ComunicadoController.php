@@ -156,7 +156,7 @@ class ComunicadoController extends Controller
         ]);
 
         $valida = Slide::where('base', $request->input)
-                    ->where('orden', $request->orden)
+                    ->where('orden', $request->ordene)
                     ->where('id_area', session('usuario')->id_area)
                     ->where('tipo_slide', $request->tipo_slide)
                     ->where('estado', 1)

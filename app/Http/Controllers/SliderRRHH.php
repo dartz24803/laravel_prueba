@@ -8,8 +8,8 @@ use App\Models\Slide;
 class SliderRRHH extends Controller{
 
     public function __construct() {
-        $this->middleware('verificar.sesion.usuario');
-        /*parent::__construct();
+        /*$this->middleware('verificar.sesion.usuario');
+        parent::__construct();
         $this->load->database();
         $this->load->model('Model_Recursos_Humanos');
         $this->load->library(array('session'));

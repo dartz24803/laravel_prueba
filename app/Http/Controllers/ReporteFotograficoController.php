@@ -10,7 +10,9 @@ use App\Models\CodigosReporteFotografico;
 use App\Models\ReporteFotograficoArchivoTemporal;
 use App\Models\ReporteFotograficoAdm;
 use Illuminate\Support\Facades\Validator;
-use Exception;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use Illuminate\Support\Facades\DB;
 
 class ReporteFotograficoController extends Controller
 {
@@ -25,7 +27,7 @@ class ReporteFotograficoController extends Controller
 
     public function __construct(Request $request){
         //constructor con variables
-        $this->middleware('verificar.sesion.usuario');
+        $this->middleware('verificar.sesion.usuario')->except(['validar_reporte_fotografico_dia_job']);;
         $this->request = $request;
         $this->modelo = new ReporteFotografico();
         $this->modeloarea = new Area();
@@ -259,7 +261,149 @@ class ReporteFotograficoController extends Controller
         return view('tienda.ReporteFotografico.imagenes_rf.modal_detalle', compact('get_id'));
     }
 
-    public function Reporte_Fotografico_Validar_Dia(){
+    public function validar_reporte_fotografico_dia_job(){
+        // Ejecutar la consulta
         
+        $sql = "SELECT 
+                    IFNULL(rfa.categoria, 'Sin categoría') AS categoria,
+                    bases.base,
+                    IFNULL(COUNT(rf.id), 0) AS num_fotos
+                FROM 
+                    (SELECT DISTINCT base FROM reporte_fotografico_new WHERE base LIKE 'B%') AS bases
+                CROSS JOIN 
+                    (SELECT * FROM reporte_fotografico_adm_new WHERE estado = 1) rfa
+                LEFT JOIN 
+                    codigos_reporte_fotografico_new crf ON rfa.id = crf.tipo
+                LEFT JOIN 
+                    reporte_fotografico_new rf ON crf.id = rf.codigo AND rf.estado = 1 AND DATE(rf.fec_reg) = CURDATE() AND bases.base = rf.base
+                GROUP BY 
+                    rfa.categoria,
+                    bases.base
+                ORDER BY 
+                    bases.base ASC,
+                    categoria ASC;";
+
+        $results = DB::select($sql);
+
+        $sql2 = "SELECT 
+                    IFNULL(rfa.categoria, 'Sin categoría') AS categoria,
+                    bases.base,
+                    IFNULL(COUNT(rf.id), 0) AS num_fotos
+                FROM 
+					(SELECT DISTINCT base FROM reporte_fotografico_new WHERE base LIKE 'B%') AS bases
+                CROSS JOIN 
+                    (SELECT * FROM reporte_fotografico_adm_new WHERE estado = 1) rfa
+                LEFT JOIN 
+                    codigos_reporte_fotografico_new crf ON rfa.id = crf.tipo
+                LEFT JOIN 
+                    reporte_fotografico_new rf ON crf.id = rf.codigo AND rf.estado = 1 AND DATE(rf.fec_reg) = CURDATE() AND bases.base = rf.base
+                GROUP BY 
+                    rfa.categoria,
+                    bases.base
+                HAVING 
+                    num_fotos = 0
+                ORDER BY 
+                    bases.base ASC,
+                    categoria ASC;";
+        $results2 = DB::select($sql2);
+
+        // Verificar si hay resultados
+        if (count($results) > 0) {
+            // Construir el cuerpo del correo con una tabla HTML
+            $emailBody = '<h2>Reporte diario de bases</h2>';// Construir el cuerpo del correo con una tabla HTML
+            $emailBody .= '<p>A continuación se presenta el detalle de las bases con 0 fotos hoy:</p>';
+            $emailBody .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 40%;">';
+            $emailBody .= '<thead>';
+            $emailBody .= '<tr>';
+            $emailBody .= '<th style="text-align: center;">Base</th>';
+            $emailBody .= '<th style="text-align: center;">Categoría</th>';
+            $emailBody .= '<th style="text-align: center;"># Fotos</th>';
+            $emailBody .= '</tr>';
+            $emailBody .= '</thead>';
+            $emailBody .= '<tbody>';
+            $previousBase = null;
+
+            foreach ($results2 as $row) {
+                if ($previousBase !== null && $previousBase !== $row->base) {
+                    $emailBody .= '<tr>';
+                    $emailBody .= '<td colspan="3" style="padding: 1px 0;"></td>';
+                    $emailBody .= '</tr>';
+                }
+                $emailBody .= '<tr>';
+                $emailBody .= '<td>' . $row->base . '</td>';
+                $emailBody .= '<td>' . $row->categoria . '</td>';
+                $emailBody .= '<td style="text-align: center; color: #fa5c5c">' . $row->num_fotos . '</td>';
+                $emailBody .= '</tr>';
+
+                $previousBase = $row->base;
+            }
+
+            $emailBody .= '</tbody>';
+            $emailBody .= '</table><br><br>';
+            $emailBody .= '<p>A continuación se presenta el detalle de las bases hoy:</p>';
+            $emailBody .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 40%;">';
+            $emailBody .= '<thead>';
+            $emailBody .= '<tr>';
+            $emailBody .= '<th style="text-align: center;">Base</th>';
+            $emailBody .= '<th style="text-align: center;">Categoría</th>';
+            $emailBody .= '<th style="text-align: center;"># Fotos</th>';
+            $emailBody .= '</tr>';
+            $emailBody .= '</thead>';
+            $emailBody .= '<tbody>';
+            $previousBase2 = "";
+
+            foreach ($results as $result) {
+                if ($previousBase2 !== null && $previousBase2 !== $result->base) {
+                    $emailBody .= '<tr>';
+                    $emailBody .= '<td colspan="3" style="padding: 1px 0;"></td>';
+                    $emailBody .= '</tr>';
+                }
+                $emailBody .= '<tr>';
+                $emailBody .= '<td>' . $result->base . '</td>';
+                $emailBody .= '<td>' . $result->categoria . '</td>';
+                $emailBody .= '<td style="text-align: center;">' . $result->num_fotos . '</td>';
+                $emailBody .= '</tr>';
+
+                $previousBase2 = $result->base;
+            }
+
+            $emailBody .= '</tbody>';
+            $emailBody .= '</table>';
+
+            
+            $mail = new PHPMailer(true);
+
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Port     =  587;
+                $mail->setFrom('somosuno@lanumero1.com.pe','REPORTE FOTOGRAFICO CONTROL');
+    
+                $mail->addAddress('ogutierrez@lanumero1.com.pe');
+                $mail->addAddress("acanales@lanumero1.com.pe");
+                $mail->addAddress("dvilca@lanumero1.com.pe");
+                $mail->addAddress("fclaverias@lanumero1.com.pe");
+                $mail->addAddress("mponte@lanumero1.com.pe");
+    
+                $mail->isHTML(true);
+                $mail->Subject = 'Reporte diario de bases con 0 fotos';
+                $mail->Body    = $emailBody;
+                $mail->CharSet = 'UTF-8';
+    
+                $mail->send();
+                echo 'Correo enviado correctamente.';
+            } catch (Exception $e) {
+                return response()->json(['error' => "Error al enviar el correo: {$mail->ErrorInfo}"], 500);
+            }
+        } else {
+            return response()->json(['message' => 'No hay bases con 0 fotos hoy.']);
+        }
+
+        //$sql3 = "";
     }
 }
