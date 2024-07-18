@@ -12,7 +12,14 @@
                 <label class="control-label text-bold">Fecha: </label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="date" class="form-control" name="fecha" id="fecha" value="{{ date('Y-m-d') }}">
+                <input type="text" class="form-control" value="{{ date('d/m/Y') }}" disabled>
+            </div>
+
+            <div class="form-group col-lg-2 mostrar" style="display: none;">
+                <label class="control-label text-bold">Hora programada: </label>
+            </div>
+            <div class="form-group col-lg-4 mostrar" style="display: none;">
+                <input type="text" class="form-control" id="hora_programada" disabled>
             </div>
         </div>
 
@@ -30,7 +37,7 @@
             </div>
         </div>
 
-        <div id="div_ocurrencias">
+        <div id="div_ocurrencias" class="row">
         </div>
     </div>
 
@@ -43,122 +50,56 @@
 </form>
 
 <script>
-    /*var video = document.getElementById('video');
-    var boton = document.getElementById('boton_camara');
-    var div_tomar_foto = document.getElementById('div_tomar_foto'); 
-    var div = document.getElementById('div_camara'); 
-    var isCameraOn = false;
-    var stream = null;
+    function Traer_Hora_Programada() {
+        Cargando();
 
-    function Activar_Camara(){
-        var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-        if(screenWidth<1000){
-            if(!isCameraOn){
-                //Pedir permiso para acceder a la cámara
-                navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: {
-                            exact: "environment"
-                        }
-                    }
-                })
-                .then(function (newStream){
-                    stream = newStream;
-                    // Mostrar el stream de la cámara en el elemento de video
-                    video.srcObject = stream;
-                    video.play();
-                    isCameraOn = true;
-                    boton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera-off"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M21 21H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3m3-3h6l2 3h4a2 2 0 0 1 2 2v9.34m-7.72-2.06a4 4 0 1 1-5.56-5.56"></path></svg>';
-                    div_tomar_foto.style.cssText = "display: block;";
-                    div.style.cssText = "display: block;";
-                })
-                .catch(function (error){
-                    console.error('Error al acceder a la cámara:', error);
-                });
-            }else{
-                //Detener la reproducción  del stream y liberar la cámara
-                if(stream){
-                    stream.getTracks().forEach(function (track){
-                        track.stop();
-                    });
-                    video.srcObject = null;
-                    isCameraOn = false;
-                    boton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>';
-                    div_tomar_foto.style.cssText = "display: none !important;";
-                    div.style.cssText = "display: none !important;";
-                }
-            }
+        var id_sede = $('#id_sede').val();
+
+        if(id_sede=="0"){
+            $('.mostrar').hide();
+            $('#hora_programada').val('');
+            $('#div_ocurrencias').html('');
         }else{
-            if(!isCameraOn){
-                //Pedir permiso para acceder a la cámara
-                navigator.mediaDevices.getUserMedia({
-                    video: true
-                })
-                .then(function (newStream){
-                    stream = newStream;
-                    // Mostrar el stream de la cámara en el elemento de video
-                    video.srcObject = stream;
-                    video.play();
-                    isCameraOn = true;
-                    boton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera-off"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M21 21H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3m3-3h6l2 3h4a2 2 0 0 1 2 2v9.34m-7.72-2.06a4 4 0 1 1-5.56-5.56"></path></svg>';
-                    div_tomar_foto.style.cssText = "display: block;";
-                    div.style.cssText = "display: block;";
-                })
-                .catch(function (error){
-                    console.error('Error al acceder a la cámara:', error);
-                });
-            }else{
-                //Detener la reproducción  del stream y liberar la cámara
-                if(stream){
-                    stream.getTracks().forEach(function (track){
-                        track.stop();
-                    });
-                    video.srcObject = null;
-                    isCameraOn = false;
-                    boton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>';
-                    div_tomar_foto.style.cssText = "display: none !important;";
-                    div.style.cssText = "display: none !important;";
+            var url = "{{ route('control_camara_reg.traer_hora_programada') }}";
+            var csrfToken = $('input[name="_token"]').val();
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {'id_sede': id_sede},
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function(data) {
+                    $('.mostrar').show();
+                    $('#hora_programada').val(data);
+                    Traer_Tienda();
                 }
-            }
+            });
         }
     }
 
-    function Tomar_Foto(){
+    function Traer_Tienda() {
         Cargando();
 
-        var dataString = new FormData(document.getElementById('formulario'));
-        var url = "{{ route('apertura_cierre_reg.previsualizacion_captura') }}";
-        var video = document.getElementById('video');
-        var div_canvas = document.getElementById('div_canvas');
-        var canvas = document.getElementById('canvas');
-        var context = canvas.getContext('2d');
-        
-        // Ajusta el tamaño del canvas al tamaño del video
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        var id_sede = $('#id_sede').val();
+        var url = "{{ route('control_camara_reg.traer_tienda') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
-        canvas.toBlob(function(blob) {
-            // Crea un formulario para enviar la imagen al servidor
-            dataString.append('photo', blob, 'photo.jpg');
-
-            // Realiza la solicitud AJAX
-            $.ajax({
-                url: url,
-                data: dataString,
-                type: 'POST',
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    div_canvas.style.cssText = "display: block;";
-                    $('#boton_disabled').prop('disabled', false);
-                    $('#captura').val('1');
-                }
-            });
-        }, 'image/jpeg');
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {'id_sede': id_sede},
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(data) {
+                $('#div_ocurrencias').html(data);
+            }
+        });
     }
 
-    function Insert_Apertura_Cierre(){
+    /*function Insert_Apertura_Cierre(){
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario'));

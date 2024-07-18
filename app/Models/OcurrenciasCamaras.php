@@ -5,17 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Sedes extends Model
+class OcurrenciasCamaras extends Model
 {
-    use HasFactory; 
+    use HasFactory;
 
-    protected $table = 'sedes';
-    protected $primaryKey = 'id_sede';
+    protected $table = 'ocurrencias_camaras';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'nombre_sede',
+        'descripcion',
         'estado',
         'fec_reg',
         'user_reg',
