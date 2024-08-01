@@ -406,4 +406,133 @@ class ReporteFotograficoController extends Controller
 
         //$sql3 = "";
     }
+
+    
+    public function validar_reporte_fotografico_dia_job_2(){
+        $sql = "SELECT 
+                    IFNULL(rfa.categoria, 'Sin categoría') AS categoria,
+                    bases.base,
+                    IFNULL(COUNT(rf.id), 0) AS num_fotos
+                FROM 
+                    (SELECT DISTINCT base FROM reporte_fotografico_new WHERE base LIKE 'B%') AS bases
+                CROSS JOIN 
+                    (SELECT * FROM reporte_fotografico_adm_new WHERE estado = 1) rfa
+                LEFT JOIN 
+                    codigos_reporte_fotografico_new crf ON rfa.id = crf.tipo
+                LEFT JOIN 
+                    reporte_fotografico_new rf ON crf.id = rf.codigo AND rf.estado = 1 AND DATE(rf.fec_reg) = CURDATE() AND bases.base = rf.base
+                GROUP BY 
+                    rfa.categoria,
+                    bases.base
+                ORDER BY 
+                    bases.base ASC,
+                    categoria ASC;";
+
+        $results = DB::select($sql);
+
+        // Ejecutar la consulta
+        $sql3 = "SELECT * FROM reporte_fotografico_adm_new WHERE estado=1 ORDER BY categoria ASC;";
+        $results3 = DB::select($sql3);
+
+        // Verificar si hay resultados
+        if (count($results) > 0) {
+            $emailBody = '<p>A continuación se presenta el detalle de las bases hoy:</p>';
+            $emailBody .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 40%;">';
+            $emailBody .= '<thead>';
+            $emailBody .= '<tr>';
+            $emailBody .= '<th style="text-align: center;">BASE</th>';
+            foreach ($results3 as $row) {
+                $emailBody .= '<th style="text-align: center;">' .$row->categoria. '</th>';                
+            }
+            $emailBody .= '<th style="text-align: center;">ESTADO</th>';
+            $emailBody .= '</tr>';
+            $emailBody .= '</thead>';
+            $emailBody .= '<tbody>';
+            $previousBase2 = "";
+            $isComplete = "";
+            $totalValues = "";
+            $emailBody .= '<tr>';
+
+            foreach ($results as $result) {
+                // Inicializa la variable para determinar si la fila está completa o no
+                if ($previousBase2 !== "" && $previousBase2 !== $result->base) {
+                    // Determina si la fila es "Completo", "Incompleto" o "FALTA"
+                    if ($totalValues == 0) {
+                        $emailBody .= '<th style="text-align: center; color:#fa2b5c; font-weight: normal">Falta</th>';
+                    } else {
+                        $emailBody .= '<th style="text-align: center; font-weight: normal; color:'.($isComplete ? '#000000' : '#6376ff').'">' . ($isComplete ? 'Completo' : 'Incompleto') . '</th>';
+                    }
+                    $emailBody .= '</tr>';
+                }
+            
+                // Si la base es diferente a la anterior, comienza una nueva fila
+                if ($previousBase2 !== $result->base) {
+                    $isComplete = true; // Resetea la variable para la nueva fila
+                    $totalValues = 0; // Contador de valores diferentes de 0
+                    $emailBody .= '<tr>';
+                    $emailBody .= '<th style="text-align: center; font-weight: normal">' . $result->base . '</th>';
+                }
+            
+                // Procesa cada valor de la fila
+                $emailBody .= '<th style="text-align: center; font-weight: normal; color:'.($result->num_fotos == 0 ? '#fa2b5c' : '#000000').'">' . $result->num_fotos . '</th>';
+            
+                // Verifica si hay algún 0 en la fila y cuenta los valores diferentes de 0
+                if ($result->num_fotos == 0) {
+                    $isComplete = false;
+                } else {
+                    $totalValues++;
+                }
+            
+                // Actualiza la base anterior
+                $previousBase2 = $result->base;
+            }
+            
+            // Cierra la última fila
+            if ($totalValues == 0) {
+                $emailBody .= '<th style="text-align: center; color:#fa2b5c; font-weight: normal">Falta</th>';
+            } else {
+                $emailBody .= '<th style="text-align: center; font-weight: normal; color:'.($isComplete ? '#000000' : '#6376ff').'">' . ($isComplete ? 'Completo' : 'Incompleto') . '</th>';
+            }
+            $emailBody .= '</tr>';
+            
+
+            $emailBody .= '</tbody>';
+            $emailBody .= '</table>';
+
+            
+            $mail = new PHPMailer(true);
+
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Port     =  587;
+                $mail->setFrom('somosuno@lanumero1.com.pe','REPORTE FOTOGRAFICO CONTROL');
+    
+                $mail->addAddress("pcardenas@lanumero1.com.pe");
+                // $mail->addAddress("acanales@lanumero1.com.pe");
+                // $mail->addAddress('ogutierrez@lanumero1.com.pe');
+                // $mail->addAddress("dvilca@lanumero1.com.pe");
+                // $mail->addAddress("fclaverias@lanumero1.com.pe");
+                // $mail->addAddress("mponte@lanumero1.com.pe");
+    
+                $mail->isHTML(true);
+                $mail->Subject = 'Reporte diario de bases';
+                $mail->Body    = $emailBody;
+                $mail->CharSet = 'UTF-8';
+    
+                $mail->send();
+                echo 'Correo enviado correctamente.';
+            } catch (Exception $e) {
+                return response()->json(['error' => "Error al enviar el correo: {$mail->ErrorInfo}"], 500);
+            }
+        } else {
+            return response()->json(['message' => 'No hay bases con 0 fotos hoy.']);
+        }
+
+    }
 }
