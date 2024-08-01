@@ -362,6 +362,11 @@
     .widget{
         border: none !important;
     }
+    @media screen and (min-width: 2000px){
+        /*.w-100{
+            width: 70% !important;
+        }*/
+    }
 </style>
 <script>
     $(document).ready(function() {
