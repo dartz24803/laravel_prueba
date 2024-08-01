@@ -65,6 +65,7 @@ Route::controller(ReporteFotograficoController::class)->group(function(){
     Route::post('/Listar_Imagenes_Reporte_Fotografico', 'Listar_Imagenes_Reporte_Fotografico');
     Route::get('Modal_Detalle_RF/{id}', 'Modal_Detalle_RF');
     Route::get('ReporteFotografico/validar_reporte_fotografico_dia_job', 'validar_reporte_fotografico_dia_job');
+    Route::get('ReporteFotografico/validar_reporte_fotografico_dia_job_2', 'validar_reporte_fotografico_dia_job_2');
 });
 //LOGÍSTICA - TRACKING
 Route::controller(TrackingController::class)->group(function(){

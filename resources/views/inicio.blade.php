@@ -1,8 +1,8 @@
 @extends('layouts.plantilla')
 
 @section('content')
-<!-- cuadro en menu;animacion menu lateral  -->
 <div id="content" class="main-content">
+    <!--<button class="btn btn-primary" type="button" onclick="validar_reporte_fotografico_dia_job_2();">Guardar</button>-->
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing" id="cancel-row">
             <div id="tabsSimple" class="col-lg-12 col-12 layout-spacing">
@@ -13,8 +13,8 @@
                                 <div class="container" id="container" style="background-image: url('{{ asset('inicio/NEW.Intranet-Icono-Fondo2.jpg') }}');">
                                     <div class="row layout-top-spacing">
                                         <!-- Logo Logistica-->
-                                        <div id="logo_logistica" class="col-md-8">
-                                            <div class="" style="width: 6rem;">
+                                        <div id="logo_logistica" class="col-sm-8">
+                                            <div class="logo6" style="width: 6rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701;height:6rem">
                                                     <img class="imagen_1"  src="{{ asset('inicio/NEW.Intranet-Icono-Logistica.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Logística</p>
@@ -22,8 +22,8 @@
                                             </div>
                                         </div>
                                         <!-- Logo Comercial-->
-                                        <div id="logo_comercial" class="col-md-4 d-flex justify-content-end">
-                                            <div class="mb-4" style="width: 7rem">
+                                        <div id="logo_comercial" class="col-sm-4 d-flex justify-content-end">
+                                            <div class="logo7 mb-4" style="width: 7rem">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #ff295c; height: 7rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Comercial.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Comercial</p>
@@ -31,8 +31,8 @@
                                             </div>
                                         </div>
                                         <!-- Logo Talento Humano-->
-                                        <div id="logo_talento_humano" class="col-md-2 d-flex justify-content-center">
-                                            <div class="" style="width: 7rem;">
+                                        <div id="logo_talento_humano" class="col-sm-2 d-flex justify-content-center">
+                                            <div class="logo7" style="width: 7rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00b1f4; height:7rem;">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-TalentoHumano.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Talento Humano</p>
@@ -40,8 +40,8 @@
                                             </div>
                                         </div>
                                         <!-- Logo Infraestructura-->
-                                        <div id="logo_infraestructura" class="col-md-3">
-                                            <div class="" style="width: 7rem;">
+                                        <div id="logo_infraestructura" class="col-sm-3">
+                                            <div class="logo7" style="width: 7rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e; height: 7rem;">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Infraestructuras.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Infraestructura</p>
@@ -49,8 +49,8 @@
                                             </div>
                                         </div>
                                         <!-- Logo Interna-->
-                                        <div id="logo_interna" class="col-md-3 d-flex justify-content-end">
-                                            <div class="" style="width: 6rem;">
+                                        <div id="logo_interna" class="col-sm-3 d-flex justify-content-end">
+                                            <div class="logo6" style="width: 6rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e;height:6rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Interna.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Interna</p>
@@ -58,7 +58,7 @@
                                             </div>
                                         </div>
                                         <!-- Logo central LN1-->
-                                        <div id="logo_central" class="col-md-4 zoom-card-2 d-flex justify-content-center">
+                                        <div id="logo_central" class="col-sm-4 zoom-card-2 d-flex justify-content-center">
                                             <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                                 <ol class="carousel-indicators">
                                                     <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -67,32 +67,33 @@
                                                     <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
                                                 </ol>
                                                 <div class="carousel-inner">
-                                                    <div class="carousel-item active">
-                                                        <img src="{{ asset('/inicio/LN1-Isotipo.png') }}" alt="La número 1" style="height: 10rem">
+                                                    <div class="carousel-item active text-center">
+                                                        <img src="{{ asset('/inicio/LN1-Isotipo.png') }}" alt="La número 1" style="height: 10rem;">
                                                     </div>
-                                                    <div class="carousel-item">
+                                                    <div class="carousel-item text-center">
                                                         <div class="d-flex justify-content-center align-items-center">
-                                                            <div class="card-body"><br><br>
+                                                            <div class="card-body">
                                                                 <h5 class="card-text">Special title treatment</h5>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="carousel-item">
+                                                    <div class="carousel-item text-center">
                                                         <div class="d-flex justify-content-center align-items-center">
-                                                            <div class="card-body"><br><br>
+                                                            <div class="card-body">
                                                                 <h5 class="card-text">TITLE 2</h5>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="carousel-item">
+                                                    <div class="carousel-item text-center">
                                                         <div class="d-flex justify-content-center align-items-center">
-                                                            <div class="card-body"><br><br>
+                                                            <div class="card-body">
                                                                 <h5 class="card-text">PHRASE 3</h5>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            
                                             <!--<div class="card text-center border-0 rounded_z" style="background-color: #f1f3f5;">
                                                 <div class="card-body text-center">
                                                     <img src="{{ asset('/inicio/LN1-Isotipo.png') }}" alt="La número 1" style="height: 10rem">
@@ -100,8 +101,8 @@
                                             </div>-->
                                         </div>
                                         <!-- Logo Finanzas-->
-                                        <div id="logo_finanzas" class="col-md-3 d-flex justify-content-center align-items-end">
-                                            <div class="" style="width: 6rem;">
+                                        <div id="logo_finanzas" class="col-sm-3 d-flex justify-content-center align-items-end">
+                                            <div class="logo6" style="width: 6rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00b1f4;height:6rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Finanzas.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Finanzas</p>
@@ -109,8 +110,8 @@
                                             </div>
                                         </div>
                                         <!-- Logo Seguridad y Salud-->
-                                        <div id="logo_seguridad" class="col-md-5 d-flex justify-content-end">
-                                            <div class="" style="width: 7rem;">
+                                        <div id="logo_seguridad" class="col-sm-5 d-flex justify-content-end">
+                                            <div class="logo7" style="width: 7rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00b1f4; height:7rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-SeguridadSalud.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Seguridad y Salud</p>
@@ -118,8 +119,8 @@
                                             </div>
                                         </div>
                                         <!-- Logo Caja y Control-->
-                                        <div id="logo_caja" class="col-md-2 d-flex justify-content-center">
-                                            <div class="" style="width: 6rem;">
+                                        <div id="logo_caja" class="col-sm-2 d-flex justify-content-center">
+                                            <div class="logo6" style="width: 6rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701; height: 6rem;">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-CajaControlInterno.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Caja y Control Interno</p>
@@ -127,8 +128,8 @@
                                             </div>
                                         </div>
                                         <!-- Logo Manufactura-->
-                                        <div id="logo_manufactura" class="col-md-2 d-flex align-items-start">
-                                            <div class="" style="width: 7rem;">
+                                        <div id="logo_manufactura" class="col-sm-2 d-flex align-items-start">
+                                            <div class="logo7" style="width: 7rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e; height: 7rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Manufactura.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Manufactura</p>
@@ -136,8 +137,8 @@
                                             </div>
                                         </div>
                                         <!-- Logo Tiendas-->
-                                        <div id="logo_tiendas" class="col-md-3 d-flex justify-content-start">
-                                            <div class="" style="width: 7rem; margin-top: 2rem;">
+                                        <div id="logo_tiendas" class="col-sm-3 d-flex justify-content-start">
+                                            <div class="logo7" style="width: 7rem; margin-top: 2rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #ff295c;height: 7rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Tiendas.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Tiendas</p>
@@ -183,28 +184,25 @@
                     <div class="col-md-2">
                         <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
-                                <!--<div class="carousel-item active">
-                                    <img class="d-block w-100" src="{{ asset('inicio/NEW.Intranet-Slide-01Procesos.png')}}" alt="First slide">
-                                </div>
-                                <div class="carousel-item">
-                                    <img class="d-block w-100" src="{{ asset('inicio/NEW.Intranet-Slide-02Manual.png')}}" alt="Second slide">
-                                </div>
-                                <div class="carousel-item">
-                                    <img class="d-block w-100" src="{{ asset('inicio/NEW.Intranet-Slide-03Politica.png')}}" alt="Third slide">
-                                </div>
-                                <div class="carousel-item">
-                                    <img class="d-block w-100" src="{{ asset('inicio/NEW.Intranet-Slide-04Instructivos.png')}}" alt="Third slide">
-                                </div>-->
                                 <div class="carousel-item active">
+                                    <img class="d-block" style="max-width: 100%;" src="{{ asset('inicio/NEW.Intranet-Slide-01Procesos.png')}}" alt="First slide">
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="d-block" style="max-width: 100%;" src="{{ asset('inicio/NEW.Intranet-Slide-02Manual.png')}}" alt="Second slide">
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="d-block" style="max-width: 100%;" src="{{ asset('inicio/NEW.Intranet-Slide-03Politica.png')}}" alt="Third slide">
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="d-block" style="max-width: 100%;" src="{{ asset('inicio/NEW.Intranet-Slide-04Instructivos.png')}}" alt="Third slide">
+                                </div>
+                                <div class="carousel-item">
                                     <div class="d-flex justify-content-center align-items-center">
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                                    <!--<div class="card">
-                                                        <div class="card-body">PRÓXIMOS CUMPLEAÑOS</div>
-                                                    </div>-->
-                                                    <div class="row" style="margin-left: 5rem;">
-                                                        <div class="col-lg-10 mb-3 justify-content-center">
+                                                    <div class="row">
+                                                        <div class="col-lg-12 mb-3 justify-content-center">
                                                             <?php if(count($list_cumple)>0){ ?>
                                                                 <div class="card-heading">
                                                                     <h5><b>Próximos cumpleaños</b></h5>
@@ -214,27 +212,18 @@
                                                                         <table class="table" style="width:100%">
                                                                             <tbody>
                                                                                 <?php $i=0; foreach($list_cumple as $list){$i++;
-                                                                                    if($i<4){?> 
+                                                                                    if($i<6){?> 
                                                                                     <tr>
-                                                                                        <td nowrap>
-                                                                                            <div class="td-content customer-name">
+                                                                                        <td>
+                                                                                            <div class="d-flex justify-content-center">
                                                                                                 <img style="max-width:100px;max-height:70px;margin:0 10px 10px 0;" src="{{ asset('template/assets/img/torta_saludo.png')}}">
                                                                                                 <img style="max-width:70px;max-height:70px;border-radius: 10%;border: 3px solid #e0e6ed;" src="<?php if ($list['foto_nombre'] !=""){echo $get_foto[0]['url_config'].$list['foto_nombre'];}else{echo asset("template/assets/especiales/user-mini.png");}  ?>" alt="avatar" title="<?php echo $list['foto_nombre'] ?>">
+                                                                                            </div>
+                                                                                            <div class="d-flex justify-content-center">
                                                                                                 <span style="color:#3b3f71"><b><?php $nombre=explode(" ",$list['nombres_min']); echo mb_convert_case($nombre[0]." ".$list['apater_min'], MB_CASE_TITLE, "UTF-8"); ?></b></span>
                                                                                             </div>
-                                                                                        </td>
-                                                                                        <td>
-                                                                                            <div class="td-content customer-name">
+                                                                                            <div class="d-flex justify-content-center">
                                                                                                 <span ><?php echo date('d', strtotime($list['cumpleanio']))." de ".strtolower($list['nom_mes']) ?></span>
-                                                                                            </div>
-                                                                                        </td>
-                                                                                        <td>
-                                                                                            <div class="td-content">
-                                                                                                <?php if($list['id_historial']!=""){?>
-                                                                                                    <a href="javascript:void(0)" data-toggle="modal" data-target="#ModalRegistro" app_reg_metalikas="{{ url('Corporacion/Modal_Saludo_Cumpleanio/') }}<?php echo $list['id_usuario'] ?>/1/1"><span class="badge badge-success">Modificar Saludo</span></a>            
-                                                                                                <?php }else{?> 
-                                                                                                    <a href="javascript:void(0)" data-toggle="modal" data-target="#ModalRegistro" app_reg_metalikas="{{ url('Corporacion/Modal_Saludo_Cumpleanio/') }}<?php echo $list['id_usuario'] ?>/1/1"><span class="badge badge-success">Saludar</span></a>        
-                                                                                                <?php }?>
                                                                                             </div>
                                                                                         </td>
                                                                                     </tr>
@@ -242,7 +231,7 @@
                                                                             </tbody>
                                                                         </table>
 
-                                                                        <?php if(count($list_cumple)>3){?> 
+                                                                        <?php if(count($list_cumple)>5){?> 
                                                                             <div class="text-center mb-4">
                                                                                 <a class="boton" href="javascript:void(0)" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="{{ url('Corporacion/Modal_Ver_Todo_Cumpleanios') }}"><span>Ver Todos</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
                                                                             </div>
@@ -300,48 +289,50 @@
         background-repeat: no-repeat;
         background-size: 135rem auto;
     }
-    #logo_logistica{
-        margin-left: 39.5rem;
-        margin-top: 6rem;
-        height: 9rem;
-    }
-    #logo_comercial{
-        margin-left: 4rem;
-        margin-top: -2rem;
-        height: 8rem;
-    }
-    #logo_talento_humano{
-        margin-top: -4rem;
-    }
-    #logo_infraestructura{
-        margin-left: 9rem;
-        margin-top: -1rem
-    }
-    #logo_interna{
-        margin-left: 5rem;
-    }
-    #logo_central{
-        margin-top: -1.5rem;
-        margin-left: 3rem;
-        height: 10rem;
-    }
-    #logo_finanzas{
-        margin-left: -2.5rem;
-    }
-    #logo_seguridad{
-        margin-left: -2rem;
-        margin-top: 1rem;
-    }
-    #logo_caja{
-        margin-top: 10rem;
-        height: 12rem;
-    }
-    #logo_manufactura{
-        margin-top: 5rem;
-        margin-left: -1rem;
-    }
-    #logo_tiendas{
-        margin-top: 1rem
+    @media screen and (min-width: 1900px) {
+        #logo_logistica{
+            margin-left: 39.5rem;
+            margin-top: 6rem;
+            height: 9rem;
+        }
+        #logo_comercial{
+            margin-left: 4rem;
+            margin-top: -2rem;
+            height: 8rem;
+        }
+        #logo_talento_humano{
+            margin-top: -4rem;
+        }
+        #logo_infraestructura{
+            margin-left: 9rem;
+            margin-top: -1rem
+        }
+        #logo_interna{
+            margin-left: 5rem;
+        }
+        #logo_central{
+            margin-top: -1.5rem;
+            margin-left: 3rem;
+            height: 10rem;
+        }
+        #logo_finanzas{
+            margin-left: -2.5rem;
+        }
+        #logo_seguridad{
+            margin-left: -2rem;
+            margin-top: 1rem;
+        }
+        #logo_caja{
+            margin-top: 10rem;
+            height: 12rem;
+        }
+        #logo_manufactura{
+            margin-top: 5rem;
+            margin-left: -1rem;
+        }
+        #logo_tiendas{
+            margin-top: 1rem
+        }
     }
     .imagen_1{
         mix-blend-mode: multiply;
@@ -426,7 +417,25 @@
     }
     @media screen and (min-width: 2000px){
         /*.w-100{
-            width: 70% !important;
+            width: 90% !important;
+        }*/
+    }
+    @media screen and (max-width: 835px) {
+        #container{
+            background-image: none !important;
+        }
+        .logo6{
+            width: 7rem !important;
+            margin-top: 0 !important;
+        }
+        .zoom-card{
+            height: 7rem !important;
+        }
+        #logo_central{
+            display: none;
+        }
+        /*#logo_seguridad{
+            margin-top: 2rem;
         }*/
     }
 </style>
@@ -435,5 +444,49 @@
         $("#inicio").addClass('active');
         $("#hinicio").attr('aria-expanded','true');
     });
+    function cambiarClaseSegunResolucion(){
+        var ventanaAncho = $(window).width();
+        console.log(ventanaAncho);
+        if (350 < ventanaAncho && ventanaAncho <= 834) {
+            $('#logo_logistica').removeClass('col-sm-8').addClass('col-sm-4 d-flex justify-content-center');
+            $('#logo_comercial').removeClass('justify-content-end').addClass('justify-content-center');
+            $('#logo_talento_humano').removeClass('col-sm-2').addClass('col-sm-4');
+            $('#logo_infraestructura').removeClass('col-sm-3').addClass('col-sm-4 d-flex justify-content-center');
+            $('#logo_interna').removeClass('col-sm-3 justify-content-end').addClass('col-sm-4 justify-content-center');
+            $('#logo_central').removeClass('d-flex');
+            $('#logo_finanzas').removeClass('col-sm-3 align-items-end').addClass('col-sm-4');
+            $('#logo_seguridad').removeClass('col-sm-5 justify-content-end').addClass('col-sm-4 justify-content-center mt-4');
+            $('#logo_caja').removeClass('col-sm-2').addClass('col-sm-4 mt-4');
+            $('#logo_manufactura').removeClass('col-sm-2 align-items-start').addClass('col-sm-4 justify-content-center mt-4');
+            $('#logo_tiendas').removeClass('col-sm-3 justify-content-start').addClass('col-sm-12 justify-content-center');
+        }
+    }
+    
+    // Llama a la función al cargar la página
+    cambiarClaseSegunResolucion();
+
+    // Llama a la función en respuesta al cambio de tamaño de la ventana
+    $(window).resize(cambiarClaseSegunResolucion);
+
+    /*function validar_reporte_fotografico_dia_job_2(){
+        Cargando();
+
+        var url = "{{ url('ReporteFotografico/validar_reporte_fotografico_dia_job_2') }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            processData: false,
+            contentType: false,
+            success:function (data) {
+                swal.fire(
+                    '¡Registro Exitoso!',
+                    '¡Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                });
+            },
+        });
+    }*/
 </script>
 @endsection
