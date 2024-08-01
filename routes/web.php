@@ -364,7 +364,11 @@ Route::controller(ControlCamaraController::class)->group(function(){
     Route::post('control_camara_reg/traer_hora_programada', 'traer_hora_programada_reg')->name('control_camara_reg.traer_hora_programada');
     Route::post('control_camara_reg/traer_tienda', 'traer_tienda_reg')->name('control_camara_reg.traer_tienda');
     Route::get('control_camara_reg/{id}/modal_imagen', 'modal_imagen_reg')->name('control_camara_reg.modal_imagen');
-    Route::post('control_camara_reg/{id}/insert_captura', 'insert_captura_reg')->name('control_camara_reg.insert_captura');
+    Route::post('control_camara_reg/{id}/insert_imagen', 'insert_imagen_reg')->name('control_camara_reg.insert_imagen');
+    Route::get('control_camara_reg/{id}/modal_ronda', 'modal_ronda_reg')->name('control_camara_reg.modal_ronda');
+    Route::post('control_camara_reg/{id}/insert_ronda', 'insert_ronda_reg')->name('control_camara_reg.insert_ronda');
+    Route::post('control_camara_reg/valida_captura', 'valida_captura_reg')->name('control_camara_reg.valida_captura');
+    Route::post('control_camara_reg', 'store_reg')->name('control_camara_reg.store');
     /*Route::post('apertura_cierre_reg/previsualizacion_captura', 'previsualizacion_captura_reg')->name('apertura_cierre_reg.previsualizacion_captura');
     Route::post('apertura_cierre_reg', 'store_reg')->name('apertura_cierre_reg.store');
     Route::get('apertura_cierre_reg/{id}/edit', 'edit_reg')->name('apertura_cierre_reg.edit');

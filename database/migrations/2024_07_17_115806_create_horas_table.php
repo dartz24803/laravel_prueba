@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_hora');
             $table->unsignedBigInteger('id_sede');
             $table->time('hora')->nullable();
+            $table->integer('orden')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
@@ -22,7 +23,7 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            $table->foreign('id_sede','hor_id_sed')->references('id_sede')->on('sedes');
+            $table->foreign('id_sede','hor_fk_id_sed')->references('id_sede')->on('sedes');
             //$table->timestamps();
         });
     }

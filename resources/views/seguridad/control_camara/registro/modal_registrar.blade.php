@@ -44,7 +44,7 @@
     <div class="modal-footer">
         @csrf
         <input type="hidden" id="captura" name="captura">
-        <button id="boton_disabled" class="btn btn-primary" type="button" onclick="Insert_Apertura_Cierre();" disabled>Guardar</button>
+        <button id="boton_disabled" class="btn btn-primary" type="button" onclick="Insert_Control_Camara();" disabled>Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
@@ -99,11 +99,36 @@
         });
     }
 
-    /*function Insert_Apertura_Cierre(){
+    function Habilitar_Boton(id){
+        Cargando();
+
+        var id_sede = $('#id_sede').val();
+        var url = "{{ route('control_camara_reg.valida_captura') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {'id_tienda': id,'id_sede':id_sede},
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(data) {
+                $("#btn_camara_"+id).prop('disabled', true);
+                if(data!=""){
+                    if(data=="habilitar"){
+                        $('#boton_disabled').prop('disabled', false);
+                    }
+                }
+            }
+        });
+    }
+
+    function Insert_Control_Camara(){
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario'));
-        var url = "{{ route('apertura_cierre_reg.store') }}";
+        var url = "{{ route('control_camara_reg.store') }}";
 
         $.ajax({
             url: url,
@@ -127,7 +152,7 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Lista_Apertura_Cierre();
+                        Lista_Control_Camara();  
                         $("#ModalRegistro .close").click();
                     });
                 }
@@ -142,5 +167,5 @@
                 );
             }
         });
-    }*/
+    }
 </script>

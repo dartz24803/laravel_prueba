@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tiendas_ronda', function (Blueprint $table) {
+        Schema::create('control_camara_archivo', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_tienda');
+            $table->unsignedBigInteger('id_control_camara');
             $table->unsignedBigInteger('id_ronda');
-            $table->dateTime('fecha')->nullable();
-            $table->integer('usuario')->nullable();
-            $table->foreign('id_tienda','tron_fk_id_tie')->references('id_tienda')->on('tiendas');
-            $table->foreign('id_ronda','tron_fk_id_ron')->references('id')->on('control_camara_ronda');
+            $table->string('archivo',100)->nullable();
+            $table->foreign('id_control_camara','ccarc_fk_id_ccam')->references('id')->on('control_camara');
             //$table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tiendas_ronda');
+        Schema::dropIfExists('control_camara_archivo');
     }
 };

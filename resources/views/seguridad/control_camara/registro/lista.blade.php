@@ -16,36 +16,23 @@
     <tbody>
         @foreach ($list_control_camara as $list)
             <tr class="text-center">
-                <td>{{ $list->cod_base }}</td>
+                <td class="text-left">{{ $list->nombre_sede }}</td>
                 <td>{{ $list->fecha }}</td>
-                <td>{{ $list->ingreso_programado }}</td>
-                <td>{{ $list->ingreso_real }}</td>
-                <td>{{ $list->cod_base }}</td>
-                <td>{{ $list->fecha }}</td>
-                <td>{{ $list->ingreso_programado }}</td>
-                <td>{{ $list->ingreso_real }}</td>
-                <td>{{ $list->cod_base }}</td>
+                <td class="text-left">{{ $list->colaborador }}</td>
+                <td>{{ $list->hora_programada }}</td>
+                <td>{{ $list->hora_registro }}</td>
+                <td>{{ $list->diferencia }}</td>
+                <td>{{ $list->observacion }}</td>
+                <td class="text-left">{{ $list->tienda }}</td>
+                <td class="text-left">{{ $list->ocurrencia }}</td>
                 <td>
-                    @if ($list->tipo_apertura!="0" && $list->fecha_v==date('Y-m-d'))
-                        <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
-                        app_elim="{{ route('apertura_cierre_reg.edit', $list->id_apertura_cierre) }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical">
-                                <circle cx="12" cy="12" r="1"></circle>
-                                <circle cx="12" cy="5" r="1"></circle>
-                                <circle cx="12" cy="19" r="1"></circle>
-                            </svg>
-                        </a>
-                    @endif
-
-                    @if ($list->archivos>0)
-                        <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
-                        app_elim="{{ route('apertura_cierre_reg.archivo', $list->id_apertura_cierre) }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye text-success">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </a>
-                    @endif
+                    <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
+                    app_elim="{{ route('apertura_cierre_reg.archivo', $list->id) }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye text-success">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </a>
                 </td>
             </tr>
         @endforeach

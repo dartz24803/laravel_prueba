@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('local', function (Blueprint $table) {
             $table->id('id_local');
             $table->string('descripcion',100)->nullable();
-            $table->integer('sede')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
