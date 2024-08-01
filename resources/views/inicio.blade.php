@@ -183,7 +183,7 @@
                     <div class="col-md-2">
                         <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
-                                <div class="carousel-item active">
+                                <!--<div class="carousel-item active">
                                     <img class="d-block w-100" src="{{ asset('inicio/NEW.Intranet-Slide-01Procesos.png')}}" alt="First slide">
                                 </div>
                                 <div class="carousel-item">
@@ -194,6 +194,68 @@
                                 </div>
                                 <div class="carousel-item">
                                     <img class="d-block w-100" src="{{ asset('inicio/NEW.Intranet-Slide-04Instructivos.png')}}" alt="Third slide">
+                                </div>-->
+                                <div class="carousel-item active">
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <!--<div class="card">
+                                                        <div class="card-body">PRÓXIMOS CUMPLEAÑOS</div>
+                                                    </div>-->
+                                                    <div class="row" style="margin-left: 5rem;">
+                                                        <div class="col-lg-10 mb-3 justify-content-center">
+                                                            <?php if(count($list_cumple)>0){ ?>
+                                                                <div class="card-heading">
+                                                                    <h5><b>Próximos cumpleaños</b></h5>
+                                                                </div>
+                                                                <div class="card-content">
+                                                                    <div class="table-responsive">
+                                                                        <table class="table" style="width:100%">
+                                                                            <tbody>
+                                                                                <?php $i=0; foreach($list_cumple as $list){$i++;
+                                                                                    if($i<4){?> 
+                                                                                    <tr>
+                                                                                        <td nowrap>
+                                                                                            <div class="td-content customer-name">
+                                                                                                <img style="max-width:100px;max-height:70px;margin:0 10px 10px 0;" src="{{ asset('template/assets/img/torta_saludo.png')}}">
+                                                                                                <img style="max-width:70px;max-height:70px;border-radius: 10%;border: 3px solid #e0e6ed;" src="<?php if ($list['foto_nombre'] !=""){echo $get_foto[0]['url_config'].$list['foto_nombre'];}else{echo asset("template/assets/especiales/user-mini.png");}  ?>" alt="avatar" title="<?php echo $list['foto_nombre'] ?>">
+                                                                                                <span style="color:#3b3f71"><b><?php $nombre=explode(" ",$list['nombres_min']); echo mb_convert_case($nombre[0]." ".$list['apater_min'], MB_CASE_TITLE, "UTF-8"); ?></b></span>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <div class="td-content customer-name">
+                                                                                                <span ><?php echo date('d', strtotime($list['cumpleanio']))." de ".strtolower($list['nom_mes']) ?></span>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <div class="td-content">
+                                                                                                <?php if($list['id_historial']!=""){?>
+                                                                                                    <a href="javascript:void(0)" data-toggle="modal" data-target="#ModalRegistro" app_reg_metalikas="{{ url('Corporacion/Modal_Saludo_Cumpleanio/') }}<?php echo $list['id_usuario'] ?>/1/1"><span class="badge badge-success">Modificar Saludo</span></a>            
+                                                                                                <?php }else{?> 
+                                                                                                    <a href="javascript:void(0)" data-toggle="modal" data-target="#ModalRegistro" app_reg_metalikas="{{ url('Corporacion/Modal_Saludo_Cumpleanio/') }}<?php echo $list['id_usuario'] ?>/1/1"><span class="badge badge-success">Saludar</span></a>        
+                                                                                                <?php }?>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                <?php } }?>     
+                                                                            </tbody>
+                                                                        </table>
+
+                                                                        <?php if(count($list_cumple)>3){?> 
+                                                                            <div class="text-center mb-4">
+                                                                                <a class="boton" href="javascript:void(0)" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="{{ url('Corporacion/Modal_Ver_Todo_Cumpleanios') }}"><span>Ver Todos</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
+                                                                            </div>
+                                                                        <?php } ?>
+                                                                    </div>
+                                                                </div>
+                                                            <?php } ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
