@@ -22,7 +22,7 @@
 
     <div class="modal-body" style="max-height:450px; overflow:auto;">
         <div class="row p-2">
-            <textarea id="paste_arear" class="textarea_paste" placeholder="Pega aquí la imagen" style="width: 100%" rows="1" disabled></textarea>
+            <textarea id="paste_arear" class="textarea_paste" placeholder="Haz click aquí para pegar la imagen" style="width: 100%" rows="1" disabled></textarea>
             <div id="imageViewerr">
             </div>
         </div>
@@ -38,7 +38,7 @@
                 <div class="row">
                     <div class="form-group col-lg-12">
                         <label class="control-label text-bold">{{ $list->descripcion }}:</label>
-                        <textarea id="paste_arear_{{ $list->id }}" class="textarea_paste" placeholder="Pega aquí la imagen" style="width: 100%" rows="1" disabled></textarea>
+                        <textarea id="paste_arear_{{ $list->id }}" class="textarea_paste" placeholder="Haz click aquí para pegar la imagen" style="width: 100%" rows="1" disabled></textarea>
                         <div id="imageViewerr_{{ $list->id }}">
                         </div>
                     </div>

@@ -22,7 +22,7 @@
 
     <div class="modal-body" style="max-height:450px; overflow:auto;">
         <div class="row p-2">
-            <textarea id="paste_area" placeholder="Pega aquí la imagen" style="width: 100%" rows="1" disabled></textarea>
+            <textarea id="paste_area" placeholder="Haz click aquí para pegar la imagen" style="width: 100%" rows="1" disabled></textarea>
             <div id="imageViewer">
             </div>
         </div>
