@@ -260,49 +260,49 @@ class ReporteFotograficoController extends Controller
         ->get();
         return view('tienda.ReporteFotografico.imagenes_rf.modal_detalle', compact('get_id'));
     }
-
-    public function validar_reporte_fotografico_dia_job(){
+/*
+    public function validar_reporte_fotografico_dia_job_old(){
         // Ejecutar la consulta
-        
-        $sql = "SELECT 
+
+        $sql = "SELECT
                     IFNULL(rfa.categoria, 'Sin categoría') AS categoria,
                     bases.base,
                     IFNULL(COUNT(rf.id), 0) AS num_fotos
-                FROM 
+                FROM
                     (SELECT DISTINCT base FROM reporte_fotografico_new WHERE base LIKE 'B%') AS bases
-                CROSS JOIN 
+                CROSS JOIN
                     (SELECT * FROM reporte_fotografico_adm_new WHERE estado = 1) rfa
-                LEFT JOIN 
+                LEFT JOIN
                     codigos_reporte_fotografico_new crf ON rfa.id = crf.tipo
-                LEFT JOIN 
+                LEFT JOIN
                     reporte_fotografico_new rf ON crf.id = rf.codigo AND rf.estado = 1 AND DATE(rf.fec_reg) = CURDATE() AND bases.base = rf.base
-                GROUP BY 
+                GROUP BY
                     rfa.categoria,
                     bases.base
-                ORDER BY 
+                ORDER BY
                     bases.base ASC,
                     categoria ASC;";
 
         $results = DB::select($sql);
 
-        $sql2 = "SELECT 
+        $sql2 = "SELECT
                     IFNULL(rfa.categoria, 'Sin categoría') AS categoria,
                     bases.base,
                     IFNULL(COUNT(rf.id), 0) AS num_fotos
-                FROM 
+                FROM
 					(SELECT DISTINCT base FROM reporte_fotografico_new WHERE base LIKE 'B%') AS bases
-                CROSS JOIN 
+                CROSS JOIN
                     (SELECT * FROM reporte_fotografico_adm_new WHERE estado = 1) rfa
-                LEFT JOIN 
+                LEFT JOIN
                     codigos_reporte_fotografico_new crf ON rfa.id = crf.tipo
-                LEFT JOIN 
+                LEFT JOIN
                     reporte_fotografico_new rf ON crf.id = rf.codigo AND rf.estado = 1 AND DATE(rf.fec_reg) = CURDATE() AND bases.base = rf.base
-                GROUP BY 
+                GROUP BY
                     rfa.categoria,
                     bases.base
-                HAVING 
+                HAVING
                     num_fotos = 0
-                ORDER BY 
+                ORDER BY
                     bases.base ASC,
                     categoria ASC;";
         $results2 = DB::select($sql2);
@@ -370,7 +370,7 @@ class ReporteFotograficoController extends Controller
             $emailBody .= '</tbody>';
             $emailBody .= '</table>';
 
-            
+
             $mail = new PHPMailer(true);
 
             try {
@@ -383,18 +383,18 @@ class ReporteFotograficoController extends Controller
                 $mail->SMTPSecure =  'tls';
                 $mail->Port     =  587;
                 $mail->setFrom('somosuno@lanumero1.com.pe','REPORTE FOTOGRAFICO CONTROL');
-    
+
                 $mail->addAddress('ogutierrez@lanumero1.com.pe');
                 $mail->addAddress("acanales@lanumero1.com.pe");
                 $mail->addAddress("dvilca@lanumero1.com.pe");
                 $mail->addAddress("fclaverias@lanumero1.com.pe");
                 $mail->addAddress("mponte@lanumero1.com.pe");
-    
+
                 $mail->isHTML(true);
                 $mail->Subject = 'Reporte diario de bases con 0 fotos';
                 $mail->Body    = $emailBody;
                 $mail->CharSet = 'UTF-8';
-    
+
                 $mail->send();
                 echo 'Correo enviado correctamente.';
             } catch (Exception $e) {
@@ -404,27 +404,26 @@ class ReporteFotograficoController extends Controller
             return response()->json(['message' => 'No hay bases con 0 fotos hoy.']);
         }
 
-        //$sql3 = "";
-    }
+    }*/
 
-    
-    public function validar_reporte_fotografico_dia_job_2(){
-        $sql = "SELECT 
+
+    public function validar_reporte_fotografico_dia_job(){
+        $sql = "SELECT
                     IFNULL(rfa.categoria, 'Sin categoría') AS categoria,
                     bases.base,
                     IFNULL(COUNT(rf.id), 0) AS num_fotos
-                FROM 
+                FROM
                     (SELECT DISTINCT base FROM reporte_fotografico_new WHERE base LIKE 'B%') AS bases
-                CROSS JOIN 
+                CROSS JOIN
                     (SELECT * FROM reporte_fotografico_adm_new WHERE estado = 1) rfa
-                LEFT JOIN 
+                LEFT JOIN
                     codigos_reporte_fotografico_new crf ON rfa.id = crf.tipo
-                LEFT JOIN 
+                LEFT JOIN
                     reporte_fotografico_new rf ON crf.id = rf.codigo AND rf.estado = 1 AND DATE(rf.fec_reg) = CURDATE() AND bases.base = rf.base
-                GROUP BY 
+                GROUP BY
                     rfa.categoria,
                     bases.base
-                ORDER BY 
+                ORDER BY
                     bases.base ASC,
                     categoria ASC;";
 
@@ -442,7 +441,7 @@ class ReporteFotograficoController extends Controller
             $emailBody .= '<tr>';
             $emailBody .= '<th style="text-align: center;">BASE</th>';
             foreach ($results3 as $row) {
-                $emailBody .= '<th style="text-align: center;">' .$row->categoria. '</th>';                
+                $emailBody .= '<th style="text-align: center;">' .$row->categoria. '</th>';
             }
             $emailBody .= '<th style="text-align: center;">ESTADO</th>';
             $emailBody .= '</tr>';
@@ -464,7 +463,7 @@ class ReporteFotograficoController extends Controller
                     }
                     $emailBody .= '</tr>';
                 }
-            
+
                 // Si la base es diferente a la anterior, comienza una nueva fila
                 if ($previousBase2 !== $result->base) {
                     $isComplete = true; // Resetea la variable para la nueva fila
@@ -472,21 +471,21 @@ class ReporteFotograficoController extends Controller
                     $emailBody .= '<tr>';
                     $emailBody .= '<th style="text-align: center; font-weight: normal">' . $result->base . '</th>';
                 }
-            
+
                 // Procesa cada valor de la fila
                 $emailBody .= '<th style="text-align: center; font-weight: normal; color:'.($result->num_fotos == 0 ? '#fa2b5c' : '#000000').'">' . $result->num_fotos . '</th>';
-            
+
                 // Verifica si hay algún 0 en la fila y cuenta los valores diferentes de 0
                 if ($result->num_fotos == 0) {
                     $isComplete = false;
                 } else {
                     $totalValues++;
                 }
-            
+
                 // Actualiza la base anterior
                 $previousBase2 = $result->base;
             }
-            
+
             // Cierra la última fila
             if ($totalValues == 0) {
                 $emailBody .= '<th style="text-align: center; color:#fa2b5c; font-weight: normal">Falta</th>';
@@ -494,12 +493,12 @@ class ReporteFotograficoController extends Controller
                 $emailBody .= '<th style="text-align: center; font-weight: normal; color:'.($isComplete ? '#000000' : '#6376ff').'">' . ($isComplete ? 'Completo' : 'Incompleto') . '</th>';
             }
             $emailBody .= '</tr>';
-            
+
 
             $emailBody .= '</tbody>';
             $emailBody .= '</table>';
 
-            
+
             $mail = new PHPMailer(true);
 
             try {
@@ -512,19 +511,19 @@ class ReporteFotograficoController extends Controller
                 $mail->SMTPSecure =  'tls';
                 $mail->Port     =  587;
                 $mail->setFrom('somosuno@lanumero1.com.pe','REPORTE FOTOGRAFICO CONTROL');
-    
+
                 $mail->addAddress("pcardenas@lanumero1.com.pe");
-                // $mail->addAddress("acanales@lanumero1.com.pe");
-                // $mail->addAddress('ogutierrez@lanumero1.com.pe');
-                // $mail->addAddress("dvilca@lanumero1.com.pe");
-                // $mail->addAddress("fclaverias@lanumero1.com.pe");
-                // $mail->addAddress("mponte@lanumero1.com.pe");
-    
+                $mail->addAddress("acanales@lanumero1.com.pe");
+                $mail->addAddress('ogutierrez@lanumero1.com.pe');
+                $mail->addAddress("dvilca@lanumero1.com.pe");
+                $mail->addAddress("fclaverias@lanumero1.com.pe");
+                $mail->addAddress("mponte@lanumero1.com.pe");
+
                 $mail->isHTML(true);
                 $mail->Subject = 'Reporte diario de bases';
                 $mail->Body    = $emailBody;
                 $mail->CharSet = 'UTF-8';
-    
+
                 $mail->send();
                 echo 'Correo enviado correctamente.';
             } catch (Exception $e) {
