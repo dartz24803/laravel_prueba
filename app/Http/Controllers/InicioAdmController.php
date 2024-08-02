@@ -19,12 +19,12 @@ class InicioAdmController extends Controller
 
     public function index(){
         $list_bases = $this->modelobase->listar_bases_b();
-        return view('inicio/slider/index', compact('list_bases'));
+        return view('Inicio/slider/index', compact('list_bases'));
     }
 
     public function Slider_Inicio_Listar(){
         $list = SliderInicio::get();
-        return view('inicio/slider/lista', compact('list'));
+        return view('Inicio/slider/lista', compact('list'));
     }
 
     public function Modal_Update_Slider_Inicio($id){
@@ -40,7 +40,7 @@ class InicioAdmController extends Controller
             'titulo.required' => 'Titulo: Campo obligatorio',
             'descripcion.required' => 'Descripcion: Campo obligatorio',
         ]);
-        
+
         $dato['titulo'] = $request->input("titulo");
         $dato['descripcion'] = $request->input("descripcion");
         $dato['link'] = $request->input("link");
