@@ -71,9 +71,24 @@
                     'X-CSRF-TOKEN': csrfToken
                 },
                 success: function(data) {
-                    $('.mostrar').show();
-                    $('#hora_programada').val(data);
-                    Traer_Tienda();
+                    if(data=="error"){
+                        Swal({
+                            title: 'Selección Denegada!',
+                            text: "¡No hay más horas programadas para está sede!",
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                        $('#id_sede').val(0);
+                        $('.mostrar').hide();
+                        $('#hora_programada').val('');
+                        $('#div_ocurrencias').html('');
+                    }else{
+                        $('.mostrar').show();
+                        $('#hora_programada').val(data);
+                        Traer_Tienda();
+                    }
                 }
             });
         }

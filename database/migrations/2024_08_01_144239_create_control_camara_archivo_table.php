@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('control_camara_archivo', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_control_camara');
-            $table->unsignedBigInteger('id_ronda');
+            $table->integer('id_ronda')->nullable();
             $table->string('archivo',100)->nullable();
             $table->foreign('id_control_camara','ccarc_fk_id_ccam')->references('id')->on('control_camara');
             //$table->timestamps();

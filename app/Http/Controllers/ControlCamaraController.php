@@ -29,12 +29,13 @@ class ControlCamaraController extends Controller
 
     public function index_reg()
     {
-        return view('seguridad.control_camara.registro.index');
+        $list_sede = Sedes::select('id_sede','nombre_sede')->where('estado',1)->get();
+        return view('seguridad.control_camara.registro.index', compact(['list_sede']));
     }
 
     public function list_reg(Request $request)
     {
-        $list_control_camara = ControlCamara::get_list_control_camara();
+        $list_control_camara = ControlCamara::get_list_control_camara(['id_sede'=>$request->id_sede]);
         return view('seguridad.control_camara.registro.lista', compact('list_control_camara'));
     }
 
@@ -62,11 +63,17 @@ class ControlCamaraController extends Controller
 
     public function traer_hora_programada_reg(Request $request)
     {
-        $cantidad = ControlCamara::where('id_sede',$request->id_sede)->where('fecha',date('Y-m-d'))
-                                    ->where('estado',1)->count();                                    
-        $ultimo = Horas::select('hora')->where('id_sede',$request->id_sede)->where('orden',($cantidad+1))
-                        ->where('estado',1)->first();
-        echo $ultimo->hora;
+        $cantidad = ControlCamara::select('id_sede','fecha','hora_programada')->where('id_sede',$request->id_sede)
+                                    ->where('fecha',date('Y-m-d'))
+                                    ->where('estado',1)->groupBy('id_sede','fecha','hora_programada')->get();
+        $cantidad_hora = Horas::where('id_sede',$request->id_sede)->count();
+        if(count($cantidad)>=$cantidad_hora){
+            echo "error";
+        }else{
+            $ultimo = Horas::select('hora')->where('id_sede',$request->id_sede)->where('orden',(count($cantidad)+1))
+                            ->where('estado',1)->first();
+            echo $ultimo->hora;
+        }
     }
 
     public function traer_tienda_reg(Request $request)
@@ -279,55 +286,6 @@ class ControlCamaraController extends Controller
                 echo "No se conecto";
             }
         }
-
-        /*foreach($list_ronda as $list){
-            if($_FILES["archivo_ronda_".$list->id]["name"] != ""){
-                $ftp_server = "lanumerounocloud.com";
-                $ftp_usuario = "intranet@lanumerounocloud.com";
-                $ftp_pass = "Intranet2022@";
-                $con_id = ftp_connect($ftp_server);
-                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
-                if($con_id && $lr){
-                    $valida = ControlCamaraArchivoTemporal::select('archivo')
-                                                            ->where('id_usuario',session('usuario')->id_usuario)
-                                                            ->where('id_tienda',$id_tienda)
-                                                            ->where('id_ronda',$list->id)->exists();
-                    if($valida){
-                        $get_id = ControlCamaraArchivoTemporal::select('archivo')
-                                                                ->where('id_usuario',session('usuario')->id_usuario)
-                                                                ->where('id_tienda',$id_tienda)
-                                                                ->where('id_ronda',$list->id)->first();
-                        ftp_delete($con_id, 'CONTROL_CAMARA/'.basename($get_id->archivo));
-                        ControlCamaraArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
-                                                    ->where('id_tienda',$id_tienda)
-                                                    ->where('id_ronda',$list->id)->delete();
-                    }
-    
-                    $path = $_FILES["archivo_ronda_".$list->id]["name"];
-                    $source_file = $_FILES['archivo_ronda_'.$list->id]['tmp_name'];
-    
-                    $ext = pathinfo($path, PATHINFO_EXTENSION);
-                    $nombre_soli = "temporal_".$id_tienda."_".$list->id."_".session('usuario')->id_usuario;
-                    $nombre = $nombre_soli.".".strtolower($ext);
-                    $archivo = "https://lanumerounocloud.com/intranet/CONTROL_CAMARA/".$nombre;
-    
-                    ftp_pasv($con_id,true); 
-                    $subio = ftp_put($con_id,"CONTROL_CAMARA/".$nombre,$source_file,FTP_BINARY);
-                    if ($subio) {
-                        ControlCamaraArchivoTemporal::create([
-                            'id_usuario' => session('usuario')->id_usuario,
-                            'id_tienda' => $id_tienda,
-                            'id_ronda' => $list->id,
-                            'archivo' => $archivo
-                        ]);
-                    }else{
-                        echo "Archivo no subido correctamente";
-                    }
-                }else{
-                    echo "No se conecto";
-                }
-            }
-        }*/
     }
 
     public function valida_captura_reg(Request $request)
@@ -352,9 +310,10 @@ class ControlCamaraController extends Controller
     
     public function store_reg(Request $request)
     {
-        $cantidad = ControlCamara::where('id_sede',$request->id_sede)->where('fecha',date('Y-m-d'))
-                                    ->where('estado',1)->count();                                    
-        $ultimo = Horas::select('hora')->where('id_sede',$request->id_sede)->where('orden',($cantidad+1))
+        $cantidad = ControlCamara::select('id_sede','fecha','hora_programada')->where('id_sede',$request->id_sede)
+                                    ->where('fecha',date('Y-m-d'))
+                                    ->where('estado',1)->groupBy('id_sede','fecha','hora_programada')->get();                                
+        $ultimo = Horas::select('hora')->where('id_sede',$request->id_sede)->where('orden',(count($cantidad)+1))
                         ->where('estado',1)->first();
 
         $list_tienda_base = Tiendas::select('id_tienda')
@@ -451,7 +410,11 @@ class ControlCamaraController extends Controller
                     if($con_id && $lr){
                         foreach($list_temporal as $temporal){
                             $nombre_actual = ltrim($temporal->archivo,'https://lanumerounocloud.com/intranet');
-                            $nuevo_nombre = "CONTROL_CAMARA/Evidencia_".$control_camara->id."_".$temporal->id_ronda."_".date('YmdHis').".".pathinfo($temporal->archivo,PATHINFO_EXTENSION);
+                            if($temporal->id_ronda>0){
+                                $nuevo_nombre = "CONTROL_CAMARA/Evidencia_".$control_camara->id."_".$temporal->id_ronda."_".date('YmdHis').".".pathinfo($temporal->archivo,PATHINFO_EXTENSION);
+                            }else{
+                                $nuevo_nombre = "CONTROL_CAMARA/Evidencia_".$control_camara->id."_".date('YmdHis').".".pathinfo($temporal->archivo,PATHINFO_EXTENSION);
+                            }
                             ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
                             $archivo = "https://lanumerounocloud.com/intranet/".$nuevo_nombre;
 
