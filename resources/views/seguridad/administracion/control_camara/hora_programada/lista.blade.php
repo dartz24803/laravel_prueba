@@ -3,6 +3,7 @@
         <tr class="text-center">
             <th>Sede</th>
             <th>Hora</th>
+            <th>Orden</th>
             <th class="no-content"></th>
         </tr>
     </thead>
@@ -11,6 +12,7 @@
             <tr class="text-center">
                 <td class="text-left">{{ $list->nombre_sede }}</td>
                 <td>{{ $list->hora }}</td>
+                <td>{{ $list->orden }}</td>
                 <td>
                     <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('control_camara_conf_ho.edit', $list->id_hora) }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">

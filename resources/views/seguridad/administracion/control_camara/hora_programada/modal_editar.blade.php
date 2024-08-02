@@ -29,7 +29,16 @@
             <div class="form-group col-lg-4">
                 <input type="time" class="form-control" id="horae" name="horae" placeholder="Ingresar hora" value="{{ $get_id->hora }}">
             </div>
-        </div>  	 	           	                	        
+        </div>
+        
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Orden:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <input type="text" class="form-control" id="ordene" name="ordene" placeholder="Ingresar orden" value="{{ $get_id->orden }}" onkeypress="return solo_Numeros(event);">
+            </div>
+        </div>
     </div>
 
     <div class="modal-footer">

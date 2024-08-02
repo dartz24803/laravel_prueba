@@ -105,7 +105,7 @@ class ControlCamaraConfController extends Controller
 
     public function list_ho()
     {
-        $list_hora_programada = Horas::select('horas.id_hora','sedes.nombre_sede','horas.hora')
+        $list_hora_programada = Horas::select('horas.id_hora','sedes.nombre_sede','horas.hora','horas.orden')
                             ->join('sedes','sedes.id_sede','=','horas.id_sede')
                             ->where('horas.estado', 1)->get();
         return view('seguridad.administracion.control_camara.hora_programada.lista', compact('list_hora_programada'));
@@ -123,12 +123,14 @@ class ControlCamaraConfController extends Controller
         $request->validate([
             'id_sede' => 'gt:0',
             'hora' => 'required',
+            'orden' => 'required',
         ],[
             'id_sede.gt' => 'Debe seleccionar sede.',
             'hora.required' => 'Debe ingresar hora.',
+            'orden.required' => 'Debe ingresar orden.',
         ]);
 
-        $valida = Horas::where('id_sede', $request->id_sede)->where('hora', $request->hora)->where('estado', 1)
+        $valida = Horas::where('id_sede', $request->id_sede)->where('orden', $request->orden)->where('estado', 1)
                         ->exists();
         if($valida){
             echo "error";
@@ -136,6 +138,7 @@ class ControlCamaraConfController extends Controller
             Horas::create([
                 'id_sede' => $request->id_sede,
                 'hora' => $request->hora,
+                'orden' => $request->orden,
                 'estado' => 1,
                 'fec_reg' => now(),
                 'user_reg' => session('usuario')->id_usuario,
@@ -158,12 +161,14 @@ class ControlCamaraConfController extends Controller
         $request->validate([
             'id_sedee' => 'gt:0',
             'horae' => 'required',
+            'ordene' => 'required',
         ],[
             'id_sedee.gt' => 'Debe seleccionar sede.',
             'horae.required' => 'Debe ingresar hora.',
+            'ordene.required' => 'Debe ingresar orden.',
         ]);
 
-        $valida = Horas::where('id_sede', $request->id_sedee)->where('hora', $request->horae)
+        $valida = Horas::where('id_sede', $request->id_sedee)->where('orden', $request->ordene)
                         ->where('estado', 1)->where('id_hora', '!=', $id)->exists();
         if($valida){
             echo "error";
@@ -171,6 +176,7 @@ class ControlCamaraConfController extends Controller
             Horas::findOrFail($id)->update([
                 'id_sede' => $request->id_sedee,
                 'hora' => $request->horae,
+                'orden' => $request->ordene,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);

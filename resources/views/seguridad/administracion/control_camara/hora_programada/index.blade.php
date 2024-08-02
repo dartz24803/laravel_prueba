@@ -28,6 +28,15 @@
         });
     }
 
+    function solo_Numeros(e) {
+        var key = event.which || event.keyCode;
+        if (key >= 48 && key <= 57) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     function Delete_Hora_Programada(id) {
         Cargando();
 
