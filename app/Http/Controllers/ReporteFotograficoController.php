@@ -260,7 +260,7 @@ class ReporteFotograficoController extends Controller
         ->get();
         return view('tienda.ReporteFotografico.imagenes_rf.modal_detalle', compact('get_id'));
     }
-
+/*
     public function validar_reporte_fotografico_dia_job_old(){
         // Ejecutar la consulta
 
@@ -404,10 +404,9 @@ class ReporteFotograficoController extends Controller
             return response()->json(['message' => 'No hay bases con 0 fotos hoy.']);
         }
 
-        //$sql3 = "";
-    }
+    }*/
 
-    
+
     public function validar_reporte_fotografico_dia_job(){
         $sql = "SELECT
                     IFNULL(rfa.categoria, 'Sin categoría') AS categoria,
@@ -514,11 +513,11 @@ class ReporteFotograficoController extends Controller
                 $mail->setFrom('somosuno@lanumero1.com.pe','REPORTE FOTOGRAFICO CONTROL');
 
                 $mail->addAddress("pcardenas@lanumero1.com.pe");
-                // $mail->addAddress("acanales@lanumero1.com.pe");
-                // $mail->addAddress('ogutierrez@lanumero1.com.pe');
-                // $mail->addAddress("dvilca@lanumero1.com.pe");
-                // $mail->addAddress("fclaverias@lanumero1.com.pe");
-                // $mail->addAddress("mponte@lanumero1.com.pe");
+                $mail->addAddress("acanales@lanumero1.com.pe");
+                $mail->addAddress('ogutierrez@lanumero1.com.pe');
+                $mail->addAddress("dvilca@lanumero1.com.pe");
+                $mail->addAddress("fclaverias@lanumero1.com.pe");
+                $mail->addAddress("mponte@lanumero1.com.pe");
 
                 $mail->isHTML(true);
                 $mail->Subject = 'Reporte diario de bases';
