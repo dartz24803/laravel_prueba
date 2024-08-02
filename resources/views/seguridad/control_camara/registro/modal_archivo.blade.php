@@ -22,7 +22,7 @@
                     <div class="carousel-item @php if($i==0){ echo 'active'; } @endphp">
                         <img class="d-block w-100" src="{{ $list->archivo }}">
                         <div class="carousel-caption d-none d-sm-block">
-                            <h3 style="color: white;">{{ $list->titulo }}</h3>
+                            <h3 style="color: #4361EE;">{{ $list->titulo }}</h3>
                         </div>
                     </div>
                     @php $i++; @endphp

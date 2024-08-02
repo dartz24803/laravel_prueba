@@ -14,6 +14,13 @@ use App\Models\Sedes;
 use App\Models\Tiendas;
 use App\Models\TiendasRonda;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Illuminate\Support\Facades\DB;
 
 class ControlCamaraController extends Controller
@@ -318,6 +325,10 @@ class ControlCamaraController extends Controller
                                     ->get();
         if(count($list_tienda_base)>0){
             foreach($list_tienda_base as $list){
+                $fecha = date('Y-m-d');
+                if(date('a',strtotime($ultimo->hora))=='am' || date('a',strtotime($ultimo->hora))=='AM'){
+                    $fecha = date('Y-m-d', strtotime(date('Y-m-d').' -1 day'));
+                }
                 $id_ocurrencia = $request->input('id_ocurrencia_'.$list->id_tienda);
                 if($request->input('id_ocurrencia_'.$list->id_tienda)=="0"){
                     $id_ocurrencia = 12;
@@ -326,7 +337,7 @@ class ControlCamaraController extends Controller
                 $control_camara = ControlCamara::create([
                     'id_usuario' => session('usuario')->id_usuario,
                     'id_sede' => $request->id_sede,
-                    'fecha' => now(),
+                    'fecha' => $fecha,
                     'hora_programada' => $ultimo->hora,
                     'hora_registro' => now(),
                     'id_tienda' => $list->id_local,
@@ -373,6 +384,10 @@ class ControlCamaraController extends Controller
                                     ->get();
         if(count($list_tienda_sede)>0){
             foreach($list_tienda_sede as $list){
+                $fecha = date('Y-m-d');
+                if(date('a',strtotime($ultimo->hora))=='am' || date('a',strtotime($ultimo->hora))=='AM'){
+                    $fecha = date('Y-m-d', strtotime(date('Y-m-d').' -1 day'));
+                }
                 $id_ocurrencia = $request->input('id_ocurrencia_'.$list->id_tienda);
                 if($request->input('id_ocurrencia_'.$list->id_tienda)=="0"){
                     $id_ocurrencia = 12;
@@ -381,7 +396,7 @@ class ControlCamaraController extends Controller
                 $control_camara = ControlCamara::create([
                     'id_usuario' => session('usuario')->id_usuario,
                     'id_sede' => $request->id_sede,
-                    'fecha' => now(),
+                    'fecha' => $fecha,
                     'hora_programada' => $ultimo->hora,
                     'hora_registro' => now(),
                     'id_tienda' => $list->id_local,
@@ -446,5 +461,91 @@ class ControlCamaraController extends Controller
             $list_archivo = ControlCamaraArchivo::where('id_control_camara',$id)->first();
         }
         return view('seguridad.control_camara.registro.modal_archivo', compact('get_id','list_archivo','cantidad'));
+    }
+
+    public function excel_reg($id_sede,$id_local)
+    {
+        $list_control_camara = ControlCamara::get_list_control_camara(['id_sede'=>$id_sede,'id_local'=>$id_local]);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getStyle("A1:I1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:I1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Control de Cámaras');
+
+        $sheet->setAutoFilter('A1:I1');
+
+        $sheet->getColumnDimension('A')->setWidth(20);
+        $sheet->getColumnDimension('B')->setWidth(15);
+        $sheet->getColumnDimension('C')->setWidth(20);
+        $sheet->getColumnDimension('D')->setWidth(25);
+        $sheet->getColumnDimension('E')->setWidth(25);
+        $sheet->getColumnDimension('F')->setWidth(20);
+        $sheet->getColumnDimension('G')->setWidth(15);
+        $sheet->getColumnDimension('H')->setWidth(20);
+        $sheet->getColumnDimension('I')->setWidth(30);
+
+        $sheet->getStyle('A1:I1')->getFont()->setBold(true);  
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:I1")->getFill()
+        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+        ->getStartColor()->setARGB('C8C8C8');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle("A1:I1")->applyFromArray($styleThinBlackBorderOutline);
+
+        $sheet->setCellValue("A1", 'Sede');     
+        $sheet->setCellValue("B1", 'Fecha');           
+        $sheet->setCellValue("C1", 'Colaborador');             
+        $sheet->setCellValue("D1", 'Hora Programada');             
+        $sheet->setCellValue("E1", 'Hora de Registro');             
+        $sheet->setCellValue("F1", 'Diferencia (min)');       
+        $sheet->setCellValue("G1", 'Observación');             
+        $sheet->setCellValue("H1", 'Tienda');             
+        $sheet->setCellValue("I1", 'Ocurrencia');             
+
+        $contador=1;
+        
+        foreach($list_control_camara as $list){
+            $contador++;
+
+            $sheet->getStyle("A{$contador}:I{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("C{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("H{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("I{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:I{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:I{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+
+            $sheet->setCellValue("A{$contador}", $list->nombre_sede);
+            $sheet->setCellValue("B{$contador}", Date::PHPToExcel($list->fecha));
+            $sheet->getStyle("B{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+            $sheet->setCellValue("C{$contador}", $list->colaborador);
+            $sheet->setCellValue("D{$contador}", $list->hora_programada);
+            $sheet->setCellValue("E{$contador}", $list->hora_registro);
+            $sheet->setCellValue("F{$contador}", $list->diferencia);
+            $sheet->setCellValue("G{$contador}", $list->observacion);
+            $sheet->setCellValue("H{$contador}", $list->tienda);
+            $sheet->setCellValue("I{$contador}", $list->ocurrencia);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename ='Control de Cámaras';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output'); 
     }
 }
