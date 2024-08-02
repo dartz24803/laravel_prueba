@@ -32,8 +32,12 @@ class ControlCamara extends Model
     ];
 
     
-    public static function get_list_control_camara()
+    public static function get_list_control_camara($dato)
     {
+        $parte = "";
+        if($dato['id_sede']!="0"){
+            $parte = "cc.id_sede=".$dato['id_sede']." AND";
+        }
         $sql = "SELECT cc.id,cc.fecha AS orden,se.nombre_sede,DATE_FORMAT(cc.fecha,'%d-%m-%Y') AS fecha,
                 CONCAT(us.usuario_apater,', ',us.usuario_nombres) AS colaborador,
                 CASE WHEN cc.hora_programada>='12:00:00' THEN 
@@ -53,7 +57,7 @@ class ControlCamara extends Model
                 LEFT JOIN tiendas ti ON cc.id_tienda=ti.id_tienda
                 LEFT JOIN local lo ON ti.id_local=lo.id_local
                 LEFT JOIN ocurrencias_camaras oc ON cc.id_ocurrencia=oc.id_ocurrencias_camaras
-                WHERE cc.estado=1";
+                WHERE $parte cc.estado=1";
         $query = DB::select($sql);
         return $query;
     }
