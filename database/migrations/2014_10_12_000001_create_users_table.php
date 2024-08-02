@@ -25,6 +25,9 @@ return new class extends Migration
             $table->integer('id_puesto')->default(0)->nullable();
             $table->integer('id_cargo')->default(0)->nullable();
             $table->integer('urladm')->default(0)->nullable();
+            $table->string('foto',150)->nullable();
+            $table->string('foto_nombre')->nullable();
+            $table->date('fec_nac')->nullable();
             $table->string('centro_labores', 10)->nullable();
             $table->integer('acceso')->default(0)->nullable();
             $table->date('ini_funciones')->nullable();
