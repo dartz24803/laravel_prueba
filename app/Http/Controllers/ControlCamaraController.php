@@ -8,6 +8,7 @@ use App\Models\ControlCamaraArchivo;
 use App\Models\ControlCamaraArchivoTemporal;
 use App\Models\ControlCamaraRonda;
 use App\Models\Horas;
+use App\Models\Local;
 use App\Models\OcurrenciasCamaras;
 use App\Models\Sedes;
 use App\Models\Tiendas;
@@ -29,13 +30,14 @@ class ControlCamaraController extends Controller
 
     public function index_reg()
     {
-        $list_sede = Sedes::select('id_sede','nombre_sede')->where('estado',1)->get();
-        return view('seguridad.control_camara.registro.index', compact(['list_sede']));
+        $list_sede = Sedes::select('id_sede','nombre_sede')->where('estado',1)->orderBy('nombre_sede','ASC')->get();
+        $list_local = Local::select('id_local','descripcion')->where('estado',1)->orderBy('descripcion','ASC')->get();
+        return view('seguridad.control_camara.registro.index', compact(['list_sede','list_local']));
     }
 
     public function list_reg(Request $request)
     {
-        $list_control_camara = ControlCamara::get_list_control_camara(['id_sede'=>$request->id_sede]);
+        $list_control_camara = ControlCamara::get_list_control_camara(['id_sede'=>$request->id_sede,'id_local'=>$request->id_local]);
         return view('seguridad.control_camara.registro.lista', compact('list_control_camara'));
     }
 
@@ -98,12 +100,12 @@ class ControlCamaraController extends Controller
         $list_tienda_base = Tiendas::select('tiendas.id_tienda','local.descripcion')
                                     ->join('local','local.id_local','=','tiendas.id_local')
                                     ->where('tiendas.id_sede', $request->id_sede)->where('tiendas.ronda',NULL)
-                                    ->where('tiendas.estado', 1)
+                                    ->where('tiendas.estado', 1)->orderBy('tiendas.id_tienda','ASC')
                                     ->get();
         $list_tienda_sede = Tiendas::select('tiendas.id_tienda','local.descripcion')
                                     ->join('local','local.id_local','=','tiendas.id_local')
                                     ->where('tiendas.id_sede', $request->id_sede)->where('tiendas.ronda',1)
-                                    ->where('tiendas.estado', 1)
+                                    ->where('tiendas.estado', 1)->orderBy('tiendas.id_tienda','ASC')
                                     ->get();
         $list_ocurrencia = OcurrenciasCamaras::select('id_ocurrencias_camaras','descripcion')
                                                 ->where('estado',1)->get();                                           
@@ -112,10 +114,7 @@ class ControlCamaraController extends Controller
     
     public function modal_imagen_reg($id_tienda)
     {
-        $get_id = ControlCamaraArchivoTemporal::select('archivo')
-                                                ->where('id_usuario',session('usuario')->id_usuario)
-                                                ->where('id_tienda',$id_tienda)->first();
-        return view('seguridad.control_camara.registro.modal_imagen', compact('id_tienda','get_id'));
+        return view('seguridad.control_camara.registro.modal_imagen', compact('id_tienda'));
     }
 
     public function insert_imagen_reg(Request $request,$id_tienda)
@@ -172,16 +171,13 @@ class ControlCamaraController extends Controller
 
     public function modal_ronda_reg($id_tienda)
     {
-        $get_id = ControlCamaraArchivoTemporal::select('archivo')
-                                                ->where('id_usuario',session('usuario')->id_usuario)
-                                                ->where('id_tienda',$id_tienda)->first();
         $get_sede = Tiendas::select('sedes.nombre_sede')
                     ->join('sedes','sedes.id_sede','=','tiendas.id_sede')
                     ->where('id_tienda',$id_tienda)->first();
         $list_ronda = TiendasRonda::select('tiendas_ronda.id','control_camara_ronda.descripcion')
                         ->join('control_camara_ronda','control_camara_ronda.id','=','tiendas_ronda.id_ronda')
-                        ->where('tiendas_ronda.id_tienda',$id_tienda)->get();
-        return view('seguridad.control_camara.registro.modal_ronda', compact('id_tienda','get_id','get_sede','list_ronda'));
+                        ->where('tiendas_ronda.id_tienda',$id_tienda)->orderBy('tiendas_ronda.id','ASC')->get();
+        return view('seguridad.control_camara.registro.modal_ronda', compact('id_tienda','get_sede','list_ronda'));
     }
 
     public function insert_ronda_reg(Request $request,$id_tienda)
@@ -193,9 +189,9 @@ class ControlCamaraController extends Controller
             'archivo_ronda.required' => 'Debe ingresar imagen.',
         ];
 
-        $list_ronda = TiendasRonda::select('tiendas_ronda.id','control_camara_ronda.descripcion')
+        $list_ronda = TiendasRonda::select('tiendas_ronda.id','tiendas_ronda.id_ronda','control_camara_ronda.descripcion')
                         ->join('control_camara_ronda','control_camara_ronda.id','=','tiendas_ronda.id_ronda')
-                        ->where('tiendas_ronda.id_tienda',$id_tienda)->get();
+                        ->where('tiendas_ronda.id_tienda',$id_tienda)->orderBy('tiendas_ronda.id','ASC')->get();
         foreach($list_ronda as $list){
             $rules['archivo_ronda_'.$list->id] = 'required';
             $messages['archivo_ronda_'.$list->id.'.required'] = 'Debe ingresar imagen para '.$list->descripcion.'.';
@@ -256,8 +252,8 @@ class ControlCamaraController extends Controller
                                                         ->where('id_ronda',$list->id)->first();
                             ftp_delete($con_id, 'CONTROL_CAMARA/'.basename($get_id->archivo));
                             ControlCamaraArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
-                                            ->where('id_tienda',$id_tienda)
-                                            ->where('id_ronda',$list->id)->delete();
+                                                        ->where('id_tienda',$id_tienda)
+                                                        ->where('id_ronda',$list->id)->delete();
                         }
 
                         $path = $_FILES["archivo_ronda_".$list->id]["name"];
@@ -274,7 +270,7 @@ class ControlCamaraController extends Controller
                             ControlCamaraArchivoTemporal::create([
                                 'id_usuario' => session('usuario')->id_usuario,
                                 'id_tienda' => $id_tienda,
-                                'id_ronda' => $list->id,
+                                'id_ronda' => $list->id_ronda,
                                 'archivo' => $archivo
                             ]);
                         }else{
@@ -296,7 +292,7 @@ class ControlCamaraController extends Controller
             $cantidad_tienda = Tiendas::where('id_sede',$request->id_sede)->count();
             $cantidad_ronda = 0;
             $tienda = Tiendas::select('id_tienda')->where('id_sede',$request->id_sede)->where('ronda',1)
-                    ->where('estado',1)->first();
+                                ->where('estado',1)->first();
             if($tienda->id_tienda){
                 $cantidad_ronda = TiendasRonda::where('id_tienda',$tienda->id_tienda)->count();
             }
@@ -316,9 +312,9 @@ class ControlCamaraController extends Controller
         $ultimo = Horas::select('hora')->where('id_sede',$request->id_sede)->where('orden',(count($cantidad)+1))
                         ->where('estado',1)->first();
 
-        $list_tienda_base = Tiendas::select('id_tienda')
+        $list_tienda_base = Tiendas::select('id_tienda','id_local')
                                     ->where('id_sede', $request->id_sede)->where('ronda',NULL)
-                                    ->where('estado', 1)
+                                    ->where('estado', 1)->orderBy('id_tienda','ASC')
                                     ->get();
         if(count($list_tienda_base)>0){
             foreach($list_tienda_base as $list){
@@ -333,7 +329,7 @@ class ControlCamaraController extends Controller
                     'fecha' => now(),
                     'hora_programada' => $ultimo->hora,
                     'hora_registro' => now(),
-                    'id_tienda' => $list->id_tienda,
+                    'id_tienda' => $list->id_local,
                     'id_ocurrencia' => $id_ocurrencia,
                     'estado' => 1,
                     'fec_reg' => now(),
@@ -371,9 +367,9 @@ class ControlCamaraController extends Controller
                 }
             }
         }
-        $list_tienda_sede = Tiendas::select('id_tienda')
+        $list_tienda_sede = Tiendas::select('id_tienda','id_local')
                                     ->where('id_sede', $request->id_sede)->where('ronda',1)
-                                    ->where('estado', 1)
+                                    ->where('estado', 1)->orderBy('id_tienda','ASC')
                                     ->get();
         if(count($list_tienda_sede)>0){
             foreach($list_tienda_sede as $list){
@@ -388,7 +384,7 @@ class ControlCamaraController extends Controller
                     'fecha' => now(),
                     'hora_programada' => $ultimo->hora,
                     'hora_registro' => now(),
-                    'id_tienda' => $list->id_tienda,
+                    'id_tienda' => $list->id_local,
                     'id_ocurrencia' => $id_ocurrencia,
                     'estado' => 1,
                     'fec_reg' => now(),
@@ -431,5 +427,24 @@ class ControlCamaraController extends Controller
                 }
             }
         }                                    
+    }
+
+    public function archivo_reg($id)
+    {
+        $get_id = ControlCamara::select('local.descripcion',DB::raw('DATE_FORMAT(control_camara.hora_programada,"%H:%i") AS hora'),
+                                DB::raw('DATE_FORMAT(control_camara.fecha,"%d/%m/%Y") AS fecha'))
+                                ->join('local','local.id_local','=','control_camara.id_tienda')
+                                ->where('control_camara.id',$id)
+                                ->first();
+        $cantidad = ControlCamaraArchivo::where('id_control_camara',$id)->count();
+        if($cantidad>1){
+            $list_archivo = ControlCamaraArchivo::leftJoin('control_camara_ronda','control_camara_archivo.id_ronda','=','control_camara_ronda.id')
+                                                ->select('control_camara_archivo.archivo','control_camara_archivo.id_ronda',
+                                                DB::raw('control_camara_ronda.descripcion AS titulo'))
+                                                ->where('control_camara_archivo.id_control_camara',$id)->get();
+        }else{
+            $list_archivo = ControlCamaraArchivo::where('id_control_camara',$id)->first();
+        }
+        return view('seguridad.control_camara.registro.modal_archivo', compact('get_id','list_archivo','cantidad'));
     }
 }

@@ -21,7 +21,17 @@
         </select>
     </div>
 
-    <div class="col-lg-10 d-flex align-items-center">
+    <div class="form-group col-lg-2">
+        <label>Local:</label>
+        <select class="form-control" id="id_localb" name="id_localb" onchange="Lista_Control_Camara();">
+            <option value="0">TODOS</option>
+            @foreach ($list_local as $list)
+                <option value="{{ $list->id_local }}">{{ $list->descripcion }}</option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="col-lg-8 d-flex align-items-center">
         <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('control_camara_reg.create') }}">
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -47,13 +57,14 @@
         Cargando();
 
         var id_sede = $('#id_sedeb').val();
+        var id_local = $('#id_localb').val();
         var url = "{{ route('control_camara_reg.list') }}";
         var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({
             type:"POST",
             url: url,
-            data: {'id_sede':id_sede},
+            data: {'id_sede':id_sede,'id_local':id_local},
             headers: {
                 'X-CSRF-TOKEN': csrfToken
             },

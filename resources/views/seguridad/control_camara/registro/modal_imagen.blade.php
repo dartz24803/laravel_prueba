@@ -24,9 +24,6 @@
         <div class="row p-2">
             <textarea id="paste_area" placeholder="Pega aquí la imagen" style="width: 100%" rows="1" disabled></textarea>
             <div id="imageViewer">
-                @if (isset($get_id->archivo))
-                    <img src="{{ $get_id->archivo }}" style="margin-top: 10px; max-width: 100%;">
-                @endif
             </div>
         </div>
     </div>

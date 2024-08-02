@@ -34,9 +34,13 @@ class ControlCamara extends Model
     
     public static function get_list_control_camara($dato)
     {
-        $parte = "";
+        $parte_sede = "";
         if($dato['id_sede']!="0"){
-            $parte = "cc.id_sede=".$dato['id_sede']." AND";
+            $parte_sede = "cc.id_sede=".$dato['id_sede']." AND";
+        }
+        $parte_local = "";
+        if($dato['id_local']!="0"){
+            $parte_local = "cc.id_tienda=".$dato['id_local']." AND";
         }
         $sql = "SELECT cc.id,cc.fecha AS orden,se.nombre_sede,DATE_FORMAT(cc.fecha,'%d-%m-%Y') AS fecha,
                 CONCAT(us.usuario_apater,', ',us.usuario_nombres) AS colaborador,
@@ -50,14 +54,15 @@ class ControlCamara extends Model
                 THEN TIMESTAMPDIFF(MINUTE, cc.hora_programada, cc.hora_registro) ELSE '' END AS diferencia,
                 CASE WHEN TIMESTAMPDIFF(MINUTE, cc.hora_programada, cc.hora_registro)>5
                 THEN 'Atrasado' ELSE 'OK' END AS observacion,lo.descripcion AS tienda,
-                oc.descripcion AS ocurrencia
+                oc.descripcion AS ocurrencia,
+                (SELECT COUNT(1) FROM control_camara_archivo ca
+                WHERE ca.id_control_camara=cc.id) AS archivos
                 FROM control_camara cc
                 LEFT JOIN sedes se ON cc.id_sede=se.id_sede
                 LEFT JOIN users us ON cc.id_usuario=us.id_usuario
-                LEFT JOIN tiendas ti ON cc.id_tienda=ti.id_tienda
-                LEFT JOIN local lo ON ti.id_local=lo.id_local
+                LEFT JOIN local lo ON cc.id_tienda=lo.id_local
                 LEFT JOIN ocurrencias_camaras oc ON cc.id_ocurrencia=oc.id_ocurrencias_camaras
-                WHERE $parte cc.estado=1";
+                WHERE $parte_sede $parte_local cc.estado=1";
         $query = DB::select($sql);
         return $query;
     }
