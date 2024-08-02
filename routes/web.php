@@ -22,6 +22,8 @@ use App\Http\Controllers\ControlCamaraConfController;
 use App\Http\Controllers\ControlCamaraController;
 use App\Http\Controllers\SliderRRHH;
 use App\Http\Controllers\Cumpleanios;
+use App\Http\Controllers\InicioAdmController;
+
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
 });
@@ -496,7 +498,6 @@ Route::controller(SliderRRHH::class)->group(function(){
     Route::get('/SliderRRHH', 'Slider_Vista_Tienda')->name('slider_tienda');
     Route::get('/Slider/{method}', 'remap');
 });
-
 Route::controller(Cumpleanios::class)->group(function(){
     Route::get('/RecursosHumanos/Cumpleanios/index', 'index');
     Route::get('/RecursosHumanos/Buscar_Cumpleanios', 'Buscar_Cumpleanios');
@@ -505,3 +506,11 @@ Route::controller(Cumpleanios::class)->group(function(){
     Route::get('/RecursosHumanos/List_Saludo_cumpleanio', 'List_Saludo_cumpleanio');
     Route::get('/RecursosHumanos/Excel_Saludo_Cumpleanio/{id}', 'Excel_Saludo_Cumpleanio');
 });
+//SLIDER INICIO
+Route::controller(InicioAdmController::class)->group(function(){
+    Route::get('Inicio/index', 'index');
+    Route::post('Inicio/Slider_Inicio_Listar', 'Slider_Inicio_Listar');
+    Route::get('Inicio/Modal_Update_Slider_Inicio/{id}', 'Modal_Update_Slider_Inicio');
+    Route::post('Inicio/Update_Slider_Inicio', 'Update_Slider_Inicio');
+});
+

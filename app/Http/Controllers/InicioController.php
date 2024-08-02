@@ -17,7 +17,6 @@ class InicioController extends Controller
     {
         $this->middleware('verificar.sesion.usuario');
         $this->request = $request;
-        //$this->modelo = new CarteraModel();
     }
     public function index()
     {
