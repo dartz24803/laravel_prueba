@@ -548,4 +548,23 @@ class ControlCamaraController extends Controller
 
         $writer->save('php://output'); 
     }
+
+    public function index_img()
+    {
+        $list_sede = Sedes::select('id_sede','nombre_sede')->where('estado',1)->orderBy('nombre_sede','ASC')->get();
+        $list_local = Local::select('id_local','descripcion')->where('estado',1)->orderBy('descripcion','ASC')->get();
+        return view('seguridad.control_camara.imagen.index', compact(['list_sede','list_local']));
+    }
+
+    public function list_img(Request $request)
+    {
+        $list_archivo = ControlCamaraArchivo::get_list_control_camara_archivo(['id_sede'=>$request->id_sede,'id_local'=>$request->id_local]);
+        return view('seguridad.control_camara.imagen.lista', compact('list_archivo'));
+    }
+
+    public function show_img($id)
+    {
+        $get_id = ControlCamaraArchivo::get_list_control_camara_archivo(['id'=>$id]);                                   
+        return view('seguridad.control_camara.imagen.modal_detalle', compact('get_id'));
+    }
 }

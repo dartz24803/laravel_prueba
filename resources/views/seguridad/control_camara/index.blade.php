@@ -57,7 +57,7 @@
         function Imagen(){
             Cargando();
 
-            var url="{{ route('apertura_cierre_img') }}";
+            var url="{{ route('control_camara_img') }}";
 
             $.ajax({
                 url: url,
