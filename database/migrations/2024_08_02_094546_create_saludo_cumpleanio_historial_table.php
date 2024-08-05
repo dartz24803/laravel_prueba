@@ -19,8 +19,8 @@ return new class extends Migration
             $table->text('mensaje')->nullable();
             $table->integer('estado_registro');
             $table->integer('estado');
-            $table->dateTime('fec_reg');
-            $table->integer('user_reg');
+            $table->dateTime('fec_reg')->nullable();
+            $table->integer('user_reg')->nullable();
             $table->dateTime('fec_act')->nullable();
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();

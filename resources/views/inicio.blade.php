@@ -62,38 +62,26 @@
                                             <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                                 <ol class="carousel-indicators">
                                                     <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                                                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                                                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-                                                    <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
+                                                    <?php foreach ($list_frases as $index => $row) { ?>
+                                                        <li data-target="#carouselExampleIndicators" data-slide-to="<?= $index + 1 ?>"></li>
+                                                    <?php } ?>
                                                 </ol>
                                                 <div class="carousel-inner">
                                                     <div class="carousel-item active text-center">
                                                         <img src="{{ asset('/inicio/LN1-Isotipo.png') }}" alt="La número 1" style="height: 10rem;">
                                                     </div>
+                                                    <?php foreach ($list_frases as $row) { ?>
                                                     <div class="carousel-item text-center">
                                                         <div class="d-flex justify-content-center align-items-center">
                                                             <div class="card-body">
-                                                                <h5 class="card-text">Special title treatment</h5>
+                                                                <h5 class="card-text">{{ $row['frase']}}</h5>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="carousel-item text-center">
-                                                        <div class="d-flex justify-content-center align-items-center">
-                                                            <div class="card-body">
-                                                                <h5 class="card-text">TITLE 2</h5>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="carousel-item text-center">
-                                                        <div class="d-flex justify-content-center align-items-center">
-                                                            <div class="card-body">
-                                                                <h5 class="card-text">PHRASE 3</h5>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                    <?php } ?>
                                                 </div>
                                             </div>
-                                            
+
                                             <!--<div class="card text-center border-0 rounded_z" style="background-color: #f1f3f5;">
                                                 <div class="card-body text-center">
                                                     <img src="{{ asset('/inicio/LN1-Isotipo.png') }}" alt="La número 1" style="height: 10rem">
@@ -212,7 +200,7 @@
                                                                         <table class="table" style="width:100%">
                                                                             <tbody>
                                                                                 <?php $i=0; foreach($list_cumple as $list){$i++;
-                                                                                    if($i<6){?> 
+                                                                                    if($i<6){?>
                                                                                     <tr>
                                                                                         <td>
                                                                                             <div class="d-flex justify-content-center">
@@ -227,11 +215,11 @@
                                                                                             </div>
                                                                                         </td>
                                                                                     </tr>
-                                                                                <?php } }?>     
+                                                                                <?php } }?>
                                                                             </tbody>
                                                                         </table>
 
-                                                                        <?php if(count($list_cumple)>5){?> 
+                                                                        <?php if(count($list_cumple)>5){?>
                                                                             <div class="text-center mb-4">
                                                                                 <a class="boton" href="javascript:void(0)" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="{{ url('Corporacion/Modal_Ver_Todo_Cumpleanios') }}"><span>Ver Todos</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
                                                                             </div>
@@ -461,7 +449,7 @@
             $('#logo_tiendas').removeClass('col-sm-3 justify-content-start').addClass('col-sm-12 justify-content-center');
         }
     }
-    
+
     // Llama a la función al cargar la página
     cambiarClaseSegunResolucion();
 
