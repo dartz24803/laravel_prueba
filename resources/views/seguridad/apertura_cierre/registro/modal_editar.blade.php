@@ -38,7 +38,18 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row d-flex justify-content-center mb-2 mt-2" id="div_tomar_fotoe" style="display:none !important;">
+            <button type="button" class="btn btn-info" onclick="Tomar_Fotoe();">Tomar foto</button>
+        </div>
+        <div class="row d-flex justify-content-center mb-4" id="div_camarae" style="display:none !important;">
+            <video id="videoe" autoplay style="max-width: 95%;"></video>
+        </div>
+        <div class="row d-flex justify-content-center text-center mb-4" id="div_canvase" style="display:none !important;">
+            <p class="mt-2">Recuerda que puedes tomar otra foto presionando nuevamente <mark style="background-color:#2196F3;color:white;">Tomar foto</mark> o guardar el registro presionando <mark style=background-color:#1B55E2;color:white;>Guardar</mark></p>
+            <canvas id="canvase" style="max-width:95%;"></canvas>
+        </div>
+        
+        <div class="row mt-2">
             <div class="form-group col-lg-2">
                 <label>Observaciones:</label>
             </div>
@@ -60,17 +71,6 @@
                 <input type="text" class="form-control" name="otra_observacione" id="otra_observacione" 
                 placeholder="Otros" style="display: none;">
             </div>
-        </div>
-
-        <div class="row d-flex justify-content-center mb-2 mt-2" id="div_tomar_fotoe" style="display:none !important;">
-            <button type="button" class="btn btn-info" onclick="Tomar_Fotoe();">Tomar foto</button>
-        </div>
-        <div class="row d-flex justify-content-center mb-4" id="div_camarae" style="display:none !important;">
-            <video id="videoe" autoplay style="max-width: 95%;"></video>
-        </div>
-        <div class="row d-flex justify-content-center text-center mb-4" id="div_canvase" style="display:none !important;">
-            <p class="mt-2">Recuerda que puedes tomar otra foto presionando nuevamente <mark style="background-color:#2196F3;color:white;">Tomar foto</mark> o guardar el registro presionando <mark style=background-color:#1B55E2;color:white;>Guardar</mark></p>
-            <canvas id="canvase" style="max-width:95%;"></canvas>
         </div>
     </div>
 

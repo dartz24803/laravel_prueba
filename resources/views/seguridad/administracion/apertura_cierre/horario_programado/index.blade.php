@@ -30,19 +30,19 @@
 
     function Activar_Dia(v){
         if(!$('#ch_'+v).is(":checked")){
-            $("#hora_ingreso_"+v).prop('disabled', true);
+            //$("#hora_ingreso_"+v).prop('disabled', true);
             $("#hora_ingreso_"+v).val('');
             $("#hora_apertura_"+v).prop('disabled', true);
             $("#hora_apertura_"+v).val('');
             $("#hora_cierre_"+v).prop('disabled', true);
             $("#hora_cierre_"+v).val('');
-            $("#hora_salida_"+v).prop('disabled', true);
+            //$("#hora_salida_"+v).prop('disabled', true);
             $("#hora_salida_"+v).val('');
         }else{
-            $("#hora_ingreso_"+v).prop('disabled', false);
+            //$("#hora_ingreso_"+v).prop('disabled', false);
             $("#hora_apertura_"+v).prop('disabled', false);
             $("#hora_cierre_"+v).prop('disabled', false);
-            $("#hora_salida_"+v).prop('disabled', false);
+            //$("#hora_salida_"+v).prop('disabled', false);
         }
     }
 

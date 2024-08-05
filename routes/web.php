@@ -373,16 +373,11 @@ Route::controller(ControlCamaraController::class)->group(function(){
     Route::post('control_camara_reg/{id}/insert_ronda', 'insert_ronda_reg')->name('control_camara_reg.insert_ronda');
     Route::post('control_camara_reg/valida_captura', 'valida_captura_reg')->name('control_camara_reg.valida_captura');
     Route::post('control_camara_reg', 'store_reg')->name('control_camara_reg.store');
-    /*Route::post('apertura_cierre_reg/previsualizacion_captura', 'previsualizacion_captura_reg')->name('apertura_cierre_reg.previsualizacion_captura');
-    Route::post('apertura_cierre_reg', 'store_reg')->name('apertura_cierre_reg.store');
-    Route::get('apertura_cierre_reg/{id}/edit', 'edit_reg')->name('apertura_cierre_reg.edit');
-    Route::put('apertura_cierre_reg/previsualizacion_captura', 'previsualizacion_captura_reg')->name('apertura_cierre_reg.previsualizacion_captura_put');
-    Route::put('apertura_cierre_reg/{id}', 'update_reg')->name('apertura_cierre_reg.update');
-    Route::get('apertura_cierre_reg/{id}/archivo', 'archivo_reg')->name('apertura_cierre_reg.archivo');
-    Route::get('apertura_cierre_reg/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_reg')->name('apertura_cierre_reg.excel');
-    Route::get('apertura_cierre_img', 'index_img')->name('apertura_cierre_img');
-    Route::post('apertura_cierre_img/list', 'list_img')->name('apertura_cierre_img.list');
-    Route::get('apertura_cierre_img/{id}/show', 'show_img')->name('apertura_cierre_img.show');*/
+    Route::get('control_camara_reg/{id}/archivo', 'archivo_reg')->name('control_camara_reg.archivo');
+    Route::get('control_camara_reg/{id_sede}/{id_local}/excel', 'excel_reg')->name('control_camara_reg.excel');
+    Route::get('control_camara_img', 'index_img')->name('control_camara_img');
+    Route::post('control_camara_img/list', 'list_img')->name('control_camara_img.list');
+    Route::get('control_camara_img/{id}/show', 'show_img')->name('control_camara_img.show');
 });
 
 

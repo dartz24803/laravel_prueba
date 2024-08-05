@@ -14,19 +14,22 @@
 
 <form id="formularioi" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
-        <h5 class="modal-title">Monitoreo (Todas las cámaras)</h5>
+        <h5 class="modal-title">Nuevo control de cámaras</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
     </div>
 
     <div class="modal-body" style="max-height:450px; overflow:auto;">
+        <div class="row">
+            <div class="form-group col-lg-12">
+                <h5 class="modal-title">MONITOREO</h5>
+            </div>
+        </div>
+
         <div class="row p-2">
-            <textarea id="paste_area" placeholder="Pega aquí la imagen" style="width: 100%" rows="1" disabled></textarea>
+            <textarea id="paste_area" placeholder="Haz click aquí para pegar la imagen" style="width: 100%" rows="1" disabled></textarea>
             <div id="imageViewer">
-                @if (isset($get_id->archivo))
-                    <img src="{{ $get_id->archivo }}" style="margin-top: 10px; max-width: 100%;">
-                @endif
             </div>
         </div>
     </div>

@@ -17,6 +17,7 @@ class Horas extends Model
     protected $fillable = [
         'id_sede',
         'hora',
+        'orden',
         'estado',
         'fec_reg',
         'user_reg',
