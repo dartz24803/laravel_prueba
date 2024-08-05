@@ -38,6 +38,17 @@
             </div>
         </div>
 
+        <div class="row d-flex justify-content-center mb-2 mt-2" id="div_tomar_foto" style="display:none !important;">
+            <button type="button" class="btn btn-info" onclick="Tomar_Foto();">Tomar foto</button>
+        </div>
+        <div class="row d-flex justify-content-center mb-2" id="div_camara" style="display:none !important;">
+            <video id="video" autoplay style="max-width: 95%;"></video>
+        </div>
+        <div class="row d-flex justify-content-center text-center" id="div_canvas" style="display:none !important;">
+            <p class="mt-2">Recuerda que puedes tomar otra foto presionando nuevamente <mark style="background-color:#2196F3;color:white;">Tomar foto</mark> o guardar el registro presionando <mark style=background-color:#1B55E2;color:white;>Guardar</mark></p>
+            <canvas id="canvas" style="max-width:95%;"></canvas>
+        </div>
+
         <div class="row">
             <div class="form-group col-lg-2">
                 <label>Observaciones:</label>
@@ -60,17 +71,6 @@
                 <input type="text" class="form-control" name="otra_observacion" id="otra_observacion" 
                 placeholder="Otros" style="display: none;">
             </div>
-        </div>
-
-        <div class="row d-flex justify-content-center mb-2 mt-2" id="div_tomar_foto" style="display:none !important;">
-            <button type="button" class="btn btn-info" onclick="Tomar_Foto();">Tomar foto</button>
-        </div>
-        <div class="row d-flex justify-content-center mb-2" id="div_camara" style="display:none !important;">
-            <video id="video" autoplay style="max-width: 95%;"></video>
-        </div>
-        <div class="row d-flex justify-content-center text-center" id="div_canvas" style="display:none !important;">
-            <p class="mt-2">Recuerda que puedes tomar otra foto presionando nuevamente <mark style="background-color:#2196F3;color:white;">Tomar foto</mark> o guardar el registro presionando <mark style=background-color:#1B55E2;color:white;>Guardar</mark></p>
-            <canvas id="canvas" style="max-width:95%;"></canvas>
         </div>
     </div>
 
