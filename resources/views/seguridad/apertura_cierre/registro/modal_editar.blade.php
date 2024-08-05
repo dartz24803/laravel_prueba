@@ -49,7 +49,7 @@
             <canvas id="canvase" style="max-width:95%;"></canvas>
         </div>
         
-        <div class="row">
+        <div class="row mt-2">
             <div class="form-group col-lg-2">
                 <label>Observaciones:</label>
             </div>
