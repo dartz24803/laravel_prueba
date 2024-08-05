@@ -79,14 +79,13 @@ Route::controller(TrackingController::class)->group(function(){
     //FIN SUBIDA ARCHIVOS
     Route::get('tracking', 'index')->name('tracking');
     Route::get('tracking/iniciar_tracking', 'iniciar_tracking')->name('tracking.iniciar_tracking');
-    Route::get('tracking/llegada_tienda_automatico', 'llegada_tienda_automatico')->name('tracking.llegada_tienda_automatico');
+    Route::get('tracking/llegada_tienda', 'llegada_tienda')->name('tracking.llegada_tienda');
     Route::post('tracking/list', 'list')->name('tracking.list');
     Route::get('tracking/create', 'create')->name('tracking.create');
     Route::post('tracking', 'store')->name('tracking.store');
     Route::post('tracking/{id}/salida_mercaderia', 'insert_salida_mercaderia')->name('tracking.salida_mercaderia');
     Route::get('tracking/{id}/detalle_transporte', 'detalle_transporte')->name('tracking.detalle_transporte');
     Route::post('tracking/{id}/mercaderia_transito', 'insert_mercaderia_transito')->name('tracking.mercaderia_transito');
-    Route::post('tracking/{id}/llegada_tienda', 'insert_llegada_tienda')->name('tracking.llegada_tienda');
     Route::post('tracking/{id}/confirmacion_llegada', 'insert_confirmacion_llegada')->name('tracking.confirmacion_llegada');
     Route::post('tracking/{id}/cierre_inspeccion_fardos', 'insert_cierre_inspeccion_fardos')->name('tracking.cierre_inspeccion_fardos');
     Route::get('tracking/{id}/verificacion_fardos', 'verificacion_fardos')->name('tracking.verificacion_fardos');

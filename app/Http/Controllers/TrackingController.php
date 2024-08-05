@@ -31,9 +31,9 @@ class TrackingController extends Controller
     public function __construct()
     {
         $this->middleware('verificar.sesion.usuario')->except(['index','detalle_operacion_diferencia','evaluacion_devolucion','iniciar_tracking','llegada_tienda_automatico']);
-        $token = TrackingToken::where('base','B06')->first();
-        $this->token = $token->token;
-        //$this->token = 'cNJ3S-QgScWZyciMPLUkuT:APA91bHkxMuAzdHPPM94yEWD3WkP9p24CnO6qZPhmKz6VsgFHRmmoM3BeprfjJlvFzr-AdlpcvdDvGbzhLlIW6-V0Bir0hhdBXDKIru8dqTomgz56QjFph-0vW5TinsoJm8vLgbT4Hei';
+        //$token = TrackingToken::where('base','B06')->first();
+        //$this->token = $token->token;
+        $this->token = 'dGFOzROqS5-9jr3kzO7Cxx:APA91bF3ga38vPAXdXt5pb1fVIRL9-vTdXqYTge9wyYycgVvPr3dKe7Yk0EWAHLvvJA3pVrd-4X8eMtQSsiTOAi11afyci5ZdZHMPOXBYw1lO37aZjvTlmzP9ZZzIlpbUgRF2vP5j7ir';
     }
 
     public function iniciar_tracking()
@@ -181,7 +181,7 @@ class TrackingController extends Controller
         }*/
     }
 
-    public function llegada_tienda_automatico()
+    public function llegada_tienda()
     {
         $list_tracking = Tracking::get_list_tracking(['llegada_tienda'=>1]);
 
@@ -513,42 +513,6 @@ class TrackingController extends Controller
         TrackingDetalleEstado::create([
             'id_detalle' => $tracking_dp->id,
             'id_estado' => 4,
-            'fecha' => now(),
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
-    }
-
-    public function insert_llegada_tienda(Request $request,$id)
-    {
-        //ALERTA 3
-        $get_id = Tracking::get_list_tracking(['id'=>$id]);
-
-        $dato = [
-            'id_tracking' => $id,
-            'token' => $this->token,
-            'titulo' => 'LLEGADA A TIENDA',
-            'contenido' => 'Hola '.$get_id->hacia.' confirma que tu mercadería haya llegado a tienda',
-        ];
-        $this->sendNotification($dato);
-
-        $tracking_dp = TrackingDetalleProceso::create([
-            'id_tracking' => $id,
-            'id_proceso' => 3,
-            'fecha' => now(),
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
-
-        TrackingDetalleEstado::create([
-            'id_detalle' => $tracking_dp->id,
-            'id_estado' => 5,
             'fecha' => now(),
             'estado' => 1,
             'fec_reg' => now(),
@@ -1712,7 +1676,7 @@ class TrackingController extends Controller
                                     Hola Andrea, tienes una solicitud de devolución por evaluar.
                                     <br><br>
                                     <a href="'.route('tracking.evaluacion_devolucion', $id).'" 
-                                    title="Autorización de Devolución"
+                                    title="Evaluación de Devolución"
                                     target="_blank" 
                                     style="background-color: red;
                                     color: white;
@@ -1721,7 +1685,7 @@ class TrackingController extends Controller
                                     font-size: 13px;
                                     text-decoration: none !important;
                                     border-radius: 10px;">
-                                        Autorización de Devolución
+                                        Evaluación de Devolución
                                     </a><br>
                                 </FONT SIZE>';
             

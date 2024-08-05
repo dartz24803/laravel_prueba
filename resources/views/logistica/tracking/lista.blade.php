@@ -83,7 +83,7 @@
                             </svg>
                         </a>
                     @elseif($list->id_estado==4)
-                        <a href="javascript:void(0);" title="Llegada a tienda" onclick="Insert_Llegada_Tienda('{{ $list->id }}');">
+                        <a href="javascript:void(0);" title="Llegada a tienda" onclick="Insert_Confirmacion_Llegada('{{ $list->id }}');">
                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle text-dark">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <polyline points="12 16 16 12 12 8"></polyline>
@@ -210,42 +210,6 @@
         Cargando();
 
         var url = "{{ route('tracking.salida_mercaderia', ':id') }}".replace(':id', id);
-        var csrfToken = $('input[name="_token"]').val();
-
-        Swal({
-            title: '¿Realmente desea cambiar el estado?',
-            text: "El cambio será permanentemente",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Si',
-            cancelButtonText: 'No',
-            padding: '2em'
-        }).then((result) => {
-            if (result.value) {
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    success: function() {
-                        Swal(
-                            '¡Cambio de estado exitoso!',
-                            '¡Haga clic en el botón!',
-                            'success'
-                        ).then(function() {
-                            Lista_Tracking();
-                        });
-                    }
-                });
-            }
-        })
-    }
-
-    function Insert_Llegada_Tienda(id) {
-        Cargando();
-
-        var url = "{{ route('tracking.llegada_tienda', ':id') }}".replace(':id', id);
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({
