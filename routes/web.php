@@ -23,6 +23,7 @@ use App\Http\Controllers\ControlCamaraController;
 use App\Http\Controllers\SliderRRHH;
 use App\Http\Controllers\Cumpleanios;
 use App\Http\Controllers\InicioAdmController;
+use App\Http\Controllers\InicioFrasesAdmController;
 
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
@@ -507,4 +508,13 @@ Route::controller(InicioAdmController::class)->group(function(){
     Route::get('Inicio/Modal_Update_Slider_Inicio/{id}', 'Modal_Update_Slider_Inicio');
     Route::post('Inicio/Update_Slider_Inicio', 'Update_Slider_Inicio');
 });
-
+//FRASES INICIO
+Route::controller(InicioFrasesAdmController::class)->group(function(){
+    Route::get('Inicio/index_frases', 'index');
+    Route::post('Inicio/Frases_Inicio_Listar', 'Frases_Inicio_Listar');
+    Route::get('Inicio/Modal_Update_Frases_Inicio/{id}', 'Modal_Update_Frases_Inicio');
+    Route::post('Inicio/Update_Frase_Inicio', 'Update_Frase_Inicio');
+    Route::get('Inicio/Modal_Registrar_Frases_Inicio', 'Modal_Registrar_Frases_Inicio');
+    Route::post('Inicio/Registrar_Frase_Inicio', 'Registrar_Frase_Inicio');
+    Route::post('Inicio/Delete_Frase', 'Delete_Frase');
+});
