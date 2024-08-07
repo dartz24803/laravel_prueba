@@ -74,7 +74,8 @@
                                                     <div class="carousel-item text-center">
                                                         <div class="d-flex justify-content-center align-items-center">
                                                             <div class="card-body">
-                                                                <h5 class="card-text">{{ $row['frase']}}</h5>
+                                                                <br><br>
+                                                                <h5 class="card-text" style="font-family: 'Poppins', sans-serif;">{{ $row['frase']}}</h5>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -173,18 +174,6 @@
                         <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
                                 <div class="carousel-item active">
-                                    <img class="d-block" style="max-width: 100%;" src="{{ asset('inicio/NEW.Intranet-Slide-01Procesos.png')}}" alt="First slide">
-                                </div>
-                                <div class="carousel-item">
-                                    <img class="d-block" style="max-width: 100%;" src="{{ asset('inicio/NEW.Intranet-Slide-02Manual.png')}}" alt="Second slide">
-                                </div>
-                                <div class="carousel-item">
-                                    <img class="d-block" style="max-width: 100%;" src="{{ asset('inicio/NEW.Intranet-Slide-03Politica.png')}}" alt="Third slide">
-                                </div>
-                                <div class="carousel-item">
-                                    <img class="d-block" style="max-width: 100%;" src="{{ asset('inicio/NEW.Intranet-Slide-04Instructivos.png')}}" alt="Third slide">
-                                </div>
-                                <div class="carousel-item">
                                     <div class="d-flex justify-content-center align-items-center">
                                         <div class="card-body">
                                             <div class="row">
@@ -234,6 +223,36 @@
                                         </div>
                                     </div>
                                 </div>
+                                <?php foreach($list_slider_inicio as $row):
+                                    $color = '#fff';
+                                    if($row['categoria'] == 'INSTRUCTIVOS'){
+                                        $active = "";
+                                        $image = asset('inicio/NEW.Intranet-Slide-04Instructivos.png');
+                                    }else if($row['categoria'] == 'POLÍTICA'){
+                                        $active = "";
+                                        $image = asset('inicio/NEW.Intranet-Slide-03Politica.png');
+                                    }else if($row['categoria'] == 'MANUAL'){
+                                        $active = "";
+                                        $image = asset('inicio/NEW.Intranet-Slide-02Manual.png');
+                                    }else if($row['categoria'] == 'PROCESOS'){
+                                        $active = "";
+                                        $image = asset('inicio/NEW.Intranet-Slide-01Procesos.png');
+                                    }
+                                    ?>
+                                    <div class="carousel-item <?= $active ?>">
+                                        <img id="imagen_fondo_slider" style="max-width: 101%; padding-left: 1%; padding-right: 1%;" src="<?= $image ?>">
+                                        <div id="carousel-caption" class="carousel-caption d-none d-block text-left">
+                                            <p class="mensaje_nuevo_slider" style="color: <?= $color ?>; margin-bottom: 0%; margin-left: 0.2rem"><?= $row['descripcion'] ?></p>
+                                            <span class="d-flex align-items-center titulo_slider" style="color: <?= $color ?>;"><?= $row['titulo'] ?></span>
+                                            <a  href="<?= $row['link'] ?>" target="_blank" style="max-width:100%;">
+                                                <span class="badge" style="background-color: #fea600; color:white; margin-top: 1%;">
+                                                    <img id="mano_slider" style="max-width: 10%; margin-right: 1%;" src="{{ asset('inicio/LN1-Intranet-Mano.png') }}" alt="">
+                                                    DESCÚBRELO
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                <?php endforeach ?>
                             </div>
                             <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -425,6 +444,91 @@
         /*#logo_seguridad{
             margin-top: 2rem;
         }*/
+    }
+    .titulo_slider{
+        font-size: 36px;
+        height: 4rem;
+        font-weight: bold;
+        line-height: 1; 
+        width: 23rem; 
+        margin-bottom: 0rem; 
+        text-transform: uppercase; 
+    }
+
+    #carousel-caption{
+        margin-left: -7%;
+        height: 100%;
+        top: 0;
+    }
+
+    @media screen and (max-width: 1050px) {
+        .mensaje_nuevo_slider{
+            font-size: medium;
+        }
+
+        .titulo_slider{
+            font-size: x-large;
+        }
+
+        #imagen_fondo_slider{
+            height: 144px;
+        }
+    }
+    @media screen and (max-width: 799px) {
+        .titulo_slider{
+            font-size: x-small;
+            height: 1rem;
+        }
+        .mensaje_nuevo_slider{
+            margin-top: 15%;
+            font-size: xx-small;
+            height: 1rem;
+        }
+ 
+        #carousel-caption{
+            top: -40%;
+        }
+        #imagen_fondo_slider{
+            height: 99px;
+        }
+
+        .badge{
+            font-size: 10px;
+        }
+
+        .contenedorestilos{
+            display: none;
+        }
+    }
+
+    @media screen and (min-width: 1900px) {
+        #carousel-caption {
+            margin-left: -7%;
+            height: 100%;
+            top: 0%;
+        }
+        .titulo_slider {
+            font-size: 20px;
+            height: 8rem;
+            font-weight: bold;
+            line-height: 1;
+            width: 36rem;
+            margin-bottom: 0rem;
+            text-transform: uppercase;
+        }
+
+        .mensaje_nuevo_slider{
+            color: #fa2b5c;
+            margin-bottom: 0%;
+            margin-left: 0.2rem;
+            font-size: large;
+            margin-top: 40rem;
+        }
+
+        .badge{
+            font-size: 10px;
+            /* width: 18%; */
+        }
     }
 </style>
 <script>
