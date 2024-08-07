@@ -710,12 +710,21 @@ class TrackingController extends Controller
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
         if($get_id->transporte==2 || ($get_id->transporte==1 && $get_id->importe_transporte>0)){
-            //ALERTA 8
+            //ALERTA 5 (SI)
             $dato = [
                 'id_tracking' => $id,
                 'token' => $this->token,
-                'titulo' => 'INSPECCIÓN DE MERCADERÍA',
-                'contenido' => 'Hola '.$get_id->desde.', se ha recepcionado la mercadería correcta',
+                'titulo' => 'CIERRE DE INSPECCIÓN DE FARDOS',
+                'contenido' => 'Hola '.$get_id->desde.', se ha dado el cierre a la inspección de fardos',
+            ];
+            $this->sendNotification($dato);
+
+            //ALERTA 7
+            $dato = [
+                'id_tracking' => $id,
+                'token' => $this->token,
+                'titulo' => 'INSPECCION DE MERCADERÍA',
+                'contenido' => 'Hola '.$get_id->desde.', se realizará la inspección de mercadería',
             ];
             $this->sendNotification($dato);
 
@@ -756,10 +765,10 @@ class TrackingController extends Controller
                     'user_act' => session('usuario')->id_usuario
                 ]);
                 $id_detalle = $tracking_dp->id;
-                $contenido_mensaje = 'Hola '.$get_id->desde.', se ha dado el cierre a la verificación de fardos';
+                $contenido_mensaje = 'Hola '.$get_id->desde.', se ha dado el cierre a la inspección de fardos';
             }
 
-            //ALERTA 5 o 6
+            //ALERTA 5 (SI) o (NO)
             $dato = [
                 'id_tracking' => $id,
                 'token' => $this->token,
@@ -1020,6 +1029,37 @@ class TrackingController extends Controller
         return view('logistica.tracking.pago_transporte', compact('get_id'));
     }
 
+    public function previsualizacion_captura_pago()
+    {
+        if($_FILES["photo"]["name"] != ""){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                if(file_exists('https://lanumerounocloud.com/intranet/TRACKING/temporal_pm_'.session('usuario')->id_usuario.'.jpg')){
+                    ftp_delete($con_id, 'TRACKING/temporal_pm_'.session('usuario')->id_usuario.'.jpg');
+                }
+
+                $path = $_FILES["photo"]["name"];
+                $source_file = $_FILES['photo']['tmp_name'];
+
+                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                $nombre_soli = "temporal_pm_".session('usuario')->id_usuario;
+                $nombre = $nombre_soli.".".strtolower($ext);
+
+                ftp_pasv($con_id,true); 
+                $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
+                if (!$subio) {
+                    echo "Archivo no subido correctamente";
+                }
+            }else{
+                echo "No se conecto";
+            }
+        }
+    }
+
     public function insert_confirmacion_pago_transporte(Request $request, $id)
     {
         $request->validate([
@@ -1082,7 +1122,29 @@ class TrackingController extends Controller
             }
         }
 
-        //ALERTA 7
+        if($request->captura=="1"){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                $nombre_actual = "TRACKING/temporal_pm_".session('usuario')->id_usuario.".jpg";
+                $nuevo_nombre = "TRACKING/Factura_".$id."_".date('YmdHis')."_captura.jpg";
+                ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
+                $archivo = "https://lanumerounocloud.com/intranet/".$nuevo_nombre;
+                
+                TrackingArchivo::create([
+                    'id_tracking' => $id,
+                    'tipo' => 1,
+                    'archivo' => $archivo
+                ]);
+            }else{
+                echo "No se conecto";
+            }
+        }
+
+        //ALERTA 6
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
         $dato = [
@@ -1164,12 +1226,12 @@ class TrackingController extends Controller
             ]);
 
             //PASAR PARA INSPECCIÓN DE MERCADERÍA
-            //ALERTA 8
+            //ALERTA 7
             $dato = [
                 'id_tracking' => $id,
                 'token' => $this->token,
-                'titulo' => 'INSPECCIÓN DE MERCADERÍA',
-                'contenido' => 'Hola '.$get_id->desde.', se ha recepcionado la mercadería correcta',
+                'titulo' => 'INSPECCION DE MERCADERÍA',
+                'contenido' => 'Hola '.$get_id->desde.', se realizará la inspección de mercadería',
             ];
             $this->sendNotification($dato);
 
