@@ -38,7 +38,6 @@ class TrackingController extends Controller
 
     public function iniciar_tracking()
     {
-        //TrackingGuiaRemisionDetalleTemporal::truncate();
         /*TrackingTemporal::truncate();
         $list_tracking = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['T']);
         foreach($list_tracking as $list){
@@ -52,23 +51,11 @@ class TrackingController extends Controller
                 'hacia' => $list->hacia,
                 'bultos' => $list->bultos
             ]);
-        }*/
-        /*$list_guia = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['G']);
-        foreach($list_guia as $list){
-            TrackingGuiaRemisionDetalleTemporal::create([
-                'n_requerimiento' => $list->n_requerimiento,
-                'n_guia_remision' => $list->n_guia_remision,
-                'sku' => $list->sku,
-                'color' => $list->color,
-                'estilo' => $list->estilo,
-                'talla' => $list->talla,
-                'descripcion' => $list->descripcion,
-                'cantidad' => $list->cantidad
-            ]);
-        }*/
-        /*DB::statement('CALL insert_tracking()');
+        }
+        DB::statement('CALL insert_tracking()');
 
-        $list_tracking = Tracking::select('tracking.id','tracking.n_requerimiento','tracking.semana',DB::raw('base.cod_base AS hacia'))
+        $list_tracking = Tracking::select('tracking.id','tracking.n_requerimiento','tracking.n_guia_remision',
+                                    'tracking.semana',DB::raw('base.cod_base AS hacia'))
                                     ->join('base','base.id_base','=','tracking.id_origen_hacia')
                                     ->where('tracking.iniciar',0)->get();
 
@@ -111,7 +98,8 @@ class TrackingController extends Controller
             ]);
     
             //MENSAJE 1
-            $list_detalle = TrackingGuiaRemisionDetalle::where('n_requerimiento', $tracking->n_requerimiento)->get();
+            //$list_detalle = TrackingGuiaRemisionDetalle::where('n_requerimiento', $tracking->n_requerimiento)->get();
+            $list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$tracking->n_requerimiento]);
     
             $mail = new PHPMailer(true);
     
@@ -135,7 +123,7 @@ class TrackingController extends Controller
             
                 $mail->Body =  '<FONT SIZE=3>
                                     Buen día '.$tracking->hacia.'.<br><br>
-                                    Se envia el reporte de la salida de Mercaderia, de la guía de remisión '.$tracking->n_requerimiento.'.<br><br>
+                                    Se envia el reporte de la salida de Mercaderia, de la guía de remisión '.$tracking->n_guia_remision.'.<br><br>
                                     <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                         <thead>
                                             <tr align="center" style="background-color:#0093C6;">
@@ -288,6 +276,7 @@ class TrackingController extends Controller
         return view('logistica.tracking.lista', compact('list_tracking'));
     }
 
+    //FORMA MANUAL
     public function create()
     {
         $list_base = Base::get_list_base_tracking();
@@ -411,6 +400,7 @@ class TrackingController extends Controller
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
     }
+    //END FORMA MANUAL
 
     public function insert_salida_mercaderia(Request $request,$id)
     {
@@ -435,6 +425,20 @@ class TrackingController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+
+        $list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$get_id->n_requerimiento]);
+        foreach($list_detalle as $list){
+            TrackingGuiaRemisionDetalle::create([
+                'n_requerimiento' => $get_id->n_requerimiento,
+                'n_guia_remision' => $get_id->n_requerimiento,
+                'sku' => $list->sku,
+                'color' => $list->color,
+                'estilo' => $list->estilo,
+                'talla' => $list->talla,
+                'descripcion' => $list->descripcion,
+                'cantidad' => $list->cantidad,
+            ]);
+        }
     }
 
     public function detalle_transporte($id)
