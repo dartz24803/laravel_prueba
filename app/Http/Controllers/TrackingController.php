@@ -1263,7 +1263,7 @@ class TrackingController extends Controller
 
     public function insert_conteo_mercaderia(Request $request,$id)
     {
-        //ALERTA 9
+        //ALERTA 8
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
         $dato = [
@@ -1288,7 +1288,7 @@ class TrackingController extends Controller
 
     public function insert_mercaderia_entregada($id)
     {
-        //ALERTA 9.3
+        //ALERTA 13
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
         $dato = [
@@ -1403,7 +1403,7 @@ class TrackingController extends Controller
 
     public function insert_reporte_diferencia(Request $request,$id)
     {
-        //ALERTA 9.1
+        //ALERTA 9
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
         $dato = [
@@ -1533,7 +1533,7 @@ class TrackingController extends Controller
             'user_act' => session('usuario')->id_usuario
         ]);
 
-        //ALERTA 9.1.1
+        //ALERTA 10
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
         $dato = [
@@ -1608,7 +1608,7 @@ class TrackingController extends Controller
                     'user_act' => session('usuario')->id_usuario
                 ]);
             }else{
-                //ALERTA 9.3
+                //ALERTA 13
                 $this->insert_mercaderia_entregada($id);
             }
         }catch(Exception $e) {
@@ -1686,7 +1686,7 @@ class TrackingController extends Controller
         $valida = TrackingDevolucionTemporal::where('id_usuario',session('usuario')->id_usuario)->exists();
 
         if($valida){
-            //ALERTA 9.2
+            //ALERTA 11
             $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
             $dato = [
@@ -1955,7 +1955,7 @@ class TrackingController extends Controller
                 echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
             }
     
-            //ALERTA 9.2.1
+            //ALERTA 12
             $dato = [
                 'id_tracking' => $id,
                 'token' => $this->token,
@@ -1975,7 +1975,7 @@ class TrackingController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
 
-            //ALERTA 9.3
+            //ALERTA 13
             $this->insert_mercaderia_entregada($id);
         }else{
             echo "error";
