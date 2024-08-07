@@ -30,7 +30,15 @@ class TrackingController extends Controller
 
     public function __construct()
     {
-        $this->middleware('verificar.sesion.usuario')->except(['index','detalle_operacion_diferencia','evaluacion_devolucion','iniciar_tracking','llegada_tienda']);
+        $this->middleware('verificar.sesion.usuario')->except([
+            'index',
+            'detalle_operacion_diferencia',
+            'evaluacion_devolucion',
+            'iniciar_tracking',
+            'llegada_tienda',
+            'list_mercaderia_nueva_app',
+            'insert_mercaderia_surtida'
+        ]);
         //$token = TrackingToken::where('base','B06')->first();
         //$this->token = $token->token;
         $this->token = 'dGFOzROqS5-9jr3kzO7Cxx:APA91bF3ga38vPAXdXt5pb1fVIRL9-vTdXqYTge9wyYycgVvPr3dKe7Yk0EWAHLvvJA3pVrd-4X8eMtQSsiTOAi11afyci5ZdZHMPOXBYw1lO37aZjvTlmzP9ZZzIlpbUgRF2vP5j7ir';
@@ -2000,6 +2008,32 @@ class TrackingController extends Controller
     {
         $list_mercaderia_nueva = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?,?,?', ['',date('Y'),date('W'),$request->cod_base,$request->tipo_usuario,$request->tipo_prenda]);
         return view('logistica.tracking.mercaderia_nueva.lista', compact('list_mercaderia_nueva'));
+    }
+
+    public function list_mercaderia_nueva_app(Request $request)
+    {
+        try {
+            $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?,?,?', [
+                '',
+                date('Y'),
+                date('W'),
+                $request->cod_base,
+                $request->tipo_usuario,
+                $request->tipo_prenda
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => "Error procesando base de datos.",
+            ], 500);
+        }
+
+        if (!$query) {
+            return response()->json([
+                'message' => 'Sin resultados.',
+            ], 404);
+        }
+
+        return response()->json($query, 200);
     }
 
     public function modal_mercaderia_nueva($sku)
