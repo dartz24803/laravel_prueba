@@ -1683,9 +1683,9 @@ class TrackingController extends Controller
             'devolucion.required' => 'Debe seleccionar al menos un ítem.',
         ]);
 
-        $valida = TrackingDevolucionTemporal::where('id_usuario',session('usuario')->id_usuario)->exists();
+        $cantidad = TrackingDevolucionTemporal::where('id_usuario',session('usuario')->id_usuario)->count();
 
-        if($valida){
+        if($cantidad==count($request->devolucion)){
             //ALERTA 11
             $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
