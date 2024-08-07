@@ -55,7 +55,7 @@ class Tracking extends Model
                     (SELECT ta.archivo FROM tracking_archivo ta
                     WHERE ta.id_tracking=tr.id AND ta.tipo=1
                     ORDER BY ta.id DESC
-                    LIMIT 1) AS archivo_transporte
+                    LIMIT 1) AS archivo_transporte,md.id_dos
                     FROM tracking tr
                     LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base
@@ -67,6 +67,10 @@ class Tracking extends Model
                     FROM tracking_detalle_estado
                     GROUP BY id_detalle) me ON mp.ultimo_id=me.id_detalle
                     LEFT JOIN tracking_detalle_estado de ON me.ultimo_id=de.id
+                    LEFT JOIN (SELECT MAX(id) AS id_dos,id_tracking
+                    FROM tracking_detalle_proceso
+                    WHERE id_proceso=2
+                    GROUP BY id_tracking) md ON tr.id=md.id_tracking
                     WHERE tr.id=".$dato['id'];
             $query = DB::select($sql);
             return $query[0];

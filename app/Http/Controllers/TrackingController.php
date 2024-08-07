@@ -30,7 +30,7 @@ class TrackingController extends Controller
 
     public function __construct()
     {
-        $this->middleware('verificar.sesion.usuario')->except(['index','detalle_operacion_diferencia','evaluacion_devolucion','iniciar_tracking','llegada_tienda_automatico']);
+        $this->middleware('verificar.sesion.usuario')->except(['index','detalle_operacion_diferencia','evaluacion_devolucion','iniciar_tracking','llegada_tienda']);
         //$token = TrackingToken::where('base','B06')->first();
         //$this->token = $token->token;
         $this->token = 'dGFOzROqS5-9jr3kzO7Cxx:APA91bF3ga38vPAXdXt5pb1fVIRL9-vTdXqYTge9wyYycgVvPr3dKe7Yk0EWAHLvvJA3pVrd-4X8eMtQSsiTOAi11afyci5ZdZHMPOXBYw1lO37aZjvTlmzP9ZZzIlpbUgRF2vP5j7ir';
@@ -527,6 +527,12 @@ class TrackingController extends Controller
         //ALERTA 4
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
+        if($get_id->id_estado=="4"){
+            $id_detalle_4 = $get_id->id_detalle;
+        }else{
+            $id_detalle_4 = $get_id->id_dos;
+        }
+
         $dato = [
             'id_tracking' => $id,
             'token' => $this->token,
@@ -535,23 +541,47 @@ class TrackingController extends Controller
         ];
         $this->sendNotification($dato);
 
-        TrackingDetalleEstado::create([
-            'id_detalle' => $get_id->id_detalle,
-            'id_estado' => 6,
-            'fecha' => now(),
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
+        if($get_id->id_estado=="4"){
+            $tracking_dp = TrackingDetalleProceso::create([
+                'id_tracking' => $id,
+                'id_proceso' => 3,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'fec_act' => now(),
+            ]);
+
+            TrackingDetalleEstado::create([
+                'id_detalle' => $tracking_dp->id,
+                'id_estado' => 6,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+            $id_detalle_6 = $tracking_dp->id;
+        }else{
+            TrackingDetalleEstado::create([
+                'id_detalle' => $get_id->id_detalle,
+                'id_estado' => 6,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+            $id_detalle_6 = $get_id->id_detalle;
+        }
 
         //MENSAJE 2
-        $estado_5 = TrackingDetalleEstado::get_list_tracking_detalle_estado(['id_detalle'=>$get_id->id_detalle,'id_estado'=>5]);
-        $estado_6 = TrackingDetalleEstado::get_list_tracking_detalle_estado(['id_detalle'=>$get_id->id_detalle,'id_estado'=>6]);
+        $estado_4 = TrackingDetalleEstado::get_list_tracking_detalle_estado(['id_detalle'=>$id_detalle_4,'id_estado'=>4]);
+        $estado_6 = TrackingDetalleEstado::get_list_tracking_detalle_estado(['id_detalle'=>$id_detalle_6,'id_estado'=>6]);
         $list_archivo = TrackingArchivo::where('id_tracking', $id)->where('tipo', 1)->get();
 
-        $fecha1 = new \DateTime($estado_5->fecha);
+        $fecha1 = new \DateTime($estado_4->fecha);
         $fecha2 = new \DateTime($estado_6->fecha);
         $intervalo = $fecha1->diff($fecha2);
         $diferencia = $intervalo->days;
@@ -627,7 +657,7 @@ class TrackingController extends Controller
                                     <tr>
                                         <td rowspan="3" style="font-weight:bold;">Fecha</td>
                                         <td style="font-weight:bold;">Partida</td>
-                                        <td style="text-align:right;">'.$estado_5->fecha_formateada.'</td>
+                                        <td style="text-align:right;">'.$estado_4->fecha_formateada.'</td>
                                     </tr>
                                     <tr>
                                         <td style="font-weight:bold;">Llegada</td>
@@ -661,7 +691,7 @@ class TrackingController extends Controller
             $mail->send();
 
             TrackingDetalleEstado::create([
-                'id_detalle' => $get_id->id_detalle,
+                'id_detalle' => $id_detalle_6,
                 'id_estado' => 7,
                 'fecha' => now(),
                 'estado' => 1,
