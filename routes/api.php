@@ -9,3 +9,4 @@ use Illuminate\Support\Facades\Route;
 });*/
 
 Route::post('tracking_token', [TrackingTokenController::class, 'store'])->name('tracking_token.store');
+Route::post('tracking_notificacion', [TrackingTokenController::class, 'list_notificacion'])->name('tracking_notificacion.list');

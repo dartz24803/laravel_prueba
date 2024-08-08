@@ -72,7 +72,6 @@ Route::controller(ReporteFotograficoController::class)->group(function(){
 });
 //LOGÍSTICA - TRACKING
 Route::controller(TrackingController::class)->group(function(){
-    Route::post('tracking/notificacion', 'list_notificacion')->name('tracking_notificacion');
     //SUBIDA DE ARCHIVOS
     Route::post('tracking/list_archivo', 'list_archivo')->name('tracking.list_archivo');
     Route::post('tracking/previsualizacion_captura', 'previsualizacion_captura')->name('tracking.previsualizacion_captura');
