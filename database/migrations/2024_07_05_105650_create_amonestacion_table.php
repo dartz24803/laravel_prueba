@@ -17,7 +17,7 @@ return new class extends Migration
             $table->date('fecha')->nullable();
             $table->unsignedBigInteger('id_solicitante');
             $table->unsignedBigInteger('id_colaborador');
-            $table->int('id_revisor')->nullable();
+            $table->integer('id_revisor')->nullable();
             $table->string('tipo', 255)->nullable();
             $table->unsignedBigInteger('id_gravedad_amonestacion');
             $table->string('motivo', 250)->nullable();
