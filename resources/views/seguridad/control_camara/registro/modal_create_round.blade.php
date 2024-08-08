@@ -43,8 +43,9 @@
 
     <div class="modal-footer">
         @csrf
+        <input type="file" id="archivo_rond" name="archivo_rond" style="display: block;">
         <input type="hidden" id="captura" name="captura">
-        <button id="boton_disabled" class="btn btn-primary" type="button" onclick="Insert_Control_Camara();" disabled>Guardar</button>
+        <button id="boton_disabled" class="btn btn-primary" type="button" onclick="Registrar_Ronda();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
@@ -139,11 +140,11 @@
         });
     }
 
-    function Insert_Control_Camara(){
+    function Registrar_Ronda(){
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario'));
-        var url = "{{ route('control_camara_reg.store') }}";
+        var url = "{{ route('control_camara_reg.registrar_ronda') }}";
 
         $.ajax({
             url: url,
@@ -183,4 +184,49 @@
             }
         });
     }
+    document.getElementById('paste_arear').addEventListener('paste', function(e) {
+        if (e.clipboardData && e.clipboardData.items) {
+            var items = e.clipboardData.items;
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf("image") !== -1) {
+                    var blob = items[i].getAsFile();
+
+                    // Display image in viewer div
+                    displayImage(blob);
+
+                    // Set the image blob as form data
+                    var fileInput = document.getElementById('archivo_rond');
+                    var dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(blob);
+                    fileInput.files = dataTransfer.files;
+
+                    break;
+                }
+            }
+        }
+    });
+    
+    @foreach ($list_ronda as $list)
+        document.getElementById('paste_arear_{{ $list->id }}').addEventListener('paste', function(e) {
+            if (e.clipboardData && e.clipboardData.items) {
+                var items = e.clipboardData.items;
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf("image") !== -1) {
+                        var blob = items[i].getAsFile();
+
+                        // Display image in viewer div
+                        displayImager(blob, {{ $list->id }});
+
+                        // Set the image blob as form data
+                        var fileInput = document.getElementById('archivo_ronda_{{ $list->id }}');
+                        var dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(blob);
+                        fileInput.files = dataTransfer.files;
+
+                        break;
+                    }
+                }
+            }
+        });
+    @endforeach
 </script>

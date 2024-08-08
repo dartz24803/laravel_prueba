@@ -62,30 +62,32 @@
     $('.basic_i').select2({
         dropdownParent: $('#ModalRegistro')
     });
-    /*
-    document.getElementById('paste_arear').addEventListener('paste', function(e) {
-        if (e.clipboardData && e.clipboardData.items) {
-            var items = e.clipboardData.items;
-            for (var i = 0; i < items.length; i++) {
-                if (items[i].type.indexOf("image") !== -1) {
-                    var blob = items[i].getAsFile();
+    @foreach ($list_ronda as $list)
+        document.getElementById('paste_arear_{{ $list->id }}').addEventListener('paste', function(e) {
+            if (e.clipboardData && e.clipboardData.items) {
+                var items = e.clipboardData.items;
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf("image") !== -1) {
+                        var blob = items[i].getAsFile();
 
-                    // Display image in viewer div
-                    displayImage(blob);
+                        // Display image in viewer div
+                        displayImager(blob, {{ $list->id }});
 
-                    // Set the image blob as form data
-                    var fileInput = document.getElementById('archivo_ronda');
-                    var dataTransfer = new DataTransfer();
-                    dataTransfer.items.add(blob);
-                    fileInput.files = dataTransfer.files;
+                        // Set the image blob as form data
+                        var fileInput = document.getElementById('archivo_ronda_{{ $list->id }}');
+                        var dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(blob);
+                        fileInput.files = dataTransfer.files;
 
-                    break;
+                        break;
+                    }
                 }
             }
-        }
-    });
+        });
+    @endforeach
+
     // Function to display image in viewer div
-    function displayImage(blob) {
+    function displayImager(blob,id) {
         var reader = new FileReader();
 
         reader.onload = function(event) {
@@ -95,7 +97,7 @@
             img.style.marginTop = "10px"; // Adjust styling as needed
 
             // Clear previous content
-            var imageViewer = document.getElementById('imageViewerr');
+            var imageViewer = document.getElementById('imageViewerr_'+id);
             imageViewer.innerHTML = '';
             
             // Append new image to viewer div
@@ -103,6 +105,13 @@
         };
 
         reader.readAsDataURL(blob);
+    }
+
+    function LimpiarImage(){
+        event.preventDefault(); // Prevenir la acción por defecto, que podría ser recargar la página
+        // Clear previous content
+        var imageViewer = document.getElementById('imageViewerr');
+        imageViewer.innerHTML = '';
     }
 
     @foreach ($list_ronda as $list)
@@ -127,5 +136,5 @@
                 }
             }
         });
-    @endforeach*/
+    @endforeach
 </script>

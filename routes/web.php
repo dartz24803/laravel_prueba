@@ -374,6 +374,7 @@ Route::controller(ControlCamaraController::class)->group(function(){
     Route::post('control_camara_reg/{id}/insert_ronda', 'insert_ronda_reg')->name('control_camara_reg.insert_ronda');
     Route::post('control_camara_reg/valida_captura', 'valida_captura_reg')->name('control_camara_reg.valida_captura');
     Route::post('control_camara_reg', 'store_reg')->name('control_camara_reg.store');
+    Route::post('control_camara_reg/registrar_ronda', 'registrar_ronda')->name('control_camara_reg.registrar_ronda');
     Route::get('control_camara_reg/{id}/archivo', 'archivo_reg')->name('control_camara_reg.archivo');
     Route::get('control_camara_reg/{id_sede}/{id_local}/excel', 'excel_reg')->name('control_camara_reg.excel');
     Route::get('control_camara_img', 'index_img')->name('control_camara_img');
