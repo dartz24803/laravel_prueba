@@ -215,33 +215,42 @@ class TrackingController extends Controller
     public function list_notificacion(Request $request)
     {
         if($request->id_tracking){
-            echo "Si";
+            try {
+                $query = TrackingNotificacion::select('titulo','contenido','fecha')
+                                                ->where('id_tracking',$request->id_tracking)->get();
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
+            }
+    
+            if (!$query) {
+                return response()->json([
+                    'message' => 'Sin resultados.',
+                ], 404);
+            }
+    
+            return response()->json($query, 200);
         }else{
-            echo "No";
+            try {
+                $query = TrackingNotificacion::select('tracking_notificacion.id_tracking',
+                                                'tracking.n_requerimiento')
+                                                ->join('tracking','tracking.id','=','tracking_notificacion.id_tracking')
+                                                ->groupBy('tracking_notificacion.id_tracking')->get();
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
+            }
+    
+            if (!$query) {
+                return response()->json([
+                    'message' => 'Sin resultados.',
+                ], 404);
+            }
+    
+            return response()->json($query, 200);
         }
-
-        /*try {
-            $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?,?,?', [
-                '',
-                date('Y'),
-                date('W'),
-                $request->cod_base,
-                $request->tipo_usuario,
-                $request->tipo_prenda
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'message' => "Error procesando base de datos.",
-            ], 500);
-        }
-
-        if (!$query) {
-            return response()->json([
-                'message' => 'Sin resultados.',
-            ], 404);
-        }
-
-        return response()->json($query, 200);*/
     }
 
     public function getAccessToken()
