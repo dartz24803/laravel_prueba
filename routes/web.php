@@ -364,8 +364,10 @@ Route::controller(ControlCamaraController::class)->group(function(){
     Route::get('control_camara_reg', 'index_reg')->name('control_camara_reg');
     Route::post('control_camara_reg/list', 'list_reg')->name('control_camara_reg.list');
     Route::get('control_camara_reg/create', 'create_reg')->name('control_camara_reg.create');
+    Route::get('control_camara_reg/modal_ronda', 'create_round');
     Route::post('control_camara_reg/traer_hora_programada', 'traer_hora_programada_reg')->name('control_camara_reg.traer_hora_programada');
     Route::post('control_camara_reg/traer_tienda', 'traer_tienda_reg')->name('control_camara_reg.traer_tienda');
+    Route::post('control_camara_reg/traer_edificio_reg', 'traer_edificio_reg')->name('control_camara_reg.traer_edificio');
     Route::get('control_camara_reg/{id}/modal_imagen', 'modal_imagen_reg')->name('control_camara_reg.modal_imagen');
     Route::post('control_camara_reg/{id}/insert_imagen', 'insert_imagen_reg')->name('control_camara_reg.insert_imagen');
     Route::get('control_camara_reg/{id}/modal_ronda', 'modal_ronda_reg')->name('control_camara_reg.modal_ronda');

@@ -29,33 +29,18 @@
 
         <div class="row p-2">
             <textarea id="paste_arear" class="textarea_paste" placeholder="Haz click aquí para pegar la imagen" style="width: 100%" rows="1" disabled></textarea>
+            <button onclick="LimpiarImage()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            </button>
             <div id="imageViewerr">
             </div>
         </div>
 
-        @if (count($list_ronda)>0)
-            <div class="row mt-3">
-                <div class="form-group col-lg-12">
-                    <h5 class="modal-title">RONDA {{ $get_sede->nombre_sede }}</h5>
-                </div>
-            </div>
-
-            @foreach ($list_ronda as $list)
-                <div class="row">
-                    <div class="form-group col-lg-12">
-                        <label class="control-label text-bold">{{ $list->descripcion }}:</label>
-                        <textarea id="paste_arear_{{ $list->id }}" class="textarea_paste" placeholder="Haz click aquí para pegar la imagen" style="width: 100%" rows="1" disabled></textarea>
-                        <div id="imageViewerr_{{ $list->id }}">
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        @endif
     </div>
 
     <div class="modal-footer">
         @csrf
-        <input type="file" id="archivo_ronda" name="archivo_ronda" style="display: none;">
+        <input type="file" id="archivo_rond" name="archivo_rond" style="display: none;">
         @foreach ($list_ronda as $list)
             <input type="file" id="archivo_ronda_{{ $list->id }}" name="archivo_ronda_{{ $list->id }}" style="display: none;">
         @endforeach
@@ -76,7 +61,7 @@
                     displayImage(blob);
 
                     // Set the image blob as form data
-                    var fileInput = document.getElementById('archivo_ronda');
+                    var fileInput = document.getElementById('archivo_rond');
                     var dataTransfer = new DataTransfer();
                     dataTransfer.items.add(blob);
                     fileInput.files = dataTransfer.files;
@@ -197,5 +182,12 @@
                 });
             }
         })
+    }
+
+    function LimpiarImage(){
+        event.preventDefault(); // Prevenir la acción por defecto, que podría ser recargar la página
+        // Clear previous content
+        var imageViewer = document.getElementById('imageViewerr');
+        imageViewer.innerHTML = '';
     }
 </script>

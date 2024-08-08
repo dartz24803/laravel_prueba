@@ -499,6 +499,18 @@
         .contenedorestilos{
             display: none;
         }
+        #logo_comercial{
+            margin-top: 1.5rem;
+        }
+        #logo_infraestructura{
+            margin-top: 1.5rem;
+        }
+        #logo_interna{
+            margin-top: 1.5rem;
+        }
+        #logo_finanzas{
+            margin-top: 1.5rem;
+        }
     }
 
     @media screen and (min-width: 1900px) {
