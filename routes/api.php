@@ -11,3 +11,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('tracking_token', [TrackingTokenController::class, 'store'])->name('tracking_token.store');
 Route::post('tracking/notificacion', [TrackingController::class, 'list_notificacion'])->name('tracking.notificacion');
+Route::post('tracking/list_mercaderia_nueva_app', [TrackingController::class, 'list_mercaderia_nueva_app'])->name('tracking.list_mercaderia_nueva_app');
