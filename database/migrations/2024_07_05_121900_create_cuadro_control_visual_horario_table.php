@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('cuadro_control_visual_horario', function (Blueprint $table) {
             $table->id('id_cuadro_control_visual_horario');
-            $table->unsignedBigInteger('id_usuario')->nullable();
+            $table->unsignedBigInteger('id_usuario');
             $table->integer('horario')->nullable();
             $table->integer('dia')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
-            $table->foreign('id_usuario')->references('id_usuario')->on('users');
+            $table->foreign('id_usuario','ccvhor_fk_id_usu')->references('id_usuario')->on('users');
             //$table->timestamps();
         });
     }

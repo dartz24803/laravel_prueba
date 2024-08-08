@@ -18,7 +18,6 @@ return new class extends Migration
             $table->dateTime('fecha')->nullable();
             $table->unsignedBigInteger('usuario');
             $table->foreign('id_puesto','org_fk_id_pue')->references('id_puesto')->on('puesto');
-            $table->foreign('usuario','org_fk_usu')->references('id_usuario')->on('users');
             //$table->timestamps();
         });
     }
