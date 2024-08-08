@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('reporte_fotografico_archivo_temporal_new', function (Blueprint $table) {
             $table->id();
             $table->string('ruta', 100)->nullable();
-            $table->unsignedBigInteger('id_usuario')->nullable();
-            $table->foreign('id_usuario')->references('id_usuario')->on('users');
+            $table->unsignedBigInteger('id_usuario');
+            $table->foreign('id_usuario','rfatnew_fk_id_usu')->references('id_usuario')->on('users');
             //$table->timestamps();
         });
     }

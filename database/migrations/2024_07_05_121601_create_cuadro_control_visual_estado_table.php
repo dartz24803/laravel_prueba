@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('cuadro_control_visual_estado', function (Blueprint $table) {
             $table->id('id_cuadro_control_visual_estado');
-            $table->unsignedBigInteger('id_usuario')->nullable();
+            $table->unsignedBigInteger('id_usuario');
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
-            $table->foreign('id_usuario')->references('id_usuario')->on('users');
+            $table->foreign('id_usuario','ccvest_fk_id_usu')->references('id_usuario')->on('users');
             //$table->timestamps();
         });
     }

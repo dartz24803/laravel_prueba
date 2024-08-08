@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id('id_amonestacion');
             $table->string('cod_amonestacion', 30)->nullable();
             $table->date('fecha')->nullable();
-            $table->unsignedBigInteger('id_solicitante')->nullable();
-            $table->unsignedBigInteger('id_colaborador')->nullable();
-            $table->unsignedBigInteger('id_revisor')->nullable();
+            $table->unsignedBigInteger('id_solicitante');
+            $table->unsignedBigInteger('id_colaborador');
+            $table->int('id_revisor')->nullable();
             $table->string('tipo', 255)->nullable();
-            $table->unsignedBigInteger('id_gravedad_amonestacion')->nullable();
+            $table->unsignedBigInteger('id_gravedad_amonestacion');
             $table->string('motivo', 250)->nullable();
             $table->text('detalle')->nullable();
             $table->dateTime('fec_aprobacion')->nullable();
@@ -32,10 +32,9 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            $table->foreign('id_solicitante')->references('id_usuario')->on('users');
-            $table->foreign('id_colaborador')->references('id_usuario')->on('users');
-            // $table->foreign('id_revisor')->references('id_revisor')->on('users');
-            $table->foreign('id_gravedad_amonestacion')->references('id_gravedad_amonestacion')->on('gravedad_amonestacion');
+            $table->foreign('id_solicitante','amo_fk_id_sol')->references('id_usuario')->on('users');
+            $table->foreign('id_colaborador','amo_fk_id_col')->references('id_usuario')->on('users');
+            $table->foreign('id_gravedad_amonestacion','amo_fk_id_gamo')->references('id_gravedad_amonestacion')->on('gravedad_amonestacion');
             //$table->timestamps();
         });
     }
