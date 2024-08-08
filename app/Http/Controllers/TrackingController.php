@@ -36,6 +36,7 @@ class TrackingController extends Controller
             'evaluacion_devolucion',
             'iniciar_tracking',
             'llegada_tienda',
+            'list_notificacion',
             'list_mercaderia_nueva_app',
             'insert_mercaderia_surtida'
         ]);
@@ -209,6 +210,38 @@ class TrackingController extends Controller
                 'fec_act' => now(),
             ]);
         }
+    }
+
+    public function list_notificacion(Request $request)
+    {
+        if($request->id_tracking){
+            echo "Si";
+        }else{
+            echo "No";
+        }
+
+        /*try {
+            $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?,?,?', [
+                '',
+                date('Y'),
+                date('W'),
+                $request->cod_base,
+                $request->tipo_usuario,
+                $request->tipo_prenda
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => "Error procesando base de datos.",
+            ], 500);
+        }
+
+        if (!$query) {
+            return response()->json([
+                'message' => 'Sin resultados.',
+            ], 404);
+        }
+
+        return response()->json($query, 200);*/
     }
 
     public function getAccessToken()
