@@ -113,8 +113,14 @@
                                 <div class="form-group col-lg-2">
                                     <label class="control-label text-bold">PDF de factura (pago adelantado): </label>
                                 </div>
-                                <div class="form-group col-lg-10">
+                                <div class="form-group ml-3 ml-lg-0 d-flex align-items-center">
                                     <input type="file" class="form-control-file" name="archivo_transporte" id="archivo_transporte" onchange="Valida_Factura_Transporte();">
+                                    <a onclick="Limpiar_Ifile();" style="cursor: pointer" title="Borrar archivo seleccionado">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x text-danger">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </a>
                                 </div>
                             </div>
     
@@ -138,6 +144,10 @@
 
             Tipo_Transporte();
         });
+
+        function Limpiar_Ifile(){
+            $('#archivo_transporte').val('');
+        }
 
         function solo_Numeros(e) {
             var key = event.which || event.keyCode;

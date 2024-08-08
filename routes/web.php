@@ -72,7 +72,6 @@ Route::controller(ReporteFotograficoController::class)->group(function(){
 });
 //LOGÍSTICA - TRACKING
 Route::controller(TrackingController::class)->group(function(){
-    Route::get('tracking/notificacion', 'prueba_notificacion');
     //SUBIDA DE ARCHIVOS
     Route::post('tracking/list_archivo', 'list_archivo')->name('tracking.list_archivo');
     Route::post('tracking/previsualizacion_captura', 'previsualizacion_captura')->name('tracking.previsualizacion_captura');
@@ -92,6 +91,7 @@ Route::controller(TrackingController::class)->group(function(){
     Route::get('tracking/{id}/verificacion_fardos', 'verificacion_fardos')->name('tracking.verificacion_fardos');
     Route::post('tracking/reporte_inspeccion_fardo', 'insert_reporte_inspeccion_fardo')->name('tracking.reporte_inspeccion_fardo');
     Route::get('tracking/{id}/pago_transporte', 'pago_transporte')->name('tracking.pago_transporte');
+    Route::post('tracking/previsualizacion_captura_pago', 'previsualizacion_captura_pago')->name('tracking.previsualizacion_captura_pago');
     Route::post('tracking/{id}/confirmacion_pago_transporte', 'insert_confirmacion_pago_transporte')->name('tracking.confirmacion_pago_transporte');
     Route::post('tracking/{id}/conteo_mercaderia', 'insert_conteo_mercaderia')->name('tracking.conteo_mercaderia');
     Route::post('tracking/{id}/mercaderia_entregada', 'insert_mercaderia_entregada')->name('tracking.mercaderia_entregada');

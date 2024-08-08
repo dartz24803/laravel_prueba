@@ -30,7 +30,16 @@ class TrackingController extends Controller
 
     public function __construct()
     {
-        $this->middleware('verificar.sesion.usuario')->except(['index','detalle_operacion_diferencia','evaluacion_devolucion','iniciar_tracking','llegada_tienda_automatico']);
+        $this->middleware('verificar.sesion.usuario')->except([
+            'index',
+            'detalle_operacion_diferencia',
+            'evaluacion_devolucion',
+            'iniciar_tracking',
+            'llegada_tienda',
+            'list_notificacion',
+            'list_mercaderia_nueva_app',
+            'insert_mercaderia_surtida_app'
+        ]);
         //$token = TrackingToken::where('base','B06')->first();
         //$this->token = $token->token;
         $this->token = 'dGFOzROqS5-9jr3kzO7Cxx:APA91bF3ga38vPAXdXt5pb1fVIRL9-vTdXqYTge9wyYycgVvPr3dKe7Yk0EWAHLvvJA3pVrd-4X8eMtQSsiTOAi11afyci5ZdZHMPOXBYw1lO37aZjvTlmzP9ZZzIlpbUgRF2vP5j7ir';
@@ -38,7 +47,6 @@ class TrackingController extends Controller
 
     public function iniciar_tracking()
     {
-        //TrackingGuiaRemisionDetalleTemporal::truncate();
         /*TrackingTemporal::truncate();
         $list_tracking = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['T']);
         foreach($list_tracking as $list){
@@ -52,23 +60,11 @@ class TrackingController extends Controller
                 'hacia' => $list->hacia,
                 'bultos' => $list->bultos
             ]);
-        }*/
-        /*$list_guia = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['G']);
-        foreach($list_guia as $list){
-            TrackingGuiaRemisionDetalleTemporal::create([
-                'n_requerimiento' => $list->n_requerimiento,
-                'n_guia_remision' => $list->n_guia_remision,
-                'sku' => $list->sku,
-                'color' => $list->color,
-                'estilo' => $list->estilo,
-                'talla' => $list->talla,
-                'descripcion' => $list->descripcion,
-                'cantidad' => $list->cantidad
-            ]);
-        }*/
-        /*DB::statement('CALL insert_tracking()');
+        }
+        DB::statement('CALL insert_tracking()');
 
-        $list_tracking = Tracking::select('tracking.id','tracking.n_requerimiento','tracking.semana',DB::raw('base.cod_base AS hacia'))
+        $list_tracking = Tracking::select('tracking.id','tracking.n_requerimiento','tracking.n_guia_remision',
+                                    'tracking.semana',DB::raw('base.cod_base AS hacia'))
                                     ->join('base','base.id_base','=','tracking.id_origen_hacia')
                                     ->where('tracking.iniciar',0)->get();
 
@@ -111,7 +107,8 @@ class TrackingController extends Controller
             ]);
     
             //MENSAJE 1
-            $list_detalle = TrackingGuiaRemisionDetalle::where('n_requerimiento', $tracking->n_requerimiento)->get();
+            //$list_detalle = TrackingGuiaRemisionDetalle::where('n_requerimiento', $tracking->n_requerimiento)->get();
+            $list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$tracking->n_requerimiento]);
     
             $mail = new PHPMailer(true);
     
@@ -135,7 +132,7 @@ class TrackingController extends Controller
             
                 $mail->Body =  '<FONT SIZE=3>
                                     Buen día '.$tracking->hacia.'.<br><br>
-                                    Se envia el reporte de la salida de Mercaderia, de la guía de remisión '.$tracking->n_requerimiento.'.<br><br>
+                                    Se envia el reporte de la salida de Mercaderia, de la guía de remisión '.$tracking->n_guia_remision.'.<br><br>
                                     <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                         <thead>
                                             <tr align="center" style="background-color:#0093C6;">
@@ -215,6 +212,47 @@ class TrackingController extends Controller
         }
     }
 
+    public function list_notificacion(Request $request)
+    {
+        if($request->id_tracking){
+            try {
+                $query = TrackingNotificacion::select('titulo','contenido','fecha')
+                                                ->where('id_tracking',$request->id_tracking)->get();
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
+            }
+    
+            if (!$query) {
+                return response()->json([
+                    'message' => 'Sin resultados.',
+                ], 404);
+            }
+    
+            return response()->json($query, 200);
+        }else{
+            try {
+                $query = TrackingNotificacion::select('tracking_notificacion.id_tracking',
+                                                'tracking.n_requerimiento')
+                                                ->join('tracking','tracking.id','=','tracking_notificacion.id_tracking')
+                                                ->groupBy('tracking_notificacion.id_tracking')->get();
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
+            }
+    
+            if (!$query) {
+                return response()->json([
+                    'message' => 'Sin resultados.',
+                ], 404);
+            }
+    
+            return response()->json($query, 200);
+        }
+    }
+
     public function getAccessToken()
     {
         $client = new GoogleClient();
@@ -288,6 +326,7 @@ class TrackingController extends Controller
         return view('logistica.tracking.lista', compact('list_tracking'));
     }
 
+    //FORMA MANUAL
     public function create()
     {
         $list_base = Base::get_list_base_tracking();
@@ -411,6 +450,7 @@ class TrackingController extends Controller
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
     }
+    //END FORMA MANUAL
 
     public function insert_salida_mercaderia(Request $request,$id)
     {
@@ -435,6 +475,20 @@ class TrackingController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+
+        $list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$get_id->n_requerimiento]);
+        foreach($list_detalle as $list){
+            TrackingGuiaRemisionDetalle::create([
+                'n_requerimiento' => $get_id->n_requerimiento,
+                'n_guia_remision' => $get_id->n_requerimiento,
+                'sku' => $list->sku,
+                'color' => $list->color,
+                'estilo' => $list->estilo,
+                'talla' => $list->talla,
+                'descripcion' => $list->descripcion,
+                'cantidad' => $list->cantidad,
+            ]);
+        }
     }
 
     public function detalle_transporte($id)
@@ -527,6 +581,12 @@ class TrackingController extends Controller
         //ALERTA 4
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
+        if($get_id->id_estado=="4"){
+            $id_detalle_4 = $get_id->id_detalle;
+        }else{
+            $id_detalle_4 = $get_id->id_dos;
+        }
+
         $dato = [
             'id_tracking' => $id,
             'token' => $this->token,
@@ -535,23 +595,47 @@ class TrackingController extends Controller
         ];
         $this->sendNotification($dato);
 
-        TrackingDetalleEstado::create([
-            'id_detalle' => $get_id->id_detalle,
-            'id_estado' => 6,
-            'fecha' => now(),
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
+        if($get_id->id_estado=="4"){
+            $tracking_dp = TrackingDetalleProceso::create([
+                'id_tracking' => $id,
+                'id_proceso' => 3,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'fec_act' => now(),
+            ]);
+
+            TrackingDetalleEstado::create([
+                'id_detalle' => $tracking_dp->id,
+                'id_estado' => 6,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+            $id_detalle_6 = $tracking_dp->id;
+        }else{
+            TrackingDetalleEstado::create([
+                'id_detalle' => $get_id->id_detalle,
+                'id_estado' => 6,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+            $id_detalle_6 = $get_id->id_detalle;
+        }
 
         //MENSAJE 2
-        $estado_5 = TrackingDetalleEstado::get_list_tracking_detalle_estado(['id_detalle'=>$get_id->id_detalle,'id_estado'=>5]);
-        $estado_6 = TrackingDetalleEstado::get_list_tracking_detalle_estado(['id_detalle'=>$get_id->id_detalle,'id_estado'=>6]);
+        $estado_4 = TrackingDetalleEstado::get_list_tracking_detalle_estado(['id_detalle'=>$id_detalle_4,'id_estado'=>4]);
+        $estado_6 = TrackingDetalleEstado::get_list_tracking_detalle_estado(['id_detalle'=>$id_detalle_6,'id_estado'=>6]);
         $list_archivo = TrackingArchivo::where('id_tracking', $id)->where('tipo', 1)->get();
 
-        $fecha1 = new \DateTime($estado_5->fecha);
+        $fecha1 = new \DateTime($estado_4->fecha);
         $fecha2 = new \DateTime($estado_6->fecha);
         $intervalo = $fecha1->diff($fecha2);
         $diferencia = $intervalo->days;
@@ -627,7 +711,7 @@ class TrackingController extends Controller
                                     <tr>
                                         <td rowspan="3" style="font-weight:bold;">Fecha</td>
                                         <td style="font-weight:bold;">Partida</td>
-                                        <td style="text-align:right;">'.$estado_5->fecha_formateada.'</td>
+                                        <td style="text-align:right;">'.$estado_4->fecha_formateada.'</td>
                                     </tr>
                                     <tr>
                                         <td style="font-weight:bold;">Llegada</td>
@@ -661,7 +745,7 @@ class TrackingController extends Controller
             $mail->send();
 
             TrackingDetalleEstado::create([
-                'id_detalle' => $get_id->id_detalle,
+                'id_detalle' => $id_detalle_6,
                 'id_estado' => 7,
                 'fecha' => now(),
                 'estado' => 1,
@@ -680,12 +764,21 @@ class TrackingController extends Controller
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
         if($get_id->transporte==2 || ($get_id->transporte==1 && $get_id->importe_transporte>0)){
-            //ALERTA 8
+            //ALERTA 5 (SI)
             $dato = [
                 'id_tracking' => $id,
                 'token' => $this->token,
-                'titulo' => 'INSPECCIÓN DE MERCADERÍA',
-                'contenido' => 'Hola '.$get_id->desde.', se ha recepcionado la mercadería correcta',
+                'titulo' => 'CIERRE DE INSPECCIÓN DE FARDOS',
+                'contenido' => 'Hola '.$get_id->desde.', se ha dado el cierre a la inspección de fardos',
+            ];
+            $this->sendNotification($dato);
+
+            //ALERTA 7
+            $dato = [
+                'id_tracking' => $id,
+                'token' => $this->token,
+                'titulo' => 'INSPECCION DE MERCADERÍA',
+                'contenido' => 'Hola '.$get_id->desde.', se realizará la inspección de mercadería',
             ];
             $this->sendNotification($dato);
 
@@ -726,10 +819,10 @@ class TrackingController extends Controller
                     'user_act' => session('usuario')->id_usuario
                 ]);
                 $id_detalle = $tracking_dp->id;
-                $contenido_mensaje = 'Hola '.$get_id->desde.', se ha dado el cierre a la verificación de fardos';
+                $contenido_mensaje = 'Hola '.$get_id->desde.', se ha dado el cierre a la inspección de fardos';
             }
 
-            //ALERTA 5 o 6
+            //ALERTA 5 (SI) o (NO)
             $dato = [
                 'id_tracking' => $id,
                 'token' => $this->token,
@@ -990,6 +1083,37 @@ class TrackingController extends Controller
         return view('logistica.tracking.pago_transporte', compact('get_id'));
     }
 
+    public function previsualizacion_captura_pago()
+    {
+        if($_FILES["photo"]["name"] != ""){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                if(file_exists('https://lanumerounocloud.com/intranet/TRACKING/temporal_pm_'.session('usuario')->id_usuario.'.jpg')){
+                    ftp_delete($con_id, 'TRACKING/temporal_pm_'.session('usuario')->id_usuario.'.jpg');
+                }
+
+                $path = $_FILES["photo"]["name"];
+                $source_file = $_FILES['photo']['tmp_name'];
+
+                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                $nombre_soli = "temporal_pm_".session('usuario')->id_usuario;
+                $nombre = $nombre_soli.".".strtolower($ext);
+
+                ftp_pasv($con_id,true); 
+                $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
+                if (!$subio) {
+                    echo "Archivo no subido correctamente";
+                }
+            }else{
+                echo "No se conecto";
+            }
+        }
+    }
+
     public function insert_confirmacion_pago_transporte(Request $request, $id)
     {
         $request->validate([
@@ -1052,7 +1176,29 @@ class TrackingController extends Controller
             }
         }
 
-        //ALERTA 7
+        if($request->captura=="1"){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                $nombre_actual = "TRACKING/temporal_pm_".session('usuario')->id_usuario.".jpg";
+                $nuevo_nombre = "TRACKING/Factura_".$id."_".date('YmdHis')."_captura.jpg";
+                ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
+                $archivo = "https://lanumerounocloud.com/intranet/".$nuevo_nombre;
+                
+                TrackingArchivo::create([
+                    'id_tracking' => $id,
+                    'tipo' => 1,
+                    'archivo' => $archivo
+                ]);
+            }else{
+                echo "No se conecto";
+            }
+        }
+
+        //ALERTA 6
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
         $dato = [
@@ -1134,12 +1280,12 @@ class TrackingController extends Controller
             ]);
 
             //PASAR PARA INSPECCIÓN DE MERCADERÍA
-            //ALERTA 8
+            //ALERTA 7
             $dato = [
                 'id_tracking' => $id,
                 'token' => $this->token,
-                'titulo' => 'INSPECCIÓN DE MERCADERÍA',
-                'contenido' => 'Hola '.$get_id->desde.', se ha recepcionado la mercadería correcta',
+                'titulo' => 'INSPECCION DE MERCADERÍA',
+                'contenido' => 'Hola '.$get_id->desde.', se realizará la inspección de mercadería',
             ];
             $this->sendNotification($dato);
 
@@ -1171,7 +1317,7 @@ class TrackingController extends Controller
 
     public function insert_conteo_mercaderia(Request $request,$id)
     {
-        //ALERTA 9
+        //ALERTA 8
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
         $dato = [
@@ -1196,7 +1342,7 @@ class TrackingController extends Controller
 
     public function insert_mercaderia_entregada($id)
     {
-        //ALERTA 9.3
+        //ALERTA 13
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
         $dato = [
@@ -1311,7 +1457,7 @@ class TrackingController extends Controller
 
     public function insert_reporte_diferencia(Request $request,$id)
     {
-        //ALERTA 9.1
+        //ALERTA 9
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
         $dato = [
@@ -1441,7 +1587,7 @@ class TrackingController extends Controller
             'user_act' => session('usuario')->id_usuario
         ]);
 
-        //ALERTA 9.1.1
+        //ALERTA 10
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
         $dato = [
@@ -1516,7 +1662,7 @@ class TrackingController extends Controller
                     'user_act' => session('usuario')->id_usuario
                 ]);
             }else{
-                //ALERTA 9.3
+                //ALERTA 13
                 $this->insert_mercaderia_entregada($id);
             }
         }catch(Exception $e) {
@@ -1591,10 +1737,10 @@ class TrackingController extends Controller
             'devolucion.required' => 'Debe seleccionar al menos un ítem.',
         ]);
 
-        $valida = TrackingDevolucionTemporal::where('id_usuario',session('usuario')->id_usuario)->exists();
+        $cantidad = TrackingDevolucionTemporal::where('id_usuario',session('usuario')->id_usuario)->count();
 
-        if($valida){
-            //ALERTA 9.2
+        if($cantidad==count($request->devolucion)){
+            //ALERTA 11
             $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
             $dato = [
@@ -1863,7 +2009,7 @@ class TrackingController extends Controller
                 echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
             }
     
-            //ALERTA 9.2.1
+            //ALERTA 12
             $dato = [
                 'id_tracking' => $id,
                 'token' => $this->token,
@@ -1883,7 +2029,7 @@ class TrackingController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
 
-            //ALERTA 9.3
+            //ALERTA 13
             $this->insert_mercaderia_entregada($id);
         }else{
             echo "error";
@@ -1926,6 +2072,7 @@ class TrackingController extends Controller
             echo "error";
         }else{
             MercaderiaSurtida::create([
+                'tipo' => 1,
                 'base' => $request->cod_base,
                 'anio' => date('Y'),
                 'semana' => date('W'),
@@ -1939,6 +2086,78 @@ class TrackingController extends Controller
                 'cantidad' => $request->cantidad,
                 'fecha' => now(),
                 'usuario' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function list_mercaderia_nueva_app(Request $request)
+    {
+        try {
+            $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?,?,?', [
+                '',
+                date('Y'),
+                date('W'),
+                $request->cod_base,
+                $request->tipo_usuario,
+                $request->tipo_prenda
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => "Error procesando base de datos.",
+            ], 500);
+        }
+
+        if (!$query) {
+            return response()->json([
+                'message' => 'Sin resultados.',
+            ], 404);
+        }
+
+        return response()->json($query, 200);
+    }
+
+    public function insert_mercaderia_surtida_app(Request $request,$sku)
+    {
+        $request->validate([
+            'cantidad' => 'gt:0',
+        ],[
+            'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
+        ]);
+
+        try {
+            $resultados = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?,?,?', [
+                $sku,
+                date('Y'),
+                date('W'),
+                $request->cod_base,
+                '',
+                ''
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => "Error procesando base de datos.",
+            ], 500);
+        }
+
+        $get_id = $resultados[0];
+
+        if(!$request->cantidad || $request->cantidad>$get_id->cantidad){
+            echo "error";
+        }else{
+            MercaderiaSurtida::create([
+                'tipo' => 1,
+                'base' => $request->cod_base,
+                'anio' => date('Y'),
+                'semana' => date('W'),
+                'sku' => $sku,
+                'estilo' => $get_id->estilo,
+                'tipo_usuario' => $get_id->tipo_usuario,
+                'tipo_prenda' => $get_id->tipo_prenda,
+                'color' => $get_id->color,
+                'talla' => $get_id->talla,
+                'descripcion' => $get_id->decripcion,
+                'cantidad' => $request->cantidad,
+                'fecha' => now()
             ]);
         }
     }

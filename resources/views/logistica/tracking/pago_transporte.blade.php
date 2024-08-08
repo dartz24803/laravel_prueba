@@ -55,14 +55,34 @@
                                         </a>
                                     @endif
                                 </div>
-                                <div class="form-group col-lg-10">
+                                <div class="form-group ml-3 ml-lg-0 d-flex align-items-center">
                                     <input type="file" class="form-control-file" name="archivo_transporte" id="archivo_transporte" onchange="Valida_Factura_Transporte();">
+                                    <a onclick="Limpiar_Ifile();" style="cursor: pointer" title="Borrar archivo seleccionado">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x text-danger">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </a>
                                 </div>
+                            </div>
+
+                            <div class="row d-flex justify-content-center mb-2 mt-2">
+                                <button type="button" class="btn btn-secondary" id="boton_camara" onclick="Activar_Camara();">Activar cámara</button>
+                            </div>
+                            <div class="row d-flex justify-content-center mb-2" id="div_camara" style="display:none !important;">
+                                <video id="video" autoplay style="max-width: 95%;"></video>
+                            </div>
+                            <div class="row d-flex justify-content-center mb-2 mt-2" id="div_tomar_foto" style="display:none !important;">
+                                <button type="button" class="btn btn-info" onclick="Tomar_Foto();">Tomar foto</button>
+                            </div>
+                            <div class="row d-flex justify-content-center text-center" id="div_canvas" style="display:none !important;">
+                                <canvas id="canvas" width="640" height="480" style="max-width:95%;"></canvas>
                             </div>
     
                             <div class="modal-footer mt-3">
                                 @csrf
                                 <input type="hidden" name="archivo_transporte_actual" value="{{ $get_id->archivo_transporte }}">
+                                <input type="hidden" id="captura" name="captura" value="0">
                                 <button class="btn btn-primary" type="button" onclick="Insert_Confirmacion_Pago_Transporte();">Guardar</button>
                                 <a class="btn" href="{{ route('tracking') }}">Cancelar</a>
                             </div>
@@ -78,6 +98,10 @@
             $("#li_trackings").addClass('active');
             $("#a_trackings").attr('aria-expanded','true');
         });
+
+        function Limpiar_Ifile(){
+            $('#archivo_transporte').val('');
+        }
 
         function solo_Numeros_Punto(e) {
             var key = event.which || event.keyCode;
@@ -114,6 +138,119 @@
 
         function Descargar_Pdf_Factura(id){
             window.open('{{ $get_id->archivo_transporte }}', '_blank');
+        }
+
+        var video = document.getElementById('video');
+        var boton = document.getElementById('boton_camara');
+        var div_tomar_foto = document.getElementById('div_tomar_foto'); 
+        var div = document.getElementById('div_camara'); 
+        var isCameraOn = false;
+        var stream = null;
+
+        function Activar_Camara(){
+            var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+            if(screenWidth<1000){
+                if(!isCameraOn){
+                    //Pedir permiso para acceder a la cámara
+                    navigator.mediaDevices.getUserMedia({
+                        video: {
+                            facingMode: {
+                                exact: "environment"
+                            }
+                        }
+                    })
+                    .then(function (newStream){
+                        stream = newStream;
+                        // Mostrar el stream de la cámara en el elemento de video
+                        video.srcObject = stream;
+                        video.play();
+                        isCameraOn = true;
+                        boton.textContent = "Desactivar cámara";
+                        div_tomar_foto.style.cssText = "display: block;";
+                        div.style.cssText = "display: block;";
+                    })
+                    .catch(function (error){
+                        console.error('Error al acceder a la cámara:', error);
+                    });
+                }else{
+                    //Detener la reproducción  del stream y liberar la cámara
+                    if(stream){
+                        stream.getTracks().forEach(function (track){
+                            track.stop();
+                        });
+                        video.srcObject = null;
+                        isCameraOn = false;
+                        boton.textContent = "Activar cámara";
+                        div_tomar_foto.style.cssText = "display: none !important;";
+                        div.style.cssText = "display: none !important;";
+                    }
+                }
+            }else{
+                if(!isCameraOn){
+                    //Pedir permiso para acceder a la cámara
+                    navigator.mediaDevices.getUserMedia({
+                        video: true
+                    })
+                    .then(function (newStream){
+                        stream = newStream;
+                        // Mostrar el stream de la cámara en el elemento de video
+                        video.srcObject = stream;
+                        video.play();
+                        isCameraOn = true;
+                        boton.textContent = "Desactivar cámara";
+                        div_tomar_foto.style.cssText = "display: block;";
+                        div.style.cssText = "display: block;";
+                    })
+                    .catch(function (error){
+                        console.error('Error al acceder a la cámara:', error);
+                    });
+                }else{
+                    //Detener la reproducción  del stream y liberar la cámara
+                    if(stream){
+                        stream.getTracks().forEach(function (track){
+                            track.stop();
+                        });
+                        video.srcObject = null;
+                        isCameraOn = false;
+                        boton.textContent = "Activar cámara";
+                        div_tomar_foto.style.cssText = "display: none !important;";
+                        div.style.cssText = "display: none !important;";
+                    }
+                }
+            }
+        }
+
+        function Tomar_Foto() {
+            Cargando();
+
+            var dataString = new FormData(document.getElementById('formulario'));
+            var url = "{{ route('tracking.previsualizacion_captura_pago') }}";
+            var video = document.getElementById('video');
+            var canvas = document.getElementById('canvas');
+            var context = canvas.getContext('2d');
+
+            // Ajusta el tamaño del canvas al tamaño del video
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob(function(blob) {
+                // Crea un formulario para enviar la imagen al servidor
+                dataString.append('photo', blob, 'photo.jpg');
+
+                // Realiza la solicitud AJAX
+                $.ajax({
+                    url: url,
+                    data: dataString,
+                    type: 'POST',
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        div_canvas.style.cssText = "display: block;";
+                        $('#captura').val('1');
+                    }
+                });
+            }, 'image/jpeg');
         }
 
         function Insert_Confirmacion_Pago_Transporte() {
