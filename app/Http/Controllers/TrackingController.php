@@ -2056,6 +2056,7 @@ class TrackingController extends Controller
             echo "error";
         }else{
             MercaderiaSurtida::create([
+                'tipo' => 1,
                 'base' => $request->cod_base,
                 'anio' => date('Y'),
                 'semana' => date('W'),

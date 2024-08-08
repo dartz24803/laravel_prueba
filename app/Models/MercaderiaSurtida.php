@@ -15,6 +15,7 @@ class MercaderiaSurtida extends Model
     public $timestamps = false; 
 
     protected $fillable = [
+        'tipo',
         'base',
         'anio',
         'semana',
@@ -26,6 +27,7 @@ class MercaderiaSurtida extends Model
         'talla',
         'descripcion',
         'cantidad',
+        'estado',
         'fecha',
         'usuario',
     ];
