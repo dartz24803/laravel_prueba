@@ -38,7 +38,7 @@ class TrackingController extends Controller
             'llegada_tienda',
             'list_notificacion',
             'list_mercaderia_nueva_app',
-            'insert_mercaderia_surtida'
+            'insert_mercaderia_surtida_app'
         ]);
         //$token = TrackingToken::where('base','B06')->first();
         //$this->token = $token->token;
@@ -2052,32 +2052,6 @@ class TrackingController extends Controller
         return view('logistica.tracking.mercaderia_nueva.lista', compact('list_mercaderia_nueva'));
     }
 
-    public function list_mercaderia_nueva_app(Request $request)
-    {
-        try {
-            $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?,?,?', [
-                '',
-                date('Y'),
-                date('W'),
-                $request->cod_base,
-                $request->tipo_usuario,
-                $request->tipo_prenda
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'message' => "Error procesando base de datos.",
-            ], 500);
-        }
-
-        if (!$query) {
-            return response()->json([
-                'message' => 'Sin resultados.',
-            ], 404);
-        }
-
-        return response()->json($query, 200);
-    }
-
     public function modal_mercaderia_nueva($sku)
     {
         return view('logistica.tracking.mercaderia_nueva.modal_editar', compact('sku'));
@@ -2112,6 +2086,78 @@ class TrackingController extends Controller
                 'cantidad' => $request->cantidad,
                 'fecha' => now(),
                 'usuario' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function list_mercaderia_nueva_app(Request $request)
+    {
+        try {
+            $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?,?,?', [
+                '',
+                date('Y'),
+                date('W'),
+                $request->cod_base,
+                $request->tipo_usuario,
+                $request->tipo_prenda
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => "Error procesando base de datos.",
+            ], 500);
+        }
+
+        if (!$query) {
+            return response()->json([
+                'message' => 'Sin resultados.',
+            ], 404);
+        }
+
+        return response()->json($query, 200);
+    }
+
+    public function insert_mercaderia_surtida_app(Request $request,$sku)
+    {
+        $request->validate([
+            'cantidad' => 'gt:0',
+        ],[
+            'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
+        ]);
+
+        try {
+            $resultados = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?,?,?', [
+                $sku,
+                date('Y'),
+                date('W'),
+                $request->cod_base,
+                '',
+                ''
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => "Error procesando base de datos.",
+            ], 500);
+        }
+
+        $get_id = $resultados[0];
+
+        if(!$request->cantidad || $request->cantidad>$get_id->cantidad){
+            echo "error";
+        }else{
+            MercaderiaSurtida::create([
+                'tipo' => 1,
+                'base' => $request->cod_base,
+                'anio' => date('Y'),
+                'semana' => date('W'),
+                'sku' => $sku,
+                'estilo' => $get_id->estilo,
+                'tipo_usuario' => $get_id->tipo_usuario,
+                'tipo_prenda' => $get_id->tipo_prenda,
+                'color' => $get_id->color,
+                'talla' => $get_id->talla,
+                'descripcion' => $get_id->decripcion,
+                'cantidad' => $request->cantidad,
+                'fecha' => now()
             ]);
         }
     }
