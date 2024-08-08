@@ -113,7 +113,6 @@ Route::controller(TrackingController::class)->group(function(){
     Route::get('tracking/mercaderia_nueva', 'mercaderia_nueva')->name('tracking.mercaderia_nueva');
     Route::post('tracking/list_mercaderia_nueva', 'list_mercaderia_nueva')->name('tracking.list_mercaderia_nueva');
     Route::get('tracking/{id}/modal_mercaderia_nueva', 'modal_mercaderia_nueva')->name('tracking.modal_mercaderia_nueva');
-    Route::post('tracking/{id}/mercaderia_surtida', 'insert_mercaderia_surtida')->name('tracking.insert_mercaderia_surtida');
 });
 //TIENDA - FUNCIÓN TEMPORAL
 Route::controller(FuncionTemporalController::class)->group(function(){
