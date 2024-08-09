@@ -47,6 +47,7 @@ class TrackingController extends Controller
 
     public function iniciar_tracking()
     {
+        //NO OLVIDAR COMENTAR EL CORREO
         /*TrackingTemporal::truncate();
         $list_tracking = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['T']);
         foreach($list_tracking as $list){
@@ -125,6 +126,14 @@ class TrackingController extends Controller
     
                 $mail->addAddress('dpalomino@lanumero1.com.pe');
                 $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+                $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$tracking->hacia]);
+                foreach($list_td as $list){
+                    $mail->addAddress($list->emailp);
+                }
+                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                foreach($list_cd as $list){
+                    $mail->addAddress($list->emailp);
+                }
     
                 $mail->isHTML(true);
     
@@ -399,6 +408,14 @@ class TrackingController extends Controller
 
             $mail->addAddress('dpalomino@lanumero1.com.pe');
             $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            foreach($list_td as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            foreach($list_cd as $list){
+                $mail->addAddress($list->emailp);
+            }*/
 
             $mail->isHTML(true);
 
@@ -617,7 +634,7 @@ class TrackingController extends Controller
             ]);
             $id_detalle_6 = $tracking_dp->id;
         }else{
-            TrackingDetalleEstado::create([
+            TrackingDetalleEstado::create([ 
                 'id_detalle' => $get_id->id_detalle,
                 'id_estado' => 6,
                 'fecha' => now(),
@@ -655,6 +672,14 @@ class TrackingController extends Controller
 
             $mail->addAddress('dpalomino@lanumero1.com.pe');
             $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            foreach($list_cd as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+            foreach($list_cc as $list){
+                $mail->addCC($list->emailp);
+            }*/
 
             $mail->isHTML(true);
 
@@ -1043,6 +1068,14 @@ class TrackingController extends Controller
 
             $mail->addAddress('dpalomino@lanumero1.com.pe');
             $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            foreach($list_cd as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+            foreach($list_cc as $list){
+                $mail->addCC($list->emailp);
+            }*/
 
             $mail->isHTML(true);
 
@@ -1250,6 +1283,14 @@ class TrackingController extends Controller
 
             $mail->addAddress('dpalomino@lanumero1.com.pe');
             $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            foreach($list_cd as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+            foreach($list_cc as $list){
+                $mail->addCC($list->emailp);
+            }*/
 
             $mail->isHTML(true);
 
@@ -1486,6 +1527,14 @@ class TrackingController extends Controller
 
             $mail->addAddress('dpalomino@lanumero1.com.pe');
             $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            foreach($list_td as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+            foreach($list_cc as $list){
+                $mail->addCC($list->emailp);
+            }*/
 
             $mail->isHTML(true);
 
@@ -1614,6 +1663,18 @@ class TrackingController extends Controller
 
             $mail->addAddress('dpalomino@lanumero1.com.pe');
             $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            foreach($list_cd as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            foreach($list_td as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+            foreach($list_cc as $list){
+                $mail->addCC($list->emailp);
+            }*/
 
             $mail->isHTML(true);
 
@@ -1813,6 +1874,14 @@ class TrackingController extends Controller
     
                 $mail->addAddress('dpalomino@lanumero1.com.pe');
                 $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                foreach($list_cd as $list){
+                    $mail->addAddress($list->emailp);
+                }
+                $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+                foreach($list_cc as $list){
+                    $mail->addCC($list->emailp);
+                }*/
     
                 $mail->isHTML(true);
     
@@ -1958,6 +2027,18 @@ class TrackingController extends Controller
     
                 $mail->addAddress('dpalomino@lanumero1.com.pe');
                 $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                foreach($list_cd as $list){
+                    $mail->addAddress($list->emailp);
+                }
+                $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+                foreach($list_td as $list){
+                    $mail->addAddress($list->emailp);
+                }
+                $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+                foreach($list_cc as $list){
+                    $mail->addCC($list->emailp);
+                }*/
     
                 $mail->isHTML(true);
     
