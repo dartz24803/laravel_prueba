@@ -38,7 +38,10 @@ class TrackingController extends Controller
             'llegada_tienda',
             'list_notificacion',
             'list_mercaderia_nueva_app',
-            'insert_mercaderia_surtida_app'
+            'insert_mercaderia_surtida_app',
+            'insert_requerimiento_reposicion_app',
+            'list_requerimiento_reposicion_app',
+            'update_requerimiento_reposicion_app'
         ]);
         //$token = TrackingToken::where('base','B06')->first();
         //$this->token = $token->token;
@@ -233,7 +236,7 @@ class TrackingController extends Controller
                 ], 500);
             }
     
-            if (!$query) {
+            if (count($query)==0) {
                 return response()->json([
                     'message' => 'Sin resultados.',
                 ], 404);
@@ -252,7 +255,7 @@ class TrackingController extends Controller
                 ], 500);
             }
     
-            if (!$query) {
+            if (count($query)==0) {
                 return response()->json([
                     'message' => 'Sin resultados.',
                 ], 404);
@@ -2188,7 +2191,7 @@ class TrackingController extends Controller
             ], 500);
         }
 
-        if (!$query) {
+        if (count($query)==0) {
             return response()->json([
                 'message' => 'Sin resultados.',
             ], 404);
@@ -2198,10 +2201,11 @@ class TrackingController extends Controller
     }
 
     public function insert_mercaderia_surtida_app(Request $request,$sku)
-    {
+    { 
         $request->validate([
-            'cantidad' => 'gt:0',
+            'cantidad' => 'required|gt:0',
         ],[
+            'cantidad.required' => 'Debe ingresar cantidad.',
             'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
         ]);
 
@@ -2214,32 +2218,129 @@ class TrackingController extends Controller
                 '',
                 ''
             ]);
+
+            $get_id = $resultados[0];
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => "Error procesando base de datos.",
             ], 500);
         }
 
-        $get_id = $resultados[0];
-
-        if(!$request->cantidad || $request->cantidad>$get_id->cantidad){
-            echo "error";
+        if($request->cantidad>$get_id->cantidad){
+            return response()->json([
+                'message' => "Error procesando base de datos.",
+            ], 500);  
         }else{
+            try {
+                MercaderiaSurtida::create([
+                    'tipo' => 1,
+                    'base' => $request->cod_base,
+                    'anio' => date('Y'),
+                    'semana' => date('W'),
+                    'sku' => $sku,
+                    'estilo' => $get_id->estilo,
+                    'tipo_usuario' => $get_id->tipo_usuario,
+                    'tipo_prenda' => $get_id->tipo_prenda,
+                    'color' => $get_id->color,
+                    'talla' => $get_id->talla,
+                    'descripcion' => $get_id->decripcion,
+                    'cantidad' => $request->cantidad,
+                    'fecha' => now()
+                ]);
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
+            }
+        }
+    }
+    //REQUERIMIENTO DE REPOSICIÓN
+    public function insert_requerimiento_reposicion_app(Request $request,$sku)
+    {
+        $request->validate([
+            'cantidad' => 'required|gt:0',
+        ],[
+            'cantidad.required' => 'Debe ingresar cantidad.',
+            'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
+        ]);
+
+        try {
             MercaderiaSurtida::create([
-                'tipo' => 1,
-                'base' => $request->cod_base,
+                'tipo' => 2,
                 'anio' => date('Y'),
                 'semana' => date('W'),
                 'sku' => $sku,
-                'estilo' => $get_id->estilo,
-                'tipo_usuario' => $get_id->tipo_usuario,
-                'tipo_prenda' => $get_id->tipo_prenda,
-                'color' => $get_id->color,
-                'talla' => $get_id->talla,
-                'descripcion' => $get_id->decripcion,
+                'estilo' => $request->estilo,
+                'tipo_usuario' => $request->tipo_usuario,
+                'tipo_prenda' => $request->tipo_prenda,
+                'color' => $request->color,
+                'talla' => $request->talla,
+                'descripcion' => $request->descripcion,
                 'cantidad' => $request->cantidad,
+                'estado' => 0,
                 'fecha' => now()
             ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => "Error procesando base de datos.",
+            ], 500);
+        }
+    }
+
+    public function list_requerimiento_reposicion_app(Request $request)
+    {
+        if($request->sku){
+            try {
+                $query = MercaderiaSurtida::where('tipo',2)->where('sku',$request->sku)
+                                            ->where('estado',0)->get();
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
+            }
+    
+            if (count($query)==0) {
+                return response()->json([
+                    'message' => 'Sin resultados.',
+                ], 404);
+            }
+    
+            return response()->json($query, 200);
+        }else if($request->estilo){
+            try {
+                $query = MercaderiaSurtida::where('tipo',2)->where('estilo',$request->estilo)
+                                            ->where('estado',0)->get();
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
+            }
+    
+            if (count($query)==0) {
+                return response()->json([
+                    'message' => 'Sin resultados.',
+                ], 404);
+            }
+    
+            return response()->json($query, 200);
+        }else{
+            return response()->json([
+                'message' => 'Sin resultados.',
+            ], 404);
+        }
+    }
+
+    public function update_requerimiento_reposicion_app($id)
+    {
+        try {
+            MercaderiaSurtida::findOrFail($id)->update([
+                'estado' => 1,
+                'fecha' => now()
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => "Error procesando base de datos.",
+            ], 500);
         }
     }
 }
