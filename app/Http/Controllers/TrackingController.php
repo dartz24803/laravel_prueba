@@ -38,15 +38,19 @@ class TrackingController extends Controller
             'llegada_tienda',
             'list_notificacion',
             'list_mercaderia_nueva_app',
-            'insert_mercaderia_surtida_app'
+            'insert_mercaderia_surtida_app',
+            'insert_requerimiento_reposicion_app',
+            'list_requerimiento_reposicion_app',
+            'update_requerimiento_reposicion_app'
         ]);
         //$token = TrackingToken::where('base','B06')->first();
         //$this->token = $token->token;
-        $this->token = 'dGFOzROqS5-9jr3kzO7Cxx:APA91bF3ga38vPAXdXt5pb1fVIRL9-vTdXqYTge9wyYycgVvPr3dKe7Yk0EWAHLvvJA3pVrd-4X8eMtQSsiTOAi11afyci5ZdZHMPOXBYw1lO37aZjvTlmzP9ZZzIlpbUgRF2vP5j7ir';
+        $this->token = 'd9r7DbMtTROw-0GtTUhgTX:APA91bH1_P6DYwNCQiK2h7JLoduSS7aZGagarRDld5puov4lprZ5DE_BLc21LpqlC9jMdaL1itzx_PgZsHCiDliMm4jTTCT1eoIcxqwVc3NuCgRoKRrFESatdY9tHgAZPOrLXhCGuYpH';
     }
 
     public function iniciar_tracking()
     {
+        //NO OLVIDAR COMENTAR EL CORREO
         /*TrackingTemporal::truncate();
         $list_tracking = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['T']);
         foreach($list_tracking as $list){
@@ -125,6 +129,18 @@ class TrackingController extends Controller
     
                 $mail->addAddress('dpalomino@lanumero1.com.pe');
                 $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+                $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$tracking->hacia]);
+                foreach($list_td as $list){
+                    $mail->addAddress($list->emailp);
+                }
+                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                foreach($list_cd as $list){
+                    $mail->addAddress($list->emailp);
+                }
+                $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+                foreach($list_cc as $list){
+                    $mail->addCC($list->emailp);
+                }
     
                 $mail->isHTML(true);
     
@@ -224,18 +240,20 @@ class TrackingController extends Controller
                 ], 500);
             }
     
-            if (!$query) {
+            if (count($query)==0) {
                 return response()->json([
                     'message' => 'Sin resultados.',
                 ], 404);
             }
     
             return response()->json($query, 200);
-        }else{
+        }elseif($request->cod_base){
             try {
                 $query = TrackingNotificacion::select('tracking_notificacion.id_tracking',
                                                 'tracking.n_requerimiento')
                                                 ->join('tracking','tracking.id','=','tracking_notificacion.id_tracking')
+                                                ->join('base','base.id_base','=','tracking.id_origen_hacia')
+                                                ->where('base.cod_base',$request->cod_base)
                                                 ->groupBy('tracking_notificacion.id_tracking')->get();
             } catch (\Throwable $th) {
                 return response()->json([
@@ -243,13 +261,17 @@ class TrackingController extends Controller
                 ], 500);
             }
     
-            if (!$query) {
+            if (count($query)==0) {
                 return response()->json([
                     'message' => 'Sin resultados.',
                 ], 404);
             }
     
             return response()->json($query, 200);
+        }else{
+            return response()->json([
+                'message' => 'Sin resultados.',
+            ], 404);
         }
     }
 
@@ -397,12 +419,24 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
-            $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            //$mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            foreach($list_td as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            foreach($list_cd as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+            foreach($list_cc as $list){
+                $mail->addCC($list->emailp);
+            }
 
             $mail->isHTML(true);
 
-            $mail->Subject = "SDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.")";
+            $mail->Subject = "SDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
                                 Buen día '.$get_id->hacia.'.<br><br>
@@ -617,7 +651,7 @@ class TrackingController extends Controller
             ]);
             $id_detalle_6 = $tracking_dp->id;
         }else{
-            TrackingDetalleEstado::create([
+            TrackingDetalleEstado::create([ 
                 'id_detalle' => $get_id->id_detalle,
                 'id_estado' => 6,
                 'fecha' => now(),
@@ -653,12 +687,20 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
-            $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            //$mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            foreach($list_cd as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+            foreach($list_cc as $list){
+                $mail->addCC($list->emailp);
+            }
 
             $mail->isHTML(true);
 
-            $mail->Subject = "IDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.")";
+            $mail->Subject = "IDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
                                 Hola '.$get_id->desde.', la mercadería ha llegado a tienda.<br><br>
@@ -1041,12 +1083,20 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
-            $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            //$mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            foreach($list_cd as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+            foreach($list_cc as $list){
+                $mail->addCC($list->emailp);
+            }
 
             $mail->isHTML(true);
 
-            $mail->Subject = "REPORTE INSPECCIÓN FARDOS: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.")";
+            $mail->Subject = "REPORTE INSPECCIÓN FARDOS: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
                                 Hola '.$get_id->desde.', los fardos han llegado con las siguientes 
@@ -1248,12 +1298,20 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
-            $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            //$mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            foreach($list_cd as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+            foreach($list_cc as $list){
+                $mail->addCC($list->emailp);
+            }
 
             $mail->isHTML(true);
 
-            $mail->Subject = "MERCADERÍA PAGADA: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.")";
+            $mail->Subject = "MERCADERÍA PAGADA: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
                                 Hola '.$get_id->desde.', se ha pagado a la agencia
@@ -1484,12 +1542,20 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
-            $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            //$mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            foreach($list_td as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+            foreach($list_cc as $list){
+                $mail->addCC($list->emailp);
+            }
 
             $mail->isHTML(true);
 
-            $mail->Subject = "DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.")";
+            $mail->Subject = "DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
                                 Hola '.$get_id->hacia.', regularizar los sobrantes y/o faltantes indicados.<br><br>
@@ -1612,12 +1678,24 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
-            $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            //$mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            foreach($list_cd as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            foreach($list_td as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+            foreach($list_cc as $list){
+                $mail->addCC($list->emailp);
+            }
 
             $mail->isHTML(true);
 
-            $mail->Subject = "REGULARIZADO - DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.")";
+            $mail->Subject = "REGULARIZADO - DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
                                 Hola '.$get_id->desde.', '.$get_id->hacia.' acaba de regularizar con la 
@@ -1811,12 +1889,20 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
-                $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                //$mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                foreach($list_cd as $list){
+                    $mail->addAddress($list->emailp);
+                }
+                $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+                foreach($list_cc as $list){
+                    $mail->addCC($list->emailp);
+                }
     
                 $mail->isHTML(true);
     
-                $mail->Subject = "SOLICITUD DE DEVOLUCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.")";
+                $mail->Subject = "SOLICITUD DE DEVOLUCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
             
                 $mail->Body =  '<FONT SIZE=3>
                                     Hola Andrea, tienes una solicitud de devolución por evaluar.
@@ -1956,12 +2042,24 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
-                $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                //$mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                foreach($list_cd as $list){
+                    $mail->addAddress($list->emailp);
+                }
+                $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+                foreach($list_td as $list){
+                    $mail->addAddress($list->emailp);
+                }
+                $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+                foreach($list_cc as $list){
+                    $mail->addCC($list->emailp);
+                }
     
                 $mail->isHTML(true);
     
-                $mail->Subject = "RESPUESTA A SOLICITUD DE DEVOLUCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.")";
+                $mail->Subject = "RESPUESTA A SOLICITUD DE DEVOLUCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
             
                 $mail->Body =  '<FONT SIZE=3>
                                     Hola '.$get_id->hacia.' - '.$get_id->desde.', a continuación respuesta de la solicitud de 
@@ -2107,7 +2205,7 @@ class TrackingController extends Controller
             ], 500);
         }
 
-        if (!$query) {
+        if (count($query)==0) {
             return response()->json([
                 'message' => 'Sin resultados.',
             ], 404);
@@ -2117,10 +2215,11 @@ class TrackingController extends Controller
     }
 
     public function insert_mercaderia_surtida_app(Request $request,$sku)
-    {
+    { 
         $request->validate([
-            'cantidad' => 'gt:0',
+            'cantidad' => 'required|gt:0',
         ],[
+            'cantidad.required' => 'Debe ingresar cantidad.',
             'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
         ]);
 
@@ -2133,32 +2232,134 @@ class TrackingController extends Controller
                 '',
                 ''
             ]);
+
+            $get_id = $resultados[0];
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => "Error procesando base de datos.",
             ], 500);
         }
 
-        $get_id = $resultados[0];
-
-        if(!$request->cantidad || $request->cantidad>$get_id->cantidad){
-            echo "error";
+        if($request->cantidad>$get_id->cantidad){
+            return response()->json([
+                'message' => "Error procesando base de datos.",
+            ], 500);  
         }else{
+            try {
+                MercaderiaSurtida::create([
+                    'tipo' => 1,
+                    'base' => $request->cod_base,
+                    'anio' => date('Y'),
+                    'semana' => date('W'),
+                    'sku' => $sku,
+                    'estilo' => $get_id->estilo,
+                    'tipo_usuario' => $get_id->tipo_usuario,
+                    'tipo_prenda' => $get_id->tipo_prenda,
+                    'color' => $get_id->color,
+                    'talla' => $get_id->talla,
+                    'descripcion' => $get_id->decripcion,
+                    'cantidad' => $request->cantidad,
+                    'fecha' => now()
+                ]);
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
+            }
+        }
+    }
+    //REQUERIMIENTO DE REPOSICIÓN
+    public function insert_requerimiento_reposicion_app(Request $request,$sku)
+    {
+        $request->validate([
+            'cantidad' => 'required|gt:0',
+            'cod_base' => 'required',
+        ],[
+            'cantidad.required' => 'Debe ingresar cantidad.',
+            'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
+            'cod_base.required' => 'Debe ingresar base.',
+        ]);
+
+        try {
             MercaderiaSurtida::create([
-                'tipo' => 1,
+                'tipo' => 2,
                 'base' => $request->cod_base,
                 'anio' => date('Y'),
                 'semana' => date('W'),
                 'sku' => $sku,
-                'estilo' => $get_id->estilo,
-                'tipo_usuario' => $get_id->tipo_usuario,
-                'tipo_prenda' => $get_id->tipo_prenda,
-                'color' => $get_id->color,
-                'talla' => $get_id->talla,
-                'descripcion' => $get_id->decripcion,
+                'estilo' => $request->estilo,
+                'tipo_usuario' => $request->tipo_usuario,
+                'tipo_prenda' => $request->tipo_prenda,
+                'color' => $request->color,
+                'talla' => $request->talla,
+                'descripcion' => $request->descripcion,
                 'cantidad' => $request->cantidad,
+                'estado' => 0,
                 'fecha' => now()
             ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => "Error procesando base de datos.",
+            ], 500);
+        }
+    }
+
+    public function list_requerimiento_reposicion_app(Request $request)
+    {
+        if($request->sku){
+            try {
+                $query = MercaderiaSurtida::where('tipo',2)->where('sku',$request->sku)
+                                            ->where('base',$request->cod_base)
+                                            ->where('estado',0)->get();
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
+            }
+    
+            if (count($query)==0) {
+                return response()->json([
+                    'message' => 'Sin resultados.',
+                ], 404);
+            }
+    
+            return response()->json($query, 200);
+        }else if($request->estilo){
+            try {
+                $query = MercaderiaSurtida::where('tipo',2)->where('estilo',$request->estilo)
+                                            ->where('base',$request->cod_base)
+                                            ->where('estado',0)->get();
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
+            }
+    
+            if (count($query)==0) {
+                return response()->json([
+                    'message' => 'Sin resultados.',
+                ], 404);
+            }
+    
+            return response()->json($query, 200);
+        }else{
+            return response()->json([
+                'message' => 'Sin resultados.',
+            ], 404);
+        }
+    }
+
+    public function update_requerimiento_reposicion_app($id)
+    {
+        try {
+            MercaderiaSurtida::findOrFail($id)->update([
+                'estado' => 1,
+                'fecha' => now()
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => "Error procesando base de datos.",
+            ], 500);
         }
     }
 }
