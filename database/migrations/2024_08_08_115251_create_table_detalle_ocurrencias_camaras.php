@@ -12,9 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('detalle_ocurrencias_camaras', function (Blueprint $table) {
-            $table->id('id_detalle_ocurrencias_camaras'); // Auto-increment primary key
-            $table->integer('id_ocurrencia')->unsigned();
-            $table->integer('id_control_camara')->unsigned();
+            $table->id('id_detalle_ocurrencias_camaras');
+            $table->unsignedBigInteger('id_ocurrencia');
+            $table->unsignedBigInteger('id_control_camara');
+            $table->foreign('id_control_camara','detalle_ocurrencias_camaras_fk_id_control_camara')->references('id')->on('control_camara');
+            $table->foreign('id_ocurrencia','detalle_ocurrencias_camaras_fk_id_ocurrencia')->references('id')->on('control_camara');
             // $table->timestamps();
         });
     }
