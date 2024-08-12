@@ -296,7 +296,7 @@
         background-repeat: no-repeat;
         background-size: 135rem auto;
     }
-    @media screen and (min-width: 1900px) {
+    @media screen and (min-width: 1051px) {
         #logo_logistica{
             margin-left: 39.5rem;
             margin-top: 6rem;
@@ -449,10 +449,10 @@
         font-size: 36px;
         height: 4rem;
         font-weight: bold;
-        line-height: 1; 
-        width: 23rem; 
-        margin-bottom: 0rem; 
-        text-transform: uppercase; 
+        line-height: 1;
+        width: 23rem;
+        margin-bottom: 0rem;
+        text-transform: uppercase;
     }
 
     #carousel-caption{
@@ -484,7 +484,7 @@
             font-size: xx-small;
             height: 1rem;
         }
- 
+
         #carousel-caption{
             top: -40%;
         }

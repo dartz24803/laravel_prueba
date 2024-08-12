@@ -78,7 +78,7 @@
             // Clear previous content
             var imageViewer = document.getElementById('imageViewer');
             imageViewer.innerHTML = '';
-            
+
             // Append new image to viewer div
             imageViewer.appendChild(img);
         };

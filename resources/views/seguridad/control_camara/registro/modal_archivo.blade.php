@@ -11,7 +11,7 @@
             <ol class="carousel-indicators">
                 @php $i = 0; @endphp
                 @foreach ($list_archivo as $list)
-                    <li data-target="#carouselExampleCaptions" data-slide-to="{{ $i }}" 
+                    <li data-target="#carouselExampleCaptions" data-slide-to="{{ $i }}"
                     @if ($i==0) class="active" @endif></li>
                     @php $i++; @endphp
                 @endforeach
@@ -23,6 +23,7 @@
                         <img class="d-block w-100" src="{{ $list->archivo }}">
                         <div class="carousel-caption d-none d-sm-block">
                             <h3 style="color: #4361EE;">{{ $list->titulo }}</h3>
+                            <h5 class="d-flex justify-content-center" style="color: #4361EE;">{{ $list->descripcion}}</h5>
                         </div>
                     </div>
                     @php $i++; @endphp
@@ -39,6 +40,7 @@
         </div>
     @else
         <img class="d-block w-100" src="{{ $list_archivo->archivo }}">
+        <h5 class="d-flex justify-content-center">{{ $list_archivo->descripcion}}</h5>
     @endif
 </div>
 

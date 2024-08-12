@@ -16,6 +16,7 @@
                         </option>
                     @endforeach
                 </select>
+                <input type="text" class="form-control" id="desc_{{$list->id_tienda}}" name="desc_{{$list->id_tienda}}" placeholder="Problemas">
             </div>
             <div class="d-flex align-items-center justify-content-center col-lg-1 ml-3 mb-3">
                 <button type="button" class="btn btn-secondary" id="btn_camara_{{ $list->id_tienda }}" title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('control_camara_reg.modal_imagen', $list->id_tienda) }}">
@@ -38,7 +39,7 @@
     .select2-search{
         display: none;
     }
-    
+
     .textarea_paste {
         width: 100%; /* Ancho completo */
         padding: 10px; /* Espaciado interno para separar el contenido del borde */
@@ -90,7 +91,7 @@
             // Clear previous content
             var imageViewer = document.getElementById('imageViewerr');
             imageViewer.innerHTML = '';
-            
+
             // Append new image to viewer div
             imageViewer.appendChild(img);
         };

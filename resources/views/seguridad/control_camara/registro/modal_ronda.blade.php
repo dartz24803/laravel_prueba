@@ -85,7 +85,7 @@
             // Clear previous content
             var imageViewer = document.getElementById('imageViewerr');
             imageViewer.innerHTML = '';
-            
+
             // Append new image to viewer div
             imageViewer.appendChild(img);
         };
@@ -130,7 +130,7 @@
             // Clear previous content
             var imageViewer = document.getElementById('imageViewerr_'+id);
             imageViewer.innerHTML = '';
-            
+
             // Append new image to viewer div
             imageViewer.appendChild(img);
         };

@@ -17,7 +17,8 @@ class ControlCamaraArchivo extends Model
     protected $fillable = [
         'id_control_camara',
         'id_ronda',
-        'archivo'
+        'archivo',
+        'descripcion'
     ];
 
     public static function get_list_control_camara_archivo($dato)
