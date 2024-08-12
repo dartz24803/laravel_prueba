@@ -2273,14 +2273,17 @@ class TrackingController extends Controller
     {
         $request->validate([
             'cantidad' => 'required|gt:0',
+            'cod_base' => 'required',
         ],[
             'cantidad.required' => 'Debe ingresar cantidad.',
             'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
+            'cod_base.required' => 'Debe ingresar base.',
         ]);
 
         try {
             MercaderiaSurtida::create([
                 'tipo' => 2,
+                'base' => $request->cod_base,
                 'anio' => date('Y'),
                 'semana' => date('W'),
                 'sku' => $sku,
@@ -2306,6 +2309,7 @@ class TrackingController extends Controller
         if($request->sku){
             try {
                 $query = MercaderiaSurtida::where('tipo',2)->where('sku',$request->sku)
+                                            ->where('base',$request->cod_base)
                                             ->where('estado',0)->get();
             } catch (\Throwable $th) {
                 return response()->json([
@@ -2323,6 +2327,7 @@ class TrackingController extends Controller
         }else if($request->estilo){
             try {
                 $query = MercaderiaSurtida::where('tipo',2)->where('estilo',$request->estilo)
+                                            ->where('base',$request->cod_base)
                                             ->where('estado',0)->get();
             } catch (\Throwable $th) {
                 return response()->json([
