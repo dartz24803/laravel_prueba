@@ -247,11 +247,13 @@ class TrackingController extends Controller
             }
     
             return response()->json($query, 200);
-        }else{
+        }elseif($request->cod_base){
             try {
                 $query = TrackingNotificacion::select('tracking_notificacion.id_tracking',
                                                 'tracking.n_requerimiento')
                                                 ->join('tracking','tracking.id','=','tracking_notificacion.id_tracking')
+                                                ->join('base','base.id_base','=','tracking.id_origen_hacia')
+                                                ->where('base.cod_base',$request->cod_base)
                                                 ->groupBy('tracking_notificacion.id_tracking')->get();
             } catch (\Throwable $th) {
                 return response()->json([
@@ -266,6 +268,10 @@ class TrackingController extends Controller
             }
     
             return response()->json($query, 200);
+        }else{
+            return response()->json([
+                'message' => 'Sin resultados.',
+            ], 404);
         }
     }
 
