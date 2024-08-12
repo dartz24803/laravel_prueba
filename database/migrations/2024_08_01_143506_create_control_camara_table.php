@@ -27,6 +27,7 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
+            $table->integer('completado')->nullable();
             $table->foreign('id_usuario','ccam_fk_id_usu')->references('id_usuario')->on('users');
             $table->foreign('id_sede','ccam_fk_id_sed')->references('id_sede')->on('sedes');
             $table->foreign('id_tienda','ccam_fk_id_tie')->references('id_tienda')->on('tiendas');

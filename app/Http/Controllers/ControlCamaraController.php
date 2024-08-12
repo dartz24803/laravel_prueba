@@ -428,6 +428,14 @@ class ControlCamaraController extends Controller
                     'user_act' => session('usuario')->id_usuario
                 ]);
 
+                $id = $control_camara->id;
+                foreach ($id_ocurrencia as $ocurrencia) {
+                    DetalleOcurrenciasCamaras::create([
+                        'id_control_camara' => $id,
+                        'id_ocurrencia' => $ocurrencia,
+                    ]);
+                }
+                
                 $list_temporal = ControlCamaraArchivoTemporal::select('id', 'archivo')
                     ->where('id_usuario', session('usuario')->id_usuario)
                     ->where('id_tienda', $list->id_tienda)->get();
