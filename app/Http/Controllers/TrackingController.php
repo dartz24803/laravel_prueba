@@ -45,7 +45,7 @@ class TrackingController extends Controller
         ]);
         //$token = TrackingToken::where('base','B06')->first();
         //$this->token = $token->token;
-        $this->token = 'dGFOzROqS5-9jr3kzO7Cxx:APA91bF3ga38vPAXdXt5pb1fVIRL9-vTdXqYTge9wyYycgVvPr3dKe7Yk0EWAHLvvJA3pVrd-4X8eMtQSsiTOAi11afyci5ZdZHMPOXBYw1lO37aZjvTlmzP9ZZzIlpbUgRF2vP5j7ir';
+        $this->token = 'd9r7DbMtTROw-0GtTUhgTX:APA91bH1_P6DYwNCQiK2h7JLoduSS7aZGagarRDld5puov4lprZ5DE_BLc21LpqlC9jMdaL1itzx_PgZsHCiDliMm4jTTCT1eoIcxqwVc3NuCgRoKRrFESatdY9tHgAZPOrLXhCGuYpH';
     }
 
     public function iniciar_tracking()
