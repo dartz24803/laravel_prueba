@@ -461,7 +461,7 @@
         top: 0;
     }
 
-    @media screen and (max-width: 1050px) {
+    @media screen and (max-width: 1050px) and (min-width: 800) {
         .mensaje_nuevo_slider{
             font-size: medium;
         }
@@ -513,7 +513,7 @@
         }
     }
 
-    @media screen and (min-width: 1900px) {
+    @media screen and (min-width: 1900px)  {
         #carousel-caption {
             margin-left: -7%;
             height: 100%;
@@ -547,6 +547,7 @@
     $(document).ready(function() {
         $("#inicio").addClass('active');
         $("#hinicio").attr('aria-expanded','true');
+        cambiarClaseSegunResolucion();
     });
     function cambiarClaseSegunResolucion(){
         var ventanaAncho = $(window).width();
@@ -563,6 +564,18 @@
             $('#logo_caja').removeClass('col-sm-2').addClass('col-sm-4 mt-4');
             $('#logo_manufactura').removeClass('col-sm-2 align-items-start').addClass('col-sm-4 justify-content-center mt-4');
             $('#logo_tiendas').removeClass('col-sm-3 justify-content-start').addClass('col-sm-12 justify-content-center');
+        }else{
+            $('#logo_logistica').addClass('col-sm-8');
+            $('#logo_comercial').addClass('justify-content-end');
+            $('#logo_talento_humano').addClass('col-sm-2');
+            $('#logo_infraestructura').addClass('col-sm-3');
+            $('#logo_interna').addClass('col-sm-3 justify-content-end');
+            $('#logo_central').addClass('d-flex');
+            $('#logo_finanzas').addClass('col-sm-3 align-items-end');
+            $('#logo_seguridad').addClass('col-sm-5 justify-content-end');
+            $('#logo_caja').addClass('col-sm-2');
+            $('#logo_manufactura').addClass('col-sm-2 align-items-start')
+            $('#logo_tiendas').addClass('col-sm-3 justify-content-start')
         }
     }
 
