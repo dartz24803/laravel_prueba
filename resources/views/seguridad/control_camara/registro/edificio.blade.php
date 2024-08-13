@@ -6,8 +6,8 @@
 
         @foreach ($list_tienda_sede as $list)
             <div class="col-lg-12 row justify-content-center">
-                <div class="form-group col-lg-3">
-                    <label class="control-label text-bold">{{ $list->descripcion }}</label>
+                <div class="form-group col-lg-10 d-flex justify-content-center">
+                    <h5 class="modal-title text-bold">{{ $list->descripcion }}</h5>
                 </div>
             </div>
         @endforeach
@@ -31,7 +31,7 @@
     @if (count($list_ronda)>0)
     <div class="row mt-3 ml-1">
         <div class="form-group col-lg-12">
-            <h5 class="modal-title">RONDA {{ $get_sede->nombre_sede }}</h5>
+            <h5 class="modal-title">RONDA</h5>
         </div>
     </div>
     <br>
