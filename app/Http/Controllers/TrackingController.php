@@ -9,6 +9,7 @@ use PHPMailer\PHPMailer\Exception;
 use App\Models\Tracking;
 use App\Models\Base;
 use App\Models\MercaderiaSurtida;
+use App\Models\MercaderiaSurtidaPadre;
 use App\Models\TrackingArchivo;
 use App\Models\TrackingArchivoTemporal;
 use App\Models\TrackingDetalleEstado;
@@ -40,6 +41,7 @@ class TrackingController extends Controller
             'list_mercaderia_nueva_app',
             'insert_mercaderia_surtida_app',
             'insert_requerimiento_reposicion_app',
+            'insert_requerimiento_reposicion_estilo_app',
             'list_requerimiento_reposicion_app',
             'update_requerimiento_reposicion_app'
         ]);
@@ -2306,18 +2308,40 @@ class TrackingController extends Controller
 
     public function insert_requerimiento_reposicion_estilo_app(Request $request)
     {
-        $codBase = $request->input('cod_base');
-        $estilo = $request->input('estilo');
-        $detalles = $request->input('detalles');
+        $request->validate([
+            'cod_base' => 'required',
+            'estilo' => 'required',
+        ],[
+            'cod_base.required' => 'Debe ingresar base.',
+            'estilo.required' => 'Debe ingresar estilo.',
+        ]);
 
-        echo $codBase."-".$estilo;
-    
-        foreach ($detalles as $detalle) {
-            $color = $detalle['color'];
-            $talla = $detalle['talla'];
-            $cantidad = $detalle['cantidad'];
+        try {
+            $padre = MercaderiaSurtidaPadre::create([
+                'base' => $request->cod_base,
+                'estilo' => $request->estilo,
+                'fecha' => now()
+            ]);
 
-            echo $color."-".$talla."-".$cantidad;
+            foreach ($request->detalles as $list) {
+                MercaderiaSurtida::create([
+                    'id_padre' => $padre->id,
+                    'tipo' => 3,
+                    'base' => $request->cod_base,
+                    'anio' => date('Y'),
+                    'semana' => date('W'),
+                    'estilo' => $request->estilo,
+                    'color'=> $list['color'],
+                    'talla' => $list['talla'],
+                    'cantidad' => $list['cantidad'],
+                    'estado' => 0,
+                    'fecha' => now()
+                ]);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => "Error procesando base de datos.",
+            ], 500);
         }
     }
 

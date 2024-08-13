@@ -15,6 +15,7 @@ class MercaderiaSurtida extends Model
     public $timestamps = false; 
 
     protected $fillable = [
+        'id_padre',
         'tipo',
         'base',
         'anio',
