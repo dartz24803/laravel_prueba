@@ -14,5 +14,6 @@ Route::post('tracking/notificacion', [TrackingController::class, 'list_notificac
 Route::post('tracking/list_mercaderia_nueva', [TrackingController::class, 'list_mercaderia_nueva_app'])->name('tracking.list_mercaderia_nueva_app');
 Route::post('tracking/{id}/mercaderia_surtida', [TrackingController::class, 'insert_mercaderia_surtida_app'])->name('tracking.insert_mercaderia_surtida_app');
 Route::post('tracking/{id}/requerimiento_reposicion', [TrackingController::class, 'insert_requerimiento_reposicion_app'])->name('tracking.insert_requerimiento_reposicion_app');
+Route::post('tracking/requerimiento_reposicion', [TrackingController::class, 'insert_requerimiento_reposicion_estilo_app'])->name('tracking.insert_requerimiento_reposicion_estilo_app');
 Route::post('tracking/list_requerimiento_reposicion', [TrackingController::class, 'list_requerimiento_reposicion_app'])->name('tracking.list_requerimiento_reposicion_app');
 Route::put('tracking/{id}/requerimiento_reposicion', [TrackingController::class, 'update_requerimiento_reposicion_app'])->name('tracking.update_requerimiento_reposicion_app');

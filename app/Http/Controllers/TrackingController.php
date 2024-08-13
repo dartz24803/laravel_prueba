@@ -2304,6 +2304,23 @@ class TrackingController extends Controller
         }
     }
 
+    public function insert_requerimiento_reposicion_estilo_app(Request $request)
+    {
+        $codBase = $request->input('cod_base');
+        $estilo = $request->input('estilo');
+        $detalles = $request->input('detalles');
+
+        echo $codBase."-".$estilo;
+    
+        foreach ($detalles as $detalle) {
+            $color = $detalle['color'];
+            $talla = $detalle['talla'];
+            $cantidad = $detalle['cantidad'];
+
+            echo $color."-".$talla."-".$cantidad;
+        }
+    }
+
     public function list_requerimiento_reposicion_app(Request $request)
     {
         if($request->sku){
