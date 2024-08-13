@@ -2323,7 +2323,7 @@ class TrackingController extends Controller
                 'fecha' => now()
             ]);
 
-            foreach ($request->detalles as $list) {
+            foreach ($request->detalle as $list) {
                 MercaderiaSurtida::create([
                     'id_padre' => $padre->id,
                     'tipo' => 3,
@@ -2347,10 +2347,9 @@ class TrackingController extends Controller
 
     public function list_requerimiento_reposicion_app(Request $request)
     {
-        if($request->sku){
+        if($request->tipo=="sku"){
             try {
-                $query = MercaderiaSurtida::where('tipo',2)->where('sku',$request->sku)
-                                            ->where('base',$request->cod_base)
+                $query = MercaderiaSurtida::where('tipo',2)->where('base',$request->cod_base)
                                             ->where('estado',0)->get();
             } catch (\Throwable $th) {
                 return response()->json([
@@ -2365,24 +2364,42 @@ class TrackingController extends Controller
             }
     
             return response()->json($query, 200);
-        }else if($request->estilo){
-            try {
-                $query = MercaderiaSurtida::where('tipo',2)->where('estilo',$request->estilo)
-                                            ->where('base',$request->cod_base)
-                                            ->where('estado',0)->get();
-            } catch (\Throwable $th) {
-                return response()->json([
-                    'message' => "Error procesando base de datos.",
-                ], 500);
+        }else if($request->tipo=="estilo"){
+            if($request->id_padre){
+                try {
+                    $query = MercaderiaSurtida::where('id_padre', $request->id_padre)
+                                                ->where('base',$request->cod_base)
+                                                ->where('estado',0)->get();
+                } catch (\Throwable $th) {
+                    return response()->json([
+                        'message' => "Error procesando base de datos.",
+                    ], 500);
+                }
+        
+                if (count($query)==0) {
+                    return response()->json([
+                        'message' => 'Sin resultados.',
+                    ], 404);
+                }
+        
+                return response()->json($query, 200);
+            }else{
+                try {
+                    $query = MercaderiaSurtidaPadre::get_list_mercaderia_surtida_padre(['cod_base'=>$request->cod_base]);
+                } catch (\Throwable $th) {
+                    return response()->json([
+                        'message' => "Error procesando base de datos.",
+                    ], 500);
+                }
+        
+                if (count($query)==0) {
+                    return response()->json([
+                        'message' => 'Sin resultados.',
+                    ], 404);
+                }
+        
+                return response()->json($query, 200);
             }
-    
-            if (count($query)==0) {
-                return response()->json([
-                    'message' => 'Sin resultados.',
-                ], 404);
-            }
-    
-            return response()->json($query, 200);
         }else{
             return response()->json([
                 'message' => 'Sin resultados.',
