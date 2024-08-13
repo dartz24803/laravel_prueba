@@ -46,7 +46,11 @@
         75% { -ms-transform: translate(-1px, 0); }
         100% { -ms-transform: translate(0, -1px); }
     }
+    .subnav {
+        list-style-type: none;
+    }
 </style>
+<link href="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/css/smart_wizard_all.min.css" rel="stylesheet" type="text/css" />
 
 <table id="tabla_js" class="table" style="width:100%">
     <thead>
@@ -181,9 +185,178 @@
                 <td>{{ $list->hora }}</td>
                 <td class="text-left">{{ $list->estado }}</td>
             </tr>
+            <tr>
+                <td colspan="8" style="width: 100%;">
+                    <div id="smartwizard{{$list->id}}" dir class="mt-4 mb-5">
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link" title="Ver detalles">
+                                    <div class="num">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-briefcase"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                                    </div>
+                                    Despacho<br>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" title="Ver detalles">
+                                    <span class="num">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-truck">
+                                            <rect x="1" y="3" width="15" height="13"></rect>
+                                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                                        </svg><br>
+                                    </span>
+                                    Traslado<br>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" title="Ver detalles">
+                                    <span class="num">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin">
+                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg><br>
+                                    </span>
+                                    Recepción de mercadería<br>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" title="Ver detalles">
+                                    <span class="num">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-bag">
+                                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                                            <path d="M16 10a4 4 0 0 1-8 0"></path>
+                                        </svg><br>
+                                    </span>
+                                    Inspección de fardo<br>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" title="Ver detalles">
+                                    <span class="num">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg><br>
+                                    </span>
+                                    Pago de mercadería
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" title="Ver detalles">
+                                    <span class="num">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-zoom-in"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg><br>
+                                    </span>
+                                    Inspección de mercadería
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" title="Ver detalles">
+                                    <span class="num">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg><br>
+                                    </span>
+                                    Diferencias
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" title="Ver detalles">
+                                    <span class="num">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-repeat"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg><br>
+                                    </span>
+                                    Devolución
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" title="Ver detalles">
+                                    <span class="num">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square">
+                                            <polyline points="9 11 12 14 22 4"></polyline>
+                                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                                        </svg><br>
+                                    </span>
+                                    Fin
+                                </a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content card">
+                            <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
+                                <div class="card-body">
+                                    <h5 class="card-title">DETALLES</h5>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    {{ $list->descripcion }} <br>
+                                    <!-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    Código: <br>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    Base: <br>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    Fecha y hora de cambio: 00:08:00 -->
+                                </div>
+                            </div>
+                            <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
+                                <div class="card-body">
+                                    <h5 class="card-title">DETALLES</h5>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    Guía de Remisión: <br>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    Código: <br>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    Base: <br>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                                    </svg>
+                                    Fecha y hora de cambio: 00:09:00
+                                </div>
+                            </div>
+                            <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">DETALLES</h5>
+                                    Guía de Remisión: <br>
+                                    Código: <br>
+                                    Base: <br>
+                                    Fecha y hora de cambio: 00:10:00
+                                </div>
+                            </div>
+                            <div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-4">
+                                <div class="card-body">
+                                    <h5 class="card-title">DETALLES</h5>
+                                    Guía de Remisión: <br>
+                                    Código: <br>
+                                    Base: <br>
+                                    Fecha y hora de cambio: 00:11:00
+                                </div>
+                            </div>
+                            <div id="step-5" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
+                                <div class="card-body">
+                                    <h5 class="card-title">DETALLES</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress" style="width: 100%; position: absolute; top:1rem; z-index:1; border-bottom:gray 1px dashed;">
+                            <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
         @endforeach
     </tbody>
 </table>
+<script src="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/js/jquery.smartWizard.min.js" type="text/javascript"></script>
 
 <script>
     $(document).ready(function() {
@@ -426,4 +599,16 @@
             }
         })
     }
+    $(function() {
+        <?php foreach ($list_tracking as $list) :
+            $estado = intval($list->id_proceso) -1; ?>
+            $('#smartwizard<?= $list->id; ?>').smartWizard({
+                selected: <?= $estado; ?>,
+                theme: 'square', // tema para el wizard, el css relacionado debe incluirse para un tema diferente al predeterminado
+                toolbar: {
+                    position: 'none', // none|top|bottom|both
+                },
+            });
+        <?php endforeach; ?>
+    });
 </script>

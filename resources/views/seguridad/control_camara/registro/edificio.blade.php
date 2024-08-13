@@ -47,7 +47,7 @@
         </div>
     @endforeach
     @endif
-    <input type="file" id="archivo_rond" name="archivo_rond" style="display: none;">
+    <input type="file" id="archivo_rond" name="archivo_rond" style="display: block;">
     @foreach ($list_ronda as $list)
         <input type="file" id="archivo_ronda_{{ $list->id }}" name="archivo_ronda_{{ $list->id }}" style="display: none;">
     @endforeach
@@ -149,6 +149,7 @@
         // Clear previous content
         var imageViewer = document.getElementById('imageViewerr');
         imageViewer.innerHTML = '';
+        $('#archivo_rond').val('');
     }
 
     @foreach ($list_ronda as $list)

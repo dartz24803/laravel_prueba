@@ -1,6 +1,8 @@
 @extends('layouts.plantilla')
 
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/css/smart_wizard_all.min.css" rel="stylesheet" type="text/css" />
+
     <div id="content" class="main-content">
         <div class="layout-px-spacing">
             <div class="page-header">
@@ -43,7 +45,7 @@
             </div>
         </div>
     </div>
-
+<script src="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/js/jquery.smartWizard.min.js" type="text/javascript"></script>
     <script>
         $(document).ready(function() {
             $("#logisticas").addClass('active');

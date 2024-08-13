@@ -97,7 +97,7 @@ class Tracking extends Model
                     DATE_FORMAT(de.fecha,'%d-%m-%Y') AS fecha,DATE_FORMAT(de.fecha,'%H:%i') AS hora,
                     CASE WHEN tr.devolucion=1 AND de.id_estado IN (14,15,16) 
                     THEN CONCAT(te.descripcion,' (PENDIENTE DEVOLUCIÓN)') ELSE te.descripcion END AS estado,
-                    de.id_estado
+                    de.id_estado,te.id_proceso,te.descripcion
                     FROM tracking tr
                     LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base
