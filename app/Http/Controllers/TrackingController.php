@@ -2365,41 +2365,38 @@ class TrackingController extends Controller
     
             return response()->json($query, 200);
         }else if($request->tipo=="estilo"){
-            if($request->id_padre){
-                try {
-                    $query = MercaderiaSurtida::where('id_padre', $request->id_padre)
-                                                ->where('base',$request->cod_base)
-                                                ->where('estado',0)->get();
-                } catch (\Throwable $th) {
-                    return response()->json([
-                        'message' => "Error procesando base de datos.",
-                    ], 500);
-                }
-        
-                if (count($query)==0) {
-                    return response()->json([
-                        'message' => 'Sin resultados.',
-                    ], 404);
-                }
-        
-                return response()->json($query, 200);
-            }else{
-                try {
-                    $query = MercaderiaSurtidaPadre::get_list_mercaderia_surtida_padre(['cod_base'=>$request->cod_base]);
-                } catch (\Throwable $th) {
-                    return response()->json([
-                        'message' => "Error procesando base de datos.",
-                    ], 500);
-                }
-        
-                if (count($query)==0) {
-                    return response()->json([
-                        'message' => 'Sin resultados.',
-                    ], 404);
-                }
-        
-                return response()->json($query, 200);
+            try {
+                $query = MercaderiaSurtidaPadre::get_list_mercaderia_surtida_padre(['cod_base'=>$request->cod_base]);
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
             }
+    
+            if (count($query)==0) {
+                return response()->json([
+                    'message' => 'Sin resultados.',
+                ], 404);
+            }
+    
+            return response()->json($query, 200);
+        }elseif($request->id_padre){
+            try {
+                $query = MercaderiaSurtida::where('id_padre', $request->id_padre)
+                                            ->where('estado',0)->get();
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
+            }
+    
+            if (count($query)==0) {
+                return response()->json([
+                    'message' => 'Sin resultados.',
+                ], 404);
+            }
+    
+            return response()->json($query, 200);
         }else{
             return response()->json([
                 'message' => 'Sin resultados.',
