@@ -6,8 +6,8 @@
 
         @foreach ($list_tienda_sede as $list)
             <div class="col-lg-12 row justify-content-center">
-                <div class="form-group col-lg-3">
-                    <label class="control-label text-bold">{{ $list->descripcion }}</label>
+                <div class="form-group col-lg-10 d-flex justify-content-center">
+                    <h5 class="modal-title text-bold">{{ $list->descripcion }}</h5>
                 </div>
             </div>
         @endforeach
