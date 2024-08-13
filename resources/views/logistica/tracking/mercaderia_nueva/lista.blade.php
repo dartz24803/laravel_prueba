@@ -9,6 +9,9 @@
             <th>Color</th>
             <th>Talla</th>
             <th>Cantidad</th>
+            <th>PX1</th>
+            <th>PX2</th>
+            <th>PX3</th>
             <th>Cantidad Surtida</th>
             <th class="no-content"></th>
         </tr>
@@ -25,6 +28,9 @@
                 <td class="text-left">{{ $list->color }}</td>
                 <td>{{ $list->talla }}</td>
                 <td>{{ $list->cantidad }}</td>
+                <td>{{ $list->precio1 }}</td>
+                <td>{{ $list->precio2 }}</td>
+                <td>{{ $list->precio3 }}</td>
                 <td>{{ $list->cantidad_surtida }}</td>
                 <td>
                     <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
