@@ -632,6 +632,13 @@ class ControlCamaraController extends Controller
 
     public function registrar_ronda(Request $request)
     {
+        $request->validate([
+            'archivo_rond' => 'required|file',
+        ],[
+            'archivo_rond.required' => 'Debe ingresar imagen.',
+            'archivo_rond.file' => 'Debe ingresar imagen.',
+        ]);
+
         $cantidad = ControlCamara::select('id_sede', 'fecha', 'hora_programada')->where('id_sede', $request->id_sede)
             ->where('fecha', date('Y-m-d'))
             ->where('estado', 1)->groupBy('id_sede', 'fecha', 'hora_programada')->get();
