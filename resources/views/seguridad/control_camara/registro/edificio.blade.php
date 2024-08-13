@@ -31,7 +31,7 @@
     @if (count($list_ronda)>0)
     <div class="row mt-3 ml-1">
         <div class="form-group col-lg-12">
-            <h5 class="modal-title">RONDA {{ $get_sede->nombre_sede }}</h5>
+            <h5 class="modal-title">RONDA</h5>
         </div>
     </div>
     <br>
