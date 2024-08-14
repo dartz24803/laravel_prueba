@@ -516,9 +516,7 @@
                         </li>
                     <?php } ?>
 
-                    <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 1 || 
-                    session('usuario')->id_puesto == 39 || session('usuario')->id_puesto == 80 || 
-                    session('usuario')->id_puesto == 251){ ?>
+                    <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 80){ ?>
                         <li class="menu" id="conf_controles_internos">
                             <a href="#rconf_controles_internos" id="hconf_controles_internos" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                                 <div class="">
