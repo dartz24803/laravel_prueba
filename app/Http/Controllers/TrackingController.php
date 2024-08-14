@@ -39,7 +39,7 @@ class TrackingController extends Controller
             'llegada_tienda',
             'list_notificacion',
             'list_mercaderia_nueva_app',
-            'insert_mercaderia_surtida_app',
+            'insert_mercaderia_nueva_app',
             'insert_requerimiento_reposicion_app',
             'insert_requerimiento_reposicion_estilo_app',
             'list_requerimiento_reposicion_app',
@@ -2192,15 +2192,26 @@ class TrackingController extends Controller
 
     public function list_mercaderia_nueva_app(Request $request)
     {
-        try {
-            $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?,?,?', [
-                '',
-                date('Y'),
-                date('W'),
-                $request->cod_base,
-                $request->tipo_usuario,
-                $request->tipo_prenda
-            ]);
+        try { 
+            if($request->estilo){
+                $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_app ?,?,?,?,?,?', [
+                    $request->estilo,
+                    date('Y'),
+                    date('W'),
+                    $request->cod_base,
+                    '',
+                    ''
+                ]);
+            }else{
+                $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_app ?,?,?,?,?,?', [
+                    '',
+                    date('Y'),
+                    date('W'),
+                    $request->cod_base,
+                    $request->tipo_usuario,
+                    $request->tipo_prenda
+                ]);
+            }
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => "Error procesando base de datos.",
@@ -2216,11 +2227,13 @@ class TrackingController extends Controller
         return response()->json($query, 200);
     }
 
-    public function insert_mercaderia_surtida_app(Request $request,$sku)
-    { 
+    public function insert_mercaderia_nueva_app(Request $request, $sku)
+    {
         $request->validate([
+            'cod_base' => 'required',
             'cantidad' => 'required|gt:0',
         ],[
+            'cantidad.cod_base' => 'Debe ingresar base.',
             'cantidad.required' => 'Debe ingresar cantidad.',
             'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
         ]);
@@ -2269,6 +2282,28 @@ class TrackingController extends Controller
                 ], 500);
             }
         }
+
+        /*$rules = [
+            'cod_base' => 'required',
+            'detalle.*.sku' => 'required',
+            'detalle.*.cantidad' => 'required|gt:0',
+        ];
+
+        $messages = [
+            'cod_base.required' => 'Debe ingresar base.',
+            'detalle.*.sku.required' => 'Debe ingresar sku.',
+            'detalle.*.cantidad.required' => 'Debe ingresar cantidad.',
+            'detalle.*.cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
+        ];
+
+        foreach ($request->detalle as $list => $item) {
+            $rules['tarea'] = 'gt:0';
+            $messages['tarea.gt'] = 'Debe seleccionar función.';
+        }
+
+        $request->validate($rules, $messages);
+
+        return response()->json(['message' => 'Datos válidos y procesados'], 200);*/
     }
     //REQUERIMIENTO DE REPOSICIÓN
     public function insert_requerimiento_reposicion_app(Request $request,$sku)
