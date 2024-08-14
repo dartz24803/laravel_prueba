@@ -516,30 +516,34 @@
                         </li>
                     <?php } ?>
 
-                    <li class="menu" id="conf_controles_internos">
-                        <a href="#rconf_controles_internos" id="hconf_controles_internos" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                            <div class="">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
-                                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-                                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-                                </svg>
-                                <span>Control Interno</span>
-                            </div>
-                            <div>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
-                                    <polyline points="9 18 15 12 9 6"></polyline>
-                                </svg>
-                            </div>
-                        </a>
-                        <ul class="collapse submenu list-unstyled" id="rconf_controles_internos" data-parent="#accordionExample">
-                            <li id="conf_precios_sugeridos">
-                                <a href="{{ route('precio_sugerido_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                                    <p class="romperpalabra"><span id="icono_active2"></span> Precio Sugerido</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                    <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 1 || 
+                    session('usuario')->id_puesto == 39 || session('usuario')->id_puesto == 80 || 
+                    session('usuario')->id_puesto == 251){ ?>
+                        <li class="menu" id="conf_controles_internos">
+                            <a href="#rconf_controles_internos" id="hconf_controles_internos" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                                <div class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
+                                        <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                                        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                                    </svg>
+                                    <span>Control Interno</span>
+                                </div>
+                                <div>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                    </svg>
+                                </div>
+                            </a>
+                            <ul class="collapse submenu list-unstyled" id="rconf_controles_internos" data-parent="#accordionExample">
+                                <li id="conf_precios_sugeridos">
+                                    <a href="{{ route('precio_sugerido_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                                        <p class="romperpalabra"><span id="icono_active2"></span> Precio Sugerido</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    <?php } ?>
 
                     <li class="menu" id="conf_rrhhs">
                         <a href="#rconf_rrhhs" id="hconf_rrhhs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
