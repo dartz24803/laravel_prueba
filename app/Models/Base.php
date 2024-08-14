@@ -35,7 +35,7 @@ class Base extends Model
 
     public static function get_list_bases_tienda()
     {
-        $sql = "SELECT cod_base FROM base 
+        $sql = "SELECT id_base,cod_base FROM base 
                 WHERE id_base IN (2,3,4,5,6,7,8,9,10,31,13,27,33,14,37)
                 ORDER BY cod_base";
         $query = DB::select($sql);

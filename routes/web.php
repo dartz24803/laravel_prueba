@@ -24,6 +24,7 @@ use App\Http\Controllers\SliderRRHH;
 use App\Http\Controllers\Cumpleanios;
 use App\Http\Controllers\InicioAdmController;
 use App\Http\Controllers\InicioFrasesAdmController;
+use App\Http\Controllers\PrecioSugeridoConfController;
 
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
@@ -380,6 +381,31 @@ Route::controller(ControlCamaraController::class)->group(function(){
     Route::get('control_camara_img', 'index_img')->name('control_camara_img');
     Route::post('control_camara_img/list', 'list_img')->name('control_camara_img.list');
     Route::get('control_camara_img/{id}/show', 'show_img')->name('control_camara_img.show');
+});
+//CONTROL INTER - PRECIO SUGERIDO CONFIGURABLE
+Route::controller(PrecioSugeridoConfController::class)->group(function(){
+    Route::get('precio_sugerido_conf', 'index')->name('precio_sugerido_conf');
+    Route::get('precio_sugerido_conf_un', 'index_un')->name('precio_sugerido_conf_un');
+    Route::get('precio_sugerido_conf_un/list', 'list_un')->name('precio_sugerido_conf_un.list');
+    Route::get('precio_sugerido_conf_un/create', 'create_un')->name('precio_sugerido_conf_un.create');
+    Route::post('precio_sugerido_conf_un', 'store_un')->name('precio_sugerido_conf_un.store');
+    Route::get('precio_sugerido_conf_un/{id}/edit', 'edit_un')->name('precio_sugerido_conf_un.edit');
+    Route::put('precio_sugerido_conf_un/{id}', 'update_un')->name('precio_sugerido_conf_un.update');
+    Route::delete('precio_sugerido_conf_un/{id}', 'destroy_un')->name('precio_sugerido_conf_un.destroy');
+    Route::get('precio_sugerido_conf_do', 'index_do')->name('precio_sugerido_conf_do');
+    Route::get('precio_sugerido_conf_do/list', 'list_do')->name('precio_sugerido_conf_do.list');
+    Route::get('precio_sugerido_conf_do/create', 'create_do')->name('precio_sugerido_conf_do.create');
+    Route::post('precio_sugerido_conf_do', 'store_do')->name('precio_sugerido_conf_do.store');
+    Route::get('precio_sugerido_conf_do/{id}/edit', 'edit_do')->name('precio_sugerido_conf_do.edit');
+    Route::put('precio_sugerido_conf_do/{id}', 'update_do')->name('precio_sugerido_conf_do.update');
+    Route::delete('precio_sugerido_conf_do/{id}', 'destroy_do')->name('precio_sugerido_conf_do.destroy');
+    Route::get('precio_sugerido_conf_tr', 'index_tr')->name('precio_sugerido_conf_tr');
+    Route::get('precio_sugerido_conf_tr/list', 'list_tr')->name('precio_sugerido_conf_tr.list');
+    Route::get('precio_sugerido_conf_tr/create', 'create_tr')->name('precio_sugerido_conf_tr.create');
+    Route::post('precio_sugerido_conf_tr', 'store_tr')->name('precio_sugerido_conf_tr.store');
+    Route::get('precio_sugerido_conf_tr/{id}/edit', 'edit_tr')->name('precio_sugerido_conf_tr.edit');
+    Route::put('precio_sugerido_conf_tr/{id}', 'update_tr')->name('precio_sugerido_conf_tr.update');
+    Route::delete('precio_sugerido_conf_tr/{id}', 'destroy_tr')->name('precio_sugerido_conf_tr.destroy');
 });
 
 

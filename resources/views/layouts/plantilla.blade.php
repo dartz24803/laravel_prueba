@@ -483,28 +483,17 @@
                             <span>ADMINISTRACION</span>
                         </div>
                     </li>
-                    <?php if (
-                        session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 102 || session('usuario')->id_puesto == 80 ||
-                        session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 23 ||
-                        session('usuario')->id_puesto == 75 || session('usuario')->id_puesto == 7 || session('usuario')->id_puesto == 133 ||
-                        session('usuario')->id_puesto == 138 || session('usuario')->id_puesto == 83 || session('usuario')->id_puesto == 145 ||
-                        session('usuario')->id_puesto == 40 || session('usuario')->id_puesto == 164 || session('usuario')->id_puesto == 148 ||
-                        session('usuario')->id_puesto == 153 || session('usuario')->id_puesto == 157 || session('usuario')->id_puesto == 6 ||
-                        session('usuario')->id_puesto == 12 || session('usuario')->id_puesto == 19 || session('usuario')->id_puesto == 23 ||
-                        session('usuario')->id_puesto == 38 || session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 111 ||
-                        session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 137 || session('usuario')->id_puesto == 164 ||
-                        session('usuario')->id_puesto == 158 || session('usuario')->id_puesto == 9 || session('usuario')->id_puesto == 128 ||
-                        session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 10
-                    ) { ?>
-                        <li class="menu" id="ccvtabla">
-                            <a href="#rccvtabla" id="hccvtabla" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+
+                    <?php if (session('usuario')->id_nivel == 1) { ?>
+                        <li class="menu" id="slider_menu">
+                            <a href="#inicio_carousel" id="inicio_slider" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                                 <div class="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
                                         <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
                                         <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
                                         <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
                                     </svg>
-                                    <span>Tienda</span>
+                                    <span>Inicio</span>
                                 </div>
                                 <div>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
@@ -512,25 +501,45 @@
                                     </svg>
                                 </div>
                             </a>
-                            <ul class="collapse submenu list-unstyled" id="rccvtabla" data-parent="#accordionExample">
-                                <li id="conf_administradores">
-                                    <a href="{{ route('administrador_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Supervisión de tienda <br>• Seguimiento al coordinador">
-                                        <p class="romperpalabra"><span id="icono_active2"></span> Administrador</p>
+                            <ul class="collapse submenu list-unstyled" id="inicio_carousel" data-parent="#accordionExample">
+                                <li id="slider_inicio">
+                                    <a href="{{ url('Inicio/index') }}">
+                                        <p class="romperpalabra"><span id="icono_active2"></span> Slider Inicio</p>
                                     </a>
                                 </li>
-                                <li id="ccv">
-                                    <a href="{{ url('/TablaCuadroControlVisual') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Horarios <br>• Cuadro de Control Visual <br>• Programación Diaria">
-                                        <p class="romperpalabra"><span id="icono_active2"></span> Cuadro de Control Visual</p>
-                                    </a>
-                                </li>
-                                <li id="rfa">
-                                    <a href="{{ url('/Tabla_RF')}}" data-toggle="tooltip" data-placement="right" data-html="true">
-                                        <p class="romperpalabra"><span id="icono_active2"></span> Reporte Fotográfico</p>
+                                <li id="frases_inicio">
+                                    <a href="{{ url('Inicio/index_frases') }}">
+                                        <p class="romperpalabra"><span id="icono_active2"></span> Frases Inicio</p>
                                     </a>
                                 </li>
                             </ul>
                         </li>
                     <?php } ?>
+
+                    <li class="menu" id="conf_controles_internos">
+                        <a href="#rconf_controles_internos" id="hconf_controles_internos" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                            <div class="">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
+                                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                                </svg>
+                                <span>Control Interno</span>
+                            </div>
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </div>
+                        </a>
+                        <ul class="collapse submenu list-unstyled" id="rconf_controles_internos" data-parent="#accordionExample">
+                            <li id="conf_precios_sugeridos">
+                                <a href="{{ route('precio_sugerido_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Precio Sugerido</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
 
                     <li class="menu" id="conf_rrhhs">
                         <a href="#rconf_rrhhs" id="hconf_rrhhs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -587,16 +596,28 @@
                         </ul>
                     </li>
 
-                    <?php if (session('usuario')->id_nivel == 1) { ?>
-                        <li class="menu" id="slider_menu">
-                            <a href="#inicio_carousel" id="inicio_slider" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <?php if (
+                        session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 102 || session('usuario')->id_puesto == 80 ||
+                        session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 23 ||
+                        session('usuario')->id_puesto == 75 || session('usuario')->id_puesto == 7 || session('usuario')->id_puesto == 133 ||
+                        session('usuario')->id_puesto == 138 || session('usuario')->id_puesto == 83 || session('usuario')->id_puesto == 145 ||
+                        session('usuario')->id_puesto == 40 || session('usuario')->id_puesto == 164 || session('usuario')->id_puesto == 148 ||
+                        session('usuario')->id_puesto == 153 || session('usuario')->id_puesto == 157 || session('usuario')->id_puesto == 6 ||
+                        session('usuario')->id_puesto == 12 || session('usuario')->id_puesto == 19 || session('usuario')->id_puesto == 23 ||
+                        session('usuario')->id_puesto == 38 || session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 111 ||
+                        session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 137 || session('usuario')->id_puesto == 164 ||
+                        session('usuario')->id_puesto == 158 || session('usuario')->id_puesto == 9 || session('usuario')->id_puesto == 128 ||
+                        session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 10
+                    ) { ?>
+                        <li class="menu" id="ccvtabla">
+                            <a href="#rccvtabla" id="hccvtabla" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                                 <div class="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
                                         <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
                                         <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
                                         <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
                                     </svg>
-                                    <span>Inicio</span>
+                                    <span>Tienda</span>
                                 </div>
                                 <div>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
@@ -604,15 +625,20 @@
                                     </svg>
                                 </div>
                             </a>
-                            <ul class="collapse submenu list-unstyled" id="inicio_carousel" data-parent="#accordionExample">
-                                <li id="slider_inicio">
-                                    <a href="{{ url('Inicio/index') }}">
-                                        <p class="romperpalabra"><span id="icono_active2"></span> Slider Inicio</p>
+                            <ul class="collapse submenu list-unstyled" id="rccvtabla" data-parent="#accordionExample">
+                                <li id="conf_administradores">
+                                    <a href="{{ route('administrador_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Supervisión de tienda <br>• Seguimiento al coordinador">
+                                        <p class="romperpalabra"><span id="icono_active2"></span> Administrador</p>
                                     </a>
                                 </li>
-                                <li id="frases_inicio">
-                                    <a href="{{ url('Inicio/index_frases') }}">
-                                        <p class="romperpalabra"><span id="icono_active2"></span> Frases Inicio</p>
+                                <li id="ccv">
+                                    <a href="{{ url('/TablaCuadroControlVisual') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Horarios <br>• Cuadro de Control Visual <br>• Programación Diaria">
+                                        <p class="romperpalabra"><span id="icono_active2"></span> Cuadro de Control Visual</p>
+                                    </a>
+                                </li>
+                                <li id="rfa">
+                                    <a href="{{ url('/Tabla_RF')}}" data-toggle="tooltip" data-placement="right" data-html="true">
+                                        <p class="romperpalabra"><span id="icono_active2"></span> Reporte Fotográfico</p>
                                     </a>
                                 </li>
                             </ul>
