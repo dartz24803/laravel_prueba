@@ -47,7 +47,7 @@
         </div>
     @endforeach
     @endif
-    <input type="file" id="archivo_rond" name="archivo_rond" style="display: block;">
+    <input type="file" id="archivo_rond" name="archivo_rond" style="display: none;">
     @foreach ($list_ronda as $list)
         <input type="file" id="archivo_ronda_{{ $list->id }}" name="archivo_ronda_{{ $list->id }}" style="display: none;">
     @endforeach

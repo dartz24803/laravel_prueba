@@ -180,10 +180,10 @@
                 <td>{{ $list->n_requerimiento }}</td>
                 <td>{{ $list->desde }}</td>
                 <td>{{ $list->hacia }}</td>
-                <td class="text-left">{{ $list->proceso }}</td>
+                <td>{{ $list->proceso }}</td>
                 <td>{{ $list->fecha }}</td>
                 <td>{{ $list->hora }}</td>
-                <td class="text-left">{{ $list->estado }}</td>
+                <td>{{ $list->estado }}</td>
             </tr>
             <tr>
                 <td colspan="8" style="width: 100%;">
@@ -282,68 +282,127 @@
                             <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
                                 <div class="card-body">
                                     <h5 class="card-title">DETALLES</h5>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
-                                        <polyline points="20 6 9 17 4 12"></polyline>
-                                    </svg>
-                                    {{ $list->descripcion }} <br>
-                                    <!-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
-                                        <polyline points="20 6 9 17 4 12"></polyline>
-                                    </svg>
-                                    Código: <br>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
-                                        <polyline points="20 6 9 17 4 12"></polyline>
-                                    </svg>
-                                    Base: <br>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
-                                        <polyline points="20 6 9 17 4 12"></polyline>
-                                    </svg>
-                                    Fecha y hora de cambio: 00:08:00 -->
+                                    @foreach ($estado as $row)
+                                        @if ($row['id_proceso'] == 1)
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                            {{ $row['descripcion'] }}<br>
+                                            <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
+                                        @endif
+                                    @endforeach
                                 </div>
                             </div>
                             <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
                                 <div class="card-body">
                                     <h5 class="card-title">DETALLES</h5>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
-                                        <polyline points="20 6 9 17 4 12"></polyline>
-                                    </svg>
-                                    Guía de Remisión: <br>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
-                                        <polyline points="20 6 9 17 4 12"></polyline>
-                                    </svg>
-                                    Código: <br>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
-                                        <polyline points="20 6 9 17 4 12"></polyline>
-                                    </svg>
-                                    Base: <br>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <line x1="15" y1="9" x2="9" y2="15"></line>
-                                        <line x1="9" y1="9" x2="15" y2="15"></line>
-                                    </svg>
-                                    Fecha y hora de cambio: 00:09:00
+                                    @foreach ($estado as $row)
+                                        @if ($row['id_proceso'] == 2)
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                            {{ $row['descripcion'] }}<br>
+                                            <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
+                                        @endif
+                                    @endforeach
                                 </div>
                             </div>
                             <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
                                 <div class="card-body">
                                     <h5 class="card-title">DETALLES</h5>
-                                    Guía de Remisión: <br>
-                                    Código: <br>
-                                    Base: <br>
-                                    Fecha y hora de cambio: 00:10:00
+                                    @foreach ($estado as $row)
+                                        @if ($row['id_proceso'] == 3)
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                            {{ $row['descripcion'] }}<br>
+                                            <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
+                                        @endif
+                                    @endforeach
                                 </div>
                             </div>
                             <div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-4">
                                 <div class="card-body">
                                     <h5 class="card-title">DETALLES</h5>
-                                    Guía de Remisión: <br>
-                                    Código: <br>
-                                    Base: <br>
-                                    Fecha y hora de cambio: 00:11:00
+                                    @foreach ($estado as $row)
+                                        @if ($row['id_proceso'] == 4)
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                            {{ $row['descripcion'] }}<br>
+                                            <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
+                                        @endif
+                                    @endforeach
                                 </div>
                             </div>
                             <div id="step-5" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
                                 <div class="card-body">
                                     <h5 class="card-title">DETALLES</h5>
+                                    @foreach ($estado as $row)
+                                        @if ($row['id_proceso'] == 5)
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                            {{ $row['descripcion'] }}<br>
+                                            <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div id="step-6" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
+                                <div class="card-body">
+                                    <h5 class="card-title">DETALLES</h5>
+                                    @foreach ($estado as $row)
+                                        @if ($row['id_proceso'] == 6)
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                            {{ $row['descripcion'] }}<br>
+                                            <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div id="step-7" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
+                                <div class="card-body">
+                                    <h5 class="card-title">DETALLES</h5>
+                                    @foreach ($estado as $row)
+                                        @if ($row['id_proceso'] == 7)
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                            {{ $row['descripcion'] }}<br>
+                                            <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div id="step-8" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
+                                <div class="card-body">
+                                    <h5 class="card-title">DETALLES</h5>
+                                    @foreach ($estado as $row)
+                                        @if ($row['id_proceso'] == 8)
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                            {{ $row['descripcion'] }}<br>
+                                            <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div id="step-9" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
+                                <div class="card-body">
+                                    <h5 class="card-title">DETALLES</h5>
+                                    @foreach ($estado as $row)
+                                        @if ($row['id_proceso'] == 9)
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                            {{ $row['descripcion'] }}<br>
+                                            <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
+                                        @endif
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -604,7 +663,8 @@
             $estado = intval($list->id_proceso) -1; ?>
             $('#smartwizard<?= $list->id; ?>').smartWizard({
                 selected: <?= $estado; ?>,
-                theme: 'square', // tema para el wizard, el css relacionado debe incluirse para un tema diferente al predeterminado
+                theme: 'square',
+                //theme: 'arrows',
                 toolbar: {
                     position: 'none', // none|top|bottom|both
                 },

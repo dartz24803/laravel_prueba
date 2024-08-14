@@ -24,6 +24,7 @@ use App\Models\TrackingTemporal;
 use App\Models\TrackingToken;
 use Google\Client as GoogleClient;
 use Illuminate\Support\Facades\DB;
+use App\Models\TrackingEstado;
 
 class TrackingController extends Controller
 {
@@ -346,8 +347,9 @@ class TrackingController extends Controller
 
     public function list()
     {
+        $estado = TrackingEstado::get();
         $list_tracking = Tracking::get_list_tracking();
-        return view('logistica.tracking.lista', compact('list_tracking'));
+        return view('logistica.tracking.lista', compact('list_tracking', 'estado'));
     }
 
     //FORMA MANUAL
