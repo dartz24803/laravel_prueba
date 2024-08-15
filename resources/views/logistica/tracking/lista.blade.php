@@ -49,8 +49,192 @@
     .subnav {
         list-style-type: none;
     }
+    .num{
+        margin-top: 2px;
+    }
+    .nav{
+        font-size: 0.6rem;
+    }
+    .nav-link{
+        font-size: 0.5rem;
+        left: 1rem !important;
+    }
+    a{
+        color:white;
+    }
+
+    @media screen and (max-width: 1550px) {
+        .nav {
+            font-size: 0.5rem; /* Reducir aún más el tamaño de fuente en pantallas muy pequeñas */
+        }/*
+        .nav-link{
+            padding: 2.5rem !important;
+        }*/
+        .num{
+            padding-left: 0.1rem !important;
+        }
+        svg{
+            width: 20px;
+            height: 20px;
+        }
+        .num{
+            margin-top: 0px;
+        }
+    }
+    /* Media Queries para diferentes pantallas */
+    @media screen and (max-width: 1200) {
+        .nav {
+            font-size: 0.4rem; /* Reducir tamaño de fuente en pantallas pequeñas */
+        }
+        .nav-link{
+            font-size: 0.2rem;
+        }
+        .num{
+            font-size: 0.5rem;
+        }
+        .num{
+            margin-top: 0px;
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        .nav {
+            font-size: 0.3rem; /* Reducir aún más el tamaño de fuente en pantallas muy pequeñas */
+            width: 20rem;
+        }
+        .nav-link{
+            font-size: 1rem;
+            width: 20rem;
+        }
+        .num{
+            margin-top: 0px;
+        }
+    }
+    
+    :root{
+        --sw-progress-color: #00b1f4 !important;/*
+        --sw-anchor-default-secondary-color: #fea701 !important;
+        --sw-anchor-disabled-primary-color: #fea701 !important;
+        --sw-anchor-disabled-secondary-color: #00ba8e !important;
+        --sw-loader-background-color: #fea701 !important;
+        --sw-anchor-done-primary-color: #ff295c !important;*/
+    }
+    
+#smartwizard1 .nav-item:nth-child(9n-8)::after,
+#smartwizard1 .nav-item:nth-child(9n-7)::after {
+    border-left-color: #00ba8e;
+}
+
+#smartwizard1 .nav-item:nth-child(9n-6)::after,
+#smartwizard1 .nav-item:nth-child(9n-5)::after {
+    border-left-color: #ff295c;
+}
+
+#smartwizard1 .nav-item:nth-child(9n-4)::after,
+#smartwizard1 .nav-item:nth-child(9n-3)::after {
+    border-left-color: #fea701;
+}
+
+#smartwizard1 .nav-item:nth-child(9n-2)::after,
+#smartwizard1 .nav-item:nth-child(9n-1)::after {
+    border-left-color: #00b1f4;
+}
+
+#smartwizard1 .nav-item:nth-child(9n)::after {
+    border-left-color: black;
+}
+
+.parte1::after{
+    border-left-color: #00ba8e !important;
+}
+.parte2::after{
+    border-left-color: #ff295c !important;
+}
+.parte3::after{
+    border-left-color: #fea701 !important;
+}
+.parte4::after{
+    border-left-color: #00b1f4 !important;
+}
+.parte1.disable{
+    background-color: white !important;
+    color: #00ba8e !important;
+}
+.parte1.disable::after{
+    border-left-color: white !important;
+}
+
+.parte2.disable{
+    background-color: white !important;
+    color: #ff295c !important;
+}
+.parte2.disable::after{
+    border-left-color: white !important;
+}
+
+.parte3.disable{
+    background-color: white !important;
+    color: #fea701 !important;
+}
+.parte3.disable::after{
+    border-left-color: white !important;
+}
+
+.parte4.disable{
+    background-color: white !important;
+    color: #00b1f4 !important;
+}
+.parte4.disable::after{
+    border-left-color: white !important;
+}
+
+.parte5.disable{
+    background-color: white !important;
+    color: black !important;
+}
+.parte5.disable::after{
+    border-left-color: white !important;
+}
+.sw-theme-arrows > .nav .nav-link:nth-child(9n-6)::after, 
+.sw-theme-arrows > .nav .nav-link:nth-child(9n-5)::after {
+    border-left-color: #ff295c;
+}
+.sw-theme-arrows > .nav .parte1.disable::before {
+    border-left-color: #00ba8e;
+}
+.sw-theme-arrows > .nav .parte2.disable::before {
+    border-left-color: #ff295c;
+}
+.sw-theme-arrows > .nav .parte3.disable::before {
+    border-left-color: #fea701;
+}
+.sw-theme-arrows > .nav .parte4.disable::before {
+    border-left-color: #00b1f4;
+}
+.sw-theme-arrows > .nav .parte5.disable::before {
+    border-left-color: #302f30;
+}
+.nav-item{
+    height: 4rem !important;
+}
+
+.default.active {
+    animation: pulse 2s infinite;
+    z-index: 1;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 </style>
-<link href="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/css/smart_wizard_all.min.css" rel="stylesheet" type="text/css" />
 
 <table id="tabla_js" class="table" style="width:100%">
     <thead>
@@ -190,15 +374,15 @@
                     <div id="smartwizard{{$list->id}}" dir class="mt-4 mb-5">
                         <ul class="nav">
                             <li class="nav-item">
-                                <a class="nav-link" title="Ver detalles">
+                                <a class="nav-link d-flex align-items-center justify-content-center parte1" title="Ver detalles">
                                     <div class="num">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-briefcase"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
                                     </div>
-                                    Despacho<br>
+                                    DESPACHO<br>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" title="Ver detalles">
+                                <a class="nav-link d-flex align-items-center justify-content-center parte1" title="Ver detalles">
                                     <span class="num">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-truck">
                                             <rect x="1" y="3" width="15" height="13"></rect>
@@ -207,22 +391,22 @@
                                             <circle cx="18.5" cy="18.5" r="2.5"></circle>
                                         </svg><br>
                                     </span>
-                                    Traslado<br>
+                                    TRASLADO<br>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" title="Ver detalles">
+                                <a class="nav-link d-flex align-items-center justify-content-center parte2" title="Ver detalles">
                                     <span class="num">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin">
                                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                                             <circle cx="12" cy="10" r="3"></circle>
                                         </svg><br>
                                     </span>
-                                    Recepción de mercadería<br>
+                                    RECEPCIÓN <br> DE MERCADERÍA<br>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" title="Ver detalles">
+                                <a class="nav-link d-flex align-items-center justify-content-center parte2" title="Ver detalles">
                                     <span class="num">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-bag">
                                             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
@@ -230,63 +414,61 @@
                                             <path d="M16 10a4 4 0 0 1-8 0"></path>
                                         </svg><br>
                                     </span>
-                                    Inspección de fardo<br>
+                                    INSPECCIÓN <br> DE FARDO<br>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" title="Ver detalles">
+                                <a class="nav-link d-flex align-items-center justify-content-center parte3" title="Ver detalles">
                                     <span class="num">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg><br>
                                     </span>
-                                    Pago de mercadería
+                                    PAGO DE <br> MERCADERÍA
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" title="Ver detalles">
+                                <a class="nav-link d-flex align-items-center justify-content-center parte3" title="Ver detalles">
                                     <span class="num">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-zoom-in"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg><br>
                                     </span>
-                                    Inspección de mercadería
+                                    INSPECCIÓN DE <br> MERCADERÍA
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" title="Ver detalles">
+                                <a class="nav-link d-flex align-items-center justify-content-center parte4" title="Ver detalles">
                                     <span class="num">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg><br>
                                     </span>
-                                    Diferencias
+                                    DIFERENCIAS
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" title="Ver detalles">
+                                <a class="nav-link d-flex align-items-center justify-content-center parte4" title="Ver detalles">
                                     <span class="num">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-repeat"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg><br>
                                     </span>
-                                    Devolución
+                                    DEVOLUCIÓN
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" title="Ver detalles">
+                                <a class="nav-link d-flex align-items-center justify-content-center parte5" title="Ver detalles">
                                     <span class="num">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square">
                                             <polyline points="9 11 12 14 22 4"></polyline>
                                             <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
                                         </svg><br>
                                     </span>
-                                    Fin
+                                    FIN
                                 </a>
                             </li>
                         </ul>
-
+{{-- cambiar check segun color de proceso --}}
                         <div class="tab-content card">
                             <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
                                 <div class="card-body">
-                                    <h5 class="card-title">DETALLES</h5>
+                                    <h5 class="card-title" style="color: #00ba8e">DESPACHO</h5>
                                     @foreach ($estado as $row)
                                         @if ($row['id_proceso'] == 1)
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00ba8e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                                             {{ $row['descripcion'] }}<br>
                                             <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
                                         @endif
@@ -295,12 +477,10 @@
                             </div>
                             <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
                                 <div class="card-body">
-                                    <h5 class="card-title">DETALLES</h5>
+                                    <h5 class="card-title" style="color: #00ba8e">TRASLADO</h5>
                                     @foreach ($estado as $row)
                                         @if ($row['id_proceso'] == 2)
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00ba8e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                                             {{ $row['descripcion'] }}<br>
                                             <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
                                         @endif
@@ -309,12 +489,10 @@
                             </div>
                             <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
                                 <div class="card-body">
-                                    <h5 class="card-title">DETALLES</h5>
+                                    <h5 class="card-title" style="color: #ff295c">RECEPCION DE MERCADERÍA</h5>
                                     @foreach ($estado as $row)
                                         @if ($row['id_proceso'] == 3)
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff295c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                                             {{ $row['descripcion'] }}<br>
                                             <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
                                         @endif
@@ -323,12 +501,10 @@
                             </div>
                             <div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-4">
                                 <div class="card-body">
-                                    <h5 class="card-title">DETALLES</h5>
+                                    <h5 class="card-title" style="color: #ff295c">INSPECCIÓN DE FARDO</h5>
                                     @foreach ($estado as $row)
                                         @if ($row['id_proceso'] == 4)
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff295c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                                             {{ $row['descripcion'] }}<br>
                                             <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
                                         @endif
@@ -337,12 +513,10 @@
                             </div>
                             <div id="step-5" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
                                 <div class="card-body">
-                                    <h5 class="card-title">DETALLES</h5>
+                                    <h5 class="card-title" style="color: #fea701">PAGO DE MERCADERÍA</h5>
                                     @foreach ($estado as $row)
                                         @if ($row['id_proceso'] == 5)
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fea701" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                                             {{ $row['descripcion'] }}<br>
                                             <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
                                         @endif
@@ -351,12 +525,10 @@
                             </div>
                             <div id="step-6" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
                                 <div class="card-body">
-                                    <h5 class="card-title">DETALLES</h5>
+                                    <h5 class="card-title" style="color: #fea701">INSPECCION DE MERCADERÍA</h5>
                                     @foreach ($estado as $row)
                                         @if ($row['id_proceso'] == 6)
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fea701" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                                             {{ $row['descripcion'] }}<br>
                                             <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
                                         @endif
@@ -365,13 +537,11 @@
                             </div>
                             <div id="step-7" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
                                 <div class="card-body">
-                                    <h5 class="card-title">DETALLES</h5>
+                                    <h5 class="card-title" style="color: #00b1f4">DIFERENCIAS</h5>
                                     @foreach ($estado as $row)
                                         @if ($row['id_proceso'] == 7)
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
-                                            {{ $row['descripcion'] }}<br>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00b1f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                        {{ $row['descripcion'] }}<br>
                                             <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
                                         @endif
                                     @endforeach
@@ -379,12 +549,10 @@
                             </div>
                             <div id="step-8" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
                                 <div class="card-body">
-                                    <h5 class="card-title">DETALLES</h5>
+                                    <h5 class="card-title" style="color: #00b1f4">DEVOLUCIÓN</h5>
                                     @foreach ($estado as $row)
                                         @if ($row['id_proceso'] == 8)
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00b1f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                                             {{ $row['descripcion'] }}<br>
                                             <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
                                         @endif
@@ -393,12 +561,10 @@
                             </div>
                             <div id="step-9" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
                                 <div class="card-body">
-                                    <h5 class="card-title">DETALLES</h5>
+                                    <h5 class="card-title">FIN</h5>
                                     @foreach ($estado as $row)
                                         @if ($row['id_proceso'] == 9)
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#302f30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                                             {{ $row['descripcion'] }}<br>
                                             <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
                                         @endif
@@ -406,16 +572,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="progress" style="width: 100%; position: absolute; top:1rem; z-index:1; border-bottom:gray 1px dashed;">
-                            <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
                     </div>
                 </td>
             </tr>
         @endforeach
     </tbody>
 </table>
-<script src="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/js/jquery.smartWizard.min.js" type="text/javascript"></script>
 
 <script>
     $(document).ready(function() {
@@ -663,11 +825,48 @@
             $estado = intval($list->id_proceso) -1; ?>
             $('#smartwizard<?= $list->id; ?>').smartWizard({
                 selected: <?= $estado; ?>,
-                theme: 'square',
-                //theme: 'arrows',
+                //theme: 'square',
+                theme: 'arrows',
                 toolbar: {
                     position: 'none', // none|top|bottom|both
                 },
+                transition: {
+                    animation: 'css',
+                },
+            });
+            // Deshabilitar los enlaces a partir del estado actual
+            for (let i = <?= $estado + 1; ?>; i <= 8; i++) {
+                let stepLink = $('#smartwizard<?= $list->id; ?> .nav-link:eq(' + i + ')');
+                stepLink.addClass('disable');
+            }
+        
+            // Aplica los estilos personalizados después de inicializar SmartWizard
+            $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-8), #smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-7)').css({
+                'background-color': '#00ba8e',
+                'color': 'white'
+            });
+            $('.parte1').css({
+                'background-color': '#00ba8e'
+            })
+
+            $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-6), #smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-5)').css({
+                'background-color': '#ff295c',
+                'color': 'white'
+            });
+
+            $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-4), #smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-3)').css({
+                'background-color': '#fea701',
+                'color': 'white'
+            });
+
+            $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-2), #smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-1)').css({
+                'background-color': '#00b1f4',
+                'color': 'white'
+            });
+
+            $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n)').css({
+                'background-color': '#302f30',
+                'color': 'white'
             });
         <?php endforeach; ?>
     });

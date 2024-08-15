@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('content')
-<link href="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/css/smart_wizard_all.min.css" rel="stylesheet" type="text/css" />
+<link href="{{ asset('template/smart_wizard/style.css')}}" rel="stylesheet" type="text/css" />
 
     <div id="content" class="main-content">
         <div class="layout-px-spacing">
