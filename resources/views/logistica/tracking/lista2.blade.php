@@ -1,6 +1,3 @@
-<?php
-use App\Models\TrackingDetalleProceso;
-?>
 <style>
     .vibrate {
         animation: vibrate 0.1s infinite;
@@ -107,7 +104,7 @@ use App\Models\TrackingDetalleProceso;
         }
         .nav-link{
             font-size: 1rem;
-            width: 21rem;
+            width: 20rem;
         }
         .num{
             margin-top: 0px;
@@ -236,6 +233,9 @@ use App\Models\TrackingDetalleProceso;
   100% {
     transform: scale(1);
   }
+}
+.card-body{
+    margin-top: -2rem;
 }
 </style>
 
@@ -538,59 +538,122 @@ use App\Models\TrackingDetalleProceso;
                                     @endforeach
                                 </div>
                             </div>
+                            <!--
                             <div id="step-7" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
                                 <div class="card-body">
                                     <h5 class="card-title" style="color: #00b1f4">DIFERENCIAS</h5>
-                                    <?php
-                                    $mensaje_mostrado1 = false;
-                                    $contiene_proceso_7 = false;
-                                    $proceso = TrackingDetalleProceso::where('id_tracking', $list->id)->get();
-                                    foreach($proceso as $dd){
-                                        if ($dd->id_proceso == 7) {
-                                            $contiene_proceso_7 = true;
-                                            break;
-                                        }
-                                    };
-                                    ?>
-                                    @if ($contiene_proceso_7)
-                                        @foreach ($estado as $row)
-                                            @if ($row['id_proceso'] == 7)
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00b1f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                                {{ $row['descripcion'] }}<br>
-                                                <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
-                                                <?php $mensaje_mostrado1 = true; ?>
-                                            @endif
-                                        @endforeach
-                                    @else
-                                    (no hay registro de devolución)
-                                    @endif
+                                    @foreach ($estado as $row)
+                                        @if ($row['id_proceso'] == 7)
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00b1f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                        {{ $row['descripcion'] }}<br>
+                                            <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
+                                        @endif
+                                    @endforeach
                                 </div>
                             </div>
                             <div id="step-8" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
                                 <div class="card-body">
                                     <h5 class="card-title" style="color: #00b1f4">DEVOLUCIÓN</h5>
-                                    <?php 
-                                        $mensaje_mostrado2 = false;
-                                        $contiene_proceso_8 = false;
-                                        foreach($proceso as $dd){
-                                            if ($dd->id_proceso == 8) {
-                                                $contiene_proceso_8 = true;
-                                                break;
-                                            }
-                                        };
-                                    ?>
-                                    @if ($contiene_proceso_8)
-                                        @foreach ($estado as $row)
-                                            @if ($row['id_proceso'] == 8)
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00b1f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                                {{ $row['descripcion'] }}<br>
-                                                <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
-                                                <?php $mensaje_mostrado2 = true; ?>
-                                            @endif
-                                        @endforeach
-                                    @else
-                                    (no hay registro de devolución)
-                                    @endif
+                                    @foreach ($estado as $row)
+                                        @if ($row['id_proceso'] == 8)
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00b1f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                            {{ $row['descripcion'] }}<br>
+                                            <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>-->
+                            <div id="step-7" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-end">
+                                        <div class="col-md-4">
+                                            <div id="smartwizard_{{$list->id}}" dir>
+                                                <ul class="nav">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link parte4" title="Ver detalles">
+                                                            <div class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square">
+                                                                    <polyline points="9 11 12 14 22 4"></polyline>
+                                                                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                                                                </svg><br>
+                                                            </div>
+                                                            Inspeccion<br>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link parte4" title="Ver detalles">
+                                                            <div class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-bag">
+                                                                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                                                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                                                                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                                                                </svg><br>
+                                                            </div>
+                                                            Devolución<br>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <div class="tab-content" style="display:none">
+                                                    <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1" style="display: none;">
+                                                    </div>
+                                                    <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">DEVOLUCION COMPLETADA</h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end">
+                                        <div class="col-md-4">
+                                            <div id="smartwizard2_{{$list->id}}" dir>
+                                                <ul class="nav">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link parte4" title="Ver detalles">
+                                                            <div class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square">
+                                                                    <polyline points="9 11 12 14 22 4"></polyline>
+                                                                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                                                                </svg><br>
+                                                            </div>
+                                                            Inspeccion<br>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link parte4" title="Ver detalles">
+                                                            <div class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-bag">
+                                                                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                                                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                                                                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                                                                </svg><br>
+                                                            </div>
+                                                            Diferencias<br>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                
+                                                <div class="tab-content" style="display:none">
+                                                    <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
+                                                    </div>
+                                                    <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">DIFERENCIA COMPLETADA</h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h5 class="card-title" style="color: #00b1f4">DIFERENCIAS</h5>
+                                    @foreach ($estado as $row)
+                                        @if ($row['id_proceso'] == 7)
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00b1f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                        {{ $row['descripcion'] }}<br>
+                                            <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
+                                        @endif
+                                    @endforeach
                                 </div>
                             </div>
                             <div id="step-9" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
@@ -855,11 +918,17 @@ use App\Models\TrackingDetalleProceso;
         })
     }
     $(function() {
-        <?php foreach ($list_tracking as $list) :
-            $estado = intval($list->id_proceso) -1; ?>
+        <?php 
+            $estado2 = intval($list->id_proceso); 
+            foreach ($list_tracking as $list) :
+            $estado = intval($list->id_proceso) -1;
+            if(intval($list->id_proceso)===7 || intval($list->id_proceso)===8){
+                $estado2 = intval($list->id_proceso)-7;
+            }
+            ?>
+            console.log(<?= $estado2 ?>);
             $('#smartwizard<?= $list->id; ?>').smartWizard({
                 selected: <?= $estado; ?>,
-                //theme: 'square',
                 theme: 'arrows',
                 toolbar: {
                     position: 'none', // none|top|bottom|both
@@ -902,6 +971,48 @@ use App\Models\TrackingDetalleProceso;
                 'background-color': '#302f30',
                 'color': 'white'
             });
+            
+            $('#smartwizard_<?= $list->id; ?>').smartWizard({
+                selected: <?= $estado2; ?>,
+                theme: 'arrows',
+                toolbar: {
+                    position: 'none', // none|top|bottom|both
+                },
+                transition: {
+                    animation: 'css',
+                },
+            });
+            
+            $('#smartwizard_<?= $list->id; ?> .nav-item:nth-child(2n-2), #smartwizard_<?= $list->id; ?> .nav-item:nth-child(2n-1)').css({
+                'background-color': '#00b1f4',
+                'color': 'white'
+            });
+            // Deshabilitar los enlaces a partir del estado actual
+            for (let i = <?= $estado2 + 1; ?>; i <= 8; i++) {
+                let stepLink = $('#smartwizard_<?= $list->id; ?> .nav-link:eq(' + i + ')');
+                stepLink.addClass('disable');
+            }
+            
+            $('#smartwizard2_<?= $list->id; ?>').smartWizard({
+                selected: <?= $estado2; ?>,
+                theme: 'arrows',
+                toolbar: {
+                    position: 'none', // none|top|bottom|both
+                },
+                transition: {
+                    animation: 'css',
+                },
+            });
+
+            $('#smartwizard2_<?= $list->id; ?> .nav-item:nth-child(2n-2), #smartwizard2_<?= $list->id; ?> .nav-item:nth-child(2n-1)').css({
+                'background-color': '#00b1f4',
+                'color': 'white'
+            });
+            // Deshabilitar los enlaces a partir del estado actual
+            for (let i = <?= $estado2 + 1; ?>; i <= 8; i++) {
+                let stepLink = $('#smartwizard2_<?= $list->id; ?> .nav-link:eq(' + i + ')');
+                stepLink.addClass('disable');
+            }
         <?php endforeach; ?>
     });
 </script>

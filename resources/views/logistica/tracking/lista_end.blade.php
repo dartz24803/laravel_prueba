@@ -107,7 +107,7 @@ use App\Models\TrackingDetalleProceso;
         }
         .nav-link{
             font-size: 1rem;
-            width: 21rem;
+            width: 20rem;
         }
         .num{
             margin-top: 0px;
