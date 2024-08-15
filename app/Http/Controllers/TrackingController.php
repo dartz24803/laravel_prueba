@@ -2193,24 +2193,73 @@ class TrackingController extends Controller
 
     public function list_mercaderia_nueva(Request $request)
     {
-        $list_mercaderia_nueva = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?,?,?', ['',date('Y'),date('W'),$request->cod_base,$request->tipo_usuario,$request->tipo_prenda]);
-        return view('logistica.tracking.mercaderia_nueva.lista', compact('list_mercaderia_nueva'));
+        $cod_base = $request->cod_base;
+        $list_mercaderia_nueva = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_app ?,?,?', [
+            $request->cod_base,
+            $request->tipo_usuario,
+            $request->tipo_prenda
+        ]);
+        return view('logistica.tracking.mercaderia_nueva.lista', compact('cod_base','list_mercaderia_nueva'));
     }
 
-    public function modal_mercaderia_nueva($sku)
+    public function modal_mercaderia_nueva($cod_base,$estilo)
     {
-        return view('logistica.tracking.mercaderia_nueva.modal_editar', compact('sku'));
+        $list_mercaderia_nueva_x_estilo = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_estilo ?,?', [
+            $cod_base,
+            $estilo
+        ]);
+        return view('logistica.tracking.mercaderia_nueva.modal_editar', compact('estilo','list_mercaderia_nueva_x_estilo'));
     }
 
-    public function insert_mercaderia_surtida(Request $request,$sku)
+    public function insert_mercaderia_surtida(Request $request)
     {
-        $request->validate([
+        $hasNonNull = count(array_filter($request->cantidad, function($value) {
+            return $value !== null;
+        }));
+
+        if($hasNonNull==0){
+            echo "error";
+        }else{
+            foreach($request->cantidad as $cantidad){
+
+            }
+            
+            $rules = [
+                'cantidad' => 'required'
+            ];
+    
+            $messages = [
+                'cantidad.required' => 'Debe ingresar al menos una cantidad.'
+            ];
+
+            $request->validate($rules, $messages);
+        }
+
+        /*$rules = [
+            'cod_base' => 'required',
+            'detalle.*.sku' => 'required',
+            'detalle.*.cantidad' => 'required|gt:0',
+        ];
+
+        $messages = [
+            'cod_base.required' => 'Debe ingresar base.',
+            'detalle.*.sku.required' => 'Debe ingresar sku.',
+            'detalle.*.cantidad.required' => 'Debe ingresar cantidad.',
+            'detalle.*.cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
+        ];
+
+        foreach ($request->detalle as $list => $item) {
+            $rules['tarea'] = 'gt:0';
+            $messages['tarea.gt'] = 'Debe seleccionar función.';
+        }*/
+
+        /*$request->validate([
             'cantidad' => 'gt:0',
         ],[
             'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
         ]);
 
-        $resultados = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?,?,?', [$sku,date('Y'),date('W'),$request->cod_base,'','']);
+        $resultados = DB::connection('sqlsrv')->select('EXEC usp_new_mercaderia_nueva ?,?,?,?,?,?', [$sku,date('Y'),date('W'),$request->cod_base,'','']);
         $get_id = $resultados[0];
 
         if($request->cantidad>$get_id->cantidad){
@@ -2233,7 +2282,7 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'usuario' => session('usuario')->id_usuario
             ]);
-        }
+        }*/
     }
 
     public function list_mercaderia_nueva_app(Request $request)
@@ -2329,28 +2378,6 @@ class TrackingController extends Controller
                 ], 500);
             }
         }
-
-        /*$rules = [
-            'cod_base' => 'required',
-            'detalle.*.sku' => 'required',
-            'detalle.*.cantidad' => 'required|gt:0',
-        ];
-
-        $messages = [
-            'cod_base.required' => 'Debe ingresar base.',
-            'detalle.*.sku.required' => 'Debe ingresar sku.',
-            'detalle.*.cantidad.required' => 'Debe ingresar cantidad.',
-            'detalle.*.cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
-        ];
-
-        foreach ($request->detalle as $list => $item) {
-            $rules['tarea'] = 'gt:0';
-            $messages['tarea.gt'] = 'Debe seleccionar función.';
-        }
-
-        $request->validate($rules, $messages);
-
-        return response()->json(['message' => 'Datos válidos y procesados'], 200);*/
     }
 
     public function list_surtido_mercaderia_nueva(Request $request)
