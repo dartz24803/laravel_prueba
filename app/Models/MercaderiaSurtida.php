@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class MercaderiaSurtida extends Model
 {
@@ -32,4 +33,17 @@ class MercaderiaSurtida extends Model
         'fecha',
         'usuario',
     ];
+
+    public static function get_list_mercaderia_surtida($dato)
+    {
+        $sql = "SELECT ms.id,ms.sku,ms.color,ms.talla,
+                (SELECT SUM(mn.Total) FROM vw_mercaderia_nueva mn
+                WHERE mn.codigo_barra=ms.sku AND mn.id_base=?) AS cantidad,
+                ms.cantidad AS requerimiento
+                FROM mercaderia_surtida ms
+                WHERE ms.tipo=1 AND ms.base=? AND ms.anio='".date('Y')."' AND
+                ms.semana='".date('W')."' AND ms.estilo=? AND ms.estado=0";
+        $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base'],$dato['cod_base'],$dato['estilo']]);
+        return $query;
+    }
 }

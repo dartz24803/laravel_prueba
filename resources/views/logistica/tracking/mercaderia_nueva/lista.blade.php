@@ -5,14 +5,10 @@
             <th>Usuario</th>
             <th>Tipo de Prenda</th>
             <th>Descripción</th>
-            <th>SKU</th>
-            <th>Color</th>
-            <th>Talla</th>
             <th>Cantidad</th>
             <th>PX1</th>
             <th>PX2</th>
             <th>PX3</th>
-            <th>Cantidad Surtida</th>
             <th class="no-content"></th>
         </tr>
     </thead>
@@ -23,18 +19,14 @@
                 <td>{{ $list->estilo }}</td>
                 <td class="text-left">{{ $list->tipo_usuario }}</td>
                 <td class="text-left">{{ $list->tipo_prenda }}</td>
-                <td class="text-left">{{ $list->decripcion }}</td>
-                <td>{{ $list->codigo_barra }}</td>
-                <td class="text-left">{{ $list->color }}</td>
-                <td>{{ $list->talla }}</td>
+                <td class="text-left">{{ $list->descripcion }}</td>
                 <td>{{ $list->cantidad }}</td>
-                <td>{{ $list->precio1 }}</td>
-                <td>{{ $list->precio2 }}</td>
-                <td>{{ $list->precio3 }}</td>
-                <td>{{ $list->cantidad_surtida }}</td>
+                <td>{{ $list->precio_1 }}</td>
+                <td>{{ $list->precio_2 }}</td>
+                <td>{{ $list->precio_3 }}</td>
                 <td>
                     <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
-                    app_elim="{{ route('tracking.modal_mercaderia_nueva', $list->codigo_barra) }}">
+                    app_elim="{{ route('tracking.modal_mercaderia_nueva', [$cod_base, $list->estilo]) }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical">
                             <circle cx="12" cy="12" r="1"></circle>
                             <circle cx="12" cy="5" r="1"></circle>
