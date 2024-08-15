@@ -510,7 +510,7 @@ class ReporteFotograficoController extends Controller
                 $mail->Password   =  'lanumero1$1';
                 $mail->SMTPSecure =  'tls';
                 $mail->Port     =  587;
-                $mail->setFrom('somosuno@lanumero1.com.pe','REPORTE FOTOGRAFICO CONTROL');
+                $mail->setFrom('somosuno@lanumero1.com.pe','Somos Uno');
 
                 //$mail->addAddress("pcardenas@lanumero1.com.pe");
                 $mail->addAddress("acanales@lanumero1.com.pe");
