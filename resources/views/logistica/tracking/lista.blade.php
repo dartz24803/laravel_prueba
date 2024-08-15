@@ -107,7 +107,7 @@ use App\Models\TrackingDetalleProceso;
         }
         .nav-link{
             font-size: 1rem;
-            width: 21rem;
+            width: 20rem;
         }
         .num{
             margin-top: 0px;
@@ -149,19 +149,10 @@ use App\Models\TrackingDetalleProceso;
 .parte3.disable::after{
     border-left-color: white !important;
 }
-
-.parte4.disable{
-    background-color: white !important;
-    color: #00b1f4 !important;
-}
 .parte4.disable::after{
     border-left-color: white !important;
 }
 
-.parte5.disable{
-    background-color: white !important;
-    color: black !important;
-}
 .parte5.disable::after{
     border-left-color: white !important;
 }
@@ -180,9 +171,6 @@ use App\Models\TrackingDetalleProceso;
 }
 .sw-theme-arrows > .nav .parte4.disable::before {
     border-left-color: #00b1f4;
-}
-.sw-theme-arrows > .nav .parte5.disable::before {
-    border-left-color: #302f30;
 }
 .nav-item{
     height: 4rem !important;
@@ -203,6 +191,15 @@ use App\Models\TrackingDetalleProceso;
   100% {
     transform: scale(1);
   }
+}
+.card-body{
+    margin-top: -2rem;
+}
+.ocultar{
+    display: none !important;
+}
+.hide-nav{
+    background-color: transparent !important;
 }
 </style>
 
@@ -406,17 +403,9 @@ use App\Models\TrackingDetalleProceso;
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center justify-content-center parte4" title="Ver detalles">
                                     <span class="num">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg><br>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-zoom-in"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
                                     </span>
-                                    DIFERENCIAS
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center justify-content-center parte4" title="Ver detalles">
-                                    <span class="num">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-repeat"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg><br>
-                                    </span>
-                                    DEVOLUCIÓN
+                                    INSPECCIÓN
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -435,7 +424,7 @@ use App\Models\TrackingDetalleProceso;
                         <div class="tab-content card">
                             <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
                                 <div class="card-body">
-                                    <h5 class="card-title" style="color: #00ba8e">DESPACHO</h5>
+                                    <h5 class="card-title mt-3" style="color: #00ba8e">DESPACHO</h5>
                                     @foreach ($estado as $row)
                                         @if ($row['id_proceso'] == 1)
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00ba8e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -447,7 +436,7 @@ use App\Models\TrackingDetalleProceso;
                             </div>
                             <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
                                 <div class="card-body">
-                                    <h5 class="card-title" style="color: #00ba8e">TRASLADO</h5>
+                                    <h5 class="card-title mt-3" style="color: #00ba8e">TRASLADO</h5>
                                     @foreach ($estado as $row)
                                         @if ($row['id_proceso'] == 2)
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00ba8e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -459,7 +448,7 @@ use App\Models\TrackingDetalleProceso;
                             </div>
                             <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
                                 <div class="card-body">
-                                    <h5 class="card-title" style="color: #ff295c">RECEPCION DE MERCADERÍA</h5>
+                                    <h5 class="card-title mt-3" style="color: #ff295c">RECEPCION DE MERCADERÍA</h5>
                                     @foreach ($estado as $row)
                                         @if ($row['id_proceso'] == 3)
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff295c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -471,7 +460,7 @@ use App\Models\TrackingDetalleProceso;
                             </div>
                             <div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-4">
                                 <div class="card-body">
-                                    <h5 class="card-title" style="color: #ff295c">INSPECCIÓN DE FARDO</h5>
+                                    <h5 class="card-title mt-3" style="color: #ff295c">INSPECCIÓN DE FARDO</h5>
                                     @foreach ($estado as $row)
                                         @if ($row['id_proceso'] == 4)
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff295c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -483,7 +472,7 @@ use App\Models\TrackingDetalleProceso;
                             </div>
                             <div id="step-5" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
                                 <div class="card-body">
-                                    <h5 class="card-title" style="color: #fea701">PAGO DE MERCADERÍA</h5>
+                                    <h5 class="card-title mt-3" style="color: #fea701">PAGO DE MERCADERÍA</h5>
                                     @foreach ($estado as $row)
                                         @if ($row['id_proceso'] == 5)
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fea701" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -495,7 +484,7 @@ use App\Models\TrackingDetalleProceso;
                             </div>
                             <div id="step-6" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
                                 <div class="card-body">
-                                    <h5 class="card-title" style="color: #fea701">INSPECCION DE MERCADERÍA</h5>
+                                    <h5 class="card-title mt-3" style="color: #fea701">INSPECCION DE MERCADERÍA</h5>
                                     @foreach ($estado as $row)
                                         @if ($row['id_proceso'] == 6)
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fea701" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -505,19 +494,133 @@ use App\Models\TrackingDetalleProceso;
                                     @endforeach
                                 </div>
                             </div>
-                            <div id="step-7" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
+                            <div id="step-7" class="tab-pane" role="tabpanel" aria-labelledby="step-7">
                                 <div class="card-body">
+                                    <div class="d-flex justify-content-end">
+                                        <div class="col-md-12">
+                                            <div id="smartwizard1_{{$list->id}}" dir>
+                                                <ul class="nav">
+                                                    <li class="nav-item hide-nav">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center parte1" title="Ver detalles">
+                                                            <div class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-briefcase"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                                                            </div>
+                                                            DESPACHO<br>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item hide-nav">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center parte1" title="Ver detalles">
+                                                            <span class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-truck">
+                                                                    <rect x="1" y="3" width="15" height="13"></rect>
+                                                                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                                                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                                                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                                                                </svg><br>
+                                                            </span>
+                                                            TRASLADO<br>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item hide-nav">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center parte2" title="Ver detalles">
+                                                            <span class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin">
+                                                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                                                    <circle cx="12" cy="10" r="3"></circle>
+                                                                </svg><br>
+                                                            </span>
+                                                            RECEPCIÓN <br> DE MERCADERÍA<br>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item hide-nav">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center parte2" title="Ver detalles">
+                                                            <span class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-bag">
+                                                                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                                                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                                                                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                                                                </svg><br>
+                                                            </span>
+                                                            INSPECCIÓN <br> DE FARDO<br>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item hide-nav">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center parte3" title="Ver detalles">
+                                                            <span class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg><br>
+                                                            </span>
+                                                            PAGO DE <br> MERCADERÍA
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item hide-nav">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center parte3" title="Ver detalles">
+                                                            <span class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-zoom-in"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg><br>
+                                                            </span>
+                                                            INSPECCIÓN DE <br> MERCADERÍA
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link parte4 arrow-right" title="Ver detalles" style="font-size: 1rem;">
+                                                            <div class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-repeat"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg><br>
+                                                                <br>
+                                                            </div>
+                                                            Devolución<br>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item hide-nav">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center parte5" title="Ver detalles">
+                                                            <span class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square">
+                                                                    <polyline points="9 11 12 14 22 4"></polyline>
+                                                                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                                                                </svg><br>
+                                                            </span>
+                                                            FIN
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <div class="tab-content" style="display:none">
+                                                    <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1" style="display: none;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end">
+                                        <div class="col-md-3">
+                                            <div id="smartwizard2_{{$list->id}}" dir>
+                                                <ul class="nav">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link parte4 arrow-right" title="Ver detalles" style="font-size: 1rem;">
+                                                            <div class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg><br>
+                                                                <br>
+                                                            </div>
+                                                            Diferencias<br>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                
+                                                <div class="tab-content" style="display:none">
+                                                    <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <h5 class="card-title" style="color: #00b1f4">DIFERENCIAS</h5>
-                                    <?php
-                                    $mensaje_mostrado1 = false;
-                                    $contiene_proceso_7 = false;
-                                    $proceso = TrackingDetalleProceso::where('id_tracking', $list->id)->get();
-                                    foreach($proceso as $dd){
-                                        if ($dd->id_proceso == 7) {
-                                            $contiene_proceso_7 = true;
-                                            break;
-                                        }
-                                    };
+                                        <?php
+                                        $mensaje_mostrado1 = false;
+                                        $contiene_proceso_7 = false;
+                                        $proceso = TrackingDetalleProceso::where('id_tracking', $list->id)->get();
+                                        foreach($proceso as $dd){
+                                            if ($dd->id_proceso == 7) {
+                                                $contiene_proceso_7 = true;
+                                                break;
+                                            }
+                                        };
                                     ?>
                                     @if ($contiene_proceso_7)
                                         @foreach ($estado as $row)
@@ -529,13 +632,9 @@ use App\Models\TrackingDetalleProceso;
                                             @endif
                                         @endforeach
                                     @else
-                                    (no hay registro de devolución)
+                                        (no hay registro de devolución)
                                     @endif
-                                </div>
-                            </div>
-                            <div id="step-8" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
-                                <div class="card-body">
-                                    <h5 class="card-title" style="color: #00b1f4">DEVOLUCIÓN</h5>
+                                    <h5 class="card-title mt-3" style="color: #00b1f4">DEVOLUCIÓN</h5>
                                     <?php 
                                         $mensaje_mostrado2 = false;
                                         $contiene_proceso_8 = false;
@@ -556,13 +655,13 @@ use App\Models\TrackingDetalleProceso;
                                             @endif
                                         @endforeach
                                     @else
-                                    (no hay registro de devolución)
+                                        (no hay registro de devolución)
                                     @endif
                                 </div>
                             </div>
-                            <div id="step-9" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
+                            <div id="step-8" class="tab-pane" role="tabpanel" aria-labelledby="step-8">
                                 <div class="card-body">
-                                    <h5 class="card-title">FIN</h5>
+                                    <h5 class="card-title mt-3">FIN</h5>
                                     @foreach ($estado as $row)
                                         @if ($row['id_proceso'] == 9)
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#302f30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -822,53 +921,121 @@ use App\Models\TrackingDetalleProceso;
         })
     }
     $(function() {
-        <?php foreach ($list_tracking as $list) :
-            $estado = intval($list->id_proceso) -1; ?>
-            $('#smartwizard<?= $list->id; ?>').smartWizard({
-                selected: <?= $estado; ?>,
-                //theme: 'square',
-                theme: 'arrows',
-                toolbar: {
-                    position: 'none', // none|top|bottom|both
-                },
-                transition: {
-                    animation: 'css',
-                },
-            });
-            // Deshabilitar los enlaces a partir del estado actual
-            for (let i = <?= $estado + 1; ?>; i <= 8; i++) {
-                let stepLink = $('#smartwizard<?= $list->id; ?> .nav-link:eq(' + i + ')');
-                stepLink.addClass('disable');
-            }
-        
-            // Aplica los estilos personalizados después de inicializar SmartWizard
-            $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-8), #smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-7)').css({
-                'background-color': '#00ba8e',
-                'color': 'white'
-            });
-            $('.parte1').css({
-                'background-color': '#00ba8e'
-            })
+        <?php
+            foreach ($list_tracking as $list) :
+                $contiene_proceso_7=false;
+                $proceso = TrackingDetalleProceso::where('id_tracking', $list->id)->get();
+                foreach($proceso as $dd){
+                    if ($dd->id_proceso == 7) {
+                        $contiene_proceso_7 = true;
+                        break;
+                    }
+                };
+                $contiene_proceso_8 = false;
+                foreach($proceso as $dd){
+                    if ($dd->id_proceso == 8) {
+                        $contiene_proceso_8 = true;
+                        break;
+                    }
+                };
+                $estado = intval($list->id_proceso) -1;
+                $estado_devolucion = -1;
+                if($contiene_proceso_7===true){
+                    $estado_devolucion = 0;
+                }
+                $estado_diferencia = -1;
+                if($contiene_proceso_8===true){
+                    $estado_diferencia = 0;
+                }
+                if ($list->id_proceso===9) {
+                    $list->id_proceso=8;
+                } else if ($list->id_proceso===8){
+                    $list->id_proceso=7;
+                }
+                $estado = intval($list->id_proceso) -1;
+                ?>
+                $('#smartwizard<?= $list->id; ?>').smartWizard({
+                    selected: <?= $estado; ?>,
+                    theme: 'arrows',
+                    toolbar: {
+                        position: 'none', // none|top|bottom|both
+                    },
+                    transition: {
+                        animation: 'css',
+                    },
+                });
+                // Deshabilitar los enlaces a partir del estado actual
+                for (let i = <?= $estado + 1; ?>; i <= 8; i++) {
+                    let stepLink = $('#smartwizard<?= $list->id; ?> .nav-link:eq(' + i + ')');
+                    stepLink.addClass('disable');
+                }
+            
+                // Aplica los estilos personalizados después de inicializar SmartWizard
+                $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-8), #smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-7)').css({
+                    'background-color': '#00ba8e',
+                    'color': 'white'
+                });
+                $('.parte1').css({
+                    'background-color': '#00ba8e'
+                })
 
-            $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-6), #smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-5)').css({
-                'background-color': '#ff295c',
-                'color': 'white'
-            });
+                $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-6), #smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-5)').css({
+                    'background-color': '#ff295c',
+                    'color': 'white'
+                });
 
-            $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-4), #smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-3)').css({
-                'background-color': '#fea701',
-                'color': 'white'
-            });
+                $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-4), #smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-3)').css({
+                    'background-color': '#fea701',
+                    'color': 'white'
+                });
 
-            $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-2), #smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-1)').css({
-                'background-color': '#00b1f4',
-                'color': 'white'
-            });
+                $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-2), #smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-1)').css({
+                    'background-color': '#00b1f4',
+                    'color': 'white'
+                });
 
-            $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n)').css({
-                'background-color': '#302f30',
-                'color': 'white'
-            });
-        <?php endforeach; ?>
+                
+                $('#smartwizard1_<?= $list->id; ?>').smartWizard({
+                    selected: <?= $estado_diferencia; ?>,
+                    theme: 'arrows',
+                    toolbar: {
+                        position: 'none', // none|top|bottom|both
+                    },
+                    transition: {
+                        animation: 'css',
+                    },
+                });
+                
+                $('#smartwizard1_<?= $list->id; ?> .nav-item:nth-child(2n-2), #smartwizard1_<?= $list->id; ?> .nav-item:nth-child(2n-1)').css({
+                    'background-color': '#00b1f4',
+                    'color': 'white'
+                });
+                // Deshabilitar los enlaces a partir del estado actual
+                for (let i = <?= $estado_diferencia + 1; ?>; i <= 1; i++) {
+                    let stepLink = $('#smartwizard1_<?= $list->id; ?> .nav-link:eq(' + i + ')');
+                    stepLink.addClass('disable');
+                }
+                
+                $('#smartwizard2_<?= $list->id; ?>').smartWizard({
+                    selected: <?= $estado_devolucion; ?>,
+                    theme: 'arrows',
+                    toolbar: {
+                        position: 'none', // none|top|bottom|both
+                    },
+                    transition: {
+                        animation: 'css',
+                    },
+                });
+
+                $('#smartwizard2_<?= $list->id; ?> .nav-item:nth-child(2n-2), #smartwizard2_<?= $list->id; ?> .nav-item:nth-child(2n-1)').css({
+                    'background-color': '#00b1f4',
+                    'color': 'white'
+                });
+                // Deshabilitar los enlaces a partir del estado actual
+                for (let i = <?= $estado_devolucion + 1; ?>; i <= 1; i++) {
+                    let stepLink = $('#smartwizard2_<?= $list->id; ?> .nav-link:eq(' + i + ')');
+                    stepLink.addClass('disable');
+                }
+            <?php endforeach; ?>
     });
 </script>

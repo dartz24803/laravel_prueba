@@ -332,8 +332,8 @@
 }
 
 .sw-theme-arrows > .nav .nav-link.disable {
-    color: var(--sw-anchor-default-secondary-color);
-    background-color: var(--sw-anchor-default-primary-color);
+    color: #00b1f4;
+    background-color: white;
     cursor: not-allowed;
 }
 
