@@ -1,3 +1,6 @@
+<?php
+use App\Models\TrackingDetalleProceso;
+?>
 <style>
     .vibrate {
         animation: vibrate 0.1s infinite;
@@ -461,7 +464,7 @@
                                 </a>
                             </li>
                         </ul>
-{{-- cambiar check segun color de proceso --}}
+
                         <div class="tab-content card">
                             <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
                                 <div class="card-body">
@@ -538,25 +541,56 @@
                             <div id="step-7" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
                                 <div class="card-body">
                                     <h5 class="card-title" style="color: #00b1f4">DIFERENCIAS</h5>
-                                    @foreach ($estado as $row)
-                                        @if ($row['id_proceso'] == 7)
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00b1f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                        {{ $row['descripcion'] }}<br>
-                                            <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
-                                        @endif
-                                    @endforeach
+                                    <?php
+                                    $mensaje_mostrado1 = false;
+                                    $contiene_proceso_7 = false;
+                                    $proceso = TrackingDetalleProceso::where('id_tracking', $list->id)->get();
+                                    foreach($proceso as $dd){
+                                        if ($dd->id_proceso == 7) {
+                                            $contiene_proceso_7 = true;
+                                            break;
+                                        }
+                                    };
+                                    ?>
+                                    @if ($contiene_proceso_7)
+                                        @foreach ($estado as $row)
+                                            @if ($row['id_proceso'] == 7)
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00b1f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                                {{ $row['descripcion'] }}<br>
+                                                <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
+                                                <?php $mensaje_mostrado1 = true; ?>
+                                            @endif
+                                        @endforeach
+                                    @else
+                                    (no hay registro de devolución)
+                                    @endif
                                 </div>
                             </div>
                             <div id="step-8" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
                                 <div class="card-body">
                                     <h5 class="card-title" style="color: #00b1f4">DEVOLUCIÓN</h5>
-                                    @foreach ($estado as $row)
-                                        @if ($row['id_proceso'] == 8)
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00b1f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                            {{ $row['descripcion'] }}<br>
-                                            <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
-                                        @endif
-                                    @endforeach
+                                    <?php 
+                                        $mensaje_mostrado2 = false;
+                                        $contiene_proceso_8 = false;
+                                        foreach($proceso as $dd){
+                                            if ($dd->id_proceso == 8) {
+                                                $contiene_proceso_8 = true;
+                                                break;
+                                            }
+                                        };
+                                    ?>
+                                    @if ($contiene_proceso_8)
+                                        @foreach ($estado as $row)
+                                            @if ($row['id_proceso'] == 8)
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00b1f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                                {{ $row['descripcion'] }}<br>
+                                                <?php if ($row['descripcion'] == $list->descripcion){ break; } ?>
+                                                <?php $mensaje_mostrado2 = true; ?>
+                                            @endif
+                                        @endforeach
+                                    @else
+                                    (no hay registro de devolución)
+                                    @endif
                                 </div>
                             </div>
                             <div id="step-9" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
