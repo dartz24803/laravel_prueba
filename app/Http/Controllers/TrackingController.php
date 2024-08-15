@@ -38,6 +38,7 @@ class TrackingController extends Controller
             'list_notificacion',
             'list_mercaderia_nueva_app',
             'insert_mercaderia_nueva_app',
+            'list_surtido_mercaderia_nueva',
             'insert_requerimiento_reposicion_app',
             'insert_requerimiento_reposicion_estilo_app',
             'list_requerimiento_reposicion_app',
@@ -2228,6 +2229,7 @@ class TrackingController extends Controller
                 'talla' => $get_id->talla,
                 'descripcion' => $get_id->decripcion,
                 'cantidad' => $request->cantidad,
+                'estado' => 0,
                 'fecha' => now(),
                 'usuario' => session('usuario')->id_usuario
             ]);
@@ -2318,6 +2320,7 @@ class TrackingController extends Controller
                     'talla' => $get_id->talla,
                     'descripcion' => $get_id->decripcion,
                     'cantidad' => $request->cantidad,
+                    'estado' => 0,
                     'fecha' => now()
                 ]);
             } catch (\Throwable $th) {
@@ -2348,6 +2351,31 @@ class TrackingController extends Controller
         $request->validate($rules, $messages);
 
         return response()->json(['message' => 'Datos válidos y procesados'], 200);*/
+    }
+
+    public function list_surtido_mercaderia_nueva(Request $request)
+    {
+        try {
+            if($request->estilo){
+                $query = MercaderiaSurtida::get_list_mercaderia_surtida(['cod_base'=>$request->cod_base,'estilo'=>$request->estilo]);
+            }else{
+                $query = MercaderiaSurtida::select('estilo','tipo_usuario','descripcion')
+                        ->where('tipo',1)->where('base',$request->cod_base)->where('estado',0)
+                        ->groupBy('estilo','tipo_usuario','descripcion')->get();
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => "Error procesando base de datos.",
+            ], 500);
+        }
+
+        if (count($query)==0) {
+            return response()->json([
+                'message' => 'Sin resultados.',
+            ], 404);
+        }
+
+        return response()->json($query, 200);
     }
     //REQUERIMIENTO DE REPOSICIÓN
     public function insert_requerimiento_reposicion_app(Request $request,$sku)
