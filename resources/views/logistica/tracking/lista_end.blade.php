@@ -107,12 +107,45 @@ use App\Models\TrackingDetalleProceso;
         }
         .nav-link{
             font-size: 1rem;
-            width: 21rem;
+            width: 20rem;
         }
         .num{
             margin-top: 0px;
         }
     }
+    
+    :root{
+        --sw-progress-color: #00b1f4 !important;/*
+        --sw-anchor-default-secondary-color: #fea701 !important;
+        --sw-anchor-disabled-primary-color: #fea701 !important;
+        --sw-anchor-disabled-secondary-color: #00ba8e !important;
+        --sw-loader-background-color: #fea701 !important;
+        --sw-anchor-done-primary-color: #ff295c !important;*/
+    }
+    
+#smartwizard1 .nav-item:nth-child(9n-8)::after,
+#smartwizard1 .nav-item:nth-child(9n-7)::after {
+    border-left-color: #00ba8e;
+}
+
+#smartwizard1 .nav-item:nth-child(9n-6)::after,
+#smartwizard1 .nav-item:nth-child(9n-5)::after {
+    border-left-color: #ff295c;
+}
+
+#smartwizard1 .nav-item:nth-child(9n-4)::after,
+#smartwizard1 .nav-item:nth-child(9n-3)::after {
+    border-left-color: #fea701;
+}
+
+#smartwizard1 .nav-item:nth-child(9n-2)::after,
+#smartwizard1 .nav-item:nth-child(9n-1)::after {
+    border-left-color: #00b1f4;
+}
+
+#smartwizard1 .nav-item:nth-child(9n)::after {
+    border-left-color: black;
+}
 
 .parte1::after{
     border-left-color: #00ba8e !important;
