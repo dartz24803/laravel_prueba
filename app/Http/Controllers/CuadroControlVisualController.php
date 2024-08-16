@@ -25,7 +25,6 @@ class CuadroControlVisualController extends Controller
         $this->middleware('verificar.sesion.usuario');
         $this->request = $request;
         $this->modelo = new HorariosCuadroControl();
-        $this->modelobase = new Base();
         $this->modelousuarios = new Usuario();
         $this->modelohorario = new HorarioDia();
         $this->modeloasignacioncargocap = new AsignacionCargoCap();

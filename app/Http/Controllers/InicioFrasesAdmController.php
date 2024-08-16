@@ -14,12 +14,10 @@ class InicioFrasesAdmController extends Controller
     public function __construct()
     {
         $this->middleware('verificar.sesion.usuario');
-        $this->modelobase = new Base();
     }
 
     public function index(){
-        $list_bases = $this->modelobase->listar_bases_b();
-        return view('Inicio/frases/index', compact('list_bases'));
+        return view('Inicio/frases/index');
     }
 
     public function Frases_Inicio_Listar(){

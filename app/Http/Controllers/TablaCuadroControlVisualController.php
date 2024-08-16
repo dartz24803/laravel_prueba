@@ -26,7 +26,6 @@ class TablaCuadroControlVisualController extends Controller
         $this->middleware('verificar.sesion.usuario');
         $this->request = $request;
         $this->modelo = new HorariosCuadroControl();
-        $this->modelobase = new Base();
         $this->modelodiasemana = new DiaSemana();
         $this->modelopuestos = new Puesto();
         $this->modeloccvh = new CuadroControlVisualHorario();

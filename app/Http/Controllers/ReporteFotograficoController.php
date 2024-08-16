@@ -31,7 +31,6 @@ class ReporteFotograficoController extends Controller
         $this->request = $request;
         $this->modelo = new ReporteFotografico();
         $this->modeloarea = new Area();
-        $this->modelobase = new Base();
         $this->modelocodigos = new CodigosReporteFotografico();
         $this->modeloarchivotmp = new ReporteFotograficoArchivoTemporal();
         $this->modelorfa = new ReporteFotograficoAdm();

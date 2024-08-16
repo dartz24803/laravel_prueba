@@ -28,7 +28,6 @@ class ReporteFotograficoAdmController extends Controller
         $this->modelo = new ReporteFotograficoAdm();
         $this->modelocodigos = new CodigosReporteFotografico();
         $this->modeloarea = new Area();
-        $this->modelobase = new Base();
         $this->modelodetalle = new ReporteFotograficoDetalle();
     }
 
