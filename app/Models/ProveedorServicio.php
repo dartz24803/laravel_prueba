@@ -16,7 +16,7 @@ class ProveedorServicio extends Model
 
     protected $fillable = [
         'cod_proveedor_servicio',
-        'nombre_proveedor_servicio',
+        'nom_proveedor_servicio',
         'ruc_proveedor_servicio',
         'dir_proveedor_servicio',
         'tel_proveedor_servicio',

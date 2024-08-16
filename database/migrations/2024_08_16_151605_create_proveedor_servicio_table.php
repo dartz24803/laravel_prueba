@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('proveedor_servicio', function (Blueprint $table) {
             $table->id('id_proveedor_servicio');
             $table->string('cod_proveedor_servicio',10)->nullable();
-            $table->string('nombre_proveedor_servicio',150)->nullable();
+            $table->string('nom_proveedor_servicio',150)->nullable();
             $table->string('ruc_proveedor_servicio',11)->nullable();
             $table->string('dir_proveedor_servicio',50)->nullable();
             $table->string('tel_proveedor_servicio',50)->nullable();

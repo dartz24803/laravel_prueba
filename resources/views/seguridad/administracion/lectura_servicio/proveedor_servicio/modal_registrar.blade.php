@@ -38,7 +38,7 @@
                 <label>Nombre:</label>
             </div>
             <div class="form-group col-lg-10">
-                <input type="text" class="form-control" name="nombre_proveedor_servicio" id="nombre_proveedor_servicio" placeholder="Ingresar nombre">
+                <input type="text" class="form-control" name="nom_proveedor_servicio" id="nom_proveedor_servicio" placeholder="Ingresar nombre">
             </div>
         </div>
 

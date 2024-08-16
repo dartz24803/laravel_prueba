@@ -44,8 +44,8 @@
                 <label>Nombre:</label>
             </div>
             <div class="form-group col-lg-10">
-                <input type="text" class="form-control" name="nombre_proveedor_servicioe" id="nombre_proveedor_servicioe" placeholder="Ingresar nombre"
-                value="{{ $get_id->nombre_proveedor_servicio }}">
+                <input type="text" class="form-control" name="nom_proveedor_servicioe" id="nom_proveedor_servicioe" placeholder="Ingresar nombre"
+                value="{{ $get_id->nom_proveedor_servicio }}">
             </div>
         </div>
 

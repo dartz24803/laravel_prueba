@@ -112,7 +112,7 @@ class LecturaServicioConfController extends Controller
     {
         $list_proveedor_servicio = ProveedorServicio::select('proveedor_servicio.id_proveedor_servicio',
                                 'proveedor_servicio.cod_base','servicio.nom_servicio',
-                                'proveedor_servicio.nombre_proveedor_servicio',
+                                'proveedor_servicio.nom_proveedor_servicio',
                                 'proveedor_servicio.ruc_proveedor_servicio',
                                 'proveedor_servicio.dir_proveedor_servicio',
                                 'proveedor_servicio.tel_proveedor_servicio',
@@ -136,15 +136,15 @@ class LecturaServicioConfController extends Controller
         $request->validate([
             'cod_base' => 'not_in:0',
             'id_servicio' => 'gt:0',
-            'nombre_proveedor_servicio' => 'required',
+            'nom_proveedor_servicio' => 'required',
         ],[
             'cod_base.not_in' => 'Debe seleccionar base.',
             'id_servicio.gt' => 'Debe seleccionar servicio.',
-            'nombre_proveedor_servicio.required' => 'Debe ingresar nombre.',
+            'nom_proveedor_servicio.required' => 'Debe ingresar nombre.',
         ]);
 
         $valida = ProveedorServicio::where('cod_base', $request->cod_base)->where('id_servicio', $request->id_servicio)
-                ->where('nombre_proveedor_servicio', $request->nombre_proveedor_servicio)->where('estado', 1)
+                ->where('nom_proveedor_servicio', $request->nom_proveedor_servicio)->where('estado', 1)
                 ->exists();
         if($valida){
             echo "error";
@@ -152,7 +152,7 @@ class LecturaServicioConfController extends Controller
             ProveedorServicio::create([
                 'cod_base' => $request->cod_base,
                 'id_servicio' => $request->id_servicio,
-                'nombre_proveedor_servicio' => $request->nombre_proveedor_servicio,
+                'nom_proveedor_servicio' => $request->nom_proveedor_servicio,
                 'ruc_proveedor_servicio' => $request->ruc_proveedor_servicio,
                 'dir_proveedor_servicio' => $request->dir_proveedor_servicio,
                 'tel_proveedor_servicio' => $request->tel_proveedor_servicio,
@@ -181,15 +181,15 @@ class LecturaServicioConfController extends Controller
         $request->validate([
             'cod_basee' => 'not_in:0',
             'id_servicioe' => 'gt:0',
-            'nombre_proveedor_servicioe' => 'required',
+            'nom_proveedor_servicioe' => 'required',
         ],[
             'cod_basee.not_in' => 'Debe seleccionar base.',
             'id_servicioe.gt' => 'Debe seleccionar servicio.',
-            'nombre_proveedor_servicioe.required' => 'Debe ingresar nombre.',
+            'nom_proveedor_servicioe.required' => 'Debe ingresar nombre.',
         ]);
 
         $valida = ProveedorServicio::where('cod_base', $request->cod_basee)->where('id_servicio', $request->id_servicioe)
-                ->where('nombre_proveedor_servicio', $request->nombre_proveedor_servicioe)->where('estado', 1)
+                ->where('nom_proveedor_servicio', $request->nom_proveedor_servicioe)->where('estado', 1)
                 ->where('id_proveedor_servicio', '!=', $id)->exists();
         if($valida){
             echo "error";
@@ -197,7 +197,7 @@ class LecturaServicioConfController extends Controller
             ProveedorServicio::findOrFail($id)->update([
                 'cod_base' => $request->cod_basee,
                 'id_servicio' => $request->id_servicioe,
-                'nombre_proveedor_servicio' => $request->nombre_proveedor_servicioe,
+                'nom_proveedor_servicio' => $request->nom_proveedor_servicioe,
                 'ruc_proveedor_servicio' => $request->ruc_proveedor_servicioe,
                 'dir_proveedor_servicio' => $request->dir_proveedor_servicioe,
                 'tel_proveedor_servicio' => $request->tel_proveedor_servicioe,

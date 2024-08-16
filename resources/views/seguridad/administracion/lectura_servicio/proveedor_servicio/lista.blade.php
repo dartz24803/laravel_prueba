@@ -17,7 +17,7 @@
             <tr class="text-center">
                 <td>{{ $list->cod_base }}</td>
                 <td class="text-left">{{ $list->nom_servicio }}</td>
-                <td class="text-left">{{ $list->nombre_proveedor_servicio }}</td>
+                <td class="text-left">{{ $list->nom_proveedor_servicio }}</td>
                 <td>{{ $list->ruc_proveedor_servicio }}</td>
                 <td class="text-left">{{ $list->dir_proveedor_servicio }}</td>
                 <td>{{ $list->tel_proveedor_servicio }}</td>
