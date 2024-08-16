@@ -393,20 +393,20 @@ Route::controller(LecturaServicioConfController::class)->group(function(){
     Route::get('lectura_servicio_conf_se/{id}/edit', 'edit_se')->name('lectura_servicio_conf_se.edit');
     Route::put('lectura_servicio_conf_se/{id}', 'update_se')->name('lectura_servicio_conf_se.update');
     Route::delete('lectura_servicio_conf_se/{id}', 'destroy_se')->name('lectura_servicio_conf_se.destroy');
-    Route::get('lectura_servicio_conf_pr', 'index_se')->name('lectura_servicio_conf_pr');
-    Route::get('lectura_servicio_conf_pr/list', 'list_se')->name('lectura_servicio_conf_pr.list');
-    Route::get('lectura_servicio_conf_pr/create', 'create_se')->name('lectura_servicio_conf_pr.create');
-    Route::post('lectura_servicio_conf_pr', 'store_se')->name('lectura_servicio_conf_pr.store');
-    Route::get('lectura_servicio_conf_pr/{id}/edit', 'edit_se')->name('lectura_servicio_conf_pr.edit');
-    Route::put('lectura_servicio_conf_pr/{id}', 'update_se')->name('lectura_servicio_conf_pr.update');
-    Route::delete('lectura_servicio_conf_pr/{id}', 'destroy_se')->name('lectura_servicio_conf_pr.destroy');
-    Route::get('lectura_servicio_conf_da', 'index_se')->name('lectura_servicio_conf_da');
-    Route::get('lectura_servicio_conf_da/list', 'list_se')->name('lectura_servicio_conf_da.list');
-    Route::get('lectura_servicio_conf_da/create', 'create_se')->name('lectura_servicio_conf_da.create');
-    Route::post('lectura_servicio_conf_da', 'store_se')->name('lectura_servicio_conf_da.store');
-    Route::get('lectura_servicio_conf_da/{id}/edit', 'edit_se')->name('lectura_servicio_conf_da.edit');
-    Route::put('lectura_servicio_conf_da/{id}', 'update_se')->name('lectura_servicio_conf_da.update');
-    Route::delete('lectura_servicio_conf_da/{id}', 'destroy_se')->name('lectura_servicio_conf_da.destroy');
+    Route::get('lectura_servicio_conf_pr', 'index_pr')->name('lectura_servicio_conf_pr');
+    Route::get('lectura_servicio_conf_pr/list', 'list_pr')->name('lectura_servicio_conf_pr.list');
+    Route::get('lectura_servicio_conf_pr/create', 'create_pr')->name('lectura_servicio_conf_pr.create');
+    Route::post('lectura_servicio_conf_pr', 'store_pr')->name('lectura_servicio_conf_pr.store');
+    Route::get('lectura_servicio_conf_pr/{id}/edit', 'edit_pr')->name('lectura_servicio_conf_pr.edit');
+    Route::put('lectura_servicio_conf_pr/{id}', 'update_pr')->name('lectura_servicio_conf_pr.update');
+    Route::delete('lectura_servicio_conf_pr/{id}', 'destroy_pr')->name('lectura_servicio_conf_pr.destroy');
+    Route::get('lectura_servicio_conf_da', 'index_da')->name('lectura_servicio_conf_da');
+    Route::get('lectura_servicio_conf_da/list', 'list_da')->name('lectura_servicio_conf_da.list');
+    Route::get('lectura_servicio_conf_da/create', 'create_da')->name('lectura_servicio_conf_da.create');
+    Route::post('lectura_servicio_conf_da', 'store_da')->name('lectura_servicio_conf_da.store');
+    Route::get('lectura_servicio_conf_da/{id}/edit', 'edit_da')->name('lectura_servicio_conf_da.edit');
+    Route::put('lectura_servicio_conf_da/{id}', 'update_da')->name('lectura_servicio_conf_da.update');
+    Route::delete('lectura_servicio_conf_da/{id}', 'destroy_da')->name('lectura_servicio_conf_da.destroy');
 });
 //CONTROL INTERNO - PRECIO SUGERIDO CONFIGURABLE
 Route::controller(PrecioSugeridoConfController::class)->group(function(){

@@ -37,7 +37,7 @@ class Base extends Model
     {
         $sql = "SELECT id_base,cod_base FROM base 
                 WHERE id_base IN (2,3,4,5,6,7,8,9,10,31,13,27,14,37)
-                ORDER BY cod_base";
+                ORDER BY cod_base ASC";
         $query = DB::select($sql);
         return $query;
     }
@@ -46,7 +46,17 @@ class Base extends Model
     {
         $sql = "SELECT id_base,cod_base FROM base 
                 WHERE id_base IN (2,3,4,5,6,7,8,9,10,31,13,27,33,14,37,21)
-                ORDER BY cod_base";
+                ORDER BY cod_base ASC";
+        $query = DB::select($sql);
+        return $query;
+    }
+
+    public static function get_list_todas_bases_agrupadas()
+    {
+        $sql = "SELECT cod_base FROM base 
+                WHERE estado=1
+                GROUP BY cod_base
+                ORDER BY cod_base ASC";
         $query = DB::select($sql);
         return $query;
     }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Base;
+use App\Models\ProveedorServicio;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -101,47 +103,61 @@ class LecturaServicioConfController extends Controller
         ]);
     }
     
-    /*public function index_ho()
+    public function index_pr()
     {
-        return view('seguridad.administracion.lectura_servicio.hora_programada.index');
+        return view('seguridad.administracion.lectura_servicio.proveedor_servicio.index');
     }
 
-    public function list_ho()
+    public function list_pr()
     {
-        $list_hora_programada = Horas::select('horas.id_hora','sedes.nombre_sede','horas.hora','horas.orden')
-                            ->join('sedes','sedes.id_sede','=','horas.id_sede')
-                            ->where('horas.estado', 1)->get();
-        return view('seguridad.administracion.lectura_servicio.hora_programada.lista', compact('list_hora_programada'));
+        $list_proveedor_servicio = ProveedorServicio::select('proveedor_servicio.id_proveedor_servicio',
+                                'proveedor_servicio.cod_base','servicio.nom_servicio',
+                                'proveedor_servicio.nombre_proveedor_servicio',
+                                'proveedor_servicio.ruc_proveedor_servicio',
+                                'proveedor_servicio.dir_proveedor_servicio',
+                                'proveedor_servicio.tel_proveedor_servicio',
+                                'proveedor_servicio.contacto_proveedor_servicio',
+                                'proveedor_servicio.telefono_contacto')
+                                ->join('servicio','servicio.id_servicio','=','proveedor_servicio.id_servicio')
+                                ->where('proveedor_servicio.estado', 1)->get();
+        return view('seguridad.administracion.lectura_servicio.proveedor_servicio.lista', compact('list_proveedor_servicio'));
     }
 
-    public function create_ho()
+    public function create_pr()
     {
-        $list_sede = Sedes::select('id_sede','nombre_sede')->where('estado',1)->orderBy('nombre_sede','ASC')
-                            ->get();
-        return view('seguridad.administracion.lectura_servicio.hora_programada.modal_registrar', compact(['list_sede']));
+        $list_base = Base::get_list_todas_bases_agrupadas();
+        $list_servicio = Servicio::select('id_servicio','nom_servicio')->where('estado',1)->orderBy('nom_servicio','ASC')
+                        ->get();
+        return view('seguridad.administracion.lectura_servicio.proveedor_servicio.modal_registrar', compact(['list_base','list_servicio']));
     }
 
-    public function store_ho(Request $request)
+    public function store_pr(Request $request)
     {
         $request->validate([
-            'id_sede' => 'gt:0',
-            'hora' => 'required',
-            'orden' => 'required',
+            'cod_base' => 'not_in:0',
+            'id_servicio' => 'gt:0',
+            'nombre_proveedor_servicio' => 'required',
         ],[
-            'id_sede.gt' => 'Debe seleccionar sede.',
-            'hora.required' => 'Debe ingresar hora.',
-            'orden.required' => 'Debe ingresar orden.',
+            'cod_base.not_in' => 'Debe seleccionar base.',
+            'id_servicio.gt' => 'Debe seleccionar servicio.',
+            'nombre_proveedor_servicio.required' => 'Debe ingresar nombre.',
         ]);
 
-        $valida = Horas::where('id_sede', $request->id_sede)->where('orden', $request->orden)->where('estado', 1)
-                        ->exists();
+        $valida = ProveedorServicio::where('cod_base', $request->cod_base)->where('id_servicio', $request->id_servicio)
+                ->where('nombre_proveedor_servicio', $request->nombre_proveedor_servicio)->where('estado', 1)
+                ->exists();
         if($valida){
             echo "error";
         }else{
-            Horas::create([
-                'id_sede' => $request->id_sede,
-                'hora' => $request->hora,
-                'orden' => $request->orden,
+            ProveedorServicio::create([
+                'cod_base' => $request->cod_base,
+                'id_servicio' => $request->id_servicio,
+                'nombre_proveedor_servicio' => $request->nombre_proveedor_servicio,
+                'ruc_proveedor_servicio' => $request->ruc_proveedor_servicio,
+                'dir_proveedor_servicio' => $request->dir_proveedor_servicio,
+                'tel_proveedor_servicio' => $request->tel_proveedor_servicio,
+                'contacto_proveedor_servicio' => $request->contacto_proveedor_servicio,
+                'telefono_contacto' => $request->telefono_contacto,
                 'estado' => 1,
                 'fec_reg' => now(),
                 'user_reg' => session('usuario')->id_usuario,
@@ -151,47 +167,54 @@ class LecturaServicioConfController extends Controller
         }
     }
 
-    public function edit_ho($id)
+    public function edit_pr($id)
     {
-        $get_id = Horas::findOrFail($id);
-        $list_sede = Sedes::select('id_sede','nombre_sede')->where('estado',1)->orderBy('nombre_sede','ASC')
-                            ->get();
-        return view('seguridad.administracion.lectura_servicio.hora_programada.modal_editar', compact('get_id','list_sede'));
+        $get_id = ProveedorServicio::findOrFail($id);
+        $list_base = Base::get_list_todas_bases_agrupadas();
+        $list_servicio = Servicio::select('id_servicio','nom_servicio')->where('estado',1)->orderBy('nom_servicio','ASC')
+                        ->get();
+        return view('seguridad.administracion.lectura_servicio.proveedor_servicio.modal_editar', compact('get_id','list_base','list_servicio'));
     }
 
-    public function update_ho(Request $request, $id)
+    public function update_pr(Request $request, $id)
     {
         $request->validate([
-            'id_sedee' => 'gt:0',
-            'horae' => 'required',
-            'ordene' => 'required',
+            'cod_basee' => 'not_in:0',
+            'id_servicioe' => 'gt:0',
+            'nombre_proveedor_servicioe' => 'required',
         ],[
-            'id_sedee.gt' => 'Debe seleccionar sede.',
-            'horae.required' => 'Debe ingresar hora.',
-            'ordene.required' => 'Debe ingresar orden.',
+            'cod_basee.not_in' => 'Debe seleccionar base.',
+            'id_servicioe.gt' => 'Debe seleccionar servicio.',
+            'nombre_proveedor_servicioe.required' => 'Debe ingresar nombre.',
         ]);
 
-        $valida = Horas::where('id_sede', $request->id_sedee)->where('orden', $request->ordene)
-                        ->where('estado', 1)->where('id_hora', '!=', $id)->exists();
+        $valida = ProveedorServicio::where('cod_base', $request->cod_basee)->where('id_servicio', $request->id_servicioe)
+                ->where('nombre_proveedor_servicio', $request->nombre_proveedor_servicioe)->where('estado', 1)
+                ->where('id_proveedor_servicio', '!=', $id)->exists();
         if($valida){
             echo "error";
         }else{
-            Horas::findOrFail($id)->update([
-                'id_sede' => $request->id_sedee,
-                'hora' => $request->horae,
-                'orden' => $request->ordene,
+            ProveedorServicio::findOrFail($id)->update([
+                'cod_base' => $request->cod_basee,
+                'id_servicio' => $request->id_servicioe,
+                'nombre_proveedor_servicio' => $request->nombre_proveedor_servicioe,
+                'ruc_proveedor_servicio' => $request->ruc_proveedor_servicioe,
+                'dir_proveedor_servicio' => $request->dir_proveedor_servicioe,
+                'tel_proveedor_servicio' => $request->tel_proveedor_servicioe,
+                'contacto_proveedor_servicio' => $request->contacto_proveedor_servicioe,
+                'telefono_contacto' => $request->telefono_contactoe,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
         }
     }
 
-    public function destroy_ho($id)
+    public function destroy_pr($id)
     {
-        Horas::findOrFail($id)->update([
+        ProveedorServicio::findOrFail($id)->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario
         ]);
-    }*/
+    }
 }
