@@ -595,6 +595,11 @@
                                     <p class="romperpalabra"><span id="icono_active2"></span> Control de cámaras</p>
                                 </a>
                             </li>
+                            <li id="conf_lecturas_servicios">
+                                <a href="{{ route('lectura_servicio_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Lectura Servicio</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
 
@@ -674,7 +679,7 @@
         //BOTON FLOTANTE SOPORTE
         (function () {
             var options = {
-                whatsapp: "+51 956 897 977", // WhatsApp number
+                whatsapp: "+51 967 778 561", // WhatsApp number
                 email: "sistemaslanumerouno@gmail.com", // Email
                 call_to_action: "Soporte", // Call to action
                 button_color: "#00b1f4", // Color of button

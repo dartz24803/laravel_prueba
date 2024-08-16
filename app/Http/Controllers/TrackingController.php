@@ -2289,19 +2289,12 @@ class TrackingController extends Controller
     {
         try { 
             if($request->estilo){
-                $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_app ?,?,?,?,?,?', [
-                    $request->estilo,
-                    date('Y'),
-                    date('W'),
+                $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_estilo ?,?', [
                     $request->cod_base,
-                    '',
-                    ''
+                    $request->estilo
                 ]);
             }else{
-                $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_app ?,?,?,?,?,?', [
-                    '',
-                    date('Y'),
-                    date('W'),
+                $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_app ?,?,?', [
                     $request->cod_base,
                     $request->tipo_usuario,
                     $request->tipo_prenda
