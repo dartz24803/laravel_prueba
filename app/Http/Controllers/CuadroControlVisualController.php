@@ -25,7 +25,6 @@ class CuadroControlVisualController extends Controller
         $this->middleware('verificar.sesion.usuario');
         $this->request = $request;
         $this->modelo = new HorariosCuadroControl();
-        $this->modelobase = new Base();
         $this->modelousuarios = new Usuario();
         $this->modelohorario = new HorarioDia();
         $this->modeloasignacioncargocap = new AsignacionCargoCap();
@@ -33,7 +32,7 @@ class CuadroControlVisualController extends Controller
     }
     
     public function Cuadro_Control_Visual_Vista(){
-        $list_bases = $this->modelobase->listar_bases_b();
+        $list_bases = Base::get_list_bases_tienda();
         return view('tienda.Cuadro_Control_Visual.index', compact('list_bases'));
     }
     

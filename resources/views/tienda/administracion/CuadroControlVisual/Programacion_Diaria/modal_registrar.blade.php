@@ -14,8 +14,8 @@
                     <select class="form-control" id="cod_base" name="cod_base" onchange="Traer_Puesto_Programacion_Diaria();">
                         <option value="0">Seleccione</option>
                         <?php foreach($list_base as $list){?>
-                            <option value="<?php echo $list['cod_base']; ?>">
-                                <?php echo $list['cod_base']; ?>
+                            <option value="<?php echo $list->cod_base; ?>">
+                                <?php echo $list->cod_base; ?>
                             </option>
                         <?php } ?>
                     </select>

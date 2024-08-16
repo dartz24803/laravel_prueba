@@ -31,7 +31,6 @@ class ReporteFotograficoController extends Controller
         $this->request = $request;
         $this->modelo = new ReporteFotografico();
         $this->modeloarea = new Area();
-        $this->modelobase = new Base();
         $this->modelocodigos = new CodigosReporteFotografico();
         $this->modeloarchivotmp = new ReporteFotograficoArchivoTemporal();
         $this->modelorfa = new ReporteFotograficoAdm();
@@ -44,7 +43,7 @@ class ReporteFotograficoController extends Controller
 
     public function Reporte_Fotografico(Request $request){
         //retornar vista si esta logueado
-        $list_bases = $this->modelobase->get_list_bases_tienda();
+        $list_bases = Base::get_list_bases_tienda();
         $today = date('Y-m-d');
         $list_categorias = $this->modelorfa->where('estado',1)->get();
         return view('tienda.ReporteFotografico.tabla_rf.reportefotografico', compact('list_categorias', 'list_bases', 'today'));
@@ -235,7 +234,7 @@ class ReporteFotograficoController extends Controller
     }
 
     public function Imagenes_Reporte_Fotografico(Request $request){
-        $list_bases = $this->modelobase->get_list_bases_tienda();
+        $list_bases = Base::get_list_bases_tienda();
         $list_categorias = $this->modelorfa->where('estado',1)->get();
         $today = date('Y-m-d');
         $base= $request->input("base");

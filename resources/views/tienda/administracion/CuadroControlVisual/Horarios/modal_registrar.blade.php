@@ -15,8 +15,8 @@
                 <select class="form-control basic" name="cod_base" id="cod_base" onchange="Traer_Puesto_Horario();">
                     <option value="0">Seleccione</option>
                     <?php foreach ($list_base as $list) { ?>
-                        <option value="<?php echo $list['cod_base']; ?>">
-                            <?php echo $list['cod_base']; ?>
+                        <option value="<?php echo $list->cod_base; ?>">
+                            <?php echo $list->cod_base; ?>
                         </option>
                     <?php } ?>
                 </select>

@@ -18,9 +18,9 @@
                 <select class="form-control" name="basese" id="basese" disabled>
                     <option value="0">Seleccione</option>
                     <?php foreach ($list_base as $list) { ?>
-                        <option value="<?php echo $list['cod_base']; ?>"
-                        <?php if ($list['cod_base'] == $get_id[0]['cod_base']) { echo "selected"; } ?>>
-                            <?php echo $list['cod_base']; ?>
+                        <option value="<?php echo $list->cod_base; ?>"
+                        <?php if ($list->cod_base == $get_id[0]['cod_base']) { echo "selected"; } ?>>
+                            <?php echo $list->cod_base; ?>
                         </option>
                     <?php } ?>
                 </select>

@@ -28,7 +28,6 @@ class ReporteFotograficoAdmController extends Controller
         $this->modelo = new ReporteFotograficoAdm();
         $this->modelocodigos = new CodigosReporteFotografico();
         $this->modeloarea = new Area();
-        $this->modelobase = new Base();
         $this->modelodetalle = new ReporteFotograficoDetalle();
     }
 
@@ -190,7 +189,7 @@ class ReporteFotograficoAdmController extends Controller
     }
 
     public function Codigos_Reporte_Fotografico(){
-        $list_bases = $this->modelobase->listar();
+        $list_bases = Base::get_list_bases_tienda();
         $list_categorias = $this->modelo->where('estado',1)->get();
         return view('tienda.administracion.ReporteFotografico.codigos.index', compact('list_bases','list_categorias'));
     }
@@ -204,7 +203,7 @@ class ReporteFotograficoAdmController extends Controller
     }
     
     public function ModalRegistroCodigosReporteFotograficoAdm(){
-        $list_bases = $this->modelobase->listar();
+        $list_bases = Base::get_list_bases_tienda();
         $list_categorias = $this->modelo->where('estado',1)->get();
         // Retorna la vista con los datos
         return view('tienda.administracion.ReporteFotografico.codigos.modal_registrar',compact('list_categorias','list_bases'));
@@ -214,7 +213,7 @@ class ReporteFotograficoAdmController extends Controller
         // Lógica para obtener los datos necesarios
         $get_id = $this->modelocodigos->where('id', $id)->get();
         $list_categorias = $this->modelo->where('estado',1)->get();
-        $list_bases = $this->modelobase->listar();
+        $list_bases = Base::get_list_bases_tienda();
         // Retorna la vista con los datos
         return view('tienda.administracion.ReporteFotografico.codigos.modal_editar', compact('get_id','list_categorias','list_bases'));
     }
