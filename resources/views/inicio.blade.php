@@ -446,11 +446,11 @@
         }*/
     }
     .titulo_slider{
-        font-size: 36px;
-        height: 4rem;
+        font-size: 1.3rem;
+        height: auto;
         font-weight: bold;
         line-height: 1;
-        width: 23rem;
+        width: 12em;
         margin-bottom: 0rem;
         text-transform: uppercase;
     }
@@ -458,7 +458,7 @@
     #carousel-caption{
         margin-left: -7%;
         height: 100%;
-        top: 0;
+        top: 75%;
     }
 
     @media screen and (max-width: 1050px) and (min-width: 800) {
@@ -520,11 +520,11 @@
             top: 0%;
         }
         .titulo_slider {
-            font-size: 20px;
-            height: 8rem;
+            font-size: 1.5rem;
+            height: auto;
             font-weight: bold;
             line-height: 1;
-            width: 36rem;
+            width: 10rem;
             margin-bottom: 0rem;
             text-transform: uppercase;
         }
@@ -533,7 +533,7 @@
             color: #fa2b5c;
             margin-bottom: 0%;
             margin-left: 0.2rem;
-            font-size: large;
+            font-size: 0.8rem;
             margin-top: 40rem;
         }
 
@@ -541,6 +541,19 @@
             font-size: 10px;
             /* width: 18%; */
         }
+    }
+    .heading span {
+        color: #00b1f4;
+        font-weight: bold;
+    }
+    .sidebar-wrapper ul.menu-categories li.menu.menu-heading > .heading .feather-circle {
+        display: none;
+        vertical-align: sub;
+        width: 9px;
+        height: 9px;
+        stroke-width: 4px;
+        color: #bfc9d4;
+        fill: #1b55e2;
     }
 </style>
 <script>
