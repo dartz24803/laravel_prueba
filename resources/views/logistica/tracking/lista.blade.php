@@ -208,6 +208,11 @@ use App\Models\TrackingDetalleProceso;
 .hide-nav a::before{
     border-left-color: transparent !important;;
 }
+
+.parte5.disable{
+    background-color: white !important;
+    color: #302f30 !important;
+}
 </style>
 
 <table id="tabla_js" class="table" style="width:100%">
@@ -416,7 +421,7 @@ use App\Models\TrackingDetalleProceso;
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center justify-content-center parte4" title="Ver detalles">
+                                <a class="nav-link d-flex align-items-center justify-content-center parte5" title="Ver detalles">
                                     <span class="num">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square">
                                             <polyline points="9 11 12 14 22 4"></polyline>
@@ -577,7 +582,7 @@ use App\Models\TrackingDetalleProceso;
                                                         </a>
                                                     </li>
                                                     <li class="nav-item hide-nav">
-                                                        <a class="nav-link d-flex align-items-center justify-content-center parte5" title="Ver detalles">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center" title="Ver detalles">
                                                             <span class="num">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square">
                                                                     <polyline points="9 11 12 14 22 4"></polyline>
@@ -1067,12 +1072,15 @@ use App\Models\TrackingDetalleProceso;
                     'color': 'white'
                 });
 
-                $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-2), #smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-1)').css({
+                $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-2)').css({
                     'background-color': '#00b1f4',
                     'color': 'white'
                 });
 
-
+                $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-1)').css({
+                    'background-color': '#302f30',
+                    'color': 'white'
+                });
                 $('#smartwizard1_<?= $list->id; ?>').smartWizard({
                     selected: <?= $estado_diferencia; ?>,
                     theme: 'arrows',
