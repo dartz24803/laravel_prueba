@@ -129,6 +129,7 @@ use App\Models\TrackingDetalleProceso;
 .parte1.disable{
     background-color: white !important;
     color: #00ba8e !important;
+    cursor: not-allowed;
 }
 .parte1.disable::after{
     border-left-color: white !important;
@@ -137,6 +138,7 @@ use App\Models\TrackingDetalleProceso;
 .parte2.disable{
     background-color: white !important;
     color: #ff295c !important;
+    cursor: not-allowed;
 }
 .parte2.disable::after{
     border-left-color: white !important;
@@ -145,6 +147,7 @@ use App\Models\TrackingDetalleProceso;
 .parte3.disable{
     background-color: white !important;
     color: #fea701 !important;
+    cursor: not-allowed;
 }
 .parte3.disable::after{
     border-left-color: white !important;
@@ -212,6 +215,7 @@ use App\Models\TrackingDetalleProceso;
 .parte5.disable{
     background-color: white !important;
     color: #302f30 !important;
+    cursor: not-allowed;
 }
 </style>
 
