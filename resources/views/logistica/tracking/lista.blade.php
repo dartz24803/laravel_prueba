@@ -416,7 +416,7 @@ use App\Models\TrackingDetalleProceso;
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center justify-content-center parte5" title="Ver detalles">
+                                <a class="nav-link d-flex align-items-center justify-content-center parte4" title="Ver detalles">
                                     <span class="num">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square">
                                             <polyline points="9 11 12 14 22 4"></polyline>
