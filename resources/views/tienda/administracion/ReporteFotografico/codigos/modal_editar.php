@@ -18,13 +18,13 @@ $base = Session('usuario')->centro_labores;
             <select class="form-control basic" id="bases_e" name="bases_e">
                 <option value="0">TODOS</option>
                     <?php foreach ($list_bases as $list) { ?>
-                        <option value="<?php echo $list['cod_base']; ?>"
+                        <option value="<?php echo $list->cod_base; ?>"
                         <?php
-                        if($get_id[0]['base'] == $list['cod_base']){
+                        if($get_id[0]['base'] == $list->cod_base){
                             echo 'selected';
                         }
                         ?>>
-                    <?php echo $list['cod_base']; ?>
+                    <?php echo $list->cod_base; ?>
                 </option>
                 <?php } ?>
             </select>

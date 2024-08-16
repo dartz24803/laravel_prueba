@@ -27,13 +27,13 @@ if ($base == 'OFC') {
             <select class="form-control basic" id="bases" name="bases" <?= $disabled ?>>
                 <option value="0" <?= $selected ?>>TODOS</option>
                     <?php foreach ($list_bases as $list) { ?>
-                        <option value="<?php echo $list['cod_base']; ?>"
+                        <option value="<?php echo $list->cod_base; ?>"
                         <?php
-                            if ($list['cod_base'] == $base && $list['cod_base'] != 'OFC') {
+                            if ($list->cod_base == $base && $list->cod_base != 'OFC') {
                                 echo "selected";
                             }
                         ?>>
-                    <?php echo $list['cod_base']; ?>
+                    <?php echo $list->cod_base; ?>
                 </option>
                 <?php } ?>
             </select>
