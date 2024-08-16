@@ -156,7 +156,7 @@ use App\Models\TrackingDetalleProceso;
 .parte5.disable::after{
     border-left-color: white !important;
 }
-.sw-theme-arrows > .nav .nav-link:nth-child(9n-6)::after, 
+.sw-theme-arrows > .nav .nav-link:nth-child(9n-6)::after,
 .sw-theme-arrows > .nav .nav-link:nth-child(9n-5)::after {
     border-left-color: #ff295c;
 }
@@ -200,6 +200,13 @@ use App\Models\TrackingDetalleProceso;
 }
 .hide-nav{
     background-color: transparent !important;
+    border-left-color: transparent !important;
+}
+.hide-nav a::after{
+    border-left-color: transparent !important;;
+}
+.hide-nav a::before{
+    border-left-color: transparent !important;;
 }
 </style>
 
@@ -501,7 +508,7 @@ use App\Models\TrackingDetalleProceso;
                                             <div id="smartwizard1_{{$list->id}}" dir>
                                                 <ul class="nav">
                                                     <li class="nav-item hide-nav">
-                                                        <a class="nav-link d-flex align-items-center justify-content-center parte1" title="Ver detalles">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center" title="Ver detalles">
                                                             <div class="num">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-briefcase"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
                                                             </div>
@@ -509,7 +516,7 @@ use App\Models\TrackingDetalleProceso;
                                                         </a>
                                                     </li>
                                                     <li class="nav-item hide-nav">
-                                                        <a class="nav-link d-flex align-items-center justify-content-center parte1" title="Ver detalles">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center" title="Ver detalles">
                                                             <span class="num">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-truck">
                                                                     <rect x="1" y="3" width="15" height="13"></rect>
@@ -522,7 +529,7 @@ use App\Models\TrackingDetalleProceso;
                                                         </a>
                                                     </li>
                                                     <li class="nav-item hide-nav">
-                                                        <a class="nav-link d-flex align-items-center justify-content-center parte2" title="Ver detalles">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center" title="Ver detalles">
                                                             <span class="num">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin">
                                                                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
@@ -533,7 +540,7 @@ use App\Models\TrackingDetalleProceso;
                                                         </a>
                                                     </li>
                                                     <li class="nav-item hide-nav">
-                                                        <a class="nav-link d-flex align-items-center justify-content-center parte2" title="Ver detalles">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center" title="Ver detalles">
                                                             <span class="num">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-bag">
                                                                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
@@ -545,7 +552,7 @@ use App\Models\TrackingDetalleProceso;
                                                         </a>
                                                     </li>
                                                     <li class="nav-item hide-nav">
-                                                        <a class="nav-link d-flex align-items-center justify-content-center parte3" title="Ver detalles">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center" title="Ver detalles">
                                                             <span class="num">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg><br>
                                                             </span>
@@ -553,15 +560,15 @@ use App\Models\TrackingDetalleProceso;
                                                         </a>
                                                     </li>
                                                     <li class="nav-item hide-nav">
-                                                        <a class="nav-link d-flex align-items-center justify-content-center parte3" title="Ver detalles">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center" title="Ver detalles">
                                                             <span class="num">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-zoom-in"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg><br>
                                                             </span>
                                                             INSPECCIÓN DE <br> MERCADERÍA
                                                         </a>
                                                     </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link parte4 arrow-right" title="Ver detalles" style="font-size: 1rem;">
+                                                    <li class="nav-item" style="margin-left: 5rem;">
+                                                        <a class="nav-link parte4 d-flex justify-align-center" title="Ver detalles" style="font-size: 1rem;">
                                                             <div class="num">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-repeat"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg><br>
                                                                 <br>
@@ -589,11 +596,71 @@ use App\Models\TrackingDetalleProceso;
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        <div class="col-md-3">
+                                        <div class="col-md-12">
                                             <div id="smartwizard2_{{$list->id}}" dir>
                                                 <ul class="nav">
-                                                    <li class="nav-item">
-                                                        <a class="nav-link parte4 arrow-right" title="Ver detalles" style="font-size: 1rem;">
+                                                    <li class="nav-item hide-nav">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center" title="Ver detalles">
+                                                            <div class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-briefcase"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                                                            </div>
+                                                            DESPACHO<br>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item hide-nav">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center" title="Ver detalles">
+                                                            <span class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-truck">
+                                                                    <rect x="1" y="3" width="15" height="13"></rect>
+                                                                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                                                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                                                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                                                                </svg><br>
+                                                            </span>
+                                                            TRASLADO<br>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item hide-nav">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center" title="Ver detalles">
+                                                            <span class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin">
+                                                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                                                    <circle cx="12" cy="10" r="3"></circle>
+                                                                </svg><br>
+                                                            </span>
+                                                            RECEPCIÓN <br> DE MERCADERÍA<br>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item hide-nav">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center" title="Ver detalles">
+                                                            <span class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-bag">
+                                                                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                                                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                                                                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                                                                </svg><br>
+                                                            </span>
+                                                            INSPECCIÓN <br> DE FARDO<br>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item hide-nav">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center" title="Ver detalles">
+                                                            <span class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg><br>
+                                                            </span>
+                                                            PAGO DE <br> MERCADERÍA
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item hide-nav">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center" title="Ver detalles">
+                                                            <span class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-zoom-in"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg><br>
+                                                            </span>
+                                                            INSPECCIÓN DE <br> MERCADERÍA
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item" style="margin-left: 5rem;">
+                                                        <a class="nav-link parte4 d-flex justify-items-center" title="Ver detalles" style="font-size: 1rem;">
                                                             <div class="num">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg><br>
                                                                 <br>
@@ -601,8 +668,19 @@ use App\Models\TrackingDetalleProceso;
                                                             Diferencias<br>
                                                         </a>
                                                     </li>
+                                                    <li class="nav-item hide-nav">
+                                                        <a class="nav-link d-flex align-items-center justify-content-center" title="Ver detalles">
+                                                            <span class="num">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square">
+                                                                    <polyline points="9 11 12 14 22 4"></polyline>
+                                                                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                                                                </svg><br>
+                                                            </span>
+                                                            FIN
+                                                        </a>
+                                                    </li>
                                                 </ul>
-                
+
                                                 <div class="tab-content" style="display:none">
                                                     <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
                                                     </div>
@@ -635,7 +713,7 @@ use App\Models\TrackingDetalleProceso;
                                         (no hay registro de devolución)
                                     @endif
                                     <h5 class="card-title mt-3" style="color: #00b1f4">DEVOLUCIÓN</h5>
-                                    <?php 
+                                    <?php
                                         $mensaje_mostrado2 = false;
                                         $contiene_proceso_8 = false;
                                         foreach($proceso as $dd){
@@ -939,13 +1017,13 @@ use App\Models\TrackingDetalleProceso;
                     }
                 };
                 $estado = intval($list->id_proceso) -1;
-                $estado_devolucion = -1;
+                $estado_devolucion = -4;
                 if($contiene_proceso_7===true){
-                    $estado_devolucion = 0;
+                    $estado_devolucion = 6;
                 }
                 $estado_diferencia = -1;
                 if($contiene_proceso_8===true){
-                    $estado_diferencia = 0;
+                    $estado_diferencia = 6;
                 }
                 if ($list->id_proceso===9) {
                     $list->id_proceso=8;
@@ -969,7 +1047,7 @@ use App\Models\TrackingDetalleProceso;
                     let stepLink = $('#smartwizard<?= $list->id; ?> .nav-link:eq(' + i + ')');
                     stepLink.addClass('disable');
                 }
-            
+
                 // Aplica los estilos personalizados después de inicializar SmartWizard
                 $('#smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-8), #smartwizard<?= $list->id; ?> .nav-item:nth-child(9n-7)').css({
                     'background-color': '#00ba8e',
@@ -994,7 +1072,7 @@ use App\Models\TrackingDetalleProceso;
                     'color': 'white'
                 });
 
-                
+
                 $('#smartwizard1_<?= $list->id; ?>').smartWizard({
                     selected: <?= $estado_diferencia; ?>,
                     theme: 'arrows',
@@ -1005,17 +1083,17 @@ use App\Models\TrackingDetalleProceso;
                         animation: 'css',
                     },
                 });
-                
+
                 $('#smartwizard1_<?= $list->id; ?> .nav-item:nth-child(2n-2), #smartwizard1_<?= $list->id; ?> .nav-item:nth-child(2n-1)').css({
                     'background-color': '#00b1f4',
                     'color': 'white'
                 });
                 // Deshabilitar los enlaces a partir del estado actual
-                for (let i = <?= $estado_diferencia + 1; ?>; i <= 1; i++) {
+                for (let i = <?= $estado_diferencia + 1; ?>; i <= 7; i++) {
                     let stepLink = $('#smartwizard1_<?= $list->id; ?> .nav-link:eq(' + i + ')');
                     stepLink.addClass('disable');
                 }
-                
+
                 $('#smartwizard2_<?= $list->id; ?>').smartWizard({
                     selected: <?= $estado_devolucion; ?>,
                     theme: 'arrows',
@@ -1032,7 +1110,7 @@ use App\Models\TrackingDetalleProceso;
                     'color': 'white'
                 });
                 // Deshabilitar los enlaces a partir del estado actual
-                for (let i = <?= $estado_devolucion + 1; ?>; i <= 1; i++) {
+                for (let i = <?= $estado_devolucion + 1; ?>; i <= 7; i++) {
                     let stepLink = $('#smartwizard2_<?= $list->id; ?> .nav-link:eq(' + i + ')');
                     stepLink.addClass('disable');
                 }
