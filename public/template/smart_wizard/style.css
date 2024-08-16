@@ -332,6 +332,11 @@
 }
 
 .sw-theme-arrows > .nav .nav-link.disable {
+    color: transparent;
+    background-color: transparent;
+}
+
+.sw-theme-arrows > .nav .nav-link.disable.parte4 {
     color: #00b1f4;
     background-color: white;
     cursor: not-allowed;
