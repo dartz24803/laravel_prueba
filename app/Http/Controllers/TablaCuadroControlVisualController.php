@@ -40,7 +40,7 @@ class TablaCuadroControlVisualController extends Controller
 
     //adm horarios
     public function Horarios_Cuadro_Control(){
-        $list_bases = $this->modelobase->listar();
+        $list_bases = Base::get_list_bases_tienda();;
         return view('tienda.administracion.CuadroControlVisual.Horarios.index', compact('list_bases'));
     }
 
@@ -52,7 +52,7 @@ class TablaCuadroControlVisualController extends Controller
 
     public function Modal_Horarios_Cuadro_Control(){
         // Lógica para obtener los datos necesarios
-        $list_base = $this->modelobase->listar();
+        $list_base = Base::get_list_bases_tienda();;
         $list_dia = $this->modelodiasemana->get();
         $list_puestos = $this->modelopuestos->get();
         // Retorna la vista con los datos
@@ -68,7 +68,7 @@ class TablaCuadroControlVisualController extends Controller
     public function Modal_Update_Horarios_Cuadro_Control($id){
         // Lógica para obtener los datos necesarios
         $get_id = $this->modelo->where('id_horarios_cuadro_control', $id)->get();
-        $list_base = $this->modelobase->listar();
+        $list_base = Base::get_list_bases_tienda();;
         $list_dia = $this->modelodiasemana->get();
         $list_puestos = $this->modelopuestos->get();
         // Retorna la vista con los datos
@@ -160,7 +160,7 @@ class TablaCuadroControlVisualController extends Controller
 
     public function Modal_Agregar_Horarios_Cuadro_Control($id){
         $get_id = $this->modelo->where('id_horarios_cuadro_control', $id)->get();
-        $list_base = $this->modelobase->listar();
+        $list_base = Base::get_list_bases_tienda();;
         $list_dia = $this->modelodiasemana->get();
         return view('tienda.administracion.CuadroControlVisual.Horarios.modal_agregar_horario', compact('get_id','list_base','list_dia'));
     }
@@ -201,7 +201,7 @@ class TablaCuadroControlVisualController extends Controller
     
     //ADM CUADRO CONTROL VISUAL
     public function Cuadro_Control_Visual(){
-        $list_bases = $this->modelobase->listar();
+        $list_bases = Base::get_list_bases_tienda();;
         return view('tienda.administracion.CuadroControlVisual.Cuadro_Control_Visual.index', compact('list_bases'));
     }
     
@@ -224,7 +224,7 @@ class TablaCuadroControlVisualController extends Controller
 
     //ADM PROGRAMACION DIARIA
     public function Programacion_Diaria(){
-        $list_bases = $this->modelobase->listar();
+        $list_bases = Base::get_list_bases_tienda();;
         return view('tienda.administracion.CuadroControlVisual.Programacion_Diaria.index', compact('list_bases'));
     }
     
@@ -236,7 +236,7 @@ class TablaCuadroControlVisualController extends Controller
     
     public function Modal_Programacion_Diaria(){
         // Lógica para obtener los datos necesarios
-        $list_base = $this->modelobase->listar();
+        $list_base = Base::get_list_bases_tienda();;
         // Retorna la vista con los datos
         return view('tienda.administracion.CuadroControlVisual.Programacion_Diaria.modal_registrar', compact('list_base'));
     }

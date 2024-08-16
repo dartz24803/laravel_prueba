@@ -4,8 +4,8 @@
         <select class="form-control basic" id="base" name="base" onchange="Lista_Horarios_Cuadro_Control();">
             <option value="0" selected>Todas</option>
             <?php foreach ($list_bases as $list) { ?>
-                <option value="<?php echo $list['cod_base']; ?>">
-                    <?php echo $list['cod_base']; ?>
+                <option value="<?php echo $list->cod_base; ?>">
+                    <?php echo $list->cod_base; ?>
                 </option>
             <?php } ?>
         </select>

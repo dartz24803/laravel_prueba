@@ -107,7 +107,7 @@ class AdministradorController extends Controller
 
     public function index_conf_sc()
     {
-        $list_base = Base::get_list_base_administrador();
+        $list_base = Base::get_list_bases_tienda();
         $list_area = Area::select('id_area','nom_area')->where('estado',1)->orderBy('nom_area','ASC')->get();
         return view('tienda.administracion.administrador.seguimiento_coordinador.index', compact('list_base','list_area'));
     }
@@ -120,7 +120,7 @@ class AdministradorController extends Controller
 
     public function create_conf_sc($validador=null)
     {
-        $list_base = Base::get_list_base_administrador();
+        $list_base = Base::get_list_bases_tienda();
         $list_area = Area::select('id_area','nom_area')->where('estado',1)->orderBy('nom_area','ASC')->get();
         $list_dia_semana = DiaSemana::all();
         $list_mes = Mes::select('id_mes','nom_mes')->get();
@@ -165,7 +165,7 @@ class AdministradorController extends Controller
         $request->validate($rules, $messages);
 
         if($request->todos=="1"){
-            $list_base = Base::get_list_base_administrador();
+            $list_base = Base::get_list_bases_tienda();
             foreach($list_base as $list){
                 ContenidoSeguimientoCoordinador::create([
                     'base' => $list->cod_base,
@@ -213,7 +213,7 @@ class AdministradorController extends Controller
     public function edit_conf_sc($id)
     {
         $get_id = ContenidoSeguimientoCoordinador::findOrFail($id);
-        $list_base = Base::get_list_base_administrador();
+        $list_base = Base::get_list_bases_tienda();
         $list_area = Area::select('id_area','nom_area')->where('estado',1)->orderBy('nom_area','ASC')->get();
         $list_dia_semana = DiaSemana::all();
         $list_mes = Mes::select('id_mes','nom_mes')->get();
@@ -289,7 +289,7 @@ class AdministradorController extends Controller
 
     public function index_st()
     {
-        $list_base = Base::get_list_base_administrador();
+        $list_base = Base::get_list_bases_tienda();
         return view('tienda.administrador.supervision_tienda.index', compact('list_base'));
     }
 
@@ -602,7 +602,7 @@ class AdministradorController extends Controller
 
     public function index_sc()
     {
-        $list_base = Base::get_list_base_administrador();
+        $list_base = Base::get_list_bases_tienda();
         return view('tienda.administrador.seguimiento_coordinador.index', compact('list_base'));
     }
 

@@ -33,7 +33,7 @@ class CuadroControlVisualController extends Controller
     }
     
     public function Cuadro_Control_Visual_Vista(){
-        $list_bases = $this->modelobase->listar_bases_b();
+        $list_bases = Base::get_list_bases_tienda();
         return view('tienda.Cuadro_Control_Visual.index', compact('list_bases'));
     }
     

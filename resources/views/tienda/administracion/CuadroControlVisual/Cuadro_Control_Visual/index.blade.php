@@ -13,10 +13,10 @@ if ($base == 'OFC') {
         <label>Base: </label>
         <select class="form-control basic" id="base" name="base" onchange="Lista_Cuadro_Control_Visual();">
             <?php foreach ($list_bases as $list) { ?>
-                <option value="<?php echo $list['cod_base']; ?>" <?php if ($list['cod_base'] == 'B03') {
+                <option value="<?php echo $list->cod_base; ?>" <?php if ($list->cod_base == 'B03') {
                                                                         echo "selected";
                                                                     } ?>>
-                    <?php echo $list['cod_base']; ?>
+                    <?php echo $list->cod_base; ?>
                 </option>
             <?php } ?>
         </select>
