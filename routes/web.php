@@ -403,6 +403,8 @@ Route::controller(LecturaServicioConfController::class)->group(function(){
     Route::get('lectura_servicio_conf_da', 'index_da')->name('lectura_servicio_conf_da');
     Route::get('lectura_servicio_conf_da/list', 'list_da')->name('lectura_servicio_conf_da.list');
     Route::get('lectura_servicio_conf_da/create', 'create_da')->name('lectura_servicio_conf_da.create');
+    Route::post('lectura_servicio_conf_da/traer_servicio_da', 'traer_servicio_da')->name('lectura_servicio_conf_da.traer_servicio');
+    Route::post('lectura_servicio_conf_da/traer_proveedor_servicio_da', 'traer_proveedor_servicio_da')->name('lectura_servicio_conf_da.traer_proveedor_servicio');
     Route::post('lectura_servicio_conf_da', 'store_da')->name('lectura_servicio_conf_da.store');
     Route::get('lectura_servicio_conf_da/{id}/edit', 'edit_da')->name('lectura_servicio_conf_da.edit');
     Route::put('lectura_servicio_conf_da/{id}', 'update_da')->name('lectura_servicio_conf_da.update');

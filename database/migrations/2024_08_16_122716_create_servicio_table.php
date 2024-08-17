@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('nom_servicio',50)->nullable();
             $table->string('desc_servicio',50)->nullable();
             $table->integer('lectura')->nullable();
+            $table->string('tipodeed',10)->nullable();
             $table->integer('estado')->nullable();
             $table->integer('user_reg')->nullable();
             $table->dateTime('fec_reg')->nullable();
