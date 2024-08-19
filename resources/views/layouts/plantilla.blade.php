@@ -652,11 +652,11 @@
                                     <p class="romperpalabra"><span id="icono_active2"></span> Control de cámaras</p>
                                 </a>
                             </li>
-                            <!--<li id="conf_lecturas_servicios">
+                            <li id="conf_lecturas_servicios">
                                 <a href="{{ route('lectura_servicio_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                                     <p class="romperpalabra"><span id="icono_active2"></span> Lectura Servicio</p>
                                 </a>
-                            </li>-->
+                            </li>
                         </ul>
                     </li>
 
