@@ -25,6 +25,7 @@ use App\Http\Controllers\Cumpleanios;
 use App\Http\Controllers\InicioAdmController;
 use App\Http\Controllers\InicioFrasesAdmController;
 use App\Http\Controllers\LecturaServicioConfController;
+use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
 
 Route::middleware([NoCache::class])->group(function () {
@@ -409,6 +410,27 @@ Route::controller(LecturaServicioConfController::class)->group(function(){
     Route::get('lectura_servicio_conf_da/{id}/edit', 'edit_da')->name('lectura_servicio_conf_da.edit');
     Route::put('lectura_servicio_conf_da/{id}', 'update_da')->name('lectura_servicio_conf_da.update');
     Route::delete('lectura_servicio_conf_da/{id}', 'destroy_da')->name('lectura_servicio_conf_da.destroy');
+});
+//SEGURIDAD - LECTURA SERVICIO
+Route::controller(LecturaServicioController::class)->group(function(){
+    Route::get('lectura_servicio', 'index')->name('lectura_servicio');
+    Route::get('lectura_servicio_reg', 'index_reg')->name('lectura_servicio_reg');
+    Route::post('lectura_servicio_reg/list', 'list_reg')->name('lectura_servicio_reg.list');
+    Route::get('lectura_servicio_reg/create', 'create_reg')->name('lectura_servicio_reg.create');
+    Route::post('lectura_servicio_reg/traer_suministro', 'traer_suministro_reg')->name('lectura_servicio_reg.traer_suministro');
+    Route::post('lectura_servicio_reg/traer_lectura', 'traer_lectura_reg')->name('lectura_servicio_reg.traer_lectura');
+    Route::post('lectura_servicio_reg', 'store_reg')->name('lectura_servicio_reg.store');
+    Route::get('lectura_servicio_reg/{id}/{tipo}/edit', 'edit_reg')->name('lectura_servicio_reg.edit');
+    Route::get('lectura_servicio_reg/{id}/{tipo}/download', 'download_reg')->name('lectura_servicio_reg.download');
+    Route::put('lectura_servicio_reg/{id}/{tipo}', 'update_reg')->name('lectura_servicio_reg.update');
+    Route::get('lectura_servicio_reg/{id_servicio}/{mes}/{anio}/excel', 'excel_reg')->name('lectura_servicio_reg.excel');
+
+    Route::post('lectura_servicio_reg/registrar_ronda', 'registrar_ronda')->name('lectura_servicio_reg.registrar_ronda');
+    Route::get('lectura_servicio_reg/{id}/archivo', 'archivo_reg')->name('lectura_servicio_reg.archivo');
+    Route::get('lectura_servicio_img', 'index_img')->name('lectura_servicio_img');
+    Route::post('lectura_servicio_img/list', 'list_img')->name('lectura_servicio_img.list');
+    Route::get('lectura_servicio_img/{id}/show', 'show_img')->name('lectura_servicio_img.show');
+    Route::get('lectura_servicio_ges', 'index_ges')->name('lectura_servicio_ges');
 });
 //CONTROL INTERNO - PRECIO SUGERIDO CONFIGURABLE
 Route::controller(PrecioSugeridoConfController::class)->group(function(){

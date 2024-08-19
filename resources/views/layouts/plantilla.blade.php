@@ -476,10 +476,15 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a id="controles_camaras" href="{{ route('control_camara') }}"><!---->
+                                    <a id="controles_camaras" href="{{ route('control_camara') }}">
                                         <p class="romperpalabra"><span id="icono_active2"></span> Control de cámaras</p>
                                     </a>
                                 </li>
+                                <!--<li>
+                                    <a id="lecturas_servicios" href="{{ route('lectura_servicio') }}">
+                                        <p class="romperpalabra"><span id="icono_active2"></span> Lectura Servicio</p>
+                                    </a>
+                                </li>-->
                             </ul>
                         </li>
 
