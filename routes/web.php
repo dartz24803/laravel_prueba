@@ -360,6 +360,13 @@ Route::controller(ControlCamaraConfController::class)->group(function(){
     Route::get('control_camara_conf_oc/{id}/edit', 'edit_oc')->name('control_camara_conf_oc.edit');
     Route::put('control_camara_conf_oc/{id}', 'update_oc')->name('control_camara_conf_oc.update');
     Route::delete('control_camara_conf_oc/{id}', 'destroy_oc')->name('control_camara_conf_oc.destroy');
+    Route::get('control_camara_conf_ho_li', 'index_ho_li')->name('control_camara_conf_ho_li');
+    Route::get('control_camara_conf_ho_li/list', 'list_ho_li')->name('control_camara_conf_ho_li.list');
+    Route::get('control_camara_conf_ho_li/create', 'create_ho_li')->name('control_camara_conf_ho_li.create');
+    Route::post('control_camara_conf_ho_li', 'store_ho_li')->name('control_camara_conf_ho_li.store');
+    Route::get('control_camara_conf_ho_li/{id}/edit', 'edit_ho_li')->name('control_camara_conf_ho_li.edit');
+    Route::put('control_camara_conf_ho_li/{id}', 'update_ho_li')->name('control_camara_conf_ho_li.update');
+    Route::delete('control_camara_conf_ho_li/{id}', 'destroy_ho_li')->name('control_camara_conf_ho_li.destroy');
 });
 //SEGURIDAD - CONTROL DE CÁMARAS
 Route::controller(ControlCamaraController::class)->group(function(){
@@ -369,6 +376,7 @@ Route::controller(ControlCamaraController::class)->group(function(){
     Route::get('control_camara_reg/create', 'create_reg')->name('control_camara_reg.create');
     Route::get('control_camara_reg/modal_ronda', 'create_round');
     Route::post('control_camara_reg/traer_hora_programada', 'traer_hora_programada_reg')->name('control_camara_reg.traer_hora_programada');
+    Route::post('control_camara_reg/traer_hora_programada_lima', 'traer_hora_programada_lima_reg')->name('control_camara_reg.traer_hora_programada_lima');
     Route::post('control_camara_reg/traer_tienda', 'traer_tienda_reg')->name('control_camara_reg.traer_tienda');
     Route::post('control_camara_reg/traer_edificio_reg', 'traer_edificio_reg')->name('control_camara_reg.traer_edificio');
     Route::get('control_camara_reg/{id}/modal_imagen', 'modal_imagen_reg')->name('control_camara_reg.modal_imagen');

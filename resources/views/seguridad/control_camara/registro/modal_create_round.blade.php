@@ -60,7 +60,7 @@
             $('#hora_programada').val('');
             $('#div_ocurrencias').html('');
         }else{
-            var url = "{{ route('control_camara_reg.traer_hora_programada') }}";
+            var url = "{{ route('control_camara_reg.traer_hora_programada_lima') }}";
             var csrfToken = $('input[name="_token"]').val();
 
             $.ajax({

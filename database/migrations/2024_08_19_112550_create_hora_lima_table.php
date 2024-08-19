@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('horas', function (Blueprint $table) {
+        Schema::create('hora_lima', function (Blueprint $table) {
             $table->id('id_hora');
             $table->unsignedBigInteger('id_sede');
             $table->time('hora')->nullable();
@@ -23,8 +23,7 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            $table->foreign('id_sede','hora_lima_fk_id_sede')->references('id_sede')->on('sedes');
-            //$table->timestamps();
+            $table->foreign('id_sede','hor_fk_id_sed')->references('id_sede')->on('sedes');
         });
     }
 
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('horas');
+        Schema::dropIfExists('hora_lima');
     }
 };

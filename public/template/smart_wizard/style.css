@@ -272,7 +272,7 @@
     overflow: hidden;
 }
 @media screen and (min-width: 640px) {
-    .sw-theme-arrows > .nav .nav-item:first-child .nav-link {
+    .sw-theme-arrows > .nav .nav-link {
         padding-left: 10px;
         margin-left: 0;
     }
