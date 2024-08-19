@@ -87,6 +87,7 @@ class ControlCamara extends Model
                     us.usuario_nombres, cc.hora_programada, cc.hora_registro, lo.descripcion
                 ORDER BY
                     cc.fecha DESC;";
+                    
         $query = DB::select($sql);
         return $query;
     }

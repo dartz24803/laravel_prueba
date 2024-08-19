@@ -776,9 +776,9 @@ class ControlCamaraController extends Controller
         if (count($list_tienda_sede) > 0) {
             foreach ($list_tienda_sede as $list) {
                 $fecha = date('Y-m-d');
-                if (date('a', strtotime($ultimo->hora)) == 'am' || date('a', strtotime($ultimo->hora)) == 'AM') {
+                /*if (date('a', strtotime($ultimo->hora)) == 'am' || date('a', strtotime($ultimo->hora)) == 'AM') {
                     $fecha = date('Y-m-d', strtotime(date('Y-m-d') . ' -1 day'));
-                }
+                }*/
 
                 $id_ocurrencia = $request->input('id_ocurrencia_' . $list->id_tienda);
                 if (empty($id_ocurrencia) || in_array("0", $id_ocurrencia)) {
