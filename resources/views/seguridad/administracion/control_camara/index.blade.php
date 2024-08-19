@@ -12,7 +12,7 @@
                                     <a id="a_sed" class="nav-link" onclick="Sede();" style="cursor: pointer;">Sede</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a id="a_hpro" class="nav-link" onclick="Hora_Programada();" style="cursor: pointer;">Hora Programada</a>
+                                    <a id="a_hpro" class="nav-link" onclick="Hora_Programada();" style="cursor: pointer;">Hora Programada Bases</a>
                                 </li>
                                 <li class="nav-item">
                                     <a id="a_loc" class="nav-link" onclick="Local();" style="cursor: pointer;">Local</a>
@@ -25,6 +25,9 @@
                                 </li>
                                 <li class="nav-item">
                                     <a id="a_ocu" class="nav-link" onclick="Ocurrencia();" style="cursor: pointer;">Ocurrencia</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a id="a_hproli" class="nav-link" onclick="Hora_Programada_Lima();" style="cursor: pointer;">Hora Programada Lima</a>
                                 </li>
                             </ul>
 
@@ -49,7 +52,7 @@
 
             Sede();
         });
-        
+
         function Sede(){
             Cargando();
 
@@ -59,13 +62,14 @@
                 url: url,
                 type: "GET",
                 success:function (resp) {
-                    $('#div_control_camara_conf').html(resp);  
+                    $('#div_control_camara_conf').html(resp);
                     $("#a_sed").addClass('active');
                     $("#a_hpro").removeClass('active');
                     $("#a_loc").removeClass('active');
                     $("#a_ron").removeClass('active');
                     $("#a_tie").removeClass('active');
                     $("#a_ocu").removeClass('active');
+                    $("#a_hproli").removeClass('active');
                 }
             });
         }
@@ -79,13 +83,14 @@
                 url: url,
                 type: "GET",
                 success:function (resp) {
-                    $('#div_control_camara_conf').html(resp);  
+                    $('#div_control_camara_conf').html(resp);
                     $("#a_sed").removeClass('active');
                     $("#a_hpro").addClass('active');
                     $("#a_loc").removeClass('active');
                     $("#a_ron").removeClass('active');
                     $("#a_tie").removeClass('active');
                     $("#a_ocu").removeClass('active');
+                    $("#a_hproli").removeClass('active');
                 }
             });
         }
@@ -99,13 +104,14 @@
                 url: url,
                 type: "GET",
                 success:function (resp) {
-                    $('#div_control_camara_conf').html(resp);  
+                    $('#div_control_camara_conf').html(resp);
                     $("#a_sed").removeClass('active');
                     $("#a_hpro").removeClass('active');
                     $("#a_loc").addClass('active');
                     $("#a_ron").removeClass('active');
                     $("#a_tie").removeClass('active');
                     $("#a_ocu").removeClass('active');
+                    $("#a_hproli").removeClass('active');
                 }
             });
         }
@@ -119,13 +125,14 @@
                 url: url,
                 type: "GET",
                 success:function (resp) {
-                    $('#div_control_camara_conf').html(resp);  
+                    $('#div_control_camara_conf').html(resp);
                     $("#a_sed").removeClass('active');
                     $("#a_hpro").removeClass('active');
                     $("#a_loc").removeClass('active');
                     $("#a_ron").addClass('active');
                     $("#a_tie").removeClass('active');
                     $("#a_ocu").removeClass('active');
+                    $("#a_hproli").removeClass('active');
                 }
             });
         }
@@ -139,13 +146,14 @@
                 url: url,
                 type: "GET",
                 success:function (resp) {
-                    $('#div_control_camara_conf').html(resp);  
+                    $('#div_control_camara_conf').html(resp);
                     $("#a_sed").removeClass('active');
                     $("#a_hpro").removeClass('active');
                     $("#a_loc").removeClass('active');
                     $("#a_ron").removeClass('active');
                     $("#a_tie").addClass('active');
                     $("#a_ocu").removeClass('active');
+                    $("#a_hproli").removeClass('active');
                 }
             });
         }
@@ -159,13 +167,35 @@
                 url: url,
                 type: "GET",
                 success:function (resp) {
-                    $('#div_control_camara_conf').html(resp);  
+                    $('#div_control_camara_conf').html(resp);
                     $("#a_sed").removeClass('active');
                     $("#a_hpro").removeClass('active');
                     $("#a_loc").removeClass('active');
                     $("#a_ron").removeClass('active');
                     $("#a_tie").removeClass('active');
                     $("#a_ocu").addClass('active');
+                    $("#a_hproli").removeClass('active');
+                }
+            });
+        }
+
+        function Hora_Programada_Lima(){
+            Cargando();
+
+            var url="{{ route('control_camara_conf_ho_li') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_control_camara_conf').html(resp);
+                    $("#a_sed").removeClass('active');
+                    $("#a_hproli").addClass('active');
+                    $("#a_loc").removeClass('active');
+                    $("#a_ron").removeClass('active');
+                    $("#a_tie").removeClass('active');
+                    $("#a_ocu").removeClass('active');
+                    $("#a_hpro").removeClass('active');
                 }
             });
         }

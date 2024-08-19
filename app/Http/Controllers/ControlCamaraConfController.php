@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ControlCamaraRonda;
 use App\Models\Horas;
+use App\Models\HorasLima;
 use App\Models\Local;
 use App\Models\OcurrenciasCamaras;
 use App\Models\Sedes;
@@ -97,7 +98,7 @@ class ControlCamaraConfController extends Controller
             'user_eli' => session('usuario')->id_usuario
         ]);
     }
-    
+
     public function index_ho()
     {
         return view('seguridad.administracion.control_camara.hora_programada.index');
@@ -416,8 +417,8 @@ class ControlCamaraConfController extends Controller
         $list_local = Local::select('id_local','descripcion')->where('estado',1)->orderBy('descripcion','ASC')
                             ->get();
         $list_ronda = ControlCamaraRonda::select('id','descripcion')->where('estado',1)
-                            ->orderBy('descripcion','ASC')->get(); 
-        $list_tienda_ronda = TiendasRonda::select('id_ronda')->where('id_tienda',$id)->get()->toArray();                                                       
+                            ->orderBy('descripcion','ASC')->get();
+        $list_tienda_ronda = TiendasRonda::select('id_ronda')->where('id_tienda',$id)->get()->toArray();
         return view('seguridad.administracion.control_camara.tienda.modal_editar', compact('get_id','list_sede','list_local','list_ronda','list_tienda_ronda'));
     }
 
@@ -549,6 +550,93 @@ class ControlCamaraConfController extends Controller
     public function destroy_oc($id)
     {
         OcurrenciasCamaras::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function index_ho_li(){
+        return view('seguridad.administracion.control_camara.hora_programada_lima.index');
+    }
+
+    public function list_ho_li(){
+        $list_hora_programada = HorasLima::select('hora_lima.id_hora','sedes.nombre_sede','hora_lima.hora','hora_lima.orden')
+                            ->join('sedes','sedes.id_sede','=','hora_lima.id_sede')
+                            ->where('hora_lima.estado', 1)->get();
+        return view('seguridad.administracion.control_camara.hora_programada_lima.lista', compact('list_hora_programada'));
+    }
+
+    public function create_ho_li(){
+        $list_sede = Sedes::select('id_sede','nombre_sede')->where('estado',1)->orderBy('nombre_sede','ASC')
+                            ->get();
+        return view('seguridad.administracion.control_camara.hora_programada_lima.modal_registrar', compact(['list_sede']));
+    }
+
+    public function store_ho_li(Request $request){
+        $request->validate([
+            'id_sede' => 'gt:0',
+            'hora' => 'required',
+            'orden' => 'required',
+        ],[
+            'id_sede.gt' => 'Debe seleccionar sede.',
+            'hora.required' => 'Debe ingresar hora.',
+            'orden.required' => 'Debe ingresar orden.',
+        ]);
+
+        $valida = HorasLima::where('id_sede', $request->id_sede)->where('orden', $request->orden)->where('estado', 1)
+                        ->exists();
+        if($valida){
+            echo "error";
+        }else{
+            HorasLima::create([
+                'id_sede' => $request->id_sede,
+                'hora' => $request->hora,
+                'orden' => $request->orden,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_ho_li($id){
+        $get_id = HorasLima::findOrFail($id);
+        $list_sede = Sedes::select('id_sede','nombre_sede')->where('estado',1)->orderBy('nombre_sede','ASC')
+                            ->get();
+        return view('seguridad.administracion.control_camara.hora_programada_lima.modal_editar', compact('get_id','list_sede'));
+    }
+
+    public function update_ho_li(Request $request, $id){
+        $request->validate([
+            'id_sedee' => 'gt:0',
+            'horae' => 'required',
+            'ordene' => 'required',
+        ],[
+            'id_sedee.gt' => 'Debe seleccionar sede.',
+            'horae.required' => 'Debe ingresar hora.',
+            'ordene.required' => 'Debe ingresar orden.',
+        ]);
+
+        $valida = HorasLima::where('id_sede', $request->id_sedee)->where('orden', $request->ordene)
+                        ->where('estado', 1)->where('id_hora', '!=', $id)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            HorasLima::findOrFail($id)->update([
+                'id_sede' => $request->id_sedee,
+                'hora' => $request->horae,
+                'orden' => $request->ordene,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_ho_li($id){
+        HorasLima::findOrFail($id)->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario

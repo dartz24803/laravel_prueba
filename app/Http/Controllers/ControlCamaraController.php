@@ -9,6 +9,7 @@ use App\Models\ControlCamaraArchivoTemporal;
 use App\Models\ControlCamaraRonda;
 use App\Models\DetalleOcurrenciasCamaras;
 use App\Models\Horas;
+use App\Models\HorasLima;
 use App\Models\Local;
 use App\Models\OcurrenciasCamaras;
 use App\Models\Sedes;
@@ -95,9 +96,13 @@ class ControlCamaraController extends Controller
 
     public function traer_hora_programada_reg(Request $request)
     {
+        $list_tienda_base = Tiendas::select('tiendas.id_tienda')
+            ->where('tiendas.id_sede', $request->id_sede)->where('tiendas.ronda', NULL)
+            ->where('tiendas.estado', 1)->orderBy('tiendas.id_tienda', 'ASC')
+            ->get();
         $cantidad = ControlCamara::select('id_sede', 'fecha', 'hora_programada')->where('id_sede', $request->id_sede)
             ->where('fecha', date('Y-m-d'))
-            ->where('completado', 1)
+            ->where('id_tienda', $list_tienda_base[0]['id_tienda'])
             ->where('estado', 1)->groupBy('id_sede', 'fecha', 'hora_programada')->get();
 
         $cantidad_hora = Horas::where('id_sede', $request->id_sede)->count();
@@ -105,6 +110,28 @@ class ControlCamaraController extends Controller
             echo "error";
         } else {
             $ultimo = Horas::select('hora')->where('id_sede', $request->id_sede)->where('orden', (count($cantidad) + 1))
+                ->where('estado', 1)->first();
+            echo $ultimo->hora;
+        }
+    }
+
+    public function traer_hora_programada_lima_reg(Request $request)
+    {
+        $list_tienda_sede = Tiendas::select('tiendas.id_tienda')
+            ->where('tiendas.id_sede', $request->id_sede)->where('tiendas.ronda', 1)
+            ->where('tiendas.estado', 1)->orderBy('tiendas.id_tienda', 'ASC')
+            ->get();
+
+        $cantidad = ControlCamara::select('id_sede', 'fecha', 'hora_programada')->where('id_sede', $request->id_sede)
+            ->where('fecha', date('Y-m-d'))
+            ->where('id_tienda', $list_tienda_sede[0]['id_tienda'])
+            ->where('estado', 1)->groupBy('id_sede', 'fecha', 'hora_programada')->get();
+
+        $cantidad_hora = HorasLima::where('id_sede', $request->id_sede)->count();
+        if (count($cantidad) >= $cantidad_hora) {
+            echo "error";
+        } else {
+            $ultimo = HorasLima::select('hora')->where('id_sede', $request->id_sede)->where('orden', (count($cantidad) + 1))
                 ->where('estado', 1)->first();
             echo $ultimo->hora;
         }
@@ -388,10 +415,16 @@ class ControlCamaraController extends Controller
 
     public function store_reg(Request $request)
     {
+        $list_tienda_base = Tiendas::select('tiendas.id_tienda')
+            ->where('tiendas.id_sede', $request->id_sede)->where('tiendas.ronda', NULL)
+            ->where('tiendas.estado', 1)->orderBy('tiendas.id_tienda', 'ASC')
+            ->get();
+
         $cantidad = ControlCamara::select('id_sede', 'fecha', 'hora_programada')->where('id_sede', $request->id_sede)
             ->where('fecha', date('Y-m-d'))
-            ->where('completado', 1)
+            ->where('id_tienda', $list_tienda_base[0]['id_tienda'])
             ->where('estado', 1)->groupBy('id_sede', 'fecha', 'hora_programada')->get();
+
         $ultimo = Horas::select('hora')->where('id_sede', $request->id_sede)->where('orden', (count($cantidad) + 1))
             ->where('estado', 1)->first();
 
@@ -435,7 +468,7 @@ class ControlCamaraController extends Controller
                         'id_ocurrencia' => $ocurrencia,
                     ]);
                 }
-                
+
                 $list_temporal = ControlCamaraArchivoTemporal::select('id', 'archivo')
                     ->where('id_usuario', session('usuario')->id_usuario)
                     ->where('id_tienda', $list->id_tienda)->get();
@@ -643,7 +676,7 @@ class ControlCamaraController extends Controller
             ->where('fecha', date('Y-m-d'))
             ->where('estado', 1)->groupBy('id_sede', 'fecha', 'hora_programada')->get();
 
-        $ultimo = Horas::select('hora')->where('id_sede', $request->id_sede)->where('orden', (count($cantidad) + 1))
+        $ultimo = HorasLima::select('hora')->where('id_sede', $request->id_sede)->where('orden', (count($cantidad) + 1))
             ->where('estado', 1)->first();
         //Registro temporal
         $list_tienda_sede = Tiendas::select('tiendas.id_tienda', 'local.descripcion')
