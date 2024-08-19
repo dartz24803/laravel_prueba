@@ -24,6 +24,7 @@ use App\Http\Controllers\SliderRRHH;
 use App\Http\Controllers\Cumpleanios;
 use App\Http\Controllers\InicioAdmController;
 use App\Http\Controllers\InicioFrasesAdmController;
+use App\Http\Controllers\LecturaServicioConfController;
 use App\Http\Controllers\PrecioSugeridoConfController;
 
 Route::middleware([NoCache::class])->group(function () {
@@ -382,7 +383,34 @@ Route::controller(ControlCamaraController::class)->group(function(){
     Route::post('control_camara_img/list', 'list_img')->name('control_camara_img.list');
     Route::get('control_camara_img/{id}/show', 'show_img')->name('control_camara_img.show');
 });
-//CONTROL INTER - PRECIO SUGERIDO CONFIGURABLE
+//SEGURIDAD - LECTURA SERVICIO CONFIGURABLE
+Route::controller(LecturaServicioConfController::class)->group(function(){
+    Route::get('lectura_servicio_conf', 'index')->name('lectura_servicio_conf');
+    Route::get('lectura_servicio_conf_se', 'index_se')->name('lectura_servicio_conf_se');
+    Route::get('lectura_servicio_conf_se/list', 'list_se')->name('lectura_servicio_conf_se.list');
+    Route::get('lectura_servicio_conf_se/create', 'create_se')->name('lectura_servicio_conf_se.create');
+    Route::post('lectura_servicio_conf_se', 'store_se')->name('lectura_servicio_conf_se.store');
+    Route::get('lectura_servicio_conf_se/{id}/edit', 'edit_se')->name('lectura_servicio_conf_se.edit');
+    Route::put('lectura_servicio_conf_se/{id}', 'update_se')->name('lectura_servicio_conf_se.update');
+    Route::delete('lectura_servicio_conf_se/{id}', 'destroy_se')->name('lectura_servicio_conf_se.destroy');
+    Route::get('lectura_servicio_conf_pr', 'index_pr')->name('lectura_servicio_conf_pr');
+    Route::get('lectura_servicio_conf_pr/list', 'list_pr')->name('lectura_servicio_conf_pr.list');
+    Route::get('lectura_servicio_conf_pr/create', 'create_pr')->name('lectura_servicio_conf_pr.create');
+    Route::post('lectura_servicio_conf_pr', 'store_pr')->name('lectura_servicio_conf_pr.store');
+    Route::get('lectura_servicio_conf_pr/{id}/edit', 'edit_pr')->name('lectura_servicio_conf_pr.edit');
+    Route::put('lectura_servicio_conf_pr/{id}', 'update_pr')->name('lectura_servicio_conf_pr.update');
+    Route::delete('lectura_servicio_conf_pr/{id}', 'destroy_pr')->name('lectura_servicio_conf_pr.destroy');
+    Route::get('lectura_servicio_conf_da', 'index_da')->name('lectura_servicio_conf_da');
+    Route::get('lectura_servicio_conf_da/list', 'list_da')->name('lectura_servicio_conf_da.list');
+    Route::get('lectura_servicio_conf_da/create', 'create_da')->name('lectura_servicio_conf_da.create');
+    Route::post('lectura_servicio_conf_da/traer_servicio_da', 'traer_servicio_da')->name('lectura_servicio_conf_da.traer_servicio');
+    Route::post('lectura_servicio_conf_da/traer_proveedor_servicio_da', 'traer_proveedor_servicio_da')->name('lectura_servicio_conf_da.traer_proveedor_servicio');
+    Route::post('lectura_servicio_conf_da', 'store_da')->name('lectura_servicio_conf_da.store');
+    Route::get('lectura_servicio_conf_da/{id}/edit', 'edit_da')->name('lectura_servicio_conf_da.edit');
+    Route::put('lectura_servicio_conf_da/{id}', 'update_da')->name('lectura_servicio_conf_da.update');
+    Route::delete('lectura_servicio_conf_da/{id}', 'destroy_da')->name('lectura_servicio_conf_da.destroy');
+});
+//CONTROL INTERNO - PRECIO SUGERIDO CONFIGURABLE
 Route::controller(PrecioSugeridoConfController::class)->group(function(){
     Route::get('precio_sugerido_conf', 'index')->name('precio_sugerido_conf');
     Route::get('precio_sugerido_conf_un', 'index_un')->name('precio_sugerido_conf_un');

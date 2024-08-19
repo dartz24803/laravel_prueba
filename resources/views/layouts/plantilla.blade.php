@@ -625,35 +625,40 @@
                             </ul>
                         </li>
 
-                        <li class="menu" id="conf_seguridades">
-                            <a href="#rconf_seguridades" id="hconf_seguridades" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                                <div class="">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
-                                        <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                                        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-                                        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-                                    </svg>
-                                    <span>Seguridad</span>
-                                </div>
-                                <div>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
-                                        <polyline points="9 18 15 12 9 6"></polyline>
-                                    </svg>
-                                </div>
-                            </a>
-                            <ul class="collapse submenu list-unstyled" id="rconf_seguridades" data-parent="#accordionExample">
-                                <li id="conf_aperturas_cierres">
-                                    <a href="{{ route('apertura_cierre_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                                        <p class="romperpalabra"><span id="icono_active2"></span> Apertura y cierre</p>
-                                    </a>
-                                </li>
-                                <li id="conf_controles_camaras">
-                                    <a href="{{ route('control_camara_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                                        <p class="romperpalabra"><span id="icono_active2"></span> Control de cámaras</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                    <li class="menu" id="conf_seguridades">
+                        <a href="#rconf_seguridades" id="hconf_seguridades" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                            <div class="">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
+                                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                                </svg>
+                                <span>Seguridad</span>
+                            </div>
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </div>
+                        </a>
+                        <ul class="collapse submenu list-unstyled" id="rconf_seguridades" data-parent="#accordionExample">
+                            <li id="conf_aperturas_cierres">
+                                <a href="{{ route('apertura_cierre_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Apertura y cierre</p>
+                                </a>
+                            </li>
+                            <li id="conf_controles_camaras">
+                                <a href="{{ route('control_camara_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Control de cámaras</p>
+                                </a>
+                            </li>
+                            <!--<li id="conf_lecturas_servicios">
+                                <a href="{{ route('lectura_servicio_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Lectura Servicio</p>
+                                </a>
+                            </li>-->
+                        </ul>
+                    </li>
 
                         <?php if (
                             session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 102 || session('usuario')->id_puesto == 80 ||
@@ -732,7 +737,7 @@
         //BOTON FLOTANTE SOPORTE
         (function () {
             var options = {
-                whatsapp: "+51 956 897 977", // WhatsApp number
+                whatsapp: "+51 967 778 561", // WhatsApp number
                 email: "sistemaslanumerouno@gmail.com", // Email
                 call_to_action: "Soporte", // Call to action
                 button_color: "#00b1f4", // Color of button
