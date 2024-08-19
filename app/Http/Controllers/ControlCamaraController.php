@@ -678,8 +678,9 @@ class ControlCamaraController extends Controller
 
         $ultimo = HorasLima::select('hora')->where('id_sede', $request->id_sede)->where('orden', (count($cantidad) + 1))
             ->where('estado', 1)->first();
+        
         //Registro temporal
-        $list_tienda_sede = Tiendas::select('tiendas.id_tienda', 'local.descripcion')
+        $list_tienda_sede = Tiendas::select('tiendas.id_tienda', 'local.descripcion','tiendas.id_local')
             ->join('local', 'local.id_local', '=', 'tiendas.id_local')
             ->where('tiendas.id_sede', $request->id_sede)->where('tiendas.ronda', 1)
             ->where('tiendas.estado', 1)->orderBy('tiendas.id_tienda', 'ASC')
@@ -792,7 +793,7 @@ class ControlCamaraController extends Controller
                     'fecha' => $fecha,
                     'hora_programada' => $ultimo->hora,
                     'hora_registro' => now(),
-                    'id_tienda' => $id_tienda,
+                    'id_tienda' => $list->id_local,
                     'id_ocurrencia' => 12,
                     'completado' => 0,
                     'estado' => 1,

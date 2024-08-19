@@ -7,17 +7,11 @@
         @foreach ($list_tienda_sede as $list)
             <div class="col-lg-12 row justify-content-center">
                 <div class="form-group col-lg-10 d-flex justify-content-center">
-                    <h5 class="modal-title text-bold">{{ $list->descripcion }}</h5>
+                    <h5 class="modal-title text-bold">{{ $list->descripcion }} - RONDAS</h5>
                 </div>
             </div>
         @endforeach
     @endif
-
-    <div class="row col-lg-12 ml-1">
-        <div class="form-group">
-            <h5 class="modal-title">MONITOREO</h5>
-        </div>
-    </div>
 
     <div class="row p-2 col-lg-12 ml-1">
         <textarea id="paste_arear" class="textarea_paste" placeholder="Haz click aquí para pegar la imagen" style="width: 100%" rows="1" disabled></textarea>
@@ -29,11 +23,6 @@
         </div>
     </div>
     @if (count($list_ronda)>0)
-    <div class="row mt-3 ml-1">
-        <div class="form-group col-lg-12">
-            <h5 class="modal-title">RONDA</h5>
-        </div>
-    </div>
     <br>
     @foreach ($list_ronda as $list)
         <div class="row col-lg-12">

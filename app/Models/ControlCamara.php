@@ -43,7 +43,7 @@ class ControlCamara extends Model
         if($dato['id_local']!="0"){
             $parte_local = "cc.id_tienda=".$dato['id_local']." AND";
         }
-        $sql = "SELECT cc.id,
+        $sql = "SELECT cc.id, cc.fec_reg,
                     cc.fecha AS orden,
                     se.nombre_sede,
                     DATE_FORMAT(cc.fecha,'%d-%m-%Y') AS fecha,
@@ -84,9 +84,10 @@ class ControlCamara extends Model
                     $parte_sede
                     cc.estado = 1
                 GROUP BY cc.id, cc.fecha, se.nombre_sede, us.usuario_apater,
-                    us.usuario_nombres, cc.hora_programada, cc.hora_registro, lo.descripcion
+                    us.usuario_nombres, cc.hora_programada, cc.hora_registro, lo.descripcion, cc.fec_reg
                 ORDER BY
-                    cc.fecha DESC;";
+                    cc.id DESC;";
+
         $query = DB::select($sql);
         return $query;
     }

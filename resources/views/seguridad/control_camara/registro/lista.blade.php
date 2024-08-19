@@ -1,8 +1,9 @@
 <table id="tabla_js" class="table table-hover" style="width:100%">
     <thead class="text-center">
         <tr>
+            <th>ID</th>
             <th>Sede</th>
-            <th>Fecha</th>
+            <th>Fecha Reporte</th>
             <th>Colaborador</th>
             <th>Hora Programada</th>
             <th>Hora de Registro</th>
@@ -10,12 +11,14 @@
             <th>Observación</th>
             <th>Tienda</th>
             <th>Ocurrencia</th>
+            <th>Fecha Registro</th>
             <th class="no-content"></th>
         </tr>
     </thead>
     <tbody>
         @foreach ($list_control_camara as $list)
             <tr class="text-center">
+                <td>{{ $list->id }}</td>
                 <td class="text-left">{{ $list->nombre_sede }}</td>
                 <td>{{ $list->fecha }}</td>
                 <td class="text-left">{{ $list->colaborador }}</td>
@@ -25,9 +28,10 @@
                 <td>{{ $list->observacion }}</td>
                 <td class="text-left">{{ $list->tienda }}</td>
                 <td class="text-left">{{ $list->ocurrencia }}</td>
+                <td>{{ $list->fec_reg }}</td>
                 <td>
                     @if ($list->archivos>0)
-                        <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
+                        <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate"
                         app_elim="{{ route('control_camara_reg.archivo', $list->id) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye text-success">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -42,7 +46,10 @@
 </table>
 
 <script>
-    $('#tabla_js').DataTable({
+    tabla = $('#tabla_js').DataTable({
+        "order": [
+            [0, "desc"]
+        ],
         "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
         "<'table-responsive'tr>" +
         "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
@@ -57,6 +64,16 @@
         },
         "stripeClasses": [],
         "lengthMenu": [10, 20, 50],
-        "pageLength": 10
+        "pageLength": 10,
+        // Ordenar por la primera columna de forma descendente
+        "columnDefs": [{
+            "targets": 0, // La primera columna
+            "visible": false, // Ocultar la primera columna
+            "searchable": false // No permitir buscar en la primera columna
+        }],
+    });
+    $('#toggle').change(function() {
+        var visible = this.checked;
+        tabla.column(10).visible(visible);
     });
 </script>
