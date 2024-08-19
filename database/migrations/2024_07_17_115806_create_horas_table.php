@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            $table->foreign('id_sede','hor_fk_id_sed')->references('id_sede')->on('sedes');
+            $table->foreign('id_sede','hora_lima_fk_id_sed')->references('id_sede')->on('sedes');
             //$table->timestamps();
         });
     }
