@@ -86,7 +86,7 @@ class ControlCamara extends Model
                 GROUP BY cc.id, cc.fecha, se.nombre_sede, us.usuario_apater,
                     us.usuario_nombres, cc.hora_programada, cc.hora_registro, lo.descripcion
                 ORDER BY
-                    cc.fecha ASC;";
+                    cc.fecha DESC;";
         $query = DB::select($sql);
         return $query;
     }
