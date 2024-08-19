@@ -1544,7 +1544,11 @@ class TrackingController extends Controller
     public function cuadre_diferencia($id)
     {
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        $list_diferencia = DB::connection('sqlsrv')->select('EXEC usp_web_ver_dif_bultos_x_req ?', [$get_id->n_requerimiento]);
+        try {
+            $list_diferencia = DB::connection('sqlsrv')->select('EXEC usp_web_ver_dif_bultos_x_req ?', [$get_id->n_requerimiento]);
+        } catch (\Throwable $th) {
+            $list_diferencia = [];
+        }
         return view('logistica.tracking.cuadre_diferencia', compact('get_id','list_diferencia'));
     }
 
@@ -1565,7 +1569,11 @@ class TrackingController extends Controller
         }
 
         //MENSAJE 5
-        $list_diferencia = DB::connection('sqlsrv')->select('EXEC usp_web_ver_dif_bultos_x_req ?', [$get_id->n_requerimiento]);
+        try {
+            $list_diferencia = DB::connection('sqlsrv')->select('EXEC usp_web_ver_dif_bultos_x_req ?', [$get_id->n_requerimiento]);
+        } catch (\Throwable $th) {
+            $list_diferencia = [];
+        }
 
         $mail = new PHPMailer(true);
 
