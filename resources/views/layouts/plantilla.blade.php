@@ -475,6 +475,11 @@
                                         <p class="romperpalabra"><span id="icono_active2"></span> Apertura y cierre</p>
                                     </a>
                                 </li>
+                                <!--<li>
+                                    <a id="asistencias_segs" href="{{ route('asistencia_seg') }}">
+                                        <p class="romperpalabra"><span id="icono_active2"></span> Asistencia</p>
+                                    </a>
+                                </li>-->
                                 <li>
                                     <a id="controles_camaras" href="{{ route('control_camara') }}">
                                         <p class="romperpalabra"><span id="icono_active2"></span> Control de cámaras</p>
