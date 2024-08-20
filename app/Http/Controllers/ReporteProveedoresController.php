@@ -69,7 +69,7 @@ class ReporteProveedoresController extends Controller{
         /*
         $dato['list_noti'] = $this->Model_Corporacion->get_list_notificacion();
         $dato['list_nav_evaluaciones'] = $this->Model_Corporacion->get_list_nav_evaluaciones();*/
-        return view('seguridad.Reporte_Proveedores.index',$dato);
+        return view('seguridad.reporte_proveedores.index',$dato);
     }
 
     public function Actualizar_Hora_RProveedor(Request $request){
