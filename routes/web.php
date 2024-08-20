@@ -432,13 +432,17 @@ Route::controller(LecturaServicioController::class)->group(function(){
     Route::get('lectura_servicio_reg/{id}/{tipo}/download', 'download_reg')->name('lectura_servicio_reg.download');
     Route::put('lectura_servicio_reg/{id}/{tipo}', 'update_reg')->name('lectura_servicio_reg.update');
     Route::get('lectura_servicio_reg/{id_servicio}/{mes}/{anio}/excel', 'excel_reg')->name('lectura_servicio_reg.excel');
-
-    Route::post('lectura_servicio_reg/registrar_ronda', 'registrar_ronda')->name('lectura_servicio_reg.registrar_ronda');
-    Route::get('lectura_servicio_reg/{id}/archivo', 'archivo_reg')->name('lectura_servicio_reg.archivo');
-    Route::get('lectura_servicio_img', 'index_img')->name('lectura_servicio_img');
-    Route::post('lectura_servicio_img/list', 'list_img')->name('lectura_servicio_img.list');
-    Route::get('lectura_servicio_img/{id}/show', 'show_img')->name('lectura_servicio_img.show');
     Route::get('lectura_servicio_ges', 'index_ges')->name('lectura_servicio_ges');
+    Route::post('lectura_servicio_ges/list', 'list_ges')->name('lectura_servicio_ges.list');
+    Route::get('lectura_servicio_ges/create', 'create_ges')->name('lectura_servicio_ges.create');
+    Route::post('lectura_servicio_ges/traer_suministro', 'traer_suministro_ges')->name('lectura_servicio_ges.traer_suministro');
+    Route::post('lectura_servicio_ges/traer_lectura', 'traer_lectura_ges')->name('lectura_servicio_ges.traer_lectura');
+    Route::post('lectura_servicio_ges', 'store_ges')->name('lectura_servicio_ges.store');
+    Route::get('lectura_servicio_ges/{id}/{tipo}/edit', 'edit_ges')->name('lectura_servicio_ges.edit');
+    Route::get('lectura_servicio_ges/{id}/{tipo}/download', 'download_reg')->name('lectura_servicio_ges.download');
+    Route::put('lectura_servicio_ges/{id}/{tipo}', 'update_reg')->name('lectura_servicio_ges.update');
+    Route::delete('lectura_servicio_ges/{id}', 'destroy_ges')->name('lectura_servicio_ges.destroy');
+    Route::get('lectura_servicio_ges/{id_servicio}/{cod_base}/{mes}/{anio}/excel', 'excel_ges')->name('lectura_servicio_ges.excel');
 });
 //CONTROL INTERNO - PRECIO SUGERIDO CONFIGURABLE
 Route::controller(PrecioSugeridoConfController::class)->group(function(){
