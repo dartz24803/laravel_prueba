@@ -61,8 +61,8 @@ class ControlCamara extends Model
                         ELSE ''
                     END AS diferencia,
                     CASE
-                        WHEN lo.id_local IN (16, 17) AND TIMESTAMPDIFF(MINUTE, cc.hora_programada, cc.hora_registro) > 10 THEN 'Atrasado'
-                        WHEN lo.id_local = 18 AND TIMESTAMPDIFF(MINUTE, cc.hora_registro, cc.hora_programada) > 10 THEN 'Atrasado'
+                        WHEN lo.id_local IN (16, 17) AND TIMESTAMPDIFF(MINUTE, cc.hora_registro, cc.hora_programada) < 0 THEN 'Atrasado'
+                        WHEN lo.id_local = 18 AND TIMESTAMPDIFF(MINUTE, cc.hora_programada, cc.hora_registro) > 10 THEN 'Atrasado'
                         ELSE 'OK'
                     END AS observacion,
                     lo.descripcion AS tienda,

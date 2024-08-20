@@ -15,6 +15,7 @@ use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\AmonestacionController;
 use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
+use App\Http\Controllers\AsistenciaSegController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
 use App\Http\Controllers\ComunicadoController;
@@ -27,6 +28,7 @@ use App\Http\Controllers\InicioFrasesAdmController;
 use App\Http\Controllers\LecturaServicioConfController;
 use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
+use App\Http\Controllers\IntencionRenunciaConfController;
 use App\Http\Controllers\OcurrenciaServicioConfController;
 use App\Http\Controllers\OcurrenciaServicioController;
 
@@ -530,6 +532,20 @@ Route::controller(PrecioSugeridoConfController::class)->group(function(){
     Route::put('precio_sugerido_conf_tr/{id}', 'update_tr')->name('precio_sugerido_conf_tr.update');
     Route::delete('precio_sugerido_conf_tr/{id}', 'destroy_tr')->name('precio_sugerido_conf_tr.destroy');
 });
+//SEGURIDAD - ASISTENCIA
+Route::controller(AsistenciaSegController::class)->group(function(){
+    Route::get('asistencia_seg', 'index')->name('asistencia_seg');
+    Route::get('asistencia_seg_lec', 'index_lec')->name('asistencia_seg_lec');
+    Route::post('asistencia_seg_lec/list', 'list_lec')->name('asistencia_seg_lec.list');
+    Route::post('asistencia_seg_lec', 'store_lec')->name('asistencia_seg_lec.store');
+    Route::get('asistencia_seg_lec/{id}/{tipo}/edit', 'edit_lec')->name('asistencia_seg_lec.edit');
+    Route::put('asistencia_seg_lec/{id}/{tipo}', 'update_lec')->name('asistencia_seg_lec.update');
+    Route::get('asistencia_seg_lec/{id}/image', 'image_lec')->name('asistencia_seg_lec.image');
+    Route::get('asistencia_seg_lec/{id}/download', 'download_lec')->name('asistencia_seg_lec.download');
+    Route::put('asistencia_seg_lec/{id}', 'update_image_lec')->name('asistencia_seg_lec.update_image');
+    Route::delete('asistencia_seg_lec/{id}', 'destroy_lec')->name('asistencia_seg_lec.destroy');
+    Route::get('asistencia_seg_lec/excel', 'excel_lec')->name('asistencia_seg_lec.excel');
+});
 
 
 
@@ -663,6 +679,17 @@ Route::controller(InicioAdmController::class)->group(function(){
 //FRASES INICIO
 Route::controller(InicioFrasesAdmController::class)->group(function(){
     Route::get('Inicio/index_frases', 'index');
+    Route::post('Inicio/Frases_Inicio_Listar', 'Frases_Inicio_Listar');
+    Route::get('Inicio/Modal_Update_Frases_Inicio/{id}', 'Modal_Update_Frases_Inicio');
+    Route::post('Inicio/Update_Frase_Inicio', 'Update_Frase_Inicio');
+    Route::get('Inicio/Modal_Registrar_Frases_Inicio', 'Modal_Registrar_Frases_Inicio');
+    Route::post('Inicio/Registrar_Frase_Inicio', 'Registrar_Frase_Inicio');
+    Route::post('Inicio/Delete_Frase', 'Delete_Frase');
+});
+
+//FRASES INICIO
+Route::controller(IntencionRenunciaConfController::class)->group(function(){
+    Route::get('IntencionRenunciaConfController/index', 'index');
     Route::post('Inicio/Frases_Inicio_Listar', 'Frases_Inicio_Listar');
     Route::get('Inicio/Modal_Update_Frases_Inicio/{id}', 'Modal_Update_Frases_Inicio');
     Route::post('Inicio/Update_Frase_Inicio', 'Update_Frase_Inicio');

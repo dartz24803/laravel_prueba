@@ -476,6 +476,11 @@
                                     </a>
                                 </li>
                                 <li>
+                                    <a id="asistencias_segs" href="{{ route('asistencia_seg') }}">
+                                        <p class="romperpalabra"><span id="icono_active2"></span> Asistencia</p>
+                                    </a>
+                                </li>
+                                <li>
                                     <a id="controles_camaras" href="{{ route('control_camara') }}">
                                         <p class="romperpalabra"><span id="icono_active2"></span> Control de cámaras</p>
                                     </a>
@@ -485,6 +490,17 @@
                                         <p class="romperpalabra"><span id="icono_active2"></span> Lectura Servicio</p>
                                     </a>
                                 </li>
+                                
+                            <?php if (
+                                session('usuario')->id_puesto == 23 || session('usuario')->id_puesto == 24 || session('usuario')->id_puesto == 36 ||
+                                session('usuario')->id_puesto == 26 || session('usuario')->id_puesto == 29 || session('usuario')->id_puesto == 161 || 
+                                session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 197 || session('usuario')->id_puesto == 148                            ) { ?>
+                                <li id="locurrencia">
+                                    <a id="hlocurrencia" href="<?= url('Corporacion/Ocurrencia_Tienda') ?>">
+                                        <p class="romperpalabra"><span id="icono_active2"></span> Ocurrencias</p>
+                                    </a>
+                                </li>
+                            <?php } ?>
                                
                             </ul>
                         </li>
@@ -626,6 +642,11 @@
                                 <li id="conf_colaboradores">
                                     <a href="{{ route('colaborador_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                                         <p class="romperpalabra"><span id="icono_active2"></span> Colaboradores</p>
+                                    </a>
+                                </li>
+                                <li id="conf_intencion_renuncia">
+                                    <a href="{{ url('IntencionRenunciaConfController/index') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                                        <p class="romperpalabra"><span id="icono_active2"></span> Intención de renuncia</p>
                                     </a>
                                 </li>
                             </ul>
