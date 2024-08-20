@@ -15,7 +15,7 @@
         "laravel/tinker": "^2.8",
         "mpdf/mpdf": "^8.2",
         "phpmailer/phpmailer": "*",
-        "phpoffice/phpspreadsheet": "^2.1"
+        "phpoffice/phpspreadsheet": "^2.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
