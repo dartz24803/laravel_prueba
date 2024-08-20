@@ -9,7 +9,7 @@
             <th>Hora de Registro</th>
             <th>Diferencia (min)</th>
             <th>Observación</th>
-            <th>Tienda</th>
+            <th>Local</th>
             <th>Ocurrencia</th>
             <th>Fecha Registro</th>
             <th class="no-content"></th>

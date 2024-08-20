@@ -627,6 +627,11 @@
                                         <p class="romperpalabra"><span id="icono_active2"></span> Colaboradores</p>
                                     </a>
                                 </li>
+                                <li id="conf_intencion_renuncia">
+                                    <a href="{{ url('IntencionRenunciaConfController/index') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                                        <p class="romperpalabra"><span id="icono_active2"></span> Intención de renuncia</p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 

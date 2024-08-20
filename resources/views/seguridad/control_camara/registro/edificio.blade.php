@@ -14,6 +14,7 @@
     @endif
 
     <div class="row p-2 col-lg-12 ml-1">
+        <label class="control-label text-bold">Vistas externas y recepción:</label>
         <textarea id="paste_arear" class="textarea_paste" placeholder="Haz click aquí para pegar la imagen" style="width: 100%" rows="1" disabled></textarea>
         <input type="text" class="form-control" id="archivo_rond_desc_0" name="archivo_ronda_desc_0" placeholder="Observaciones">
         <button onclick="LimpiarImage()">
