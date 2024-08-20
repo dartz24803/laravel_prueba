@@ -475,7 +475,13 @@ Route::controller(AsistenciaSegController::class)->group(function(){
     Route::get('asistencia_seg', 'index')->name('asistencia_seg');
     Route::get('asistencia_seg_lec', 'index_lec')->name('asistencia_seg_lec');
     Route::post('asistencia_seg_lec/list', 'list_lec')->name('asistencia_seg_lec.list');
-    Route::get('asistencia_seg_lec/create', 'create_lec')->name('asistencia_seg_lec.create');
+    Route::post('asistencia_seg_lec', 'store_lec')->name('asistencia_seg_lec.store');
+    Route::get('asistencia_seg_lec/{id}/{tipo}/edit', 'edit_lec')->name('asistencia_seg_lec.edit');
+    Route::put('asistencia_seg_lec/{id}/{tipo}', 'update_lec')->name('asistencia_seg_lec.update');
+    Route::get('asistencia_seg_lec/{id}/image', 'image_lec')->name('asistencia_seg_lec.image');
+    Route::get('asistencia_seg_lec/{id}/download', 'download_lec')->name('asistencia_seg_lec.download');
+    Route::put('asistencia_seg_lec/{id}', 'update_image_lec')->name('asistencia_seg_lec.update_image');
+    Route::delete('asistencia_seg_lec/{id}', 'destroy_lec')->name('asistencia_seg_lec.destroy');
 });
 
 
