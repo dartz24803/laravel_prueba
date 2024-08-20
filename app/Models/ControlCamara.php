@@ -61,7 +61,8 @@ class ControlCamara extends Model
                         ELSE ''
                     END AS diferencia,
                     CASE
-                        WHEN TIMESTAMPDIFF(MINUTE, cc.hora_programada, cc.hora_registro) > 5 THEN 'Atrasado'
+                        WHEN lo.id_local IN (16, 17) AND TIMESTAMPDIFF(MINUTE, cc.hora_programada, cc.hora_registro) > 10 THEN 'Atrasado'
+                        WHEN lo.id_local = 18 AND TIMESTAMPDIFF(MINUTE, cc.hora_registro, cc.hora_programada) > 10 THEN 'Atrasado'
                         ELSE 'OK'
                     END AS observacion,
                     lo.descripcion AS tienda,
@@ -84,7 +85,7 @@ class ControlCamara extends Model
                     $parte_sede
                     cc.estado = 1
                 GROUP BY cc.id, cc.fecha, se.nombre_sede, us.usuario_apater,
-                    us.usuario_nombres, cc.hora_programada, cc.hora_registro, lo.descripcion, cc.fec_reg
+                    us.usuario_nombres, cc.hora_programada, cc.hora_registro, lo.descripcion, cc.fec_reg, lo.id_local
                 ORDER BY
                     cc.id DESC;";
 
