@@ -15,6 +15,7 @@ use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\AmonestacionController;
 use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
+use App\Http\Controllers\AsistenciaSegController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
 use App\Http\Controllers\ComunicadoController;
@@ -468,6 +469,13 @@ Route::controller(PrecioSugeridoConfController::class)->group(function(){
     Route::get('precio_sugerido_conf_tr/{id}/edit', 'edit_tr')->name('precio_sugerido_conf_tr.edit');
     Route::put('precio_sugerido_conf_tr/{id}', 'update_tr')->name('precio_sugerido_conf_tr.update');
     Route::delete('precio_sugerido_conf_tr/{id}', 'destroy_tr')->name('precio_sugerido_conf_tr.destroy');
+});
+//SEGURIDAD - ASISTENCIA
+Route::controller(AsistenciaSegController::class)->group(function(){
+    Route::get('asistencia_seg', 'index')->name('asistencia_seg');
+    Route::get('asistencia_seg_lec', 'index_lec')->name('asistencia_seg_lec');
+    Route::post('asistencia_seg_lec/list', 'list_lec')->name('asistencia_seg_lec.list');
+    Route::get('asistencia_seg_lec/create', 'create_lec')->name('asistencia_seg_lec.create');
 });
 
 
