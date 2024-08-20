@@ -8,6 +8,12 @@ use App\Models\Usuario;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class AsistenciaSegController extends Controller
 {
@@ -223,5 +229,92 @@ class AsistenciaSegController extends Controller
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario
         ]);
+    }
+
+    public function excel_lec()
+    {
+        $list_lectora = SeguridadAsistencia::get_list_lectora();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getStyle("A1:I1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:I1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Asistencia con Lectora');
+
+        $sheet->setAutoFilter('A1:I1');
+
+		$sheet->getColumnDimension('A')->setWidth(18);
+		$sheet->getColumnDimension('B')->setWidth(12);
+        $sheet->getColumnDimension('C')->setWidth(50);
+        $sheet->getColumnDimension('D')->setWidth(18);
+		$sheet->getColumnDimension('E')->setWidth(12);
+		$sheet->getColumnDimension('F')->setWidth(18);
+        $sheet->getColumnDimension('G')->setWidth(18);
+        $sheet->getColumnDimension('H')->setWidth(12);
+        $sheet->getColumnDimension('I')->setWidth(50);
+
+        $sheet->getStyle('A1:I1')->getFont()->setBold(true);  
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:I1")->getFill()
+        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+        ->getStartColor()->setARGB('C8C8C8');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle("A1:I1")->applyFromArray($styleThinBlackBorderOutline);
+
+        $sheet->setCellValue('A1', 'Fecha Ingreso');
+        $sheet->setCellValue('B1', 'Base');
+		$sheet->setCellValue('C1', 'Colaborador');
+        $sheet->setCellValue('D1', 'Hora Ingreso');
+        $sheet->setCellValue('E1', 'Sede');
+        $sheet->setCellValue('F1', 'Fecha Salida');
+        $sheet->setCellValue('G1', 'Hora Salida');
+        $sheet->setCellValue('H1', 'Sede');
+        $sheet->setCellValue('I1', 'Observaciones');           
+
+        $contador=1;
+        
+        foreach($list_lectora as $list){
+            $contador++;
+
+            $sheet->getStyle("A{$contador}:I{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("C{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("I{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:I{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:I{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+
+            $sheet->setCellValue("A{$contador}", Date::PHPToExcel($list->f_ingreso));
+            $sheet->getStyle("A{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+            $sheet->setCellValue("B{$contador}", $list->base);
+            $sheet->setCellValue("C{$contador}", $list->colaborador);
+            $sheet->setCellValue("D{$contador}", $list->h_ingreso);
+            $sheet->setCellValue("E{$contador}", $list->cod_sede);
+            if($list->f_salida!=""){
+                $sheet->setCellValue("F{$contador}", Date::PHPToExcel($list->f_salida));
+                $sheet->getStyle("F{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+            }
+            $sheet->setCellValue("G{$contador}", $list->h_salida);
+            $sheet->setCellValue("H{$contador}", $list->cod_sedes);
+            $sheet->setCellValue("I{$contador}", $list->observacion);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename ='Asistencia con lectora';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output'); 
     }
 }
