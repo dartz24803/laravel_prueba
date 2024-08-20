@@ -210,7 +210,7 @@
                     $('#apellidos_confirmacion').html('<span id="apellidos_css">'+data.split("*")[2]+'</span>');
                     $('#puesto_confirmacion').html('<span id="puesto_css">'+data.split("*")[3]+'</span>');
                     $('#base_confirmacion').html('<span id="base_css">'+data.split("*")[4]+'</span>');
-                    $("#num_doc_al").val('');
+                    $("#num_doc").val('');
                     $('#modal_asistencia_lectora').modal('show');
                     Lista_Lectora();
                     setTimeout(function() {
