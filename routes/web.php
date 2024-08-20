@@ -29,6 +29,9 @@ use App\Http\Controllers\LecturaServicioConfController;
 use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
 use App\Http\Controllers\IntencionRenunciaConfController;
+use App\Http\Controllers\OcurrenciasTiendaController;
+use App\Http\Controllers\ReporteProveedoresController;
+
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
 });
@@ -618,13 +621,25 @@ Route::controller(InicioFrasesAdmController::class)->group(function(){
     Route::post('Inicio/Delete_Frase', 'Delete_Frase');
 });
 
-//FRASES INICIO
+//INTENCION DE RENUNCIA
 Route::controller(IntencionRenunciaConfController::class)->group(function(){
-    Route::get('IntencionRenunciaConfController/index', 'index');
+    Route::get('IntencionRenunciaConfController/index', 'index');/*
     Route::post('Inicio/Frases_Inicio_Listar', 'Frases_Inicio_Listar');
     Route::get('Inicio/Modal_Update_Frases_Inicio/{id}', 'Modal_Update_Frases_Inicio');
     Route::post('Inicio/Update_Frase_Inicio', 'Update_Frase_Inicio');
     Route::get('Inicio/Modal_Registrar_Frases_Inicio', 'Modal_Registrar_Frases_Inicio');
     Route::post('Inicio/Registrar_Frase_Inicio', 'Registrar_Frase_Inicio');
-    Route::post('Inicio/Delete_Frase', 'Delete_Frase');
+    Route::post('Inicio/Delete_Frase', 'Delete_Frase');*/
+});
+//Ocurrencias
+Route::controller(OcurrenciasTiendaController::class)->group(function(){
+    Route::get('OcurrenciaTienda/index', 'Ocurrencia_Tienda');
+    Route::post('OcurrenciaTienda/ListaOcurrencia/{base}/{fec_ini}/{fec_fin}/{tipo}/{colaborador}', 'ListaOcurrencia');
+});
+//Ocurrencias
+Route::controller(ReporteProveedoresController::class)->group(function(){
+    Route::get('RProveedores/index', 'RProveedores');
+    Route::post('RProveedores/Buscar_RProveedor', 'Buscar_RProveedor');
+    Route::post('RProveedores/Actualizar_Hora_RProveedor', 'Actualizar_Hora_RProveedor');
+    Route::get('RProveedores/Excel_RProveedor/{base}/{estado_interno}/{fecha_inicio}/{fecha_fin}', 'Excel_RProveedor');
 });

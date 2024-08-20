@@ -496,8 +496,17 @@
                                 session('usuario')->id_puesto == 26 || session('usuario')->id_puesto == 29 || session('usuario')->id_puesto == 161 || 
                                 session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 197 || session('usuario')->id_puesto == 148                            ) { ?>
                                 <li id="locurrencia">
-                                    <a id="hlocurrencia" href="<?= url('Corporacion/Ocurrencia_Tienda') ?>">
+                                    <a id="hlocurrencia" href="<?= url('OcurrenciaTienda/index') ?>">
                                         <p class="romperpalabra"><span id="icono_active2"></span> Ocurrencias</p>
+                                    </a>
+                                </li>
+                            <?php } ?>
+                            
+                            <?php if (session('usuario')->id_puesto == 23 || session('usuario')->id_puesto == 24 || 
+                            session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 36) { ?>
+                                <li id="lrproveedor">
+                                    <a id="hlrproveedor" href="<?= url('RProveedores/index') ?>">
+                                        <p class="romperpalabra"><span id="icono_active2"></span> Reporte de proveedores</p>
                                     </a>
                                 </li>
                             <?php } ?>
