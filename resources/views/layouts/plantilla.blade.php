@@ -485,6 +485,7 @@
                                         <p class="romperpalabra"><span id="icono_active2"></span> Lectura Servicio</p>
                                     </a>
                                 </li>
+                               
                             </ul>
                         </li>
 
@@ -662,6 +663,12 @@
                                     <p class="romperpalabra"><span id="icono_active2"></span> Lectura Servicio</p>
                                 </a>
                             </li>
+                            <li id="conf_concurrencias_servicios">
+                                <a href="{{ route('ocurrencia_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                                    <p class="romperpalabra"><span id="icono_active2"></span> Ocurrencias</p>
+                                </a>
+                            </li>
+                            
                         </ul>
                     </li>
 

@@ -5,23 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OcurrenciaGestionCamaras extends Model
+class OcurrenciaConclusion extends Model
 {
     use HasFactory;
 
-    protected $table = 'ocurrencias_camaras';
-    protected $primaryKey = 'id_ocurrencias_camaras';
+    protected $table = 'conclusion';
+    protected $primaryKey = 'id_conclusion';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'descripcion',
+        'cod_conclusion',
+        'nom_conclusion',
         'estado',
         'fec_reg',
         'user_reg',
         'fec_act',
         'user_act',
         'fec_eli',
-        'user_eli'
+        'user_eli',
+        'digitos'
     ];
 }
