@@ -35,6 +35,7 @@ use App\Http\Controllers\OcurrenciaServicioController;
 
 
 use App\Http\Controllers\OcurrenciasTiendaController;
+use App\Http\Controllers\PostulanteController;
 use App\Http\Controllers\ReporteProveedoresController;
 
 Route::middleware([NoCache::class])->group(function () {
@@ -558,6 +559,13 @@ Route::controller(AsistenciaSegController::class)->group(function(){
     Route::get('asistencia_seg_man/{id}/obs', 'obs_man')->name('asistencia_seg_man.obs');
     Route::put('asistencia_seg_man/{id}', 'update_obs_man')->name('asistencia_seg_man.update_obs');
     Route::get('asistencia_seg_man/{cod_base}/{id_colaborador}/{inicio}/{fin}/excel', 'excel_man')->name('asistencia_seg_man.excel');
+});
+//RECURSOS HUMANOS - POSTULANTE REVISIÓN
+Route::controller(PostulanteController::class)->group(function(){
+    Route::get('postulante_revision', 'index_prev')->name('postulante_revision');
+    Route::post('postulante_revision/list', 'list_prev')->name('postulante_revision.list');
+    Route::get('postulante_revision/{id}/edit', 'edit_prev')->name('postulante_revision.edit');
+    Route::put('postulante_revision/{id}', 'update_prev')->name('postulante_revision.update');
 });
 
 
