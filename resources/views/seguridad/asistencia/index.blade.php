@@ -82,10 +82,10 @@
             });
         }
 
-        function Manual(){
+        function Manual(){ 
             Cargando();
 
-            var url="{{ route('lectura_servicio_ges') }}";
+            var url="{{ route('asistencia_seg_man') }}";
 
             $.ajax({
                 url: url,
