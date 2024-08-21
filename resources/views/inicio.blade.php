@@ -191,7 +191,7 @@
                                                                                 <?php $i=0; foreach($list_cumple as $list){$i++;
                                                                                     if($i<6){?>
                                                                                     <tr>
-                                                                                        <td>
+                                                                                        {{-- <td>
                                                                                             <div class="d-flex justify-content-center">
                                                                                                 <img style="max-width:100px;max-height:70px;margin:0 10px 10px 0;" src="{{ asset('template/assets/img/torta_saludo.png')}}">
                                                                                                 <img style="max-width:70px;max-height:70px;border-radius: 10%;border: 3px solid #e0e6ed;" src="<?php if ($list['foto_nombre'] !=""){echo $get_foto[0]['url_config'].$list['foto_nombre'];}else{echo asset("template/assets/especiales/user-mini.png");}  ?>" alt="avatar" title="<?php echo $list['foto_nombre'] ?>">
@@ -202,7 +202,7 @@
                                                                                             <div class="d-flex justify-content-center">
                                                                                                 <span ><?php echo date('d', strtotime($list['cumpleanio']))." de ".strtolower($list['nom_mes']) ?></span>
                                                                                             </div>
-                                                                                        </td>
+                                                                                        </td>  --}}
                                                                                     </tr>
                                                                                 <?php } }?>
                                                                             </tbody>

@@ -60,4 +60,26 @@ class Base extends Model
         $query = DB::select($sql);
         return $query;
     }
+
+    public static function get_list_base_only(){
+        $centro_labores=session('usuario')->centro_labores;
+        $id_puesto=session('usuario')->id_puesto;
+        $id_nivel=session('usuario')->id_nivel;
+        
+        if($id_puesto==23 || $id_puesto==26 || $id_nivel==1 || $id_puesto==27){
+            $buscar=" ";
+        }elseif($id_puesto==128 ){
+            $buscar=" and cod_base not in ('OFC', 'CD' , 'AMT', 'DEED', 'EXT', 'ZET') ";
+        }elseif($centro_labores==="CD" || $centro_labores==="OFC" || $centro_labores==="AMT"){
+            $buscar=" and cod_base in ('OFC', 'CD', 'AMT') ";
+        }else{
+            $buscar= " ";
+        }
+
+        $sql = "SELECT cod_base from base WHERE
+                estado='1' $buscar GROUP BY `cod_base` order by cod_base ASC";
+        $query = DB::select($sql);
+        
+        return json_decode(json_encode($query), true);
+    }
 }

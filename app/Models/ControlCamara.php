@@ -63,6 +63,7 @@ class ControlCamara extends Model
                     CASE
                         WHEN lo.id_local IN (16, 17) AND TIMESTAMPDIFF(MINUTE, cc.hora_registro, cc.hora_programada) < 0 THEN 'Atrasado'
                         WHEN lo.id_local = 18 AND TIMESTAMPDIFF(MINUTE, cc.hora_programada, cc.hora_registro) > 10 THEN 'Atrasado'
+                        WHEN TIMESTAMPDIFF(MINUTE, NOW(), cc.hora_programada) < 0 THEN 'Atrasado'
                         ELSE 'OK'
                     END AS observacion,
                     lo.descripcion AS tienda,
