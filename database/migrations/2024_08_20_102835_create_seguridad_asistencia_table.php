@@ -31,6 +31,8 @@ return new class extends Migration
             $table->integer('user_eli')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->foreign('id_usuario','sasi_fk_id_usu')->references('id_usuario')->on('users');
+            $table->index(['fecha', 'estado'], 'idx_fec_est');
+            $table->index(['fecha_salida', 'estado'], 'idx_fsal_est');
             //$table->timestamps();
         });
     }
