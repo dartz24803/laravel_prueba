@@ -60,7 +60,7 @@
 </div>
 
 @csrf
-<div class="table-responsive mb-4 mt-4" id="lista_manual">
+<div class="table-responsive mb-4" id="lista_manual">
 </div>
 
 <script>
