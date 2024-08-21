@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Base;
 use App\Models\DatosServicio;
 use App\Models\ProveedorServicio;
-use App\Models\SegLugarServicio;
+use App\Models\LugarServicio;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -243,7 +243,7 @@ class LecturaServicioConfController extends Controller
     public function create_da()
     {
         $list_base = Base::get_list_todas_bases_agrupadas();
-        $list_lugar = SegLugarServicio::all();
+        $list_lugar = LugarServicio::all();
         return view('seguridad.administracion.lectura_servicio.datos_servicio.modal_registrar', compact(['list_lugar','list_base']));
     }
 
@@ -309,7 +309,7 @@ class LecturaServicioConfController extends Controller
     {
         $get_id = DatosServicio::findOrFail($id);
         $list_base = Base::get_list_todas_bases_agrupadas();
-        $list_lugar = SegLugarServicio::all();
+        $list_lugar = LugarServicio::all();
         $list_servicio = ProveedorServicio::select('proveedor_servicio.id_servicio','servicio.nom_servicio')
                         ->join('servicio','servicio.id_servicio','=','proveedor_servicio.id_servicio')
                         ->where('proveedor_servicio.cod_base',$get_id->cod_base)->where('proveedor_servicio.estado',1)
