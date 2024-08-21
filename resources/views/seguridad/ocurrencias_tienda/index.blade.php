@@ -17,13 +17,13 @@ $id_nivel= session('usuario')->id_nivel;
             <div class="row" id="cancel-row">
                 <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                     <div class="widget-content widget-content-area br-6">
-                        <div class="toolbar">
+                        <div class="toolbar m-4">
                             <div class="row">
                                 <div class="form-group col-md-8">
                                 </div> 
 
                                 <div class="form-group col-md-1">
-                                    <button type="button" class="btn btn-primary mb-2 mr-2 form-control" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg_metalikas="<?= url('Corporacion/Modal_Ocurrencia_Tienda_Admin') ?>">
+                                    <button type="button" class="btn btn-primary mb-2 mr-2 form-control" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="<?= url('OcurrenciaTienda/Modal_Ocurrencia_Tienda_Admin') ?>">
                                         Nuevo
                                     </button>
                                 </div> 
@@ -68,9 +68,9 @@ $id_nivel= session('usuario')->id_nivel;
                                     <label>Tipo Ocurrencia</label>
                                     <select class="form-control basic" id="tipo_ocurrencia_busq" name="tipo_ocurrencia_busq">
                                         <option value="Todo">Todos</option>
-                                        <?php //foreach($list_tipo_ocurrencia as $list){ ?>
-                                            <option value="<?php //echo $list['id_tipo_ocurrencia']; ?>"><?php //echo $list['nom_tipo_ocurrencia']; ?></option>
-                                        <?php //} ?>
+                                        <?php foreach($list_tipo_ocurrencia as $list){ ?>
+                                            <option value="<?php echo $list->id_tipo_ocurrencia; ?>"><?php echo $list->nom_tipo_ocurrencia; ?></option>
+                                        <?php } ?>
                                     </select>
                                 </div>
 
@@ -353,18 +353,22 @@ $id_nivel= session('usuario')->id_nivel;
             });
         });
         var base_busq = $('#base_busq').val();
-        var url="<?php echo url('Corporacion/Confirmar_Revision_Ocurrencia')?>";
+        var url="{{ url('OcurrenciaTienda/Confirmar_Revision_Ocurrencia') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({
             type:"POST",
             url:url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             success:function (data) {
                 swal.fire(
                     'Confirmación Exitosa',
                     'Haga clic en el botón!',
                     'success'
                 ).then(function() {
-                    window.location = "<?php echo url('Corporacion/Ocurrencia_Tienda') ?>";
+                    Cambiar_Ocurrencia_Admin();
                 });
             }
         });
@@ -412,7 +416,8 @@ $id_nivel= session('usuario')->id_nivel;
             });
         });
 
-        var url = "<?php echo url('Corporacion/Delete_Ocurrencia')?>";
+        var url = "{{ url('OcurrenciaTienda/DeleteOcurrencia') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
         Swal({
             title: '¿Realmente desea eliminar el registro?',
@@ -428,6 +433,9 @@ $id_nivel= session('usuario')->id_nivel;
                 $.ajax({
                     type: "POST",
                     url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
                     data: {'id_ocurrencia': id},
                     success: function() {
                         Swal(
@@ -456,7 +464,7 @@ $id_nivel= session('usuario')->id_nivel;
         var fecha_fin = fecha_fin[0]+fecha_fin[1]+fecha_fin[2];
         var tipo_ocurrencia = $('#tipo_ocurrencia_busq').val();
         var colaborador = $('#colaborador_busq').val();
-        //window.location ="<?php echo url('Corporacion/Excel_Ocurrencia/"+cod_base+"/"+fecha_inicio+"/"+fecha_fin+"/"+tipo_ocurrencia+"/"+colaborador')?>";
+        window.location = "{{ url('Corporacion/Excel_Ocurrencia') }}/" + cod_base + "/" + fecha_inicio + "/" + fecha_fin + "/" + tipo_ocurrencia + "/" + colaborador;
     }
 </script>
 

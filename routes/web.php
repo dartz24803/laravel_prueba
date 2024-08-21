@@ -704,8 +704,17 @@ Route::controller(IntencionRenunciaConfController::class)->group(function(){
 Route::controller(OcurrenciasTiendaController::class)->group(function(){
     Route::get('OcurrenciaTienda/index', 'Ocurrencia_Tienda');
     Route::post('OcurrenciaTienda/ListaOcurrencia/{base}/{fec_ini}/{fec_fin}/{tipo}/{colaborador}', 'ListaOcurrencia');
+    Route::get('OcurrenciaTienda/Modal_Ocurrencia_Tienda_Admin', 'Modal_Ocurrencia_Tienda_Admin');
+    Route::post('OcurrenciaTienda/Insert_Ocurrencia_Tienda_Admin', 'Insert_Ocurrencia_Tienda_Admin');
+    Route::get('OcurrenciaTienda/Modal_Update_Ocurrencia_Tienda_Admin/{id}', 'Modal_Update_Ocurrencia_Tienda_Admin');
+    Route::post('OcurrenciaTienda/Buscar_Tipo_Ocurrencia/', 'Buscar_Tipo_Ocurrencia')->name('OcurrenciaTienda/Buscar_Tipo_Ocurrencia');
+    Route::post('OcurrenciaTienda/Tipo_Piocha', 'Tipo_Piocha');
+    Route::post('OcurrenciaTienda/DeleteOcurrencia', 'Delete_Ocurrencia');
+    Route::post('OcurrenciaTienda/Update_Ocurrencia_Tienda', 'Update_Ocurrencia_Tienda');
+    Route::post('OcurrenciaTienda/Confirmar_Revision_Ocurrencia', 'Confirmar_Revision_Ocurrencia');
+    Route::get('Corporacion/Excel_Ocurrencia/{cod_base}/{fecha_inicio}/{fecha_fin}/{tipo_ocurrencia}/{colaborador}', 'Excel_Ocurrencia');
 });
-//Ocurrencias
+//Reporte Proveedores
 Route::controller(ReporteProveedoresController::class)->group(function(){
     Route::get('RProveedores/index', 'RProveedores');
     Route::post('RProveedores/Buscar_RProveedor', 'Buscar_RProveedor');

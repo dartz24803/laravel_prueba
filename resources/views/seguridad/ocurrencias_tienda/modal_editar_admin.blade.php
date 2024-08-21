@@ -1,13 +1,12 @@
-<link href="<?php echo base_url(); ?>template/inputfiles/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('template/inputfiles/css/fileinput.css') }}" media="all" rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
-<link href="<?php echo base_url(); ?>template/inputfiles/themes/explorer-fas/theme.css" media="all" rel="stylesheet" type="text/css"/>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/plugins/piexif.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/plugins/sortable.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/fileinput.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/locales/fr.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/locales/es.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/themes/fas/theme.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/themes/explorer-fas/theme.js" type="text/javascript"></script>
+<link href="{{ asset('template/inputfiles/themes/explorer-fas/theme.css') }}" media="all" rel="stylesheet" type="text/css"/>
+<script src="{{ asset('template/inputfiles/js/plugins/piexif.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/plugins/sortable.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/fileinput.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/locales/es.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/themes/fas/theme.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/themes/explorer-fas/theme.js') }}" type="text/javascript"></script>
 
 <style>
     .input-group>.input-group-append>.btn,
@@ -78,8 +77,8 @@
                 <select class="form-control" name="id_tipoe" id="id_tipoe" onchange="Tipo_Piochae();">
                     <option value="0">Seleccione</option>
                     <?php foreach ($list_tipo as $list) { ?>
-                        <option value="<?php echo $list['id_tipo_ocurrencia']; ?>" <?php if($get_id[0]['id_tipo']==$list['id_tipo_ocurrencia']){echo "selected";}?>>
-                            <?php echo $list['nom_tipo_ocurrencia']; ?>
+                        <option value="<?php echo $list->id_tipo_ocurrencia; ?>" <?php if($get_id[0]['id_tipo']==$list->id_tipo_ocurrencia){echo "selected";}?>>
+                            <?php echo $list->nom_tipo_ocurrencia; ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -312,11 +311,15 @@
         });
 
         var id_tipo = $('#id_tipoe').val();
-        var url = "<?php echo site_url(); ?>Corporacion/Tipo_Piocha";
+        var url = "{{ url('OcurrenciaTienda/Tipo_Piocha')}}";
+        var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({
             type:"POST",
             url:url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             data:{'id_tipo':id_tipo},
             success: function(resp) {
                 if(resp=="Si"){
@@ -337,7 +340,7 @@
 
     $(document).on('click', '#download_file', function() {
         image_id = $(this).data('image_id');
-        window.location.replace("<?php echo site_url(); ?>Corporacion/Descargar_Archivo_Ocurrencia/" + image_id);
+        window.location.replace("{{ url('Corporacion/Descargar_Archivo_Ocurrencia') }}/" + image_id);
     });
 
     $(document).on('click', '#delete_file', function() {
@@ -345,7 +348,7 @@
         file_col = $('#i_' + image_id);
         $.ajax({
             type: 'POST',
-            url: '<?php echo site_url(); ?>Corporacion/Delete_Archivo_Ocurrencia',
+            url: "{{ url('Corporacion/Delete_Archivo_Ocurrencia')}}",
             data: {
                 image_id: image_id
             },
@@ -365,4 +368,55 @@
         initialPreviewAsData: true,
         allowedFileExtensions: ['jpg','png','jpeg'],
     });
+    
+    function Edit_Ocurrencia_Tienda_Admin() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_ocurrenciae'));
+        var url = "{{ url('OcurrenciaTienda/Update_Ocurrencia_Tienda') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        //if (Valida_Ocurrencia_Tienda_Admine()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function(data) {
+                    if (data == "error") {
+                        Swal({
+                            title: 'Actualización Denegada',
+                            text: "¡La Ocurrencia ya existe para el día, base e incidencia!",
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    } else {
+                        swal.fire(
+                            'Actualización Exitosa!',
+                            'Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            $('#ModalUpdate').modal('hide');
+                            Cambiar_Ocurrencia_Admin();
+                        });
+                    }
+                }
+            });
+        /*} else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }*/
+    }
 </script>
