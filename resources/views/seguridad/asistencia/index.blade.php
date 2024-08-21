@@ -82,7 +82,7 @@
             });
         }
 
-        function Manual(){
+        function Manual(){ 
             Cargando();
 
             var url="{{ route('asistencia_seg_man') }}";
