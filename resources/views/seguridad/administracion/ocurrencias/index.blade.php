@@ -14,7 +14,9 @@
                                 <li class="nav-item">
                                     <a id="a_pser" class="nav-link" onclick="ConclusionOcurrencias();" style="cursor: pointer;">Conclusión Ocurrencias</a>
                                 </li>
-                              
+                                <li class="nav-item">
+                                    <a id="a_dser" class="nav-link" onclick="TipoOcurrencias();" style="cursor: pointer;">Tipo Ocurrencias</a>
+                                </li>
                             </ul>
 
                             <div class="row" id="cancel-row">
@@ -38,7 +40,7 @@
 
             GestionOcurrencias();
         });
-        
+
         function GestionOcurrencias(){
             Cargando();
 
@@ -48,7 +50,7 @@
                 url: url,
                 type: "GET",
                 success:function (resp) {
-                    $('#div_ocurrencias_conf').html(resp);  
+                    $('#div_ocurrencias_conf').html(resp);
                     $("#a_ser").addClass('active');
                     $("#a_pser").removeClass('active');
                     $("#a_dser").removeClass('active');
@@ -65,7 +67,7 @@
                 url: url,
                 type: "GET",
                 success:function (resp) {
-                    $('#div_ocurrencias_conf').html(resp);  
+                    $('#div_ocurrencias_conf').html(resp);
                     $("#a_ser").removeClass('active');
                     $("#a_pser").addClass('active');
                     $("#a_dser").removeClass('active');
@@ -73,6 +75,23 @@
             });
         }
 
-       
+        function TipoOcurrencias(){
+            Cargando();
+
+            var url="{{ route('ocurrencia_conf_to') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_ocurrencias_conf').html(resp);
+                    $("#a_ser").removeClass('active');
+                    $("#a_pser").removeClass('active');
+                    $("#a_dser").addClass('active');
+                }
+            });
+        }
+
+
     </script>
 @endsection

@@ -30,7 +30,6 @@ use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
 use App\Http\Controllers\IntencionRenunciaConfController;
 use App\Http\Controllers\OcurrenciaServicioConfController;
-use App\Http\Controllers\OcurrenciaServicioController;
 
 
 
@@ -471,43 +470,14 @@ Route::controller(OcurrenciaServicioConfController::class)->group(function(){
     Route::get('ocurrencia_conf_co/{id}/edit', 'edit_co')->name('ocurrencia_conf_co.edit');
     Route::put('ocurrencia_conf_co/{id}', 'update_co')->name('ocurrencia_conf_co.update');
     Route::delete('ocurrencia_conf_co/{id}', 'destroy_co')->name('ocurrencia_conf_co.destroy');
-    Route::get('ocurrencia_conf_da', 'index_da')->name('ocurrencia_conf_da');
-    Route::get('ocurrencia_conf_da/list', 'list_da')->name('ocurrencia_conf_da.list');
-    Route::get('ocurrencia_conf_da/create', 'create_da')->name('ocurrencia_conf_da.create');
-    Route::post('ocurrencia_conf_da/traer_servicio_da', 'traer_servicio_da')->name('ocurrencia_conf_da.traer_servicio');
-    Route::post('ocurrencia_conf_da/traer_proveedor_servicio_da', 'traer_proveedor_servicio_da')->name('ocurrencia_conf_da.traer_proveedor_servicio');
-    Route::post('ocurrencia_conf_da', 'store_da')->name('ocurrencia_conf_da.store');
-    Route::get('ocurrencia_conf_da/{id}/edit', 'edit_da')->name('ocurrencia_conf_da.edit');
-    Route::put('ocurrencia_conf_da/{id}', 'update_da')->name('ocurrencia_conf_da.update');
-    Route::delete('ocurrencia_conf_da/{id}', 'destroy_da')->name('ocurrencia_conf_da.destroy');
+    Route::get('ocurrencia_conf_to', 'index_to')->name('ocurrencia_conf_to');
+    Route::get('ocurrencia_conf_to/list', 'list_to')->name('ocurrencia_conf_to.list');
+    Route::get('ocurrencia_conf_to/create', 'create_to')->name('ocurrencia_conf_to.create');
+    Route::post('ocurrencia_conf_to', 'store_to')->name('ocurrencia_conf_to.store');
+    Route::get('ocurrencia_conf_to/{id}/edit', 'edit_to')->name('ocurrencia_conf_to.edit');
+    Route::put('ocurrencia_conf_to/{id}', 'update_to')->name('ocurrencia_conf_to.update');
+    Route::delete('ocurrencia_conf_to/{id}', 'destroy_to')->name('ocurrencia_conf_to.destroy');
 });
-
-//SEGURIDAD - OCURRENCIA SERVICIO
-Route::controller(OcurrenciaServicioController::class)->group(function(){
-    Route::get('ocurrencia_servicio', 'index')->name('ocurrencia_servicio');
-    Route::get('ocurrencia_servicio_reg', 'index_reg')->name('ocurrencia_servicio_reg');
-    Route::post('ocurrencia_servicio_reg/list', 'list_reg')->name('ocurrencia_servicio_reg.list');
-    Route::get('ocurrencia_servicio_reg/create', 'create_reg')->name('ocurrencia_servicio_reg.create');
-    Route::post('ocurrencia_servicio_reg/traer_suministro', 'traer_suministro_reg')->name('ocurrencia_servicio_reg.traer_suministro');
-    Route::post('ocurrencia_servicio_reg/traer_lectura', 'traer_lectura_reg')->name('ocurrencia_servicio_reg.traer_lectura');
-    Route::post('ocurrencia_servicio_reg', 'store_reg')->name('ocurrencia_servicio_reg.store');
-    Route::get('ocurrencia_servicio_reg/{id}/{tipo}/edit', 'edit_reg')->name('ocurrencia_servicio_reg.edit');
-    Route::get('ocurrencia_servicio_reg/{id}/{tipo}/download', 'download_reg')->name('ocurrencia_servicio_reg.download');
-    Route::put('ocurrencia_servicio_reg/{id}/{tipo}', 'update_reg')->name('ocurrencia_servicio_reg.update');
-    Route::get('ocurrencia_servicio_reg/{id_servicio}/{mes}/{anio}/excel', 'excel_reg')->name('ocurrencia_servicio_reg.excel');
-    Route::get('ocurrencia_servicio_ges', 'index_ges')->name('ocurrencia_servicio_ges');
-    Route::post('ocurrencia_servicio_ges/list', 'list_ges')->name('ocurrencia_servicio_ges.list');
-    Route::get('ocurrencia_servicio_ges/create', 'create_ges')->name('ocurrencia_servicio_ges.create');
-    Route::post('ocurrencia_servicio_ges/traer_suministro', 'traer_suministro_ges')->name('ocurrencia_servicio_ges.traer_suministro');
-    Route::post('ocurrencia_servicio_ges/traer_lectura', 'traer_lectura_ges')->name('ocurrencia_servicio_ges.traer_lectura');
-    Route::post('ocurrencia_servicio_ges', 'store_ges')->name('ocurrencia_servicio_ges.store');
-    Route::get('ocurrencia_servicio_ges/{id}/{tipo}/edit', 'edit_ges')->name('ocurrencia_servicio_ges.edit');
-    Route::get('ocurrencia_servicio_ges/{id}/{tipo}/download', 'download_reg')->name('ocurrencia_servicio_ges.download');
-    Route::put('ocurrencia_servicio_ges/{id}/{tipo}', 'update_reg')->name('ocurrencia_servicio_ges.update');
-    Route::delete('ocurrencia_servicio_ges/{id}', 'destroy_ges')->name('ocurrencia_servicio_ges.destroy');
-    Route::get('ocurrencia_servicio_ges/{id_servicio}/{cod_base}/{mes}/{anio}/excel', 'excel_ges')->name('ocurrencia_servicio_ges.excel');
-});
-
 
 
 //CONTROL INTERNO - PRECIO SUGERIDO CONFIGURABLE
