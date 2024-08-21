@@ -228,14 +228,14 @@ class LecturaServicioConfController extends Controller
     public function list_da()
     {
         $list_datos_servicio = DatosServicio::leftJoin('proveedor_servicio', 'datos_servicio.id_proveedor_servicio', '=', 'proveedor_servicio.id_proveedor_servicio')
-                                ->select('datos_servicio.id_datos_servicio','seg_lugar_servicio.nom_lugar_servicio',
+                                ->select('datos_servicio.id_datos_servicio','vw_lugar_servicio.nom_lugar_servicio',
                                 'datos_servicio.cod_base','servicio.nom_servicio',
                                 'proveedor_servicio.nom_proveedor_servicio',
                                 'datos_servicio.contrato_servicio','datos_servicio.medidor',
                                 'datos_servicio.suministro','datos_servicio.ruta',
                                 'datos_servicio.cliente','datos_servicio.doc_cliente')
                                 ->join('servicio','servicio.id_servicio','=','datos_servicio.id_servicio')
-                                ->join('seg_lugar_servicio','seg_lugar_servicio.id_lugar_servicio','=','datos_servicio.id_lugar_servicio')
+                                ->join('vw_lugar_servicio','vw_lugar_servicio.id_lugar_servicio','=','datos_servicio.id_lugar_servicio')
                                 ->where('datos_servicio.estado', 1)->get();
         return view('seguridad.administracion.lectura_servicio.datos_servicio.lista', compact('list_datos_servicio'));
     }
