@@ -11,20 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('servicio', function (Blueprint $table) {
-            $table->id('id_servicio');
-            $table->string('cod_servicio',10)->nullable();
-            $table->string('nom_servicio',50)->nullable();
-            $table->string('desc_servicio',50)->nullable();
-            $table->integer('lectura')->nullable();
+        Schema::create('tipo_documento', function (Blueprint $table) {
+            $table->id('id_tipo_documento');
+            $table->string('cod_tipo_documento',10)->nullable();
+            $table->string('cod_sunat',1)->nullable();
+            $table->string('nom_tipo_documento',50)->nullable();
+            $table->string('numero',4)->nullable();
+            $table->string('desc_abreviada',100)->nullable();
+            $table->string('observacion',250)->nullable();
             $table->integer('estado')->nullable();
-            $table->string('tipodeed',10)->nullable();
             $table->integer('user_reg')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_act')->nullable();
             $table->integer('user_eli')->nullable();
             $table->dateTime('fec_eli')->nullable();
+            $table->integer('digitos')->nullable();
             //$table->timestamps();
         });
     }
@@ -34,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('servicio');
+        Schema::dropIfExists('tipo_documento');
     }
 };

@@ -451,6 +451,19 @@
                                         </a>
                                     </li>
                                 <?php } ?>
+                                <?php if (session('usuario')->id_nivel == 1 || 
+                                session('usuario')->id_nivel == 2 || 
+                                session('usuario')->id_puesto == 21 || 
+                                session('usuario')->id_puesto == 278 || 
+                                session('usuario')->id_puesto == 279 || 
+                                session('usuario')->id_puesto == 22 || 
+                                session('usuario')->id_puesto == 133) { ?>
+                                    <!--<li>
+                                        <a id="postulantes_revisiones" href="{{ route('postulante_revision') }}">
+                                            <p class="romperpalabra"><span id="icono_active2"></span> Postulantes Revisión</p>
+                                        </a>
+                                    </li>-->
+                                <?php } ?>
                             </ul>
                         </li>
 

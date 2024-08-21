@@ -1,0 +1,83 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('postulante', function (Blueprint $table) {
+            $table->id('id_postulante');
+            $table->string('postulante_nombres',50)->nullable();
+            $table->string('postulante_apater',50)->nullable();
+            $table->string('postulante_amater',50)->nullable();
+            $table->string('postulante_codigo',50)->nullable();
+            $table->string('postulante_password')->nullable();
+            $table->integer('id_nivel')->nullable();
+            $table->string('postulante_email',100)->nullable();
+            $table->string('emailp',150)->nullable();
+            $table->string('num_celp',15)->nullable();
+            $table->string('num_fijop',15)->nullable();
+            $table->string('num_cele',15)->nullable();
+            $table->string('num_anexoe',10)->nullable();
+            $table->unsignedBigInteger('id_gerencia');
+            $table->unsignedBigInteger('id_sub_gerencia');
+            $table->unsignedBigInteger('id_area');
+            $table->unsignedBigInteger('id_puesto');
+            $table->integer('id_cargo')->nullable();
+            $table->unsignedBigInteger('id_tipo_documento');
+            $table->string('num_doc',15)->nullable();
+            $table->integer('id_nacionalidad')->nullable();
+            $table->integer('id_genero')->nullable();
+            $table->integer('id_estado_civil')->nullable();
+            $table->string('foto',100)->nullable();
+            $table->string('foto_nombre',100)->nullable();
+            $table->dateTime('ini_funciones')->nullable();
+            $table->dateTime('fin_funciones')->nullable();
+            $table->text('observaciones')->nullable();
+            $table->string('dia_nac',2)->nullable();
+            $table->string('mes_nac',2)->nullable();
+            $table->string('anio_nac',4)->nullable();
+            $table->date('fec_nac')->nullable();
+            $table->integer('situacion')->nullable();
+            $table->integer('enfermedades')->nullable();
+            $table->integer('alergia')->nullable();
+            $table->string('centro_labores',10)->nullable();
+            $table->unsignedBigInteger('id_puesto_evaluador');
+            $table->unsignedBigInteger('id_evaluador');
+            $table->integer('flag_email')->nullable();
+            $table->integer('estado')->nullable();
+            $table->integer('user_reg')->nullable();
+            $table->dateTime('fec_reg')->nullable();
+            $table->integer('user_act')->nullable();
+            $table->dateTime('fec_act')->nullable();
+            $table->integer('user_eli')->nullable();
+            $table->dateTime('fec_eli')->nullable();
+            $table->integer('acceso')->nullable();
+            $table->string('ip_acceso',25)->nullable();
+            $table->integer('estado_postulacion')->nullable();
+            $table->integer('aprobado')->nullable();
+            $table->foreign('id_gerencia','pos_fk_id_ger')->references('id_gerencia')->on('gerencia');
+            $table->foreign('id_sub_gerencia','pos_fk_id_sger')->references('id_sub_gerencia')->on('sub_gerencia');
+            $table->foreign('id_area','pos_fk_id_are')->references('id_area')->on('area');
+            $table->foreign('id_puesto','pos_fk_id_pue')->references('id_puesto')->on('puesto');
+            $table->foreign('id_tipo_documento','pos_fk_id_tdoc')->references('id_tipo_documento')->on('tipo_documento');
+            $table->foreign('id_puesto_evaluador','pos_fk_id_peva')->references('id_puesto')->on('puesto');
+            $table->foreign('id_evaluador','pos_fk_id_eva')->references('id_usuario')->on('users');
+            //$table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('postulante');
+    }
+};

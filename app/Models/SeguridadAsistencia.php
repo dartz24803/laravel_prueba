@@ -60,4 +60,28 @@ class SeguridadAsistencia extends Model
             return $query;
         }
     }
+
+    public static function get_list_manual($dato=null)
+    {
+        $parte_usuario = "";
+        if($dato['id_colaborador']!="0"){
+            $parte_usuario = "AND sa.id_usuario=".$dato['id_colaborador'];
+        }
+        $parte_base = "";
+        if($dato['cod_base']!="0"){
+            $parte_base = "AND sa.base='".$dato['cod_base']."'";
+        }elseif(session('usuario')->id_puesto==24 && $dato['cod_base']=="0"){
+            $parte_base = "AND sa.base IN ('CD','OFC','AMT')";
+        }
+        $sql = "SELECT sa.id_seguridad_asistencia,sa.base,
+                CONCAT(us.usuario_apater,' ',us.usuario_amater,', ',us.usuario_nombres) AS colaborador,
+                DATE_FORMAT(sa.fecha,'%d/%m/%Y') AS f_ingreso,sa.h_ingreso,sa.cod_sede,
+                DATE_FORMAT(sa.fecha_salida,'%d/%m/%Y') AS f_salida,sa.h_salida,sa.cod_sedes,sa.observacion,
+                sa.imagen
+                FROM seguridad_asistencia sa
+                INNER JOIN users us ON sa.id_usuario=us.id_usuario
+                WHERE (sa.fecha BETWEEN '".$dato['fecha_inicio']."' AND '".$dato['fecha_fin']."') $parte_usuario $parte_base AND sa.estado=1";
+        $query = DB::select($sql);
+        return $query;
+    }
 }

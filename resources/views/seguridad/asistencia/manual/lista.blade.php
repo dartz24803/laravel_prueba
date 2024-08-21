@@ -6,6 +6,8 @@
             <th colspan="3"><b>Salida</b></th>
             <?php if(session('usuario')->id_nivel==1 || 
             session('usuario')->id_puesto==19 || 
+            session('usuario')->id_puesto==21 || 
+            session('usuario')->id_puesto==22 || 
             session('usuario')->id_puesto==23){ ?> 
                 <th colspan="3"><b></b></th>
             <?php }else{ ?> 
@@ -25,13 +27,15 @@
             <th class="no-content">Imagen</th>
             <?php if(session('usuario')->id_nivel==1 || 
             session('usuario')->id_puesto==19 || 
+            session('usuario')->id_puesto==21 || 
+            session('usuario')->id_puesto==22 || 
             session('usuario')->id_puesto==23){?> 
                 <th class="no-content"></th>
             <?php }?>
         </tr>
     </thead>
     <tbody>
-        @foreach ($list_lectora as $list)
+        @foreach ($list_manual as $list)
             <tr class="text-center">
                 <td>{{ $list->base }}</td>
                 <td class="text-left">{{ $list->colaborador }}</td>
@@ -40,20 +44,21 @@
                     {{ $list->h_ingreso }}
                     @if (session('usuario')->id_nivel==1 || 
                     session('usuario')->id_puesto==19 || 
+                    session('usuario')->id_puesto==21 || 
+                    session('usuario')->id_puesto==22 || 
                     session('usuario')->id_puesto==23)
                         <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
-                        app_elim="{{ route('asistencia_seg_lec.edit', [$list->id_seguridad_asistencia, 'ingreso']) }}">
+                        app_elim="{{ route('asistencia_seg_man.edit', [$list->id_seguridad_asistencia, 'ingreso']) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                 <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                             </svg>
                         </a>
                     @else
                         @if ((session('usuario')->id_puesto==24 || 
-                        session('usuario')->id_puesto==36 || 
-                        session('usuario')->id_nivel==12) && 
+                        session('usuario')->id_puesto==36) && 
                         $list->h_ingreso=="")
                             <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
-                            app_elim="{{ route('asistencia_seg_lec.edit', [$list->id_seguridad_asistencia, 'ingreso']) }}">
+                            app_elim="{{ route('asistencia_seg_man.edit', [$list->id_seguridad_asistencia, 'ingreso']) }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                     <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                 </svg>
@@ -67,20 +72,21 @@
                     {{ $list->h_salida }}
                     @if (session('usuario')->id_nivel==1 || 
                     session('usuario')->id_puesto==19 || 
+                    session('usuario')->id_puesto==21 || 
+                    session('usuario')->id_puesto==22 || 
                     session('usuario')->id_puesto==23)
                         <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
-                        app_elim="{{ route('asistencia_seg_lec.edit', [$list->id_seguridad_asistencia, 'salida']) }}">
+                        app_elim="{{ route('asistencia_seg_man.edit', [$list->id_seguridad_asistencia, 'salida']) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                 <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                             </svg>
                         </a>
                     @else
                         @if ((session('usuario')->id_puesto==24 || 
-                        session('usuario')->id_puesto==36 || 
-                        session('usuario')->id_nivel==12) && 
+                        session('usuario')->id_puesto==36) && 
                         $list->h_ingreso=="")
                             <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
-                            app_elim="{{ route('asistencia_seg_lec.edit', [$list->id_seguridad_asistencia, 'salida']) }}">
+                            app_elim="{{ route('asistencia_seg_man.edit', [$list->id_seguridad_asistencia, 'salida']) }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                     <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                 </svg>
@@ -89,7 +95,15 @@
                     @endif                    
                 </td>
                 <td>{{ $list->cod_sedes }}</td>
-                <td class="text-left">{{ nl2br($list->observacion) }}</td>
+                <td class="text-left">
+                    {{ nl2br($list->observacion) }}
+                    <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
+                    app_elim="{{ route('asistencia_seg_man.obs', $list->id_seguridad_asistencia) }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
+                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                        </svg>
+                    </a>
+                </td>
                 <td>
                     @if ($list->imagen!="")
                         <a href="{{ $list->imagen }}" target="_blank" title="Imagen">
@@ -101,9 +115,11 @@
                     @endif
                     @if (session('usuario')->id_nivel==1 || 
                     session('usuario')->id_puesto==19 || 
+                    session('usuario')->id_puesto==21 || 
+                    session('usuario')->id_puesto==22 || 
                     session('usuario')->id_puesto==23)
                         <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
-                        app_elim="{{ route('asistencia_seg_lec.image', $list->id_seguridad_asistencia) }}">
+                        app_elim="{{ route('asistencia_seg_man.image', $list->id_seguridad_asistencia) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                 <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                             </svg>
@@ -113,7 +129,7 @@
                         session('usuario')->id_puesto==36) && 
                         $list->imagen=="")
                             <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
-                            app_elim="{{ route('asistencia_seg_lec.image', $list->id_seguridad_asistencia) }}">
+                            app_elim="{{ route('asistencia_seg_man.image', $list->id_seguridad_asistencia) }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                     <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                 </svg>
@@ -123,9 +139,11 @@
                 </td>
                 @if (session('usuario')->id_nivel==1 || 
                 session('usuario')->id_puesto==19 || 
+                session('usuario')->id_puesto==21 || 
+                session('usuario')->id_puesto==22 || 
                 session('usuario')->id_puesto==23)
                     <td>
-                        <a href="javascript:void(0);" title="Eliminar" onclick="Delete_Lectora('{{ $list->id_seguridad_asistencia }}')">
+                        <a href="javascript:void(0);" title="Eliminar" onclick="Delete_Manual('{{ $list->id_seguridad_asistencia }}')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
                                 <polyline points="3 6 5 6 21 6"></polyline>
                                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>

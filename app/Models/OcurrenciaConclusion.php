@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class OcurrenciaConclusion extends Model
 {
@@ -26,4 +27,12 @@ class OcurrenciaConclusion extends Model
         'user_eli',
         'digitos'
     ];
+
+    public static function get_list_conclusion()
+    {
+        $sql = "SELECT id_conclusion,nom_conclusion FROM conclusion
+                ORDER BY nom_conclusion ASC";
+        $query = DB::select($sql);
+        return $query;
+    }
 }
