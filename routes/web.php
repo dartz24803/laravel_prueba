@@ -483,6 +483,16 @@ Route::controller(AsistenciaSegController::class)->group(function(){
     Route::put('asistencia_seg_lec/{id}', 'update_image_lec')->name('asistencia_seg_lec.update_image');
     Route::delete('asistencia_seg_lec/{id}', 'destroy_lec')->name('asistencia_seg_lec.destroy');
     Route::get('asistencia_seg_lec/excel', 'excel_lec')->name('asistencia_seg_lec.excel');
+    Route::get('asistencia_seg_man', 'index_man')->name('asistencia_seg_man');
+    Route::post('asistencia_seg_man/list', 'list_man')->name('asistencia_seg_man.list');
+    Route::post('asistencia_seg_man/traer_colaborador', 'traer_colaborador_man')->name('asistencia_seg_man.traer_colaborador');
+    Route::get('asistencia_seg_man/create', 'create_man')->name('asistencia_seg_man.create');
+    Route::post('asistencia_seg_man', 'store_man')->name('asistencia_seg_man.store');
+    Route::get('asistencia_seg_man/{id}/{tipo}/edit', 'edit_man')->name('asistencia_seg_man.edit');
+    Route::get('asistencia_seg_man/{id}/image', 'image_man')->name('asistencia_seg_man.image');
+    Route::get('asistencia_seg_man/{id}/obs', 'obs_man')->name('asistencia_seg_man.obs');
+    Route::put('asistencia_seg_man/{id}', 'update_obs_man')->name('asistencia_seg_man.update_obs');
+    Route::get('asistencia_seg_man/{cod_base}/{id_colaborador}/{inicio}/{fin}/excel', 'excel_man')->name('asistencia_seg_man.excel');
 });
 
 
