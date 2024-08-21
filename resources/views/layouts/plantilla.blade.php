@@ -458,11 +458,11 @@
                                 session('usuario')->id_puesto == 279 || 
                                 session('usuario')->id_puesto == 22 || 
                                 session('usuario')->id_puesto == 133) { ?>
-                                    <li>
+                                    <!--<li>
                                         <a id="postulantes_revisiones" href="{{ route('postulante_revision') }}">
                                             <p class="romperpalabra"><span id="icono_active2"></span> Postulantes Revisión</p>
                                         </a>
-                                    </li>
+                                    </li>-->
                                 <?php } ?>
                             </ul>
                         </li>
