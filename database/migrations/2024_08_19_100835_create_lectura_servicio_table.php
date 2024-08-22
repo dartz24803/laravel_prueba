@@ -16,10 +16,10 @@ return new class extends Migration
             $table->string('cod_base',5)->nullable();
             $table->date('fecha')->nullable();
             $table->time('hora_ing')->nullable();
-            $table->decimal('lect_ing',10,3)->nullable();
+            $table->decimal('lect_ing',20,3)->nullable();
             $table->string('img_ing',100)->nullable();
             $table->time('hora_sal')->nullable();
-            $table->decimal('lect_sal',10,3)->nullable();
+            $table->decimal('lect_sal',20,3)->nullable();
             $table->string('img_sal',100)->nullable();
             $table->unsignedBigInteger('id_servicio');
             $table->unsignedBigInteger('id_datos_servicio');

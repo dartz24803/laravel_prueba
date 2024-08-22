@@ -441,6 +441,7 @@ Route::controller(LecturaServicioController::class)->group(function(){
     Route::get('lectura_servicio_reg/{id}/{tipo}/edit', 'edit_reg')->name('lectura_servicio_reg.edit');
     Route::get('lectura_servicio_reg/{id}/{tipo}/download', 'download_reg')->name('lectura_servicio_reg.download');
     Route::put('lectura_servicio_reg/{id}/{tipo}', 'update_reg')->name('lectura_servicio_reg.update');
+    Route::put('lectura_servicio_reg/{id}/{tipo}/direct', 'update_directo_reg')->name('lectura_servicio_reg.update_directo');
     Route::get('lectura_servicio_reg/{id_servicio}/{mes}/{anio}/excel', 'excel_reg')->name('lectura_servicio_reg.excel');
     Route::get('lectura_servicio_ges', 'index_ges')->name('lectura_servicio_ges');
     Route::post('lectura_servicio_ges/list', 'list_ges')->name('lectura_servicio_ges.list');
@@ -452,6 +453,7 @@ Route::controller(LecturaServicioController::class)->group(function(){
     Route::get('lectura_servicio_ges/{id}/{tipo}/edit', 'edit_ges')->name('lectura_servicio_ges.edit');
     Route::get('lectura_servicio_ges/{id}/{tipo}/download', 'download_reg')->name('lectura_servicio_ges.download');
     Route::put('lectura_servicio_ges/{id}/{tipo}', 'update_reg')->name('lectura_servicio_ges.update');
+    Route::put('lectura_servicio_ges/{id}/{tipo}/direct', 'update_directo_reg')->name('lectura_servicio_ges.update_directo');
     Route::delete('lectura_servicio_ges/{id}', 'destroy_ges')->name('lectura_servicio_ges.destroy');
     Route::get('lectura_servicio_ges/{id_servicio}/{cod_base}/{mes}/{anio}/excel', 'excel_ges')->name('lectura_servicio_ges.excel');
 });
