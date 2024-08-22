@@ -43,11 +43,9 @@ class LecturaServicio extends Model
             $parte_servicio = "ls.id_servicio=".$dato['id_servicio']." AND";
         }
         $parte_base = "";
-        //if(isset($dato['cod_base'])){
-            if($dato['cod_base']!="0"){
-                $parte_base = "ls.cod_base='".$dato['cod_base']."' AND";
-            }
-        //}
+        if($dato['cod_base']!="0"){
+            $parte_base = "ls.cod_base='".$dato['cod_base']."' AND";
+        }
         $parte_anio = "";
         if($dato['anio']!="0"){
             $parte_anio = "YEAR(ls.fecha)='".$dato['anio']."' AND";
