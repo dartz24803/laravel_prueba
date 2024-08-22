@@ -109,6 +109,76 @@
                 onkeypress="return solo_Numeros(event);">
             </div>
         </div>
+
+        <div class="row">
+            <div class="form-group col-lg-12">
+                <h5 class="modal-title">Parámetros de consumo</h5>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Lunes:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <input type="text" class="form-control" name="parametro_1" id="parametro_1" placeholder="Ingresar parámetro"
+                onkeypress="return solo_Numeros(event);">
+            </div>
+
+            <div class="form-group col-lg-2">
+                <label>Martes:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <input type="text" class="form-control" name="parametro_2" id="parametro_2" placeholder="Ingresar parámetro"
+                onkeypress="return solo_Numeros(event);">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Miércoles:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <input type="text" class="form-control" name="parametro_3" id="parametro_3" placeholder="Ingresar parámetro"
+                onkeypress="return solo_Numeros(event);">
+            </div>
+
+            <div class="form-group col-lg-2">
+                <label>Jueves:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <input type="text" class="form-control" name="parametro_4" id="parametro_4" placeholder="Ingresar parámetro"
+                onkeypress="return solo_Numeros(event);">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Viernes:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <input type="text" class="form-control" name="parametro_5" id="parametro_5" placeholder="Ingresar parámetro"
+                onkeypress="return solo_Numeros(event);">
+            </div>
+
+            <div class="form-group col-lg-2">
+                <label>Sábado:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <input type="text" class="form-control" name="parametro_6" id="parametro_6" placeholder="Ingresar parámetro"
+                onkeypress="return solo_Numeros(event);">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Domingo:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <input type="text" class="form-control" name="parametro_7" id="parametro_7" placeholder="Ingresar parámetro"
+                onkeypress="return solo_Numeros(event);">
+            </div>
+        </div>
     </div>
 
     <div class="modal-footer">

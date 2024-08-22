@@ -1,24 +1,21 @@
 <?php 
-$id_puesto=$_SESSION['usuario'][0]['id_puesto'];
-$id_nivel=$_SESSION['usuario'][0]['id_nivel'];
+    $id_puesto = session('usuario')->id_puesto;
+    $id_nivel = session('usuario')->id_nivel;
 ?>
-
-<link href="<?php echo base_url(); ?>template/inputfiles/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('template/inputfiles/css/fileinput.css') }}" media="all" rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
-<link href="<?php echo base_url(); ?>template/inputfiles/themes/explorer-fas/theme.css" media="all" rel="stylesheet" type="text/css"/>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/plugins/piexif.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/plugins/sortable.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/fileinput.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/locales/fr.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/locales/es.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/themes/fas/theme.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/themes/explorer-fas/theme.js" type="text/javascript"></script>
+<link href="{{ asset('template/inputfiles/themes/explorer-fas/theme.css') }}" media="all" rel="stylesheet" type="text/css"/>
+<script src="{{ asset('template/inputfiles/js/plugins/piexif.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/plugins/sortable.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/fileinput.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/locales/es.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/themes/fas/theme.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/themes/explorer-fas/theme.js') }}" type="text/javascript"></script>
 
 <style>
      .kv-file-upload{
         display:none!important;
     }
-
     .input-group > .input-group-append > .btn, .input-group > .input-group-append > .input-group-text, .input-group > .input-group-prepend:first-child > .btn:not(:first-child), .input-group > .input-group-prepend:first-child > .input-group-text:not(:first-child), .input-group > .input-group-prepend:not(:first-child) > .btn, .input-group > .input-group-prepend:not(:first-child) > .input-group-text {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
@@ -40,10 +37,10 @@ $id_nivel=$_SESSION['usuario'][0]['id_nivel'];
                 <label>Base: </label>
             </div>
             <div  class="form-group col-md-4">
-                <select class="form-control" name="cod_base" id="cod_base" onchange="Buscar_Tipo_Ocu('1')">
+                <select class="form-control" name="cod_base" id="cod_base" onchange="Buscar_Tipo_Ocu()">
                     <option value="0" >Seleccione</option>
                     <?php foreach($list_base as $list){ ?>
-                        <option value="<?php echo $list['cod_base']; ?>"><?php echo $list['cod_base']; ?></option> 
+                        <option value="<?php echo $list->cod_base; ?>"><?php echo $list->cod_base; ?></option> 
                     <?php } ?>
                 </select>   
             </div>
@@ -52,7 +49,7 @@ $id_nivel=$_SESSION['usuario'][0]['id_nivel'];
                 <label>Tipo: </label>
             </div>
             <div class="form-group col-md-4" id="div_tipo_o">
-                <select class="form-control" name="id_tipo" id="id_tipo">
+                <select class="form-control" name="id_tipo" id="id_tipo" onchange="Tipo_Piocha()">
                     <option value="0">Seleccione</option>
                 </select>   
             </div>
@@ -86,8 +83,8 @@ $id_nivel=$_SESSION['usuario'][0]['id_nivel'];
                 <select class="form-control basic_insert" name="id_usuario" id="id_usuario">
                     <option value="0">Seleccionar</option>
                     <?php foreach($list_usuario as $list){ ?>
-                        <option value="<?php echo $list['id_usuario']; ?>">
-                            <?php echo $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']; ?>
+                        <option value="<?php echo $list->id_usuario; ?>">
+                            <?php echo $list->usuario_nombres." ".$list->usuario_apater." ".$list->usuario_amater; ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -107,7 +104,7 @@ $id_nivel=$_SESSION['usuario'][0]['id_nivel'];
                 <select class="form-control" name="id_gestion" id="id_gestion">
                     <option value="0" >Seleccione</option>
                     <?php foreach($list_gestion as $list){ ?>
-                            <option value="<?php echo $list['id_gestion']; ?>"><?php echo $list['nom_gestion']; ?></option>
+                            <option value="<?php echo $list->id_gestion; ?>"><?php echo $list->nom_gestion; ?></option>
                         
                     <?php } ?>
                 </select>   
@@ -217,11 +214,15 @@ $id_nivel=$_SESSION['usuario'][0]['id_nivel'];
         });
 
         var id_tipo = $('#id_tipo').val();
-        var url = "<?php echo site_url(); ?>Corporacion/Tipo_Piocha";
+        var url = "{{ url('OcurrenciaTienda/Tipo_Piocha')}}";
+        var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({
             type:"POST",
             url:url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             data:{'id_tipo':id_tipo},
             success: function(resp) {
                 if(resp=="Si"){
@@ -252,4 +253,100 @@ $id_nivel=$_SESSION['usuario'][0]['id_nivel'];
         initialPreviewAsData: true,
         allowedFileExtensions: ['jpg','png','jpeg'],
     });
+    
+    function Insert_Ocurrencia_Tienda_Admin() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_ocurrencia'));
+        var url = "{{ url('OcurrenciaTienda/Insert_Ocurrencia_Tienda_Admin') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        //if (Valida_Ocurrencia_Tienda_Admin()) { 
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    if (data == "error") {
+                        Swal({
+                            title: 'Registro Denegado',
+                            text: "¡La Ocurrencia ya existe para el día, base e incidencia!",
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    } else {
+                        swal.fire(
+                            'Registro Exitoso!',
+                            'Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            $('#ModalRegistro').modal('hide');
+                            Cambiar_Ocurrencia_Admin();
+                        });
+                    }
+                }
+            });
+        /*} else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }*/
+    }
+/*
+    function Valida_Ocurrencia_Tienda_Admin() {
+        if ($('#id_tipo').val().trim() == '') {
+            msgDate = 'Debe seleccionar tipo.';
+            inputFocus = '#id_tipo';
+            return false;
+        }
+        if ($('#id_gestion').val().trim() == '') {
+            msgDate = 'Debe seleccionar gestión.';
+            inputFocus = '#id_gestion';
+            return false;
+        }
+        if ($('#cod_base').val().trim() == '0') {
+            msgDate = 'Debe seleccionar base.';
+            inputFocus = '#cod_base';
+            return false;
+        }
+        if ($('#descripcion').val().trim() == '') {
+            msgDate = 'Debe ingresar descripción.';
+            inputFocus = '#descripcion';
+            return false;
+        }
+        return true;
+    }*/
+   
+    function Buscar_Tipo_Ocu() {
+        Cargando();
+        var dataString = new FormData(document.getElementById('formulario_ocurrencia'));
+        var url = "{{ url('OcurrenciaTienda/Buscar_Tipo_Ocurrencia') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            data: dataString,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#id_tipo').html(data);
+            }
+        });
+    }
 </script>

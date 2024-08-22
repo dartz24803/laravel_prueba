@@ -31,9 +31,9 @@
                                 @if (session('usuario')->id_puesto==23 || 
                                 session('usuario')->id_puesto==19 || 
                                 session('usuario')->id_nivel==1)
-                                    <li class="nav-item">
+                                    <!--<li class="nav-item">
                                         <a id="a_rep" class="nav-link" onclick="Reporte();" style="cursor: pointer;">Reporte</a>
-                                    </li>
+                                    </li>-->
                                 @endif
                             </ul>
 
@@ -99,7 +99,7 @@
             });
         }
 
-        function Reporte(){
+        /*function Reporte(){
             Cargando();
 
             var url="{{ route('lectura_servicio_ges') }}";
@@ -114,6 +114,6 @@
                     $("#a_rep").addClass('active');
                 }
             });
-        }
+        }*/
     </script>
 @endsection

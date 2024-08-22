@@ -54,17 +54,6 @@ class ReporteProveedoresController extends Controller{
 
             $dato['list_rproveedor'] = CalendarioLogistico::get_list_rproveedor($dato);
         }
-/*
-        $dato['list_proveedor'] = DB::connection('sqlsrv')
-                                ->table('tge_entidades')
-                                ->where('clp_tipenti', 'PR')
-                                ->where('clp_estado', '<>', '*')
-                                ->get()
-                                ->toArray();
-        $dato['list_proveedor2'] = ProveedorGeneral::where('estado', 1)
-                                ->whereIn('id_proveedor_mae', [1,2])
-                                ->get()
-                                ->toArray();*/
         //NOTIFICACIÓN-NO BORRAR
         /*
         $dato['list_noti'] = $this->Model_Corporacion->get_list_notificacion();
@@ -120,17 +109,7 @@ class ReporteProveedoresController extends Controller{
             ]);
         }
     }
-/*
-    public function List_RProveedor(){
-        if ($this->session->userdata('usuario')) {
-            $dato['list_rproveedor'] = $this->Model_Corporacion->get_list_rproveedor();
-            $dato['list_proveedor'] = $this->Model_Corporacion->get_list_proveedor();
-            $this->load->view('Seguridad/Reporte_Proveedores/lista_rproveedor',$dato);
-        }else{
-            redirect('');
-        }
-    }
-*/
+
     public function Buscar_RProveedor(Request $request){
         $id_puesto=session('usuario')->id_puesto;
         $id_nivel=session('usuario')->id_nivel;
@@ -303,7 +282,5 @@ class ReporteProveedoresController extends Controller{
 		header('Cache-Control: max-age=0');
 
 		$writer->save('php://output');
-
-
     }
 }

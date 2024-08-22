@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Base;
 use App\Models\DatosServicio;
 use App\Models\ProveedorServicio;
-use App\Models\SegLugarServicio;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

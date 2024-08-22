@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Base;
 use App\Models\DatosServicio;
 use App\Models\ProveedorServicio;
-use App\Models\SegLugarServicio;
+use App\Models\LugarServicio;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -228,14 +228,14 @@ class LecturaServicioConfController extends Controller
     public function list_da()
     {
         $list_datos_servicio = DatosServicio::leftJoin('proveedor_servicio', 'datos_servicio.id_proveedor_servicio', '=', 'proveedor_servicio.id_proveedor_servicio')
-                                ->select('datos_servicio.id_datos_servicio','seg_lugar_servicio.nom_lugar_servicio',
+                                ->select('datos_servicio.id_datos_servicio','vw_lugar_servicio.nom_lugar_servicio',
                                 'datos_servicio.cod_base','servicio.nom_servicio',
                                 'proveedor_servicio.nom_proveedor_servicio',
                                 'datos_servicio.contrato_servicio','datos_servicio.medidor',
                                 'datos_servicio.suministro','datos_servicio.ruta',
                                 'datos_servicio.cliente','datos_servicio.doc_cliente')
                                 ->join('servicio','servicio.id_servicio','=','datos_servicio.id_servicio')
-                                ->join('seg_lugar_servicio','seg_lugar_servicio.id_lugar_servicio','=','datos_servicio.id_lugar_servicio')
+                                ->join('vw_lugar_servicio','vw_lugar_servicio.id_lugar_servicio','=','datos_servicio.id_lugar_servicio')
                                 ->where('datos_servicio.estado', 1)->get();
         return view('seguridad.administracion.lectura_servicio.datos_servicio.lista', compact('list_datos_servicio'));
     }
@@ -243,7 +243,7 @@ class LecturaServicioConfController extends Controller
     public function create_da()
     {
         $list_base = Base::get_list_todas_bases_agrupadas();
-        $list_lugar = SegLugarServicio::all();
+        $list_lugar = LugarServicio::all();
         return view('seguridad.administracion.lectura_servicio.datos_servicio.modal_registrar', compact(['list_lugar','list_base']));
     }
 
@@ -271,10 +271,24 @@ class LecturaServicioConfController extends Controller
             'id_lugar_servicio' => 'gt:0',
             'cod_base' => 'not_in:0',
             'id_servicio' => 'gt:0',
+            'parametro_1' => 'required_with:suministro',
+            'parametro_2' => 'required_with:suministro',
+            'parametro_3' => 'required_with:suministro',
+            'parametro_4' => 'required_with:suministro',
+            'parametro_5' => 'required_with:suministro',
+            'parametro_6' => 'required_with:suministro',
+            'parametro_7' => 'required_with:suministro'
         ],[
             'id_lugar_servicio.gt' => 'Debe seleccionar lugar.',
             'cod_base.not_in' => 'Debe seleccionar base.',
             'id_servicio.gt' => 'Debe seleccionar servicio.',
+            'parametro_1.required_with' => 'Debe ingresar parámetro para día lunes.',
+            'parametro_2.required_with' => 'Debe ingresar parámetro para día martes.',
+            'parametro_3.required_with' => 'Debe ingresar parámetro para día miércoles.',
+            'parametro_4.required_with' => 'Debe ingresar parámetro para día jueves.',
+            'parametro_5.required_with' => 'Debe ingresar parámetro para día viernes.',
+            'parametro_6.required_with' => 'Debe ingresar parámetro para día sábado.',
+            'parametro_7.required_with' => 'Debe ingresar parámetro para día domingo.'
         ]);
 
         $valida = DatosServicio::where('cod_base', $request->cod_base)->where('id_servicio', $request->id_servicio)
@@ -296,6 +310,13 @@ class LecturaServicioConfController extends Controller
                 'ruta' => $request->ruta,
                 'cliente' => $request->cliente,
                 'doc_cliente' => $request->doc_cliente,
+                'parametro_1' => $request->parametro_1,
+                'parametro_2' => $request->parametro_2,
+                'parametro_3' => $request->parametro_3,
+                'parametro_4' => $request->parametro_4,
+                'parametro_5' => $request->parametro_5,
+                'parametro_6' => $request->parametro_6,
+                'parametro_7' => $request->parametro_7,
                 'estado' => 1,
                 'fec_reg' => now(),
                 'user_reg' => session('usuario')->id_usuario,
@@ -309,7 +330,7 @@ class LecturaServicioConfController extends Controller
     {
         $get_id = DatosServicio::findOrFail($id);
         $list_base = Base::get_list_todas_bases_agrupadas();
-        $list_lugar = SegLugarServicio::all();
+        $list_lugar = LugarServicio::all();
         $list_servicio = ProveedorServicio::select('proveedor_servicio.id_servicio','servicio.nom_servicio')
                         ->join('servicio','servicio.id_servicio','=','proveedor_servicio.id_servicio')
                         ->where('proveedor_servicio.cod_base',$get_id->cod_base)->where('proveedor_servicio.estado',1)
@@ -327,10 +348,24 @@ class LecturaServicioConfController extends Controller
             'id_lugar_servicioe' => 'gt:0',
             'cod_basee' => 'not_in:0',
             'id_servicioe' => 'gt:0',
+            'parametro_1e' => 'required_with:suministroe',
+            'parametro_2e' => 'required_with:suministroe',
+            'parametro_3e' => 'required_with:suministroe',
+            'parametro_4e' => 'required_with:suministroe',
+            'parametro_5e' => 'required_with:suministroe',
+            'parametro_6e' => 'required_with:suministroe',
+            'parametro_7e' => 'required_with:suministroe'
         ],[
             'id_lugar_servicioe.gt' => 'Debe seleccionar lugar.',
             'cod_basee.not_in' => 'Debe seleccionar base.',
             'id_servicioe.gt' => 'Debe seleccionar servicio.',
+            'parametro_1e.required_with' => 'Debe ingresar parámetro para día lunes.',
+            'parametro_2e.required_with' => 'Debe ingresar parámetro para día martes.',
+            'parametro_3e.required_with' => 'Debe ingresar parámetro para día miércoles.',
+            'parametro_4e.required_with' => 'Debe ingresar parámetro para día jueves.',
+            'parametro_5e.required_with' => 'Debe ingresar parámetro para día viernes.',
+            'parametro_6e.required_with' => 'Debe ingresar parámetro para día sábado.',
+            'parametro_7e.required_with' => 'Debe ingresar parámetro para día domingo.'
         ]);
 
         $valida = DatosServicio::where('cod_base', $request->cod_basee)->where('id_servicio', $request->id_servicioe)
@@ -353,6 +388,13 @@ class LecturaServicioConfController extends Controller
                 'ruta' => $request->rutae,
                 'cliente' => $request->clientee,
                 'doc_cliente' => $request->doc_clientee,
+                'parametro_1' => $request->parametro_1e,
+                'parametro_2' => $request->parametro_2e,
+                'parametro_3' => $request->parametro_3e,
+                'parametro_4' => $request->parametro_4e,
+                'parametro_5' => $request->parametro_5e,
+                'parametro_6' => $request->parametro_6e,
+                'parametro_7' => $request->parametro_7e,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);

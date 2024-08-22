@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SegLugarServicio extends Model
+class LugarServicio extends Model
 {
     use HasFactory;
 
-    protected $table = 'seg_lugar_servicio';
+    protected $table = 'vw_lugar_servicio';
 
     public $timestamps = false;
 

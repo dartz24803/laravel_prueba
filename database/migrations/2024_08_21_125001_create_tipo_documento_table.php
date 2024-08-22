@@ -26,6 +26,7 @@ return new class extends Migration
             $table->dateTime('fec_act')->nullable();
             $table->integer('user_eli')->nullable();
             $table->dateTime('fec_eli')->nullable();
+            $table->integer('digitos')->nullable();
             //$table->timestamps();
         });
     }
