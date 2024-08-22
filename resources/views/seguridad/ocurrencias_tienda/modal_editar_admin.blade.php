@@ -346,11 +346,15 @@
     $(document).on('click', '#delete_file', function() {
         image_id = $(this).data('image_id');
         file_col = $('#i_' + image_id);
+        var csrfToken = $('input[name="_token"]').val();
         $.ajax({
             type: 'POST',
-            url: "{{ url('Corporacion/Delete_Archivo_Ocurrencia')}}",
+            url: "{{ url('OcurrenciaTienda/Delete_Archivo_Ocurrencia')}}",
             data: {
                 image_id: image_id
+            },
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
             },
             success: function(data) {
                 file_col.remove();
