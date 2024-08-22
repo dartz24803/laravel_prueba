@@ -23,6 +23,13 @@ return new class extends Migration
             $table->string('img_sal',100)->nullable();
             $table->unsignedBigInteger('id_servicio');
             $table->unsignedBigInteger('id_datos_servicio');
+            $table->integer('parametro_1')->nullable();
+            $table->integer('parametro_2')->nullable();
+            $table->integer('parametro_3')->nullable();
+            $table->integer('parametro_4')->nullable();
+            $table->integer('parametro_5')->nullable();
+            $table->integer('parametro_6')->nullable();
+            $table->integer('parametro_7')->nullable();
             $table->integer('estado')->nullable();
             $table->integer('user_reg')->nullable();
             $table->dateTime('fec_reg')->nullable();

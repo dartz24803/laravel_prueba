@@ -18,7 +18,7 @@ class TrackingProcesoSeeder extends Seeder
             ['descripcion'=>'TRASLADO'],
             ['descripcion'=>'RECEPCIÓN DE MERCADERÍA'],
             ['descripcion'=>'INSPECCIÓN'],
-            ['descripcion'=>'PAGO DE MERCADERÍA'],
+            ['descripcion'=>'PAGO DE MERCADERÍA11'],
             ['descripcion'=>'INSPECCIÓN DE MERCADERÍA'],
             ['descripcion'=>'DIFERENCIAS'],
             ['descripcion'=>'DEVOLUCIÓN'],
