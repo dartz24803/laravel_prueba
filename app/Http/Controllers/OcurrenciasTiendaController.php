@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Models\Base;
 use App\Models\OcurrenciaArchivo;
@@ -72,26 +72,15 @@ class OcurrenciasTiendaController extends Controller{
 
     //-------------------------arreglar-----------------------------
     public function Confirmar_Revision_Ocurrencia(Request $request){
-        $base = $request->input("base");
-        $cant = Ocurrencias::where('revisado', 0)
-                    ->whereDate('fec_ocurrencia', Carbon::now()->format('Y-m-d'))
-                    ->where('estado', 1)
-                    ->where('cod_base', $base)
-                    ->count();
-        if($cant==0){
-            echo "error";
-        }else{
-            $id_usuario = session('usuario')[0]['id_usuario']; // Obtén el ID del usuario de la sesión
+        $id = $request->input("id");
+        $id_usuario = session('usuario')->id_usuario; // Obtén el ID del usuario de la sesión
 
-            Ocurrencias::whereDate('fec_ocurrencia', Carbon::now()->format('Y-m-d'))
-                ->where('cod_base', $base)
-                ->where('revisado', 0)
-                ->update([
-                    'revisado' => 1,
-                    'fec_revisado' => DB::raw('NOW()'),
-                    'user_revisado' => $id_usuario,
-                ]);
-        }
+        Ocurrencias::where('id_ocurrencia', $id)
+            ->update([
+                'revisado' => 1,
+                'fec_revisado' => DB::raw('NOW()'),
+                'user_revisado' => $id_usuario,
+            ]);
     }
 
     public function Modal_Ocurrencia_Tienda_Admin(){
@@ -273,37 +262,45 @@ class OcurrenciasTiendaController extends Controller{
 
     public function Descargar_Archivo_Ocurrencia($id_ocurrencia_archivo) {
         // Obtener el archivo de la base de datos
+        //print_r($id_ocurrencia_archivo);
         $archivo = OcurrenciaArchivo::where('estado', 1)
-                    ->where('id_ocurrencia', $id_ocurrencia_archivo)
+                    ->where('id_ocurrencia_archivo', $id_ocurrencia_archivo)
                     ->first();
 
         // Obtener la URL de configuración
         $config = Config::where('estado', 1)
                     ->where('descrip_config', 'Ocurrencia_Tienda')
                     ->first();
-
-        // Verificar si se obtuvieron los datos
-        if (!$archivo || !$config) {
-            return abort(404, 'Archivo o configuración no encontrada.');
-        }
-
+        
         // Construir la ruta completa del archivo
         $filePath = $config->url_config . $archivo->archivo;
-        $fileName = basename($filePath);
-        print_r($archivo);
-/*
-        // Descargar el archivo
-        if (file_exists($filePath)) {
-            return Response::download($filePath, $fileName);
-        } else {
-            return abort(404, 'El archivo no existe en el servidor.');
-        }*/
+        // $fileName = basename($filePath);
+        
+
+        // URL del archivo
+        $url = $filePath;
+
+        // Crear un cliente Guzzle
+        $client = new Client();
+
+        // Realizar la solicitud GET para obtener el archivo
+        $response = $client->get($url);
+
+        // Obtener el contenido del archivo
+        $content = $response->getBody()->getContents();
+
+        // Obtener el nombre del archivo desde la URL
+        $filename = basename($url);
+
+        // Devolver el contenido del archivo en la respuesta
+        return response($content, 200)
+                    ->header('Content-Type', $response->getHeaderLine('Content-Type'))
+                    ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
 
-
-    public function Delete_Archivo_Ocurrencia() {
-        $id_ocurrencia_archivo = $this->input->post('image_id');
-        $this->Model_Corporacion->delete_archivo_ocurrencia($id_ocurrencia_archivo);
+    public function Delete_Archivo_Ocurrencia(Request $request) {
+        $id_ocurrencia_archivo = $request->input('image_id');
+        OcurrenciaArchivo::where('id_ocurrencia_archivo', $id_ocurrencia_archivo)->delete();
     }
 
     public function Update_Ocurrencia_Tienda(Request $request){
@@ -325,6 +322,7 @@ class OcurrenciasTiendaController extends Controller{
                     ->where('id_conclusion', $request->id_conclusione)
                     ->where('id_gestion', $request->id_gestione)
                     ->where('descripcion', $request->descripcione)
+                    ->where('id_ocurrencia', '<>', $request->id_ocurrencia)
                     ->where('estado', 1)
                     ->exists();
         if ($valida){
@@ -373,11 +371,12 @@ class OcurrenciasTiendaController extends Controller{
                             $ext = pathinfo($path, PATHINFO_EXTENSION);
                             $nombre_soli="Ocurrencia_Tienda_".$fecha."_".rand(10,199);
                             $nombre = $nombre_soli.".".$ext;
-                            $dato['ruta']=$nombre;
+                            $dato2['archivo']=$nombre;
 
                             ftp_pasv($con_id,true);
                             $subio = ftp_put($con_id,"SEGURIDAD/OCURRENCIAS/".$nombre,$source_file,FTP_BINARY);
                             if($subio){
+                                $dato2['id_ocurrencia'] = $request->id_ocurrencia;
                                 $dato2['estado']=1;
                                 $dato2['fec_reg']=now();
                                 $dato2['user_reg']=session('usuario')->id_usuario;

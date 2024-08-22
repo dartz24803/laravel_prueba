@@ -28,13 +28,13 @@ $id_nivel= session('usuario')->id_nivel;
                                     </button>
                                 </div> 
 
-                                <?php if($id_nivel==1 || $id_puesto==23 || $id_puesto==26){ ?>
+                                {{-- <?php if($id_nivel==1 || $id_puesto==23 || $id_puesto==26){ ?>
                                     <div class="form-group col-md-2">
                                         <button type="button" class="btn btn-primary mb-2 mr-2" onclick="Confirmar_Revision()" <?php if($cantidad_revisadas==0){ echo "disabled"; } ?>>
                                             Confirmar revisión
                                         </button>
                                     </div> 
-                                <?php } ?>
+                                <?php } ?> --}}
 
                                 <div class="form-group col-md-1">
                                     <a class="btn mb-2 mr-2" style="background-color: #28a745 !important;" onclick="Excel_Ocurrencia();">
@@ -311,68 +311,45 @@ $id_nivel= session('usuario')->id_nivel;
         });  
     }
 
-    function Confirmar_Revision(){
-        $(document)
-        .ajaxStart(function () {
-            $.blockUI({
-                message: '<svg> ... </svg>',
-                fadeIn: 800,
-                overlayCSS: {
-                    backgroundColor: '#1b2024',
-                    opacity: 0.8,
-                    zIndex: 1200,
-                    cursor: 'wait'
-                },
-                css: {
-                    border: 0,
-                    color: '#fff',
-                    zIndex: 1201,
-                    padding: 0,
-                    backgroundColor: 'transparent'
-                }
-            });
-        })
-        .ajaxStop(function () {
-            $.blockUI({
-                message: '<svg> ... </svg>',
-                fadeIn: 800,
-                timeout: 100,
-                overlayCSS: {
-                    backgroundColor: '#1b2024',
-                    opacity: 0.8,
-                    zIndex: 1200,
-                    cursor: 'wait'
-                },
-                css: {
-                    border: 0,
-                    color: '#fff',
-                    zIndex: 1201,
-                    padding: 0,
-                    backgroundColor: 'transparent'
-                }
-            });
-        });
-        var base_busq = $('#base_busq').val();
-        var url="{{ url('OcurrenciaTienda/Confirmar_Revision_Ocurrencia') }}";
+    function Confirmar_Revision(id) {
+        Cargando();
+        var url = "{{ url('OcurrenciaTienda/Confirmar_Revision_Ocurrencia') }}";
         var csrfToken = $('input[name="_token"]').val();
 
-        $.ajax({
-            type:"POST",
-            url:url,
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
-            success:function (data) {
-                swal.fire(
-                    'Confirmación Exitosa',
-                    'Haga clic en el botón!',
-                    'success'
-                ).then(function() {
-                    Cambiar_Ocurrencia_Admin();
+        Swal({
+            title: '¿Realmente desea confirmar el registro?',
+            text: "El registro será confirmado",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    data: {
+                        'id': id
+                    },
+                    success: function() {
+                        Swal(
+                            'Confirmación Exitosa',
+                            'Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            Cambiar_Ocurrencia_Admin(); // Ejecuta la función después de la confirmación
+                        });
+                    },
                 });
             }
-        });
+        })
     }
+
 
     function Delete_Ocurrencia_Tienda(id) {
         $(document)
