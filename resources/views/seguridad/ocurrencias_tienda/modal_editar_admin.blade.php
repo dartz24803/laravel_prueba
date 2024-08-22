@@ -1,13 +1,12 @@
-<link href="<?php echo base_url(); ?>template/inputfiles/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('template/inputfiles/css/fileinput.css') }}" media="all" rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
-<link href="<?php echo base_url(); ?>template/inputfiles/themes/explorer-fas/theme.css" media="all" rel="stylesheet" type="text/css"/>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/plugins/piexif.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/plugins/sortable.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/fileinput.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/locales/fr.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/locales/es.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/themes/fas/theme.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/themes/explorer-fas/theme.js" type="text/javascript"></script>
+<link href="{{ asset('template/inputfiles/themes/explorer-fas/theme.css') }}" media="all" rel="stylesheet" type="text/css"/>
+<script src="{{ asset('template/inputfiles/js/plugins/piexif.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/plugins/sortable.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/fileinput.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/locales/es.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/themes/fas/theme.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/themes/explorer-fas/theme.js') }}" type="text/javascript"></script>
 
 <style>
     .input-group>.input-group-append>.btn,
@@ -60,15 +59,15 @@
                 <label>Base: </label>
             </div>
             <div  class="form-group col-md-4">
-                <select class="form-control" name="cod_basee" id="cod_basee" onchange="Buscar_Tipo_Ocu('2')"> 
+                <select class="form-control" name="cod_basee" id="cod_basee" onchange="Buscar_Tipo_Ocu('2')">
                     <option value="0" >Seleccione</option>
-                    <?php foreach($list_base as $list){ 
-                        if($get_id[0]['cod_base']==$list['cod_base']){?> 
-                        <option selected value="<?php echo $list['cod_base']; ?>"><?php echo $list['cod_base']; ?></option> 
+                    <?php foreach($list_base as $list){
+                        if($get_id[0]['cod_base']==$list['cod_base']){?>
+                        <option selected value="<?php echo $list['cod_base']; ?>"><?php echo $list['cod_base']; ?></option>
                         <?php }else{?>
-                        <option value="<?php echo $list['cod_base']; ?>"><?php echo $list['cod_base']; ?></option> 
+                        <option value="<?php echo $list['cod_base']; ?>"><?php echo $list['cod_base']; ?></option>
                         <?php } } ?>
-                </select>   
+                </select>
             </div>
 
             <div class="form-group col-md-2">
@@ -78,8 +77,8 @@
                 <select class="form-control" name="id_tipoe" id="id_tipoe" onchange="Tipo_Piochae();">
                     <option value="0">Seleccione</option>
                     <?php foreach ($list_tipo as $list) { ?>
-                        <option value="<?php echo $list['id_tipo_ocurrencia']; ?>" <?php if($get_id[0]['id_tipo']==$list['id_tipo_ocurrencia']){echo "selected";}?>>
-                            <?php echo $list['nom_tipo_ocurrencia']; ?>
+                        <option value="<?php echo $list->id_tipo_ocurrencia; ?>" <?php if($get_id[0]['id_tipo']==$list->id_tipo_ocurrencia){echo "selected";}?>>
+                            <?php echo $list->nom_tipo_ocurrencia; ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -94,7 +93,7 @@
                     <option value="1" <?php if($get_id[0]['id_zona']==1){ echo "selected"; } ?>>Hombre</option>
                     <option value="2" <?php if($get_id[0]['id_zona']==2){ echo "selected"; } ?>>Mujer</option>
                     <option value="3" <?php if($get_id[0]['id_zona']==3){ echo "selected"; } ?>>Infantil</option>
-                </select>   
+                </select>
             </div>
 
             <div class="form-group col-md-2 ocultar_tipo_piocha_u">
@@ -104,12 +103,12 @@
                 <select class="form-control" name="id_estilo_u" id="id_estilo_u">
                     <option value="0" <?php if($get_id[0]['id_estilo']==0){ echo "selected"; } ?>>Seleccione</option>
                     <option value="1" <?php if($get_id[0]['id_estilo']==1){ echo "selected"; } ?>>Lector de código de barra</option>
-                </select>   
+                </select>
             </div>
 
             <div class="form-group col-md-2">
                 <label class="control-label text-bold">Colaborador: </label>
-            </div>            
+            </div>
             <div class="form-group col-md-10">
                 <select class="form-control basic_update" name="id_usuarioe" id="id_usuarioe">
                     <option value="0" <?php if (!(strcmp(0, $get_id[0]['id_usuario']))) { echo "selected=\"selected\""; } ?>>Seleccionar</option>
@@ -128,7 +127,7 @@
                 <input type="date" class="form-control" id="fec_ocurrenciae" name="fec_ocurrenciae" value="<?php echo $get_id[0]['fec_ocurrencia']; ?>" >
             </div>
 
-            
+
 
             <div class="form-group col-md-2">
                 <label>Conclusión: </label>
@@ -172,7 +171,7 @@
                 <input type="text" class="form-control" id="montoe" name="montoe" placeholder="Ingresar monto" value="<?php echo $get_id[0]['monto'] ?>">
             </div>
 
-            
+
 
             <div class="form-group col-md-2">
                 <label>Hora: </label>
@@ -194,7 +193,7 @@
                 <label>Acción Inmediata: </label>
             </div>
             <div class="form-group col-md-10">
-                <input type="text" class="form-control" id="accion_inmediata" name="accion_inmediata" value="<?php echo $get_id[0]['accion_inmediata'] ?>">  
+                <input type="text" class="form-control" id="accion_inmediata" name="accion_inmediata" value="<?php echo $get_id[0]['accion_inmediata'] ?>">
             </div>-->
 
             <div class="form-group col-md-12">
@@ -261,7 +260,7 @@
         Tipo_Piochae();
     });
 
-    var ss = $(".basic_update").select2({ 
+    var ss = $(".basic_update").select2({
         tags: true
     });
 
@@ -312,11 +311,15 @@
         });
 
         var id_tipo = $('#id_tipoe').val();
-        var url = "<?php echo site_url(); ?>Corporacion/Tipo_Piocha";
+        var url = "{{ url('OcurrenciaTienda/Tipo_Piocha')}}";
+        var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({
             type:"POST",
             url:url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             data:{'id_tipo':id_tipo},
             success: function(resp) {
                 if(resp=="Si"){
@@ -337,7 +340,7 @@
 
     $(document).on('click', '#download_file', function() {
         image_id = $(this).data('image_id');
-        window.location.replace("<?php echo site_url(); ?>Corporacion/Descargar_Archivo_Ocurrencia/" + image_id);
+        window.location.href = "{{ url('OcurrenciaTienda/Descargar_Archivo_Ocurrencia') }}/" + image_id;
     });
 
     $(document).on('click', '#delete_file', function() {
@@ -345,7 +348,7 @@
         file_col = $('#i_' + image_id);
         $.ajax({
             type: 'POST',
-            url: '<?php echo site_url(); ?>Corporacion/Delete_Archivo_Ocurrencia',
+            url: "{{ url('Corporacion/Delete_Archivo_Ocurrencia')}}",
             data: {
                 image_id: image_id
             },
@@ -365,4 +368,55 @@
         initialPreviewAsData: true,
         allowedFileExtensions: ['jpg','png','jpeg'],
     });
+
+    function Edit_Ocurrencia_Tienda_Admin() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_ocurrenciae'));
+        var url = "{{ url('OcurrenciaTienda/Update_Ocurrencia_Tienda') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        //if (Valida_Ocurrencia_Tienda_Admine()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function(data) {
+                    if (data == "error") {
+                        Swal({
+                            title: 'Actualización Denegada',
+                            text: "¡La Ocurrencia ya existe para el día, base e incidencia!",
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    } else {
+                        swal.fire(
+                            'Actualización Exitosa!',
+                            'Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            $('#ModalUpdate').modal('hide');
+                            Cambiar_Ocurrencia_Admin();
+                        });
+                    }
+                }
+            });
+        /*} else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }*/
+    }
 </script>
