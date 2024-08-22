@@ -271,10 +271,24 @@ class LecturaServicioConfController extends Controller
             'id_lugar_servicio' => 'gt:0',
             'cod_base' => 'not_in:0',
             'id_servicio' => 'gt:0',
+            'parametro_1' => 'required_with:suministro',
+            'parametro_2' => 'required_with:suministro',
+            'parametro_3' => 'required_with:suministro',
+            'parametro_4' => 'required_with:suministro',
+            'parametro_5' => 'required_with:suministro',
+            'parametro_6' => 'required_with:suministro',
+            'parametro_7' => 'required_with:suministro'
         ],[
             'id_lugar_servicio.gt' => 'Debe seleccionar lugar.',
             'cod_base.not_in' => 'Debe seleccionar base.',
             'id_servicio.gt' => 'Debe seleccionar servicio.',
+            'parametro_1.required_with' => 'Debe ingresar parámetro para día lunes.',
+            'parametro_2.required_with' => 'Debe ingresar parámetro para día martes.',
+            'parametro_3.required_with' => 'Debe ingresar parámetro para día miércoles.',
+            'parametro_4.required_with' => 'Debe ingresar parámetro para día jueves.',
+            'parametro_5.required_with' => 'Debe ingresar parámetro para día viernes.',
+            'parametro_6.required_with' => 'Debe ingresar parámetro para día sábado.',
+            'parametro_7.required_with' => 'Debe ingresar parámetro para día domingo.'
         ]);
 
         $valida = DatosServicio::where('cod_base', $request->cod_base)->where('id_servicio', $request->id_servicio)
@@ -296,6 +310,13 @@ class LecturaServicioConfController extends Controller
                 'ruta' => $request->ruta,
                 'cliente' => $request->cliente,
                 'doc_cliente' => $request->doc_cliente,
+                'parametro_1' => $request->parametro_1,
+                'parametro_2' => $request->parametro_2,
+                'parametro_3' => $request->parametro_3,
+                'parametro_4' => $request->parametro_4,
+                'parametro_5' => $request->parametro_5,
+                'parametro_6' => $request->parametro_6,
+                'parametro_7' => $request->parametro_7,
                 'estado' => 1,
                 'fec_reg' => now(),
                 'user_reg' => session('usuario')->id_usuario,
@@ -327,10 +348,24 @@ class LecturaServicioConfController extends Controller
             'id_lugar_servicioe' => 'gt:0',
             'cod_basee' => 'not_in:0',
             'id_servicioe' => 'gt:0',
+            'parametro_1e' => 'required_with:suministroe',
+            'parametro_2e' => 'required_with:suministroe',
+            'parametro_3e' => 'required_with:suministroe',
+            'parametro_4e' => 'required_with:suministroe',
+            'parametro_5e' => 'required_with:suministroe',
+            'parametro_6e' => 'required_with:suministroe',
+            'parametro_7e' => 'required_with:suministroe'
         ],[
             'id_lugar_servicioe.gt' => 'Debe seleccionar lugar.',
             'cod_basee.not_in' => 'Debe seleccionar base.',
             'id_servicioe.gt' => 'Debe seleccionar servicio.',
+            'parametro_1e.required_with' => 'Debe ingresar parámetro para día lunes.',
+            'parametro_2e.required_with' => 'Debe ingresar parámetro para día martes.',
+            'parametro_3e.required_with' => 'Debe ingresar parámetro para día miércoles.',
+            'parametro_4e.required_with' => 'Debe ingresar parámetro para día jueves.',
+            'parametro_5e.required_with' => 'Debe ingresar parámetro para día viernes.',
+            'parametro_6e.required_with' => 'Debe ingresar parámetro para día sábado.',
+            'parametro_7e.required_with' => 'Debe ingresar parámetro para día domingo.'
         ]);
 
         $valida = DatosServicio::where('cod_base', $request->cod_basee)->where('id_servicio', $request->id_servicioe)
@@ -353,6 +388,13 @@ class LecturaServicioConfController extends Controller
                 'ruta' => $request->rutae,
                 'cliente' => $request->clientee,
                 'doc_cliente' => $request->doc_clientee,
+                'parametro_1' => $request->parametro_1e,
+                'parametro_2' => $request->parametro_2e,
+                'parametro_3' => $request->parametro_3e,
+                'parametro_4' => $request->parametro_4e,
+                'parametro_5' => $request->parametro_5e,
+                'parametro_6' => $request->parametro_6e,
+                'parametro_7' => $request->parametro_7e,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
