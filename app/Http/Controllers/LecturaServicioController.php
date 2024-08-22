@@ -40,7 +40,7 @@ class LecturaServicioController extends Controller
 
     public function list_reg(Request $request)
     {
-        $list_lectura_servicio = LecturaServicio::get_list_lectura_servicio(['id_servicio'=>$request->id_servicio,'mes'=>$request->mes,'anio'=>$request->anio]);
+        $list_lectura_servicio = LecturaServicio::get_list_lectura_servicio(['id_servicio'=>$request->id_servicio,'cod_base'=>session('usuario')->centro_labores,'mes'=>$request->mes,'anio'=>$request->anio]);
         return view('seguridad.lectura_servicio.lectura.lista', compact('list_lectura_servicio'));
     }
 
@@ -52,8 +52,13 @@ class LecturaServicioController extends Controller
 
     public function traer_suministro_reg(Request $request)
     {
+        if($request->cod_base){
+            $cod_base = $request->cod_base;
+        }else{
+            $cod_base = session('usuario')->centro_labores;
+        }
         $list_suministro = DatosServicio::select('id_datos_servicio','suministro')
-                        ->where('cod_base',session('usuario')->centro_labores)
+                        ->where('cod_base',$cod_base)
                         ->where('id_servicio',$request->id_servicio)->where('id_lugar_servicio','!=','1')
                         ->where('estado',1)->get();
         return view('seguridad.lectura_servicio.lectura.suministro',compact('list_suministro'));
@@ -61,9 +66,14 @@ class LecturaServicioController extends Controller
 
     public function traer_lectura_reg(Request $request)
     {
+        if($request->cod_base){
+            $cod_base = $request->cod_base;
+        }else{
+            $cod_base = session('usuario')->centro_labores;
+        }
         $ultimo = LecturaServicio::select('lect_ing')
                     ->where('id_servicio',$request->id_servicio)
-                    ->where('cod_base',session('usuario')->centro_labores)
+                    ->where('cod_base',$cod_base)
                     ->where('id_datos_servicio',$request->id_datos_servicio)
                     ->where('estado',1)->orderBy('id','DESC')->first();
         if($ultimo){
@@ -73,7 +83,19 @@ class LecturaServicioController extends Controller
 
     public function store_reg(Request $request)
     {
-        $request->validate([
+        /*VARIA SEGÚN SI ES LECTURA O GESTIÓN, 
+        Si es Gestión se manda $request->cod_base sino se pone el centro_labores del usuario que va 
+        registrar*/
+        if($request->cod_base){
+            $fecha = $request->fecha;
+            $cod_base = $request->cod_base;
+        }else{
+            $fecha = date('Y-m-d');
+            $cod_base = session('usuario')->centro_labores;
+        }
+        //END
+
+        $validate = $request->validate([
             'id_servicio' => 'gt:0',
             'id_datos_servicio' => 'gt:0',
             'hora_ing' => 'required',
@@ -85,7 +107,139 @@ class LecturaServicioController extends Controller
             'lect_ing.required' => 'Debe ingresar lectura.'
         ]);
 
-        $valida = LecturaServicio::where('fecha', date('Y-m-d'))->where('id_servicio', $request->id_servicio)
+        $ultimo = LecturaServicio::select('lect_sal')
+                ->where('id_servicio',$request->id_servicio)
+                ->where('cod_base',$cod_base)
+                ->where('id_datos_servicio',$request->id_datos_servicio)
+                ->where('estado',1)->orderBy('id','DESC')->first();
+        if(isset($ultimo->lect_sal)){
+            $lect_sal = $ultimo->lect_sal;
+        }else{
+            $lect_sal = 0;
+        }
+
+        $errors = [];
+
+        if ($validate['lect_ing'] <= $lect_sal) {
+            $errors['lect_ing'] = ['Debe ingresar lectura mayor a la última lectura de salida.'];
+        }
+
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
+        $get_suministro = DatosServicio::findOrFail($request->id_datos_servicio);
+        $parametro = "parametro_".date("N", strtotime($fecha));
+        $ultimo = LecturaServicio::select('lect_sal')
+                ->where('id_servicio',$request->id_servicio)
+                ->where('cod_base',$cod_base)
+                ->where('id_datos_servicio',$request->id_datos_servicio)
+                ->where('estado',1)->orderBy('id','DESC')->first();
+        if(isset($ultimo->lect_sal)){
+            $lect_sal = $ultimo->lect_sal;
+        }else{
+            $lect_sal = $request->lect_ing;
+        }
+
+        $valida = LecturaServicio::where('fecha', $fecha)->where('id_servicio', $request->id_servicio)
+                ->where('id_datos_servicio', $request->id_datos_servicio)->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else if(($request->lect_ing-$lect_sal)>$get_suministro->$parametro){
+            echo "parametro";
+        }else{
+            $archivo = "";
+            if($_FILES["img_ing"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    $path = $_FILES["img_ing"]["name"];
+                    $source_file = $_FILES['img_ing']['tmp_name'];
+    
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $nombre_soli = "LectIng_".$request->id_servicio."_".$request->id_datos_servicio."_".date('YmdHis');
+                    $nombre = $nombre_soli.".".strtolower($ext);
+    
+                    ftp_pasv($con_id,true);
+                    $subio = ftp_put($con_id,"LECTURA_SERVICIO/".$nombre,$source_file,FTP_BINARY);
+                    if($subio){
+                        $archivo = "https://lanumerounocloud.com/intranet/LECTURA_SERVICIO/".$nombre;
+                    }else{
+                        echo "Archivo no subido correctamente";
+                    }
+                }else{
+                    echo "No se conecto";
+                }
+            }
+
+            LecturaServicio::create([
+                'cod_base' => $cod_base,
+                'fecha' => $fecha,
+                'hora_ing' => $request->hora_ing,
+                'lect_ing' => $request->lect_ing,
+                'img_ing' => $archivo,
+                'id_servicio' => $request->id_servicio,
+                'id_datos_servicio' => $request->id_datos_servicio,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+    
+    public function store_directo_reg(Request $request)
+    {
+        /*VARIA SEGÚN SI ES LECTURA O GESTIÓN, 
+        Si es Gestión se manda $request->cod_base sino se pone el centro_labores del usuario que va 
+        registrar*/
+        if($request->cod_base){
+            $fecha = $request->fecha;
+            $cod_base = $request->cod_base;
+        }else{
+            $fecha = date('Y-m-d');
+            $cod_base = session('usuario')->centro_labores;
+        }
+        //END
+
+        $validate = $request->validate([
+            'id_servicio' => 'gt:0',
+            'id_datos_servicio' => 'gt:0',
+            'hora_ing' => 'required',
+            'lect_ing' => 'required'
+        ],[
+            'id_servicio.gt' => 'Debe seleccionar servicio.',
+            'id_datos_servicio.gt' => 'Debe seleccionar suministro.',
+            'hora_ing.required' => 'Debe ingresar hora.',
+            'lect_ing.required' => 'Debe ingresar lectura.'
+        ]);
+
+        $ultimo = LecturaServicio::select('lect_sal')
+                ->where('id_servicio',$request->id_servicio)
+                ->where('cod_base',$cod_base)
+                ->where('id_datos_servicio',$request->id_datos_servicio)
+                ->where('estado',1)->orderBy('id','DESC')->first();
+        if(isset($ultimo->lect_sal)){
+            $lect_sal = $ultimo->lect_sal;
+        }else{
+            $lect_sal = 0;
+        }                
+
+        $errors = [];
+
+        if ($validate['lect_ing'] <= $lect_sal) {
+            $errors['lect_ing'] = ['Debe ingresar lectura mayor a la última lectura de salida.'];
+        }
+
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
+        $valida = LecturaServicio::where('fecha', $fecha)->where('id_servicio', $request->id_servicio)
                 ->where('id_datos_servicio', $request->id_datos_servicio)->where('estado', 1)->exists();
         if($valida){
             echo "error";
@@ -118,8 +272,8 @@ class LecturaServicioController extends Controller
             }
 
             LecturaServicio::create([
-                'cod_base' => session('usuario')->centro_labores,
-                'fecha' => now(),
+                'cod_base' => $cod_base,
+                'fecha' => $fecha,
                 'hora_ing' => $request->hora_ing,
                 'lect_ing' => $request->lect_ing,
                 'img_ing' => $archivo,
@@ -190,23 +344,157 @@ class LecturaServicioController extends Controller
 
         $errors = [];
 
-        if ($get_id) {
-            if($tipo=="ing"){
-                if($get_id->hora_sal!=""){
-                    if ($validate['hora_'.$tipo.'e'] >= $get_id->hora_sal) {
-                        $errors['hora_'.$tipo.'e'] = ['Debe ingresar hora menor a la de salida.'];
-                    }
-                    if ($validate['lect_'.$tipo.'e'] >= $get_id->lect_sal) {
-                        $errors['lect_'.$tipo.'e'] = ['Debe ingresar lectura menor a la de salida.'];
-                    }
-                }
+        if($tipo=="ing"){
+            $ultimo = LecturaServicio::select('lect_sal')
+                    ->where('id_servicio',$get_id->id_servicio)
+                    ->where('cod_base',$get_id->cod_base)
+                    ->where('id_datos_servicio',$get_id->id_datos_servicio)
+                    ->where('estado',1)->where('id','!=',$id)->orderBy('id','DESC')->first();
+            if(isset($ultimo->lect_sal)){
+                $lect_sal = $ultimo->lect_sal;
             }else{
-                if ($validate['hora_'.$tipo.'e'] < $get_id->hora_ing) {
-                    $errors['hora_'.$tipo.'e'] = ['Debe ingresar hora mayor a la de ingreso.'];
+                $lect_sal = 0;
+            }
+
+            if ($validate['lect_inge'] <= $lect_sal) {
+                $errors['lect_inge'] = ['Debe ingresar lectura mayor a la última lectura de salida.'];
+            }
+            if($get_id->hora_sal!=""){
+                if ($validate['hora_'.$tipo.'e'] >= $get_id->hora_sal) {
+                    $errors['hora_'.$tipo.'e'] = ['Debe ingresar hora menor a la de salida.'];
                 }
-                if ($validate['lect_'.$tipo.'e'] < $get_id->lect_ing) {
-                    $errors['lect_'.$tipo.'e'] = ['Debe ingresar lectura mayor a la de ingreso.'];
+                if ($validate['lect_'.$tipo.'e'] >= $get_id->lect_sal) {
+                    $errors['lect_'.$tipo.'e'] = ['Debe ingresar lectura menor a la de salida.'];
                 }
+            }
+        }else{
+            if ($validate['hora_'.$tipo.'e'] < $get_id->hora_ing) {
+                $errors['hora_'.$tipo.'e'] = ['Debe ingresar hora mayor a la de ingreso.'];
+            }
+            if ($validate['lect_'.$tipo.'e'] < $get_id->lect_ing) {
+                $errors['lect_'.$tipo.'e'] = ['Debe ingresar lectura mayor a la de ingreso.'];
+            }
+        }
+
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
+        $get_suministro = DatosServicio::findOrFail($get_id->id_datos_servicio);
+        $parametro = "parametro_".date("N", strtotime($get_id->fecha));
+        if($tipo=="ing"){
+            $lectura = $request->lect_inge;
+            $ultimo = LecturaServicio::select('lect_sal')
+                    ->where('id_servicio',$get_id->id_servicio)
+                    ->where('cod_base',$get_id->cod_base)
+                    ->where('id_datos_servicio',$get_id->id_datos_servicio)
+                    ->where('estado',1)->where('id','!=',$id)->orderBy('id','DESC')->first();
+            if(isset($ultimo->lect_sal)){
+                $lectura_ant = $ultimo->lect_sal;
+            }else{
+                $lectura_ant = $request->lect_inge;
+            }
+        }else{
+            $lectura = $request->lect_sale;
+            if($get_id->lect_ing){
+                $lectura_ant = $get_id->lect_ing;
+            }else{
+                $lectura_ant = $request->lect_sale;
+            }
+        }
+
+        if(($lectura-$lectura_ant)>$get_suministro->$parametro){
+            echo "parametro";
+        }else{
+            $archivo = "";
+            if($_FILES["img_".$tipo."e"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    if($tipo=="ing"){
+                        if($get_id->img_ing!=""){
+                            ftp_delete($con_id, 'LECTURA_SERVICIO/'.basename($get_id->img_ing));
+                        }
+                    }else{
+                        if($get_id->img_sal!=""){
+                            ftp_delete($con_id, 'LECTURA_SERVICIO/'.basename($get_id->img_sal));
+                        }
+                    }
+                    $path = $_FILES["img_".$tipo."e"]["name"];
+                    $source_file = $_FILES['img_'.$tipo.'e']['tmp_name'];
+    
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $nombre_soli = "LectIng_".$get_id->id_servicio."_".$get_id->id_datos_servicio."_".date('YmdHis');
+                    $nombre = $nombre_soli.".".strtolower($ext);
+    
+                    ftp_pasv($con_id,true);
+                    $subio = ftp_put($con_id,"LECTURA_SERVICIO/".$nombre,$source_file,FTP_BINARY);
+                    if($subio){
+                        $archivo = "https://lanumerounocloud.com/intranet/LECTURA_SERVICIO/".$nombre;
+                    }else{
+                        echo "Archivo no subido correctamente";
+                    }
+                }else{
+                    echo "No se conecto";
+                }
+            }
+    
+            LecturaServicio::findOrFail($id)->update([
+                'hora_'.$tipo => $request->input('hora_'.$tipo.'e'),
+                'lect_'.$tipo => $request->input('lect_'.$tipo.'e'),
+                'img_'.$tipo => $archivo,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function update_directo_reg(Request $request,$id,$tipo)
+    {
+        $validate = $request->validate([
+            'hora_'.$tipo.'e' => 'required',
+            'lect_'.$tipo.'e' => 'required'
+        ],[
+            'hora_'.$tipo.'e.required' => 'Debe ingresar hora.',
+            'lect_'.$tipo.'e.required' => 'Debe ingresar lectura.'
+        ]);
+
+        $get_id = LecturaServicio::findOrFail($id);
+
+        $errors = [];
+
+        if($tipo=="ing"){
+            $ultimo = LecturaServicio::select('lect_sal')
+                    ->where('id_servicio',$get_id->id_servicio)
+                    ->where('cod_base',$get_id->cod_base)
+                    ->where('id_datos_servicio',$get_id->id_datos_servicio)
+                    ->where('estado',1)->where('id','!=',$id)->orderBy('id','DESC')->first();
+            if(isset($ultimo->lect_sal)){
+                $lect_sal = $ultimo->lect_sal;
+            }else{
+                $lect_sal = 0;
+            }
+
+            if ($validate['lect_inge'] <= $lect_sal) {
+                $errors['lect_inge'] = ['Debe ingresar lectura mayor a la última lectura de salida.'];
+            }
+            if($get_id->hora_sal!=""){
+                if ($validate['hora_'.$tipo.'e'] >= $get_id->hora_sal) {
+                    $errors['hora_'.$tipo.'e'] = ['Debe ingresar hora menor a la de salida.'];
+                }
+                if ($validate['lect_'.$tipo.'e'] >= $get_id->lect_sal) {
+                    $errors['lect_'.$tipo.'e'] = ['Debe ingresar lectura menor a la de salida.'];
+                }
+            }
+        }else{
+            if ($validate['hora_'.$tipo.'e'] < $get_id->hora_ing) {
+                $errors['hora_'.$tipo.'e'] = ['Debe ingresar hora mayor a la de ingreso.'];
+            }
+            if ($validate['lect_'.$tipo.'e'] < $get_id->lect_ing) {
+                $errors['lect_'.$tipo.'e'] = ['Debe ingresar lectura mayor a la de ingreso.'];
             }
         }
 
@@ -261,7 +549,7 @@ class LecturaServicioController extends Controller
 
     public function excel_reg($id_servicio,$mes,$anio)
     {
-        $list_lectura_servicio = LecturaServicio::get_list_lectura_servicio(['id_servicio'=>$id_servicio,'mes'=>$mes,'anio'=>$anio]);
+        $list_lectura_servicio = LecturaServicio::get_list_lectura_servicio(['id_servicio'=>$id_servicio,'cod_base'=>session('usuario')->centro_labores,'mes'=>$mes,'anio'=>$anio]);
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -356,90 +644,6 @@ class LecturaServicioController extends Controller
         $list_base = Base::get_list_todas_bases_agrupadas();
         $list_servicio = Servicio::where('lectura',1)->where('estado',1)->get();
         return view('seguridad.lectura_servicio.gestion.modal_registrar',compact('list_base','list_servicio'));
-    }
-
-    public function traer_suministro_ges(Request $request)
-    {
-        $list_suministro = DatosServicio::select('id_datos_servicio','suministro')
-                        ->where('cod_base',$request->cod_base)
-                        ->where('id_servicio',$request->id_servicio)->where('id_lugar_servicio','!=','1')
-                        ->where('estado',1)->get();
-        return view('seguridad.lectura_servicio.gestion.suministro',compact('list_suministro'));
-    }
-
-    public function traer_lectura_ges(Request $request)
-    {
-        $ultimo = LecturaServicio::select('lect_ing')
-                    ->where('id_servicio',$request->id_servicio)
-                    ->where('cod_base',$request->cod_base)
-                    ->where('id_datos_servicio',$request->id_datos_servicio)
-                    ->where('estado',1)->orderBy('id','DESC')->first();
-        if($ultimo){
-            echo $ultimo->lect_ing;
-        }
-    }
-
-    public function store_ges(Request $request)
-    {
-        $request->validate([
-            'id_servicio' => 'gt:0',
-            'id_datos_servicio' => 'gt:0',
-            'hora_ing' => 'required',
-            'lect_ing' => 'required'
-        ],[
-            'id_servicio.gt' => 'Debe seleccionar servicio.',
-            'id_datos_servicio.gt' => 'Debe seleccionar suministro.',
-            'hora_ing.required' => 'Debe ingresar hora.',
-            'lect_ing.required' => 'Debe ingresar lectura.'
-        ]);
-
-        $valida = LecturaServicio::where('fecha', $request->fecha)->where('id_servicio', $request->id_servicio)
-                ->where('id_datos_servicio', $request->id_datos_servicio)->where('estado', 1)->exists();
-        if($valida){
-            echo "error";
-        }else{
-            $archivo = "";
-            if($_FILES["img_ing"]["name"] != ""){
-                $ftp_server = "lanumerounocloud.com";
-                $ftp_usuario = "intranet@lanumerounocloud.com";
-                $ftp_pass = "Intranet2022@";
-                $con_id = ftp_connect($ftp_server);
-                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
-                if($con_id && $lr){
-                    $path = $_FILES["img_ing"]["name"];
-                    $source_file = $_FILES['img_ing']['tmp_name'];
-    
-                    $ext = pathinfo($path, PATHINFO_EXTENSION);
-                    $nombre_soli = "LectIng_".$request->id_servicio."_".$request->id_datos_servicio."_".date('YmdHis');
-                    $nombre = $nombre_soli.".".strtolower($ext);
-    
-                    ftp_pasv($con_id,true);
-                    $subio = ftp_put($con_id,"LECTURA_SERVICIO/".$nombre,$source_file,FTP_BINARY);
-                    if($subio){
-                        $archivo = "https://lanumerounocloud.com/intranet/LECTURA_SERVICIO/".$nombre;
-                    }else{
-                        echo "Archivo no subido correctamente";
-                    }
-                }else{
-                    echo "No se conecto";
-                }
-            }
-
-            LecturaServicio::create([
-                'cod_base' => $request->cod_base,
-                'fecha' => now(),
-                'hora_ing' => $request->hora_ing,
-                'lect_ing' => $request->lect_ing,
-                'img_ing' => $archivo,
-                'id_servicio' => $request->id_servicio,
-                'id_datos_servicio' => $request->id_datos_servicio,
-                'estado' => 1,
-                'fec_reg' => now(),
-                'user_reg' => session('usuario')->id_usuario,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
-        }
     }
 
     public function edit_ges($id,$tipo)
