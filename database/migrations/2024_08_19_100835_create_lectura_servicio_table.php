@@ -39,6 +39,11 @@ return new class extends Migration
             $table->dateTime('fec_eli')->nullable();
             $table->foreign('id_servicio','lser_fk_id_ser')->references('id_servicio')->on('servicio');
             $table->foreign('id_datos_servicio','lser_fk_id_dser')->references('id_datos_servicio')->on('datos_servicio');
+            $table->index(['id_servicio'], 'idx_iser');
+            $table->index(['id_datos_servicio'], 'idx_idser');
+            $table->index(['cod_base'], 'idx_cbas');
+            $table->index(['fecha'], 'idx_fec');
+            $table->index(['estado'], 'idx_est');
             //$table->timestamps();
         });
     }
