@@ -701,6 +701,7 @@ Route::controller(OcurrenciasTiendaController::class)->group(function(){
     Route::post('OcurrenciaTienda/Update_Ocurrencia_Tienda', 'Update_Ocurrencia_Tienda');
     Route::post('OcurrenciaTienda/Confirmar_Revision_Ocurrencia', 'Confirmar_Revision_Ocurrencia');
     Route::get('Corporacion/Excel_Ocurrencia/{cod_base}/{fecha_inicio}/{fecha_fin}/{tipo_ocurrencia}/{colaborador}', 'Excel_Ocurrencia');
+    Route::get('OcurrenciaTienda/Descargar_Archivo_Ocurrencia/{id}', 'Descargar_Archivo_Ocurrencia');
 });
 //Reporte Proveedores
 Route::controller(ReporteProveedoresController::class)->group(function(){

@@ -19,10 +19,11 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
-
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 class OcurrenciasTiendaController extends Controller{
     protected $request;
-    
+
     public function __construct()
     {
         $this->middleware('verificar.sesion.usuario');
@@ -35,7 +36,7 @@ class OcurrenciasTiendaController extends Controller{
                 ->select('id_tipo_ocurrencia', 'nom_tipo_ocurrencia')
                 ->where('estado', 1)
                 ->get();
-        
+
         //$dato['list_tipo_ocurrencia'] = $this->Model_Corporacion->get_combo_tipo_ocurrencia('Todo');
         $list_colaborador = Ocurrencias::get_combo_colaborador_ocurrencia();
 
@@ -45,8 +46,8 @@ class OcurrenciasTiendaController extends Controller{
                     ->whereDate('fec_ocurrencia', now())
                     ->where('estado', 1)
                     ->count();
-                    
-        
+
+
         //NOTIFICACIÓN-NO BORRAR
         /*
         $dato['list_noti'] = $this->Model_Corporacion->get_list_notificacion();
@@ -56,7 +57,7 @@ class OcurrenciasTiendaController extends Controller{
 /*
     public function Traer_Tipo_Ocurrencia_Busq(){
         if ($this->session->userdata('usuario')) {
-            $dato['cod_base'] = $this->input->post("cod_base"); 
+            $dato['cod_base'] = $this->input->post("cod_base");
             $dato['list_tipo_ocurrencia'] = $this->Model_Corporacion->get_combo_tipo_ocurrencia($dato['cod_base']);
             $this->load->view('Admin/Configuracion/Ocurrencia_Tienda/tipo_ocurrencia',$dato);
         }else{
@@ -173,7 +174,7 @@ class OcurrenciasTiendaController extends Controller{
             $dato['id_estilo']= $request->input("id_estilo_i");
             $dato['id_conclusion']= $request->input("id_conclusion");
             $dato['id_gestion']= $request->input("id_gestion");
-            $dato['cantidad'] = $request->input("cantidad"); 
+            $dato['cantidad'] = $request->input("cantidad");
             $dato['monto'] = $request->input("monto");
             $dato['descripcion'] = $request->input("descripcion");
             $dato['cod_base'] = $request->input("cod_base");
@@ -181,7 +182,7 @@ class OcurrenciasTiendaController extends Controller{
             $dato['fec_reg'] =now();
             $dato['user_reg'] = session('usuario')->id_usuario;
             $ocurrencia = Ocurrencias::create($dato);
-            $dato2['id_ocurrencia'] = $ocurrencia->id;
+            $dato2['id_ocurrencia'] = $ocurrencia->id_ocurrencia;
 
             if (isset($_FILES["files"])) {
                 $files = $_FILES["files"];
@@ -217,7 +218,6 @@ class OcurrenciasTiendaController extends Controller{
                                 $dato2['fec_reg']=now();
                                 $dato2['user_reg']=session('usuario')->id_usuario;
                                 OcurrenciaArchivo::create($dato2);
-                                print_r($dato2);
                                 echo "Archivo subido correctamente";
                             }else{
                                 echo "Archivo no subido correctamente";
@@ -226,7 +226,7 @@ class OcurrenciasTiendaController extends Controller{
                     }
                 }
             }
-            
+
         }
     }
 
@@ -244,14 +244,14 @@ class OcurrenciasTiendaController extends Controller{
     }
 
     public function Modal_Update_Ocurrencia_Tienda_Admin($id_ocurrencia){
-        $dato['get_id'] = Ocurrencias::get_list_ocurrencia($id_ocurrencia);    
+        $dato['get_id'] = Ocurrencias::get_list_ocurrencia($id_ocurrencia);
         $dato['get_id_files_ocurrencia'] = OcurrenciaArchivo::where('estado',1)
                                         ->where('id_ocurrencia', $id_ocurrencia)
                                         ->get();
         $dato['list_usuario'] = Usuario::where('estado', 1)
                                 ->whereIn('id_puesto', [23,24,36])
                                 ->get();
-        
+
         $dato['base'] = $dato['get_id'][0]['cod_base'];
         $dato['list_tipo'] = DB::table('tipo_ocurrencia')
                             ->where('base', $dato['base'])
@@ -272,18 +272,34 @@ class OcurrenciasTiendaController extends Controller{
     }
 
     public function Descargar_Archivo_Ocurrencia($id_ocurrencia_archivo) {
-        if ($this->session->userdata('usuario')) {
-            $dato['get_file'] = $this->Model_Corporacion->get_id_archivos_ocurrencia($id_ocurrencia_archivo);
-            $dato['url'] = $this->Model_Configuracion->ruta_archivos_config('Ocurrencia_Tienda');
-            $image = $dato['url'][0]['url_config'].$dato['get_file'][0]['archivo'];
-            $name     = basename($image);
-            $ext      = pathinfo($image, PATHINFO_EXTENSION);
-            force_download($name , file_get_contents($dato['url'][0]['url_config'].$dato['get_file'][0]['archivo']));
+        // Obtener el archivo de la base de datos
+        $archivo = OcurrenciaArchivo::where('estado', 1)
+                    ->where('id_ocurrencia', $id_ocurrencia_archivo)
+                    ->first();
+
+        // Obtener la URL de configuración
+        $config = Config::where('estado', 1)
+                    ->where('descrip_config', 'Ocurrencia_Tienda')
+                    ->first();
+
+        // Verificar si se obtuvieron los datos
+        if (!$archivo || !$config) {
+            return abort(404, 'Archivo o configuración no encontrada.');
         }
-        else{
-            redirect('');
-        }
+
+        // Construir la ruta completa del archivo
+        $filePath = $config->url_config . $archivo->archivo;
+        $fileName = basename($filePath);
+        print_r($archivo);
+/*
+        // Descargar el archivo
+        if (file_exists($filePath)) {
+            return Response::download($filePath, $fileName);
+        } else {
+            return abort(404, 'El archivo no existe en el servidor.');
+        }*/
     }
+
 
     public function Delete_Archivo_Ocurrencia() {
         $id_ocurrencia_archivo = $this->input->post('image_id');
@@ -325,7 +341,7 @@ class OcurrenciasTiendaController extends Controller{
             $dato['id_conclusion']= $request->input("id_conclusione");
             $dato['id_gestion']= $request->input("id_gestione");
             $dato['monto'] = $request->input("montoe");
-            $dato['cantidad'] = $request->input("cantidade"); 
+            $dato['cantidad'] = $request->input("cantidade");
             $dato['descripcion'] = $request->input("descripcione");
             $dato['hora'] = $request->input("horae");
             $dato['fec_act'] =now();
@@ -376,22 +392,22 @@ class OcurrenciasTiendaController extends Controller{
         }
     }
 
-    public function Delete_Ocurrencia(Request $request){ 
+    public function Delete_Ocurrencia(Request $request){
         $id_ocurrencia= $request->input("id_ocurrencia");
         $dato = [
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario,
         ];
-        Ocurrencias::findOrfail($id_ocurrencia)->update($dato); 
+        Ocurrencias::findOrfail($id_ocurrencia)->update($dato);
     }
 
-    public function Excel_Ocurrencia($cod_base,$fecha,$fecha_fin,$id_tipo_ocurrencia,$id_colaborador){  
+    public function Excel_Ocurrencia($cod_base,$fecha,$fecha_fin,$id_tipo_ocurrencia,$id_colaborador){
         $fecha = substr($fecha,0,4)."-".substr($fecha,4,2)."-".substr($fecha,-2);
         $fecha_fin = substr($fecha_fin,0,4)."-".substr($fecha_fin,4,2)."-".substr($fecha_fin,-2);
         $list_ocurrencia = Ocurrencias::get_list_ocurrencia($id_ocurrencia=null,$cod_base,$fecha,$fecha_fin,$id_tipo_ocurrencia,$id_colaborador);
 
-        $spreadsheet = new Spreadsheet(); 
+        $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
         $sheet->getStyle("A1:N1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -416,7 +432,7 @@ class OcurrenciasTiendaController extends Controller{
         $sheet->getColumnDimension('M')->setWidth(85);
         $sheet->getColumnDimension('N')->setWidth(15);
 
-        $sheet->getStyle('A1:N1')->getFont()->setBold(true);  
+        $sheet->getStyle('A1:N1')->getFont()->setBold(true);
 
         $spreadsheet->getActiveSheet()->getStyle("A1:N1")->getFill()
         ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
@@ -449,7 +465,7 @@ class OcurrenciasTiendaController extends Controller{
         $sheet->setCellValue('N1', 'Revisado');
 
         $contador=1;
-        
+
         foreach($list_ocurrencia as $list){
             $contador++;
 
@@ -482,12 +498,12 @@ class OcurrenciasTiendaController extends Controller{
         $filename = 'Lista_Ocurrencia_'.$curdate;
         if (ob_get_contents()) ob_end_clean();
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+        header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"');
         header('Cache-Control: max-age=0');
 
-        $writer->save('php://output'); 
+        $writer->save('php://output');
     }
-    
+
     public function Buscar_Tipo_Ocurrencia(Request $request){
         $dato['list_tipo'] = DB::table('tipo_ocurrencia')
                             ->where('base', $request->input("cod_base"))
