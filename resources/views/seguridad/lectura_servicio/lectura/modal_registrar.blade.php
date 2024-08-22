@@ -93,7 +93,60 @@
             processData: false,
             contentType: false,
             success: function(data) {
-                if(data=="error"){
+                if(data=="parametro"){
+                    Swal({
+                        title: '¿Realmente desea registrar?',
+                        text: "La lectura es mayor a los parámetros definidos para el suministro",
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Si',
+                        cancelButtonText: 'No',
+                        padding: '2em'
+                    }).then((result) => {
+                        if (result.value) {
+                            var dataString = new FormData(document.getElementById('formulario'));
+                            var url = "{{ route('lectura_servicio_reg.store_directo') }}";
+
+                            $.ajax({
+                                url: url,
+                                data: dataString,
+                                type: "POST",
+                                processData: false,
+                                contentType: false,
+                                success: function(data) {
+                                    if(data=="error"){
+                                        Swal({
+                                            title: '¡Registro Denegado!',
+                                            text: "¡El registro ya existe!",
+                                            type: 'error',
+                                            showCancelButton: false,
+                                            confirmButtonColor: '#3085d6',
+                                            confirmButtonText: 'OK',
+                                        });
+                                    }else{
+                                        swal.fire(
+                                            '¡Registro Exitoso!',
+                                            '¡Haga clic en el botón!',
+                                            'success'
+                                        ).then(function() {
+                                            Lista_Lectura_Servicio();
+                                            $("#ModalRegistro .close").click();
+                                        })
+                                    }
+                                },
+                                error:function(xhr) {
+                                    var errors = xhr.responseJSON.errors;
+                                    var firstError = Object.values(errors)[0][0];
+                                    Swal.fire(
+                                        '¡Ups!',
+                                        firstError,
+                                        'warning'
+                                    );
+                                }
+                            });
+                        }
+                    })
+                }else if(data=="error"){
                     Swal({
                         title: '¡Registro Denegado!',
                         text: "¡El registro ya existe!",

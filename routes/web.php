@@ -437,6 +437,7 @@ Route::controller(LecturaServicioController::class)->group(function(){
     Route::post('lectura_servicio_reg/traer_suministro', 'traer_suministro_reg')->name('lectura_servicio_reg.traer_suministro');
     Route::post('lectura_servicio_reg/traer_lectura', 'traer_lectura_reg')->name('lectura_servicio_reg.traer_lectura');
     Route::post('lectura_servicio_reg', 'store_reg')->name('lectura_servicio_reg.store');
+    Route::post('lectura_servicio_reg/direct', 'store_directo_reg')->name('lectura_servicio_reg.store_directo');
     Route::get('lectura_servicio_reg/{id}/{tipo}/edit', 'edit_reg')->name('lectura_servicio_reg.edit');
     Route::get('lectura_servicio_reg/{id}/{tipo}/download', 'download_reg')->name('lectura_servicio_reg.download');
     Route::put('lectura_servicio_reg/{id}/{tipo}', 'update_reg')->name('lectura_servicio_reg.update');
@@ -444,9 +445,10 @@ Route::controller(LecturaServicioController::class)->group(function(){
     Route::get('lectura_servicio_ges', 'index_ges')->name('lectura_servicio_ges');
     Route::post('lectura_servicio_ges/list', 'list_ges')->name('lectura_servicio_ges.list');
     Route::get('lectura_servicio_ges/create', 'create_ges')->name('lectura_servicio_ges.create');
-    Route::post('lectura_servicio_ges/traer_suministro', 'traer_suministro_ges')->name('lectura_servicio_ges.traer_suministro');
-    Route::post('lectura_servicio_ges/traer_lectura', 'traer_lectura_ges')->name('lectura_servicio_ges.traer_lectura');
-    Route::post('lectura_servicio_ges', 'store_ges')->name('lectura_servicio_ges.store');
+    Route::post('lectura_servicio_ges/traer_suministro', 'traer_suministro_reg')->name('lectura_servicio_ges.traer_suministro');
+    Route::post('lectura_servicio_ges/traer_lectura', 'traer_lectura_reg')->name('lectura_servicio_ges.traer_lectura');
+    Route::post('lectura_servicio_ges', 'store_reg')->name('lectura_servicio_ges.store');
+    Route::post('lectura_servicio_ges/direct', 'store_directo_reg')->name('lectura_servicio_ges.store_directo');
     Route::get('lectura_servicio_ges/{id}/{tipo}/edit', 'edit_ges')->name('lectura_servicio_ges.edit');
     Route::get('lectura_servicio_ges/{id}/{tipo}/download', 'download_reg')->name('lectura_servicio_ges.download');
     Route::put('lectura_servicio_ges/{id}/{tipo}', 'update_reg')->name('lectura_servicio_ges.update');
