@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Area;
 use App\Models\Base;
 use App\Models\Postulante;
 use App\Models\Usuario;
@@ -13,6 +14,28 @@ class PostulanteController extends Controller
     public function __construct()
     {
         $this->middleware('verificar.sesion.usuario');
+    }
+
+    public function index()
+    {
+        return view('rrhh.postulante.index');
+    }
+
+    public function index_reg()
+    {
+        return view('rrhh.postulante.registro.index');
+    }
+
+    public function index_tod()
+    {
+        $list_area = Area::where('estado',1)->orderBy('nom_area','ASC')->get();
+        return view('rrhh.postulante.todos.index', compact('list_area'));
+    }
+
+    public function list_tod(Request $request)
+    {
+        $list_todos = Postulante::get_list_todos(['estado_postulante_1'=>$request->estado_postulante_1,'estado_postulante_2'=>$request->estado_postulante_2,'estado_postulante_3'=>$request->estado_postulante_3,'id_area'=>$request->id_area]);
+        return view('rrhh.postulante.todos.lista', compact('list_todos'));
     }
 
     public function index_prev()

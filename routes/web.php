@@ -534,8 +534,16 @@ Route::controller(AsistenciaSegController::class)->group(function(){
     Route::put('asistencia_seg_man/{id}', 'update_obs_man')->name('asistencia_seg_man.update_obs');
     Route::get('asistencia_seg_man/{cod_base}/{id_colaborador}/{inicio}/{fin}/excel', 'excel_man')->name('asistencia_seg_man.excel');
 });
-//RECURSOS HUMANOS - POSTULANTE REVISIÓN
+//RECURSOS HUMANOS - POSTULANTE
 Route::controller(PostulanteController::class)->group(function(){
+    //POSTULANTE
+    Route::get('postulante', 'index')->name('postulante');
+    Route::get('postulante_reg', 'index_reg')->name('postulante_reg');
+    Route::get('postulante_tod', 'index_tod')->name('postulante_tod');
+    Route::post('postulante_tod/list', 'list_tod')->name('postulante_tod.list');
+    Route::put('postulante_tod/{id}', 'update_tod')->name('postulante_tod.update');
+    Route::get('postulante_tod/{cod_base}/{id_colaborador}/{inicio}/{fin}/excel', 'excel_tod')->name('postulante_tod.excel');
+    //REVISIÓN
     Route::get('postulante_revision', 'index_prev')->name('postulante_revision');
     Route::post('postulante_revision/list', 'list_prev')->name('postulante_revision.list');
     Route::get('postulante_revision/{id}/edit', 'edit_prev')->name('postulante_revision.edit');
