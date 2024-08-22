@@ -40,7 +40,7 @@ class LecturaServicioController extends Controller
 
     public function list_reg(Request $request)
     {
-        $list_lectura_servicio = LecturaServicio::get_list_lectura_servicio(['id_servicio'=>$request->id_servicio,'mes'=>$request->mes,'anio'=>$request->anio]);
+        $list_lectura_servicio = LecturaServicio::get_list_lectura_servicio(['id_servicio'=>$request->id_servicio,'cod_base'=>session('usuario')->centro_labores,'mes'=>$request->mes,'anio'=>$request->anio]);
         return view('seguridad.lectura_servicio.lectura.lista', compact('list_lectura_servicio'));
     }
 
@@ -112,10 +112,15 @@ class LecturaServicioController extends Controller
                 ->where('cod_base',$cod_base)
                 ->where('id_datos_servicio',$request->id_datos_servicio)
                 ->where('estado',1)->orderBy('id','DESC')->first();
+        if(isset($ultimo->lect_sal)){
+            $lect_sal = $ultimo->lect_sal;
+        }else{
+            $lect_sal = 0;
+        }
 
         $errors = [];
 
-        if ($validate['lect_ing'] <= $ultimo->lect_sal) {
+        if ($validate['lect_ing'] <= $lect_sal) {
             $errors['lect_ing'] = ['Debe ingresar lectura mayor a la última lectura de salida.'];
         }
 
@@ -125,17 +130,22 @@ class LecturaServicioController extends Controller
 
         $get_suministro = DatosServicio::findOrFail($request->id_datos_servicio);
         $parametro = "parametro_".date("N", strtotime($fecha));
-        $ultimo = LecturaServicio::select('lect_ing')
+        $ultimo = LecturaServicio::select('lect_sal')
                 ->where('id_servicio',$request->id_servicio)
                 ->where('cod_base',$cod_base)
                 ->where('id_datos_servicio',$request->id_datos_servicio)
                 ->where('estado',1)->orderBy('id','DESC')->first();
+        if(isset($ultimo->lect_sal)){
+            $lect_sal = $ultimo->lect_sal;
+        }else{
+            $lect_sal = $request->lect_ing;
+        }
 
         $valida = LecturaServicio::where('fecha', $fecha)->where('id_servicio', $request->id_servicio)
                 ->where('id_datos_servicio', $request->id_datos_servicio)->where('estado', 1)->exists();
         if($valida){
             echo "error";
-        }else if(($request->lect_ing-$ultimo->lect_ing)>$get_suministro->$parametro){
+        }else if(($request->lect_ing-$lect_sal)>$get_suministro->$parametro){
             echo "parametro";
         }else{
             $archivo = "";
@@ -213,10 +223,15 @@ class LecturaServicioController extends Controller
                 ->where('cod_base',$cod_base)
                 ->where('id_datos_servicio',$request->id_datos_servicio)
                 ->where('estado',1)->orderBy('id','DESC')->first();
+        if(isset($ultimo->lect_sal)){
+            $lect_sal = $ultimo->lect_sal;
+        }else{
+            $lect_sal = 0;
+        }                
 
         $errors = [];
 
-        if ($validate['lect_ing'] <= $ultimo->lect_sal) {
+        if ($validate['lect_ing'] <= $lect_sal) {
             $errors['lect_ing'] = ['Debe ingresar lectura mayor a la última lectura de salida.'];
         }
 
@@ -400,7 +415,7 @@ class LecturaServicioController extends Controller
 
     public function excel_reg($id_servicio,$mes,$anio)
     {
-        $list_lectura_servicio = LecturaServicio::get_list_lectura_servicio(['id_servicio'=>$id_servicio,'mes'=>$mes,'anio'=>$anio]);
+        $list_lectura_servicio = LecturaServicio::get_list_lectura_servicio(['id_servicio'=>$id_servicio,'cod_base'=>session('usuario')->centro_labores,'mes'=>$mes,'anio'=>$anio]);
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
