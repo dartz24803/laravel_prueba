@@ -723,3 +723,37 @@ Route::controller(ReporteProveedoresController::class)->group(function(){
     Route::post('RProveedores/Actualizar_Hora_RProveedor', 'Actualizar_Hora_RProveedor');
     Route::get('RProveedores/Excel_RProveedor/{base}/{estado_interno}/{fecha_inicio}/{fecha_fin}', 'Excel_RProveedor');
 });
+
+use App\Http\Controllers\InicioSeguridadController;
+//Inicio Seguridad
+Route::controller(InicioSeguridadController::class)->group(function(){
+    Route::get('InicioSeguridad/index', 'index');
+});
+use App\Http\Controllers\InicioTiendaController;
+//Inicio tienda
+Route::controller(InicioTiendaController::class)->group(function(){
+    Route::get('InicioTienda/index', 'index');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -598,25 +598,12 @@
     // Llama a la función en respuesta al cambio de tamaño de la ventana
     $(window).resize(cambiarClaseSegunResolucion);
 
-    /*function validar_reporte_fotografico_dia_job_2(){
-        Cargando();
+    document.getElementById('logo_seguridad').onclick = function() {
+        window.location.href = "{{ url('InicioSeguridad/index') }}";
+    };
 
-        var url = "{{ url('ReporteFotografico/validar_reporte_fotografico_dia_job_2') }}";
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            processData: false,
-            contentType: false,
-            success:function (data) {
-                swal.fire(
-                    '¡Registro Exitoso!',
-                    '¡Haga clic en el botón!',
-                    'success'
-                ).then(function() {
-                });
-            },
-        });
-    }*/
+    document.getElementById('logo_tiendas').onclick = function() {
+        window.location.href = "{{ url('InicioTienda/index') }}";
+    };
 </script>
 @endsection
