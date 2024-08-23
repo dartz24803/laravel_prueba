@@ -29,6 +29,7 @@ use App\Http\Controllers\LecturaServicioConfController;
 use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
 use App\Http\Controllers\IntencionRenunciaConfController;
+use App\Http\Controllers\LogisticaInicioController;
 use App\Http\Controllers\OcurrenciaServicioConfController;
 
 
@@ -548,6 +549,10 @@ Route::controller(PostulanteController::class)->group(function(){
     Route::post('postulante_revision/list', 'list_prev')->name('postulante_revision.list');
     Route::get('postulante_revision/{id}/edit', 'edit_prev')->name('postulante_revision.edit');
     Route::put('postulante_revision/{id}', 'update_prev')->name('postulante_revision.update');
+});
+//ÁREA LOGÍSTICA
+Route::controller(LogisticaInicioController::class)->group(function(){
+    Route::get('logistica', 'index')->name('logistica');
 });
 
 
