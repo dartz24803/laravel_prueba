@@ -10,4 +10,10 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        $("#ccvtabla").addClass('active');
+        $("#hccvtabla").attr('aria-expanded', 'true');
+    });
+</script>
 @endsection
