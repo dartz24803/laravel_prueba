@@ -30,6 +30,7 @@ use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
 use App\Http\Controllers\IntencionRenunciaConfController;
 use App\Http\Controllers\LogisticaInicioController;
+use App\Http\Controllers\ObservacionController;
 use App\Http\Controllers\OcurrenciaServicioConfController;
 
 
@@ -554,7 +555,13 @@ Route::controller(PostulanteController::class)->group(function(){
 Route::controller(LogisticaInicioController::class)->group(function(){
     Route::get('logistica', 'index')->name('logistica');
 });
-
+//CAJA - OBSERVACIONES
+Route::controller(ObservacionController::class)->group(function(){
+    Route::get('observacion', 'index_reg')->name('observacion');
+    Route::post('observacion/list', 'list_reg')->name('observacion.list');
+    Route::get('observacion/{id}/edit', 'edit_reg')->name('observacion.edit');
+    Route::put('observacion/{id}', 'update_reg')->name('observacion.update');
+});
 
 
 
