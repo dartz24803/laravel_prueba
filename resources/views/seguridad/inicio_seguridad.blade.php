@@ -10,4 +10,10 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        $("#conf_seguridades").addClass('active');
+        $("#hconf_seguridades").attr('aria-expanded', 'true');
+    });
+</script>
 @endsection
