@@ -26,7 +26,7 @@ class ObservacionController extends Controller
 
     public function create_reg()
     {
-        $list_servicio = Servicio::where('lectura',1)->where('estado',1)->get();
+        //$list_servicio = Servicio::where('lectura',1)->where('estado',1)->get();
         return view('caja.observacion.modal_registrar',compact('list_servicio'));
     }
 }

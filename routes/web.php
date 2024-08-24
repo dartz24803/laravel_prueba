@@ -30,6 +30,7 @@ use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
 use App\Http\Controllers\IntencionRenunciaConfController;
 use App\Http\Controllers\LogisticaInicioController;
+use App\Http\Controllers\ObservacionConfController;
 use App\Http\Controllers\ObservacionController;
 use App\Http\Controllers\OcurrenciaServicioConfController;
 
@@ -561,6 +562,24 @@ Route::controller(ObservacionController::class)->group(function(){
     Route::post('observacion/list', 'list_reg')->name('observacion.list');
     Route::get('observacion/{id}/edit', 'edit_reg')->name('observacion.edit');
     Route::put('observacion/{id}', 'update_reg')->name('observacion.update');
+});
+//RECURSOS HUMANOS - COLABORADOR CONFIGURABLE
+Route::controller(ObservacionConfController::class)->group(function(){
+    Route::get('observacion_conf', 'index')->name('observacion_conf');
+    Route::get('observacion_conf_terr', 'index_terr')->name('observacion_conf_terr');
+    Route::get('observacion_conf_terr/list', 'list_terr')->name('observacion_conf_terr.list');
+    Route::get('observacion_conf_terr/create', 'create_terr')->name('observacion_conf_terr.create');
+    Route::post('observacion_conf_terr', 'store_terr')->name('observacion_conf_terr.store');
+    Route::get('observacion_conf_terr/{id}/edit', 'edit_terr')->name('observacion_conf_terr.edit');
+    Route::put('observacion_conf_terr/{id}', 'update_terr')->name('observacion_conf_terr.update');
+    Route::delete('observacion_conf_terr/{id}', 'destroy_terr')->name('observacion_conf_terr.destroy');
+    Route::get('observacion_conf_err', 'index_err')->name('observacion_conf_err');
+    Route::get('observacion_conf_err/list', 'list_err')->name('observacion_conf_err.list');
+    Route::get('observacion_conf_err/create', 'create_err')->name('observacion_conf_err.create');
+    Route::post('observacion_conf_err', 'store_err')->name('observacion_conf_err.store');
+    Route::get('observacion_conf_err/{id}/edit', 'edit_err')->name('observacion_conf_err.edit');
+    Route::put('observacion_conf_err/{id}', 'update_err')->name('observacion_conf_err.update');
+    Route::delete('observacion_conf_err/{id}', 'destroy_err')->name('observacion_conf_err.destroy');
 });
 
 
