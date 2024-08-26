@@ -560,10 +560,19 @@ Route::controller(LogisticaInicioController::class)->group(function(){
 Route::controller(ObservacionController::class)->group(function(){
     Route::get('observacion', 'index_reg')->name('observacion');
     Route::post('observacion/list', 'list_reg')->name('observacion.list');
+    Route::get('observacion/create', 'create_reg')->name('observacion.create');
+    Route::post('observacion/traer_error', 'traer_error_reg')->name('observacion.traer_error');
+    Route::post('observacion/traer_datos_error', 'traer_datos_error_reg')->name('observacion.traer_datos_error');
+    Route::post('observacion/traer_responsable', 'traer_responsable_reg')->name('observacion.traer_responsable');
+    Route::post('observacion', 'store_reg')->name('observacion.store');
     Route::get('observacion/{id}/edit', 'edit_reg')->name('observacion.edit');
+    Route::get('observacion/{id}/download', 'download_reg')->name('observacion.download');
     Route::put('observacion/{id}', 'update_reg')->name('observacion.update');
+    Route::get('observacion/{id}/cambiar_estado', 'cambiar_estado_reg')->name('observacion.cambiar_estado');
+    Route::delete('observacion/{id}', 'destroy_reg')->name('observacion.destroy');
+    Route::get('observacion/{cod_base}/{id_colaborador}/{inicio}/{fin}/excel', 'excel_reg')->name('observacion.excel');
 });
-//RECURSOS HUMANOS - COLABORADOR CONFIGURABLE
+//CAJA - OBSERVACIONES CONFIGURABLE
 Route::controller(ObservacionConfController::class)->group(function(){
     Route::get('observacion_conf', 'index')->name('observacion_conf');
     Route::get('observacion_conf_terr', 'index_terr')->name('observacion_conf_terr');
