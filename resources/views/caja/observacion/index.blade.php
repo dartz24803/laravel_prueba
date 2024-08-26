@@ -1,4 +1,8 @@
-@extends('layouts.plantilla')
+@extends('layouts.plantilla_new')
+
+@section('navbar')
+    @include('caja.navbar')
+@endsection
 
 @section('content')
     <div id="content" class="main-content">
@@ -69,9 +73,8 @@
 
     <script>
         $(document).ready(function() {
-            $("#logisticas").addClass('active');
-            $("#hlogisticas").attr('aria-expanded', 'true');
-            $("#trackings").addClass('active');
+            $("#observaciones").addClass('active');
+            $("#hobservaciones").attr('aria-expanded', 'true');
 
             Lista_Observacion();
         });

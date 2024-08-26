@@ -16,6 +16,7 @@ use App\Http\Controllers\AmonestacionController;
 use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
 use App\Http\Controllers\AsistenciaSegController;
+use App\Http\Controllers\CajaInicioController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
 use App\Http\Controllers\ComunicadoController;
@@ -555,6 +556,10 @@ Route::controller(PostulanteController::class)->group(function(){
 //ÁREA LOGÍSTICA
 Route::controller(LogisticaInicioController::class)->group(function(){
     Route::get('logistica', 'index')->name('logistica');
+});
+//ÁREA CAJA
+Route::controller(CajaInicioController::class)->group(function(){
+    Route::get('caja', 'index')->name('caja');
 });
 //CAJA - OBSERVACIONES
 Route::controller(ObservacionController::class)->group(function(){

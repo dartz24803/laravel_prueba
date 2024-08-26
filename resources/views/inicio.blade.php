@@ -112,7 +112,7 @@
                                             <div class="logo6" style="width: 6rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701; height: 6rem;">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-CajaControlInterno.png')}}" alt="">
-                                                    <p class="card-text text-center text-white">Caja y Control Interno</p>
+                                                    <p class="card-text text-center text-white"><a href="{{ route('caja') }}" style="color: white;">Caja y Control Interno</a></p>
                                                 </div>
                                             </div>
                                         </div>
