@@ -1,4 +1,8 @@
-@extends('layouts.plantilla')
+@extends('layouts.plantilla_new')
+
+@section('navbar')
+    @include('logistica.navbar')
+@endsection
 
 @section('content')
 <link href="{{ asset('template/smart_wizard/style.css')}}" rel="stylesheet" type="text/css" />
@@ -48,9 +52,8 @@
 <script src="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/js/jquery.smartWizard.min.js" type="text/javascript"></script>
     <script>
         $(document).ready(function() {
-            $("#logisticas").addClass('active');
-            $("#hlogisticas").attr('aria-expanded', 'true');
             $("#trackings").addClass('active');
+            $("#htrackings").attr('aria-expanded', 'true');
 
             Lista_Tracking();
         });
