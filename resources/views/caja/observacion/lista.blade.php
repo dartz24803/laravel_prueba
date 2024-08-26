@@ -10,26 +10,37 @@
             <th>Monto</th>
             <th>Suceso</th>
             <th>Responsable</th>
-            <th class="no-content"></th>
+            @if (session('usuario')->id_nivel==1 || 
+            session('usuario')->id_puesto==9 || 
+            session('usuario')->id_puesto==29 || 
+            session('usuario')->id_puesto==31 || 
+            session('usuario')->id_puesto==32 ||
+            session('usuario')->id_puesto==128)
+                <th class="no-content"></th>
+            @endif
         </tr>
     </thead>
     <tbody>
-        @foreach ($list_observacion as $list)
+        @foreach ($list_suceso as $list)
             <tr class="text-center">
                 <td>{{ $list->orden }}</td>
                 <td>{{ $list->fecha }}</td>
                 <td>{{ $list->centro_labores }}</td>
                 <td>{{ $list->cod_suceso }}</td>
-                <td>{{ $list->nom_tipo_error }}</td>
-                <td>{{ $list->nom_error }}</td>
-                <td>{{ number_format($list['monto'],2) }}</td>
-                <td>{{ $list->nom_suceso }}</td>
-                <td>{{ $list->user_suceso }}</td>
-                <?php if($id_nivel==1 || $id_puesto==9 || $id_puesto==29 || $id_puesto==31 || $id_puesto==32 ||
-                    $id_puesto==128 || $usuario_codigo=='71104161') {?>
+                <td class="text-left">{{ $list->nom_tipo_error }}</td>
+                <td class="text-left">{{ $list->nom_error }}</td>
+                <td>{{ number_format($list->monto,2) }}</td>
+                <td class="text-left">{{ $list->nom_suceso }}</td>
+                <td class="text-left">{{ $list->user_suceso }}</td>
+                @if (session('usuario')->id_nivel==1 || 
+                session('usuario')->id_puesto==9 || 
+                session('usuario')->id_puesto==29 || 
+                session('usuario')->id_puesto==31 || 
+                session('usuario')->id_puesto==32 ||
+                session('usuario')->id_puesto==128)
                     <td class="text-center">
-                        <?php if($list['archivo']!=""){ ?>
-                            <a style="cursor:pointer;display: -webkit-inline-box;" title="DNI vista" data-toggle="modal" data-target="#zoomupModalhijo" data-imagen="<?= $list['archivo']?>">
+                        @if ($list->archivo!="")
+                            <a style="cursor:pointer;display: -webkit-inline-box;" title="Archivo" href="{{ $list->archivo }}" target="_blank">
                                 <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                                     viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve">
                                     <rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/>
@@ -44,39 +55,42 @@
                                     
                                 </svg>
                             </a>
-                        <?php } ?>  
-                        <?php if($list['estado_suceso']==1){ ?>
-                            <?php if($id_nivel==1 || $id_puesto==128 || $id_puesto==9 || $usuario_codigo=='71104161'){ ?>
-                                <a href="#" title="Cambiar Estado" onclick="Cambiar_Estado_Suceso('<?= $list['id_suceso']; ?>')" role="button">
+                        @endif
+                        @if ($list->estado_suceso==1)
+                            @if (session('usuario')->id_nivel==1 || 
+                            session('usuario')->id_puesto==9 ||
+                            session('usuario')->id_puesto==128)
+                                <a href="javascript:void(0);" title="Cambiar Estado" onclick="Cambiar_Estado_Suceso('{{ $list->id_suceso }}')">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square text-primary">
                                         <polyline points="9 11 12 14 22 4"></polyline>
                                         <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
                                     </svg>
                                 </a>
-                            <?php } ?>  
-
-                            <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Corporacion/Modal_Update_Suceso') ?>/<?= $list['id_suceso']; ?>/<?= $list['id_tipo_error']; ?>">
+                            @endif
+                            <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('observacion.edit', $list->id_suceso) }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                     <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                 </svg>
                             </a>
-                            <a href="#" class="" title="Eliminar" onclick="Delete_Suceso('<?= $list['id_suceso']; ?>')" id="delete" role="button">
+                            <a href="javascript:void(0);" title="Eliminar" onclick="Delete_Suceso('{{ $list->id_suceso }}')">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
                                     <polyline points="3 6 5 6 21 6"></polyline>
                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                     <line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>
                                 </svg>
                             </a>
-                        <?php }elseif($list['estado_suceso']==2 && ($id_puesto==128 || $id_puesto==9 || $id_nivel==1
-                            || $usuario_codigo=='71104161')) {?>
-                            <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= site_url('Corporacion/Modal_Update_Suceso') ?>/<?= $list['id_suceso']; ?>/<?= $list['id_tipo_error']; ?>">
+                        @elseif($list->estado_suceso==2 && 
+                        (session('usuario')->id_nivel==1 ||
+                        session('usuario')->id_puesto==128 || 
+                        session('usuario')->id_puesto==9))
+                            <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('observacion.edit', $list->id_suceso) }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                     <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                 </svg>
                             </a>
-                        <?php } ?>
-                    </td>
-                <?php } ?>
+                        @endif
+                    </td>                    
+                @endif
             </tr>
         @endforeach
     </tbody>
