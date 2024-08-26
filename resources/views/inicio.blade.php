@@ -605,5 +605,28 @@
     document.getElementById('logo_tiendas').onclick = function() {
         window.location.href = "{{ url('InicioTienda/index') }}";
     };
+
+
+    /*function validar_reporte_fotografico_dia_job_2(){
+        Cargando();
+        var csrfToken = $('input[name="_token"]').val();
+        url = "{{ url('ReporteFotografico/validar_reporte_fotografico_dia_job_2')}}"
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(data) {
+                swal.fire(
+                    'Registro Exitoso!',
+                    'Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                });
+            }
+        });
+    }*/
 </script>
 @endsection
