@@ -632,7 +632,7 @@ class ReporteFotograficoController extends Controller
                 $mail->addAddress("mponte@lanumero1.com.pe");
 
                 $mail->isHTML(true);
-                $mail->Subject = 'Prueba Reporte diario de bases';
+                $mail->Subject = 'Reporte diario de bases';
                 $mail->Body    = $emailBody;
                 $mail->CharSet = 'UTF-8';
                 $mail->addAttachment($filePath);
