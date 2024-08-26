@@ -75,8 +75,9 @@
 
     <script>
         $(document).ready(function() {
-            $("#li_trackings").addClass('active');
-            $("#a_trackings").attr('aria-expanded','true');
+            $("#logisticas").addClass('active');
+            $("#hlogisticas").attr('aria-expanded', 'true');
+            $("#trackings").addClass('active');
         });
 
         function Ingreso_Detalle(id){

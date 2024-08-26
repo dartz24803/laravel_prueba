@@ -52,8 +52,9 @@
 <script src="https://cdn.jsdelivr.net/npm/smartwizard@6/dist/js/jquery.smartWizard.min.js" type="text/javascript"></script>
     <script>
         $(document).ready(function() {
+            $("#logisticas").addClass('active');
+            $("#hlogisticas").attr('aria-expanded', 'true');
             $("#trackings").addClass('active');
-            $("#htrackings").attr('aria-expanded', 'true');
 
             Lista_Tracking();
         });
