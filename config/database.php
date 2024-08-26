@@ -7,7 +7,7 @@ return [
     /*
     |--------------------------------------------------------------------------
     | Default Database Connection Name
-    |--------------------------------------------------------------------------
+    |---------------------------------------------------------------- ----------
     |
     | Here you may specify which of the database connections below you wish
     | to use as your default connection for all database work. Of course
@@ -48,7 +48,7 @@ return [
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'lanumerouno'),
+            'database' => env('DB_DATABASE', 'intranet'),
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
@@ -151,7 +151,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
         ],
 
         'default' => [

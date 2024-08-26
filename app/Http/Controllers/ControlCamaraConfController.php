@@ -32,7 +32,7 @@ class ControlCamaraConfController extends Controller
 
     public function list_se()
     {
-        $list_sede = Sedes::select('id_sede','nombre_sede')->where('estado', 1)->get();
+        $list_sede = Sedes::select('id_sede', 'nombre_sede')->where('estado', 1)->get();
         return view('seguridad.administracion.control_camara.sede.lista', compact('list_sede'));
     }
 
@@ -45,14 +45,14 @@ class ControlCamaraConfController extends Controller
     {
         $request->validate([
             'nombre_sede' => 'required',
-        ],[
+        ], [
             'nombre_sede.required' => 'Debe ingresar nombre.',
         ]);
 
         $valida = Sedes::where('nombre_sede', $request->nombre_sede)->where('estado', 1)->exists();
-        if($valida){
+        if ($valida) {
             echo "error";
-        }else{
+        } else {
             Sedes::create([
                 'nombre_sede' => $request->nombre_sede,
                 'estado' => 1,
@@ -74,14 +74,14 @@ class ControlCamaraConfController extends Controller
     {
         $request->validate([
             'nombre_sedee' => 'required',
-        ],[
+        ], [
             'nombre_sedee.required' => 'Debe ingresar nombre.',
         ]);
 
         $valida = Sedes::where('nombre_sede', $request->nombre_sedee)->where('estado', 1)->where('id_sede', '!=', $id)->exists();
-        if($valida){
+        if ($valida) {
             echo "error";
-        }else{
+        } else {
             Sedes::findOrFail($id)->update([
                 'nombre_sede' => $request->nombre_sedee,
                 'fec_act' => now(),
@@ -106,16 +106,16 @@ class ControlCamaraConfController extends Controller
 
     public function list_ho()
     {
-        $list_hora_programada = Horas::select('horas.id_hora','sedes.nombre_sede','horas.hora','horas.orden')
-                            ->join('sedes','sedes.id_sede','=','horas.id_sede')
-                            ->where('horas.estado', 1)->get();
+        $list_hora_programada = Horas::select('horas.id_hora', 'sedes.nombre_sede', 'horas.hora', 'horas.orden')
+            ->join('sedes', 'sedes.id_sede', '=', 'horas.id_sede')
+            ->where('horas.estado', 1)->get();
         return view('seguridad.administracion.control_camara.hora_programada.lista', compact('list_hora_programada'));
     }
 
     public function create_ho()
     {
-        $list_sede = Sedes::select('id_sede','nombre_sede')->where('estado',1)->orderBy('nombre_sede','ASC')
-                            ->get();
+        $list_sede = Sedes::select('id_sede', 'nombre_sede')->where('estado', 1)->orderBy('nombre_sede', 'ASC')
+            ->get();
         return view('seguridad.administracion.control_camara.hora_programada.modal_registrar', compact(['list_sede']));
     }
 
@@ -125,17 +125,17 @@ class ControlCamaraConfController extends Controller
             'id_sede' => 'gt:0',
             'hora' => 'required',
             'orden' => 'required',
-        ],[
+        ], [
             'id_sede.gt' => 'Debe seleccionar sede.',
             'hora.required' => 'Debe ingresar hora.',
             'orden.required' => 'Debe ingresar orden.',
         ]);
 
         $valida = Horas::where('id_sede', $request->id_sede)->where('orden', $request->orden)->where('estado', 1)
-                        ->exists();
-        if($valida){
+            ->exists();
+        if ($valida) {
             echo "error";
-        }else{
+        } else {
             Horas::create([
                 'id_sede' => $request->id_sede,
                 'hora' => $request->hora,
@@ -152,9 +152,9 @@ class ControlCamaraConfController extends Controller
     public function edit_ho($id)
     {
         $get_id = Horas::findOrFail($id);
-        $list_sede = Sedes::select('id_sede','nombre_sede')->where('estado',1)->orderBy('nombre_sede','ASC')
-                            ->get();
-        return view('seguridad.administracion.control_camara.hora_programada.modal_editar', compact('get_id','list_sede'));
+        $list_sede = Sedes::select('id_sede', 'nombre_sede')->where('estado', 1)->orderBy('nombre_sede', 'ASC')
+            ->get();
+        return view('seguridad.administracion.control_camara.hora_programada.modal_editar', compact('get_id', 'list_sede'));
     }
 
     public function update_ho(Request $request, $id)
@@ -163,17 +163,17 @@ class ControlCamaraConfController extends Controller
             'id_sedee' => 'gt:0',
             'horae' => 'required',
             'ordene' => 'required',
-        ],[
+        ], [
             'id_sedee.gt' => 'Debe seleccionar sede.',
             'horae.required' => 'Debe ingresar hora.',
             'ordene.required' => 'Debe ingresar orden.',
         ]);
 
         $valida = Horas::where('id_sede', $request->id_sedee)->where('orden', $request->ordene)
-                        ->where('estado', 1)->where('id_hora', '!=', $id)->exists();
-        if($valida){
+            ->where('estado', 1)->where('id_hora', '!=', $id)->exists();
+        if ($valida) {
             echo "error";
-        }else{
+        } else {
             Horas::findOrFail($id)->update([
                 'id_sede' => $request->id_sedee,
                 'hora' => $request->horae,
@@ -200,7 +200,7 @@ class ControlCamaraConfController extends Controller
 
     public function list_lo()
     {
-        $list_local = Local::select('id_local','descripcion')->where('estado', 1)->get();
+        $list_local = Local::select('id_local', 'descripcion')->where('estado', 1)->get();
         return view('seguridad.administracion.control_camara.local.lista', compact('list_local'));
     }
 
@@ -213,14 +213,14 @@ class ControlCamaraConfController extends Controller
     {
         $request->validate([
             'descripcion' => 'required',
-        ],[
+        ], [
             'descripcion.required' => 'Debe ingresar descripción.',
         ]);
 
         $valida = Local::where('descripcion', $request->descripcion)->where('estado', 1)->exists();
-        if($valida){
+        if ($valida) {
             echo "error";
-        }else{
+        } else {
             Local::create([
                 'descripcion' => $request->descripcion,
                 'estado' => 1,
@@ -242,15 +242,15 @@ class ControlCamaraConfController extends Controller
     {
         $request->validate([
             'descripcione' => 'required',
-        ],[
+        ], [
             'descripcione.required' => 'Debe ingresar descripción.',
         ]);
 
         $valida = Local::where('descripcion', $request->descripcione)->where('estado', 1)
-                        ->where('id_local', '!=', $id)->exists();
-        if($valida){
+            ->where('id_local', '!=', $id)->exists();
+        if ($valida) {
             echo "error";
-        }else{
+        } else {
             Local::findOrFail($id)->update([
                 'descripcion' => $request->descripcione,
                 'fec_act' => now(),
@@ -275,7 +275,7 @@ class ControlCamaraConfController extends Controller
 
     public function list_ro()
     {
-        $list_ronda = ControlCamaraRonda::select('id','descripcion')->where('estado', 1)->get();
+        $list_ronda = ControlCamaraRonda::select('id', 'descripcion')->where('estado', 1)->get();
         return view('seguridad.administracion.control_camara.ronda.lista', compact('list_ronda'));
     }
 
@@ -288,14 +288,14 @@ class ControlCamaraConfController extends Controller
     {
         $request->validate([
             'descripcion' => 'required',
-        ],[
+        ], [
             'descripcion.required' => 'Debe ingresar descripción.',
         ]);
 
         $valida = ControlCamaraRonda::where('descripcion', $request->descripcion)->where('estado', 1)->exists();
-        if($valida){
+        if ($valida) {
             echo "error";
-        }else{
+        } else {
             ControlCamaraRonda::create([
                 'descripcion' => $request->descripcion,
                 'estado' => 1,
@@ -317,15 +317,15 @@ class ControlCamaraConfController extends Controller
     {
         $request->validate([
             'descripcione' => 'required',
-        ],[
+        ], [
             'descripcione.required' => 'Debe ingresar descripción.',
         ]);
 
         $valida = ControlCamaraRonda::where('descripcion', $request->descripcione)->where('estado', 1)
-                        ->where('id', '!=', $id)->exists();
-        if($valida){
+            ->where('id', '!=', $id)->exists();
+        if ($valida) {
             echo "error";
-        }else{
+        } else {
             ControlCamaraRonda::findOrFail($id)->update([
                 'descripcion' => $request->descripcione,
                 'fec_act' => now(),
@@ -350,24 +350,28 @@ class ControlCamaraConfController extends Controller
 
     public function list_ti()
     {
-        $list_tienda = Tiendas::select('tiendas.id_tienda','sedes.nombre_sede','local.descripcion',
-                                DB::raw('(SELECT GROUP_CONCAT(cr.descripcion SEPARATOR ", ")
+        $list_tienda = Tiendas::select(
+            'tiendas.id_tienda',
+            'sedes.nombre_sede',
+            'local.descripcion',
+            DB::raw('(SELECT GROUP_CONCAT(cr.descripcion SEPARATOR ", ")
                                 FROM tiendas_ronda tr
                                 INNER JOIN control_camara_ronda cr ON cr.id=tr.id_ronda
-                                WHERE tr.id_tienda=tiendas.id_tienda) AS ronda'))
-                                ->join('sedes','sedes.id_sede','=','tiendas.id_sede')
-                                ->join('local','local.id_local','=','tiendas.id_local')
-                                ->where('tiendas.estado', 1)->get();
+                                WHERE tr.id_tienda=tiendas.id_tienda) AS ronda')
+        )
+            ->join('sedes', 'sedes.id_sede', '=', 'tiendas.id_sede')
+            ->join('local', 'local.id_local', '=', 'tiendas.id_local')
+            ->where('tiendas.estado', 1)->get();
         return view('seguridad.administracion.control_camara.tienda.lista', compact('list_tienda'));
     }
 
     public function create_ti()
     {
-        $list_sede = Sedes::select('id_sede','nombre_sede')->where('estado',1)->orderBy('nombre_sede','ASC')
-                            ->get();
-        $list_local = Local::select('id_local','descripcion')->where('estado',1)->orderBy('descripcion','ASC')
-                            ->get();
-        return view('seguridad.administracion.control_camara.tienda.modal_registrar', compact(['list_sede','list_local']));
+        $list_sede = Sedes::select('id_sede', 'nombre_sede')->where('estado', 1)->orderBy('nombre_sede', 'ASC')
+            ->get();
+        $list_local = Local::select('id_local', 'descripcion')->where('estado', 1)->orderBy('descripcion', 'ASC')
+            ->get();
+        return view('seguridad.administracion.control_camara.tienda.modal_registrar', compact(['list_sede', 'list_local']));
     }
 
     public function store_ti(Request $request)
@@ -375,26 +379,26 @@ class ControlCamaraConfController extends Controller
         $request->validate([
             'id_sede' => 'gt:0',
             'id_local' => 'required',
-        ],[
+        ], [
             'id_sede.gt' => 'Debe seleccionar sede.',
             'id_local.required' => 'Debe seleccionar al menos un local.',
         ]);
 
-        if(is_array($request->id_local) && count($request->id_local)>0){
+        if (is_array($request->id_local) && count($request->id_local) > 0) {
             $cadena = "";
-            foreach($request->id_local as $local){
+            foreach ($request->id_local as $local) {
                 $valida = Tiendas::where('id_sede', $request->id_sede)
-                                    ->where('id_local',$local)->where('estado', 1)->exists();
-                if($valida){
+                    ->where('id_local', $local)->where('estado', 1)->exists();
+                if ($valida) {
                     $get_local = Local::findOrFail($local);
-                    $cadena = $cadena.$get_local->descripcion.", ";
+                    $cadena = $cadena . $get_local->descripcion . ", ";
                 }
             }
-            if($cadena!=""){
-                $cadena = "Ya se seleccionó el(los) local(es) ".substr($cadena,0,-2)." para está sede.";
+            if ($cadena != "") {
+                $cadena = "Ya se seleccionó el(los) local(es) " . substr($cadena, 0, -2) . " para está sede.";
                 echo $cadena;
-            }else{
-                foreach($request->id_local as $local){
+            } else {
+                foreach ($request->id_local as $local) {
                     Tiendas::create([
                         'id_sede' => $request->id_sede,
                         'id_local' => $local,
@@ -412,20 +416,20 @@ class ControlCamaraConfController extends Controller
     public function edit_ti($id)
     {
         $get_id = Tiendas::findOrFail($id);
-        $list_sede = Sedes::select('id_sede','nombre_sede')->where('estado',1)->orderBy('nombre_sede','ASC')
-                            ->get();
-        $list_local = Local::select('id_local','descripcion')->where('estado',1)->orderBy('descripcion','ASC')
-                            ->get();
-        $list_ronda = ControlCamaraRonda::select('id','descripcion')->where('estado',1)
-                            ->orderBy('descripcion','ASC')->get();
-        $list_tienda_ronda = TiendasRonda::select('id_ronda')->where('id_tienda',$id)->get()->toArray();
-        return view('seguridad.administracion.control_camara.tienda.modal_editar', compact('get_id','list_sede','list_local','list_ronda','list_tienda_ronda'));
+        $list_sede = Sedes::select('id_sede', 'nombre_sede')->where('estado', 1)->orderBy('nombre_sede', 'ASC')
+            ->get();
+        $list_local = Local::select('id_local', 'descripcion')->where('estado', 1)->orderBy('descripcion', 'ASC')
+            ->get();
+        $list_ronda = ControlCamaraRonda::select('id', 'descripcion')->where('estado', 1)
+            ->orderBy('descripcion', 'ASC')->get();
+        $list_tienda_ronda = TiendasRonda::select('id_ronda')->where('id_tienda', $id)->get()->toArray();
+        return view('seguridad.administracion.control_camara.tienda.modal_editar', compact('get_id', 'list_sede', 'list_local', 'list_ronda', 'list_tienda_ronda'));
     }
 
     public function traer_ronda_ti()
     {
-        $list_ronda = ControlCamaraRonda::select('id','descripcion')->where('estado',1)
-                                        ->orderBy('descripcion','ASC')->get();
+        $list_ronda = ControlCamaraRonda::select('id', 'descripcion')->where('estado', 1)
+            ->orderBy('descripcion', 'ASC')->get();
         return view('seguridad.administracion.control_camara.tienda.rondas', compact('list_ronda'));
     }
 
@@ -435,17 +439,17 @@ class ControlCamaraConfController extends Controller
             'id_sedee' => 'gt:0',
             'id_locale' => 'gt:0',
             'rondas' => 'required_if:ronda,1'
-        ],[
+        ], [
             'id_sedee.gt' => 'Debe seleccionar sede.',
             'id_locale.gt' => 'Debe seleccionar local.',
             'rondas.required_if' => 'Debe seleccionar al menos una ronda',
         ]);
 
         $valida = Tiendas::where('id_sede', $request->id_sedee)->where('id_local', $request->id_locale)
-                            ->where('estado', 1)->where('id_tienda', '!=', $id)->exists();
-        if($valida){
+            ->where('estado', 1)->where('id_tienda', '!=', $id)->exists();
+        if ($valida) {
             echo "error";
-        }else{
+        } else {
             Tiendas::findOrFail($id)->update([
                 'id_sede' => $request->id_sedee,
                 'id_local' => $request->id_locale,
@@ -454,10 +458,10 @@ class ControlCamaraConfController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
 
-            if($request->ronda=="1"){
-                if(is_array($request->rondas) && count($request->rondas)>0){
-                    TiendasRonda::where('id_tienda',$id)->delete();
-                    foreach($request->rondas as $ronda){
+            if ($request->ronda == "1") {
+                if (is_array($request->rondas) && count($request->rondas) > 0) {
+                    TiendasRonda::where('id_tienda', $id)->delete();
+                    foreach ($request->rondas as $ronda) {
                         TiendasRonda::create([
                             'id_tienda' => $id,
                             'id_ronda' => $ronda,
@@ -466,8 +470,8 @@ class ControlCamaraConfController extends Controller
                         ]);
                     }
                 }
-            }else{
-                TiendasRonda::where('id_tienda',$id)->delete();
+            } else {
+                TiendasRonda::where('id_tienda', $id)->delete();
             }
         }
     }
@@ -488,7 +492,7 @@ class ControlCamaraConfController extends Controller
 
     public function list_oc()
     {
-        $list_ocurrencia = OcurrenciasCamaras::select('id_ocurrencias_camaras','descripcion')->where('estado', 1)->get();
+        $list_ocurrencia = OcurrenciasCamaras::select('id_ocurrencias_camaras', 'descripcion')->where('estado', 1)->get();
         return view('seguridad.administracion.control_camara.ocurrencia.lista', compact('list_ocurrencia'));
     }
 
@@ -501,14 +505,14 @@ class ControlCamaraConfController extends Controller
     {
         $request->validate([
             'descripcion' => 'required',
-        ],[
+        ], [
             'descripcion.required' => 'Debe ingresar descripción.',
         ]);
 
         $valida = OcurrenciasCamaras::where('descripcion', $request->descripcion)->where('estado', 1)->exists();
-        if($valida){
+        if ($valida) {
             echo "error";
-        }else{
+        } else {
             OcurrenciasCamaras::create([
                 'descripcion' => $request->descripcion,
                 'estado' => 1,
@@ -530,15 +534,15 @@ class ControlCamaraConfController extends Controller
     {
         $request->validate([
             'descripcione' => 'required',
-        ],[
+        ], [
             'descripcione.required' => 'Debe ingresar descripción.',
         ]);
 
         $valida = OcurrenciasCamaras::where('descripcion', $request->descripcione)->where('estado', 1)
-                        ->where('id_ocurrencias_camaras', '!=', $id)->exists();
-        if($valida){
+            ->where('id_ocurrencias_camaras', '!=', $id)->exists();
+        if ($valida) {
             echo "error";
-        }else{
+        } else {
             OcurrenciasCamaras::findOrFail($id)->update([
                 'descripcion' => $request->descripcione,
                 'fec_act' => now(),
@@ -556,39 +560,43 @@ class ControlCamaraConfController extends Controller
         ]);
     }
 
-    public function index_ho_li(){
+    public function index_ho_li()
+    {
         return view('seguridad.administracion.control_camara.hora_programada_lima.index');
     }
 
-    public function list_ho_li(){
-        $list_hora_programada = HorasLima::select('hora_lima.id_hora','sedes.nombre_sede','hora_lima.hora','hora_lima.orden')
-                            ->join('sedes','sedes.id_sede','=','hora_lima.id_sede')
-                            ->where('hora_lima.estado', 1)->get();
+    public function list_ho_li()
+    {
+        $list_hora_programada = HorasLima::select('hora_lima.id_hora', 'sedes.nombre_sede', 'hora_lima.hora', 'hora_lima.orden')
+            ->join('sedes', 'sedes.id_sede', '=', 'hora_lima.id_sede')
+            ->where('hora_lima.estado', 1)->get();
         return view('seguridad.administracion.control_camara.hora_programada_lima.lista', compact('list_hora_programada'));
     }
 
-    public function create_ho_li(){
-        $list_sede = Sedes::select('id_sede','nombre_sede')->where('estado',1)->orderBy('nombre_sede','ASC')
-                            ->get();
+    public function create_ho_li()
+    {
+        $list_sede = Sedes::select('id_sede', 'nombre_sede')->where('estado', 1)->orderBy('nombre_sede', 'ASC')
+            ->get();
         return view('seguridad.administracion.control_camara.hora_programada_lima.modal_registrar', compact(['list_sede']));
     }
 
-    public function store_ho_li(Request $request){
+    public function store_ho_li(Request $request)
+    {
         $request->validate([
             'id_sede' => 'gt:0',
             'hora' => 'required',
             'orden' => 'required',
-        ],[
+        ], [
             'id_sede.gt' => 'Debe seleccionar sede.',
             'hora.required' => 'Debe ingresar hora.',
             'orden.required' => 'Debe ingresar orden.',
         ]);
 
         $valida = HorasLima::where('id_sede', $request->id_sede)->where('orden', $request->orden)->where('estado', 1)
-                        ->exists();
-        if($valida){
+            ->exists();
+        if ($valida) {
             echo "error";
-        }else{
+        } else {
             HorasLima::create([
                 'id_sede' => $request->id_sede,
                 'hora' => $request->hora,
@@ -602,29 +610,31 @@ class ControlCamaraConfController extends Controller
         }
     }
 
-    public function edit_ho_li($id){
+    public function edit_ho_li($id)
+    {
         $get_id = HorasLima::findOrFail($id);
-        $list_sede = Sedes::select('id_sede','nombre_sede')->where('estado',1)->orderBy('nombre_sede','ASC')
-                            ->get();
-        return view('seguridad.administracion.control_camara.hora_programada_lima.modal_editar', compact('get_id','list_sede'));
+        $list_sede = Sedes::select('id_sede', 'nombre_sede')->where('estado', 1)->orderBy('nombre_sede', 'ASC')
+            ->get();
+        return view('seguridad.administracion.control_camara.hora_programada_lima.modal_editar', compact('get_id', 'list_sede'));
     }
 
-    public function update_ho_li(Request $request, $id){
+    public function update_ho_li(Request $request, $id)
+    {
         $request->validate([
             'id_sedee' => 'gt:0',
             'horae' => 'required',
             'ordene' => 'required',
-        ],[
+        ], [
             'id_sedee.gt' => 'Debe seleccionar sede.',
             'horae.required' => 'Debe ingresar hora.',
             'ordene.required' => 'Debe ingresar orden.',
         ]);
 
         $valida = HorasLima::where('id_sede', $request->id_sedee)->where('orden', $request->ordene)
-                        ->where('estado', 1)->where('id_hora', '!=', $id)->exists();
-        if($valida){
+            ->where('estado', 1)->where('id_hora', '!=', $id)->exists();
+        if ($valida) {
             echo "error";
-        }else{
+        } else {
             HorasLima::findOrFail($id)->update([
                 'id_sede' => $request->id_sedee,
                 'hora' => $request->horae,
@@ -635,7 +645,8 @@ class ControlCamaraConfController extends Controller
         }
     }
 
-    public function destroy_ho_li($id){
+    public function destroy_ho_li($id)
+    {
         HorasLima::findOrFail($id)->update([
             'estado' => 2,
             'fec_eli' => now(),

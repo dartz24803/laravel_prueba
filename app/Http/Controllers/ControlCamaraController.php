@@ -486,7 +486,7 @@ class ControlCamaraController extends Controller
                             ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
                             $archivo = "https://lanumerounocloud.com/intranet/" . $nuevo_nombre;
 
-                            $descripcion = $request->input('desc_'. ($list->id_tienda));
+                            $descripcion = $request->input('desc_' . ($list->id_tienda));
                             ControlCamaraArchivo::create([
                                 'id_control_camara' => $control_camara->id,
                                 'archivo' => $archivo,
@@ -502,14 +502,14 @@ class ControlCamaraController extends Controller
         }
 
         //validar completado  '1'
-        $list_tienda_sede = Tiendas::select('tiendas.id_tienda','local.descripcion')
-                                    ->join('local','local.id_local','=','tiendas.id_local')
-                                    ->where('tiendas.id_sede', $request->id_sede)->where('tiendas.ronda',1)
-                                    ->where('tiendas.estado', 1)->orderBy('tiendas.id_tienda','ASC')
-                                    ->count();
+        $list_tienda_sede = Tiendas::select('tiendas.id_tienda', 'local.descripcion')
+            ->join('local', 'local.id_local', '=', 'tiendas.id_local')
+            ->where('tiendas.id_sede', $request->id_sede)->where('tiendas.ronda', 1)
+            ->where('tiendas.estado', 1)->orderBy('tiendas.id_tienda', 'ASC')
+            ->count();
 
 
-        $total = count($list_tienda_base)+$list_tienda_sede;
+        $total = count($list_tienda_base) + $list_tienda_sede;
 
         $fecha = date('Y-m-d');
         if (date('a', strtotime($ultimo->hora)) == 'am' || date('a', strtotime($ultimo->hora)) == 'AM') {
@@ -525,10 +525,10 @@ class ControlCamaraController extends Controller
         // print_r('cantidad'.$cantidad);
         if ($total === $cantidad) {
             ControlCamara::where('hora_programada', $ultimo->hora)
-            ->where('id_sede', $request->id_sede)
-            ->where('fecha', date('Y-m-d'))->update([
-                'completado' => 1,
-            ]);
+                ->where('id_sede', $request->id_sede)
+                ->where('fecha', date('Y-m-d'))->update([
+                    'completado' => 1,
+                ]);
         }
     }
 
@@ -667,7 +667,7 @@ class ControlCamaraController extends Controller
     {
         $request->validate([
             'archivo_rond' => 'required|file',
-        ],[
+        ], [
             'archivo_rond.required' => 'Debe ingresar imagen.',
             'archivo_rond.file' => 'Debe ingresar imagen.',
         ]);
@@ -678,9 +678,9 @@ class ControlCamaraController extends Controller
 
         $ultimo = HorasLima::select('hora')->where('id_sede', $request->id_sede)->where('orden', (count($cantidad) + 1))
             ->where('estado', 1)->first();
-        
+
         //Registro temporal
-        $list_tienda_sede = Tiendas::select('tiendas.id_tienda', 'local.descripcion','tiendas.id_local')
+        $list_tienda_sede = Tiendas::select('tiendas.id_tienda', 'local.descripcion', 'tiendas.id_local')
             ->join('local', 'local.id_local', '=', 'tiendas.id_local')
             ->where('tiendas.id_sede', $request->id_sede)->where('tiendas.ronda', 1)
             ->where('tiendas.estado', 1)->orderBy('tiendas.id_tienda', 'ASC')
@@ -814,7 +814,7 @@ class ControlCamaraController extends Controller
                     $con_id = ftp_connect($ftp_server);
                     $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
                     if ($con_id && $lr) {
-                        foreach ($list_temporal as $key=>$temporal) {
+                        foreach ($list_temporal as $key => $temporal) {
                             $nombre_actual = ltrim($temporal->archivo, 'https://lanumerounocloud.com/intranet');
                             if ($temporal->id_ronda > 0) {
                                 $nuevo_nombre = "CONTROL_CAMARA/Evidencia_" . $control_camara->id . "_" . $temporal->id_ronda . "_" . date('YmdHis') . "." . pathinfo($temporal->archivo, PATHINFO_EXTENSION);
@@ -824,7 +824,7 @@ class ControlCamaraController extends Controller
                             ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
                             $archivo = "https://lanumerounocloud.com/intranet/" . $nuevo_nombre;
 
-                            $descripcion = $request->input('archivo_ronda_desc_'. ($key));
+                            $descripcion = $request->input('archivo_ronda_desc_' . ($key));
 
                             ControlCamaraArchivo::create([
                                 'id_control_camara' => $control_camara->id,
@@ -852,7 +852,7 @@ class ControlCamaraController extends Controller
         if (date('a', strtotime($ultimo->hora)) == 'am' || date('a', strtotime($ultimo->hora)) == 'AM') {
             $fecha = date('Y-m-d', strtotime(date('Y-m-d') . ' -1 day'));
         }
-        $total = $list_tienda_base+count($list_tienda_sede);
+        $total = $list_tienda_base + count($list_tienda_sede);
 
         $cantidad = ControlCamara::select('id_sede', 'fecha', 'hora_programada')
             ->where('id_sede', $request->id_sede)
@@ -864,10 +864,10 @@ class ControlCamaraController extends Controller
         // print_r('cantidad'.$cantidad);
         if ($total === $cantidad) {
             ControlCamara::where('hora_programada', $ultimo->hora)
-            ->where('id_sede', $request->id_sede)
-            ->where('fecha', date('Y-m-d'))->update([
-                'completado' => 1,
-            ]);
+                ->where('id_sede', $request->id_sede)
+                ->where('fecha', date('Y-m-d'))->update([
+                    'completado' => 1,
+                ]);
         }
     }
 }

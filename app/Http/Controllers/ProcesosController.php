@@ -12,14 +12,133 @@ use App\Models\ContenidoSupervisionTienda;
 use App\Models\DetalleSeguimientoCoordinador;
 use App\Models\DetalleSupervisionTienda;
 use App\Models\DiaSemana;
+use App\Models\Gerencia;
 use App\Models\Mes;
+use App\Models\NivelJerarquico;
+use App\Models\Procesos;
+use App\Models\Puesto;
 use App\Models\SeguimientoCoordinador;
 use App\Models\SupervisionTienda;
+use App\Models\TipoPortal;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\DB;
 
-class AdministradorController extends Controller
+class ProcesosController extends Controller
 {
+
+    public function index()
+    {
+        return view('procesos.portalprocesos.index');
+    }
+
+
+    public function index_lm()
+    {
+        return view('procesos.portalprocesos.listamaestra.index');
+    }
+
+    public function list_lm()
+    {
+        // Obtener la lista de procesos con los campos requeridos
+        $list_procesos = Procesos::select(
+            'portal_procesos.codigo',
+            'portal_procesos.nombre',
+            'portal_procesos.id_tipo',
+            'portal_procesos.id_area',
+            'portal_procesos.id_responsable',
+            'portal_procesos.fecha',
+            'portal_procesos.estado'
+        )
+            ->whereNotNull('portal_procesos.codigo') // Filtrar procesos sin código
+            ->where('portal_procesos.codigo', '!=', '') // Filtrar procesos con código vacío
+            ->orderBy('portal_procesos.codigo', 'ASC')
+            ->get();
+
+        // Preparar un array para almacenar los nombres de las áreas y del responsable
+        foreach ($list_procesos as $proceso) {
+            // Obtener nombres de las áreas
+            $ids = explode(',', $proceso->id_area);
+            $nombresAreas = DB::table('area')
+                ->whereIn('id_area', $ids)
+                ->pluck('nom_area');
+
+            // Asignar nombres de las áreas al proceso
+            $proceso->nombres_area = $nombresAreas->implode(', ');
+            // Obtener nombre del responsable
+            $nombreResponsable = DB::table('puesto')
+                ->where('id_puesto', $proceso->id_responsable)
+                ->value('nom_puesto'); // Asumiendo que la columna del nombre es 'nombre'
+            // Obtener nombre del tipo portal
+            $nombreTipoPortal = DB::table('tipo_portal')
+                ->where('id_tipo_portal', $proceso->id_tipo)
+                ->value('nom_tipo'); // Asumiendo que la columna del nombre es 'nombre'
+
+            // Asignar nombre del responsable al proceso
+            $proceso->nombre_responsable = $nombreResponsable;
+            $proceso->nombre_tipo_portal = $nombreTipoPortal;
+
+            // Asignar texto basado en el estado
+            switch ($proceso->estado) {
+                case 1:
+                    $proceso->estado_texto = 'Por aprobar';
+                    break;
+                case 2:
+                    $proceso->estado_texto = 'Publicado';
+                    break;
+                case 3:
+                    $proceso->estado_texto = 'Por actualizar';
+                    break;
+                default:
+                    $proceso->estado_texto = 'Desconocido';
+                    break;
+            }
+        }
+
+        return view('procesos.portalprocesos.listamaestra.lista', compact('list_procesos'));
+    }
+
+
+
+    public function create_lm()
+    {
+        $list_tipo = TipoPortal::select('id_tipo_portal', 'nom_tipo')
+            ->get();
+        $list_responsable = Puesto::select('id_puesto', 'nom_puesto')
+            ->where('estado', 1)
+            ->orderBy('nom_puesto', 'ASC')
+            ->get()
+            ->unique('nom_puesto');
+        $list_base = Base::get_list_todas_bases_agrupadas();
+        $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')->where('estado', 1)->get();
+        $list_nivel = NivelJerarquico::select('id_nivel', 'nom_nivel')->where('estado', 1)->get();
+
+        $list_puesto = NivelJerarquico::select('id_nivel', 'nom_nivel')
+            ->where('estado', 1)
+            ->get();
+        $list_area = Area::select('id_area', 'nom_area')
+            ->where('estado', 1)
+            ->orderBy('nom_area', 'ASC')
+            ->distinct('nom_area')->get();
+
+        // $list_area = Area::select('id_area', 'nom_area')
+        //     ->get();
+        return view('procesos.portalprocesos.listamaestra.modal_registrar', compact('list_tipo', 'list_responsable', 'list_area', 'list_puesto', 'list_base', 'list_gerencia', 'list_nivel'));
+
+        // return view('procesos.portalprocesos.listamaestra.modal_registrar', compact('list_tipo'));
+    }
+
+
+    public function index_lm1()
+    {
+        // $list_servicio = Servicio::where('lectura', 1)->where('estado', 1)->get();
+        $list_base = Base::get_list_todas_bases_agrupadas();
+        $list_mes = Mes::select('cod_mes', 'nom_mes')->where('estado', 1)->get();
+        // $list_anio = Anio::select('cod_anio')->where('estado', 1)->orderBy('cod_anio', 'DESC')->get();
+        return view('procesos.portalprocesos.listamaestra.list', compact('list_base', 'list_mes'));
+    }
+
+
     public function __construct()
     {
         $this->middleware('verificar.sesion.usuario');
@@ -35,11 +154,7 @@ class AdministradorController extends Controller
         return view('tienda.administracion.administrador.supervision_tienda.index');
     }
 
-    public function list_conf_st()
-    {
-        $list_c_supervision_tienda = ContenidoSupervisionTienda::select('id', 'descripcion')->where('estado', 1)->get();
-        return view('tienda.administracion.administrador.supervision_tienda.lista', compact('list_c_supervision_tienda'));
-    }
+
 
     public function create_conf_st($validador = null)
     {
@@ -282,10 +397,7 @@ class AdministradorController extends Controller
         ]);
     }
 
-    public function index()
-    {
-        return view('tienda.administrador.index');
-    }
+
 
     public function index_st()
     {
@@ -493,6 +605,7 @@ class AdministradorController extends Controller
 
     public function update_st(Request $request, $id)
     {
+
         SupervisionTienda::findOrFail($id)->update([
             'observacion' => addslashes($request->observacione),
             'fec_act' => now(),

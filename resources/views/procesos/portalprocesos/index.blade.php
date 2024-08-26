@@ -16,19 +16,17 @@
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                             <li class="nav-item">
-                                <a id="a_reg" class="nav-link" onclick="Registro();" style="cursor: pointer;">Registro</a>
+                                <a id="a_reg" class="nav-link" onclick="ListaMaestra();" style="cursor: pointer;">Lista Maestra</a>
                             </li>
-                            <li class="nav-item">
-                                <a id="a_img" class="nav-link" onclick="Imagen();" style="cursor: pointer;">Imagen</a>
-                            </li>
-                        </ul>
 
+                        </ul>
                         <div class="row" id="cancel-row">
                             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
-                                <div id="div_apertura_cierre_tienda" class="widget-content widget-content-area p-3">
+                                <div id="div_lista_maestra" class="widget-content widget-content-area p-3">
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -42,37 +40,21 @@
         $("#hseguridades").attr('aria-expanded', 'true');
         $("#aperturas_cierres").addClass('active');
 
-        Registro();
+        ListaMaestra();
     });
 
-    function Registro() {
+    function ListaMaestra() {
         Cargando();
 
-        var url = "{{ route('apertura_cierre_reg') }}";
+        var url = "{{ route('portalprocesos_lm') }}";
 
         $.ajax({
             url: url,
             type: "GET",
             success: function(resp) {
-                $('#div_apertura_cierre_tienda').html(resp);
+                $('#div_lista_maestra').html(resp);
                 $("#a_reg").addClass('active');
                 $("#a_img").removeClass('active');
-            }
-        });
-    }
-
-    function Imagen() {
-        Cargando();
-
-        var url = "{{ route('apertura_cierre_img') }}";
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            success: function(resp) {
-                $('#div_apertura_cierre_tienda').html(resp);
-                $("#a_reg").removeClass('active');
-                $("#a_img").addClass('active');
             }
         });
     }

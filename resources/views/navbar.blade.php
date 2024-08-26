@@ -1,9 +1,10 @@
 <style>
-    .main-container, #content {
-        min-height: auto; 
+    .main-container,
+    #content {
+        min-height: auto;
     }
 
-    #container{
+    #container {
         position: relative;
         top: -2rem;
     }
@@ -47,12 +48,13 @@
         display: inline-block;
         vertical-align: middle;
     }
+
     .tooltip-inner {
         font-family: Century;
         font-size: 1rem;
         background-color: white !important;
         color: #515365;
-        border-radius: 5px ;
+        border-radius: 5px;
         border: 1px solid #ffa700;
         text-align: justify;
         line-height: 3;
@@ -60,9 +62,11 @@
         max-width: 100%;
         padding: 0.5rem;
     }
+
     .tooltip.show.bs-tooltip-right .arrow::before {
         border-right-color: #ffa700 !important;
     }
+
     .cLcbjv {
         display: none;
     }

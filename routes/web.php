@@ -35,36 +35,37 @@ use App\Http\Controllers\OcurrenciaServicioConfController;
 
 use App\Http\Controllers\OcurrenciasTiendaController;
 use App\Http\Controllers\PostulanteController;
+use App\Http\Controllers\ProcesosController;
 use App\Http\Controllers\ReporteProveedoresController;
 
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
 });
 Route::post('/ReporteFotograficoAdmListar', [ReporteFotograficoAdmController::class, 'listar']);
-Route::controller(ReporteFotograficoAdmController::class)->group(function(){
+Route::controller(ReporteFotograficoAdmController::class)->group(function () {
     Route::get('/ReporteFotograficoAdm',  'index')->name('tienda.administracion.ReporteFotografico.reportefotograficoadm');
     Route::get('ReporteFotograficoAdmController/ModalUpdatedReporteFotograficoAdm/{id}', 'ModalUpdatedReporteFotograficoAdm')->name('tienda.administracion.ReporteFotografico.modal_editar');
     Route::get('ReporteFotograficoAdmController/ModalRegistrarReporteFotograficoAdm', 'ModalRegistroReporteFotograficoAdm')->name('tienda.administracion.ReporteFotografico.modal_registro');
     Route::post('/Registrar_Reporte_Fotografico_Adm', 'Registrar_Reporte_Fotografico_Adm');
     Route::post('/Update_Registro_Fotografico_Adm', 'Update_Registro_Fotografico_Adm')->name('Update_Registro_Fotografico_Adm');
     Route::post('/Delete_Reporte_Fotografico_Adm', 'Delete_Reporte_Fotografico_Adm');
-    Route::get('Tabla_RF','Tabla_RF');
+    Route::get('Tabla_RF', 'Tabla_RF');
     Route::get('Codigos_Reporte_Fotografico', 'Codigos_Reporte_Fotografico');
     Route::post('/Codigos_Reporte_Fotografico_Listar', 'Codigos_Reporte_Fotografico_Listar');
     Route::get('ModalRegistroCodigosReporteFotograficoAdm', 'ModalRegistroCodigosReporteFotograficoAdm');
-    Route::post('Registrar_Codigo_Reporte_Fotografico_Adm','Registrar_Codigo_Reporte_Fotografico_Adm');
-    Route::get('ModalUpdatedCodigoReporteFotograficoAdm/{id}','ModalUpdatedCodigoReporteFotograficoAdm');
-    Route::post('Update_Codigo_Registro_Fotografico_Adm','Update_Codigo_Registro_Fotografico_Adm');
-    Route::post('Delete_Codigo_Reporte_Fotografico_Adm','Delete_Codigo_Reporte_Fotografico_Adm');
+    Route::post('Registrar_Codigo_Reporte_Fotografico_Adm', 'Registrar_Codigo_Reporte_Fotografico_Adm');
+    Route::get('ModalUpdatedCodigoReporteFotograficoAdm/{id}', 'ModalUpdatedCodigoReporteFotograficoAdm');
+    Route::post('Update_Codigo_Registro_Fotografico_Adm', 'Update_Codigo_Registro_Fotografico_Adm');
+    Route::post('Delete_Codigo_Reporte_Fotografico_Adm', 'Delete_Codigo_Reporte_Fotografico_Adm');
 });
 //----------------------------LOGIN-------------------------//
-Route::controller(Login::class)->group(function(){
+Route::controller(Login::class)->group(function () {
     Route::get('/', 'index')->name('login');
     Route::post('IngresarLogin', 'ingresar')->name('IngresarLogin');
     Route::get('DestruirSesion', 'logout')->name('DestruirSesion');
 });
 //---------------------REGISTRO FOTOGRAFICO--------------------------//
-Route::controller(ReporteFotograficoController::class)->group(function(){
+Route::controller(ReporteFotograficoController::class)->group(function () {
     Route::get('/ReporteFotografico', 'index')->name('reportefotografico');
     Route::get('Modal_Update_Registro_Fotografico/{id}', 'ModalUpdatedReporteFotografico')->name('tienda.ReporteFotografico.modal_editar');
     Route::get('ReporteFotografico/ModalRegistrarReporteFotografico', 'ModalRegistroReporteFotografico')->name('tienda.ReporteFotografico.modal_registro');
@@ -83,7 +84,7 @@ Route::controller(ReporteFotograficoController::class)->group(function(){
     Route::get('ReporteFotografico/validar_reporte_fotografico_dia_job_2', 'validar_reporte_fotografico_dia_job_2');
 });
 //LOGÍSTICA - TRACKING
-Route::controller(TrackingController::class)->group(function(){
+Route::controller(TrackingController::class)->group(function () {
     //SUBIDA DE ARCHIVOS
     Route::post('tracking/list_archivo', 'list_archivo')->name('tracking.list_archivo');
     Route::post('tracking/previsualizacion_captura', 'previsualizacion_captura')->name('tracking.previsualizacion_captura');
@@ -128,7 +129,7 @@ Route::controller(TrackingController::class)->group(function(){
     Route::post('tracking/mercaderia_surtida', 'insert_mercaderia_surtida')->name('tracking.insert_mercaderia_surtida');
 });
 //TIENDA - FUNCIÓN TEMPORAL
-Route::controller(FuncionTemporalController::class)->group(function(){
+Route::controller(FuncionTemporalController::class)->group(function () {
     Route::get('funcion_temporal', 'index')->name('funcion_temporal');
     Route::get('funcion_temporal/{id}/list', 'list')->name('funcion_temporal.list');
     Route::get('funcion_temporal/create', 'create')->name('funcion_temporal.create');
@@ -141,7 +142,7 @@ Route::controller(FuncionTemporalController::class)->group(function(){
     Route::get('funcion_temporal/{id}/excel', 'excel')->name('funcion_temporal.excel');
 });
 //TIENDA - ADMINISTRADOR
-Route::controller(AdministradorController::class)->group(function(){
+Route::controller(AdministradorController::class)->group(function () {
     Route::get('administrador_conf', 'index_conf')->name('administrador_conf');
     Route::get('administrador_conf_st', 'index_conf_st')->name('administrador_conf_st');
     Route::get('administrador_conf_st/list', 'list_conf_st')->name('administrador_conf_st.list');
@@ -184,8 +185,38 @@ Route::controller(AdministradorController::class)->group(function(){
     Route::delete('administrador_sc/{id}', 'destroy_sc')->name('administrador_sc.destroy');
     Route::get('administrador_sc/{id}/evidencia', 'evidencia_sc')->name('administrador_sc.evidencia');
 });
+
+//PROCESOS - ADMINISTRADOR
+Route::controller(ProcesosController::class)->group(function () {
+    Route::get('portalprocesos', 'index')->name('portalprocesos');
+    Route::get('portalprocesos_lm', 'index_lm')->name('portalprocesos_lm');
+    Route::get('portalprocesos_lm/list', 'list_lm')->name('portalprocesos_lm.list');
+    Route::get('portalprocesos_lm/create', 'create_lm')->name('portalprocesos_lm.create');
+    // Route::get('ocurrencia_conf_go/list', 'list_go')->name('ocurrencia_conf_go.list');
+    // Route::get('ocurrencia_conf_go/create', 'create_go')->name('ocurrencia_conf_go.create');
+    // Route::post('ocurrencia_conf_go', 'store_go')->name('ocurrencia_conf_go.store');
+    // Route::get('ocurrencia_conf_go/{id}/edit', 'edit_go')->name('ocurrencia_conf_go.edit');
+    // Route::put('ocurrencia_conf_go/{id}', 'update_go')->name('ocurrencia_conf_go.update');
+    // Route::delete('ocurrencia_conf_go/{id}', 'destroy_go')->name('ocurrencia_conf_go.destroy');
+    // Route::get('ocurrencia_conf_co', 'index_co')->name('ocurrencia_conf_co');
+    // Route::get('ocurrencia_conf_co/list', 'list_coc')->name('ocurrencia_conf_co.list');
+    // Route::get('ocurrencia_conf_co/create', 'create_co')->name('ocurrencia_conf_co.create');
+    // Route::post('ocurrencia_conf_co', 'store_co')->name('ocurrencia_conf_co.store');
+    // Route::get('ocurrencia_conf_co/{id}/edit', 'edit_co')->name('ocurrencia_conf_co.edit');
+    // Route::put('ocurrencia_conf_co/{id}', 'update_co')->name('ocurrencia_conf_co.update');
+    // Route::delete('ocurrencia_conf_co/{id}', 'destroy_co')->name('ocurrencia_conf_co.destroy');
+    // Route::get('ocurrencia_conf_to', 'index_to')->name('ocurrencia_conf_to');
+    // Route::get('ocurrencia_conf_to/list', 'list_to')->name('ocurrencia_conf_to.list');
+    // Route::get('ocurrencia_conf_to/create', 'create_to')->name('ocurrencia_conf_to.create');
+    // Route::post('ocurrencia_conf_to', 'store_to')->name('ocurrencia_conf_to.store');
+    // Route::get('ocurrencia_conf_to/{id}/edit', 'edit_to')->name('ocurrencia_conf_to.edit');
+    // Route::put('ocurrencia_conf_to/{id}', 'update_to')->name('ocurrencia_conf_to.update');
+    // Route::delete('ocurrencia_conf_to/{id}', 'destroy_to')->name('ocurrencia_conf_to.destroy');
+});
+
+
 //RECURSOS HUMANOS - COLABORADOR CONFIGURABLE
-Route::controller(ColaboradorConfController::class)->group(function(){
+Route::controller(ColaboradorConfController::class)->group(function () {
     Route::get('colaborador_conf', 'index')->name('colaborador_conf');
     Route::post('colaborador_conf/traer_gerencia', 'traer_gerencia')->name('colaborador_conf.traer_gerencia');
     Route::post('colaborador_conf/traer_sub_gerencia', 'traer_sub_gerencia')->name('colaborador_conf.traer_sub_gerencia');
@@ -266,21 +297,21 @@ Route::controller(ColaboradorConfController::class)->group(function(){
     Route::put('colaborador_conf_ca/{id}', 'update_ca')->name('colaborador_conf_ca.update');
     Route::delete('colaborador_conf_ca/{id}', 'destroy_ca')->name('colaborador_conf_ca.destroy');
     Route::get('Index_Datacorp', 'Index_Datacorp');
-    Route::post('Listar_Accesos_Datacorp','Listar_Accesos_Datacorp');
+    Route::post('Listar_Accesos_Datacorp', 'Listar_Accesos_Datacorp');
     Route::get('Modal_Registrar_Datacorp', 'Modal_Registrar_Datacorp');
     Route::get('Modal_Update_Datacorp/{id}', 'Modal_Update_Datacorp');
     Route::post('Registrar_Datacorp', 'Registrar_Datacorp');
     Route::post('Update_Datacorp', 'Update_Datacorp');
     Route::post('/Delete_Datacorp', 'Delete_Datacorp');
     Route::get('Index_Paginas_Web', 'Index_Paginas_Web');
-    Route::post('Listar_Accesos_Pagina','Listar_Accesos_Pagina');
+    Route::post('Listar_Accesos_Pagina', 'Listar_Accesos_Pagina');
     Route::get('Modal_Registrar_Pagina', 'Modal_Registrar_Pagina');
     Route::get('Modal_Update_Pagina/{id}', 'Modal_Update_Pagina');
     Route::post('Registrar_Pagina', 'Registrar_Pagina');
     Route::post('Update_Pagina', 'Update_Pagina');
     Route::post('/Delete_Pagina', 'Delete_Pagina');
     Route::get('Index_Programas', 'Index_Programas');
-    Route::post('Listar_Accesos_Programa','Listar_Accesos_Programa');
+    Route::post('Listar_Accesos_Programa', 'Listar_Accesos_Programa');
     Route::get('Modal_Registrar_Programa', 'Modal_Registrar_Programa');
     Route::get('Modal_Update_Programa/{id}', 'Modal_Update_Programa');
     Route::post('Registrar_Programa', 'Registrar_Programa');
@@ -288,7 +319,7 @@ Route::controller(ColaboradorConfController::class)->group(function(){
     Route::post('/Delete_Programa', 'Delete_Programa');
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
-Route::controller(AperturaCierreTiendaConfController::class)->group(function(){
+Route::controller(AperturaCierreTiendaConfController::class)->group(function () {
     Route::get('apertura_cierre_conf', 'index')->name('apertura_cierre_conf');
     Route::get('apertura_cierre_conf_ho', 'index_ho')->name('apertura_cierre_conf_ho');
     Route::get('apertura_cierre_conf_ho/list', 'list_ho')->name('apertura_cierre_conf_ho.list');
@@ -306,7 +337,7 @@ Route::controller(AperturaCierreTiendaConfController::class)->group(function(){
     Route::delete('apertura_cierre_conf_ob/{id}', 'destroy_ob')->name('apertura_cierre_conf_ob.destroy');
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS
-Route::controller(AperturaCierreTiendaController::class)->group(function(){
+Route::controller(AperturaCierreTiendaController::class)->group(function () {
     Route::get('apertura_cierre', 'index')->name('apertura_cierre');
     Route::get('apertura_cierre_reg', 'index_reg')->name('apertura_cierre_reg');
     Route::post('apertura_cierre_reg/list', 'list_reg')->name('apertura_cierre_reg.list');
@@ -324,7 +355,7 @@ Route::controller(AperturaCierreTiendaController::class)->group(function(){
     Route::get('apertura_cierre_img/{id}/show', 'show_img')->name('apertura_cierre_img.show');
 });
 //SEGURIDAD - CONTROL DE CÁMARAS CONFIGURABLE
-Route::controller(ControlCamaraConfController::class)->group(function(){
+Route::controller(ControlCamaraConfController::class)->group(function () {
     Route::get('control_camara_conf', 'index')->name('control_camara_conf');
     Route::get('control_camara_conf_se', 'index_se')->name('control_camara_conf_se');
     Route::get('control_camara_conf_se/list', 'list_se')->name('control_camara_conf_se.list');
@@ -378,7 +409,7 @@ Route::controller(ControlCamaraConfController::class)->group(function(){
     Route::delete('control_camara_conf_ho_li/{id}', 'destroy_ho_li')->name('control_camara_conf_ho_li.destroy');
 });
 //SEGURIDAD - CONTROL DE CÁMARAS
-Route::controller(ControlCamaraController::class)->group(function(){
+Route::controller(ControlCamaraController::class)->group(function () {
     Route::get('control_camara', 'index')->name('control_camara');
     Route::get('control_camara_reg', 'index_reg')->name('control_camara_reg');
     Route::post('control_camara_reg/list', 'list_reg')->name('control_camara_reg.list');
@@ -402,7 +433,7 @@ Route::controller(ControlCamaraController::class)->group(function(){
     Route::get('control_camara_img/{id}/show', 'show_img')->name('control_camara_img.show');
 });
 //SEGURIDAD - LECTURA SERVICIO CONFIGURABLE
-Route::controller(LecturaServicioConfController::class)->group(function(){
+Route::controller(LecturaServicioConfController::class)->group(function () {
     Route::get('lectura_servicio_conf', 'index')->name('lectura_servicio_conf');
     Route::get('lectura_servicio_conf_se', 'index_se')->name('lectura_servicio_conf_se');
     Route::get('lectura_servicio_conf_se/list', 'list_se')->name('lectura_servicio_conf_se.list');
@@ -429,7 +460,7 @@ Route::controller(LecturaServicioConfController::class)->group(function(){
     Route::delete('lectura_servicio_conf_da/{id}', 'destroy_da')->name('lectura_servicio_conf_da.destroy');
 });
 //SEGURIDAD - LECTURA SERVICIO
-Route::controller(LecturaServicioController::class)->group(function(){
+Route::controller(LecturaServicioController::class)->group(function () {
     Route::get('lectura_servicio', 'index')->name('lectura_servicio');
     Route::get('lectura_servicio_reg', 'index_reg')->name('lectura_servicio_reg');
     Route::post('lectura_servicio_reg/list', 'list_reg')->name('lectura_servicio_reg.list');
@@ -459,7 +490,7 @@ Route::controller(LecturaServicioController::class)->group(function(){
 });
 
 //SEGURIDAD - OCURRENCIA SERVICIO CONFIGURABLE
-Route::controller(OcurrenciaServicioConfController::class)->group(function(){
+Route::controller(OcurrenciaServicioConfController::class)->group(function () {
     Route::get('ocurrencia_conf', 'index')->name('ocurrencia_conf');
     Route::get('ocurrencia_conf_go', 'index_go')->name('ocurrencia_conf_go');
     Route::get('ocurrencia_conf_go/list', 'list_go')->name('ocurrencia_conf_go.list');
@@ -486,7 +517,7 @@ Route::controller(OcurrenciaServicioConfController::class)->group(function(){
 
 
 //CONTROL INTERNO - PRECIO SUGERIDO CONFIGURABLE
-Route::controller(PrecioSugeridoConfController::class)->group(function(){
+Route::controller(PrecioSugeridoConfController::class)->group(function () {
     Route::get('precio_sugerido_conf', 'index')->name('precio_sugerido_conf');
     Route::get('precio_sugerido_conf_un', 'index_un')->name('precio_sugerido_conf_un');
     Route::get('precio_sugerido_conf_un/list', 'list_un')->name('precio_sugerido_conf_un.list');
@@ -511,7 +542,7 @@ Route::controller(PrecioSugeridoConfController::class)->group(function(){
     Route::delete('precio_sugerido_conf_tr/{id}', 'destroy_tr')->name('precio_sugerido_conf_tr.destroy');
 });
 //SEGURIDAD - ASISTENCIA
-Route::controller(AsistenciaSegController::class)->group(function(){
+Route::controller(AsistenciaSegController::class)->group(function () {
     Route::get('asistencia_seg', 'index')->name('asistencia_seg');
     Route::get('asistencia_seg_lec', 'index_lec')->name('asistencia_seg_lec');
     Route::post('asistencia_seg_lec/list', 'list_lec')->name('asistencia_seg_lec.list');
@@ -535,7 +566,7 @@ Route::controller(AsistenciaSegController::class)->group(function(){
     Route::get('asistencia_seg_man/{cod_base}/{id_colaborador}/{inicio}/{fin}/excel', 'excel_man')->name('asistencia_seg_man.excel');
 });
 //RECURSOS HUMANOS - POSTULANTE
-Route::controller(PostulanteController::class)->group(function(){
+Route::controller(PostulanteController::class)->group(function () {
     //POSTULANTE
     Route::get('postulante', 'index')->name('postulante');
     Route::get('postulante_reg', 'index_reg')->name('postulante_reg');
@@ -557,7 +588,7 @@ Route::controller(PostulanteController::class)->group(function(){
 
 
 //CUADRO CONTROL VISUAL ADMINISTRACION
-Route::controller(TablaCuadroControlVisualController::class)->group(function(){
+Route::controller(TablaCuadroControlVisualController::class)->group(function () {
     //---------------------Administrable horarios---------------------------------------------//
     Route::get('TablaCuadroControlVisual', 'index')->name('TablaCuadroControlVisual');
     Route::get('Horarios_Cuadro_Control', 'Horarios_Cuadro_Control')->name('Horarios_Cuadro_Control');
@@ -583,7 +614,7 @@ Route::controller(TablaCuadroControlVisualController::class)->group(function(){
     Route::get('/Traer_Horario_Programacion_Diaria', 'Traer_Horario_Programacion_Diaria');
 });
 //CUADRO CONTROL VISUAL
-Route::controller(CuadroControlVisualController::class)->group(function(){
+Route::controller(CuadroControlVisualController::class)->group(function () {
     //------------------------------CCV------------------------------------//
     Route::get('Cuadro_Control_Visual_Vista', 'Cuadro_Control_Visual_Vista')->name('Cuadro_Control_Visual_Vista');
     Route::post('Lista_Cuadro_Control_Visual_Vista', 'Lista_Cuadro_Control_Visual_Vista');
@@ -613,11 +644,11 @@ Route::controller(CuadroControlVisualController::class)->group(function(){
 
 
 
-Route::controller(PuestoController::class)->group(function(){
+Route::controller(PuestoController::class)->group(function () {
     Route::get('Traer_Puesto_Cargo_Colaborador', 'Traer_Puesto_Cargo_Colaborador');
 });
 //ASISTENCIA
-Route::controller(AsistenciaController::class)->group(function(){
+Route::controller(AsistenciaController::class)->group(function () {
     //------------------------------CCV------------------------------------//
     Route::get('Reporte_Control_Asistencia', 'index')->name('Reporte_Control_Asistencia');
     Route::post('Buscar_Reporte_Control_Asistencia', 'Buscar_Reporte_Control_Asistencia');
@@ -625,7 +656,7 @@ Route::controller(AsistenciaController::class)->group(function(){
     // Route::post('/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
 });
 //AMONESTACION
-Route::controller(AmonestacionController::class)->group(function(){
+Route::controller(AmonestacionController::class)->group(function () {
     //------------------------------AMONESTACIONES------------------------------------//
     Route::get('Amonestacion', 'Amonestacion')->name('Amonestacion');
     Route::get('Amonestaciones_Emitidas', 'Amonestaciones_Emitidas')->name('Amonestaciones_Emitidas');
@@ -638,11 +669,11 @@ Route::controller(AmonestacionController::class)->group(function(){
     Route::post('/Update_Amonestacion', 'Update_Amonestacion');
     Route::post('/Delete_Amonestacion', 'Delete_Amonestacion');
     Route::get('/Modal_Documento_Amonestacion/{id}', 'Modal_Documento_Amonestacion');
-    Route::get('Pdf_Amonestacion/{id}','Pdf_Amonestacion');
+    Route::get('Pdf_Amonestacion/{id}', 'Pdf_Amonestacion');
     Route::post('/Update_Documento_Amonestacion', 'Update_Documento_Amonestacion');
     Route::post('Aprobacion_Amonestacion', 'Aprobacion_Amonestacion');
 });
-Route::controller(ComunicadoController::class)->group(function(){
+Route::controller(ComunicadoController::class)->group(function () {
     Route::get('Comunicado', 'Index')->name('Comunicado');
     Route::get('Cargar_Slider_Rrhh', 'Cargar_Slider_Rrhh')->name('Cargar_Slider_Rrhh');
     Route::post('Lista_Slider_Rrhh', 'Lista_Slider_Rrhh')->name('Lista_Slider_Rrhh');
@@ -659,12 +690,12 @@ Route::controller(ComunicadoController::class)->group(function(){
     Route::post('Update_Anuncio_Intranet', 'Update_Anuncio_Intranet');
     Route::post('Delete_Anuncio_Intranet', 'Delete_Anuncio_Intranet');
 });
-Route::controller(SliderRRHH::class)->group(function(){
+Route::controller(SliderRRHH::class)->group(function () {
     Route::get('/SliderRRHH/{base}', 'Slider_Vista_RRHH')->name('slider_rrhh');
     Route::get('/SliderRRHH', 'Slider_Vista_Tienda')->name('slider_tienda');
     Route::get('/Slider/{method}', 'remap');
 });
-Route::controller(Cumpleanios::class)->group(function(){
+Route::controller(Cumpleanios::class)->group(function () {
     Route::get('/RecursosHumanos/Cumpleanios/index', 'index');
     Route::get('/RecursosHumanos/Buscar_Cumpleanios', 'Buscar_Cumpleanios');
     Route::get('/RecursosHumanos/Modal_Lista_Saludo_Cumpleanio/{id}', 'Modal_Lista_Saludo_Cumpleanio');
@@ -673,14 +704,14 @@ Route::controller(Cumpleanios::class)->group(function(){
     Route::get('/RecursosHumanos/Excel_Saludo_Cumpleanio/{id}', 'Excel_Saludo_Cumpleanio');
 });
 //SLIDER INICIO
-Route::controller(InicioAdmController::class)->group(function(){
+Route::controller(InicioAdmController::class)->group(function () {
     Route::get('Inicio/index', 'index');
     Route::post('Inicio/Slider_Inicio_Listar', 'Slider_Inicio_Listar');
     Route::get('Inicio/Modal_Update_Slider_Inicio/{id}', 'Modal_Update_Slider_Inicio');
     Route::post('Inicio/Update_Slider_Inicio', 'Update_Slider_Inicio');
 });
 //FRASES INICIO
-Route::controller(InicioFrasesAdmController::class)->group(function(){
+Route::controller(InicioFrasesAdmController::class)->group(function () {
     Route::get('Inicio/index_frases', 'index');
     Route::post('Inicio/Frases_Inicio_Listar', 'Frases_Inicio_Listar');
     Route::get('Inicio/Modal_Update_Frases_Inicio/{id}', 'Modal_Update_Frases_Inicio');
@@ -691,7 +722,7 @@ Route::controller(InicioFrasesAdmController::class)->group(function(){
 });
 
 //INTENCION DE RENUNCIA
-Route::controller(IntencionRenunciaConfController::class)->group(function(){
+Route::controller(IntencionRenunciaConfController::class)->group(function () {
     Route::get('IntencionRenunciaConfController/index', 'index');/*
     Route::post('Inicio/Frases_Inicio_Listar', 'Frases_Inicio_Listar');
     Route::get('Inicio/Modal_Update_Frases_Inicio/{id}', 'Modal_Update_Frases_Inicio');
@@ -701,7 +732,7 @@ Route::controller(IntencionRenunciaConfController::class)->group(function(){
     Route::post('Inicio/Delete_Frase', 'Delete_Frase');*/
 });
 //Ocurrencias
-Route::controller(OcurrenciasTiendaController::class)->group(function(){
+Route::controller(OcurrenciasTiendaController::class)->group(function () {
     Route::get('OcurrenciaTienda/index', 'Ocurrencia_Tienda');
     Route::post('OcurrenciaTienda/ListaOcurrencia/{base}/{fec_ini}/{fec_fin}/{tipo}/{colaborador}', 'ListaOcurrencia');
     Route::get('OcurrenciaTienda/Modal_Ocurrencia_Tienda_Admin', 'Modal_Ocurrencia_Tienda_Admin');
@@ -717,7 +748,7 @@ Route::controller(OcurrenciasTiendaController::class)->group(function(){
     Route::post('OcurrenciaTienda/Delete_Archivo_Ocurrencia', 'Delete_Archivo_Ocurrencia');
 });
 //Reporte Proveedores
-Route::controller(ReporteProveedoresController::class)->group(function(){
+Route::controller(ReporteProveedoresController::class)->group(function () {
     Route::get('RProveedores/index', 'RProveedores');
     Route::post('RProveedores/Buscar_RProveedor', 'Buscar_RProveedor');
     Route::post('RProveedores/Actualizar_Hora_RProveedor', 'Actualizar_Hora_RProveedor');
