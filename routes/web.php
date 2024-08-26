@@ -16,6 +16,7 @@ use App\Http\Controllers\AmonestacionController;
 use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
 use App\Http\Controllers\AsistenciaSegController;
+use App\Http\Controllers\CajaInicioController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
 use App\Http\Controllers\ComunicadoController;
@@ -29,6 +30,9 @@ use App\Http\Controllers\LecturaServicioConfController;
 use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
 use App\Http\Controllers\IntencionRenunciaConfController;
+use App\Http\Controllers\LogisticaInicioController;
+use App\Http\Controllers\ObservacionConfController;
+use App\Http\Controllers\ObservacionController;
 use App\Http\Controllers\OcurrenciaServicioConfController;
 
 
@@ -580,7 +584,48 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::get('postulante_revision/{id}/edit', 'edit_prev')->name('postulante_revision.edit');
     Route::put('postulante_revision/{id}', 'update_prev')->name('postulante_revision.update');
 });
-
+//ÁREA LOGÍSTICA
+Route::controller(LogisticaInicioController::class)->group(function(){
+    Route::get('logistica', 'index')->name('logistica');
+});
+//ÁREA CAJA
+Route::controller(CajaInicioController::class)->group(function(){
+    Route::get('caja', 'index')->name('caja');
+});
+//CAJA - OBSERVACIONES
+Route::controller(ObservacionController::class)->group(function(){
+    Route::get('observacion', 'index_reg')->name('observacion');
+    Route::post('observacion/list', 'list_reg')->name('observacion.list');
+    Route::get('observacion/create', 'create_reg')->name('observacion.create');
+    Route::post('observacion/traer_error', 'traer_error_reg')->name('observacion.traer_error');
+    Route::post('observacion/traer_datos_error', 'traer_datos_error_reg')->name('observacion.traer_datos_error');
+    Route::post('observacion/traer_responsable', 'traer_responsable_reg')->name('observacion.traer_responsable');
+    Route::post('observacion', 'store_reg')->name('observacion.store');
+    Route::get('observacion/{id}/edit', 'edit_reg')->name('observacion.edit');
+    Route::get('observacion/{id}/download', 'download_reg')->name('observacion.download');
+    Route::put('observacion/{id}', 'update_reg')->name('observacion.update');
+    Route::get('observacion/{id}/cambiar_estado', 'cambiar_estado_reg')->name('observacion.cambiar_estado');
+    Route::delete('observacion/{id}', 'destroy_reg')->name('observacion.destroy');
+    Route::get('observacion/{cod_base}/{id_colaborador}/{inicio}/{fin}/excel', 'excel_reg')->name('observacion.excel');
+});
+//CAJA - OBSERVACIONES CONFIGURABLE
+Route::controller(ObservacionConfController::class)->group(function(){
+    Route::get('observacion_conf', 'index')->name('observacion_conf');
+    Route::get('observacion_conf_terr', 'index_terr')->name('observacion_conf_terr');
+    Route::get('observacion_conf_terr/list', 'list_terr')->name('observacion_conf_terr.list');
+    Route::get('observacion_conf_terr/create', 'create_terr')->name('observacion_conf_terr.create');
+    Route::post('observacion_conf_terr', 'store_terr')->name('observacion_conf_terr.store');
+    Route::get('observacion_conf_terr/{id}/edit', 'edit_terr')->name('observacion_conf_terr.edit');
+    Route::put('observacion_conf_terr/{id}', 'update_terr')->name('observacion_conf_terr.update');
+    Route::delete('observacion_conf_terr/{id}', 'destroy_terr')->name('observacion_conf_terr.destroy');
+    Route::get('observacion_conf_err', 'index_err')->name('observacion_conf_err');
+    Route::get('observacion_conf_err/list', 'list_err')->name('observacion_conf_err.list');
+    Route::get('observacion_conf_err/create', 'create_err')->name('observacion_conf_err.create');
+    Route::post('observacion_conf_err', 'store_err')->name('observacion_conf_err.store');
+    Route::get('observacion_conf_err/{id}/edit', 'edit_err')->name('observacion_conf_err.edit');
+    Route::put('observacion_conf_err/{id}', 'update_err')->name('observacion_conf_err.update');
+    Route::delete('observacion_conf_err/{id}', 'destroy_err')->name('observacion_conf_err.destroy');
+});
 
 
 
@@ -754,3 +799,45 @@ Route::controller(ReporteProveedoresController::class)->group(function () {
     Route::post('RProveedores/Actualizar_Hora_RProveedor', 'Actualizar_Hora_RProveedor');
     Route::get('RProveedores/Excel_RProveedor/{base}/{estado_interno}/{fecha_inicio}/{fecha_fin}', 'Excel_RProveedor');
 });
+
+use App\Http\Controllers\InicioSeguridadController;
+//Inicio Seguridad
+Route::controller(InicioSeguridadController::class)->group(function(){
+    Route::get('InicioSeguridad/index', 'index');
+});
+use App\Http\Controllers\InicioTiendaController;
+//Inicio tienda
+Route::controller(InicioTiendaController::class)->group(function(){
+    Route::get('InicioTienda/index', 'index');
+});
+use App\Http\Controllers\SliderMarketingController;
+//Slider Marketing
+Route::controller(SliderMarketingController::class)->group(function(){
+    Route::get('Marketing/Slider_List_Comercial', 'index');
+    Route::post('Marketing/Buscar_RProveedor', 'Buscar_RProveedor');
+    Route::post('Marketing/Actualizar_Hora_RProveedor', 'Actualizar_Hora_RProveedor');
+    Route::get('Marketing/Excel_RProveedor/{base}/{estado_interno}/{fecha_inicio}/{fecha_fin}', 'Excel_RProveedor');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

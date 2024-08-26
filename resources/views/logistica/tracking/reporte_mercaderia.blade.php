@@ -1,4 +1,8 @@
-@extends('layouts.plantilla')
+@extends('layouts.plantilla_new')
+
+@section('navbar')
+    @include('logistica.navbar')
+@endsection
 
 @section('content')
     <div id="content" class="main-content">
@@ -51,8 +55,9 @@
 
     <script>
         $(document).ready(function() {
-            $("#li_trackings").addClass('active');
-            $("#a_trackings").attr('aria-expanded','true');
+            $("#logisticas").addClass('active');
+            $("#hlogisticas").attr('aria-expanded', 'true');
+            $("#trackings").addClass('active');
         });
 
         function Insert_Reporte_Mercaderia() {

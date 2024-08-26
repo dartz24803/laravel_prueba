@@ -1,4 +1,8 @@
-@extends('layouts.plantilla')
+@extends('layouts.plantilla_new')
+
+@section('navbar')
+    @include('logistica.navbar')
+@endsection
 
 @section('content')
 <link href="{{ asset('template/smart_wizard/style.css')}}" rel="stylesheet" type="text/css" />

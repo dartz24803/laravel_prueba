@@ -74,7 +74,8 @@
         session('usuario')->id_puesto==122 || session('usuario')->id_puesto==137 || 
         session('usuario')->id_puesto==164 || session('usuario')->id_puesto==158 || 
         session('usuario')->id_puesto==9 || session('usuario')->id_puesto==128 || 
-        session('usuario')->id_puesto==27 || session('usuario')->id_puesto==10)
+        session('usuario')->id_puesto==27 || session('usuario')->id_puesto==10 || 
+        session('usuario')->id_puesto==55)
             $('#tabla_js').DataTable({
                 "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
                 "<'table-responsive'tr>" +

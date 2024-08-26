@@ -617,42 +617,6 @@
                             </ul>
                         </li>
                     <?php } ?>
-                    <?php if (
-                        session('usuario')->id_nivel == "1" || session('usuario')->centro_labores == "OFC" || session('usuario')->id_puesto == "29" || session('usuario')->id_puesto == "161" ||
-                        session('usuario')->id_puesto == "197" || session('usuario')->id_puesto == "128" || session('usuario')->id_puesto == "251" || session('usuario')->id_puesto == "41" ||
-                        session('usuario')->id_puesto == "66" || session('usuario')->id_puesto == "73" || session('usuario')->id_puesto == "158" || session('usuario')->id_puesto == "12" ||
-                        session('usuario')->id_puesto == "155" || session('usuario')->id_puesto == "9" || session('usuario')->id_puesto == "19" || session('usuario')->id_puesto == "21" ||
-                        session('usuario')->id_puesto == "131" || session('usuario')->id_puesto == "68" || session('usuario')->id_puesto == "72" || session('usuario')->id_puesto == "15" ||
-                        session('usuario')->id_puesto == "27" || session('usuario')->id_puesto == "148" || session('usuario')->id_puesto == "76" || session('usuario')->id_puesto == "311" ||
-                        Session('usuario')->id_puesto == 144
-                    ) { ?>
-                        <li class="menu" id="procesos">
-                            <a href="#rprocesos" id="hprocesos" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                                <div class="">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-smile">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
-                                        <line x1="15" y1="9" x2="15.01" y2="9"></line>
-                                    </svg>
-                                    <span>Procesos</span>
-                                </div>
-                                <div>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
-                                        <polyline points="9 18 15 12 9 6"></polyline>
-                                    </svg>
-                                </div>
-                            </a>
-
-                            <ul class="collapse submenu list-unstyled" id="rprocesos" data-parent="#accordionExample">
-                                <li>
-                                    <a id="portalprocesos" href="{{ route('portalprocesos') }}">
-                                        <p class="romperpalabra"><span id="icono_active2"></span> Lista Maestra</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    <?php } ?>
                     <!-- Administrables  -->
                     <li class="menu menu-heading">
                         <div class="heading">
