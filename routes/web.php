@@ -779,6 +779,14 @@ use App\Http\Controllers\InicioTiendaController;
 Route::controller(InicioTiendaController::class)->group(function(){
     Route::get('InicioTienda/index', 'index');
 });
+use App\Http\Controllers\SliderMarketingController;
+//Slider Marketing
+Route::controller(SliderMarketingController::class)->group(function(){
+    Route::get('Marketing/Slider_List_Comercial', 'index');
+    Route::post('Marketing/Buscar_RProveedor', 'Buscar_RProveedor');
+    Route::post('Marketing/Actualizar_Hora_RProveedor', 'Actualizar_Hora_RProveedor');
+    Route::get('Marketing/Excel_RProveedor/{base}/{estado_interno}/{fecha_inicio}/{fecha_fin}', 'Excel_RProveedor');
+});
 
 
 

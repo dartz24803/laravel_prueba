@@ -2,7 +2,7 @@
 
 @section('content')
 <div id="content" class="main-content">
-    <button class="btn btn-primary" type="button" onclick="validar_reporte_fotografico_dia_job_2();">Guardar</button>
+    <!--<button class="btn btn-primary" type="button" onclick="validar_reporte_fotografico_dia_job_2();">Guardar</button>-->
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing" id="cancel-row">
             <div id="tabsSimple" class="col-lg-12 col-12 layout-spacing">
@@ -607,7 +607,7 @@
     };
 
 
-    function validar_reporte_fotografico_dia_job_2(){
+    /*function validar_reporte_fotografico_dia_job_2(){
         Cargando();
         var csrfToken = $('input[name="_token"]').val();
         url = "{{ url('ReporteFotografico/validar_reporte_fotografico_dia_job')}}"
@@ -627,6 +627,6 @@
                 });
             }
         });
-    }
+    }*/
 </script>
 @endsection
