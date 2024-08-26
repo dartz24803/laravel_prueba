@@ -630,6 +630,7 @@ class ReporteFotograficoController extends Controller
                 $mail->addAddress("dvilca@lanumero1.com.pe");
                 $mail->addAddress("fclaverias@lanumero1.com.pe");
                 $mail->addAddress("mponte@lanumero1.com.pe");
+                $mail->addAddress("AVALDIVIESO@LANUMERO1.COM.PE");
 
                 $mail->isHTML(true);
                 $mail->Subject = 'Reporte diario de bases';
