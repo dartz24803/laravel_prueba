@@ -73,8 +73,9 @@
 
     <script>
         $(document).ready(function() {
+            $("#cajas").addClass('active');
+            $("#hcajas").attr('aria-expanded', 'true');
             $("#observaciones").addClass('active');
-            $("#hobservaciones").attr('aria-expanded', 'true');
 
             Lista_Observacion();
         });

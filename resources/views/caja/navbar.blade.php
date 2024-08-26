@@ -1,13 +1,25 @@
-<li class="menu" id="observaciones">
-    <a id="hobservaciones" href="{{ route('observacion') }}" aria-expanded="false" class="dropdown-toggle">
+<li class="menu" id="cajas">
+    <a href="#rcajas" id="hcajas" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
         <div class="">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign">
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
             </svg>
-            <span>Observación</span>
+            <span>Caja</span>
+        </div>
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
         </div>
     </a>
+    <ul class="collapse submenu list-unstyled" id="rcajas" data-parent="#accordionExample">
+        <li id="observaciones">
+            <a href="{{ route('observacion') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                <p class="romperpalabra"><span id="icono_active2"></span> Observaciones</p>
+            </a>
+        </li>
+    </ul>
 </li>
 
 <li class="menu menu-heading">
