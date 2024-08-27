@@ -1,4 +1,8 @@
-@extends('layouts.plantilla')
+@extends('layouts.plantilla_new')
+
+@section('navbar')
+    @include('tienda.navbar')
+@endsection
 
 @section('content')
 <?php

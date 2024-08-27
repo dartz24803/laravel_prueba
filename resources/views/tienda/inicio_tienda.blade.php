@@ -1,4 +1,8 @@
-@extends('layouts.plantilla')
+@extends('layouts.plantilla_new')
+
+@section('navbar')
+    @include('tienda.navbar')
+@endsection
 
 @section('content')
 <div id="content" class="main-content">
@@ -12,8 +16,8 @@
 </div>
 <script>
     $(document).ready(function() {
-        $("#ccvtabla").addClass('active');
-        $("#hccvtabla").attr('aria-expanded', 'true');
+        $("#inicio").addClass('active');
+        $("#hinicio").attr('aria-expanded', 'true');
     });
 </script>
 @endsection
