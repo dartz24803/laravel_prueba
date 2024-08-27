@@ -265,11 +265,11 @@ class TrackingController extends Controller
                 ], 500);
             }
     
-            if (count($query)==0) {
+            /*if (count($query)==0) {
                 return response()->json([
                     'message' => 'Sin resultados.',
                 ], 404);
-            }
+            }*/
     
             return response()->json($query, 200);
         }else{
