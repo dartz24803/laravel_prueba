@@ -803,12 +803,12 @@ Route::controller(ReporteProveedoresController::class)->group(function () {
 use App\Http\Controllers\InicioSeguridadController;
 //Inicio Seguridad
 Route::controller(InicioSeguridadController::class)->group(function(){
-    Route::get('InicioSeguridad/index', 'index');
+    Route::get('InicioSeguridad/index', 'index')->name('seguridad');
 });
 use App\Http\Controllers\InicioTiendaController;
 //Inicio tienda
 Route::controller(InicioTiendaController::class)->group(function(){
-    Route::get('InicioTienda/index', 'index');
+    Route::get('InicioTienda/index', 'index')->name('tienda');
 });
 use App\Http\Controllers\SliderMarketingController;
 //Slider Marketing

@@ -17,7 +17,7 @@
                                             <div class="logo6" style="width: 6rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701;height:6rem">
                                                     <img class="imagen_1"  src="{{ asset('inicio/NEW.Intranet-Icono-Logistica.png')}}" alt="">
-                                                    <p class="card-text text-center text-white"><a href="{{ route('logistica') }}" style="color: white;">Logística</a></p>
+                                                    <p class="card-text text-center text-white">Logística</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -112,7 +112,7 @@
                                             <div class="logo6" style="width: 6rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701; height: 6rem;">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-CajaControlInterno.png')}}" alt="">
-                                                    <p class="card-text text-center text-white"><a href="{{ route('caja') }}" style="color: white;">Caja y Control Interno</a></p>
+                                                    <p class="card-text text-center text-white">Caja y Control Interno</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -562,6 +562,23 @@
         $("#hinicio").attr('aria-expanded','true');
         cambiarClaseSegunResolucion();
     });
+
+    document.getElementById('logo_logistica').onclick = function() {
+        window.location.href = "{{ route('logistica') }}";
+    };
+
+    document.getElementById('logo_seguridad').onclick = function() {
+        window.location.href = "{{ route('seguridad') }}";
+    };
+
+    document.getElementById('logo_tiendas').onclick = function() {
+        window.location.href = "{{ route('tienda') }}";
+    };
+
+    document.getElementById('logo_caja').onclick = function() {
+        window.location.href = "{{ route('caja') }}";
+    };
+
     function cambiarClaseSegunResolucion(){
         var ventanaAncho = $(window).width();
         console.log(ventanaAncho);
@@ -597,36 +614,5 @@
 
     // Llama a la función en respuesta al cambio de tamaño de la ventana
     $(window).resize(cambiarClaseSegunResolucion);
-
-    document.getElementById('logo_seguridad').onclick = function() {
-        window.location.href = "{{ url('InicioSeguridad/index') }}";
-    };
-
-    document.getElementById('logo_tiendas').onclick = function() {
-        window.location.href = "{{ url('InicioTienda/index') }}";
-    };
-
-
-    /*function validar_reporte_fotografico_dia_job_2(){
-        Cargando();
-        var csrfToken = $('input[name="_token"]').val();
-        url = "{{ url('ReporteFotografico/validar_reporte_fotografico_dia_job')}}"
-
-        $.ajax({
-            url: url,
-            type: 'GET',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
-            success: function(data) {
-                swal.fire(
-                    'Registro Exitoso!',
-                    'Haga clic en el botón!',
-                    'success'
-                ).then(function() {
-                });
-            }
-        });
-    }*/
 </script>
 @endsection
