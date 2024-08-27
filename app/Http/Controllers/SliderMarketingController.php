@@ -28,7 +28,7 @@ class SliderMarketingController extends Controller
         $dato['list_noti'] = $this->Model_Corporacion->get_list_notificacion();
         $dato['list_nav_evaluaciones'] = $this->Model_Corporacion->get_list_nav_evaluaciones();*/
 
-        return view("marketing/slider/body", $dato);
+        return view("comercial/marketing/slider/body", $dato);
     }
     
     public function Buscar_Base_Slide_Comercial(Request $request){
@@ -42,7 +42,7 @@ class SliderMarketingController extends Controller
                         ->where('base', $base)
                         ->orderBy('orden', 'ASC')
                         ->get();
-        return view('marketing/slider/lista', $dato);
+        return view('comercial/marketing/slider/lista', $dato);
     }
     
     public function Modal_Slide_Insertar_Comercial(){
@@ -50,7 +50,7 @@ class SliderMarketingController extends Controller
         $dato['list_base'] = Base::where('nom_base', 'LIKE', 'BASE%')
                         ->orderBy('nom_base', 'ASC')
                         ->get();
-        return view('marketing/slider/modal_registrar', $dato);   
+        return view('comercial/marketing/slider/modal_registrar', $dato);   
     }
 
     public function Insert_Slide_Comercial(Request $request){
@@ -158,7 +158,7 @@ class SliderMarketingController extends Controller
                         ->get();
         $dato['url'] = Config::where('descrip_config', 'Slide_Comercial')
                         ->get();
-        return view('marketing/slider/modal_editar',$dato);
+        return view('comercial/marketing/slider/modal_editar',$dato);
     }
 
     public function Update_slide_Comercial(Request $request){
@@ -256,6 +256,6 @@ class SliderMarketingController extends Controller
                         ->where('tipo_slide', '!=', 2)
                         ->orderBy('orden', 'ASC')
                         ->get();
-        return view("marketing/slider/index", $dato);
+        return view("comercial/marketing/slider/index", $dato);
     }
 }

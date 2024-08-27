@@ -1,7 +1,7 @@
 @extends('layouts.plantilla_new')
 
 @section('navbar')
-    @include('marketing.navbar')
+    @include('comercial.navbar')
 @endsection
 
 @section('content')
@@ -51,9 +51,8 @@
         @csrf
         <div class="row" id="cancel-row">
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                <div class="widget-content widget-content-area br-6">
-
-                    <div class="toolbar">
+                <div class="widget-content widget-content-area br-6 p-2">
+                    <div class="toolbar m-4">
                         <div class="container" style="padding-left: 0px; padding-right: 0px;">
                             <div class="row">
                                 <div class="col-sm" align="left">

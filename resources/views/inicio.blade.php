@@ -580,6 +580,10 @@
         window.location.href = "{{ route('recursos_humanos') }}";
     };
 
+    document.getElementById('logo_comercial').onclick = function() {
+        window.location.href = "{{ url('Comercial/InicioComercial') }}";
+    };
+    
     function cambiarClaseSegunResolucion(){
         var ventanaAncho = $(window).width();
         console.log(ventanaAncho);

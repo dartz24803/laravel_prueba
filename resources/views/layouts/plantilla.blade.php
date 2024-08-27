@@ -330,7 +330,7 @@
                     </li>
 
                     <!-- Parte aplicaciones solo en inicio -->
-                    {{-- @if (url()->current() == url('Home')) --}}
+                    @if (url()->current() == url('Home'))
                     <li class="menu menu-heading">
                         <div class="heading"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle">
                                 <circle cx="12" cy="12" r="10"></circle>
@@ -386,7 +386,7 @@
                             </a>
                         </li>
                     <?php } ?>
-                    {{-- @else --}}
+                    @else
                     <!-- Fin de parte aplicaciones -->
                     <li class="menu menu-heading">
                         <div class="heading">
@@ -545,7 +545,7 @@
                             </ul>
                         </li>
                     <?php } ?>
-                    {{-- @endif --}}
+                    @endif
                 </ul>
             </nav>
         </div>

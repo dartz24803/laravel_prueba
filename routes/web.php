@@ -815,6 +815,10 @@ use App\Http\Controllers\InicioTiendaController;
 Route::controller(InicioTiendaController::class)->group(function(){
     Route::get('InicioTienda/index', 'index')->name('tienda');
 });
+use App\Http\Controllers\InicioComercialController;
+Route::controller(InicioComercialController::class)->group(function(){
+    Route::get('Comercial/InicioComercial', 'index');
+});
 use App\Http\Controllers\SliderMarketingController;
 //Slider Marketing
 Route::controller(SliderMarketingController::class)->group(function(){
