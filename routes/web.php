@@ -40,6 +40,7 @@ use App\Http\Controllers\OcurrenciaServicioConfController;
 use App\Http\Controllers\OcurrenciasTiendaController;
 use App\Http\Controllers\PostulanteController;
 use App\Http\Controllers\ProcesosController;
+use App\Http\Controllers\RecursosHumanosInicioController;
 use App\Http\Controllers\ReporteProveedoresController;
 
 Route::middleware([NoCache::class])->group(function () {
@@ -625,6 +626,10 @@ Route::controller(ObservacionConfController::class)->group(function(){
     Route::get('observacion_conf_err/{id}/edit', 'edit_err')->name('observacion_conf_err.edit');
     Route::put('observacion_conf_err/{id}', 'update_err')->name('observacion_conf_err.update');
     Route::delete('observacion_conf_err/{id}', 'destroy_err')->name('observacion_conf_err.destroy');
+});
+//ÁREA RECURSOS HUMANOS
+Route::controller(RecursosHumanosInicioController::class)->group(function(){
+    Route::get('recursos_humanos', 'index')->name('recursos_humanos');
 });
 
 

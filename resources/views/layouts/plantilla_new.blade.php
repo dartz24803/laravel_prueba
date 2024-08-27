@@ -285,6 +285,11 @@
         .tooltip.show.bs-tooltip-right .arrow::before {
             border-right-color: #ffa700 !important;
         }
+
+        .heading span {
+            color: #00b1f4;
+            font-weight: bold;
+        }
     </style>
     <!--  BEGIN MAIN CONTAINER  -->
     <div class="main-container sidebar-closed sbar-open" id="container">

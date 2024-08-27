@@ -542,10 +542,7 @@
             /* width: 18%; */
         }
     }
-    .heading span {
-        color: #00b1f4;
-        font-weight: bold;
-    }
+
     .sidebar-wrapper ul.menu-categories li.menu.menu-heading > .heading .feather-circle {
         display: none;
         vertical-align: sub;
@@ -577,6 +574,10 @@
 
     document.getElementById('logo_caja').onclick = function() {
         window.location.href = "{{ route('caja') }}";
+    };
+
+    document.getElementById('logo_talento_humano').onclick = function() {
+        window.location.href = "{{ route('recursos_humanos') }}";
     };
 
     function cambiarClaseSegunResolucion(){
