@@ -20,9 +20,9 @@
                 <td><?php echo $list['base']; ?></td>
                 <td><?php if($list['tipo_slide']=="1"){echo "Imagen";} else{echo 'Video' ;} ?></td>
                 <td><?php echo $list['duracion']; ?></td>
-                <td><?php echo word_limiter($list['titulo'], 4) ?></td>
-                <td><?php echo word_limiter($list['descripcion'], 4) ?></td>
-                <td><?php echo format_date($list['fec_reg']) ?></td>
+                <td>{{ Str::words($list['titulo'], 4) }}</td>
+                <td>{{ Str::words($list['descripcion'], 4) }}</td>
+                <td>{{ \Carbon\Carbon::parse($list['fec_reg'])->format('d/m/Y') }}</td>
                 <td>
                     <?php if(substr($list['archivoslide'],-3) === "mp4"){ ?>
                             <?php echo ' 
@@ -36,8 +36,7 @@
                 </td>
                 <td class="text-center">
                     <a href="javascript:void(0);" title="Editar" 
-                    data-toggle="modal" data-target="#ModalUpdateSlide" 
-                    app_upd_slide="<?= site_url('Corporacion/Modal_Update_slide_Comercial') ?>/<?php echo $list['id_slide']  ?>">
+                    data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('Marketing/Modal_Update_Slide_Comercial/'.$list['id_slide']) }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                         </svg>
@@ -71,8 +70,46 @@
             "pageLength": 10
         });
     });
-        $(".img_post").click(function () {
-    window.open($(this).attr("src"), 'popUpWindow', 
-    "height=" + this.naturalHeight + ",width=" + this.naturalWidth + ",resizable=yes,toolbar=yes,menubar=no')");
-});
+    $(".img_post").click(function () {
+        window.open($(this).attr("src"), 'popUpWindow', 
+        "height=" + this.naturalHeight + ",width=" + this.naturalWidth + ",resizable=yes,toolbar=yes,menubar=no')");
+    });
+    function Delete_slide_Comercial(id) {
+        var csrfToken = $('input[name="_token"]').val();
+        var id = id;
+        var url = "{{ url('Corporacion/Slide_delete') }}";
+        Swal({
+            //title: '¿Realmente quieres eliminar el registro de '+ nombre +'?',
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    data: {
+                        'id_slide': id
+                    },
+                    success: function() {
+                        Swal(
+                            'Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            Busca_Slide_Comercial();
+                        });
+                    }
+                });
+            }
+        })
+    }
 </script>

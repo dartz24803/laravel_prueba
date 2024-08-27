@@ -1,16 +1,14 @@
-<?php  $sesion =  $_SESSION['usuario'][0];?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Slider</title>
-    <link rel="icon" type="image/png" href="<?php echo base_url(); ?>template/assets/img/favicon.png" sizes="16x16">
-    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/especiales/sliders/sliderstyle.css">
-    <script src="<?php echo base_url(); ?>template/assets/js/libs/jquery-3.1.1.min.js"></script>
+    <link rel="icon" type="image/png" href="{{ asset('template/assets/img/favicon.png') }}" sizes="16x16">
+    <link rel="stylesheet" href="{{ asset('css/sliderstyle.css') }}">
+    <script src="{{ asset('template/assets/js/libs/jquery-3.1.1.min.js') }}"></script>
 </head>
 <body>
-
 <?php foreach($slider as $list) {  ?>
     <?php if($list['tipo_slide'] == 1){  ?>
            <?php echo "<div class='slide' data-timing={$list['duracion']} data-fadein={$list['entrada_slide']} data-fadeout={$list['salida_slide']}>"; ?>

@@ -1,4 +1,8 @@
-@extends('layouts.plantilla')
+@extends('layouts.plantilla_new')
+
+@section('navbar')
+    @include('marketing.navbar')
+@endsection
 
 @section('content')
 <?php
@@ -44,7 +48,7 @@
                 <h3>Listado de Slides Marketing</h3>
             </div>
         </div>
-
+        @csrf
         <div class="row" id="cancel-row">
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
@@ -57,13 +61,12 @@
                                     <div class="row">
                                         <div class="col-sm" >
                                             <!-- Fade in up modal  href=""-->
-
                                             <a  onclick="Ver_Slide()" role="button" target="_blank" class="btn btn-primary mb-2 mr-2" title="Ver" >
                                                 Visualizar Slide
                                             </a>
                                         </div>
                                         <div class="col-sm">
-                                            <select id="base" name="base" class="form-control basic" onchange="Busca_Slide_Comercial()">
+                                            <select id="base_filtro" name="base_filtro" class="form-control basic" onchange="Busca_Slide_Comercial()">
                                                 <option value="0" >Seleccionar</option>
                                                 <?php foreach($list_base as $list){
                                                     if($list['id_base'] == 1){ ?>
@@ -80,7 +83,7 @@
                                 <div class="col-sm registrof">
                                     <div align="right">
                                         <!-- Fade in up modal -->
-                                        <button type="button" class="btn btn-primary mb-2 mr-2" title="Registrar" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg=" url('Marketing/Modal_Slide_Insertar_Comercial') }}" >
+                                        <button type="button" class="btn btn-primary mb-2 mr-2" title="Registrar" data-toggle="modal" data-target="#ModalRegistroGrande" app_reg_grande="{{ url('Marketing/Modal_Slide_Insertar_Comercial') }}" >
                                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
                                             Registrar
                                         </button>
@@ -104,20 +107,16 @@
     <?php $funcioncontrolador = base64_encode('Slider_Vista_Comercial'); ?>
 <script>
     $(document).ready(function() {
-        //$("#comercial").addClass('active');
-        //$("#hcomercial").attr('aria-expanded','true');
-        //$("#sliderc").addClass('active');
         $("#marketing").addClass('active');
         $("#hmarketing").attr('aria-expanded','true');
         $("#sliderc").addClass('active');
-        $("#entrada_slide").inputmask({mask:"9.9"});
-        $("#salida_slide").inputmask({mask:"9.9"});
         Busca_Slide_Comercial();
     });
+
     function Ver_Slide() {
-        var base = $('#base').val();
+        var base = $('#base_filtro').val();
         var funcion = "{{ $funcioncontrolador }}";
-        var url = "{{ url('SliderComercial') }}/" + funcion + "/" + base;
+        var url = "{{ url('Marketing/SliderComercial') }}/" + funcion + "/" + base;
         window.open(url, "_blank");
     }
 
@@ -125,28 +124,23 @@
     function Busca_Slide_Comercial(){
         Cargando();
 
-        var base = $('#base').val();
+        var csrfToken = $('input[name="_token"]').val();
+        var base = $('#base_filtro').val();
         var url = "{{ url('Marketing/Buscar_Base_Slide_Comercial') }}";
+
         $.ajax({
-            type:"POST",
-            url:url,
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             data: {'base':base },
             success:function (data) {
                 $('#lista_colaborador').html(data);
             }
         });
     }
-    /*$('#base').on('change', function() {
 
-    });
-    $('#base').trigger("change");*/
-
-</script>
-<script>/*
-    $('.chosen-select-deselect').chosen({
-        width: '100%',
-        allow_single_deselect: true
-    });*/
 </script>
 
 @endsection

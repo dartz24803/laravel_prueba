@@ -820,8 +820,11 @@ use App\Http\Controllers\SliderMarketingController;
 Route::controller(SliderMarketingController::class)->group(function(){
     Route::get('Marketing/Slider_List_Comercial', 'index');
     Route::post('Marketing/Buscar_Base_Slide_Comercial', 'Buscar_Base_Slide_Comercial');
-    Route::post('Marketing/Actualizar_Hora_RProveedor', 'Actualizar_Hora_RProveedor');
-    Route::get('Marketing/Excel_RProveedor/{base}/{estado_interno}/{fecha_inicio}/{fecha_fin}', 'Excel_RProveedor');
+    Route::get('Marketing/Modal_Slide_Insertar_Comercial', 'Modal_Slide_Insertar_Comercial');
+    Route::post('Marketing/Insert_Slide_Comercial', 'Insert_Slide_Comercial');
+    Route::get('Marketing/Modal_Update_Slide_Comercial/{id}', 'Modal_Update_Slide_Comercial');
+    Route::post('Marketing/Update_Slide_Comercial', 'Update_Slide_Comercial');
+    Route::get('Marketing/SliderComercial/{funcion}/{base}', 'Slider_Vista_Comercial');
 });
 
 
