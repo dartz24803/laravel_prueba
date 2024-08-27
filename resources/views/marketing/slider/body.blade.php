@@ -19,7 +19,7 @@
 
     .table-condensed td{
         vertical-align: middle;
-    }
+    }/*
     .chosen-container .chosen-results {
         max-height:70px;
     }
@@ -27,7 +27,7 @@
     #base_chosen{
         margin-top: 7px;
     }
-
+*/
 
     @media (max-width: 600px) {
         .registrof {
@@ -67,9 +67,9 @@
                                                 <option value="0" >Seleccionar</option>
                                                 <?php foreach($list_base as $list){
                                                     if($list['id_base'] == 1){ ?>
-                                                            <option value="<?php //$variable = Encryptor('encrypt', $list['id_base']);  echo $variable;  ?>" selected > <?php echo $list['nom_base'];?> </option>
+                                                            <option value="<?php $variable = base64_encode($list['id_base']);  echo $variable;  ?>" selected > <?php echo $list['nom_base'];?> </option>
                                                     <?php }else{?>
-                                                            <option value="<?php //$variablee = Encryptor('encrypt', $list['id_base']); echo $variablee; ?>"> <?php echo $list['nom_base'];?> </option>
+                                                            <option value="<?php $variablee = base64_encode($list['id_base']); echo $variablee; ?>"> <?php echo $list['nom_base'];?> </option>
                                                     <?php } ?>
                                                 <?php } ?>
                                             </select>
@@ -101,7 +101,7 @@
 
     </div>
 </div>
-    <?php //$funcioncontrolador=Encryptor('encrypt', 'Slider_Vista_Comercial'); ?>
+    <?php $funcioncontrolador = base64_encode('Slider_Vista_Comercial'); ?>
 <script>
     $(document).ready(function() {
         //$("#comercial").addClass('active');
@@ -116,7 +116,7 @@
     });
     function Ver_Slide() {
         var base = $('#base').val();
-        var funcion = "";
+        var funcion = "{{ $funcioncontrolador }}";
         var url = "{{ url('SliderComercial') }}/" + funcion + "/" + base;
         window.open(url, "_blank");
     }
@@ -126,7 +126,7 @@
         Cargando();
 
         var base = $('#base').val();
-        var url = "{{ url('Corporacion/Buscar_Base_Slide_Comercial') }}";
+        var url = "{{ url('Marketing/Buscar_Base_Slide_Comercial') }}";
         $.ajax({
             type:"POST",
             url:url,
@@ -142,11 +142,11 @@
     $('#base').trigger("change");*/
 
 </script>
-<script>
+<script>/*
     $('.chosen-select-deselect').chosen({
         width: '100%',
         allow_single_deselect: true
-    });
+    });*/
 </script>
 
 @endsection

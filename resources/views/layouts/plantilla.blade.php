@@ -931,6 +931,7 @@
     <script src="{{ asset('template/assets/js/app.js') }}"></script>
     <script src="{{ asset('template/plugins/blockui/jquery.blockUI.min.js') }}"></script>
     <script src="{{ asset('template/plugins/blockui/custom-blockui.js') }}"></script>
+    <script src="{{ asset('template/plugins/input-mask/jquery.inputmask.bundle.min.js') }}"></script>
     <script src="{{ asset('template/plugins/sweetalerts/sweetalert2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/sweetalerts/custom-sweetalert.js') }}"></script>
 

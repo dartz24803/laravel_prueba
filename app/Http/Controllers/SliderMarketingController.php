@@ -30,4 +30,17 @@ class SliderMarketingController extends Controller
 
         return view("marketing/slider/body", $dato);
     }
+    
+    public function Buscar_Base_Slide_Comercial(Request $request){
+        $base_slide = $request->input("base");
+        $base = base64_decode($base_slide);
+        $dato['url'] = Config::where('descrip_config', 'Slide_Comercial')
+                        ->where('estado', 1)
+                        ->get();
+        $dato['slider'] = Slide::where('estado', 1)
+                        ->where('id_area', 7)
+                        ->where('base', $base)
+                        ->orderBy('orden', 'ASC');
+        return view('marketing/slider/lista', $dato);
+    }
 }
