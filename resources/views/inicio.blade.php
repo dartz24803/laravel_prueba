@@ -579,6 +579,10 @@
         window.location.href = "{{ route('caja') }}";
     };
 
+    document.getElementById('logo_talento_humano').onclick = function() {
+        window.location.href = "{{ route('recursos_humanos') }}";
+    };
+
     function cambiarClaseSegunResolucion(){
         var ventanaAncho = $(window).width();
         console.log(ventanaAncho);
