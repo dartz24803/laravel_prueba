@@ -634,12 +634,12 @@
                             </a>
                             <ul class="collapse submenu list-unstyled" id="rmarketing" data-parent="#accordionExample">
                                 <li id="sliderc">
-                                    <a id="hslider" href="{{ url('Corporacion/Slider_List_Comercial') }}">
+                                    <a id="hslider" href="{{ url('Marketing/Slider_List_Comercial') }}">
                                         <p class="romperpalabra"><span id="icono_active2"></span> Slider Marketing</p>
                                     </a>
                                 </li>
                                 <li id="mercaderiamkt">
-                                    <a id="rmercaderiamkt" href="{{ url('Logistica/Mercaderia_Fotografia/2') }}">
+                                    <a id="rmercaderiamkt" href="{{ url('Marketing/Mercaderia_Fotografia/2') }}">
                                         <p class="romperpalabra" title="Mercadería a enviar para fotografía"><span id="icono_active2"></span> Mercadería a Enviar para fotografía</p>
                                     </a>
                                 </li>
