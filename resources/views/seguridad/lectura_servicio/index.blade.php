@@ -1,4 +1,8 @@
-@extends('layouts.plantilla')
+@extends('layouts.plantilla_new')
+
+@section('navbar')
+    @include('seguridad.navbar')
+@endsection
 
 @section('content')
     <div id="content" class="main-content">

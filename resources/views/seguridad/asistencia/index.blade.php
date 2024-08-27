@@ -1,4 +1,8 @@
-@extends('layouts.plantilla')
+@extends('layouts.plantilla_new')
+
+@section('navbar')
+    @include('seguridad.navbar')
+@endsection
 
 @section('content')
 <div id="content" class="main-content">
@@ -56,12 +60,12 @@
         $("#hseguridades").attr('aria-expanded', 'true');
         $("#asistencias_segs").addClass('active');
 
-        @if(session('usuario') - > id_puesto != 21 &&
-            session('usuario') - > id_puesto != 279 &&
-            session('usuario') - > id_puesto != 209)
-        Lectora();
+        @if(session('usuario') -> id_puesto != 21 &&
+        session('usuario') -> id_puesto != 279 &&
+        session('usuario') -> id_puesto != 209)
+            Lectora();
         @else
-        Manual()
+            Manual()
         @endif
     });
 
