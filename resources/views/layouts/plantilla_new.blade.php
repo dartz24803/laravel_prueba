@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
     <title>La Número 1 | Intranet</title>
-    <link rel="icon" type="image/x-icon" href="{{ asset('template/assets/img/favicon.png') }}"/>
+    <link rel="icon" type="image/x-icon" href="{{ asset('template/assets/img/favicon.png') }}" />
     <link href="{{ asset('template/assets/css/loader.css') }}" rel="stylesheet" type="text/css" />
     <script src="{{ asset('template/assets/js/loader.js') }}"></script>
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
@@ -36,17 +37,26 @@
     </script>
     <link rel="stylesheet" href="{{ asset('css/modals.css') }}">
 </head>
+
 <body class="alt-menu sidebar-noneoverflow">
     <!-- BEGIN LOADER -->
-    <div id="load_screen"> <div class="loader"> <div class="loader-content">
-        <div class="spinner-grow align-self-center"></div>
-    </div></div></div>
+    <div id="load_screen">
+        <div class="loader">
+            <div class="loader-content">
+                <div class="spinner-grow align-self-center"></div>
+            </div>
+        </div>
+    </div>
     <!--  END LOADER -->
 
     <!--  BEGIN NAVBAR  -->
     <div class="header-container fixed-top">
         <header class="header navbar navbar-expand-sm expand-header d-flex justify-content-around" style="background: #302f30; height:5rem;">
-            <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></a>
+            <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg></a>
 
             <a id="div_imagen_header" class="col-md-5 offset-5">
                 <img src="{{ asset('inicio/Grupo-LN1.png') }}" class="navbar-logo ajuste1" alt="logo">
@@ -54,7 +64,10 @@
             <ul class="navbar-item flex-row ml-auto">
                 <li class="nav-item dropdown notification-dropdown">
                     <a href="javascript:void(0);" class="nav-link dropdown-toggle" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><!--<span class="badge badge-success"></span>-->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg><!--<span class="badge badge-success"></span>-->
                     </a>
                     <div class="dropdown-menu position-absolute" aria-labelledby="notificationDropdown">
                         <div class="notification-scroll">
@@ -75,7 +88,10 @@
 
                 <li class="nav-item dropdown user-profile-dropdown  order-lg-0 order-1">
                     <a href="javascript:void(0);" class="nav-link dropdown-toggle user" id="userProfileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
                     </a>
                     <div class="dropdown-menu position-absolute" aria-labelledby="userProfileDropdown">
                         <div class="user-profile-section">
@@ -88,7 +104,11 @@
                         </div>
                         <div class="dropdown-item">
                             <a href="{{ route('DestruirSesion') }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> <span>Salir</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg> <span>Salir</span>
                             </a>
                         </div>
                     </div>
@@ -142,45 +162,45 @@
     <script>
         function Cargando() {
             $(document)
-            .ajaxStart(function() {
-                $.blockUI({
-                    message: '<svg> ... </svg>',
-                    fadeIn: 800,
-                    overlayCSS: {
-                        backgroundColor: '#302f30',
-                        opacity: 0.8,
-                        zIndex: 1200,
-                        cursor: 'wait'
-                    },
-                    css: {
-                        border: 0,
-                        color: '#fff',
-                        zIndex: 1201,
-                        padding: 0,
-                        backgroundColor: 'transparent'
-                    }
+                .ajaxStart(function() {
+                    $.blockUI({
+                        message: '<svg> ... </svg>',
+                        fadeIn: 800,
+                        overlayCSS: {
+                            backgroundColor: '#302f30',
+                            opacity: 0.8,
+                            zIndex: 1200,
+                            cursor: 'wait'
+                        },
+                        css: {
+                            border: 0,
+                            color: '#fff',
+                            zIndex: 1201,
+                            padding: 0,
+                            backgroundColor: 'transparent'
+                        }
+                    });
+                })
+                .ajaxStop(function() {
+                    $.blockUI({
+                        message: '<svg> ... </svg>',
+                        fadeIn: 800,
+                        timeout: 100,
+                        overlayCSS: {
+                            backgroundColor: '#302f30',
+                            opacity: 0.8,
+                            zIndex: 1200,
+                            cursor: 'wait'
+                        },
+                        css: {
+                            border: 0,
+                            color: '#fff',
+                            zIndex: 1201,
+                            padding: 0,
+                            backgroundColor: 'transparent'
+                        }
+                    });
                 });
-            })
-            .ajaxStop(function() {
-                $.blockUI({
-                    message: '<svg> ... </svg>',
-                    fadeIn: 800,
-                    timeout: 100,
-                    overlayCSS: {
-                        backgroundColor: '#302f30',
-                        opacity: 0.8,
-                        zIndex: 1200,
-                        cursor: 'wait'
-                    },
-                    css: {
-                        border: 0,
-                        color: '#fff',
-                        zIndex: 1201,
-                        padding: 0,
-                        backgroundColor: 'transparent'
-                    }
-                });
-            });
         }
 
         $(document).ready(function() {
@@ -214,26 +234,31 @@
             border-radius: 15px;
             font-weight: bold;
         }
+
         #accordionExample>.active .active #icono_active2 {
             content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23ffa700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-disc'><circle cx='12' cy='12' r='10'></circle><circle cx='12' cy='12' r='3'></circle></svg>");
             display: inline-block;
             vertical-align: middle;
         }
+
         .menu:not(.menu-heading):hover {
             border: 1.5px solid #ffa700;
             border-radius: 15px;
             font-weight: bold;
         }
+
         img.navbar-logo.ajuste1 {
             width: 140px;
             height: 45px;
         }
+
         img.navbar-logo.ajuste2 {
             position: relative;
             left: -1rem;
             width: 50px;
             height: 50px;
         }
+
         #sidebar .theme-brand li.theme-logo img {
             position: relative;
             width: 44px;
@@ -248,7 +273,7 @@
             font-size: 1rem;
             background-color: white !important;
             color: #515365;
-            border-radius: 5px ;
+            border-radius: 5px;
             border: 1px solid #ffa700;
             text-align: justify;
             line-height: 3;
@@ -256,6 +281,7 @@
             max-width: 100%;
             padding: 0.5rem;
         }
+
         .tooltip.show.bs-tooltip-right .arrow::before {
             border-right-color: #ffa700 !important;
         }
@@ -300,7 +326,11 @@
 
                     <li class="menu menu-heading">
                         <div class="heading">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="19" cy="12" r="1"></circle>
+                                <circle cx="5" cy="12" r="1"></circle>
+                            </svg>
                             <span>MÓDULOS</span>
                         </div>
                     </li>
@@ -332,7 +362,7 @@
             App.init();
         });
         //BOTON FLOTANTE SOPORTE
-        (function () {
+        (function() {
             var options = {
                 whatsapp: "+51 967 778 561", // WhatsApp number
                 email: "sistemaslanumerouno@gmail.com", // Email
@@ -343,21 +373,30 @@
                 order: "whatsapp,email", // Order of buttons
                 pre_filled_message: "Hola, Necesito soporte.", // WhatsApp pre-filled message
             };
-            var proto = document.location.protocol, host = "getbutton.io", url = proto + "//static." + host;
-            var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = url + '/widget-send-button/js/init.js';
-            s.onload = function () { WhWidgetSendButton.init(host, proto, options); };
-            var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
+            var proto = document.location.protocol,
+                host = "getbutton.io",
+                url = proto + "//static." + host;
+            var s = document.createElement('script');
+            s.type = 'text/javascript';
+            s.async = true;
+            s.src = url + '/widget-send-button/js/init.js';
+            s.onload = function() {
+                WhWidgetSendButton.init(host, proto, options);
+            };
+            var x = document.getElementsByTagName('script')[0];
+            x.parentNode.insertBefore(s, x);
         })();
     </script>
     <style>
-    .dkuywW{
-        display:none !important;
-    }
-    @media (max-width: 600px) {
-        #div_imagen_header{
-            display:none
+        .dkuywW {
+            display: none !important;
         }
-    }
+
+        @media (max-width: 600px) {
+            #div_imagen_header {
+                display: none
+            }
+        }
     </style>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/custom-select2.js') }}"></script>
@@ -375,4 +414,5 @@
         $('[data-toggle="tooltip"]').tooltip();
     </script>
 </body>
+
 </html>
