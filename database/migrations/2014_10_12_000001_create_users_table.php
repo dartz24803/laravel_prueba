@@ -152,6 +152,8 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
+            $table->index(['id_gerencia'], 'idx_id_ger');
+            $table->index(['estado'], 'idx_est');
         });
     }
 
