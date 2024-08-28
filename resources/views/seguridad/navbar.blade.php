@@ -39,9 +39,11 @@
         session('usuario')->id_puesto == 164 || 
         session('usuario')->id_puesto == 197 || 
         session('usuario')->id_puesto == 148 || 
+        session('usuario')->id_puesto == 315 || 
         session('usuario')->id_puesto == 209)
             @if (session('usuario')->id_nivel == 1 || 
             session('usuario')->id_puesto == 23 || 
+            session('usuario')->id_puesto == 315 || 
             session('usuario')->id_puesto == 24)
                 <li>
                     <a id="aperturas_cierres" href="{{ route('apertura_cierre') }}">
@@ -94,6 +96,7 @@
             session('usuario')->id_puesto == 161 ||
             session('usuario')->id_puesto == 197 || 
             session('usuario')->id_puesto == 134 || 
+            session('usuario')->id_puesto == 315 || 
             session('usuario')->id_puesto == 148)
                 <li>
                     <a id="lecturas_servicios" href="{{ route('lectura_servicio') }}">
@@ -109,6 +112,7 @@
             session('usuario')->id_puesto == 29 || 
             session('usuario')->id_puesto == 161 ||
             session('usuario')->id_puesto == 197 || 
+            session('usuario')->id_puesto == 315 || 
             session('usuario')->id_puesto == 148)
                 <li id="locurrencia">
                     <a id="hlocurrencia" href="<?= url('OcurrenciaTienda/index') ?>">

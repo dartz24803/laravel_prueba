@@ -65,7 +65,7 @@
             </div>
 
             <div class="form-group col-lg-2">
-                <label>Hora Ingreso:</label>
+                <label>Hora {{ $tipo }}:</label>
             </div>
             <div class="form-group col-lg-4">
                 <input type="time" class="form-control" name="h_{{ $tipo }}e" id="h_{{ $tipo }}e"

@@ -33,7 +33,8 @@ class ReporteProveedoresController extends Controller{
         if($id_puesto==23 || $id_nivel==1 || $id_puesto==24){
             $dato['base']=0;
             if($id_puesto==24){
-                $dato['list_base'] = Base::where('estado', 1)
+                $dato['list_base'] = Base::select('cod_base')
+                                    ->where('estado', 1)
                                     ->whereIn('id_base', [15,19,34])
                                     ->groupBy('cod_base')
                                     ->orderBy('cod_base', 'ASC')
@@ -121,7 +122,8 @@ class ReporteProveedoresController extends Controller{
         $dato['estado']=3;
         if($id_puesto==23 || $id_nivel==1 || $id_puesto==24){
             if($id_puesto==24){
-                $dato['list_base'] = Base::where('estado', 1)
+                $dato['list_base'] = Base::select('cod_base')
+                                    ->where('estado', 1)
                                     ->whereIn('id_base', [15,19,34])
                                     ->groupBy('cod_base')
                                     ->orderBy('cod_base', 'ASC')
