@@ -19,5 +19,10 @@
                 <p class="romperpalabra"><span id="icono_active2"></span> Tracking</p>
             </a>
         </li>
+        <li id="reprocesos">
+            <a href="{{ url('Reproceso/index') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Reproceso</p>
+            </a>
+        </li>
     </ul>
 </li>

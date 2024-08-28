@@ -843,7 +843,18 @@ Route::controller(SliderMarketingController::class)->group(function(){
     Route::post('Marketing/Update_Slide_Comercial', 'Update_Slide_Comercial');
     Route::get('Marketing/SliderComercial/{funcion}/{base}', 'Slider_Vista_Comercial');
 });
-
+use App\Http\Controllers\ReprocesoController;
+Route::controller(ReprocesoController::class)->group(function(){
+    Route::get('Reproceso/index', 'Reproceso');
+    Route::post('Reproceso/Lista_Reproceso', 'Lista_Reproceso');
+    Route::get('Reproceso/Modal_Reproceso', 'Modal_Reproceso');
+    Route::post('Reproceso/Insert_Reproceso', 'Insert_Reproceso');
+    Route::get('Reproceso/Modal_Update_Reproceso/{id}', 'Modal_Update_Reproceso');
+    Route::get('Reproceso/Modal_Ver_Reproceso/{id}', 'Modal_Ver_Reproceso');
+    Route::post('Reproceso/Update_Reproceso', 'Update_Reproceso');
+    Route::post('Reproceso/Delete_Reproceso', 'Delete_Reproceso');
+    Route::get('Reproceso/Excel_Reproceso', 'Excel_Reproceso');
+});
 
 
 
