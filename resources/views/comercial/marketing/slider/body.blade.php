@@ -1,4 +1,4 @@
-@extends('layouts.plantilla_new')
+@extends('layouts.plantilla')
 
 @section('navbar')
     @include('comercial.navbar')
