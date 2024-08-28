@@ -19,6 +19,7 @@ use App\Http\Controllers\AsistenciaSegController;
 use App\Http\Controllers\CajaInicioController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
+use App\Http\Controllers\ColaboradorController;
 use App\Http\Controllers\ComunicadoController;
 use App\Http\Controllers\ControlCamaraConfController;
 use App\Http\Controllers\ControlCamaraController;
@@ -630,6 +631,18 @@ Route::controller(ObservacionConfController::class)->group(function(){
 //ÁREA RECURSOS HUMANOS
 Route::controller(RecursosHumanosInicioController::class)->group(function(){
     Route::get('recursos_humanos', 'index')->name('recursos_humanos');
+});
+//RECURSOS HUMANOS - COLABORADOR
+Route::controller(ColaboradorController::class)->group(function(){
+    Route::get('colaborador', 'index')->name('colaborador');
+    Route::get('colaborador_co', 'index_co')->name('colaborador_co');
+    Route::post('colaborador_co/list', 'list_co')->name('colaborador_co.list');
+    Route::get('colaborador_co/{id}/edit', 'edit_co')->name('colaborador_co.edit');
+    Route::put('colaborador_co/{id}', 'update_co')->name('colaborador_co.update');
+    Route::get('colaborador_co/{id}/download', 'download_co')->name('colaborador_co.download');
+    Route::get('colaborador_co/{id_gerencia}/excel', 'excel_co')->name('colaborador_co.excel');
+    Route::get('colaborador_ce', 'index_ce')->name('colaborador_ce');
+    Route::get('colaborador_ce/list', 'list_ce')->name('colaborador_ce.list');
 });
 
 

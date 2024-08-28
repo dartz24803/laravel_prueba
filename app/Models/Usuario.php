@@ -21,6 +21,7 @@ class Usuario extends Model
         'usuario_nombres',
         'usuario_codigo',
         'usuario_password',
+        'password_desencriptado',
         'id_nivel',
         'id_puesto',
         'centro_labores',
