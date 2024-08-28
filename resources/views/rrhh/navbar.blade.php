@@ -55,7 +55,7 @@
         session('usuario')->id_puesto == 310 || 
         session('usuario')->id_puesto == 209)
             <li>
-                <a id="colaboradores" href="{{ route('colaborador') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Slider RRHH <br>• Anuncios Intranet">
+                <a id="colaboradores" href="{{ route('colaborador') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Colaborador <br>• Colaborador (Cesados)">
                     <p class="romperpalabra"><span id="icono_active2"></span> Colaboradores</p>
                 </a>
             </li>
