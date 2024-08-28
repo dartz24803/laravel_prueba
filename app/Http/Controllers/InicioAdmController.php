@@ -17,17 +17,17 @@ class InicioAdmController extends Controller
     }
 
     public function index(){
-        return view('Inicio/slider/index');
+        return view('interna/administracion/Inicio/slider/index');
     }
 
     public function Slider_Inicio_Listar(){
         $list = SliderInicio::get();
-        return view('Inicio/slider/lista', compact('list'));
+        return view('interna/administracion/Inicio/slider/lista', compact('list'));
     }
 
     public function Modal_Update_Slider_Inicio($id){
         $dato['get_id'] = SliderInicio::where('id', $id)->get();
-        return view('Inicio/slider/modal_editar',$dato);
+        return view('interna/administracion/Inicio/slider/modal_editar',$dato);
     }
 
     public function Update_Slider_Inicio(Request $request){
