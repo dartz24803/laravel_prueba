@@ -331,14 +331,58 @@
 
                     <li class="menu menu-heading">
                         <div class="heading">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal">
-                                <circle cx="12" cy="12" r="1"></circle>
-                                <circle cx="19" cy="12" r="1"></circle>
-                                <circle cx="5" cy="12" r="1"></circle>
-                            </svg>
-                            <span>MÓDULOS</span>
+                            <span>APLICACIONES</span>
                         </div>
                     </li>
+
+                    <li class="menu" id="calendarios">
+                        <a href="javascript:void(0);" id="hcalendarios" class="dropdown-toggle">
+                            <div class="">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                <span id="icono_active"></span>
+                                <span> Calendario</span>
+                            </div>
+                        </a>
+                    </li>
+                    <?php if (
+                        session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 75 || session('usuario')->id_puesto == 122
+                        || session('usuario')->id_puesto == 83 || session('usuario')->id_puesto == 86 ||
+                        /* session('usuario')->calendario_l == "SI" || $id_usuario == 857 ||*/ session('usuario')->id_puesto == 195
+                    ) { ?>
+                        <li class="menu" id="calendario_logistico">
+                            <a href="javascript:void(0);" id="hcalendario_logistico" class="dropdown-toggle">
+                                <div class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    <span id="icono_active"></span>
+                                    <span> Calendario Logístico</span>
+                                </div>
+                            </a>
+                        </li>
+                    <?php } ?>
+                    <?php if (/*$directorio == 1 ||*/session('usuario')->id_nivel == 1) { ?>
+                        <li class="menu" id="contactos">
+                            <a href="javascript:void(0);" id="hcontacto" class="dropdown-toggle">
+                                <div class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                    <span id="icono_active"></span>
+                                    <span> Contactos</span>
+                                </div>
+                            </a>
+                        </li>
+                    <?php } ?>
 
                     @yield('navbar')
                 </ul>

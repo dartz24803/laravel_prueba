@@ -1,3 +1,9 @@
+<li class="menu menu-heading">
+    <div class="heading">
+        <span>MÓDULOS</span>
+    </div>
+</li>
+
 <li class="menu" id="rhumanos">
     <a href="#revaluaciones" id="hrhumanos" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
         <div class="">
