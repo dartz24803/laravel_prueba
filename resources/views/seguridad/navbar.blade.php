@@ -171,6 +171,7 @@ session('usuario')->id_puesto == 9 ||
 session('usuario')->id_puesto == 128 || 
 session('usuario')->id_puesto == 27 || 
 session('usuario')->id_puesto == 10 || 
+session('usuario')->id_puesto == 315 || 
 session('usuario')->id_puesto == 312)
     <li class="menu menu-heading">
         <div class="heading">
@@ -201,6 +202,7 @@ session('usuario')->id_puesto == 312)
         </a>
         <ul class="collapse submenu list-unstyled" id="rconf_seguridades" data-parent="#accordionExample">
             @if (session('usuario')->id_nivel == "1" || 
+            session('usuario')->id_puesto == "315" || 
             session('usuario')->id_puesto == "23")
                 <li id="conf_aperturas_cierres">
                     <a href="{{ route('apertura_cierre_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
@@ -216,6 +218,7 @@ session('usuario')->id_puesto == 312)
             @if (session('usuario')->id_nivel == "1" || 
             session('usuario')->id_puesto == "9" || 
             session('usuario')->id_nivel == "11" || 
+            session('usuario')->id_puesto == "315" || 
             session('usuario')->id_puesto == "138")
                 <li id="conf_lecturas_servicios">
                     <a href="{{ route('lectura_servicio_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
