@@ -26,7 +26,8 @@ class Organigrama extends Model
         if($dato['id_gerencia']!="0"){
             $parte_gerencia = "WHERE us.id_gerencia=".$dato['id_gerencia'];
         }
-        $sql = "SELECT og.id_usuario,us.ini_funciones AS orden,
+        $sql = "SELECT CASE WHEN og.id_usuario IS NULL THEN 0 ELSE og.id_usuario END AS id_usuario,
+                us.ini_funciones AS orden,
                 CASE WHEN YEAR(us.fec_nac) BETWEEN 1946 AND 1964 THEN 'BB'
                 WHEN YEAR(us.fec_nac) BETWEEN 1965 AND 1980 THEN 'X'
                 WHEN YEAR(us.fec_nac) BETWEEN 1981 AND 1996 THEN 'Y'
