@@ -17,7 +17,7 @@
                                             <div class="logo6" style="width: 6rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701;height:6rem">
                                                     <img class="imagen_1"  src="{{ asset('inicio/NEW.Intranet-Icono-Logistica.png')}}" alt="">
-                                                    <p class="card-text text-center text-white">Logística</p>
+                                                    <p class="card-text text-center text-white">Gestión Logística</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -26,7 +26,7 @@
                                             <div class="logo7 mb-4" style="width: 7rem">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #ff295c; height: 7rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Comercial.png')}}" alt="">
-                                                    <p class="card-text text-center text-white">Comercial</p>
+                                                    <p class="card-text text-center text-white">Gestión Comercial</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -35,7 +35,7 @@
                                             <div class="logo7" style="width: 7rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00b1f4; height:7rem;">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-TalentoHumano.png')}}" alt="">
-                                                    <p class="card-text text-center text-white">Talento Humano</p>
+                                                    <p class="card-text text-center text-white">G. Talento Humano</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -44,7 +44,7 @@
                                             <div class="logo7" style="width: 7rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e; height: 7rem;">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Infraestructuras.png')}}" alt="">
-                                                    <p class="card-text text-center text-white">Infraestructura</p>
+                                                    <p class="card-text text-center text-white">Gestión Infraestructura</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -53,7 +53,7 @@
                                             <div class="logo6" style="width: 6rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e;height:6rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Interna.png')}}" alt="">
-                                                    <p class="card-text text-center text-white">Interna</p>
+                                                    <p class="card-text text-center text-white">Gestión Interna</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -94,7 +94,7 @@
                                             <div class="logo6" style="width: 6rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00b1f4;height:6rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Finanzas.png')}}" alt="">
-                                                    <p class="card-text text-center text-white">Finanzas</p>
+                                                    <p class="card-text text-center text-white">Gestión Finanzas</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -103,7 +103,7 @@
                                             <div class="logo7" style="width: 7rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00b1f4; height:7rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-SeguridadSalud.png')}}" alt="">
-                                                    <p class="card-text text-center text-white">Seguridad y Salud</p>
+                                                    <p class="card-text text-center text-white">G. Seguridad y Salud</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -112,7 +112,7 @@
                                             <div class="logo6" style="width: 6rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701; height: 6rem;">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-CajaControlInterno.png')}}" alt="">
-                                                    <p class="card-text text-center text-white">Caja y Control Interno</p>
+                                                    <p class="card-text text-center text-white">G. Caja y Control Interno</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -121,7 +121,7 @@
                                             <div class="logo7" style="width: 7rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e; height: 7rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Manufactura.png')}}" alt="">
-                                                    <p class="card-text text-center text-white">Manufactura</p>
+                                                    <p class="card-text text-center text-white">Gestión Manufactura</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -130,7 +130,7 @@
                                             <div class="logo7" style="width: 7rem; margin-top: 2rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #ff295c;height: 7rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Tiendas.png')}}" alt="">
-                                                    <p class="card-text text-center text-white">Tiendas</p>
+                                                    <p class="card-text text-center text-white">Gestión Tiendas</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -583,7 +583,7 @@
     document.getElementById('logo_comercial').onclick = function() {
         window.location.href = "{{ url('Comercial/InicioComercial') }}";
     };
-    
+
     function cambiarClaseSegunResolucion(){
         var ventanaAncho = $(window).width();
         console.log(ventanaAncho);
