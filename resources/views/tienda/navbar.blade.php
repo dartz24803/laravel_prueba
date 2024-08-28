@@ -1,3 +1,9 @@
+<li class="menu menu-heading">
+    <div class="heading">
+        <span>MÓDULOS</span>
+    </div>
+</li>
+
 <?php if (
     session('usuario')->id_nivel == "1" || session('usuario')->centro_labores == "OFC" || session('usuario')->id_puesto == "29" || session('usuario')->id_puesto == "161" ||
     session('usuario')->id_puesto == "197" || session('usuario')->id_puesto == "128" || session('usuario')->id_puesto == "251" || session('usuario')->id_puesto == "41" ||

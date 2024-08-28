@@ -1,3 +1,9 @@
+<li class="menu menu-heading">
+    <div class="heading">
+        <span>MÓDULOS</span>
+    </div>
+</li>
+
 <li class="menu" id="logisticas">
     <a href="#rlogisticas" id="hlogisticas" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
         <div class="">

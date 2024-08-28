@@ -23,8 +23,12 @@ class Usuario extends Model
         'usuario_password',
         'password_desencriptado',
         'id_nivel',
+        'usuario_email',
         'id_puesto',
         'centro_labores',
+        'acceso',
+        'verif_email',
+        'documento',
         'estado',
         'fec_reg',
         'user_reg',
@@ -304,5 +308,32 @@ class Usuario extends Model
                 ORDER BY cumpleanio ASC";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
+    }
+
+    public static function get_list_cesado($dato){
+        $parte_gerencia = "";
+        if($dato['id_gerencia']!="0"){
+            $parte_gerencia = "us.id_gerencia=".$dato['id_gerencia']." AND";
+        }
+        $sql = "SELECT us.id_usuario,us.ini_funciones AS orden,
+                CASE WHEN YEAR(us.fec_nac) BETWEEN 1946 AND 1964 THEN 'BB'
+                WHEN YEAR(us.fec_nac) BETWEEN 1965 AND 1980 THEN 'X'
+                WHEN YEAR(us.fec_nac) BETWEEN 1981 AND 1996 THEN 'Y'
+                WHEN YEAR(us.fec_nac) BETWEEN 1997 AND 2012 THEN 'Z'
+                WHEN YEAR(us.fec_nac) >= 2013 THEN '&alpha;' ELSE '' END AS generacion,
+                us.centro_labores,us.usuario_apater,us.usuario_amater,us.usuario_nombres,
+                DATE_FORMAT(us.ini_funciones,'%d-%m-%Y') AS fecha_ingreso,td.cod_tipo_documento,us.num_doc,
+                us.num_celp,pu.nom_puesto,ar.nom_area,CASE WHEN SUBSTRING(us.fin_funciones,1,1)='2' THEN
+                TIMESTAMPDIFF(DAY, us.ini_funciones, us.fin_funciones) 
+                ELSE TIMESTAMPDIFF(DAY, us.ini_funciones, CURDATE()) END AS dias_laborados,us.verif_email,
+                us.foto,us.documento,us.fec_baja
+                FROM users us
+                LEFT JOIN tipo_documento td ON us.id_tipo_documento=td.id_tipo_documento
+                LEFT JOIN puesto pu ON us.id_puesto=pu.id_puesto
+                LEFT JOIN area ar ON us.id_area=ar.id_area
+                WHERE $parte_gerencia us.id_nivel<>8 AND us.estado=3
+                ORDER BY us.ini_funciones DESC";
+        $query = DB::select($sql);
+        return $query;
     }
 }

@@ -329,18 +329,223 @@
                         </a>
                     </li>
 
-                    <li class="menu menu-heading">
-                        <div class="heading">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal">
-                                <circle cx="12" cy="12" r="1"></circle>
-                                <circle cx="19" cy="12" r="1"></circle>
-                                <circle cx="5" cy="12" r="1"></circle>
-                            </svg>
-                            <span>MÓDULOS</span>
-                        </div>
-                    </li>
+                    <!-- Parte aplicaciones solo en inicio -->
+                    @if (strtolower(url()->current()) == strtolower(url('Home')))                    
+                        <li class="menu menu-heading">
+                            <div class="heading"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                                <span>APLICACIONES</span>
+                            </div>
+                        </li>
+                        <li class="menu" id="calendarios">
+                            <a href="<?= url('Corporacion/Calendario') ?>" id="hcalendarios" class="dropdown-toggle">
+                                <div class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    <span id="icono_active"></span>
+                                    <span> Calendario</span>
+                                </div>
+                            </a>
+                        </li>
+                        <?php if (
+                            session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 75 || session('usuario')->id_puesto == 122
+                            || session('usuario')->id_puesto == 83 || session('usuario')->id_puesto == 86 ||
+                            /* session('usuario')->calendario_l == "SI" || $id_usuario == 857 ||*/ session('usuario')->id_puesto == 195
+                        ) { ?>
+                            <li class="menu" id="calendario_logistico">
+                                <a href="<?= url('Corporacion/Calendario_Logistico') ?>" id="hcalendario_logistico" class="dropdown-toggle">
+                                    <div class="">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                        </svg>
+                                        <span id="icono_active"></span>
+                                        <span> Calendario Logístico</span>
+                                    </div>
+                                </a>
+                            </li>
+                        <?php } ?>
+                        <?php if (/*$directorio == 1 ||*/session('usuario')->id_nivel == 1) { ?>
+                            <li class="menu" id="contactos">
+                                <a href="<?= url('Corporacion/Lista_Directorio_Telefonico') ?>" id="hcontacto" class="dropdown-toggle">
+                                    <div class="">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin">
+                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                        <span id="icono_active"></span>
+                                        <span> Contactos</span>
+                                    </div>
+                                </a>
+                            </li>
+                        <?php } ?>
+                    @else
+                        <!-- Fin de parte aplicaciones -->
+                        <li class="menu menu-heading">
+                            <div class="heading">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal">
+                                    <circle cx="12" cy="12" r="1"></circle>
+                                    <circle cx="19" cy="12" r="1"></circle>
+                                    <circle cx="5" cy="12" r="1"></circle>
+                                </svg>
+                                <span>MÓDULOS</span>
+                            </div>
+                        </li>
 
-                    @yield('navbar')
+                        <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 4 || session('usuario')->id_puesto == 68) { ?>
+                            <li class="menu" id="marketing">
+                                <a href="#rmarketing" id="hmarketing" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                                    <div class="">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart">
+                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                        </svg>
+                                        <span>Marketing</span>
+                                    </div>
+                                    <div>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                    </div>
+                                </a>
+                                <ul class="collapse submenu list-unstyled" id="rmarketing" data-parent="#accordionExample">
+                                    <li id="sliderc">
+                                        <a id="hslider" href="{{ url('Marketing/Slider_List_Comercial') }}">
+                                            <p class="romperpalabra"><span id="icono_active2"></span> Slider Marketing</p>
+                                        </a>
+                                    </li>
+                                    <li id="mercaderiamkt">
+                                        <a id="rmercaderiamkt" href="{{ url('Marketing/Mercaderia_Fotografia/2') }}">
+                                            <p class="romperpalabra" title="Mercadería a enviar para fotografía"><span id="icono_active2"></span> Mercadería a Enviar para fotografía</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        <?php } ?>
+                        <?php if (
+                            session('usuario')->id_nivel == "1" || session('usuario')->centro_labores == "OFC" || session('usuario')->id_puesto == "29" || session('usuario')->id_puesto == "161" ||
+                            session('usuario')->id_puesto == "197" || session('usuario')->id_puesto == "128" || session('usuario')->id_puesto == "251" || session('usuario')->id_puesto == "41" ||
+                            session('usuario')->id_puesto == "66" || session('usuario')->id_puesto == "73" || session('usuario')->id_puesto == "158" || session('usuario')->id_puesto == "12" ||
+                            session('usuario')->id_puesto == "155" || session('usuario')->id_puesto == "9" || session('usuario')->id_puesto == "19" || session('usuario')->id_puesto == "21" ||
+                            session('usuario')->id_puesto == "131" || session('usuario')->id_puesto == "68" || session('usuario')->id_puesto == "72" || session('usuario')->id_puesto == "15" ||
+                            session('usuario')->id_puesto == "27" || session('usuario')->id_puesto == "148" || session('usuario')->id_puesto == "76" || session('usuario')->id_puesto == "311" ||
+                            Session('usuario')->id_puesto == 144
+                        ) { ?>
+                            <li class="menu" id="procesos">
+                                <a href="#rprocesos" id="hprocesos" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                                    <div class="">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart">
+                                            <circle cx="9" cy="21" r="1"></circle>
+                                            <circle cx="20" cy="21" r="1"></circle>
+                                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                        </svg>
+                                        <span>Procesos</span>
+                                    </div>
+                                    <div>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                    </div>
+                                </a>
+
+                                <ul class="collapse submenu list-unstyled" id="rprocesos" data-parent="#accordionExample">
+                                    <li>
+                                        <a id="portalprocesos" href="{{ route('portalprocesos') }}">
+                                            <p class="romperpalabra"><span id="icono_active2"></span> Portal Procesos</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        <?php } ?>
+                        <!-- Administrables  -->
+                        <li class="menu menu-heading">
+                            <div class="heading">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal">
+                                    <circle cx="12" cy="12" r="1"></circle>
+                                    <circle cx="19" cy="12" r="1"></circle>
+                                    <circle cx="5" cy="12" r="1"></circle>
+                                </svg>
+                                <span>ADMINISTRACION</span>
+                            </div>
+                        </li>
+
+                        <?php if (session('usuario')->id_nivel == 1) { ?>
+                            <li class="menu" id="slider_menu">
+                                <a href="#inicio_carousel" id="inicio_slider" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                                    <div class="">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
+                                            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                                            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                                        </svg>
+                                        <span>Inicio</span>
+                                    </div>
+                                    <div>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                    </div>
+                                </a>
+                                <ul class="collapse submenu list-unstyled" id="inicio_carousel" data-parent="#accordionExample">
+                                    <li id="slider_inicio">
+                                        <a href="{{ url('Inicio/index') }}">
+                                            <p class="romperpalabra"><span id="icono_active2"></span> Slider Inicio</p>
+                                        </a>
+                                    </li>
+                                    <li id="frases_inicio">
+                                        <a href="{{ url('Inicio/index_frases') }}">
+                                            <p class="romperpalabra"><span id="icono_active2"></span> Frases Inicio</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        <?php } ?>
+
+                        <?php if (
+                            session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 102 || session('usuario')->id_puesto == 80 ||
+                            session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 23 ||
+                            session('usuario')->id_puesto == 75 || session('usuario')->id_puesto == 7 || session('usuario')->id_puesto == 133 ||
+                            session('usuario')->id_puesto == 138 || session('usuario')->id_puesto == 83 || session('usuario')->id_puesto == 145 ||
+                            session('usuario')->id_puesto == 40 || session('usuario')->id_puesto == 164 || session('usuario')->id_puesto == 148 ||
+                            session('usuario')->id_puesto == 153 || session('usuario')->id_puesto == 157 || session('usuario')->id_puesto == 6 ||
+                            session('usuario')->id_puesto == 12 || session('usuario')->id_puesto == 19 || session('usuario')->id_puesto == 23 ||
+                            session('usuario')->id_puesto == 38 || session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 111 ||
+                            session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 137 || session('usuario')->id_puesto == 164 ||
+                            session('usuario')->id_puesto == 158 || session('usuario')->id_puesto == 9 || session('usuario')->id_puesto == 128 ||
+                            session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 10
+                        ) { ?>
+                            <li class="menu" id="ccvtabla">
+                                <a href="#rccvtabla" id="hccvtabla" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                                    <div class="">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
+                                            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                                            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                                        </svg>
+                                        <span>Procesos</span>
+                                    </div>
+                                    <div>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                    </div>
+                                </a>
+                                <ul class="collapse submenu list-unstyled" id="rccvtabla" data-parent="#accordionExample">
+                                    <li id="conf_administradores">
+                                        <a href="{{ route('administrador_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Supervisión de tienda <br>• Seguimiento al coordinador">
+                                            <p class="romperpalabra"><span id="icono_active2"></span>Portal Procesos</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        <?php } ?>
+                    @endif
                 </ul>
             </nav>
         </div>
@@ -359,6 +564,8 @@
     <script src="{{ asset('template/assets/js/app.js') }}"></script>
     <script src="{{ asset('template/plugins/blockui/jquery.blockUI.min.js') }}"></script>
     <script src="{{ asset('template/plugins/blockui/custom-blockui.js') }}"></script>
+    <script src="{{ asset('template/plugins/input-mask/jquery.inputmask.bundle.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/input-mask/input-mask.js') }}"></script>
     <script src="{{ asset('template/plugins/sweetalerts/sweetalert2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/sweetalerts/custom-sweetalert.js') }}"></script>
 

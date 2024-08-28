@@ -37,7 +37,8 @@ class Organigrama extends Model
                 us.usuario_amater,us.usuario_nombres,pu.nom_puesto,ar.nom_area,sg.nom_sub_gerencia,
                 ge.nom_gerencia,DATE_FORMAT(us.ini_funciones,'%d-%m-%Y') AS fecha_ingreso,
                 td.cod_tipo_documento,us.num_doc,us.num_celp,
-                DATE_FORMAT(us.fec_baja,'%d-%m-%Y') AS fecha_baja,mt.nom_motivo,us.doc_baja,us.foto
+                DATE_FORMAT(us.fec_baja,'%d-%m-%Y') AS fecha_baja,mt.nom_motivo,us.doc_baja,us.verif_email,
+                us.foto,us.documento,us.fec_baja
                 FROM organigrama og
                 LEFT JOIN users us ON og.id_usuario=us.id_usuario
                 LEFT JOIN puesto pu ON og.id_puesto=pu.id_puesto

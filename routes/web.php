@@ -637,12 +637,20 @@ Route::controller(ColaboradorController::class)->group(function(){
     Route::get('colaborador', 'index')->name('colaborador');
     Route::get('colaborador_co', 'index_co')->name('colaborador_co');
     Route::post('colaborador_co/list', 'list_co')->name('colaborador_co.list');
+    Route::post('colaborador_co/mail', 'mail_co')->name('colaborador_co.mail');
     Route::get('colaborador_co/{id}/edit', 'edit_co')->name('colaborador_co.edit');
     Route::put('colaborador_co/{id}', 'update_co')->name('colaborador_co.update');
     Route::get('colaborador_co/{id}/download', 'download_co')->name('colaborador_co.download');
+    Route::get('colaborador_co/{id}/pdf_perfil', 'pdf_perfil_co')->name('colaborador_co.pdf_perfil');
     Route::get('colaborador_co/{id_gerencia}/excel', 'excel_co')->name('colaborador_co.excel');
     Route::get('colaborador_ce', 'index_ce')->name('colaborador_ce');
-    Route::get('colaborador_ce/list', 'list_ce')->name('colaborador_ce.list');
+    Route::post('colaborador_ce/list', 'list_ce')->name('colaborador_ce.list');
+    Route::post('colaborador_ce/mail', 'mail_co')->name('colaborador_ce.mail');
+    Route::get('colaborador_ce/{id}/edit', 'edit_ce')->name('colaborador_ce.edit');
+    Route::put('colaborador_ce/{id}', 'update_co')->name('colaborador_ce.update');
+    Route::get('colaborador_ce/{id}/download', 'download_co')->name('colaborador_ce.download');
+    Route::get('colaborador_ce/{id}/pdf_perfil', 'pdf_perfil_co')->name('colaborador_ce.pdf_perfil');
+    Route::get('colaborador_ce/{id_gerencia}/excel', 'excel_ce')->name('colaborador_ce.excel');
 });
 
 

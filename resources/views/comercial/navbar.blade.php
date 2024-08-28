@@ -1,3 +1,8 @@
+<li class="menu menu-heading">
+    <div class="heading">
+        <span>MÓDULOS</span>
+    </div>
+</li>
 
 <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 4 || session('usuario')->id_puesto == 68) { ?>
     <li class="menu" id="marketing">
