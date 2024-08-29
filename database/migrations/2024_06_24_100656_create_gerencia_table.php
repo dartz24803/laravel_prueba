@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('gerencia', function (Blueprint $table) {
             $table->id('id_gerencia');
             $table->unsignedBigInteger('id_direccion');
-            $table->string('cod_gerencia',10)->nullable();
-            $table->string('nom_gerencia',50)->nullable();
+            $table->string('cod_gerencia', 10)->nullable();
+            $table->string('nom_gerencia', 50)->nullable();
             $table->integer('digitos_cuenta')->default(0)->nullable();
             $table->integer('digitos_cci')->default(0)->nullable();
             $table->integer('estado')->nullable();
@@ -25,10 +25,11 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            $table->foreign('id_direccion','ger_fk_id_dir')->references('id_direccion')->on('direccion');
+            $table->foreign('id_direccion', 'ger_fk_id_dir')->references('id_direccion')->on('direccion');
             //$table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.
