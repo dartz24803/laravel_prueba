@@ -32,6 +32,7 @@ use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
 use App\Http\Controllers\IntencionRenunciaConfController;
 use App\Http\Controllers\InternaInicioController;
+use App\Http\Controllers\LineaCarreraController;
 use App\Http\Controllers\LogisticaInicioController;
 use App\Http\Controllers\ObservacionConfController;
 use App\Http\Controllers\ObservacionController;
@@ -664,7 +665,18 @@ Route::controller(ColaboradorController::class)->group(function(){
 Route::controller(InternaInicioController::class)->group(function(){
     Route::get('interna', 'index')->name('interna');
 });
-
+//CAJA - LÍNEA DE CARRERA
+Route::controller(LineaCarreraController::class)->group(function(){
+    Route::get('linea_carrera', 'index')->name('linea_carrera');
+    Route::get('linea_carrera_so', 'index_so')->name('linea_carrera_so');
+    Route::post('linea_carrera_so/list', 'list_so')->name('linea_carrera_so.list');
+    Route::get('linea_carrera_so/{id}/obs', 'obs_so')->name('linea_carrera_so.obs');
+    Route::get('linea_carrera_so/{id}/edit', 'edit_so')->name('linea_carrera_so.edit');
+    Route::post('linea_carrera_so/{id}', 'update_so')->name('linea_carrera_so.update');
+    Route::get('linea_carrera_en', 'index_en')->name('linea_carrera_en');
+    Route::post('linea_carrera_en/list', 'list_en')->name('linea_carrera_en.list');
+    Route::put('linea_carrera_en/{id}', 'update_en')->name('linea_carrera_en.update');
+});
 
 
 

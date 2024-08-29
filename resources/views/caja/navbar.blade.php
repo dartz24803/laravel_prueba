@@ -20,6 +20,11 @@
         </div>
     </a>
     <ul class="collapse submenu list-unstyled" id="rcajas" data-parent="#accordionExample">
+        <li id="lineas_carreras">
+            <a href="{{ route('linea_carrera') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                <p class="romperpalabra"><span id="icono_active2"></span> Línea de carrera</p>
+            </a>
+        </li>
         <li id="observaciones">
             <a href="{{ route('observacion') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                 <p class="romperpalabra"><span id="icono_active2"></span> Observaciones</p>
