@@ -17,7 +17,7 @@ $id_nivel= session('usuario')->id_nivel;
             </div>
         </div>
 
-        <?php if($id_nivel==1 || $id_puesto==23 || $id_puesto==24 || $id_puesto==26 || $id_puesto==315){ ?>
+        <?php if($id_nivel==1 || $id_puesto==23 || $id_puesto==24 || $id_puesto==26 || $id_puesto==36 || $id_puesto==315){ ?>
             <div class="row" id="cancel-row">
                 <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                     <div class="widget-content widget-content-area br-6">
@@ -188,7 +188,7 @@ $id_nivel= session('usuario')->id_nivel;
         $("#hlocurrencia").addClass('active');
 
         <?php if(session('usuario')->id_nivel==1 || session('usuario')->id_puesto==23 || 
-        session('usuario')->id_puesto==24 || session('usuario')->id_puesto==26 || session('usuario')->id_puesto===315){ ?>
+        session('usuario')->id_puesto==24 || session('usuario')->id_puesto==26 || session('usuario')->id_puesto==36 || session('usuario')->id_puesto===315){ ?>
             Cambiar_Ocurrencia_Admin();
         <?php } ?>
     });

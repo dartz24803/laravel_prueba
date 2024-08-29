@@ -1410,4 +1410,42 @@ class ColaboradorConfController extends Controller
             'user_eli' => session('usuario')->id_usuario
         ]);
     }
+
+    public function Estado_Civil(){
+        $dato['list_estado_civil'] = $this->Model_Corporacion->get_list_estado_civil();
+        return view('Admin/Configuracion/EstadoCivil/index',$dato);
+    }
+
+    public function Modal_Estado_Civil(){
+            $this->load->view('Admin/Configuracion/EstadoCivil/modal_registrar');   
+    }
+
+    public function Insert_Estado_Civil(){
+            $dato['cod_estado_civil']= $this->input->post("cod_estado_civil");
+            $dato['nom_estado_civil']= $this->input->post("nom_estado_civil");
+            $total=count($this->Model_Corporacion->valida_estado_civil($dato));
+            if ($total>0)
+            {
+                echo "error";
+            }
+            else{
+                $this->Model_Corporacion->insert_estado_civil($dato);
+            }
+    }
+    /*
+    public function Modal_Update_Estado_Civil($id_estado_civil){
+        $dato['get_id'] = $this->Model_Corporacion->get_id_estado_civil($id_estado_civil);
+        $this->load->view('Admin/Configuracion/EstadoCivil/modal_editar',$dato);
+    }
+    public function Update_Estado_Civil(){
+        $dato['id_estado_civil']= $this->input->post("id_estado_civil");
+        $dato['cod_estado_civil']= $this->input->post("cod_estado_civil"); 
+        $dato['nom_estado_civil']= $this->input->post("nom_estado_civil");
+        $this->Model_Corporacion->update_estado_civil($dato);
+    }
+    
+    public function Delete_Estado_Civil(){
+        $dato['id_estado_civil']= $this->input->post("id_estado_civil");
+        $this->Model_Corporacion->delete_estado_civil($dato);
+    }*/
 }

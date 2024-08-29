@@ -50,6 +50,8 @@
             @if (session('usuario')->id_nivel == 1 || 
             session('usuario')->id_puesto == 23 || 
             session('usuario')->id_puesto == 315 || 
+            session('usuario')->id_puesto == 29 ||
+            session('usuario')->id_puesto == 197 || 
             session('usuario')->id_puesto == 24)
                 <li>
                     <a id="aperturas_cierres" href="{{ route('apertura_cierre') }}">
@@ -65,6 +67,7 @@
             session('usuario')->id_puesto == 36 || 
             session('usuario')->id_puesto == 19 || 
             session('usuario')->id_puesto == 22 || 
+            session('usuario')->id_puesto == 315 || 
             session('usuario')->id_puesto == 209)
                 <li>
                     <a id="asistencias_segs" href="{{ route('asistencia_seg') }}">
@@ -129,6 +132,7 @@
             @if (session('usuario')->id_nivel == 1 || 
             session('usuario')->id_puesto == 23 || 
             session('usuario')->id_puesto == 24 ||
+            session('usuario')->id_puesto == 315 || 
             session('usuario')->id_puesto == 36)
                 <li id="lrproveedor">
                     <a id="hlrproveedor" href="<?= url('RProveedores/index') ?>">
