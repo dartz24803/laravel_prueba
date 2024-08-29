@@ -65,7 +65,7 @@
                 <line x1="12" y1="8" x2="12" y2="16"></line>
                 <line x1="8" y1="12" x2="16" y2="12"></line>
             </svg>
-            Registrar112131
+            Registrar
         </button>
         <!-- <a id="modal_apertura_cierre" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('apertura_cierre_reg.create') }}"></a> -->
 
@@ -101,5 +101,73 @@
                 $('#lista_ocurrencia').html(resp);
             }
         });
+    }
+
+
+    function Excel_Apertura_Cierre() {
+        var cod_base = $('#cod_baseb').val();
+        var fec_ini = $('#fecha_iniciob').val();
+        var fec_fin = $('#fecha_finb').val();
+        window.location = "{{ route('portalprocesos_lm.excel', [':cod_base', ':fec_ini', ':fec_fin']) }}".replace(':cod_base', cod_base).replace(':fec_ini', fec_ini).replace(':fec_fin', fec_fin);
+    }
+
+    function Delete_Proceso(id) {
+        Cargando();
+
+        var url = "{{ route('portalprocesos_lm.destroy', ':id') }}".replace(':id', id);
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "DELETE",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function() {
+                        Swal(
+                            '¡Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            Lista_Ocurrencia();
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+
+    function Valida_Archivo(val) {
+        Cargando();
+
+        var archivoInput = document.getElementById(val);
+        var archivoRuta = archivoInput.value;
+        var extPermitidas = /(.pdf|.png|.jpg|.jpeg)$/i;
+
+        if (!extPermitidas.exec(archivoRuta)) {
+            Swal({
+                title: 'Registro Denegado',
+                text: "Asegurese de ingresar archivo con extensión .pdf | .jpg | .png | .jpeg",
+                type: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK',
+            });
+            archivoInput.value = '';
+            return false;
+        } else {
+            return true;
+        }
     }
 </script>

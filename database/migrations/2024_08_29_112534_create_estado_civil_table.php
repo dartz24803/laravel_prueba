@@ -11,31 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gerencia', function (Blueprint $table) {
-            $table->id('id_gerencia');
-            $table->unsignedBigInteger('id_direccion');
-            $table->string('cod_gerencia', 10)->nullable();
-            $table->string('nom_gerencia', 50)->nullable();
-            $table->integer('digitos_cuenta')->default(0)->nullable();
-            $table->integer('digitos_cci')->default(0)->nullable();
-            $table->integer('estado')->nullable();
+        Schema::create('estado_civil', function (Blueprint $table) {
+            $table->id('id_estado_civil');
+            $table->string('cod_estado_civil', 10);
+            $table->string('nom_estado_civil', 50);
+            $table->integer('estado')->default(1);
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
             $table->dateTime('fec_act')->nullable();
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            $table->foreign('id_direccion', 'ger_fk_id_dir')->references('id_direccion')->on('direccion');
-            //$table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('gerencia');
+        Schema::dropIfExists('estado_civil');
     }
 };

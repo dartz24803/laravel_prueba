@@ -1,3 +1,25 @@
+<style>.toolbar {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los elementos se ajusten a la siguiente línea */
+    gap: 10px; /* Espacio entre los elementos */
+}
+
+.form-group {
+    flex: 1 1 100%; /* Deja que los elementos tomen todo el ancho en pantallas pequeñas */
+}
+
+@media (min-width: 576px) {
+    .form-group {
+        flex: 1 1 30%; /* Ajusta el ancho de los elementos en pantallas medianas */
+    }
+}
+
+@media (min-width: 768px) {
+    .form-group {
+        flex: 1 1 32%; /* Ajusta ligeramente para pantallas más grandes */
+    }
+}
+</style>
 <?php
 $base = Session('usuario')->centro_labores;
 ?>
