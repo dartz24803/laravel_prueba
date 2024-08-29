@@ -560,6 +560,10 @@
         cambiarClaseSegunResolucion();
     });
 
+    document.getElementById('logo_interna').onclick = function() {
+        window.location.href = "{{ route('interna') }}";
+    };
+
     document.getElementById('logo_logistica').onclick = function() {
         window.location.href = "{{ route('logistica') }}";
     };

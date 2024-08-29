@@ -31,6 +31,7 @@ use App\Http\Controllers\LecturaServicioConfController;
 use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
 use App\Http\Controllers\IntencionRenunciaConfController;
+use App\Http\Controllers\InternaInicioController;
 use App\Http\Controllers\LogisticaInicioController;
 use App\Http\Controllers\ObservacionConfController;
 use App\Http\Controllers\ObservacionController;
@@ -658,6 +659,10 @@ Route::controller(ColaboradorController::class)->group(function(){
     Route::get('colaborador_ce/{id}/download', 'download_co')->name('colaborador_ce.download');
     Route::get('colaborador_ce/{id}/pdf_perfil', 'pdf_perfil_co')->name('colaborador_ce.pdf_perfil');
     Route::get('colaborador_ce/{id_gerencia}/excel', 'excel_ce')->name('colaborador_ce.excel');
+});
+//ÁREA INTERNA
+Route::controller(InternaInicioController::class)->group(function(){
+    Route::get('interna', 'index')->name('interna');
 });
 
 
