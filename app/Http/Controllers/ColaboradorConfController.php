@@ -17,6 +17,12 @@ use App\Models\SubGerencia;
 use App\Models\DatacorpAccesos;
 use App\Models\PaginasWebAccesos;
 use App\Models\ProgramaAccesos;
+use App\Models\EstadoCivil;/*
+use App\Models\ProgramaAccesos;
+use App\Models\ProgramaAccesos;
+use App\Models\ProgramaAccesos;
+use App\Models\ProgramaAccesos;
+use App\Models\ProgramaAccesos;*/
 use Illuminate\Http\Request;
 
 class ColaboradorConfController extends Controller
@@ -1412,40 +1418,80 @@ class ColaboradorConfController extends Controller
     }
 
     public function Estado_Civil(){
-        $dato['list_estado_civil'] = $this->Model_Corporacion->get_list_estado_civil();
-        return view('Admin/Configuracion/EstadoCivil/index',$dato);
+        $dato['list_estado_civil'] = EstadoCivil::where('estado',1)
+                                    ->get();
+        return view('rrhh.administracion.colaborador.EstadoCivil.index',$dato);
     }
 
     public function Modal_Estado_Civil(){
-            $this->load->view('Admin/Configuracion/EstadoCivil/modal_registrar');   
+        return view('rrhh.administracion.colaborador.EstadoCivil.modal_registrar');   
     }
 
-    public function Insert_Estado_Civil(){
-            $dato['cod_estado_civil']= $this->input->post("cod_estado_civil");
-            $dato['nom_estado_civil']= $this->input->post("nom_estado_civil");
-            $total=count($this->Model_Corporacion->valida_estado_civil($dato));
-            if ($total>0)
-            {
-                echo "error";
-            }
-            else{
-                $this->Model_Corporacion->insert_estado_civil($dato);
-            }
-    }
-    /*
-    public function Modal_Update_Estado_Civil($id_estado_civil){
-        $dato['get_id'] = $this->Model_Corporacion->get_id_estado_civil($id_estado_civil);
-        $this->load->view('Admin/Configuracion/EstadoCivil/modal_editar',$dato);
-    }
-    public function Update_Estado_Civil(){
-        $dato['id_estado_civil']= $this->input->post("id_estado_civil");
-        $dato['cod_estado_civil']= $this->input->post("cod_estado_civil"); 
-        $dato['nom_estado_civil']= $this->input->post("nom_estado_civil");
-        $this->Model_Corporacion->update_estado_civil($dato);
+    public function Insert_Estado_Civil(Request $request){
+        $request->validate([
+            'cod_estado_civil' => 'required',
+            'nom_estado_civil' => 'required',
+        ],[
+            'cod_estado_civil.required' => 'Debe ingresar codigo de estado civil.',
+            'nom_estado_civil.required' => 'Debe ingresar descripcion de estado civil.',
+        ]);
+
+        $valida = EstadoCivil::where('cod_estado_civil', $request->input("cod_estado_civil"))
+                ->where('nom_estado_civil', $request->input("nom_estado_civil"))
+                ->where('estado', 1)
+                ->exists();
+        
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_estado_civil']= $request->input("cod_estado_civil");
+            $dato['nom_estado_civil']= $request->input("nom_estado_civil");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            EstadoCivil::create($dato);
+        }
     }
     
-    public function Delete_Estado_Civil(){
-        $dato['id_estado_civil']= $this->input->post("id_estado_civil");
-        $this->Model_Corporacion->delete_estado_civil($dato);
-    }*/
+    public function Modal_Update_Estado_Civil($id_estado_civil){
+        $dato['get_id'] = EstadoCivil::where('id_estado_civil', $id_estado_civil)
+                        ->get();
+        return view('rrhh.administracion.colaborador.EstadoCivil.modal_editar',$dato);
+    }
+
+    public function Update_Estado_Civil(Request $request){
+        $request->validate([
+            'cod_estado_civil_e' => 'required',
+            'nom_estado_civil_e' => 'required',
+        ],[
+            'cod_estado_civil_e.required' => 'Debe ingresar codigo de estado civil.',
+            'nom_estado_civil_e.required' => 'Debe ingresar descripcion de estado civil.',
+        ]);
+        
+        $valida = EstadoCivil::where('cod_estado_civil', $request->input("cod_estado_civil_e"))
+                ->where('nom_estado_civil', $request->input("nom_estado_civil_e"))
+                ->where('estado', 1)
+                ->exists();
+        
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_estado_civil']= $request->input("cod_estado_civil_e"); 
+            $dato['nom_estado_civil']= $request->input("nom_estado_civil_e");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            EstadoCivil::findOrFail($request->id_estado_civil)->update($dato);
+        }
+    }
+    
+    public function Delete_Estado_Civil(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        EstadoCivil::findOrFail($request->id_estado_civil)->update($dato);
+    }
+    
+    
 }

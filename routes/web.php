@@ -325,12 +325,12 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('Update_Programa', 'Update_Programa');
     Route::post('/Delete_Programa', 'Delete_Programa');
     Route::get('Index_Programas', 'Index_Programas');
-    Route::post('ColaboradorConfController/', 'Listar_Accesos_Programa');
-    Route::get('ColaboradorConfController/', 'Modal_Registrar_Programa');
-    Route::get('ColaboradorConfController/', 'Modal_Update_Programa');
-    Route::post('ColaboradorConfController/', 'Registrar_Programa');
-    Route::post('ColaboradorConfController/', 'Update_Programa');
-    Route::post('ColaboradorConfController/', 'Delete_Programa');
+    Route::post('ColaboradorConfController/Estado_Civil', 'Estado_Civil');
+    Route::get('ColaboradorConfController/Modal_Estado_Civil', 'Modal_Estado_Civil');
+    Route::get('ColaboradorConfController/Modal_Update_Estado_Civil/{id}', 'Modal_Update_Estado_Civil');
+    Route::post('ColaboradorConfController/Insert_Estado_Civil', 'Insert_Estado_Civil');
+    Route::post('ColaboradorConfController/Update_Estado_Civil', 'Update_Estado_Civil');
+    Route::post('ColaboradorConfController/Delete_Estado_Civil', 'Delete_Estado_Civil');
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function () {
