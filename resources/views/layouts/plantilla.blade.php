@@ -18,6 +18,10 @@
     <link href="{{ asset('template/assets/css/scrollspyNav.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('template/assets/css/components/tabs-accordian/custom-tabs.css') }}" rel="stylesheet" type="text/css" />
 
+    <!-- Lightbox2 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/zoom.js/0.3.1/zoom.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zoom.js/0.3.1/zoom.min.js"></script>
+
     <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
     <link rel="stylesheet" type="text/css" href="{{ asset('template/plugins/table/datatable/datatables.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('template/plugins/table/datatable/dt-global_style.css') }}">
@@ -540,10 +544,8 @@
                         <li class="menu" id="procesos">
                             <a href="#rprocesos" id="hprocesos" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                                 <div class="">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart">
-                                        <circle cx="9" cy="21" r="1"></circle>
-                                        <circle cx="20" cy="21" r="1"></circle>
-                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle">
+                                        <circle cx="12" cy="12" r="10"></circle>
                                     </svg>
                                     <span>Procesos</span>
                                 </div>
@@ -556,6 +558,7 @@
 
                             <ul class="collapse submenu list-unstyled" id="rprocesos" data-parent="#accordionExample">
                                 <li>
+                                    <!-- <a id="administradores" href="{{ route('administrador') }}"> -->
                                     <a id="portalprocesos" href="{{ route('portalprocesos') }}">
                                         <p class="romperpalabra"><span id="icono_active2"></span> Portal Procesos</p>
                                     </a>
@@ -687,7 +690,6 @@
                     <?php } ?>
                     {{-- @endif --}}
 
-
                     <?php if (
                         session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 102 || session('usuario')->id_puesto == 80 ||
                         session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 23 ||
@@ -701,13 +703,11 @@
                         session('usuario')->id_puesto == 158 || session('usuario')->id_puesto == 9 || session('usuario')->id_puesto == 128 ||
                         session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 10
                     ) { ?>
-                        <li class="menu" id="ccvtabla">
-                            <a href="#rccvtabla" id="hccvtabla" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <li class="menu" id="procesosconf">
+                            <a href="#rprocesos" id="hprocesos" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                                 <div class="">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
-                                        <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                                        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-                                        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle">
+                                        <circle cx="12" cy="12" r="10"></circle>
                                     </svg>
                                     <span>Procesos</span>
                                 </div>
@@ -717,16 +717,19 @@
                                     </svg>
                                 </div>
                             </a>
-                            <ul class="collapse submenu list-unstyled" id="rccvtabla" data-parent="#accordionExample">
-                                <li id="conf_administradores">
-                                    <a href="{{ route('administrador_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Supervisión de tienda <br>• Seguimiento al coordinador">
-                                        <p class="romperpalabra"><span id="icono_active2"></span>Portal Procesos</p>
+
+                            <ul class="collapse submenu list-unstyled" id="rprocesos" data-parent="#accordionExample">
+                                <li>
+                                    <!-- <a id="administradores" href="{{ route('administrador') }}"> -->
+                                    <a id="portalprocesosconf" href="{{ route('portalprocesos_lm_conf') }}">
+                                        <p class="romperpalabra"><span id="icono_active2"></span> Portal Procesos</p>
                                     </a>
                                 </li>
                             </ul>
                         </li>
                     <?php } ?>
                     {{-- @endif --}}
+
                 </ul>
             </nav>
         </div>

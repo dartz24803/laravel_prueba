@@ -196,26 +196,14 @@ Route::controller(ProcesosController::class)->group(function () {
     Route::get('portalprocesos_lm', 'index_lm')->name('portalprocesos_lm');
     Route::get('portalprocesos_lm/list', 'list_lm')->name('portalprocesos_lm.list');
     Route::get('portalprocesos_lm/create', 'create_lm')->name('portalprocesos_lm.create');
-    // Route::get('ocurrencia_conf_go/list', 'list_go')->name('ocurrencia_conf_go.list');
-    // Route::get('ocurrencia_conf_go/create', 'create_go')->name('ocurrencia_conf_go.create');
-    // Route::post('ocurrencia_conf_go', 'store_go')->name('ocurrencia_conf_go.store');
-    // Route::get('ocurrencia_conf_go/{id}/edit', 'edit_go')->name('ocurrencia_conf_go.edit');
-    // Route::put('ocurrencia_conf_go/{id}', 'update_go')->name('ocurrencia_conf_go.update');
-    // Route::delete('ocurrencia_conf_go/{id}', 'destroy_go')->name('ocurrencia_conf_go.destroy');
-    // Route::get('ocurrencia_conf_co', 'index_co')->name('ocurrencia_conf_co');
-    // Route::get('ocurrencia_conf_co/list', 'list_coc')->name('ocurrencia_conf_co.list');
-    // Route::get('ocurrencia_conf_co/create', 'create_co')->name('ocurrencia_conf_co.create');
-    // Route::post('ocurrencia_conf_co', 'store_co')->name('ocurrencia_conf_co.store');
-    // Route::get('ocurrencia_conf_co/{id}/edit', 'edit_co')->name('ocurrencia_conf_co.edit');
-    // Route::put('ocurrencia_conf_co/{id}', 'update_co')->name('ocurrencia_conf_co.update');
-    // Route::delete('ocurrencia_conf_co/{id}', 'destroy_co')->name('ocurrencia_conf_co.destroy');
-    // Route::get('ocurrencia_conf_to', 'index_to')->name('ocurrencia_conf_to');
-    // Route::get('ocurrencia_conf_to/list', 'list_to')->name('ocurrencia_conf_to.list');
-    // Route::get('ocurrencia_conf_to/create', 'create_to')->name('ocurrencia_conf_to.create');
-    // Route::post('ocurrencia_conf_to', 'store_to')->name('ocurrencia_conf_to.store');
-    // Route::get('ocurrencia_conf_to/{id}/edit', 'edit_to')->name('ocurrencia_conf_to.edit');
-    // Route::put('ocurrencia_conf_to/{id}', 'update_to')->name('ocurrencia_conf_to.update');
-    // Route::delete('ocurrencia_conf_to/{id}', 'destroy_to')->name('ocurrencia_conf_to.destroy');
+    Route::get('portalprocesos_lm/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_lm')->name('portalprocesos_lm.excel');
+    Route::post('portalprocesos_lm', 'store_lm')->name('portalprocesos_lm.store');
+    Route::get('portalprocesos_lm/{id}/image', 'image_lm')->name('portalprocesos_lm.image');
+    Route::get('portalprocesos_lm/{id}/image_edit', 'image_edit_lm')->name('portalprocesos_lm.image_edit');
+    Route::delete('portalprocesos_lm/{id}', 'destroy_lm')->name('portalprocesos_lm.destroy');
+    Route::get('portalprocesos_lm/{id}/edit', 'edit_lm')->name('portalprocesos_lm.edit');
+    // CONFIGURABLES - ADMINISTRABLES
+    Route::get('portalprocesos_lm_conf', 'index_lm_conf')->name('portalprocesos_lm_conf');
 });
 
 
@@ -585,15 +573,15 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::put('postulante_revision/{id}', 'update_prev')->name('postulante_revision.update');
 });
 //ÁREA LOGÍSTICA
-Route::controller(LogisticaInicioController::class)->group(function(){
+Route::controller(LogisticaInicioController::class)->group(function () {
     Route::get('logistica', 'index')->name('logistica');
 });
 //ÁREA CAJA
-Route::controller(CajaInicioController::class)->group(function(){
+Route::controller(CajaInicioController::class)->group(function () {
     Route::get('caja', 'index')->name('caja');
 });
 //CAJA - OBSERVACIONES
-Route::controller(ObservacionController::class)->group(function(){
+Route::controller(ObservacionController::class)->group(function () {
     Route::get('observacion', 'index_reg')->name('observacion');
     Route::post('observacion/list', 'list_reg')->name('observacion.list');
     Route::get('observacion/create', 'create_reg')->name('observacion.create');
@@ -609,7 +597,7 @@ Route::controller(ObservacionController::class)->group(function(){
     Route::get('observacion/{cod_base}/{id_colaborador}/{inicio}/{fin}/excel', 'excel_reg')->name('observacion.excel');
 });
 //CAJA - OBSERVACIONES CONFIGURABLE
-Route::controller(ObservacionConfController::class)->group(function(){
+Route::controller(ObservacionConfController::class)->group(function () {
     Route::get('observacion_conf', 'index')->name('observacion_conf');
     Route::get('observacion_conf_terr', 'index_terr')->name('observacion_conf_terr');
     Route::get('observacion_conf_terr/list', 'list_terr')->name('observacion_conf_terr.list');
@@ -802,42 +790,21 @@ Route::controller(ReporteProveedoresController::class)->group(function () {
 
 use App\Http\Controllers\InicioSeguridadController;
 //Inicio Seguridad
-Route::controller(InicioSeguridadController::class)->group(function(){
+Route::controller(InicioSeguridadController::class)->group(function () {
     Route::get('InicioSeguridad/index', 'index')->name('seguridad');
 });
+
 use App\Http\Controllers\InicioTiendaController;
 //Inicio tienda
-Route::controller(InicioTiendaController::class)->group(function(){
+Route::controller(InicioTiendaController::class)->group(function () {
     Route::get('InicioTienda/index', 'index')->name('tienda');
 });
+
 use App\Http\Controllers\SliderMarketingController;
 //Slider Marketing
-Route::controller(SliderMarketingController::class)->group(function(){
+Route::controller(SliderMarketingController::class)->group(function () {
     Route::get('Marketing/Slider_List_Comercial', 'index');
     Route::post('Marketing/Buscar_RProveedor', 'Buscar_RProveedor');
     Route::post('Marketing/Actualizar_Hora_RProveedor', 'Actualizar_Hora_RProveedor');
     Route::get('Marketing/Excel_RProveedor/{base}/{estado_interno}/{fecha_inicio}/{fecha_fin}', 'Excel_RProveedor');
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
