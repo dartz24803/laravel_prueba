@@ -45,6 +45,6 @@
 
     function Excel_Colaborador() {
         var id_gerencia = $('#id_gerenciab').val();
-        window.location = "{{ route('colaborador_co.excel', ':id_servicio') }}".replace(':id_gerencia', id_gerencia);
+        window.location = "{{ route('colaborador_co.excel', ':id_gerencia') }}".replace(':id_gerencia', id_gerencia);
     }
 </script>
