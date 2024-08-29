@@ -52,6 +52,7 @@
             session('usuario')->id_puesto == 315 || 
             session('usuario')->id_puesto == 29 ||
             session('usuario')->id_puesto == 197 || 
+            session('usuario')->id_puesto == 36 || 
             session('usuario')->id_puesto == 24)
                 <li>
                     <a id="aperturas_cierres" href="{{ route('apertura_cierre') }}">
@@ -214,8 +215,6 @@ session('usuario')->id_puesto == 312)
         </a>
         <ul class="collapse submenu list-unstyled" id="rconf_seguridades" data-parent="#accordionExample">
             @if (session('usuario')->id_nivel == "1" || 
-            session('usuario')->id_puesto == 24 || 
-            session('usuario')->id_puesto == 36 || 
             session('usuario')->id_puesto == "315" || 
             session('usuario')->id_puesto == "23")
                 <li id="conf_aperturas_cierres">
