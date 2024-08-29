@@ -40,7 +40,8 @@
                     {{ $list->h_ingreso }}
                     @if (session('usuario')->id_nivel==1 || 
                     session('usuario')->id_puesto==19 || 
-                    session('usuario')->id_puesto==23)
+                    session('usuario')->id_puesto==23 ||
+                    session('usuario')->id_puesto==24)
                         <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
                         app_elim="{{ route('asistencia_seg_lec.edit', [$list->id_seguridad_asistencia, 'ingreso']) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
@@ -48,7 +49,7 @@
                             </svg>
                         </a>
                     @else
-                        @if ((session('usuario')->id_puesto==24 || 
+                        @if ((
                         session('usuario')->id_puesto==36 || 
                         session('usuario')->id_nivel==12) && 
                         $list->h_ingreso=="")
@@ -67,7 +68,8 @@
                     {{ $list->h_salida }}
                     @if (session('usuario')->id_nivel==1 || 
                     session('usuario')->id_puesto==19 || 
-                    session('usuario')->id_puesto==23)
+                    session('usuario')->id_puesto==23 ||
+                    session('usuario')->id_puesto==24)
                         <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
                         app_elim="{{ route('asistencia_seg_lec.edit', [$list->id_seguridad_asistencia, 'salida']) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
@@ -75,7 +77,7 @@
                             </svg>
                         </a>
                     @else
-                        @if ((session('usuario')->id_puesto==24 || 
+                        @if ((
                         session('usuario')->id_puesto==36 || 
                         session('usuario')->id_nivel==12) && 
                         $list->h_ingreso=="")
