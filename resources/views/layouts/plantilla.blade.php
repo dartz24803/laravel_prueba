@@ -289,6 +289,11 @@
         .tooltip.show.bs-tooltip-right .arrow::before {
             border-right-color: #ffa700 !important;
         }
+
+        .heading span {
+            color: #00b1f4;
+            font-weight: bold;
+        }
     </style>
     <!--  BEGIN MAIN CONTAINER  -->
     <div class="main-container sidebar-closed sbar-open" id="container">
@@ -328,17 +333,14 @@
                         </a>
                     </li>
 
-                    <!-- Parte aplicaciones solo en inicio -->
-                    {{-- @if (url()->current() == url('Home')) --}}
                     <li class="menu menu-heading">
-                        <div class="heading"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle">
-                                <circle cx="12" cy="12" r="10"></circle>
-                            </svg>
+                        <div class="heading">
                             <span>APLICACIONES</span>
                         </div>
                     </li>
+
                     <li class="menu" id="calendarios">
-                        <a href="<?= url('Corporacion/Calendario') ?>" id="hcalendarios" class="dropdown-toggle">
+                        <a href="javascript:void(0);" id="hcalendarios" class="dropdown-toggle">
                             <div class="">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
                                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -357,7 +359,7 @@
                         /* session('usuario')->calendario_l == "SI" || $id_usuario == 857 ||*/ session('usuario')->id_puesto == 195
                     ) { ?>
                         <li class="menu" id="calendario_logistico">
-                            <a href="<?= url('Corporacion/Calendario_Logistico') ?>" id="hcalendario_logistico" class="dropdown-toggle">
+                            <a href="javascript:void(0);" id="hcalendario_logistico" class="dropdown-toggle">
                                 <div class="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
                                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -373,7 +375,7 @@
                     <?php } ?>
                     <?php if (/*$directorio == 1 ||*/session('usuario')->id_nivel == 1) { ?>
                         <li class="menu" id="contactos">
-                            <a href="<?= url('Corporacion/Lista_Directorio_Telefonico') ?>" id="hcontacto" class="dropdown-toggle">
+                            <a href="javascript:void(0);" id="hcontacto" class="dropdown-toggle">
                                 <div class="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin">
                                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
@@ -385,6 +387,8 @@
                             </a>
                         </li>
                     <?php } ?>
+
+                    @yield('navbar')
                     {{-- @else --}}
                     <!-- Fin de parte aplicaciones -->
                     <li class="menu menu-heading">

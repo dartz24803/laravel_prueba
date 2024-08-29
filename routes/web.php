@@ -19,6 +19,7 @@ use App\Http\Controllers\AsistenciaSegController;
 use App\Http\Controllers\CajaInicioController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
+use App\Http\Controllers\ColaboradorController;
 use App\Http\Controllers\ComunicadoController;
 use App\Http\Controllers\ControlCamaraConfController;
 use App\Http\Controllers\ControlCamaraController;
@@ -30,6 +31,7 @@ use App\Http\Controllers\LecturaServicioConfController;
 use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
 use App\Http\Controllers\IntencionRenunciaConfController;
+use App\Http\Controllers\InternaInicioController;
 use App\Http\Controllers\LogisticaInicioController;
 use App\Http\Controllers\ObservacionConfController;
 use App\Http\Controllers\ObservacionController;
@@ -40,6 +42,7 @@ use App\Http\Controllers\OcurrenciaServicioConfController;
 use App\Http\Controllers\OcurrenciasTiendaController;
 use App\Http\Controllers\PostulanteController;
 use App\Http\Controllers\ProcesosController;
+use App\Http\Controllers\RecursosHumanosInicioController;
 use App\Http\Controllers\ReporteProveedoresController;
 
 Route::middleware([NoCache::class])->group(function () {
@@ -309,6 +312,13 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('Registrar_Programa', 'Registrar_Programa');
     Route::post('Update_Programa', 'Update_Programa');
     Route::post('/Delete_Programa', 'Delete_Programa');
+    Route::get('Index_Programas', 'Index_Programas');
+    Route::post('ColaboradorConfController/Estado_Civil', 'Estado_Civil');
+    Route::get('ColaboradorConfController/Modal_Estado_Civil', 'Modal_Estado_Civil');
+    Route::get('ColaboradorConfController/Modal_Update_Estado_Civil/{id}', 'Modal_Update_Estado_Civil');
+    Route::post('ColaboradorConfController/Insert_Estado_Civil', 'Insert_Estado_Civil');
+    Route::post('ColaboradorConfController/Update_Estado_Civil', 'Update_Estado_Civil');
+    Route::post('ColaboradorConfController/Delete_Estado_Civil', 'Delete_Estado_Civil');
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function () {
@@ -614,6 +624,34 @@ Route::controller(ObservacionConfController::class)->group(function () {
     Route::put('observacion_conf_err/{id}', 'update_err')->name('observacion_conf_err.update');
     Route::delete('observacion_conf_err/{id}', 'destroy_err')->name('observacion_conf_err.destroy');
 });
+//ÁREA RECURSOS HUMANOS
+Route::controller(RecursosHumanosInicioController::class)->group(function () {
+    Route::get('recursos_humanos', 'index')->name('recursos_humanos');
+});
+//RECURSOS HUMANOS - COLABORADOR
+Route::controller(ColaboradorController::class)->group(function () {
+    Route::get('colaborador', 'index')->name('colaborador');
+    Route::get('colaborador_co', 'index_co')->name('colaborador_co');
+    Route::post('colaborador_co/list', 'list_co')->name('colaborador_co.list');
+    Route::post('colaborador_co/mail', 'mail_co')->name('colaborador_co.mail');
+    Route::get('colaborador_co/{id}/edit', 'edit_co')->name('colaborador_co.edit');
+    Route::put('colaborador_co/{id}', 'update_co')->name('colaborador_co.update');
+    Route::get('colaborador_co/{id}/download', 'download_co')->name('colaborador_co.download');
+    Route::get('colaborador_co/{id}/pdf_perfil', 'pdf_perfil_co')->name('colaborador_co.pdf_perfil');
+    Route::get('colaborador_co/{id_gerencia}/excel', 'excel_co')->name('colaborador_co.excel');
+    Route::get('colaborador_ce', 'index_ce')->name('colaborador_ce');
+    Route::post('colaborador_ce/list', 'list_ce')->name('colaborador_ce.list');
+    Route::post('colaborador_ce/mail', 'mail_co')->name('colaborador_ce.mail');
+    Route::get('colaborador_ce/{id}/edit', 'edit_ce')->name('colaborador_ce.edit');
+    Route::put('colaborador_ce/{id}', 'update_co')->name('colaborador_ce.update');
+    Route::get('colaborador_ce/{id}/download', 'download_co')->name('colaborador_ce.download');
+    Route::get('colaborador_ce/{id}/pdf_perfil', 'pdf_perfil_co')->name('colaborador_ce.pdf_perfil');
+    Route::get('colaborador_ce/{id_gerencia}/excel', 'excel_ce')->name('colaborador_ce.excel');
+});
+//ÁREA INTERNA
+Route::controller(InternaInicioController::class)->group(function () {
+    Route::get('interna', 'index')->name('interna');
+});
 
 
 
@@ -800,11 +838,34 @@ Route::controller(InicioTiendaController::class)->group(function () {
     Route::get('InicioTienda/index', 'index')->name('tienda');
 });
 
+use App\Http\Controllers\InicioComercialController;
+
+Route::controller(InicioComercialController::class)->group(function () {
+    Route::get('Comercial/InicioComercial', 'index');
+});
+
 use App\Http\Controllers\SliderMarketingController;
 //Slider Marketing
 Route::controller(SliderMarketingController::class)->group(function () {
     Route::get('Marketing/Slider_List_Comercial', 'index');
-    Route::post('Marketing/Buscar_RProveedor', 'Buscar_RProveedor');
-    Route::post('Marketing/Actualizar_Hora_RProveedor', 'Actualizar_Hora_RProveedor');
-    Route::get('Marketing/Excel_RProveedor/{base}/{estado_interno}/{fecha_inicio}/{fecha_fin}', 'Excel_RProveedor');
+    Route::post('Marketing/Buscar_Base_Slide_Comercial', 'Buscar_Base_Slide_Comercial');
+    Route::get('Marketing/Modal_Slide_Insertar_Comercial', 'Modal_Slide_Insertar_Comercial');
+    Route::post('Marketing/Insert_Slide_Comercial', 'Insert_Slide_Comercial');
+    Route::get('Marketing/Modal_Update_Slide_Comercial/{id}', 'Modal_Update_Slide_Comercial');
+    Route::post('Marketing/Update_Slide_Comercial', 'Update_Slide_Comercial');
+    Route::get('Marketing/SliderComercial/{funcion}/{base}', 'Slider_Vista_Comercial');
+});
+
+use App\Http\Controllers\ReprocesoController;
+
+Route::controller(ReprocesoController::class)->group(function () {
+    Route::get('Reproceso/index', 'Reproceso');
+    Route::post('Reproceso/Lista_Reproceso', 'Lista_Reproceso');
+    Route::get('Reproceso/Modal_Reproceso', 'Modal_Reproceso');
+    Route::post('Reproceso/Insert_Reproceso', 'Insert_Reproceso');
+    Route::get('Reproceso/Modal_Update_Reproceso/{id}', 'Modal_Update_Reproceso');
+    Route::get('Reproceso/Modal_Ver_Reproceso/{id}', 'Modal_Ver_Reproceso');
+    Route::post('Reproceso/Update_Reproceso', 'Update_Reproceso');
+    Route::post('Reproceso/Delete_Reproceso', 'Delete_Reproceso');
+    Route::get('Reproceso/Excel_Reproceso', 'Excel_Reproceso');
 });

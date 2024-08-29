@@ -1,3 +1,9 @@
+<li class="menu menu-heading">
+    <div class="heading">
+        <span>MÓDULOS</span>
+    </div>
+</li>
+
 <li class="menu" id="logisticas">
     <a href="#rlogisticas" id="hlogisticas" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
         <div class="">
@@ -17,6 +23,11 @@
         <li id="trackings">
             <a href="{{ route('tracking') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                 <p class="romperpalabra"><span id="icono_active2"></span> Tracking</p>
+            </a>
+        </li>
+        <li id="reprocesos">
+            <a href="{{ url('Reproceso/index') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Reproceso</p>
             </a>
         </li>
     </ul>

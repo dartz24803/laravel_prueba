@@ -206,8 +206,7 @@ use App\Models\TrackingDetalleProceso;
     display: none !important;
 }
 .hide-nav{
-    background-color: transparent !important;
-    border-left-color: transparent !important;
+    display: none;
 }
 .hide-nav a::after{
     border-left-color: transparent !important;;
@@ -220,6 +219,10 @@ use App\Models\TrackingDetalleProceso;
     background-color: white !important;
     color: #302f30 !important;
     cursor: not-allowed;
+}
+.parte4.sw2::before, 
+.parte4.sw2::after{
+    border-left-color: transparent !important;
 }
 </style>
 
@@ -743,8 +746,8 @@ use App\Models\TrackingDetalleProceso;
                                                             INSPECCIÓN DE <br> MERCADERÍA
                                                         </a>
                                                     </li>
-                                                    <li class="nav-item" style="margin-left: 9rem;">
-                                                        <a class="nav-link parte4 d-flex align-items-center" title="Ver detalles" style="font-size: 1rem;">
+                                                    <li class="nav-item" style="margin-left: 77%; margin-right: 10%;">
+                                                        <a class="nav-link parte4 sw2 d-flex align-items-center" title="Ver detalles" style="font-size: 1rem; width: 111%; padding-left: 20%;">
                                                             <div class="num">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-repeat"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg><br>
                                                                 <br>
@@ -835,8 +838,8 @@ use App\Models\TrackingDetalleProceso;
                                                             INSPECCIÓN DE <br> MERCADERÍA
                                                         </a>
                                                     </li>
-                                                    <li class="nav-item" style="margin-left: 9rem;">
-                                                        <a class="nav-link parte4 d-flex align-items-center" title="Ver detalles" style="font-size: 1rem;">
+                                                    <li class="nav-item" style="margin-left: 77%; margin-right: 10%;">
+                                                        <a class="nav-link parte4 sw2 d-flex align-items-center" title="Ver detalles" style="font-size: 1rem;; width: 111%; padding-left: 20%">
                                                             <div class="num">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg><br>
                                                                 <br>

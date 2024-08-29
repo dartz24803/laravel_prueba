@@ -1,5 +1,9 @@
 @extends('layouts.plantilla')
 
+@section('navbar')
+    @include('tienda.navbar')
+@endsection
+
 @section('content')
 <?php 
 $id_puesto = Session('usuario')->id_puesto;

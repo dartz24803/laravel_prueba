@@ -253,23 +253,31 @@ class TrackingController extends Controller
             return response()->json($query, 200);
         }elseif($request->cod_base){
             try {
-                $query = TrackingNotificacion::select('tracking_notificacion.id_tracking',
-                                                'tracking.n_requerimiento')
-                                                ->join('tracking','tracking.id','=','tracking_notificacion.id_tracking')
-                                                ->join('base','base.id_base','=','tracking.id_origen_hacia')
-                                                ->where('base.cod_base',$request->cod_base)
-                                                ->groupBy('tracking_notificacion.id_tracking')->get();
+                if($request->cod_base=="OFI"){
+                    $query = TrackingNotificacion::select('tracking_notificacion.id_tracking',
+                            'tracking.n_requerimiento')
+                            ->join('tracking','tracking.id','=','tracking_notificacion.id_tracking')
+                            ->join('base','base.id_base','=','tracking.id_origen_hacia')
+                            ->groupBy('tracking_notificacion.id_tracking')->get();
+                }else{
+                    $query = TrackingNotificacion::select('tracking_notificacion.id_tracking',
+                            'tracking.n_requerimiento')
+                            ->join('tracking','tracking.id','=','tracking_notificacion.id_tracking')
+                            ->join('base','base.id_base','=','tracking.id_origen_hacia')
+                            ->where('base.cod_base',$request->cod_base)
+                            ->groupBy('tracking_notificacion.id_tracking')->get();
+                }
             } catch (\Throwable $th) {
                 return response()->json([
                     'message' => "Error procesando base de datos.",
                 ], 500);
             }
     
-            if (count($query)==0) {
+            /*if (count($query)==0) {
                 return response()->json([
                     'message' => 'Sin resultados.',
                 ], 404);
-            }
+            }*/
     
             return response()->json($query, 200);
         }else{

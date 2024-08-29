@@ -17,21 +17,21 @@ class InicioFrasesAdmController extends Controller
     }
 
     public function index(){
-        return view('Inicio/frases/index');
+        return view('interna/administracion/Inicio/frases/index');
     }
 
     public function Frases_Inicio_Listar(){
         $list = FrasesInicio::where('estado', 1)->get();
-        return view('Inicio/frases/lista', compact('list'));
+        return view('interna/administracion/Inicio/frases/lista', compact('list'));
     }
 
     public function Modal_Update_Frases_Inicio($id){
         $dato['get_id'] = FrasesInicio::where('id', $id)->get();
-        return view('Inicio/frases/modal_editar',$dato);
+        return view('interna/administracion/Inicio/frases/modal_editar',$dato);
     }
 
     public function Modal_Registrar_Frases_Inicio(){
-        return view('Inicio/frases/modal_registrar');
+        return view('interna/administracion/Inicio/frases/modal_registrar');
     }
 
     public function Registrar_Frase_Inicio(Request $request){

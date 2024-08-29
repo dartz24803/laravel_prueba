@@ -1,5 +1,9 @@
 @extends('layouts.plantilla')
 
+@section('navbar')
+    @include('rrhh.navbar')
+@endsection
+
 @section('content')
 <style>
     svg.warning  {
@@ -91,9 +95,9 @@
 
 <script>
     $(document).ready(function() {
-        $("#rhumanos").addClass('active');
-        $("#hrhumanos").attr('aria-expanded','true');
-        $("#intencion_renuncia").addClass('active');
+        $("#conf_rrhhs").addClass('active');
+        $("#hconf_rrhhs").attr('aria-expanded', 'true');
+        $("#conf_intencion_renuncia").addClass('active');
         Busca_Intencion_Renuncia();
     });
 </script>

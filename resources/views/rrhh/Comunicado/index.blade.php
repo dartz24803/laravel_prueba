@@ -1,5 +1,9 @@
 @extends('layouts.plantilla')
 
+@section('navbar')
+    @include('rrhh.navbar')
+@endsection
+
 @section('content')
 
 <div id="content" class="main-content">
