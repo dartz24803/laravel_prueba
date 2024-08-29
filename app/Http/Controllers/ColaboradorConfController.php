@@ -17,12 +17,12 @@ use App\Models\SubGerencia;
 use App\Models\DatacorpAccesos;
 use App\Models\PaginasWebAccesos;
 use App\Models\ProgramaAccesos;
-use App\Models\EstadoCivil;/*
-use App\Models\ProgramaAccesos;
-use App\Models\ProgramaAccesos;
-use App\Models\ProgramaAccesos;
-use App\Models\ProgramaAccesos;
-use App\Models\ProgramaAccesos;*/
+use App\Models\EstadoCivil;
+use App\Models\Idioma;
+// use App\Models\ProgramaAccesos;
+// use App\Models\ProgramaAccesos;
+// use App\Models\ProgramaAccesos;
+// use App\Models\ProgramaAccesos;
 use Illuminate\Http\Request;
 
 class ColaboradorConfController extends Controller
@@ -1494,4 +1494,80 @@ class ColaboradorConfController extends Controller
     }
     
     
+    public function Idioma(){
+        $dato['list_idioma'] = Idioma::where('estado', 1)
+                            ->get();
+        return view('rrhh.administracion.colaborador.Idioma.index',$dato);
+    }
+
+    public function Modal_Idioma(){
+        return view('rrhh.administracion.colaborador.Idioma.modal_registrar');   
+    }
+/*
+    public function Insert_Idioma(){
+        if ($this->session->userdata('usuario')) {
+            $dato['cod_idioma']= $this->input->post("cod_idioma"); 
+            $dato['nom_idioma']= $this->input->post("nom_idioma");
+            $total=count($this->Model_Corporacion->valida_idioma($dato));
+            if ($total>0)
+            {
+                echo "error";
+            }
+            else{
+                $this->Model_Corporacion->insert_idioma($dato);
+            }
+            
+        }
+        else{
+            redirect('');
+        }
+    }
+
+    public function Modal_Update_Idioma($id_idioma){
+        if ($this->session->userdata('usuario')) {
+            $dato['get_id'] = $this->Model_Corporacion->get_id_idioma($id_idioma);
+            $this->load->view('Admin/Configuracion/Idioma/modal_editar',$dato);
+        }
+        else{
+            redirect('');
+        }
+    }
+
+    public function Update_Idioma(){
+        if ($this->session->userdata('usuario')) {
+            $dato['id_idioma']= $this->input->post("id_idioma");
+            $dato['cod_idioma']= $this->input->post("cod_idioma"); 
+            $dato['nom_idioma']= $this->input->post("nom_idioma");
+            $total=count($this->Model_Corporacion->valida_genero($dato));
+            if ($total>0)
+            {
+                echo "error";
+            }
+            else{
+            $this->Model_Corporacion->update_idioma($dato);
+            //}
+            
+        }
+        else{
+            redirect('');
+        }
+    }
+    
+    public function Delete_Idioma(){
+        if ($this->session->userdata('usuario')) {
+            $dato['id_idioma']= $this->input->post("id_idioma");
+            $total=count($this->Model_Corporacion->valida_genero($dato));
+            if ($total>0)
+            {
+                echo "error";
+            }
+            else{
+            $this->Model_Corporacion->delete_idioma($dato);
+            //}
+            
+        }
+        else{
+            redirect('');
+        }
+    }*/
 }

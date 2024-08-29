@@ -331,6 +331,12 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Estado_Civil', 'Insert_Estado_Civil');
     Route::post('ColaboradorConfController/Update_Estado_Civil', 'Update_Estado_Civil');
     Route::post('ColaboradorConfController/Delete_Estado_Civil', 'Delete_Estado_Civil');
+    Route::post('ColaboradorConfController/Idioma', 'Idioma');
+    Route::get('ColaboradorConfController/Modal_Idioma', 'Modal_Idioma');
+    Route::get('ColaboradorConfController/Modal_Update_Idioma/{id}', 'Modal_Update_Idioma');
+    Route::post('ColaboradorConfController/Insert_Idioma', 'Insert_Idioma');
+    Route::post('ColaboradorConfController/Update_Idioma', 'Update_Idioma');
+    Route::post('ColaboradorConfController/Delete_Idioma', 'Delete_Idioma');
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function () {
