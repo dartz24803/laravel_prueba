@@ -324,6 +324,13 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('Registrar_Programa', 'Registrar_Programa');
     Route::post('Update_Programa', 'Update_Programa');
     Route::post('/Delete_Programa', 'Delete_Programa');
+    Route::get('Index_Programas', 'Index_Programas');
+    Route::post('ColaboradorConfController/', 'Listar_Accesos_Programa');
+    Route::get('ColaboradorConfController/', 'Modal_Registrar_Programa');
+    Route::get('ColaboradorConfController/', 'Modal_Update_Programa');
+    Route::post('ColaboradorConfController/', 'Registrar_Programa');
+    Route::post('ColaboradorConfController/', 'Update_Programa');
+    Route::post('ColaboradorConfController/', 'Delete_Programa');
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function () {

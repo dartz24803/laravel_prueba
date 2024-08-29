@@ -48,6 +48,23 @@
                                 <li class="nav-item">
                                     <a id="programas" class="nav-link" onclick="Index_Programas();" style="cursor: pointer;">Programas</a>
                                 </li>
+                                <?php if(session('usuario')->id_nivel==1 || session('usuario')->id_nivel==2){ ?>
+                                    <a style="cursor: pointer;" class="nav-link" id="EstadoCivil" onclick="TablaEstadoCivil()">Estado Civil</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="Idiomaonce" onclick="TablaIdiomas()">Idiomas</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="Nacionalidaddoce" onclick="TablaNacionalidad()">Nacionalidad</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="Parentescotrece" onclick="TablaParentesco()">Parentesco</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="PlazoRenovaciontrece" onclick="TablaPlazoRenovacion()">Plazo de Renovación</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="Referenciaquince" onclick="TablaReferencia()">Referencia Laboral</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="Regimenveintidos" onclick="TablaRegimen()">Régimen Laboral</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="Situaciondieciseis" onclick="TablaSituacion()">Situacion Laboral</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="TipoContratoArriba" onclick="TablaTipoContrato()">Tipo de Contrato</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="TipoDocumentodieciocho" onclick="TablaTipoDocumento()">Tipo de Documento</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="TipoSangrediecinueve" onclick="TablaTipoSangre()">Tipo de Sangre</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="TipoViaveinte" onclick="TablaTipoVia()">Tipo de Via</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="TipoViviendaveintiuno" onclick="TablaTipoVivienda()">Tipo de Vivienda</a>
+
+                                    {{-- empresas(administracion finanzas), --}}
+                                <?php }?>
                             </ul>
 
                             <div class="row" id="cancel-row">
@@ -380,6 +397,37 @@
                 }
             });
         }
+    //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
+    function Active_Tabla_Colaboradores(){
+        $("#EstadoCivil").removeClass('active');
+        $("#paginas_web").removeClass('active');
+        $("#datacorp").removeClass('active');
+        $("#programas").removeClass('active');
+        $("#a_di").removeClass('active');
+        $("#a_ge").removeClass('active');
+        $("#a_de").removeClass('active');
+        $("#a_ar").removeClass('active');
+        $("#a_ni").removeClass('active');
+        $("#a_se").removeClass('active');
+        $("#a_co").removeClass('active');
+        $("#a_pu").removeClass('active');
+        $("#a_ca").removeClass('active');
+    }
+    //-----------------------------------------------------ESTADO CIVIL-----------------------------------------------
+    function TablaEstadoCivil() {
+        Cargando();
+        Active_Tabla_Colaboradores();
 
+        $("#EstadoCivil").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Estado_Civil') }}";
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function(resp) {
+                $('#lista_escogida').html(resp);
+            }
+        });
+    }
     </script>
 @endsection
