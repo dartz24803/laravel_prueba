@@ -206,6 +206,9 @@ Route::controller(ProcesosController::class)->group(function () {
     Route::get('portalprocesos_lm/{id}/image_edit', 'image_edit_lm')->name('portalprocesos_lm.image_edit');
     Route::delete('portalprocesos_lm/{id}', 'destroy_lm')->name('portalprocesos_lm.destroy');
     Route::get('portalprocesos_lm/{id}/edit', 'edit_lm')->name('portalprocesos_lm.edit');
+    Route::get('puestos-por-areas', 'getPuestosPorAreas')->name('puestos_por_areas');
+
+
     // CONFIGURABLES - ADMINISTRABLES
     Route::get('portalprocesos_lm_conf', 'index_lm_conf')->name('portalprocesos_lm_conf');
 });
@@ -660,7 +663,7 @@ Route::controller(InternaInicioController::class)->group(function () {
     Route::get('interna', 'index')->name('interna');
 });
 //CAJA - LÍNEA DE CARRERA
-Route::controller(LineaCarreraController::class)->group(function(){
+Route::controller(LineaCarreraController::class)->group(function () {
     Route::get('linea_carrera', 'index')->name('linea_carrera');
     Route::get('linea_carrera_so', 'index_so')->name('linea_carrera_so');
     Route::post('linea_carrera_so/list', 'list_so')->name('linea_carrera_so.list');

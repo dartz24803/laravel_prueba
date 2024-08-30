@@ -1,3 +1,16 @@
+<style>
+    #tabla_js td {
+        max-width: 180px;
+        /* Controla el ancho máximo */
+        white-space: nowrap;
+        /* Evita que el texto se divida en varias líneas */
+        overflow: hidden;
+        /* Oculta el contenido que se desborda */
+        text-overflow: ellipsis;
+        /* Añade puntos suspensivos (...) */
+    }
+</style>
+
 <table id="tabla_js" class="table table-hover" style="width:100%">
     <thead class="text-center">
         <tr>
@@ -19,7 +32,9 @@
             <td>{{ $proceso->codigo }}</td>
             <td>{{ $proceso->nombre }}</td>
             <td>{{ $proceso->nombre_tipo_portal }}</td>
-            <td>{{ $proceso->nombres_area }}</td>
+            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ $proceso->nombres_area }}
+            </td>
             <td>{{ $proceso->nombre_responsable }}</td>
             <td>{{ $proceso->fecha }}</td>
             <td>{{ $proceso->estado_texto }}</td>
@@ -56,6 +71,12 @@
 
 <script>
     var tabla = $('#tabla_js').DataTable({
+        "columnDefs": [{
+                "width": "180px",
+                "targets": 3
+            } // Aplica a la columna de Área (índice 3)
+        ],
+        "autoWidth": false, // Desactiva el auto ajuste de ancho de DataTables
         "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
             "<'table-responsive'tr>" +
             "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
