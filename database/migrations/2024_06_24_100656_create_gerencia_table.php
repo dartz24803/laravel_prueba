@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('gerencia', function (Blueprint $table) {
             $table->id('id_gerencia');
             $table->unsignedBigInteger('id_direccion');
-            $table->string('cod_gerencia', 10)->nullable();
             $table->string('nom_gerencia', 50)->nullable();
             $table->integer('digitos_cuenta')->default(0)->nullable();
             $table->integer('digitos_cci')->default(0)->nullable();
