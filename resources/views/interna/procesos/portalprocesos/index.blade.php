@@ -1,5 +1,9 @@
 @extends('layouts.plantilla')
 
+@section('navbar')
+    @include('interna.navbar')
+@endsection
+
 @section('content')
 <style>
     input[disabled] {
