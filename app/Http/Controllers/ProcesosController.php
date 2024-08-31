@@ -16,6 +16,7 @@ use App\Models\Gerencia;
 use App\Models\Mes;
 use App\Models\NivelJerarquico;
 use App\Models\Procesos;
+use App\Models\ProcesosHistorial;
 use App\Models\Puesto;
 use App\Models\SeguimientoCoordinador;
 use App\Models\SupervisionTienda;
@@ -373,6 +374,67 @@ class ProcesosController extends Controller
             ->get()
             ->unique('nom_area');
 
-        return view('interna.procesos.portalprocesos.listamaestra.modal_editar', compact('get_id', 'list_tipo', 'list_responsable', 'list_area', 'selected_area_ids', 'selected_puesto_ids', 'div_puesto'));
+
+        // dd($id);
+        $list_procesos = ProcesosHistorial::select(
+            'portal_procesos_historial.id_portal',
+            'portal_procesos_historial.version',
+            'portal_procesos_historial.codigo',
+            'portal_procesos_historial.nombre',
+            'portal_procesos_historial.id_tipo',
+            'portal_procesos_historial.id_area',
+            'portal_procesos_historial.id_responsable',
+            'portal_procesos_historial.fecha',
+            'portal_procesos_historial.estado_registro',
+            'portal_procesos_historial.archivo',
+            // 'portal_procesos_historial.id_portal_historial'
+        )
+            ->where('portal_procesos_historial.id_portal', '=', $id)  // Filtra por id_portal
+            ->where('portal_procesos_historial.estado', '=', 1)
+            ->orderBy('portal_procesos_historial.codigo', 'ASC')
+            ->get();
+
+        // Preparar un array para almacenar los nombres de las áreas y del responsable
+        foreach ($list_procesos as $proceso) {
+            // Obtener nombres de las áreas
+            $ids = explode(',', $proceso->id_area);
+            $nombresAreas = DB::table('area')
+                ->whereIn('id_area', $ids)
+                ->pluck('nom_area');
+
+            // Asignar nombres de las áreas al proceso
+            $proceso->nombres_area = $nombresAreas->implode(', ');
+            // Obtener nombre del responsable
+            $nombreResponsable = DB::table('puesto')
+                ->where('id_puesto', $proceso->id_responsable)
+                ->value('nom_puesto'); // Asumiendo que la columna del nombre es 'nombre'
+            // Obtener nombre del tipo portal
+            $nombreTipoPortal = DB::table('tipo_portal')
+                ->where('id_tipo_portal', $proceso->id_tipo)
+                ->value('nom_tipo'); // Asumiendo que la columna del nombre es 'nombre'
+
+            // Asignar nombre del responsable al proceso
+            $proceso->nombre_responsable = $nombreResponsable;
+            $proceso->nombre_tipo_portal = $nombreTipoPortal;
+
+            // Asignar texto basado en el estado
+            switch ($proceso->estado_registro) {
+                case 1:
+                    $proceso->estado_texto = 'Por aprobar';
+                    break;
+                case 2:
+                    $proceso->estado_texto = 'Publicado';
+                    break;
+                case 3:
+                    $proceso->estado_texto = 'Por actualizar';
+                    break;
+                default:
+                    $proceso->estado_texto = 'Desconocido';
+                    break;
+            }
+        }
+
+
+        return view('interna.procesos.portalprocesos.listamaestra.modal_editar', compact('get_id', 'list_tipo', 'list_responsable', 'list_area', 'selected_area_ids', 'selected_puesto_ids', 'div_puesto', 'list_procesos'));
     }
 }
