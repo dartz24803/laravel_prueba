@@ -20,41 +20,43 @@
     </a>
 
     <ul class="collapse submenu list-unstyled" id="rseguridades" data-parent="#accordionExample">
-        @if (session('usuario')->id_nivel == 1 || 
-        session('usuario')->id_puesto == 10 || 
-        session('usuario')->id_puesto == 36 || 
+        @if (session('usuario')->id_nivel == 1 ||
+        session('usuario')->id_puesto == 10 ||
+        session('usuario')->id_puesto == 36 ||
         session('usuario')->id_puesto == 29 ||
-        session('usuario')->id_puesto == 24 || 
-        session('usuario')->id_puesto == 16 || 
-        session('usuario')->id_puesto == 20 || 
-        session('usuario')->id_puesto == 21 || 
+        session('usuario')->id_puesto == 24 ||
+        session('usuario')->id_puesto == 16 ||
+        session('usuario')->id_puesto == 20 ||
+        session('usuario')->id_puesto == 21 ||
         session('usuario')->id_puesto == 279 ||
-        session('usuario')->id_puesto == 26 || 
-        session('usuario')->id_puesto == 27 || 
-        session('usuario')->id_puesto == 98 || 
+        session('usuario')->id_puesto == 26 ||
+        session('usuario')->id_puesto == 27 ||
+        session('usuario')->id_puesto == 98 ||
         session('usuario')->id_puesto == 23 ||
-        session('usuario')->id_puesto == 31 || 
-        session('usuario')->id_puesto == 30 || 
-        session('usuario')->id_puesto == 19 || 
+        session('usuario')->id_puesto == 31 ||
+        session('usuario')->id_puesto == 30 ||
+        session('usuario')->id_puesto == 19 ||
         session('usuario')->id_puesto == 12 ||
-        session('usuario')->id_puesto == 13 || 
-        session('usuario')->id_puesto == 104 || 
-        session('usuario')->id_puesto == 155 || 
+        session('usuario')->id_puesto == 13 ||
+        session('usuario')->id_puesto == 104 ||
+        session('usuario')->id_puesto == 155 ||
         session('usuario')->id_puesto == 22 ||
-        session('usuario')->id_puesto == 161 || 
-        session('usuario')->id_puesto == 164 || 
-        session('usuario')->id_puesto == 197 || 
-        session('usuario')->id_puesto == 148 || 
-        session('usuario')->id_puesto == 315 || 
+        session('usuario')->id_puesto == 161 ||
+        session('usuario')->id_puesto == 164 ||
+        session('usuario')->id_puesto == 197 ||
+        session('usuario')->id_puesto == 148 ||
+        session('usuario')->id_puesto == 311 ||
+        session('usuario')->id_puesto == 315 ||
         session('usuario')->id_puesto == 209)
-            @if (session('usuario')->id_nivel == 1 || 
-            session('usuario')->id_puesto == 23 || 
-            session('usuario')->id_puesto == 315 || 
+            @if (session('usuario')->id_nivel == 1 ||
+            session('usuario')->id_puesto == 23 ||
+            session('usuario')->id_puesto == 311 ||
+            session('usuario')->id_puesto == 315 ||
             session('usuario')->id_puesto == 29 ||
             session('usuario')->id_puesto == 30 ||
             session('usuario')->id_puesto == 31 ||
-            session('usuario')->id_puesto == 197 || 
-            session('usuario')->id_puesto == 36 || 
+            session('usuario')->id_puesto == 197 ||
+            session('usuario')->id_puesto == 36 ||
             session('usuario')->id_puesto == 24)
                 <li>
                     <a id="aperturas_cierres" href="{{ route('apertura_cierre') }}">
@@ -63,14 +65,15 @@
                 </li>
             @endif
             @if (session('usuario')->id_nivel == 1 ||
-            session('usuario')->id_puesto == 21 || 
-            session('usuario')->id_puesto == 279 || 
-            session('usuario')->id_puesto == 23 || 
-            session('usuario')->id_puesto == 24 || 
-            session('usuario')->id_puesto == 36 || 
-            session('usuario')->id_puesto == 19 || 
-            session('usuario')->id_puesto == 22 || 
-            session('usuario')->id_puesto == 315 || 
+            session('usuario')->id_puesto == 21 ||
+            session('usuario')->id_puesto == 279 ||
+            session('usuario')->id_puesto == 23 ||
+            session('usuario')->id_puesto == 24 ||
+            session('usuario')->id_puesto == 36 ||
+            session('usuario')->id_puesto == 19 ||
+            session('usuario')->id_puesto == 22 ||
+            session('usuario')->id_puesto == 311 ||
+            session('usuario')->id_puesto == 315 ||
             session('usuario')->id_puesto == 209)
                 <li>
                     <a id="asistencias_segs" href="{{ route('asistencia_seg') }}">
@@ -79,8 +82,8 @@
                 </li>
             @endif
             @if (session('usuario')->id_nivel == 1 ||
-            session('usuario')->id_puesto == 23 || 
-            session('usuario')->id_puesto == 24 || 
+            session('usuario')->id_puesto == 23 ||
+            session('usuario')->id_puesto == 24 ||
             session('usuario')->id_puesto == 164)
                 <li>
                     <a id="controles_camaras" href="{{ route('control_camara') }}">
@@ -88,27 +91,28 @@
                     </a>
                 </li>
             @endif
-            @if (session('usuario')->id_nivel == 1 || 
-            session('usuario')->id_puesto == 24 || 
-            session('usuario')->id_puesto == 36 || 
+            @if (session('usuario')->id_nivel == 1 ||
+            session('usuario')->id_puesto == 24 ||
+            session('usuario')->id_puesto == 36 ||
             session('usuario')->id_puesto == 29 ||
-            session('usuario')->id_puesto == 16 || 
-            session('usuario')->id_puesto == 20 || 
+            session('usuario')->id_puesto == 16 ||
+            session('usuario')->id_puesto == 20 ||
             session('usuario')->id_puesto == 26 ||
-            session('usuario')->id_puesto == 27 || 
-            session('usuario')->id_puesto == 98 || 
+            session('usuario')->id_puesto == 27 ||
+            session('usuario')->id_puesto == 98 ||
             session('usuario')->id_puesto == 31 ||
-            session('usuario')->id_puesto == 30 || 
-            session('usuario')->id_puesto == 10 || 
+            session('usuario')->id_puesto == 30 ||
+            session('usuario')->id_puesto == 10 ||
             session('usuario')->id_puesto == 23 ||
-            session('usuario')->id_puesto == 12 || 
+            session('usuario')->id_puesto == 12 ||
             session('usuario')->id_puesto == 13 ||
-            session('usuario')->id_puesto == 104 || 
-            session('usuario')->id_puesto == 155 || 
+            session('usuario')->id_puesto == 104 ||
+            session('usuario')->id_puesto == 155 ||
             session('usuario')->id_puesto == 161 ||
-            session('usuario')->id_puesto == 197 || 
-            session('usuario')->id_puesto == 134 || 
-            session('usuario')->id_puesto == 315 || 
+            session('usuario')->id_puesto == 197 ||
+            session('usuario')->id_puesto == 134 ||
+            session('usuario')->id_puesto == 311 ||
+            session('usuario')->id_puesto == 315 ||
             session('usuario')->id_puesto == 148)
                 <li>
                     <a id="lecturas_servicios" href="{{ route('lectura_servicio') }}">
@@ -116,15 +120,16 @@
                     </a>
                 </li>
             @endif
-            @if (session('usuario')->id_nivel == 1 || 
-            session('usuario')->id_puesto == 23 || 
-            session('usuario')->id_puesto == 24 || 
+            @if (session('usuario')->id_nivel == 1 ||
+            session('usuario')->id_puesto == 23 ||
+            session('usuario')->id_puesto == 24 ||
             session('usuario')->id_puesto == 36 ||
-            session('usuario')->id_puesto == 26 || 
-            session('usuario')->id_puesto == 29 || 
+            session('usuario')->id_puesto == 26 ||
+            session('usuario')->id_puesto == 29 ||
             session('usuario')->id_puesto == 161 ||
-            session('usuario')->id_puesto == 197 || 
-            session('usuario')->id_puesto == 315 || 
+            session('usuario')->id_puesto == 197 ||
+            session('usuario')->id_puesto == 311 ||
+            session('usuario')->id_puesto == 315 ||
             session('usuario')->id_puesto == 148)
                 <li id="locurrencia">
                     <a id="hlocurrencia" href="<?= url('OcurrenciaTienda/index') ?>">
@@ -132,10 +137,11 @@
                     </a>
                 </li>
             @endif
-            @if (session('usuario')->id_nivel == 1 || 
-            session('usuario')->id_puesto == 23 || 
+            @if (session('usuario')->id_nivel == 1 ||
+            session('usuario')->id_puesto == 23 ||
             session('usuario')->id_puesto == 24 ||
-            session('usuario')->id_puesto == 315 || 
+            session('usuario')->id_puesto == 311 ||
+            session('usuario')->id_puesto == 315 ||
             session('usuario')->id_puesto == 36)
                 <li id="lrproveedor">
                     <a id="hlrproveedor" href="<?= url('RProveedores/index') ?>">
@@ -147,44 +153,45 @@
     </ul>
 </li>
 
-@if (session('usuario')->id_nivel == 1 || 
-session('usuario')->id_nivel == 2 || 
-session('usuario')->id_nivel == 7 || 
+@if (session('usuario')->id_nivel == 1 ||
+session('usuario')->id_nivel == 2 ||
+session('usuario')->id_nivel == 7 ||
 session('usuario')->id_nivel == 11 ||
-session('usuario')->id_nivel == 5 || 
-session('usuario')->id_nivel == 4 || 
+session('usuario')->id_nivel == 5 ||
+session('usuario')->id_nivel == 4 ||
 session('usuario')->id_puesto == 102 ||
-session('usuario')->id_puesto == 80 || 
+session('usuario')->id_puesto == 80 ||
 session('usuario')->id_puesto == 81 ||
-session('usuario')->id_puesto == 122 || 
+session('usuario')->id_puesto == 122 ||
 session('usuario')->id_puesto == 23 ||
-session('usuario')->id_puesto == 75 || 
-session('usuario')->id_puesto == 7 || 
+session('usuario')->id_puesto == 75 ||
+session('usuario')->id_puesto == 7 ||
 session('usuario')->id_puesto == 133 ||
-session('usuario')->id_puesto == 138 || 
+session('usuario')->id_puesto == 138 ||
 session('usuario')->id_puesto == 83 ||
-session('usuario')->id_puesto == 145 || 
-session('usuario')->id_puesto == 40 || 
-session('usuario')->id_puesto == 164 || 
-session('usuario')->id_puesto == 148 || 
+session('usuario')->id_puesto == 145 ||
+session('usuario')->id_puesto == 40 ||
+session('usuario')->id_puesto == 164 ||
+session('usuario')->id_puesto == 148 ||
 session('usuario')->id_puesto == 153 ||
-session('usuario')->id_puesto == 157 || 
-session('usuario')->id_puesto == 6 || 
-session('usuario')->id_puesto == 12 || 
+session('usuario')->id_puesto == 157 ||
+session('usuario')->id_puesto == 6 ||
+session('usuario')->id_puesto == 12 ||
 session('usuario')->id_puesto == 19 ||
-session('usuario')->id_puesto == 23 || 
-session('usuario')->id_puesto == 38 || 
-session('usuario')->id_puesto == 81 || 
+session('usuario')->id_puesto == 23 ||
+session('usuario')->id_puesto == 38 ||
+session('usuario')->id_puesto == 81 ||
 session('usuario')->id_puesto == 111 ||
-session('usuario')->id_puesto == 122 || 
-session('usuario')->id_puesto == 137 || 
-session('usuario')->id_puesto == 164 || 
+session('usuario')->id_puesto == 122 ||
+session('usuario')->id_puesto == 137 ||
+session('usuario')->id_puesto == 164 ||
 session('usuario')->id_puesto == 158 ||
-session('usuario')->id_puesto == 9 || 
-session('usuario')->id_puesto == 128 || 
-session('usuario')->id_puesto == 27 || 
-session('usuario')->id_puesto == 10 || 
-session('usuario')->id_puesto == 315 || 
+session('usuario')->id_puesto == 9 ||
+session('usuario')->id_puesto == 128 ||
+session('usuario')->id_puesto == 27 ||
+session('usuario')->id_puesto == 10 ||
+session('usuario')->id_puesto == 311 ||
+session('usuario')->id_puesto == 315 ||
 session('usuario')->id_puesto == 312)
     <li class="menu menu-heading">
         <div class="heading">
@@ -214,8 +221,10 @@ session('usuario')->id_puesto == 312)
             </div>
         </a>
         <ul class="collapse submenu list-unstyled" id="rconf_seguridades" data-parent="#accordionExample">
-            @if (session('usuario')->id_nivel == "1" || 
-            session('usuario')->id_puesto == "315" || 
+            @if (session('usuario')->id_nivel == "1" ||
+            session('usuario')->id_puesto == 36 ||
+            session('usuario')->id_puesto == 311 ||
+            session('usuario')->id_puesto == "315" ||
             session('usuario')->id_puesto == "23")
                 <li id="conf_aperturas_cierres">
                     <a href="{{ route('apertura_cierre_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
@@ -228,10 +237,12 @@ session('usuario')->id_puesto == 312)
                     </a>
                 </li>
             @endif
-            @if (session('usuario')->id_nivel == "1" || 
-            session('usuario')->id_puesto == "9" || 
-            session('usuario')->id_nivel == "11" || 
-            session('usuario')->id_puesto == "315" || 
+            @if (session('usuario')->id_nivel == "1" ||
+            session('usuario')->id_puesto == "9" ||
+            session('usuario')->id_puesto == 36 ||
+            session('usuario')->id_nivel == "11" ||
+            session('usuario')->id_puesto == 311 ||
+            session('usuario')->id_puesto == "315" ||
             session('usuario')->id_puesto == "138")
                 <li id="conf_lecturas_servicios">
                     <a href="{{ route('lectura_servicio_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
@@ -239,7 +250,7 @@ session('usuario')->id_puesto == 312)
                     </a>
                 </li>
             @endif
-            @if (session('usuario')->id_nivel == "1" || 
+            @if (session('usuario')->id_nivel == "1" ||
             session('usuario')->id_puesto == "23")
                 <li id="conf_concurrencias_servicios">
                     <a href="{{ route('ocurrencia_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">

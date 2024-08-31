@@ -1,5 +1,9 @@
 @extends('layouts.plantilla')
 
+@section('navbar')
+    @include('interna.navbar')
+@endsection
+
 @section('content')
 <div id="content" class="main-content">
     <div class="layout-px-spacing">

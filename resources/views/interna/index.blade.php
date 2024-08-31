@@ -17,8 +17,8 @@
 
     <script>
         $(document).ready(function() {
-            $("#slider_menu").addClass('active');
-            $("#inicio_slider").attr('aria-expanded', 'true');
+            $("#procesos").addClass('active');
+            $("#procesos").attr('aria-expanded', 'true');
         });
     </script>
 @endsection

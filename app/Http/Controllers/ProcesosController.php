@@ -36,19 +36,19 @@ class ProcesosController extends Controller
 
     public function index()
     {
-        return view('procesos.portalprocesos.index');
+        return view('interna.procesos.portalprocesos.index');
     }
 
 
     public function index_lm()
     {
-        return view('procesos.portalprocesos.listamaestra.index');
+        return view('interna.procesos.portalprocesos.listamaestra.index');
     }
 
 
     public function index_lm_conf()
     {
-        return view('procesos.administracion.portalprocesos.index');
+        return view('interna.procesos.administracion.portalprocesos.index');
     }
 
     public function list_lm()
@@ -110,7 +110,7 @@ class ProcesosController extends Controller
             }
         }
 
-        return view('procesos.portalprocesos.listamaestra.lista', compact('list_procesos'));
+        return view('interna.procesos.portalprocesos.listamaestra.lista', compact('list_procesos'));
     }
 
 
@@ -136,7 +136,7 @@ class ProcesosController extends Controller
             ->orderBy('nom_area', 'ASC')
             ->distinct('nom_area')->get();
 
-        return view('procesos.portalprocesos.listamaestra.modal_registrar', compact('list_tipo', 'list_responsable', 'list_area', 'list_base', 'list_gerencia', 'list_nivel'));
+        return view('interna.procesos.portalprocesos.listamaestra.modal_registrar', compact('list_tipo', 'list_responsable', 'list_area', 'list_base', 'list_gerencia', 'list_nivel'));
     }
 
     public function getPuestosPorAreas(Request $request)
@@ -175,7 +175,7 @@ class ProcesosController extends Controller
         if ($get_id->archivo) {
             $imageUrl = "https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/" . $get_id->archivo;
         }
-        return view('procesos.portalprocesos.listamaestra.modal_imagen', compact('get_id', 'imageUrl'));
+        return view('interna.procesos.portalprocesos.listamaestra.modal_imagen', compact('get_id', 'imageUrl'));
     }
 
     public function image_edit_lm($id)
@@ -186,7 +186,7 @@ class ProcesosController extends Controller
         if ($get_id->archivo) {
             $imageUrl = "https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/" . $get_id->archivo;
         }
-        return view('procesos.portalprocesos.listamaestra.modal_imagen', compact('get_id', 'imageUrl'));
+        return view('interna.procesos.portalprocesos.listamaestra.modal_imagen', compact('get_id', 'imageUrl'));
     }
 
 
@@ -373,6 +373,6 @@ class ProcesosController extends Controller
             ->get()
             ->unique('nom_area');
 
-        return view('procesos.portalprocesos.listamaestra.modal_editar', compact('get_id', 'list_tipo', 'list_responsable', 'list_area', 'selected_area_ids', 'selected_puesto_ids', 'div_puesto'));
+        return view('interna.procesos.portalprocesos.listamaestra.modal_editar', compact('get_id', 'list_tipo', 'list_responsable', 'list_area', 'selected_area_ids', 'selected_puesto_ids', 'div_puesto'));
     }
 }
