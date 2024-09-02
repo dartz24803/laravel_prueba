@@ -23,4 +23,22 @@
         });
     }
 
+    function Insert_Examen_Entrenamiento(id){
+        Cargando();
+
+        var url = "{{ route('linea_carrera_en.update', ':id') }}".replace(':id', id);
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            type:"PUT",
+            data: {'id':id},
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success:function (data) {
+                Lista_Entrenamiento();
+            }
+        });
+    }
 </script>

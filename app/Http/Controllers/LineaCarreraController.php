@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Base;
 use App\Models\Entrenamiento;
+use App\Models\ExamenEntrenamiento;
+use App\Models\Notificacion;
 use App\Models\SolicitudPuesto;
 use App\Models\Suceso;
 use App\Models\Usuario;
@@ -154,5 +156,29 @@ class LineaCarreraController extends Controller
     {
         $list_entrenamiento = Entrenamiento::get_list_entrenamiento();
         return view('caja.linea_carrera.entrenamiento.lista', compact('list_entrenamiento'));
+    }
+
+    public function update_en($id)
+    {
+        $get_id = Entrenamiento::get_list_entrenamiento(['id'=>$id]);
+        $examen = ExamenEntrenamiento::create([
+            'id_entrenamiento' => $id,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+        Notificacion::create([
+            'id_usuario' => $get_id->id_usuario,
+            'solicitante' => $examen->id,
+            'id_tipo' => 46,
+            'leido' => 0,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
     }
 }
