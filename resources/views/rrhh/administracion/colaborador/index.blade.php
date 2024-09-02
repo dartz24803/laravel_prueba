@@ -88,7 +88,26 @@
 
             Direccion();
         });
-        
+
+
+    //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
+    function Active_Tabla_Colaboradores(){
+        $("#EstadoCivil").removeClass('active');
+        $("#Idioma").removeClass('active');
+        $("#paginas_web").removeClass('active');
+        $("#datacorp").removeClass('active');
+        $("#programas").removeClass('active');
+        $("#a_di").removeClass('active');
+        $("#a_ge").removeClass('active');
+        $("#a_de").removeClass('active');
+        $("#a_ar").removeClass('active');
+        $("#a_ni").removeClass('active');
+        $("#a_se").removeClass('active');
+        $("#a_co").removeClass('active');
+        $("#a_pu").removeClass('active');
+        $("#a_ca").removeClass('active');
+    }
+
         function Direccion(){
             Cargando();
 
@@ -99,7 +118,7 @@
                 url: url,
                 type: "GET",
                 success:function (resp) {
-                    $('#div_colaborador_conf').html(resp);  
+                    $('#div_colaborador_conf').html(resp);
                     $("#a_di").addClass('active');
                 }
             });
@@ -115,7 +134,7 @@
                 url: url,
                 type: "GET",
                 success:function (resp) {
-                    $('#div_colaborador_conf').html(resp);  
+                    $('#div_colaborador_conf').html(resp);
                     $("#a_ge").addClass('active');
                 }
             });
@@ -147,7 +166,7 @@
                 url: url,
                 type: "GET",
                 success:function (resp) {
-                    $('#div_colaborador_conf').html(resp);  
+                    $('#div_colaborador_conf').html(resp);
                     $("#a_ar").addClass('active');
                 }
             });
@@ -232,7 +251,7 @@
                 }
             });
         }
-        
+
         function Index_Datacorp(){
             Cargando();
 
@@ -243,7 +262,7 @@
                 url: url,
                 type:"GET",
                 success:function (resp) {
-                    $('#div_colaborador_conf').html(resp);  
+                    $('#div_colaborador_conf').html(resp);
                     $("#datacorp").addClass('active');
                 }
             });
@@ -259,12 +278,12 @@
                 url: url,
                 type:"GET",
                 success:function (resp) {
-                    $('#div_colaborador_conf').html(resp);  
+                    $('#div_colaborador_conf').html(resp);
                     $("#paginas_web").addClass('active');
                 }
             });
         }
-        
+
         function Index_Programas(){
             Cargando();
 
@@ -280,28 +299,12 @@
                 }
             });
         }
-    //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
-    function Active_Tabla_Colaboradores(){
-        $("#EstadoCivil").removeClass('active');
-        $("#paginas_web").removeClass('active');
-        $("#datacorp").removeClass('active');
-        $("#programas").removeClass('active');
-        $("#a_di").removeClass('active');
-        $("#a_ge").removeClass('active');
-        $("#a_de").removeClass('active');
-        $("#a_ar").removeClass('active');
-        $("#a_ni").removeClass('active');
-        $("#a_se").removeClass('active');
-        $("#a_co").removeClass('active');
-        $("#a_pu").removeClass('active');
-        $("#a_ca").removeClass('active');
-    }
     //-----------------------------------------------------ESTADO CIVIL-----------------------------------------------
     function TablaEstadoCivil() {
         Cargando();
         Active_Tabla_Colaboradores();
         $("#EstadoCivil").addClass('active');
-        
+
         var csrfToken = $('input[name="_token"]').val();
         var url = "{{ url('ColaboradorConfController/Estado_Civil') }}";
         $.ajax({
@@ -315,7 +318,7 @@
             }
         });
     }
-    
+
     function TablaIdiomas() {
         Cargando();
         Active_Tabla_Colaboradores();
@@ -323,14 +326,18 @@
         $("#Idioma").addClass('active');
 
         var url = "{{ url('ColaboradorConfController/Idioma') }}";
-//riojas apertura y cierre
+        var csrfToken = $('input[name="_token"]').val();
+
         $.ajax({
             type: "POST",
             url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             success: function(resp) {
                 $('#div_colaborador_conf').html(resp);
                 //$("#ModalRegistro .close").click()
-                $('#Idioma').parents().parents().parents().parents().find('.textocambio').text('Idioma');
+                //$('#Idioma').parents().parents().parents().parents().find('.textocambio').text('Idioma');
             }
         });
     }
