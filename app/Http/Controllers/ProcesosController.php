@@ -128,16 +128,42 @@ class ProcesosController extends Controller
         $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')->where('estado', 1)->get();
         $list_nivel = NivelJerarquico::select('id_nivel', 'nom_nivel')->where('estado', 1)->get();
 
-        $list_puesto = NivelJerarquico::select('id_nivel', 'nom_nivel')
-            ->where('estado', 1)
-            ->get();
+        // $list_puesto = NivelJerarquico::select('id_nivel', 'nom_nivel')
+        //     ->where('estado', 1)
+        //     ->get();
         $list_area = Area::select('id_area', 'nom_area')
             ->where('estado', 1)
             ->orderBy('nom_area', 'ASC')
             ->distinct('nom_area')->get();
 
-        return view('interna.procesos.portalprocesos.listamaestra.modal_registrar', compact('list_tipo', 'list_responsable', 'list_area', 'list_puesto', 'list_base', 'list_gerencia', 'list_nivel'));
+        return view('interna.procesos.portalprocesos.listamaestra.modal_registrar', compact('list_tipo', 'list_responsable', 'list_area', 'list_base', 'list_gerencia', 'list_nivel'));
     }
+
+    public function getPuestosPorAreas(Request $request)
+    {
+        $idsAreas = $request->input('areas');
+        // Verifica si $idsAreas es vacío o null
+        if (empty($idsAreas)) {
+            // Si es vacío o null, obten todos los id_area de la tabla Area
+            $areas = Area::select('id_area')
+                ->where('estado', 1)
+                ->orderBy('nom_area', 'ASC')
+                ->distinct('nom_area')
+                ->get()
+                ->pluck('id_area'); // Obtener solo los valores de id_area como un array
+
+            $idsAreas = $areas->toArray(); // Convertir a un array para usar en la consulta
+        }
+
+        // Filtra los puestos basados en las áreas seleccionadas
+        $puestos = Puesto::whereIn('id_area', $idsAreas)->get();
+
+
+        // Filtra los puestos basados en las áreas seleccionadas
+        return response()->json($puestos);
+    }
+
+
 
 
 
@@ -218,8 +244,6 @@ class ProcesosController extends Controller
         $list_area_string = implode(',', $list_area);
 
 
-
-
         // Cargar Imagenes
         $get_id = Procesos::findOrFail($id);
 
@@ -260,7 +284,11 @@ class ProcesosController extends Controller
             'id_tipo' => $request->id_portal ?? null,
             'fecha' => $request->fecha ?? null,
             'id_responsable' => is_array($request->id_puesto) ? implode(',', $request->id_puesto) : $request->id_puesto ?? '',
-            'id_area' => is_array($request->id_area) ? implode(',', $request->id_area) : $request->id_area ?? '',
+            'id_area' =>  $accesoTodo
+                ? $list_area_string
+                : (is_array($request->id_area_acceso_t) ? implode(',', $request->id_area_acceso_t) : $request->id_area_acceso_t ?? ''),
+
+            // 'id_area' => is_array($request->id_area_acceso_t) ? implode(',', $request->id_area_acceso_t) : $request->id_area_acceso_t ?? '',
             'numero' => $request->ndocumento ?? '',
             'version' =>  1,
             'descripcion' => $request->descripcion ?? '',
@@ -269,7 +297,7 @@ class ProcesosController extends Controller
             'etiqueta' => is_array($request->etiqueta) ? implode(',', $request->etiqueta) : $request->etiqueta ?? '',
             'acceso' => $accesoTodo
                 ? $list_responsable_string
-                : (is_array($request->id_puesto_acceso) ? implode(',', $request->id_puesto_acceso) : $request->id_puesto_acceso ?? ''),
+                : (is_array($request->tipo_acceso_t) ? implode(',', $request->tipo_acceso_t) : $request->tipo_acceso_t ?? ''),
             'acceso_area' => $accesoTodo
                 ? $list_area_string
                 : (is_array($request->id_area_acceso) ? implode(',', $request->id_area_acceso) : $request->id_area_acceso ?? ''),
@@ -283,7 +311,7 @@ class ProcesosController extends Controller
                 : (is_array($request->id_base_acceso) ? implode(',', $request->id_base_acceso) : $request->id_base_acceso ?? ''),
             'acceso_todo' => $accesoTodo,
 
-            'div_puesto' => $accesoTodo ? 0 : (!empty(implode(',', (array) $request->id_puesto_acceso)) ? 1 : 0),
+            'div_puesto' => $accesoTodo ? 0 : (!empty(implode(',', (array) $request->tipo_acceso_t)) ? 1 : 0),
             'div_base' => $accesoTodo ? 0 : (!empty(implode(',', (array) $request->id_base_acceso)) ? 1 : 0),
             // 'div_base' => $accesoTodo ? 0 : 1,
             'div_area' => $accesoTodo ? 0 : (!empty(implode(',', (array) $request->id_area_acceso)) ? 1 : 0),
@@ -308,10 +336,6 @@ class ProcesosController extends Controller
             'fec_eli' => $request->fec_eli ?? null,
             'user_eli' => $request->user_eli ?? null,
         ]);
-
-
-
-
         // Redirigir o devolver respuesta
         return redirect()->back()->with('success', 'Portal registrado con éxito.');
     }
@@ -329,15 +353,19 @@ class ProcesosController extends Controller
     public function edit_lm($id)
     {
         $get_id = Procesos::findOrFail($id);
+        $div_puesto = $get_id->div_puesto;
+
         // Obtener el valor del campo `id_area` y convertirlo en un array
         $selected_area_ids = explode(',', $get_id->id_area);
+        $selected_puesto_ids = explode(',', $get_id->acceso);
+        // dd($selected_puesto_ids);
         $list_tipo = TipoPortal::select('id_tipo_portal', 'nom_tipo')->get();
         $list_responsable = Puesto::select('id_puesto', 'nom_puesto')
             ->where('estado', 1)
             ->orderBy('nom_puesto', 'ASC')
             ->get()
             ->unique('nom_puesto');
-
+        // dd($list_responsable);
         // Cambiar la consulta para obtener objetos en lugar de IDs
         $list_area = Area::select('id_area', 'nom_area')
             ->where('estado', 1)
@@ -345,6 +373,6 @@ class ProcesosController extends Controller
             ->get()
             ->unique('nom_area');
 
-        return view('interna.procesos.portalprocesos.listamaestra.modal_editar', compact('get_id', 'list_tipo', 'list_responsable', 'list_area', 'selected_area_ids'));
+        return view('interna.procesos.portalprocesos.listamaestra.modal_editar', compact('get_id', 'list_tipo', 'list_responsable', 'list_area', 'selected_area_ids', 'selected_puesto_ids', 'div_puesto'));
     }
 }

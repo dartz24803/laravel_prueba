@@ -125,33 +125,6 @@
                         <div class="row">
 
 
-                            <div class="form-group col-lg-8">
-                                <label>Area:</label>
-                                <select class="form-control multivalue" name="id_areae[]" id="id_areae" multiple="multiple">
-                                    @foreach ($list_area as $area)
-                                    <option value="{{ $area->id_area }}"
-                                        {{ in_array($area->id_area, $selected_area_ids) ? 'selected' : '' }}>
-                                        {{ $area->nom_area }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="form-group col-md-4">
-                                <label>N° Documento: </label>
-                                <input type="text" class="form-control" id="numeroe" name="numeroe" value="{{ $get_id->numero }}">
-                            </div>
-
-
-
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-lg-6">
-                                <label>Descripción:</label>
-                                <textarea name="descripcione" id="descripcione" cols="1" rows="2" class="form-control">{{ $get_id->descripcion }}</textarea>
-                            </div>
-
 
                             <div class=" form-group col-md-3">
                                 <label>N° Documento: </label>
@@ -170,6 +143,23 @@
                                 <span id="miLabel" class="form-control" style="color:black">{{ $get_id->version }}</span>
 
                             </div>
+
+                            <div class="form-group col-md-6">
+                                <label>Estado: </label>
+                                <input type="text" class="form-control" id="numeroe" name="numeroe" value="{{ $get_id->numero }}">
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-lg-12">
+                                <label>Descripción:</label>
+                                <textarea name="descripcione" id="descripcione" cols="1" rows="2" class="form-control">{{ $get_id->descripcion }}</textarea>
+                            </div>
+
+
                         </div>
 
                         <div class="row">
@@ -192,7 +182,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group col-md-6">
+                            <!-- <div class="form-group col-md-6">
                                 <label>Archivo 2:</label>
                                 <a href="{{ $get_id->archivo2 ? 'https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/' . $get_id->archivo2 : '#' }}"
                                     title="Ver Contenido"
@@ -209,7 +199,7 @@
                                 <div class="d-flex align-items-center">
                                     <input type="file" class="form-control-file" name="imagene" id="imagene" onchange="Valida_Archivo('imagene');">
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
 
 
@@ -219,44 +209,55 @@
             </div>
             <div class="tab-pane fade" id="accesos" role="tabpanel" aria-labelledby="accesos-tab">
 
-                <div class="row d-flex col-md-12 my-5">
-                    <div class="form-group col-md-2 ">
-                        <label class="control-label text-bold">Acceso a Todos</label>
+                <div class="row d-flex col-md-12 my-2">
+                    @if($div_puesto == 1)
+                    <!-- Bloque cuando div_puesto = 1 -->
+                    <div class="col-md-12 my-2 text-center">
+                        <div>
+                            <label class="control-label text-bold">Todos</label>
 
-                        <label class="switch">
-                            <input type="checkbox" id="acceso_todo" name="acceso_todo" onclick="Acceso_Todo(1)">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="form-group col-md-2">
-                        <button class="btn btn-primary mt-2 " id="btn_seccion" onclick="Seccion_Portal(1);" type="button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="8" x2="12" y2="16"></line>
-                                <line x1="8" y1="12" x2="16" y2="12"></line>
-                            </svg>
-                        </button>
-                        <input type="hidden" name="div_puesto" id="div_puesto" value="0">
-                        <input type="hidden" name="div_base" id="div_base" value="0">
-                        <input type="hidden" name="div_area" id="div_area" value="0">
-                        <input type="hidden" name="div_nivel" id="div_nivel" value="0">
-                        <input type="hidden" name="div_gerencia" id="div_gerencia" value="0">
-                    </div>
-                    <div class="form-group col-md-8">
-                        <div class="form-group">
-                            <label class="control-label text-bold">Seleccionar acceso por: </label>
+                            <label class="switch">
+                                <input type="checkbox" id="acceso_todo" name="acceso_todo" onclick="Acceso_Todo()">
+                                <span class="slider"></span>
+                            </label>
                         </div>
-                        <div class="form-group">
-                            <select name="tipo_acceso" id="tipo_acceso" class="form-control">
-                                <option value="0">Seleccione</option>
-                                <option value="1">Por Puesto</option>
-                                <option value="2">Por Centro de Labores</option>
-                                <option value="3">Por Área</option>
-                                <option value="4">Por Gerencia</option>
-                                <option value="5">Por Nivel</option>
-                            </select>
+
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label class="control-label text-bold">Acceso Área: </label>
+                        <select class="form-control multivalue" name="id_areae[]" id="id_areae" multiple="multiple">
+                            @foreach ($list_area as $area)
+                            <option value="{{ $area->id_area }}"
+                                {{ in_array($area->id_area, $selected_area_ids) ? 'selected' : '' }}>
+                                {{ $area->nom_area }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+
+                    <div class="form-group col-md-12">
+                        <label class="control-label text-bold">Acceso Puesto: </label>
+                        <select class="form-control multivalue" name="tipo_acceso_p[]" id="tipo_acceso_p" multiple="multiple">
+                            @foreach ($list_responsable as $puesto)
+                            <option value="{{ $puesto->id_puesto }}"
+                                @if(in_array($puesto->id_puesto, $selected_puesto_ids)) selected @endif>
+                                {{ $puesto->nom_puesto }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+
+                    @else
+                    <!-- Bloque alternativo cuando div_puesto != 1 -->
+                    <div class="row d-flex">
+                        <div class="form-group col-md-12">
+                            <label class="control-label text-bold">Contenido Alternativo</label>
+                            <p>Este es el contenido alternativo que se muestra cuando div_puesto no es 1.</p>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
             <div class="tab-pane fade" id="versiones" role="tabpanel" aria-labelledby="versiones-tab">
