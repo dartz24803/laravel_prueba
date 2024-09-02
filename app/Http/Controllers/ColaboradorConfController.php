@@ -19,6 +19,7 @@ use App\Models\PaginasWebAccesos;
 use App\Models\ProgramaAccesos;
 use App\Models\EstadoCivil;
 use App\Models\Idioma;
+use App\Models\Nacionalidad;
 // use App\Models\ProgramaAccesos;
 // use App\Models\ProgramaAccesos;
 // use App\Models\ProgramaAccesos;
@@ -1559,5 +1560,80 @@ class ColaboradorConfController extends Controller
         $dato['fec_eli'] = now();
         $dato['user_eli'] = session('usuario')->id_usuario;
         Idioma::findOrFail($request->id_idioma)->update($dato);
+    }
+
+    public function Nacionalidad(){
+        $dato['list_nacionalidad'] = Nacionalidad::where('estado', 1)
+                                    ->get();
+        return view('rrhh.administracion.colaborador.Nacionalidad.index',$dato);
+    }
+
+    public function Modal_Nacionalidad(){
+        return view('rrhh.administracion.colaborador.Nacionalidad.modal_registrar');
+    }
+
+    public function Insert_Nacionalidad(Request $request){
+        $request->validate([
+            'pais_nacionalidad' => 'required',
+            'nom_nacionalidad' => 'required',
+        ],[
+            'pais_nacionalidad.required' => 'Debe ingresar pais de nacionalidad.',
+            'nom_nacionalidad.required' => 'Debe ingresar nacionalidad.',
+        ]);
+        $valida = Nacionalidad::where('pais_nacionalidad', $request->pais_nacionalidad)
+                ->where('nom_nacionalidad', $request->nom_nacionalidad)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['pais_nacionalidad'] = $request->input("pais_nacionalidad");
+            $dato['nom_nacionalidad'] = $request->input("nom_nacionalidad");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Nacionalidad::create($dato);
+        }
+    }
+
+    public function Modal_Update_Nacionalidad($id_nacionalidad){
+        $dato['get_id'] = Nacionalidad::where('id_nacionalidad', $id_nacionalidad)
+                        ->get();
+        return view('rrhh.administracion.colaborador.Nacionalidad.modal_editar',$dato);
+    }
+
+    public function Update_Nacionalidad(Request $request){
+        $request->validate([
+            'pais_nacionalidad_e' => 'required',
+            'nom_nacionalidad_e' => 'required',
+        ],[
+            'pais_nacionalidad_e.required' => 'Debe ingresar pais de nacionalidad.',
+            'nom_nacionalidad_e.required' => 'Debe ingresar nacionalidad.',
+        ]);
+        $valida = Nacionalidad::where('pais_nacionalidad', $request->pais_nacionalidad_e)
+                ->where('nom_nacionalidad', $request->nom_nacionalidad_e)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['pais_nacionalidad'] = $request->input("pais_nacionalidad_e");
+            $dato['nom_nacionalidad'] = $request->input("nom_nacionalidad_e");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Nacionalidad::findOrFail($request->id_nacionalidad)->update($dato);
+        }
+    }
+
+    public function Delete_Nacionalidad(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Nacionalidad::findOrFail($request->id_nacionalidad)->update($dato);
     }
 }

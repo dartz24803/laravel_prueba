@@ -51,7 +51,7 @@
                                 <?php if(session('usuario')->id_nivel==1 || session('usuario')->id_nivel==2){ ?>
                                     <a style="cursor: pointer;" class="nav-link" id="EstadoCivil" onclick="TablaEstadoCivil()">Estado Civil</a>
                                     <a style="cursor: pointer;" class="nav-link" id="Idioma" onclick="TablaIdiomas()">Idiomas</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="Nacionalidaddoce" onclick="TablaNacionalidad()">Nacionalidad</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="Nacionalidad" onclick="TablaNacionalidad()">Nacionalidad</a>
                                     <a style="cursor: pointer;" class="nav-link" id="Parentescotrece" onclick="TablaParentesco()">Parentesco</a>
                                     <a style="cursor: pointer;" class="nav-link" id="PlazoRenovaciontrece" onclick="TablaPlazoRenovacion()">Plazo de Renovación</a>
                                     <a style="cursor: pointer;" class="nav-link" id="Referenciaquince" onclick="TablaReferencia()">Referencia Laboral</a>
@@ -92,6 +92,7 @@
 
     //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
     function Active_Tabla_Colaboradores(){
+        $("#Nacionalidad").removeClass('active');
         $("#EstadoCivil").removeClass('active');
         $("#Idioma").removeClass('active');
         $("#paginas_web").removeClass('active');
@@ -336,10 +337,30 @@
             },
             success: function(resp) {
                 $('#div_colaborador_conf').html(resp);
-                //$("#ModalRegistro .close").click()
-                //$('#Idioma').parents().parents().parents().parents().find('.textocambio').text('Idioma');
             }
         });
     }
-    </script>
+
+    function TablaNacionalidad() {
+        Cargando();
+        Active_Tabla_Colaboradores();
+
+        $("#Nacionalidad").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Nacionalidad') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+
+</script>
 @endsection
