@@ -57,6 +57,11 @@
         </div>
     </a>
     <ul class="collapse submenu list-unstyled" id="rconf_cajas" data-parent="#accordionExample">
+        <li id="conf_lineas_carreras">
+            <a href="{{ route('linea_carrera_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                <p class="romperpalabra"><span id="icono_active2"></span> Línea de carrera</p>
+            </a>
+        </li>
         <li id="conf_observaciones">
             <a href="{{ route('observacion_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                 <p class="romperpalabra"><span id="icono_active2"></span> Observaciones</p>
