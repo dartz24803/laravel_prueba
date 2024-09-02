@@ -6,6 +6,7 @@
         </button>
     </div>
 </div>
+@csrf
 <div class="table-responsive mb-4 mt-4">
     <table id="zero-configidioma" class="table table-hover" style="width:100%">
         <thead>

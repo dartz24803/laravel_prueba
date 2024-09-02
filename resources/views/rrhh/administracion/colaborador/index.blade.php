@@ -306,8 +306,8 @@
         Active_Tabla_Colaboradores();
         $("#EstadoCivil").addClass('active');
 
-        var csrfToken = $('input[name="_token"]').val();
         var url = "{{ url('ColaboradorConfController/Estado_Civil') }}";
+        var csrfToken = $('input[name="_token"]').val();
         $.ajax({
             type: "POST",
             url: url,
