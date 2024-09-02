@@ -17,9 +17,9 @@
         @foreach ($list_entrenamiento as $list)
             <tr class="text-center" style="background-color:{{ $list->color_fondo }}">
                 <td>{{ $list->orden }}</td>
-                <td>{{ ucfirst($list->nom_puesto_aspirado) }}</td>
+                <td class="text-left">{{ ucfirst($list->nom_puesto_aspirado) }}</td>
                 <td>{{ $list->base }}</td> 
-                <td>{{ ucwords($list->nombre_completo) }}</td>
+                <td class="text-left">{{ ucwords($list->nombre_completo) }}</td>
                 <td>{{ $list->fecha_inicio }}</td> 
                 <td>{{ $list->fecha_fin }}</td> 
                 <td>
