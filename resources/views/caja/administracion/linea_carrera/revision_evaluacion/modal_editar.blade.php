@@ -1,64 +1,66 @@
 <form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
-        <h5 class="modal-title">Editar error:</h5>
+        <h5 class="modal-title">Revisión de Evaluación:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
     </div> 
 
     <div class="modal-body" style="max-height:700px; overflow:auto;">
+        @php $i = 1; $nota = 0; @endphp
+        @foreach ($list_detalle as $list)
+            <div class="row">
+                <div class="form-group col-lg-12">
+                    @if ($list->opciones==null)
+                        <label class="control-label text-bold">{{ $i.". ".$list->descripcion }}</label>
+                        <textarea class="form-control" rows="3" placeholder="Respuesta" disabled>{{ $list->respuesta }}</textarea>
+                    @else
+                        @php
+                            if($list->respuesta==$list->respuesta_correcta){
+                                $nota++;
+                            }
+                        @endphp
+                        <label class="control-label text-bold">
+                            {{ $i.". ".$list->descripcion }}
+                            <span class="text-@php if($list->respuesta==$list->respuesta_correcta){ echo 'success'; }else{ echo 'danger'; } @endphp">
+                                (@php if($list->respuesta==$list->respuesta_correcta){ echo 'Respuesta correcta'; }else{ echo 'Respuesta incorrecta'; } @endphp)
+                            </span>
+                        </label>
+                        @php
+                            $j = 0;
+                            $detalle = explode(",,,",$list->opciones); 
+                            while($j<count($detalle)){
+                                $pregunta = explode(":::",$detalle[$j]);
+                        @endphp
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="respuesta_{{ $list->id_pregunta }}" id="respuesta_{{ $j."-".$list->id_pregunta }}"
+                                @php if($pregunta[0]==$list->respuesta){ echo "checked"; } @endphp disabled>
+                                <label class="custom-control-label" for="respuesta_{{ $j.'-'.$list->id_pregunta }}">{{ $pregunta[1] }}</label>
+                            </div>
+                        @php 
+                                $j++;
+                            }
+                        @endphp 
+                    @endif
+                </div>
+            </div>
+        @php $i++; @endphp
+        @endforeach
+
         <div class="row">
             <div class="form-group col-lg-2">
-                <label>Tipo de error:</label>
+                <label class="control-label text-bold">Nota:</label>
             </div>
             <div class="form-group col-lg-4">
-                <select class="form-control" name="id_tipo_errore" id="id_tipo_errore">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_tipo_error as $list)
-                        <option value="{{ $list->id_tipo_error }}"
-                        @if ($list->id_tipo_error==$get_id->id_tipo_error) selected @endif>
-                            {{ $list->nom_tipo_error }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="form-group col-lg-2">
-                <label>Nombre:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="text" class="form-control" id="nom_errore" name="nom_errore" placeholder="Ingresar nombre" value="{{ $get_id->nom_error }}">
+                <input type="text" class="form-control" name="nota" id="nota" placeholder="Nota" value="{{ $nota }}" onkeypress="return solo_Numeros(event);">
             </div>
         </div>
-
-        <div class="row">
-            <div class="form-group col-lg-3">
-                <label class="control-label text-bold" for="montoe">Monto: </label>
-            </div>            
-            <div class="form-group col-lg-1">
-                <input type="checkbox" id="montoe" name="montoe" value="1" @if ($get_id->monto=="1") checked @endif>                                        
-            </div>
-            
-            <div class="form-group col-lg-3">
-                <label class="control-label text-bold" for="automaticoe">Automatico: </label>
-            </div>            
-            <div class="form-group col-lg-1">
-                <input type="checkbox" id="automaticoe" name="automaticoe" value="1" @if ($get_id->automatico=="1") checked @endif>                                        
-            </div>
-
-            <div class="form-group col-lg-3">
-                <label class="control-label text-bold" for="archivoe">Documento: </label>
-            </div>            
-            <div class="form-group col-lg-1">
-                <input type="checkbox" id="archivoe" name="archivoe" value="1" @if ($get_id->archivo=="1") checked @endif>                                        
-            </div>
-        </div>  
     </div>
 
     <div class="modal-footer">
         @csrf
         @method('PUT')
-        <button class="btn btn-primary" type="button" onclick="Update_Error();">Guardar</button>
+        {{--<button class="btn btn-primary" type="button" onclick="Update_Error();">Guardar</button>--}}
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
@@ -68,7 +70,7 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('observacion_conf_err.update', $get_id->id_error) }}";
+        var url = "{{ route('observacion_conf_err.update', $get_id->id) }}";
 
         $.ajax({
             url: url,
