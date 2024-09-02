@@ -59,8 +59,7 @@
         }
 
         function Revision_Evaluacion(){
-            alert('Aún no funciona');
-            /*Cargando();
+            Cargando();
 
             var url="{{ route('linea_carrera_conf_reva') }}";
 
@@ -72,7 +71,7 @@
                     $("#a_terr").removeClass('active');
                     $("#a_err").addClass('active');
                 }
-            });*/
+            });
         }
     </script>
 @endsection
