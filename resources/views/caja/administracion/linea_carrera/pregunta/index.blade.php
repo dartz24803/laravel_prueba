@@ -31,7 +31,7 @@
     function Tipo(v){
         Cargando();
 
-        var id_tipo = $('#id_tipo').val();
+        var id_tipo = $('#id_tipo'+v).val();
 
         if(id_tipo=="1"){
             $('#tipo_abierta'+v).show();
