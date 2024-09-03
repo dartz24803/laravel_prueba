@@ -31,13 +31,16 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use App\Models\Notificacion;
 
 class ProcesosController extends Controller
 {
 
     public function index()
     {
-        return view('interna.procesos.portalprocesos.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('interna.procesos.portalprocesos.index', compact('list_notificacion'));
     }
 
 
@@ -55,20 +58,21 @@ class ProcesosController extends Controller
     public function list_lm()
     {
         // Obtener la lista de procesos con los campos requeridos
-        $list_procesos = Procesos::select(
-            'portal_procesos.id_portal',
-            'portal_procesos.codigo',
-            'portal_procesos.nombre',
-            'portal_procesos.id_tipo',
-            'portal_procesos.id_area',
-            'portal_procesos.id_responsable',
-            'portal_procesos.fecha',
-            'portal_procesos.estado_registro'
+        $list_procesos = ProcesosHistorial::select(
+            'portal_procesos_historial.id_portal_historial',
+            'portal_procesos_historial.id_portal',
+            'portal_procesos_historial.codigo',
+            'portal_procesos_historial.nombre',
+            'portal_procesos_historial.id_tipo',
+            'portal_procesos_historial.id_area',
+            'portal_procesos_historial.id_responsable',
+            'portal_procesos_historial.fecha',
+            'portal_procesos_historial.estado_registro'
         )
-            ->whereNotNull('portal_procesos.codigo')
-            ->where('portal_procesos.codigo', '!=', '')
-            ->where('portal_procesos.estado', '=', 1)
-            ->orderBy('portal_procesos.codigo', 'ASC')
+            ->whereNotNull('portal_procesos_historial.codigo')
+            ->where('portal_procesos_historial.codigo', '!=', '')
+            ->where('portal_procesos_historial.estado', '=', 1)
+            ->orderBy('portal_procesos_historial.codigo', 'ASC')
             ->get();
 
         // Preparar un array para almacenar los nombres de las áreas y del responsable
@@ -161,8 +165,9 @@ class ProcesosController extends Controller
         }
 
         // Filtra los puestos basados en las áreas seleccionadas
-        $puestos = Puesto::whereIn('id_area', $idsAreas)->get();
-
+        $puestos = Puesto::whereIn('id_area', $idsAreas)
+            ->where('estado', 1)
+            ->get();
 
         // Filtra los puestos basados en las áreas seleccionadas
         return response()->json($puestos);
@@ -174,18 +179,7 @@ class ProcesosController extends Controller
 
     public function image_lm($id)
     {
-        $get_id = Procesos::findOrFail($id);
-        // Construye la URL completa de la imagen
-        $imageUrl = null;
-        if ($get_id->archivo) {
-            $imageUrl = "https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/" . $get_id->archivo;
-        }
-        return view('interna.procesos.portalprocesos.listamaestra.modal_imagen', compact('get_id', 'imageUrl'));
-    }
-
-    public function image_edit_lm($id)
-    {
-        $get_id = Procesos::findOrFail($id);
+        $get_id = ProcesosHistorial::where('id_portal', $id)->firstOrFail();
         // Construye la URL completa de la imagen
         $imageUrl = null;
         if ($get_id->archivo) {
@@ -250,37 +244,75 @@ class ProcesosController extends Controller
 
 
         // Cargar Imagenes
-        $get_id = Procesos::findOrFail($id);
+        // $get_id = Procesos::findOrFail($id);
+        $get_id = ProcesosHistorial::where('id_portal', $id)->firstOrFail();
 
         $archivo = "";
-        if ($_FILES["archivo1"]["name"] != "") {
-            $ftp_server = "lanumerounocloud.com";
-            $ftp_usuario = "intranet@lanumerounocloud.com";
-            $ftp_pass = "Intranet2022@";
-            $con_id = ftp_connect($ftp_server);
-            $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
-            if ($con_id && $lr) {
+        $documento = "";
+        $diagrama = "";
+
+        // Conectar al servidor FTP
+        $ftp_server = "lanumerounocloud.com";
+        $ftp_usuario = "intranet@lanumerounocloud.com";
+        $ftp_pass = "Intranet2022@";
+        $con_id = ftp_connect($ftp_server);
+        $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+
+        if ($con_id && $lr) {
+            ftp_pasv($con_id, true);
+
+            // Subir archivo 1
+            if (!empty($_FILES["archivo1"]["name"])) {
                 if ($get_id->imagen != "") {
                     ftp_delete($con_id, 'PORTAL_PROCESOS/' . basename($get_id->imagen));
                 }
                 $path = $_FILES["archivo1"]["name"];
                 $source_file = $_FILES['archivo1']['tmp_name'];
-
-                $ext = pathinfo($path, PATHINFO_EXTENSION);
                 $nombre = $_FILES["archivo1"]["name"];
 
-                ftp_pasv($con_id, true);
                 $subio = ftp_put($con_id, "PORTAL_PROCESOS/" . $nombre, $source_file, FTP_BINARY);
                 if ($subio) {
-                    $archivo =  $nombre;
+                    $archivo = $nombre;
                 } else {
-                    echo "Archivo no subido correctamente";
+                    echo "Archivo 1 no subido correctamente";
                 }
-            } else {
-                echo "No se conecto";
             }
+
+            // Subir documento
+            if (!empty($_FILES["documentoa"]["name"])) {
+                $path_doc = $_FILES["documentoa"]["name"];
+                $source_file_doc = $_FILES['documentoa']['tmp_name'];
+                $nombre_doc = $_FILES["documentoa"]["name"];
+
+                $subio_doc = ftp_put($con_id, "PORTAL_PROCESOS/" . $nombre_doc, $source_file_doc, FTP_BINARY);
+                if ($subio_doc) {
+                    $documento = $nombre_doc;
+                } else {
+                    echo "Documento no subido correctamente";
+                }
+            }
+
+            // Subir diagrama
+            if (!empty($_FILES["diagramaa"]["name"])) {
+                $path_diag = $_FILES["diagramaa"]["name"];
+                $source_file_diag = $_FILES['diagramaa']['tmp_name'];
+                $nombre_diag = $_FILES["diagramaa"]["name"];
+
+                $subio_diag = ftp_put($con_id, "PORTAL_PROCESOS/" . $nombre_diag, $source_file_diag, FTP_BINARY);
+                if ($subio_diag) {
+                    $diagrama = $nombre_diag;
+                } else {
+                    echo "Diagrama no subido correctamente";
+                }
+            }
+
+            ftp_close($con_id); // Cerrar conexión FTP
+
+        } else {
+            echo "No se conectó al servidor FTP";
         }
-        // Cargar Imagenes
+
+
 
 
         // Crear un nuevo registro de Portal Procesos utilizando el método estático create
@@ -328,9 +360,9 @@ class ProcesosController extends Controller
             'archivo' => $archivo ?? '',
             'archivo2' => $request->archivo2 ?? '',
             'archivo3' => $request->archivo3 ?? '',
-            'archivo4' => $request->archivo4 ?? '',
-            'archivo5' => $request->archivo5 ?? '',
-            'user_aprob' => $request->user_aprob ?? null,
+            'archivo4' =>  $documento ?? '',
+            'archivo5' => $diagrama ?? '',
+            'user_aprob' => $request->user_aprob ?? 0,
             'fec_aprob' => $request->fec_aprob ?? null,
             'estado_registro' => $request->estado_registro ?? 1,
             'estado' => $request->estado ?? 1,
@@ -379,10 +411,10 @@ class ProcesosController extends Controller
             'archivo' => $archivo ?? '',
             'archivo2' => $request->archivo2 ?? '',
             'archivo3' => $request->archivo3 ?? '',
-            'archivo4' => $request->archivo4 ?? '',
-            'archivo5' => $request->archivo5 ?? '',
-            'user_aprob' => session('usuario')->id_usuario,
-            'fec_aprob' => $request->fec_aprob ? date('Y-m-d H:i:s', strtotime($request->fec_aprob)) : null,
+            'archivo4' =>  $documento ?? '',
+            'archivo5' => $diagrama ?? '',
+            'user_aprob' => $request->user_aprob ?? 0,
+            'fec_aprob' => $request->fec_aprob ?? null,
             'estado_registro' => $request->estado_registro ?? 1,
             'estado' => $request->estado ?? 1,
             'fec_reg' => $request->fec_reg ? date('Y-m-d H:i:s', strtotime($request->fec_reg)) : now(),
@@ -394,63 +426,77 @@ class ProcesosController extends Controller
         ]);
 
         // Redirigir o devolver respuesta
-        return redirect()->back()->with('success', 'Portal registrado con éxito.');
+        return redirect()->back()->with('success', 'Proceso registrado con éxito.');
     }
 
 
     public function update_lm(Request $request, $id)
     {
+        // Obtener el registro del historial de procesos
+        $get_id = ProcesosHistorial::where('id_portal', $id)->firstOrFail();
 
-        // $valida = Procesos::where('estado', 1)->where('id_portal', '!=', $id)->exists();
-        // if ($valida) {
-        //     echo "error";
-        // } else {
-        $get_id = Procesos::findOrFail($id);
+        // Inicializar variables para los archivos
+        $archivo = $get_id->archivo;
+        $documento = $get_id->archivo4;
+        $diagrama = $get_id->archivo5;
 
-        $archivo = "";
-        if ($_FILES["archivo1"]["name"] != "") {
-            $ftp_server = "lanumerounocloud.com";
-            $ftp_usuario = "intranet@lanumerounocloud.com";
-            $ftp_pass = "Intranet2022@";
-            $con_id = ftp_connect($ftp_server);
-            $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
-            if ($con_id && $lr) {
-                if ($get_id->imagen != "") {
-                    ftp_delete($con_id, 'PORTAL_PROCESOS/' . basename($get_id->imagen));
+        // Conectar al servidor FTP
+        $ftp_server = "lanumerounocloud.com";
+        $ftp_usuario = "intranet@lanumerounocloud.com";
+        $ftp_pass = "Intranet2022@";
+        $con_id = ftp_connect($ftp_server);
+        $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+
+        if ($con_id && $lr) {
+            ftp_pasv($con_id, true);
+
+            // Subir archivo 1 si se ha cargado
+            if ($request->hasFile('archivo1e')) {
+                if ($get_id->archivo) {
+                    ftp_delete($con_id, 'PORTAL_PROCESOS/' . basename($get_id->archivo));
                 }
-                $path = $_FILES["archivo1"]["name"];
-                $source_file = $_FILES['archivo1']['tmp_name'];
-
-                $ext = pathinfo($path, PATHINFO_EXTENSION);
-                $nombre = $_FILES["archivo1"]["name"];
-
-                ftp_pasv($con_id, true);
-                $subio = ftp_put($con_id, "PORTAL_PROCESOS/" . $nombre, $source_file, FTP_BINARY);
-                if ($subio) {
-                    $archivo =  $nombre;
-                } else {
-                    echo "Archivo no subido correctamente";
+                $archivo = $request->file('archivo1e')->getClientOriginalName();
+                $request->file('archivo1e')->move(storage_path('app/temp'), $archivo);
+                $source_file = storage_path('app/temp/' . $archivo);
+                $subio = ftp_put($con_id, "PORTAL_PROCESOS/" . $archivo, $source_file, FTP_BINARY);
+                if (!$subio) {
+                    echo "Archivo 1 no subido correctamente";
                 }
-            } else {
-                echo "No se conecto";
             }
+
+            // Subir documento si se ha cargado
+            if ($request->hasFile('documentoae')) {
+                if ($get_id->archivo4) {
+                    ftp_delete($con_id, 'PORTAL_PROCESOS/' . basename($get_id->archivo4));
+                }
+                $documento = $request->file('documentoae')->getClientOriginalName();
+                $request->file('documentoae')->move(storage_path('app/temp'), $documento);
+                $source_file_doc = storage_path('app/temp/' . $documento);
+                $subio_doc = ftp_put($con_id, "PORTAL_PROCESOS/" . $documento, $source_file_doc, FTP_BINARY);
+                if (!$subio_doc) {
+                    echo "Documento no subido correctamente";
+                }
+            }
+
+            // Subir diagrama si se ha cargado
+            if ($request->hasFile('diagramaae')) {
+                if ($get_id->archivo5) {
+                    ftp_delete($con_id, 'PORTAL_PROCESOS/' . basename($get_id->archivo5));
+                }
+                $diagrama = $request->file('diagramaae')->getClientOriginalName();
+                $request->file('diagramaae')->move(storage_path('app/temp'), $diagrama);
+                $source_file_diag = storage_path('app/temp/' . $diagrama);
+                $subio_diag = ftp_put($con_id, "PORTAL_PROCESOS/" . $diagrama, $source_file_diag, FTP_BINARY);
+                if (!$subio_diag) {
+                    echo "Diagrama no subido correctamente";
+                }
+            }
+
+            ftp_close($con_id); // Cerrar conexión FTP
+        } else {
+            echo "No se conectó al servidor FTP";
         }
-        Procesos::findOrFail($id)->update([
-            'nombre' => $request->nombre,
-            'id_tipo' => $request->id_tipo,
-            'fecha' => $request->fecha,
-            'id_responsable' => $request->id_responsablee,
-            'codigo' => $request->codigo,
-            'numero' => $request->ndocumento,
-            'version' => $request->versione,
-            'estado_registro' => $request->estadoe,
-            'descripcion' => $request->descripcione ?? '',
 
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario,
-            'archivo' => $archivo ?? '',
-
-        ]);
         // Actualiza la tabla 'ProcesosHistorial'
         DB::table('portal_procesos_historial')
             ->where('id_portal', $id)
@@ -467,11 +513,11 @@ class ProcesosController extends Controller
                 'descripcion' => $request->descripcione ?? '',
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario,
-                'archivo' => $archivo ?? '',
+                'archivo' => $archivo,
+                'archivo4' => $documento,
+                'archivo5' => $diagrama,
             ]);
-        // }
     }
-
 
     public function destroy_lm($id)
     {
@@ -482,9 +528,27 @@ class ProcesosController extends Controller
         ]);
     }
 
+
+    public function approve_lm($id)
+    {
+        // dd($id);
+        // Procesos::findOrFail($id)->update([
+        //     'estado_registro' => 2,
+        //     'fec_eli' => now(),
+        //     'user_eli' => session('usuario')->id_usuario
+        // ]);
+        ProcesosHistorial::where('id_portal_historial', $id)->update([
+            'estado_registro' => 2,
+            'fec_aprob' => now(),
+            'user_aprob' => session('usuario')->id_usuario
+        ]);
+    }
+
     public function edit_lm($id)
     {
-        $get_id = Procesos::findOrFail($id);
+        // $get_id = Procesos::findOrFail($id);
+
+        $get_id = ProcesosHistorial::where('id_portal', $id)->firstOrFail();
         $div_puesto = $get_id->div_puesto;
 
         // Obtener el valor del campo `id_area` y convertirlo en un array
@@ -509,6 +573,7 @@ class ProcesosController extends Controller
 
         // dd($list_area);
         $list_procesos = ProcesosHistorial::select(
+            'portal_procesos_historial.id_portal_historial',
             'portal_procesos_historial.id_portal',
             'portal_procesos_historial.version',
             'portal_procesos_historial.codigo',
@@ -518,7 +583,11 @@ class ProcesosController extends Controller
             'portal_procesos_historial.id_responsable',
             'portal_procesos_historial.fecha',
             'portal_procesos_historial.estado_registro',
-            'portal_procesos_historial.archivo'
+            'portal_procesos_historial.archivo',
+            'portal_procesos_historial.archivo4',
+            'portal_procesos_historial.archivo5'
+
+
         )
             ->where('portal_procesos_historial.id_portal', '=', $id)
             ->where('portal_procesos_historial.estado', '=', 1)

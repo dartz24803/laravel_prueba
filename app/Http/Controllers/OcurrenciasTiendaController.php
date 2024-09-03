@@ -9,6 +9,7 @@ use App\Models\OcurrenciaGestion;
 use App\Models\OcurrenciaConclusion;
 use App\Models\Ocurrencias;
 use App\Models\Config;
+use App\Models\Notificacion;
 use Illuminate\Support\Facades\DB;
 use App\Models\Usuario;
 use Carbon\Carbon;
@@ -30,6 +31,8 @@ class OcurrenciasTiendaController extends Controller{
     }
 
     public function Ocurrencia_Tienda(Request $request){
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();            
         $list_base = Base::get_list_base_only();
 
         $list_tipo_ocurrencia = DB::table('tipo_ocurrencia')
@@ -52,7 +55,7 @@ class OcurrenciasTiendaController extends Controller{
         /*
         $dato['list_noti'] = $this->Model_Corporacion->get_list_notificacion();
         $dato['list_nav_evaluaciones'] = $this->Model_Corporacion->get_list_nav_evaluaciones();*/
-        return view('seguridad.ocurrencias_tienda.index', compact('cantidad_revisadas', 'list_base', 'list_colaborador', 'list_tipo_ocurrencia'));
+        return view('seguridad.ocurrencias_tienda.index', compact('list_notificacion','cantidad_revisadas', 'list_base', 'list_colaborador', 'list_tipo_ocurrencia'));
     }
 /*
     public function Traer_Tipo_Ocurrencia_Busq(){

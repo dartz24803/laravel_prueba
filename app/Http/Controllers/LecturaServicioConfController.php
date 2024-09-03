@@ -6,6 +6,7 @@ use App\Models\Base;
 use App\Models\DatosServicio;
 use App\Models\ProveedorServicio;
 use App\Models\LugarServicio;
+use App\Models\Notificacion;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +20,9 @@ class LecturaServicioConfController extends Controller
 
     public function index()
     {
-        return view('seguridad.administracion.lectura_servicio.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();        
+        return view('seguridad.administracion.lectura_servicio.index',compact('list_notificacion'));
     }
 
     public function index_se()

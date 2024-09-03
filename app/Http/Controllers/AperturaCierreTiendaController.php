@@ -7,6 +7,7 @@ use App\Models\AperturaCierreTienda;
 use App\Models\ArchivosAperturaCierreTienda;
 use App\Models\Base;
 use App\Models\CObservacionAperturaCierreTienda;
+use App\Models\Notificacion;
 use App\Models\ObservacionAperturaCierreTienda;
 use App\Models\TiendaMarcacionDia;
 use Illuminate\Http\Request;
@@ -28,7 +29,9 @@ class AperturaCierreTiendaController extends Controller
 
     public function index()
     {
-        return view('seguridad.apertura_cierre.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();            
+        return view('seguridad.apertura_cierre.index',compact('list_notificacion'));
     }
 
     public function index_reg()

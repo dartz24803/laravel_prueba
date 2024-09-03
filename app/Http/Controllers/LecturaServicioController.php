@@ -7,6 +7,7 @@ use App\Models\Base;
 use App\Models\DatosServicio;
 use App\Models\LecturaServicio;
 use App\Models\Mes;
+use App\Models\Notificacion;
 use App\Models\Servicio;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -27,7 +28,9 @@ class LecturaServicioController extends Controller
 
     public function index()
     {
-        return view('seguridad.lectura_servicio.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();            
+        return view('seguridad.lectura_servicio.index',compact('list_notificacion'));
     }
 
     public function index_reg()

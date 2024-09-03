@@ -6,6 +6,7 @@ use App\Models\ControlCamaraRonda;
 use App\Models\Horas;
 use App\Models\HorasLima;
 use App\Models\Local;
+use App\Models\Notificacion;
 use App\Models\OcurrenciasCamaras;
 use App\Models\Sedes;
 use App\Models\Tiendas;
@@ -22,7 +23,9 @@ class ControlCamaraConfController extends Controller
 
     public function index()
     {
-        return view('seguridad.administracion.control_camara.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('seguridad.administracion.control_camara.index',compact('list_notificacion'));
     }
 
     public function index_se()

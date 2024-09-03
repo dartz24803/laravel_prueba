@@ -87,9 +87,9 @@
 </div>
 
 <script>
-    Lista_Ocurrencia();
+    Lista_Maestra();
 
-    function Lista_Ocurrencia() {
+    function Lista_Maestra() {
         Cargando();
 
         var url = "{{ route('portalprocesos_lm.list') }}";
@@ -139,7 +139,43 @@
                             'El registro ha sido eliminado satisfactoriamente.',
                             'success'
                         ).then(function() {
-                            Lista_Ocurrencia();
+                            Lista_Maestra();
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+    function Aprobar_Proceso(id) {
+        Cargando();
+
+        var url = "{{ route('portalprocesos_lm.approve', ':id') }}".replace(':id', id);
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            title: '¿Realmente desea aprobar el registro?',
+            text: "El registro será aprobado",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function() {
+                        Swal(
+                            'Aprobado!',
+                            'El registro ha sido Aprobado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            Lista_Maestra();
                         });
                     }
                 });
@@ -154,11 +190,11 @@
         var archivoInput = document.getElementById(val);
         var archivoRuta = archivoInput.value;
         var extPermitidas = /(.pdf|.png|.jpg|.jpeg)$/i;
-
+        console.log(archivoRuta)
         if (!extPermitidas.exec(archivoRuta)) {
             Swal({
-                title: 'Registro Denegado',
-                text: "Asegurese de ingresar archivo con extensión .pdf | .jpg | .png | .jpeg",
+                title: 'Registro Denegado11',
+                text: "Asegurese de ingresar archivo con extensión111111111 .pdf | .jpg | .png | .jpeg",
                 type: 'error',
                 showCancelButton: false,
                 confirmButtonColor: '#3085d6',
@@ -168,6 +204,22 @@
             return false;
         } else {
             return true;
+        }
+    }
+
+
+    function Validar_Archivo_Backup(v) {
+        var archivoInput = document.getElementById(v);
+        var archivoRuta = archivoInput.value;
+        var extPermitidas = /(.jpg|.jpeg|.png|.pdf|.mp4|.xlsx|.pptx|.docx|.bpm)$/i;
+        if (!extPermitidas.exec(archivoRuta)) {
+            swal.fire(
+                '!Archivo no permitido!',
+                'El archivo debe ser jpg, jpeg, png, pdf, mp4, pptx, docx o bpm',
+                'error'
+            )
+            archivoInput.value = '';
+            return false;
         }
     }
 </script>
