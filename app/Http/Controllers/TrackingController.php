@@ -2499,6 +2499,8 @@ class TrackingController extends Controller
                     'color'=> $list['color'],
                     'talla' => $list['talla'],
                     'cantidad' => $list['cantidad'],
+                    'stk_almacen' => $list['stk_almacen'],
+                    'stk_tienda' => $list['stk_tienda'],
                     'estado' => 0,
                     'fecha' => now()
                 ]);
