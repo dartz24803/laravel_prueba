@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notificacion;
 use Illuminate\Http\Request;
 
 class CajaInicioController extends Controller
@@ -13,6 +14,8 @@ class CajaInicioController extends Controller
 
     public function index()
     {
-        return view('caja.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();          
+        return view('caja.index',compact('list_notificacion'));
     }
 }

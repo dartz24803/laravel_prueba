@@ -24,7 +24,9 @@ class LineaCarreraController extends Controller
 
     public function index()
     {
-        return view('caja.linea_carrera.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();          
+        return view('caja.linea_carrera.index',compact('list_notificacion'));
     }
 
     public function index_so()

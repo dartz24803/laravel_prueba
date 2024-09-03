@@ -2415,7 +2415,8 @@ class TrackingController extends Controller
                 $query = MercaderiaSurtida::get_list_mercaderia_surtida(['cod_base'=>$request->cod_base,'estilo'=>$request->estilo]);
             }else{
                 $query = MercaderiaSurtida::select('estilo','tipo_usuario','descripcion')
-                        ->where('tipo',1)->where('base',$request->cod_base)->where('estado',0)
+                        ->where('tipo',1)->where('anio',date('Y'))->where('semana',date('W'))
+                        ->where('base',$request->cod_base)->where('estado',0)
                         ->groupBy('estilo','tipo_usuario','descripcion')->get();
             }
         } catch (\Throwable $th) {
