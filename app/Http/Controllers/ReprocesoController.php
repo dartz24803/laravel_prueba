@@ -24,7 +24,7 @@ class ReprocesoController extends Controller
     public function Reproceso(){
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('Logistica/Reproceso/index', compact('list_notificacion'));
+        return view('logistica/Reproceso/index', compact('list_notificacion'));
     }
 
     public function Lista_Reproceso(){
