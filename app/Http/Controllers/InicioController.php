@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Usuario;
 use App\Models\Config;
 use App\Models\FrasesInicio;
+use App\Models\Notificacion;
 use App\Models\SliderInicio;
 
 class InicioController extends Controller
@@ -28,7 +29,8 @@ class InicioController extends Controller
         $get_foto = Config::where('descrip_config', 'Foto_Colaborador')
                             ->where('estado', 1)
                             ->get();
-        return view('inicio', compact('list_cumple','get_foto', 'list_frases', 'list_slider_inicio'));
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('inicio', compact('list_cumple','get_foto', 'list_frases', 'list_slider_inicio', 'list_notificacion'));
     }
     /*
     public function listar()

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Config;
+use App\Models\Notificacion;
 use Illuminate\Http\Request;
 
 class NotificacionConfController extends Controller
@@ -14,7 +15,8 @@ class NotificacionConfController extends Controller
 
     public function index()
     {
-        return view('interna.administracion.notificacion.index');
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('interna.administracion.notificacion.index', compact('list_notificacion'));
     }
 
     public function index_ti()

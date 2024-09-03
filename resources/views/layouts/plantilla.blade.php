@@ -66,29 +66,75 @@
                 <img src="{{ asset('inicio/Grupo-LN1.png') }}" class="navbar-logo ajuste1" alt="logo">
             </a>
             <ul class="navbar-item flex-row ml-auto">
-                <li class="nav-item dropdown notification-dropdown">
-                    <a href="javascript:void(0);" class="nav-link dropdown-toggle" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">
-                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                        </svg><!--<span class="badge badge-success"></span>-->
-                    </a>
-                    <div class="dropdown-menu position-absolute" aria-labelledby="notificationDropdown">
-                        <div class="notification-scroll">
-                            <div class="dropdown-item">
-                                <div class="media">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-slash">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
-                                    </svg>
-                                    <div class="media-body">
-                                        <div class="notification-para">Usted no tiene notificaciones nuevas.</div>
+                @if (session('usuario')->id_usuario=="139")
+                    <li class="nav-item dropdown notification-dropdown">
+                        <a href="javascript:void(0);" class="nav-link dropdown-toggle" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                            </svg>@if (count($list_notificacion)>0) <span class="badge badge-success"></span> @endif
+                        </a>
+                        <div class="dropdown-menu position-absolute" aria-labelledby="notificationDropdown">
+                            <div class="notification-scroll">
+                                @if (count($list_notificacion)>0)
+                                    @foreach ($list_notificacion as $list)
+                                        <div class="dropdown-item">
+                                            <div class="media server-log">
+                                                {!! $list->icono !!}
+                                                <div class="media-body">
+                                                    <div class="data-info">
+                                                        <h6 class="">{{ $list->mensaje." ".$list->solicitante }}</h6>
+                                                        <p class="">{{ $list->fecha }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="dropdown-item">
+                                        <div class="media">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-slash">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                                            </svg>
+                                            <div class="media-body">
+                                                <div class="data-info">
+                                                    <h6 class="">Usted no tiene notificaciones nuevas.</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </li>
+                @else
+                    <li class="nav-item dropdown notification-dropdown">
+                        <a href="javascript:void(0);" class="nav-link dropdown-toggle" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                            </svg>
+                        </a>
+                        <div class="dropdown-menu position-absolute" aria-labelledby="notificationDropdown">
+                            <div class="notification-scroll">
+                                <div class="dropdown-item">
+                                    <div class="media">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-slash">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                                        </svg>
+                                        <div class="media-body">
+                                            <div class="data-info">
+                                                <h6 class="">Usted no tiene notificaciones nuevas.</h6>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </li>
+                    </li>
+                @endif
 
                 <li class="nav-item dropdown user-profile-dropdown  order-lg-0 order-1">
                     <a href="javascript:void(0);" class="nav-link dropdown-toggle user" id="userProfileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
