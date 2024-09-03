@@ -22,7 +22,7 @@ use App\Models\Idioma;
 use App\Models\Nacionalidad;
 use App\Models\Parentesco;
 use App\Models\ReferenciaLaboral;
-// use App\Models\ProgramaAccesos;
+use App\Models\Regimen;
 // use App\Models\ProgramaAccesos;
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
@@ -1776,55 +1776,84 @@ class ColaboradorConfController extends Controller
         ReferenciaLaboral::findOrFail($request->id_referencia_laboral)->update($dato);
     }
     
-    public function Regimen()// RRHH
-    {
-        $dato['list_regimen'] = $this->Model_Corporacion->get_list_regimen();
-        return view('Admin/Configuracion/Regimen/boton', $dato);
-
+    public function Regimen(){
+        $dato['list_regimen'] = Regimen::where('estado', 1)
+                            ->get();
+        return view('rrhh.administracion.colaborador.Regimen.index', $dato);
     }
 
     public function Modal_Regimen(){
-            $this->load->view('Admin/Configuracion/Regimen/modal_registrar');   
-
+        return view('rrhh.administracion.colaborador.Regimen.modal_registrar');   
     }
 
-    public function Insert_Regimen(){
-            $dato['cod_regimen']= strtoupper($this->input->post("codigo")); 
-            $dato['nom_regimen']= strtoupper($this->input->post("nombre"));
-            $dato['dia_vacaciones']= $this->input->post("vacaciones");
+    public function Insert_Regimen(Request $request){
+        $request->validate([
+            'codigo' => 'required',
+            'nombre' => 'required',
+        ],[
+            'codigo.required' => 'Debe ingresar codigo de regimen.',
+            'nombre.required' => 'Debe ingresar descripcion de regimen.',
+        ]);
+
+        $valida = Regimen::where('cod_regimen', $request->codigo)
+                ->where('nom_regimen', $request->nombre)
+                ->exists();
+        
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_regimen']= strtoupper($request->input("codigo")); 
+            $dato['nom_regimen']= strtoupper($request->input("nombre"));
+            $dato['dia_vacaciones']= $request->input("vacaciones");
             $dato['da_mes']= $dato['dia_vacaciones']/12;
-            
-            
-            $total=count($this->Model_Corporacion->valida_regimen($dato));
-            if ($total>0)
-            {
-                echo "error";
-            }
-            else{
-                $this->Model_Corporacion->insert_regimen($dato);
-            }
-            
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Regimen::create($dato);
+        }
     }
 
     public function Modal_Update_Regimen($id_regimen){
-            $dato['get_id'] = $this->Model_Corporacion->get_id_regimen($id_regimen);
-            $this->load->view('Admin/Configuracion/Regimen/modal_editar',$dato);
-
+        $dato['get_id'] = Regimen::where('id_regimen', $id_regimen)
+                        ->get();
+        return view('rrhh.administracion.colaborador.Regimen.modal_editar',$dato);
     }
 
-    public function Update_Regimen(){
-            $dato['id_regimen']= $this->input->post("id_regimen");
-            $dato['cod_regimen']= strtoupper($this->input->post("codigo")); 
-            $dato['nom_regimen']= strtoupper($this->input->post("nombre"));
-            $dato['dia_vacaciones']= $this->input->post("vacaciones");
+    public function Update_Regimen(Request $request){
+        $request->validate([
+            'codigo' => 'required',
+            'nombre' => 'required',
+        ],[
+            'codigo.required' => 'Debe ingresar codigo de regimen.',
+            'nombre.required' => 'Debe ingresar descripcion de regimen.',
+        ]);
+
+        $valida = Regimen::where('cod_regimen', $request->codigo)
+                ->where('nom_regimen', $request->nombre)
+                ->where('dia_vacaciones', $request->vacaciones)
+                ->where('estado', 1)
+                ->exists();
+        if($valida){
+            echo "error";
+        }else{
+            $dato['cod_regimen']= strtoupper($request->input("codigo")); 
+            $dato['nom_regimen']= strtoupper($request->input("nombre"));
+            $dato['dia_vacaciones']= $request->input("vacaciones");
             $dato['da_mes']= $dato['dia_vacaciones']/12;
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
             
-            $this->Model_Corporacion->update_regimen($dato);
+            Regimen::findOrFail($request->id_regimen)->update($dato);
+        }
 
     }
     
-    public function Delete_regimen(){
-        $dato['id_regimen']= $this->input->post("id_regimen");
-        $this->Model_Corporacion->delete_regimen($dato);
+    public function Delete_regimen(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Regimen::findOrFail($request->input("id_regimen"))->update($dato);
     }
 }

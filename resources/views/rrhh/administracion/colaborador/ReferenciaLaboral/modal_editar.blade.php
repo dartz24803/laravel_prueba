@@ -47,14 +47,25 @@
             processData: false,
             contentType: false,
             success: function(data) {
-                swal.fire(
-                    'Actualización Exitosa!',
-                    'Haga clic en el botón!',
-                    'success'
-                ).then(function() {
-                    $("#ModalUpdate .close").click();
-                    TablaReferencia();
-                });
+                if (data == "error") {
+                    Swal({
+                        title: 'Actualizacion Denegado',
+                        text: "¡El registro ya existe!",
+                        type: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
+                    });
+                } else {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $("#ModalUpdate .close").click();
+                        TablaReferencia();
+                    });
+                }
             },
             error:function(xhr) {
                 var errors = xhr.responseJSON.errors;

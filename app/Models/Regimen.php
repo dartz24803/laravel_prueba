@@ -6,24 +6,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class RegimenLaboral extends Model
+class Regimen extends Model
 {
     use HasFactory;
     
     public $timestamps = false;
 
-    protected $table = 'regimen_laboral';
+    protected $table = 'regimen';
 
-    protected $primaryKey = 'id_regimen_laboral';
+    protected $primaryKey = 'id_regimen';
     
     protected $fillable = [
-        'codigo',
-        'descripcion',
-        'descripcion_abreviada',
-        'sectorpv',
-        'sectorpb',
-        'otras',
-        'observacion',
+        'cod_regimen',
+        'nom_regimen',
+        'dia_vacaciones',
+        'da_mes',
         'estado',
         'fec_reg',
         'user_reg',

@@ -39,7 +39,54 @@
 </form> 
 
 <script>
-      $('#vacaciones').bind('keyup paste', function(){
+    $('#vacaciones').bind('keyup paste', function(){
         this.value = this.value.replace(/[^0-9]/g, '');
-  });
+    });
+
+    function Insert_Regimen() {
+        var dataString = new FormData(document.getElementById('formulario_registrar_regimen'));
+        var url = "{{ url('ColaboradorConfController/Insert_Regimen') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                if (data == "error") {
+                    Swal({
+                        title: 'Registro Denegado',
+                        text: "¡El regimen ya existe!",
+                        type: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
+                    });
+                } else {
+                    swal.fire(
+                        'Registro Exitoso!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $("#ModalRegistro .close").click()
+                        TablaRegimen();
+                    });
+                }
+            },
+            error:function(xhr) {
+                var errors = xhr.responseJSON.errors;
+                var firstError = Object.values(errors)[0][0];
+                Swal.fire(
+                    '¡Ups!',
+                    firstError,
+                    'warning'
+                );
+            }
+        });
+    }
 </script>
