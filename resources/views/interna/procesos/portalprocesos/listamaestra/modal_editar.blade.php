@@ -1,5 +1,16 @@
 <!-- CSS -->
 <style>
+    .select2-container--default .select2-dropdown {
+        z-index: 1090;
+        /* Debe ser menor que el z-index del modal */
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field:disabled {
+        background-color: transparent !important;
+
+    }
+
+
     .switch {
         position: relative;
         display: inline-block;
@@ -7,7 +18,8 @@
         height: 20px;
     }
 
-    #tabla_js td {
+
+    #tabla_js2 td {
         max-width: 180px;
         /* Controla el ancho máximo */
         white-space: nowrap;
@@ -57,6 +69,7 @@
     }
 </style>
 <form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
+
     <div class="modal-header">
         <h5 class="modal-title">Actualizar Portal</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -130,7 +143,13 @@
                                     <span id="miLabel" class="form-control" style="color:black">{{ $get_id->codigo }}</span>
                                 </div>
                             </div>
-
+                            <!-- <div class="form-group col-md-4">
+                                <label>Código: </label>
+                                <div>
+                                    <input type="hidden" name="codigo" id="codigo" class="form-control">
+                                    <label id="miLabel" style="color:black; font-size: 1rem;">LNU-1</label>
+                                </div>
+                            </div> -->
                         </div>
 
                         <div class="row">
@@ -138,14 +157,13 @@
 
 
                             <div class=" form-group col-md-3">
-                                <label>N° Documento: </label>
-                                <select class="form-control" id="estado" name="estado">
+                                <label>Estado: </label>
+                                <select class="form-control" id="estadoe" name="estadoe">
                                     <option value="1" {{ $get_id->estado_registro == 1 ? 'selected' : '' }}>Por aprobar</option>
                                     <option value="2" {{ $get_id->estado_registro == 2 ? 'selected' : '' }}>Publicado</option>
                                     <option value="3" {{ $get_id->estado_registro == 3 ? 'selected' : '' }}>Por actualizar</option>
                                 </select>
                             </div>
-
 
                             <div class="form-group col-md-3">
                                 <label>Versión:</label>
@@ -156,8 +174,8 @@
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label>Estado: </label>
-                                <input type="text" class="form-control" id="numeroe" name="numeroe" value="{{ $get_id->numero }}">
+                                <label>N° Documento: </label>
+                                <input type="text" class="form-control" id="ndocumento" name="ndocumento" value="{{ $get_id->numero }}">
                             </div>
 
 
@@ -189,7 +207,7 @@
                                     </svg>
                                 </a>
                                 <div class="d-flex align-items-center">
-                                    <input type="file" class="form-control-file" name="imagene" id="imagene" onchange="Valida_Archivo('imagene');">
+                                    <input type="file" class="form-control-file" name="archivo1" id="archivo1" onchange="Valida_Archivo('archivo1');">
                                 </div>
                             </div>
 
@@ -221,60 +239,55 @@
             <div class="tab-pane fade" id="accesos" role="tabpanel" aria-labelledby="accesos-tab">
 
                 <div class="row d-flex col-md-12 my-2">
-                    @if($div_puesto == 1)
-                    <!-- Bloque cuando div_puesto = 1 -->
-                    <div class="col-md-12 my-2 text-center">
-                        <div>
-                            <label class="control-label text-bold">Todos</label>
 
-                            <label class="switch">
-                                <input type="checkbox" id="acceso_todo" name="acceso_todo" onclick="Acceso_Todo()">
-                                <span class="slider"></span>
-                            </label>
+                    <div class="form-group col-md-12">
+
+                        <div class="col-12 text-center">
+                            <label class="control-label text-bold centered-label"> Accesos</label>
+                            <!-- <div>
+                                <label class="control-label text-bold">Todos</label>
+
+                                <label class="switch">
+                                    <input type="checkbox" id="acceso_todo" name="acceso_todo" onclick="Acceso_Todo()" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div> -->
+                            <div class="divider"></div>
+
                         </div>
-
-                    </div>
-                    <div class="form-group col-md-12">
-                        <label class="control-label text-bold">Acceso Área: </label>
-                        <select class="form-control multivalue" name="id_areae[]" id="id_areae" multiple="multiple">
-                            @foreach ($list_area as $area)
-                            <option value="{{ $area->id_area }}"
-                                {{ in_array($area->id_area, $selected_area_ids) ? 'selected' : '' }}>
-                                {{ $area->nom_area }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-
-                    <div class="form-group col-md-12">
-                        <label class="control-label text-bold">Acceso Puesto: </label>
-                        <select class="form-control multivalue" name="tipo_acceso_p[]" id="tipo_acceso_p" multiple="multiple">
-                            @foreach ($list_responsable as $puesto)
-                            <option value="{{ $puesto->id_puesto }}"
-                                @if(in_array($puesto->id_puesto, $selected_puesto_ids)) selected @endif>
-                                {{ $puesto->nom_puesto }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-
-                    @else
-                    <!-- Bloque alternativo cuando div_puesto != 1 -->
-                    <div class="row d-flex">
                         <div class="form-group col-md-12">
-                            <label class="control-label text-bold">Contenido Alternativo</label>
-                            <p>Este es el contenido alternativo que se muestra cuando div_puesto no es 1.</p>
+                            <label class="control-label text-bold">Acceso Área: </label>
+                            <select class="form-control multivalue" name="id_area_p[]" id="id_area_p" multiple="multiple">
+                                @foreach ($list_area as $area)
+                                <option value="{{ $area->id_area }}"
+                                    {{ in_array($area->id_area, $selected_area_ids) ? 'selected' : '' }}>
+                                    {{ $area->nom_area }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="control-label text-bold">Acceso Puesto: </label>
+                            <select class="form-control multivalue" name="tipo_acceso_p[]" id="tipo_acceso_p" multiple="multiple">
+                                @foreach ($list_responsable as $puesto)
+                                <option value="{{ $puesto->id_puesto }}"
+                                    @if(in_array($puesto->id_puesto, $selected_puesto_ids)) selected @endif>
+                                    {{ $puesto->nom_puesto }}
+                                </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
-                    @endif
+
                 </div>
+
+
             </div>
             <div class="tab-pane fade" id="versiones" role="tabpanel" aria-labelledby="versiones-tab">
                 <!-- Contenido de la pestaña Otra Sección -->
                 <div class="row d-flex col-md-12 my-2">
-                    <table id="tabla_js" class="table table-hover" style="width:100%">
+                    <!-- Botón para subir versión -->
+                    <table id="tabla_js2" class="table table-hover" style="width:100%">
                         <thead class="text-center">
                             <tr>
 
@@ -306,7 +319,7 @@
 
                                 <td>
 
-                                    <a href="{{ $proceso->archivo ? 'https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/' . $proceso->archivo : '#' }}"
+                                    <a href="{{ $proceso->archivo ? 'https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/' . $proceso ->archivo : '#' }}"
                                         title="Ver Contenido"
                                         target="_blank"
                                         class="redirect-link d-inline-flex align-items-center ">
@@ -329,25 +342,151 @@
                 </div>
             </div>
         </div>
+
+    </div>
     </div>
 
     <div class="modal-footer">
         @csrf
         @method('PUT')
         <input type="hidden" id="capturae" name="capturae">
-        <button id="boton_disablede" class="btn btn-primary" type="button" disabled>Guardar</button>
-        <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
+        <button id="boton_disablede" class="btn btn-primary" type="button" onclick="Update_Proceso();">Guardar</button>
+        <button class=" btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
+
 <script>
-    $('.multivalue').select2({
-        tags: true, // Permite crear nuevas etiquetas
-        tokenSeparators: [',', ' '], // Separa las etiquetas con comas y espacios
-        dropdownParent: $('#ModalRegistro')
+    $('#id_area_p').select2({
+        tags: true,
+        tokenSeparators: [',', ' '],
+        dropdownParent: $('#ModalUpdate')
+    });
+    $('#tipo_acceso_p').select2({
+        tags: true,
+        tokenSeparators: [',', ' '],
+        dropdownParent: $('#ModalUpdate')
+    });
+    $('#id_area_acceso_e').select2({
+        tags: true,
+        tokenSeparators: [',', ' '],
+        dropdownParent: $('#ModalUpdate')
+    });
+    $('#tipo_acceso_e').select2({
+        tags: true,
+        tokenSeparators: [',', ' '],
+        dropdownParent: $('#ModalUpdate')
+    });
+    $(document).ready(function() {
+
+        $('#id_area_acceso_e').on('change', function() {
+            const selectedAreas = $(this).val();
+            var url = "{{ route('puestos_por_areas') }}";
+            console.log('Selected Areas:', selectedAreas); // Para verificar que los valores se están obteniendo correctamente
+
+            // Hacer una solicitud AJAX para obtener los puestos basados en las áreas seleccionadas
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: {
+                    areas: selectedAreas
+                },
+                success: function(response) {
+                    // Vaciar el segundo select antes de agregar las nuevas opciones
+                    $('#tipo_acceso_e').empty();
+
+                    // Agregar las nuevas opciones
+                    $.each(response, function(index, puesto) {
+                        $('#tipo_acceso_e').append(
+                            `<option value="${puesto.id_puesto}">${puesto.nom_puesto}</option>`
+                        );
+                    });
+
+                    // Reinitialize select2 if needed
+                    $('#tipo_acceso_e').select2();
+                },
+                error: function(xhr) {
+                    console.error('Error al obtener puestos:', xhr);
+                }
+            });
+        });
     });
 
-    var tabla = $('#tabla_js').DataTable({
+    function Acceso_Todo() {
+        const isChecked = document.getElementById('acceso_todo').checked;
+
+        $("#id_area_acceso_e").prop('disabled', isChecked).trigger('change');
+        $("#id_area_p").prop('disabled', isChecked).trigger('change');
+        $("#tipo_acceso_p").prop('disabled', isChecked).trigger('change');
+        $("#tipo_acceso_e").prop('disabled', isChecked).trigger('change');
+
+        if (isChecked) {
+            $("#id_area_acceso_e").val(null).trigger('change');
+            $("#id_area_p").val(null).trigger('change');
+            $("#tipo_acceso_p").val(null).trigger('change');
+            $("#tipo_acceso_e").val(null).trigger('change');
+
+            $("#id_area_acceso_e").append('<option value="all" disabled selected>Seleccionado todo</option>').trigger('change');
+            $("#id_area_p").append('<option value="all" disabled selected>Seleccionado todo</option>').trigger('change');
+            $("#tipo_acceso_p").append('<option value="all" disabled selected>Seleccionado todo</option>').trigger('change');
+            $("#tipo_acceso_e").append('<option value="all" disabled selected>Seleccionado todo</option>').trigger('change');
+
+        } else {
+            $("#id_area_acceso_e option[value='all']").remove();
+            $("#id_area_p option[value='all']").remove();
+            $("#tipo_acceso_p option[value='all']").remove();
+            $("#tipo_acceso_e option[value='all']").remove();
+
+        }
+    }
+
+
+
+    function Update_Proceso() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formularioe'));
+        var url = "{{ route('portalprocesos_lm.update', $get_id->id_portal) }}";
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                if (data == "error") {
+                    Swal({
+                        title: '¡Actualización Denegada!',
+                        text: "¡El registro ya existe!",
+                        type: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
+                    });
+                } else {
+                    swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Lista_Ocurrencia();
+                        $("#ModalUpdate .close").click();
+                    });
+                }
+            },
+            error: function(xhr) {
+                var errors = xhr.responseJSON.errors;
+                var firstError = Object.values(errors)[0][0];
+                Swal.fire(
+                    '¡Ups!',
+                    firstError,
+                    'warning'
+                );
+            }
+        });
+    }
+    var tabla = $('#tabla_js2').DataTable({
         "columnDefs": [{
                 "width": "180px",
                 "targets": 3

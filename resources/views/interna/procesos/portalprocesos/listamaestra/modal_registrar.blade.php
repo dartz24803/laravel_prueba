@@ -107,14 +107,16 @@
             </div>
             <div class="form-group col-lg-4">
                 <label class="control-label text-bold">Tipo: </label>
-
                 <select class="form-control basicm" name="id_portal" id="id_portal">
                     <option value="0">Seleccione</option>
                     @foreach ($list_tipo as $list)
-                    <option value="{{ $list->id_tipo_portal }}">{{ $list->nom_tipo }}</option>
+                    <option value="{{ $list->id_tipo_portal }}" data-cod-tipo="{{ $list->cod_tipo }}">
+                        {{ $list->nom_tipo }}
+                    </option>
                     @endforeach
                 </select>
             </div>
+
             <div class="form-group col-lg-4">
                 <label class="control-label text-bold">Fecha: </label>
 
@@ -129,15 +131,19 @@
                 <select class="form-control basicm" name="id_puesto" id="id_puesto">
                     <option value="0">Seleccione</option>
                     @foreach ($list_responsable as $list)
-                    <option value="{{ $list->id_puesto }}">{{ $list->nom_puesto }}</option>
+                    <option value="{{ $list->id_puesto }}" data-cod-area="{{ $list->cod_area }}">
+                        {{ $list->nom_puesto }}
+                    </option>
                     @endforeach
                 </select>
             </div>
 
+
             <div class="form-group col-md-4">
-                <label>N° Documento: </label>
-                <input type="text" class="form-control" id="ndocumento" name="ndocumento" placeholder="Ingresar documento">
+                <label for="ndocumento">N° Documento: </label>
+                <input type="number" class="form-control" id="ndocumento" name="ndocumento" placeholder="Ingresar documento">
             </div>
+
             <!-- <div class="form-group col-lg-6">
                 <label>Area:</label>
 
@@ -159,11 +165,9 @@
                 <label>Código: </label>
                 <div>
                     <input type="hidden" name="codigo" id="codigo" class="form-control">
-                    <label id="miLabel" style="color:black; font-size: 1rem;">LNU-T-D05-T</label>
+                    <label id="miLabel" style="color:black; font-size: 1rem;">LNU-1</label>
                 </div>
             </div>
-
-
 
         </div>
 
@@ -280,44 +284,17 @@
         dropdownParent: $('#ModalRegistro')
     });
 
-    function Acceso_Todo() {
-        const isChecked = document.getElementById('acceso_todo').checked;
-
-        $("#id_area_acceso_t").prop('disabled', isChecked).trigger('change');
-        $("#tipo_acceso_t").prop('disabled', isChecked).trigger('change');
-
-        if (isChecked) {
-            $("#id_area_acceso_t").val(null).trigger('change');
-            $("#tipo_acceso_t").val(null).trigger('change');
-
-            $("#id_area_acceso_t").append('<option value="all" disabled selected>Seleccionado todo</option>').trigger('change');
-            $("#tipo_acceso_t").append('<option value="all" disabled selected>Seleccionado todo</option>').trigger('change');
-        } else {
-            $("#id_area_acceso_t option[value='all']").remove();
-            $("#tipo_acceso_t option[value='all']").remove();
-        }
-    }
-
-    // Manejador de eventos para cambios en la selección
-    $('#id_area_acceso_t').select2({
-        tags: true, // Permite crear nuevas etiquetas
-        tokenSeparators: [',', ' '], // Separa las etiquetas con comas y espacios
-        dropdownParent: $('#ModalRegistro')
-    });
-    $('#id_area_acceso_t').on('change', function() {
-        const selectedValues = $(this).val();
-        console.log('Valores seleccionados en el select de áreas:', selectedValues);
-    });
-
-
-
     $(document).ready(function() {
         $('#id_area_acceso_t').select2({
             tags: true,
             tokenSeparators: [',', ' '],
             dropdownParent: $('#ModalRegistro')
         });
-
+        $('#tipo_acceso_t').select2({
+            tags: true,
+            tokenSeparators: [',', ' '],
+            dropdownParent: $('#ModalRegistro')
+        });
         $('#id_area_acceso_t').on('change', function() {
             const selectedAreas = $(this).val();
             var url = "{{ route('puestos_por_areas') }}";
@@ -349,10 +326,71 @@
                 }
             });
         });
+        // Función para actualizar el código
+        function actualizarCodigo() {
+            var selectedOptionArea = $('#id_puesto').find('option:selected');
+            var selectedOptionTipo = $('#id_portal').find('option:selected');
+
+            var codArea = selectedOptionArea.data('cod-area');
+            var codTipo = selectedOptionTipo.data('cod-tipo');
+
+            // Obtener el número de documento y asegurar que sea solo un número
+            var numeroDocumento = $('#ndocumento').val().replace(/\D/g, ''); // Reemplaza caracteres no numéricos por vacío
+            var codigoBase = 'LNU-1';
+
+            // Verifica si ambos valores están seleccionados
+            if (codArea && codTipo) {
+                var nuevoCodigo = 'LNU-' + codArea + '-' + codTipo + numeroDocumento + '-1';
+                $('#miLabel').text(nuevoCodigo);
+                $('#codigo').val(nuevoCodigo);
+            } else {
+                // Si no hay selección válida en ambos, muestra solo el código base
+                $('#miLabel').text(codigoBase);
+                $('#codigo').val(codigoBase);
+            }
+        }
+
+        // Evento cuando se cambia el select de Responsable (id_puesto)
+        $('#id_puesto').change(function() {
+            actualizarCodigo();
+        });
+
+        // Evento cuando se cambia el select de Tipo (id_portal)
+        $('#id_portal').change(function() {
+            actualizarCodigo();
+        });
+
+        // Evento cuando se cambia el campo de número de documento
+        $('#ndocumento').on('input', function() {
+            actualizarCodigo();
+        });
     });
 
 
 
+
+    function Acceso_Todo() {
+        const isChecked = document.getElementById('acceso_todo').checked;
+
+        $("#id_area_acceso_t").prop('disabled', isChecked).trigger('change');
+        $("#tipo_acceso_t").prop('disabled', isChecked).trigger('change');
+
+        if (isChecked) {
+            $("#id_area_acceso_t").val(null).trigger('change');
+            $("#tipo_acceso_t").val(null).trigger('change');
+
+            $("#id_area_acceso_t").append('<option value="all" disabled selected>Seleccionado todo</option>').trigger('change');
+            $("#tipo_acceso_t").append('<option value="all" disabled selected>Seleccionado todo</option>').trigger('change');
+        } else {
+            $("#id_area_acceso_t option[value='all']").remove();
+            $("#tipo_acceso_t option[value='all']").remove();
+        }
+    }
+
+    $('#id_area_acceso_t').on('change', function() {
+        const selectedValues = $(this).val();
+        console.log('Valores seleccionados en el select de áreas:', selectedValues);
+    });
 
 
     function Insert_Funcion_Temporal() {
