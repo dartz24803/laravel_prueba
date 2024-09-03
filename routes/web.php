@@ -338,6 +338,12 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Nacionalidad', 'Insert_Nacionalidad');
     Route::post('ColaboradorConfController/Update_Nacionalidad', 'Update_Nacionalidad');
     Route::post('ColaboradorConfController/Delete_Nacionalidad', 'Delete_Nacionalidad');
+    Route::post('ColaboradorConfController/Parentesco', 'Parentesco');
+    Route::get('ColaboradorConfController/Modal_Parentesco', 'Modal_Parentesco');
+    Route::get('ColaboradorConfController/Modal_Update_Parentesco/{id}', 'Modal_Update_Parentesco');
+    Route::post('ColaboradorConfController/Insert_Parentesco', 'Insert_Parentesco');
+    Route::post('ColaboradorConfController/Update_Parentesco', 'Update_Parentesco');
+    Route::post('ColaboradorConfController/Delete_Parentesco', 'Delete_Parentesco');
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function () {
