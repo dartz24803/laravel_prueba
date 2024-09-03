@@ -20,7 +20,45 @@
 
     <div class="modal-footer">
         @csrf
-        <button class="btn btn-primary" type="button" onclick="Update_Solicitud_Puesto({{ $id }},2);">Guardar</button>
+        <button class="btn btn-primary" type="button" onclick="Programacion_Entrenamiento({{ $id }},2);">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
+
+<script>
+    function Programacion_Entrenamiento(id,estado){
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formularioe'));
+        var url="{{ route('linea_carrera_so.update', ':id') }}".replace(':id', id);
+
+        dataString.append('estado', estado);
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            processData: false,
+            contentType: false,
+            success:function (data) {
+                swal.fire(
+                    '!Solicitud Exitosa!',
+                    '!Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                    $("#ModalUpdate .close").click();
+                    Lista_Solicitud_Puesto();  
+                });
+            },
+            error:function(xhr) {
+                var errors = xhr.responseJSON.errors;
+                var firstError = Object.values(errors)[0][0];
+                Swal.fire(
+                    '¡Ups!',
+                    firstError,
+                    'warning'
+                );
+            }
+        });
+    }
+</script>

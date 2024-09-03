@@ -32,6 +32,7 @@ use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
 use App\Http\Controllers\IntencionRenunciaConfController;
 use App\Http\Controllers\InternaInicioController;
+use App\Http\Controllers\LineaCarreraConfController;
 use App\Http\Controllers\LineaCarreraController;
 use App\Http\Controllers\LogisticaInicioController;
 use App\Http\Controllers\ObservacionConfController;
@@ -330,6 +331,12 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Idioma', 'Insert_Idioma');
     Route::post('ColaboradorConfController/Update_Idioma', 'Update_Idioma');
     Route::post('ColaboradorConfController/Delete_Idioma', 'Delete_Idioma');
+    Route::post('ColaboradorConfController/Nacionalidad', 'Nacionalidad');
+    Route::get('ColaboradorConfController/Modal_Nacionalidad', 'Modal_Nacionalidad');
+    Route::get('ColaboradorConfController/Modal_Update_Nacionalidad/{id}', 'Modal_Update_Nacionalidad');
+    Route::post('ColaboradorConfController/Insert_Nacionalidad', 'Insert_Nacionalidad');
+    Route::post('ColaboradorConfController/Update_Nacionalidad', 'Update_Nacionalidad');
+    Route::post('ColaboradorConfController/Delete_Nacionalidad', 'Delete_Nacionalidad');
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function () {
@@ -674,6 +681,22 @@ Route::controller(LineaCarreraController::class)->group(function () {
     Route::get('linea_carrera_en', 'index_en')->name('linea_carrera_en');
     Route::post('linea_carrera_en/list', 'list_en')->name('linea_carrera_en.list');
     Route::put('linea_carrera_en/{id}', 'update_en')->name('linea_carrera_en.update');
+});
+//CAJA - LÍNEA DE CARRERA CONFIGURABLE
+Route::controller(LineaCarreraConfController::class)->group(function () {
+    Route::get('linea_carrera_conf', 'index')->name('linea_carrera_conf');
+    Route::get('linea_carrera_conf_pre', 'index_pre')->name('linea_carrera_conf_pre');
+    Route::get('linea_carrera_conf_pre/list', 'list_pre')->name('linea_carrera_conf_pre.list');
+    Route::get('linea_carrera_conf_pre/create', 'create_pre')->name('linea_carrera_conf_pre.create');
+    Route::post('linea_carrera_conf_pre', 'store_pre')->name('linea_carrera_conf_pre.store');
+    Route::get('linea_carrera_conf_pre/{id}/edit', 'edit_pre')->name('linea_carrera_conf_pre.edit');
+    Route::put('linea_carrera_conf_pre/{id}', 'update_pre')->name('linea_carrera_conf_pre.update');
+    Route::get('linea_carrera_conf_pre/{id}/show', 'show_pre')->name('linea_carrera_conf_pre.show');
+    Route::delete('linea_carrera_conf_pre/{id}', 'destroy_pre')->name('linea_carrera_conf_pre.destroy');
+    Route::get('linea_carrera_conf_reva', 'index_reva')->name('linea_carrera_conf_reva');
+    Route::get('linea_carrera_conf_reva/list', 'list_reva')->name('linea_carrera_conf_reva.list');
+    Route::get('linea_carrera_conf_reva/{id}/edit', 'edit_reva')->name('linea_carrera_conf_reva.edit');
+    Route::put('linea_carrera_conf_reva/{id}', 'update_reva')->name('linea_carrera_conf_reva.update');
 });
 
 

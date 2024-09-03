@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Base;
+use App\Models\Entrenamiento;
+use App\Models\ExamenEntrenamiento;
+use App\Models\Notificacion;
 use App\Models\SolicitudPuesto;
 use App\Models\Suceso;
 use App\Models\Usuario;
@@ -87,8 +90,7 @@ class LineaCarreraController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            //$mail->addAddress('rrhh@lanumero1.com.pe');
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('rrhh@lanumero1.com.pe');
 
             $mail->isHTML(true);
 
@@ -117,17 +119,28 @@ class LineaCarreraController extends Controller
             ]);
 
             if($request->estado=="2"){
-                echo "Siuuuuu";
-                /*$this->Model_Caja->insert_entrenamiento($dato);
-                $dato['usuario_nombres'] = $get_id[0]['usuario_nombres'];
-                $dato['usuario_apater'] = $get_id[0]['usuario_apater'];
-                $dato['usuario_amater'] = $get_id[0]['usuario_amater'];
-                $dato['num_doc'] = $get_id[0]['num_doc'];
-                $dato['perfil_infosap'] = $get_id[0]['perfil_infosap'];
-                $dato['id_usuario'] = $get_id[0]['id_usuario'];
-                $dato['id_puesto'] = $get_id[0]['id_puesto_aspirado'];
-                $dato['id_base'] = $get_id[0]['id_base'];
-                $this->Model_Caja->insert_entrenamiento_infosap($dato);*/
+                Entrenamiento::create([
+                    'id_solicitud_puesto' => $id,
+                    'fecha_inicio' => now(),
+                    'fecha_fin' => date('Y-m-d', strtotime('+'.$request->diase.' days')),
+                    'estado_e' => 1,
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+
+                DB::connection('sqlsrv')->select('EXEC usp_web_upt_rol_usuario_intranet ?,?,?,?,?,?,?,?', [
+                    $get_id->usuario_nombres,
+                    $get_id->usuario_apater,
+                    $get_id->usuario_amater,
+                    $get_id->num_doc,
+                    $get_id->perfil_infosap,
+                    $get_id->id_usuario,
+                    $get_id->id_puesto,
+                    $get_id->id_base
+                ]);
             }
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
@@ -136,13 +149,36 @@ class LineaCarreraController extends Controller
 
     public function index_en()
     {
-        //$list_gerencia = Gerencia::where('estado',1)->orderBy('nom_gerencia','ASC')->get();
-        return view('caja.linea_carrera.entrenamiento.index', compact('list_gerencia'));
+        return view('caja.linea_carrera.entrenamiento.index');
     }
 
     public function list_en(Request $request)
     {
-        //$list_colaborador = Organigrama::get_list_colaborador(['id_gerencia'=>$request->id_gerencia]);
-        return view('caja.linea_carrera.entrenamiento.lista', compact('list_colaborador'));
+        $list_entrenamiento = Entrenamiento::get_list_entrenamiento();
+        return view('caja.linea_carrera.entrenamiento.lista', compact('list_entrenamiento'));
+    }
+
+    public function update_en($id)
+    {
+        $get_id = Entrenamiento::get_list_entrenamiento(['id'=>$id]);
+        $examen = ExamenEntrenamiento::create([
+            'id_entrenamiento' => $id,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+        Notificacion::create([
+            'id_usuario' => $get_id->id_usuario,
+            'solicitante' => $examen->id,
+            'id_tipo' => 46,
+            'leido' => 0,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
     }
 }
