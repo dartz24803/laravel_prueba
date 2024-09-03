@@ -700,6 +700,7 @@ Route::controller(LineaCarreraController::class)->group(function () {
     Route::get('linea_carrera_en', 'index_en')->name('linea_carrera_en');
     Route::post('linea_carrera_en/list', 'list_en')->name('linea_carrera_en.list');
     Route::put('linea_carrera_en/{id}', 'update_en')->name('linea_carrera_en.update');
+    Route::get('linea_carrera_en/update_estado_entrenamiento', 'update_estado_entrenamiento')->name('linea_carrera_en.update_estado_entrenamiento');
     Route::get('linea_carrera_re', 'index_re')->name('linea_carrera_re');
     Route::get('linea_carrera_re/list', 'list_re')->name('linea_carrera_re.list');
     Route::get('linea_carrera_re/{id}/edit', 'edit_re')->name('linea_carrera_re.edit');
