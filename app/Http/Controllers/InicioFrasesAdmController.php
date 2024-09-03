@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Base;
 use App\Models\FrasesInicio;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Notificacion;
 
 class InicioFrasesAdmController extends Controller
 {
@@ -17,7 +18,9 @@ class InicioFrasesAdmController extends Controller
     }
 
     public function index(){
-        return view('interna/administracion/Inicio/frases/index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('interna/administracion/Inicio/frases/index', compact('list_notificacion'));
     }
 
     public function Frases_Inicio_Listar(){

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Notificacion;
 
 
 class InicioComercialController extends Controller
@@ -11,6 +12,8 @@ class InicioComercialController extends Controller
         $this->middleware('verificar.sesion.usuario')->except(['validar_reporte_fotografico_dia_job']);
     }
     public function index() {
-        return view('comercial.inicio_comercial');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('comercial.inicio_comercial', compact('list_notificacion'));
     }
 }

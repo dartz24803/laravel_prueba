@@ -17,8 +17,8 @@
 
 <script>
     $(document).ready(function() {
-        $("#inicio").addClass('active');
-        $("#hinicio").attr('aria-expanded', 'true');
+        $("#logisticas").addClass('active');
+        $("#hlogisticas").attr('aria-expanded', 'true');
     });
 </script>
 @endsection

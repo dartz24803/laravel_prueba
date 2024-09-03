@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Slide;
 use App\Models\Base;
 use App\Models\Config;
+use App\Models\Notificacion;
 
 
 class SliderMarketingController extends Controller
@@ -15,6 +16,8 @@ class SliderMarketingController extends Controller
         $this->middleware('verificar.sesion.usuario')->except(['validar_reporte_fotografico_dia_job']);
     }
     public function index() {
+        //NOTIFICACIONES
+        $dato["list_notificacion"] = Notificacion::get_list_notificacion();
         $dato["slider"] = Slide::where('estado', 1)
                         ->where('id_area', 7)
                         ->get();

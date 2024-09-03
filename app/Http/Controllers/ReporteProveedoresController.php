@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Base;
 use App\Models\CalendarioLogistico;
+use App\Models\Notificacion;
 use App\Models\ProveedorGeneral;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -24,6 +25,8 @@ class ReporteProveedoresController extends Controller{
     }
 
     public function RProveedores(){
+        //NOTIFICACIONES
+        $dato['list_notificacion'] = Notificacion::get_list_notificacion();        
         $id_puesto=session('usuario')->id_puesto;
         $id_nivel=session('usuario')->id_nivel;
         $dato['desde']=date('Y-m-d');
