@@ -6,6 +6,7 @@ use App\Models\Amonestacion;
 use Illuminate\Http\Request;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
+use App\Models\Notificacion;
 
 class InternaInicioController extends Controller
 {
@@ -16,7 +17,9 @@ class InternaInicioController extends Controller
 
     public function index()
     {
-        return view('interna.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('interna.index', compact('list_notificacion'));
 
         /*$list_usuario = Amonestacion::select('users.emailp')->where('amonestacion.fecha','2024-08-28')
                         ->join('users','users.id_usuario','=','amonestacion.id_colaborador')->get();
