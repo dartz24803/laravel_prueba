@@ -1775,4 +1775,56 @@ class ColaboradorConfController extends Controller
         $dato['user_eli'] = session('usuario')->id_usuario;
         ReferenciaLaboral::findOrFail($request->id_referencia_laboral)->update($dato);
     }
+    
+    public function Regimen()// RRHH
+    {
+        $dato['list_regimen'] = $this->Model_Corporacion->get_list_regimen();
+        return view('Admin/Configuracion/Regimen/boton', $dato);
+
+    }
+
+    public function Modal_Regimen(){
+            $this->load->view('Admin/Configuracion/Regimen/modal_registrar');   
+
+    }
+
+    public function Insert_Regimen(){
+            $dato['cod_regimen']= strtoupper($this->input->post("codigo")); 
+            $dato['nom_regimen']= strtoupper($this->input->post("nombre"));
+            $dato['dia_vacaciones']= $this->input->post("vacaciones");
+            $dato['da_mes']= $dato['dia_vacaciones']/12;
+            
+            
+            $total=count($this->Model_Corporacion->valida_regimen($dato));
+            if ($total>0)
+            {
+                echo "error";
+            }
+            else{
+                $this->Model_Corporacion->insert_regimen($dato);
+            }
+            
+    }
+
+    public function Modal_Update_Regimen($id_regimen){
+            $dato['get_id'] = $this->Model_Corporacion->get_id_regimen($id_regimen);
+            $this->load->view('Admin/Configuracion/Regimen/modal_editar',$dato);
+
+    }
+
+    public function Update_Regimen(){
+            $dato['id_regimen']= $this->input->post("id_regimen");
+            $dato['cod_regimen']= strtoupper($this->input->post("codigo")); 
+            $dato['nom_regimen']= strtoupper($this->input->post("nombre"));
+            $dato['dia_vacaciones']= $this->input->post("vacaciones");
+            $dato['da_mes']= $dato['dia_vacaciones']/12;
+            
+            $this->Model_Corporacion->update_regimen($dato);
+
+    }
+    
+    public function Delete_regimen(){
+        $dato['id_regimen']= $this->input->post("id_regimen");
+        $this->Model_Corporacion->delete_regimen($dato);
+    }
 }
