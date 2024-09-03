@@ -344,6 +344,12 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Parentesco', 'Insert_Parentesco');
     Route::post('ColaboradorConfController/Update_Parentesco', 'Update_Parentesco');
     Route::post('ColaboradorConfController/Delete_Parentesco', 'Delete_Parentesco');
+    Route::post('ColaboradorConfController/Referencia_Laboral', 'Referencia_Laboral');
+    Route::get('ColaboradorConfController/Modal_Referencia_Laboral', 'Modal_Referencia_Laboral');
+    Route::get('ColaboradorConfController/Modal_Update_Referencia_Laboral/{id}', 'Modal_Update_Referencia_Laboral');
+    Route::post('ColaboradorConfController/Insert_Referencia_Laboral', 'Insert_Referencia_Laboral');
+    Route::post('ColaboradorConfController/Update_Referencia_Laboral', 'Update_Referencia_Laboral');
+    Route::post('ColaboradorConfController/Delete_Referencia_Laboral', 'Delete_Referencia_Laboral');
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function () {
