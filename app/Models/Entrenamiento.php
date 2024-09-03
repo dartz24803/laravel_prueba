@@ -84,4 +84,20 @@ class Entrenamiento extends Model
             return $query;
         }
     }
+
+    public static function get_list_entrenamiento_terminado(){
+        $sql = "SELECT en.id,us.usuario_nombres,us.usuario_apater,us.usuario_amater,
+                us.num_doc,pu.perfil_infosap,sp.id_usuario,sp.id_puesto_aspirado AS id_puesto,
+                IFNULL((SELECT ba.id_base FROM base ba 
+                WHERE ba.cod_base=sp.base AND ba.estado=1
+                ORDER BY ba.id_base DESC
+                LIMIT 1),0) AS id_base
+                FROM entrenamiento en
+                LEFT JOIN solicitud_puesto sp ON en.id_solicitud_puesto=sp.id
+                LEFT JOIN users us ON sp.id_usuario=us.id_usuario
+                LEFT JOIN puesto pu ON sp.id_puesto=pu.id_puesto
+                WHERE DATE_ADD(en.fecha_fin, INTERVAL 1 DAY)=CURDATE() AND en.estado_e=1 AND en.estado=1";
+        $query = DB::select($sql);
+        return $query;
+    }
 }

@@ -19,7 +19,32 @@ class LineaCarreraController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('verificar.sesion.usuario');
+        $this->middleware('verificar.sesion.usuario')->except([
+            'update_estado_entrenamiento'
+        ]);
+    }
+
+    public function update_estado_entrenamiento(){
+        $list_entrenamiento = Entrenamiento::get_list_entrenamiento_terminado();
+
+        foreach($list_entrenamiento as $list){
+            Entrenamiento::findOrFail($list->id)->update([
+                'estado_e' => 2,
+                'fec_act' => now(),
+                'user_act' => 0
+            ]);
+
+            DB::connection('sqlsrv')->statement('EXEC usp_web_upt_rol_usuario_intranet ?,?,?,?,?,?,?,?', [
+                $list->usuario_nombres,
+                $list->usuario_apater,
+                $list->usuario_amater,
+                $list->num_doc,
+                $list->perfil_infosap,
+                $list->id_usuario,
+                $list->id_puesto,
+                $list->id_base
+            ]);
+        }
     }
 
     public function index()
@@ -94,6 +119,7 @@ class LineaCarreraController extends Controller
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
             $mail->addAddress('rrhh@lanumero1.com.pe');
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
 
             $mail->isHTML(true);
 
@@ -134,14 +160,14 @@ class LineaCarreraController extends Controller
                     'user_act' => session('usuario')->id_usuario
                 ]);
 
-                DB::connection('sqlsrv')->select('EXEC usp_web_upt_rol_usuario_intranet ?,?,?,?,?,?,?,?', [
+                DB::connection('sqlsrv')->statement('EXEC usp_web_upt_rol_usuario_intranet ?,?,?,?,?,?,?,?', [
                     $get_id->usuario_nombres,
                     $get_id->usuario_apater,
                     $get_id->usuario_amater,
                     $get_id->num_doc,
                     $get_id->perfil_infosap,
                     $get_id->id_usuario,
-                    $get_id->id_puesto,
+                    $get_id->id_puesto_aspirado,
                     $get_id->id_base
                 ]);
             }
