@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Base;
 use App\Models\CObservacionAperturaCierreTienda;
+use App\Models\Notificacion;
 use App\Models\TiendaMarcacion;
 use App\Models\TiendaMarcacionDia;
 use Illuminate\Http\Request;
@@ -17,7 +18,9 @@ class AperturaCierreTiendaConfController extends Controller
 
     public function index()
     {
-        return view('seguridad.administracion.apertura_cierre.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('seguridad.administracion.apertura_cierre.index',compact('list_notificacion'));
     }
 
     public function index_ho()

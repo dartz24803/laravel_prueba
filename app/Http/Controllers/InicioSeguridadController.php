@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notificacion;
 use Illuminate\Http\Request;
 
 class InicioSeguridadController extends Controller
@@ -18,6 +19,8 @@ class InicioSeguridadController extends Controller
     }
     public function index()
     {
-        return view('seguridad.inicio_seguridad');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();         
+        return view('seguridad.inicio_seguridad',compact('list_notificacion'));
     }
 }

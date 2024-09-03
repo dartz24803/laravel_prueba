@@ -54,7 +54,7 @@ class Base extends Model
     public static function get_list_todas_bases_agrupadas()
     {
         $sql = "SELECT cod_base FROM base 
-                WHERE estado=1 AND id_base!=33
+                WHERE estado=1 AND id_base NOT IN (1,11,12,30,33,35,36)
                 GROUP BY cod_base
                 ORDER BY cod_base ASC";
         $query = DB::select($sql);
@@ -68,17 +68,19 @@ class Base extends Model
         $id_nivel = session('usuario')->id_nivel;
 
         if ($id_puesto == 23 || $id_puesto == 26 || $id_nivel == 1 || $id_puesto == 27) {
-            $buscar = " ";
+            $buscar = "";
         } elseif ($id_puesto == 128) {
-            $buscar = " and cod_base not in ('OFC', 'CD' , 'AMT', 'DEED', 'EXT', 'ZET') ";
+            $buscar = "AND cod_base not in ('OFC', 'CD' , 'AMT', 'DEED', 'EXT', 'ZET') ";
         } elseif ($centro_labores === "CD" || $centro_labores === "OFC" || $centro_labores === "AMT") {
-            $buscar = " and cod_base in ('OFC', 'CD', 'AMT') ";
+            $buscar = "AND cod_base in ('OFC', 'CD', 'AMT') ";
         } else {
-            $buscar = " ";
+            $buscar = "";
         }
 
-        $sql = "SELECT cod_base from base WHERE
-                estado='1' $buscar GROUP BY `cod_base` order by cod_base ASC";
+        $sql = "SELECT cod_base FROM base 
+                WHERE estado=1 AND id_base NOT IN (1,11,12,30,33,35,36) $buscar
+                GROUP BY cod_base
+                ORDER BY cod_base ASC";
         $query = DB::select($sql);
 
         return json_decode(json_encode($query), true);

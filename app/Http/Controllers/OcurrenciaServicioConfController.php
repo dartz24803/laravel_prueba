@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Base;
 use App\Models\DatosServicio;
+use App\Models\Notificacion;
 use App\Models\ProveedorServicio;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
@@ -25,7 +26,9 @@ class OcurrenciaServicioConfController extends Controller
 
     public function index()
     {
-        return view('seguridad.administracion.ocurrencias.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();        
+        return view('seguridad.administracion.ocurrencias.index',compact('list_notificacion'));
     }
 
 
