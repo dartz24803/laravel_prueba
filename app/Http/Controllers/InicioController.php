@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Usuario;
 use App\Models\Config;
 use App\Models\FrasesInicio;
+use App\Models\Notificacion;
 use App\Models\SliderInicio;
 
 class InicioController extends Controller
@@ -22,13 +23,16 @@ class InicioController extends Controller
     }
     public function index()
     {
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+
         $list_slider_inicio = SliderInicio::get();
         $list_frases = FrasesInicio::where('estado', 1)->get();
         $list_cumple = Usuario::get_list_proximos_cumpleanios();
         $get_foto = Config::where('descrip_config', 'Foto_Colaborador')
                             ->where('estado', 1)
                             ->get();
-        return view('inicio', compact('list_cumple','get_foto', 'list_frases', 'list_slider_inicio'));
+        return view('inicio', compact('list_notificacion','list_cumple','get_foto', 'list_frases', 'list_slider_inicio'));
     }
     /*
     public function listar()

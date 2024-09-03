@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notificacion;
 use Illuminate\Http\Request;
 
 class LogisticaInicioController extends Controller
@@ -13,6 +14,8 @@ class LogisticaInicioController extends Controller
 
     public function index()
     {
-        return view('logistica.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('logistica.index', compact('list_notificacion'));
     }
 }

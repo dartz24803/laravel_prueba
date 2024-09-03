@@ -24,6 +24,7 @@ return new class extends Migration
             $table->integer('user_act');
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
+            $table->index(['id_usuario','leido','estado'], 'not_idx_com_1');
             //$table->timestamps();
         });
     }

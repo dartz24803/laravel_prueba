@@ -9,6 +9,7 @@ use App\Models\Usuario;
 use App\Models\HorarioDia;
 use App\Models\AsignacionCargoCap;
 use App\Models\CuadroControlVisualEstado;
+use App\Models\Notificacion;
 
 class CuadroControlVisualController extends Controller
 {
@@ -32,8 +33,10 @@ class CuadroControlVisualController extends Controller
     }
     
     public function Cuadro_Control_Visual_Vista(){
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();        
         $list_bases = Base::get_list_bases_tienda();
-        return view('tienda.Cuadro_Control_Visual.index', compact('list_bases'));
+        return view('tienda.Cuadro_Control_Visual.index', compact('list_notificacion','list_bases'));
     }
     
     public function Lista_Cuadro_Control_Visual_Vista(Request $request){

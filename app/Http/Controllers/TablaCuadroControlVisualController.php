@@ -8,6 +8,7 @@ use App\Models\Base;
 use App\Models\DiaSemana;
 use App\Models\Puesto;
 use App\Models\CuadroControlVisualHorario;
+use App\Models\Notificacion;
 use App\Models\Usuario;
 use Illuminate\Support\Facades\Validator;
 
@@ -34,7 +35,9 @@ class TablaCuadroControlVisualController extends Controller
 
     //parte superior de pestañas
     public function index(){
-        return view('tienda.administracion.CuadroControlVisual.tabla_ccv');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();        
+        return view('tienda.administracion.CuadroControlVisual.tabla_ccv',compact('list_notificacion'));
     }
 
     //adm horarios

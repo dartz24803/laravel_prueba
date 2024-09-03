@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notificacion;
 use Illuminate\Http\Request;
 
 class InicioTiendaController extends Controller
@@ -18,6 +19,8 @@ class InicioTiendaController extends Controller
     }
     public function index()
     {
-        return view('tienda.inicio_tienda');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();        
+        return view('tienda.inicio_tienda',compact('list_notificacion'));
     }
 }

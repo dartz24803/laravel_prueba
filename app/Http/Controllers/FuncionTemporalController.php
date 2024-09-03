@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\FuncionTemporal;
+use App\Models\Notificacion;
 use App\Models\Puesto;
 use App\Models\TareasFuncionTemporal;
 use App\Models\Usuario;
@@ -24,8 +25,10 @@ class FuncionTemporalController extends Controller
 
     public function index()
     {
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();            
         $list_usuario = Usuario::get_list_usuario_ft();
-        return view('tienda.funcion_temporal.index', compact('list_usuario'));
+        return view('tienda.funcion_temporal.index', compact('list_notificacion','list_usuario'));
     }
 
     public function list($id_usuario)
