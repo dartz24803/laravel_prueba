@@ -72,9 +72,6 @@ $id_nivel= session('usuario')->id_nivel;
                                     <label>Tipo Ocurrencia</label>
                                     <select class="form-control basic" id="tipo_ocurrencia_busq" name="tipo_ocurrencia_busq">
                                         <option value="Todo">Todos</option>
-                                        <?php foreach($list_tipo_ocurrencia as $list){ ?>
-                                            <option value="<?php echo $list->id_tipo_ocurrencia; ?>"><?php echo $list->nom_tipo_ocurrencia; ?></option>
-                                        <?php } ?>
                                     </select>
                                 </div>
 
@@ -198,52 +195,13 @@ $id_nivel= session('usuario')->id_nivel;
     });
 */
     function Traer_Tipo_Ocurrencia_Busq(){
-        $(document)
-        .ajaxStart(function () {
-            $.blockUI({
-                message: '<svg> ... </svg>',
-                fadeIn: 800,
-                overlayCSS: {
-                    backgroundColor: '#1b2024',
-                    opacity: 0.8,
-                    zIndex: 1200,
-                    cursor: 'wait'
-                },
-                css: {
-                    border: 0,
-                    color: '#fff',
-                    zIndex: 1201,
-                    padding: 0,
-                    backgroundColor: 'transparent'
-                }
-            });
-        })
-        .ajaxStop(function () {
-            $.blockUI({
-                message: '<svg> ... </svg>',
-                fadeIn: 800,
-                timeout: 100,
-                overlayCSS: {
-                    backgroundColor: '#1b2024',
-                    opacity: 0.8,
-                    zIndex: 1200,
-                    cursor: 'wait'
-                },
-                css: {
-                    border: 0,
-                    color: '#fff',
-                    zIndex: 1201,
-                    padding: 0,
-                    backgroundColor: 'transparent'
-                }
-            });
-        });
+        Cargando();
 
         var cod_base = $('#base_busq').val();
-        var url="<?php echo url('Corporacion/Traer_Tipo_Ocurrencia_Busq') ?>";
+        var url="<?php echo url('OcurrenciaTienda/Traer_Tipo_Ocurrencia_Busq') ?>";
 
         $.ajax({
-            type:"POST",
+            type:"GET",
             url:url,
             data:{'cod_base':cod_base},
             success:function (data) {

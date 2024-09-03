@@ -892,6 +892,7 @@ Route::controller(OcurrenciasTiendaController::class)->group(function () {
     Route::get('Corporacion/Excel_Ocurrencia/{cod_base}/{fecha_inicio}/{fecha_fin}/{tipo_ocurrencia}/{colaborador}', 'Excel_Ocurrencia');
     Route::get('OcurrenciaTienda/Descargar_Archivo_Ocurrencia/{id}', 'Descargar_Archivo_Ocurrencia');
     Route::post('OcurrenciaTienda/Delete_Archivo_Ocurrencia', 'Delete_Archivo_Ocurrencia');
+    Route::get('OcurrenciaTienda/Traer_Tipo_Ocurrencia_Busq', 'Traer_Tipo_Ocurrencia_Busq');
 });
 //Reporte Proveedores
 Route::controller(ReporteProveedoresController::class)->group(function () {

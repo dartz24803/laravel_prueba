@@ -22,6 +22,8 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
+use App\Models\OcurrenciaTipo;
+
 class OcurrenciasTiendaController extends Controller{
     protected $request;
 
@@ -512,5 +514,12 @@ class OcurrenciasTiendaController extends Controller{
                             ->where('estado', 1)
                             ->get();
         return view("seguridad.ocurrencias_tienda.cmb_tipo_o", $dato);
+    }
+    
+    
+    public function Traer_Tipo_Ocurrencia_Busq(Request $request){
+        $dato['list_tipo'] = OcurrenciaTipo::where('base', $request->input("cod_base"))
+                        ->get();
+        return view('seguridad.ocurrencias_tienda.cmb_tipo_o', $dato);
     }
 }
