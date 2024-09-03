@@ -52,16 +52,15 @@
                                     <a style="cursor: pointer;" class="nav-link" id="EstadoCivil" onclick="TablaEstadoCivil()">Estado Civil</a>
                                     <a style="cursor: pointer;" class="nav-link" id="Idioma" onclick="TablaIdiomas()">Idiomas</a>
                                     <a style="cursor: pointer;" class="nav-link" id="Nacionalidad" onclick="TablaNacionalidad()">Nacionalidad</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="Parentescotrece" onclick="TablaParentesco()">Parentesco</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="PlazoRenovaciontrece" onclick="TablaPlazoRenovacion()">Plazo de Renovación</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="Referenciaquince" onclick="TablaReferencia()">Referencia Laboral</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="Regimenveintidos" onclick="TablaRegimen()">Régimen Laboral</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="Situaciondieciseis" onclick="TablaSituacion()">Situacion Laboral</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="TipoContratoArriba" onclick="TablaTipoContrato()">Tipo de Contrato</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="TipoDocumentodieciocho" onclick="TablaTipoDocumento()">Tipo de Documento</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="TipoSangrediecinueve" onclick="TablaTipoSangre()">Tipo de Sangre</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="TipoViaveinte" onclick="TablaTipoVia()">Tipo de Via</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="TipoViviendaveintiuno" onclick="TablaTipoVivienda()">Tipo de Vivienda</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="Parentesco" onclick="TablaParentesco()">Parentesco</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="Referencia" onclick="TablaReferencia()">Referencia Laboral</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="Regimen" onclick="TablaRegimen()">Régimen Laboral</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="Situacion" onclick="TablaSituacion()">Situacion Laboral</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="TipoContrato" onclick="TablaTipoContrato()">Tipo de Contrato</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="TipoDocumento" onclick="TablaTipoDocumento()">Tipo de Documento</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="TipoSangre" onclick="TablaTipoSangre()">Tipo de Sangre</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="TipoVia" onclick="TablaTipoVia()">Tipo de Via</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="TipoVivienda" onclick="TablaTipoVivienda()">Tipo de Vivienda</a>
 
                                     {{-- empresas(administracion finanzas), --}}
                                 <?php }?>
@@ -92,6 +91,8 @@
 
     //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
     function Active_Tabla_Colaboradores(){
+        $("#Referencia").removeClass('active');
+        $("#Parentesco").removeClass('active');
         $("#Nacionalidad").removeClass('active');
         $("#EstadoCivil").removeClass('active');
         $("#Idioma").removeClass('active');
@@ -362,5 +363,45 @@
         });
     }
 
+    function TablaParentesco() {
+        Cargando();
+        Active_Tabla_Colaboradores();
+
+        $("#Parentesco").addClass('active');
+        var csrfToken = $('input[name="_token"]').val();
+        var url = "{{ url('ColaboradorConfController/Parentesco') }}";
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp)
+            }
+        });
+    }
+    
+    function TablaReferencia() {
+        Cargando();
+        Active_Tabla_Colaboradores();
+
+        $("#Referencia").addClass('active');
+        var url = "{{ url('ColaboradorConfController/Referencia_Laboral') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+
+    }
 </script>
 @endsection

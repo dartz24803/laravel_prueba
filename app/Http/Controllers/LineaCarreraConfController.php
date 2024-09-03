@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DetalleExamenEntrenamiento;
-use App\Models\ExamenEntrenamiento;
 use App\Models\Pregunta;
 use App\Models\PreguntaDetalle;
 use App\Models\PuestoLineaCarrera;
@@ -219,98 +217,5 @@ class LineaCarreraConfController extends Controller
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario
         ]);
-    }
-
-    public function index_reva()
-    {
-        return view('caja.administracion.linea_carrera.revision_evaluacion.index');
-    }
-
-    public function list_reva()
-    {
-        $list_examen_entrenamiento = ExamenEntrenamiento::get_list_examen_entrenamiento();
-        return view('caja.administracion.linea_carrera.revision_evaluacion.lista', compact('list_examen_entrenamiento'));
-    }
-
-    public function edit_reva($id)
-    {
-        $get_id = ExamenEntrenamiento::findOrFail($id);
-        $list_detalle = DetalleExamenEntrenamiento::get_list_detalle_examen_entrenamiento(['id_examen' => $id]);
-        return view('caja.administracion.linea_carrera.revision_evaluacion.modal_editar', compact('get_id','list_detalle'));
-    }
-
-    public function update_reva(Request $request, $id)
-    {
-        $validate = $request->validate([
-            'id_puestoe' => 'gt:0',
-            'id_tipoe' => 'gt:0'
-        ],[
-            'id_puestoe.gt' => 'Debe seleccionar puesto.',
-            'id_tipoe.gt' => 'Debe seleccionar tipo.'
-        ]);
-
-        $errors = [];
-
-        if($validate['id_tipoe']=="1"){
-            if($request->descripcione==""){
-                $errors['descripcione'] = ['Debe ingresar descripción.'];
-            }
-        }
-        if($validate['id_tipoe']=="2"){
-            if($request->descripcione==""){
-                $errors['descripcione'] = ['Debe ingresar descripción.'];
-            }
-            if($request->opcion_1e==""){
-                $errors['opcion_1e'] = ['Debe ingresar opción 1.'];
-            }
-            if($request->opcion_2e==""){
-                $errors['opcion_2e'] = ['Debe ingresar opción 2.'];
-            }
-            if($request->opcion_3e==""){
-                $errors['opcion_3e'] = ['Debe ingresar opción 3.'];
-            }
-            if($request->opcion_4e==""){
-                $errors['opcion_4e'] = ['Debe ingresar opción 4.'];
-            }
-            if($request->opcion_5e==""){
-                $errors['opcion_5e'] = ['Debe ingresar opción 5.'];
-            }
-            if(!isset($request->validar_opcione)){
-                $errors['validar_opcione'] = ['Debe seleccionar la alternativa correcta.'];
-            }
-        }
-
-        if (!empty($errors)) {
-            return response()->json(['errors' => $errors], 422);
-        }
-
-        $valida = Pregunta::where('id_puesto', $request->id_puestoe)
-                ->where('descripcion', $request->descripcione)->where('estado', 1)->where('id','!=',$id)->exists();
-        if($valida){
-            echo "error";
-        }else{
-            Pregunta::findOrFail($id)->update([
-                'id_puesto' => $request->id_puestoe,
-                'descripcion' => $request->descripcione,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
-            if($request->id_tipoe=="2"){
-                PreguntaDetalle::where('id_pregunta', $id)->delete();
-                $i = 1;
-                while($i<=5){
-                    $respuesta = 0;
-                    if($request->validar_opcione==$i){
-                        $respuesta = 1;
-                    }
-                    PreguntaDetalle::create([
-                        'id_pregunta' => $id,
-                        'opcion' => $request->input('opcion_'.$i.'e'),
-                        'respuesta' => $respuesta
-                    ]);
-                    $i++;
-                }
-            }
-        }
     }
 }

@@ -6,17 +6,20 @@ use Illuminate\Http\Request;
 use App\Models\Config;
 use App\Models\Mes;
 use App\Models\Usuario;
+use App\Models\Notificacion;
 
 class Cumpleanios extends Controller
 {
     //cumpleanios
     public function index(){
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
         $get_foto = Config::where('descrip_config', 'Foto_Colaborador')
                             ->where('estado', 1)
                             ->get();
         $list_mes = Mes::where('estado', 1)
                             ->get();
-        return view('rrhh.Cumpleanio.index',compact('get_foto', 'list_mes'));
+        return view('rrhh.Cumpleanio.index',compact('get_foto', 'list_mes', 'list_notificacion'));
     }
     
     public function Buscar_Cumpleanios(Request $request){

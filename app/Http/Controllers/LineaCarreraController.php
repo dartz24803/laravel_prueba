@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Base;
+use App\Models\DetalleExamenEntrenamiento;
 use App\Models\Entrenamiento;
 use App\Models\ExamenEntrenamiento;
 use App\Models\Notificacion;
@@ -180,5 +181,28 @@ class LineaCarreraController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+    }
+
+    public function index_re()
+    {
+        return view('caja.linea_carrera.revision_evaluacion.index');
+    }
+
+    public function list_re()
+    {
+        $list_examen_entrenamiento = ExamenEntrenamiento::get_list_examen_entrenamiento();
+        return view('caja.linea_carrera.revision_evaluacion.lista', compact('list_examen_entrenamiento'));
+    }
+
+    public function edit_re($id)
+    {
+        $get_id = ExamenEntrenamiento::findOrFail($id);
+        $list_detalle = DetalleExamenEntrenamiento::get_list_detalle_examen_entrenamiento(['id_examen' => $id]);
+        return view('caja.linea_carrera.revision_evaluacion.modal_editar', compact('get_id','list_detalle'));
+    }
+
+    public function update_re(Request $request, $id)
+    {
+
     }
 }

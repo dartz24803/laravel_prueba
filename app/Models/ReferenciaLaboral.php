@@ -5,17 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OcurrenciasCamaras extends Model
+class ReferenciaLaboral extends Model
 {
     use HasFactory;
 
-    protected $table = 'ocurrencias_camaras';
-    protected $primaryKey = 'id_ocurrencias_camaras';
+    protected $table = 'referencia_laboral';
+    protected $primaryKey = 'id_referencia_laboral';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'descripcion',
+        'cod_referencia_laboral',
+        'nom_referencia_laboral',
         'estado',
         'fec_reg',
         'user_reg',

@@ -10,8 +10,9 @@ class Config extends Model
     use HasFactory;
 
     protected $table = 'config';
-
     protected $primaryKey = 'id_config';
+
+    public $timestamps = false;
     
     protected $fillable = [
         'descrip_config',

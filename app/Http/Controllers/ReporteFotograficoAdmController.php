@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\CodigosReporteFotografico;
 use App\Models\Area;
 use App\Models\Base;
+use App\Models\Notificacion;
 use App\Models\ReporteFotograficoDetalle;
 use Exception;
 
@@ -185,7 +186,9 @@ class ReporteFotograficoAdmController extends Controller
 
     public function Tabla_RF(){
         //enviar listas a la vista
-        return view('tienda.administracion.ReporteFotografico.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();          
+        return view('tienda.administracion.ReporteFotografico.index',compact('list_notificacion'));
     }
 
     public function Codigos_Reporte_Fotografico(){

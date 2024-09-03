@@ -7,6 +7,7 @@ use App\Models\Slide;
 use App\Models\Base;
 use App\Models\Config;
 use App\Models\BolsaTrabajo;
+use App\Models\Notificacion;
 class ComunicadoController extends Controller
 {
     /**
@@ -19,7 +20,9 @@ class ComunicadoController extends Controller
         $this->middleware('verificar.sesion.usuario');
     }
     public function index(){
-        return view('rrhh.Comunicado.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('rrhh.Comunicado.index', compact('list_notificacion'));
     }
 
     public function Cargar_Slider_Rrhh(){

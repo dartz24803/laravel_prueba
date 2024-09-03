@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Base;
+use App\Models\Notificacion;
 use App\Models\SeguridadAsistencia;
 use App\Models\Usuario;
 use GuzzleHttp\Client;
@@ -24,7 +25,9 @@ class AsistenciaSegController extends Controller
 
     public function index()
     {
-        return view('seguridad.asistencia.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();            
+        return view('seguridad.asistencia.index',compact('list_notificacion'));
     }
 
     public function index_lec()

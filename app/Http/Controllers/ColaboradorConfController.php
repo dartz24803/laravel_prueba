@@ -20,11 +20,12 @@ use App\Models\ProgramaAccesos;
 use App\Models\EstadoCivil;
 use App\Models\Idioma;
 use App\Models\Nacionalidad;
-// use App\Models\ProgramaAccesos;
-// use App\Models\ProgramaAccesos;
+use App\Models\Parentesco;
+use App\Models\ReferenciaLaboral;
 // use App\Models\ProgramaAccesos;
 // use App\Models\ProgramaAccesos;
 use Illuminate\Http\Request;
+use App\Models\Notificacion;
 
 class ColaboradorConfController extends Controller
 {
@@ -35,7 +36,9 @@ class ColaboradorConfController extends Controller
 
     public function index()
     {
-        return view('rrhh.administracion.colaborador.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('rrhh.administracion.colaborador.index', compact('list_notificacion'));
     }
 
     public function traer_gerencia(Request $request)
@@ -1546,11 +1549,8 @@ class ColaboradorConfController extends Controller
             echo "error";
         }else{
             $dato['nom_idioma']= $request->input("nom_idioma_e");
-            $dato['estado'] = 1;
-            $dato['fec_reg'] = now();
             $dato['fec_act'] = now();
             $dato['user_act'] = session('usuario')->id_usuario;
-            $dato['user_reg'] = session('usuario')->id_usuario;
             Idioma::findOrFail($request->id_idioma)->update($dato);
         }
     }
@@ -1621,11 +1621,8 @@ class ColaboradorConfController extends Controller
         }else{
             $dato['pais_nacionalidad'] = $request->input("pais_nacionalidad_e");
             $dato['nom_nacionalidad'] = $request->input("nom_nacionalidad_e");
-            $dato['estado'] = 1;
-            $dato['fec_reg'] = now();
             $dato['fec_act'] = now();
             $dato['user_act'] = session('usuario')->id_usuario;
-            $dato['user_reg'] = session('usuario')->id_usuario;
             Nacionalidad::findOrFail($request->id_nacionalidad)->update($dato);
         }
     }
@@ -1635,5 +1632,147 @@ class ColaboradorConfController extends Controller
         $dato['fec_eli'] = now();
         $dato['user_eli'] = session('usuario')->id_usuario;
         Nacionalidad::findOrFail($request->id_nacionalidad)->update($dato);
+    }
+    
+    public function Parentesco(){
+        $dato['list_parentesco'] = Parentesco::where('estado', 1)
+                                ->get();
+        return view('rrhh.administracion.colaborador.Parentesco.index',$dato);
+    }
+
+    public function Modal_Parentesco(){
+        return view('rrhh.administracion.colaborador.Parentesco.modal_registrar');   
+    }
+
+    public function Insert_Parentesco(Request $request){
+        $request->validate([
+            'cod_parentesco' => 'required',
+            'nom_parentesco' => 'required',
+        ],[
+            'cod_parentesco.required' => 'Debe ingresar codigo de parentesco.',
+            'nom_parentesco.required' => 'Debe ingresar descripcion de parentesco.',
+        ]);
+
+        $valida = Parentesco::where('cod_parentesco', $request->cod_parentesco)
+                ->where('nom_parentesco', $request->nom_parentesco)
+                ->where('estado', 1)
+                ->exists();
+        
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_parentesco']= $request->input("cod_parentesco"); 
+            $dato['nom_parentesco']= $request->input("nom_parentesco");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Parentesco::create($dato);
+        }
+    }
+
+    public function Modal_Update_Parentesco($id_parentesco){
+        $dato['get_id'] = Parentesco::where('id_parentesco', $id_parentesco)
+                        ->get();
+        return view('rrhh.administracion.colaborador.Parentesco.modal_editar',$dato);
+    }
+
+    public function Update_Parentesco(Request $request){
+        $request->validate([
+            'cod_parentesco' => 'required',
+            'nom_parentesco' => 'required',
+        ],[
+            'cod_parentesco.required' => 'Debe ingresar codigo de parentesco.',
+            'nom_parentesco.required' => 'Debe ingresar descripcion de parentesco.',
+        ]);
+
+        $dato['cod_parentesco']= $request->input("cod_parentesco"); 
+        $dato['nom_parentesco']= $request->input("nom_parentesco");
+        $dato['fec_act'] = now();
+        $dato['user_act'] = session('usuario')->id_usuario;
+        Parentesco::findOrFail($request->id_parentesco)->update($dato);
+    }
+
+    public function Delete_Parentesco(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Parentesco::findOrFail($request->id_parentesco)->update($dato);
+    }
+    
+    public function Referencia_Laboral(){
+        $dato['list_referencia_laboral'] = ReferenciaLaboral::where('estado',1)
+                                        ->get();
+        return view('rrhh.administracion.colaborador.ReferenciaLaboral.index',$dato);
+    }
+
+    public function Modal_Referencia_Laboral(){
+        return view('rrhh.administracion.colaborador.ReferenciaLaboral.modal_registrar');   
+    }
+
+    public function Insert_Referencia_Laboral(Request $request){
+        $request->validate([
+            'cod_referencia_laboral' => 'required',
+            'nom_referencia_laboral' => 'required',
+        ],[
+            'cod_referencia_laboral.required' => 'Debe ingresar codigo de referencia laboral.',
+            'nom_referencia_laboral.required' => 'Debe ingresar descripcion de referencia laboral.',
+        ]);
+        $valida = ReferenciaLaboral::where('cod_referencia_laboral', $request->cod_referencia_laboral)
+                ->where('nom_referencia_laboral', $request->nom_referencia_laboral)
+                ->where('estado', 1)
+                ->exists();
+
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_referencia_laboral']= $request->input("cod_referencia_laboral"); 
+            $dato['nom_referencia_laboral']= $request->input("nom_referencia_laboral");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            ReferenciaLaboral::create($dato);
+        }
+    }
+
+    public function Modal_Update_Referencia_Laboral($id_referencia_laboral){
+        $dato['get_id'] = ReferenciaLaboral::where('id_referencia_laboral', $id_referencia_laboral)
+                        ->get();
+        return view('rrhh.administracion.colaborador.ReferenciaLaboral.modal_editar',$dato);
+    }
+
+    public function Update_Referencia_Laboral(Request $request){
+        $request->validate([
+            'cod_referencia_laboral' => 'required',
+            'nom_referencia_laboral' => 'required',
+        ],[
+            'cod_referencia_laboral.required' => 'Debe ingresar codigo de referencia laboral.',
+            'nom_referencia_laboral.required' => 'Debe ingresar descripcion de referencia laboral.',
+        ]);
+        $valida = ReferenciaLaboral::where('cod_referencia_laboral', $request->cod_referencia_laboral)
+                ->where('nom_referencia_laboral', $request->nom_referencia_laboral)
+                ->where('estado', 1)
+                ->exists();
+
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['id_referencia_laboral']= $request->input("id_referencia_laboral");
+            $dato['cod_referencia_laboral']= $request->input("cod_referencia_laboral"); 
+            $dato['nom_referencia_laboral']= $request->input("nom_referencia_laboral");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            ReferenciaLaboral::findOrFail($request->id_referencia_laboral)->update($dato);
+        }
+    }
+    
+    public function Delete_Referencia_Laboral(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        ReferenciaLaboral::findOrFail($request->id_referencia_laboral)->update($dato);
     }
 }

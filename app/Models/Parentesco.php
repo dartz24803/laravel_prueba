@@ -5,17 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OcurrenciasCamaras extends Model
+class Parentesco extends Model
 {
     use HasFactory;
 
-    protected $table = 'ocurrencias_camaras';
-    protected $primaryKey = 'id_ocurrencias_camaras';
+    protected $table = 'parentesco';
+    protected $primaryKey = 'id_parentesco';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'descripcion',
+        'cod_parentesco',
+        'nom_parentesco',
         'estado',
         'fec_reg',
         'user_reg',

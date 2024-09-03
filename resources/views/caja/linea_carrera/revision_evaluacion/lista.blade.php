@@ -29,7 +29,7 @@
                 </td>
                 <td class="text-center">
                     @if ($list->hora_fin_real!=null && $list->fecha_revision==null)
-                        <a href="javascript:void(0);" title="Revisión" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('linea_carrera_conf_reva.edit', $list->id) }}">
+                        <a href="javascript:void(0);" title="Revisión" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('linea_carrera_re.edit', $list->id) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye text-success">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                             <circle cx="12" cy="12" r="3"></circle></svg>

@@ -1,20 +1,20 @@
 @csrf
-<div class="table-responsive mb-4 mt-4" id="lista_revision">
+<div class="table-responsive mb-4 mt-4" id="lista_revision_evaluacion">
 </div>
 
 <script>
-    Lista_Revision();
+    Lista_Revision_Evaluacion();
 
-    function Lista_Revision(){
+    function Lista_Revision_Evaluacion(){
         Cargando();
 
-        var url = "{{ route('linea_carrera_conf_reva.list') }}";
+        var url = "{{ route('linea_carrera_re.list') }}";
 
         $.ajax({
             url: url,
             type: "GET",
             success:function (resp) {
-                $('#lista_revision').html(resp);  
+                $('#lista_revision_evaluacion').html(resp);  
             }
         });
     }
