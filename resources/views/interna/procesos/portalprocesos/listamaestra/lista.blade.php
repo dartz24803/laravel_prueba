@@ -9,6 +9,11 @@
         text-overflow: ellipsis;
         /* Añade puntos suspensivos (...) */
     }
+
+    .text-primary {
+        color: #007bff;
+        /* Blue color */
+    }
 </style>
 
 <table id="tabla_js" class="table table-hover" style="width:100%">
@@ -45,6 +50,14 @@
                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                     </svg>
                 </a>
+                @if ($proceso->estado_registro == 1)
+                <a href="javascript:void(0);" title="Aprobar" onclick="Aprobar_Proceso('{{ $proceso->id_portal_historial }}')">
+                    <svg title="Aprobar" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#007bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </a>
+                @endif
                 <a href="javascript:void(0);" title="Ver Contenido" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('portalprocesos_lm.image', $proceso->id_portal) }}">
                     <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve">
                         <rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399" />
@@ -55,7 +68,7 @@
 
                     </svg>
                 </a>
-                <a href="javascript:void(0);" title="Eliminar" onclick="Delete_Proceso('{{ $proceso->id_portal }}')">
+                <a href="javascript:void(0);" title="Eliminar">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
                         <polyline points="3 6 5 6 21 6"></polyline>
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -63,6 +76,8 @@
                         <line x1="14" y1="11" x2="14" y2="17"></line>
                     </svg>
                 </a>
+
+
             </td>
         </tr>
         @endforeach

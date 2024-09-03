@@ -223,57 +223,26 @@
 
         <div class="row d-flex">
 
-            <div class="form-group col-md-2">
+            <div class="form-group col-md-6">
                 <label>Archivo 1:</label>
-            </div>
-
-            <div class="form-group col-lg-10">
                 <input type="file" class="form-control-file" name="archivo1" id="archivo1" onchange="Valida_Archivo('archivo1');">
             </div>
-        </div>
-        <!-- <div class="row d-flex">
-            <div class="form-group col-md-2">
-                <label>Archivo 2:</label>
-            </div>
-            <div class="form-group col-md-10">
-                <input type="file" class="form-control-file" id="archivo2" name="archivo2" onchange="return Validar_Archivo_Portal('archivo2')" />
-            </div>
-        </div> -->
-
-        <!-- <div class="row d-flex">
-            <div class="form-group col-md-2">
-                <label>Archivo 3:</label>
-            </div>
-            <div class="form-group col-md-10">
-                <input type="file" class="form-control-file" id="archivo3" name="archivo3" onchange="return Validar_Archivo_Portal('archivo3')" />
-            </div>
-        </div>
-
-        <div class="row d-flex">
-            <div class="form-group col-md-2">
+            <div class="form-group col-md-6">
                 <label>Documento:</label>
+                <input type="file" class="form-control-file" name="documentoa" id="documentoa" onchange="Validar_Archivo_Backup('documentoa');">
             </div>
-            <div class="form-group col-md-10">
-                <input type="file" class="form-control-file" id="archivo4" name="archivo4" onchange="return Validar_Archivo_Backup('archivo4')" />
+            <div class="form-group col-md-6">
+                <label>Diagrama:</label>
+                <input type="file" class="form-control-file" name="diagramaa" id="diagramaa" onchange="Validar_Archivo_Backup('diagramaa');">
             </div>
+
         </div>
 
-        <div class="row d-flex">
-            <div class="form-group col-md-2">
-                <label>Diagrama:</label>
-            </div>
-            <div class="form-group col-md-10">
-                <input type="file" class="form-control-file" id="archivo5" name="archivo5" onchange="return Validar_Archivo_Backup('archivo5')" />
-            </div>
-        </div> -->
-
-    </div>
-
-    <div class="modal-footer">
-        @csrf
-        <button class="btn btn-primary" type="button" onclick="Insert_Funcion_Temporal();">Guardar</button>
-        <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
-    </div>
+        <div class="modal-footer">
+            @csrf
+            <button class="btn btn-primary" type="button" onclick="Insert_Funcion_Temporal();">Guardar</button>
+            <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
+        </div>
 
 </form>
 
@@ -413,7 +382,7 @@
                         'Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Lista_Ocurrencia();
+                        Lista_Maestra();
                         $("#ModalRegistro .close").click();
                     });
                 }
