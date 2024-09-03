@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notificacion;
 use Illuminate\Http\Request;
 use App\Models\UsuarioReproceso;
 use App\Models\Reproceso;
@@ -21,11 +22,9 @@ class ReprocesoController extends Controller
     }
     //-------------------------------REPROCESO--------------------------------
     public function Reproceso(){
-        //NOTIFICACIÓN-NO BORRAR
-        /*
-        $dato['list_noti'] = $this->Model_Corporacion->get_list_notificacion();
-        $dato['list_nav_evaluaciones'] = $this->Model_Corporacion->get_list_nav_evaluaciones();*/
-        return view('Logistica/Reproceso/index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('Logistica/Reproceso/index', compact('list_notificacion'));
     }
 
     public function Lista_Reproceso(){

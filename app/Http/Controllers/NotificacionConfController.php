@@ -15,6 +15,7 @@ class NotificacionConfController extends Controller
 
     public function index()
     {
+        //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
         return view('interna.administracion.notificacion.index', compact('list_notificacion'));
     }

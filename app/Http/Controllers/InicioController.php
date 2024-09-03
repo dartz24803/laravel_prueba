@@ -23,14 +23,16 @@ class InicioController extends Controller
     }
     public function index()
     {
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+
         $list_slider_inicio = SliderInicio::get();
         $list_frases = FrasesInicio::where('estado', 1)->get();
         $list_cumple = Usuario::get_list_proximos_cumpleanios();
         $get_foto = Config::where('descrip_config', 'Foto_Colaborador')
                             ->where('estado', 1)
                             ->get();
-        $list_notificacion = Notificacion::get_list_notificacion();
-        return view('inicio', compact('list_cumple','get_foto', 'list_frases', 'list_slider_inicio', 'list_notificacion'));
+        return view('inicio', compact('list_notificacion','list_cumple','get_foto', 'list_frases', 'list_slider_inicio'));
     }
     /*
     public function listar()
