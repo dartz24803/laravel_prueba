@@ -52,7 +52,7 @@
                                     <a style="cursor: pointer;" class="nav-link" id="EstadoCivil" onclick="TablaEstadoCivil()">Estado Civil</a>
                                     <a style="cursor: pointer;" class="nav-link" id="Idioma" onclick="TablaIdiomas()">Idiomas</a>
                                     <a style="cursor: pointer;" class="nav-link" id="Nacionalidad" onclick="TablaNacionalidad()">Nacionalidad</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="Parentescotrece" onclick="TablaParentesco()">Parentesco</a>
+                                    <a style="cursor: pointer;" class="nav-link" id="Parentesco" onclick="TablaParentesco()">Parentesco</a>
                                     <a style="cursor: pointer;" class="nav-link" id="PlazoRenovaciontrece" onclick="TablaPlazoRenovacion()">Plazo de Renovación</a>
                                     <a style="cursor: pointer;" class="nav-link" id="Referenciaquince" onclick="TablaReferencia()">Referencia Laboral</a>
                                     <a style="cursor: pointer;" class="nav-link" id="Regimenveintidos" onclick="TablaRegimen()">Régimen Laboral</a>
@@ -92,6 +92,7 @@
 
     //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
     function Active_Tabla_Colaboradores(){
+        $("#Parentesco").removeClass('active');
         $("#Nacionalidad").removeClass('active');
         $("#EstadoCivil").removeClass('active');
         $("#Idioma").removeClass('active');
@@ -362,5 +363,24 @@
         });
     }
 
+    function TablaParentesco() {
+        Cargando();
+        Active_Tabla_Colaboradores();
+
+        $("#Parentesco").addClass('active');
+        var csrfToken = $('input[name="_token"]').val();
+        var url = "{{ url('ColaboradorConfController/Parentesco') }}";
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp)
+            }
+        });
+    }
 </script>
 @endsection
