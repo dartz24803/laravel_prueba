@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Base;
 use App\Models\SliderInicio;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Notificacion;
 
 class InicioAdmController extends Controller
 {
@@ -17,7 +18,9 @@ class InicioAdmController extends Controller
     }
 
     public function index(){
-        return view('interna/administracion/Inicio/slider/index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('interna/administracion/Inicio/slider/index', compact('list_notificacion'));
     }
 
     public function Slider_Inicio_Listar(){
