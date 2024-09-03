@@ -18,6 +18,9 @@
                                 <li class="nav-item">
                                     <a id="a_ent" class="nav-link" onclick="Entrenamiento();" style="cursor: pointer;">Acceso a los módulos</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a id="a_rev" class="nav-link" onclick="Revision_Evaluacion();" style="cursor: pointer;">Revisión evaluación</a>
+                                </li>
                             </ul>
 
                             <div class="row" id="cancel-row">
@@ -54,6 +57,7 @@
                     $('#div_linea_carrera').html(resp);  
                     $("#a_sol").addClass('active');
                     $("#a_ent").removeClass('active');
+                    $("#a_rev").removeClass('active');
                 }
             });
         }
@@ -70,6 +74,24 @@
                     $('#div_linea_carrera').html(resp);  
                     $("#a_sol").removeClass('active');
                     $("#a_ent").addClass('active');
+                    $("#a_rev").removeClass('active');
+                }
+            });
+        }
+
+        function Revision_Evaluacion(){
+            Cargando();
+
+            var url="{{ route('linea_carrera_re') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_linea_carrera').html(resp);  
+                    $("#a_sol").removeClass('active');
+                    $("#a_ent").removeClass('active');
+                    $("#a_rev").addClass('active');
                 }
             });
         }

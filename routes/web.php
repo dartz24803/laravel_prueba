@@ -35,6 +35,7 @@ use App\Http\Controllers\InternaInicioController;
 use App\Http\Controllers\LineaCarreraConfController;
 use App\Http\Controllers\LineaCarreraController;
 use App\Http\Controllers\LogisticaInicioController;
+use App\Http\Controllers\NotificacionConfController;
 use App\Http\Controllers\ObservacionConfController;
 use App\Http\Controllers\ObservacionController;
 use App\Http\Controllers\OcurrenciaServicioConfController;
@@ -687,6 +688,10 @@ Route::controller(LineaCarreraController::class)->group(function () {
     Route::get('linea_carrera_en', 'index_en')->name('linea_carrera_en');
     Route::post('linea_carrera_en/list', 'list_en')->name('linea_carrera_en.list');
     Route::put('linea_carrera_en/{id}', 'update_en')->name('linea_carrera_en.update');
+    Route::get('linea_carrera_re', 'index_re')->name('linea_carrera_re');
+    Route::get('linea_carrera_re/list', 'list_re')->name('linea_carrera_re.list');
+    Route::get('linea_carrera_re/{id}/edit', 'edit_re')->name('linea_carrera_re.edit');
+    Route::put('linea_carrera_re/{id}', 'update_re')->name('linea_carrera_re.update');
 });
 //CAJA - LÍNEA DE CARRERA CONFIGURABLE
 Route::controller(LineaCarreraConfController::class)->group(function () {
@@ -699,10 +704,17 @@ Route::controller(LineaCarreraConfController::class)->group(function () {
     Route::put('linea_carrera_conf_pre/{id}', 'update_pre')->name('linea_carrera_conf_pre.update');
     Route::get('linea_carrera_conf_pre/{id}/show', 'show_pre')->name('linea_carrera_conf_pre.show');
     Route::delete('linea_carrera_conf_pre/{id}', 'destroy_pre')->name('linea_carrera_conf_pre.destroy');
-    Route::get('linea_carrera_conf_reva', 'index_reva')->name('linea_carrera_conf_reva');
-    Route::get('linea_carrera_conf_reva/list', 'list_reva')->name('linea_carrera_conf_reva.list');
-    Route::get('linea_carrera_conf_reva/{id}/edit', 'edit_reva')->name('linea_carrera_conf_reva.edit');
-    Route::put('linea_carrera_conf_reva/{id}', 'update_reva')->name('linea_carrera_conf_reva.update');
+});
+//INTERNA - NOTIFICACIÓN CONFIGURABLE
+Route::controller(NotificacionConfController::class)->group(function () {
+    Route::get('notificacion_conf', 'index')->name('notificacion_conf');
+    Route::get('notificacion_conf_ti', 'index_ti')->name('notificacion_conf_ti');
+    Route::get('notificacion_conf_ti/list', 'list_ti')->name('notificacion_conf_ti.list');
+    Route::get('notificacion_conf_ti/create', 'create_ti')->name('notificacion_conf_ti.create');
+    Route::post('notificacion_conf_ti', 'store_ti')->name('notificacion_conf_ti.store');
+    Route::get('notificacion_conf_ti/{id}/edit', 'edit_ti')->name('notificacion_conf_ti.edit');
+    Route::put('notificacion_conf_ti/{id}', 'update_ti')->name('notificacion_conf_ti.update');
+    Route::delete('notificacion_conf_ti/{id}', 'destroy_ti')->name('notificacion_conf_ti.destroy');
 });
 
 
