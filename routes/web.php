@@ -350,6 +350,12 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Referencia_Laboral', 'Insert_Referencia_Laboral');
     Route::post('ColaboradorConfController/Update_Referencia_Laboral', 'Update_Referencia_Laboral');
     Route::post('ColaboradorConfController/Delete_Referencia_Laboral', 'Delete_Referencia_Laboral');
+    Route::post('ColaboradorConfController/Regimen', 'Regimen');
+    Route::get('ColaboradorConfController/Modal_Regimen', 'Modal_Regimen');
+    Route::get('ColaboradorConfController/Modal_Update_Regimen/{id}', 'Modal_Update_Regimen');
+    Route::post('ColaboradorConfController/Insert_Regimen', 'Insert_Regimen');
+    Route::post('ColaboradorConfController/Update_Regimen', 'Update_Regimen');
+    Route::post('ColaboradorConfController/Delete_Regimen', 'Delete_Regimen');
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function () {
