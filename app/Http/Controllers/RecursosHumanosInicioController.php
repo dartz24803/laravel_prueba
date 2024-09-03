@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Notificacion;
 
 class RecursosHumanosInicioController extends Controller
 {
@@ -13,6 +14,8 @@ class RecursosHumanosInicioController extends Controller
 
     public function index()
     {
-        return view('rrhh.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('rrhh.index', compact('list_notificacion'));
     }
 }

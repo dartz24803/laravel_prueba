@@ -10,6 +10,7 @@ use App\Models\Config;
 use App\Models\Gravedad_Amonestacion;
 use App\Models\Motivo_Amonestacion;
 use App\Models\Tipo_Amonestacion;
+use App\Models\Notificacion;
 
 class AmonestacionController extends Controller
 {
@@ -37,10 +38,9 @@ class AmonestacionController extends Controller
     }
     
     public function Amonestacion(){
-        //NOTIFICACIÓN-NO BORRAR
-        //$dato['list_noti'] = $this->Model_Corporacion->get_list_notificacion();
-        //$dato['list_nav_evaluaciones'] = $this->Model_Corporacion->get_list_nav_evaluaciones();
-        return view('rrhh.Amonestacion.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('rrhh.Amonestacion.index', compact('list_notificacion'));
     }
 
     public function Amonestaciones_Emitidas(){

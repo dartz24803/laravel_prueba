@@ -15,6 +15,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use App\Models\Notificacion;
 
 class ColaboradorController extends Controller
 {
@@ -25,7 +26,9 @@ class ColaboradorController extends Controller
 
     public function index()
     {
-        return view('rrhh.colaborador.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('rrhh.colaborador.index', compact('list_notificacion'));
     }
 
     public function index_co()

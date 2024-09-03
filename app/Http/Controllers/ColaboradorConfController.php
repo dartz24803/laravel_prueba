@@ -25,6 +25,7 @@ use App\Models\ReferenciaLaboral;
 // use App\Models\ProgramaAccesos;
 // use App\Models\ProgramaAccesos;
 use Illuminate\Http\Request;
+use App\Models\Notificacion;
 
 class ColaboradorConfController extends Controller
 {
@@ -35,7 +36,9 @@ class ColaboradorConfController extends Controller
 
     public function index()
     {
-        return view('rrhh.administracion.colaborador.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('rrhh.administracion.colaborador.index', compact('list_notificacion'));
     }
 
     public function traer_gerencia(Request $request)
