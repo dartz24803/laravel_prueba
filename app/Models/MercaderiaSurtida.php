@@ -29,6 +29,8 @@ class MercaderiaSurtida extends Model
         'talla',
         'descripcion',
         'cantidad',
+        'stk_almacen',
+        'stk_tienda',
         'estado',
         'fecha',
         'usuario',
