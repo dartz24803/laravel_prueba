@@ -118,8 +118,8 @@ class LineaCarreraController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            //$mail->addAddress('rrhh@lanumero1.com.pe');
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('rrhh@lanumero1.com.pe');
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
 
             $mail->isHTML(true);
 
