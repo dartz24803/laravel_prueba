@@ -7,6 +7,7 @@ use App\Models\ReporteFotografico;
 use App\Models\Area;
 use App\Models\Base;
 use App\Models\CodigosReporteFotografico;
+use App\Models\Notificacion;
 use App\Models\ReporteFotograficoArchivoTemporal;
 use App\Models\ReporteFotograficoAdm;
 use Illuminate\Support\Facades\Validator;
@@ -45,7 +46,9 @@ class ReporteFotograficoController extends Controller
 
     public function index(){
         //enviar listas a la vista
-        return view('tienda.ReporteFotografico.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();        
+        return view('tienda.ReporteFotografico.index',compact('list_notificacion'));
     }
 
     public function Reporte_Fotografico(Request $request){

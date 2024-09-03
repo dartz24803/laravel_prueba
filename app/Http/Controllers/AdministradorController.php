@@ -13,6 +13,7 @@ use App\Models\DetalleSeguimientoCoordinador;
 use App\Models\DetalleSupervisionTienda;
 use App\Models\DiaSemana;
 use App\Models\Mes;
+use App\Models\Notificacion;
 use App\Models\SeguimientoCoordinador;
 use App\Models\SupervisionTienda;
 use Illuminate\Http\Request;
@@ -27,7 +28,9 @@ class AdministradorController extends Controller
 
     public function index_conf()
     {
-        return view('tienda.administracion.administrador.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();            
+        return view('tienda.administracion.administrador.index',compact('list_notificacion'));
     }
 
     public function index_conf_st()
@@ -284,7 +287,9 @@ class AdministradorController extends Controller
 
     public function index()
     {
-        return view('tienda.administrador.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();            
+        return view('tienda.administrador.index',compact('list_notificacion'));
     }
 
     public function index_st()
