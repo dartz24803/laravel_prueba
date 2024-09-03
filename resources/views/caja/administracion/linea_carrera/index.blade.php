@@ -13,10 +13,7 @@
                         <div class="widget-content widget-content-area simple-tab">
                             <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                                 <li class="nav-item">
-                                    <a id="a_terr" class="nav-link" onclick="Pregunta();" style="cursor: pointer;">Preguntas</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a id="a_err" class="nav-link" onclick="Revision_Evaluacion();" style="cursor: pointer;">Revisión evaluación</a>
+                                    <a id="a_pre" class="nav-link" onclick="Pregunta();" style="cursor: pointer;">Preguntas</a>
                                 </li>
                             </ul>
 
@@ -52,24 +49,7 @@
                 type: "GET",
                 success:function (resp) {
                     $('#div_linea_carrera_conf').html(resp);  
-                    $("#a_terr").addClass('active');
-                    $("#a_err").removeClass('active');
-                }
-            });
-        }
-
-        function Revision_Evaluacion(){
-            Cargando();
-
-            var url="{{ route('linea_carrera_conf_reva') }}";
-
-            $.ajax({
-                url: url,
-                type: "GET",
-                success:function (resp) {
-                    $('#div_linea_carrera_conf').html(resp);  
-                    $("#a_terr").removeClass('active');
-                    $("#a_err").addClass('active');
+                    $("#a_pre").addClass('active');
                 }
             });
         }
