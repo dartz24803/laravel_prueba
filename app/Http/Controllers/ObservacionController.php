@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Base;
 use App\Models\Error;
+use App\Models\Notificacion;
 use App\Models\Suceso;
 use App\Models\TipoError;
 use App\Models\Usuario;
@@ -26,8 +27,10 @@ class ObservacionController extends Controller
 
     public function index_reg()
     {
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
         $list_base = Base::get_list_bases_tienda();
-        return view('caja.observacion.index',compact('list_base'));
+        return view('caja.observacion.index',compact('list_notificacion','list_base'));
     }
 
     public function list_reg(Request $request)

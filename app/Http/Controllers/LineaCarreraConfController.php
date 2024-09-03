@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notificacion;
 use App\Models\Pregunta;
 use App\Models\PreguntaDetalle;
 use App\Models\PuestoLineaCarrera;
@@ -17,7 +18,9 @@ class LineaCarreraConfController extends Controller
 
     public function index()
     {
-        return view('caja.administracion.linea_carrera.index');
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();          
+        return view('caja.administracion.linea_carrera.index',compact('list_notificacion'));
     }
 
     public function index_pre()
