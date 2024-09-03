@@ -2494,9 +2494,13 @@ class TrackingController extends Controller
                     'anio' => date('Y'),
                     'semana' => date('W'),
                     'estilo' => $request->estilo,
+                    'tipo_usuario' => $list['tipo_usuario'],
+                    'descripcion' => $list['descripcion'],
                     'color'=> $list['color'],
                     'talla' => $list['talla'],
                     'cantidad' => $list['cantidad'],
+                    'stk_almacen' => $list['stk_almacen'],
+                    'stk_tienda' => $list['stk_tienda'],
                     'estado' => 0,
                     'fecha' => now()
                 ]);
