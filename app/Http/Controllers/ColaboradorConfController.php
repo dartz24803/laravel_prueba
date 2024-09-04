@@ -1864,69 +1864,75 @@ class ColaboradorConfController extends Controller
                                         ->get();
         return view('rrhh.administracion.colaborador.SituacionLaboral.index',$dato);
     }
-/*
+
     public function Modal_Situacion_Laboral(){
-        if ($this->session->userdata('usuario')) {
-            $this->load->view('Admin/Configuracion/Situacion_Laboral/modal_registrar');   
-        }
-        else{
-            redirect('');
-        }
+        return view('rrhh.administracion.colaborador.SituacionLaboral.modal_registrar');   
     }
 
-    public function Insert_Situacion_Laboral(){
-        if ($this->session->userdata('usuario')) {
-            $dato['cod_situacion_laboral']= $this->input->post("cod_situacion_laboral"); 
-            $dato['nom_situacion_laboral']= $this->input->post("nom_situacion_laboral");
-            $dato['ficha']= $this->input->post("ficha");
-            $dato['digitos']= $this->input->post("digitos");
-            $total=count($this->Model_Corporacion->valida_situacion_laboral($dato));
-            if ($total>0)
-            {
-                echo "error";
-            }
-            else{
-                $this->Model_Corporacion->insert_situacion_laboral($dato);
-            }
-            
-        }
-        else{
-            redirect('');
+    public function Insert_Situacion_Laboral(Request $request){
+        $request->validate([
+            'cod_situacion_laboral' => 'required',
+            'nom_situacion_laboral' => 'required',
+        ],[
+            'cod_situacion_laboral.required' => 'Debe ingresar codigo de situacion laboral.',
+            'nom_situacion_laboral.required' => 'Debe ingresar descripcion de situacion laboral.',
+        ]);
+
+        $valida = SituacionLaboral::where('cod_situacion_laboral', $request->nom_situacion_laboral)
+                ->where('nom_situacion_laboral', $request->cod_situacion_laboral)
+                ->where('estado', 1)
+                ->exists();
+        if($valida){
+            echo "error";
+        }else{
+            $dato['cod_situacion_laboral']= $request->input("cod_situacion_laboral"); 
+            $dato['nom_situacion_laboral']= $request->input("nom_situacion_laboral");
+            $dato['ficha']= $request->input("ficha");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            SituacionLaboral::create($dato);
         }
     }
 
     public function Modal_Update_Situacion_Laboral($id_situacion_laboral){
-        if ($this->session->userdata('usuario')) {
-            $dato['get_id'] = $this->Model_Corporacion->get_id_situacion_laboral($id_situacion_laboral);
-            $this->load->view('Admin/Configuracion/Situacion_Laboral/modal_editar',$dato);
-        }
-        else{
-            redirect('');
-        }
+        $dato['get_id'] = SituacionLaboral::where('id_situacion_laboral', $id_situacion_laboral)
+                        ->get();
+        return view('rrhh.administracion.colaborador.SituacionLaboral.modal_editar',$dato);
     }
 
-    public function Update_Situacion_Laboral(){
-        if ($this->session->userdata('usuario')) {
-            $dato['id_situacion_laboral']= $this->input->post("id_situacion_laboral");
-            $dato['cod_situacion_laboral']= $this->input->post("cod_situacion_laboral"); 
-            $dato['nom_situacion_laboral']= $this->input->post("nom_situacion_laboral");
-            $dato['ficha']= $this->input->post("ficha");
-            $dato['digitos']= $this->input->post("digitos");
+    public function Update_Situacion_Laboral(Request $request){
+        $request->validate([
+            'cod_situacion_laboral' => 'required',
+            'nom_situacion_laboral' => 'required',
+        ],[
+            'cod_situacion_laboral.required' => 'Debe ingresar codigo de situacion laboral.',
+            'nom_situacion_laboral.required' => 'Debe ingresar descripcion de situacion laboral.',
+        ]);
 
-            $this->Model_Corporacion->update_situacion_laboral($dato);
-        }
-        else{
-            redirect('');
+        $valida = SituacionLaboral::where('cod_situacion_laboral', $request->cod_situacion_laboral)
+                ->where('nom_situacion_laboral', $request->nom_situacion_laboral)
+                ->where('estado', 1)
+                ->exists();
+        if($valida){
+            echo "error";
+        }else{
+            $dato['cod_situacion_laboral']= $request->input("cod_situacion_laboral"); 
+            $dato['nom_situacion_laboral']= $request->input("nom_situacion_laboral");
+            $dato['ficha']= $request->input("ficha");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+
+            SituacionLaboral::findOrFail($request->id_situacion_laboral)->update($dato);
         }
     }
     
-    public function Delete_Situacion_Laboral(){
-        if ($this->session->userdata('usuario')) {
-            $dato['id_situacion_laboral']= $this->input->post("id_situacion_laboral");
-            $this->Model_Corporacion->delete_situacion_laboral($dato);            
-        }
-        else{
-            redirect('');
-        }
-    }*/
+    public function Delete_Situacion_Laboral(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        SituacionLaboral::findOrFail($request->input("id_situacion_laboral"))->update($dato);
+    }
 }

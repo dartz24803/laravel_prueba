@@ -62,7 +62,7 @@
     </div>
 </li>
 
-<?php if (
+<?php if ((
     session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 102 || session('usuario')->id_puesto == 80 ||
     session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 23 ||
     session('usuario')->id_puesto == 75 || session('usuario')->id_puesto == 7 || session('usuario')->id_puesto == 133 ||
@@ -73,7 +73,8 @@
     session('usuario')->id_puesto == 38 || session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 111 ||
     session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 137 || session('usuario')->id_puesto == 164 ||
     session('usuario')->id_puesto == 158 || session('usuario')->id_puesto == 9 || session('usuario')->id_puesto == 128 ||
-    session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 10 || session('usuario')->id_puesto == "22"
+    session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 10 || session('usuario')->id_puesto == 22
+    ) && !Str::startsWith(session('usuario')->centro_labores, 'B')
 ) { ?>
     <li class="menu" id="ccvtabla">
         <a href="#rccvtabla" id="hccvtabla" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">

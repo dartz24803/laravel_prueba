@@ -13,7 +13,7 @@ class SituacionLaboral extends Model
 
     public $timestamps = false;
 
-    protected $primaryKey = 'id_situacion laboral';
+    protected $primaryKey = 'id_situacion_laboral';
 
     protected $fillable = [
         'cod_situacion_laboral',
