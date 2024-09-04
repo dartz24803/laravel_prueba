@@ -20,7 +20,7 @@
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                             <li class="nav-item">
-                                <a id="a_reg" class="nav-link" onclick="ListaMaestra();" style="cursor: pointer;">Lista Maestra</a>
+                                <a id="a_reg" class="nav-link" onclick="ListRegistroAccesoReportes();" style="cursor: pointer;">ACCESO DE REPORTES</a>
                             </li>
 
                         </ul>
@@ -40,17 +40,17 @@
 
 <script>
     $(document).ready(function() {
-        $("#procesos").addClass('active');
-        $("#procesos").attr('aria-expanded', 'true');
-        $("#portalprocesos").addClass('active');
+        $("#bi").addClass('active');
+        $("#bi").attr('aria-expanded', 'true');
+        $("#bireporte").addClass('active');
 
-        ListaMaestra();
+        ListRegistroAccesoReportes();
     });
 
-    function ListaMaestra() {
+    function ListRegistroAccesoReportes() {
         Cargando();
 
-        var url = "{{ route('portalprocesos_lm') }}";
+        var url = "{{ route('bireporte_ra') }}";
 
         $.ajax({
             url: url,

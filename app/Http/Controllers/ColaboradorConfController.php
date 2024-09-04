@@ -23,7 +23,7 @@ use App\Models\Nacionalidad;
 use App\Models\Parentesco;
 use App\Models\ReferenciaLaboral;
 use App\Models\Regimen;
-// use App\Models\ProgramaAccesos;
+use App\Models\SituacionLaboral;
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
 
@@ -1856,4 +1856,77 @@ class ColaboradorConfController extends Controller
         $dato['user_eli'] = session('usuario')->id_usuario;
         Regimen::findOrFail($request->input("id_regimen"))->update($dato);
     }
+    
+    
+    public function Situacion_Laboral()// RRHH
+    {
+        $dato['list_situacion_laboral'] = SituacionLaboral::where('estado', 1)
+                                        ->get();
+        return view('rrhh.administracion.colaborador.SituacionLaboral.index',$dato);
+    }
+/*
+    public function Modal_Situacion_Laboral(){
+        if ($this->session->userdata('usuario')) {
+            $this->load->view('Admin/Configuracion/Situacion_Laboral/modal_registrar');   
+        }
+        else{
+            redirect('');
+        }
+    }
+
+    public function Insert_Situacion_Laboral(){
+        if ($this->session->userdata('usuario')) {
+            $dato['cod_situacion_laboral']= $this->input->post("cod_situacion_laboral"); 
+            $dato['nom_situacion_laboral']= $this->input->post("nom_situacion_laboral");
+            $dato['ficha']= $this->input->post("ficha");
+            $dato['digitos']= $this->input->post("digitos");
+            $total=count($this->Model_Corporacion->valida_situacion_laboral($dato));
+            if ($total>0)
+            {
+                echo "error";
+            }
+            else{
+                $this->Model_Corporacion->insert_situacion_laboral($dato);
+            }
+            
+        }
+        else{
+            redirect('');
+        }
+    }
+
+    public function Modal_Update_Situacion_Laboral($id_situacion_laboral){
+        if ($this->session->userdata('usuario')) {
+            $dato['get_id'] = $this->Model_Corporacion->get_id_situacion_laboral($id_situacion_laboral);
+            $this->load->view('Admin/Configuracion/Situacion_Laboral/modal_editar',$dato);
+        }
+        else{
+            redirect('');
+        }
+    }
+
+    public function Update_Situacion_Laboral(){
+        if ($this->session->userdata('usuario')) {
+            $dato['id_situacion_laboral']= $this->input->post("id_situacion_laboral");
+            $dato['cod_situacion_laboral']= $this->input->post("cod_situacion_laboral"); 
+            $dato['nom_situacion_laboral']= $this->input->post("nom_situacion_laboral");
+            $dato['ficha']= $this->input->post("ficha");
+            $dato['digitos']= $this->input->post("digitos");
+
+            $this->Model_Corporacion->update_situacion_laboral($dato);
+        }
+        else{
+            redirect('');
+        }
+    }
+    
+    public function Delete_Situacion_Laboral(){
+        if ($this->session->userdata('usuario')) {
+            $dato['id_situacion_laboral']= $this->input->post("id_situacion_laboral");
+            $this->Model_Corporacion->delete_situacion_laboral($dato);            
+        }
+        else{
+            redirect('');
+        }
+    }*/
 }

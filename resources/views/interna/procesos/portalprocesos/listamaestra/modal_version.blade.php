@@ -240,6 +240,8 @@
                                 <div class="d-flex align-items-center">
                                     <input type="file" class="form-control-file" name="documentoae" id="documentoae" onchange="Validar_Archivo_Backup('documentoae');">
                                 </div>
+
+
                             </div>
 
                             <div class="form-group col-md-6">
@@ -323,6 +325,7 @@
                     <table id="tabla_js2" class="table table-hover" style="width:100%">
                         <thead class="text-center">
                             <tr>
+
                                 <th>Código</th>
                                 <th>Versión</th>
                                 <th>Título</th>
