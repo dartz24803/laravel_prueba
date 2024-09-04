@@ -26,21 +26,15 @@
                                 (@php if($list->respuesta==$list->respuesta_correcta){ echo 'Respuesta correcta'; }else{ echo 'Respuesta incorrecta'; } @endphp)
                             </span>
                         </label>
-                        @php
-                            $j = 0;
-                            $detalle = explode(",,,",$list->opciones); 
-                            while($j<count($detalle)){
-                                $pregunta = explode(":::",$detalle[$j]);
-                        @endphp
+                        @php $detalle = explode(",,,",$list->opciones); @endphp
+                        @foreach ($detalle as $j => $opcion)
+                            @php $pregunta = explode(":::",$opcion); @endphp
                             <div class="custom-control custom-radio">
                                 <input type="radio" class="custom-control-input" name="respuesta_{{ $list->id_pregunta }}" id="respuesta_{{ $j."-".$list->id_pregunta }}"
                                 @php if($pregunta[0]==$list->respuesta){ echo "checked"; } @endphp disabled>
                                 <label class="custom-control-label" for="respuesta_{{ $j.'-'.$list->id_pregunta }}">{{ $pregunta[1] }}</label>
                             </div>
-                        @php 
-                                $j++;
-                            }
-                        @endphp 
+                        @endforeach
                     @endif
                 </div>
             </div>
