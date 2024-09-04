@@ -78,7 +78,7 @@
                             @if (count($list_notificacion)>0)
                                 @foreach ($list_notificacion as $list)
                                     <div class="dropdown-item">
-                                        <a onclick="Update_Notificacion_Leido('{{ $list->id_notificacion }}');">
+                                        <a onclick="Update_Notificacion_Leido('{{ $list->id_notificacion }}','{{ $list->id_tipo }}');">
                                             <div class="media">
                                                 {!! $list->icono !!}
                                                 <div class="media-body">
@@ -227,7 +227,7 @@
                 });
         }
 
-        function Update_Notificacion_Leido(id){
+        function Update_Notificacion_Leido(id,id_tipo){
             Cargando();
 
             var url = "{{ route('notificacion.update_leido', ':id') }}".replace(':id', id);
@@ -240,15 +240,15 @@
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 success: function(resp) {
-                    if(resp == "44"){
+                    if(id_tipo == "44"){
                         window.location = "{{ route('linea_carrera') }}";
-                    }else if(resp == "45"){
+                    }else if(id_tipo == "45"){
                         window.location = "{{ route('inicio') }}";
-                    }else if(resp == "46"){
-
-                    }else if(resp == "47"){
+                    }else if(id_tipo == "46"){
+                        window.open("{{ route('linea_carrera.evaluacion', ':id') }}".replace(':id', resp), "_blank");
+                    }else if(id_tipo == "47"){
                         window.location = "{{ route('linea_carrera') }}";
-                    }else if(resp == "6"){
+                    }else if(id_tipo == "6"){
                         window.location = "{{ route('inicio') }}";
                     }else{
                         window.location = "{{ route('inicio') }}";

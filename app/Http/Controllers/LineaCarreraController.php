@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Base;
 use App\Models\DetalleExamenEntrenamiento;
+use App\Models\DetalleExamenEntrenamientoTmp;
 use App\Models\Entrenamiento;
 use App\Models\ExamenEntrenamiento;
 use App\Models\Notificacion;
+use App\Models\Pregunta;
 use App\Models\SolicitudPuesto;
 use App\Models\Suceso;
 use App\Models\Usuario;
@@ -14,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 class LineaCarreraController extends Controller
 {
@@ -209,6 +212,85 @@ class LineaCarreraController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+    }
+
+    public function evaluacion_ev($id)
+    {
+        $get_id = ExamenEntrenamiento::get_list_examen_entrenamiento(['id'=>$id]);
+        return view('caja.linea_carrera.evaluacion.index', compact('get_id'));
+    }
+
+    public function iniciar_evaluacion_ev(Request $request, $id)
+    {
+        $get_id = ExamenEntrenamiento::get_list_examen_entrenamiento(['id'=>$id]);
+        $list_pregunta = Pregunta::get_list_pregunta_evaluacion(['id_puesto'=>$get_id->id_puesto_aspirado]);
+        foreach($list_pregunta as $list){
+            DetalleExamenEntrenamientoTmp::create([
+                'id_usuario' => session('usuario')->id_usuario,
+                'id_pregunta' => $list->id
+            ]);
+        }
+        ExamenEntrenamiento::findOrFail($id)->update([
+            'fecha' => now(),
+            'hora_inicio' => now(),
+            'hora_fin' => date('H:i:s', strtotime('+ 45 minutes')),
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function examen_en(Request $request)
+    {
+        $get_id = ExamenEntrenamiento::get_list_examen_entrenamiento(['id'=>$request->id]);
+        $hora = substr($get_id->hora_fin,0,2);
+        $minuto = substr($get_id->hora_fin,3,2);
+        $segundo = substr($get_id->hora_fin,6,2);
+        $list_pregunta = DetalleExamenEntrenamientoTmp::get_list_detalle_examen_entrenamiento_tmp();
+        return view('caja.linea_carrera.evaluacion.examen', compact('hora','minuto','segundo','list_pregunta'));
+    }
+
+    public function terminar_evaluacion_ev(Request $request, $id)
+    {
+        // Validar si ya se guardaron las respuestas de la evaluación
+        $valida = DetalleExamenEntrenamiento::get_list_detalle_examen_entrenamiento(['id_examen'=>$id]);
+        if(count($valida)==0){
+            // Actualizar hora real de finalización de evaluación
+            ExamenEntrenamiento::findOrFail($id)->update([
+                'hora_fin_real' => now(),
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+            // Registrar las respuestas de cada pregunta de la evaluación
+            $list_pregunta = DetalleExamenEntrenamientoTmp::get_list_detalle_examen_entrenamiento_tmp();
+            foreach($list_pregunta as $list){
+                DetalleExamenEntrenamiento::create([
+                    'id_examen' => $id,
+                    'id_pregunta' => $list->id_pregunta,
+                    'respuesta' => $request->input('respuesta_'.$list->id_pregunta),
+                ]);
+            }
+            // Eliminar las preguntas asignadas en la tabla temporal
+            DetalleExamenEntrenamientoTmp::where('id_usuario', session('usuario')->id_usuario)->delete();
+            // Desactivar notificación al colaborador
+            $get_id = ExamenEntrenamiento::get_list_examen_entrenamiento(['id'=>$id]);
+            Notificacion::findOrFail($get_id->id_notificacion)->update([
+                'leido' => 1,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+            // Enviar notificación a Kattia para la revisión
+            Notificacion::create([
+                'id_usuario' => 172,
+                'solicitante' => $get_id->id_usuario,
+                'id_tipo' => 47,
+                'leido' => 0,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
     }
 
     public function index_re()
