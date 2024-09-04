@@ -403,5 +403,26 @@
         });
 
     }
+    
+    function TablaRegimen() {
+        Cargando();
+        Active_Tabla_Colaboradores();
+
+        $("#Regimen").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Regimen') }}";
+        var csrfToken = $('input[name="_token"]').val();
+        
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
 </script>
 @endsection

@@ -22,8 +22,8 @@ use App\Models\Idioma;
 use App\Models\Nacionalidad;
 use App\Models\Parentesco;
 use App\Models\ReferenciaLaboral;
-// use App\Models\ProgramaAccesos;
-// use App\Models\ProgramaAccesos;
+use App\Models\Regimen;
+use App\Models\SituacionLaboral;
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
 
@@ -1775,4 +1775,158 @@ class ColaboradorConfController extends Controller
         $dato['user_eli'] = session('usuario')->id_usuario;
         ReferenciaLaboral::findOrFail($request->id_referencia_laboral)->update($dato);
     }
+    
+    public function Regimen(){
+        $dato['list_regimen'] = Regimen::where('estado', 1)
+                            ->get();
+        return view('rrhh.administracion.colaborador.Regimen.index', $dato);
+    }
+
+    public function Modal_Regimen(){
+        return view('rrhh.administracion.colaborador.Regimen.modal_registrar');   
+    }
+
+    public function Insert_Regimen(Request $request){
+        $request->validate([
+            'codigo' => 'required',
+            'nombre' => 'required',
+        ],[
+            'codigo.required' => 'Debe ingresar codigo de regimen.',
+            'nombre.required' => 'Debe ingresar descripcion de regimen.',
+        ]);
+
+        $valida = Regimen::where('cod_regimen', $request->codigo)
+                ->where('nom_regimen', $request->nombre)
+                ->exists();
+        
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_regimen']= strtoupper($request->input("codigo")); 
+            $dato['nom_regimen']= strtoupper($request->input("nombre"));
+            $dato['dia_vacaciones']= $request->input("vacaciones");
+            $dato['da_mes']= $dato['dia_vacaciones']/12;
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Regimen::create($dato);
+        }
+    }
+
+    public function Modal_Update_Regimen($id_regimen){
+        $dato['get_id'] = Regimen::where('id_regimen', $id_regimen)
+                        ->get();
+        return view('rrhh.administracion.colaborador.Regimen.modal_editar',$dato);
+    }
+
+    public function Update_Regimen(Request $request){
+        $request->validate([
+            'codigo' => 'required',
+            'nombre' => 'required',
+        ],[
+            'codigo.required' => 'Debe ingresar codigo de regimen.',
+            'nombre.required' => 'Debe ingresar descripcion de regimen.',
+        ]);
+
+        $valida = Regimen::where('cod_regimen', $request->codigo)
+                ->where('nom_regimen', $request->nombre)
+                ->where('dia_vacaciones', $request->vacaciones)
+                ->where('estado', 1)
+                ->exists();
+        if($valida){
+            echo "error";
+        }else{
+            $dato['cod_regimen']= strtoupper($request->input("codigo")); 
+            $dato['nom_regimen']= strtoupper($request->input("nombre"));
+            $dato['dia_vacaciones']= $request->input("vacaciones");
+            $dato['da_mes']= $dato['dia_vacaciones']/12;
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            
+            Regimen::findOrFail($request->id_regimen)->update($dato);
+        }
+
+    }
+    
+    public function Delete_regimen(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Regimen::findOrFail($request->input("id_regimen"))->update($dato);
+    }
+    
+    
+    public function Situacion_Laboral()// RRHH
+    {
+        $dato['list_situacion_laboral'] = SituacionLaboral::where('estado', 1)
+                                        ->get();
+        return view('rrhh.administracion.colaborador.SituacionLaboral.index',$dato);
+    }
+/*
+    public function Modal_Situacion_Laboral(){
+        if ($this->session->userdata('usuario')) {
+            $this->load->view('Admin/Configuracion/Situacion_Laboral/modal_registrar');   
+        }
+        else{
+            redirect('');
+        }
+    }
+
+    public function Insert_Situacion_Laboral(){
+        if ($this->session->userdata('usuario')) {
+            $dato['cod_situacion_laboral']= $this->input->post("cod_situacion_laboral"); 
+            $dato['nom_situacion_laboral']= $this->input->post("nom_situacion_laboral");
+            $dato['ficha']= $this->input->post("ficha");
+            $dato['digitos']= $this->input->post("digitos");
+            $total=count($this->Model_Corporacion->valida_situacion_laboral($dato));
+            if ($total>0)
+            {
+                echo "error";
+            }
+            else{
+                $this->Model_Corporacion->insert_situacion_laboral($dato);
+            }
+            
+        }
+        else{
+            redirect('');
+        }
+    }
+
+    public function Modal_Update_Situacion_Laboral($id_situacion_laboral){
+        if ($this->session->userdata('usuario')) {
+            $dato['get_id'] = $this->Model_Corporacion->get_id_situacion_laboral($id_situacion_laboral);
+            $this->load->view('Admin/Configuracion/Situacion_Laboral/modal_editar',$dato);
+        }
+        else{
+            redirect('');
+        }
+    }
+
+    public function Update_Situacion_Laboral(){
+        if ($this->session->userdata('usuario')) {
+            $dato['id_situacion_laboral']= $this->input->post("id_situacion_laboral");
+            $dato['cod_situacion_laboral']= $this->input->post("cod_situacion_laboral"); 
+            $dato['nom_situacion_laboral']= $this->input->post("nom_situacion_laboral");
+            $dato['ficha']= $this->input->post("ficha");
+            $dato['digitos']= $this->input->post("digitos");
+
+            $this->Model_Corporacion->update_situacion_laboral($dato);
+        }
+        else{
+            redirect('');
+        }
+    }
+    
+    public function Delete_Situacion_Laboral(){
+        if ($this->session->userdata('usuario')) {
+            $dato['id_situacion_laboral']= $this->input->post("id_situacion_laboral");
+            $this->Model_Corporacion->delete_situacion_laboral($dato);            
+        }
+        else{
+            redirect('');
+        }
+    }*/
 }

@@ -372,6 +372,18 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Referencia_Laboral', 'Insert_Referencia_Laboral');
     Route::post('ColaboradorConfController/Update_Referencia_Laboral', 'Update_Referencia_Laboral');
     Route::post('ColaboradorConfController/Delete_Referencia_Laboral', 'Delete_Referencia_Laboral');
+    Route::post('ColaboradorConfController/Regimen', 'Regimen');
+    Route::get('ColaboradorConfController/Modal_Regimen', 'Modal_Regimen');
+    Route::get('ColaboradorConfController/Modal_Update_Regimen/{id}', 'Modal_Update_Regimen');
+    Route::post('ColaboradorConfController/Insert_Regimen', 'Insert_Regimen');
+    Route::post('ColaboradorConfController/Update_Regimen', 'Update_Regimen');
+    Route::post('ColaboradorConfController/Delete_Regimen', 'Delete_Regimen');
+    Route::post('ColaboradorConfController/Situacion_Laboral', 'Situacion_Laboral');
+    Route::get('ColaboradorConfController/Situacion_Laboral', 'Situacion_Laboral');
+    Route::get('ColaboradorConfController/Situacion_Laboral/{id}', 'Situacion_Laboral');
+    Route::post('ColaboradorConfController/Situacion_Laboral', 'Situacion_Laboral');
+    Route::post('ColaboradorConfController/Situacion_Laboral', 'Situacion_Laboral');
+    Route::post('ColaboradorConfController/Situacion_Laboral', 'Situacion_Laboral');
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function () {
@@ -716,6 +728,7 @@ Route::controller(LineaCarreraController::class)->group(function () {
     Route::get('linea_carrera_en', 'index_en')->name('linea_carrera_en');
     Route::post('linea_carrera_en/list', 'list_en')->name('linea_carrera_en.list');
     Route::put('linea_carrera_en/{id}', 'update_en')->name('linea_carrera_en.update');
+    Route::get('linea_carrera_en/update_estado_entrenamiento', 'update_estado_entrenamiento')->name('linea_carrera_en.update_estado_entrenamiento');
     Route::get('linea_carrera_re', 'index_re')->name('linea_carrera_re');
     Route::get('linea_carrera_re/list', 'list_re')->name('linea_carrera_re.list');
     Route::get('linea_carrera_re/{id}/edit', 'edit_re')->name('linea_carrera_re.edit');
@@ -908,6 +921,7 @@ Route::controller(OcurrenciasTiendaController::class)->group(function () {
     Route::get('Corporacion/Excel_Ocurrencia/{cod_base}/{fecha_inicio}/{fecha_fin}/{tipo_ocurrencia}/{colaborador}', 'Excel_Ocurrencia');
     Route::get('OcurrenciaTienda/Descargar_Archivo_Ocurrencia/{id}', 'Descargar_Archivo_Ocurrencia');
     Route::post('OcurrenciaTienda/Delete_Archivo_Ocurrencia', 'Delete_Archivo_Ocurrencia');
+    Route::get('OcurrenciaTienda/Traer_Tipo_Ocurrencia_Busq', 'Traer_Tipo_Ocurrencia_Busq');
 });
 //Reporte Proveedores
 Route::controller(ReporteProveedoresController::class)->group(function () {
