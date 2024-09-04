@@ -116,8 +116,8 @@
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({
-            title: '¿Realmente desea eliminar el registro22?',
-            text: "El registro será eliminado permanentemente22",
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Si',

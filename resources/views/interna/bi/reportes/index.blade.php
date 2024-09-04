@@ -20,7 +20,7 @@
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                             <li class="nav-item">
-                                <a id="a_reg" class="nav-link" onclick="ListRegistroAccesoReportes();" style="cursor: pointer;">REGISTRO DE ACCESO DE REPORTES</a>
+                                <a id="a_reg" class="nav-link" onclick="ListRegistroAccesoReportes();" style="cursor: pointer;">ACCESO DE REPORTES</a>
                             </li>
 
                         </ul>

@@ -188,15 +188,6 @@ class BiReporteController extends Controller
             'estado' => $request->estado ?? 1,
             'fec_reg' => $request->fec_reg ? date('Y-m-d H:i:s', strtotime($request->fec_reg)) : now(),
             'user_reg' => session('usuario')->id_usuario,
-            'acceso_area' => 0,
-            'acceso_nivel' => 0,
-            'acceso_gerencia' => 0,
-            'acceso_base' => 'OFC',
-            'div_puesto' => 0,
-            'div_base' => 0,
-            'div_area' => 0,
-            'div_nivel' => 0,
-            'div_gerencia' => 0,
         ]);
 
         // Redirigir o devolver respuesta
@@ -206,7 +197,6 @@ class BiReporteController extends Controller
 
     public function update_ra(Request $request, $id)
     {
-
         BiReporte::where('id_acceso_bi_reporte', $id)->update([
             'nom_reporte' => $request->nombrea,
             'iframe' => $request->iframea,
@@ -223,124 +213,6 @@ class BiReporteController extends Controller
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario
         ]);
-    }
-
-
-    public function approve_lm($id)
-    {
-        // dd($id);
-        // Procesos::findOrFail($id)->update([
-        //     'estado_registro' => 2,
-        //     'fec_eli' => now(),
-        //     'user_eli' => session('usuario')->id_usuario
-        // ]);
-        ProcesosHistorial::where('id_portal_historial', $id)->update([
-            'estado_registro' => 2,
-            'fec_aprob' => now(),
-            'user_aprob' => session('usuario')->id_usuario
-        ]);
-    }
-
-
-
-    public function version_lm($id)
-    {
-        // $get_id = Procesos::findOrFail($id);
-        $get_id = ProcesosHistorial::where('id_portal', $id)->firstOrFail();
-        $div_puesto = $get_id->div_puesto;
-
-        // Obtener el valor del campo `id_area` y convertirlo en un array
-        $selected_area_ids = explode(',', $get_id->id_area);
-        $selected_puesto_ids = explode(',', $get_id->acceso);
-
-        $list_tipo = TipoPortal::select('id_tipo_portal', 'nom_tipo')->get();
-
-
-        $list_responsable = Puesto::select('puesto.id_puesto', 'puesto.nom_puesto', 'area.cod_area')
-            ->join('area', 'puesto.id_area', '=', 'area.id_area')  // Realiza el INNER JOIN entre Puesto y Area
-            ->where('puesto.estado', 1)
-            ->orderBy('puesto.nom_puesto', 'ASC')
-            ->get()
-            ->unique('nom_puesto');
-
-        $list_area = Area::select('id_area', 'nom_area')
-            ->where('estado', 1)
-            ->orderBy('id_area', 'ASC')
-            ->get()
-            ->unique('nom_area');
-
-        // dd($list_area);
-        $list_procesos = ProcesosHistorial::select(
-            'portal_procesos_historial.id_portal_historial',
-            'portal_procesos_historial.id_portal',
-            'portal_procesos_historial.version',
-            'portal_procesos_historial.codigo',
-            'portal_procesos_historial.nombre',
-            'portal_procesos_historial.id_tipo',
-            'portal_procesos_historial.id_area',
-            'portal_procesos_historial.id_responsable',
-            'portal_procesos_historial.fecha',
-            'portal_procesos_historial.estado_registro',
-            'portal_procesos_historial.archivo',
-            'portal_procesos_historial.archivo4',
-            'portal_procesos_historial.archivo5'
-
-
-        )
-            ->where('portal_procesos_historial.id_portal', '=', $id)
-            ->where('portal_procesos_historial.estado', '=', 1)
-            ->orderBy('portal_procesos_historial.codigo', 'ASC')
-            ->get();
-
-
-        // Preparar un array para almacenar los nombres de las áreas y del responsable
-        foreach ($list_procesos as $proceso) {
-            $ids = explode(',', $proceso->id_area);
-            $nombresAreas = DB::table('area')
-                ->whereIn('id_area', $ids)
-                ->pluck('nom_area');
-
-            $proceso->nombres_area = $nombresAreas->implode(', ');
-            $nombreResponsable = DB::table('puesto')
-                ->where('id_puesto', $proceso->id_responsable)
-                ->value('nom_puesto');
-            $nombreTipoPortal = DB::table('tipo_portal')
-                ->where('id_tipo_portal', $proceso->id_tipo)
-                ->value('nom_tipo');
-
-            $proceso->nombre_responsable = $nombreResponsable;
-            $proceso->nombre_tipo_portal = $nombreTipoPortal;
-
-            switch ($proceso->estado_registro) {
-                case 0:
-                    $proceso->estado_texto = 'Publicado';
-                    break;
-                case 1:
-                    $proceso->estado_texto = 'Por aprobar';
-                    break;
-                case 2:
-                    $proceso->estado_texto = 'Publicado';
-                    break;
-                case 3:
-                    $proceso->estado_texto = 'Por actualizar';
-                    break;
-                default:
-                    $proceso->estado_texto = 'Desconocido';
-                    break;
-            }
-        }
-        $ultima_version = $list_procesos->isNotEmpty() ? $list_procesos->last()->version + 1 : 1;
-        return view('interna.procesos.portalprocesos.listamaestra.modal_editar', compact(
-            'get_id',
-            'list_tipo',
-            'list_responsable',
-            'list_area',
-            'selected_area_ids',
-            'selected_puesto_ids',
-            'div_puesto',
-            'list_procesos',
-            'ultima_version'
-        ));
     }
 
 
