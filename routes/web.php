@@ -728,6 +728,7 @@ Route::controller(NotificacionConfController::class)->group(function () {
     Route::get('notificacion_conf_ti/{id}/edit', 'edit_ti')->name('notificacion_conf_ti.edit');
     Route::put('notificacion_conf_ti/{id}', 'update_ti')->name('notificacion_conf_ti.update');
     Route::delete('notificacion_conf_ti/{id}', 'destroy_ti')->name('notificacion_conf_ti.destroy');
+    Route::put('notificacion/{id}/leido', 'update_leido')->name('notificacion.update_leido');
 });
 
 
