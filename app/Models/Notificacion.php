@@ -30,7 +30,7 @@ class Notificacion extends Model
     ];
 
     public static function get_list_notificacion($dato=null){ 
-        $sql = "SELECT co.mensaje,co.icono,CASE WHEN nt.id_tipo=45 THEN pu.nom_puesto 
+        $sql = "SELECT nt.id_notificacion,co.mensaje,co.icono,CASE WHEN nt.id_tipo=45 THEN pu.nom_puesto 
                 WHEN nt.id_tipo=46 THEN '' ELSE CONCAT_WS(' ',us.usuario_nombres,us.usuario_apater) 
                 END AS solicitante,DATE_FORMAT(nt.fec_reg, '%d-%m-%Y %H:%i:%s') AS fecha
                 FROM notificacion nt

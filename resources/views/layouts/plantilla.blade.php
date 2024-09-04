@@ -78,15 +78,17 @@
                             @if (count($list_notificacion)>0)
                                 @foreach ($list_notificacion as $list)
                                     <div class="dropdown-item">
-                                        <div class="media server-log">
-                                            {!! $list->icono !!}
-                                            <div class="media-body">
-                                                <div class="data-info">
-                                                    <h6 class="">{{ $list->mensaje." ".$list->solicitante }}</h6>
-                                                    <p class="">{{ $list->fecha }}</p>
+                                        <a onclick="Update_Notificacion_Leido('{{ $list->id_notificacion }}');">
+                                            <div class="media">
+                                                {!! $list->icono !!}
+                                                <div class="media-body">
+                                                    <div class="data-info">
+                                                        <h6 class="">{{ $list->mensaje." ".$list->solicitante }}</h6>
+                                                        <p class="">{{ $list->fecha }}</p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </a>
                                     </div>
                                 @endforeach
                             @else
@@ -223,6 +225,36 @@
                         }
                     });
                 });
+        }
+
+        function Update_Notificacion_Leido(id){
+            Cargando();
+
+            var url = "{{ route('notificacion.update_leido', ':id') }}".replace(':id', id);
+
+            $.ajax({
+                type: "PUT",
+                url: url,
+                data: {'id_notificacion': id},
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success: function(resp) {
+                    if(resp == "44"){
+                        window.location = "{{ route('linea_carrera') }}";
+                    }else if(resp == "45"){
+                        window.location = "{{ route('inicio') }}";
+                    }else if(resp == "46"){
+
+                    }else if(resp == "47"){
+                        window.location = "{{ route('linea_carrera') }}";
+                    }else if(resp == "6"){
+                        window.location = "{{ route('inicio') }}";
+                    }else{
+                        window.location = "{{ route('inicio') }}";
+                    }
+                }
+            });
         }
 
         $(document).ready(function() {

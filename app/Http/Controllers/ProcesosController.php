@@ -315,69 +315,6 @@ class ProcesosController extends Controller
             echo "No se conectó al servidor FTP";
         }
 
-
-
-
-        // Crear un nuevo registro de Portal Procesos utilizando el método estático create
-        // $portal = Procesos::create([
-        //     'nombre' => $request->nombre ?? '',
-        //     'id_tipo' => $request->id_portal ?? null,
-        //     'fecha' => $request->fecha ?? null,
-        //     'id_responsable' => is_array($request->id_puesto) ? implode(',', $request->id_puesto) : $request->id_puesto ?? '',
-        //     'id_area' =>  $accesoTodo
-        //         ? $list_area_string
-        //         : (is_array($request->id_area_acceso_t) ? implode(',', $request->id_area_acceso_t) : $request->id_area_acceso_t ?? ''),
-
-        //     // 'id_area' => is_array($request->id_area_acceso_t) ? implode(',', $request->id_area_acceso_t) : $request->id_area_acceso_t ?? '',
-        //     'numero' => $request->ndocumento ?? '',
-        //     'version' =>  1,
-        //     'descripcion' => $request->descripcion ?? '',
-        //     'cod_portal' => '22TEST', // Puedes mantener este campo vacío o asignarlo según tu lógica
-        //     'codigo' => $request->codigo ?? 'SIN CÓDIGO',
-        //     'etiqueta' => is_array($request->etiqueta) ? implode(',', $request->etiqueta) : $request->etiqueta ?? '',
-        //     'acceso' => $accesoTodo
-        //         ? $list_responsable_string
-        //         : (is_array($request->tipo_acceso_t) ? implode(',', $request->tipo_acceso_t) : $request->tipo_acceso_t ?? ''),
-        //     'acceso_area' => $accesoTodo
-        //         ? $list_area_string
-        //         : (is_array($request->id_area_acceso) ? implode(',', $request->id_area_acceso) : $request->id_area_acceso ?? ''),
-        //     'acceso_nivel' => $accesoTodo ? $list_niveljerarquico_string
-        //         : (is_array($request->id_nivel_acceso) ? implode(',', $request->id_nivel_acceso) : $request->id_nivel_acceso ?? ''),
-        //     // 'acceso_nivel' => $accesoTodo ? $list_niveljerarquico_string : '', // Asignar la cadena de IDs si acceso_todo es 1
-        //     'acceso_gerencia' => $accesoTodo ? $list_gerencia_string
-        //         : (is_array($request->id_gerencia_acceso) ? implode(',', $request->id_gerencia_acceso) : $request->id_gerencia_acceso ?? ''),
-        //     // 'acceso_base' => $accesoTodo ? $list_base_string : '', // Asignar la cadena de IDs si acceso_todo es 1
-        //     'acceso_base' => $accesoTodo ? $list_base_string
-        //         : (is_array($request->id_base_acceso) ? implode(',', $request->id_base_acceso) : $request->id_base_acceso ?? ''),
-        //     'acceso_todo' => $accesoTodo,
-
-        //     'div_puesto' => $accesoTodo ? 0 : (!empty(implode(',', (array) $request->tipo_acceso_t)) ? 1 : 0),
-        //     'div_base' => $accesoTodo ? 0 : (!empty(implode(',', (array) $request->id_base_acceso)) ? 1 : 0),
-        //     // 'div_base' => $accesoTodo ? 0 : 1,
-        //     'div_area' => $accesoTodo ? 0 : (!empty(implode(',', (array) $request->id_area_acceso)) ? 1 : 0),
-        //     // 'div_area' => $accesoTodo ?  0 : 1,
-        //     'div_nivel' => $accesoTodo ? 0 : (!empty(implode(',', (array) $request->id_nivel_acceso)) ? 1 : 0),
-        //     // 'div_nivel' => $accesoTodo ?  0 : 1,
-        //     'div_gerencia' => $accesoTodo ? 0 : (!empty(implode(',', (array) $request->id_gerencia_acceso)) ? 1 : 0),
-        //     // 'div_gerencia' => $accesoTodo ? 0 : 1,
-        //     'archivo' => $archivo ?? '',
-        //     'archivo2' => $request->archivo2 ?? '',
-        //     'archivo3' => $request->archivo3 ?? '',
-        //     'archivo4' =>  $documento ?? '',
-        //     'archivo5' => $diagrama ?? '',
-        //     'user_aprob' => $request->user_aprob ?? 0,
-        //     'fec_aprob' => $request->fec_aprob ?? null,
-        //     'estado_registro' => $request->estado_registro ?? 1,
-        //     'estado' => $request->estado ?? 1,
-        //     'fec_reg' => $request->fec_reg ?? now(),
-        //     'user_reg' => session('usuario')->id_usuario,
-        //     'fec_act' => $request->fec_act ?? null,
-        //     'user_act' => $request->user_act ?? null,
-        //     'fec_eli' => $request->fec_eli ?? null,
-        //     'user_eli' => $request->user_eli ?? null,
-        // ]);
-        // $id_portal_ag = $portal->id_portal;
-
         // Crear un nuevo registro en la tabla portal_procesos_historial
         ProcesosHistorial::create([
             'id_portal' => $id_portal_ag ?? 1, // ID del portal creado anteriormente
@@ -535,18 +472,116 @@ class ProcesosController extends Controller
 
     public function approve_lm($id)
     {
-        // dd($id);
-        // Procesos::findOrFail($id)->update([
-        //     'estado_registro' => 2,
-        //     'fec_eli' => now(),
-        //     'user_eli' => session('usuario')->id_usuario
-        // ]);
+
         ProcesosHistorial::where('id_portal_historial', $id)->update([
             'estado_registro' => 2,
             'fec_aprob' => now(),
             'user_aprob' => session('usuario')->id_usuario
         ]);
     }
+
+
+
+    public function version_lm($id)
+    {
+        // $get_id = Procesos::findOrFail($id);
+        $get_id = ProcesosHistorial::where('id_portal', $id)->firstOrFail();
+        $div_puesto = $get_id->div_puesto;
+
+        // Obtener el valor del campo `id_area` y convertirlo en un array
+        $selected_area_ids = explode(',', $get_id->id_area);
+        $selected_puesto_ids = explode(',', $get_id->acceso);
+
+        $list_tipo = TipoPortal::select('id_tipo_portal', 'nom_tipo')->get();
+
+
+        $list_responsable = Puesto::select('puesto.id_puesto', 'puesto.nom_puesto', 'area.cod_area')
+            ->join('area', 'puesto.id_area', '=', 'area.id_area')  // Realiza el INNER JOIN entre Puesto y Area
+            ->where('puesto.estado', 1)
+            ->orderBy('puesto.nom_puesto', 'ASC')
+            ->get()
+            ->unique('nom_puesto');
+
+        $list_area = Area::select('id_area', 'nom_area')
+            ->where('estado', 1)
+            ->orderBy('id_area', 'ASC')
+            ->get()
+            ->unique('nom_area');
+
+        // dd($list_area);
+        $list_procesos = ProcesosHistorial::select(
+            'portal_procesos_historial.id_portal_historial',
+            'portal_procesos_historial.id_portal',
+            'portal_procesos_historial.version',
+            'portal_procesos_historial.codigo',
+            'portal_procesos_historial.nombre',
+            'portal_procesos_historial.id_tipo',
+            'portal_procesos_historial.id_area',
+            'portal_procesos_historial.id_responsable',
+            'portal_procesos_historial.fecha',
+            'portal_procesos_historial.estado_registro',
+            'portal_procesos_historial.archivo',
+            'portal_procesos_historial.archivo4',
+            'portal_procesos_historial.archivo5'
+
+
+        )
+            ->where('portal_procesos_historial.id_portal', '=', $id)
+            ->where('portal_procesos_historial.estado', '=', 1)
+            ->orderBy('portal_procesos_historial.codigo', 'ASC')
+            ->get();
+
+
+        // Preparar un array para almacenar los nombres de las áreas y del responsable
+        foreach ($list_procesos as $proceso) {
+            $ids = explode(',', $proceso->id_area);
+            $nombresAreas = DB::table('area')
+                ->whereIn('id_area', $ids)
+                ->pluck('nom_area');
+
+            $proceso->nombres_area = $nombresAreas->implode(', ');
+            $nombreResponsable = DB::table('puesto')
+                ->where('id_puesto', $proceso->id_responsable)
+                ->value('nom_puesto');
+            $nombreTipoPortal = DB::table('tipo_portal')
+                ->where('id_tipo_portal', $proceso->id_tipo)
+                ->value('nom_tipo');
+
+            $proceso->nombre_responsable = $nombreResponsable;
+            $proceso->nombre_tipo_portal = $nombreTipoPortal;
+
+            switch ($proceso->estado_registro) {
+                case 0:
+                    $proceso->estado_texto = 'Publicado';
+                    break;
+                case 1:
+                    $proceso->estado_texto = 'Por aprobar';
+                    break;
+                case 2:
+                    $proceso->estado_texto = 'Publicado';
+                    break;
+                case 3:
+                    $proceso->estado_texto = 'Por actualizar';
+                    break;
+                default:
+                    $proceso->estado_texto = 'Desconocido';
+                    break;
+            }
+        }
+        $ultima_version = $list_procesos->isNotEmpty() ? $list_procesos->last()->version + 1 : 1;
+        return view('interna.procesos.portalprocesos.listamaestra.modal_editar', compact(
+            'get_id',
+            'list_tipo',
+            'list_responsable',
+            'list_area',
+            'selected_area_ids',
+            'selected_puesto_ids',
+            'div_puesto',
+            'list_procesos',
+            'ultima_version'
+        ));
+    }
+
 
     public function edit_lm($id)
     {

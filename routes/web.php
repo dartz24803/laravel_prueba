@@ -16,6 +16,7 @@ use App\Http\Controllers\AmonestacionController;
 use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
 use App\Http\Controllers\AsistenciaSegController;
+use App\Http\Controllers\BiReporteController;
 use App\Http\Controllers\CajaInicioController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
@@ -201,19 +202,37 @@ Route::controller(ProcesosController::class)->group(function () {
     Route::get('portalprocesos', 'index')->name('portalprocesos');
     Route::get('portalprocesos_lm', 'index_lm')->name('portalprocesos_lm');
     Route::get('portalprocesos_lm/list', 'list_lm')->name('portalprocesos_lm.list');
-    Route::get('portalprocesos_lm/create', 'create_lm')->name('portalprocesos_lm.create');
+    Route::get('portalprocesos_lm/create', 'create_ra')->name('portalprocesos_lm.create');
     Route::get('portalprocesos_lm/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_lm')->name('portalprocesos_lm.excel');
     Route::post('portalprocesos_lm', 'store_lm')->name('portalprocesos_lm.store');
     Route::get('portalprocesos_lm/{id}/image', 'image_lm')->name('portalprocesos_lm.image');
     Route::delete('portalprocesos_lm/{id}', 'destroy_lm')->name('portalprocesos_lm.destroy');
     Route::post('portalprocesos_lm/{id}', 'approve_lm')->name('portalprocesos_lm.approve');
     Route::get('portalprocesos_lm/{id}/edit', 'edit_lm')->name('portalprocesos_lm.edit');
+    Route::get('portalprocesos_lm/{id}/version', 'version_lm')->name('portalprocesos_lm.version');
     Route::put('portalprocesos_lm/{id}', 'update_lm')->name('portalprocesos_lm.update');
     Route::get('puestos-por-areas', 'getPuestosPorAreas')->name('puestos_por_areas');
 
 
     // CONFIGURABLES - ADMINISTRABLES
     Route::get('portalprocesos_lm_conf', 'index_lm_conf')->name('portalprocesos_lm_conf');
+});
+
+//BI REPORTES - 
+Route::controller(BiReporteController::class)->group(function () {
+    Route::get('bireporte', 'index')->name('bireporte');
+    Route::get('bireporte_ra', 'index_ra')->name('bireporte_ra');
+    Route::get('bireporte_ra/list', 'list_ra')->name('bireporte_ra.list');
+    Route::get('bireporte_ra/create', 'create_ra')->name('bireporte_ra.create');
+    Route::get('bireporte_ra/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_lm')->name('bireporte_ra.excel');
+    Route::post('bireporte_ra', 'store_ra')->name('bireporte_ra.store');
+    Route::delete('bireporte_ra/{id}', 'destroy_ra')->name('bireporte_ra.destroy');
+    Route::get('bireporte_ra/{id}/edit', 'edit_ra')->name('bireporte_ra.edit');
+    Route::put('bireporte_ra/{id}', 'update_ra')->name('bireporte_ra.update');
+
+
+    // CONFIGURABLES - ADMINISTRABLES
+    Route::get('bireporte_ra_conf', 'index_ra_conf')->name('bireporte_ra_conf');
 });
 
 
@@ -734,6 +753,7 @@ Route::controller(NotificacionConfController::class)->group(function () {
     Route::get('notificacion_conf_ti/{id}/edit', 'edit_ti')->name('notificacion_conf_ti.edit');
     Route::put('notificacion_conf_ti/{id}', 'update_ti')->name('notificacion_conf_ti.update');
     Route::delete('notificacion_conf_ti/{id}', 'destroy_ti')->name('notificacion_conf_ti.destroy');
+    Route::put('notificacion/{id}/leido', 'update_leido')->name('notificacion.update_leido');
 });
 
 
