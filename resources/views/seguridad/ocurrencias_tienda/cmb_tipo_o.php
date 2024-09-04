@@ -5,4 +5,9 @@
     <?php foreach($list_tipo as $list){ ?>
         <option value="<?php echo $list->id_tipo_ocurrencia; ?>"><?php echo $list->nom_tipo_ocurrencia; ?></option>  
     <?php } ?>
-</select> 
+</select>
+<script>
+    var ss = $(".basic").select2({
+        tags: true,
+    });
+</script>
