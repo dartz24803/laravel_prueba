@@ -39,4 +39,25 @@ class Pregunta extends Model
         $query = DB::select($sql);
         return $query;
     }
+
+    public static function get_list_pregunta_evaluacion($dato){
+        $sql = "SELECT id,descripcion FROM 
+                (
+                    SELECT id,descripcion FROM pregunta
+                    WHERE id_puesto=".$dato['id_puesto']." AND id_tipo=1 AND estado=1
+                    ORDER BY RAND()
+                    LIMIT 15
+                ) AS t1
+                UNION ALL
+                SELECT id,descripcion FROM 
+                (
+                    SELECT id,descripcion FROM pregunta
+                    WHERE id_puesto=".$dato['id_puesto']." AND id_tipo=2 AND estado=1
+                    ORDER BY RAND()
+                    LIMIT 5
+                ) AS t2
+                ORDER BY RAND()";
+        $query = DB::select($sql);
+        return $query;
+    }
 }

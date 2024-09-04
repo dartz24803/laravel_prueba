@@ -15,13 +15,16 @@ class NotificacionConfController extends Controller
 
     public function update_leido($id)
     {
-        Notificacion::findOrFail($id)->update([
-            'leido' => 1,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
         $get_id = Notificacion::findOrFail($id);
-        echo $get_id->id_tipo;
+        if($get_id->id_tipo!="46"){
+            Notificacion::findOrFail($id)->update([
+                'leido' => 1,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }else{
+            echo $get_id->solicitante;
+        }
     }
 
     public function index()
