@@ -185,6 +185,7 @@ $id_nivel= session('usuario')->id_nivel;
         $("#hlocurrencia").addClass('active');
 
         Traer_Tipo_Ocurrencia_Busq();
+        Cambiar_Ocurrencia_Admin();
         <?php if(session('usuario')->id_nivel==1 || session('usuario')->id_puesto==23 || 
         session('usuario')->id_puesto==24 || session('usuario')->id_puesto==26 || session('usuario')->id_puesto==36 || session('usuario')->id_puesto===315){ ?>
             Cambiar_Ocurrencia_Admin();
