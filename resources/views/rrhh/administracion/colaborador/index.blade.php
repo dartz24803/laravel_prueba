@@ -91,6 +91,8 @@
 
     //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
     function Active_Tabla_Colaboradores(){
+        $("#Situacion").removeClass('active');
+        $("#Regimen").removeClass('active');
         $("#Referencia").removeClass('active');
         $("#Parentesco").removeClass('active');
         $("#Nacionalidad").removeClass('active');
@@ -419,6 +421,28 @@
             headers: {
                 'X-CSRF-TOKEN': csrfToken
             },
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+    
+    function TablaSituacion() {
+        Cargando();
+        Active_Tabla_Colaboradores();
+
+        $("#Situacion").addClass('active');
+        var csrfToken = $('input[name="_token"]').val();
+
+        var url = "{{ url('ColaboradorConfController/Situacion_Laboral') }}";
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            
             success: function(resp) {
                 $('#div_colaborador_conf').html(resp);
             }

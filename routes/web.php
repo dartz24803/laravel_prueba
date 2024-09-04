@@ -376,11 +376,11 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Update_Regimen', 'Update_Regimen');
     Route::post('ColaboradorConfController/Delete_Regimen', 'Delete_Regimen');
     Route::post('ColaboradorConfController/Situacion_Laboral', 'Situacion_Laboral');
-    Route::get('ColaboradorConfController/Situacion_Laboral', 'Situacion_Laboral');
-    Route::get('ColaboradorConfController/Situacion_Laboral/{id}', 'Situacion_Laboral');
-    Route::post('ColaboradorConfController/Situacion_Laboral', 'Situacion_Laboral');
-    Route::post('ColaboradorConfController/Situacion_Laboral', 'Situacion_Laboral');
-    Route::post('ColaboradorConfController/Situacion_Laboral', 'Situacion_Laboral');
+    Route::get('ColaboradorConfController/Modal_Situacion_Laboral', 'Modal_Situacion_Laboral');
+    Route::get('ColaboradorConfController/Modal_Update_Situacion_Laboral/{id}', 'Modal_Update_Situacion_Laboral');
+    Route::post('ColaboradorConfController/Insert_Situacion_Laboral', 'Insert_Situacion_Laboral');
+    Route::post('ColaboradorConfController/Update_Situacion_Laboral', 'Update_Situacion_Laboral');
+    Route::post('ColaboradorConfController/Delete_Situacion_Laboral', 'Delete_Situacion_Laboral');
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function () {

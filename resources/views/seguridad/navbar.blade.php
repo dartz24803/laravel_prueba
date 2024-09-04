@@ -153,7 +153,7 @@
     </ul>
 </li>
 
-@if (session('usuario')->id_nivel == 1 ||
+@if ((session('usuario')->id_nivel == 1 ||
 session('usuario')->id_nivel == 2 ||
 session('usuario')->id_nivel == 7 ||
 session('usuario')->id_nivel == 11 ||
@@ -192,7 +192,8 @@ session('usuario')->id_puesto == 27 ||
 session('usuario')->id_puesto == 10 ||
 session('usuario')->id_puesto == 311 ||
 session('usuario')->id_puesto == 315 ||
-session('usuario')->id_puesto == 312)
+//usuarios de base no deben ver configurables
+session('usuario')->id_puesto == 312) && !Str::startsWith(session('usuario')->centro_labores, 'B'))
     <li class="menu menu-heading">
         <div class="heading">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal">
