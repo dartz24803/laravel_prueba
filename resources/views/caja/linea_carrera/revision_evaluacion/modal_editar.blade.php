@@ -1,3 +1,17 @@
+<style>
+    textarea[disabled] {
+        background-color: white !important;
+        color: black;
+    }
+    input[type="radio"]:disabled + label {
+        color: inherit !important;
+    }
+    input[readonly] {
+        background-color: white !important;
+        color: black;
+    }
+</style>
+
 <form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title">Revisión de Evaluación:</h5>
@@ -10,11 +24,15 @@
         @php $i = 1; $nota = 0; @endphp
         @foreach ($list_detalle as $list)
             <div class="row">
-                <div class="form-group col-lg-12">
-                    @if ($list->opciones==null)
+                @if ($list->opciones==null)
+                    <div class="form-group col-lg-12">
                         <label class="control-label text-bold">{{ $i.". ".$list->descripcion }}</label>
+                        <input type="text" class="form-control col-lg-2 mb-2" id="puntaje_{{ $list->id_pregunta }}" 
+                        placeholder="Puntaje" onkeypress="return solo_Numeros_Punto(event);" oninput="Actualizar_Nota(this);">
                         <textarea class="form-control" rows="3" placeholder="Respuesta" disabled>{{ $list->respuesta }}</textarea>
-                    @else
+                    </div>
+                @else
+                    <div class="form-group col-lg-12">
                         @php
                             if($list->respuesta==$list->respuesta_correcta){
                                 $nota++;
@@ -35,8 +53,8 @@
                                 <label class="custom-control-label" for="respuesta_{{ $j.'-'.$list->id_pregunta }}">{{ $pregunta[1] }}</label>
                             </div>
                         @endforeach
-                    @endif
-                </div>
+                    </div>
+                @endif
             </div>
         @php $i++; @endphp
         @endforeach
@@ -46,7 +64,7 @@
                 <label class="control-label text-bold">Nota:</label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="notae" id="notae" placeholder="Nota" value="{{ $nota }}" onkeypress="return solo_Numeros(event);">
+                <input type="text" class="form-control" name="notae" id="notae" placeholder="Nota" value="{{ $nota }}" readonly>
             </div>
         </div>
     </div>
@@ -60,6 +78,37 @@
 </form>
 
 <script>
+    var valores_anteriores = {};
+
+    function Actualizar_Nota(input) {
+        var id = input.id;
+        var valor = parseFloat(input.value);
+
+        // Si el valor es NaN (input vacío), considera el valor como 0
+        if (isNaN(valor) || valor < 0 || valor > 1) {
+            input.value = '';
+            valor = 0;
+        }
+
+        // Si el input ha sido previamente llenado, resta el valor anterior
+        if (valores_anteriores.hasOwnProperty(id)) {
+            var valor_anterior = valores_anteriores[id];
+            Actualizar_Valor_Acumulado(-valor_anterior);
+        }
+
+        // Suma el nuevo valor al acumulado
+        Actualizar_Valor_Acumulado(valor);
+
+        // Almacena el nuevo valor como el valor anterior
+        valores_anteriores[id] = valor;
+    }
+
+    function Actualizar_Valor_Acumulado(valor) {
+        var nota = parseFloat(document.getElementById('notae').value);
+        nota += valor;
+        document.getElementById('notae').value = nota.toFixed(1);
+    }
+
     function Update_Revision_Evaluacion() {
         Cargando();
 
