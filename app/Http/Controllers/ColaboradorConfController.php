@@ -24,6 +24,9 @@ use App\Models\Parentesco;
 use App\Models\ReferenciaLaboral;
 use App\Models\Regimen;
 use App\Models\SituacionLaboral;
+use App\Models\TipoContrato;
+// use App\Models\SituacionLaboral;
+// use App\Models\SituacionLaboral;
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
 
@@ -1934,5 +1937,69 @@ class ColaboradorConfController extends Controller
         $dato['fec_eli'] = now();
         $dato['user_eli'] = session('usuario')->id_usuario;
         SituacionLaboral::findOrFail($request->input("id_situacion_laboral"))->update($dato);
+    }
+    
+    //-------------------------------------TIPO CONTRATO----------------------------------
+    public function Tipo_Contrato(){
+        $dato['list_tipo_contrato'] = TipoContrato::where('estado', 1)
+                                    ->get();
+        return view('rrhh.administracion.colaborador.TipoContrato.index',$dato);
+    }
+
+    public function Modal_Tipo_Contrato(){
+        return view('rrhh.administracion.colaborador.TipoContrato.modal_registrar');   
+    }
+
+    public function Insert_Tipo_Contrato(Request $request){
+        $request->validate([
+            'nom_tipo_contrato' => 'required',
+        ],[
+            'nom_tipo_contrato.required' => 'Debe ingresar descripcion de situacion laboral.',
+        ]);
+        $valida = TipoContrato::where('nom_tipo_contrato', $request->nom_tipo_contrato)
+                    ->exists();
+        if($valida){
+            echo "error";
+        }else{
+            $dato['id_situacion_laboral'] = 2;
+            $dato['nom_tipo_contrato']= $request->input("nom_tipo_contrato");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            TipoContrato::create($dato);
+        }
+    }
+
+    public function Modal_Update_Tipo_Contrato($id_tipo_contrato){
+        $dato['get_id'] = TipoContrato::where('id_tipo_contrato', $id_tipo_contrato)
+                        ->get();
+        return view('rrhh.administracion.colaborador.TipoContrato.modal_editar',$dato);
+    }
+
+    public function Update_Tipo_Contrato(Request $request){
+        $request->validate([
+            'nom_tipo_contrato' => 'required',
+        ],[
+            'nom_tipo_contrato.required' => 'Debe ingresar descripcion de situacion laboral.',
+        ]);
+        $valida = TipoContrato::where('nom_tipo_contrato', $request->nom_tipo_contrato)
+                    ->exists();
+        if($valida){
+            echo "error";
+        }else{
+            $dato['nom_tipo_contrato']= $request->input("nom_tipo_contrato");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            TipoContrato::findOrFail($request->id_tipo_contrato)->update($dato);
+        }
+    }
+    
+    public function Delete_Tipo_Contrato(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        TipoContrato::findOrFail($request->input("id_tipo_contrato"))->update($dato);
     }
 }

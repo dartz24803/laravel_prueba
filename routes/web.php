@@ -381,6 +381,12 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Situacion_Laboral', 'Insert_Situacion_Laboral');
     Route::post('ColaboradorConfController/Update_Situacion_Laboral', 'Update_Situacion_Laboral');
     Route::post('ColaboradorConfController/Delete_Situacion_Laboral', 'Delete_Situacion_Laboral');
+    Route::post('ColaboradorConfController/Tipo_Contrato', 'Tipo_Contrato');
+    Route::get('ColaboradorConfController/Modal_Tipo_Contrato', 'Modal_Tipo_Contrato');
+    Route::get('ColaboradorConfController/Modal_Update_Tipo_Contrato/{id}', 'Modal_Update_Tipo_Contrato');
+    Route::post('ColaboradorConfController/Insert_Tipo_Contrato', 'Insert_Tipo_Contrato');
+    Route::post('ColaboradorConfController/Update_Tipo_Contrato', 'Update_Tipo_Contrato');
+    Route::post('ColaboradorConfController/Delete_Tipo_Contrato', 'Delete_Tipo_Contrato');
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function () {
