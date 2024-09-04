@@ -46,7 +46,7 @@
                 <label class="control-label text-bold">Nota:</label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="nota" id="nota" placeholder="Nota" value="{{ $nota }}" onkeypress="return solo_Numeros(event);">
+                <input type="text" class="form-control" name="notae" id="notae" placeholder="Nota" value="{{ $nota }}" onkeypress="return solo_Numeros(event);">
             </div>
         </div>
     </div>
@@ -54,17 +54,17 @@
     <div class="modal-footer">
         @csrf
         @method('PUT')
-        {{--<button class="btn btn-primary" type="button" onclick="Update_Error();">Guardar</button>--}}
+        <button class="btn btn-primary" type="button" onclick="Update_Revision_Evaluacion();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
-    function Update_Error() {
+    function Update_Revision_Evaluacion() {
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('observacion_conf_err.update', $get_id->id) }}";
+        var url = "{{ route('linea_carrera_re.update', $get_id->id) }}";
 
         $.ajax({
             url: url,
@@ -73,25 +73,14 @@
             processData: false,
             contentType: false,
             success: function(data) {
-                if(data=="error"){
-                    Swal({
-                        title: '¡Actualización Denegada!',
-                        text: "¡El registro ya existe!",
-                        type: 'error',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK',
-                    });
-                }else{
-                    swal.fire(
-                        '¡Actualización Exitosa!',
-                        '¡Haga clic en el botón!',
-                        'success'
-                    ).then(function() {
-                        Lista_Error();
-                        $("#ModalUpdate .close").click();
-                    });  
-                }
+                swal.fire(
+                    'Revisión Exitosa!',
+                    '¡Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                    Lista_Revision_Evaluacion();
+                    $("#ModalUpdate .close").click();
+                });  
             },
             error:function(xhr) {
                 var errors = xhr.responseJSON.errors;
