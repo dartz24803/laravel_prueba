@@ -162,7 +162,7 @@
     session('usuario')->id_puesto == 158 || session('usuario')->id_puesto == 9 || session('usuario')->id_puesto == 128 ||
     session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 10
 ) { ?>
-    <li class="menu" id="procesosconf">
+    <!-- <li class="menu" id="procesosconf">
         <a href="#rprocesos" id="hprocesos" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div class="">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
@@ -186,7 +186,7 @@
                 </a>
             </li>
         </ul>
-    </li>
+    </li> -->
 <?php } ?>
 
 
@@ -203,7 +203,7 @@
     session('usuario')->id_puesto == 158 || session('usuario')->id_puesto == 9 || session('usuario')->id_puesto == 128 ||
     session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 10
 ) { ?>
-    <li class="menu" id="biconf">
+    <!-- <li class="menu" id="biconf">
         <a href="#rbi" id="hbi" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div class="">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
@@ -227,5 +227,5 @@
                 </a>
             </li>
         </ul>
-    </li>
+    </li> -->
 <?php } ?>

@@ -227,11 +227,11 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('bireporte_ra/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_lm')->name('bireporte_ra.excel');
     Route::post('bireporte_ra', 'store_ra')->name('bireporte_ra.store');
     Route::get('bireporte_ra/{id}/image', 'image_lm')->name('bireporte_ra.image');
-    Route::delete('bireporte_ra/{id}', 'destroy_lm')->name('bireporte_ra.destroy');
+    Route::delete('bireporte_ra/{id}', 'destroy_ra')->name('bireporte_ra.destroy');
     Route::post('bireporte_ra/{id}', 'approve_lm')->name('bireporte_ra.approve');
     Route::get('bireporte_ra/{id}/edit', 'edit_ra')->name('bireporte_ra.edit');
     Route::get('bireporte_ra/{id}/version', 'version_lm')->name('bireporte_ra.version');
-    Route::put('bireporte_ra/{id}', 'update_lm')->name('bireporte_ra.update');
+    Route::put('bireporte_ra/{id}', 'update_ra')->name('bireporte_ra.update');
 
 
     // CONFIGURABLES - ADMINISTRABLES

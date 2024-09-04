@@ -105,14 +105,13 @@
 
         <div class="row">
             <div class="form-group col-md-4">
-                <label for="ndocumento">Reporte: </label>
-                <input type="text" class="form-control" id="ndocumento" name="ndocumento" placeholder="Nombre Reporte">
+                <label for="nomreporte">Reporte: </label>
+                <input type="text" class="form-control" id="nomreporte" name="nomreporte" placeholder="Nombre Reporte">
             </div>
             <div class="form-group col-lg-8">
                 <label>Iframe:</label>
-                <textarea name="descripcion" id="descripcion" cols="1" rows="2" class="form-control"></textarea>
+                <textarea name="iframe" id="iframe" cols="1" rows="2" class="form-control"></textarea>
             </div>
-
 
         </div>
 

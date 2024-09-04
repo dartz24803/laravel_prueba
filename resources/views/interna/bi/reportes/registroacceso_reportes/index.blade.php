@@ -66,8 +66,8 @@
             Registrar
         </button>
         <!-- <a id="modal_apertura_cierre" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('apertura_cierre_reg.create') }}"></a> -->
-
-        <a class="btn mb-2 mb-sm-0 mb-md-2 mb-lg-0" style="background-color: #28a745 !important;" onclick="Excel_Apertura_Cierre();">
+        <!-- 
+        <a class="btn mb-2 mb-sm-0 mb-md-2 mb-lg-0" style="background-color: #28a745 !important;" onclick="Excel_reporteBI();">
             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="64" height="64" viewBox="0 0 172 172" style=" fill:#000000;">
                 <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
                     <path d="M0,172v-172h172v172z" fill="none"></path>
@@ -76,7 +76,7 @@
                     </g>
                 </g>
             </svg>
-        </a>
+        </a> -->
     </div>
 </div>
 
@@ -102,22 +102,22 @@
     }
 
 
-    function Excel_Apertura_Cierre() {
+    function Excel_reporteBI() {
         var cod_base = $('#cod_baseb').val();
         var fec_ini = $('#fecha_iniciob').val();
         var fec_fin = $('#fecha_finb').val();
         window.location = "{{ route('portalprocesos_lm.excel', [':cod_base', ':fec_ini', ':fec_fin']) }}".replace(':cod_base', cod_base).replace(':fec_ini', fec_ini).replace(':fec_fin', fec_fin);
     }
 
-    function Delete_Proceso(id) {
+    function Delete_ReporteBI(id) {
         Cargando();
 
-        var url = "{{ route('portalprocesos_lm.destroy', ':id') }}".replace(':id', id);
+        var url = "{{ route('bireporte_ra.destroy', ':id') }}".replace(':id', id);
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({
-            title: '¿Realmente desea eliminar el registro1111?',
-            text: "El registro será eliminado permanentemente1111",
+            title: '¿Realmente desea eliminar el registro22?',
+            text: "El registro será eliminado permanentemente22",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Si',

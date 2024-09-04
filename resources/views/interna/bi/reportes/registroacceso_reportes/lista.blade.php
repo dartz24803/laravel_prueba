@@ -39,12 +39,12 @@
             </td>
             <td>
                 <!-- Aquí irían las acciones como editar, eliminar, etc. -->
-                <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('portalprocesos_lm.edit', $reporte->id_acceso_bi_reporte) }}">
+                <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('bireporte_ra.edit', $reporte->id_acceso_bi_reporte) }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                     </svg>
                 </a>
-                <a href="javascript:void(0);" title="Eliminar" onclick="Delete_Proceso('{{ $reporte->id_acceso_bi_reporte }}')">
+                <a href="javascript:void(0);" title="Eliminar" onclick="Delete_ReporteBI('{{ $reporte->id_acceso_bi_reporte }}')">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
                         <polyline points="3 6 5 6 21 6"></polyline>
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -61,9 +61,10 @@
 <script>
     var tabla = $('#tabla_js').DataTable({
         "columnDefs": [{
-            "width": "180px",
-            "targets": [2, 3] // Aplica a las columnas de Áreas y Puestos con Acceso
+            "width": "300px",
+            "targets": [2] // Aplica a las columnas de Áreas y Puestos con Acceso
         }],
+        "ordering": false,
         "autoWidth": false,
         "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
             "<'table-responsive'tr>" +

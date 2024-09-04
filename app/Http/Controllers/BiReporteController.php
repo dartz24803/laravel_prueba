@@ -67,7 +67,7 @@ class BiReporteController extends Controller
         )
             ->where('acceso_bi_reporte.acceso', '!=', '')
             ->where('acceso_bi_reporte.estado', '=', 1)
-            ->orderBy('acceso_bi_reporte.codigo', 'ASC')
+            ->orderBy('acceso_bi_reporte.fec_reg', 'DESC') // Ordena por fec_reg en orden ascendente
             ->get();
 
         // Preparar un array para almacenar los nombres de las áreas y del responsable
@@ -142,23 +142,9 @@ class BiReporteController extends Controller
 
 
 
-
-
-    public function image_lm($id)
-    {
-        $get_id = ProcesosHistorial::where('id_portal', $id)->firstOrFail();
-        // Construye la URL completa de la imagen
-        $imageUrl = null;
-        if ($get_id->archivo) {
-            $imageUrl = "https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/" . $get_id->archivo;
-        }
-        return view('interna.procesos.portalprocesos.listamaestra.modal_imagen', compact('get_id', 'imageUrl'));
-    }
-
-
     public function store_ra(Request $request)
     {
-        $id = $request->input('id_acceso_bi_reporte');
+        // $id = $request->input('id_acceso_bi_reporte');
 
         $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
 
@@ -183,50 +169,34 @@ class BiReporteController extends Controller
         $list_responsable_string = implode(',', $list_responsable);
         $list_area_string = implode(',', $list_area);
 
-        $get_id = BiReporte::where('id_acceso_bi_reporte', $id)->firstOrFail();
+        // $get_id = BiReporte::where('id_acceso_bi_reporte', $id)->firstOrFail();
 
         // Crear un nuevo registro en la tabla portal_procesos_historial
         BiReporte::create([
-            'id_portal' => $id_portal_ag ?? 1, // ID del portal creado anteriormente
-            'codigo' => $request->codigo ?? 'SIN CÓDIGO',
-            'numero' => $request->ndocumento ?? '',
-            'version' => 1,
-            'nombre' => $request->nombre ?? '',
-            'id_tipo' => $request->id_portal ?? null,
+            'codigo' => $request->codigo ?? '23AR00001',
+            'nom_reporte' => $request->nomreporte ?? '',
+            'acceso_todo' => $accesoTodo,
             'id_area' => $accesoTodo
                 ? $list_area_string
                 : (is_array($request->id_area_acceso_t) ? implode(',', $request->id_area_acceso_t) : $request->id_area_acceso_t ?? ''),
             'fecha' => $request->fecha ?? null,
-            'etiqueta' => is_array($request->etiqueta) ? implode(',', $request->etiqueta) : $request->etiqueta ?? '',
-            'descripcion' => $request->descripcion ?? '',
+            'iframe' => $request->iframe ?? '',
             'id_responsable' => is_array($request->id_puesto) ? implode(',', $request->id_puesto) : $request->id_puesto ?? null,
             'acceso' => $accesoTodo
                 ? $list_responsable_string
                 : (is_array($request->tipo_acceso_t) ? implode(',', $request->tipo_acceso_t) : $request->tipo_acceso_t ?? ''),
-            'acceso_area' => $accesoTodo
-                ? $list_area_string
-                : (is_array($request->id_area_acceso) ? implode(',', $request->id_area_acceso) : $request->id_area_acceso ?? ''),
-            'acceso_todo' => $accesoTodo,
-            'div_puesto' => $accesoTodo ? 0 : (!empty($request->tipo_acceso_t) ? 1 : 0),
-            'div_base' => $accesoTodo ? 0 : (!empty($request->id_base_acceso) ? 1 : 0),
-            'div_area' => $accesoTodo ? 0 : (!empty($request->id_area_acceso) ? 1 : 0),
-            'div_nivel' => $accesoTodo ? 0 : (!empty($request->id_nivel_acceso) ? 1 : 0),
-            'div_gerencia' => $accesoTodo ? 0 : (!empty($request->id_gerencia_acceso) ? 1 : 0),
-            'archivo' => $archivo ?? '',
-            'archivo2' => $request->archivo2 ?? '',
-            'archivo3' => $request->archivo3 ?? '',
-            'archivo4' =>  $documento ?? '',
-            'archivo5' => $diagrama ?? '',
-            'user_aprob' => $request->user_aprob ?? 0,
-            'fec_aprob' => $request->fec_aprob ?? null,
-            'estado_registro' => $request->estado_registro ?? 1,
             'estado' => $request->estado ?? 1,
             'fec_reg' => $request->fec_reg ? date('Y-m-d H:i:s', strtotime($request->fec_reg)) : now(),
             'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => $request->fec_act ? date('Y-m-d H:i:s', strtotime($request->fec_act)) : null,
-            'user_act' => !empty($request->user_act) ? (int)$request->user_act : null,
-            'fec_eli' => $request->fec_eli ? date('Y-m-d H:i:s', strtotime($request->fec_eli)) : null,
-            'user_eli' => !empty($request->user_eli) ? (int)$request->user_eli : null,
+            'acceso_area' => 0,
+            'acceso_nivel' => 0,
+            'acceso_gerencia' => 0,
+            'acceso_base' => 'OFC',
+            'div_puesto' => 0,
+            'div_base' => 0,
+            'div_area' => 0,
+            'div_nivel' => 0,
+            'div_gerencia' => 0,
         ]);
 
         // Redirigir o devolver respuesta
@@ -234,99 +204,21 @@ class BiReporteController extends Controller
     }
 
 
-    public function update_lm(Request $request, $id)
+    public function update_ra(Request $request, $id)
     {
-        // Obtener el registro del historial de procesos
-        $get_id = ProcesosHistorial::where('id_portal', $id)->firstOrFail();
 
-        // Inicializar variables para los archivos
-        $archivo = $get_id->archivo;
-        $documento = $get_id->archivo4;
-        $diagrama = $get_id->archivo5;
+        BiReporte::where('id_acceso_bi_reporte', $id)->update([
+            'nom_reporte' => $request->nombrea,
+            'iframe' => $request->iframea,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario,
 
-        // Conectar al servidor FTP
-        $ftp_server = "lanumerounocloud.com";
-        $ftp_usuario = "intranet@lanumerounocloud.com";
-        $ftp_pass = "Intranet2022@";
-        $con_id = ftp_connect($ftp_server);
-        $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
-
-        if ($con_id && $lr) {
-            ftp_pasv($con_id, true);
-
-            // Subir archivo 1 si se ha cargado
-            if ($request->hasFile('archivo1e')) {
-                if ($get_id->archivo) {
-                    ftp_delete($con_id, 'PORTAL_PROCESOS/' . basename($get_id->archivo));
-                }
-                $archivo = $request->file('archivo1e')->getClientOriginalName();
-                $request->file('archivo1e')->move(storage_path('app/temp'), $archivo);
-                $source_file = storage_path('app/temp/' . $archivo);
-                $subio = ftp_put($con_id, "PORTAL_PROCESOS/" . $archivo, $source_file, FTP_BINARY);
-                if (!$subio) {
-                    echo "Archivo 1 no subido correctamente";
-                }
-            }
-
-            // Subir documento si se ha cargado
-            if ($request->hasFile('documentoae')) {
-                if ($get_id->archivo4) {
-                    ftp_delete($con_id, 'PORTAL_PROCESOS/' . basename($get_id->archivo4));
-                }
-                $documento = $request->file('documentoae')->getClientOriginalName();
-                $request->file('documentoae')->move(storage_path('app/temp'), $documento);
-                $source_file_doc = storage_path('app/temp/' . $documento);
-                $subio_doc = ftp_put($con_id, "PORTAL_PROCESOS/" . $documento, $source_file_doc, FTP_BINARY);
-                if (!$subio_doc) {
-                    echo "Documento no subido correctamente";
-                }
-            }
-
-            // Subir diagrama si se ha cargado
-            if ($request->hasFile('diagramaae')) {
-                if ($get_id->archivo5) {
-                    ftp_delete($con_id, 'PORTAL_PROCESOS/' . basename($get_id->archivo5));
-                }
-                $diagrama = $request->file('diagramaae')->getClientOriginalName();
-                $request->file('diagramaae')->move(storage_path('app/temp'), $diagrama);
-                $source_file_diag = storage_path('app/temp/' . $diagrama);
-                $subio_diag = ftp_put($con_id, "PORTAL_PROCESOS/" . $diagrama, $source_file_diag, FTP_BINARY);
-                if (!$subio_diag) {
-                    echo "Diagrama no subido correctamente";
-                }
-            }
-
-            ftp_close($con_id); // Cerrar conexión FTP
-        } else {
-            echo "No se conectó al servidor FTP";
-        }
-
-        // Actualiza la tabla 'ProcesosHistorial'
-        DB::table('portal_procesos_historial')
-            ->where('id_portal', $id)
-            ->where('version', 1)
-            ->update([
-                'nombre' => $request->nombre,
-                'id_tipo' => $request->id_tipo,
-                'fecha' => $request->fecha,
-                'id_responsable' => $request->id_responsablee,
-                'codigo' => $request->codigo,
-                'numero' => $request->ndocumento,
-                'version' => $request->versione,
-                'estado_registro' => $request->estadoe,
-                'descripcion' => $request->descripcione ?? '',
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario,
-                'archivo' => $archivo,
-                'archivo4' => $documento,
-                'archivo5' => $diagrama,
-            ]);
+        ]);
     }
 
-    public function destroy_lm($id)
+    public function destroy_ra($id)
     {
-
-        ProcesosHistorial::where('id_portal_historial', $id)->firstOrFail()->update([
+        BiReporte::where('id_acceso_bi_reporte', $id)->firstOrFail()->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario
@@ -455,8 +347,6 @@ class BiReporteController extends Controller
     public function edit_ra($id)
     {
         $get_id = BiReporte::findOrFail($id);
-        // $get_id = ProcesosHistorial::where('id_portal', $id)->firstOrFail();
-
         // Obtener el valor del campo `id_area` y convertirlo en un array
         $selected_area_ids = explode(',', $get_id->id_area);
         $selected_puesto_ids = explode(',', $get_id->acceso);
@@ -474,75 +364,12 @@ class BiReporteController extends Controller
             ->get()
             ->unique('nom_area');
 
-        // dd($list_area);
-        $list_procesos = ProcesosHistorial::select(
-            'portal_procesos_historial.id_portal_historial',
-            'portal_procesos_historial.id_portal',
-            'portal_procesos_historial.version',
-            'portal_procesos_historial.codigo',
-            'portal_procesos_historial.nombre',
-            'portal_procesos_historial.id_tipo',
-            'portal_procesos_historial.id_area',
-            'portal_procesos_historial.id_responsable',
-            'portal_procesos_historial.fecha',
-            'portal_procesos_historial.estado_registro',
-            'portal_procesos_historial.archivo',
-            'portal_procesos_historial.archivo4',
-            'portal_procesos_historial.archivo5'
-
-
-        )
-            ->where('portal_procesos_historial.id_portal', '=', $id)
-            ->where('portal_procesos_historial.estado', '=', 1)
-            ->orderBy('portal_procesos_historial.codigo', 'ASC')
-            ->get();
-
-
-        // Preparar un array para almacenar los nombres de las áreas y del responsable
-        foreach ($list_procesos as $proceso) {
-            $ids = explode(',', $proceso->id_area);
-            $nombresAreas = DB::table('area')
-                ->whereIn('id_area', $ids)
-                ->pluck('nom_area');
-
-            $proceso->nombres_area = $nombresAreas->implode(', ');
-            $nombreResponsable = DB::table('puesto')
-                ->where('id_puesto', $proceso->id_responsable)
-                ->value('nom_puesto');
-            $nombreTipoPortal = DB::table('tipo_portal')
-                ->where('id_tipo_portal', $proceso->id_tipo)
-                ->value('nom_tipo');
-
-            $proceso->nombre_responsable = $nombreResponsable;
-            $proceso->nombre_tipo_portal = $nombreTipoPortal;
-
-            switch ($proceso->estado_registro) {
-                case 0:
-                    $proceso->estado_texto = 'Publicado';
-                    break;
-                case 1:
-                    $proceso->estado_texto = 'Por aprobar';
-                    break;
-                case 2:
-                    $proceso->estado_texto = 'Publicado';
-                    break;
-                case 3:
-                    $proceso->estado_texto = 'Por actualizar';
-                    break;
-                default:
-                    $proceso->estado_texto = 'Desconocido';
-                    break;
-            }
-        }
-        $ultima_version = $list_procesos->isNotEmpty() ? $list_procesos->last()->version + 1 : 1;
         return view('interna.bi.reportes.registroacceso_reportes.modal_editar', compact(
             'get_id',
             'list_responsable',
             'list_area',
             'selected_area_ids',
             'selected_puesto_ids',
-            'list_procesos',
-            'ultima_version'
         ));
     }
 
