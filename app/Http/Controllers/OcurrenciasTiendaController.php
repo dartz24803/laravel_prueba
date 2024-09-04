@@ -520,6 +520,6 @@ class OcurrenciasTiendaController extends Controller{
     public function Traer_Tipo_Ocurrencia_Busq(Request $request){
         $dato['list_tipo'] = OcurrenciaTipo::where('base', $request->input("cod_base"))
                         ->get();
-        return view('seguridad.ocurrencias_tienda.cmb_tipo_o', $dato);
+        return view('seguridad.ocurrencias_tienda.cmb_tipo_o_modal', $dato);
     }
 }
