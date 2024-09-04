@@ -53,7 +53,7 @@ $id_nivel= session('usuario')->id_nivel;
                                     <select class="form-control" id="base_busq" name="base_busq" onchange="Traer_Tipo_Ocurrencia_Busq();">
                                         <option value="Todo">Todos</option>
                                         <?php foreach($list_base as $list){ ?>
-                                            <option value="<?php echo $list['cod_base']; ?>"><?php echo $list['cod_base']; ?></option>
+                                            <option value="<?php echo $list['cod_base']; ?>" <?php if($list['cod_base'] === session('usuario')->centro_labores){ echo "selected"; } ?>><?php echo $list['cod_base']; ?></option>
                                         <?php } ?>
                                     </select>
                                 </div>
@@ -184,6 +184,7 @@ $id_nivel= session('usuario')->id_nivel;
         $("#rseguridades").attr('aria-expanded','true');
         $("#hlocurrencia").addClass('active');
 
+        Traer_Tipo_Ocurrencia_Busq();
         <?php if(session('usuario')->id_nivel==1 || session('usuario')->id_puesto==23 || 
         session('usuario')->id_puesto==24 || session('usuario')->id_puesto==26 || session('usuario')->id_puesto==36 || session('usuario')->id_puesto===315){ ?>
             Cambiar_Ocurrencia_Admin();
