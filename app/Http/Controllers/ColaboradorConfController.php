@@ -2002,4 +2002,5 @@ class ColaboradorConfController extends Controller
         $dato['user_eli'] = session('usuario')->id_usuario;
         TipoContrato::findOrFail($request->input("id_tipo_contrato"))->update($dato);
     }
+    
 }

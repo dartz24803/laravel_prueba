@@ -12,7 +12,7 @@
                     <div class="statbox widget box box-shadow">
                         <div class="widget-content widget-content-area simple-tab">
                             <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
-                                <div class="d-flex align-items-center overflow-auto py-2" id="scroll_tabs">
+                                <div class="d-flex align-items-center overflow-auto py-1" id="scroll_tabs">
                                     <li class="nav-item">
                                         <a id="a_di" class="nav-link" onclick="Direccion();" style="cursor: pointer;">Dirección</a>
                                     </li>
