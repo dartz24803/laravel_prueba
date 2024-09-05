@@ -193,6 +193,20 @@ class LineaCarreraController extends Controller
         return view('caja.linea_carrera.entrenamiento.lista', compact('list_entrenamiento'));
     }
 
+    public function evaluacion_en($id)
+    {
+        $get_id = Entrenamiento::get_list_entrenamiento(['id'=>$id]);
+        $get_usuario = Usuario::select('centro_labores',
+                    DB::raw('LOWER(CONCAT(SUBSTRING_INDEX(usuario_nombres," ",1)," ",usuario_apater)) AS nom_usuario'))
+                    ->where('id_usuario',$get_id->id_usuario)->first();
+        $list_evaluacion = ExamenEntrenamiento::select(DB::raw('DATE_FORMAT(fecha,"%d-%m-%Y") AS fecha'),
+                            'nota',DB::raw('DATE_FORMAT(fecha_revision,"%d-%m-%Y %H:%i:%s") AS fecha_revision'),
+                            'fec_reg AS orden',DB::raw('CASE WHEN nota>=14 THEN "Aprobado" 
+                            WHEN nota<14 THEN "Desaprobado" ELSE "Pendiente de revisión" END AS nom_estado'))
+                            ->where('id_entrenamiento',$id)->where('estado',1)->get();
+        return view('caja.linea_carrera.entrenamiento.modal_evaluacion',compact('get_usuario','list_evaluacion'));
+    }
+
     public function update_en($id)
     {
         $get_id = Entrenamiento::get_list_entrenamiento(['id'=>$id]);
@@ -458,6 +472,23 @@ class LineaCarreraController extends Controller
                     $get_id->id_puesto_aspirado,
                     $get_id->id_base
                 ]);
+            }else{
+                $valida = ExamenEntrenamiento::where('id_entrenamiento',$get_id->id)->where('estado',1)
+                        ->count();
+                        
+                if($valida<2){
+                    if($request->notae>10){
+                        $dias = 5;
+                    }else{
+                        $dias = 10;
+                    }
+                    Entrenamiento::findOrFail($get_id->id)->update([
+                        'fecha_fin' => date('Y-m-d', strtotime('+'.$dias.' days')),
+                        'estado_e' => 1,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+                }
             }
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";

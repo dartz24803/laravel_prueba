@@ -9,8 +9,11 @@
     <link rel="stylesheet" href="{{ asset('template/evaluacion_lc/css/bootstrap.min.css') }}">
     <script src="{{ asset('template/evaluacion_lc/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('template/evaluacion_lc/js/jquery-3.2.1.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('template/evaluacion_lc/sweetalert2/dist/sweetalert2.min.css') }}">
-    <script src="{{ asset('template/evaluacion_lc/sweetalert2/dist/sweetalert2.min.js') }}"></script>
+    <link href="{{ asset('template/plugins/sweetalerts/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('template/plugins/sweetalerts/sweetalert.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('template/assets/css/components/custom-sweetalert.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset('template/plugins/sweetalerts/sweetalert2.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/sweetalerts/custom-sweetalert.js') }}"></script>
     <script src="{{ asset('template/evaluacion_lc/blockui/jquery.blockUI.min.js') }}"></script>
     <script src="{{ asset('template/evaluacion_lc/blockui/custom-blockui.js') }}"></script>
     <style>
@@ -249,10 +252,9 @@
                     text: "La evaluación empezará inmediatamente",
                     type: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
                     confirmButtonText: 'Si',
                     cancelButtonText: 'No',
+                    padding: '2em'
                 }).then((result) => {
                     if (result.value) {
                         $.ajax({
