@@ -184,6 +184,19 @@ class BiReporteController extends Controller
     {
         // $id = $request->input('id_acceso_bi_reporte');
 
+        $request->validate([
+            'nomreporte' =>  'required',
+            'iframe' => 'required',
+            'tipo_acceso_b' => 'required',
+            'id_area_acceso_t' => 'required',
+        ], [
+            'nomreporte.required' => 'Debe ingresar nombre.',
+            'iframe.required' => 'Debe ingresar Iframe.',
+            'tipo_acceso_b.required' => 'Debe seleccionar base.',
+            'id_area_acceso_t.required' => 'Debe seleccionar area.'
+
+        ]);
+
         $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
 
         // Obtener Lista Responsables
@@ -217,7 +230,6 @@ class BiReporteController extends Controller
             // Si no hay reportes previos, iniciar en 23AR00000
             $nuevoCodigo = 1;
         }
-
         // Formatear el código con ceros a la izquierda
         $codigoFormateado = '23AR' . str_pad($nuevoCodigo, 5, '0', STR_PAD_LEFT);
 
@@ -248,6 +260,14 @@ class BiReporteController extends Controller
 
     public function update_ra(Request $request, $id)
     {
+        $request->validate([
+            'nombrea' =>  'required',
+            'iframea' => 'required',
+        ], [
+            'nombrea.required' => 'Debe ingresar nombre.',
+            'iframea.required' => 'Debe ingresar Iframe.',
+
+        ]);
         BiReporte::where('id_acceso_bi_reporte', $id)->update([
             'nom_reporte' => $request->nombrea,
             'iframe' => $request->iframea,

@@ -116,6 +116,7 @@
 
     //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
     function Active_Tabla_Colaboradores(){
+        $("#TipoSangre").removeClass('active');
         $("#TipoDocumento").removeClass('active');
         $("#TipoContrato").removeClass('active');
         $("#Situacion").removeClass('active');
@@ -518,5 +519,61 @@
             }
         });
     }
+
+    function TablaTipoSangre() {
+        Cargando();
+        Active_Tabla_Colaboradores();
+
+        $("#TipoSangre").addClass('active');
+        var csrfToken = $('input[name="_token"]').val();
+
+        var url = "{{ url('ColaboradorConfController/Grupo_Sanguineo') }}";
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+/*-------------------------------------Paolo
+    function TablaTipoVia() {
+        Cargando();
+        Active_Tabla_Colaboradores();
+
+        $("#TipoVia").addClass('active');
+
+        var url = "<?php// echo url(); ?>Corporacion/Tipo_Via";
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function(resp) {
+                $('#lista_escogida').html(resp);
+            }
+        });
+    }
+
+    function TablaTipoVivienda() {
+        Cargando();
+        Active_Tabla_Colaboradores();
+
+        $("#TipoVivienda").addClass('active');
+
+        var url = "<?php// echo url(); ?>Corporacion/Tipo_Vivienda";
+        $.ajax({
+            type: "POST",
+            url: url,
+            success: function(resp) {
+                $('#lista_escogida').html(resp);
+                //$("#ModalRegistro .close").click()
+                $('#TipoVivienda').parents().parents().parents().parents().find('.textocambio').text('Tipo de Vivienda');
+            }
+        });
+    }
+    --------------------------------------------Paolo-----------------------------------------------*/
+
 </script>
 @endsection
