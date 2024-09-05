@@ -539,7 +539,7 @@
             }
         });
     }
-/*
+/*-------------------------------------Paolo
     function TablaTipoVia() {
         Cargando();
         Active_Tabla_Colaboradores();
@@ -572,7 +572,8 @@
                 $('#TipoVivienda').parents().parents().parents().parents().find('.textocambio').text('Tipo de Vivienda');
             }
         });
-    }*/
+    }
+    --------------------------------------------Paolo-----------------------------------------------*/
 
 </script>
 @endsection
