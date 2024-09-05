@@ -401,6 +401,26 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Grupo_Sanguineo', 'Insert_Grupo_Sanguineo');
     Route::post('ColaboradorConfController/Update_Grupo_Sanguineo', 'Update_Grupo_Sanguineo');
     Route::post('ColaboradorConfController/Delete_Grupo_Sanguineo', 'Delete_Grupo_Sanguineo');
+    /*-------------------------------------------------Paolo--------------------------------------
+    Route::post('ColaboradorConfController/Grupo_Sanguineo', 'Grupo_Sanguineo');
+    Route::get('ColaboradorConfController/Modal_Grupo_Sanguineo', 'Modal_Grupo_Sanguineo');
+    Route::get('ColaboradorConfController/Modal_Update_Grupo_Sanguineo/{id}', 'Modal_Update_Grupo_Sanguineo');
+    Route::post('ColaboradorConfController/Insert_Grupo_Sanguineo', 'Insert_Grupo_Sanguineo');
+    Route::post('ColaboradorConfController/Update_Grupo_Sanguineo', 'Update_Grupo_Sanguineo');
+    Route::post('ColaboradorConfController/Delete_Grupo_Sanguineo', 'Delete_Grupo_Sanguineo');
+    Route::post('ColaboradorConfController/Grupo_Sanguineo', 'Grupo_Sanguineo');
+    Route::get('ColaboradorConfController/Modal_Grupo_Sanguineo', 'Modal_Grupo_Sanguineo');
+    Route::get('ColaboradorConfController/Modal_Update_Grupo_Sanguineo/{id}', 'Modal_Update_Grupo_Sanguineo');
+    Route::post('ColaboradorConfController/Insert_Grupo_Sanguineo', 'Insert_Grupo_Sanguineo');
+    Route::post('ColaboradorConfController/Update_Grupo_Sanguineo', 'Update_Grupo_Sanguineo');
+    Route::post('ColaboradorConfController/Delete_Grupo_Sanguineo', 'Delete_Grupo_Sanguineo');
+    Route::post('ColaboradorConfController/Grupo_Sanguineo', 'Grupo_Sanguineo');
+    Route::get('ColaboradorConfController/Modal_Grupo_Sanguineo', 'Modal_Grupo_Sanguineo');
+    Route::get('ColaboradorConfController/Modal_Update_Grupo_Sanguineo/{id}', 'Modal_Update_Grupo_Sanguineo');
+    Route::post('ColaboradorConfController/Insert_Grupo_Sanguineo', 'Insert_Grupo_Sanguineo');
+    Route::post('ColaboradorConfController/Update_Grupo_Sanguineo', 'Update_Grupo_Sanguineo');
+    Route::post('ColaboradorConfController/Delete_Grupo_Sanguineo', 'Delete_Grupo_Sanguineo');
+    ----------------------------------------Paolo----------------------------------*/
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function () {

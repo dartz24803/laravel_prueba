@@ -2133,7 +2133,7 @@ class ColaboradorConfController extends Controller
                 TipoDocumento::create($dato);
             }
     }
-/*
+/*----------------------------------------Paolo
     public function Modal_Update_Grupo_Sanguineo($id_Grupo_Sanguineo){
             $dato['get_id'] = $this->Model_Corporacion->get_id_grupo_sanguineo($id_Grupo_Sanguineo);
             $this->load->view('Admin/Configuracion/GrupoSanguineo/modal_editar',$dato);
@@ -2152,4 +2152,5 @@ class ColaboradorConfController extends Controller
             $dato['id_grupo_sanguineo']= $this->input->post("id_grupo_sanguineo");
             $this->Model_Corporacion->delete_grupo_sanguineo($dato);
     }*/
+    /*---------------------------------------------------------Paolo*/
 }
