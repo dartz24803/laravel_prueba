@@ -99,6 +99,7 @@ class BiReporteController extends Controller
     {
         // $list_tipo = TipoPortal::select('id_tipo_portal', 'nom_tipo')
         // ->get();
+        $list_base = Base::get_list_todas_bases_agrupadas_bi();
 
         $list_responsable = Puesto::select('puesto.id_puesto', 'puesto.nom_puesto', 'area.cod_area')
             ->join('area', 'puesto.id_area', '=', 'area.id_area')  // Realiza el INNER JOIN entre Puesto y Area
@@ -112,10 +113,47 @@ class BiReporteController extends Controller
             ->orderBy('nom_area', 'ASC')
             ->distinct('nom_area')->get();
 
-        return view('interna.bi.reportes.registroacceso_reportes.modal_registrar', compact('list_responsable', 'list_area'));
+        return view('interna.bi.reportes.registroacceso_reportes.modal_registrar', compact(
+            'list_responsable',
+            'list_area',
+            'list_base'
+        ));
     }
 
-    public function getPuestosPorAreas(Request $request)
+    public function getAreasPorBase(Request $request)
+    {
+        $idsBases = $request->input('bases');
+        // Verifica si $idsAreas es vacío o null
+        if (empty($idsBases)) {
+            // Si es vacío o null, obten todos los id_area de la tabla Area
+            $bases = Base::select('id_base')
+                ->where('estado', 1)
+                ->orderBy('cod_base', 'ASC')
+                ->distinct('cod_base')
+                ->get()
+                ->pluck('id_base'); // Obtener solo los valores de id_area como un array
+
+            $idsBases = $bases->toArray(); // Convertir a un array para usar en la consulta
+        }
+
+        // Filtra las áreas basadas en los idsBases seleccionados
+        $areas = Area::where(function ($query) use ($idsBases) {
+            foreach ($idsBases as $idBase) {
+                $query->orWhereRaw("FIND_IN_SET(?, id_base)", [$idBase]);
+            }
+        })
+            ->where('estado', 1)
+            ->get();
+        // $areas = Area::whereIn('id_base', $idsBases)
+        //     ->where('estado', 1)
+        //     ->get();
+
+        // Filtra los puestos basados en las áreas seleccionadas
+        return response()->json($areas);
+    }
+
+
+    public function getPuestosPorAreasBi(Request $request)
     {
         $idsAreas = $request->input('areas');
         // Verifica si $idsAreas es vacío o null
@@ -169,11 +207,23 @@ class BiReporteController extends Controller
         $list_responsable_string = implode(',', $list_responsable);
         $list_area_string = implode(',', $list_area);
 
-        // $get_id = BiReporte::where('id_acceso_bi_reporte', $id)->firstOrFail();
+        // Verificar si existe un código previo, si no, iniciar con 23AR00000
+        $ultimoReporte = BiReporte::latest('id_acceso_bi_reporte')->first();
+        if ($ultimoReporte) {
+            // Extraer la parte numérica del código (ej: 00001)
+            $ultimoCodigo = intval(substr($ultimoReporte->codigo, 4)); // Asumiendo que el prefijo es "23AR"
+            $nuevoCodigo = $ultimoCodigo + 1; // Incrementar el número
+        } else {
+            // Si no hay reportes previos, iniciar en 23AR00000
+            $nuevoCodigo = 1;
+        }
+
+        // Formatear el código con ceros a la izquierda
+        $codigoFormateado = '23AR' . str_pad($nuevoCodigo, 5, '0', STR_PAD_LEFT);
 
         // Crear un nuevo registro en la tabla portal_procesos_historial
         BiReporte::create([
-            'codigo' => $request->codigo ?? '23AR00001',
+            'codigo' => $request->codigo ?? $codigoFormateado,
             'nom_reporte' => $request->nomreporte ?? '',
             'acceso_todo' => $accesoTodo,
             'id_area' => $accesoTodo
@@ -188,6 +238,7 @@ class BiReporteController extends Controller
             'estado' => $request->estado ?? 1,
             'fec_reg' => $request->fec_reg ? date('Y-m-d H:i:s', strtotime($request->fec_reg)) : now(),
             'user_reg' => session('usuario')->id_usuario,
+
         ]);
 
         // Redirigir o devolver respuesta
