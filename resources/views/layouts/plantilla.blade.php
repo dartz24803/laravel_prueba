@@ -344,6 +344,15 @@
             color: #00b1f4;
             font-weight: bold;
         }
+        /* Estilo para la barra de desplazamiento (scrollbar) */
+        .d-flex.overflow-auto {
+        scrollbar-width: thin; /* Firefox */
+        scrollbar-color: #fea701 #f0f3f3; /* Color del thumb y del fondo en Firefox */
+        }
+        #scroll_tabs{
+            background: #f0f3f3;
+            border-radius: 10px;
+        }
     </style>
     <!--  BEGIN MAIN CONTAINER  -->
     <div class="main-container sidebar-closed sbar-open" id="container">

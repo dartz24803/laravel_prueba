@@ -19,7 +19,10 @@
         </select>
     </div>
     @else
-    <input type="text" name="cod_baseb" id="cod_baseb" value="{{ session('usuario')->centro_labores }}">
+    <div class="form-group col-lg-2">
+        <label>Base:</label>
+        <input type="text" name="cod_baseb" class="form-control" id="cod_baseb" value="{{ session('usuario')->centro_labores }}" disabled>
+    </div>
     @endif
 
     <div class="form-group col-lg-3 mt-4">

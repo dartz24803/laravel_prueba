@@ -59,9 +59,11 @@ h4 {
   color: #3b3f5c; }
 
 .simple-tab .nav-tabs .nav-item.show .nav-link, .simple-tab .nav-tabs .nav-link.active {
-  color: #4361ee;
+  color: #f0f3f3;
   font-weight: 600;
-  background-color: #fff; }
+  background-color: #fea701;
+  border-radius: 10px;
+}
 
 .nav-tabs {
   border-bottom: 1px solid #e0e6ed; }

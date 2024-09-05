@@ -12,83 +12,83 @@
                     <div class="statbox widget box box-shadow">
                         <div class="widget-content widget-content-area simple-tab">
                             <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
-                            <div class="d-flex overflow-auto bg-light py-2">
-                                <li class="nav-item">
-                                    <a id="a_di" class="nav-link" onclick="Direccion();" style="cursor: pointer;">Dirección</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a id="a_ge" class="nav-link" onclick="Gerencia();" style="cursor: pointer;">Gerencia</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a id="a_de" class="nav-link" onclick="Sub_Gerencia();" style="cursor: pointer;">Departamento</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a id="a_ar" class="nav-link" onclick="Area();" style="cursor: pointer;">Área</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a id="a_ni" class="nav-link" onclick="Nivel_Jerarquico();" style="cursor: pointer;">Nivel Jerárquico</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a id="a_se" class="nav-link" onclick="Sede_Laboral();" style="cursor: pointer;">Sede Laboral</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a id="a_co" class="nav-link" onclick="Competencia();" style="cursor: pointer;">Competencia</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a id="a_pu" class="nav-link" onclick="Puesto();" style="cursor: pointer;">Puesto</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a id="a_ca" class="nav-link" onclick="Cargo();" style="cursor: pointer;">Cargo</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a id="datacorp" class="nav-link" onclick="Index_Datacorp();" style="cursor: pointer;">Datacorp</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a id="paginas_web" class="nav-link" onclick="Index_Paginas_Web();" style="cursor: pointer;">Páginas web</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a id="programas" class="nav-link" onclick="Index_Programas();" style="cursor: pointer;">Programas</a>
-                                </li>
-                                <?php if(session('usuario')->id_nivel==1 || session('usuario')->id_nivel==2){ ?>
-                                    <li class="nav-item">                                
-                                        <a style="cursor: pointer;" class="nav-link" id="EstadoCivil" onclick="TablaEstadoCivil()">Estado Civil</a>
+                                <div class="d-flex align-items-center overflow-auto py-1" id="scroll_tabs">
+                                    <li class="nav-item">
+                                        <a id="a_di" class="nav-link" onclick="Direccion();" style="cursor: pointer;">Dirección</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a style="cursor: pointer;" class="nav-link" id="Idioma" onclick="TablaIdiomas()">Idiomas</a>
+                                        <a id="a_ge" class="nav-link" onclick="Gerencia();" style="cursor: pointer;">Gerencia</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a style="cursor: pointer;" class="nav-link" id="Nacionalidad" onclick="TablaNacionalidad()">Nacionalidad</a>
+                                        <a id="a_de" class="nav-link" onclick="Sub_Gerencia();" style="cursor: pointer;">Departamento</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a style="cursor: pointer;" class="nav-link" id="Parentesco" onclick="TablaParentesco()">Parentesco</a>
+                                        <a id="a_ar" class="nav-link" onclick="Area();" style="cursor: pointer;">Área</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a style="cursor: pointer;" class="nav-link" id="Referencia" onclick="TablaReferencia()">Referencia Laboral</a>
+                                        <a id="a_ni" class="nav-link" onclick="Nivel_Jerarquico();" style="cursor: pointer;">Nivel Jerárquico</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a style="cursor: pointer;" class="nav-link" id="Regimen" onclick="TablaRegimen()">Régimen Laboral</a>
+                                        <a id="a_se" class="nav-link" onclick="Sede_Laboral();" style="cursor: pointer;">Sede Laboral</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a style="cursor: pointer;" class="nav-link" id="Situacion" onclick="TablaSituacion()">Situacion Laboral</a>
+                                        <a id="a_co" class="nav-link" onclick="Competencia();" style="cursor: pointer;">Competencia</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a style="cursor: pointer;" class="nav-link" id="TipoContrato" onclick="TablaTipoContrato()">Tipo de Contrato</a>
+                                        <a id="a_pu" class="nav-link" onclick="Puesto();" style="cursor: pointer;">Puesto</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a style="cursor: pointer;" class="nav-link" id="TipoDocumento" onclick="TablaTipoDocumento()">Tipo de Documento</a>
+                                        <a id="a_ca" class="nav-link" onclick="Cargo();" style="cursor: pointer;">Cargo</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a style="cursor: pointer;" class="nav-link" id="TipoSangre" onclick="TablaTipoSangre()">Tipo de Sangre</a>
+                                        <a id="datacorp" class="nav-link" onclick="Index_Datacorp();" style="cursor: pointer;">Datacorp</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a style="cursor: pointer;" class="nav-link" id="TipoVia" onclick="TablaTipoVia()">Tipo de Via</a>
+                                        <a id="paginas_web" class="nav-link" onclick="Index_Paginas_Web();" style="cursor: pointer;">Páginas web</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a style="cursor: pointer;" class="nav-link" id="TipoVivienda" onclick="TablaTipoVivienda()">Tipo de Vivienda</a>
+                                        <a id="programas" class="nav-link" onclick="Index_Programas();" style="cursor: pointer;">Programas</a>
                                     </li>
-                                    {{-- empresas(administracion finanzas), --}}
-                                <?php }?>
-                            </div>
+                                    <?php if(session('usuario')->id_nivel==1 || session('usuario')->id_nivel==2){ ?>
+                                        <li class="nav-item">                                
+                                            <a style="cursor: pointer;" class="nav-link" id="EstadoCivil" onclick="TablaEstadoCivil()">Estado Civil</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a style="cursor: pointer;" class="nav-link" id="Idioma" onclick="TablaIdiomas()">Idiomas</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a style="cursor: pointer;" class="nav-link" id="Nacionalidad" onclick="TablaNacionalidad()">Nacionalidad</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a style="cursor: pointer;" class="nav-link" id="Parentesco" onclick="TablaParentesco()">Parentesco</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a style="cursor: pointer;" class="nav-link" id="Referencia" onclick="TablaReferencia()">Referencia Laboral</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a style="cursor: pointer;" class="nav-link" id="Regimen" onclick="TablaRegimen()">Régimen Laboral</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a style="cursor: pointer;" class="nav-link" id="Situacion" onclick="TablaSituacion()">Situacion Laboral</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a style="cursor: pointer;" class="nav-link" id="TipoContrato" onclick="TablaTipoContrato()">Tipo de Contrato</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a style="cursor: pointer;" class="nav-link" id="TipoDocumento" onclick="TablaTipoDocumento()">Tipo de Documento</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a style="cursor: pointer;" class="nav-link" id="TipoSangre" onclick="TablaTipoSangre()">Tipo de Sangre</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a style="cursor: pointer;" class="nav-link" id="TipoVia" onclick="TablaTipoVia()">Tipo de Via</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a style="cursor: pointer;" class="nav-link" id="TipoVivienda" onclick="TablaTipoVivienda()">Tipo de Vivienda</a>
+                                        </li>
+                                        {{-- empresas(administracion finanzas), --}}
+                                    <?php }?>
+                                </div>
                             </ul>
 
                             <div class="row" id="cancel-row">
@@ -116,6 +116,7 @@
 
     //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
     function Active_Tabla_Colaboradores(){
+        $("#TipoDocumento").removeClass('active');
         $("#TipoContrato").removeClass('active');
         $("#Situacion").removeClass('active');
         $("#Regimen").removeClass('active');
@@ -494,6 +495,28 @@
             }
         });
 
+    }
+    
+    function TablaTipoDocumento() {
+        Cargando();
+        Active_Tabla_Colaboradores();
+
+        $("#TipoDocumento").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Tipo_Documento') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
     }
 </script>
 @endsection

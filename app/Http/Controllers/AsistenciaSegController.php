@@ -353,6 +353,7 @@ class AsistenciaSegController extends Controller
                 )
                     ->where('estado', 1)->where('id_nivel', '!=', 8)->get();
             }
+            return view('seguridad.asistencia.manual.index', compact('list_base', 'list_colaborador'));
         } elseif (session('usuario')->id_puesto == 36) {
             $list_colaborador = Usuario::select(
                 'id_usuario',
@@ -360,8 +361,8 @@ class AsistenciaSegController extends Controller
             )
                 ->where('centro_labores', session('usuario')->centro_labores)
                 ->where('estado', 1)->where('id_nivel', '!=', 8)->get();
+            return view('seguridad.asistencia.manual.index', compact('list_colaborador'));
         }
-        return view('seguridad.asistencia.manual.index', compact('list_base', 'list_colaborador'));
     }
 
     public function list_man(Request $request)
