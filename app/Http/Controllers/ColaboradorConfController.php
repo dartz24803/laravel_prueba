@@ -2240,4 +2240,8 @@ class ColaboradorConfController extends Controller
             $this->Model_Corporacion->delete_grupo_sanguineo($dato);
     }*/
     /*---------------------------------------------------------Paolo*/
+
+
+
+    // AGREGANDO ALGO
 }
