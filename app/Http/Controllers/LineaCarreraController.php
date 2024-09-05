@@ -328,7 +328,7 @@ class LineaCarreraController extends Controller
         if($request->notae>=14){
             $texto = "aprobado";
         }else{
-            $texto = "rechazado";
+            $texto = "desaprobado";
         }
 
         $mail = new PHPMailer(true);

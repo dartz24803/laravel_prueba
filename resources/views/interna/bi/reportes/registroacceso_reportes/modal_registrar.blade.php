@@ -120,31 +120,49 @@
             <div class="col-12 text-center">
                 <div class="divider"></div>
 
-                <label class="control-label text-bold centered-label">Dar Accesos</label>
-                <div>
-                    <label class="control-label text-bold">Todos</label>
+                <label class="control-label text-bold centered-label">Filtros</label>
 
-                    <label class="switch">
-                        <input type="checkbox" id="acceso_todo" name="acceso_todo" onclick="Acceso_Todo()">
-                        <span class="slider"></span>
-                    </label>
+                @csrf
+                <div class="row">
+
+                    <div class="form-group col-md-6">
+                        <label class="control-label text-bold">Filtro Base: </label>
+                        <select class="form-control multivalue" name="tipo_acceso_b[]" id="tipo_acceso_b" multiple="multiple">
+                            @foreach ($list_base as $base)
+                            <option value="{{ $base->id_base }}">{{ $base->cod_base }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label text-bold">Filtro Área: </label>
+                        <select class="form-control multivalue" name="id_area_acceso_t[]" id="id_area_acceso_t" multiple="multiple">
+                            @foreach ($list_area as $list)
+                            <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
             </div>
 
         </div>
+        <div class="col-12 text-center">
+            <div class="divider"></div>
 
-        @csrf
-        <div class="row d-flex">
-            <div class="form-group col-md-6">
-                <label class="control-label text-bold">Acceso Área: </label>
-                <select class="form-control multivalue" name="id_area_acceso_t[]" id="id_area_acceso_t" multiple="multiple">
-                    @foreach ($list_area as $list)
-                    <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
-                    @endforeach
-                </select>
+            <label class="control-label text-bold centered-label">Dar Accesos</label>
+            <div>
+                <label class="control-label text-bold">Todos</label>
+
+                <label class="switch">
+                    <input type="checkbox" id="acceso_todo" name="acceso_todo" onclick="Acceso_Todo()">
+                    <span class="slider"></span>
+                </label>
             </div>
-            <div class="form-group col-md-6">
+        </div>
+
+        <div class="row d-flex">
+
+            <div class="form-group col-md-12">
                 <label class="control-label text-bold">Acceso Puesto: </label>
                 <select class="form-control multivalue" name="tipo_acceso_t[]" id="tipo_acceso_t" multiple="multiple">
                     @foreach ($list_responsable as $puesto)
@@ -153,8 +171,6 @@
                 </select>
             </div>
         </div>
-
-
 
 
         <div class="modal-footer">
@@ -183,9 +199,46 @@
             tokenSeparators: [',', ' '],
             dropdownParent: $('#ModalRegistro')
         });
+        $('#tipo_acceso_p').select2({
+            tags: true,
+            tokenSeparators: [',', ' '],
+            dropdownParent: $('#ModalRegistro')
+        });
+        $('#tipo_acceso_b').on('change', function() {
+            const selectedBases = $(this).val();
+            var url = "{{ route('areas_por_base_bi') }}";
+            console.log('Selected Bases:', selectedBases); // Para verificar que los valores se están obteniendo correctamente
+
+            // Hacer una solicitud AJAX para obtener los puestos basados en las áreas seleccionadas
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: {
+                    bases: selectedBases
+                },
+                success: function(response) {
+                    // Vaciar el segundo select antes de agregar las nuevas opciones
+                    $('#id_area_acceso_t').empty();
+
+                    // Agregar las nuevas opciones
+                    $.each(response, function(index, area) {
+                        $('#id_area_acceso_t').append(
+                            `<option value="${area.id_area}">${area.nom_area}</option>`
+                        );
+                    });
+
+                    // Reinitialize select2 if needed
+                    $('#id_area_acceso_t').select2();
+                },
+                error: function(xhr) {
+                    console.error('Error al obtener puestos:', xhr);
+                }
+            });
+        });
+
         $('#id_area_acceso_t').on('change', function() {
             const selectedAreas = $(this).val();
-            var url = "{{ route('puestos_por_areas') }}";
+            var url = "{{ route('puestos_por_areas_bi') }}";
             console.log('Selected Areas:', selectedAreas); // Para verificar que los valores se están obteniendo correctamente
 
             // Hacer una solicitud AJAX para obtener los puestos basados en las áreas seleccionadas
