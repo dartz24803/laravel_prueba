@@ -2170,33 +2170,4 @@ class ColaboradorConfController extends Controller
         $dato['user_eli'] = session('usuario')->id_usuario;
         TipoDocumento::findOrFail($request->input("id_tipo_documento"))->update($dato);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // l
 }
