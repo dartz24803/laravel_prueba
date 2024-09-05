@@ -118,9 +118,8 @@
                                 </label>
                             </div> -->
                             <div class="divider"></div>
-
                         </div>
-                        <div class="form-group col-md-12">
+                        <!-- <div class="form-group col-md-12">
                             <label class="control-label text-bold">Acceso Área: </label>
                             <select class="form-control multivalue" name="id_area_p[]" id="id_area_p" multiple="multiple" disabled>
                                 @foreach ($list_area as $area)
@@ -130,7 +129,7 @@
                                 </option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> -->
                         <div class="form-group col-md-12">
                             <label class="control-label text-bold">Acceso Puesto: </label>
                             <select class="form-control multivalue" name="tipo_acceso_p[]" id="tipo_acceso_p" multiple="multiple" disabled>
@@ -189,7 +188,7 @@
 
         $('#id_area_acceso_e').on('change', function() {
             const selectedAreas = $(this).val();
-            var url = "{{ route('puestos_por_areas') }}";
+            var url = "{{ route('puestos_por_areas_bi') }}";
             console.log('Selected Areas:', selectedAreas); // Para verificar que los valores se están obteniendo correctamente
 
             // Hacer una solicitud AJAX para obtener los puestos basados en las áreas seleccionadas

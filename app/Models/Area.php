@@ -17,6 +17,7 @@ class Area extends Model
 
     protected $fillable = [
         'id_direccion',
+        'id_base',
         'id_gerencia',
         'id_departamento',
         'cod_area',
@@ -39,10 +40,11 @@ class Area extends Model
 
     public function listar()
     {
-        return $this->where('estado',1)->orderBy("id_area",'DESC')->get()->toArray();
+        return $this->where('estado', 1)->orderBy("id_area", 'DESC')->get()->toArray();
     }
-    
-    public static function get_list_area(){
+
+    public static function get_list_area()
+    {
         $sql = "SELECT ar.id_area,di.direccion,ge.nom_gerencia,dc.nom_sub_gerencia,ar.nom_area,ar.cod_area,
                 (SELECT GROUP_CONCAT(pu.nom_puesto)
                 FROM puesto pu

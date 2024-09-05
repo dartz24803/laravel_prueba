@@ -445,7 +445,7 @@
 
         $('#id_area_acceso_e').on('change', function() {
             const selectedAreas = $(this).val();
-            var url = "{{ route('puestos_por_areas') }}";
+            var url = "{{ route('puestos_por_areas_bi') }}";
             console.log('Selected Areas:', selectedAreas); // Para verificar que los valores se están obteniendo correctamente
 
             // Hacer una solicitud AJAX para obtener los puestos basados en las áreas seleccionadas

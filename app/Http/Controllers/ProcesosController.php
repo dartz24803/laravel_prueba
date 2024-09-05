@@ -136,7 +136,7 @@ class ProcesosController extends Controller
             ->get()
             ->unique('nom_puesto');
 
-        $list_base = Base::get_list_todas_bases_agrupadas();
+        $list_base = Base::get_list_todas_bases_agrupadas_bi();
         $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')->where('estado', 1)->get();
         $list_nivel = NivelJerarquico::select('id_nivel', 'nom_nivel')->where('estado', 1)->get();
 

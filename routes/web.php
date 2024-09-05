@@ -202,7 +202,7 @@ Route::controller(ProcesosController::class)->group(function () {
     Route::get('portalprocesos', 'index')->name('portalprocesos');
     Route::get('portalprocesos_lm', 'index_lm')->name('portalprocesos_lm');
     Route::get('portalprocesos_lm/list', 'list_lm')->name('portalprocesos_lm.list');
-    Route::get('portalprocesos_lm/create', 'create_ra')->name('portalprocesos_lm.create');
+    Route::get('portalprocesos_lm/create', 'create_lm')->name('portalprocesos_lm.create');
     Route::get('portalprocesos_lm/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_lm')->name('portalprocesos_lm.excel');
     Route::post('portalprocesos_lm', 'store_lm')->name('portalprocesos_lm.store');
     Route::get('portalprocesos_lm/{id}/image', 'image_lm')->name('portalprocesos_lm.image');
@@ -229,6 +229,8 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::delete('bireporte_ra/{id}', 'destroy_ra')->name('bireporte_ra.destroy');
     Route::get('bireporte_ra/{id}/edit', 'edit_ra')->name('bireporte_ra.edit');
     Route::put('bireporte_ra/{id}', 'update_ra')->name('bireporte_ra.update');
+    Route::get('puestos-por-areas-bi', 'getPuestosPorAreasBi')->name('puestos_por_areas_bi');
+    Route::get('areas_por_base', 'getAreasPorBase')->name('areas_por_base_bi');
 
 
     // CONFIGURABLES - ADMINISTRABLES

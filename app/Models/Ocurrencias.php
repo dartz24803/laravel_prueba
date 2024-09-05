@@ -42,7 +42,8 @@ class Ocurrencias extends Model
         'user_eli'
     ];
 
-    public static function get_combo_colaborador_ocurrencia(){
+    public static function get_combo_colaborador_ocurrencia()
+    {
         $sql = "SELECT oc.id_usuario AS id_colaborador,
                 CONCAT(us.usuario_nombres,' ',us.usuario_apater) AS nom_colaborador 
                 FROM ocurrencia oc
@@ -53,23 +54,24 @@ class Ocurrencias extends Model
         $query = DB::select($sql);
         return json_decode(json_encode($query), true);
     }
-    
-    public static function get_list_ocurrencia($id_ocurrencia=null,$cod_base=null,$fecha=null,$fecha_fin=null,$id_tipo_ocurrencia=null,$id_colaborador=null){ 
-        if(isset($id_ocurrencia) && $id_ocurrencia > 0){
+
+    public static function get_list_ocurrencia($id_ocurrencia = null, $cod_base = null, $fecha = null, $fecha_fin = null, $id_tipo_ocurrencia = null, $id_colaborador = null)
+    {
+        if (isset($id_ocurrencia) && $id_ocurrencia > 0) {
             $sql = "SELECT *,DATE_FORMAT(fec_ocurrencia, '%Y-%m-%d') AS fecha_ocurrencia 
                     FROM ocurrencia 
                     WHERE id_ocurrencia=$id_ocurrencia";
-        }else{
+        } else {
             $parte_base = "";
-            if($cod_base != "Todo"){
+            if ($cod_base != "Todo") {
                 $parte_base = "AND oc.cod_base='$cod_base'";
             }
             $parte_tipo_ocurrencia = "";
-            if($id_tipo_ocurrencia != "Todo"){
+            if ($id_tipo_ocurrencia != "Todo") {
                 $parte_tipo_ocurrencia = "AND oc.id_tipo='$id_tipo_ocurrencia'";
             }
             $parte_colaborador = "";
-            if($id_colaborador != "Todo"){
+            if ($id_colaborador != "Todo") {
                 $parte_colaborador = "AND oc.id_usuario='$id_colaborador'";
             }
             $sql = "SELECT oc.id_ocurrencia,oc.cod_ocurrencia,
@@ -86,9 +88,9 @@ class Ocurrencias extends Model
                     LEFT JOIN conclusion co ON co.id_conclusion=oc.id_conclusion
                     LEFT JOIN ocurrencia_gestion og ON og.id_gestion=oc.id_gestion
                     LEFT JOIN users us ON us.id_usuario=oc.id_usuario
-                    WHERE oc.estado=1 AND oc.fec_ocurrencia BETWEEN '".$fecha."' AND '".$fecha_fin."' 
+                    WHERE oc.estado=1 AND oc.fec_ocurrencia BETWEEN '" . $fecha . "' AND '" . $fecha_fin . "' 
                     $parte_base $parte_tipo_ocurrencia $parte_colaborador
-                    ORDER BY oc.cod_ocurrencia ASC";   
+                    ORDER BY oc.cod_ocurrencia ASC";
         }
         $query = DB::select($sql);
         return json_decode(json_encode($query), true);
