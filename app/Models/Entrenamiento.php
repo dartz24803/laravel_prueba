@@ -57,24 +57,29 @@ class Entrenamiento extends Model
                     CASE WHEN en.estado_e=1 THEN 'warning' WHEN en.estado_e=2 THEN 'success' 
                     ELSE '' END AS color_estado,
                     CASE WHEN en.estado_e=2 THEN '#FF000036' ELSE 'transparent' END AS color_fondo,
-                    CASE WHEN (SELECT COUNT(1) FROM examen_entrenamiento ee 
-                    WHERE ee.id_entrenamiento=en.id AND ee.fecha_revision IS NOT NULL AND ee.estado=1)>0 THEN
-                    (SELECT ee.nota FROM examen_entrenamiento ee 
-                    WHERE ee.id_entrenamiento=en.id AND ee.estado=1) ELSE '' END AS nota,
-                    CASE WHEN (SELECT COUNT(1) FROM examen_entrenamiento ee 
-                    WHERE ee.id_entrenamiento=en.id AND ee.fecha_revision IS NOT NULL AND ee.estado=1)>0 THEN
-                        (CASE WHEN (SELECT ee.nota FROM examen_entrenamiento ee 
-                        WHERE ee.id_entrenamiento=en.id AND ee.estado=1)>=14 THEN 'Aprobado' 
-                        ELSE 'Desaprobado' END)
-                    ELSE '' END AS nom_evaluacion,
-                    /*(SELECT COUNT(1) FROM examen_entrenamiento ee 
-                    WHERE ee.id_entrenamiento=en.id AND ee.fecha_revision IS NULL AND 
-                    ee.estado=1)*/
-                    (SELECT CASE WHEN ee.nota>=14 OR ee.fecha_revision IS NULL THEN 1 ELSE 0 END 
+                    IFNULL((SELECT ee.nota FROM examen_entrenamiento ee 
+                    WHERE ee.id_entrenamiento=en.id AND ee.estado=1
+                    ORDER BY ee.id DESC
+                    LIMIT 1),'') AS nota,
+                    (CASE WHEN (SELECT ee.nota FROM examen_entrenamiento ee 
+                    WHERE ee.id_entrenamiento=en.id AND ee.estado=1
+                    ORDER BY ee.id DESC
+                    LIMIT 1)>=14 THEN 'Aprobado' 
+                    WHEN (SELECT ee.nota FROM examen_entrenamiento ee 
+                    WHERE ee.id_entrenamiento=en.id AND ee.estado=1
+                    ORDER BY ee.id DESC
+                    LIMIT 1)<14 THEN 'Desaprobado' 
+                    WHEN (SELECT ee.hora_fin_real FROM examen_entrenamiento ee 
+                    WHERE ee.id_entrenamiento=en.id AND ee.estado=1
+                    ORDER BY ee.id DESC
+                    LIMIT 1) IS NOT NULL THEN 'Pendiente de revisión' ELSE '' END) AS nom_evaluacion,
+                    CASE WHEN (SELECT COUNT(1) FROM examen_entrenamiento ee
+                    WHERE ee.id_entrenamiento=en.id AND ee.estado=1)=2 THEN 1
+                    ELSE (SELECT CASE WHEN ee.nota>=14 OR ee.fecha_revision IS NULL THEN 1 ELSE 0 END 
                     FROM examen_entrenamiento ee
                     WHERE ee.id_entrenamiento=en.id AND ee.estado=1
                     ORDER BY ee.id DESC
-                    LIMIT 1) AS examen_asignado,
+                    LIMIT 1) END AS examen_asignado,
                     CASE WHEN (SELECT COUNT(1) FROM pregunta pr 
                     WHERE pr.id_puesto=sp.id_puesto_aspirado AND pr.id_tipo=1 AND pr.estado=1)>=15 AND 
                     (SELECT COUNT(1) FROM pregunta pr 

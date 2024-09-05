@@ -744,6 +744,7 @@ Route::controller(LineaCarreraController::class)->group(function () {
     Route::post('linea_carrera_so/{id}', 'update_so')->name('linea_carrera_so.update');
     Route::get('linea_carrera_en', 'index_en')->name('linea_carrera_en');
     Route::post('linea_carrera_en/list', 'list_en')->name('linea_carrera_en.list');
+    Route::get('linea_carrera_en/{id}/evaluacion', 'evaluacion_en')->name('linea_carrera_en.evaluacion');
     Route::put('linea_carrera_en/{id}', 'update_en')->name('linea_carrera_en.update');
     Route::get('linea_carrera_en/update_estado_entrenamiento', 'update_estado_entrenamiento')->name('linea_carrera_en.update_estado_entrenamiento');
     Route::get('linea_carrera/{id}/evaluacion', 'evaluacion_ev')->name('linea_carrera.evaluacion');
