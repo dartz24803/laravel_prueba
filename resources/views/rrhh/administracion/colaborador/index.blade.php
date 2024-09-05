@@ -116,6 +116,7 @@
 
     //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
     function Active_Tabla_Colaboradores(){
+        $("#TipoDocumento").removeClass('active');
         $("#TipoContrato").removeClass('active');
         $("#Situacion").removeClass('active');
         $("#Regimen").removeClass('active');
@@ -494,6 +495,28 @@
             }
         });
 
+    }
+    
+    function TablaTipoDocumento() {
+        Cargando();
+        Active_Tabla_Colaboradores();
+
+        $("#TipoDocumento").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Tipo_Documento') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
     }
 </script>
 @endsection

@@ -25,7 +25,7 @@ use App\Models\ReferenciaLaboral;
 use App\Models\Regimen;
 use App\Models\SituacionLaboral;
 use App\Models\TipoContrato;
-// use App\Models\SituacionLaboral;
+use App\Models\TipoDocumento;
 // use App\Models\SituacionLaboral;
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
@@ -2002,5 +2002,86 @@ class ColaboradorConfController extends Controller
         $dato['user_eli'] = session('usuario')->id_usuario;
         TipoContrato::findOrFail($request->input("id_tipo_contrato"))->update($dato);
     }
+
     
+    //-------------------------------------TIPO DOCUMENTO---------------------------------
+    public function Tipo_Documento(){
+        $dato['list_tipo_doc'] = TipoDocumento::where('estado', 1)
+                                ->get();
+        return view('rrhh.administracion.colaborador.TipoDocumento.index',$dato);
+    }
+
+    public function Modal_Tipo_Documento(){
+        return view('rrhh.administracion.colaborador.TipoDocumento.modal_registrar');   
+    }
+
+    public function Insert_Tipo_Documento(Request $request){
+        $request->validate([
+            'cod_tipo_documento' => 'required',
+            'digitos' => 'required',
+            'nom_tipo_documento' => 'required',
+        ],[
+            'cod_tipo_documento' => 'Debe ingresar codigo de tipo de documento',
+            'digitos' => 'Debe ingresar digitos',
+            'nom_tipo_documento.required' => 'Debe ingresar descripcion de situacion laboral.',
+        ]);
+        $valida = TipoDocumento::where('nom_tipo_documento', $request->nom_tipo_documento)
+                    ->where('digitos', $request->digitos)
+                    ->where('cod_tipo_documento', $request->cod_tipo_documento)
+                    ->where('estado', 1)
+                    ->exists();
+        if($valida){
+            echo "error";
+        }else{
+            $dato['cod_tipo_documento']= $request->input("cod_tipo_documento");
+            $dato['nom_tipo_documento']= $request->input("nom_tipo_documento");
+            $dato['digitos']= $request->input("digitos");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            TipoDocumento::create($dato);
+        }
+    }
+
+    public function Modal_Update_Tipo_Documento($id_tipo_documento){
+        $dato['get_id'] = TipoDocumento::where('id_tipo_documento', $id_tipo_documento)
+                        ->get();
+        return view('rrhh.administracion.colaborador.TipoDocumento.modal_editar',$dato);
+    }
+
+    public function Update_Tipo_Documento(Request $request){
+        $request->validate([
+            'cod_tipo_documento' => 'required',
+            'digitos' => 'required',
+            'nom_tipo_documento' => 'required',
+        ],[
+            'cod_tipo_documento' => 'Debe ingresar codigo de tipo de documento',
+            'digitos' => 'Debe ingresar digitos',
+            'nom_tipo_documento.required' => 'Debe ingresar descripcion de situacion laboral.',
+        ]);
+        $valida = TipoDocumento::where('nom_tipo_documento', $request->nom_tipo_documento)
+                    ->where('digitos', $request->digitos)
+                    ->where('cod_tipo_documento', $request->cod_tipo_documento)
+                    ->where('estado', 1)
+                    ->exists();
+        if($valida){
+            echo "error";
+        }else{
+            $dato['cod_tipo_documento']= $request->input("cod_tipo_documento"); 
+            $dato['nom_tipo_documento']= $request->input("nom_tipo_documento");
+            $dato['digitos']= $request->input("digitos");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            TipoDocumento::findOrFail($request->input("id_tipo_documento"))->update($dato);
+        }
+    }
+    
+    public function Delete_Tipo_Documento(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        TipoDocumento::findOrFail($request->input("id_tipo_documento"))->update($dato);
+    }
 }
