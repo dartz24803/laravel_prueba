@@ -30,6 +30,7 @@ use App\Models\TipoDocumento;
 // use App\Models\SituacionLaboral;
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
+use App\Models\Ubicacion;
 
 class ColaboradorConfController extends Controller
 {
@@ -2242,6 +2243,88 @@ class ColaboradorConfController extends Controller
     /*---------------------------------------------------------Paolo*/
 
 
+    // -------------------------------BRYAN------------------------------------
+    public function index_ubi()
+    {
+        return view('rrhh.administracion.colaborador.ubicacion.index');
+    }
+    public function list_ubi()
+    {
+        $list_ubicacion = Ubicacion::with('sede')
+            ->select('id_ubicacion', 'cod_ubi', 'id_sede')
+            ->where('estado', 1)
+            ->get();
 
+        return view('rrhh.administracion.colaborador.ubicacion.lista', compact('list_ubicacion'));
+    }
+
+
+    public function create_ubi()
+    {
+        $list_sede = SedeLaboral::select('id', 'descripcion')->where('estado', 1)->get();
+        return view('rrhh.administracion.colaborador.ubicacion.modal_registrar', compact('list_sede'));
+    }
+
+    public function store_ubi(Request $request)
+    {
+        $request->validate([
+            'codigoe' => 'required',
+            'sedee' => 'required',
+        ], [
+            'codigoe.required' => 'Debe ingresar código.',
+        ]);
+
+        $valida = Ubicacion::where('cod_ubi', $request->codigoe)->where('estado', 1)->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            Ubicacion::create([
+                'cod_ubi' => $request->codigoe,
+                'id_sede' => $request->sedee ?? 1,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_ubi($id)
+    {
+        $list_sede = SedeLaboral::select('id', 'descripcion')->where('estado', 1)->get();
+        $get_id = Ubicacion::findOrFail($id);
+        return view('rrhh.administracion.colaborador.ubicacion.modal_editar', compact('get_id', 'list_sede'));
+    }
+
+    public function update_ubi(Request $request, $id)
+    {
+        $request->validate([
+            'codigoe' => 'required',
+        ], [
+            'codigoe.required' => 'Debe ingresar nombre.',
+        ]);
+
+        $valida = Ubicacion::where('descripcion', $request->codigoe)->where('estado', 1)
+            ->where('id', '!=', $id)->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            Ubicacion::findOrFail($id)->update([
+                'descripcion' => $request->codigoe,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_ubi($id)
+    {
+        Ubicacion::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
     // AGREGANDO ALGO
 }

@@ -421,6 +421,17 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Update_Grupo_Sanguineo', 'Update_Grupo_Sanguineo');
     Route::post('ColaboradorConfController/Delete_Grupo_Sanguineo', 'Delete_Grupo_Sanguineo');
     ----------------------------------------Paolo----------------------------------*/
+    // ----------------------------------------bryan----------------------------------*/
+
+    Route::get('colaborador_conf_ubi', 'index_ubi')->name('colaborador_conf_ubi');
+    Route::get('colaborador_conf_ubi/list', 'list_ubi')->name('colaborador_conf_ubi.list');
+    Route::get('colaborador_conf_ubi/create', 'create_ubi')->name('colaborador_conf_ubi.create');
+    Route::post('colaborador_ccolaborador_conf_ubionf_ubi', 'store_ubi')->name('colaborador_conf_ubi.store');
+    Route::get('colaborador_conf_ubi/{id}/edit', 'edit_ubi')->name('colaborador_conf_ubi.edit');
+    Route::put('colaborador_conf_ubi/{id}', 'update_ubi')->name('colaborador_conf_ubi.update');
+    Route::delete('colaborador_conf_ubi/{id}', 'destroy_ubi')->name('colaborador_conf_ubi.destroy');
+    // ----------------------------------------bryan----------------------------------*/
+
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function () {
