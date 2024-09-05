@@ -2234,7 +2234,7 @@ class ColaboradorConfController extends Controller
             $this->Model_Corporacion->update_grupo_sanguineo($dato);
 
     }
-    
+    //pppppppppppppp
     public function Delete_Grupo_Sanguineo(){
             $dato['id_grupo_sanguineo']= $this->input->post("id_grupo_sanguineo");
             $this->Model_Corporacion->delete_grupo_sanguineo($dato);
