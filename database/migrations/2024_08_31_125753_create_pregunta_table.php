@@ -16,11 +16,11 @@ return new class extends Migration
             $table->integer('id_puesto')->nullable();
             $table->integer('id_tipo')->nullable();
             $table->string('descripcion',500)->nullable();
-            $table->integer('estado');
-            $table->dateTime('fec_reg');
-            $table->integer('user_reg');
-            $table->dateTime('fec_act');
-            $table->integer('user_act');
+            $table->integer('estado')->nullable();
+            $table->dateTime('fec_reg')->nullable();
+            $table->integer('user_reg')->nullable();
+            $table->dateTime('fec_act')->nullable();
+            $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
             //$table->timestamps();
