@@ -32,10 +32,15 @@
 function Insert_Grupo_Sanguineo() {
     var dataString = $("#formulario_registrar_sangre").serialize();
     var url = "{{ url('ColaboradorConfController/Insert_Grupo_Sanguineo') }}";
+    var csrfToken = $('input[name="_token"]').val();
+
     $.ajax({
         type: "POST",
         url: url,
         data: dataString,
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
         success: function(data) {
             if (data == "error") {
                 Swal({
@@ -53,6 +58,7 @@ function Insert_Grupo_Sanguineo() {
                     'success'
                 ).then(function() {
                     $("#ModalRegistro .close").click()
+                    TablaTipoSangre();
                 });
             }
         },

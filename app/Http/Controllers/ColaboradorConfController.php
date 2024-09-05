@@ -30,6 +30,7 @@ use App\Models\TipoDocumento;
 // use App\Models\SituacionLaboral;
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
+use App\Models\Ubicacion;
 
 class ColaboradorConfController extends Controller
 {
@@ -2172,29 +2173,17 @@ class ColaboradorConfController extends Controller
         TipoDocumento::findOrFail($request->input("id_tipo_documento"))->update($dato);
     }
 
-    public function Grupo_Sanguineo() // RRHH
-    {
+    public function Grupo_Sanguineo(){
         $dato['list_grupo_sanguineo'] = GrupoSanguineo::where('estado', 1)
             ->get();
         return view('rrhh.administracion.colaborador.GrupoSanguineo.index', $dato);
     }
 
-    public function Modal_Grupo_Sanguineo()
-    {
+    public function Modal_Grupo_Sanguineo(){
         return view('rrhh.administracion.colaborador.GrupoSanguineo.modal_registrar');
     }
 
-    public function Insert_Grupo_Sanguineo(Request $request)
-    {
-        $dato['cod_grupo_sanguineo'] = $this->input->post("cod_grupo_sanguineo");
-        $dato['nom_grupo_sanguineo'] = $this->input->post("nom_grupo_sanguineo");
-        $total = count($this->Model_Corporacion->valida_Grupo_Sanguineo($dato));
-        if ($total > 0) {
-            echo "error";
-        } else {
-            $this->Model_Corporacion->insert_Grupo_Sanguineo($dato);
-        }
-
+    public function Insert_Grupo_Sanguineo(Request $request){
         $request->validate([
             'cod_grupo_sanguineo' => 'required',
             'nom_grupo_sanguineo' => 'required',
@@ -2209,39 +2198,209 @@ class ColaboradorConfController extends Controller
         if ($valida) {
             echo "error";
         } else {
-            $dato['cod_tipo_documento'] = $request->input("cod_tipo_documento");
-            $dato['nom_tipo_documento'] = $request->input("nom_tipo_documento");
-            $dato['digitos'] = $request->input("digitos");
+            $dato['cod_grupo_sanguineo'] = $request->input("cod_grupo_sanguineo");
+            $dato['nom_grupo_sanguineo'] = $request->input("nom_grupo_sanguineo");
             $dato['estado'] = 1;
             $dato['fec_reg'] = now();
             $dato['fec_act'] = now();
             $dato['user_act'] = session('usuario')->id_usuario;
             $dato['user_reg'] = session('usuario')->id_usuario;
-            TipoDocumento::create($dato);
+            GrupoSanguineo::create($dato);
         }
     }
-    /*----------------------------------------Paolo
+    /*----------------------------------------Paolo*/
     public function Modal_Update_Grupo_Sanguineo($id_Grupo_Sanguineo){
-            $dato['get_id'] = $this->Model_Corporacion->get_id_grupo_sanguineo($id_Grupo_Sanguineo);
-            $this->load->view('Admin/Configuracion/GrupoSanguineo/modal_editar',$dato);
+        $dato['get_id'] = GrupoSanguineo::where('id_grupo_sanguineo', $id_Grupo_Sanguineo)
+                        ->get();
+        return view('rrhh.administracion.colaborador.GrupoSanguineo.modal_editar',$dato);
     }
 
-    public function Update_Grupo_Sanguineo(){
-            $dato['id_grupo_sanguineo']= $this->input->post("id_grupo_sanguineo");
-            $dato['cod_grupo_sanguineo']= $this->input->post("cod_grupo_sanguineo"); 
-            $dato['nom_grupo_sanguineo']= $this->input->post("nom_grupo_sanguineo");
-
-            $this->Model_Corporacion->update_grupo_sanguineo($dato);
-
+    public function Update_Grupo_Sanguineo(Request $request){
+        $request->validate([
+            'cod_grupo_sanguineo' => 'required',
+            'nom_grupo_sanguineo' => 'required',
+        ], [
+            'cod_grupo_sanguineo' => 'Debe ingresar codigo de tipo de documento',
+            'nom_grupo_sanguineo.required' => 'Debe ingresar descripcion de situacion laboral.',
+        ]);
+        $valida = GrupoSanguineo::where('nom_grupo_sanguineo', $request->nom_grupo_sanguineo)
+            ->where('cod_grupo_sanguineo', $request->cod_grupo_sanguineo)
+            ->where('estado', 1)
+            ->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            $dato['cod_grupo_sanguineo']= $request->input("cod_grupo_sanguineo"); 
+            $dato['nom_grupo_sanguineo']= $request->input("nom_grupo_sanguineo");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
+        }
     }
     
-    public function Delete_Grupo_Sanguineo(){
-            $dato['id_grupo_sanguineo']= $this->input->post("id_grupo_sanguineo");
-            $this->Model_Corporacion->delete_grupo_sanguineo($dato);
+    public function Delete_Grupo_Sanguineo(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
+    }
+    /*
+    public function Modal_Update_Grupo_Sanguineo($id_Grupo_Sanguineo){
+        $dato['get_id'] = GrupoSanguineo::where('id_grupo_sanguineo', $id_Grupo_Sanguineo)
+                        ->get();
+        return view('rrhh.administracion.colaborador.GrupoSanguineo.modal_editar',$dato);
+    }
+
+    public function Update_Grupo_Sanguineo(Request $request){
+        $request->validate([
+            'cod_grupo_sanguineo' => 'required',
+            'nom_grupo_sanguineo' => 'required',
+        ], [
+            'cod_grupo_sanguineo' => 'Debe ingresar codigo de tipo de documento',
+            'nom_grupo_sanguineo.required' => 'Debe ingresar descripcion de situacion laboral.',
+        ]);
+        $valida = GrupoSanguineo::where('nom_grupo_sanguineo', $request->nom_grupo_sanguineo)
+            ->where('cod_grupo_sanguineo', $request->cod_grupo_sanguineo)
+            ->where('estado', 1)
+            ->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            $dato['cod_grupo_sanguineo']= $request->input("cod_grupo_sanguineo"); 
+            $dato['nom_grupo_sanguineo']= $request->input("nom_grupo_sanguineo");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
+        }
+    }
+    
+    public function Delete_Grupo_Sanguineo(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
+    }
+    
+    public function Modal_Update_Grupo_Sanguineo($id_Grupo_Sanguineo){
+        $dato['get_id'] = GrupoSanguineo::where('id_grupo_sanguineo', $id_Grupo_Sanguineo)
+                        ->get();
+        return view('rrhh.administracion.colaborador.GrupoSanguineo.modal_editar',$dato);
+    }
+
+    public function Update_Grupo_Sanguineo(Request $request){
+        $request->validate([
+            'cod_grupo_sanguineo' => 'required',
+            'nom_grupo_sanguineo' => 'required',
+        ], [
+            'cod_grupo_sanguineo' => 'Debe ingresar codigo de tipo de documento',
+            'nom_grupo_sanguineo.required' => 'Debe ingresar descripcion de situacion laboral.',
+        ]);
+        $valida = GrupoSanguineo::where('nom_grupo_sanguineo', $request->nom_grupo_sanguineo)
+            ->where('cod_grupo_sanguineo', $request->cod_grupo_sanguineo)
+            ->where('estado', 1)
+            ->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            $dato['cod_grupo_sanguineo']= $request->input("cod_grupo_sanguineo"); 
+            $dato['nom_grupo_sanguineo']= $request->input("nom_grupo_sanguineo");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
+        }
+    }
+    
+    public function Delete_Grupo_Sanguineo(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
     }*/
     /*---------------------------------------------------------Paolo*/
 
 
+    // -------------------------------BRYAN------------------------------------
+    public function index_ubi()
+    {
+        return view('rrhh.administracion.colaborador.ubicacion.index');
+    }
+    public function list_ubi()
+    {
+        $list_ubicacion = Ubicacion::with('sede')
+            ->select('id_ubicacion', 'cod_ubi', 'id_sede')
+            ->where('estado', 1)
+            ->get();
 
+        return view('rrhh.administracion.colaborador.ubicacion.lista', compact('list_ubicacion'));
+    }
+
+
+    public function create_ubi()
+    {
+        $list_sede = SedeLaboral::select('id', 'descripcion')->where('estado', 1)->get();
+        return view('rrhh.administracion.colaborador.ubicacion.modal_registrar', compact('list_sede'));
+    }
+
+    public function store_ubi(Request $request)
+    {
+        $request->validate([
+            'codigoe' => 'required',
+            'sedee' => 'required',
+        ], [
+            'codigoe.required' => 'Debe ingresar código.',
+        ]);
+
+        $valida = Ubicacion::where('cod_ubi', $request->codigoe)->where('estado', 1)->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            Ubicacion::create([
+                'cod_ubi' => $request->codigoe,
+                'id_sede' => $request->sedee ?? 1,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_ubi($id)
+    {
+        $list_sede = SedeLaboral::select('id', 'descripcion')->where('estado', 1)->get();
+        $get_id = Ubicacion::findOrFail($id);
+        return view('rrhh.administracion.colaborador.ubicacion.modal_editar', compact('get_id', 'list_sede'));
+    }
+
+    public function update_ubi(Request $request, $id)
+    {
+        $request->validate([
+            'codigoe' => 'required',
+        ], [
+            'codigoe.required' => 'Debe ingresar nombre.',
+        ]);
+
+        $valida = Ubicacion::where('descripcion', $request->codigoe)->where('estado', 1)
+            ->where('id', '!=', $id)->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            Ubicacion::findOrFail($id)->update([
+                'descripcion' => $request->codigoe,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_ubi($id)
+    {
+        Ubicacion::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
     // AGREGANDO ALGO
 }

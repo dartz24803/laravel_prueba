@@ -31,4 +31,51 @@
     </div>
 </form>
   
+<script>
+    function Edit_Grupo_Sanguineo() {
+        var dataString = new FormData(document.getElementById('formulario_editar_sangre'));
+        var url = "{{ url('ColaboradorConfController/Update_Grupo_Sanguineo') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: dataString,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                if (data == "error") {
+                    Swal({
+                        title: 'Actualizacion Denegada',
+                        text: "¡El registro ya existe!",
+                        type: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
+                    });
+                } else {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $("#ModalUpdate .close").click()
+                        TablaTipoSangre();
+                    });
+                }
+            },
+            error:function(xhr) {
+                var errors = xhr.responseJSON.errors;
+                var firstError = Object.values(errors)[0][0];
+                Swal.fire(
+                    '¡Ups!',
+                    firstError,
+                    'warning'
+                );
+            }
+        });
+    }
+</script>
