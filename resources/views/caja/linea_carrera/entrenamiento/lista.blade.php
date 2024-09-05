@@ -25,7 +25,7 @@
                 <td>
                     <span class="badge badge-{{ $list->color_estado }}">{{ $list->nom_estado }}</span>
                 </td>
-                <td>{{ $list->nota }}</td>
+                <td @if ($list->nota<14) style="color: red;" @endif>{{ $list->nota }}</td>
                 <td class="text-left">{{ $list->nom_evaluacion }}</td>
                 <td class="text-center">
                     <div class="btn-group dropleft" role="group"> 
