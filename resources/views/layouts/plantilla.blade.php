@@ -78,15 +78,17 @@
                             @if (count($list_notificacion)>0)
                                 @foreach ($list_notificacion as $list)
                                     <div class="dropdown-item">
-                                        <div class="media server-log">
-                                            {!! $list->icono !!}
-                                            <div class="media-body">
-                                                <div class="data-info">
-                                                    <h6 class="">{{ $list->mensaje." ".$list->solicitante }}</h6>
-                                                    <p class="">{{ $list->fecha }}</p>
+                                        <a onclick="Update_Notificacion_Leido('{{ $list->id_notificacion }}','{{ $list->id_tipo }}');">
+                                            <div class="media">
+                                                {!! $list->icono !!}
+                                                <div class="media-body">
+                                                    <div class="data-info">
+                                                        <h6 class="">{{ $list->mensaje." ".$list->solicitante }}</h6>
+                                                        <p class="">{{ $list->fecha }}</p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </a>
                                     </div>
                                 @endforeach
                             @else
@@ -223,6 +225,36 @@
                         }
                     });
                 });
+        }
+
+        function Update_Notificacion_Leido(id,id_tipo){
+            Cargando();
+
+            var url = "{{ route('notificacion.update_leido', ':id') }}".replace(':id', id);
+
+            $.ajax({
+                type: "PUT",
+                url: url,
+                data: {'id_notificacion': id},
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success: function(resp) {
+                    if(id_tipo == "44"){
+                        window.location = "{{ route('linea_carrera') }}";
+                    }else if(id_tipo == "45"){
+                        window.location = "{{ route('inicio') }}";
+                    }else if(id_tipo == "46"){
+                        window.open("{{ route('linea_carrera.evaluacion', ':id') }}".replace(':id', resp), "_blank");
+                    }else if(id_tipo == "47"){
+                        window.location = "{{ route('linea_carrera') }}";
+                    }else if(id_tipo == "6"){
+                        window.location = "{{ route('inicio') }}";
+                    }else{
+                        window.location = "{{ route('inicio') }}";
+                    }
+                }
+            });
         }
 
         $(document).ready(function() {

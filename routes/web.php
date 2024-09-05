@@ -378,11 +378,17 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Update_Regimen', 'Update_Regimen');
     Route::post('ColaboradorConfController/Delete_Regimen', 'Delete_Regimen');
     Route::post('ColaboradorConfController/Situacion_Laboral', 'Situacion_Laboral');
-    Route::get('ColaboradorConfController/Situacion_Laboral', 'Situacion_Laboral');
-    Route::get('ColaboradorConfController/Situacion_Laboral/{id}', 'Situacion_Laboral');
-    Route::post('ColaboradorConfController/Situacion_Laboral', 'Situacion_Laboral');
-    Route::post('ColaboradorConfController/Situacion_Laboral', 'Situacion_Laboral');
-    Route::post('ColaboradorConfController/Situacion_Laboral', 'Situacion_Laboral');
+    Route::get('ColaboradorConfController/Modal_Situacion_Laboral', 'Modal_Situacion_Laboral');
+    Route::get('ColaboradorConfController/Modal_Update_Situacion_Laboral/{id}', 'Modal_Update_Situacion_Laboral');
+    Route::post('ColaboradorConfController/Insert_Situacion_Laboral', 'Insert_Situacion_Laboral');
+    Route::post('ColaboradorConfController/Update_Situacion_Laboral', 'Update_Situacion_Laboral');
+    Route::post('ColaboradorConfController/Delete_Situacion_Laboral', 'Delete_Situacion_Laboral');
+    Route::post('ColaboradorConfController/Tipo_Contrato', 'Tipo_Contrato');
+    Route::get('ColaboradorConfController/Modal_Tipo_Contrato', 'Modal_Tipo_Contrato');
+    Route::get('ColaboradorConfController/Modal_Update_Tipo_Contrato/{id}', 'Modal_Update_Tipo_Contrato');
+    Route::post('ColaboradorConfController/Insert_Tipo_Contrato', 'Insert_Tipo_Contrato');
+    Route::post('ColaboradorConfController/Update_Tipo_Contrato', 'Update_Tipo_Contrato');
+    Route::post('ColaboradorConfController/Delete_Tipo_Contrato', 'Delete_Tipo_Contrato');
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function () {
@@ -728,6 +734,10 @@ Route::controller(LineaCarreraController::class)->group(function () {
     Route::post('linea_carrera_en/list', 'list_en')->name('linea_carrera_en.list');
     Route::put('linea_carrera_en/{id}', 'update_en')->name('linea_carrera_en.update');
     Route::get('linea_carrera_en/update_estado_entrenamiento', 'update_estado_entrenamiento')->name('linea_carrera_en.update_estado_entrenamiento');
+    Route::get('linea_carrera/{id}/evaluacion', 'evaluacion_ev')->name('linea_carrera.evaluacion');
+    Route::post('linea_carrera_ev/{id}/iniciar_evaluacion', 'iniciar_evaluacion_ev')->name('linea_carrera_ev.iniciar_evaluacion');
+    Route::post('linea_carrera_ev/examen', 'examen_en')->name('linea_carrera_ev.examen');
+    Route::post('linea_carrera_ev/{id}/terminar_evaluacion', 'terminar_evaluacion_ev')->name('linea_carrera_ev.terminar_evaluacion');
     Route::get('linea_carrera_re', 'index_re')->name('linea_carrera_re');
     Route::get('linea_carrera_re/list', 'list_re')->name('linea_carrera_re.list');
     Route::get('linea_carrera_re/{id}/edit', 'edit_re')->name('linea_carrera_re.edit');
@@ -755,6 +765,7 @@ Route::controller(NotificacionConfController::class)->group(function () {
     Route::get('notificacion_conf_ti/{id}/edit', 'edit_ti')->name('notificacion_conf_ti.edit');
     Route::put('notificacion_conf_ti/{id}', 'update_ti')->name('notificacion_conf_ti.update');
     Route::delete('notificacion_conf_ti/{id}', 'destroy_ti')->name('notificacion_conf_ti.destroy');
+    Route::put('notificacion/{id}/leido', 'update_leido')->name('notificacion.update_leido');
 });
 
 

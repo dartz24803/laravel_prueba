@@ -37,5 +37,52 @@
         <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
-  
+<script>
+    function Edit_Situacion_Laboral() {
+        var dataString = new FormData(document.getElementById('formulario_editar_situacion'));
+        var url = "{{ url('ColaboradorConfController/Update_Situacion_Laboral') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: dataString,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                if (data == "error") {
+                    Swal({
+                        title: 'Actualización Denegada',
+                        text: "¡El registro ya existe!",
+                        type: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
+                    });
+                } else {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        TablaSituacion();
+                        $("#ModalUpdate .close").click()
+                    });
+                }
+            },
+            error:function(xhr) {
+                var errors = xhr.responseJSON.errors;
+                var firstError = Object.values(errors)[0][0];
+                Swal.fire(
+                    '¡Ups!',
+                    firstError,
+                    'warning'
+                );
+            }
+        });
+    }
+</script>
 

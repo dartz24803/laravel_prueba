@@ -2370,8 +2370,12 @@ class TrackingController extends Controller
                 '',
                 ''
             ]);
-
             $get_id = $resultados[0];
+
+            $stock = DB::connection('sqlsrv')->select('EXEC usp_movil_ver_stock_precios_sku ?', [
+                $sku
+            ]);
+            $get_stock = $stock[0];
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => "Error procesando base de datos.",
@@ -2397,6 +2401,8 @@ class TrackingController extends Controller
                     'talla' => $get_id->talla,
                     'descripcion' => $get_id->decripcion,
                     'cantidad' => $request->cantidad,
+                    'stk_almacen' => $get_stock->stk_almacen,
+                    'stk_tienda' => $get_stock->stk_tienda,
                     'estado' => 0,
                     'fecha' => now()
                 ]);

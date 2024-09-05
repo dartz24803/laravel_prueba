@@ -13,6 +13,20 @@ class NotificacionConfController extends Controller
         $this->middleware('verificar.sesion.usuario');
     }
 
+    public function update_leido($id)
+    {
+        $get_id = Notificacion::findOrFail($id);
+        if($get_id->id_tipo!="46"){
+            Notificacion::findOrFail($id)->update([
+                'leido' => 1,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }else{
+            echo $get_id->solicitante;
+        }
+    }
+
     public function index()
     {
         //NOTIFICACIONES

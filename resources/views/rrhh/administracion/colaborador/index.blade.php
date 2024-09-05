@@ -12,6 +12,7 @@
                     <div class="statbox widget box box-shadow">
                         <div class="widget-content widget-content-area simple-tab">
                             <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
+                            <div class="d-flex overflow-auto bg-light py-2">
                                 <li class="nav-item">
                                     <a id="a_di" class="nav-link" onclick="Direccion();" style="cursor: pointer;">Dirección</a>
                                 </li>
@@ -49,21 +50,45 @@
                                     <a id="programas" class="nav-link" onclick="Index_Programas();" style="cursor: pointer;">Programas</a>
                                 </li>
                                 <?php if(session('usuario')->id_nivel==1 || session('usuario')->id_nivel==2){ ?>
-                                    <a style="cursor: pointer;" class="nav-link" id="EstadoCivil" onclick="TablaEstadoCivil()">Estado Civil</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="Idioma" onclick="TablaIdiomas()">Idiomas</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="Nacionalidad" onclick="TablaNacionalidad()">Nacionalidad</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="Parentesco" onclick="TablaParentesco()">Parentesco</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="Referencia" onclick="TablaReferencia()">Referencia Laboral</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="Regimen" onclick="TablaRegimen()">Régimen Laboral</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="Situacion" onclick="TablaSituacion()">Situacion Laboral</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="TipoContrato" onclick="TablaTipoContrato()">Tipo de Contrato</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="TipoDocumento" onclick="TablaTipoDocumento()">Tipo de Documento</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="TipoSangre" onclick="TablaTipoSangre()">Tipo de Sangre</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="TipoVia" onclick="TablaTipoVia()">Tipo de Via</a>
-                                    <a style="cursor: pointer;" class="nav-link" id="TipoVivienda" onclick="TablaTipoVivienda()">Tipo de Vivienda</a>
-
+                                    <li class="nav-item">                                
+                                        <a style="cursor: pointer;" class="nav-link" id="EstadoCivil" onclick="TablaEstadoCivil()">Estado Civil</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="Idioma" onclick="TablaIdiomas()">Idiomas</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="Nacionalidad" onclick="TablaNacionalidad()">Nacionalidad</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="Parentesco" onclick="TablaParentesco()">Parentesco</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="Referencia" onclick="TablaReferencia()">Referencia Laboral</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="Regimen" onclick="TablaRegimen()">Régimen Laboral</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="Situacion" onclick="TablaSituacion()">Situacion Laboral</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="TipoContrato" onclick="TablaTipoContrato()">Tipo de Contrato</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="TipoDocumento" onclick="TablaTipoDocumento()">Tipo de Documento</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="TipoSangre" onclick="TablaTipoSangre()">Tipo de Sangre</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="TipoVia" onclick="TablaTipoVia()">Tipo de Via</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="TipoVivienda" onclick="TablaTipoVivienda()">Tipo de Vivienda</a>
+                                    </li>
                                     {{-- empresas(administracion finanzas), --}}
                                 <?php }?>
+                            </div>
                             </ul>
 
                             <div class="row" id="cancel-row">
@@ -91,6 +116,9 @@
 
     //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
     function Active_Tabla_Colaboradores(){
+        $("#TipoContrato").removeClass('active');
+        $("#Situacion").removeClass('active');
+        $("#Regimen").removeClass('active');
         $("#Referencia").removeClass('active');
         $("#Parentesco").removeClass('active');
         $("#Nacionalidad").removeClass('active');
@@ -423,6 +451,49 @@
                 $('#div_colaborador_conf').html(resp);
             }
         });
+    }
+    
+    function TablaSituacion() {
+        Cargando();
+        Active_Tabla_Colaboradores();
+
+        $("#Situacion").addClass('active');
+        var csrfToken = $('input[name="_token"]').val();
+
+        var url = "{{ url('ColaboradorConfController/Situacion_Laboral') }}";
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+    
+    function TablaTipoContrato() {
+        Cargando();
+        Active_Tabla_Colaboradores();
+
+        $("#TipoContrato").addClass('active')
+        var url = "{{ url('ColaboradorConfController/Tipo_Contrato') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+
     }
 </script>
 @endsection
