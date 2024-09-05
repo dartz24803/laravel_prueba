@@ -101,8 +101,6 @@
 
     <div class="modal-body" style="max-height:450px; overflow:auto;">
 
-
-
         <div class="row">
             <div class="form-group col-md-4">
                 <label for="nomreporte">Reporte: </label>
@@ -120,7 +118,7 @@
             <div class="col-12 text-center">
                 <div class="divider"></div>
 
-                <label class="control-label text-bold centered-label">Filtros</label>
+                <label class="control-label text-bold">Filtros</label>
 
                 @csrf
                 <div class="row">
@@ -149,10 +147,9 @@
         <div class="col-12 text-center">
             <div class="divider"></div>
 
-            <label class="control-label text-bold centered-label">Dar Accesos</label>
+            <label class="control-label text-bold">Dar Accesos</label>
             <div>
                 <label class="control-label text-bold">Todos</label>
-
                 <label class="switch">
                     <input type="checkbox" id="acceso_todo" name="acceso_todo" onclick="Acceso_Todo()">
                     <span class="slider"></span>
@@ -171,13 +168,13 @@
                 </select>
             </div>
         </div>
+    </div>
 
-
-        <div class="modal-footer">
-            @csrf
-            <button class="btn btn-primary" type="button" onclick="Insert_Funcion_Temporal();">Guardar</button>
-            <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
-        </div>
+    <div class="modal-footer">
+        @csrf
+        <button class="btn btn-primary" type="button" onclick="Insert_Funcion_Temporal();">Guardar</button>
+        <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
+    </div>
 
 </form>
 
@@ -320,8 +317,18 @@
                         Lista_Maestra();
                         $("#ModalRegistro .close").click();
                     });
+                },
+                error: function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
                 }
             });
+
         }
     }
 
