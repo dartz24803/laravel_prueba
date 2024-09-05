@@ -23,7 +23,7 @@
                 <td>{{ $list->fecha }}</td>
                 <td>{{ $list->hora_inicio }}</td>
                 <td>{{ $list->hora_fin }}</td>
-                <td>{{ $list->nota }}</td>
+                <td @if ($list->nota<14) style="color: red;" @endif>{{ $list->nota }}</td>
                 <td>
                     <span class="badge badge-{{ $list->color_estado }}">{{ $list->nom_estado }}</span>
                 </td>
