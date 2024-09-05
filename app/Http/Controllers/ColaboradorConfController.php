@@ -18,6 +18,7 @@ use App\Models\DatacorpAccesos;
 use App\Models\PaginasWebAccesos;
 use App\Models\ProgramaAccesos;
 use App\Models\EstadoCivil;
+use App\Models\GrupoSanguineo;
 use App\Models\Idioma;
 use App\Models\Nacionalidad;
 use App\Models\Parentesco;
