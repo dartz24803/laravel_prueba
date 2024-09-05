@@ -63,4 +63,43 @@
                 "pageLength": 10
             });
     });
+    function Delete_Grupo_Sanguineo(id) {
+        var id = id;
+        var url = "{{ url('ColaboradorConfController/Delete_Grupo_Sanguineo') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            //title: '¿Realmente quieres eliminar el registro de '+ nombre +'?',
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        'id_grupo_sanguineo': id
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function() {
+                        Swal(
+                            'Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            TablaTipoSangre()
+                        });
+                    }
+                });
+            }
+        })
+    }
 </script>
