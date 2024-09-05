@@ -17,11 +17,11 @@ return new class extends Migration
             $table->date('fecha_inicio')->nullable();
             $table->date('fecha_fin')->nullable();
             $table->integer('estado_e')->nullable();
-            $table->integer('estado');
-            $table->dateTime('fec_reg');
-            $table->integer('user_reg');
-            $table->dateTime('fec_act');
-            $table->integer('user_act');
+            $table->integer('estado')->nullable();
+            $table->dateTime('fec_reg')->nullable();
+            $table->integer('user_reg')->nullable();
+            $table->dateTime('fec_act')->nullable();
+            $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
             $table->foreign('id_solicitud_puesto', 'ent_fk_id_spue')->references('id')->on('solicitud_puesto');

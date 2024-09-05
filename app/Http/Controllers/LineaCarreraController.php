@@ -36,8 +36,7 @@ class LineaCarreraController extends Controller
         foreach($list_entrenamiento as $list){
             Entrenamiento::findOrFail($list->id)->update([
                 'estado_e' => 2,
-                'fec_act' => now(),
-                'user_act' => 0
+                'fec_act' => now()
             ]);
 
             DB::connection('sqlsrv')->statement('EXEC usp_web_upt_rol_usuario_intranet ?,?,?,?,?,?,?,?', [
@@ -50,6 +49,26 @@ class LineaCarreraController extends Controller
                 $list->id_puesto,
                 $list->id_base
             ]);
+
+            if($list->examen_asignado==0 && $list->examen_acceso==1){
+                $examen = ExamenEntrenamiento::create([
+                    'id_entrenamiento' => $list->id,
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'fec_act' => now()
+                ]);
+                Notificacion::create([
+                    'id_usuario' => $list->id_usuario,
+                    'solicitante' => $examen->id,
+                    'id_tipo' => 46,
+                    'leido' => 0,
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'fec_act' => now()
+                ]); 
+            }
+
+            echo $list->examen_asignado."_".$list->examen_acceso;
         }
     }
 

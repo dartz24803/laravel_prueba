@@ -21,11 +21,11 @@ return new class extends Migration
             $table->unsignedBigInteger('grado_instruccion');
             $table->integer('observacion')->nullable();
             $table->integer('estado_s')->nullable();
-            $table->integer('estado');
-            $table->dateTime('fec_reg');
-            $table->integer('user_reg');
-            $table->dateTime('fec_act');
-            $table->integer('user_act');
+            $table->integer('estado')->nullable();
+            $table->dateTime('fec_reg')->nullable();
+            $table->integer('user_reg')->nullable();
+            $table->dateTime('fec_act')->nullable();
+            $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
             $table->foreign('id_puesto', 'spue_fk_id_pue')->references('id_puesto')->on('puesto');

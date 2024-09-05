@@ -98,15 +98,27 @@ class Entrenamiento extends Model
 
     public static function get_list_entrenamiento_terminado(){
         $sql = "SELECT en.id,us.usuario_nombres,us.usuario_apater,us.usuario_amater,
-                us.num_doc,pu.perfil_infosap,sp.id_usuario,sp.id_puesto_aspirado AS id_puesto,
+                us.num_doc,pa.perfil_infosap,sp.id_usuario,sp.id_puesto_aspirado AS id_puesto,
                 IFNULL((SELECT ba.id_base FROM base ba 
                 WHERE ba.cod_base=sp.base AND ba.estado=1
                 ORDER BY ba.id_base DESC
-                LIMIT 1),0) AS id_base
+                LIMIT 1),0) AS id_base,
+                CASE WHEN (SELECT COUNT(1) FROM examen_entrenamiento ee
+                WHERE ee.id_entrenamiento=en.id AND ee.estado=1)=2 THEN 1
+                ELSE IFNULL((SELECT CASE WHEN ee.nota>=14 OR ee.fecha_revision IS NULL THEN 1 ELSE 0 END 
+                FROM examen_entrenamiento ee
+                WHERE ee.id_entrenamiento=en.id AND ee.estado=1
+                ORDER BY ee.id DESC
+                LIMIT 1),1) END AS examen_asignado,
+                CASE WHEN (SELECT COUNT(1) FROM pregunta pr 
+                WHERE pr.id_puesto=sp.id_puesto_aspirado AND pr.id_tipo=1 AND pr.estado=1)>=15 AND 
+                (SELECT COUNT(1) FROM pregunta pr 
+                WHERE pr.id_puesto=sp.id_puesto_aspirado AND pr.id_tipo=2 AND pr.estado=1)>=5 THEN 1
+                ELSE 0 END AS examen_acceso
                 FROM entrenamiento en
                 LEFT JOIN solicitud_puesto sp ON en.id_solicitud_puesto=sp.id
+                LEFT JOIN puesto pa ON sp.id_puesto_aspirado=pa.id_puesto
                 LEFT JOIN users us ON sp.id_usuario=us.id_usuario
-                LEFT JOIN puesto pu ON sp.id_puesto=pu.id_puesto
                 WHERE DATE_ADD(en.fecha_fin, INTERVAL 1 DAY)=CURDATE() AND en.estado_e=1 AND en.estado=1";
         $query = DB::select($sql);
         return $query;
