@@ -65,7 +65,7 @@ class Entrenamiento extends Model
                     WHERE ee.id_entrenamiento=en.id AND ee.fecha_revision IS NOT NULL AND ee.estado=1)>0 THEN
                         (CASE WHEN (SELECT ee.nota FROM examen_entrenamiento ee 
                         WHERE ee.id_entrenamiento=en.id AND ee.estado=1)>=14 THEN 'Aprobado' 
-                        ELSE 'Rechazado' END)
+                        ELSE 'Desaprobado' END)
                     ELSE '' END AS nom_evaluacion,
                     /*(SELECT COUNT(1) FROM examen_entrenamiento ee 
                     WHERE ee.id_entrenamiento=en.id AND ee.fecha_revision IS NULL AND 

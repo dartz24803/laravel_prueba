@@ -59,7 +59,7 @@ class ExamenEntrenamiento extends Model
                     ELSE DATE_FORMAT(ee.hora_fin,'%H:%i:%s') END AS hora_fin,   
                     CASE WHEN ee.fecha_revision IS NULL THEN '' 
                     ELSE ee.nota END AS nota,CASE WHEN ee.fecha_revision IS NULL THEN 'Pendiente' 
-                    ELSE (CASE WHEN ee.nota>=14 THEN 'Aprobado' ELSE 'Rechazado' END) END AS nom_estado,
+                    ELSE (CASE WHEN ee.nota>=14 THEN 'Aprobado' ELSE 'Desaprobado' END) END AS nom_estado,
                     CASE WHEN ee.fecha_revision IS NULL THEN 'warning' 
                     ELSE (CASE WHEN ee.nota>=14 THEN 'success' ELSE 'danger' END) END AS color_estado,
                     ee.hora_fin_real,ee.fecha_revision
