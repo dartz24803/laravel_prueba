@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Area;
+use App\Models\AreaUbicacion;
 use App\Models\Cargo;
 use App\Models\Competencia;
 use App\Models\CompetenciaPuesto;
@@ -336,7 +337,13 @@ class ColaboradorConfController extends Controller
     public function create_ar()
     {
         $list_direccion = Direccion::select('id_direccion', 'direccion')->where('estado', 1)->get();
-        return view('rrhh.administracion.colaborador.area.modal_registrar', compact('list_direccion'));
+        $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')->where('estado', 1)->get();
+        $list_sub_gerencia = SubGerencia::select('id_sub_gerencia', 'nom_sub_gerencia')->where('estado', 1)->get();
+        $list_puesto = Puesto::select('id_puesto', 'nom_puesto')->where('estado', 1)->get();
+        $list_ubicaciones = Ubicacion::select('id_ubicacion', 'cod_ubi')->where('estado', 1)->get();
+
+        // list_ubicaciones
+        return view('rrhh.administracion.colaborador.area.modal_registrar', compact('list_direccion', 'list_gerencia', 'list_sub_gerencia', 'list_puesto', 'list_ubicaciones'));
     }
 
     public function traer_puesto_ar(Request $request)
@@ -372,7 +379,8 @@ class ColaboradorConfController extends Controller
             if (is_array($request->puestos) && count($request->puestos) > 0) {
                 $puestos = implode(",", $request->puestos);
             }
-            Area::create([
+
+            $area = Area::create([
                 'id_direccion' => $request->id_direccion,
                 'id_gerencia' => $request->id_gerencia,
                 'id_departamento' => $request->id_sub_gerencia,
@@ -386,6 +394,21 @@ class ColaboradorConfController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
+            // Verifica si se han enviado ubicaciones
+            if (is_array($request->ubicaciones) && count($request->ubicaciones) > 0) {
+                // Inserta las filas correspondientes en area_ubicacion
+                $data = array_map(function ($id_ubicacion) use ($area) {
+                    return [
+                        'id_area' => $area->id_area,
+                        'id_ubicacion' => $id_ubicacion,
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario
+                    ];
+                }, $request->ubicaciones);
+
+                // Inserta los registros en AreaUbicacion
+                AreaUbicacion::insert($data);
+            }
         }
     }
 
@@ -396,7 +419,26 @@ class ColaboradorConfController extends Controller
         $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')->where('id_direccion', $get_id->id_direccion)->where('estado', 1)->get();
         $list_sub_gerencia = SubGerencia::select('id_sub_gerencia', 'nom_sub_gerencia')->where('id_gerencia', $get_id->id_gerencia)->where('estado', 1)->get();
         $list_puesto = Puesto::select('id_puesto', 'nom_puesto')->where('id_gerencia', $get_id->id_gerencia)->where('estado', 1)->get();
-        return view('rrhh.administracion.colaborador.area.modal_editar', compact('get_id', 'list_direccion', 'list_gerencia', 'list_sub_gerencia', 'list_puesto'));
+        // Consultar las ubicaciones relacionadas con el área a través de la tabla intermedia "area_ubicacion"
+        // $list_ubicaciones = Ubicacion::select('ubicacion.id_ubicacion', 'ubicacion.cod_ubi')
+        //     ->join('area_ubicacion', 'ubicacion.id_ubicacion', '=', 'area_ubicacion.id_ubicacion')
+        //     ->where('area_ubicacion.id_area', $get_id->id_area) // Relacionar con el área actual
+        //     ->where('ubicacion.estado', 1) // Filtrar ubicaciones activas
+        //     ->get();
+        // Obtener todos los cod_ubi con estado=1
+        $list_ubicaciones = Ubicacion::select('id_ubicacion', 'cod_ubi')
+            ->where('estado', 1)
+            ->get();
+
+        $id_ubicaciones = AreaUbicacion::where('id_area', $get_id->id_area)
+            ->join('ubicacion', 'area_ubicacion.id_ubicacion', '=', 'ubicacion.id_ubicacion')
+            ->where('ubicacion.estado', 1)
+            ->pluck('area_ubicacion.id_ubicacion') // Extrae solo los 'id_ubicacion'
+            ->map(function ($id) {
+                return (string) $id; // Convertir a string
+            })
+            ->toArray();
+        return view('rrhh.administracion.colaborador.area.modal_editar', compact('get_id', 'list_direccion', 'list_gerencia', 'list_sub_gerencia', 'list_puesto', 'list_ubicaciones', 'id_ubicaciones'));
     }
 
     public function update_ar(Request $request, $id)
@@ -427,6 +469,22 @@ class ColaboradorConfController extends Controller
             if (is_array($request->puestose) && count($request->puestose) > 0) {
                 $puestos = implode(",", $request->puestose);
             }
+            if (is_array($request->ubicacionesed) && count($request->ubicacionesed) > 0) {
+                // Elimina las entradas existentes para el id_area
+                AreaUbicacion::where('id_area', $id)->delete();
+                // Prepara los datos para insertar
+                $data = array_map(function ($id_ubicacion) use ($id) {
+                    return [
+                        'id_area' => $id,
+                        'id_ubicacion' => $id_ubicacion,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                    ];
+                }, $request->ubicacionesed);
+                // Inserta las nuevas entradas
+                AreaUbicacion::insert($data);
+            }
+
             Area::findOrFail($id)->update([
                 'id_direccion' => $request->id_direccione,
                 'id_gerencia' => $request->id_gerenciae,
@@ -2173,17 +2231,20 @@ class ColaboradorConfController extends Controller
         TipoDocumento::findOrFail($request->input("id_tipo_documento"))->update($dato);
     }
 
-    public function Grupo_Sanguineo(){
+    public function Grupo_Sanguineo()
+    {
         $dato['list_grupo_sanguineo'] = GrupoSanguineo::where('estado', 1)
             ->get();
         return view('rrhh.administracion.colaborador.GrupoSanguineo.index', $dato);
     }
 
-    public function Modal_Grupo_Sanguineo(){
+    public function Modal_Grupo_Sanguineo()
+    {
         return view('rrhh.administracion.colaborador.GrupoSanguineo.modal_registrar');
     }
 
-    public function Insert_Grupo_Sanguineo(Request $request){
+    public function Insert_Grupo_Sanguineo(Request $request)
+    {
         $request->validate([
             'cod_grupo_sanguineo' => 'required',
             'nom_grupo_sanguineo' => 'required',
@@ -2209,13 +2270,15 @@ class ColaboradorConfController extends Controller
         }
     }
     /*----------------------------------------Paolo*/
-    public function Modal_Update_Grupo_Sanguineo($id_Grupo_Sanguineo){
+    public function Modal_Update_Grupo_Sanguineo($id_Grupo_Sanguineo)
+    {
         $dato['get_id'] = GrupoSanguineo::where('id_grupo_sanguineo', $id_Grupo_Sanguineo)
-                        ->get();
-        return view('rrhh.administracion.colaborador.GrupoSanguineo.modal_editar',$dato);
+            ->get();
+        return view('rrhh.administracion.colaborador.GrupoSanguineo.modal_editar', $dato);
     }
 
-    public function Update_Grupo_Sanguineo(Request $request){
+    public function Update_Grupo_Sanguineo(Request $request)
+    {
         $request->validate([
             'cod_grupo_sanguineo' => 'required',
             'nom_grupo_sanguineo' => 'required',
@@ -2230,15 +2293,16 @@ class ColaboradorConfController extends Controller
         if ($valida) {
             echo "error";
         } else {
-            $dato['cod_grupo_sanguineo']= $request->input("cod_grupo_sanguineo"); 
-            $dato['nom_grupo_sanguineo']= $request->input("nom_grupo_sanguineo");
+            $dato['cod_grupo_sanguineo'] = $request->input("cod_grupo_sanguineo");
+            $dato['nom_grupo_sanguineo'] = $request->input("nom_grupo_sanguineo");
             $dato['fec_act'] = now();
             $dato['user_act'] = session('usuario')->id_usuario;
             GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
         }
     }
-    
-    public function Delete_Grupo_Sanguineo(Request $request){
+
+    public function Delete_Grupo_Sanguineo(Request $request)
+    {
         $dato['estado'] = 2;
         $dato['fec_eli'] = now();
         $dato['user_eli'] = session('usuario')->id_usuario;
