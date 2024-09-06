@@ -119,6 +119,7 @@
 
     //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
     function Active_Tabla_Colaboradores() {
+        $("#TipoVia").removeClass('active');
         $("#TipoSangre").removeClass('active');
         $("#TipoDocumento").removeClass('active');
         $("#TipoContrato").removeClass('active');
@@ -559,31 +560,34 @@
             }
         });
     }
-    /*-------------------------------------Paolo
+    /*-------------------------------------Paolo*/
         function TablaTipoVia() {
             Cargando();
             Active_Tabla_Colaboradores();
 
             $("#TipoVia").addClass('active');
+            var csrfToken = $('input[name="_token"]').val();
 
-            var url = "<? php // echo url(); 
-                        ?>Corporacion/Tipo_Via";
+            var url = "{{ url('ColaboradorConfController/Tipo_Via') }}";
             $.ajax({
                 type: "POST",
                 url: url,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 success: function(resp) {
-                    $('#lista_escogida').html(resp);
+                    $('#div_colaborador_conf').html(resp);
                 }
             });
         }
-
+/*
         function TablaTipoVivienda() {
             Cargando();
             Active_Tabla_Colaboradores();
 
             $("#TipoVivienda").addClass('active');
 
-            var url = "<? php // echo url(); 
+            var url = "<?php // echo url();
                         ?>Corporacion/Tipo_Vivienda";
             $.ajax({
                 type: "POST",

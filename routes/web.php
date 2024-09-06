@@ -219,7 +219,7 @@ Route::controller(ProcesosController::class)->group(function () {
     Route::get('portalprocesos_lm_conf', 'index_lm_conf')->name('portalprocesos_lm_conf');
 });
 
-//BI REPORTES - 
+//BI REPORTES -
 Route::controller(BiReporteController::class)->group(function () {
     Route::get('bireporte', 'index')->name('bireporte');
     Route::get('bireporte_ra', 'index_ra')->name('bireporte_ra');
@@ -402,14 +402,14 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Grupo_Sanguineo', 'Insert_Grupo_Sanguineo');
     Route::post('ColaboradorConfController/Update_Grupo_Sanguineo', 'Update_Grupo_Sanguineo');
     Route::post('ColaboradorConfController/Delete_Grupo_Sanguineo', 'Delete_Grupo_Sanguineo');
-    /*-------------------------------------------------Paolo--------------------------------------
-    Route::post('ColaboradorConfController/Grupo_Sanguineo', 'Grupo_Sanguineo');
-    Route::get('ColaboradorConfController/Modal_Grupo_Sanguineo', 'Modal_Grupo_Sanguineo');
-    Route::get('ColaboradorConfController/Modal_Update_Grupo_Sanguineo/{id}', 'Modal_Update_Grupo_Sanguineo');
-    Route::post('ColaboradorConfController/Insert_Grupo_Sanguineo', 'Insert_Grupo_Sanguineo');
-    Route::post('ColaboradorConfController/Update_Grupo_Sanguineo', 'Update_Grupo_Sanguineo');
-    Route::post('ColaboradorConfController/Delete_Grupo_Sanguineo', 'Delete_Grupo_Sanguineo');
-    Route::post('ColaboradorConfController/Grupo_Sanguineo', 'Grupo_Sanguineo');
+    /*-------------------------------------------------Paolo--------------------------------------*/
+    Route::post('ColaboradorConfController/Tipo_Via', 'Tipo_Via');
+    Route::get('ColaboradorConfController/Modal_Tipo_Via', 'Modal_Tipo_Via');
+    Route::get('ColaboradorConfController/Modal_Update_Tipo_Via/{id}', 'Modal_Update_Tipo_Via');
+    Route::post('ColaboradorConfController/Insert_Tipo_Via', 'Insert_Tipo_Via');
+    Route::post('ColaboradorConfController/Update_Tipo_Via', 'Update_Tipo_Via');
+    Route::post('ColaboradorConfController/Delete_Tipo_Via', 'Delete_Tipo_Via');
+    Route::post('ColaboradorConfController/Grupo_Sanguineo', 'Grupo_Sanguineo');/*
     Route::get('ColaboradorConfController/Modal_Grupo_Sanguineo', 'Modal_Grupo_Sanguineo');
     Route::get('ColaboradorConfController/Modal_Update_Grupo_Sanguineo/{id}', 'Modal_Update_Grupo_Sanguineo');
     Route::post('ColaboradorConfController/Insert_Grupo_Sanguineo', 'Insert_Grupo_Sanguineo');

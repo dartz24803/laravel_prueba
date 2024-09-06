@@ -18,7 +18,6 @@ use App\Models\DatacorpAccesos;
 use App\Models\PaginasWebAccesos;
 use App\Models\ProgramaAccesos;
 use App\Models\EstadoCivil;
-use App\Models\GrupoSanguineo;
 use App\Models\Idioma;
 use App\Models\Nacionalidad;
 use App\Models\Parentesco;
@@ -27,7 +26,11 @@ use App\Models\Regimen;
 use App\Models\SituacionLaboral;
 use App\Models\TipoContrato;
 use App\Models\TipoDocumento;
-// use App\Models\SituacionLaboral;
+use App\Models\GrupoSanguineo;
+//-----------ppp---------------
+use App\Models\TipoVia;
+// use App\Models\;
+//-----------------ppp--------
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
 use App\Models\Ubicacion;
@@ -2033,7 +2036,7 @@ class ColaboradorConfController extends Controller
         $request->validate([
             'nom_tipo_contrato' => 'required',
         ], [
-            'nom_tipo_contrato.required' => 'Debe ingresar descripcion de situacion laboral.',
+            'nom_tipo_contrato.required' => 'Debe ingresar descripcion de tipo de contrato.',
         ]);
         $valida = TipoContrato::where('nom_tipo_contrato', $request->nom_tipo_contrato)
             ->exists();
@@ -2063,7 +2066,7 @@ class ColaboradorConfController extends Controller
         $request->validate([
             'nom_tipo_contrato' => 'required',
         ], [
-            'nom_tipo_contrato.required' => 'Debe ingresar descripcion de situacion laboral.',
+            'nom_tipo_contrato.required' => 'Debe ingresar descripcion de tipo de contrato.',
         ]);
         $valida = TipoContrato::where('nom_tipo_contrato', $request->nom_tipo_contrato)
             ->exists();
@@ -2108,7 +2111,7 @@ class ColaboradorConfController extends Controller
         ], [
             'cod_tipo_documento' => 'Debe ingresar codigo de tipo de documento',
             'digitos' => 'Debe ingresar digitos',
-            'nom_tipo_documento.required' => 'Debe ingresar descripcion de situacion laboral.',
+            'nom_tipo_documento.required' => 'Debe ingresar descripcion de tipo de documento.',
         ]);
         $valida = TipoDocumento::where('nom_tipo_documento', $request->nom_tipo_documento)
             ->where('digitos', $request->digitos)
@@ -2146,7 +2149,7 @@ class ColaboradorConfController extends Controller
         ], [
             'cod_tipo_documento' => 'Debe ingresar codigo de tipo de documento',
             'digitos' => 'Debe ingresar digitos',
-            'nom_tipo_documento.required' => 'Debe ingresar descripcion de situacion laboral.',
+            'nom_tipo_documento.required' => 'Debe ingresar descripcion de tipo de documento.',
         ]);
         $valida = TipoDocumento::where('nom_tipo_documento', $request->nom_tipo_documento)
             ->where('digitos', $request->digitos)
@@ -2188,8 +2191,8 @@ class ColaboradorConfController extends Controller
             'cod_grupo_sanguineo' => 'required',
             'nom_grupo_sanguineo' => 'required',
         ], [
-            'cod_grupo_sanguineo' => 'Debe ingresar codigo de tipo de documento',
-            'nom_grupo_sanguineo.required' => 'Debe ingresar descripcion de situacion laboral.',
+            'cod_grupo_sanguineo' => 'Debe ingresar codigo de grupo sanguineo',
+            'nom_grupo_sanguineo.required' => 'Debe ingresar descripcion de grupo sanguineo.',
         ]);
         $valida = GrupoSanguineo::where('nom_grupo_sanguineo', $request->nom_grupo_sanguineo)
             ->where('cod_grupo_sanguineo', $request->cod_grupo_sanguineo)
@@ -2230,20 +2233,96 @@ class ColaboradorConfController extends Controller
         if ($valida) {
             echo "error";
         } else {
-            $dato['cod_grupo_sanguineo']= $request->input("cod_grupo_sanguineo"); 
+            $dato['cod_grupo_sanguineo']= $request->input("cod_grupo_sanguineo");
             $dato['nom_grupo_sanguineo']= $request->input("nom_grupo_sanguineo");
             $dato['fec_act'] = now();
             $dato['user_act'] = session('usuario')->id_usuario;
             GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
         }
     }
-    
+
     public function Delete_Grupo_Sanguineo(Request $request){
         $dato['estado'] = 2;
         $dato['fec_eli'] = now();
         $dato['user_eli'] = session('usuario')->id_usuario;
         GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
     }
+
+    public function Tipo_Via(){
+        $dato['list_tipo_via'] = TipoVia::where('estado', 1)
+                                ->get();
+        return view('rrhh.administracion.colaborador.TipoVia.index',$dato);
+    }
+
+    public function Modal_Tipo_Via(){
+        return view('rrhh.administracion.colaborador.TipoVia.modal_registrar');
+    }
+
+    public function Insert_Tipo_Via(Request $request){
+        $request->validate([
+            'cod_tipo_via' => 'required',
+            'nom_tipo_via' => 'required',
+        ], [
+            'cod_tipo_via' => 'Debe ingresar codigo de tipo de documento',
+            'nom_tipo_via.required' => 'Debe ingresar descripcion de situacion laboral.',
+        ]);
+        $valida = TipoVia::where('nom_tipo_via', $request->nom_tipo_via)
+            ->where('cod_tipo_via', $request->cod_tipo_via)
+            ->where('estado', 1)
+            ->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            $dato['cod_tipo_via']= $request->input("cod_tipo_via");
+            $dato['nom_tipo_via']= $request->input("nom_tipo_via");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            TipoVia::create($dato);
+        }
+    }
+
+    public function Modal_Update_Tipo_Via($id_tipo_via){
+        $dato['get_id'] = TipoVia::where('id_tipo_via', $id_tipo_via)
+                        ->get();
+        return view('rrhh.administracion.colaborador.TipoVia.modal_editar',$dato);
+    }
+
+    public function Update_Tipo_Via(Request $request){
+        $request->validate([
+            'cod_tipo_via' => 'required',
+            'nom_tipo_via' => 'required',
+        ], [
+            'cod_tipo_via' => 'Debe ingresar codigo de tipo de documento',
+            'nom_tipo_via.required' => 'Debe ingresar descripcion de situacion laboral.',
+        ]);
+
+        $valida = TipoVia::where('nom_tipo_via', $request->nom_tipo_via)
+            ->where('cod_tipo_via', $request->cod_tipo_via)
+            ->where('estado', 1)
+            ->exists();
+
+        if ($valida) {
+            echo "error";
+        } else {
+            $dato['cod_tipo_via']= $request->input("cod_tipo_via");
+            $dato['nom_tipo_via']= $request->input("nom_tipo_via");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+
+            TipoVia::findOrFail($request->input("id_tipo_via"))->update($dato);
+        }
+    }
+
+    public function Delete_Tipo_Via(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        TipoVia::findOrFail($request->input("id_tipo_via"))->update($dato);
+    }
+
     /*
     public function Modal_Update_Grupo_Sanguineo($id_Grupo_Sanguineo){
         $dato['get_id'] = GrupoSanguineo::where('id_grupo_sanguineo', $id_Grupo_Sanguineo)
@@ -2266,21 +2345,21 @@ class ColaboradorConfController extends Controller
         if ($valida) {
             echo "error";
         } else {
-            $dato['cod_grupo_sanguineo']= $request->input("cod_grupo_sanguineo"); 
+            $dato['cod_grupo_sanguineo']= $request->input("cod_grupo_sanguineo");
             $dato['nom_grupo_sanguineo']= $request->input("nom_grupo_sanguineo");
             $dato['fec_act'] = now();
             $dato['user_act'] = session('usuario')->id_usuario;
             GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
         }
     }
-    
+
     public function Delete_Grupo_Sanguineo(Request $request){
         $dato['estado'] = 2;
         $dato['fec_eli'] = now();
         $dato['user_eli'] = session('usuario')->id_usuario;
         GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
     }
-    
+
     public function Modal_Update_Grupo_Sanguineo($id_Grupo_Sanguineo){
         $dato['get_id'] = GrupoSanguineo::where('id_grupo_sanguineo', $id_Grupo_Sanguineo)
                         ->get();
@@ -2302,14 +2381,14 @@ class ColaboradorConfController extends Controller
         if ($valida) {
             echo "error";
         } else {
-            $dato['cod_grupo_sanguineo']= $request->input("cod_grupo_sanguineo"); 
+            $dato['cod_grupo_sanguineo']= $request->input("cod_grupo_sanguineo");
             $dato['nom_grupo_sanguineo']= $request->input("nom_grupo_sanguineo");
             $dato['fec_act'] = now();
             $dato['user_act'] = session('usuario')->id_usuario;
             GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
         }
     }
-    
+
     public function Delete_Grupo_Sanguineo(Request $request){
         $dato['estado'] = 2;
         $dato['fec_eli'] = now();
