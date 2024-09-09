@@ -409,12 +409,12 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Tipo_Via', 'Insert_Tipo_Via');
     Route::post('ColaboradorConfController/Update_Tipo_Via', 'Update_Tipo_Via');
     Route::post('ColaboradorConfController/Delete_Tipo_Via', 'Delete_Tipo_Via');
-    Route::post('ColaboradorConfController/Grupo_Sanguineo', 'Grupo_Sanguineo');/*
-    Route::get('ColaboradorConfController/Modal_Grupo_Sanguineo', 'Modal_Grupo_Sanguineo');
-    Route::get('ColaboradorConfController/Modal_Update_Grupo_Sanguineo/{id}', 'Modal_Update_Grupo_Sanguineo');
-    Route::post('ColaboradorConfController/Insert_Grupo_Sanguineo', 'Insert_Grupo_Sanguineo');
-    Route::post('ColaboradorConfController/Update_Grupo_Sanguineo', 'Update_Grupo_Sanguineo');
-    Route::post('ColaboradorConfController/Delete_Grupo_Sanguineo', 'Delete_Grupo_Sanguineo');
+    Route::post('ColaboradorConfController/Tipo_Vivienda', 'Tipo_Vivienda');
+    Route::get('ColaboradorConfController/Modal_Tipo_Vivienda', 'Modal_Tipo_Vivienda');
+    Route::get('ColaboradorConfController/Modal_Update_Tipo_Vivienda/{id}', 'Modal_Update_Tipo_Vivienda');
+    Route::post('ColaboradorConfController/Insert_Tipo_Vivienda', 'Insert_Tipo_Vivienda');
+    Route::post('ColaboradorConfController/Update_Tipo_Vivienda', 'Update_Tipo_Vivienda');
+    Route::post('ColaboradorConfController/Delete_Tipo_Vivienda', 'Delete_Tipo_Vivienda');/*
     Route::post('ColaboradorConfController/Grupo_Sanguineo', 'Grupo_Sanguineo');
     Route::get('ColaboradorConfController/Modal_Grupo_Sanguineo', 'Modal_Grupo_Sanguineo');
     Route::get('ColaboradorConfController/Modal_Update_Grupo_Sanguineo/{id}', 'Modal_Update_Grupo_Sanguineo');
