@@ -534,7 +534,7 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Lista_Maestra();
+                        List_Reporte();
                         $("#ModalUpdate .close").click();
                     });
                 }

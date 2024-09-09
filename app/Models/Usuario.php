@@ -38,7 +38,22 @@ class Usuario extends Model
         'user_eli'
     ];
 
-    public function login($usuario){
+    public static function get_list_colaborador_usuario(array $filters)
+    {
+        $query = self::select('id_usuario', 'usuario_apater', 'usuario_amater', 'usuario_nombres')
+            ->where('estado', 1);
+
+        // Aplica los filtros
+        if (isset($filters['id_usuario'])) {
+            $query->where('id_usuario', $filters['id_usuario']);
+        }
+
+        // Devuelve los resultados
+        return $query->get();
+    }
+
+    public function login($usuario)
+    {
         $query = "SELECT u.id_usuario, u.usuario_nombres, u.usuario_apater, u.usuario_amater, u.usuario_codigo,
         u.id_nivel, u.centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,u.id_puesto,u.acceso,
         u.ini_funciones,u.fec_reg,u.usuario_password,u.estado, n.nom_nivel, p.nom_puesto, a.nom_area, u.id_area,
@@ -57,10 +72,11 @@ class Usuario extends Model
         return $result;
     }
 
-    public static function get_list_usuario_ft($dato=null){
+    public static function get_list_usuario_ft($dato = null)
+    {
         $parte = "";
-        if(isset($dato['base'])){
-            $parte = "centro_labores='".$dato['base']."' AND";
+        if (isset($dato['base'])) {
+            $parte = "centro_labores='" . $dato['base'] . "' AND";
         }
         $sql = "SELECT id_usuario,CASE WHEN (usuario_apater='' OR usuario_apater IS NULL) AND
                 (usuario_amater='' OR usuario_amater IS NULL) THEN usuario_nombres ELSE
@@ -72,7 +88,8 @@ class Usuario extends Model
         return $query;
     }
 
-    function get_list_colaborador_programacion_diaria($base,$id_puesto){
+    function get_list_colaborador_programacion_diaria($base, $id_puesto)
+    {
         $sql = "SELECT id_usuario,CONCAT(usuario_nombres,' ',usuario_apater,' ',usuario_amater) AS colaborador
                 FROM users
                 WHERE centro_labores='$base' AND id_puesto=$id_puesto AND estado=1
@@ -84,9 +101,10 @@ class Usuario extends Model
 
 
     //obtener horarios x base actual
-    function get_horarios_x_base_hoy($base=null){
+    function get_horarios_x_base_hoy($base = null)
+    {
         $parte = "";
-        if ($base!='0') {
+        if ($base != '0') {
             $parte = " AND t.base = '$base'";
         }
         $sql = "SELECT hd.id_horario, t.base, hd.dia, hd.nom_dia, hd.hora_entrada, hd.hora_descanso_e, hd.hora_descanso_s, hd.hora_salida
@@ -96,7 +114,8 @@ class Usuario extends Model
         return $query;
     }
     //lista con hora de entrada y salida
-    function get_list_cuadro_control_visual($base){
+    function get_list_cuadro_control_visual($base)
+    {
         $sql = "SELECT u.id_usuario,u.usuario_nombres,u.usuario_apater,u.usuario_amater,u.centro_labores,
                 u.num_celp,u.usuario_codigo,u.foto,p.nom_puesto,
                 (SELECT CASE WHEN hcc.t_refrigerio_h=1
@@ -150,7 +169,8 @@ class Usuario extends Model
         return json_decode(json_encode($result), true);
     }
 
-    function contador_presentes_ccv($base=null){
+    function contador_presentes_ccv($base = null)
+    {
         $sql = "SELECT COUNT(*) AS contador_presentes_ccv
                 FROM users u
                 LEFT JOIN puesto p ON p.id_puesto = u.id_puesto
@@ -165,7 +185,8 @@ class Usuario extends Model
         return json_decode(json_encode($result), true);
     }
 
-    function contador_total_x_bases($base=null){
+    function contador_total_x_bases($base = null)
+    {
         $sql = "SELECT COUNT(*) AS contador_total_x_bases FROM users u LEFT JOIN puesto p ON p.id_puesto = u.id_puesto
                 WHERE u.centro_labores = '$base'
                 AND u.estado = 1
@@ -174,20 +195,21 @@ class Usuario extends Model
         return json_decode(json_encode($result), true);
     }
 
-    function get_list_usuarios_x_baset($cod_base=null,$area=null,$estado){
-        $base="";
-        if($cod_base!="0"){
+    function get_list_usuarios_x_baset($cod_base = null, $area = null, $estado)
+    {
+        $base = "";
+        if ($cod_base != "0") {
             $base = "AND u.centro_labores='$cod_base'";
         }
-        $carea="";
-        if(isset($area) && $area > 0){
+        $carea = "";
+        if (isset($area) && $area > 0) {
             $carea = "AND u.id_area='$area' ";
         }
 
-        $id_estado="";
-        if($estado==1){
+        $id_estado = "";
+        if ($estado == 1) {
             $id_estado = "AND u.estado=1";
-        }else{
+        } else {
             $id_estado = "AND u.estado in (2,3)";
         }
         $sql = "SELECT u.*,(SELECT fec_inicio h FROM historico_colaborador h where u.id_usuario=h.id_usuario and h.estado in (1,3) ORDER BY h.fec_inicio DESC,h.fec_fin DESC limit 1)as fec_inicio,
@@ -198,7 +220,8 @@ class Usuario extends Model
         return json_decode(json_encode($result), true);
     }
 
-    public function list_usuarios_responsables($dato){
+    public function list_usuarios_responsables($dato)
+    {
         $sql = "SELECT 	u.id_usuario, u.usuario_nombres, u.usuario_apater, u.usuario_amater, u.usuario_codigo, 
                 u.id_nivel, u.usuario_email, u.centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,
                 u.desvinculacion, u.ini_funciones,u.fec_reg,
@@ -210,14 +233,15 @@ class Usuario extends Model
                 left join nivel n on n.id_nivel=u.id_nivel
                 left join puesto p on p.id_puesto=u.id_puesto
                 
-                WHERE  u.estado IN (1,4) and u.desvinculacion IN (0) and u.id_nivel<>8 and u.id_puesto in (".$dato['puestos_jefes'][0]['puestos'].")";
-                
+                WHERE  u.estado IN (1,4) and u.desvinculacion IN (0) and u.id_nivel<>8 and u.id_puesto in (" . $dato['puestos_jefes'][0]['puestos'] . ")";
+
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }
-    
-    function get_list_colaborador($id_usuario=null){
-        if(isset($id_usuario) && $id_usuario > 0){
+
+    function get_list_colaborador($id_usuario = null)
+    {
+        if (isset($id_usuario) && $id_usuario > 0) {
             $sql = "SELECT u.*, n.nom_nacionalidad, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo
                     from users u
                     LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
@@ -225,10 +249,8 @@ class Usuario extends Model
                     LEFT JOIN area a on a.id_area=u.id_area
                     LEFT JOIN puesto p on p.id_puesto=u.id_puesto
                     LEFT JOIN cargo c on c.id_cargo=u.id_cargo
-                    where u.estado=1 and id_usuario =".$id_usuario;
-        }
-        else
-        {
+                    where u.estado=1 and id_usuario =" . $id_usuario;
+        } else {
             $sql = "SELECT u.*,  n.nom_nacionalidad, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo
                     from users u
                     LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
@@ -242,22 +264,24 @@ class Usuario extends Model
         return json_decode(json_encode($result), true);
     }
 
-    static function get_list_proximos_cumpleanios_admin($dato){
-        $anio=date('Y');
+    static function get_list_proximos_cumpleanios_admin($dato)
+    {
+        $anio = date('Y');
         $sql = "SELECT u.id_usuario,u.centro_labores,u.foto,u.usuario_nombres,u.usuario_apater,u.usuario_amater,u.fec_nac,u.foto_nombre,
         CONCAT(YEAR(NOW()), '-', DATE_FORMAT(u.fec_nac, '%m-%d')) as cumpleanio,
         (SELECT COUNT(*) FROM saludo_cumpleanio_historial i where i.id_cumpleaniero=u.id_usuario and year(i.fec_reg)='$anio' and i.estado=1) as cantidad,
         p.nom_puesto
         FROM users u
         left join puesto p on u.id_puesto=p.id_puesto
-        WHERE u.estado=1 and DATE_FORMAT(u.fec_nac, '%m')='".$dato['cod_mes']."'
+        WHERE u.estado=1 and DATE_FORMAT(u.fec_nac, '%m')='" . $dato['cod_mes'] . "'
         ORDER BY cumpleanio  ASC;";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }
 
-    static function get_list_usuario($id_usuario=null){
-        if(isset($id_usuario) && $id_usuario > 0){
+    static function get_list_usuario($id_usuario = null)
+    {
+        if (isset($id_usuario) && $id_usuario > 0) {
             $sql = "SELECT u.*, p.nom_puesto, m.nom_mes, g.cod_genero, g.nom_genero,a.cod_area,a.nom_area,t.cod_tipo_documento,ge.nom_gerencia,
                     u.usuario_email,(SELECT st.archivo FROM saludo_temporal st
                     WHERE st.id_usuario=u.id_usuario
@@ -270,15 +294,16 @@ class Usuario extends Model
                     left join tipo_documento t on t.id_tipo_documento=u.id_tipo_documento
                     left join gerencia ge on ge.id_gerencia = u.id_gerencia 
                     WHERE u.id_usuario=$id_usuario";
-        }else{
+        } else {
             $sql = "SELECT * FROM parentesco";
         }
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }
 
-    static function get_list_saludo_cumpleanios($id_usuario){
-        $anio=date('Y');
+    static function get_list_saludo_cumpleanios($id_usuario)
+    {
+        $anio = date('Y');
         $sql = "SELECT u.*,CONCAT(YEAR(NOW()), '-', DATE_FORMAT(a.fec_nac, '%m-%d')) as cumpleanio,
         a.usuario_nombres,a.usuario_apater,a.usuario_amater,
         concat(b.usuario_nombres,' ',b.usuario_apater) as saludado_por,
@@ -291,10 +316,11 @@ class Usuario extends Model
         return json_decode(json_encode($result), true);
     }
 
-    static function get_list_proximos_cumpleanios(){
-        $id_usuario= session('usuario')->id_usuario;
+    static function get_list_proximos_cumpleanios()
+    {
+        $id_usuario = session('usuario')->id_usuario;
         // $centro_labores= session('usuario')->centro_labores;
-        $anio=date('Y');
+        $anio = date('Y');
         $sql = "SELECT u.id_usuario,u.foto,u.usuario_nombres,u.usuario_apater,u.usuario_amater,u.fec_nac,
                 u.foto_nombre,CONCAT(YEAR(NOW()), '-', DATE_FORMAT(fec_nac, '%m-%d')) as cumpleanio,
                 h.id_historial,h.estado_registro,m.nom_mes,
@@ -310,10 +336,11 @@ class Usuario extends Model
         return json_decode(json_encode($result), true);
     }
 
-    public static function get_list_cesado($dato){
+    public static function get_list_cesado($dato)
+    {
         $parte_gerencia = "";
-        if($dato['id_gerencia']!="0"){
-            $parte_gerencia = "us.id_gerencia=".$dato['id_gerencia']." AND";
+        if ($dato['id_gerencia'] != "0") {
+            $parte_gerencia = "us.id_gerencia=" . $dato['id_gerencia'] . " AND";
         }
         $sql = "SELECT us.id_usuario,us.ini_funciones AS orden,
                 CASE WHEN YEAR(us.fec_nac) BETWEEN 1946 AND 1964 THEN 'BB'

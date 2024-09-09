@@ -10,32 +10,88 @@
         /* Añade puntos suspensivos (...) */
     }
 
+    .bg-green {
+        background-color: #24e17f;
+        /* Verde claro */
+        color: white;
+        /* Verde oscuro para el texto */
+        padding: 5px;
+        border-radius: 5px;
+        /* Borde redondeado */
+    }
+
+    .bg-orange {
+        background-color: orange;
+        /* Naranja claro */
+        color: white;
+        /* Naranja oscuro para el texto */
+        padding: 5px;
+        border-radius: 5px;
+        /* Borde redondeado */
+    }
+
     .text-primary {
         color: #007bff;
         /* Blue color */
+    }
+
+    .col-tipo {
+        width: 350px;
+        /* Ajusta el valor según sea necesario */
     }
 </style>
 
 <table id="tabla_js" class="table table-hover" style="width:100%">
     <thead class="text-center">
         <tr>
-
-            <th>Nombre del Reporte</th>
-            <th>Áreas</th>
-            <th>Puestos con Acceso</th>
+            <th>Última Act</th>
+            <th>Nombre BI</th>
+            <th>Actividad</th>
+            <th>Área</th>
+            <th class="col-tipo">Accesos</th>
+            <th>Estado</th>
+            <th>Días sin Atención</th> <!-- Nueva columna -->
             <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
         @foreach ($list_bi_reporte as $reporte)
         <tr class="text-center">
+            <td>{{ $reporte->estado_act }}</td>
+            <td>{{ $reporte->nom_bi }}</td>
+            <td>
+                @if ($reporte->actividad == 1)
+                En uso
+                @elseif ($reporte->actividad == 2)
+                Suspendido
+                @else
+                No definido
+                @endif
+            </td>
 
-            <td>{{ $reporte->nom_reporte }}</td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->nombres_area }}
             </td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->nombres_puesto }}
+            </td>
+            <td>
+                @if ($reporte->estado == 1)
+                Por Revisar
+                @elseif ($reporte->estado == 2)
+                Completado
+                @else
+                Desconocido
+                @endif
+            </td>
+            <td>
+                @if ($reporte->dias_sin_atencion != 'N/A')
+                <span class="{{ $reporte->dias_sin_atencion < 10 ? 'bg-green' : 'bg-orange' }}">
+                    {{ $reporte->dias_sin_atencion }} Días
+                </span>
+                @else
+                N/A
+                @endif
             </td>
             <td>
                 <!-- Aquí irían las acciones como editar, eliminar, etc. -->
@@ -44,6 +100,15 @@
                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                     </svg>
                 </a>
+                @if ($reporte->estado_valid == 0)
+                <a href="javascript:void(0);" title="Aprobar" onclick="Validar_Reporte('{{ $reporte->id_acceso_bi_reporte }}')">
+                    <svg title="Aprobar" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#007bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </a>
+                @endif
+
                 <a href="javascript:void(0);" title="Eliminar" onclick="Delete_ReporteBI('{{ $reporte->id_acceso_bi_reporte }}')">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
                         <polyline points="3 6 5 6 21 6"></polyline>
@@ -57,6 +122,8 @@
         @endforeach
     </tbody>
 </table>
+
+
 
 <script>
     var tabla = $('#tabla_js').DataTable({

@@ -1,13 +1,37 @@
 <!-- CSS -->
 <style>
+    /* .modal-body {
+        max-height: 450px;
+        overflow: auto;
+
+    }
+
+    .nav-tabs {
+        position: sticky;
+        top: 0;
+        background-color: #fff;
+        border-bottom: 1px solid #ddd;
+        z-index: 100;
+    } */
+
     /* Asegúrate de que el dropdown de Select2 tenga un z-index más bajo */
     .select2-container--default .select2-dropdown {
         z-index: 1090;
         /* Debe ser menor que el z-index del modal */
     }
 
+    .col-tipo {
+        width: 200px;
+        /* Ajusta el valor según sea necesario */
+    }
+
+    .col-accion {
+        width: 50px;
+        /* Ajusta el valor según sea necesario */
+    }
+
     /* Estilo para el campo de búsqueda dentro del select2 */
-    /* Estilo para el campo de búsqueda dentro del select2 cuando está deshabilitado */
+    /* Estilo para el campo de búsqueda dentro decol-accionl select2 cuando está deshabilitado */
     .select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field:disabled {
         background-color: transparent !important;
 
@@ -100,30 +124,131 @@
     </div>
 
     <div class="modal-body" style="max-height:450px; overflow:auto;">
+        <ul class="nav nav-tabs" id="myTab2" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="documento-tab" data-toggle="tab" href="#documento2" role="tab" aria-controls="documento2" aria-selected="true">Documento</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="indicadores-tab" data-toggle="tab" href="#indicadores2" role="tab" aria-controls="indicadores2" aria-selected="false">Indicadores</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="accesos-tab" data-toggle="tab" href="#accesos2" role="tab" aria-controls="accesos2" aria-selected="false">Accesos</a>
+            </li>
 
-        <div class="row">
-            <div class="form-group col-md-4">
-                <label for="nomreporte">Reporte: </label>
-                <input type="text" class="form-control" id="nomreporte" name="nomreporte" placeholder="Nombre Reporte">
-            </div>
-            <div class="form-group col-lg-8">
-                <label>Iframe:</label>
-                <textarea name="iframe" id="iframe" cols="1" rows="2" class="form-control"></textarea>
-            </div>
-
-        </div>
-
-
-        <div class="row">
-            <div class="col-12 text-center">
-                <div class="divider"></div>
-
-                <label class="control-label text-bold">Filtros</label>
-
-                @csrf
-                <div class="row">
+        </ul>
+        <div class="tab-content" id="myTabContent2">
+            <div class="tab-pane fade show active" id="documento2" role="tabpanel" aria-labelledby="documento-tab">
+                <div class="row my-4">
 
                     <div class="form-group col-md-6">
+                        <label for="nombi">Nombre BI: </label>
+                        <input type="text" class="form-control" id="nombi" name="nombi" placeholder="">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="nomintranet">Nombre Intranet: </label>
+                        <input type="text" class="form-control" id="nomintranet" name="nomintranet" placeholder="">
+                    </div>
+
+
+                    <div class="form-group col-lg-12">
+                        <label>Iframe:</label>
+                        <textarea name="iframe" id="iframe" cols="1" rows="2" class="form-control"></textarea>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <label for="objetivo">Objetivo: </label>
+                        <input type="text" class="form-control" id="objetivo" name="objetivo" placeholder="">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label text-bold">Actividad: </label>
+                        <select class="form-control" name="actividad_bi" id="actividad_bi">
+                            <option value="1">En uso</option>
+                            <option value="2">Suspendido</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="areass">Área: </label>
+                        <select class="form-control " name="areass" id="areass">
+                            @foreach ($list_area as $list)
+                            <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label text-bold">Frec. Actualización: </label>
+                        <select class="form-control" name="frec_actualizacion" id="frec_actualizacion">
+                            <option value="1">Minuto</option>
+                            <option value="2">Hora</option>
+                            <option value="3">Día</option>
+                            <option value="4">Mes</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="solicitantes">Solicitante: </label>
+                        <select class="form-control" name="solicitante" id="solicitante">
+                            @foreach ($list_colaborador as $list)
+                            <option value="{{ $list->id_usuario }}">
+                                {{ $list->usuario_apater }} {{ $list->usuario_amater }} {{ $list->usuario_nombres }}
+                            </option>
+                            @endforeach
+                        </select>
+
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="tablas">Tablas: </label>
+                        <input type="text" class="form-control" id="tablas" name="tablas" placeholder="">
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="tab-pane fade" id="indicadores2" role="tabpanel" aria-labelledby="indicadores-tab">
+                <!-- Contenido de la pestaña Otra Sección -->
+                <div class="row d-flex col-md-12 my-2">
+                    <!-- Tabla para añadir filas dinámicamente -->
+                    <table id="tabla_versiones" class="table table-hover" style="width:100%">
+                        <thead class="text-center">
+                            <tr>
+                                <th>Indicador</th>
+                                <th>Descripción</th>
+                                <th class="col-tipo">Tipo</th>
+                                <th class="col-tipo">Presentación</th>
+                                <th class="col-accion">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla_body">
+                            <tr class="text-center">
+                                <td class="px-1"><input type="text" class="form-control" name="indicador[]"></td>
+                                <td class="px-1"><input type="text" class="form-control" name="descripcion[]"></td>
+                                <td class="px-1">
+                                    <select class="form-control " name="tipo[]" id="tipo">
+                                        @foreach ($list_tipo_indicador as $list)
+                                        <option value="{{ $list->idtipo_indicador }}">{{ $list->nom_indicador}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td class="px-1">
+                                    <select class="form-control" name="presentacion[]">
+                                        <option value="1">Tabla</option>
+                                        <option value="2">Gráfico</option>
+                                    </select>
+                                </td>
+                                <td class="px-1"><button type="button" class="btn btn-success btn-sm" onclick="addRow()">+</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="tab-pane fade" id="accesos2" role="tabpanel" aria-labelledby="accesos-tab">
+                <div class="row my-4">
+                    @csrf
+                    <div class="form-group col-md-6">
+                        <!-- <label class="control-label text-bold">Filtros</label> -->
+
                         <label class="control-label text-bold">Filtro Base: </label>
                         <select class="form-control multivalue" name="tipo_acceso_b[]" id="tipo_acceso_b" multiple="multiple">
                             @foreach ($list_base as $base)
@@ -138,34 +263,21 @@
                             <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
                             @endforeach
                         </select>
+
+                    </div>
+                    <!-- <div class="divider"></div> -->
+
+                    <div class="form-group col-md-12 text-center">
+                        <div class="divider"></div>
+
+                        <label class="control-label text-bold">Acceso Puesto: </label>
+                        <select class="form-control multivalue" name="tipo_acceso_t[]" id="tipo_acceso_t" multiple="multiple">
+                            @foreach ($list_responsable as $puesto)
+                            <option value="{{ $puesto->id_puesto }}">{{ $puesto->nom_puesto }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
-
-            </div>
-
-        </div>
-        <div class="col-12 text-center">
-            <div class="divider"></div>
-
-            <label class="control-label text-bold">Dar Accesos</label>
-            <div>
-                <label class="control-label text-bold">Todos</label>
-                <label class="switch">
-                    <input type="checkbox" id="acceso_todo" name="acceso_todo" onclick="Acceso_Todo()">
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </div>
-
-        <div class="row d-flex">
-
-            <div class="form-group col-md-12">
-                <label class="control-label text-bold">Acceso Puesto: </label>
-                <select class="form-control multivalue" name="tipo_acceso_t[]" id="tipo_acceso_t" multiple="multiple">
-                    @foreach ($list_responsable as $puesto)
-                    <option value="{{ $puesto->id_puesto }}">{{ $puesto->nom_puesto }}</option>
-                    @endforeach
-                </select>
             </div>
         </div>
     </div>
@@ -179,6 +291,44 @@
 </form>
 
 <script>
+    function addRow() {
+        // Obtener el cuerpo de la tablacodigo
+        var tableBody = document.getElementById('tabla_body');
+
+        // Crear una nueva fila
+        var newRow = document.createElement('tr');
+        newRow.classList.add('text-center');
+
+        // Contenido HTML de la nueva fila
+        newRow.innerHTML = `
+        <td class="px-1"><input type="text" class="form-control" name="indicador[]"></td>
+        <td class="px-1"><input type="text" class="form-control" name="descripcion[]"></td>
+        <td class="px-1">
+            <select class="form-control" name="tipo[]">
+                @foreach ($list_tipo_indicador as $list)
+                    <option value="{{ $list->idtipo_indicador }}">{{ $list->nom_indicador }}</option>
+                @endforeach
+            </select>
+        </td>
+        <td class="px-1">
+            <select class="form-control" name="presentacion[]">
+                <option value="1">Tabla</option>
+                <option value="2">Gráfico</option>
+            </select>
+        </td>
+        <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
+    `;
+
+        // Agregar la nueva fila al cuerpo de la tabla
+        tableBody.appendChild(newRow);
+    }
+
+    // Función para eliminar una fila
+    function removeRow(button) {
+        var row = button.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    }
+
     $('.multivalue').select2({
         tags: true, // Permite crear nuevas etiquetas
         tokenSeparators: [',', ' '], // Separa las etiquetas con comas y espacios
@@ -236,9 +386,6 @@
         $('#id_area_acceso_t').on('change', function() {
             const selectedAreas = $(this).val();
             var url = "{{ route('puestos_por_areas_bi') }}";
-            console.log('Selected Areas:', selectedAreas); // Para verificar que los valores se están obteniendo correctamente
-
-            // Hacer una solicitud AJAX para obtener los puestos basados en las áreas seleccionadas
             $.ajax({
                 url: url,
                 method: 'GET',
@@ -255,8 +402,6 @@
                             `<option value="${puesto.id_puesto}">${puesto.nom_puesto}</option>`
                         );
                     });
-
-                    // Reinitialize select2 if needed
                     $('#tipo_acceso_t').select2();
                 },
                 error: function(xhr) {
@@ -264,6 +409,41 @@
                 }
             });
         });
+
+        $('#areass').on('change', function() {
+            const selectedAreaUser = $(this).val();
+            var url = "{{ route('usuarios_por_area') }}";
+
+            console.log('Área seleccionada:', selectedAreaUser); // Verifica que el área seleccionada se está enviando correctamente
+
+            // Hacer una solicitud AJAX para obtener los usuarios basados en el área seleccionada
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: {
+                    area_id: selectedAreaUser
+                },
+                success: function(response) {
+                    // Vaciar el segundo select antes de agregar las nuevas opciones
+                    $('#solicitante').empty();
+
+                    // Agregar las nuevas opciones
+                    $.each(response, function(index, usuario) {
+                        $('#solicitante').append(
+                            `<option value="${usuario.id_usuario}">${usuario.nombre_completo}</option>`
+                        );
+                    });
+
+
+                    // Reinitialize select2 si es necesario
+                    // $('#solicitante').select2();
+                },
+                error: function(xhr) {
+                    console.error('Error al obtener usuarios:', xhr);
+                }
+            });
+        });
+
 
     });
 
@@ -314,7 +494,7 @@
                         'Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Lista_Maestra();
+                        List_Reporte();
                         $("#ModalRegistro .close").click();
                     });
                 },

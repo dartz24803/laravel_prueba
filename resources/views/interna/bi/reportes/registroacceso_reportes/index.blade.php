@@ -85,9 +85,9 @@
 </div>
 
 <script>
-    Lista_Maestra();
+    List_Reporte();
 
-    function Lista_Maestra() {
+    function List_Reporte() {
         Cargando();
 
         var url = "{{ route('bireporte_ra.list') }}";
@@ -137,7 +137,7 @@
                             'El registro ha sido eliminado satisfactoriamente.',
                             'success'
                         ).then(function() {
-                            Lista_Maestra();
+                            List_Reporte();
                         });
                     }
                 });
@@ -145,15 +145,15 @@
         })
     }
 
-    function Aprobar_Proceso(id) {
+    function Validar_Reporte(id) {
         Cargando();
 
-        var url = "{{ route('portalprocesos_lm.approve', ':id') }}".replace(':id', id);
+        var url = "{{ route('bireporte_ra.valid', ':id') }}".replace(':id', id);
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({
-            title: '¿Realmente desea aprobar el registro?',
-            text: "El registro será aprobado",
+            title: '¿Realmente desea validar el reporte?',
+            text: "El reporte será validado",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Si',
@@ -173,7 +173,7 @@
                             'El registro ha sido Aprobado satisfactoriamente.',
                             'success'
                         ).then(function() {
-                            Lista_Maestra();
+                            List_Reporte();
                         });
                     }
                 });

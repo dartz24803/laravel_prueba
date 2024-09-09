@@ -26,7 +26,7 @@
                                     <a id="a_ar" class="nav-link" onclick="Area();" style="cursor: pointer;">Área</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a id="a_ubi" class="nav-link" onclick="Ubicacion();" style="cursor: pointer;">Ubicación</a>
+                                    <a id="a_ubi" class="nav-link" onclick="Ubicacion();" style="cursor: pointer;">Ubicacion</a>
                                 </li>
                                 <li class="nav-item">
                                     <a id="a_ni" class="nav-link" onclick="Nivel_Jerarquico();" style="cursor: pointer;">Nivel Jerárquico</a>
@@ -89,6 +89,9 @@
                                     <li class="nav-item">
                                         <a style="cursor: pointer;" class="nav-link" id="TipoVivienda" onclick="TablaTipoVivienda()">Tipo de Vivienda</a>
                                     </li>
+                                    <li>
+                                        <a style="cursor: pointer;"  class="nav-link" id="Empresa" onclick="TablaEmpresa()">Empresa</a>
+                                    </li>
                                     {{-- empresas(administracion finanzas), --}}
                                 <?php } ?>
                             </div>
@@ -119,6 +122,9 @@
 
     //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
     function Active_Tabla_Colaboradores() {
+        $("#Empresa").removeClass('active');
+        $("#TipoVivienda").removeClass('active');
+        $("#TipoVia").removeClass('active');
         $("#TipoSangre").removeClass('active');
         $("#TipoDocumento").removeClass('active');
         $("#TipoContrato").removeClass('active');
@@ -559,20 +565,23 @@
             }
         });
     }
-    /*-------------------------------------Paolo
+    /*-------------------------------------Paolo-------------------------*/
         function TablaTipoVia() {
             Cargando();
             Active_Tabla_Colaboradores();
 
             $("#TipoVia").addClass('active');
+            var csrfToken = $('input[name="_token"]').val();
 
-            var url = "<? php // echo url(); 
-                        ?>Corporacion/Tipo_Via";
+            var url = "{{ url('ColaboradorConfController/Tipo_Via') }}";
             $.ajax({
                 type: "POST",
                 url: url,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 success: function(resp) {
-                    $('#lista_escogida').html(resp);
+                    $('#div_colaborador_conf').html(resp);
                 }
             });
         }
@@ -583,18 +592,40 @@
 
             $("#TipoVivienda").addClass('active');
 
-            var url = "<? php // echo url(); 
-                        ?>Corporacion/Tipo_Vivienda";
+            var url = "{{ url('ColaboradorConfController/Tipo_Vivienda') }}";
+            var csrfToken = $('input[name="_token"]').val();
+
             $.ajax({
                 type: "POST",
                 url: url,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 success: function(resp) {
-                    $('#lista_escogida').html(resp);
-                    //$("#ModalRegistro .close").click()
-                    $('#TipoVivienda').parents().parents().parents().parents().find('.textocambio').text('Tipo de Vivienda');
+                    $('#div_colaborador_conf').html(resp);
                 }
             });
         }
-        --------------------------------------------Paolo-----------------------------------------------*/
+
+    function TablaEmpresa() {
+        Active_Tabla_Colaboradores();
+        $("#Empresa").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Empresa') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+        /*--------------------------------------------Paolo-----------------------------------------------*/
 </script>
 @endsection

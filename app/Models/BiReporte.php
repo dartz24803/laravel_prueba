@@ -15,22 +15,17 @@ class BiReporte extends Model
 
     // Definir los campos que se pueden asignar de forma masiva
     protected $fillable = [
-        'codigo',
-        'nom_reporte',
+        'estado_act',
+        'nom_bi',
+        'nom_intranet',
+        'actividad',
         'id_area',
+        'id_usuario',
+        'frecuencia_act',
+        'tablas',
+        'objetivo',
         'iframe',
-        'descripcion',
-        'acceso',
-        'acceso_area',
-        'acceso_nivel',
-        'acceso_gerencia',
-        'acceso_base',
         'acceso_todo',
-        'div_puesto',
-        'div_base',
-        'div_area',
-        'div_nivel',
-        'div_gerencia',
         'estado',
         'fec_reg',
         'user_reg',
@@ -46,4 +41,6 @@ class BiReporte extends Model
         'fec_act',
         'fec_eli',
     ];
+
+    // Puedes agregar cualquier método adicional que necesites aquí
 }

@@ -21,12 +21,13 @@ class Organigrama extends Model
         'usuario'
     ];
 
-    public static function get_list_colaborador($dato){
+    public static function get_list_colaborador($dato)
+    {
         $parte_gerencia = "";
-        if($dato['id_gerencia']!="0"){
-            $parte_gerencia = "WHERE us.id_gerencia=".$dato['id_gerencia'];
+        if ($dato['id_gerencia'] != "0") {
+            $parte_gerencia = "WHERE us.id_gerencia=" . $dato['id_gerencia'];
         }
-        if(isset($dato['excel'])){
+        if (isset($dato['excel'])) {
             $sql = "SELECT eu.nom_estado_usuario,CASE WHEN us.ini_funciones IS NULL THEN '' 
                     ELSE us.ini_funciones END AS ini_funciones,
                     us.centro_labores,us.usuario_apater,us.usuario_amater,us.usuario_nombres,ca.nom_cargo,
@@ -124,7 +125,7 @@ class Organigrama extends Model
                     LEFT JOIN grupo_sanguineo gs ON ou.id_grupo_sanguineo=gs.id_grupo_sanguineo
                     $parte_gerencia
                     ORDER BY us.ini_funciones DESC";
-        }else{
+        } else {
             $sql = "SELECT CASE WHEN og.id_usuario IS NULL THEN 0 ELSE og.id_usuario END AS id_usuario,
                     us.ini_funciones AS orden,
                     CASE WHEN YEAR(us.fec_nac) BETWEEN 1946 AND 1964 THEN 'BB'
