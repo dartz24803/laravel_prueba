@@ -19,7 +19,6 @@ use App\Models\DatacorpAccesos;
 use App\Models\PaginasWebAccesos;
 use App\Models\ProgramaAccesos;
 use App\Models\EstadoCivil;
-use App\Models\GrupoSanguineo;
 use App\Models\Idioma;
 use App\Models\Nacionalidad;
 use App\Models\Parentesco;
@@ -28,7 +27,15 @@ use App\Models\Regimen;
 use App\Models\SituacionLaboral;
 use App\Models\TipoContrato;
 use App\Models\TipoDocumento;
-// use App\Models\SituacionLaboral;
+use App\Models\GrupoSanguineo;
+//-----------ppp---------------
+use App\Models\TipoVia;
+use App\Models\TipoVivienda;
+use App\Models\Empresas;
+use App\Models\Config;
+use App\Models\Banco;
+use Illuminate\Support\Facades\DB;
+//-----------------ppp--------
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
 use App\Models\Ubicacion;
@@ -2091,7 +2098,7 @@ class ColaboradorConfController extends Controller
         $request->validate([
             'nom_tipo_contrato' => 'required',
         ], [
-            'nom_tipo_contrato.required' => 'Debe ingresar descripcion de situacion laboral.',
+            'nom_tipo_contrato.required' => 'Debe ingresar descripcion de tipo de contrato.',
         ]);
         $valida = TipoContrato::where('nom_tipo_contrato', $request->nom_tipo_contrato)
             ->exists();
@@ -2121,7 +2128,7 @@ class ColaboradorConfController extends Controller
         $request->validate([
             'nom_tipo_contrato' => 'required',
         ], [
-            'nom_tipo_contrato.required' => 'Debe ingresar descripcion de situacion laboral.',
+            'nom_tipo_contrato.required' => 'Debe ingresar descripcion de tipo de contrato.',
         ]);
         $valida = TipoContrato::where('nom_tipo_contrato', $request->nom_tipo_contrato)
             ->exists();
@@ -2166,7 +2173,7 @@ class ColaboradorConfController extends Controller
         ], [
             'cod_tipo_documento' => 'Debe ingresar codigo de tipo de documento',
             'digitos' => 'Debe ingresar digitos',
-            'nom_tipo_documento.required' => 'Debe ingresar descripcion de situacion laboral.',
+            'nom_tipo_documento.required' => 'Debe ingresar descripcion de tipo de documento.',
         ]);
         $valida = TipoDocumento::where('nom_tipo_documento', $request->nom_tipo_documento)
             ->where('digitos', $request->digitos)
@@ -2204,7 +2211,7 @@ class ColaboradorConfController extends Controller
         ], [
             'cod_tipo_documento' => 'Debe ingresar codigo de tipo de documento',
             'digitos' => 'Debe ingresar digitos',
-            'nom_tipo_documento.required' => 'Debe ingresar descripcion de situacion laboral.',
+            'nom_tipo_documento.required' => 'Debe ingresar descripcion de tipo de documento.',
         ]);
         $valida = TipoDocumento::where('nom_tipo_documento', $request->nom_tipo_documento)
             ->where('digitos', $request->digitos)
@@ -2249,8 +2256,8 @@ class ColaboradorConfController extends Controller
             'cod_grupo_sanguineo' => 'required',
             'nom_grupo_sanguineo' => 'required',
         ], [
-            'cod_grupo_sanguineo' => 'Debe ingresar codigo de tipo de documento',
-            'nom_grupo_sanguineo.required' => 'Debe ingresar descripcion de situacion laboral.',
+            'cod_grupo_sanguineo' => 'Debe ingresar codigo de grupo sanguineo',
+            'nom_grupo_sanguineo.required' => 'Debe ingresar descripcion de grupo sanguineo.',
         ]);
         $valida = GrupoSanguineo::where('nom_grupo_sanguineo', $request->nom_grupo_sanguineo)
             ->where('cod_grupo_sanguineo', $request->cod_grupo_sanguineo)
@@ -2283,8 +2290,8 @@ class ColaboradorConfController extends Controller
             'cod_grupo_sanguineo' => 'required',
             'nom_grupo_sanguineo' => 'required',
         ], [
-            'cod_grupo_sanguineo' => 'Debe ingresar codigo de tipo de documento',
-            'nom_grupo_sanguineo.required' => 'Debe ingresar descripcion de situacion laboral.',
+            'cod_grupo_sanguineo' => 'Debe ingresar codigo de grupo sanguineo',
+            'nom_grupo_sanguineo.required' => 'Debe ingresar descripcion de grupo sanguineo.',
         ]);
         $valida = GrupoSanguineo::where('nom_grupo_sanguineo', $request->nom_grupo_sanguineo)
             ->where('cod_grupo_sanguineo', $request->cod_grupo_sanguineo)
@@ -2293,93 +2300,180 @@ class ColaboradorConfController extends Controller
         if ($valida) {
             echo "error";
         } else {
-            $dato['cod_grupo_sanguineo'] = $request->input("cod_grupo_sanguineo");
-            $dato['nom_grupo_sanguineo'] = $request->input("nom_grupo_sanguineo");
-            $dato['fec_act'] = now();
-            $dato['user_act'] = session('usuario')->id_usuario;
-            GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
-        }
-    }
-
-    public function Delete_Grupo_Sanguineo(Request $request)
-    {
-        $dato['estado'] = 2;
-        $dato['fec_eli'] = now();
-        $dato['user_eli'] = session('usuario')->id_usuario;
-        GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
-    }
-    /*
-    public function Modal_Update_Grupo_Sanguineo($id_Grupo_Sanguineo){
-        $dato['get_id'] = GrupoSanguineo::where('id_grupo_sanguineo', $id_Grupo_Sanguineo)
-                        ->get();
-        return view('rrhh.administracion.colaborador.GrupoSanguineo.modal_editar',$dato);
-    }
-
-    public function Update_Grupo_Sanguineo(Request $request){
-        $request->validate([
-            'cod_grupo_sanguineo' => 'required',
-            'nom_grupo_sanguineo' => 'required',
-        ], [
-            'cod_grupo_sanguineo' => 'Debe ingresar codigo de tipo de documento',
-            'nom_grupo_sanguineo.required' => 'Debe ingresar descripcion de situacion laboral.',
-        ]);
-        $valida = GrupoSanguineo::where('nom_grupo_sanguineo', $request->nom_grupo_sanguineo)
-            ->where('cod_grupo_sanguineo', $request->cod_grupo_sanguineo)
-            ->where('estado', 1)
-            ->exists();
-        if ($valida) {
-            echo "error";
-        } else {
-            $dato['cod_grupo_sanguineo']= $request->input("cod_grupo_sanguineo"); 
+            $dato['cod_grupo_sanguineo']= $request->input("cod_grupo_sanguineo");
             $dato['nom_grupo_sanguineo']= $request->input("nom_grupo_sanguineo");
             $dato['fec_act'] = now();
             $dato['user_act'] = session('usuario')->id_usuario;
             GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
         }
     }
-    
+
     public function Delete_Grupo_Sanguineo(Request $request){
         $dato['estado'] = 2;
         $dato['fec_eli'] = now();
         $dato['user_eli'] = session('usuario')->id_usuario;
         GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
     }
-    
-    public function Modal_Update_Grupo_Sanguineo($id_Grupo_Sanguineo){
-        $dato['get_id'] = GrupoSanguineo::where('id_grupo_sanguineo', $id_Grupo_Sanguineo)
-                        ->get();
-        return view('rrhh.administracion.colaborador.GrupoSanguineo.modal_editar',$dato);
+
+    public function Tipo_Via(){
+        $dato['list_tipo_via'] = TipoVia::where('estado', 1)
+                                ->get();
+        return view('rrhh.administracion.colaborador.TipoVia.index',$dato);
     }
 
-    public function Update_Grupo_Sanguineo(Request $request){
+    public function Modal_Tipo_Via(){
+        return view('rrhh.administracion.colaborador.TipoVia.modal_registrar');
+    }
+
+    public function Insert_Tipo_Via(Request $request){
         $request->validate([
-            'cod_grupo_sanguineo' => 'required',
-            'nom_grupo_sanguineo' => 'required',
+            'cod_tipo_via' => 'required',
+            'nom_tipo_via' => 'required',
         ], [
-            'cod_grupo_sanguineo' => 'Debe ingresar codigo de tipo de documento',
-            'nom_grupo_sanguineo.required' => 'Debe ingresar descripcion de situacion laboral.',
+            'cod_tipo_via' => 'Debe ingresar codigo de tipo de via',
+            'nom_tipo_via.required' => 'Debe ingresar descripcion de tipo de via.',
         ]);
-        $valida = GrupoSanguineo::where('nom_grupo_sanguineo', $request->nom_grupo_sanguineo)
-            ->where('cod_grupo_sanguineo', $request->cod_grupo_sanguineo)
+        $valida = TipoVia::where('nom_tipo_via', $request->nom_tipo_via)
+            ->where('cod_tipo_via', $request->cod_tipo_via)
             ->where('estado', 1)
             ->exists();
         if ($valida) {
             echo "error";
         } else {
-            $dato['cod_grupo_sanguineo']= $request->input("cod_grupo_sanguineo"); 
-            $dato['nom_grupo_sanguineo']= $request->input("nom_grupo_sanguineo");
+            $dato['cod_tipo_via']= $request->input("cod_tipo_via");
+            $dato['nom_tipo_via']= $request->input("nom_tipo_via");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
             $dato['fec_act'] = now();
             $dato['user_act'] = session('usuario')->id_usuario;
-            GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            TipoVia::create($dato);
         }
     }
-    
-    public function Delete_Grupo_Sanguineo(Request $request){
+
+    public function Modal_Update_Tipo_Via($id_tipo_via){
+        $dato['get_id'] = TipoVia::where('id_tipo_via', $id_tipo_via)
+                        ->get();
+        return view('rrhh.administracion.colaborador.TipoVia.modal_editar',$dato);
+    }
+
+    public function Update_Tipo_Via(Request $request){
+        $request->validate([
+            'cod_tipo_via' => 'required',
+            'nom_tipo_via' => 'required',
+        ], [
+            'cod_tipo_via' => 'Debe ingresar codigo de tipo de via',
+            'nom_tipo_via.required' => 'Debe ingresar descripcion de tipo de via.',
+        ]);
+
+        $valida = TipoVia::where('nom_tipo_via', $request->nom_tipo_via)
+            ->where('cod_tipo_via', $request->cod_tipo_via)
+            ->where('estado', 1)
+            ->exists();
+
+        if ($valida) {
+            echo "error";
+        } else {
+            $dato['cod_tipo_via']= $request->input("cod_tipo_via");
+            $dato['nom_tipo_via']= $request->input("nom_tipo_via");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+
+            TipoVia::findOrFail($request->input("id_tipo_via"))->update($dato);
+        }
+    }
+
+    public function Delete_Tipo_Via(Request $request){
         $dato['estado'] = 2;
         $dato['fec_eli'] = now();
         $dato['user_eli'] = session('usuario')->id_usuario;
-        GrupoSanguineo::findOrFail($request->input("id_grupo_sanguineo"))->update($dato);
-    }*/
+        TipoVia::findOrFail($request->input("id_tipo_via"))->update($dato);
+    }
+
+    public function Tipo_Vivienda(){
+        $dato['list_tipo_vivienda'] = TipoVivienda::where('estado', 1)
+                                    ->get();
+        return view('rrhh.administracion.colaborador.TipoVivienda.index',$dato);
+    }
+
+    public function Modal_Tipo_Vivienda(){
+        return view('rrhh.administracion.colaborador.TipoVivienda.modal_registrar');
+    }
+
+    public function Insert_Tipo_Vivienda(Request $request){
+        $request->validate([
+            'nom_tipo_vivienda' => 'required',
+        ], [
+            'nom_tipo_vivienda.required' => 'Debe ingresar descripcion de tipo de vivienda.',
+        ]);
+        $valida = TipoVivienda::where('nom_tipo_vivienda', $request->nom_tipo_vivienda)
+            ->where('estado', 1)
+            ->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            $dato['nom_tipo_vivienda']= $request->input("nom_tipo_vivienda");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            TipoVivienda::create($dato);
+        }
+    }
+
+    public function Modal_Update_Tipo_Vivienda($id_tipo_vivienda){
+        $dato['get_id'] = TipoVivienda::where('id_tipo_vivienda', $id_tipo_vivienda)
+                        ->get();
+        return view('rrhh.administracion.colaborador.TipoVivienda.modal_editar',$dato);
+    }
+
+    public function Update_Tipo_Vivienda(Request $request){
+        $request->validate([
+            'nom_tipo_vivienda' => 'required',
+        ], [
+            'nom_tipo_vivienda.required' => 'Debe ingresar descripcion de tipo de vivienda.',
+        ]);
+
+        $valida = TipoVivienda::where('nom_tipo_vivienda', $request->nom_tipo_vivienda)
+            ->where('estado', 1)
+            ->exists();
+
+        if ($valida) {
+            echo "error";
+        } else {
+            $dato['nom_tipo_vivienda']= $request->input("nom_tipo_vivienda");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+
+            TipoVivienda::findOrFail($request->input("id_tipo_vivienda"))->update($dato);
+        }
+    }
+
+    public function Delete_Tipo_Vivienda(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        TipoVivienda::findOrFail($request->input("id_tipo_vivienda"))->update($dato);
+    }
+
+    public function Empresa(){
+        $dato['list_empresa'] = Empresas::where('estado', 1)
+                            ->get();
+        $dato['url'] = Config::where('descrip_config', 'Img_Empresa_Adm_Finanzas')
+                        ->get();
+        return view('rrhh.administracion.colaborador.Empresa.index',$dato);
+    }
+
+    public function Modal_Empresa(){
+            $dato['list_banco'] = Banco::where('estado',1)->get();
+            $dato['list_tipo_documento'] = TipoDocumento::where('estado',1)->get();
+            $dato['list_departamento'] = DB::table('departamento')->where('estado',1)->get();
+            $dato['list_provincia'] = DB::table('provincia')->where('estado',1)->get();
+            $dato['list_distrito'] = DB::table('distrito')->where('estado',1)->get();
+            $dato['list_regimen'] = Regimen::where('estado',1)->get();
+            return view('rrhh.administracion.colaborador.Empresa.modal_registrar',$dato);
+    }
     /*---------------------------------------------------------Paolo*/
 
 

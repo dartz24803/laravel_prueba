@@ -427,7 +427,7 @@
             width: 90% !important;
         }*/
     }
-    @media screen and (max-width: 835px) {
+    @media screen and (max-width: 933px) {
         #container{
             background-image: none !important;
         }
@@ -591,7 +591,7 @@
     function cambiarClaseSegunResolucion(){
         var ventanaAncho = $(window).width();
         console.log(ventanaAncho);
-        if (350 < ventanaAncho && ventanaAncho <= 834) {
+        if (350 < ventanaAncho && ventanaAncho <= 933) {
             $('#logo_logistica').removeClass('col-sm-8').addClass('col-sm-4 d-flex justify-content-center');
             $('#logo_comercial').removeClass('justify-content-end').addClass('justify-content-center');
             $('#logo_talento_humano').removeClass('col-sm-2').addClass('col-sm-4');
@@ -604,17 +604,17 @@
             $('#logo_manufactura').removeClass('col-sm-2 align-items-start').addClass('col-sm-4 justify-content-center mt-4');
             $('#logo_tiendas').removeClass('col-sm-3 justify-content-start').addClass('col-sm-12 justify-content-center');
         }else{
-            $('#logo_logistica').addClass('col-sm-8');
-            $('#logo_comercial').addClass('justify-content-end');
-            $('#logo_talento_humano').addClass('col-sm-2');
-            $('#logo_infraestructura').addClass('col-sm-3');
-            $('#logo_interna').addClass('col-sm-3 justify-content-end');
+            $('#logo_logistica').removeClass('col-sm-4 d-flex justify-content-center').addClass('col-sm-8');
+            $('#logo_comercial').removeClass('justify-content-center').addClass('justify-content-end');
+            $('#logo_talento_humano').removeClass('col-sm-4').addClass('col-sm-2');
+            $('#logo_infraestructura').removeClass('col-sm-4 d-flex justify-content-center').addClass('col-sm-3');
+            $('#logo_interna').removeClass('col-sm-4 justify-content-center').addClass('col-sm-3 justify-content-end');
             $('#logo_central').addClass('d-flex');
-            $('#logo_finanzas').addClass('col-sm-3 align-items-end');
-            $('#logo_seguridad').addClass('col-sm-5 justify-content-end');
-            $('#logo_caja').addClass('col-sm-2');
-            $('#logo_manufactura').addClass('col-sm-2 align-items-start')
-            $('#logo_tiendas').addClass('col-sm-3 justify-content-start')
+            $('#logo_finanzas').removeClass('col-sm-4').addClass('col-sm-3 align-items-end');
+            $('#logo_seguridad').removeClass('col-sm-4 justify-content-center mt-4').addClass('col-sm-5 justify-content-end');
+            $('#logo_caja').removeClass('col-sm-4 mt-4').addClass('col-sm-2');
+            $('#logo_manufactura').removeClass('col-sm-4 justify-content-center mt-4').addClass('col-sm-2 align-items-start')
+            $('#logo_tiendas').removeClass('col-sm-12 justify-content-center').addClass('col-sm-3 justify-content-start')
         }
     }
 
