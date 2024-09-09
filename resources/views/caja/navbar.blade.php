@@ -46,6 +46,31 @@ session('usuario')->id_puesto == 148)
         </a>
         <ul class="collapse submenu list-unstyled" id="rcajas" data-parent="#accordionExample">
             @if (session('usuario')->id_nivel == 1 || 
+            session('usuario')->id_puesto == 36 || 
+            session('usuario')->id_puesto == 23 ||
+            session('usuario')->id_puesto == 29 || 
+            session('usuario')->id_puesto == 161 ||
+            session('usuario')->id_puesto == 32 || 
+            session('usuario')->id_puesto == 31 || 
+            session('usuario')->id_puesto == 98 || 
+            session('usuario')->id_puesto == 128 ||
+            session('usuario')->id_puesto == 20 || 
+            session('usuario')->id_puesto == 26 || 
+            session('usuario')->id_puesto == 27 || 
+            session('usuario')->id_puesto == 16 ||
+            session('usuario')->id_puesto == 33 || 
+            session('usuario')->id_puesto == 30 || 
+            session('usuario')->id_puesto == 167 || 
+            session('usuario')->id_puesto == 23 ||
+            session('usuario')->id_puesto == 197 || 
+            session('usuario')->id_puesto == 148)
+                <li id="cambios_prendas">
+                    <a href="{{ route('cambio_prenda') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                        <p class="romperpalabra"><span id="icono_active2"></span> Cambio de prenda</p>
+                    </a>
+                </li>
+            @endif
+            @if (session('usuario')->id_nivel == 1 || 
             session('usuario')->id_puesto == 128 || 
             session('usuario')->id_puesto == 9 || 
             session('usuario')->id_puesto == 29 ||
@@ -108,6 +133,11 @@ session('usuario')->id_puesto == 128)
                 </div>
             </a>
             <ul class="collapse submenu list-unstyled" id="rconf_cajas" data-parent="#accordionExample">
+                <li id="conf_cambios_prendas">
+                    <a href="{{ route('cambio_prenda_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                        <p class="romperpalabra"><span id="icono_active2"></span> Cambio de prenda</p>
+                    </a>
+                </li>
                 <li id="conf_lineas_carreras">
                     <a href="{{ route('linea_carrera_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                         <p class="romperpalabra"><span id="icono_active2"></span> Línea de carrera</p>
