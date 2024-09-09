@@ -18,6 +18,7 @@ use App\Http\Controllers\AperturaCierreTiendaController;
 use App\Http\Controllers\AsistenciaSegController;
 use App\Http\Controllers\BiReporteController;
 use App\Http\Controllers\CajaInicioController;
+use App\Http\Controllers\CambioPrendaConfController;
 use App\Http\Controllers\CambioPrendaController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
@@ -812,12 +813,29 @@ Route::controller(NotificacionConfController::class)->group(function () {
     Route::delete('notificacion_conf_ti/{id}', 'destroy_ti')->name('notificacion_conf_ti.destroy');
     Route::put('notificacion/{id}/leido', 'update_leido')->name('notificacion.update_leido');
 });
-//CAJA - OBSERVACIONES
+//CAJA - CAMBIO DE PRENDA
 Route::controller(CambioPrendaController::class)->group(function () {
     Route::get('cambio_prenda', 'index_reg')->name('cambio_prenda');
     Route::post('cambio_prenda/list', 'list_reg')->name('cambio_prenda.list');
+    Route::get('cambio_prenda_con/create', 'create_reg_con')->name('cambio_prenda_con.create');
+    Route::post('cambio_prenda/comprobante', 'comprobante_reg')->name('cambio_prenda.comprobante');
+    Route::post('cambio_prenda_con', 'store_reg_con')->name('cambio_prenda_con.store');
+    Route::get('cambio_prenda_sin/create', 'create_reg_sin')->name('cambio_prenda_sin.create');
+    Route::post('cambio_prenda/{id}/cambiar_estado', 'cambiar_estado_reg')->name('cambio_prenda.cambiar_estado');
+    Route::delete('cambio_prenda/{id}', 'destroy_reg')->name('cambio_prenda.destroy');
+    Route::get('cambio_prenda/{id}/detalle', 'detalle_reg')->name('cambio_prenda.detalle');
 });
-
+//CAJA - CAMBIO DE PRENDA CONFIGURABLE
+Route::controller(CambioPrendaConfController::class)->group(function () {
+    Route::get('cambio_prenda_conf', 'index')->name('cambio_prenda_conf');
+    Route::get('cambio_prenda_conf_mo', 'index_mo')->name('cambio_prenda_conf_mo');
+    Route::get('cambio_prenda_conf_mo/list', 'list_mo')->name('cambio_prenda_conf_mo.list');
+    Route::get('cambio_prenda_conf_mo/create', 'create_mo')->name('cambio_prenda_conf_mo.create');
+    Route::post('cambio_prenda_conf_mo', 'store_mo')->name('cambio_prenda_conf_mo.store');
+    Route::get('cambio_prenda_conf_mo/{id}/edit', 'edit_mo')->name('cambio_prenda_conf_mo.edit');
+    Route::put('cambio_prenda_conf_mo/{id}', 'update_mo')->name('cambio_prenda_conf_mo.update');
+    Route::delete('cambio_prenda_conf_mo/{id}', 'destroy_mo')->name('cambio_prenda_conf_mo.destroy');
+});
 
 
 
