@@ -414,14 +414,14 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::get('ColaboradorConfController/Modal_Update_Tipo_Vivienda/{id}', 'Modal_Update_Tipo_Vivienda');
     Route::post('ColaboradorConfController/Insert_Tipo_Vivienda', 'Insert_Tipo_Vivienda');
     Route::post('ColaboradorConfController/Update_Tipo_Vivienda', 'Update_Tipo_Vivienda');
-    Route::post('ColaboradorConfController/Delete_Tipo_Vivienda', 'Delete_Tipo_Vivienda');/*
-    Route::post('ColaboradorConfController/Grupo_Sanguineo', 'Grupo_Sanguineo');
-    Route::get('ColaboradorConfController/Modal_Grupo_Sanguineo', 'Modal_Grupo_Sanguineo');
-    Route::get('ColaboradorConfController/Modal_Update_Grupo_Sanguineo/{id}', 'Modal_Update_Grupo_Sanguineo');
-    Route::post('ColaboradorConfController/Insert_Grupo_Sanguineo', 'Insert_Grupo_Sanguineo');
-    Route::post('ColaboradorConfController/Update_Grupo_Sanguineo', 'Update_Grupo_Sanguineo');
-    Route::post('ColaboradorConfController/Delete_Grupo_Sanguineo', 'Delete_Grupo_Sanguineo');
-    ----------------------------------------Paolo----------------------------------*/
+    Route::post('ColaboradorConfController/Delete_Tipo_Vivienda', 'Delete_Tipo_Vivienda');
+    Route::post('ColaboradorConfController/Empresa', 'Empresa');
+    Route::get('ColaboradorConfController/Modal_Empresa', 'Modal_Empresa');
+    Route::get('ColaboradorConfController/Modal_Update_Empresa/{id}', 'Modal_Update_Empresa');
+    Route::post('ColaboradorConfController/Insert_Empresa', 'Insert_Empresa');
+    Route::post('ColaboradorConfController/Update_Empresa', 'Update_Empresa');
+    Route::post('ColaboradorConfController/Delete_Empresa', 'Delete_Empresa');
+    /*----------------------------------------Paolo----------------------------------*/
     // ----------------------------------------bryan----------------------------------*/
 
     Route::get('colaborador_conf_ubi', 'index_ubi')->name('colaborador_conf_ubi');

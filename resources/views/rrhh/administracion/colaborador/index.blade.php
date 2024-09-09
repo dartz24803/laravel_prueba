@@ -89,6 +89,9 @@
                                     <li class="nav-item">
                                         <a style="cursor: pointer;" class="nav-link" id="TipoVivienda" onclick="TablaTipoVivienda()">Tipo de Vivienda</a>
                                     </li>
+                                    <li>
+                                        <a style="cursor: pointer;"  class="nav-link" id="Empresa" onclick="TablaEmpresa()">Empresa</a>
+                                    </li>
                                     {{-- empresas(administracion finanzas), --}}
                                 <?php } ?>
                             </div>
@@ -119,6 +122,7 @@
 
     //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
     function Active_Tabla_Colaboradores() {
+        $("#Empresa").removeClass('active');
         $("#TipoVivienda").removeClass('active');
         $("#TipoVia").removeClass('active');
         $("#TipoSangre").removeClass('active');
@@ -602,6 +606,26 @@
                 }
             });
         }
+
+    function TablaEmpresa() {
+        Active_Tabla_Colaboradores();
+        $("#Empresa").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Empresa') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
         /*--------------------------------------------Paolo-----------------------------------------------*/
 </script>
 @endsection

@@ -31,6 +31,10 @@ use App\Models\GrupoSanguineo;
 //-----------ppp---------------
 use App\Models\TipoVia;
 use App\Models\TipoVivienda;
+use App\Models\Empresas;
+use App\Models\Config;
+use App\Models\Banco;
+use Illuminate\Support\Facades\DB;
 //-----------------ppp--------
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
@@ -2453,6 +2457,23 @@ class ColaboradorConfController extends Controller
         TipoVivienda::findOrFail($request->input("id_tipo_vivienda"))->update($dato);
     }
 
+    public function Empresa(){
+        $dato['list_empresa'] = Empresas::where('estado', 1)
+                            ->get();
+        $dato['url'] = Config::where('descrip_config', 'Img_Empresa_Adm_Finanzas')
+                        ->get();
+        return view('rrhh.administracion.colaborador.Empresa.index',$dato);
+    }
+
+    public function Modal_Empresa(){
+            $dato['list_banco'] = Banco::where('estado',1)->get();
+            $dato['list_tipo_documento'] = TipoDocumento::where('estado',1)->get();
+            $dato['list_departamento'] = DB::table('departamento')->where('estado',1)->get();
+            $dato['list_provincia'] = DB::table('provincia')->where('estado',1)->get();
+            $dato['list_distrito'] = DB::table('distrito')->where('estado',1)->get();
+            $dato['list_regimen'] = Regimen::where('estado',1)->get();
+            return view('rrhh.administracion.colaborador.Empresa.modal_registrar',$dato);
+    }
     /*---------------------------------------------------------Paolo*/
 
 
