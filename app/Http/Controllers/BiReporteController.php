@@ -7,6 +7,7 @@ use App\Models\ArchivoSeguimientoCoordinador;
 use App\Models\ArchivoSupervisionTienda;
 use App\Models\Area;
 use App\Models\Base;
+use App\Models\BiPuestoAcceso;
 use App\Models\BiReporte;
 use App\Models\ContenidoSeguimientoCoordinador;
 use App\Models\ContenidoSupervisionTienda;
@@ -14,6 +15,7 @@ use App\Models\DetalleSeguimientoCoordinador;
 use App\Models\DetalleSupervisionTienda;
 use App\Models\DiaSemana;
 use App\Models\Gerencia;
+use App\Models\IndicadorBi;
 use App\Models\Mes;
 use App\Models\NivelJerarquico;
 use App\Models\Procesos;
@@ -33,6 +35,9 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use App\Models\Notificacion;
+use App\Models\Organigrama;
+use App\Models\TipoIndicador;
+use App\Models\Usuario;
 
 class BiReporteController extends Controller
 {
@@ -58,40 +63,64 @@ class BiReporteController extends Controller
 
     public function list_ra()
     {
-        // Obtener la lista de procesos con los campos requeridos
+        // Obtener la lista de reportes con los campos requeridos
         $list_bi_reporte = BiReporte::select(
             'acceso_bi_reporte.id_acceso_bi_reporte',
-            'acceso_bi_reporte.nom_reporte',
-            'acceso_bi_reporte.id_area',
-            'acceso_bi_reporte.acceso',
+            'acceso_bi_reporte.estado_act',
+            'acceso_bi_reporte.nom_bi',
+            'acceso_bi_reporte.actividad',
+            'acceso_bi_reporte.estado',
+            'acceso_bi_reporte.id_area', // Asegúrate de incluir id_area en la selección
+            'acceso_bi_reporte.fec_reg',
+            'acceso_bi_reporte.fec_valid',
+            'acceso_bi_reporte.estado_valid'
         )
-            ->where('acceso_bi_reporte.acceso', '!=', '')
             ->where('acceso_bi_reporte.estado', '=', 1)
-            ->orderBy('acceso_bi_reporte.fec_reg', 'DESC') // Ordena por fec_reg en orden ascendente
+            ->orderBy('acceso_bi_reporte.fec_reg', 'DESC') // Ordena por fec_reg en orden descendente
             ->get();
 
-        // Preparar un array para almacenar los nombres de las áreas y del responsable
+        // Obtener IDs de los reportes
+        $reportesIds = $list_bi_reporte->pluck('id_acceso_bi_reporte')->toArray();
+
+        // Consultar nombres de los puestos asociados a los reportes
+        $puestos = DB::table('bi_puesto_acceso')
+            ->join('puesto', 'bi_puesto_acceso.id_puesto', '=', 'puesto.id_puesto')
+            ->whereIn('bi_puesto_acceso.id_acceso_bi_reporte', $reportesIds)
+            ->select('bi_puesto_acceso.id_acceso_bi_reporte', 'puesto.nom_puesto')
+            ->get()
+            ->groupBy('id_acceso_bi_reporte');
+
+        // Consultar nombres de las áreas
+        $areas = DB::table('area')
+            ->whereIn('id_area', $list_bi_reporte->pluck('id_area')->flatten()->unique())
+            ->pluck('nom_area', 'id_area')
+            ->toArray();
+
+        // Preparar los datos para cada reporte
         foreach ($list_bi_reporte as $reporte) {
-            // Obtener nombres de las áreas
+            // Obtener nombres de los puestos asociados al reporte actual
+            $nombresPuestosReporte = $puestos->get($reporte->id_acceso_bi_reporte, collect())->pluck('nom_puesto')->implode(', ');
+            $reporte->nombres_puesto = $nombresPuestosReporte;
+
+            // Obtener nombres de las áreas asociadas al reporte actual
             $ids = explode(',', $reporte->id_area);
-            $nombresAreas = DB::table('area')
-                ->whereIn('id_area', $ids)
-                ->pluck('nom_area');
-
-            // Asignar nombres de las áreas al proceso
-            $reporte->nombres_area = $nombresAreas->implode(', ');
-            // Obtener nombres de las puestos
-            $idsp = explode(',', $reporte->acceso);
-            $nombresPuestos = DB::table('puesto')
-                ->whereIn('id_puesto', $idsp)
-                ->pluck('nom_puesto');
-
-            // Asignar nombres de las áreas al proceso
-            $reporte->nombres_puesto = $nombresPuestos->implode(', ');
+            $nombresAreas = array_intersect_key($areas, array_flip($ids));
+            $reporte->nombres_area = implode(', ', $nombresAreas);
+            // Calcular los días sin atención
+            if ($reporte->fec_valid) {
+                $fec_reg = new \DateTime($reporte->fec_reg);
+                $fec_valid = new \DateTime($reporte->fec_valid);
+                $interval = $fec_valid->diff($fec_reg);
+                $reporte->dias_sin_atencion = $interval->days;
+            } else {
+                $reporte->dias_sin_atencion = 'N/A'; // O cualquier otro valor que indique que no se puede calcular
+            }
         }
 
         return view('interna.bi.reportes.registroacceso_reportes.lista', compact('list_bi_reporte'));
     }
+
+
 
 
 
@@ -113,10 +142,25 @@ class BiReporteController extends Controller
             ->orderBy('nom_area', 'ASC')
             ->distinct('nom_area')->get();
 
+        $list_tipo_indicador = TipoIndicador::select('idtipo_indicador', 'nom_indicador')
+            ->where('estado', 1)
+            ->orderBy('nom_indicador', 'ASC')
+            ->distinct('nom_indicador')->get();
+
+        $list_colaborador = Usuario::select('id_usuario', 'usuario_apater', 'usuario_amater', 'usuario_nombres')
+            ->where('estado', 1)
+            ->get();  // Añadir el método get() para obtener los resultados
+
+
+        // $list_colaborador = Organigrama::get_list_colaborador(['id_gerencia' => 0]);
+        // dd($list_colaborador);
+
         return view('interna.bi.reportes.registroacceso_reportes.modal_registrar', compact(
             'list_responsable',
             'list_area',
-            'list_base'
+            'list_base',
+            'list_tipo_indicador',
+            'list_colaborador'
         ));
     }
 
@@ -152,6 +196,25 @@ class BiReporteController extends Controller
         return response()->json($areas);
     }
 
+    public function getUsuariosPorArea(Request $request)
+    {
+        $areaId = $request->input('area_id');
+
+        // Obtiene los usuarios cuyo id_puesto coincida con el área seleccionada
+        $usuarios = Usuario::where('id_area', $areaId)
+            ->where('estado', 1)  // Filtrar por usuarios activos si es necesario
+            ->get(['id_usuario', 'usuario_apater', 'usuario_amater', 'usuario_nombres']);
+
+        // Concatenar los campos en una propiedad adicional
+        $usuarios->map(function ($usuario) {
+            $usuario->nombre_completo = "{$usuario->usuario_apater} {$usuario->usuario_amater} {$usuario->usuario_nombres}";
+            return $usuario;
+        });
+
+        return response()->json($usuarios);
+    }
+
+
 
     public function getPuestosPorAreasBi(Request $request)
     {
@@ -182,76 +245,85 @@ class BiReporteController extends Controller
 
     public function store_ra(Request $request)
     {
-        // $id = $request->input('id_acceso_bi_reporte');
-
+        // Validar los datos del formulario
         $request->validate([
-            'nomreporte' =>  'required',
+            'nombi' => 'required',
             'iframe' => 'required',
-            'tipo_acceso_b' => 'required',
-            'id_area_acceso_t' => 'required',
+            'tipo_acceso_t' => 'required',
+            // 'id_area_acceso_t' => 'required',
+            'indicador.*' => 'required',
+            'descripcion.*' => 'required',
+            'tipo.*' => 'required',
+            'presentacion.*' => 'required',
         ], [
-            'nomreporte.required' => 'Debe ingresar nombre.',
+            'nombi.required' => 'Debe ingresar nombre bi.',
             'iframe.required' => 'Debe ingresar Iframe.',
-            'tipo_acceso_b.required' => 'Debe seleccionar base.',
-            'id_area_acceso_t.required' => 'Debe seleccionar area.'
-
+            'tipo_acceso_t.required' => 'Debe seleccionar los Accesos por Puesto',
+            // 'id_area_acceso_t.required' => 'Debe seleccionar área.',
+            'indicador.*.required' => 'Debe ingresar un indicador.',
+            'descripcion.*.required' => 'Debe ingresar una descripción.',
+            'tipo.*.required' => 'Debe seleccionar un tipo.',
+            'presentacion.*.required' => 'Debe seleccionar una presentación.',
         ]);
 
+        // Guardar los datos en la tabla portal_procesos_historial
         $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
-
-        // Obtener Lista Responsables
-        $list_responsable = Puesto::select('id_puesto', 'nom_puesto')
-            ->where('estado', 1)
-            ->orderBy('id_puesto', 'ASC')
-            ->get()
-            ->unique('nom_puesto')
-            ->pluck('id_puesto')
-            ->toArray();
-
-        // Obtener Lista Area
-        $list_area = Area::select('id_area', 'nom_area')
-            ->where('estado', 1)
-            ->orderBy('id_area', 'ASC')
-            ->get()
-            ->unique('nom_area')
-            ->pluck('id_area')
-            ->toArray();
-        // Convertir el array a una cadena separada por comas
-        $list_responsable_string = implode(',', $list_responsable);
-        $list_area_string = implode(',', $list_area);
-
-        // Verificar si existe un código previo, si no, iniciar con 23AR00000
-        $ultimoReporte = BiReporte::latest('id_acceso_bi_reporte')->first();
-        if ($ultimoReporte) {
-            // Extraer la parte numérica del código (ej: 00001)
-            $ultimoCodigo = intval(substr($ultimoReporte->codigo, 4)); // Asumiendo que el prefijo es "23AR"
-            $nuevoCodigo = $ultimoCodigo + 1; // Incrementar el número
-        } else {
-            // Si no hay reportes previos, iniciar en 23AR00000
-            $nuevoCodigo = 1;
-        }
-        // Formatear el código con ceros a la izquierda
-        $codigoFormateado = '23AR' . str_pad($nuevoCodigo, 5, '0', STR_PAD_LEFT);
-
-        // Crear un nuevo registro en la tabla portal_procesos_historial
-        BiReporte::create([
-            'codigo' => $request->codigo ?? $codigoFormateado,
-            'nom_reporte' => $request->nomreporte ?? '',
+        $biReporte = BiReporte::create([
+            'estado_act' => 'Actualizado',
+            'nom_bi' => $request->nombi ?? '',
+            'nom_intranet' => $request->nomintranet ?? '',
+            'actividad' => $request->actividad_bi ?? '',
             'acceso_todo' => $accesoTodo,
-            'id_area' => $accesoTodo
-                ? $list_area_string
-                : (is_array($request->id_area_acceso_t) ? implode(',', $request->id_area_acceso_t) : $request->id_area_acceso_t ?? ''),
-            'fecha' => $request->fecha ?? null,
+            'id_area' => $request->areass ?? 0,
+            'id_usuario' => $request->solicitante ?? 0,
+            'frecuencia_act' => $request->frec_actualizacion ?? 1,
+            'objetivo' => $request->objetivo ?? '',
+            'tablas' => $request->tablas ?? '',
             'iframe' => $request->iframe ?? '',
-            'id_responsable' => is_array($request->id_puesto) ? implode(',', $request->id_puesto) : $request->id_puesto ?? null,
-            'acceso' => $accesoTodo
-                ? $list_responsable_string
-                : (is_array($request->tipo_acceso_t) ? implode(',', $request->tipo_acceso_t) : $request->tipo_acceso_t ?? ''),
-            'estado' => $request->estado ?? 1,
+            'estado' => 1,
+            'estado_valid' => 0,
             'fec_reg' => $request->fec_reg ? date('Y-m-d H:i:s', strtotime($request->fec_reg)) : now(),
             'user_reg' => session('usuario')->id_usuario,
-
+            'fec_act' => $request->fec_reg ? date('Y-m-d H:i:s', strtotime($request->fec_reg)) : now(),
+            'user_act' => session('usuario')->id_usuario,
         ]);
+        // Obtener el ID del nuevo registro en bi_reportes
+        $biReporteId = $biReporte->id_acceso_bi_reporte;
+        // dd($biReporteId);
+        // Guardar los datos en la tabla indicadores_bi
+        $indicadores = $request->input('indicador', []);
+        $descripciones = $request->input('descripcion', []);
+        $tipos = $request->input('tipo', []);
+        $presentaciones = $request->input('presentacion', []);
+
+        foreach ($indicadores as $index => $indicador) {
+            IndicadorBi::create([
+                'id_acceso_bi_reporte' => $biReporteId,
+                'nom_indicador' => $indicador,
+                'estado' => 1,
+                'descripcion' => $descripciones[$index] ?? '',
+                'idtipo_indicador' => $tipos[$index] ?? 0,
+                'presentacion' => $presentaciones[$index] ?? 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+            ]);
+        }
+
+        // Guardar los datos en la tabla bi_puesto_acceso
+        $puestos = $request->input('tipo_acceso_t', []);
+
+        foreach ($puestos as $puestoId) {
+            BiPuestoAcceso::create([
+                'id_acceso_bi_reporte' => $biReporteId,
+                'id_puesto' => $puestoId,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+            ]);
+        }
 
         // Redirigir o devolver respuesta
         return redirect()->back()->with('success', 'Reporte registrado con éxito.');
@@ -277,6 +349,19 @@ class BiReporteController extends Controller
         ]);
     }
 
+
+
+    public function update_valid(Request $request, $id)
+    {
+
+        BiReporte::where('id_acceso_bi_reporte', $id)->update([
+            'fec_valid' => now(),
+            'estado_valid' => 1,
+        ]);
+    }
+
+
+
     public function destroy_ra($id)
     {
         BiReporte::where('id_acceso_bi_reporte', $id)->firstOrFail()->update([
@@ -290,9 +375,16 @@ class BiReporteController extends Controller
     public function edit_ra($id)
     {
         $get_id = BiReporte::findOrFail($id);
+        $id_usuario = $get_id->id_usuario; // Asignamos el valor de id_usuario desde $get_id
+
         // Obtener el valor del campo `id_area` y convertirlo en un array
-        $selected_area_ids = explode(',', $get_id->id_area);
-        $selected_puesto_ids = explode(',', $get_id->acceso);
+        // $selected_puesto_ids = explode(',', $get_id->acceso);
+        // Obtener los IDs de los puestos asociados al reporte
+        $selected_puesto_ids = DB::table('bi_puesto_acceso')
+            ->where('id_acceso_bi_reporte', $id)
+            ->pluck('id_puesto')
+            ->toArray(); // Convertir a array para usar en la vista
+        $list_base = Base::get_list_todas_bases_agrupadas_bi();
 
         $list_responsable = Puesto::select('puesto.id_puesto', 'puesto.nom_puesto', 'area.cod_area')
             ->join('area', 'puesto.id_area', '=', 'area.id_area')  // Realiza el INNER JOIN entre Puesto y Area
@@ -307,12 +399,40 @@ class BiReporteController extends Controller
             ->get()
             ->unique('nom_area');
 
+        $list_indicadores = IndicadorBi::with('tipoIndicador')
+            ->select(
+                'indicadores_bi.nom_indicador',
+                'indicadores_bi.descripcion',
+                'indicadores_bi.idtipo_indicador',
+                'indicadores_bi.presentacion',
+                'indicadores_bi.fec_reg',
+                'tipo_indicador.nom_indicador as tipo_indicador_nom'
+            )
+            ->where('id_acceso_bi_reporte', $id) // Filtra por el valor de $id en el campo id_acceso_bi_reporte
+            ->join('tipo_indicador', 'indicadores_bi.idtipo_indicador', '=', 'tipo_indicador.idtipo_indicador')
+            ->get();
+
+        $list_tipo_indicador = TipoIndicador::select('idtipo_indicador', 'nom_indicador')
+            ->where('estado', 1)
+            ->orderBy('nom_indicador', 'ASC')
+            ->distinct('nom_indicador')->get();
+
+        // dd($id_usuario);
+
+        $list_colaborador = Usuario::get_list_colaborador_usuario([
+            'id_usuario' => $id_usuario // Filtro por id_usuario
+        ]);
+
         return view('interna.bi.reportes.registroacceso_reportes.modal_editar', compact(
             'get_id',
             'list_responsable',
             'list_area',
-            'selected_area_ids',
             'selected_puesto_ids',
+            'list_colaborador',
+            'selected_puesto_ids', // IDs de los puestos seleccionados
+            'list_tipo_indicador',
+            'list_base',
+            'list_indicadores'
         ));
     }
 

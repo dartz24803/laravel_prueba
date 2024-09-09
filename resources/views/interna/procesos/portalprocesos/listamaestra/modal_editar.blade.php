@@ -277,14 +277,6 @@
 
                         <div class="col-12 text-center">
                             <label class="control-label text-bold centered-label"> Accesos</label>
-                            <!-- <div>
-                                <label class="control-label text-bold">Todos</label>
-
-                                <label class="switch">
-                                    <input type="checkbox" id="acceso_todo" name="acceso_todo" onclick="Acceso_Todo()" checked>
-                                    <span class="slider"></span>
-                                </label>
-                            </div> -->
                             <div class="divider"></div>
 
                         </div>
@@ -398,8 +390,6 @@
                         </tbody>
 
                     </table>
-
-
                 </div>
             </div>
         </div>

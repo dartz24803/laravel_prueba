@@ -26,7 +26,7 @@
                                     <a id="a_ar" class="nav-link" onclick="Area();" style="cursor: pointer;">Área</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a id="a_ubi" class="nav-link" onclick="Ubicacion();" style="cursor: pointer;">Ubicación</a>
+                                    <a id="a_ubi" class="nav-link" onclick="Ubicacion();" style="cursor: pointer;">Ubicacion</a>
                                 </li>
                                 <li class="nav-item">
                                     <a id="a_ni" class="nav-link" onclick="Nivel_Jerarquico();" style="cursor: pointer;">Nivel Jerárquico</a>
