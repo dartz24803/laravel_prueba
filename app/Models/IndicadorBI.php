@@ -11,6 +11,9 @@ class IndicadorBi extends Model
 
     // La tabla asociada con el modelo
     protected $table = 'indicadores_bi';
+    protected $primaryKey = 'idindicadores_bi';
+
+    public $timestamps = false;
 
     // Los atributos que se pueden asignar masivamente
     protected $fillable = [
@@ -26,9 +29,6 @@ class IndicadorBi extends Model
         'fect_eli',
         'user_eli',
     ];
-
-    // Desactivar los timestamps
-    public $timestamps = false;
 
     // Los atributos que deben ser convertidos a tipos nativos
     protected $casts = [
