@@ -496,22 +496,34 @@ class BiReporteController extends Controller
     public function excel_rebi($cod_base, $fecha_inicio, $fecha_fin)
     {
         // Obtener la lista de reportes con los campos requeridos
-        $list_reportes = BiReporte::select(
-            'nom_bi',
-            'nom_intranet',
-            'actividad',
-            'id_area',
-            'id_usuario',
-            'frecuencia_act',
-            'tablas',
-            'objetivo',
-            'iframe',
-            'fec_reg'
-        )
-            ->whereNotNull('acceso_bi_reporte.nom_bi')
-            ->where('acceso_bi_reporte.id_usuario', '!=', '')
+        $list_reportes = DB::table('indicadores_bi')
+            ->join('acceso_bi_reporte', 'indicadores_bi.id_acceso_bi_reporte', '=', 'acceso_bi_reporte.id_acceso_bi_reporte')
+            ->leftJoin('tipo_indicador', 'indicadores_bi.idtipo_indicador', '=', 'tipo_indicador.idtipo_indicador')
+            ->select(
+                'acceso_bi_reporte.id_acceso_bi_reporte',
+                'acceso_bi_reporte.nom_bi',
+                'acceso_bi_reporte.nom_intranet',
+                'acceso_bi_reporte.iframe',
+                'acceso_bi_reporte.actividad',
+                'acceso_bi_reporte.id_area',
+                'acceso_bi_reporte.objetivo',
+                'acceso_bi_reporte.frecuencia_act',
+                'acceso_bi_reporte.id_usuario',
+                'acceso_bi_reporte.tablas',
+                'acceso_bi_reporte.estado',
+                'acceso_bi_reporte.fec_act',
+                'acceso_bi_reporte.fec_reg',
+                'acceso_bi_reporte.fec_valid',
+                'acceso_bi_reporte.estado_valid',
+                'indicadores_bi.nom_indicador',
+                'indicadores_bi.descripcion', // Nueva columna
+                'indicadores_bi.idtipo_indicador', // Nueva columna
+                'indicadores_bi.presentacion', // Nueva columna
+                'tipo_indicador.nom_indicador as tipo_indicador_nombre' // Obtenemos el nombre del indicador
+            )
             ->where('acceso_bi_reporte.estado', '=', 1)
-            ->orderBy('acceso_bi_reporte.fec_reg', 'DESC')
+            ->where('acceso_bi_reporte.estado_valid', '=', 1)
+            ->orderBy('acceso_bi_reporte.fec_reg', 'DESC') // Ordena por fec_reg en orden descendente
             ->get();
 
         // Obtener IDs de los reportes
@@ -531,6 +543,12 @@ class BiReporteController extends Controller
             ->pluck('nom_area', 'id_area')
             ->toArray();
 
+        // Consultar los nombres de los indicadores
+        $tipoIndicadores = DB::table('tipo_indicador')
+            ->whereIn('idtipo_indicador', $list_reportes->pluck('idtipo_indicador')->unique())
+            ->pluck('nom_indicador', 'idtipo_indicador')
+            ->toArray();
+
         // Preparar un array para almacenar los nombres de las áreas y el nombre del usuario
         foreach ($list_reportes as $reporte) {
             // Obtener nombres de los puestos asociados al reporte actual
@@ -541,6 +559,9 @@ class BiReporteController extends Controller
             $ids = explode(',', $reporte->id_area);
             $nombresAreas = array_intersect_key($areas, array_flip($ids));
             $reporte->nombres_area = implode(', ', $nombresAreas);
+
+            // Obtener el nombre del tipo de indicador
+            $reporte->nombre_indicador = $tipoIndicadores[$reporte->idtipo_indicador] ?? 'Indicador desconocido';
         }
 
         // Creación del archivo Excel
@@ -548,7 +569,7 @@ class BiReporteController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $spreadsheet->getActiveSheet()->setTitle('Listado de Reportes');
 
-        $sheet->setAutoFilter('A1:L1');
+        $sheet->setAutoFilter('A1:N1'); // Actualización para incluir las nuevas columnas
 
         $columnWidths = [
             'A' => 20,
@@ -562,15 +583,17 @@ class BiReporteController extends Controller
             'I' => 20,
             'J' => 20,
             'K' => 20,
-            'L' => 20
+            'L' => 20,
+            'M' => 20,
+            'N' => 20, // Nueva columna
         ];
 
         foreach ($columnWidths as $column => $width) {
             $sheet->getColumnDimension($column)->setWidth($width);
         }
 
-        $sheet->getStyle('A1:L1')->getFont()->setBold(true);
-        $sheet->getStyle('A1:L1')->applyFromArray([
+        $sheet->getStyle('A1:N1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:N1')->applyFromArray([
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => Border::BORDER_THIN,
@@ -579,7 +602,7 @@ class BiReporteController extends Controller
             ],
         ]);
 
-        $sheet->getStyle('A1:L1')->getFill()
+        $sheet->getStyle('A1:N1')->getFill()
             ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
             ->getStartColor()->setARGB('C8C8C8');
 
@@ -593,7 +616,11 @@ class BiReporteController extends Controller
         $sheet->setCellValue('G1', 'Tablas');
         $sheet->setCellValue('H1', 'Objetivo');
         $sheet->setCellValue('I1', 'Iframe');
-        $sheet->setCellValue('J1', 'Fecha Registro');
+        $sheet->setCellValue('J1', 'Nombre del Indicador');
+        $sheet->setCellValue('K1', 'Descripción'); // Nueva columna
+        $sheet->setCellValue('L1', 'Tipo de Indicador'); // Nueva columna
+        $sheet->setCellValue('M1', 'Presentación'); // Nueva columna
+        $sheet->setCellValue('N1', 'Fecha Registro');
 
         // Obtener los ids de usuario únicos de la lista de reportes
         $idsUsuarios = $list_reportes->pluck('id_usuario')->unique();
@@ -607,6 +634,8 @@ class BiReporteController extends Controller
             $contador++;
             $actividad = ['1' => 'En Uso', '2' => 'Suspendido'][$reporte->actividad] ?? 'Desconocido';
             $frecuencia = ['1' => 'Minuto', '2' => 'Hora', '3' => 'Día', '4' => 'Mes'][$reporte->frecuencia_act] ?? 'Desconocido';
+            $tipo_presentacion = ['1' => 'Tabla', '2' => 'Gráfico'][$reporte->presentacion] ?? 'Desconocido';
+
 
             $sheet->setCellValue("A{$contador}", $reporte->nom_bi);
             $sheet->setCellValue("B{$contador}", $reporte->nom_intranet);
@@ -618,12 +647,16 @@ class BiReporteController extends Controller
             $sheet->setCellValue("G{$contador}", $reporte->tablas);
             $sheet->setCellValue("H{$contador}", $reporte->objetivo);
             $sheet->setCellValue("I{$contador}", $reporte->iframe);
-            $sheet->setCellValue("J{$contador}", Date::PHPToExcel($reporte->fec_reg));
-            $sheet->getStyle("J{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+            $sheet->setCellValue("J{$contador}", $reporte->nombre_indicador);
+            $sheet->setCellValue("K{$contador}", $reporte->descripcion); // Nueva columna
+            $sheet->setCellValue("L{$contador}", $reporte->nombre_indicador); // Nueva columna
+            $sheet->setCellValue("M{$contador}", $tipo_presentacion); // Nueva columna
+            $sheet->setCellValue("N{$contador}", $reporte->fec_reg);
         }
 
         $writer = new Xlsx($spreadsheet);
-        $filename = 'db_reportes_' . date('d-m-Y');
+        $filename = 'reporte.xlsx';
+
 
         if (ob_get_contents()) ob_end_clean();
         header('Content-Type: application/vnd.ms-excel');
@@ -644,22 +677,32 @@ class BiReporteController extends Controller
 
     public function list_db()
     {
-        // Obtener la lista de reportes con los campos requeridos
-        $list_bi_reporte = BiReporte::select(
-            'acceso_bi_reporte.id_acceso_bi_reporte',
-            'acceso_bi_reporte.nom_bi',
-            'acceso_bi_reporte.nom_intranet',
-            'acceso_bi_reporte.iframe',
-            'acceso_bi_reporte.actividad',
-            'acceso_bi_reporte.id_area',
-            'acceso_bi_reporte.objetivo',
-            'acceso_bi_reporte.frecuencia_act',
-            'acceso_bi_reporte.id_usuario',
-            'acceso_bi_reporte.estado',
-            'acceso_bi_reporte.fec_reg',
-            'acceso_bi_reporte.fec_valid',
-            'acceso_bi_reporte.estado_valid'
-        )
+        // Obtener la lista de reportes con los campos requeridos de la tabla indicadores_bi
+        $list_bi_reporte = DB::table('indicadores_bi')
+            ->join('acceso_bi_reporte', 'indicadores_bi.id_acceso_bi_reporte', '=', 'acceso_bi_reporte.id_acceso_bi_reporte')
+            ->leftJoin('tipo_indicador', 'indicadores_bi.idtipo_indicador', '=', 'tipo_indicador.idtipo_indicador')
+            ->select(
+                'acceso_bi_reporte.id_acceso_bi_reporte',
+                'acceso_bi_reporte.nom_bi',
+                'acceso_bi_reporte.nom_intranet',
+                'acceso_bi_reporte.iframe',
+                'acceso_bi_reporte.actividad',
+                'acceso_bi_reporte.id_area',
+                'acceso_bi_reporte.objetivo',
+                'acceso_bi_reporte.frecuencia_act',
+                'acceso_bi_reporte.id_usuario',
+                'acceso_bi_reporte.estado',
+                'acceso_bi_reporte.fec_act',
+                'acceso_bi_reporte.fec_reg',
+                'acceso_bi_reporte.fec_valid',
+                'acceso_bi_reporte.estado_valid',
+                'indicadores_bi.nom_indicador',
+                'indicadores_bi.descripcion',
+                'indicadores_bi.idtipo_indicador',
+                'indicadores_bi.presentacion',
+                'tipo_indicador.nom_indicador as tipo_indicador_nombre' // Obtenemos el nombre del indicador
+
+            )
             ->where('acceso_bi_reporte.estado', '=', 1)
             ->where('acceso_bi_reporte.estado_valid', '=', 1)
             ->orderBy('acceso_bi_reporte.fec_reg', 'DESC') // Ordena por fec_reg en orden descendente
@@ -667,7 +710,7 @@ class BiReporteController extends Controller
 
         // Obtener IDs de los reportes
         $reportesIds = $list_bi_reporte->pluck('id_acceso_bi_reporte')->toArray();
-
+        // dd($reportesIds);
         // Consultar nombres de los puestos asociados a los reportes
         $puestos = DB::table('bi_puesto_acceso')
             ->join('puesto', 'bi_puesto_acceso.id_puesto', '=', 'puesto.id_puesto')
@@ -682,38 +725,37 @@ class BiReporteController extends Controller
             ->pluck('nom_area', 'id_area')
             ->toArray();
 
-
+        // Consultar los nombres de los usuarios
         $idsUsuarios = $list_bi_reporte->pluck('id_usuario')->unique();
         $nombresUsuarios = DB::table('users')
             ->whereIn('id_usuario', $idsUsuarios)
             ->select(DB::raw("id_usuario, CONCAT(usuario_nombres, ' ', usuario_apater, ' ', usuario_amater) as nombre_completo"))
             ->pluck('nombre_completo', 'id_usuario');
-        // dd($nombresUsuarios);
 
         // Preparar los datos para cada reporte
         foreach ($list_bi_reporte as $reporte) {
             // Obtener nombres de los puestos asociados al reporte actual
             $nombresPuestosReporte = $puestos->get($reporte->id_acceso_bi_reporte, collect())->pluck('nom_puesto')->implode(', ');
             $reporte->nombres_puesto = $nombresPuestosReporte;
+
             // Obtener el nombre del usuario correspondiente
             $nombreUsuario = $nombresUsuarios[$reporte->id_usuario] ?? 'Usuario desconocido'; // Acceder por id_usuario
-            $reporte->nombre_usuario = $nombreUsuario; // Asignar el nombre al reporte
+            $reporte->nombre_usuario = $nombreUsuario;
 
-            // $nombreUsuario = $nombresUsuarios ?? 'Usuario desconocido';
             // Obtener nombres de las áreas asociadas al reporte actual
             $ids = explode(',', $reporte->id_area);
             $nombresAreas = array_intersect_key($areas, array_flip($ids));
             $reporte->nombres_area = implode(', ', $nombresAreas);
+            $reporte->tipo_presentacion = $reporte->presentacion == 1 ? 'Tabla' : ($reporte->presentacion == 2 ? 'Gráfico' : 'Desconocido');
+            $reporte->tipo_frecuencia = $reporte->frecuencia_act == 1 ? 'Minuto' : ($reporte->frecuencia_act == 2 ? 'Hora' : ($reporte->frecuencia_act == 3 ? 'Día' : ($reporte->frecuencia_act == 4 ? 'Mes' : 'Desconocido')));
+
             // Calcular los días sin atención
-            // Suponiendo que $reporte->estado_valid contiene el valor del estado
             if ($reporte->estado_valid == 1) {
-                // Si estado_valid es 1, se usa fec_valid
                 $fec_reg = new \DateTime($reporte->fec_reg);
                 $fec_valid = new \DateTime($reporte->fec_valid);
                 $interval = $fec_valid->diff($fec_reg);
                 $reporte->dias_sin_atencion = $interval->days;
             } else {
-                // Si estado_valid no es 1, se usa la fecha actual
                 $fec_reg = new \DateTime($reporte->fec_reg);
                 $fecha_actual = new \DateTime(); // Fecha actual
                 $interval = $fecha_actual->diff($fec_reg);

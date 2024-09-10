@@ -49,10 +49,15 @@
             <th>Nombre Intranet</th>
             <th>Iframe</th>
             <th>Actividad</th>
-            <th>Área</th>
+            <th class="col-tipo">Área</th>
             <th>Objetivo</th>
-            <th class="col-tipo">Accesos</th>
+            <th>Indicador</th>
+            <th>Descripción</th>
+            <th>Tipo</th>
+            <th>Presentación</th>
+            <th>Frecuencia</th>
             <th>Solicitante</th>
+            <th>Accesos</th>
 
         </tr>
     </thead>
@@ -76,13 +81,28 @@
                 {{ $reporte->nombres_area }}
             </td>
             <td>{{ $reporte->objetivo }}</td>
+
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                {{ $reporte->nombres_puesto }}
+                {{ $reporte->nom_indicador }}
+            </td>
+            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ $reporte->descripcion }}
+            </td>
+            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ $reporte->tipo_indicador_nombre }}
+            </td>
+            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ $reporte->tipo_presentacion }}
+            </td>
+            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ $reporte->tipo_frecuencia }}
             </td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->nombre_usuario }}
             </td>
-
+            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ $reporte->nombres_puesto }}
+            </td>
 
         </tr>
         @endforeach
