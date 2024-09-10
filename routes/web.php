@@ -841,8 +841,11 @@ Route::controller(CambioPrendaController::class)->group(function () {
     Route::post('cambio_prenda/comprobante', 'comprobante_reg')->name('cambio_prenda.comprobante');
     Route::post('cambio_prenda_con', 'store_reg_con')->name('cambio_prenda_con.store');
     Route::get('cambio_prenda_sin/create', 'create_reg_sin')->name('cambio_prenda_sin.create');
+    Route::post('cambio_prenda/producto', 'producto_reg')->name('cambio_prenda.producto');
+    Route::post('cambio_prenda_sin', 'store_reg_sin')->name('cambio_prenda_sin.store');
     Route::get('cambio_prenda/{id}/edit', 'edit_reg')->name('cambio_prenda.edit');
     Route::put('cambio_prenda_con/{id}', 'update_reg_con')->name('cambio_prenda_con.update');
+    Route::put('cambio_prenda_sin/{id}', 'update_reg_sin')->name('cambio_prenda_sin.update');
     Route::put('cambio_prenda/{id}/cambiar_estado', 'cambiar_estado_reg')->name('cambio_prenda.cambiar_estado');
     Route::delete('cambio_prenda/{id}', 'destroy_reg')->name('cambio_prenda.destroy');
     Route::get('cambio_prenda/{id}/modal_finalizar', 'modal_finalizar_reg')->name('cambio_prenda.modal_finalizar');
