@@ -19,6 +19,7 @@ class IndicadorBi extends Model
     protected $fillable = [
         'id_acceso_bi_reporte',
         'nom_indicador',
+        'estado',
         'descripcion',
         'idtipo_indicador',
         'presentacion',

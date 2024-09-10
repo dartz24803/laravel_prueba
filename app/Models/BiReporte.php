@@ -15,11 +15,11 @@ class BiReporte extends Model
 
     // Definir los campos que se pueden asignar de forma masiva
     protected $fillable = [
-        'estado_act',
         'nom_bi',
         'nom_intranet',
         'actividad',
         'id_area',
+        'estado_valid',
         'id_usuario',
         'frecuencia_act',
         'tablas',

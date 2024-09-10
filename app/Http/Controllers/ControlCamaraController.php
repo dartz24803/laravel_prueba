@@ -399,7 +399,7 @@ class ControlCamaraController extends Controller
         $valida = ControlCamaraArchivoTemporal::where('id_usuario', session('usuario')->id_usuario)
             ->where('id_tienda', $request->id_tienda)->exists();
         if ($valida) {
-            $cantidad_tienda = Tiendas::where('id_sede', $request->id_sede)->count();
+            $cantidad_tienda = Tiendas::where('id_sede', $request->id_sede)->where('estado', 1)->count();
             $cantidad_ronda = 0;
             $tienda = Tiendas::select('id_tienda')->where('id_sede', $request->id_sede)->where('ronda', 1)
                 ->where('estado', 1)->first();

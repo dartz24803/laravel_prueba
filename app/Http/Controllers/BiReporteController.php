@@ -66,7 +66,6 @@ class BiReporteController extends Controller
         // Obtener la lista de reportes con los campos requeridos
         $list_bi_reporte = BiReporte::select(
             'acceso_bi_reporte.id_acceso_bi_reporte',
-            'acceso_bi_reporte.estado_act',
             'acceso_bi_reporte.nom_bi',
             'acceso_bi_reporte.actividad',
             'acceso_bi_reporte.estado',
@@ -107,13 +106,19 @@ class BiReporteController extends Controller
             $nombresAreas = array_intersect_key($areas, array_flip($ids));
             $reporte->nombres_area = implode(', ', $nombresAreas);
             // Calcular los días sin atención
-            if ($reporte->fec_valid) {
+            // Suponiendo que $reporte->estado_valid contiene el valor del estado
+            if ($reporte->estado_valid == 1) {
+                // Si estado_valid es 1, se usa fec_valid
                 $fec_reg = new \DateTime($reporte->fec_reg);
                 $fec_valid = new \DateTime($reporte->fec_valid);
                 $interval = $fec_valid->diff($fec_reg);
                 $reporte->dias_sin_atencion = $interval->days;
             } else {
-                $reporte->dias_sin_atencion = 'N/A'; // O cualquier otro valor que indique que no se puede calcular
+                // Si estado_valid no es 1, se usa la fecha actual
+                $fec_reg = new \DateTime($reporte->fec_reg);
+                $fecha_actual = new \DateTime(); // Fecha actual
+                $interval = $fecha_actual->diff($fec_reg);
+                $reporte->dias_sin_atencion = $interval->days;
             }
         }
 
@@ -269,7 +274,6 @@ class BiReporteController extends Controller
         // Guardar los datos en la tabla portal_procesos_historial
         $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
         $biReporte = BiReporte::create([
-            'estado_act' => 'Actualizado',
             'nom_bi' => $request->nombi ?? '',
             'nom_intranet' => $request->nomintranet ?? '',
             'actividad' => $request->actividad_bi ?? '',
@@ -286,7 +290,10 @@ class BiReporteController extends Controller
             'user_reg' => session('usuario')->id_usuario,
             'fec_act' => $request->fec_reg ? date('Y-m-d H:i:s', strtotime($request->fec_reg)) : now(),
             'user_act' => session('usuario')->id_usuario,
+            'fec_valid' => $request->fec_valid ? date('Y-m-d H:i:s', strtotime($request->fec_valid)) : now(),
+
         ]);
+
         // Obtener el ID del nuevo registro en bi_reportes
         $biReporteId = $biReporte->id_acceso_bi_reporte;
         // dd($biReporteId);
@@ -332,21 +339,70 @@ class BiReporteController extends Controller
 
     public function update_ra(Request $request, $id)
     {
+        // Validar los datos del formulario
         $request->validate([
-            'nombrea' =>  'required',
-            'iframea' => 'required',
+            'nombi' => 'required',
+            'iframe' => 'required',
+            'indicador.*' => 'required',
+            'descripcion.*' => 'required',
+            'tipo.*' => 'required',
+            'presentacion.*' => 'required',
         ], [
-            'nombrea.required' => 'Debe ingresar nombre.',
-            'iframea.required' => 'Debe ingresar Iframe.',
-
+            'nombi.required' => 'Debe ingresar nombre BI.',
+            'iframe.required' => 'Debe ingresar Iframe.',
+            'indicador.*.required' => 'Debe ingresar un indicador.',
+            'descripcion.*.required' => 'Debe ingresar una descripción.',
+            'tipo.*.required' => 'Debe seleccionar un tipo.',
+            'presentacion.*.required' => 'Debe seleccionar una presentación.',
         ]);
-        BiReporte::where('id_acceso_bi_reporte', $id)->update([
-            'nom_reporte' => $request->nombrea,
-            'iframe' => $request->iframea,
+
+        // Buscar el registro existente
+        $biReporte = BiReporte::findOrFail($id);
+        // dd($biReporte);
+        // Actualizar los datos en la tabla
+        $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
+        $biReporte->update([
+            'nom_bi' => $request->nombi ?? '',
+            'nom_intranet' => $request->nomintranet ?? '',
+            'actividad' => $request->actividad_bi ?? '',
+            'acceso_todo' => $accesoTodo,
+            'id_area' => $request->areass ?? 0,
+            'id_usuario' => $request->solicitante ?? 0,
+            'frecuencia_act' => $request->frec_actualizacion ?? 1,
+            'objetivo' => $request->objetivo ?? '',
+            'tablas' => $request->tablas ?? '',
+            'iframe' => $request->iframe ?? '',
+            'estado' => 1,
+            'estado_valid' => 0,
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario,
-
+            'fec_valid' => $request->fec_valid ? date('Y-m-d H:i:s', strtotime($request->fec_valid)) : now(),
         ]);
+
+        // Actualizar indicadores
+        if ($request->has('indicador')) {
+            // Primero, eliminamos los registros antiguos que no están en la solicitud
+            IndicadorBi::where('id_acceso_bi_reporte', $biReporte->id_acceso_bi_reporte)
+                ->whereNotIn('idindicadores_bi', array_keys($request->indicador))
+                ->delete();
+
+            // Ahora, actualizamos o creamos los registros nuevos
+            foreach ($request->indicador as $key => $indicador) {
+                $biIndicador = IndicadorBi::updateOrCreate(
+                    [
+                        'id_acceso_bi_reporte' => $biReporte->id_acceso_bi_reporte,
+                        'idindicadores_bi' => $key
+                    ],
+                    [
+                        'estado' => 1,
+                        'nom_indicador' => $indicador,
+                        'descripcion' => $request->descripcion[$key] ?? '',
+                        'idtipo_indicador' => $request->tipo[$key] ?? 0,
+                        'presentacion' => $request->presentacion[$key] ?? 0,
+                    ]
+                );
+            }
+        }
     }
 
 
