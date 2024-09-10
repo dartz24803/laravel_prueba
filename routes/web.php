@@ -18,6 +18,7 @@ use App\Http\Controllers\AperturaCierreTiendaController;
 use App\Http\Controllers\AsistenciaSegController;
 use App\Http\Controllers\BiReporteController;
 use App\Http\Controllers\CajaChicaConfController;
+use App\Http\Controllers\CajaChicaController;
 use App\Http\Controllers\CajaInicioController;
 use App\Http\Controllers\CambioPrendaConfController;
 use App\Http\Controllers\CambioPrendaController;
@@ -873,6 +874,10 @@ Route::controller(FinanzasInicioController::class)->group(function () {
 //TESORERÍA - CAJA CHICA CONFIGURABLE
 Route::controller(CajaChicaConfController::class)->group(function () {
     Route::get('caja_chica_conf', 'index')->name('caja_chica_conf');
+});
+//TESORERÍA - CAJA CHICA
+Route::controller(CajaChicaController::class)->group(function () {
+    Route::get('caja_chica', 'index')->name('caja_chica');
 });
 
 

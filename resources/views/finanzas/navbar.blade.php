@@ -26,7 +26,7 @@
 
     <ul class="collapse submenu list-unstyled" id="rtesorerias" data-parent="#accordionExample">
         <li>
-            <a id="portalprocesos" href="{{ route('portalprocesos') }}">
+            <a id="cajas_chicas" href="{{ route('caja_chica') }}">
                 <p class="romperpalabra"><span id="icono_active2"></span> Caja chica</p>
             </a>
         </li>
