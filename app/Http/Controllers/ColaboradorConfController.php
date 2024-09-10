@@ -28,14 +28,12 @@ use App\Models\SituacionLaboral;
 use App\Models\TipoContrato;
 use App\Models\TipoDocumento;
 use App\Models\GrupoSanguineo;
-//-----------ppp---------------
 use App\Models\TipoVia;
 use App\Models\TipoVivienda;
 use App\Models\Empresas;
 use App\Models\Config;
 use App\Models\Banco;
 use Illuminate\Support\Facades\DB;
-//-----------------ppp--------
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
 use App\Models\Ubicacion;
@@ -2455,6 +2453,94 @@ class ColaboradorConfController extends Controller
         $dato['fec_eli'] = now();
         $dato['user_eli'] = session('usuario')->id_usuario;
         TipoVivienda::findOrFail($request->input("id_tipo_vivienda"))->update($dato);
+    }
+
+    public function Banco(){
+        $dato['list_banco'] = Banco::where('estado', 1)->get();
+        return view('rrhh.administracion.colaborador.Banco.index',$dato);
+    }
+
+    public function Modal_Banco(){
+        return view('rrhh.administracion.colaborador.Banco.modal_registrar');   
+    }
+
+    public function Insert_Banco(Request $request){
+        $request->validate([
+            'cod_banco' => 'required',
+            'nom_banco' => 'required',
+            'digitos_cuenta' => 'required',        
+            'digitos_cci' => 'required',            
+        ], [
+            'cod_banco.required' => 'Debe ingresar codigo de banco.',
+            'nom_banco.required' => 'Debe ingresar descripcion de banco.',
+            'digitos_cuenta' => 'Debe ingresar digitos de cuenta',
+            'digitos_cci' => 'Debe ingresar digitos cci',
+        ]);
+
+        $valida = Banco::where('nom_banco', $request->nom_banco)
+            ->where('cod_banco', $request->cod_banco)
+            ->where('digitos_cuenta', $request->digitos_cuenta)
+            ->where('digitos_cci', $request->digitos_cci)
+            ->where('estado', 1)
+            ->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            $dato['cod_banco']= $request->input("cod_banco");
+            $dato['nom_banco']= $request->input("nom_banco");
+            $dato['digitos_cuenta']= $request->input("digitos_cuenta");
+            $dato['digitos_cci']= $request->input("digitos_cci");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Banco::create($dato);
+        }
+    }
+
+    public function Modal_Update_Banco($id_banco){
+        $dato['get_id'] = Banco::where('id_banco', $id_banco)->get();
+        return view('rrhh.administracion.colaborador.Banco.modal_editar',$dato);
+    }
+
+    public function Update_Banco(Request $request){
+        $request->validate([
+            'cod_banco' => 'required',
+            'nom_banco' => 'required',
+            'digitos_cuenta' => 'required',        
+            'digitos_cci' => 'required',            
+        ], [
+            'cod_banco.required' => 'Debe ingresar codigo de banco.',
+            'nom_banco.required' => 'Debe ingresar descripcion de banco.',
+            'digitos_cuenta' => 'Debe ingresar digitos de cuenta',
+            'digitos_cci' => 'Debe ingresar digitos cci',
+        ]);
+
+        $valida = Banco::where('nom_banco', $request->nom_banco)
+            ->where('cod_banco', $request->cod_banco)
+            ->where('digitos_cuenta', $request->digitos_cuenta)
+            ->where('digitos_cci', $request->digitos_cci)
+            ->where('estado', 1)
+            ->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            $dato['cod_banco']= $request->input("cod_banco");
+            $dato['nom_banco']= $request->input("nom_banco");
+            $dato['digitos_cuenta']= $request->input("digitos_cuenta");
+            $dato['digitos_cci']= $request->input("digitos_cci");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            Banco::findOrFail($request->id_banco)->update($dato);
+        }
+    }
+
+    public function Delete_Banco(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Banco::findOrFail($request->input("id_banco"))->update($dato);
     }
 
     public function Empresa(){

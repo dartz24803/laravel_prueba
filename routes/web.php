@@ -424,6 +424,12 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Empresa', 'Insert_Empresa');
     Route::post('ColaboradorConfController/Update_Empresa', 'Update_Empresa');
     Route::post('ColaboradorConfController/Delete_Empresa', 'Delete_Empresa');
+    Route::post('ColaboradorConfController/Banco', 'Banco');
+    Route::get('ColaboradorConfController/Modal_Banco', 'Modal_Banco');
+    Route::get('ColaboradorConfController/Modal_Update_Banco/{id}', 'Modal_Update_Banco');
+    Route::post('ColaboradorConfController/Insert_Banco', 'Insert_Banco');
+    Route::post('ColaboradorConfController/Update_Banco', 'Update_Banco');
+    Route::post('ColaboradorConfController/Delete_Banco', 'Delete_Banco');
     /*----------------------------------------Paolo----------------------------------*/
     // ----------------------------------------bryan----------------------------------*/
 
