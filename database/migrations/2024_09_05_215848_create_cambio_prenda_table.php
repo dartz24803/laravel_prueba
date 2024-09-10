@@ -45,6 +45,11 @@ return new class extends Migration
             //$table->index(['base'], 'cpre_idx_id_bas');
             $table->index(['id_motivo'], 'cpre_idx_id_mot');
             $table->index(['id_usuario'], 'cpre_idx_id_usu');
+            $table->index(['fec_reg'], 'cpre_idx_freg');
+            $table->index(['base'], 'cpre_idx_bas');
+            $table->index(['tipo_boleta'], 'cpre_idx_tbol');
+            $table->index(['estado_cambio'], 'cpre_idx_ecam');
+            $table->index(['estado'], 'cpre_idx_est');
             //$table->timestamps();
         });
     }
