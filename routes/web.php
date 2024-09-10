@@ -436,6 +436,12 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Empresa', 'Insert_Empresa');
     Route::post('ColaboradorConfController/Update_Empresa', 'Update_Empresa');
     Route::post('ColaboradorConfController/Delete_Empresa', 'Delete_Empresa');
+    Route::post('ColaboradorConfController/Banco', 'Banco');
+    Route::get('ColaboradorConfController/Modal_Banco', 'Modal_Banco');
+    Route::get('ColaboradorConfController/Modal_Update_Banco/{id}', 'Modal_Update_Banco');
+    Route::post('ColaboradorConfController/Insert_Banco', 'Insert_Banco');
+    Route::post('ColaboradorConfController/Update_Banco', 'Update_Banco');
+    Route::post('ColaboradorConfController/Delete_Banco', 'Delete_Banco');
     /*----------------------------------------Paolo----------------------------------*/
     // ----------------------------------------bryan----------------------------------*/
 
@@ -835,8 +841,12 @@ Route::controller(CambioPrendaController::class)->group(function () {
     Route::post('cambio_prenda/comprobante', 'comprobante_reg')->name('cambio_prenda.comprobante');
     Route::post('cambio_prenda_con', 'store_reg_con')->name('cambio_prenda_con.store');
     Route::get('cambio_prenda_sin/create', 'create_reg_sin')->name('cambio_prenda_sin.create');
-    Route::post('cambio_prenda/{id}/cambiar_estado', 'cambiar_estado_reg')->name('cambio_prenda.cambiar_estado');
+    Route::get('cambio_prenda/{id}/edit', 'edit_reg')->name('cambio_prenda.edit');
+    Route::put('cambio_prenda_con/{id}', 'update_reg_con')->name('cambio_prenda_con.update');
+    Route::put('cambio_prenda/{id}/cambiar_estado', 'cambiar_estado_reg')->name('cambio_prenda.cambiar_estado');
     Route::delete('cambio_prenda/{id}', 'destroy_reg')->name('cambio_prenda.destroy');
+    Route::get('cambio_prenda/{id}/modal_finalizar', 'modal_finalizar_reg')->name('cambio_prenda.modal_finalizar');
+    Route::put('cambio_prenda/{id}/finalizar', 'finalizar_reg')->name('cambio_prenda.finalizar');
     Route::get('cambio_prenda/{id}/detalle', 'detalle_reg')->name('cambio_prenda.detalle');
 });
 //CAJA - CAMBIO DE PRENDA CONFIGURABLE

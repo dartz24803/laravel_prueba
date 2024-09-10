@@ -61,8 +61,8 @@ class CambioPrenda extends Model
                         CONCAT(us.usuario_nombres,' ',us.usuario_apater,' ',us.usuario_amater) 
                         AS registrado_por,cp.n_documento,
                         (SELECT SUM(cd.n_cant_vent) FROM cambio_prenda_detalle cd
-                        WHERE cd.id_cambio_prenda=cp.id_cambio_prenda AND cd.estado=1) AS cant_total,
-                        CASE WHEN cp.id_motivo='01' THEN cp.otro ELSE mc.nom_motivo END AS nom_motivo,
+                        WHERE cd.id_cambio_prenda=cp.id_cambio_prenda) AS cant_total,
+                        CASE WHEN cp.id_motivo=6 THEN cp.otro ELSE mc.nom_motivo END AS nom_motivo,
                         cp.nuevo_num_comprobante,
                         cp.nuevo_num_serie,CASE WHEN cp.estado_cambio=1 THEN 'Pendiente de aprobación'
                         WHEN cp.estado_cambio=2 THEN 'Aprobado' WHEN cp.estado_cambio=3 THEN 'Denegado'
