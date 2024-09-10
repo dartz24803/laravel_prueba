@@ -149,4 +149,41 @@
         modal.find('.modal-title').text('Firma')
         $('.alert').hide();//Oculto alert
     })
+    
+function Delete_Empresa(id){
+    var id = id;
+    var url="{{ url('ColaboradorConfController/Delete_Empresa') }}";
+    var csrfToken = $('input[name="_token"]').val();
+    Swal({
+        //title: '¿Realmente quieres eliminar el registro de '+ nombre +'?',
+        title: '¿Realmente desea eliminar el registro',
+        text: "El registro será eliminado permanentemente",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+    }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                type:"POST",
+                url:url,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                data: {'id_empresa':id},
+                success:function () {
+                    Swal(
+                        'Eliminado!',
+                        'El registro ha sido eliminado satisfactoriamente.',
+                        'success'
+                    ).then(function() {
+                        TablaEmpresa(); 
+                    });
+                }
+            });
+        }
+    })
+}
 </script>

@@ -430,6 +430,8 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Banco', 'Insert_Banco');
     Route::post('ColaboradorConfController/Update_Banco', 'Update_Banco');
     Route::post('ColaboradorConfController/Delete_Banco', 'Delete_Banco');
+    Route::post('ColaboradorConfController/Provincia', 'Provincia');
+    Route::post('ColaboradorConfController/Distrito', 'Distrito');
     /*----------------------------------------Paolo----------------------------------*/
     // ----------------------------------------bryan----------------------------------*/
 
