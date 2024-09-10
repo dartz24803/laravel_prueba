@@ -114,7 +114,7 @@
 
     <!-- <form id="formulario_insert" method="POST" enctype="multipart/form-data" class="needs-validation""> -->
     <div class=" modal-header">
-        <h5 class="modal-title">Registrar Accesos de Reporte</h5>
+        <h5 class="modal-title">Editar Accesos de Reporte</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -192,7 +192,7 @@
 
                     <div class="form-group col-md-6">
                         <label for="solicitantes">Solicitante: </label>
-                        <select class="form-control" name="solicitante[]" id="solicitante">
+                        <select class="form-control" name="solicitante" id="solicitante">
                             @foreach ($list_colaborador as $list)
                             <option value="{{ $list->id_usuario }}"
                                 {{ $list->id_usuario == $get_id->id_usuario ? 'selected' : '' }}>
@@ -217,36 +217,44 @@
             <div class="tab-pane fade" id="indicadores" role="tabpanel" aria-labelledby="indicadores-tab2">
                 <!-- Contenido de la pestaña Otra Sección -->
                 <div class="row d-flex col-md-12 my-2">
-                    <!-- Botón para subir versión -->
-                    <table id="tabla_js2" class="table table-hover" style="width:100%">
+                    <!-- Tabla para añadir filas dinámicamente -->
+                    <table id="tabla_versiones" class="table table-hover" style="width:100%">
                         <thead class="text-center">
                             <tr>
                                 <th>Indicador</th>
                                 <th>Descripción</th>
-                                <th>Tipo de Indicador</th>
-                                <th>Presentación</th>
-                                <th>Fecha de Registro</th>
-
+                                <th class="col-tipo">Tipo</th>
+                                <th class="col-tipo">Presentación</th>
+                                <th class="col-accion">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tabla_body">
+                            <!-- Si ya tienes valores para editar, los mostramos en la tabla -->
                             @foreach ($list_indicadores as $indicador)
                             <tr class="text-center">
-                                <td>{{ $indicador->nom_indicador }}</td>
-                                <td>{{ $indicador->descripcion }}</td>
-                                <td>{{ $indicador->tipo_indicador_nom }}</td> <!-- Mostrar el nombre del tipo de indicador en lugar del ID -->
-                                <td>
-                                    <select class="form-control" name="presentacion[]" style="width: 150px;">
+                                <td class="px-1"><input type="text" class="form-control" name="indicador[]" value="{{ $indicador->nom_indicador }}"></td>
+                                <td class="px-1"><input type="text" class="form-control" name="descripcion[]" value="{{ $indicador->descripcion }}"></td>
+                                <td class="px-1">
+                                    <select class="form-control" name="tipo[]">
+                                        @foreach ($list_tipo_indicador as $list)
+                                        <option value="{{ $list->idtipo_indicador }}" {{ $list->idtipo_indicador == $indicador->idtipo_indicador ? 'selected' : '' }}>
+                                            {{ $list->nom_indicador }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td class="px-1">
+                                    <select class="form-control" name="presentacion[]">
                                         <option value="1" {{ $indicador->presentacion == 1 ? 'selected' : '' }}>Tabla</option>
                                         <option value="2" {{ $indicador->presentacion == 2 ? 'selected' : '' }}>Gráfico</option>
                                     </select>
                                 </td>
-                                <td>{{ $indicador->fec_reg ? $indicador->fec_reg->format('d-m-Y') : 'N/A' }}</td>
+                                <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
                             </tr>
                             @endforeach
                         </tbody>
                     </table>
-
+                    <button type="button" class="btn btn-success btn-sm" onclick="addRow()">Agregar fila</button>
                 </div>
             </div>
 
@@ -255,7 +263,7 @@
                     <div class="form-group col-md-12 text-center">
                         <div class="divider"></div>
                         <label class="control-label text-bold">Acceso Puesto: </label>
-                        <select class="form-control multivalue" name="tipo_acceso_te[]" id="tipo_acceso_te" multiple="multiple">
+                        <select disabled class="form-control multivalue" name="tipo_acceso_te[]" id="tipo_acceso_te" multiple="multiple">
                             @foreach ($list_responsable as $puesto)
                             <option value="{{ $puesto->id_puesto }}"
                                 {{ in_array($puesto->id_puesto, $selected_puesto_ids) ? 'selected' : '' }}>
@@ -272,17 +280,19 @@
 
     <div class="modal-footer">
         @csrf
-        <button disabled class="btn btn-primary" type="button" onclick="Insert_Funcion_Temporal(); ">Guardar</button>
+        @method('POST')
+        <button class="btn btn-primary" type="button" onclick="Update_Proceso(); ">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 
 </form>
 
 <script>
+    // Función para agregar una nueva fila
     function addRow() {
-        // Obtener el cuerpo de la tablacodigo
-        var tableBody = document.getElementById('tabla_body');
 
+        // Obtener el cuerpo de la tabla
+        var tableBody = document.getElementById('tabla_body');
         // Crear una nueva fila
         var newRow = document.createElement('tr');
         newRow.classList.add('text-center');
@@ -316,6 +326,7 @@
         var row = button.parentNode.parentNode;
         row.parentNode.removeChild(row);
     }
+
 
     $('.multivalue').select2({
         tags: true, // Permite crear nuevas etiquetas
@@ -462,105 +473,48 @@
     });
 
 
-    function Insert_Funcion_Temporal() {
+    function Update_Proceso() {
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario_insert'));
-        var url = "{{ route('bireporte_ra.store') }}";
+        var url = "{{ route('bireporte_ra.update', $get_id->id_acceso_bi_reporte) }}";
 
-
-        if (Valida_Insert_Funcion_Temporal()) {
-            $.ajax({
-                url: url,
-                data: dataString,
-                type: "POST",
-                processData: false,
-                contentType: false,
-                success: function(data) {
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                if (data == "error") {
+                    Swal({
+                        title: '¡Actualización Denegada!',
+                        text: "¡El registro ya existe!",
+                        type: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
+                    });
+                } else {
                     swal.fire(
-                        'Registro Exitoso!',
-                        'Haga clic en el botón!',
+                        '¡Actualización Exitosa!',
+                        '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
                         List_Reporte();
-                        $("#ModalRegistro .close").click();
+                        $("#ModalUpdate .close").click();
                     });
-                },
-                error: function(xhr) {
-                    var errors = xhr.responseJSON.errors;
-                    var firstError = Object.values(errors)[0][0];
-                    Swal.fire(
-                        '¡Ups!',
-                        firstError,
-                        'warning'
-                    );
                 }
-            });
-
-        }
-    }
-
-    function Valida_Insert_Funcion_Temporal() {
-        if ($('#id_tipo_i').val() == 1) {
-            var mensaje = "Debe seleccionar función.";
-        } else if ($('#id_tipo_i').val() == 2) {
-            var mensaje = "Debe seleccionar tarea.";
-            if ($('#select_tarea').val() == 19) {
-                var mensaje = "Debe ingresar tarea.";
-            }
-        }
-
-        if ($('#id_usuario_i').val() === '0') {
-            Swal(
-                'Ups!',
-                'Debe seleccionar colaborador.',
-                'warning'
-            ).then(function() {});
-            return false;
-        }
-        if ($('#id_tipo_i').val() === '0') {
-            Swal(
-                'Ups!',
-                'Debe seleccionar tipo.',
-                'warning'
-            ).then(function() {});
-            return false;
-        }
-        if ($('#id_tipo_i').val() === '1') {
-            if ($('#tarea_i').val() === '0' || $('#tarea_i').val() === '') {
-                Swal(
-                    'Ups!',
-                    mensaje,
+            },
+            error: function(xhr) {
+                var errors = xhr.responseJSON.errors;
+                var firstError = Object.values(errors)[0][0];
+                Swal.fire(
+                    '¡Ups!',
+                    firstError,
                     'warning'
-                ).then(function() {});
-                return false;
+                );
             }
-        } else {
-            if ($('#select_tarea').val() === '0') {
-                Swal(
-                    'Ups!',
-                    mensaje,
-                    'warning'
-                ).then(function() {});
-                return false;
-            }
-        }
-        if ($('#fecha_i').val() === '') {
-            Swal(
-                'Ups!',
-                'Debe ingresar fecha.',
-                'warning'
-            ).then(function() {});
-            return false;
-        }
-        if ($('#hora_inicio_i').val() === '') {
-            Swal(
-                'Ups!',
-                'Debe ingresar hora de inicio.',
-                'warning'
-            ).then(function() {});
-            return false;
-        }
-        return true;
+        });
     }
 </script>
