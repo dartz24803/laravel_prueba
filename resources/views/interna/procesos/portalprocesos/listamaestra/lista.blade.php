@@ -41,7 +41,8 @@
                 {{ $proceso->nombres_area }}
             </td>
             <td>{{ $proceso->nombre_responsable }}</td>
-            <td>{{ $proceso->fecha }}</td>
+            <td>{{ \Carbon\Carbon::parse($proceso->fecha)->locale('es')->translatedFormat('D d M y') }}</td>
+
             <td>{{ $proceso->estado_texto }}</td>
 
             <td>

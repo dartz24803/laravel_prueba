@@ -57,7 +57,7 @@
     <tbody>
         @foreach ($list_bi_reporte as $reporte)
         <tr class="text-center">
-            <td>{{ $reporte->estado_act }}</td>
+            <td>{{ \Carbon\Carbon::parse($reporte->fec_act)->locale('es')->translatedFormat('D d M y') }}</td>
             <td>{{ $reporte->nom_bi }}</td>
             <td>
                 @if ($reporte->actividad == 1)
@@ -75,15 +75,24 @@
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->nombres_puesto }}
             </td>
-            <td>
-                @if ($reporte->estado == 1)
+            <td class="
+                    @if ($reporte->estado_valid == 0)
+                        bg-warning text-white
+                    @elseif ($reporte->estado_valid == 1)
+                        bg-success text-white
+                    @else
+                        bg-secondary text-white
+                    @endif
+                ">
+                @if ($reporte->estado_valid == 0)
                 Por Revisar
-                @elseif ($reporte->estado == 2)
+                @elseif ($reporte->estado_valid == 1)
                 Completado
                 @else
                 Desconocido
                 @endif
             </td>
+
             <td>
                 @if ($reporte->dias_sin_atencion != 'N/A')
                 <span class="{{ $reporte->dias_sin_atencion < 10 ? 'bg-green' : 'bg-orange' }}">

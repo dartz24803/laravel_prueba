@@ -230,7 +230,7 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::post('bireporte_ra', 'store_ra')->name('bireporte_ra.store');
     Route::delete('bireporte_ra/{id}', 'destroy_ra')->name('bireporte_ra.destroy');
     Route::get('bireporte_ra/{id}/edit', 'edit_ra')->name('bireporte_ra.edit');
-    Route::put('bireporte_ra/{id}', 'update_ra')->name('bireporte_ra.update');
+    Route::post('bireporte_ra/{id}', 'update_ra')->name('bireporte_ra.update');
     Route::post('bireporte_ra/{id}/valid', 'update_valid')->name('bireporte_ra.valid');
     Route::get('puestos-por-areas-bi', 'getPuestosPorAreasBi')->name('puestos_por_areas_bi');
     Route::get('usuarios_por_area', 'getUsuariosPorArea')->name('usuarios_por_area');
@@ -829,8 +829,12 @@ Route::controller(CambioPrendaController::class)->group(function () {
     Route::post('cambio_prenda/comprobante', 'comprobante_reg')->name('cambio_prenda.comprobante');
     Route::post('cambio_prenda_con', 'store_reg_con')->name('cambio_prenda_con.store');
     Route::get('cambio_prenda_sin/create', 'create_reg_sin')->name('cambio_prenda_sin.create');
-    Route::post('cambio_prenda/{id}/cambiar_estado', 'cambiar_estado_reg')->name('cambio_prenda.cambiar_estado');
+    Route::get('cambio_prenda/{id}/edit', 'edit_reg')->name('cambio_prenda.edit');
+    Route::put('cambio_prenda_con/{id}', 'update_reg_con')->name('cambio_prenda_con.update');
+    Route::put('cambio_prenda/{id}/cambiar_estado', 'cambiar_estado_reg')->name('cambio_prenda.cambiar_estado');
     Route::delete('cambio_prenda/{id}', 'destroy_reg')->name('cambio_prenda.destroy');
+    Route::get('cambio_prenda/{id}/modal_finalizar', 'modal_finalizar_reg')->name('cambio_prenda.modal_finalizar');
+    Route::put('cambio_prenda/{id}/finalizar', 'finalizar_reg')->name('cambio_prenda.finalizar');
     Route::get('cambio_prenda/{id}/detalle', 'detalle_reg')->name('cambio_prenda.detalle');
 });
 //CAJA - CAMBIO DE PRENDA CONFIGURABLE
