@@ -13,16 +13,14 @@
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                             <li class="nav-item">
-                                <a id="a_ser" class="nav-link" style="cursor: pointer;">Puesto Areas</a>
+                                <a id="a_tipind" class="nav-link" style="cursor: pointer;">Tipo Indicadores</a>
                             </li>
-                            <li class="nav-item">
-                                <a id="a_pser" class="nav-link" style="cursor: pointer;">Sugerencias</a>
-                            </li>
+
                         </ul>
 
                         <div class="row" id="cancel-row">
                             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
-                                <div id="div_ocurrencias_conf" class="widget-content widget-content-area p-3">
+                                <div id="div_reporte_tipoind_conf" class="widget-content widget-content-area p-3">
                                 </div>
                             </div>
                         </div>
@@ -35,11 +33,26 @@
 
 <script>
     $(document).ready(function() {
-        $("#procesosconf").addClass('active');
-        $("#procesosconf").attr('aria-expanded', 'true');
-        $("#portalprocesosconf").addClass('active');
+        $("#reporteconf").addClass('active');
+        $("#reporteconf").attr('aria-expanded', 'true');
+        $("#dbprocesosconf").addClass('active');
 
-        GestionOcurrencias();
+        TipoIndicador();
     });
+
+    function TipoIndicador() {
+        Cargando();
+
+        var url = "{{ route('bireporte_ti_conf') }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(resp) {
+                $('#div_reporte_tipoind_conf').html(resp);
+                $("#a_tipind").addClass('active');
+            }
+        });
+    }
 </script>
 @endsection

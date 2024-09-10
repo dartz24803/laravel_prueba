@@ -226,7 +226,6 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('bireporte_ra', 'index_ra')->name('bireporte_ra');
     Route::get('bireporte_ra/list', 'list_ra')->name('bireporte_ra.list');
     Route::get('bireporte_ra/create', 'create_ra')->name('bireporte_ra.create');
-    Route::get('bireporte_ra/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_lm')->name('bireporte_ra.excel');
     Route::post('bireporte_ra', 'store_ra')->name('bireporte_ra.store');
     Route::delete('bireporte_ra/{id}', 'destroy_ra')->name('bireporte_ra.destroy');
     Route::get('bireporte_ra/{id}/edit', 'edit_ra')->name('bireporte_ra.edit');
@@ -236,9 +235,22 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('usuarios_por_area', 'getUsuariosPorArea')->name('usuarios_por_area');
     Route::get('areas_por_base', 'getAreasPorBase')->name('areas_por_base_bi');
 
+    // DB REPORTE
+    Route::get('bireporte_db', 'index_db')->name('bireporte_db');
+    Route::get('bireporte_db/list', 'list_db')->name('bireporte_db.list');
+    Route::get('bireporte_db/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_rebi')->name('bireporte_db.excel');
+
+
 
     // CONFIGURABLES - ADMINISTRABLES
     Route::get('bireporte_ra_conf', 'index_ra_conf')->name('bireporte_ra_conf');
+    Route::get('bireporte_ti_conf', 'index_ti_conf')->name('bireporte_ti_conf');
+    Route::get('bireporte_ti_conf/list', 'list_tind')->name('bireporte_ti_conf.list');
+    Route::get('bireporte_ti_conf/{id}/edit', 'edit_tind')->name('bireporte_ti_conf.edit');
+    Route::delete('bireporte_ti_conf/{id}', 'destroy_tind')->name('bireporte_ti_conf.destroy');
+    Route::put('bireporte_ti_conf/{id}', 'update_tind')->name('bireporte_ti_conf.update');
+    Route::get('bireporte_ti_conf/create', 'create_tind')->name('bireporte_ti_conf.create');
+    Route::post('bireporte_ti_conf', 'store_tind')->name('bireporte_ti_conf.store');
 });
 
 
