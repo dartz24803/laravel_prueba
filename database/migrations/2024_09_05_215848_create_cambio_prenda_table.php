@@ -16,12 +16,11 @@ return new class extends Migration
             $table->integer('tipo_boleta')->nullable();
             $table->string('cod_cambio',20)->nullable();
             //$table->unsignedBigInteger('base');
+            $table->unsignedBigInteger('id_usuario');
             $table->string('base',20)->nullable();
             $table->string('tipo_comprobante',2)->nullable();
             $table->string('serie',20)->nullable();
             $table->string('n_documento',20)->nullable();
-            $table->string('n_codi_arti',50)->nullable();
-            $table->integer('n_cant_vent')->nullable();
             $table->string('nuevo_num_comprobante',100)->nullable();
             $table->string('nuevo_num_serie',50)->nullable();
             $table->unsignedBigInteger('id_motivo');
@@ -42,8 +41,10 @@ return new class extends Migration
             $table->integer('user_eli')->nullable();
             //$table->foreign('base', 'cpre_fk_id_bas')->references('id_ubicacion')->on('ubicacion');
             $table->foreign('id_motivo', 'cpre_fk_id_mot')->references('id_motivo')->on('motivo_cprenda');
+            $table->foreign('id_usuario', 'cpre_fk_id_usu')->references('id_usuario')->on('users');
             //$table->index(['base'], 'cpre_idx_id_bas');
             $table->index(['id_motivo'], 'cpre_idx_id_mot');
+            $table->index(['id_usuario'], 'cpre_idx_id_usu');
             //$table->timestamps();
         });
     }

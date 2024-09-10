@@ -20,13 +20,6 @@ class CambioPrendaDetalle extends Model
         'n_cant_vent',
         'c_arti_desc',
         'color',
-        'talla',
-        'estado',
-        'fec_reg',
-        'user_reg',
-        'fec_act',
-        'user_act',
-        'fec_eli',
-        'user_eli'
+        'talla'
     ];
 }

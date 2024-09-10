@@ -3,8 +3,20 @@
         <tr class="text-center">
             <th>Fecha registro</th>
             <th>Base</th>
+            @if ($tipo=="2")
+                <th>Fecha Compra</th>
+                <th>Hora</th>
+            @endif
             <th>Registrado por</th>
-            <th>Comprobante</th>
+            @if ($tipo=="2")
+                <th>Cliente</th>
+                <th>Teléfono</th>
+                <th>Vendedor</th>
+                <th>N° caja</th>
+            @endif
+            @if ($tipo=="1")
+                <th>Comprobante</th>
+            @endif
             <th>Cantidad</th>
             <th>Motivo</th>
             <th>Nuevo comprobante</th>
@@ -18,8 +30,20 @@
             <tr class="text-center">
                 <td>{{ $list->fecha }}</td>
                 <td>{{ $list->base }}</td>
+                @if ($tipo=="2")
+                    <td>{{ $list->fecha_compra }}</td>
+                    <td>{{ $list->hora }}</td>
+                @endif
                 <td class="text-left">{{ $list->registrado_por }}</td>
-                <td>{{ $list->n_documento }}</td>
+                @if ($tipo=="2")
+                    <td class="text-left">{{ $list->nom_cliente }}</td>
+                    <td>{{ $list->telefono }}</td>
+                    <td class="text-left">{{ $list->vendedor }}</td>
+                    <td>{{ $list->num_caja }}</td>
+                @endif
+                @if ($tipo=="1")
+                    <td>{{ $list->n_documento }}</td>
+                @endif
                 <td>{{ $list->cant_total }}</td>
                 <td class="text-left">{{ $list->nom_motivo }}</td>
                 <td>{{ $list->nuevo_num_comprobante }}</td>
