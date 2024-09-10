@@ -66,7 +66,7 @@
                 <img src="{{ asset('inicio/Grupo-LN1.png') }}" class="navbar-logo ajuste1" alt="logo">
             </a>
             <ul class="navbar-item flex-row ml-auto">
-                <li class="nav-item dropdown notification-dropdown">
+                <li class="nav-item dropdown notification-dropdown mr-4">
                     <a href="javascript:void(0);" class="nav-link dropdown-toggle" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">
                             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
@@ -109,7 +109,12 @@
                         </div>
                     </div>
                 </li>
-
+                <li class="d-flex justify-content-center align-items-center">
+                    <a class="text-light text-center" style="font-size: 0.5rem">
+                        {{ explode(' ', session('usuario')->usuario_nombres)[0] }} 
+                        {{ session('usuario')->usuario_apater }}
+                    </a>
+                </li>
                 <li class="nav-item dropdown user-profile-dropdown  order-lg-0 order-1">
                     <a href="javascript:void(0);" class="nav-link dropdown-toggle user" id="userProfileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
@@ -350,7 +355,7 @@
         scrollbar-color: #fea701 #f0f3f3; /* Color del thumb y del fondo en Firefox */
         }
         #scroll_tabs{
-            background: #f0f3f3;
+            background: white;
             border-radius: 10px;
         }
     </style>
@@ -504,7 +509,7 @@
             display: none !important;
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 900px) {
             #div_imagen_header {
                 display: none
             }

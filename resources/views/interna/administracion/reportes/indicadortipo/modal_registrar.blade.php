@@ -1,6 +1,6 @@
 <form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
-        <h5 class="modal-title">Registrar nuevo tipo:</h5>
+        <h5 class="modal-title">Registrar nuevo tipo indicador:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -10,35 +10,18 @@
     </div>
 
     <div class="modal-body" style="max-height:700px; overflow:auto;">
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Nombre:</label>
+        <div class="row"> <!-- Add this row class to create a horizontal layout -->
+            <div class="form-group col-lg-6">
+                <label for="nom_indicador">Nombre Indicador:</label>
+                <input type="text" class="form-control" id="nom_indicador" name="nom_indicador">
             </div>
-            <div class="form-group col-lg-10">
-                <input type="text" class="form-control" id="descrip_config" name="descrip_config"
-                    placeholder="Ingresar nombre">
+
+            <div class="form-group col-lg-6">
+                <label for="descripcion">Descripción:</label>
+                <input type="text" class="form-control" id="descripcion" name="descripcion">
             </div>
         </div>
 
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Mensaje:</label>
-            </div>
-            <div class="form-group col-lg-10">
-                <input type="text" class="form-control" id="mensaje" name="mensaje"
-                    placeholder="Ingresar mensaje">
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Ícono:</label>
-            </div>
-            <div class="form-group col-lg-10">
-                <textarea class="form-control" name="icono" id="icono" rows="10"
-                    placeholder="Ingresar ícono"></textarea>
-            </div>
-        </div>
     </div>
 
     <div class="modal-footer">
@@ -53,7 +36,7 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario'));
-        var url = "{{ route('notificacion_conf_ti.store') }}";
+        var url = "{{ route('bireporte_ti_conf.store') }}";
 
         $.ajax({
             url: url,

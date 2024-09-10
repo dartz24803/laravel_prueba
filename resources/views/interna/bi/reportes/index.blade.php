@@ -22,7 +22,9 @@
                             <li class="nav-item">
                                 <a id="a_reg" class="nav-link" onclick="ListRegistroAccesoReportes();" style="cursor: pointer;">ACCESO DE REPORTES</a>
                             </li>
-
+                            <li class="nav-item">
+                                <a id="a_bdr" class="nav-link" onclick="ListBDReportes();" style="cursor: pointer;">BD REPORTES</a>
+                            </li>
                         </ul>
                         <div class="row" id="cancel-row">
                             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
@@ -58,7 +60,23 @@
             success: function(resp) {
                 $('#div_lista_maestra').html(resp);
                 $("#a_reg").addClass('active');
-                $("#a_img").removeClass('active');
+                $("#a_bdr").removeClass('active');
+            }
+        });
+    }
+
+    function ListBDReportes() {
+        Cargando();
+
+        var url = "{{ route('bireporte_db') }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(resp) {
+                $('#div_lista_maestra').html(resp);
+                $("#a_reg").removeClass('active');
+                $("#a_bdr").addClass('active');
             }
         });
     }
