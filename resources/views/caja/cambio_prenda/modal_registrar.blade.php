@@ -101,7 +101,7 @@
             data: dataString,
             type: "POST",
             processData: false,
-            contentType: false,,
+            contentType: false,
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
