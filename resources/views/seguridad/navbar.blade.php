@@ -45,11 +45,13 @@
         session('usuario')->id_puesto == 164 ||
         session('usuario')->id_puesto == 197 ||
         session('usuario')->id_puesto == 148 ||
+        session('usuario')->id_puesto == 307 ||
         session('usuario')->id_puesto == 311 ||
         session('usuario')->id_puesto == 315 ||
         session('usuario')->id_puesto == 209)
             @if (session('usuario')->id_nivel == 1 ||
             session('usuario')->id_puesto == 23 ||
+            session('usuario')->id_puesto == 307 ||
             session('usuario')->id_puesto == 311 ||
             session('usuario')->id_puesto == 315 ||
             session('usuario')->id_puesto == 29 ||
@@ -72,6 +74,7 @@
             session('usuario')->id_puesto == 36 ||
             session('usuario')->id_puesto == 19 ||
             session('usuario')->id_puesto == 22 ||
+            session('usuario')->id_puesto == 307 ||
             session('usuario')->id_puesto == 311 ||
             session('usuario')->id_puesto == 315 ||
             session('usuario')->id_puesto == 209)
@@ -84,7 +87,8 @@
             @if (session('usuario')->id_nivel == 1 ||
             session('usuario')->id_puesto == 23 ||
             session('usuario')->id_puesto == 24 ||
-            session('usuario')->id_puesto == 164)
+            session('usuario')->id_puesto == 164 ||
+            session('usuario')->id_puesto == 307)
                 <li>
                     <a id="controles_camaras" href="{{ route('control_camara') }}">
                         <p class="romperpalabra"><span id="icono_active2"></span> Control de cámaras</p>
@@ -111,6 +115,7 @@
             session('usuario')->id_puesto == 161 ||
             session('usuario')->id_puesto == 197 ||
             session('usuario')->id_puesto == 134 ||
+            session('usuario')->id_puesto == 307 ||
             session('usuario')->id_puesto == 311 ||
             session('usuario')->id_puesto == 315 ||
             session('usuario')->id_puesto == 148)
@@ -128,6 +133,7 @@
             session('usuario')->id_puesto == 29 ||
             session('usuario')->id_puesto == 161 ||
             session('usuario')->id_puesto == 197 ||
+            session('usuario')->id_puesto == 307 ||
             session('usuario')->id_puesto == 311 ||
             session('usuario')->id_puesto == 315 ||
             session('usuario')->id_puesto == 148)
@@ -140,6 +146,7 @@
             @if (session('usuario')->id_nivel == 1 ||
             session('usuario')->id_puesto == 23 ||
             session('usuario')->id_puesto == 24 ||
+            session('usuario')->id_puesto == 307 ||
             session('usuario')->id_puesto == 311 ||
             session('usuario')->id_puesto == 315 ||
             session('usuario')->id_puesto == 36)
@@ -193,7 +200,8 @@ session('usuario')->id_puesto == 10 ||
 session('usuario')->id_puesto == 311 ||
 session('usuario')->id_puesto == 315 ||
 //usuarios de base no deben ver configurables
-session('usuario')->id_puesto == 312) && !Str::startsWith(session('usuario')->centro_labores, 'B'))
+session('usuario')->id_puesto == 312) && !Str::startsWith(session('usuario')->centro_labores, 'B') ||
+session('usuario')->id_puesto == 307)
     <li class="menu menu-heading">
         <div class="heading">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal">
@@ -224,6 +232,7 @@ session('usuario')->id_puesto == 312) && !Str::startsWith(session('usuario')->ce
         <ul class="collapse submenu list-unstyled" id="rconf_seguridades" data-parent="#accordionExample">
             @if (session('usuario')->id_nivel == "1" ||
             session('usuario')->id_puesto == 36 ||
+            session('usuario')->id_puesto == 307 ||
             session('usuario')->id_puesto == 311 ||
             session('usuario')->id_puesto == "315" ||
             session('usuario')->id_puesto == "23")
@@ -242,6 +251,7 @@ session('usuario')->id_puesto == 312) && !Str::startsWith(session('usuario')->ce
             session('usuario')->id_puesto == "9" ||
             session('usuario')->id_puesto == 36 ||
             session('usuario')->id_nivel == "11" ||
+            session('usuario')->id_puesto == 307 ||
             session('usuario')->id_puesto == 311 ||
             session('usuario')->id_puesto == "315" ||
             session('usuario')->id_puesto == "138")
@@ -252,7 +262,8 @@ session('usuario')->id_puesto == 312) && !Str::startsWith(session('usuario')->ce
                 </li>
             @endif
             @if (session('usuario')->id_nivel == "1" ||
-            session('usuario')->id_puesto == "23")
+            session('usuario')->id_puesto == "23" ||
+            session('usuario')->id_puesto == 307)
                 <li id="conf_concurrencias_servicios">
                     <a href="{{ route('ocurrencia_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                         <p class="romperpalabra"><span id="icono_active2"></span> Ocurrencias</p>
