@@ -17,6 +17,8 @@ use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
 use App\Http\Controllers\AsistenciaSegController;
 use App\Http\Controllers\BiReporteController;
+use App\Http\Controllers\CajaChicaConfController;
+use App\Http\Controllers\CajaChicaController;
 use App\Http\Controllers\CajaInicioController;
 use App\Http\Controllers\CambioPrendaConfController;
 use App\Http\Controllers\CambioPrendaController;
@@ -28,6 +30,8 @@ use App\Http\Controllers\ControlCamaraConfController;
 use App\Http\Controllers\ControlCamaraController;
 use App\Http\Controllers\SliderRRHH;
 use App\Http\Controllers\Cumpleanios;
+use App\Http\Controllers\FinanzaInicioController;
+use App\Http\Controllers\FinanzasInicioController;
 use App\Http\Controllers\InicioAdmController;
 use App\Http\Controllers\InicioFrasesAdmController;
 use App\Http\Controllers\LecturaServicioConfController;
@@ -226,7 +230,6 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('bireporte_ra', 'index_ra')->name('bireporte_ra');
     Route::get('bireporte_ra/list', 'list_ra')->name('bireporte_ra.list');
     Route::get('bireporte_ra/create', 'create_ra')->name('bireporte_ra.create');
-    Route::get('bireporte_ra/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_lm')->name('bireporte_ra.excel');
     Route::post('bireporte_ra', 'store_ra')->name('bireporte_ra.store');
     Route::delete('bireporte_ra/{id}', 'destroy_ra')->name('bireporte_ra.destroy');
     Route::get('bireporte_ra/{id}/edit', 'edit_ra')->name('bireporte_ra.edit');
@@ -236,9 +239,22 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('usuarios_por_area', 'getUsuariosPorArea')->name('usuarios_por_area');
     Route::get('areas_por_base', 'getAreasPorBase')->name('areas_por_base_bi');
 
+    // DB REPORTE
+    Route::get('bireporte_db', 'index_db')->name('bireporte_db');
+    Route::get('bireporte_db/list', 'list_db')->name('bireporte_db.list');
+    Route::get('bireporte_db/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_rebi')->name('bireporte_db.excel');
+
+
 
     // CONFIGURABLES - ADMINISTRABLES
     Route::get('bireporte_ra_conf', 'index_ra_conf')->name('bireporte_ra_conf');
+    Route::get('bireporte_ti_conf', 'index_ti_conf')->name('bireporte_ti_conf');
+    Route::get('bireporte_ti_conf/list', 'list_tind')->name('bireporte_ti_conf.list');
+    Route::get('bireporte_ti_conf/{id}/edit', 'edit_tind')->name('bireporte_ti_conf.edit');
+    Route::delete('bireporte_ti_conf/{id}', 'destroy_tind')->name('bireporte_ti_conf.destroy');
+    Route::put('bireporte_ti_conf/{id}', 'update_tind')->name('bireporte_ti_conf.update');
+    Route::get('bireporte_ti_conf/create', 'create_tind')->name('bireporte_ti_conf.create');
+    Route::post('bireporte_ti_conf', 'store_tind')->name('bireporte_ti_conf.store');
 });
 
 
@@ -831,8 +847,11 @@ Route::controller(CambioPrendaController::class)->group(function () {
     Route::post('cambio_prenda/comprobante', 'comprobante_reg')->name('cambio_prenda.comprobante');
     Route::post('cambio_prenda_con', 'store_reg_con')->name('cambio_prenda_con.store');
     Route::get('cambio_prenda_sin/create', 'create_reg_sin')->name('cambio_prenda_sin.create');
+    Route::post('cambio_prenda/producto', 'producto_reg')->name('cambio_prenda.producto');
+    Route::post('cambio_prenda_sin', 'store_reg_sin')->name('cambio_prenda_sin.store');
     Route::get('cambio_prenda/{id}/edit', 'edit_reg')->name('cambio_prenda.edit');
     Route::put('cambio_prenda_con/{id}', 'update_reg_con')->name('cambio_prenda_con.update');
+    Route::put('cambio_prenda_sin/{id}', 'update_reg_sin')->name('cambio_prenda_sin.update');
     Route::put('cambio_prenda/{id}/cambiar_estado', 'cambiar_estado_reg')->name('cambio_prenda.cambiar_estado');
     Route::delete('cambio_prenda/{id}', 'destroy_reg')->name('cambio_prenda.destroy');
     Route::get('cambio_prenda/{id}/modal_finalizar', 'modal_finalizar_reg')->name('cambio_prenda.modal_finalizar');
@@ -849,6 +868,18 @@ Route::controller(CambioPrendaConfController::class)->group(function () {
     Route::get('cambio_prenda_conf_mo/{id}/edit', 'edit_mo')->name('cambio_prenda_conf_mo.edit');
     Route::put('cambio_prenda_conf_mo/{id}', 'update_mo')->name('cambio_prenda_conf_mo.update');
     Route::delete('cambio_prenda_conf_mo/{id}', 'destroy_mo')->name('cambio_prenda_conf_mo.destroy');
+});
+//ÁREA FINANZAS
+Route::controller(FinanzasInicioController::class)->group(function () {
+    Route::get('finanzas', 'index')->name('finanzas');
+});
+//TESORERÍA - CAJA CHICA CONFIGURABLE
+Route::controller(CajaChicaConfController::class)->group(function () {
+    Route::get('caja_chica_conf', 'index')->name('caja_chica_conf');
+});
+//TESORERÍA - CAJA CHICA
+Route::controller(CajaChicaController::class)->group(function () {
+    Route::get('caja_chica', 'index')->name('caja_chica');
 });
 
 

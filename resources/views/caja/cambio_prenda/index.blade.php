@@ -177,6 +177,45 @@
             }
         }
 
+        function Buscar_Producto(v) {
+            Cargando();
+
+            var n_codi_arti = $('#n_codi_arti'+v).val();
+            var url = "{{ route('cambio_prenda.producto') }}";
+            
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {'n_codi_arti':n_codi_arti,'valida':v},
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success: function(data) {
+                    if(data=="error"){
+                            Swal({
+                            title: '¡Sin Resultados!',
+                            text: "¡Verificar datos!",
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    }else{
+                        $('#div_detalle'+v).html(data);
+                    }
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+        }
+
         /*function Descargar_Archivo(id){
             window.location.replace("{{ route('observacion.download', ':id') }}".replace(':id', id));
         }*/

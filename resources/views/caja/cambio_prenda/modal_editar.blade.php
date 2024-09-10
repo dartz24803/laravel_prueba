@@ -84,10 +84,10 @@
                 </select>
             </div>
 
-            <div class="form-group col-lg-2 mostrare" @if ($get_id->otro=="")  style="display: none;" @endif>
+            <div class="form-group col-lg-2 mostrare" @if ($get_id->otro=="") style="display: none;" @endif>
                 <label class="control-label text-bold">Otro:</label>
             </div>
-            <div class="form-group col-lg-4 mostrare" @if ($get_id->otro=="")  style="display: none;" @endif>
+            <div class="form-group col-lg-4 mostrare" @if ($get_id->otro=="") style="display: none;" @endif>
                 <input type="text" class="form-control" name="otroe" id="otroe" placeholder="Ingresar otro"
                 value="{{ $get_id->otro }}">
             </div>
