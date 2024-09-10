@@ -50,10 +50,18 @@
                             </div>
                         
                             <div id="div_boton" class="col-lg-3">
-                                <button type="button" class="btn btn-primary mb-2 mb-sm-0 mb-md-2 mb-lg-0" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('cambio_prenda_con.create') }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-                                    Registrar
-                                </button>
+                                @if (session('usuario')->id_nivel=="1" || 
+                                session('usuario')->id_puesto=="36" || 
+                                session('usuario')->id_puesto=="23" || 
+                                session('usuario')->id_puesto=="29" || 
+                                session('usuario')->id_puesto=="167" || 
+                                session('usuario')->id_puesto=="161" || 
+                                session('usuario')->id_puesto=="197")
+                                    <button type="button" class="btn btn-primary mb-2 mb-sm-0 mb-md-2 mb-lg-0" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('cambio_prenda_con.create') }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                                        Registrar
+                                    </button>
+                                @endif
                             </div>
                         </div>
 
@@ -102,16 +110,16 @@
         function Buscar_Comprobante(v) {
             Cargando();
 
-            var base = $('#base').val();
-            var tipo_comprobante = $('#tipo_comprobante').val();
-            var serie = $('#serie').val();
-            var n_documento = $('#n_documento').val();
+            var base = $('#base'+v).val();
+            var tipo_comprobante = $('#tipo_comprobante'+v).val();
+            var serie = $('#serie'+v).val();
+            var n_documento = $('#n_documento'+v).val();
             var url = "{{ route('cambio_prenda.comprobante') }}";
             
             $.ajax({
                 url: url,
                 type: "POST",
-                data: {'base':base,'tipo_comprobante':tipo_comprobante,'serie':serie,'n_documento':n_documento},
+                data: {'base':base,'tipo_comprobante':tipo_comprobante,'serie':serie,'n_documento':n_documento,'valida':v},
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
@@ -126,7 +134,7 @@
                             confirmButtonText: 'OK',
                         });
                     }else{
-                        $('#div_detalle').html(data);
+                        $('#div_detalle'+v).html(data);
                     }
                 },
                 error:function(xhr) {
@@ -161,37 +169,32 @@
             }
         }
 
+        function Habilitar_Checkbox(id,v){
+            if ($("#cb_"+id+v).is(":checked")){
+                $("#cb_"+id+v).prop('checked', false);
+            }else{
+                $("#cb_"+id+v).prop('checked', true);
+            }
+        }
+
         /*function Descargar_Archivo(id){
             window.location.replace("{{ route('observacion.download', ':id') }}".replace(':id', id));
         }*/
 
-        function Cambiar_Estado_Cambio_Prenda(id,tipo) {
+        function Cambiar_Estado_Cambio_Prenda(id,estado_cambio) {
             Cargando();
 
-            if(tipo==1){
+            if(estado_cambio=="2"){
                 titulo = "¿Realmente desea aprobar la solicitud?";
-                estado_cambio = 2;
-                n_num_cod = "";
-                n_serie = "";
-            }
-            if(tipo==2){
+            }else{
                 titulo = "¿Realmente desea denegar la solicitud?";
-                estado_cambio = 3;
-                n_num_cod = "";
-                n_serie = "";
-            }
-            if(tipo==3){
-                titulo = "¿Realmente desea finalizar la solicitud?";
-                estado_cambio = 4;
-                n_num_cod =  $('#n_num_cod').val();
-                n_serie = $('#n_serie').val();
             }
 
             var url = "{{ route('cambio_prenda.cambiar_estado', ':id') }}".replace(':id', id);
 
             Swal({
                 title: titulo,
-                text: "El cambio será permanentemente",
+                text: "El cambio será permanentemente.",
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Si',
@@ -200,9 +203,9 @@
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        type: "POST",
+                        type: "PUT",
                         url: url,
-                        data: {'id_cambio_prenda': id,'estado_cambio':estado_cambio,'n_num_cod':n_num_cod,'n_serie':n_serie},
+                        data: {'id_cambio_prenda': id,'estado_cambio':estado_cambio},
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         },

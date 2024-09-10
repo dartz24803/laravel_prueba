@@ -7,19 +7,23 @@
     </div>
                 
     <div class="modal-body" style="max-height:700px; overflow:auto;">
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label class="control-label text-bold">Base:</label>
+        @if (session('usuario')->id_nivel=="1")
+            <div class="row">
+                <div class="form-group col-lg-2">
+                    <label class="control-label text-bold">Base:</label>
+                </div>
+                <div class="form-group col-lg-4">
+                    <select class="form-control" name="base" id="base">
+                        <option value="0">Seleccione</option>
+                        @foreach ($list_base as $list)
+                            <option value="{{ $list->cod_base }}">{{ $list->cod_base }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" name="base" id="base">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_base as $list)
-                        <option value="{{ $list->cod_base }}">{{ $list->cod_base }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
+        @else
+            <input type="hidden" name="base" value="{{ session('usuario')->centro_labores }}">
+        @endif
 
         <div class="row">
             <div class="form-group col-lg-2">

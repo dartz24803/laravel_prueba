@@ -19,13 +19,6 @@ return new class extends Migration
             $table->string('c_arti_desc')->nullable();
             $table->string('color',50)->nullable();
             $table->string('talla',20)->nullable();
-            $table->integer('estado')->nullable();
-            $table->dateTime('fec_reg')->nullable();
-            $table->integer('user_reg')->nullable();
-            $table->dateTime('fec_act')->nullable();
-            $table->integer('user_act')->nullable();
-            $table->dateTime('fec_eli')->nullable();
-            $table->integer('user_eli')->nullable();
             $table->foreign('id_cambio_prenda', 'cpdet_fk_id_cpre')->references('id_cambio_prenda')->on('cambio_prenda');
             $table->index(['id_cambio_prenda'], 'cpdet_idx_id_cpre');
             //$table->timestamps();
