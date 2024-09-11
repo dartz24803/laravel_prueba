@@ -33,6 +33,12 @@ use App\Models\TipoVivienda;
 use App\Models\Empresas;
 use App\Models\Config;
 use App\Models\Banco;
+use App\Models\Genero;
+// use App\Models\Banco;
+// use App\Models\Banco;
+// use App\Models\Banco;
+// use App\Models\Banco;
+// use App\Models\Banco;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
@@ -2548,8 +2554,7 @@ class ColaboradorConfController extends Controller
             $dato['list_provincia'] = DB::table('provincia')->where('id_departamento',$id_departamento)
                                     ->where('estado', 1)
                                     ->get();
-            return view('provincia', $dato);
-
+            return view('layouts.provincia', $dato);
     }
 
     public function Distrito(Request $request) {
@@ -2558,7 +2563,7 @@ class ColaboradorConfController extends Controller
             $dato['list_distrito'] = DB::table('distrito')->where('id_departamento', $id_departamento)
                                     ->where('id_provincia', $id_provincia)
                                     ->get();
-            return view('distrito', $dato);
+            return view('layouts.distrito', $dato);
     }
 
     public function Empresa(){
@@ -2901,6 +2906,77 @@ class ColaboradorConfController extends Controller
 
     }
 
+    public function Genero(){
+        $dato['list_genero'] = Genero::where('estado', 1)
+                            ->get();
+        return view('rrhh.administracion.colaborador.Genero.index',$dato);
+    }
+
+    public function Modal_Genero(){
+        return view('rrhh.administracion.colaborador.Genero.modal_registrar');   
+    }
+
+    public function Insert_Genero(Request $request){
+        $request->validate([
+            'cod_genero' => 'required',
+            'nom_genero' => 'required',
+        ],[
+            'cod_genero' => 'Debe ingresar código de género',
+            'nom_genero' => 'Debe ingresar nombre de genero',
+        ]);
+        $valida = Genero::where('cod_genero', $request->cod_genero)
+                ->where('nom_genero', $request->nom_genero)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_genero']= $request->input("cod_genero");
+            $dato['nom_genero']= $request->input("nom_genero");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Genero::create($dato);
+        }
+    }
+
+    public function Modal_Update_Genero($id_genero){
+        $dato['get_id'] = Genero::where('id_genero', $id_genero)
+                        ->get();
+        return view('rrhh.administracion.colaborador.Genero.modal_editar',$dato);
+    }
+
+    public function Update_Genero(Request $request){
+        $request->validate([
+            'cod_genero' => 'required',
+            'nom_genero' => 'required',
+        ],[
+            'cod_genero' => 'Debe ingresar código de género',
+            'nom_genero' => 'Debe ingresar nombre de genero',
+        ]);
+        $valida = Genero::where('cod_genero', $request->cod_genero)
+                ->where('nom_genero', $request->nom_genero)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_genero']= $request->input("cod_genero");
+            $dato['nom_genero']= $request->input("nom_genero");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            Genero::findOrFail($request->input("id_genero"))->update($dato);
+        }
+    }
+
+    public function Delete_Genero(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Genero::findOrFail($request->input("id_genero"))->update($dato);
+    }
     /*---------------------------------------------------------Paolo*/
 
 

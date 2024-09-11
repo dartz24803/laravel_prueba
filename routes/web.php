@@ -448,6 +448,12 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Delete_Banco', 'Delete_Banco');
     Route::post('ColaboradorConfController/Provincia', 'Provincia');
     Route::post('ColaboradorConfController/Distrito', 'Distrito');
+    Route::post('ColaboradorConfController/Genero', 'Genero');
+    Route::get('ColaboradorConfController/Modal_Genero', 'Modal_Genero');
+    Route::get('ColaboradorConfController/Modal_Update_Genero/{id}', 'Modal_Update_Genero');
+    Route::post('ColaboradorConfController/Insert_Genero', 'Insert_Genero');
+    Route::post('ColaboradorConfController/Update_Genero', 'Update_Genero');
+    Route::post('ColaboradorConfController/Delete_Genero', 'Delete_Genero');
     /*----------------------------------------Paolo----------------------------------*/
     // ----------------------------------------bryan----------------------------------*/
 
