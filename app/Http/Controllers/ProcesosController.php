@@ -57,23 +57,35 @@ class ProcesosController extends Controller
 
     public function list_lm()
     {
+
         // Obtener la lista de procesos con los campos requeridos
         $list_procesos = ProcesosHistorial::select(
             'portal_procesos_historial.id_portal_historial',
             'portal_procesos_historial.id_portal',
             'portal_procesos_historial.codigo',
             'portal_procesos_historial.nombre',
+            'portal_procesos_historial.version',
             'portal_procesos_historial.id_tipo',
             'portal_procesos_historial.id_area',
             'portal_procesos_historial.id_responsable',
             'portal_procesos_historial.fecha',
             'portal_procesos_historial.estado_registro'
         )
+            ->join(
+                DB::raw('(SELECT id_portal, MAX(version) AS max_version 
+                         FROM portal_procesos_historial 
+                         GROUP BY id_portal) as max_versions'),
+                'portal_procesos_historial.id_portal',
+                '=',
+                'max_versions.id_portal'
+            )
+            ->whereColumn('portal_procesos_historial.version', 'max_versions.max_version')
             ->whereNotNull('portal_procesos_historial.codigo')
             ->where('portal_procesos_historial.codigo', '!=', '')
             ->where('portal_procesos_historial.estado', '=', 1)
             ->orderBy('portal_procesos_historial.codigo', 'ASC')
             ->get();
+
 
         // Preparar un array para almacenar los nombres de las áreas y del responsable
         foreach ($list_procesos as $proceso) {
@@ -585,8 +597,17 @@ class ProcesosController extends Controller
 
     public function edit_lm($id)
     {
+
         // $get_id = Procesos::findOrFail($id);
-        $get_id = ProcesosHistorial::where('id_portal', $id)->firstOrFail();
+        // $get_id = ProcesosHistorial::where('id_portal', $id)->firstOrFail();
+
+        $get_id = ProcesosHistorial::where('id_portal', $id)
+            ->where('version', function ($query) use ($id) {
+                $query->selectRaw('MAX(version)')
+                    ->from('portal_procesos_historial')
+                    ->where('id_portal', $id);
+            })
+            ->firstOrFail();
         $div_puesto = $get_id->div_puesto;
 
         // Obtener el valor del campo `id_area` y convertirlo en un array
@@ -650,7 +671,7 @@ class ProcesosController extends Controller
 
             $proceso->nombre_responsable = $nombreResponsable;
             $proceso->nombre_tipo_portal = $nombreTipoPortal;
-
+            // dd($get_id->estado_registro, gettype($get_id->estado_registro));
             switch ($proceso->estado_registro) {
                 case 0:
                     $proceso->estado_texto = 'Publicado';
@@ -669,7 +690,6 @@ class ProcesosController extends Controller
                     break;
             }
         }
-        $ultima_version = $list_procesos->isNotEmpty() ? $list_procesos->last()->version + 1 : 1;
         return view('interna.procesos.portalprocesos.listamaestra.modal_editar', compact(
             'get_id',
             'list_tipo',
@@ -679,7 +699,6 @@ class ProcesosController extends Controller
             'selected_puesto_ids',
             'div_puesto',
             'list_procesos',
-            'ultima_version'
         ));
     }
 

@@ -157,8 +157,9 @@
 
 
                             <div class=" form-group col-md-3">
-                                <label>Estado: </label>
+                                <label>Estado222: </label>
                                 <select class="form-control" id="estadoe" name="estadoe">
+                                    <option value="0" {{ $get_id->estado_registro == 0 ? 'selected' : '' }}>Publicado</option>
                                     <option value="1" {{ $get_id->estado_registro == 1 ? 'selected' : '' }}>Por aprobar</option>
                                     <option value="2" {{ $get_id->estado_registro == 2 ? 'selected' : '' }}>Publicado</option>
                                     <option value="3" {{ $get_id->estado_registro == 3 ? 'selected' : '' }}>Por actualizar</option>
@@ -497,6 +498,7 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularioe'));
+
         var url = "{{ route('portalprocesos_lm.update', $get_id->id_portal) }}";
 
         $.ajax({

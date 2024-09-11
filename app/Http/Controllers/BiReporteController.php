@@ -654,9 +654,9 @@ class BiReporteController extends Controller
             $sheet->setCellValue("N{$contador}", $reporte->fec_reg);
         }
 
-        $writer = new Xlsx($spreadsheet);
-        $filename = 'reporte.xlsx';
 
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Lista Reporte BI ' . date('d-m-Y');
 
         if (ob_get_contents()) ob_end_clean();
         header('Content-Type: application/vnd.ms-excel');
@@ -665,8 +665,6 @@ class BiReporteController extends Controller
 
         $writer->save('php://output');
     }
-
-
 
 
     // BD REPORTES
