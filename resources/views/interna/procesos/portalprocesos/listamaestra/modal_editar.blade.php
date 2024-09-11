@@ -168,11 +168,18 @@
 
                             <div class="form-group col-md-3">
                                 <label>Versión:</label>
-
+                                <a href="javascript:void(0);" id="upgradeLink" onclick="incrementarVersion()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="green" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up-circle">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="16 12 12 8 8 12"></polyline>
+                                        <line x1="12" y1="16" x2="12" y2="8"></line>
+                                    </svg>
+                                </a>
                                 <input type="hidden" name="versione" id="versione" value="{{ $get_id->version }}">
-                                <span id="miLabel" class="form-control" style="color:black">{{ $get_id->version }}</span>
-
+                                <span id="miVersion" class="form-control" style="color:black">{{ $get_id->version }}</span>
                             </div>
+
+
 
                             <div class="form-group col-md-6">
                                 <label>N° Documento: </label>
@@ -539,6 +546,79 @@
             }
         });
     }
+
+    function incrementarVersion() {
+        // Mostrar SweetAlert de confirmación
+        var dataString = new FormData(document.getElementById('formularioe'));
+        var url = "{{ route('portalprocesos_lm.store', $get_id->id_portal) }}";
+
+        Swal({
+            title: '¿Estás seguro?',
+            text: "Se va crear una nueva versión.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            // cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, aumentar versión',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            // (result) => {
+            if (result.value) {
+
+                // Si el usuario confirma, entonces aumentamos la versión
+
+                // Obtener el valor actual de la versión
+                let versionInput = document.getElementById('versione');
+                let versionLabel = document.getElementById('miVersion');
+                let upgradeLink = document.getElementById('upgradeLink');
+                let upgradeIcon = upgradeLink.querySelector('svg'); // Obtener el ícono SVG
+
+                // Convertir el valor actual a un número entero y aumentar en 1
+                let nuevaVersion = parseInt(versionInput.value) + 1;
+
+                // Actualizar el valor en el campo oculto y en el label visible
+                versionInput.value = nuevaVersion;
+                versionLabel.textContent = nuevaVersion;
+
+                // Deshabilitar el enlace después de aumentar la versión una vez
+                upgradeLink.style.pointerEvents = 'none'; // Deshabilitar el clic
+
+                // Cambiar color del ícono SVG a gris
+                upgradeIcon.setAttribute('stroke', 'gray');
+                $.ajax({
+                    url: url,
+                    data: dataString,
+                    type: "POST",
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        swal.fire(
+                            'Registro Exitoso!',
+                            'Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            Lista_Maestra();
+                            $("#ModalRegistro .close").click();
+                        });
+                    },
+                    error: function(xhr) {
+                        var errors = xhr.responseJSON.errors;
+                        var firstError = Object.values(errors)[0][0];
+                        Swal.fire(
+                            '¡Ups!',
+                            firstError,
+                            'warning'
+                        );
+                    }
+                });
+
+            }
+        });
+
+    }
+
+
+
     var tabla = $('#tabla_js2').DataTable({
         "columnDefs": [{
                 "width": "180px",
