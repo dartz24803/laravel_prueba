@@ -93,18 +93,6 @@ return [
             'sslmode' => 'prefer',
         ],
 
-        /*'sqlsrv' => [
-            'driver' => 'sqlsrv',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', 'localhost'),
-            'port' => env('DB_PORT', '1433'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset' => 'utf8',
-            'prefix' => '',
-            'prefix_indexes' => true,
-        ],*/
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'host' => env('SQLSRV_DB_HOST', 'localhost'),
@@ -112,6 +100,20 @@ return [
             'database' => env('SQLSRV_DB_DATABASE', 'forge'),
             'username' => env('SQLSRV_DB_USERNAME', 'forge'),
             'password' => env('SQLSRV_DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            /*EN PRODUCCIÓN ES NECESARIO ESTO
+            'trust_server_certificate' => true,*/
+        ],
+
+        'sqlsrv_dbmsrt' => [
+            'driver' => 'sqlsrv',
+            'host' => env('SQLSRV_DBMSTR_HOST', 'localhost'),
+            'port' => env('SQLSRV_DBMSTR_PORT', '1433'),
+            'database' => env('SQLSRV_DBMSTR_DATABASE', 'forge'),
+            'username' => env('SQLSRV_DBMSTR_USERNAME', 'forge'),
+            'password' => env('SQLSRV_DBMSTR_PASSWORD', ''),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,

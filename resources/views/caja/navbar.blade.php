@@ -71,6 +71,15 @@ session('usuario')->id_puesto == 148)
                 </li>
             @endif
             @if (session('usuario')->id_nivel == 1 || 
+            session('usuario')->id_puesto == 28 ||  
+            session('usuario')->id_puesto == 128)
+                <li id="duraciones_transacciones">
+                    <a href="{{ route('duracion_transaccion') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                        <p class="romperpalabra"><span id="icono_active2"></span> Duración de transaccion</p>
+                    </a>
+                </li>
+            @endif
+            @if (session('usuario')->id_nivel == 1 || 
             session('usuario')->id_puesto == 128 || 
             session('usuario')->id_puesto == 9 || 
             session('usuario')->id_puesto == 29 ||
