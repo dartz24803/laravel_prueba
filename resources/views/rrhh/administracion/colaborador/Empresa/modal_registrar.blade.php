@@ -154,7 +154,7 @@
                 <label id="lbl2" class="control-label text-bold">Activo:</label>
             </div>
             <div class="form-group col-md-3">
-                <input type="checkbox" class="minimal" id="activo"  name="activo" value="1">
+                <input type="checkbox" class="minimal" id="activo"  name="activo" value="1" checked>
             </div>
 
             <div class="form-group col-md-2">
@@ -258,7 +258,7 @@
             <div class="form-group col-md-6">
                 <label class="control-label text-bold">Aporte Senati: </label>
                 <div class="">
-                    <input type="checkbox" id="aporte_senati" name="aporte_senati" value="1">
+                    <input type="checkbox" id="aporte_senati" name="aporte_senati" value="1" checked>
                 </div>
             </div>
 
@@ -345,12 +345,15 @@
 <script>
     function provincia(){
         var url = "{{ url('ColaboradorConfController/Provincia') }}";
+        var csrfToken = $('input[name="_token"]').val();
         $.ajax({
             url: url,
             type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             data: $("#formulario_registrar_empresa").serialize(),
-            success: function(data)
-            {
+            success: function(data){
                 $('#mprovincia').html(data);
             }
         });
@@ -359,14 +362,61 @@
 
     function distrito(){
         var url = "{{ url('ColaboradorConfController/Distrito') }}";
+        var csrfToken = $('input[name="_token"]').val();
         $.ajax({
             url: url,
             type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             //data: frm,
             data: $("#formulario_registrar_empresa").serialize(),
-            success: function(data)
-            {
+            success: function(data){
                 $('#mdistrito').html(data);
+            }
+        });
+    }
+    function Insert_Empresa() {
+        var dataString = new FormData(document.getElementById('formulario_registrar_empresa'));
+        var url = "{{ url('ColaboradorConfController/Insert_Empresa') }}";
+        var csrfToken = $('input[name="_token"]').val();
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            data: dataString,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                if (data == "error") {
+                    Swal({
+                        title: 'Registro Denegado',
+                        text: "¡El registro ya existe!",
+                        type: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
+                    });
+                } else {
+                    swal.fire(
+                        'Registro Exitoso!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        TablaEmpresa();
+                    });
+                }
+            },
+            error: function(xhr) {
+                var errors = xhr.responseJSON.errors;
+                var firstError = Object.values(errors)[0][0];
+                Swal.fire(
+                    '¡Ups!',
+                    firstError,
+                    'warning'
+                );
             }
         });
     }

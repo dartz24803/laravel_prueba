@@ -19,8 +19,8 @@ class Empresas extends Model
     protected $primaryKey = 'id_empresa';
 
     protected $fillable = [
-        'cod_empresea',
-        'nom_empresea',
+        'cod_empresa',
+        'nom_empresa',
         'ruc_empresa',
         'id_banco',
         'num_cuenta',

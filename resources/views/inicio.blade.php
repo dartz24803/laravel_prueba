@@ -572,6 +572,10 @@
         window.location.href = "{{ route('seguridad') }}";
     };
 
+    document.getElementById('logo_finanzas').onclick = function() {
+        window.location.href = "{{ route('finanzas') }}";
+    };
+
     document.getElementById('logo_tiendas').onclick = function() {
         window.location.href = "{{ route('tienda') }}";
     };

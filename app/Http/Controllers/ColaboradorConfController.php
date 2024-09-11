@@ -2473,8 +2473,8 @@ class ColaboradorConfController extends Controller
         ], [
             'cod_banco.required' => 'Debe ingresar codigo de banco.',
             'nom_banco.required' => 'Debe ingresar descripcion de banco.',
-            'digitos_cuenta' => 'Debe ingresar digitos de cuenta',
-            'digitos_cci' => 'Debe ingresar digitos cci',
+            'digitos_cuenta.required' => 'Debe ingresar digitos de cuenta',
+            'digitos_cci.required' => 'Debe ingresar digitos cci',
         ]);
 
         $valida = Banco::where('nom_banco', $request->nom_banco)
@@ -2543,6 +2543,24 @@ class ColaboradorConfController extends Controller
         Banco::findOrFail($request->input("id_banco"))->update($dato);
     }
 
+    public function Provincia(Request $request) {
+            $id_departamento= $request->input("id_departamento");
+            $dato['list_provincia'] = DB::table('provincia')->where('id_departamento',$id_departamento)
+                                    ->where('estado', 1)
+                                    ->get();
+            return view('provincia', $dato);
+
+    }
+
+    public function Distrito(Request $request) {
+            $id_departamento= $request->input("id_departamento");
+            $id_provincia= $request->input("id_provincia");
+            $dato['list_distrito'] = DB::table('distrito')->where('id_departamento', $id_departamento)
+                                    ->where('id_provincia', $id_provincia)
+                                    ->get();
+            return view('distrito', $dato);
+    }
+
     public function Empresa(){
         $dato['list_empresa'] = Empresas::where('estado', 1)
                             ->get();
@@ -2552,14 +2570,337 @@ class ColaboradorConfController extends Controller
     }
 
     public function Modal_Empresa(){
-            $dato['list_banco'] = Banco::where('estado',1)->get();
-            $dato['list_tipo_documento'] = TipoDocumento::where('estado',1)->get();
-            $dato['list_departamento'] = DB::table('departamento')->where('estado',1)->get();
-            $dato['list_provincia'] = DB::table('provincia')->where('estado',1)->get();
-            $dato['list_distrito'] = DB::table('distrito')->where('estado',1)->get();
-            $dato['list_regimen'] = Regimen::where('estado',1)->get();
-            return view('rrhh.administracion.colaborador.Empresa.modal_registrar',$dato);
+        $dato['list_banco'] = Banco::where('estado',1)->get();
+        $dato['list_tipo_documento'] = TipoDocumento::where('estado',1)->get();
+        $dato['list_departamento'] = DB::table('departamento')->where('estado',1)->get();
+        $dato['list_provincia'] = DB::table('provincia')->where('estado',1)->get();
+        $dato['list_distrito'] = DB::table('distrito')->where('estado',1)->get();
+        $dato['list_regimen'] = Regimen::where('estado',1)->get();
+        return view('rrhh.administracion.colaborador.Empresa.modal_registrar',$dato);
     }
+
+    public function Insert_Empresa(Request $request){
+        $request->validate([
+            'cod_empresa' => 'required',
+            'nom_empresa' => 'required',
+            'ruc_empresa' => 'required',
+            'representante_empresa' => 'required',
+            'id_tipo_documento' => 'required',
+            'num_documento' => 'required',
+            'id_departamento' => 'not_in:0',
+            'id_distrito' => 'not_in:0',
+            'id_provincia' => 'not_in:0',
+            'direccion' => 'required',
+        ],[
+            'cod_empresa.required' => 'Debe ingresar codigo de empresa',
+            'nom_empresa.required' => 'Debe ingresar nombre de empresa',
+            'ruc_empresa.required' => 'Debe ingresar ruc de empresa',
+            'representante_empresa.required' => 'Debe ingresar representante de empresa',
+            'id_tipo_documento.required' => 'Debe ingresar tipo de documento de empresa',
+            'num_documento.required' => 'Debe ingresar numero de documento de empresa',
+            'id_departamento.not_in' => 'Debe ingresar departamento de empresa',
+            'id_distrito.not_in' => 'Debe ingresar distrito de empresa',
+            'id_provincia.not_in' => 'Debe ingresar provincia de empresa',
+            'direccion.required' => 'Debe ingresar direccion de empresa',
+        ]);
+        $valida = Empresas::where("cod_empresa", $request->cod_empresa)
+                    ->where("nom_empresa", $request->nom_empresa)
+                    ->where("ruc_empresa", $request->ruc_empresa)
+                    ->where("representante_empresa", $request->representante_empresa)
+                    ->where("id_tipo_documento", $request->id_tipo_documento)
+                    ->where("num_documento", $request->num_documento)
+                    ->where("num_partida", $request->num_partida)
+                    ->where("id_departamento", $request->id_departamento)
+                    ->where("id_distrito", $request->id_distrito)
+                    ->where("id_provincia", $request->id_provincia)
+                    ->where("direccion", $request->direccion)
+                    ->exists();
+        if ($valida>0){
+            echo "error";
+        }else{
+            $dato['cod_empresa']= $request->input("cod_empresa");
+            $dato['nom_empresa']= $request->input("nom_empresa"); 
+            $dato['ruc_empresa']= $request->input("ruc_empresa"); 
+            $dato['id_banco']= $request->input("id_banco"); 
+            $dato['num_cuenta']= $request->input("num_cuenta"); 
+            $dato['email_empresa']= $request->input("email_empresa"); 
+            $dato['representante_empresa']= $request->input("representante_empresa"); 
+            $dato['id_tipo_documento']= $request->input("id_tipo_documento"); 
+            $dato['num_documento']= $request->input("num_documento"); 
+            $dato['num_partida']= $request->input("num_partida"); 
+            $dato['id_departamento']= $request->input("id_departamento"); 
+            $dato['id_distrito']= $request->input("id_distrito"); 
+            $dato['id_provincia']= $request->input("id_provincia"); 
+            $dato['direccion']= $request->input("direccion"); 
+            $dato['id_regimen']= $request->input("id_regimen"); 
+            $dato['activo']= $request->input("activo"); 
+            $dato['telefono_empresa']= $request->input("telefono_empresa"); 
+            $dato['inicio_actividad']= $request->input("inicio_actividad"); 
+            $dato['dias_laborales']= $request->input("dias_laborales"); 
+            $dato['hora_dia']= $request->input("hora_dia"); 
+            $dato['aporte_senati']= $request->input("aporte_senati"); 
+            $dato['firma']="";
+            $dato['logo']="";
+            $dato['pie']="";
+            $dato['aporte_senati'] = 0;
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            if($_FILES['firma']['name']!="" || $_FILES['logo']['name']!="" || $_FILES['pie']['name']!=""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if((!$con_id) || (!$lr)){
+                    echo "No se conecto";
+                }else{
+                    echo "Se conecto";
+                    if($_FILES['firma']['name']!=""){
+                        $path = $_FILES['firma']['name'];
+                        $temp = explode(".",$_FILES['firma']['name']);
+                        $source_file = $_FILES['firma']['tmp_name'];
+
+                        $fecha=date('Y-m-d');
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $nombre_soli="Firma_".$fecha."_".rand(10,199);
+                        $nombre = $nombre_soli.".".$ext;
+
+                        $dato['firma'] = $nombre;
+
+                        ftp_pasv($con_id,true);
+                        $subio = ftp_put($con_id,"ADM_TABLAS/ADM_FINANZAS/EMPRESA/".$nombre,$source_file,FTP_BINARY);
+                        if($subio){
+                            echo "Archivo subido correctamente";
+                        }else{
+                            echo "Archivo no subido correctamente";
+                        }
+                    }
+                    if($_FILES['logo']['name']!=""){
+                        $path = $_FILES['logo']['name'];
+                        $temp = explode(".",$_FILES['logo']['name']);
+                        $source_file = $_FILES['logo']['tmp_name'];
+
+                        $fecha=date('Y-m-d');
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $nombre_soli="Logo_".$fecha."_".rand(10,199);
+                        $nombre = $nombre_soli.".".$ext;
+
+                        $dato['logo'] = $nombre;
+
+                        ftp_pasv($con_id,true);
+                        $subio = ftp_put($con_id,"ADM_TABLAS/ADM_FINANZAS/EMPRESA/".$nombre,$source_file,FTP_BINARY);
+                        if($subio){
+                            echo "Archivo subido correctamente";
+                        }else{
+                            echo "Archivo no subido correctamente";
+                        }
+                    }
+                    if($_FILES['pie']['name']!=""){
+                        $path = $_FILES['pie']['name'];
+                        $temp = explode(".",$_FILES['pie']['name']);
+                        $source_file = $_FILES['pie']['tmp_name'];
+
+                        $fecha=date('Y-m-d');
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $nombre_soli="PiePagina_".$fecha."_".rand(10,199);
+                        $nombre = $nombre_soli.".".$ext;
+
+                        $dato['pie'] = $nombre;
+
+                        ftp_pasv($con_id,true);
+                        $subio = ftp_put($con_id,"ADM_TABLAS/ADM_FINANZAS/EMPRESA/".$nombre,$source_file,FTP_BINARY);
+                        if($subio){
+                            echo "Archivo subido correctamente";
+                        }else{
+                            echo "Archivo no subido correctamente";
+                        }
+                    }
+                }   
+            }
+            Empresas::create($dato);
+        }
+    }
+
+    public function Modal_Update_Empresa($id_empresa){
+        $dato['get_id'] = Empresas::where('id_empresa', $id_empresa)
+                        ->get();
+        $id_departamento=$dato['get_id'][0]['id_departamento'];
+        $id_provincia=$dato['get_id'][0]['id_provincia'];
+        $dato['list_banco'] = Banco::where('estado',1)->get();
+        $dato['list_tipo_documento'] = TipoDocumento::where('estado',1)->get();
+        $dato['list_departamento'] = DB::table('departamento')->where('estado',1)->get();
+        $dato['list_provincia'] = DB::table('provincia')
+                                ->where('estado',1)
+                                ->where('id_departamento', $id_departamento)
+                                ->get();
+        $dato['list_distrito'] = DB::table('distrito')
+                                ->where('estado',1)
+                                ->where('id_departamento',$id_departamento)
+                                ->where('id_provincia',$id_provincia)
+                                ->get();
+        $dato['list_regimen'] = Regimen::where('estado',1)->get();
+        $dato['url'] = Config::where('descrip_config', 'Img_Empresa_Adm_Finanzas')
+                    ->where('estado', 1)
+                    ->get();
+        return view('rrhh.administracion.colaborador.Empresa.modal_editar',$dato);
+    }
+
+    public function Update_Empresa(Request $request){
+        $request->validate([
+            'cod_empresa' => 'required',
+            'nom_empresa' => 'required',
+            'ruc_empresa' => 'required',
+            'representante_empresa' => 'required',
+            'id_tipo_documento' => 'required',
+            'num_documento' => 'required',
+            'id_departamento' => 'not_in:0',
+            'id_distrito' => 'not_in:0',
+            'id_provincia' => 'not_in:0',
+            'direccion' => 'required',
+        ],[
+            'cod_empresa.required' => 'Debe ingresar codigo de empresa',
+            'nom_empresa.required' => 'Debe ingresar nombre de empresa',
+            'ruc_empresa.required' => 'Debe ingresar ruc de empresa',
+            'representante_empresa.required' => 'Debe ingresar representante de empresa',
+            'id_tipo_documento.required' => 'Debe ingresar tipo de documento de empresa',
+            'num_documento.required' => 'Debe ingresar numero de documento de empresa',
+            'id_departamento.not_in' => 'Debe ingresar departamento de empresa',
+            'id_distrito.not_in' => 'Debe ingresar distrito de empresa',
+            'id_provincia.not_in' => 'Debe ingresar provincia de empresa',
+            'direccion.required' => 'Debe ingresar direccion de empresa',
+        ]);
+        $valida = Empresas::where("cod_empresa", $request->cod_empresa)
+                    ->where("nom_empresa", $request->nom_empresa)
+                    ->where("ruc_empresa", $request->ruc_empresa)
+                    ->where("representante_empresa", $request->representante_empresa)
+                    ->where("id_tipo_documento", $request->id_tipo_documento)
+                    ->where("num_documento", $request->num_documento)
+                    ->where("num_partida", $request->num_partida)
+                    ->where("id_departamento", $request->id_departamento)
+                    ->where("id_distrito", $request->id_distrito)
+                    ->where("id_provincia", $request->id_provincia)
+                    ->where("direccion", $request->direccion)
+                    ->exists();
+        if ($valida>0){
+            echo "error";
+        }else{
+            $dato['cod_empresa']= $request->input("cod_empresa");
+            $dato['nom_empresa']= $request->input("nom_empresa"); 
+            $dato['ruc_empresa']= $request->input("ruc_empresa"); 
+            $dato['id_banco']= $request->input("id_banco"); 
+            $dato['num_cuenta']= $request->input("num_cuenta"); 
+            $dato['email_empresa']= $request->input("email_empresa"); 
+            $dato['representante_empresa']= $request->input("representante_empresa"); 
+            $dato['id_tipo_documento']= $request->input("id_tipo_documento"); 
+            $dato['num_documento']= $request->input("num_documento"); 
+            $dato['num_partida']= $request->input("num_partida"); 
+            $dato['id_departamento']= $request->input("id_departamento"); 
+            $dato['id_distrito']= $request->input("id_distrito"); 
+            $dato['id_provincia']= $request->input("id_provincia"); 
+            $dato['direccion']= $request->input("direccion"); 
+            $dato['id_regimen']= $request->input("id_regimen"); 
+            $dato['activo']= $request->input("activo"); 
+            $dato['telefono_empresa']= $request->input("telefono_empresa"); 
+            $dato['inicio_actividad']= $request->input("inicio_actividad"); 
+            $dato['dias_laborales']= $request->input("dias_laborales"); 
+            $dato['hora_dia']= $request->input("hora_dia"); 
+            $dato['aporte_senati']= $request->input("aporte_senati"); 
+            $dato['firma']="";
+            $dato['logo']="";
+            $dato['pie']="";
+            $dato['aporte_senati'] = 0;
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            if($_FILES['firmae']['name']!="" || $_FILES['logoe']['name']!="" || $_FILES['piee']['name']!=""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if((!$con_id) || (!$lr)){
+                    echo "No se conecto";
+                }else{
+                    echo "Se conecto";
+                    if($_FILES['firmae']['name']!=""){
+                        $path = $_FILES['firmae']['name'];
+                        $temp = explode(".",$_FILES['firmae']['name']);
+                        $source_file = $_FILES['firmae']['tmp_name'];
+
+                        $fecha=date('Y-m-d');
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $nombre_soli="Firma_".$fecha."_".rand(10,199);
+                        $nombre = $nombre_soli.".".$ext;
+
+                        $dato['firma'] = $nombre;
+
+                        ftp_pasv($con_id,true);
+                        $subio = ftp_put($con_id,"ADM_TABLAS/ADM_FINANZAS/EMPRESA/".$nombre,$source_file,FTP_BINARY);
+                        if($subio){
+                            echo "Archivo subido correctamente";
+                        }else{
+                            echo "Archivo no subido correctamente";
+                        }
+                    }
+                    if($_FILES['logoe']['name']!=""){
+                        $path = $_FILES['logoe']['name'];
+                        $temp = explode(".",$_FILES['logoe']['name']);
+                        $source_file = $_FILES['logoe']['tmp_name'];
+
+                        $fecha=date('Y-m-d');
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $nombre_soli="Logo_".$fecha."_".rand(10,199);
+                        $nombre = $nombre_soli.".".$ext;
+
+                        $dato['logo'] = $nombre;
+
+                        ftp_pasv($con_id,true);
+                        $subio = ftp_put($con_id,"ADM_TABLAS/ADM_FINANZAS/EMPRESA/".$nombre,$source_file,FTP_BINARY);
+                        if($subio){
+                            echo "Archivo subido correctamente";
+                        }else{
+                            echo "Archivo no subido correctamente";
+                        }
+                    }
+                    if($_FILES['piee']['name']!=""){
+                        $path = $_FILES['piee']['name'];
+                        $temp = explode(".",$_FILES['piee']['name']);
+                        $source_file = $_FILES['piee']['tmp_name'];
+
+                        $fecha=date('Y-m-d');
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $nombre_soli="PiePagina_".$fecha."_".rand(10,199);
+                        $nombre = $nombre_soli.".".$ext;
+
+                        $dato['pie'] = $nombre;
+
+                        ftp_pasv($con_id,true);
+                        $subio = ftp_put($con_id,"ADM_TABLAS/ADM_FINANZAS/EMPRESA/".$nombre,$source_file,FTP_BINARY);
+                        if($subio){
+                            echo "Archivo subido correctamente";
+                        }else{
+                            echo "Archivo no subido correctamente";
+                        }
+                    }
+                }   
+            }
+            Empresas::findOrFail($request->id_empresa)->update($dato);
+        }
+    }
+
+    public function Delete_Empresa(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Empresas::findOrFail($request->id_empresa)->update($dato);
+
+    }
+
     /*---------------------------------------------------------Paolo*/
 
 

@@ -27,13 +27,13 @@ return new class extends Migration
             $table->string('id_distrito', 6)->nullable();
             $table->string('id_provincia', 4);
             $table->string('direccion', 200)->nullable();
-            $table->char('activo', 1);
+            $table->char('activo', 1)->nullable();
             $table->unsignedBigInteger('id_regimen')->nullable();
             $table->integer('telefono_empresa');
             $table->date('inicio_actividad')->nullable();
             $table->integer('dias_laborales');
             $table->integer('hora_dia');
-            $table->integer('aporte_senati');
+            $table->integer('aporte_senati')->nullable();
             $table->text('firma');
             $table->text('logo');
             $table->text('pie');

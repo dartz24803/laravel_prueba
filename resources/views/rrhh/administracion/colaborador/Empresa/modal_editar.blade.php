@@ -70,8 +70,6 @@
     }
 </style>
 
-<!--<link href="<?= base_url() ?>template/fileinput/css/fileinput.min.css" rel="stylesheet">-->
-
 <form id="formulario_editar_empresa" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title">Editar Empresa <b><?php echo $get_id[0]['nom_empresa']; ?></b> </h5>
@@ -191,10 +189,10 @@
                 <select class="form-control" name="id_departamento" id="id_departamento" onchange="provincia()">
                 <option value="0">Seleccione</option>
                 <?php foreach($list_departamento as $list){
-                    if($get_id[0]['id_departamento'] == $list['id_departamento']){ ?>
-                    <option selected value="<?php echo $list['id_departamento']; ?>"><?php echo $list['nombre_departamento'];?></option> 
+                    if($get_id[0]['id_departamento'] == $list->id_departamento){ ?>
+                    <option selected value="<?php echo $list->id_departamento; ?>"><?php echo $list->nombre_departamento;?></option> 
                 <?php }else{?>
-                <option value="<?php echo $list['id_departamento']; ?>"><?php echo $list['nombre_departamento'];?></option>
+                <option value="<?php echo $list->id_departamento; ?>"><?php echo $list->nombre_departamento;?></option>
                 <?php } } ?>
                 </select>         
             </div>
@@ -206,10 +204,10 @@
                 <select class="form-control" name="id_provincia" id="id_provincia"  onchange="distrito()">
                 <option  value="0"  selected>Seleccione</option>
                 <?php foreach($list_provincia as $list){
-                if($get_id[0]['id_provincia'] == $list['id_provincia']){ ?> 
-                <option selected value="<?php echo $list['id_provincia']; ?>"><?php echo $list['nombre_provincia'];?></option>
+                if($get_id[0]['id_provincia'] == $list->id_provincia){ ?> 
+                <option selected value="<?php echo $list->id_provincia; ?>"><?php echo $list->nombre_provincia;?></option>
                 <?php }else{?>
-                <option value="<?php echo $list['id_provincia']; ?>"><?php echo $list['nombre_provincia'];?></option>
+                <option value="<?php echo $list->id_provincia; ?>"><?php echo $list->nombre_provincia;?></option>
                 <?php } } ?>
                  </select>  
             </div>
@@ -221,10 +219,10 @@
                  <select class="form-control" name="id_distrito" id="id_distrito">
                 <option  value="0"  selected>Seleccione</option>
                 <?php foreach($list_distrito as $list){
-                if($get_id[0]['id_distrito'] == $list['id_distrito']){ ?> 
-                <option selected value="<?php echo $list['id_distrito']; ?>"><?php echo $list['nombre_distrito'];?></option>
+                if($get_id[0]['id_distrito'] == $list->id_distrito){ ?> 
+                <option selected value="<?php echo $list->id_distrito; ?>"><?php echo $list->nombre_distrito;?></option>
                 <?php }else{?>
-                <option value="<?php echo $list['id_distrito']; ?>"><?php echo $list['nombre_distrito'];?></option>
+                <option value="<?php echo $list->id_distrito; ?>"><?php echo $list->nombre_distrito;?></option>
                 <?php } } ?>
                  </select>
             </div>
@@ -250,12 +248,6 @@
                 <input type="number" class="form-control" id="hora_dia"  name="hora_dia" placeholder="Horas/Día" min="1" value="<?php echo $get_id[0]['hora_dia']; ?>">
             </div>
 
-            <!--<div class="form-group col-md-2">
-                <label>Firma: </label>
-            </div>
-            <div class="form-group col-md-4">
-                <input id="firma" name="firma" type="file" class="file" size="100" required data-allowed-file-extensions='["jpeg|png|jpg"]'>
-            </div>-->
             <div class="form-group col-md-6">
                 <label>Firma: <?php if($get_id[0]['firma']!=""){?> 
                     <a href="javascript:void(0);" title="Documento" data-toggle="modal" data-target="#Modal_IMG_Link_Normal" data-imagen="<?php echo $url[0]['url_config'].$get_id[0]["firma"]?>" data-title="Firma">
@@ -334,8 +326,6 @@
     </div>
 </form>
 
-<!--<script src="<?= base_url() ?>template/fileinput/js/fileinput.min.js"></script>-->
-
 <script>
     $(document).ready(function(){
         $('.email_empresa').focusout(function(){
@@ -382,10 +372,15 @@
 
 <script>
 function provincia(){
-    var url = "<?php echo site_url(); ?>Corporacion/Provincia";
+    var url = "{{ url('ColaboradorConfController/Provincia') }}";
+    var csrfToken = $('input[name="_token"]').val();
+
     $.ajax({
         url: url,
         type: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
         //data: frm,
         data: $("#formulario_editar_empresa").serialize(),
         success: function(data)             
@@ -397,7 +392,7 @@ function provincia(){
 }
 
 function distrito(){
-    var url = "<?php echo site_url(); ?>Corporacion/Distrito";
+    var url = "{{ url('ColaboradorConfController/Distrito') }}";
     $.ajax({
         url: url, 
         type: 'POST',
@@ -406,6 +401,53 @@ function distrito(){
         success: function(data)             
         {
             $('#mdistrito').html(data);               
+        }
+    });
+}
+
+function Edit_Empresa(){
+    var dataString = new FormData(document.getElementById('formulario_editar_empresa'));
+    var url="{{ url('ColaboradorConfController/Update_Empresa') }}";
+    var csrfToken = $('input[name="_token"]').val();
+
+    $.ajax({
+        type:"POST",
+        url: url,
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
+        data:dataString,
+        processData: false,
+        contentType: false,
+        success:function (data) {
+            if (data == "error") {
+                Swal({
+                    title: 'Actualizacion Denegada',
+                    text: "¡El registro ya existe!",
+                    type: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK',
+                });
+            } else {
+                swal.fire(
+                    'Actualización Exitosa!',
+                    'Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                    $("#ModalUpdate .close").click()
+                    TablaEmpresa();
+                });
+            }
+        },
+        error: function(xhr) {
+            var errors = xhr.responseJSON.errors;
+            var firstError = Object.values(errors)[0][0];
+            Swal.fire(
+                '¡Ups!',
+                firstError,
+                'warning'
+            );
         }
     });
 }
