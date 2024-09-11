@@ -30,6 +30,7 @@ use App\Http\Controllers\ControlCamaraConfController;
 use App\Http\Controllers\ControlCamaraController;
 use App\Http\Controllers\SliderRRHH;
 use App\Http\Controllers\Cumpleanios;
+use App\Http\Controllers\DuracionTransaccionController;
 use App\Http\Controllers\FinanzaInicioController;
 use App\Http\Controllers\FinanzasInicioController;
 use App\Http\Controllers\InicioAdmController;
@@ -868,6 +869,12 @@ Route::controller(CambioPrendaConfController::class)->group(function () {
     Route::get('cambio_prenda_conf_mo/{id}/edit', 'edit_mo')->name('cambio_prenda_conf_mo.edit');
     Route::put('cambio_prenda_conf_mo/{id}', 'update_mo')->name('cambio_prenda_conf_mo.update');
     Route::delete('cambio_prenda_conf_mo/{id}', 'destroy_mo')->name('cambio_prenda_conf_mo.destroy');
+});
+//CAJA - DURACIÓN DE TRANSACCIONES
+Route::controller(DuracionTransaccionController::class)->group(function () {
+    Route::get('duracion_transaccion', 'index')->name('duracion_transaccion'); 
+    Route::post('duracion_transaccion/list', 'list')->name('duracion_transaccion.list');
+    Route::get('duracion_transaccion/{inicio}/{fin}/excel', 'excel')->name('duracion_transaccion.excel');
 });
 //ÁREA FINANZAS
 Route::controller(FinanzasInicioController::class)->group(function () {
