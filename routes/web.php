@@ -17,8 +17,6 @@ use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
 use App\Http\Controllers\AsistenciaSegController;
 use App\Http\Controllers\BiReporteController;
-use App\Http\Controllers\CajaChicaConfController;
-use App\Http\Controllers\CajaChicaController;
 use App\Http\Controllers\CajaInicioController;
 use App\Http\Controllers\CambioPrendaConfController;
 use App\Http\Controllers\CambioPrendaController;
@@ -30,8 +28,6 @@ use App\Http\Controllers\ControlCamaraConfController;
 use App\Http\Controllers\ControlCamaraController;
 use App\Http\Controllers\SliderRRHH;
 use App\Http\Controllers\Cumpleanios;
-use App\Http\Controllers\FinanzaInicioController;
-use App\Http\Controllers\FinanzasInicioController;
 use App\Http\Controllers\InicioAdmController;
 use App\Http\Controllers\InicioFrasesAdmController;
 use App\Http\Controllers\LecturaServicioConfController;
@@ -215,7 +211,7 @@ Route::controller(ProcesosController::class)->group(function () {
     Route::delete('portalprocesos_lm/{id}', 'destroy_lm')->name('portalprocesos_lm.destroy');
     Route::post('portalprocesos_lm/{id}', 'approve_lm')->name('portalprocesos_lm.approve');
     Route::get('portalprocesos_lm/{id}/edit', 'edit_lm')->name('portalprocesos_lm.edit');
-    Route::get('portalprocesos_lm/{id}/version', 'version_lm')->name('portalprocesos_lm.version');
+    Route::post('portalprocesos_lm/{id}', 'version_lm')->name('portalprocesos_lm.version');
     Route::put('portalprocesos_lm/{id}', 'update_lm')->name('portalprocesos_lm.update');
     Route::get('puestos-por-areas', 'getPuestosPorAreas')->name('puestos_por_areas');
 
@@ -874,18 +870,6 @@ Route::controller(CambioPrendaConfController::class)->group(function () {
     Route::get('cambio_prenda_conf_mo/{id}/edit', 'edit_mo')->name('cambio_prenda_conf_mo.edit');
     Route::put('cambio_prenda_conf_mo/{id}', 'update_mo')->name('cambio_prenda_conf_mo.update');
     Route::delete('cambio_prenda_conf_mo/{id}', 'destroy_mo')->name('cambio_prenda_conf_mo.destroy');
-});
-//ÁREA FINANZAS
-Route::controller(FinanzasInicioController::class)->group(function () {
-    Route::get('finanzas', 'index')->name('finanzas');
-});
-//TESORERÍA - CAJA CHICA CONFIGURABLE
-Route::controller(CajaChicaConfController::class)->group(function () {
-    Route::get('caja_chica_conf', 'index')->name('caja_chica_conf');
-});
-//TESORERÍA - CAJA CHICA
-Route::controller(CajaChicaController::class)->group(function () {
-    Route::get('caja_chica', 'index')->name('caja_chica');
 });
 
 
