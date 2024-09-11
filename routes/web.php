@@ -17,8 +17,6 @@ use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
 use App\Http\Controllers\AsistenciaSegController;
 use App\Http\Controllers\BiReporteController;
-use App\Http\Controllers\CajaChicaConfController;
-use App\Http\Controllers\CajaChicaController;
 use App\Http\Controllers\CajaInicioController;
 use App\Http\Controllers\CambioPrendaConfController;
 use App\Http\Controllers\CambioPrendaController;
@@ -216,7 +214,7 @@ Route::controller(ProcesosController::class)->group(function () {
     Route::delete('portalprocesos_lm/{id}', 'destroy_lm')->name('portalprocesos_lm.destroy');
     Route::post('portalprocesos_lm/{id}', 'approve_lm')->name('portalprocesos_lm.approve');
     Route::get('portalprocesos_lm/{id}/edit', 'edit_lm')->name('portalprocesos_lm.edit');
-    Route::get('portalprocesos_lm/{id}/version', 'version_lm')->name('portalprocesos_lm.version');
+    Route::post('portalprocesos_lm/{id}', 'version_lm')->name('portalprocesos_lm.version');
     Route::put('portalprocesos_lm/{id}', 'update_lm')->name('portalprocesos_lm.update');
     Route::get('puestos-por-areas', 'getPuestosPorAreas')->name('puestos_por_areas');
 
@@ -449,6 +447,12 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Delete_Banco', 'Delete_Banco');
     Route::post('ColaboradorConfController/Provincia', 'Provincia');
     Route::post('ColaboradorConfController/Distrito', 'Distrito');
+    Route::post('ColaboradorConfController/Genero', 'Genero');
+    Route::get('ColaboradorConfController/Modal_Genero', 'Modal_Genero');
+    Route::get('ColaboradorConfController/Modal_Update_Genero/{id}', 'Modal_Update_Genero');
+    Route::post('ColaboradorConfController/Insert_Genero', 'Insert_Genero');
+    Route::post('ColaboradorConfController/Update_Genero', 'Update_Genero');
+    Route::post('ColaboradorConfController/Delete_Genero', 'Delete_Genero');
     /*----------------------------------------Paolo----------------------------------*/
     // ----------------------------------------bryan----------------------------------*/
 
