@@ -46,7 +46,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-// use App\Models\Banco;
+use App\Models\ComisionAFP;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
@@ -3302,11 +3302,8 @@ class ColaboradorConfController extends Controller
                     ],
                 ],
             ];
-            //Font BOLD
-            //$sheet->getStyle("A1:G1")->applyFromArray($styleThinBlackBorderOutline);
             $sheet->getStyle("A3:B3")->applyFromArray($styleThinBlackBorderOutline);
             $sheet->getStyle('A1:B3')->getFont()->setBold(true);
-            //$slno = 1;
             $start = 3;
             foreach($data as $d){
                 $start = $start+1;
@@ -3317,19 +3314,12 @@ class ColaboradorConfController extends Controller
 
                 $sheet->getStyle("A{$start}:B{$start}")->applyFromArray($styleThinBlackBorderOutline);
             }
-            //Alignment
-            //fONT SIZE
             $sheet->getStyle("A1")->getFont()->setSize(12);
             $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::VERTICAL_CENTER);
             $sheet->getStyle('A3:B3')->getAlignment()->setHorizontal(Alignment::VERTICAL_CENTER);
-            //$sheet->getActiveSheet()->getStyle('X2')->getNumberFormat();//->setFormatCode(//    '0000-000-0000');
-                //$sheet->getStyle('A2:F100')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            //Custom width for Individual Columns
             $sheet->getColumnDimension('A')->setWidth(10);
             $sheet->getColumnDimension('B')->setWidth(55);
-            //final part
             $curdate = date('d-m-Y');
-           // $writer = new Xlsx($spreadsheet);
             $filename = 'T6 Zona_'.$curdate;
             if (ob_get_contents()) ob_end_clean();
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -3338,6 +3328,78 @@ class ColaboradorConfController extends Controller
         
             $writer = IOFactory::createWriter($spreadsheet,'Xlsx');
             $writer->save('php://output');
+    }
+    
+    public function Comision_AFP(){
+        $dato['list_comision'] = ComisionAFP::where('estado', 1)
+                            ->get();
+        return view('rrhh.administracion.colaborador.ComisionAfp.index',$dato);
+    }
+
+    public function Modal_Comision_AFP(){
+        return view('rrhh.administracion.colaborador.ComisionAfp.modal_registrar');   
+    }
+
+    public function Insert_Comision_AFP(Request $request){
+        $request->validate([
+            'cod_genero' => 'required',
+            'nom_genero' => 'required',
+        ],[
+            'cod_genero' => 'Debe ingresar código de género',
+            'nom_genero' => 'Debe ingresar nombre de genero',
+        ]);
+        $valida = ComisionAFP::where('cod_genero', $request->cod_genero)
+                ->where('nom_genero', $request->nom_genero)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_genero']= $request->input("cod_genero");
+            $dato['nom_genero']= $request->input("nom_genero");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Comision_AFP::create($dato);
+        }
+    }
+
+    public function Modal_Update_Comision_AFP($id_genero){
+        $dato['get_id'] = Comision_AFP::where('id_genero', $id_genero)
+                        ->get();
+        return view('rrhh.administracion.colaborador.ComisionAfp.modal_editar',$dato);
+    }
+
+    public function Update_Comision_AFP(Request $request){
+        $request->validate([
+            'cod_genero' => 'required',
+            'nom_genero' => 'required',
+        ],[
+            'cod_genero' => 'Debe ingresar código de género',
+            'nom_genero' => 'Debe ingresar nombre de genero',
+        ]);
+        $valida = Comision_AFP::where('cod_genero', $request->cod_genero)
+                ->where('nom_genero', $request->nom_genero)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_genero']= $request->input("cod_genero");
+            $dato['nom_genero']= $request->input("nom_genero");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            Comision_AFP::findOrFail($request->input("id_genero"))->update($dato);
+        }
+    }
+
+    public function Delete_Comision_AFP(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Comision_AFP::findOrFail($request->input("id_genero"))->update($dato);
     }
     /*---------------------------------------------------------Paolo*/
 

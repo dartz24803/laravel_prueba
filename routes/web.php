@@ -501,6 +501,12 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Update_Zona', 'Update_Zona');
     Route::post('ColaboradorConfController/Delete_Zona', 'Delete_Zona');
     Route::get('ColaboradorConfController/Excel_ZonaPL', 'Excel_ZonaPL');
+    Route::post('ColaboradorConfController/Comision_AFP', 'Comision_AFP');
+    Route::get('ColaboradorConfController/Modal_Comision_AFP', 'Modal_Comision_AFP');
+    Route::get('ColaboradorConfController/Modal_Update_Comision_AFP/{id}', 'Modal_Update_Comision_AFP');
+    Route::post('ColaboradorConfController/Insert_Comision_AFP', 'Insert_Comision_AFP');
+    Route::post('ColaboradorConfController/Update_Comision_AFP', 'Update_Comision_AFP');
+    Route::post('ColaboradorConfController/Delete_Comision_AFP', 'Delete_Comision_AFP');
     /*----------------------------------------Paolo----------------------------------*/
     // ----------------------------------------bryan----------------------------------*/
 
