@@ -80,6 +80,18 @@ session('usuario')->id_puesto == 148)
                 </li>
             @endif
             @if (session('usuario')->id_nivel == 1 || 
+            session('usuario')->id_nivel == 7 || 
+            session('usuario')->id_puesto == 128 || 
+            session('usuario')->id_puesto == 148 || 
+            session('usuario')->id_puesto == 31 || 
+            session('usuario')->id_puesto == 32)
+                <li id="insumos">
+                    <a href="{{ route('insumo') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                        <p class="romperpalabra"><span id="icono_active2"></span> Insumos</p>
+                    </a>
+                </li>
+            @endif
+            @if (session('usuario')->id_nivel == 1 || 
             session('usuario')->id_puesto == 128 || 
             session('usuario')->id_puesto == 9 || 
             session('usuario')->id_puesto == 29 ||
@@ -114,8 +126,10 @@ session('usuario')->id_puesto == 148)
 @endif
 
 @if (session('usuario')->id_nivel == 1 || 
+session('usuario')->id_nivel == 7 ||
 session('usuario')->id_puesto == 80 ||
-session('usuario')->id_puesto == 128)
+session('usuario')->id_puesto == 128 ||
+session('usuario')->id_puesto == 148)
     <li class="menu menu-heading">
         <div class="heading">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
@@ -142,21 +156,39 @@ session('usuario')->id_puesto == 128)
                 </div>
             </a>
             <ul class="collapse submenu list-unstyled" id="rconf_cajas" data-parent="#accordionExample">
-                <li id="conf_cambios_prendas">
-                    <a href="{{ route('cambio_prenda_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                        <p class="romperpalabra"><span id="icono_active2"></span> Cambio de prenda</p>
-                    </a>
-                </li>
-                <li id="conf_lineas_carreras">
-                    <a href="{{ route('linea_carrera_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                        <p class="romperpalabra"><span id="icono_active2"></span> Línea de carrera</p>
-                    </a>
-                </li>
-                <li id="conf_observaciones">
-                    <a href="{{ route('observacion_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                        <p class="romperpalabra"><span id="icono_active2"></span> Observaciones</p>
-                    </a>
-                </li>
+                @if (session('usuario')->id_nivel == 1 || 
+                session('usuario')->id_puesto == 128)
+                    <li id="conf_cambios_prendas">
+                        <a href="{{ route('cambio_prenda_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                            <p class="romperpalabra"><span id="icono_active2"></span> Cambio de prenda</p>
+                        </a>
+                    </li>
+                @endif
+                @if (session('usuario')->id_nivel == 1 || 
+                session('usuario')->id_nivel == 7 || 
+                session('usuario')->id_puesto == 148)
+                    <li id="conf_insumos">
+                        <a href="{{ route('insumo_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                            <p class="romperpalabra"><span id="icono_active2"></span> Insumo</p>
+                        </a>
+                    </li>
+                @endif
+                @if (session('usuario')->id_nivel == 1 || 
+                session('usuario')->id_puesto == 128)
+                    <li id="conf_lineas_carreras">
+                        <a href="{{ route('linea_carrera_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                            <p class="romperpalabra"><span id="icono_active2"></span> Línea de carrera</p>
+                        </a>
+                    </li>
+                @endif
+                @if (session('usuario')->id_nivel == 1 || 
+                session('usuario')->id_puesto == 128)
+                    <li id="conf_observaciones">
+                        <a href="{{ route('observacion_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                            <p class="romperpalabra"><span id="icono_active2"></span> Observaciones</p>
+                        </a>
+                    </li>
+                @endif
             </ul>
         </li>
     @endif

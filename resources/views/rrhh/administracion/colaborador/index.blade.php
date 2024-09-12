@@ -98,6 +98,12 @@
                                     <li>
                                         <a style="cursor: pointer;"  class="nav-link" id="Genero" onclick="TablaGenero()">Genero</a>
                                     </li>
+                                    <li>
+                                        <a style="cursor: pointer;"  class="nav-link" id="Talla" onclick="TablaTalla()">Talla</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer;"  class="nav-link" id="Accesorio" onclick="TablaAccesorio()">Accesorio</a>
+                                    </li>
                                 <?php } ?>
                             </div>
                         </ul>
@@ -127,6 +133,8 @@
 
     //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
     function Active_Tabla_Colaboradores() {
+        $("#Accesorio").removeClass('active');
+        $("#Talla").removeClass('active');
         $("#Genero").removeClass('active');
         $("#Banco").removeClass('active');
         $("#Empresa").removeClass('active');
@@ -659,6 +667,46 @@
         $("#Genero").addClass('active');
 
         var url = "{{ url('ColaboradorConfController/Genero') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+
+    function TablaTalla() {
+        Active_Tabla_Colaboradores();
+        $("#Talla").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Talla') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+    
+    function TablaAccesorio() {
+        Active_Tabla_Colaboradores();
+        $("#Accesorio").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Accesorio') }}";
         var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({

@@ -100,7 +100,7 @@ $(document).ready(function() {
                             'El registro ha sido eliminado satisfactoriamente.',
                             'success'
                         ).then(function() {
-                            Tablaregimen();
+                            TablaRegimen();
                         });
                     }
                 });

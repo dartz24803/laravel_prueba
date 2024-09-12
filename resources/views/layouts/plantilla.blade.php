@@ -112,7 +112,7 @@
                 <li class="d-flex justify-content-center align-items-center">
                     <a class="text-light text-center" style="font-size: 0.5rem">
                         {{ explode(' ', session('usuario')->usuario_nombres)[0] }}
-                        {{ session('usuario')->usuario_apater }}
+                        {{ session('usuario')->nom_area }}
                     </a>
                 </li>
                 <li class="nav-item dropdown user-profile-dropdown  order-lg-0 order-1">
