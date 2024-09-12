@@ -43,7 +43,8 @@ class TrackingController extends Controller
             'insert_requerimiento_reposicion_app',
             'insert_requerimiento_reposicion_estilo_app',
             'list_requerimiento_reposicion_app',
-            'update_requerimiento_reposicion_app'
+            'update_requerimiento_reposicion_app',
+            'delete_mercaderia_surtida_app'
         ]);
     }
 
@@ -2589,5 +2590,10 @@ class TrackingController extends Controller
                 'message' => "Error procesando base de datos.",
             ], 500);
         }
+    }
+
+    public function delete_mercaderia_surtida_app($id)
+    {
+        MercaderiaSurtida::destroy($id);
     }
 }
