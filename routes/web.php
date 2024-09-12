@@ -929,6 +929,14 @@ Route::controller(InsumoConfController::class)->group(function() {
 //CAJA - INSUMOS
 Route::controller(InsumoController::class)->group(function() {
     Route::get('insumo', 'index')->name('insumo');
+    Route::get('insumo_en', 'index_en')->name('insumo_en');
+    Route::get('insumo_en/list', 'list_en')->name('insumo_en.list');
+    Route::get('insumo_en/create', 'create_en')->name('insumo_en.create');
+    Route::post('insumo_en', 'store_en')->name('insumo_en.store');
+    Route::get('insumo_en/{id}/edit', 'edit_en')->name('insumo_en.edit');
+    Route::get('insumo_en/{id}/{tipo}/download', 'download_en')->name('insumo_en.download');
+    Route::put('insumo_en/{id}', 'update_en')->name('insumo_en.update');
+    Route::delete('insumo_en/{id}', 'destroy_en')->name('insumo_en.destroy');
 });
 
 
