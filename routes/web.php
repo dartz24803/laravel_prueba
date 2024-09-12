@@ -467,6 +467,19 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Talla', 'Insert_Talla');
     Route::post('ColaboradorConfController/Update_Talla', 'Update_Talla');
     Route::post('ColaboradorConfController/Delete_Talla', 'Delete_Talla');
+    Route::post('ColaboradorConfController/Grado_Instruccion', 'Grado_Instruccion');
+    Route::get('ColaboradorConfController/Modal_Grado_Instruccion', 'Modal_Grado_Instruccion');
+    Route::get('ColaboradorConfController/Modal_Update_Grado_Instruccion/{id}', 'Modal_Update_Grado_Instruccion');
+    Route::post('ColaboradorConfController/Insert_Grado_Instruccion', 'Insert_Grado_Instruccion');
+    Route::post('ColaboradorConfController/Update_Grado_Instruccion', 'Update_Grado_Instruccion');
+    Route::post('ColaboradorConfController/Delete_Grado_Instruccion', 'Delete_Grado_Instruccion');
+    Route::post('ColaboradorConfController/Zona', 'Zona');
+    Route::get('ColaboradorConfController/Modal_Zona', 'Modal_Zona');
+    Route::get('ColaboradorConfController/Modal_Update_Zona/{id}', 'Modal_Update_Zona');
+    Route::post('ColaboradorConfController/Insert_Zona', 'Insert_Zona');
+    Route::post('ColaboradorConfController/Update_Zona', 'Update_Zona');
+    Route::post('ColaboradorConfController/Delete_Zona', 'Delete_Zona');
+    Route::get('ColaboradorConfController/Excel_ZonaPL', 'Excel_ZonaPL');
     /*----------------------------------------Paolo----------------------------------*/
     // ----------------------------------------bryan----------------------------------*/
 
