@@ -12,8 +12,8 @@
                 <label class="control-label text-bold">Razón social:</label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="nom_proveedore" id="nom_proveedore" 
-                placeholder="Razón social" value="{{ $get_id->nom_proveedor }}">
+                <input type="text" class="form-control" name="nombre_proveedore" id="nombre_proveedore" 
+                placeholder="Razón social" value="{{ $get_id->nombre_proveedor }}">
             </div>
 
             <div class="form-group col-lg-2">
@@ -21,7 +21,7 @@
             </div>
             <div class="form-group col-lg-4">
                 <input type="text" class="form-control" name="ruc_proveedore" id="ruc_proveedore" 
-                placeholder="RUC" onkeypress="return solo_Numeros(event);" 
+                placeholder="RUC" maxlength="11" onkeypress="return solo_Numeros(event);" 
                 value="{{ $get_id->ruc_proveedor }}">
             </div>
         </div>

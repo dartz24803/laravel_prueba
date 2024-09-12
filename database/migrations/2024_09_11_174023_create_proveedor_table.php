@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('proveedor', function (Blueprint $table) {
             $table->id('id_proveedor');
             $table->unsignedBigInteger('tipo');
-            $table->string('nom_proveedor',250)->nullable();
+            $table->string('nombre_proveedor',250)->nullable();
             $table->string('ruc_proveedor',20)->nullable();
             $table->string('direccion_proveedor',250)->nullable();
             $table->string('telefono_proveedor',20)->nullable();

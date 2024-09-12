@@ -12,7 +12,7 @@
                 <label class="control-label text-bold">Razón social:</label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="nom_proveedor" id="nom_proveedor" 
+                <input type="text" class="form-control" name="nombre_proveedor" id="nombre_proveedor" 
                 placeholder="Razón social">
             </div>
 
@@ -21,7 +21,7 @@
             </div>
             <div class="form-group col-lg-4">
                 <input type="text" class="form-control" name="ruc_proveedor" id="ruc_proveedor" 
-                placeholder="RUC" onkeypress="return solo_Numeros(event);">
+                placeholder="RUC" maxlength="11" onkeypress="return solo_Numeros(event);">
             </div>
         </div>
 

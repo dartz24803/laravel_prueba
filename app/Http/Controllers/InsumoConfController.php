@@ -106,7 +106,7 @@ class InsumoConfController extends Controller
     public function list_pr()
     {
         $list_proveedor = Proveedor::from('proveedor AS pr')
-                        ->select('pr.id_proveedor','pr.nom_proveedor','pr.ruc_proveedor',
+                        ->select('pr.id_proveedor','pr.nombre_proveedor','pr.ruc_proveedor',
                         'pr.direccion_proveedor','pr.telefono_proveedor','pr.celular_proveedor',
                         'pr.email_proveedor','pr.web_proveedor','pr.contacto_proveedor',
                         'pr.proveedor_codigo','pr.proveedor_password','ba.nom_banco','pr.num_cuenta',
@@ -129,10 +129,10 @@ class InsumoConfController extends Controller
     public function store_pr(Request $request)
     {
         $request->validate([
-            'nom_proveedor' => 'required',
+            'nombre_proveedor' => 'required',
             'ruc_proveedor' => 'required'
         ], [
-            'nom_proveedor.required' => 'Debe ingresar razón social.',
+            'nombre_proveedor.required' => 'Debe ingresar razón social.',
             'ruc_proveedor.required' => 'Debe ingresar RUC.'
         ]);
 
@@ -143,7 +143,7 @@ class InsumoConfController extends Controller
         } else {
             Proveedor::create([
                 'tipo' => 5,
-                'nom_proveedor' => $request->nom_proveedor,
+                'nombre_proveedor' => $request->nombre_proveedor,
                 'ruc_proveedor' => $request->ruc_proveedor,
                 'direccion_proveedor' => $request->direccion_proveedor,
                 'telefono_proveedor' => $request->telefono_proveedor,
@@ -178,10 +178,10 @@ class InsumoConfController extends Controller
     public function update_pr(Request $request, $id)
     {
         $request->validate([
-            'nom_proveedore' => 'required',
+            'nombre_proveedore' => 'required',
             'ruc_proveedore' => 'required'
         ], [
-            'nom_proveedore.required' => 'Debe ingresar razón social.',
+            'nombre_proveedore.required' => 'Debe ingresar razón social.',
             'ruc_proveedore.required' => 'Debe ingresar RUC.'
         ]);
 
@@ -191,7 +191,7 @@ class InsumoConfController extends Controller
             echo "error";
         } else {
             Proveedor::findOrFail($id)->update([
-                'nom_proveedor' => $request->nom_proveedore,
+                'nombre_proveedor' => $request->nombre_proveedore,
                 'ruc_proveedor' => $request->ruc_proveedore,
                 'direccion_proveedor' => $request->direccion_proveedore,
                 'telefono_proveedor' => $request->telefono_proveedore,

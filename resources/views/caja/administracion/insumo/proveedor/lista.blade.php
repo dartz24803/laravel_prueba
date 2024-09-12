@@ -20,7 +20,7 @@
     <tbody>
         @foreach ($list_proveedor as $list)
             <tr class="text-center">
-                <td class="text-left">{{ $list->nom_proveedor }}</td>
+                <td class="text-left">{{ $list->nombre_proveedor }}</td>
                 <td>{{ $list->ruc_proveedor }}</td>
                 <td class="text-left">{{ $list->direccion_proveedor }}</td>
                 <td>{{ $list->telefono_proveedor }}</td>
