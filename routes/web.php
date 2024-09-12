@@ -45,6 +45,8 @@ use App\Http\Controllers\InternaInicioController;
 use App\Http\Controllers\LineaCarreraConfController;
 use App\Http\Controllers\LineaCarreraController;
 use App\Http\Controllers\LogisticaInicioController;
+use App\Http\Controllers\ManufacturaController;
+use App\Http\Controllers\ManufacturaInicioController;
 use App\Http\Controllers\NotificacionConfController;
 use App\Http\Controllers\ObservacionConfController;
 use App\Http\Controllers\ObservacionController;
@@ -55,6 +57,7 @@ use App\Http\Controllers\OcurrenciaServicioConfController;
 use App\Http\Controllers\OcurrenciasTiendaController;
 use App\Http\Controllers\PostulanteController;
 use App\Http\Controllers\ProcesosController;
+use App\Http\Controllers\ProduccionController;
 use App\Http\Controllers\RecursosHumanosInicioController;
 use App\Http\Controllers\ReporteProveedoresController;
 
@@ -213,7 +216,7 @@ Route::controller(ProcesosController::class)->group(function () {
     Route::get('portalprocesos_lm/list', 'list_lm')->name('portalprocesos_lm.list');
     Route::get('portalprocesos_lm/create', 'create_lm')->name('portalprocesos_lm.create');
     Route::get('portalprocesos_lm/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_lm')->name('portalprocesos_lm.excel');
-    Route::post('portalprocesos_lm', 'store_lm')->name('portalprocesos_lm.store');
+    Route::get('portalprocesos_lm/store', 'store_lm')->name('portalprocesos_lm.store');
     Route::get('portalprocesos_lm/{id}/image', 'image_lm')->name('portalprocesos_lm.image');
     Route::delete('portalprocesos_lm/{id}', 'destroy_lm')->name('portalprocesos_lm.destroy');
     Route::post('portalprocesos_lm/{id}', 'approve_lm')->name('portalprocesos_lm.approve');
@@ -915,9 +918,27 @@ Route::controller(DuracionTransaccionController::class)->group(function () {
     Route::post('duracion_transaccion/list', 'list')->name('duracion_transaccion.list');
     Route::get('duracion_transaccion/{inicio}/{fin}/excel', 'excel')->name('duracion_transaccion.excel');
 });
+
+//PRODUCCIÓN - PRODUCCIÓN
+Route::controller(ProduccionController::class)->group(function () {
+    Route::get('produccion', 'index')->name('produccion');
+    Route::get('produccion_av', 'index_av')->name('produccion_av');
+    Route::get('produccion_av/list', 'list_av')->name('produccion_av.list');
+    Route::get('produccion_av/create', 'create_av')->name('produccion_av.create');
+    Route::post('produccion_av', 'store_av')->name('produccion_av.store');
+    Route::get('produccion_av/{id}/edit', 'edit_av')->name('produccion_av.edit');
+    Route::put('produccion_av/{id}', 'update_av')->name('produccion_av.update');
+});
+
+
+
 //ÁREA FINANZAS
 Route::controller(FinanzasInicioController::class)->group(function () {
     Route::get('finanzas', 'index')->name('finanzas');
+});
+//ÁREA MANUFACTURA
+Route::controller(ManufacturaInicioController::class)->group(function () {
+    Route::get('manufactura', 'index')->name('manufactura');
 });
 //TESORERÍA - CAJA CHICA CONFIGURABLE
 Route::controller(CajaChicaConfController::class)->group(function () {
@@ -928,7 +949,7 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::get('caja_chica', 'index')->name('caja_chica');
 });
 //CAJA - INSUMOS CONFIGURABLE
-Route::controller(InsumoConfController::class)->group(function() {
+Route::controller(InsumoConfController::class)->group(function () {
     Route::get('insumo_conf', 'index')->name('insumo_conf');
     Route::get('insumo_conf_in', 'index_in')->name('insumo_conf_in');
     Route::get('insumo_conf_in/list', 'list_in')->name('insumo_conf_in.list');
@@ -946,7 +967,7 @@ Route::controller(InsumoConfController::class)->group(function() {
     Route::delete('insumo_conf_pr/{id}', 'destroy_pr')->name('insumo_conf_pr.destroy');
 });
 //CAJA - INSUMOS
-Route::controller(InsumoController::class)->group(function() {
+Route::controller(InsumoController::class)->group(function () {
     Route::get('insumo', 'index')->name('insumo');
 });
 
