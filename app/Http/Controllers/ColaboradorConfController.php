@@ -34,8 +34,8 @@ use App\Models\Empresas;
 use App\Models\Config;
 use App\Models\Banco;
 use App\Models\Genero;
-// use App\Models\Banco;
-// use App\Models\Banco;
+use App\Models\Talla;
+use App\Models\Accesorio;
 // use App\Models\Banco;
 // use App\Models\Banco;
 // use App\Models\Banco;
@@ -1992,7 +1992,7 @@ class ColaboradorConfController extends Controller
         }
     }
 
-    public function Delete_regimen(Request $request)
+    public function Delete_Regimen(Request $request)
     {
         $dato['estado'] = 2;
         $dato['fec_eli'] = now();
@@ -2976,6 +2976,156 @@ class ColaboradorConfController extends Controller
         $dato['fec_eli'] = now();
         $dato['user_eli'] = session('usuario')->id_usuario;
         Genero::findOrFail($request->input("id_genero"))->update($dato);
+    }
+    
+    public function Accesorio(){
+        $dato['list_accesorio'] = Accesorio::where('estado', 1)
+                            ->get();
+        return view('rrhh.administracion.colaborador.Accesorio.index',$dato);
+    }
+
+    public function Modal_Accesorio(){
+        return view('rrhh.administracion.colaborador.Accesorio.modal_registrar');   
+    }
+
+    public function Insert_Accesorio(Request $request){
+        $request->validate([
+            'nom_accesorio' => 'required',
+        ],[
+            'nom_accesorio.required' => 'Debe ingresar nombre de accesorio',
+        ]);
+        $valida = Accesorio::where('nom_accesorio', $request->nom_accesorio)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['nom_accesorio']= $request->input("nom_accesorio");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Accesorio::create($dato);
+        }
+    }
+
+    public function Modal_Update_Accesorio($id_accesorio){
+        $dato['get_id'] = Accesorio::where('id_accesorio', $id_accesorio)
+                        ->get();
+        return view('rrhh.administracion.colaborador.Accesorio.modal_editar',$dato);
+    }
+
+    public function Update_Accesorio(Request $request){
+        $request->validate([
+            'nom_accesorio' => 'required',
+        ],[
+            'nom_accesorio.required' => 'Debe ingresar nombre de accesorio',
+        ]);
+        $valida = Accesorio::where('nom_accesorio', $request->nom_accesorio)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['nom_accesorio']= $request->input("nom_accesorio");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            Accesorio::findOrFail($request->input("id_accesorio"))->update($dato);
+        }
+    }
+
+    public function Delete_Accesorio(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Accesorio::findOrFail($request->input("id_accesorio"))->update($dato);
+    }
+
+    public function Talla(){
+        $dato['list_talla'] = Talla::where('talla.estado', 1)
+                        ->leftJoin('accesorio', 'accesorio.id_accesorio', '=', 'talla.id_accesorio')
+                        ->get();
+    
+        return view('rrhh.administracion.colaborador.Talla.index', $dato);    
+    }
+
+    public function Modal_Talla(){
+        $dato['list_accesorio'] = Accesorio::where('estado',1)
+                                ->get();
+        return view('rrhh.administracion.colaborador.Talla.modal_registrar', $dato);   
+    }
+
+    public function Insert_Talla(Request $request){
+        $request->validate([
+            'id_accesorio' => 'not_in:0',
+            'cod_talla' => 'required',
+            'nom_talla' => 'required',
+        ],[
+            'id_accesorio' => 'Debe seleccionar accesorio',
+            'cod_talla' => 'Debe ingresar código de talla',
+            'nom_talla' => 'Debe ingresar nombre de talla',
+        ]);
+        $valida = Talla::where('id_accesorio', $request->id_accesorio)
+                ->where('cod_talla', $request->cod_talla)
+                ->where('nom_talla', $request->nom_talla)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['id_accesorio']= $request->input('id_accesorio');
+            $dato['cod_talla']= $request->input("cod_talla");
+            $dato['nom_talla']= $request->input("nom_talla");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Talla::create($dato);
+        }
+    }
+
+    public function Modal_Update_Talla($id_talla){
+        $dato['get_id'] = Talla::where('id_talla', $id_talla)
+                        ->get();
+        $dato['list_accesorio'] = Accesorio::where('estado',1)
+                                ->get();
+        return view('rrhh.administracion.colaborador.Talla.modal_editar',$dato);
+    }
+
+    public function Update_Talla(Request $request){
+        $request->validate([
+            'id_accesorio' => 'required',
+            'cod_talla' => 'required',
+            'nom_talla' => 'required',
+        ],[
+            'id_accesorio' => 'Debe seleccionar accesorio',
+            'cod_talla' => 'Debe ingresar código de género',
+            'nom_talla' => 'Debe ingresar nombre de talla',
+        ]);
+        $valida = Talla::where('id_accesorio', $request->id_accesorio)
+                ->where('cod_talla', $request->cod_talla)
+                ->where('nom_talla', $request->nom_talla)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['id_accesorio']= $request->input('id_accesorio');
+            $dato['cod_talla']= $request->input("cod_talla");
+            $dato['nom_talla']= $request->input("nom_talla");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            Talla::findOrFail($request->input("id_talla"))->update($dato);
+        }
+    }
+
+    public function Delete_Talla(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Talla::findOrFail($request->input("id_talla"))->update($dato);
     }
     /*---------------------------------------------------------Paolo*/
 
