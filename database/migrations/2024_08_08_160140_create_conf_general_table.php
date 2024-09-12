@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('conf_general', function (Blueprint $table) {
             $table->string('codigo_primario');
             $table->string('codigo_secundario');
-            $table->string('valor');
-            $table->string('descripcion');
+            $table->string('valor')->nullable();
+            $table->string('descripcion')->nullable();
             // Definir claves primarias compuestas
             $table->primary(['codigo_primario', 'codigo_secundario']);
         });

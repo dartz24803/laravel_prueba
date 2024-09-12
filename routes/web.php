@@ -17,6 +17,8 @@ use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
 use App\Http\Controllers\AsistenciaSegController;
 use App\Http\Controllers\BiReporteController;
+use App\Http\Controllers\CajaChicaConfController;
+use App\Http\Controllers\CajaChicaController;
 use App\Http\Controllers\CajaInicioController;
 use App\Http\Controllers\CambioPrendaConfController;
 use App\Http\Controllers\CambioPrendaController;
@@ -33,6 +35,8 @@ use App\Http\Controllers\FinanzaInicioController;
 use App\Http\Controllers\FinanzasInicioController;
 use App\Http\Controllers\InicioAdmController;
 use App\Http\Controllers\InicioFrasesAdmController;
+use App\Http\Controllers\InsumoConfController;
+use App\Http\Controllers\InsumoController;
 use App\Http\Controllers\LecturaServicioConfController;
 use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
@@ -892,6 +896,29 @@ Route::controller(CajaChicaConfController::class)->group(function () {
 Route::controller(CajaChicaController::class)->group(function () {
     Route::get('caja_chica', 'index')->name('caja_chica');
 });
+//CAJA - INSUMOS CONFIGURABLE
+Route::controller(InsumoConfController::class)->group(function() {
+    Route::get('insumo_conf', 'index')->name('insumo_conf');
+    Route::get('insumo_conf_in', 'index_in')->name('insumo_conf_in');
+    Route::get('insumo_conf_in/list', 'list_in')->name('insumo_conf_in.list');
+    Route::get('insumo_conf_in/create', 'create_in')->name('insumo_conf_in.create');
+    Route::post('insumo_conf_in', 'store_in')->name('insumo_conf_in.store');
+    Route::get('insumo_conf_in/{id}/edit', 'edit_in')->name('insumo_conf_in.edit');
+    Route::put('insumo_conf_in/{id}', 'update_in')->name('insumo_conf_in.update');
+    Route::delete('insumo_conf_in/{id}', 'destroy_in')->name('insumo_conf_in.destroy');
+    Route::get('insumo_conf_pr', 'index_pr')->name('insumo_conf_pr');
+    Route::get('insumo_conf_pr/list', 'list_pr')->name('insumo_conf_pr.list');
+    Route::get('insumo_conf_pr/create', 'create_pr')->name('insumo_conf_pr.create');
+    Route::post('insumo_conf_pr', 'store_pr')->name('insumo_conf_pr.store');
+    Route::get('insumo_conf_pr/{id}/edit', 'edit_pr')->name('insumo_conf_pr.edit');
+    Route::put('insumo_conf_pr/{id}', 'update_pr')->name('insumo_conf_pr.update');
+    Route::delete('insumo_conf_pr/{id}', 'destroy_pr')->name('insumo_conf_pr.destroy');
+});
+//CAJA - INSUMOS
+Route::controller(InsumoController::class)->group(function() {
+    Route::get('insumo', 'index')->name('insumo');
+});
+
 
 
 
