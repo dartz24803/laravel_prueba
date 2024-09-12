@@ -220,11 +220,30 @@ Route::controller(ProcesosController::class)->group(function () {
     Route::get('portalprocesos_lm/{id}/edit', 'edit_lm')->name('portalprocesos_lm.edit');
     Route::put('portalprocesos_lm/{id}/version', 'version_lm')->name('portalprocesos_lm.version');
     Route::put('portalprocesos_lm/{id}', 'update_lm')->name('portalprocesos_lm.update');
+    Route::get('temas_por_areas', 'getTemasPorAreas')->name('temas_por_areas');
+    Route::get('capacitadores_por_areas', 'getCapacitadoresPorAreas')->name('capacitadores_por_areas');
     Route::get('puestos-por-areas', 'getPuestosPorAreas')->name('puestos_por_areas');
 
 
     // CONFIGURABLES - ADMINISTRABLES
     Route::get('portalprocesos_lm_conf', 'index_lm_conf')->name('portalprocesos_lm_conf');
+
+    // CAPACITACIÓN
+    Route::get('portalprocesoscap', 'indexcap')->name('portalprocesoscap');
+    Route::get('portalprocesos_cap', 'index_cap')->name('portalprocesos_cap');
+    Route::get('portalprocesos_cap/list', 'list_cap')->name('portalprocesos_cap.list');
+    Route::get('portalprocesos_cap/create', 'create_cap')->name('portalprocesos_cap.create');
+    Route::post('portalprocesos_cap', 'store_cap')->name('portalprocesos_cap.store');
+    Route::delete('portalprocesos_cap/{id}', 'destroy_cap')->name('portalprocesos_cap.destroy');
+    // ADMINISTRABLES - CAPACITACIÓN
+    Route::get('portalprocesoscap_conf', 'indexcap_conf')->name('portalprocesoscap_conf');
+    Route::get('portalprocesos_cap_conf', 'index_cap_conf')->name('portalprocesos_cap_conf');
+    Route::get('portalprocesos_cap_conf/list', 'list_cap_conf')->name('portalprocesos_cap_conf.list');
+    Route::get('portalprocesos_cap_conf/{id}/edit', 'edit_cap_conf')->name('portalprocesos_cap_conf.edit');
+    Route::delete('portalprocesos_cap_conf/{id}', 'destroy_cap_conf')->name('portalprocesos_cap_conf.destroy');
+    Route::post('portalprocesos_cap_conf/{id}', 'update_cap_conf')->name('portalprocesos_cap_conf.update');
+    Route::get('portalprocesos_cap_conf/create', 'create_cap_conf')->name('portalprocesos_cap_conf.create');
+    Route::post('portalprocesos_cap_conf', 'store_cap_conf')->name('portalprocesos_cap_conf.store');
 });
 
 //BI REPORTES -
@@ -249,7 +268,7 @@ Route::controller(BiReporteController::class)->group(function () {
 
 
 
-    // CONFIGURABLES - ADMINISTRABLES
+    // ADMINISTRABLES - ADMINISTRABLES
     Route::get('bireporte_ra_conf', 'index_ra_conf')->name('bireporte_ra_conf');
     Route::get('bireporte_ti_conf', 'index_ti_conf')->name('bireporte_ti_conf');
     Route::get('bireporte_ti_conf/list', 'list_tind')->name('bireporte_ti_conf.list');
