@@ -36,9 +36,17 @@ use App\Models\Banco;
 use App\Models\Genero;
 use App\Models\Talla;
 use App\Models\Accesorio;
-// use App\Models\Banco;
-// use App\Models\Banco;
-// use App\Models\Banco;
+use App\Models\GradoInstruccion;
+use App\Models\Zona;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use App\Models\ComisionAFP;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
@@ -3126,6 +3134,273 @@ class ColaboradorConfController extends Controller
         $dato['fec_eli'] = now();
         $dato['user_eli'] = session('usuario')->id_usuario;
         Talla::findOrFail($request->input("id_talla"))->update($dato);
+    }
+    
+    public function Grado_Instruccion(){
+        $dato['list_grado_instruccion'] = GradoInstruccion::where('estado', 1)
+                        ->get();
+    
+        return view('rrhh.administracion.colaborador.GradoInstruccion.index', $dato);    
+    }
+
+    public function Modal_Grado_Instruccion(){
+        return view('rrhh.administracion.colaborador.GradoInstruccion.modal_registrar');   
+    }
+
+    public function Insert_Grado_Instruccion(Request $request){
+        $request->validate([
+            'cod_grado_instruccion' => 'required',
+            'nom_grado_instruccion' => 'required',
+        ],[
+            'cod_grado_instruccion' => 'Debe ingresar código de grado_instruccion',
+            'nom_grado_instruccion' => 'Debe ingresar nombre de grado_instruccion',
+        ]);
+        $valida = GradoInstruccion::where('cod_grado_instruccion', $request->cod_grado_instruccion)
+                ->where('nom_grado_instruccion', $request->nom_grado_instruccion)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_grado_instruccion']= $request->input("cod_grado_instruccion");
+            $dato['nom_grado_instruccion']= $request->input("nom_grado_instruccion");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            GradoInstruccion::create($dato);
+        }
+    }
+
+    public function Modal_Update_Grado_Instruccion($id_grado_instruccion){
+        $dato['get_id'] = GradoInstruccion::where('id_grado_instruccion', $id_grado_instruccion)
+                        ->get();
+        return view('rrhh.administracion.colaborador.GradoInstruccion.modal_editar',$dato);
+    }
+
+    public function Update_Grado_Instruccion(Request $request){
+        $request->validate([
+            'cod_grado_instruccion' => 'required',
+            'nom_grado_instruccion' => 'required',
+        ],[
+            'cod_grado_instruccion' => 'Debe ingresar código de género',
+            'nom_grado_instruccion' => 'Debe ingresar nombre de grado_instruccion',
+        ]);
+        $valida = GradoInstruccion::where('cod_grado_instruccion', $request->cod_grado_instruccion)
+                ->where('nom_grado_instruccion', $request->nom_grado_instruccion)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_grado_instruccion']= $request->input("cod_grado_instruccion");
+            $dato['nom_grado_instruccion']= $request->input("nom_grado_instruccion");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            GradoInstruccion::findOrFail($request->input("id_grado_instruccion"))->update($dato);
+        }
+    }
+
+    public function Delete_Grado_Instruccion(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        GradoInstruccion::findOrFail($request->input("id_grado_instruccion"))->update($dato);
+    }
+    
+    public function Zona(){
+        $dato['list_zona'] = Zona::where('estado', 1)
+                            ->get();
+        return view('rrhh.administracion.colaborador.Zona.index',$dato);
+    }
+
+    public function Modal_Zona(){
+        return view('rrhh.administracion.colaborador.Zona.modal_registrar');   
+    }
+
+    public function Insert_Zona(Request $request){
+        $request->validate([
+            'numero' => 'required',
+            'descripcion' => 'required',
+        ],[
+            'numero' => 'Debe ingresar numero de zona',
+            'descripcion' => 'Debe ingresar nombre de zona',
+        ]);
+        $valida = Zona::where('numero', $request->numero)
+                ->where('descripcion', $request->descripcion)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['numero']= $request->input("numero");
+            $dato['descripcion']= $request->input("descripcion");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Zona::create($dato);
+        }
+    }
+
+    public function Modal_Update_Zona($id_zona){
+        $dato['get_id'] = Zona::where('id_zona', $id_zona)
+                        ->get();
+        return view('rrhh.administracion.colaborador.Zona.modal_editar',$dato);
+    }
+
+    public function Update_Zona(Request $request){
+        $request->validate([
+            'cod_genero' => 'required',
+            'nom_genero' => 'required',
+        ],[
+            'cod_genero' => 'Debe ingresar código de género',
+            'nom_genero' => 'Debe ingresar nombre de genero',
+        ]);
+        $valida = Zona::where('cod_genero', $request->cod_genero)
+                ->where('nom_genero', $request->nom_genero)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_genero']= $request->input("cod_genero");
+            $dato['nom_genero']= $request->input("nom_genero");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            Zona::findOrFail($request->input("id_genero"))->update($dato);
+        }
+    }
+
+    public function Delete_Zona(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Zona::findOrFail($request->input("id_zona"))->update($dato);
+    }
+    
+    public function Excel_ZonaPL(){
+            $data = Zona::where('estado', 1)
+                    ->get();
+            // Create new Spreadsheet object
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $spreadsheet->getActiveSheet()->setTitle('T6 Zona');
+            $sheet->setCellValue('A1', 'TABLA 6: "ZONA"');
+            $sheet->setCellValue('A3', 'N°');
+            $sheet->setCellValue('B3', 'DESCRIPCIÓN');
+            $sheet->mergeCells("A1:B1");
+
+            //border
+            $styleThinBlackBorderOutline = [
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => 'FF000000'],
+                    ],
+                ],
+            ];
+            $sheet->getStyle("A3:B3")->applyFromArray($styleThinBlackBorderOutline);
+            $sheet->getStyle('A1:B3')->getFont()->setBold(true);
+            $start = 3;
+            foreach($data as $d){
+                $start = $start+1;
+                
+                $spreadsheet->getActiveSheet()->setCellValue("A{$start}", $d['numero']);
+                $spreadsheet->getActiveSheet()->setCellValue("B{$start}", $d['descripcion']);
+
+
+                $sheet->getStyle("A{$start}:B{$start}")->applyFromArray($styleThinBlackBorderOutline);
+            }
+            $sheet->getStyle("A1")->getFont()->setSize(12);
+            $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle('A3:B3')->getAlignment()->setHorizontal(Alignment::VERTICAL_CENTER);
+            $sheet->getColumnDimension('A')->setWidth(10);
+            $sheet->getColumnDimension('B')->setWidth(55);
+            $curdate = date('d-m-Y');
+            $filename = 'T6 Zona_'.$curdate;
+            if (ob_get_contents()) ob_end_clean();
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+            header('Cache-Control: max-age=0');
+        
+            $writer = IOFactory::createWriter($spreadsheet,'Xlsx');
+            $writer->save('php://output');
+    }
+    
+    public function Comision_AFP(){
+        $dato['list_comision'] = ComisionAFP::where('afp.estado', 1)
+                            ->leftJoin('sistema_pensionario', 'sistema_pensionario.id_sistema_pensionario', '=', 'afp.id_sistema_pensionario')
+                            ->get();
+        return view('rrhh.administracion.colaborador.ComisionAfp.index',$dato);
+    }
+
+    public function Modal_Comision_AFP(){
+        return view('rrhh.administracion.colaborador.ComisionAfp.modal_registrar');   
+    }
+
+    public function Insert_Comision_AFP(Request $request){
+        $request->validate([
+            'cod_genero' => 'required',
+            'nom_genero' => 'required',
+        ],[
+            'cod_genero' => 'Debe ingresar código de género',
+            'nom_genero' => 'Debe ingresar nombre de genero',
+        ]);
+        $valida = ComisionAFP::where('cod_genero', $request->cod_genero)
+                ->where('nom_genero', $request->nom_genero)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_genero']= $request->input("cod_genero");
+            $dato['nom_genero']= $request->input("nom_genero");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Comision_AFP::create($dato);
+        }
+    }
+
+    public function Modal_Update_Comision_AFP($id_genero){
+        $dato['get_id'] = Comision_AFP::where('id_genero', $id_genero)
+                        ->get();
+        return view('rrhh.administracion.colaborador.ComisionAfp.modal_editar',$dato);
+    }
+
+    public function Update_Comision_AFP(Request $request){
+        $request->validate([
+            'cod_genero' => 'required',
+            'nom_genero' => 'required',
+        ],[
+            'cod_genero' => 'Debe ingresar código de género',
+            'nom_genero' => 'Debe ingresar nombre de genero',
+        ]);
+        $valida = Comision_AFP::where('cod_genero', $request->cod_genero)
+                ->where('nom_genero', $request->nom_genero)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_genero']= $request->input("cod_genero");
+            $dato['nom_genero']= $request->input("nom_genero");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            Comision_AFP::findOrFail($request->input("id_genero"))->update($dato);
+        }
+    }
+
+    public function Delete_Comision_AFP(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Comision_AFP::findOrFail($request->input("id_genero"))->update($dato);
     }
     /*---------------------------------------------------------Paolo*/
 

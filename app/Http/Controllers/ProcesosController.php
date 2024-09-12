@@ -213,7 +213,7 @@ class ProcesosController extends Controller
 
     public function store_lm(Request $request)
     {
-        $id = $request->input('id_portal');
+
         $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
 
         // Obtener Lista de Bases
@@ -274,16 +274,14 @@ class ProcesosController extends Controller
         $ftp_pass = "Intranet2022@";
         $con_id = ftp_connect($ftp_server);
         $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
-        // Verificar si existe un registro para el id_portal
-        $get_id = ProcesosHistorial::where('id_portal', $id)->first();
+
+        // dd($get_id);
+        // Conexión a FTP SERVER
         if ($con_id && $lr) {
             ftp_pasv($con_id, true);
-
             // Subir archivo 1
             if (!empty($_FILES["archivo1"]["name"])) {
-                if ($get_id->imagen != "") {
-                    ftp_delete($con_id, 'PORTAL_PROCESOS/' . basename($get_id->imagen));
-                }
+
                 $path = $_FILES["archivo1"]["name"];
                 $source_file = $_FILES['archivo1']['tmp_name'];
                 $nombre = $_FILES["archivo1"]["name"];
@@ -331,112 +329,61 @@ class ProcesosController extends Controller
         }
 
 
+        // Si no existe, obtener el último ID del portal y crear un nuevo registro
+        $ultimoIdPortal = ProcesosHistorial::max('id_portal');
+        $id_portal_ag = $ultimoIdPortal ? $ultimoIdPortal + 1 : 1;
 
-        if (!$get_id) {
-            // Si no existe, obtener el último ID del portal y crear un nuevo registro
-            $ultimoIdPortal = ProcesosHistorial::max('id_portal');
-            $id_portal_ag = $ultimoIdPortal ? $ultimoIdPortal + 1 : 1;
+        // Crear un nuevo registro en la tabla portal_procesos_historial
+        ProcesosHistorial::create([
+            'id_portal' => $id_portal_ag,
+            'codigo' => $request->codigo ?? 'SIN CÓDIGO',
+            'numero' => $request->ndocumento ?? '',
+            'version' => 1,
+            'nombre' => $request->nombre ?? '',
+            'id_tipo' => $request->id_portal ?? null,
+            'id_area' => $accesoTodo
+                ? $list_area_string
+                : (is_array($request->id_area_acceso_t) ? implode(',', $request->id_area_acceso_t) : $request->id_area_acceso_t ?? ''),
+            'fecha' => $request->fecha ?? null,
+            'etiqueta' => is_array($request->etiqueta) ? implode(',', $request->etiqueta) : $request->etiqueta ?? '',
+            'descripcion' => $request->descripcion ?? '',
+            'id_responsable' => is_array($request->id_puesto) ? implode(',', $request->id_puesto) : $request->id_puesto ?? null,
+            'acceso' => $accesoTodo
+                ? $list_responsable_string
+                : (is_array($request->tipo_acceso_t) ? implode(',', $request->tipo_acceso_t) : $request->tipo_acceso_t ?? ''),
+            'acceso_area' => $accesoTodo
+                ? $list_area_string
+                : (is_array($request->id_area_acceso) ? implode(',', $request->id_area_acceso) : $request->id_area_acceso ?? ''),
+            'acceso_nivel' => $accesoTodo ? $list_niveljerarquico_string
+                : (is_array($request->id_nivel_acceso) ? implode(',', $request->id_nivel_acceso) : $request->id_nivel_acceso ?? ''),
+            'acceso_gerencia' => $accesoTodo ? $list_gerencia_string
+                : (is_array($request->id_gerencia_acceso) ? implode(',', $request->id_gerencia_acceso) : $request->id_gerencia_acceso ?? ''),
+            'acceso_base' => $accesoTodo ? $list_base_string
+                : (is_array($request->id_base_acceso) ? implode(',', $request->id_base_acceso) : $request->id_base_acceso ?? ''),
+            'acceso_todo' => $accesoTodo,
+            'div_puesto' => $accesoTodo ? 0 : (!empty($request->tipo_acceso_t) ? 1 : 0),
+            'div_base' => $accesoTodo ? 0 : (!empty($request->id_base_acceso) ? 1 : 0),
+            'div_area' => $accesoTodo ? 0 : (!empty($request->id_area_acceso) ? 1 : 0),
+            'div_nivel' => $accesoTodo ? 0 : (!empty($request->id_nivel_acceso) ? 1 : 0),
+            'div_gerencia' => $accesoTodo ? 0 : (!empty($request->id_gerencia_acceso) ? 1 : 0),
+            'archivo' => $archivo ?? '',
+            'archivo2' => $request->archivo2 ?? '',
+            'archivo3' => $request->archivo3 ?? '',
+            'archivo4' => $documento ?? '',
+            'archivo5' => $diagrama ?? '',
+            'user_aprob' => $request->user_aprob ?? 0,
+            'fec_aprob' => $request->fec_aprob ?? null,
+            'estado_registro' => $request->estado_registro ?? 1,
+            'estado' => $request->estado ?? 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario,
+            'fec_eli' => null,
+            'user_eli' => null,
 
-            // Crear un nuevo registro en la tabla portal_procesos_historial
-            ProcesosHistorial::create([
-                'id_portal' => $id_portal_ag,
-                'codigo' => $request->codigo ?? 'SIN CÓDIGO',
-                'numero' => $request->ndocumento ?? '',
-                'version' => 1,
-                'nombre' => $request->nombre ?? '',
-                'id_tipo' => $request->id_portal ?? null,
-                'id_area' => $accesoTodo
-                    ? $list_area_string
-                    : (is_array($request->id_area_acceso_t) ? implode(',', $request->id_area_acceso_t) : $request->id_area_acceso_t ?? ''),
-                'fecha' => $request->fecha ?? null,
-                'etiqueta' => is_array($request->etiqueta) ? implode(',', $request->etiqueta) : $request->etiqueta ?? '',
-                'descripcion' => $request->descripcion ?? '',
-                'id_responsable' => is_array($request->id_puesto) ? implode(',', $request->id_puesto) : $request->id_puesto ?? null,
-                'acceso' => $accesoTodo
-                    ? $list_responsable_string
-                    : (is_array($request->tipo_acceso_t) ? implode(',', $request->tipo_acceso_t) : $request->tipo_acceso_t ?? ''),
-                'acceso_area' => $accesoTodo
-                    ? $list_area_string
-                    : (is_array($request->id_area_acceso) ? implode(',', $request->id_area_acceso) : $request->id_area_acceso ?? ''),
-                'acceso_nivel' => $accesoTodo ? $list_niveljerarquico_string
-                    : (is_array($request->id_nivel_acceso) ? implode(',', $request->id_nivel_acceso) : $request->id_nivel_acceso ?? ''),
-                'acceso_gerencia' => $accesoTodo ? $list_gerencia_string
-                    : (is_array($request->id_gerencia_acceso) ? implode(',', $request->id_gerencia_acceso) : $request->id_gerencia_acceso ?? ''),
-                'acceso_base' => $accesoTodo ? $list_base_string
-                    : (is_array($request->id_base_acceso) ? implode(',', $request->id_base_acceso) : $request->id_base_acceso ?? ''),
-                'acceso_todo' => $accesoTodo,
-                'div_puesto' => $accesoTodo ? 0 : (!empty($request->tipo_acceso_t) ? 1 : 0),
-                'div_base' => $accesoTodo ? 0 : (!empty($request->id_base_acceso) ? 1 : 0),
-                'div_area' => $accesoTodo ? 0 : (!empty($request->id_area_acceso) ? 1 : 0),
-                'div_nivel' => $accesoTodo ? 0 : (!empty($request->id_nivel_acceso) ? 1 : 0),
-                'div_gerencia' => $accesoTodo ? 0 : (!empty($request->id_gerencia_acceso) ? 1 : 0),
-                'archivo' => $archivo ?? '',
-                'archivo2' => $request->archivo2 ?? '',
-                'archivo3' => $request->archivo3 ?? '',
-                'archivo4' => $documento ?? '',
-                'archivo5' => $diagrama ?? '',
-                'user_aprob' => $request->user_aprob ?? 0,
-                'fec_aprob' => $request->fec_aprob ?? null,
-                'estado_registro' => $request->estado_registro ?? 1,
-                'estado' => $request->estado ?? 1,
-                'fec_reg' => now(),
-                'user_reg' => session('usuario')->id_usuario,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario,
-                'fec_eli' => null,
-                'user_eli' => null,
+        ]);
 
-            ]);
-        } else {
-            // Si existe, actualizar el registro
-            $get_id->update([
-                'codigo' => $request->codigo ?? $get_id->codigo,
-                'numero' => $request->ndocumento ?? $get_id->numero,
-                'version' => $get_id->version + 1,
-                'nombre' => $request->nombre ?? $get_id->nombre,
-                'id_tipo' => $request->id_portal ?? $get_id->id_tipo,
-                'id_area' => $accesoTodo
-                    ? $list_area_string
-                    : (is_array($request->id_area_acceso_t) ? implode(',', $request->id_area_acceso_t) : $request->id_area_acceso_t ?? $get_id->id_area),
-                'fecha' => $request->fecha ?? $get_id->fecha,
-                'etiqueta' => is_array($request->etiqueta) ? implode(',', $request->etiqueta) : $request->etiqueta ?? $get_id->etiqueta,
-                'descripcion' => $request->descripcion ?? $get_id->descripcion,
-                'id_responsable' => is_array($request->id_puesto) ? implode(',', $request->id_puesto) : $request->id_puesto ?? $get_id->id_responsable,
-                'acceso' => $accesoTodo
-                    ? $list_responsable_string
-                    : (is_array($request->tipo_acceso_t) ? implode(',', $request->tipo_acceso_t) : $request->tipo_acceso_t ?? $get_id->acceso),
-                'acceso_area' => $accesoTodo
-                    ? $list_area_string
-                    : (is_array($request->id_area_acceso) ? implode(',', $request->id_area_acceso) : $request->id_area_acceso ?? $get_id->acceso_area),
-                'acceso_nivel' => $accesoTodo ? $list_niveljerarquico_string
-                    : (is_array($request->id_nivel_acceso) ? implode(',', $request->id_nivel_acceso) : $request->id_nivel_acceso ?? $get_id->acceso_nivel),
-                'acceso_gerencia' => $accesoTodo ? $list_gerencia_string
-                    : (is_array($request->id_gerencia_acceso) ? implode(',', $request->id_gerencia_acceso) : $request->id_gerencia_acceso ?? $get_id->acceso_gerencia),
-                'acceso_base' => $accesoTodo ? $list_base_string
-                    : (is_array($request->id_base_acceso) ? implode(',', $request->id_base_acceso) : $request->id_base_acceso ?? $get_id->acceso_base),
-                'acceso_todo' => $accesoTodo,
-                'div_puesto' => $accesoTodo ? 0 : (!empty($request->tipo_acceso_t) ? 1 : $get_id->div_puesto),
-                'div_base' => $accesoTodo ? 0 : (!empty($request->id_base_acceso) ? 1 : $get_id->div_base),
-                'div_area' => $accesoTodo ? 0 : (!empty($request->id_area_acceso) ? 1 : $get_id->div_area),
-                'div_nivel' => $accesoTodo ? 0 : (!empty($request->id_nivel_acceso) ? 1 : $get_id->div_nivel),
-                'div_gerencia' => $accesoTodo ? 0 : (!empty($request->id_gerencia_acceso) ? 1 : $get_id->div_gerencia),
-                'archivo' => $archivo ?? $get_id->archivo,
-                'archivo2' => $request->archivo2 ?? $get_id->archivo2,
-                'archivo3' => $request->archivo3 ?? $get_id->archivo3,
-                'archivo4' => $documento ?? $get_id->archivo4,
-                'archivo5' => $diagrama ?? $get_id->archivo5,
-                'user_aprob' => $request->user_aprob ?? $get_id->user_aprob,
-                'fec_aprob' => $request->fec_aprob ?? $get_id->fec_aprob,
-                'estado_registro' => $request->estado_registro ?? $get_id->estado_registro,
-                'estado' => $request->estado ?? $get_id->estado,
-                'fec_reg' => $get_id->fec_reg,
-                'user_reg' => $get_id->user_reg,
-                'fec_act' => now(),
-                'user_act' => auth()->id(),
-                'fec_eli' => $get_id->fec_eli,
-                'user_eli' => $get_id->user_eli,
-            ]);
-        }
 
         // Redirigir o devolver respuesta
         return redirect()->back()->with('success', 'Datos guardados exitosamente');
@@ -696,9 +643,6 @@ class ProcesosController extends Controller
 
     public function edit_lm($id)
     {
-
-        // $get_id = Procesos::findOrFail($id);
-        // $get_id = ProcesosHistorial::where('id_portal', $id)->firstOrFail();
 
         $get_id = ProcesosHistorial::where('id_portal', $id)
             ->where('version', function ($query) use ($id) {
@@ -1338,11 +1282,9 @@ class ProcesosController extends Controller
         $list_capacitacion = Capacitacion::select('capacitacion.id_capacitacion', 'capacitacion.cod_capacitacion', 'capacitacion.id_area', 'capacitacion.nom_capacitacion', 'capacitacion.descripcion', 'area.nom_area')
             ->join('area', 'capacitacion.id_area', '=', 'area.id_area')
             ->where('capacitacion.estado', 1)
-            ->orderBy('capacitacion.fec_reg', 'DESC')
+            ->orderBy('capacitacion.id_capacitacion', 'DESC')
             ->distinct('capacitacion.nom_capacitacion')
             ->get();
-
-
         return view('interna.administracion.procesos.capacitacion.lista', compact('list_capacitacion'));
     }
 

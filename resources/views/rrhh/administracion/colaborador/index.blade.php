@@ -104,6 +104,15 @@
                                     <li>
                                         <a style="cursor: pointer;"  class="nav-link" id="Accesorio" onclick="TablaAccesorio()">Accesorio</a>
                                     </li>
+                                    <li>
+                                        <a style="cursor: pointer;"  class="nav-link" id="GradoInstruccion" onclick="TablaGradoInstruccion()">Grado Instruccion</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer;"  class="nav-link" id="Zona" onclick="TablaZona()">Zona</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer;"  class="nav-link" id="ComisionAFP" onclick="TablaComisionAFP()">Comision</a>
+                                    </li>
                                 <?php } ?>
                             </div>
                         </ul>
@@ -133,6 +142,9 @@
 
     //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
     function Active_Tabla_Colaboradores() {
+        $("#ComisionAFP").removeClass('active');
+        $("#Zona").removeClass('active');
+        $("#GradoInstruccion").removeClass('active');
         $("#Accesorio").removeClass('active');
         $("#Talla").removeClass('active');
         $("#Genero").removeClass('active');
@@ -707,6 +719,66 @@
         $("#Accesorio").addClass('active');
 
         var url = "{{ url('ColaboradorConfController/Accesorio') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+    
+    function TablaGradoInstruccion() {
+        Active_Tabla_Colaboradores();
+        $("#GradoInstruccion").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Grado_Instruccion') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+    
+    function TablaZona() {
+        Active_Tabla_Colaboradores();
+        $("#Zona").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Zona') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+    
+    function TablaComisionAFP() {
+        Active_Tabla_Colaboradores();
+        $("#ComisionAFP").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Comision_AFP') }}";
         var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({

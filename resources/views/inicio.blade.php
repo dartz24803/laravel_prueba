@@ -16,7 +16,7 @@
                                         <div id="logo_logistica" class="col-sm-8">
                                             <div class="logo6" style="width: 6rem;">
                                                 <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701;height:6rem">
-                                                    <img class="imagen_1"  src="{{ asset('inicio/NEW.Intranet-Icono-Logistica.png')}}" alt="">
+                                                    <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Logistica.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Gestión Logística</p>
                                                 </div>
                                             </div>
@@ -71,14 +71,14 @@
                                                         <img src="{{ asset('/inicio/LN1-Isotipo.png') }}" alt="La número 1" style="height: 10rem;">
                                                     </div>
                                                     <?php foreach ($list_frases as $row) { ?>
-                                                    <div class="carousel-item text-center">
-                                                        <div class="d-flex justify-content-center align-items-center">
-                                                            <div class="card-body">
-                                                                <br><br>
-                                                                <h5 class="card-text" style="font-family: 'Poppins', sans-serif;">{{ $row['frase']}}</h5>
+                                                        <div class="carousel-item text-center">
+                                                            <div class="d-flex justify-content-center align-items-center">
+                                                                <div class="card-body">
+                                                                    <br><br>
+                                                                    <h5 class="card-text" style="font-family: 'Poppins', sans-serif;">{{ $row['frase']}}</h5>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
                                                     <?php } ?>
                                                 </div>
                                             </div>
@@ -180,7 +180,7 @@
                                                 <div class="col-lg-12">
                                                     <div class="row">
                                                         <div class="col-lg-12 mb-3 justify-content-center">
-                                                            <?php if(count($list_cumple)>0){ ?>
+                                                            <?php if (count($list_cumple) > 0) { ?>
                                                                 <div class="card-heading d-flex justify-content-center">
                                                                     <h5><b>Próximos cumpleaños</b></h5>
                                                                 </div>
@@ -188,181 +188,217 @@
                                                                     <div class="table-responsive">
                                                                         <table class="table" style="width:100%">
                                                                             <tbody>
-                                                                                <?php $i=0; foreach($list_cumple as $list){$i++;
-                                                                                    if($i<6){?>
-                                                                                    <tr>
-                                                                                        {{-- <td>
+                                                                                <?php $i = 0;
+                                                                                foreach ($list_cumple as $list) {
+                                                                                    $i++;
+                                                                                    if ($i < 6) { ?>
+                                                                                        <tr>
+                                                                                            {{-- <td>
                                                                                             <div class="d-flex justify-content-center">
                                                                                                 <img style="max-width:100px;max-height:70px;margin:0 10px 10px 0;" src="{{ asset('template/assets/img/torta_saludo.png')}}">
-                                                                                                <img style="max-width:70px;max-height:70px;border-radius: 10%;border: 3px solid #e0e6ed;" src="<?php if ($list['foto_nombre'] !=""){echo $get_foto[0]['url_config'].$list['foto_nombre'];}else{echo asset("template/assets/especiales/user-mini.png");}  ?>" alt="avatar" title="<?php echo $list['foto_nombre'] ?>">
-                                                                                            </div>
-                                                                                            <div class="d-flex justify-content-center">
-                                                                                                <span style="color:#3b3f71"><b><?php $nombre=explode(" ",$list['nombres_min']); echo mb_convert_case($nombre[0]." ".$list['apater_min'], MB_CASE_TITLE, "UTF-8"); ?></b></span>
-                                                                                            </div>
-                                                                                            <div class="d-flex justify-content-center">
-                                                                                                <span ><?php echo date('d', strtotime($list['cumpleanio']))." de ".strtolower($list['nom_mes']) ?></span>
-                                                                                            </div>
-                                                                                        </td>  --}}
-                                                                                    </tr>
-                                                                                <?php } }?>
-                                                                            </tbody>
-                                                                        </table>
-
-                                                                        <?php if(count($list_cumple)>5){?>
-                                                                            <div class="text-center mb-4">
-                                                                                <a class="boton" href="javascript:void(0)" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="{{ url('Corporacion/Modal_Ver_Todo_Cumpleanios') }}"><span>Ver Todos</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>
-                                                                            </div>
-                                                                        <?php } ?>
+                                                                                            <img style="max-width:70px;max-height:70px;border-radius: 10%;border: 3px solid #e0e6ed;" src="<?php if ($list['foto_nombre'] != "") {
+                                                                                                                                                                                                echo $get_foto[0]['url_config'] . $list['foto_nombre'];
+                                                                                                                                                                                            } else {
+                                                                                                                                                                                                echo asset("template/assets/especiales/user-mini.png");
+                                                                                                                                                                                            }  ?>" alt="avatar" title="<?php echo $list['foto_nombre'] ?>">
                                                                     </div>
+                                                                    <div class="d-flex justify-content-center">
+                                                                        <span style="color:#3b3f71"><b><?php $nombre = explode(" ", $list['nombres_min']);
+                                                                                                        echo mb_convert_case($nombre[0] . " " . $list['apater_min'], MB_CASE_TITLE, "UTF-8"); ?></b></span>
+                                                                    </div>
+                                                                    <div class="d-flex justify-content-center">
+                                                                        <span><?php echo date('d', strtotime($list['cumpleanio'])) . " de " . strtolower($list['nom_mes']) ?></span>
+                                                                    </div>
+                                                                    </td> --}}
+                                                                    </tr>
+                                                            <?php }
+                                                                                } ?>
+                                                            </tbody>
+                                                            </table>
+
+                                                            <?php if (count($list_cumple) > 5) { ?>
+                                                                <div class="text-center mb-4">
+                                                                    <a class="boton" href="javascript:void(0)" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="{{ url('Corporacion/Modal_Ver_Todo_Cumpleanios') }}"><span>Ver Todos</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right">
+                                                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                                            <polyline points="12 5 19 12 12 19"></polyline>
+                                                                        </svg></a>
                                                                 </div>
                                                             <?php } ?>
+                                                                </div>
                                                         </div>
+                                                    <?php } ?>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <?php foreach($list_slider_inicio as $row):
-                                    $color = '#fff';
-                                    if($row['categoria'] == 'INSTRUCTIVOS'){
-                                        $active = "text-center";
-                                        $image = asset('inicio/NEW.Intranet-Slide-04Instructivos.png');
-                                    }else if($row['categoria'] == 'POLÍTICA'){
-                                        $active = "text-center";
-                                        $image = asset('inicio/NEW.Intranet-Slide-03Politica.png');
-                                    }else if($row['categoria'] == 'MANUAL'){
-                                        $active = "text-center";
-                                        $image = asset('inicio/NEW.Intranet-Slide-02Manual.png');
-                                    }else if($row['categoria'] == 'PROCESOS'){
-                                        $active = "text-center";
-                                        $image = asset('inicio/NEW.Intranet-Slide-01Procesos.png');
-                                    }
-                                    ?>
-                                    <div class="carousel-item <?= $active ?>">
-                                        <img id="imagen_fondo_slider" style="max-width: 101%" src="<?= $image ?>">
-                                        <div id="carousel-caption" class="carousel-caption d-none d-block text-left">
-                                            <p class="mensaje_nuevo_slider" style="color: <?= $color ?>; margin-bottom: 0%; margin-left: 0.2rem"><?= $row['descripcion'] ?></p>
-                                            <span class="d-flex align-items-center titulo_slider" style="color: <?= $color ?>;"><?= $row['titulo'] ?></span>
-                                            <a  href="<?= $row['link'] ?>" target="_blank" style="max-width:100%;">
-                                                <span class="badge" style="background-color: #fea600; color:white; margin-top: 1%;">
-                                                    <img id="mano_slider" style="max-width: 10%; margin-right: 1%;" src="{{ asset('inicio/LN1-Intranet-Mano.png') }}" alt="">
-                                                    DESCÚBRELO
-                                                </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                <?php endforeach ?>
                             </div>
-                            <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            </a>
-                            <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            </a>
+                            <?php foreach ($list_slider_inicio as $row):
+                                $color = '#fff';
+                                if ($row['categoria'] == 'INSTRUCTIVOS') {
+                                    $active = "text-center";
+                                    $image = asset('inicio/NEW.Intranet-Slide-04Instructivos.png');
+                                } else if ($row['categoria'] == 'POLÍTICA') {
+                                    $active = "text-center";
+                                    $image = asset('inicio/NEW.Intranet-Slide-03Politica.png');
+                                } else if ($row['categoria'] == 'MANUAL') {
+                                    $active = "text-center";
+                                    $image = asset('inicio/NEW.Intranet-Slide-02Manual.png');
+                                } else if ($row['categoria'] == 'PROCESOS') {
+                                    $active = "text-center";
+                                    $image = asset('inicio/NEW.Intranet-Slide-01Procesos.png');
+                                }
+                            ?>
+                                <div class="carousel-item <?= $active ?>">
+                                    <img id="imagen_fondo_slider" style="max-width: 101%" src="<?= $image ?>">
+                                    <div id="carousel-caption" class="carousel-caption d-none d-block text-left">
+                                        <p class="mensaje_nuevo_slider" style="color: <?= $color ?>; margin-bottom: 0%; margin-left: 0.2rem"><?= $row['descripcion'] ?></p>
+                                        <span class="d-flex align-items-center titulo_slider" style="color: <?= $color ?>;"><?= $row['titulo'] ?></span>
+                                        <a href="<?= $row['link'] ?>" target="_blank" style="max-width:100%;">
+                                            <span class="badge" style="background-color: #fea600; color:white; margin-top: 1%;">
+                                                <img id="mano_slider" style="max-width: 10%; margin-right: 1%;" src="{{ asset('inicio/LN1-Intranet-Mano.png') }}" alt="">
+                                                DESCÚBRELO
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            <?php endforeach ?>
                         </div>
+                        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+</div>
 <style>
-    .rounded_z{
+    .rounded_z {
         border-radius: 1.1rem;
     }
 
     .zoom-card {
-        transition: transform 0.5s; /* Animación de transición suave */
+        transition: transform 0.5s;
+        /* Animación de transición suave */
     }
+
     .zoom-card:hover {
-        transform: scale(1.1); /* Efecto de zoom */
+        transform: scale(1.1);
+        /* Efecto de zoom */
         cursor: pointer;
     }
 
-    img{
+    img {
         max-width: 100%;
     }
 
     .zoom-card-2 {
-        transition: transform 1s; /* Animación de transición suave */
+        transition: transform 1s;
+        /* Animación de transición suave */
     }
+
     .zoom-card-2:hover {
-        transform: scale(1.05); /* Efecto de zoom */
+        transform: scale(1.05);
+        /* Efecto de zoom */
         cursor: pointer;
     }
+
     #container {
         background-position: center;
         background-repeat: no-repeat;
         background-size: 135rem auto;
     }
+
     @media screen and (min-width: 1051px) {
-        #logo_logistica{
+        #logo_logistica {
             margin-left: 39.5rem;
             margin-top: 6rem;
             height: 9rem;
         }
-        #logo_comercial{
+
+        #logo_comercial {
             margin-left: 4rem;
             margin-top: -2rem;
             height: 8rem;
         }
-        #logo_talento_humano{
+
+        #logo_talento_humano {
             margin-top: -4rem;
         }
-        #logo_infraestructura{
+
+        #logo_infraestructura {
             margin-left: 9rem;
             margin-top: -1rem
         }
-        #logo_interna{
+
+        #logo_interna {
             margin-left: 5rem;
         }
-        #logo_central{
+
+        #logo_central {
             margin-top: -1.5rem;
             margin-left: 3rem;
             height: 10rem;
         }
-        #logo_finanzas{
+
+        #logo_finanzas {
             margin-left: -2.5rem;
         }
-        #logo_seguridad{
+
+        #logo_seguridad {
             margin-left: -2rem;
             margin-top: 1rem;
         }
-        #logo_caja{
+
+        #logo_caja {
             margin-top: 10rem;
             height: 12rem;
         }
-        #logo_manufactura{
+
+        #logo_manufactura {
             margin-top: 5rem;
             margin-left: -1rem;
         }
-        #logo_tiendas{
+
+        #logo_tiendas {
             margin-top: 1rem
         }
     }
-    .imagen_1{
+
+    .imagen_1 {
         mix-blend-mode: multiply;
         position: absolute;
         filter: brightness(88%);
     }
-    .card-text{
+
+    .card-text {
         z-index: 9;
-        transition: opacity 1s ease; /* Transición para el texto */
+        transition: opacity 1s ease;
+        /* Transición para el texto */
         font-weight: bold;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Sombra de texto */
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        /* Sombra de texto */
     }
-    .zoom-card:hover .imagen_1{
+
+    .zoom-card:hover .imagen_1 {
         filter: none;
         mix-blend-mode: unset;
     }
-    .zoom-card:hover .card-text{
+
+    .zoom-card:hover .card-text {
         opacity: 0;
     }
 
-    i{
+    i {
         color: #00b1f4;
     }
+
     .carousel-control-prev,
     .carousel-control-next {
         background-color: gray;
@@ -378,6 +414,7 @@
             opacity: 1;
             transform: translateX(0);
         }
+
         100% {
             opacity: 0;
             transform: translateX(-30%);
@@ -390,21 +427,27 @@
             opacity: 0;
             transform: translateX(30%);
         }
+
         100% {
             opacity: 1;
             transform: translateX(0);
         }
     }
+
     /* Apply animations to carousel items */
     .carousel-item {
         transition: transform 2s ease-in-out, opacity 2s ease-in-out;
         position: absolute;
         top: 0px;
-        left: 0px;/*
+        left: 0px;
+        /*
         width: 300px;
         height: 100px;*/
     }
-    .carousel-item-next, .carousel-item-prev, .carousel-item.active {
+
+    .carousel-item-next,
+    .carousel-item-prev,
+    .carousel-item.active {
         opacity: 1;
         transform: translateX(0);
         position: relative;
@@ -419,33 +462,41 @@
     .carousel-item-prev.carousel-item-right {
         animation: sliderOutSection 2s forwards;
     }
-    .widget{
+
+    .widget {
         border: none !important;
     }
-    @media screen and (min-width: 2000px){
+
+    @media screen and (min-width: 2000px) {
         /*.w-100{
             width: 90% !important;
         }*/
     }
+
     @media screen and (max-width: 933px) {
-        #container{
+        #container {
             background-image: none !important;
         }
-        .logo6{
+
+        .logo6 {
             width: 7rem !important;
             margin-top: 0 !important;
         }
-        .zoom-card{
+
+        .zoom-card {
             height: 7rem !important;
         }
-        #logo_central{
+
+        #logo_central {
             display: none;
         }
+
         /*#logo_seguridad{
             margin-top: 2rem;
         }*/
     }
-    .titulo_slider{
+
+    .titulo_slider {
         font-size: 1.3rem;
         height: auto;
         font-weight: bold;
@@ -455,70 +506,78 @@
         text-transform: uppercase;
     }
 
-    #carousel-caption{
+    #carousel-caption {
         margin-left: -7%;
         height: 100%;
         top: 75%;
     }
 
     @media screen and (max-width: 1050px) and (min-width: 800) {
-        .mensaje_nuevo_slider{
+        .mensaje_nuevo_slider {
             font-size: medium;
         }
 
-        .titulo_slider{
+        .titulo_slider {
             font-size: x-large;
         }
 
-        #imagen_fondo_slider{
+        #imagen_fondo_slider {
             height: 144px;
         }
     }
+
     @media screen and (max-width: 799px) {
-        .titulo_slider{
+        .titulo_slider {
             font-size: x-small;
             height: 1rem;
         }
-        .mensaje_nuevo_slider{
+
+        .mensaje_nuevo_slider {
             margin-top: 15%;
             font-size: xx-small;
             height: 1rem;
         }
 
-        #carousel-caption{
+        #carousel-caption {
             top: -40%;
         }
-        #imagen_fondo_slider{
+
+        #imagen_fondo_slider {
             height: 99px;
         }
 
-        .badge{
+        .badge {
             font-size: 10px;
         }
 
-        .contenedorestilos{
+        .contenedorestilos {
             display: none;
         }
-        #logo_comercial{
+
+        #logo_comercial {
             margin-top: 1.5rem;
         }
-        #logo_infraestructura{
+
+        #logo_infraestructura {
             margin-top: 1.5rem;
         }
-        #logo_interna{
+
+        #logo_interna {
             margin-top: 1.5rem;
         }
-        #logo_finanzas{
+
+        #logo_finanzas {
             margin-top: 1.5rem;
         }
     }
 
-    @media screen and (min-width: 1900px)  {
+    @media screen and (min-width: 1900px) {
         #carousel-caption {
             margin-left: -7%;
             height: 100%;
             top: 0%;
         }
+
         .titulo_slider {
             font-size: 1.5rem;
             height: auto;
@@ -529,7 +588,7 @@
             text-transform: uppercase;
         }
 
-        .mensaje_nuevo_slider{
+        .mensaje_nuevo_slider {
             color: #fa2b5c;
             margin-bottom: 0%;
             margin-left: 0.2rem;
@@ -537,13 +596,13 @@
             margin-top: 40rem;
         }
 
-        .badge{
+        .badge {
             font-size: 10px;
             /* width: 18%; */
         }
     }
 
-    .sidebar-wrapper ul.menu-categories li.menu.menu-heading > .heading .feather-circle {
+    .sidebar-wrapper ul.menu-categories li.menu.menu-heading>.heading .feather-circle {
         display: none;
         vertical-align: sub;
         width: 9px;
@@ -556,7 +615,7 @@
 <script>
     $(document).ready(function() {
         $("#inicio").addClass('active');
-        $("#hinicio").attr('aria-expanded','true');
+        $("#hinicio").attr('aria-expanded', 'true');
         cambiarClaseSegunResolucion();
     });
 
@@ -567,9 +626,12 @@
     document.getElementById('logo_logistica').onclick = function() {
         window.location.href = "{{ route('logistica') }}";
     };
-
     document.getElementById('logo_seguridad').onclick = function() {
         window.location.href = "{{ route('seguridad') }}";
+    };
+
+    document.getElementById('logo_manufactura').onclick = function() {
+        window.location.href = "{{ route('manufactura') }}";
     };
 
     document.getElementById('logo_finanzas').onclick = function() {
@@ -592,7 +654,7 @@
         window.location.href = "{{ url('Comercial/InicioComercial') }}";
     };
 
-    function cambiarClaseSegunResolucion(){
+    function cambiarClaseSegunResolucion() {
         var ventanaAncho = $(window).width();
         console.log(ventanaAncho);
         if (350 < ventanaAncho && ventanaAncho <= 933) {
@@ -607,7 +669,7 @@
             $('#logo_caja').removeClass('col-sm-2').addClass('col-sm-4 mt-4');
             $('#logo_manufactura').removeClass('col-sm-2 align-items-start').addClass('col-sm-4 justify-content-center mt-4');
             $('#logo_tiendas').removeClass('col-sm-3 justify-content-start').addClass('col-sm-12 justify-content-center');
-        }else{
+        } else {
             $('#logo_logistica').removeClass('col-sm-4 d-flex justify-content-center').addClass('col-sm-8');
             $('#logo_comercial').removeClass('justify-content-center').addClass('justify-content-end');
             $('#logo_talento_humano').removeClass('col-sm-4').addClass('col-sm-2');
