@@ -30,4 +30,14 @@ class MercaderiaSurtidaPadre extends Model
         $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);
         return $query;
     }
+
+    public static function get_list_mercaderia_surtida_padre_vendedor($dato)
+    {
+        $sql = "SELECT mp.id,mp.estilo 
+                FROM mercaderia_surtida_padre mp
+                WHERE mp.base=? AND (SELECT COUNT(1) FROM mercaderia_surtida ms
+                WHERE ms.id_padre=mp.id)>0";
+        $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);
+        return $query;
+    }
 }
