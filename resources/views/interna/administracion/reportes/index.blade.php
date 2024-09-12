@@ -35,7 +35,7 @@
     $(document).ready(function() {
         $("#reporteconf").addClass('active');
         $("#reporteconf").attr('aria-expanded', 'true');
-        $("#dbprocesosconf").addClass('active');
+
 
         TipoIndicador();
     });

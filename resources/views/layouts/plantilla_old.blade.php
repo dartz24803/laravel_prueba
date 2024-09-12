@@ -462,6 +462,13 @@
                                     </a>
                                 </li>
                             </ul>
+                            <ul class="collapse submenu list-unstyled" id="rcapacitacion" data-parent="#accordionExample">
+                                <li>
+                                    <a id="capacitacion" href="{{ route('portalprocesos_cap') }}">
+                                        <p class="romperpalabra"><span id="icono_active2"></span> Capacitación</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     <?php } ?>
                     <!-- BI -->
@@ -576,7 +583,7 @@
                             <ul class="collapse submenu list-unstyled" id="rccvtabla" data-parent="#accordionExample">
                                 <li id="conf_administradores">
                                     <a href="{{ route('administrador_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Supervisión de tienda <br>• Seguimiento al coordinador">
-                                        <p class="romperpalabra"><span id="icono_active2"></span>Portal Procesos22</p>
+                                        <p class="romperpalabra"><span id="icono_active2"></span>Portal Procesos</p>
                                     </a>
                                 </li>
                             </ul>
