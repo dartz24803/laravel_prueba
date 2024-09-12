@@ -3331,7 +3331,8 @@ class ColaboradorConfController extends Controller
     }
     
     public function Comision_AFP(){
-        $dato['list_comision'] = ComisionAFP::where('estado', 1)
+        $dato['list_comision'] = ComisionAFP::where('afp.estado', 1)
+                            ->leftJoin('sistema_pensionario', 'sistema_pensionario.id_sistema_pensionario', '=', 'afp.id_sistema_pensionario')
                             ->get();
         return view('rrhh.administracion.colaborador.ComisionAfp.index',$dato);
     }
