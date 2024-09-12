@@ -17,6 +17,8 @@ use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
 use App\Http\Controllers\AsistenciaSegController;
 use App\Http\Controllers\BiReporteController;
+use App\Http\Controllers\CajaChicaConfController;
+use App\Http\Controllers\CajaChicaController;
 use App\Http\Controllers\CajaInicioController;
 use App\Http\Controllers\CambioPrendaConfController;
 use App\Http\Controllers\CambioPrendaController;
@@ -214,7 +216,7 @@ Route::controller(ProcesosController::class)->group(function () {
     Route::delete('portalprocesos_lm/{id}', 'destroy_lm')->name('portalprocesos_lm.destroy');
     Route::post('portalprocesos_lm/{id}', 'approve_lm')->name('portalprocesos_lm.approve');
     Route::get('portalprocesos_lm/{id}/edit', 'edit_lm')->name('portalprocesos_lm.edit');
-    Route::post('portalprocesos_lm/{id}', 'version_lm')->name('portalprocesos_lm.version');
+    Route::put('portalprocesos_lm/{id}/version', 'version_lm')->name('portalprocesos_lm.version');
     Route::put('portalprocesos_lm/{id}', 'update_lm')->name('portalprocesos_lm.update');
     Route::get('puestos-por-areas', 'getPuestosPorAreas')->name('puestos_por_areas');
 
@@ -888,7 +890,7 @@ Route::controller(CambioPrendaConfController::class)->group(function () {
 });
 //CAJA - DURACIÓN DE TRANSACCIONES
 Route::controller(DuracionTransaccionController::class)->group(function () {
-    Route::get('duracion_transaccion', 'index')->name('duracion_transaccion'); 
+    Route::get('duracion_transaccion', 'index')->name('duracion_transaccion');
     Route::post('duracion_transaccion/list', 'list')->name('duracion_transaccion.list');
     Route::get('duracion_transaccion/{inicio}/{fin}/excel', 'excel')->name('duracion_transaccion.excel');
 });
