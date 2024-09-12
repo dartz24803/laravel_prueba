@@ -2594,6 +2594,12 @@ class TrackingController extends Controller
 
     public function delete_mercaderia_surtida_app($id)
     {
-        MercaderiaSurtida::destroy($id);
+        try {
+            MercaderiaSurtida::destroy($id);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => "Error procesando base de datos.",
+            ], 500);
+        }
     }
 }
