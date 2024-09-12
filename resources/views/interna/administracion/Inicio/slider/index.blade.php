@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('navbar')
-    @include('interna.navbar')
+@include('interna.navbar')
 @endsection
 
 @section('content')
@@ -28,30 +28,29 @@
 <script>
     $(document).ready(function() {
         $("#slider_menu").addClass('active');
-        $("#inicio_slider").attr('aria-expanded','true');
+        $("#inicio_slider").attr('aria-expanded', 'true');
         $("#slider_inicio").addClass('active');
 
         Slider_Inicio_Listar();
     });
 
-    function Slider_Inicio_Listar(){
+    function Slider_Inicio_Listar() {
         Cargando();
 
-        var url="{{ url('Inicio/Slider_Inicio_Listar') }}";
+        var url = "{{ url('Inicio/Slider_Inicio_Listar') }}";
         var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({
-            url:url,
-            type:"POST",
+            url: url,
+            type: "POST",
             headers: {
                 'X-CSRF-TOKEN': csrfToken
             },
-            success:function (resp) {
+            success: function(resp) {
                 $('#lista_slider_inicio').html(resp);
             }
         });
     }
-
 </script>
 
 @endsection

@@ -88,7 +88,6 @@
 </style>
 <form id="formulario_insert" method="POST" enctype="multipart/form-data" class="needs-validation">
 
-    <!-- <form id="formulario_insert" method="POST" enctype="multipart/form-data" class="needs-validation""> -->
     <div class=" modal-header">
         <h5 class="modal-title">Registrar Nuevo Portal</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -368,89 +367,23 @@
         var dataString = new FormData(document.getElementById('formulario_insert'));
         var url = "{{ route('portalprocesos_lm.store') }}";
 
-
-        if (Valida_Insert_Funcion_Temporal()) {
-            $.ajax({
-                url: url,
-                data: dataString,
-                type: "POST",
-                processData: false,
-                contentType: false,
-                success: function(data) {
-                    swal.fire(
-                        'Registro Exitoso!',
-                        'Haga clic en el botón!',
-                        'success'
-                    ).then(function() {
-                        Lista_Maestra();
-                        $("#ModalRegistro .close").click();
-                    });
-                }
-            });
-        }
-    }
-
-    function Valida_Insert_Funcion_Temporal() {
-        if ($('#id_tipo_i').val() == 1) {
-            var mensaje = "Debe seleccionar función.";
-        } else if ($('#id_tipo_i').val() == 2) {
-            var mensaje = "Debe seleccionar tarea.";
-            if ($('#select_tarea').val() == 19) {
-                var mensaje = "Debe ingresar tarea.";
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                swal.fire(
+                    'Registro Exitoso!',
+                    'Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                    Lista_Maestra();
+                    $("#ModalRegistro .close").click();
+                });
             }
-        }
+        });
 
-        if ($('#id_usuario_i').val() === '0') {
-            Swal(
-                'Ups!',
-                'Debe seleccionar colaborador.',
-                'warning'
-            ).then(function() {});
-            return false;
-        }
-        if ($('#id_tipo_i').val() === '0') {
-            Swal(
-                'Ups!',
-                'Debe seleccionar tipo.',
-                'warning'
-            ).then(function() {});
-            return false;
-        }
-        if ($('#id_tipo_i').val() === '1') {
-            if ($('#tarea_i').val() === '0' || $('#tarea_i').val() === '') {
-                Swal(
-                    'Ups!',
-                    mensaje,
-                    'warning'
-                ).then(function() {});
-                return false;
-            }
-        } else {
-            if ($('#select_tarea').val() === '0') {
-                Swal(
-                    'Ups!',
-                    mensaje,
-                    'warning'
-                ).then(function() {});
-                return false;
-            }
-        }
-        if ($('#fecha_i').val() === '') {
-            Swal(
-                'Ups!',
-                'Debe ingresar fecha.',
-                'warning'
-            ).then(function() {});
-            return false;
-        }
-        if ($('#hora_inicio_i').val() === '') {
-            Swal(
-                'Ups!',
-                'Debe ingresar hora de inicio.',
-                'warning'
-            ).then(function() {});
-            return false;
-        }
-        return true;
     }
 </script>

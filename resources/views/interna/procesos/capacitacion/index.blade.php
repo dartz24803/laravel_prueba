@@ -20,13 +20,13 @@
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                             <li class="nav-item">
-                                <a id="a_lm" class="nav-link" onclick="ListaMaestra();" style="cursor: pointer;">Lista Maestra</a>
+                                <a id="a_cap" class="nav-link" onclick="ListaCapacitaciones();" style="cursor: pointer;">Capacitación</a>
                             </li>
 
                         </ul>
                         <div class="row" id="cancel-row">
                             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
-                                <div id="div_lista_maestra" class="widget-content widget-content-area p-3">
+                                <div id="div_lista_capacitaciones" class="widget-content widget-content-area p-3">
                                 </div>
                             </div>
                         </div>
@@ -42,22 +42,22 @@
     $(document).ready(function() {
         $("#procesos").addClass('active');
         $("#procesos").attr('aria-expanded', 'true');
-        $("#portalprocesos").addClass('active');
+        $("#capacitacion").addClass('active');
 
-        ListaMaestra();
+        ListaCapacitaciones();
     });
 
-    function ListaMaestra() {
+    function ListaCapacitaciones() {
         Cargando();
 
-        var url = "{{ route('portalprocesos_lm') }}";
+        var url = "{{ route('portalprocesos_cap') }}";
 
         $.ajax({
             url: url,
             type: "GET",
             success: function(resp) {
-                $('#div_lista_maestra').html(resp);
-                $("#a_lm").addClass('active');
+                $('#div_lista_capacitaciones').html(resp);
+                $("#a_cap").addClass('active');
             }
         });
     }

@@ -35,6 +35,8 @@ use App\Http\Controllers\FinanzaInicioController;
 use App\Http\Controllers\FinanzasInicioController;
 use App\Http\Controllers\InicioAdmController;
 use App\Http\Controllers\InicioFrasesAdmController;
+use App\Http\Controllers\InsumoConfController;
+use App\Http\Controllers\InsumoController;
 use App\Http\Controllers\LecturaServicioConfController;
 use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
@@ -218,11 +220,30 @@ Route::controller(ProcesosController::class)->group(function () {
     Route::get('portalprocesos_lm/{id}/edit', 'edit_lm')->name('portalprocesos_lm.edit');
     Route::put('portalprocesos_lm/{id}/version', 'version_lm')->name('portalprocesos_lm.version');
     Route::put('portalprocesos_lm/{id}', 'update_lm')->name('portalprocesos_lm.update');
+    Route::get('temas_por_areas', 'getTemasPorAreas')->name('temas_por_areas');
+    Route::get('capacitadores_por_areas', 'getCapacitadoresPorAreas')->name('capacitadores_por_areas');
     Route::get('puestos-por-areas', 'getPuestosPorAreas')->name('puestos_por_areas');
 
 
     // CONFIGURABLES - ADMINISTRABLES
     Route::get('portalprocesos_lm_conf', 'index_lm_conf')->name('portalprocesos_lm_conf');
+
+    // CAPACITACIÓN
+    Route::get('portalprocesoscap', 'indexcap')->name('portalprocesoscap');
+    Route::get('portalprocesos_cap', 'index_cap')->name('portalprocesos_cap');
+    Route::get('portalprocesos_cap/list', 'list_cap')->name('portalprocesos_cap.list');
+    Route::get('portalprocesos_cap/create', 'create_cap')->name('portalprocesos_cap.create');
+    Route::post('portalprocesos_cap', 'store_cap')->name('portalprocesos_cap.store');
+    Route::delete('portalprocesos_cap/{id}', 'destroy_cap')->name('portalprocesos_cap.destroy');
+    // ADMINISTRABLES - CAPACITACIÓN
+    Route::get('portalprocesoscap_conf', 'indexcap_conf')->name('portalprocesoscap_conf');
+    Route::get('portalprocesos_cap_conf', 'index_cap_conf')->name('portalprocesos_cap_conf');
+    Route::get('portalprocesos_cap_conf/list', 'list_cap_conf')->name('portalprocesos_cap_conf.list');
+    Route::get('portalprocesos_cap_conf/{id}/edit', 'edit_cap_conf')->name('portalprocesos_cap_conf.edit');
+    Route::delete('portalprocesos_cap_conf/{id}', 'destroy_cap_conf')->name('portalprocesos_cap_conf.destroy');
+    Route::post('portalprocesos_cap_conf/{id}', 'update_cap_conf')->name('portalprocesos_cap_conf.update');
+    Route::get('portalprocesos_cap_conf/create', 'create_cap_conf')->name('portalprocesos_cap_conf.create');
+    Route::post('portalprocesos_cap_conf', 'store_cap_conf')->name('portalprocesos_cap_conf.store');
 });
 
 //BI REPORTES -
@@ -247,7 +268,7 @@ Route::controller(BiReporteController::class)->group(function () {
 
 
 
-    // CONFIGURABLES - ADMINISTRABLES
+    // ADMINISTRABLES - ADMINISTRABLES
     Route::get('bireporte_ra_conf', 'index_ra_conf')->name('bireporte_ra_conf');
     Route::get('bireporte_ti_conf', 'index_ti_conf')->name('bireporte_ti_conf');
     Route::get('bireporte_ti_conf/list', 'list_tind')->name('bireporte_ti_conf.list');
@@ -919,6 +940,37 @@ Route::controller(CajaChicaConfController::class)->group(function () {
 Route::controller(CajaChicaController::class)->group(function () {
     Route::get('caja_chica', 'index')->name('caja_chica');
 });
+//CAJA - INSUMOS CONFIGURABLE
+Route::controller(InsumoConfController::class)->group(function() {
+    Route::get('insumo_conf', 'index')->name('insumo_conf');
+    Route::get('insumo_conf_in', 'index_in')->name('insumo_conf_in');
+    Route::get('insumo_conf_in/list', 'list_in')->name('insumo_conf_in.list');
+    Route::get('insumo_conf_in/create', 'create_in')->name('insumo_conf_in.create');
+    Route::post('insumo_conf_in', 'store_in')->name('insumo_conf_in.store');
+    Route::get('insumo_conf_in/{id}/edit', 'edit_in')->name('insumo_conf_in.edit');
+    Route::put('insumo_conf_in/{id}', 'update_in')->name('insumo_conf_in.update');
+    Route::delete('insumo_conf_in/{id}', 'destroy_in')->name('insumo_conf_in.destroy');
+    Route::get('insumo_conf_pr', 'index_pr')->name('insumo_conf_pr');
+    Route::get('insumo_conf_pr/list', 'list_pr')->name('insumo_conf_pr.list');
+    Route::get('insumo_conf_pr/create', 'create_pr')->name('insumo_conf_pr.create');
+    Route::post('insumo_conf_pr', 'store_pr')->name('insumo_conf_pr.store');
+    Route::get('insumo_conf_pr/{id}/edit', 'edit_pr')->name('insumo_conf_pr.edit');
+    Route::put('insumo_conf_pr/{id}', 'update_pr')->name('insumo_conf_pr.update');
+    Route::delete('insumo_conf_pr/{id}', 'destroy_pr')->name('insumo_conf_pr.destroy');
+});
+//CAJA - INSUMOS
+Route::controller(InsumoController::class)->group(function() {
+    Route::get('insumo', 'index')->name('insumo');
+    Route::get('insumo_en', 'index_en')->name('insumo_en');
+    Route::get('insumo_en/list', 'list_en')->name('insumo_en.list');
+    Route::get('insumo_en/create', 'create_en')->name('insumo_en.create');
+    Route::post('insumo_en', 'store_en')->name('insumo_en.store');
+    Route::get('insumo_en/{id}/edit', 'edit_en')->name('insumo_en.edit');
+    Route::get('insumo_en/{id}/{tipo}/download', 'download_en')->name('insumo_en.download');
+    Route::put('insumo_en/{id}', 'update_en')->name('insumo_en.update');
+    Route::delete('insumo_en/{id}', 'destroy_en')->name('insumo_en.destroy');
+});
+
 
 
 

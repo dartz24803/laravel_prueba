@@ -7,6 +7,7 @@ use App\Models\ArchivoSeguimientoCoordinador;
 use App\Models\ArchivoSupervisionTienda;
 use App\Models\Area;
 use App\Models\Base;
+use App\Models\Capacitacion;
 use App\Models\ContenidoSeguimientoCoordinador;
 use App\Models\ContenidoSupervisionTienda;
 use App\Models\DetalleSeguimientoCoordinador;
@@ -32,6 +33,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use App\Models\Notificacion;
+use App\Models\User;
 
 class ProcesosController extends Controller
 {
@@ -43,6 +45,12 @@ class ProcesosController extends Controller
         return view('interna.procesos.portalprocesos.index', compact('list_notificacion'));
     }
 
+    public function indexcap()
+    {
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('interna.procesos.capacitacion.index', compact('list_notificacion'));
+    }
 
     public function index_lm()
     {
@@ -137,8 +145,7 @@ class ProcesosController extends Controller
 
     public function create_lm()
     {
-        // $list_tipo = TipoPortal::select('id_tipo_portal', 'nom_tipo')
-        // ->get();
+
         $list_tipo = TipoPortal::select('id_tipo_portal', 'nom_tipo', 'cod_tipo')->get();
 
         $list_responsable = Puesto::select('puesto.id_puesto', 'puesto.nom_puesto', 'area.cod_area')
@@ -207,7 +214,6 @@ class ProcesosController extends Controller
     public function store_lm(Request $request)
     {
         $id = $request->input('id_portal');
-
         $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
 
         // Obtener Lista de Bases
@@ -547,6 +553,25 @@ class ProcesosController extends Controller
             'user_aprob' => session('usuario')->id_usuario
         ]);
     }
+    public function getTemasPorAreas(Request $request)
+    {
+        $idArea = $request->input('areas');
+        $idAreaInt = intval($idArea);
+        $temas = Capacitacion::where('id_area', $idAreaInt)
+            ->where('estado', 1)
+            ->get();
+        return response()->json($temas);
+    }
+    public function getCapacitadoresPorAreas(Request $request)
+    {
+        $idArea = $request->input('areas');
+        $idAreaInt = intval($idArea);
+        $capacitadores = User::where('id_area', $idAreaInt)
+            ->where('estado', 1)
+            ->get();
+        return response()->json($capacitadores);
+    }
+
 
     public function version_lm(Request $request, $id)
     {
@@ -918,5 +943,492 @@ class ProcesosController extends Controller
         header('Cache-Control: max-age=0');
 
         $writer->save('php://output');
+    }
+
+    // CAPACITACIONES
+
+    public function index_cap()
+    {
+        return view('interna.procesos.capacitacion.capacitaciones.index');
+    }
+
+
+    public function list_cap()
+    {
+
+        // Obtener la lista de procesos con los campos requeridos
+        $list_procesos = ProcesosHistorial::select(
+            'portal_procesos_historial.id_portal_historial',
+            'portal_procesos_historial.id_portal',
+            'portal_procesos_historial.codigo',
+            'portal_procesos_historial.nombre',
+            'portal_procesos_historial.version',
+            'portal_procesos_historial.id_tipo',
+            'portal_procesos_historial.id_area',
+            'portal_procesos_historial.id_responsable',
+            'portal_procesos_historial.fecha',
+            'portal_procesos_historial.estado_registro'
+        )
+            ->join(
+                DB::raw('(SELECT id_portal, MAX(version) AS max_version 
+                         FROM portal_procesos_historial 
+                         GROUP BY id_portal) as max_versions'),
+                'portal_procesos_historial.id_portal',
+                '=',
+                'max_versions.id_portal'
+            )
+            ->whereColumn('portal_procesos_historial.version', 'max_versions.max_version')
+            ->whereNotNull('portal_procesos_historial.codigo')
+            ->where('portal_procesos_historial.codigo', '!=', '')
+            ->where('portal_procesos_historial.estado', '=', 1)
+            ->orderBy('portal_procesos_historial.codigo', 'ASC')
+            ->get();
+
+
+        // Preparar un array para almacenar los nombres de las áreas y del responsable
+        foreach ($list_procesos as $proceso) {
+            // Obtener nombres de las áreas
+            $ids = explode(',', $proceso->id_area);
+            $nombresAreas = DB::table('area')
+                ->whereIn('id_area', $ids)
+                ->pluck('nom_area');
+
+            // Asignar nombres de las áreas al proceso
+            $proceso->nombres_area = $nombresAreas->implode(', ');
+            // Obtener nombre del responsable
+            $nombreResponsable = DB::table('puesto')
+                ->where('id_puesto', $proceso->id_responsable)
+                ->value('nom_puesto'); // Asumiendo que la columna del nombre es 'nombre'
+            // Obtener nombre del tipo portal
+            $nombreTipoPortal = DB::table('tipo_portal')
+                ->where('id_tipo_portal', $proceso->id_tipo)
+                ->value('nom_tipo'); // Asumiendo que la columna del nombre es 'nombre'
+
+            // Asignar nombre del responsable al proceso
+            $proceso->nombre_responsable = $nombreResponsable;
+            $proceso->nombre_tipo_portal = $nombreTipoPortal;
+
+            // Asignar texto basado en el estado
+            switch ($proceso->estado_registro) {
+                case 0:
+                    $proceso->estado_texto = 'Publicado';
+                    break;
+                case 1:
+                    $proceso->estado_texto = 'Por aprobar';
+                    break;
+                case 2:
+                    $proceso->estado_texto = 'Publicado';
+                    break;
+                case 3:
+                    $proceso->estado_texto = 'Por actualizar';
+                    break;
+                default:
+                    $proceso->estado_texto = 'Desconocido';
+                    break;
+            }
+        }
+
+        return view('interna.procesos.portalprocesos.listamaestra.lista', compact('list_procesos'));
+    }
+
+
+
+
+    public function edit_cap($id)
+    {
+
+        $get_id = ProcesosHistorial::where('id_portal', $id)
+            ->where('version', function ($query) use ($id) {
+                $query->selectRaw('MAX(version)')
+                    ->from('portal_procesos_historial')
+                    ->where('id_portal', $id);
+            })
+            ->firstOrFail();
+        $div_puesto = $get_id->div_puesto;
+
+        // Obtener el valor del campo `id_area` y convertirlo en un array
+        $selected_area_ids = explode(',', $get_id->id_area);
+        $selected_puesto_ids = explode(',', $get_id->acceso);
+
+        $list_tipo = TipoPortal::select('id_tipo_portal', 'nom_tipo')->get();
+
+
+        $list_responsable = Puesto::select('puesto.id_puesto', 'puesto.nom_puesto', 'area.cod_area')
+            ->join('area', 'puesto.id_area', '=', 'area.id_area')  // Realiza el INNER JOIN entre Puesto y Area
+            ->where('puesto.estado', 1)
+            ->orderBy('puesto.nom_puesto', 'ASC')
+            ->get()
+            ->unique('nom_puesto');
+
+        $list_area = Area::select('id_area', 'nom_area')
+            ->where('estado', 1)
+            ->orderBy('id_area', 'ASC')
+            ->get()
+            ->unique('nom_area');
+
+        // dd($list_area);
+        $list_procesos = ProcesosHistorial::select(
+            'portal_procesos_historial.id_portal_historial',
+            'portal_procesos_historial.id_portal',
+            'portal_procesos_historial.version',
+            'portal_procesos_historial.codigo',
+            'portal_procesos_historial.nombre',
+            'portal_procesos_historial.id_tipo',
+            'portal_procesos_historial.id_area',
+            'portal_procesos_historial.id_responsable',
+            'portal_procesos_historial.fecha',
+            'portal_procesos_historial.estado_registro',
+            'portal_procesos_historial.archivo',
+            'portal_procesos_historial.archivo4',
+            'portal_procesos_historial.archivo5'
+
+
+        )
+            ->where('portal_procesos_historial.id_portal', '=', $id)
+            ->where('portal_procesos_historial.estado', '=', 1)
+            ->orderBy('portal_procesos_historial.codigo', 'ASC')
+            ->get();
+
+
+        // Preparar un array para almacenar los nombres de las áreas y del responsable
+        foreach ($list_procesos as $proceso) {
+            $ids = explode(',', $proceso->id_area);
+            $nombresAreas = DB::table('area')
+                ->whereIn('id_area', $ids)
+                ->pluck('nom_area');
+
+            $proceso->nombres_area = $nombresAreas->implode(', ');
+            $nombreResponsable = DB::table('puesto')
+                ->where('id_puesto', $proceso->id_responsable)
+                ->value('nom_puesto');
+            $nombreTipoPortal = DB::table('tipo_portal')
+                ->where('id_tipo_portal', $proceso->id_tipo)
+                ->value('nom_tipo');
+
+            $proceso->nombre_responsable = $nombreResponsable;
+            $proceso->nombre_tipo_portal = $nombreTipoPortal;
+            // dd($get_id->estado_registro, gettype($get_id->estado_registro));
+            switch ($proceso->estado_registro) {
+                case 0:
+                    $proceso->estado_texto = 'Publicado';
+                    break;
+                case 1:
+                    $proceso->estado_texto = 'Por aprobar';
+                    break;
+                case 2:
+                    $proceso->estado_texto = 'Publicado';
+                    break;
+                case 3:
+                    $proceso->estado_texto = 'Por actualizar';
+                    break;
+                default:
+                    $proceso->estado_texto = 'Desconocido';
+                    break;
+            }
+        }
+        return view('interna.procesos.portalprocesos.listamaestra.modal_editar', compact(
+            'get_id',
+            'list_tipo',
+            'list_responsable',
+            'list_area',
+            'selected_area_ids',
+            'selected_puesto_ids',
+            'div_puesto',
+            'list_procesos',
+        ));
+    }
+
+    public function store_cap(Request $request)
+    {
+        $id = $request->input('id_capacitacion');
+        dd($id);
+        // Obtener Lista Responsables
+        $list_responsable = Puesto::select('id_puesto', 'nom_puesto')
+            ->where('estado', 1)
+            ->orderBy('id_puesto', 'ASC')
+            ->get()
+            ->unique('nom_puesto')
+            ->pluck('id_puesto')
+            ->toArray();
+        // Obtener Lista Area
+        $list_area = Area::select('id_area', 'nom_area')
+            ->where('estado', 1)
+            ->orderBy('id_area', 'ASC')
+            ->get()
+            ->unique('nom_area')
+            ->pluck('id_area')
+            ->toArray();
+
+        // Cargar Imagenes
+        $archivo = "";
+        $documento = "";
+        $diagrama = "";
+
+        // Crear un nuevo registro en la tabla portal_procesos_historial
+        ProcesosHistorial::create([
+            'codigo' => $request->codigo ?? 'SIN CÓDIGO',
+            'numero' => $request->ndocumento ?? '',
+            'version' => 1,
+            'nombre' => $request->nombre ?? '',
+            'id_tipo' => $request->id_portal ?? null,
+            'archivo' => $archivo ?? '',
+            'archivo2' => $request->archivo2 ?? '',
+            'archivo3' => $request->archivo3 ?? '',
+            'archivo4' => $documento ?? '',
+            'archivo5' => $diagrama ?? '',
+            'user_aprob' => $request->user_aprob ?? 0,
+            'fec_aprob' => $request->fec_aprob ?? null,
+            'estado_registro' => $request->estado_registro ?? 1,
+            'estado' => $request->estado ?? 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario,
+            'fec_eli' => null,
+            'user_eli' => null,
+
+        ]);
+    }
+
+
+
+    public function create_cap()
+    {
+        // $list_tipo = TipoPortal::select('id_tipo_portal', 'nom_tipo')
+        // ->get();
+
+        $list_users = User::select(
+            'id_usuario',
+            DB::raw("CONCAT(usuario_nombres, ' ', usuario_apater, ' ', usuario_amater) AS nombre_completo")
+        )
+            ->where('estado', 1)
+            ->havingRaw("TRIM(nombre_completo) <> ''") // Filtra los resultados para excluir nombres vacíos
+            ->orderBy('nombre_completo', 'ASC')
+            ->distinct('id_usuario')
+            ->get();
+
+
+        $list_tipo = TipoPortal::select('id_tipo_portal', 'nom_tipo', 'cod_tipo')->get();
+
+        $list_responsable = Puesto::select('puesto.id_puesto', 'puesto.nom_puesto', 'area.cod_area')
+            ->join('area', 'puesto.id_area', '=', 'area.id_area')  // Realiza el INNER JOIN entre Puesto y Area
+            ->where('puesto.estado', 1)
+            ->orderBy('puesto.nom_puesto', 'ASC')
+            ->get()
+            ->unique('nom_puesto');
+
+        // $list_puesto = NivelJerarquico::select('id_nivel', 'nom_nivel')
+        //     ->where('estado', 1)
+        //     ->get();
+        $list_area = Area::select('id_area', 'nom_area')
+            ->where('estado', 1)
+            ->orderBy('nom_area', 'ASC')
+            ->distinct('nom_area')->get();
+
+        return view('interna.procesos.capacitacion.capacitaciones.modal_registrar', compact('list_tipo', 'list_responsable', 'list_area', 'list_users'));
+    }
+
+
+    public function update_cap(Request $request, $id)
+    {
+
+        // Obtener el registro del historial de procesos
+        $get_id = ProcesosHistorial::where('id_portal_historial', $id)->firstOrFail();
+
+        // Inicializar variables para los archivos
+        $archivo = $get_id->archivo;
+        $documento = $get_id->archivo4;
+        $diagrama = $get_id->archivo5;
+
+        // Conectar al servidor FTP
+        $ftp_server = "lanumerounocloud.com";
+        $ftp_usuario = "intranet@lanumerounocloud.com";
+        $ftp_pass = "Intranet2022@";
+        $con_id = ftp_connect($ftp_server);
+        $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+
+        if ($con_id && $lr) {
+            ftp_pasv($con_id, true);
+
+            // Subir archivo 1 si se ha cargado
+            if ($request->hasFile('archivo1e')) {
+                if ($get_id->archivo) {
+                    ftp_delete($con_id, 'PORTAL_PROCESOS/' . basename($get_id->archivo));
+                }
+                $archivo = $request->file('archivo1e')->getClientOriginalName();
+                $request->file('archivo1e')->move(storage_path('app/temp'), $archivo);
+                $source_file = storage_path('app/temp/' . $archivo);
+                $subio = ftp_put($con_id, "PORTAL_PROCESOS/" . $archivo, $source_file, FTP_BINARY);
+                if (!$subio) {
+                    echo "Archivo 1 no subido correctamente";
+                }
+            }
+
+            // Subir documento si se ha cargado
+            if ($request->hasFile('documentoae')) {
+                if ($get_id->archivo4) {
+                    ftp_delete($con_id, 'PORTAL_PROCESOS/' . basename($get_id->archivo4));
+                }
+                $documento = $request->file('documentoae')->getClientOriginalName();
+                $request->file('documentoae')->move(storage_path('app/temp'), $documento);
+                $source_file_doc = storage_path('app/temp/' . $documento);
+                $subio_doc = ftp_put($con_id, "PORTAL_PROCESOS/" . $documento, $source_file_doc, FTP_BINARY);
+                if (!$subio_doc) {
+                    echo "Documento no subido correctamente";
+                }
+            }
+
+            // Subir diagrama si se ha cargado
+            if ($request->hasFile('diagramaae')) {
+                if ($get_id->archivo5) {
+                    ftp_delete($con_id, 'PORTAL_PROCESOS/' . basename($get_id->archivo5));
+                }
+                $diagrama = $request->file('diagramaae')->getClientOriginalName();
+                $request->file('diagramaae')->move(storage_path('app/temp'), $diagrama);
+                $source_file_diag = storage_path('app/temp/' . $diagrama);
+                $subio_diag = ftp_put($con_id, "PORTAL_PROCESOS/" . $diagrama, $source_file_diag, FTP_BINARY);
+                if (!$subio_diag) {
+                    echo "Diagrama no subido correctamente";
+                }
+            }
+
+            ftp_close($con_id); // Cerrar conexión FTP
+        } else {
+            echo "No se conectó al servidor FTP";
+        }
+
+        // Actualiza la tabla 'ProcesosHistorial'
+        DB::table('portal_procesos_historial')
+            ->where('id_portal_historial', $id)
+            ->update([
+                'nombre' => $request->nombre,
+                'id_tipo' => $request->id_tipo,
+                'fecha' => $request->fecha,
+                'id_responsable' => $request->id_responsablee,
+                'codigo' => $request->codigo,
+                'numero' => $request->ndocumento,
+                'version' => $request->versione,
+                'estado_registro' => $request->estadoe,
+                'descripcion' => $request->descripcione ?? '',
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+                'archivo' => $archivo,
+                'archivo4' => $documento,
+                'archivo5' => $diagrama,
+            ]);
+    }
+
+
+
+
+    // ADMINISTRABLE CAPACITACIÓN
+    public function indexcap_conf()
+    {
+
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('interna.administracion.procesos.index', compact('list_notificacion'));
+    }
+    public function index_cap_conf()
+    {
+        return view('interna.administracion.procesos.capacitacion.index');
+    }
+
+    public function list_cap_conf()
+    {
+        $list_capacitacion = Capacitacion::select('capacitacion.id_capacitacion', 'capacitacion.cod_capacitacion', 'capacitacion.id_area', 'capacitacion.nom_capacitacion', 'capacitacion.descripcion', 'area.nom_area')
+            ->join('area', 'capacitacion.id_area', '=', 'area.id_area')
+            ->where('capacitacion.estado', 1)
+            ->orderBy('capacitacion.fec_reg', 'DESC')
+            ->distinct('capacitacion.nom_capacitacion')
+            ->get();
+
+
+        return view('interna.administracion.procesos.capacitacion.lista', compact('list_capacitacion'));
+    }
+
+    public function edit_cap_conf($id)
+    {
+        $list_area = Area::select('id_area', 'nom_area')
+            ->where('estado', 1)
+            ->orderBy('id_area', 'ASC')
+            ->get()
+            ->unique('nom_area');
+        $get_id = Capacitacion::findOrFail($id);
+        return view('interna.administracion.procesos.capacitacion.modal_editar',  compact('get_id', 'list_area'));
+    }
+
+    public function destroy_cap_conf($id)
+    {
+        Capacitacion::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function create_cap_conf()
+    {
+        $list_area = Area::select('id_area', 'nom_area')
+            ->where('estado', 1)
+            ->orderBy('nom_area', 'ASC')
+            ->distinct('nom_area')->get();
+
+
+
+        return view('interna.administracion.procesos.capacitacion.modal_registrar', compact('list_area'));
+    }
+
+    public function store_cap_conf(Request $request)
+    {
+        $request->validate([
+            'nom_capa' => 'required',
+            'descripcion' => 'required',
+        ], [
+            'nom_capa.required' => 'Debe ingresar nombre.',
+            'descripcion.required' => 'Debe ingresar descripción.',
+        ]);
+        // Obtener el último código de capacitación
+        $lastCapacitacion = Capacitacion::orderBy('id_capacitacion', 'desc')->first();
+        if ($lastCapacitacion) {
+            // Extraer el número del último código (suponiendo que el código es siempre CP seguido de 5 números)
+            $lastCodeNumber = intval(substr($lastCapacitacion->cod_capacitacion, 2));
+            $newCodeNumber = $lastCodeNumber + 1;
+        } else {
+            // Si no existe un código previo, empezamos desde CP00001
+            $newCodeNumber = 1;
+        }
+
+        $newCodCapacitacion = 'CP' . str_pad($newCodeNumber, 5, '0', STR_PAD_LEFT);
+        Capacitacion::create([
+            'nom_capacitacion' => $request->nom_capa,
+            'descripcion' => $request->descripcion,
+            'cod_capacitacion' => $newCodCapacitacion,
+            'id_area' => $request->id_area,
+            'estado' => 1,
+            'orden' => '',
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function update_cap_conf(Request $request, $id)
+    {
+        $request->validate([
+            'nombrecapae' => 'required',
+            'descripcionee' => 'required',
+        ], [
+            'nombrecapae.required' => 'Debe seleccionar nombre.',
+            'descripcionee.required' => 'Debe seleccionar descripción.',
+        ]);
+
+        Capacitacion::findOrFail($id)->update([
+            'nom_capacitacion' => $request->nombrecapae,
+            'descripcion' => $request->descripcionee,
+            'id_area' => $request->id_areae,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
     }
 }
