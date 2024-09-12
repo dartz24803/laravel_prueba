@@ -218,7 +218,7 @@ Route::controller(ProcesosController::class)->group(function () {
     Route::delete('portalprocesos_lm/{id}', 'destroy_lm')->name('portalprocesos_lm.destroy');
     Route::post('portalprocesos_lm/{id}', 'approve_lm')->name('portalprocesos_lm.approve');
     Route::get('portalprocesos_lm/{id}/edit', 'edit_lm')->name('portalprocesos_lm.edit');
-    Route::post('portalprocesos_lm/{id}', 'version_lm')->name('portalprocesos_lm.version');
+    Route::put('portalprocesos_lm/{id}/version', 'version_lm')->name('portalprocesos_lm.version');
     Route::put('portalprocesos_lm/{id}', 'update_lm')->name('portalprocesos_lm.update');
     Route::get('puestos-por-areas', 'getPuestosPorAreas')->name('puestos_por_areas');
 
@@ -457,6 +457,18 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Genero', 'Insert_Genero');
     Route::post('ColaboradorConfController/Update_Genero', 'Update_Genero');
     Route::post('ColaboradorConfController/Delete_Genero', 'Delete_Genero');
+    Route::post('ColaboradorConfController/Accesorio', 'Accesorio');
+    Route::get('ColaboradorConfController/Modal_Accesorio', 'Modal_Accesorio');
+    Route::get('ColaboradorConfController/Modal_Update_Accesorio/{id}', 'Modal_Update_Accesorio');
+    Route::post('ColaboradorConfController/Insert_Accesorio', 'Insert_Accesorio');
+    Route::post('ColaboradorConfController/Update_Accesorio', 'Update_Accesorio');
+    Route::post('ColaboradorConfController/Delete_Accesorio', 'Delete_Accesorio');
+    Route::post('ColaboradorConfController/Talla', 'Talla');
+    Route::get('ColaboradorConfController/Modal_Talla', 'Modal_Talla');
+    Route::get('ColaboradorConfController/Modal_Update_Talla/{id}', 'Modal_Update_Talla');
+    Route::post('ColaboradorConfController/Insert_Talla', 'Insert_Talla');
+    Route::post('ColaboradorConfController/Update_Talla', 'Update_Talla');
+    Route::post('ColaboradorConfController/Delete_Talla', 'Delete_Talla');
     /*----------------------------------------Paolo----------------------------------*/
     // ----------------------------------------bryan----------------------------------*/
 
@@ -880,7 +892,7 @@ Route::controller(CambioPrendaConfController::class)->group(function () {
 });
 //CAJA - DURACIÓN DE TRANSACCIONES
 Route::controller(DuracionTransaccionController::class)->group(function () {
-    Route::get('duracion_transaccion', 'index')->name('duracion_transaccion'); 
+    Route::get('duracion_transaccion', 'index')->name('duracion_transaccion');
     Route::post('duracion_transaccion/list', 'list')->name('duracion_transaccion.list');
     Route::get('duracion_transaccion/{inicio}/{fin}/excel', 'excel')->name('duracion_transaccion.excel');
 });

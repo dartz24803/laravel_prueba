@@ -168,6 +168,7 @@
 
                             <div class="form-group col-md-3">
                                 <label>Versión:</label>
+
                                 <a href="javascript:void(0);" id="upgradeLink" onclick="incrementarVersion()">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="green" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up-circle">
                                         <circle cx="12" cy="12" r="10"></circle>
@@ -290,7 +291,7 @@
                         </div>
                         <div class="form-group col-md-12">
                             <label class="control-label text-bold">Acceso Área: </label>
-                            <select class="form-control multivalue" name="id_area_p[]" id="id_area_p" multiple="multiple" disabled>
+                            <select class="form-control multivalue" name="id_area_p[]" id="id_area_p" multiple="multiple">
                                 @foreach ($list_area as $area)
                                 <option value="{{ $area->id_area }}"
                                     {{ in_array($area->id_area, $selected_area_ids) ? 'selected' : '' }}>
@@ -301,7 +302,8 @@
                         </div>
                         <div class="form-group col-md-12">
                             <label class="control-label text-bold">Acceso Puesto: </label>
-                            <select class="form-control multivalue" name="tipo_acceso_p[]" id="tipo_acceso_p" multiple="multiple" disabled>
+                            <select class="form-control multivalue" name="tipo_acceso_p[]" id="tipo_acceso_p" multiple="multiple">
+                                <!-- <select class="form-control multivalue" name="tipo_acceso_p[]" id="tipo_acceso_p" multiple="multiple" disabled> -->
                                 @foreach ($list_responsable as $puesto)
                                 <option value="{{ $puesto->id_puesto }}"
                                     @if(in_array($puesto->id_puesto, $selected_puesto_ids)) selected @endif>
@@ -469,6 +471,8 @@
                 }
             });
         });
+
+
     });
 
     function Acceso_Todo() {
@@ -506,7 +510,7 @@
 
         var dataString = new FormData(document.getElementById('formularioe'));
 
-        var url = "{{ route('portalprocesos_lm.update', $get_id->id_portal) }}";
+        var url = "{{ route('portalprocesos_lm.update', $get_id->id_portal_historial) }}";
 
         $.ajax({
             url: url,
@@ -547,10 +551,15 @@
         });
     }
 
+
+
+
     function incrementarVersion() {
         // Mostrar SweetAlert de confirmación
         var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('portalprocesos_lm.store', $get_id->id_portal) }}";
+        var url = "{{ route('portalprocesos_lm.version', $get_id->id_portal) }}";
+
+
 
         Swal({
             title: '¿Estás seguro?',
@@ -598,7 +607,7 @@
                             'success'
                         ).then(function() {
                             Lista_Maestra();
-                            $("#ModalRegistro .close").click();
+                            $("#ModalUpdate .close").click();
                         });
                     },
                     error: function(xhr) {
