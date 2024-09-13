@@ -996,6 +996,16 @@ Route::controller(InsumoController::class)->group(function () {
     Route::get('insumo_en/{id}/{tipo}/download', 'download_en')->name('insumo_en.download');
     Route::put('insumo_en/{id}', 'update_en')->name('insumo_en.update');
     Route::delete('insumo_en/{id}', 'destroy_en')->name('insumo_en.destroy');
+    Route::get('insumo_ra', 'index_ra')->name('insumo_ra');
+    Route::get('insumo_ra/list_izquierda', 'list_izquierda_ra')->name('insumo_ra.list_izquierda');
+    Route::get('insumo_ra/list_derecha', 'list_derecha_ra')->name('insumo_ra.list_derecha');
+    Route::get('insumo_ra/create', 'create_ra')->name('insumo_ra.create');
+    Route::post('insumo_ra', 'store_ra')->name('insumo_ra.store');
+    Route::get('insumo_ra/{id}/edit', 'edit_ra')->name('insumo_ra.edit');
+    Route::put('insumo_ra/{id}', 'update_ra')->name('insumo_ra.update');
+    Route::delete('insumo_ra/{id}', 'destroy_ra')->name('insumo_ra.destroy');
+    Route::get('insumo_ra/excel_izquierda', 'excel_izquierda_ra')->name('insumo_ra.excel_izquierda');
+    Route::get('insumo_ra/excel_derecha', 'excel_derecha_ra')->name('insumo_ra.excel_derecha');
 });
 
 

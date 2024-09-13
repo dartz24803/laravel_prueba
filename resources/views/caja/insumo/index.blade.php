@@ -69,7 +69,7 @@
         function Reparto_Insumo(){
             Cargando();
 
-            var url="{{ route('linea_carrera_en') }}";
+            var url="{{ route('insumo_ra') }}";
 
             $.ajax({
                 url: url,
