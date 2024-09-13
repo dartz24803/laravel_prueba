@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 class RepartoInsumo extends Model
 {
     use HasFactory;
-
     
     protected $table = 'reparto_insumo';
     protected $primaryKey = 'id_reparto_insumo';

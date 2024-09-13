@@ -87,7 +87,7 @@
         function Salida_Insumo(){
             Cargando();
 
-            var url="{{ route('linea_carrera_re') }}";
+            var url="{{ route('insumo_sa') }}";
 
             $.ajax({
                 url: url,
