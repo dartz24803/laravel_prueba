@@ -169,8 +169,8 @@
 
 
                     <div class="form-group col-md-6">
-                        <label for="areass">Área: </label>
-                        <select class="form-control" name="areass" id="areass">
+                        <label for="areasse">Área1: </label>
+                        <select class="form-control" name="areasse" id="areasse">
                             @foreach ($list_area as $list)
                             <option value="{{ $list->id_area }}"
                                 {{ $list->id_area == $get_id->id_area ? 'selected' : '' }}>
@@ -178,7 +178,6 @@
                             </option>
                             @endforeach
                         </select>
-
                     </div>
                     <div class="form-group col-md-6">
                         <label class="control-label text-bold">Frec. Actualización: </label>
@@ -186,13 +185,15 @@
                             <option value="1" {{ $get_id->frecuencia_act == 1 ? 'selected' : '' }}>Minuto</option>
                             <option value="2" {{ $get_id->frecuencia_act == 2 ? 'selected' : '' }}>Hora</option>
                             <option value="3" {{ $get_id->frecuencia_act == 3 ? 'selected' : '' }}>Día</option>
-                            <option value="4" {{ $get_id->frecuencia_act == 4 ? 'selected' : '' }}>Mes</option>
+                            <option value="4" {{ $get_id->frecuencia_act == 4 ? 'selected' : '' }}>Semana</option>
+                            <option value="5" {{ $get_id->frecuencia_act == 5 ? 'selected' : '' }}>Mes</option>
+
                         </select>
                     </div>
 
                     <div class="form-group col-md-6">
                         <label for="solicitantes">Solicitante: </label>
-                        <select class="form-control" name="solicitante" id="solicitante">
+                        <select class="form-control" name="solicitantee" id="solicitantee">
                             @foreach ($list_colaborador as $list)
                             <option value="{{ $list->id_usuario }}"
                                 {{ $list->id_usuario == $get_id->id_usuario ? 'selected' : '' }}>
@@ -409,13 +410,10 @@
             });
         });
 
-        $('#areass').on('change', function() {
+        $('#areasse').on('change', function() {
             const selectedAreaUser = $(this).val();
             var url = "{{ route('usuarios_por_area') }}";
-
-            console.log('Área seleccionada:', selectedAreaUser); // Verifica que el área seleccionada se está enviando correctamente
-
-            // Hacer una solicitud AJAX para obtener los usuarios basados en el área seleccionada
+            console.log('Área seleccionada:', selectedAreaUser);
             $.ajax({
                 url: url,
                 method: 'GET',
@@ -424,18 +422,15 @@
                 },
                 success: function(response) {
                     // Vaciar el segundo select antes de agregar las nuevas opciones
-                    $('#solicitante').empty();
+                    $('#solicitantee').empty();
 
                     // Agregar las nuevas opciones
                     $.each(response, function(index, usuario) {
-                        $('#solicitante').append(
+                        $('#solicitantee').append(
                             `<option value="${usuario.id_usuario}">${usuario.nombre_completo}</option>`
                         );
                     });
 
-
-                    // Reinitialize select2 si es necesario
-                    // $('#solicitante').select2();
                 },
                 error: function(xhr) {
                     console.error('Error al obtener usuarios:', xhr);

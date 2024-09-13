@@ -181,7 +181,8 @@
                             <option value="1">Minuto</option>
                             <option value="2">Hora</option>
                             <option value="3">Día</option>
-                            <option value="4">Mes</option>
+                            <option value="4">Semana</option>
+                            <option value="5">Mes</option>
                         </select>
                     </div>
                     <div class="form-group col-md-6">
@@ -197,7 +198,8 @@
                     </div>
                     <div class="form-group col-md-12">
                         <label for="tablas">Tablas: </label>
-                        <input type="text" class="form-control" id="tablas" name="tablas" placeholder="">
+                        <textarea name="tablas" id="tablas" cols="1" rows="2" class="form-control"></textarea>
+
                     </div>
                 </div>
 
@@ -335,6 +337,7 @@
         dropdownParent: $('#ModalRegistro')
     });
 
+
     $(document).ready(function() {
         $('#id_area_acceso_t').select2({
             tags: true,
@@ -413,9 +416,7 @@
         $('#areass').on('change', function() {
             const selectedAreaUser = $(this).val();
             var url = "{{ route('usuarios_por_area') }}";
-
             console.log('Área seleccionada:', selectedAreaUser); // Verifica que el área seleccionada se está enviando correctamente
-
             // Hacer una solicitud AJAX para obtener los usuarios basados en el área seleccionada
             $.ajax({
                 url: url,
@@ -480,99 +481,40 @@
         var dataString = new FormData(document.getElementById('formulario_insert'));
         var url = "{{ route('bireporte_ra.store') }}";
 
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                swal.fire(
+                    'Registro Exitoso!',
+                    'Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                    List_Reporte();
+                    $("#ModalRegistro .close").click();
+                });
+            },
+            error: function(xhr) {
+                var errors = xhr.responseJSON.errors;
+                var firstError = Object.values(errors)[0][0];
+                Swal.fire(
+                    '¡Ups!',
+                    firstError,
+                    'warning'
+                );
+            }
+        });
 
-        if (Valida_Insert_Funcion_Temporal()) {
-            $.ajax({
-                url: url,
-                data: dataString,
-                type: "POST",
-                processData: false,
-                contentType: false,
-                success: function(data) {
-                    swal.fire(
-                        'Registro Exitoso!',
-                        'Haga clic en el botón!',
-                        'success'
-                    ).then(function() {
-                        List_Reporte();
-                        $("#ModalRegistro .close").click();
-                    });
-                },
-                error: function(xhr) {
-                    var errors = xhr.responseJSON.errors;
-                    var firstError = Object.values(errors)[0][0];
-                    Swal.fire(
-                        '¡Ups!',
-                        firstError,
-                        'warning'
-                    );
-                }
-            });
-
-        }
     }
 
-    function Valida_Insert_Funcion_Temporal() {
-        if ($('#id_tipo_i').val() == 1) {
-            var mensaje = "Debe seleccionar función.";
-        } else if ($('#id_tipo_i').val() == 2) {
-            var mensaje = "Debe seleccionar tarea.";
-            if ($('#select_tarea').val() == 19) {
-                var mensaje = "Debe ingresar tarea.";
-            }
+    // Evitar el envío del formulario cuando se presiona Enter
+    document.getElementById('formulario_insert').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Evita que el formulario se envíe
+            Insert_Funcion_Temporal(); // Llama a tu función cuando se presiona Enter
         }
-
-        if ($('#id_usuario_i').val() === '0') {
-            Swal(
-                'Ups!',
-                'Debe seleccionar colaborador.',
-                'warning'
-            ).then(function() {});
-            return false;
-        }
-        if ($('#id_tipo_i').val() === '0') {
-            Swal(
-                'Ups!',
-                'Debe seleccionar tipo.',
-                'warning'
-            ).then(function() {});
-            return false;
-        }
-        if ($('#id_tipo_i').val() === '1') {
-            if ($('#tarea_i').val() === '0' || $('#tarea_i').val() === '') {
-                Swal(
-                    'Ups!',
-                    mensaje,
-                    'warning'
-                ).then(function() {});
-                return false;
-            }
-        } else {
-            if ($('#select_tarea').val() === '0') {
-                Swal(
-                    'Ups!',
-                    mensaje,
-                    'warning'
-                ).then(function() {});
-                return false;
-            }
-        }
-        if ($('#fecha_i').val() === '') {
-            Swal(
-                'Ups!',
-                'Debe ingresar fecha.',
-                'warning'
-            ).then(function() {});
-            return false;
-        }
-        if ($('#hora_inicio_i').val() === '') {
-            Swal(
-                'Ups!',
-                'Debe ingresar hora de inicio.',
-                'warning'
-            ).then(function() {});
-            return false;
-        }
-        return true;
-    }
+    });
 </script>

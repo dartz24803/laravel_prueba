@@ -15,7 +15,7 @@ use App\Models\DetalleSeguimientoCoordinador;
 use App\Models\DetalleSupervisionTienda;
 use App\Models\DiaSemana;
 use App\Models\Gerencia;
-use App\Models\IndicadorReporteBi;
+use App\Models\IndicadorBi;
 use App\Models\Mes;
 
 use App\Models\NivelJerarquico;
@@ -306,7 +306,7 @@ class BiReporteController extends Controller
         $presentaciones = $request->input('presentacion', []);
 
         foreach ($indicadores as $index => $indicador) {
-            IndicadorReporteBi::create([
+            IndicadorBi::create([
                 'id_acceso_bi_reporte' => $biReporteId,
                 'nom_indicador' => $indicador,
                 'estado' => 1,
@@ -363,17 +363,18 @@ class BiReporteController extends Controller
         // dd($biReporte);
         // Actualizar los datos en la tabla
         $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
+        // dd($request->areasse);
         $biReporte->update([
-            'nom_bi' => $request->nombi ?? '',
-            'nom_intranet' => $request->nomintranet ?? '',
-            'actividad' => $request->actividad_bi ?? '',
+            'nom_bi' => $request->nombi,
+            'nom_intranet' => $request->nomintranet,
+            'actividad' => $request->actividad_bi,
             'acceso_todo' => $accesoTodo,
-            'id_area' => $request->areass ?? 0,
-            'id_usuario' => $request->solicitante ?? 0,
-            'frecuencia_act' => $request->frec_actualizacion ?? 1,
-            'objetivo' => $request->objetivo ?? '',
-            'tablas' => $request->tablas ?? '',
-            'iframe' => $request->iframe ?? '',
+            'id_area' => $request->areasse,
+            'id_usuario' => $request->solicitantee,
+            'frecuencia_act' => $request->frec_actualizacion,
+            'objetivo' => $request->objetivo,
+            'tablas' => $request->tablas,
+            'iframe' => $request->iframe,
             'estado' => 1,
             'estado_valid' => 0,
             'fec_act' => now(),
@@ -457,7 +458,7 @@ class BiReporteController extends Controller
             ->get()
             ->unique('nom_area');
 
-        $list_indicadores = IndicadorReporteBi::with('tipoIndicador')
+        $list_indicadores = IndicadorBi::with('tipoIndicador')
             ->select(
                 'indicadores_bi.nom_indicador',
                 'indicadores_bi.descripcion',
@@ -748,7 +749,7 @@ class BiReporteController extends Controller
             $nombresAreas = array_intersect_key($areas, array_flip($ids));
             $reporte->nombres_area = implode(', ', $nombresAreas);
             $reporte->tipo_presentacion = $reporte->presentacion == 1 ? 'Tabla' : ($reporte->presentacion == 2 ? 'Gráfico' : 'Desconocido');
-            $reporte->tipo_frecuencia = $reporte->frecuencia_act == 1 ? 'Minuto' : ($reporte->frecuencia_act == 2 ? 'Hora' : ($reporte->frecuencia_act == 3 ? 'Día' : ($reporte->frecuencia_act == 4 ? 'Mes' : 'Desconocido')));
+            $reporte->tipo_frecuencia = $reporte->frecuencia_act == 1 ? 'Minuto' : ($reporte->frecuencia_act == 2 ? 'Hora' : ($reporte->frecuencia_act == 3 ? 'Día' : ($reporte->frecuencia_act == 4 ? 'Semana' : ($reporte->frecuencia_act == 5 ? 'Mes' : 'Desconocido'))));
 
             // Calcular los días sin atención
             if ($reporte->estado_valid == 1) {
