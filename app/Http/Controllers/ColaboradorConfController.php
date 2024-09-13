@@ -2475,15 +2475,15 @@ class ColaboradorConfController extends Controller
     }
 
     public function Modal_Banco(){
-        return view('rrhh.administracion.colaborador.Banco.modal_registrar');   
+        return view('rrhh.administracion.colaborador.Banco.modal_registrar');
     }
 
     public function Insert_Banco(Request $request){
         $request->validate([
             'cod_banco' => 'required',
             'nom_banco' => 'required',
-            'digitos_cuenta' => 'required',        
-            'digitos_cci' => 'required',            
+            'digitos_cuenta' => 'required',
+            'digitos_cci' => 'required',
         ], [
             'cod_banco.required' => 'Debe ingresar codigo de banco.',
             'nom_banco.required' => 'Debe ingresar descripcion de banco.',
@@ -2522,8 +2522,8 @@ class ColaboradorConfController extends Controller
         $request->validate([
             'cod_banco' => 'required',
             'nom_banco' => 'required',
-            'digitos_cuenta' => 'required',        
-            'digitos_cci' => 'required',            
+            'digitos_cuenta' => 'required',
+            'digitos_cci' => 'required',
         ], [
             'cod_banco.required' => 'Debe ingresar codigo de banco.',
             'nom_banco.required' => 'Debe ingresar descripcion de banco.',
@@ -2632,26 +2632,26 @@ class ColaboradorConfController extends Controller
             echo "error";
         }else{
             $dato['cod_empresa']= $request->input("cod_empresa");
-            $dato['nom_empresa']= $request->input("nom_empresa"); 
-            $dato['ruc_empresa']= $request->input("ruc_empresa"); 
-            $dato['id_banco']= $request->input("id_banco"); 
-            $dato['num_cuenta']= $request->input("num_cuenta"); 
-            $dato['email_empresa']= $request->input("email_empresa"); 
-            $dato['representante_empresa']= $request->input("representante_empresa"); 
-            $dato['id_tipo_documento']= $request->input("id_tipo_documento"); 
-            $dato['num_documento']= $request->input("num_documento"); 
-            $dato['num_partida']= $request->input("num_partida"); 
-            $dato['id_departamento']= $request->input("id_departamento"); 
-            $dato['id_distrito']= $request->input("id_distrito"); 
-            $dato['id_provincia']= $request->input("id_provincia"); 
-            $dato['direccion']= $request->input("direccion"); 
-            $dato['id_regimen']= $request->input("id_regimen"); 
-            $dato['activo']= $request->input("activo"); 
-            $dato['telefono_empresa']= $request->input("telefono_empresa"); 
-            $dato['inicio_actividad']= $request->input("inicio_actividad"); 
-            $dato['dias_laborales']= $request->input("dias_laborales"); 
-            $dato['hora_dia']= $request->input("hora_dia"); 
-            $dato['aporte_senati']= $request->input("aporte_senati"); 
+            $dato['nom_empresa']= $request->input("nom_empresa");
+            $dato['ruc_empresa']= $request->input("ruc_empresa");
+            $dato['id_banco']= $request->input("id_banco");
+            $dato['num_cuenta']= $request->input("num_cuenta");
+            $dato['email_empresa']= $request->input("email_empresa");
+            $dato['representante_empresa']= $request->input("representante_empresa");
+            $dato['id_tipo_documento']= $request->input("id_tipo_documento");
+            $dato['num_documento']= $request->input("num_documento");
+            $dato['num_partida']= $request->input("num_partida");
+            $dato['id_departamento']= $request->input("id_departamento");
+            $dato['id_distrito']= $request->input("id_distrito");
+            $dato['id_provincia']= $request->input("id_provincia");
+            $dato['direccion']= $request->input("direccion");
+            $dato['id_regimen']= $request->input("id_regimen");
+            $dato['activo']= $request->input("activo");
+            $dato['telefono_empresa']= $request->input("telefono_empresa");
+            $dato['inicio_actividad']= $request->input("inicio_actividad");
+            $dato['dias_laborales']= $request->input("dias_laborales");
+            $dato['hora_dia']= $request->input("hora_dia");
+            $dato['aporte_senati']= $request->input("aporte_senati");
             $dato['firma']="";
             $dato['logo']="";
             $dato['pie']="";
@@ -2731,7 +2731,7 @@ class ColaboradorConfController extends Controller
                             echo "Archivo no subido correctamente";
                         }
                     }
-                }   
+                }
             }
             Empresas::create($dato);
         }
@@ -2801,26 +2801,26 @@ class ColaboradorConfController extends Controller
             echo "error";
         }else{
             $dato['cod_empresa']= $request->input("cod_empresa");
-            $dato['nom_empresa']= $request->input("nom_empresa"); 
-            $dato['ruc_empresa']= $request->input("ruc_empresa"); 
-            $dato['id_banco']= $request->input("id_banco"); 
-            $dato['num_cuenta']= $request->input("num_cuenta"); 
-            $dato['email_empresa']= $request->input("email_empresa"); 
-            $dato['representante_empresa']= $request->input("representante_empresa"); 
-            $dato['id_tipo_documento']= $request->input("id_tipo_documento"); 
-            $dato['num_documento']= $request->input("num_documento"); 
-            $dato['num_partida']= $request->input("num_partida"); 
-            $dato['id_departamento']= $request->input("id_departamento"); 
-            $dato['id_distrito']= $request->input("id_distrito"); 
-            $dato['id_provincia']= $request->input("id_provincia"); 
-            $dato['direccion']= $request->input("direccion"); 
-            $dato['id_regimen']= $request->input("id_regimen"); 
-            $dato['activo']= $request->input("activo"); 
-            $dato['telefono_empresa']= $request->input("telefono_empresa"); 
-            $dato['inicio_actividad']= $request->input("inicio_actividad"); 
-            $dato['dias_laborales']= $request->input("dias_laborales"); 
-            $dato['hora_dia']= $request->input("hora_dia"); 
-            $dato['aporte_senati']= $request->input("aporte_senati"); 
+            $dato['nom_empresa']= $request->input("nom_empresa");
+            $dato['ruc_empresa']= $request->input("ruc_empresa");
+            $dato['id_banco']= $request->input("id_banco");
+            $dato['num_cuenta']= $request->input("num_cuenta");
+            $dato['email_empresa']= $request->input("email_empresa");
+            $dato['representante_empresa']= $request->input("representante_empresa");
+            $dato['id_tipo_documento']= $request->input("id_tipo_documento");
+            $dato['num_documento']= $request->input("num_documento");
+            $dato['num_partida']= $request->input("num_partida");
+            $dato['id_departamento']= $request->input("id_departamento");
+            $dato['id_distrito']= $request->input("id_distrito");
+            $dato['id_provincia']= $request->input("id_provincia");
+            $dato['direccion']= $request->input("direccion");
+            $dato['id_regimen']= $request->input("id_regimen");
+            $dato['activo']= $request->input("activo");
+            $dato['telefono_empresa']= $request->input("telefono_empresa");
+            $dato['inicio_actividad']= $request->input("inicio_actividad");
+            $dato['dias_laborales']= $request->input("dias_laborales");
+            $dato['hora_dia']= $request->input("hora_dia");
+            $dato['aporte_senati']= $request->input("aporte_senati");
             $dato['firma']="";
             $dato['logo']="";
             $dato['pie']="";
@@ -2900,7 +2900,7 @@ class ColaboradorConfController extends Controller
                             echo "Archivo no subido correctamente";
                         }
                     }
-                }   
+                }
             }
             Empresas::findOrFail($request->id_empresa)->update($dato);
         }
@@ -2921,7 +2921,7 @@ class ColaboradorConfController extends Controller
     }
 
     public function Modal_Genero(){
-        return view('rrhh.administracion.colaborador.Genero.modal_registrar');   
+        return view('rrhh.administracion.colaborador.Genero.modal_registrar');
     }
 
     public function Insert_Genero(Request $request){
@@ -2985,7 +2985,7 @@ class ColaboradorConfController extends Controller
         $dato['user_eli'] = session('usuario')->id_usuario;
         Genero::findOrFail($request->input("id_genero"))->update($dato);
     }
-    
+
     public function Accesorio(){
         $dato['list_accesorio'] = Accesorio::where('estado', 1)
                             ->get();
@@ -2993,7 +2993,7 @@ class ColaboradorConfController extends Controller
     }
 
     public function Modal_Accesorio(){
-        return view('rrhh.administracion.colaborador.Accesorio.modal_registrar');   
+        return view('rrhh.administracion.colaborador.Accesorio.modal_registrar');
     }
 
     public function Insert_Accesorio(Request $request){
@@ -3054,14 +3054,14 @@ class ColaboradorConfController extends Controller
         $dato['list_talla'] = Talla::where('talla.estado', 1)
                         ->leftJoin('accesorio', 'accesorio.id_accesorio', '=', 'talla.id_accesorio')
                         ->get();
-    
-        return view('rrhh.administracion.colaborador.Talla.index', $dato);    
+
+        return view('rrhh.administracion.colaborador.Talla.index', $dato);
     }
 
     public function Modal_Talla(){
         $dato['list_accesorio'] = Accesorio::where('estado',1)
                                 ->get();
-        return view('rrhh.administracion.colaborador.Talla.modal_registrar', $dato);   
+        return view('rrhh.administracion.colaborador.Talla.modal_registrar', $dato);
     }
 
     public function Insert_Talla(Request $request){
@@ -3135,16 +3135,16 @@ class ColaboradorConfController extends Controller
         $dato['user_eli'] = session('usuario')->id_usuario;
         Talla::findOrFail($request->input("id_talla"))->update($dato);
     }
-    
+
     public function Grado_Instruccion(){
         $dato['list_grado_instruccion'] = GradoInstruccion::where('estado', 1)
                         ->get();
-    
-        return view('rrhh.administracion.colaborador.GradoInstruccion.index', $dato);    
+
+        return view('rrhh.administracion.colaborador.GradoInstruccion.index', $dato);
     }
 
     public function Modal_Grado_Instruccion(){
-        return view('rrhh.administracion.colaborador.GradoInstruccion.modal_registrar');   
+        return view('rrhh.administracion.colaborador.GradoInstruccion.modal_registrar');
     }
 
     public function Insert_Grado_Instruccion(Request $request){
@@ -3208,7 +3208,7 @@ class ColaboradorConfController extends Controller
         $dato['user_eli'] = session('usuario')->id_usuario;
         GradoInstruccion::findOrFail($request->input("id_grado_instruccion"))->update($dato);
     }
-    
+
     public function Zona(){
         $dato['list_zona'] = Zona::where('estado', 1)
                             ->get();
@@ -3216,7 +3216,7 @@ class ColaboradorConfController extends Controller
     }
 
     public function Modal_Zona(){
-        return view('rrhh.administracion.colaborador.Zona.modal_registrar');   
+        return view('rrhh.administracion.colaborador.Zona.modal_registrar');
     }
 
     public function Insert_Zona(Request $request){
@@ -3280,7 +3280,7 @@ class ColaboradorConfController extends Controller
         $dato['user_eli'] = session('usuario')->id_usuario;
         Zona::findOrFail($request->input("id_zona"))->update($dato);
     }
-    
+
     public function Excel_ZonaPL(){
             $data = Zona::where('estado', 1)
                     ->get();
@@ -3307,7 +3307,7 @@ class ColaboradorConfController extends Controller
             $start = 3;
             foreach($data as $d){
                 $start = $start+1;
-                
+
                 $spreadsheet->getActiveSheet()->setCellValue("A{$start}", $d['numero']);
                 $spreadsheet->getActiveSheet()->setCellValue("B{$start}", $d['descripcion']);
 
@@ -3323,76 +3323,90 @@ class ColaboradorConfController extends Controller
             $filename = 'T6 Zona_'.$curdate;
             if (ob_get_contents()) ob_end_clean();
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+            header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"');
             header('Cache-Control: max-age=0');
-        
+
             $writer = IOFactory::createWriter($spreadsheet,'Xlsx');
             $writer->save('php://output');
     }
-    
+
     public function Comision_AFP(){
         $dato['list_comision'] = ComisionAFP::where('afp.estado', 1)
                             ->leftJoin('sistema_pensionario', 'sistema_pensionario.id_sistema_pensionario', '=', 'afp.id_sistema_pensionario')
                             ->get();
-        return view('rrhh.administracion.colaborador.ComisionAfp.index',$dato);
+        return view('rrhh.administracion.colaborador.Comision.index',$dato);
     }
 
     public function Modal_Comision_AFP(){
-        return view('rrhh.administracion.colaborador.ComisionAfp.modal_registrar');   
+        $list_sistema_pensionario = DB::table('sistema_pensionario')
+                                    ->select('*')
+                                    ->get();
+        return view('rrhh.administracion.colaborador.Comision.modal_registrar', compact('list_sistema_pensionario'));
     }
 
     public function Insert_Comision_AFP(Request $request){
         $request->validate([
-            'cod_genero' => 'required',
-            'nom_genero' => 'required',
+            'id_sistema_pensionario' => 'not_in:0',
+            'cod_comision' => 'required',
+            'nom_comision' => 'required',
         ],[
-            'cod_genero' => 'Debe ingresar código de género',
-            'nom_genero' => 'Debe ingresar nombre de genero',
+            'id_sistema_pensionario' => 'Debe seleccionar sistema pensionario',
+            'cod_comision' => 'Debe ingresar código de comision',
+            'nom_comision' => 'Debe ingresar nombre de comision',
         ]);
-        $valida = ComisionAFP::where('cod_genero', $request->cod_genero)
-                ->where('nom_genero', $request->nom_genero)
+        $valida = ComisionAFP::where('id_sistema_pensionario', $request->id_sistema_pensionario)
+                ->where('cod_afp', $request->cod_comision)
+                ->where('nom_afp', $request->nom_comision)
                 ->where('estado', 1)
                 ->exists();
         if ($valida){
             echo "error";
         }else{
-            $dato['cod_genero']= $request->input("cod_genero");
-            $dato['nom_genero']= $request->input("nom_genero");
+            $dato['id_sistema_pensionario']= $request->input("id_sistema_pensionario");
+            $dato['cod_afp']= $request->input("cod_comision");
+            $dato['nom_afp']= $request->input("nom_comision");
             $dato['estado'] = 1;
             $dato['fec_reg'] = now();
             $dato['fec_act'] = now();
             $dato['user_act'] = session('usuario')->id_usuario;
             $dato['user_reg'] = session('usuario')->id_usuario;
-            Comision_AFP::create($dato);
+            ComisionAFP::create($dato);
         }
     }
 
-    public function Modal_Update_Comision_AFP($id_genero){
-        $dato['get_id'] = Comision_AFP::where('id_genero', $id_genero)
+    public function Modal_Update_Comision_AFP($id_afp){
+        $dato['list_sistema_pensionario'] = DB::table('sistema_pensionario')
+                                    ->select('*')
+                                    ->get();
+        $dato['get_id'] = ComisionAFP::where('id_afp', $id_afp)
                         ->get();
-        return view('rrhh.administracion.colaborador.ComisionAfp.modal_editar',$dato);
+        return view('rrhh.administracion.colaborador.Comision.modal_editar',$dato);
     }
 
     public function Update_Comision_AFP(Request $request){
         $request->validate([
-            'cod_genero' => 'required',
-            'nom_genero' => 'required',
+            'id_sistema_pensionario' => 'not_in:0',
+            'cod_comision' => 'required',
+            'nom_comision' => 'required',
         ],[
-            'cod_genero' => 'Debe ingresar código de género',
-            'nom_genero' => 'Debe ingresar nombre de genero',
+            'id_sistema_pensionario' => 'Debe seleccionar sistema pensionario',
+            'cod_comision' => 'Debe ingresar código de comision',
+            'nom_comision' => 'Debe ingresar nombre de comision',
         ]);
-        $valida = Comision_AFP::where('cod_genero', $request->cod_genero)
-                ->where('nom_genero', $request->nom_genero)
+        $valida = ComisionAFP::where('id_sistema_pensionario', $request->id_sistema_pensionario)
+                ->where('cod_afp', $request->cod_comision)
+                ->where('nom_afp', $request->nom_comision)
                 ->where('estado', 1)
                 ->exists();
         if ($valida){
             echo "error";
         }else{
-            $dato['cod_genero']= $request->input("cod_genero");
-            $dato['nom_genero']= $request->input("nom_genero");
+            $dato['id_sistema_pensionario']= $request->input("id_sistema_pensionario");
+            $dato['cod_afp']= $request->input("cod_comision");
+            $dato['nom_afp']= $request->input("nom_comision");
             $dato['fec_act'] = now();
             $dato['user_act'] = session('usuario')->id_usuario;
-            Comision_AFP::findOrFail($request->input("id_genero"))->update($dato);
+            ComisionAFP::findOrFail($request->input("id_comision"))->update($dato);
         }
     }
 
@@ -3400,7 +3414,7 @@ class ColaboradorConfController extends Controller
         $dato['estado'] = 2;
         $dato['fec_eli'] = now();
         $dato['user_eli'] = session('usuario')->id_usuario;
-        Comision_AFP::findOrFail($request->input("id_genero"))->update($dato);
+        ComisionAFP::findOrFail($request->input("id_comision"))->update($dato);
     }
     /*---------------------------------------------------------Paolo*/
 
