@@ -105,7 +105,8 @@
         }
 
         function Reporte_Insumo(){
-            Cargando();
+            alert('Aún no funciona');
+            /*Cargando();
 
             var url="{{ route('linea_carrera_re') }}";
 
@@ -119,7 +120,7 @@
                     $("#a_sins").removeClass('active');
                     $("#a_roins").addClass('active');
                 }
-            });
+            });*/
         }
     </script>
 @endsection
