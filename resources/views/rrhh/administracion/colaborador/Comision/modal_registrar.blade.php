@@ -1,6 +1,6 @@
-<form id="formulario_registrar_banco" method="POST" enctype="multipart/form-data" class="needs-validation">
+<form id="formulario_registro_comision" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
-        <h5 class="modal-title">Registrar Nuevo Banco</h5>
+        <h5 class="modal-title">Registrar Nueva Comisión</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
@@ -9,46 +9,43 @@
     <div class="modal-body" style="max-height:450px; overflow:auto;">
         <div class="col-md-12 row">
             <div class="form-group col-md-2">
-                <label class="col-sm-3 control-label text-bold">Siglas: </label>
+                <label class="control-label text-bold">Sistema Pensionario:</label>
             </div>
-            <div class="form-group col-sm-3">
-                <input type="text" class="form-control" id="cod_banco" name="cod_banco" placeholder="Siglas" autofocus>
-            </div>
-
-            <div class="form-group col-md-2">
-                <label class="col-sm-3 control-label text-bold">Banco:</label>
-            </div>
-            <div class="form-group col-sm-5">
-                <input type="text" class="form-control" id="nom_banco" name="nom_banco" placeholder="Ingresar Nombre de Banco" autofocus>
+            <div class="form-group col-sm-4">
+                <select class="form-control" name="id_sistema_pensionario" id="id_sistema_pensionario" onchange="area()">
+                <option value="0" >Seleccionar</option>
+                <?php foreach($list_sistema_pensionario as $list){ ?>
+                    <option value="<?php echo $list->id_sistema_pensionario; ?>"><?php echo $list->cod_sistema_pensionario ?></option>
+                <?php } ?>
+                </select>
             </div>
 
             <div class="form-group col-md-2">
-                <label class="col-sm-3 control-label text-bold">Digitos Cuenta:</label>
+                <label class="control-label text-bold">Código:</label>
             </div>
-            <div class="form-group col-sm-3">
-                <input type="number" class="form-control" id="digitos_cuenta" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-    maxlength = "2"   name="digitos_cuenta" placeholder="N° Cuenta">
+            <div class="form-group col-sm-4">
+                <input type="text" class="form-control" id="cod_comision" name="cod_comision" placeholder="Código">
             </div>
 
             <div class="form-group col-md-2">
-                <label class="col-sm-3 control-label text-bold">Digitos CCI:</label>
+                <label class="control-label text-bold">Nombre:</label>
             </div>
-            <div class="form-group col-sm-3">
-                <input type="number" class="form-control" id="digitos_cci"  oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-    maxlength = "2" name="digitos_cci" placeholder="N° CCI">
+            <div class="form-group col-sm-10">
+                <input type="text" class="form-control" id="nom_comision" name="nom_comision" placeholder="Nombre">
             </div>
         </div>
     </div>
 
     <div class="modal-footer">
-        <button class="btn btn-primary mt-3" type="button" onclick="Insert_Banco();">Guardar</button>
+        <button class="btn btn-primary mt-3" type="button" onclick="Insert_Comision();">Guardar</button>
         <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
+
 <script>
-function Insert_Banco(){
-    var dataString = $("#formulario_registrar_banco").serialize();
-    var url="{{ url('ColaboradorConfController/Insert_Banco') }}";
+function Insert_Comision(){
+    var dataString = $("#formulario_registro_comision").serialize();
+    var url="{{ url('ColaboradorConfController/Insert_Comision_AFP') }}";
     var csrfToken = $('input[name="_token"]').val();
 
     $.ajax({
@@ -75,7 +72,7 @@ function Insert_Banco(){
                     'success'
                 ).then(function() {
                     $("#ModalRegistro .close").click();
-                    TablaBanco();
+                    TablaComisionAFP();
                 });
             }
         },
