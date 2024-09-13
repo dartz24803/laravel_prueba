@@ -7,7 +7,7 @@
     </div>
 </div>
 
-<div class="table-responsive mb-4 mt-4" id="lista_entrada_insumo">
+<div class="table-responsive mb-4" id="lista_entrada_insumo">
 </div>
 
 <script>
