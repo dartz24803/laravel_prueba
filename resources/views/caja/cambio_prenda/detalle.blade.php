@@ -15,10 +15,10 @@
                 <td class="text-left">{{ $list->c_arti_desc }}</td>
                 <td>{{ $list->n_cant_vent }}</td>
                 <td>
-                    <input type="checkbox" name="devolver[]" value="{{ $list->c_nume_docu.'_'.$list->n_codi_arti }}">
+                    <input type="checkbox" name="devolver{{ $valida }}[]" value="{{ $list->c_nume_docu.'_'.$list->n_codi_arti }}">
                 </td>
                 <td>
-                    <input type="text" class="form-control" name="cant_{{ $list->c_nume_docu.'_'.$list->n_codi_arti }}" placeholder="#" onkeypress="return solo_Numeros(event);">
+                    <input type="text" class="form-control" name="cant_{{ $list->c_nume_docu.'_'.$list->n_codi_arti.$valida }}" placeholder="#" onkeypress="return solo_Numeros(event);">
                 </td>
             </tr>
         @endforeach                                       

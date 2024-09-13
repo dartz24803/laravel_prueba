@@ -58,8 +58,6 @@
 
 
         <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('portalprocesos_lm.create') }}">
-
-            <!-- <button type="button" class="btn btn-primary mb-2 mb-sm-0 mb-md-2 mb-lg-0" title="Registrar" data-target="#ModalRegistro" app_reg="{{ route('portalprocesos_lm.create') }}"> -->
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                 <line x1="12" y1="8" x2="12" y2="16"></line>
@@ -118,8 +116,8 @@
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({
-            title: '¿Realmente desea eliminar el registro1111?',
-            text: "El registro será eliminado permanentemente1111",
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Si',

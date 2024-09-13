@@ -92,7 +92,27 @@
                                     <li>
                                         <a style="cursor: pointer;"  class="nav-link" id="Empresa" onclick="TablaEmpresa()">Empresa</a>
                                     </li>
-                                    {{-- empresas(administracion finanzas), --}}
+                                    <li>
+                                        <a style="cursor: pointer;"  class="nav-link" id="Banco" onclick="TablaBanco()">Banco</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer;"  class="nav-link" id="Genero" onclick="TablaGenero()">Genero</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer;"  class="nav-link" id="Talla" onclick="TablaTalla()">Talla</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer;"  class="nav-link" id="Accesorio" onclick="TablaAccesorio()">Accesorio</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer;"  class="nav-link" id="GradoInstruccion" onclick="TablaGradoInstruccion()">Grado Instruccion</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer;"  class="nav-link" id="Zona" onclick="TablaZona()">Zona</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer;"  class="nav-link" id="ComisionAFP" onclick="TablaComisionAFP()">Comision</a>
+                                    </li>
                                 <?php } ?>
                             </div>
                         </ul>
@@ -122,6 +142,13 @@
 
     //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
     function Active_Tabla_Colaboradores() {
+        $("#ComisionAFP").removeClass('active');
+        $("#Zona").removeClass('active');
+        $("#GradoInstruccion").removeClass('active');
+        $("#Accesorio").removeClass('active');
+        $("#Talla").removeClass('active');
+        $("#Genero").removeClass('active');
+        $("#Banco").removeClass('active');
         $("#Empresa").removeClass('active');
         $("#TipoVivienda").removeClass('active');
         $("#TipoVia").removeClass('active');
@@ -626,6 +653,146 @@
             }
         });
     }
-        /*--------------------------------------------Paolo-----------------------------------------------*/
+
+    function TablaBanco() {
+        Active_Tabla_Colaboradores();
+        $("#Banco").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Banco') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+
+    function TablaGenero() {
+        Active_Tabla_Colaboradores();
+        $("#Genero").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Genero') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+
+    function TablaTalla() {
+        Active_Tabla_Colaboradores();
+        $("#Talla").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Talla') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+    
+    function TablaAccesorio() {
+        Active_Tabla_Colaboradores();
+        $("#Accesorio").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Accesorio') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+    
+    function TablaGradoInstruccion() {
+        Active_Tabla_Colaboradores();
+        $("#GradoInstruccion").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Grado_Instruccion') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+    
+    function TablaZona() {
+        Active_Tabla_Colaboradores();
+        $("#Zona").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Zona') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+    
+    function TablaComisionAFP() {
+        Active_Tabla_Colaboradores();
+        $("#ComisionAFP").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Comision_AFP') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+    /*--------------------------------------------Paolo-----------------------------------------------*/
 </script>
 @endsection

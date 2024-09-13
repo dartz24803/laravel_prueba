@@ -20,7 +20,7 @@
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                             <li class="nav-item">
-                                <a id="a_reg" class="nav-link" onclick="ListaMaestra();" style="cursor: pointer;">Lista Maestra</a>
+                                <a id="a_lm" class="nav-link" onclick="ListaMaestra();" style="cursor: pointer;">Lista Maestra</a>
                             </li>
 
                         </ul>
@@ -57,8 +57,7 @@
             type: "GET",
             success: function(resp) {
                 $('#div_lista_maestra').html(resp);
-                $("#a_reg").addClass('active');
-                $("#a_img").removeClass('active');
+                $("#a_lm").addClass('active');
             }
         });
     }

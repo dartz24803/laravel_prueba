@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id('id_grado_instruccion');
             $table->string('cod_grado_instruccion',10)->nullable();
             $table->string('nom_grado_instruccion',50)->nullable();
-            $table->integer('estado');
-            $table->dateTime('fec_reg');
-            $table->integer('user_reg');
-            $table->dateTime('fec_act');
-            $table->integer('user_act');
+            $table->integer('estado')->nullable();
+            $table->dateTime('fec_reg')->nullable();
+            $table->integer('user_reg')->nullable();
+            $table->dateTime('fec_act')->nullable();
+            $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
             //$table->timestamps();

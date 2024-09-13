@@ -36,7 +36,14 @@
         <ul class="collapse submenu list-unstyled" id="rprocesos" data-parent="#accordionExample">
             <li>
                 <a id="portalprocesos" href="{{ route('portalprocesos') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Portal Procesos</p>
+                    <p class="romperpalabra"><span id="icono_active2"></span> Portal Procesos222</p>
+                </a>
+            </li>
+        </ul>
+        <ul class="collapse submenu list-unstyled" id="rprocesos" data-parent="#accordionExample">
+            <li>
+                <a id="capacitacion" href="{{ route('portalprocesoscap') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Capacitación</p>
                 </a>
             </li>
         </ul>
@@ -162,15 +169,17 @@
     session('usuario')->id_puesto == 158 || session('usuario')->id_puesto == 9 || session('usuario')->id_puesto == 128 ||
     session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 10
 ) { ?>
-    <!-- <li class="menu" id="procesosconf">
-        <a href="#rprocesos" id="hprocesos" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+    <li class="menu" id="reporteconf">
+        <a href="#rreportebiconf" id="hreportebiconf" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div class="">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
                     <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
                     <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
                     <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
                 </svg>
-                <span>Procesos</span>
+                <span>ReporteBI
+
+                </span>
             </div>
             <div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
@@ -179,14 +188,14 @@
             </div>
         </a>
 
-        <ul class="collapse submenu list-unstyled" id="rprocesos" data-parent="#accordionExample">
+        <ul class="collapse submenu list-unstyled" id="rreportebiconf" data-parent="#accordionExample">
             <li>
-                <a id="portalprocesosconf" href="{{ route('portalprocesos_lm_conf') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Portal Procesos</p>
+                <a id="dbreporteconf" href="{{ route('bireporte_ra_conf') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Tipo Indicadores </p>
                 </a>
             </li>
         </ul>
-    </li> -->
+    </li>
 <?php } ?>
 
 
@@ -203,15 +212,15 @@
     session('usuario')->id_puesto == 158 || session('usuario')->id_puesto == 9 || session('usuario')->id_puesto == 128 ||
     session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 10
 ) { ?>
-    <!-- <li class="menu" id="biconf">
-        <a href="#rbi" id="hbi" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+    <li class="menu" id="procesoconf">
+        <a href="#rprocesosconf" id="hprocesosconf" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
             <div class="">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
                     <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
                     <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
                     <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
                 </svg>
-                <span>BI</span>
+                <span>Procesos</span>
             </div>
             <div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
@@ -220,12 +229,12 @@
             </div>
         </a>
 
-        <ul class="collapse submenu list-unstyled" id="rbi" data-parent="#accordionExample">
+        <ul class="collapse submenu list-unstyled" id="rprocesosconf" data-parent="#accordionExample">
             <li>
-                <a id="repbiconf" href="{{ route('bireporte_ra_conf') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Reporte</p>
+                <a id="repbiconf" href="{{ route('portalprocesoscap_conf') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Tema Capacitaciones</p>
                 </a>
             </li>
         </ul>
-    </li> -->
+    </li>
 <?php } ?>

@@ -66,7 +66,7 @@
                 <img src="{{ asset('inicio/Grupo-LN1.png') }}" class="navbar-logo ajuste1" alt="logo">
             </a>
             <ul class="navbar-item flex-row ml-auto">
-                <li class="nav-item dropdown notification-dropdown">
+                <li class="nav-item dropdown notification-dropdown mr-4">
                     <a href="javascript:void(0);" class="nav-link dropdown-toggle" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">
                             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
@@ -76,40 +76,45 @@
                     <div class="dropdown-menu position-absolute" aria-labelledby="notificationDropdown">
                         <div class="notification-scroll">
                             @if (count($list_notificacion)>0)
-                                @foreach ($list_notificacion as $list)
-                                    <div class="dropdown-item">
-                                        <a onclick="Update_Notificacion_Leido('{{ $list->id_notificacion }}','{{ $list->id_tipo }}');">
-                                            <div class="media">
-                                                {!! $list->icono !!}
-                                                <div class="media-body">
-                                                    <div class="data-info">
-                                                        <h6 class="">{{ $list->mensaje." ".$list->solicitante }}</h6>
-                                                        <p class="">{{ $list->fecha }}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                @endforeach
-                            @else
-                                <div class="dropdown-item">
+                            @foreach ($list_notificacion as $list)
+                            <div class="dropdown-item">
+                                <a onclick="Update_Notificacion_Leido('{{ $list->id_notificacion }}','{{ $list->id_tipo }}');">
                                     <div class="media">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-slash">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
-                                        </svg>
+                                        {!! $list->icono !!}
                                         <div class="media-body">
                                             <div class="data-info">
-                                                <h6 class="">Usted no tiene notificaciones nuevas.</h6>
+                                                <h6 class="">{{ $list->mensaje." ".$list->solicitante }}</h6>
+                                                <p class="">{{ $list->fecha }}</p>
                                             </div>
                                         </div>
                                     </div>
+                                </a>
+                            </div>
+                            @endforeach
+                            @else
+                            <div class="dropdown-item">
+                                <div class="media">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-slash">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                                    </svg>
+                                    <div class="media-body">
+                                        <div class="data-info">
+                                            <h6 class="">Usted no tiene notificaciones nuevas.</h6>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
                             @endif
                         </div>
                     </div>
                 </li>
-
+                <li class="d-flex justify-content-center align-items-center">
+                    <a class="text-light text-center" style="font-size: 0.5rem">
+                        {{ explode(' ', session('usuario')->usuario_nombres)[0] }}
+                        {{ session('usuario')->nom_area }}
+                    </a>
+                </li>
                 <li class="nav-item dropdown user-profile-dropdown  order-lg-0 order-1">
                     <a href="javascript:void(0);" class="nav-link dropdown-toggle user" id="userProfileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
@@ -227,7 +232,7 @@
                 });
         }
 
-        function Update_Notificacion_Leido(id,id_tipo){
+        function Update_Notificacion_Leido(id, id_tipo) {
             Cargando();
 
             var url = "{{ route('notificacion.update_leido', ':id') }}".replace(':id', id);
@@ -235,22 +240,24 @@
             $.ajax({
                 type: "PUT",
                 url: url,
-                data: {'id_notificacion': id},
+                data: {
+                    'id_notificacion': id
+                },
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 success: function(resp) {
-                    if(id_tipo == "44"){
+                    if (id_tipo == "44") {
                         window.location = "{{ route('linea_carrera') }}";
-                    }else if(id_tipo == "45"){
+                    } else if (id_tipo == "45") {
                         window.location = "{{ route('inicio') }}";
-                    }else if(id_tipo == "46"){
+                    } else if (id_tipo == "46") {
                         window.open("{{ route('linea_carrera.evaluacion', ':id') }}".replace(':id', resp), "_blank");
-                    }else if(id_tipo == "47"){
+                    } else if (id_tipo == "47") {
                         window.location = "{{ route('linea_carrera') }}";
-                    }else if(id_tipo == "6"){
+                    } else if (id_tipo == "6") {
                         window.location = "{{ route('inicio') }}";
-                    }else{
+                    } else {
                         window.location = "{{ route('inicio') }}";
                     }
                 }
@@ -344,13 +351,17 @@
             color: #00b1f4;
             font-weight: bold;
         }
+
         /* Estilo para la barra de desplazamiento (scrollbar) */
         .d-flex.overflow-auto {
-        scrollbar-width: thin; /* Firefox */
-        scrollbar-color: #fea701 #f0f3f3; /* Color del thumb y del fondo en Firefox */
+            scrollbar-width: thin;
+            /* Firefox */
+            scrollbar-color: #fea701 #f0f3f3;
+            /* Color del thumb y del fondo en Firefox */
         }
-        #scroll_tabs{
-            background: #f0f3f3;
+
+        #scroll_tabs {
+            background: white;
             border-radius: 10px;
         }
     </style>
@@ -504,7 +515,7 @@
             display: none !important;
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 900px) {
             #div_imagen_header {
                 display: none
             }

@@ -28,14 +28,26 @@ use App\Models\SituacionLaboral;
 use App\Models\TipoContrato;
 use App\Models\TipoDocumento;
 use App\Models\GrupoSanguineo;
-//-----------ppp---------------
 use App\Models\TipoVia;
 use App\Models\TipoVivienda;
 use App\Models\Empresas;
 use App\Models\Config;
 use App\Models\Banco;
+use App\Models\Genero;
+use App\Models\Talla;
+use App\Models\Accesorio;
+use App\Models\GradoInstruccion;
+use App\Models\Zona;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use App\Models\ComisionAFP;
 use Illuminate\Support\Facades\DB;
-//-----------------ppp--------
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
 use App\Models\Ubicacion;
@@ -1988,7 +2000,7 @@ class ColaboradorConfController extends Controller
         }
     }
 
-    public function Delete_regimen(Request $request)
+    public function Delete_Regimen(Request $request)
     {
         $dato['estado'] = 2;
         $dato['fec_eli'] = now();
@@ -2457,6 +2469,111 @@ class ColaboradorConfController extends Controller
         TipoVivienda::findOrFail($request->input("id_tipo_vivienda"))->update($dato);
     }
 
+    public function Banco(){
+        $dato['list_banco'] = Banco::where('estado', 1)->get();
+        return view('rrhh.administracion.colaborador.Banco.index',$dato);
+    }
+
+    public function Modal_Banco(){
+        return view('rrhh.administracion.colaborador.Banco.modal_registrar');   
+    }
+
+    public function Insert_Banco(Request $request){
+        $request->validate([
+            'cod_banco' => 'required',
+            'nom_banco' => 'required',
+            'digitos_cuenta' => 'required',        
+            'digitos_cci' => 'required',            
+        ], [
+            'cod_banco.required' => 'Debe ingresar codigo de banco.',
+            'nom_banco.required' => 'Debe ingresar descripcion de banco.',
+            'digitos_cuenta.required' => 'Debe ingresar digitos de cuenta',
+            'digitos_cci.required' => 'Debe ingresar digitos cci',
+        ]);
+
+        $valida = Banco::where('nom_banco', $request->nom_banco)
+            ->where('cod_banco', $request->cod_banco)
+            ->where('digitos_cuenta', $request->digitos_cuenta)
+            ->where('digitos_cci', $request->digitos_cci)
+            ->where('estado', 1)
+            ->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            $dato['cod_banco']= $request->input("cod_banco");
+            $dato['nom_banco']= $request->input("nom_banco");
+            $dato['digitos_cuenta']= $request->input("digitos_cuenta");
+            $dato['digitos_cci']= $request->input("digitos_cci");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Banco::create($dato);
+        }
+    }
+
+    public function Modal_Update_Banco($id_banco){
+        $dato['get_id'] = Banco::where('id_banco', $id_banco)->get();
+        return view('rrhh.administracion.colaborador.Banco.modal_editar',$dato);
+    }
+
+    public function Update_Banco(Request $request){
+        $request->validate([
+            'cod_banco' => 'required',
+            'nom_banco' => 'required',
+            'digitos_cuenta' => 'required',        
+            'digitos_cci' => 'required',            
+        ], [
+            'cod_banco.required' => 'Debe ingresar codigo de banco.',
+            'nom_banco.required' => 'Debe ingresar descripcion de banco.',
+            'digitos_cuenta' => 'Debe ingresar digitos de cuenta',
+            'digitos_cci' => 'Debe ingresar digitos cci',
+        ]);
+
+        $valida = Banco::where('nom_banco', $request->nom_banco)
+            ->where('cod_banco', $request->cod_banco)
+            ->where('digitos_cuenta', $request->digitos_cuenta)
+            ->where('digitos_cci', $request->digitos_cci)
+            ->where('estado', 1)
+            ->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            $dato['cod_banco']= $request->input("cod_banco");
+            $dato['nom_banco']= $request->input("nom_banco");
+            $dato['digitos_cuenta']= $request->input("digitos_cuenta");
+            $dato['digitos_cci']= $request->input("digitos_cci");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            Banco::findOrFail($request->id_banco)->update($dato);
+        }
+    }
+
+    public function Delete_Banco(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Banco::findOrFail($request->input("id_banco"))->update($dato);
+    }
+
+    public function Provincia(Request $request) {
+            $id_departamento= $request->input("id_departamento");
+            $dato['list_provincia'] = DB::table('provincia')->where('id_departamento',$id_departamento)
+                                    ->where('estado', 1)
+                                    ->get();
+            return view('layouts.provincia', $dato);
+    }
+
+    public function Distrito(Request $request) {
+            $id_departamento= $request->input("id_departamento");
+            $id_provincia= $request->input("id_provincia");
+            $dato['list_distrito'] = DB::table('distrito')->where('id_departamento', $id_departamento)
+                                    ->where('id_provincia', $id_provincia)
+                                    ->get();
+            return view('layouts.distrito', $dato);
+    }
+
     public function Empresa(){
         $dato['list_empresa'] = Empresas::where('estado', 1)
                             ->get();
@@ -2466,13 +2583,824 @@ class ColaboradorConfController extends Controller
     }
 
     public function Modal_Empresa(){
-            $dato['list_banco'] = Banco::where('estado',1)->get();
-            $dato['list_tipo_documento'] = TipoDocumento::where('estado',1)->get();
-            $dato['list_departamento'] = DB::table('departamento')->where('estado',1)->get();
-            $dato['list_provincia'] = DB::table('provincia')->where('estado',1)->get();
-            $dato['list_distrito'] = DB::table('distrito')->where('estado',1)->get();
-            $dato['list_regimen'] = Regimen::where('estado',1)->get();
-            return view('rrhh.administracion.colaborador.Empresa.modal_registrar',$dato);
+        $dato['list_banco'] = Banco::where('estado',1)->get();
+        $dato['list_tipo_documento'] = TipoDocumento::where('estado',1)->get();
+        $dato['list_departamento'] = DB::table('departamento')->where('estado',1)->get();
+        $dato['list_provincia'] = DB::table('provincia')->where('estado',1)->get();
+        $dato['list_distrito'] = DB::table('distrito')->where('estado',1)->get();
+        $dato['list_regimen'] = Regimen::where('estado',1)->get();
+        return view('rrhh.administracion.colaborador.Empresa.modal_registrar',$dato);
+    }
+
+    public function Insert_Empresa(Request $request){
+        $request->validate([
+            'cod_empresa' => 'required',
+            'nom_empresa' => 'required',
+            'ruc_empresa' => 'required',
+            'representante_empresa' => 'required',
+            'id_tipo_documento' => 'required',
+            'num_documento' => 'required',
+            'id_departamento' => 'not_in:0',
+            'id_distrito' => 'not_in:0',
+            'id_provincia' => 'not_in:0',
+            'direccion' => 'required',
+        ],[
+            'cod_empresa.required' => 'Debe ingresar codigo de empresa',
+            'nom_empresa.required' => 'Debe ingresar nombre de empresa',
+            'ruc_empresa.required' => 'Debe ingresar ruc de empresa',
+            'representante_empresa.required' => 'Debe ingresar representante de empresa',
+            'id_tipo_documento.required' => 'Debe ingresar tipo de documento de empresa',
+            'num_documento.required' => 'Debe ingresar numero de documento de empresa',
+            'id_departamento.not_in' => 'Debe ingresar departamento de empresa',
+            'id_distrito.not_in' => 'Debe ingresar distrito de empresa',
+            'id_provincia.not_in' => 'Debe ingresar provincia de empresa',
+            'direccion.required' => 'Debe ingresar direccion de empresa',
+        ]);
+        $valida = Empresas::where("cod_empresa", $request->cod_empresa)
+                    ->where("nom_empresa", $request->nom_empresa)
+                    ->where("ruc_empresa", $request->ruc_empresa)
+                    ->where("representante_empresa", $request->representante_empresa)
+                    ->where("id_tipo_documento", $request->id_tipo_documento)
+                    ->where("num_documento", $request->num_documento)
+                    ->where("num_partida", $request->num_partida)
+                    ->where("id_departamento", $request->id_departamento)
+                    ->where("id_distrito", $request->id_distrito)
+                    ->where("id_provincia", $request->id_provincia)
+                    ->where("direccion", $request->direccion)
+                    ->exists();
+        if ($valida>0){
+            echo "error";
+        }else{
+            $dato['cod_empresa']= $request->input("cod_empresa");
+            $dato['nom_empresa']= $request->input("nom_empresa"); 
+            $dato['ruc_empresa']= $request->input("ruc_empresa"); 
+            $dato['id_banco']= $request->input("id_banco"); 
+            $dato['num_cuenta']= $request->input("num_cuenta"); 
+            $dato['email_empresa']= $request->input("email_empresa"); 
+            $dato['representante_empresa']= $request->input("representante_empresa"); 
+            $dato['id_tipo_documento']= $request->input("id_tipo_documento"); 
+            $dato['num_documento']= $request->input("num_documento"); 
+            $dato['num_partida']= $request->input("num_partida"); 
+            $dato['id_departamento']= $request->input("id_departamento"); 
+            $dato['id_distrito']= $request->input("id_distrito"); 
+            $dato['id_provincia']= $request->input("id_provincia"); 
+            $dato['direccion']= $request->input("direccion"); 
+            $dato['id_regimen']= $request->input("id_regimen"); 
+            $dato['activo']= $request->input("activo"); 
+            $dato['telefono_empresa']= $request->input("telefono_empresa"); 
+            $dato['inicio_actividad']= $request->input("inicio_actividad"); 
+            $dato['dias_laborales']= $request->input("dias_laborales"); 
+            $dato['hora_dia']= $request->input("hora_dia"); 
+            $dato['aporte_senati']= $request->input("aporte_senati"); 
+            $dato['firma']="";
+            $dato['logo']="";
+            $dato['pie']="";
+            $dato['aporte_senati'] = 0;
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            if($_FILES['firma']['name']!="" || $_FILES['logo']['name']!="" || $_FILES['pie']['name']!=""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if((!$con_id) || (!$lr)){
+                    echo "No se conecto";
+                }else{
+                    echo "Se conecto";
+                    if($_FILES['firma']['name']!=""){
+                        $path = $_FILES['firma']['name'];
+                        $temp = explode(".",$_FILES['firma']['name']);
+                        $source_file = $_FILES['firma']['tmp_name'];
+
+                        $fecha=date('Y-m-d');
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $nombre_soli="Firma_".$fecha."_".rand(10,199);
+                        $nombre = $nombre_soli.".".$ext;
+
+                        $dato['firma'] = $nombre;
+
+                        ftp_pasv($con_id,true);
+                        $subio = ftp_put($con_id,"ADM_TABLAS/ADM_FINANZAS/EMPRESA/".$nombre,$source_file,FTP_BINARY);
+                        if($subio){
+                            echo "Archivo subido correctamente";
+                        }else{
+                            echo "Archivo no subido correctamente";
+                        }
+                    }
+                    if($_FILES['logo']['name']!=""){
+                        $path = $_FILES['logo']['name'];
+                        $temp = explode(".",$_FILES['logo']['name']);
+                        $source_file = $_FILES['logo']['tmp_name'];
+
+                        $fecha=date('Y-m-d');
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $nombre_soli="Logo_".$fecha."_".rand(10,199);
+                        $nombre = $nombre_soli.".".$ext;
+
+                        $dato['logo'] = $nombre;
+
+                        ftp_pasv($con_id,true);
+                        $subio = ftp_put($con_id,"ADM_TABLAS/ADM_FINANZAS/EMPRESA/".$nombre,$source_file,FTP_BINARY);
+                        if($subio){
+                            echo "Archivo subido correctamente";
+                        }else{
+                            echo "Archivo no subido correctamente";
+                        }
+                    }
+                    if($_FILES['pie']['name']!=""){
+                        $path = $_FILES['pie']['name'];
+                        $temp = explode(".",$_FILES['pie']['name']);
+                        $source_file = $_FILES['pie']['tmp_name'];
+
+                        $fecha=date('Y-m-d');
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $nombre_soli="PiePagina_".$fecha."_".rand(10,199);
+                        $nombre = $nombre_soli.".".$ext;
+
+                        $dato['pie'] = $nombre;
+
+                        ftp_pasv($con_id,true);
+                        $subio = ftp_put($con_id,"ADM_TABLAS/ADM_FINANZAS/EMPRESA/".$nombre,$source_file,FTP_BINARY);
+                        if($subio){
+                            echo "Archivo subido correctamente";
+                        }else{
+                            echo "Archivo no subido correctamente";
+                        }
+                    }
+                }   
+            }
+            Empresas::create($dato);
+        }
+    }
+
+    public function Modal_Update_Empresa($id_empresa){
+        $dato['get_id'] = Empresas::where('id_empresa', $id_empresa)
+                        ->get();
+        $id_departamento=$dato['get_id'][0]['id_departamento'];
+        $id_provincia=$dato['get_id'][0]['id_provincia'];
+        $dato['list_banco'] = Banco::where('estado',1)->get();
+        $dato['list_tipo_documento'] = TipoDocumento::where('estado',1)->get();
+        $dato['list_departamento'] = DB::table('departamento')->where('estado',1)->get();
+        $dato['list_provincia'] = DB::table('provincia')
+                                ->where('estado',1)
+                                ->where('id_departamento', $id_departamento)
+                                ->get();
+        $dato['list_distrito'] = DB::table('distrito')
+                                ->where('estado',1)
+                                ->where('id_departamento',$id_departamento)
+                                ->where('id_provincia',$id_provincia)
+                                ->get();
+        $dato['list_regimen'] = Regimen::where('estado',1)->get();
+        $dato['url'] = Config::where('descrip_config', 'Img_Empresa_Adm_Finanzas')
+                    ->where('estado', 1)
+                    ->get();
+        return view('rrhh.administracion.colaborador.Empresa.modal_editar',$dato);
+    }
+
+    public function Update_Empresa(Request $request){
+        $request->validate([
+            'cod_empresa' => 'required',
+            'nom_empresa' => 'required',
+            'ruc_empresa' => 'required',
+            'representante_empresa' => 'required',
+            'id_tipo_documento' => 'required',
+            'num_documento' => 'required',
+            'id_departamento' => 'not_in:0',
+            'id_distrito' => 'not_in:0',
+            'id_provincia' => 'not_in:0',
+            'direccion' => 'required',
+        ],[
+            'cod_empresa.required' => 'Debe ingresar codigo de empresa',
+            'nom_empresa.required' => 'Debe ingresar nombre de empresa',
+            'ruc_empresa.required' => 'Debe ingresar ruc de empresa',
+            'representante_empresa.required' => 'Debe ingresar representante de empresa',
+            'id_tipo_documento.required' => 'Debe ingresar tipo de documento de empresa',
+            'num_documento.required' => 'Debe ingresar numero de documento de empresa',
+            'id_departamento.not_in' => 'Debe ingresar departamento de empresa',
+            'id_distrito.not_in' => 'Debe ingresar distrito de empresa',
+            'id_provincia.not_in' => 'Debe ingresar provincia de empresa',
+            'direccion.required' => 'Debe ingresar direccion de empresa',
+        ]);
+        $valida = Empresas::where("cod_empresa", $request->cod_empresa)
+                    ->where("nom_empresa", $request->nom_empresa)
+                    ->where("ruc_empresa", $request->ruc_empresa)
+                    ->where("representante_empresa", $request->representante_empresa)
+                    ->where("id_tipo_documento", $request->id_tipo_documento)
+                    ->where("num_documento", $request->num_documento)
+                    ->where("num_partida", $request->num_partida)
+                    ->where("id_departamento", $request->id_departamento)
+                    ->where("id_distrito", $request->id_distrito)
+                    ->where("id_provincia", $request->id_provincia)
+                    ->where("direccion", $request->direccion)
+                    ->exists();
+        if ($valida>0){
+            echo "error";
+        }else{
+            $dato['cod_empresa']= $request->input("cod_empresa");
+            $dato['nom_empresa']= $request->input("nom_empresa"); 
+            $dato['ruc_empresa']= $request->input("ruc_empresa"); 
+            $dato['id_banco']= $request->input("id_banco"); 
+            $dato['num_cuenta']= $request->input("num_cuenta"); 
+            $dato['email_empresa']= $request->input("email_empresa"); 
+            $dato['representante_empresa']= $request->input("representante_empresa"); 
+            $dato['id_tipo_documento']= $request->input("id_tipo_documento"); 
+            $dato['num_documento']= $request->input("num_documento"); 
+            $dato['num_partida']= $request->input("num_partida"); 
+            $dato['id_departamento']= $request->input("id_departamento"); 
+            $dato['id_distrito']= $request->input("id_distrito"); 
+            $dato['id_provincia']= $request->input("id_provincia"); 
+            $dato['direccion']= $request->input("direccion"); 
+            $dato['id_regimen']= $request->input("id_regimen"); 
+            $dato['activo']= $request->input("activo"); 
+            $dato['telefono_empresa']= $request->input("telefono_empresa"); 
+            $dato['inicio_actividad']= $request->input("inicio_actividad"); 
+            $dato['dias_laborales']= $request->input("dias_laborales"); 
+            $dato['hora_dia']= $request->input("hora_dia"); 
+            $dato['aporte_senati']= $request->input("aporte_senati"); 
+            $dato['firma']="";
+            $dato['logo']="";
+            $dato['pie']="";
+            $dato['aporte_senati'] = 0;
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            if($_FILES['firmae']['name']!="" || $_FILES['logoe']['name']!="" || $_FILES['piee']['name']!=""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if((!$con_id) || (!$lr)){
+                    echo "No se conecto";
+                }else{
+                    echo "Se conecto";
+                    if($_FILES['firmae']['name']!=""){
+                        $path = $_FILES['firmae']['name'];
+                        $temp = explode(".",$_FILES['firmae']['name']);
+                        $source_file = $_FILES['firmae']['tmp_name'];
+
+                        $fecha=date('Y-m-d');
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $nombre_soli="Firma_".$fecha."_".rand(10,199);
+                        $nombre = $nombre_soli.".".$ext;
+
+                        $dato['firma'] = $nombre;
+
+                        ftp_pasv($con_id,true);
+                        $subio = ftp_put($con_id,"ADM_TABLAS/ADM_FINANZAS/EMPRESA/".$nombre,$source_file,FTP_BINARY);
+                        if($subio){
+                            echo "Archivo subido correctamente";
+                        }else{
+                            echo "Archivo no subido correctamente";
+                        }
+                    }
+                    if($_FILES['logoe']['name']!=""){
+                        $path = $_FILES['logoe']['name'];
+                        $temp = explode(".",$_FILES['logoe']['name']);
+                        $source_file = $_FILES['logoe']['tmp_name'];
+
+                        $fecha=date('Y-m-d');
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $nombre_soli="Logo_".$fecha."_".rand(10,199);
+                        $nombre = $nombre_soli.".".$ext;
+
+                        $dato['logo'] = $nombre;
+
+                        ftp_pasv($con_id,true);
+                        $subio = ftp_put($con_id,"ADM_TABLAS/ADM_FINANZAS/EMPRESA/".$nombre,$source_file,FTP_BINARY);
+                        if($subio){
+                            echo "Archivo subido correctamente";
+                        }else{
+                            echo "Archivo no subido correctamente";
+                        }
+                    }
+                    if($_FILES['piee']['name']!=""){
+                        $path = $_FILES['piee']['name'];
+                        $temp = explode(".",$_FILES['piee']['name']);
+                        $source_file = $_FILES['piee']['tmp_name'];
+
+                        $fecha=date('Y-m-d');
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $nombre_soli="PiePagina_".$fecha."_".rand(10,199);
+                        $nombre = $nombre_soli.".".$ext;
+
+                        $dato['pie'] = $nombre;
+
+                        ftp_pasv($con_id,true);
+                        $subio = ftp_put($con_id,"ADM_TABLAS/ADM_FINANZAS/EMPRESA/".$nombre,$source_file,FTP_BINARY);
+                        if($subio){
+                            echo "Archivo subido correctamente";
+                        }else{
+                            echo "Archivo no subido correctamente";
+                        }
+                    }
+                }   
+            }
+            Empresas::findOrFail($request->id_empresa)->update($dato);
+        }
+    }
+
+    public function Delete_Empresa(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Empresas::findOrFail($request->id_empresa)->update($dato);
+
+    }
+
+    public function Genero(){
+        $dato['list_genero'] = Genero::where('estado', 1)
+                            ->get();
+        return view('rrhh.administracion.colaborador.Genero.index',$dato);
+    }
+
+    public function Modal_Genero(){
+        return view('rrhh.administracion.colaborador.Genero.modal_registrar');   
+    }
+
+    public function Insert_Genero(Request $request){
+        $request->validate([
+            'cod_genero' => 'required',
+            'nom_genero' => 'required',
+        ],[
+            'cod_genero' => 'Debe ingresar código de género',
+            'nom_genero' => 'Debe ingresar nombre de genero',
+        ]);
+        $valida = Genero::where('cod_genero', $request->cod_genero)
+                ->where('nom_genero', $request->nom_genero)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_genero']= $request->input("cod_genero");
+            $dato['nom_genero']= $request->input("nom_genero");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Genero::create($dato);
+        }
+    }
+
+    public function Modal_Update_Genero($id_genero){
+        $dato['get_id'] = Genero::where('id_genero', $id_genero)
+                        ->get();
+        return view('rrhh.administracion.colaborador.Genero.modal_editar',$dato);
+    }
+
+    public function Update_Genero(Request $request){
+        $request->validate([
+            'cod_genero' => 'required',
+            'nom_genero' => 'required',
+        ],[
+            'cod_genero' => 'Debe ingresar código de género',
+            'nom_genero' => 'Debe ingresar nombre de genero',
+        ]);
+        $valida = Genero::where('cod_genero', $request->cod_genero)
+                ->where('nom_genero', $request->nom_genero)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_genero']= $request->input("cod_genero");
+            $dato['nom_genero']= $request->input("nom_genero");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            Genero::findOrFail($request->input("id_genero"))->update($dato);
+        }
+    }
+
+    public function Delete_Genero(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Genero::findOrFail($request->input("id_genero"))->update($dato);
+    }
+    
+    public function Accesorio(){
+        $dato['list_accesorio'] = Accesorio::where('estado', 1)
+                            ->get();
+        return view('rrhh.administracion.colaborador.Accesorio.index',$dato);
+    }
+
+    public function Modal_Accesorio(){
+        return view('rrhh.administracion.colaborador.Accesorio.modal_registrar');   
+    }
+
+    public function Insert_Accesorio(Request $request){
+        $request->validate([
+            'nom_accesorio' => 'required',
+        ],[
+            'nom_accesorio.required' => 'Debe ingresar nombre de accesorio',
+        ]);
+        $valida = Accesorio::where('nom_accesorio', $request->nom_accesorio)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['nom_accesorio']= $request->input("nom_accesorio");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Accesorio::create($dato);
+        }
+    }
+
+    public function Modal_Update_Accesorio($id_accesorio){
+        $dato['get_id'] = Accesorio::where('id_accesorio', $id_accesorio)
+                        ->get();
+        return view('rrhh.administracion.colaborador.Accesorio.modal_editar',$dato);
+    }
+
+    public function Update_Accesorio(Request $request){
+        $request->validate([
+            'nom_accesorio' => 'required',
+        ],[
+            'nom_accesorio.required' => 'Debe ingresar nombre de accesorio',
+        ]);
+        $valida = Accesorio::where('nom_accesorio', $request->nom_accesorio)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['nom_accesorio']= $request->input("nom_accesorio");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            Accesorio::findOrFail($request->input("id_accesorio"))->update($dato);
+        }
+    }
+
+    public function Delete_Accesorio(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Accesorio::findOrFail($request->input("id_accesorio"))->update($dato);
+    }
+
+    public function Talla(){
+        $dato['list_talla'] = Talla::where('talla.estado', 1)
+                        ->leftJoin('accesorio', 'accesorio.id_accesorio', '=', 'talla.id_accesorio')
+                        ->get();
+    
+        return view('rrhh.administracion.colaborador.Talla.index', $dato);    
+    }
+
+    public function Modal_Talla(){
+        $dato['list_accesorio'] = Accesorio::where('estado',1)
+                                ->get();
+        return view('rrhh.administracion.colaborador.Talla.modal_registrar', $dato);   
+    }
+
+    public function Insert_Talla(Request $request){
+        $request->validate([
+            'id_accesorio' => 'not_in:0',
+            'cod_talla' => 'required',
+            'nom_talla' => 'required',
+        ],[
+            'id_accesorio' => 'Debe seleccionar accesorio',
+            'cod_talla' => 'Debe ingresar código de talla',
+            'nom_talla' => 'Debe ingresar nombre de talla',
+        ]);
+        $valida = Talla::where('id_accesorio', $request->id_accesorio)
+                ->where('cod_talla', $request->cod_talla)
+                ->where('nom_talla', $request->nom_talla)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['id_accesorio']= $request->input('id_accesorio');
+            $dato['cod_talla']= $request->input("cod_talla");
+            $dato['nom_talla']= $request->input("nom_talla");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Talla::create($dato);
+        }
+    }
+
+    public function Modal_Update_Talla($id_talla){
+        $dato['get_id'] = Talla::where('id_talla', $id_talla)
+                        ->get();
+        $dato['list_accesorio'] = Accesorio::where('estado',1)
+                                ->get();
+        return view('rrhh.administracion.colaborador.Talla.modal_editar',$dato);
+    }
+
+    public function Update_Talla(Request $request){
+        $request->validate([
+            'id_accesorio' => 'required',
+            'cod_talla' => 'required',
+            'nom_talla' => 'required',
+        ],[
+            'id_accesorio' => 'Debe seleccionar accesorio',
+            'cod_talla' => 'Debe ingresar código de género',
+            'nom_talla' => 'Debe ingresar nombre de talla',
+        ]);
+        $valida = Talla::where('id_accesorio', $request->id_accesorio)
+                ->where('cod_talla', $request->cod_talla)
+                ->where('nom_talla', $request->nom_talla)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['id_accesorio']= $request->input('id_accesorio');
+            $dato['cod_talla']= $request->input("cod_talla");
+            $dato['nom_talla']= $request->input("nom_talla");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            Talla::findOrFail($request->input("id_talla"))->update($dato);
+        }
+    }
+
+    public function Delete_Talla(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Talla::findOrFail($request->input("id_talla"))->update($dato);
+    }
+    
+    public function Grado_Instruccion(){
+        $dato['list_grado_instruccion'] = GradoInstruccion::where('estado', 1)
+                        ->get();
+    
+        return view('rrhh.administracion.colaborador.GradoInstruccion.index', $dato);    
+    }
+
+    public function Modal_Grado_Instruccion(){
+        return view('rrhh.administracion.colaborador.GradoInstruccion.modal_registrar');   
+    }
+
+    public function Insert_Grado_Instruccion(Request $request){
+        $request->validate([
+            'cod_grado_instruccion' => 'required',
+            'nom_grado_instruccion' => 'required',
+        ],[
+            'cod_grado_instruccion' => 'Debe ingresar código de grado_instruccion',
+            'nom_grado_instruccion' => 'Debe ingresar nombre de grado_instruccion',
+        ]);
+        $valida = GradoInstruccion::where('cod_grado_instruccion', $request->cod_grado_instruccion)
+                ->where('nom_grado_instruccion', $request->nom_grado_instruccion)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_grado_instruccion']= $request->input("cod_grado_instruccion");
+            $dato['nom_grado_instruccion']= $request->input("nom_grado_instruccion");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            GradoInstruccion::create($dato);
+        }
+    }
+
+    public function Modal_Update_Grado_Instruccion($id_grado_instruccion){
+        $dato['get_id'] = GradoInstruccion::where('id_grado_instruccion', $id_grado_instruccion)
+                        ->get();
+        return view('rrhh.administracion.colaborador.GradoInstruccion.modal_editar',$dato);
+    }
+
+    public function Update_Grado_Instruccion(Request $request){
+        $request->validate([
+            'cod_grado_instruccion' => 'required',
+            'nom_grado_instruccion' => 'required',
+        ],[
+            'cod_grado_instruccion' => 'Debe ingresar código de género',
+            'nom_grado_instruccion' => 'Debe ingresar nombre de grado_instruccion',
+        ]);
+        $valida = GradoInstruccion::where('cod_grado_instruccion', $request->cod_grado_instruccion)
+                ->where('nom_grado_instruccion', $request->nom_grado_instruccion)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_grado_instruccion']= $request->input("cod_grado_instruccion");
+            $dato['nom_grado_instruccion']= $request->input("nom_grado_instruccion");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            GradoInstruccion::findOrFail($request->input("id_grado_instruccion"))->update($dato);
+        }
+    }
+
+    public function Delete_Grado_Instruccion(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        GradoInstruccion::findOrFail($request->input("id_grado_instruccion"))->update($dato);
+    }
+    
+    public function Zona(){
+        $dato['list_zona'] = Zona::where('estado', 1)
+                            ->get();
+        return view('rrhh.administracion.colaborador.Zona.index',$dato);
+    }
+
+    public function Modal_Zona(){
+        return view('rrhh.administracion.colaborador.Zona.modal_registrar');   
+    }
+
+    public function Insert_Zona(Request $request){
+        $request->validate([
+            'numero' => 'required',
+            'descripcion' => 'required',
+        ],[
+            'numero' => 'Debe ingresar numero de zona',
+            'descripcion' => 'Debe ingresar nombre de zona',
+        ]);
+        $valida = Zona::where('numero', $request->numero)
+                ->where('descripcion', $request->descripcion)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['numero']= $request->input("numero");
+            $dato['descripcion']= $request->input("descripcion");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Zona::create($dato);
+        }
+    }
+
+    public function Modal_Update_Zona($id_zona){
+        $dato['get_id'] = Zona::where('id_zona', $id_zona)
+                        ->get();
+        return view('rrhh.administracion.colaborador.Zona.modal_editar',$dato);
+    }
+
+    public function Update_Zona(Request $request){
+        $request->validate([
+            'cod_genero' => 'required',
+            'nom_genero' => 'required',
+        ],[
+            'cod_genero' => 'Debe ingresar código de género',
+            'nom_genero' => 'Debe ingresar nombre de genero',
+        ]);
+        $valida = Zona::where('cod_genero', $request->cod_genero)
+                ->where('nom_genero', $request->nom_genero)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_genero']= $request->input("cod_genero");
+            $dato['nom_genero']= $request->input("nom_genero");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            Zona::findOrFail($request->input("id_genero"))->update($dato);
+        }
+    }
+
+    public function Delete_Zona(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Zona::findOrFail($request->input("id_zona"))->update($dato);
+    }
+    
+    public function Excel_ZonaPL(){
+            $data = Zona::where('estado', 1)
+                    ->get();
+            // Create new Spreadsheet object
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $spreadsheet->getActiveSheet()->setTitle('T6 Zona');
+            $sheet->setCellValue('A1', 'TABLA 6: "ZONA"');
+            $sheet->setCellValue('A3', 'N°');
+            $sheet->setCellValue('B3', 'DESCRIPCIÓN');
+            $sheet->mergeCells("A1:B1");
+
+            //border
+            $styleThinBlackBorderOutline = [
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => 'FF000000'],
+                    ],
+                ],
+            ];
+            $sheet->getStyle("A3:B3")->applyFromArray($styleThinBlackBorderOutline);
+            $sheet->getStyle('A1:B3')->getFont()->setBold(true);
+            $start = 3;
+            foreach($data as $d){
+                $start = $start+1;
+                
+                $spreadsheet->getActiveSheet()->setCellValue("A{$start}", $d['numero']);
+                $spreadsheet->getActiveSheet()->setCellValue("B{$start}", $d['descripcion']);
+
+
+                $sheet->getStyle("A{$start}:B{$start}")->applyFromArray($styleThinBlackBorderOutline);
+            }
+            $sheet->getStyle("A1")->getFont()->setSize(12);
+            $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle('A3:B3')->getAlignment()->setHorizontal(Alignment::VERTICAL_CENTER);
+            $sheet->getColumnDimension('A')->setWidth(10);
+            $sheet->getColumnDimension('B')->setWidth(55);
+            $curdate = date('d-m-Y');
+            $filename = 'T6 Zona_'.$curdate;
+            if (ob_get_contents()) ob_end_clean();
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+            header('Cache-Control: max-age=0');
+        
+            $writer = IOFactory::createWriter($spreadsheet,'Xlsx');
+            $writer->save('php://output');
+    }
+    
+    public function Comision_AFP(){
+        $dato['list_comision'] = ComisionAFP::where('afp.estado', 1)
+                            ->leftJoin('sistema_pensionario', 'sistema_pensionario.id_sistema_pensionario', '=', 'afp.id_sistema_pensionario')
+                            ->get();
+        return view('rrhh.administracion.colaborador.ComisionAfp.index',$dato);
+    }
+
+    public function Modal_Comision_AFP(){
+        return view('rrhh.administracion.colaborador.ComisionAfp.modal_registrar');   
+    }
+
+    public function Insert_Comision_AFP(Request $request){
+        $request->validate([
+            'cod_genero' => 'required',
+            'nom_genero' => 'required',
+        ],[
+            'cod_genero' => 'Debe ingresar código de género',
+            'nom_genero' => 'Debe ingresar nombre de genero',
+        ]);
+        $valida = ComisionAFP::where('cod_genero', $request->cod_genero)
+                ->where('nom_genero', $request->nom_genero)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_genero']= $request->input("cod_genero");
+            $dato['nom_genero']= $request->input("nom_genero");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Comision_AFP::create($dato);
+        }
+    }
+
+    public function Modal_Update_Comision_AFP($id_genero){
+        $dato['get_id'] = Comision_AFP::where('id_genero', $id_genero)
+                        ->get();
+        return view('rrhh.administracion.colaborador.ComisionAfp.modal_editar',$dato);
+    }
+
+    public function Update_Comision_AFP(Request $request){
+        $request->validate([
+            'cod_genero' => 'required',
+            'nom_genero' => 'required',
+        ],[
+            'cod_genero' => 'Debe ingresar código de género',
+            'nom_genero' => 'Debe ingresar nombre de genero',
+        ]);
+        $valida = Comision_AFP::where('cod_genero', $request->cod_genero)
+                ->where('nom_genero', $request->nom_genero)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['cod_genero']= $request->input("cod_genero");
+            $dato['nom_genero']= $request->input("nom_genero");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            Comision_AFP::findOrFail($request->input("id_genero"))->update($dato);
+        }
+    }
+
+    public function Delete_Comision_AFP(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Comision_AFP::findOrFail($request->input("id_genero"))->update($dato);
     }
     /*---------------------------------------------------------Paolo*/
 

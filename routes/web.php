@@ -17,6 +17,8 @@ use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
 use App\Http\Controllers\AsistenciaSegController;
 use App\Http\Controllers\BiReporteController;
+use App\Http\Controllers\CajaChicaConfController;
+use App\Http\Controllers\CajaChicaController;
 use App\Http\Controllers\CajaInicioController;
 use App\Http\Controllers\CambioPrendaConfController;
 use App\Http\Controllers\CambioPrendaController;
@@ -28,8 +30,13 @@ use App\Http\Controllers\ControlCamaraConfController;
 use App\Http\Controllers\ControlCamaraController;
 use App\Http\Controllers\SliderRRHH;
 use App\Http\Controllers\Cumpleanios;
+use App\Http\Controllers\DuracionTransaccionController;
+use App\Http\Controllers\FinanzaInicioController;
+use App\Http\Controllers\FinanzasInicioController;
 use App\Http\Controllers\InicioAdmController;
 use App\Http\Controllers\InicioFrasesAdmController;
+use App\Http\Controllers\InsumoConfController;
+use App\Http\Controllers\InsumoController;
 use App\Http\Controllers\LecturaServicioConfController;
 use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
@@ -38,6 +45,8 @@ use App\Http\Controllers\InternaInicioController;
 use App\Http\Controllers\LineaCarreraConfController;
 use App\Http\Controllers\LineaCarreraController;
 use App\Http\Controllers\LogisticaInicioController;
+use App\Http\Controllers\ManufacturaController;
+use App\Http\Controllers\ManufacturaInicioController;
 use App\Http\Controllers\NotificacionConfController;
 use App\Http\Controllers\ObservacionConfController;
 use App\Http\Controllers\ObservacionController;
@@ -48,6 +57,7 @@ use App\Http\Controllers\OcurrenciaServicioConfController;
 use App\Http\Controllers\OcurrenciasTiendaController;
 use App\Http\Controllers\PostulanteController;
 use App\Http\Controllers\ProcesosController;
+use App\Http\Controllers\ProduccionController;
 use App\Http\Controllers\RecursosHumanosInicioController;
 use App\Http\Controllers\ReporteProveedoresController;
 
@@ -206,18 +216,37 @@ Route::controller(ProcesosController::class)->group(function () {
     Route::get('portalprocesos_lm/list', 'list_lm')->name('portalprocesos_lm.list');
     Route::get('portalprocesos_lm/create', 'create_lm')->name('portalprocesos_lm.create');
     Route::get('portalprocesos_lm/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_lm')->name('portalprocesos_lm.excel');
-    Route::post('portalprocesos_lm', 'store_lm')->name('portalprocesos_lm.store');
+    Route::get('portalprocesos_lm/store', 'store_lm')->name('portalprocesos_lm.store');
     Route::get('portalprocesos_lm/{id}/image', 'image_lm')->name('portalprocesos_lm.image');
     Route::delete('portalprocesos_lm/{id}', 'destroy_lm')->name('portalprocesos_lm.destroy');
     Route::post('portalprocesos_lm/{id}', 'approve_lm')->name('portalprocesos_lm.approve');
     Route::get('portalprocesos_lm/{id}/edit', 'edit_lm')->name('portalprocesos_lm.edit');
-    Route::get('portalprocesos_lm/{id}/version', 'version_lm')->name('portalprocesos_lm.version');
+    Route::put('portalprocesos_lm/{id}/version', 'version_lm')->name('portalprocesos_lm.version');
     Route::put('portalprocesos_lm/{id}', 'update_lm')->name('portalprocesos_lm.update');
+    Route::get('temas_por_areas', 'getTemasPorAreas')->name('temas_por_areas');
+    Route::get('capacitadores_por_areas', 'getCapacitadoresPorAreas')->name('capacitadores_por_areas');
     Route::get('puestos-por-areas', 'getPuestosPorAreas')->name('puestos_por_areas');
 
 
     // CONFIGURABLES - ADMINISTRABLES
     Route::get('portalprocesos_lm_conf', 'index_lm_conf')->name('portalprocesos_lm_conf');
+
+    // CAPACITACIÓN
+    Route::get('portalprocesoscap', 'indexcap')->name('portalprocesoscap');
+    Route::get('portalprocesos_cap', 'index_cap')->name('portalprocesos_cap');
+    Route::get('portalprocesos_cap/list', 'list_cap')->name('portalprocesos_cap.list');
+    Route::get('portalprocesos_cap/create', 'create_cap')->name('portalprocesos_cap.create');
+    Route::post('portalprocesos_cap', 'store_cap')->name('portalprocesos_cap.store');
+    Route::delete('portalprocesos_cap/{id}', 'destroy_cap')->name('portalprocesos_cap.destroy');
+    // ADMINISTRABLES - CAPACITACIÓN
+    Route::get('portalprocesoscap_conf', 'indexcap_conf')->name('portalprocesoscap_conf');
+    Route::get('portalprocesos_cap_conf', 'index_cap_conf')->name('portalprocesos_cap_conf');
+    Route::get('portalprocesos_cap_conf/list', 'list_cap_conf')->name('portalprocesos_cap_conf.list');
+    Route::get('portalprocesos_cap_conf/{id}/edit', 'edit_cap_conf')->name('portalprocesos_cap_conf.edit');
+    Route::delete('portalprocesos_cap_conf/{id}', 'destroy_cap_conf')->name('portalprocesos_cap_conf.destroy');
+    Route::post('portalprocesos_cap_conf/{id}', 'update_cap_conf')->name('portalprocesos_cap_conf.update');
+    Route::get('portalprocesos_cap_conf/create', 'create_cap_conf')->name('portalprocesos_cap_conf.create');
+    Route::post('portalprocesos_cap_conf', 'store_cap_conf')->name('portalprocesos_cap_conf.store');
 });
 
 //BI REPORTES -
@@ -226,19 +255,31 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('bireporte_ra', 'index_ra')->name('bireporte_ra');
     Route::get('bireporte_ra/list', 'list_ra')->name('bireporte_ra.list');
     Route::get('bireporte_ra/create', 'create_ra')->name('bireporte_ra.create');
-    Route::get('bireporte_ra/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_lm')->name('bireporte_ra.excel');
     Route::post('bireporte_ra', 'store_ra')->name('bireporte_ra.store');
     Route::delete('bireporte_ra/{id}', 'destroy_ra')->name('bireporte_ra.destroy');
     Route::get('bireporte_ra/{id}/edit', 'edit_ra')->name('bireporte_ra.edit');
-    Route::put('bireporte_ra/{id}', 'update_ra')->name('bireporte_ra.update');
-    Route::post('bireporte_ra/{id}', 'update_valid')->name('bireporte_ra.valid');
+    Route::post('bireporte_ra/{id}', 'update_ra')->name('bireporte_ra.update');
+    Route::post('bireporte_ra/{id}/valid', 'update_valid')->name('bireporte_ra.valid');
     Route::get('puestos-por-areas-bi', 'getPuestosPorAreasBi')->name('puestos_por_areas_bi');
     Route::get('usuarios_por_area', 'getUsuariosPorArea')->name('usuarios_por_area');
     Route::get('areas_por_base', 'getAreasPorBase')->name('areas_por_base_bi');
 
+    // DB REPORTE
+    Route::get('bireporte_db', 'index_db')->name('bireporte_db');
+    Route::get('bireporte_db/list', 'list_db')->name('bireporte_db.list');
+    Route::get('bireporte_db/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_rebi')->name('bireporte_db.excel');
 
-    // CONFIGURABLES - ADMINISTRABLES
+
+
+    // ADMINISTRABLES - ADMINISTRABLES
     Route::get('bireporte_ra_conf', 'index_ra_conf')->name('bireporte_ra_conf');
+    Route::get('bireporte_ti_conf', 'index_ti_conf')->name('bireporte_ti_conf');
+    Route::get('bireporte_ti_conf/list', 'list_tind')->name('bireporte_ti_conf.list');
+    Route::get('bireporte_ti_conf/{id}/edit', 'edit_tind')->name('bireporte_ti_conf.edit');
+    Route::delete('bireporte_ti_conf/{id}', 'destroy_tind')->name('bireporte_ti_conf.destroy');
+    Route::put('bireporte_ti_conf/{id}', 'update_tind')->name('bireporte_ti_conf.update');
+    Route::get('bireporte_ti_conf/create', 'create_tind')->name('bireporte_ti_conf.create');
+    Route::post('bireporte_ti_conf', 'store_tind')->name('bireporte_ti_conf.store');
 });
 
 
@@ -424,6 +465,51 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Empresa', 'Insert_Empresa');
     Route::post('ColaboradorConfController/Update_Empresa', 'Update_Empresa');
     Route::post('ColaboradorConfController/Delete_Empresa', 'Delete_Empresa');
+    Route::post('ColaboradorConfController/Banco', 'Banco');
+    Route::get('ColaboradorConfController/Modal_Banco', 'Modal_Banco');
+    Route::get('ColaboradorConfController/Modal_Update_Banco/{id}', 'Modal_Update_Banco');
+    Route::post('ColaboradorConfController/Insert_Banco', 'Insert_Banco');
+    Route::post('ColaboradorConfController/Update_Banco', 'Update_Banco');
+    Route::post('ColaboradorConfController/Delete_Banco', 'Delete_Banco');
+    Route::post('ColaboradorConfController/Provincia', 'Provincia');
+    Route::post('ColaboradorConfController/Distrito', 'Distrito');
+    Route::post('ColaboradorConfController/Genero', 'Genero');
+    Route::get('ColaboradorConfController/Modal_Genero', 'Modal_Genero');
+    Route::get('ColaboradorConfController/Modal_Update_Genero/{id}', 'Modal_Update_Genero');
+    Route::post('ColaboradorConfController/Insert_Genero', 'Insert_Genero');
+    Route::post('ColaboradorConfController/Update_Genero', 'Update_Genero');
+    Route::post('ColaboradorConfController/Delete_Genero', 'Delete_Genero');
+    Route::post('ColaboradorConfController/Accesorio', 'Accesorio');
+    Route::get('ColaboradorConfController/Modal_Accesorio', 'Modal_Accesorio');
+    Route::get('ColaboradorConfController/Modal_Update_Accesorio/{id}', 'Modal_Update_Accesorio');
+    Route::post('ColaboradorConfController/Insert_Accesorio', 'Insert_Accesorio');
+    Route::post('ColaboradorConfController/Update_Accesorio', 'Update_Accesorio');
+    Route::post('ColaboradorConfController/Delete_Accesorio', 'Delete_Accesorio');
+    Route::post('ColaboradorConfController/Talla', 'Talla');
+    Route::get('ColaboradorConfController/Modal_Talla', 'Modal_Talla');
+    Route::get('ColaboradorConfController/Modal_Update_Talla/{id}', 'Modal_Update_Talla');
+    Route::post('ColaboradorConfController/Insert_Talla', 'Insert_Talla');
+    Route::post('ColaboradorConfController/Update_Talla', 'Update_Talla');
+    Route::post('ColaboradorConfController/Delete_Talla', 'Delete_Talla');
+    Route::post('ColaboradorConfController/Grado_Instruccion', 'Grado_Instruccion');
+    Route::get('ColaboradorConfController/Modal_Grado_Instruccion', 'Modal_Grado_Instruccion');
+    Route::get('ColaboradorConfController/Modal_Update_Grado_Instruccion/{id}', 'Modal_Update_Grado_Instruccion');
+    Route::post('ColaboradorConfController/Insert_Grado_Instruccion', 'Insert_Grado_Instruccion');
+    Route::post('ColaboradorConfController/Update_Grado_Instruccion', 'Update_Grado_Instruccion');
+    Route::post('ColaboradorConfController/Delete_Grado_Instruccion', 'Delete_Grado_Instruccion');
+    Route::post('ColaboradorConfController/Zona', 'Zona');
+    Route::get('ColaboradorConfController/Modal_Zona', 'Modal_Zona');
+    Route::get('ColaboradorConfController/Modal_Update_Zona/{id}', 'Modal_Update_Zona');
+    Route::post('ColaboradorConfController/Insert_Zona', 'Insert_Zona');
+    Route::post('ColaboradorConfController/Update_Zona', 'Update_Zona');
+    Route::post('ColaboradorConfController/Delete_Zona', 'Delete_Zona');
+    Route::get('ColaboradorConfController/Excel_ZonaPL', 'Excel_ZonaPL');
+    Route::post('ColaboradorConfController/Comision_AFP', 'Comision_AFP');
+    Route::get('ColaboradorConfController/Modal_Comision_AFP', 'Modal_Comision_AFP');
+    Route::get('ColaboradorConfController/Modal_Update_Comision_AFP/{id}', 'Modal_Update_Comision_AFP');
+    Route::post('ColaboradorConfController/Insert_Comision_AFP', 'Insert_Comision_AFP');
+    Route::post('ColaboradorConfController/Update_Comision_AFP', 'Update_Comision_AFP');
+    Route::post('ColaboradorConfController/Delete_Comision_AFP', 'Delete_Comision_AFP');
     /*----------------------------------------Paolo----------------------------------*/
     // ----------------------------------------bryan----------------------------------*/
 
@@ -823,8 +909,15 @@ Route::controller(CambioPrendaController::class)->group(function () {
     Route::post('cambio_prenda/comprobante', 'comprobante_reg')->name('cambio_prenda.comprobante');
     Route::post('cambio_prenda_con', 'store_reg_con')->name('cambio_prenda_con.store');
     Route::get('cambio_prenda_sin/create', 'create_reg_sin')->name('cambio_prenda_sin.create');
-    Route::post('cambio_prenda/{id}/cambiar_estado', 'cambiar_estado_reg')->name('cambio_prenda.cambiar_estado');
+    Route::post('cambio_prenda/producto', 'producto_reg')->name('cambio_prenda.producto');
+    Route::post('cambio_prenda_sin', 'store_reg_sin')->name('cambio_prenda_sin.store');
+    Route::get('cambio_prenda/{id}/edit', 'edit_reg')->name('cambio_prenda.edit');
+    Route::put('cambio_prenda_con/{id}', 'update_reg_con')->name('cambio_prenda_con.update');
+    Route::put('cambio_prenda_sin/{id}', 'update_reg_sin')->name('cambio_prenda_sin.update');
+    Route::put('cambio_prenda/{id}/cambiar_estado', 'cambiar_estado_reg')->name('cambio_prenda.cambiar_estado');
     Route::delete('cambio_prenda/{id}', 'destroy_reg')->name('cambio_prenda.destroy');
+    Route::get('cambio_prenda/{id}/modal_finalizar', 'modal_finalizar_reg')->name('cambio_prenda.modal_finalizar');
+    Route::put('cambio_prenda/{id}/finalizar', 'finalizar_reg')->name('cambio_prenda.finalizar');
     Route::get('cambio_prenda/{id}/detalle', 'detalle_reg')->name('cambio_prenda.detalle');
 });
 //CAJA - CAMBIO DE PRENDA CONFIGURABLE
@@ -838,6 +931,73 @@ Route::controller(CambioPrendaConfController::class)->group(function () {
     Route::put('cambio_prenda_conf_mo/{id}', 'update_mo')->name('cambio_prenda_conf_mo.update');
     Route::delete('cambio_prenda_conf_mo/{id}', 'destroy_mo')->name('cambio_prenda_conf_mo.destroy');
 });
+//CAJA - DURACIÓN DE TRANSACCIONES
+Route::controller(DuracionTransaccionController::class)->group(function () {
+    Route::get('duracion_transaccion', 'index')->name('duracion_transaccion');
+    Route::post('duracion_transaccion/list', 'list')->name('duracion_transaccion.list');
+    Route::get('duracion_transaccion/{inicio}/{fin}/excel', 'excel')->name('duracion_transaccion.excel');
+});
+
+//PRODUCCIÓN - PRODUCCIÓN
+Route::controller(ProduccionController::class)->group(function () {
+    Route::get('produccion', 'index')->name('produccion');
+    Route::get('produccion_av', 'index_av')->name('produccion_av');
+    Route::get('produccion_av/list', 'list_av')->name('produccion_av.list');
+    Route::get('produccion_av/create', 'create_av')->name('produccion_av.create');
+    Route::post('produccion_av', 'store_av')->name('produccion_av.store');
+    Route::get('produccion_av/{id}/edit', 'edit_av')->name('produccion_av.edit');
+    Route::put('produccion_av/{id}', 'update_av')->name('produccion_av.update');
+});
+
+
+
+//ÁREA FINANZAS
+Route::controller(FinanzasInicioController::class)->group(function () {
+    Route::get('finanzas', 'index')->name('finanzas');
+});
+//ÁREA MANUFACTURA
+Route::controller(ManufacturaInicioController::class)->group(function () {
+    Route::get('manufactura', 'index')->name('manufactura');
+});
+//TESORERÍA - CAJA CHICA CONFIGURABLE
+Route::controller(CajaChicaConfController::class)->group(function () {
+    Route::get('caja_chica_conf', 'index')->name('caja_chica_conf');
+});
+//TESORERÍA - CAJA CHICA
+Route::controller(CajaChicaController::class)->group(function () {
+    Route::get('caja_chica', 'index')->name('caja_chica');
+});
+//CAJA - INSUMOS CONFIGURABLE
+Route::controller(InsumoConfController::class)->group(function () {
+    Route::get('insumo_conf', 'index')->name('insumo_conf');
+    Route::get('insumo_conf_in', 'index_in')->name('insumo_conf_in');
+    Route::get('insumo_conf_in/list', 'list_in')->name('insumo_conf_in.list');
+    Route::get('insumo_conf_in/create', 'create_in')->name('insumo_conf_in.create');
+    Route::post('insumo_conf_in', 'store_in')->name('insumo_conf_in.store');
+    Route::get('insumo_conf_in/{id}/edit', 'edit_in')->name('insumo_conf_in.edit');
+    Route::put('insumo_conf_in/{id}', 'update_in')->name('insumo_conf_in.update');
+    Route::delete('insumo_conf_in/{id}', 'destroy_in')->name('insumo_conf_in.destroy');
+    Route::get('insumo_conf_pr', 'index_pr')->name('insumo_conf_pr');
+    Route::get('insumo_conf_pr/list', 'list_pr')->name('insumo_conf_pr.list');
+    Route::get('insumo_conf_pr/create', 'create_pr')->name('insumo_conf_pr.create');
+    Route::post('insumo_conf_pr', 'store_pr')->name('insumo_conf_pr.store');
+    Route::get('insumo_conf_pr/{id}/edit', 'edit_pr')->name('insumo_conf_pr.edit');
+    Route::put('insumo_conf_pr/{id}', 'update_pr')->name('insumo_conf_pr.update');
+    Route::delete('insumo_conf_pr/{id}', 'destroy_pr')->name('insumo_conf_pr.destroy');
+});
+//CAJA - INSUMOS
+Route::controller(InsumoController::class)->group(function () {
+    Route::get('insumo', 'index')->name('insumo');
+    Route::get('insumo_en', 'index_en')->name('insumo_en');
+    Route::get('insumo_en/list', 'list_en')->name('insumo_en.list');
+    Route::get('insumo_en/create', 'create_en')->name('insumo_en.create');
+    Route::post('insumo_en', 'store_en')->name('insumo_en.store');
+    Route::get('insumo_en/{id}/edit', 'edit_en')->name('insumo_en.edit');
+    Route::get('insumo_en/{id}/{tipo}/download', 'download_en')->name('insumo_en.download');
+    Route::put('insumo_en/{id}', 'update_en')->name('insumo_en.update');
+    Route::delete('insumo_en/{id}', 'destroy_en')->name('insumo_en.destroy');
+});
+
 
 
 
