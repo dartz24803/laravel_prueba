@@ -112,7 +112,6 @@
 </style>
 <form id="formulario_insert" method="POST" enctype="multipart/form-data" class="needs-validation">
 
-    <!-- <form id="formulario_insert" method="POST" enctype="multipart/form-data" class="needs-validation""> -->
     <div class=" modal-header">
         <h5 class="modal-title">Registrar Accesos de Reporte</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">

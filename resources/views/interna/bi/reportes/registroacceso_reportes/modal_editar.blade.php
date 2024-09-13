@@ -110,9 +110,8 @@
         transform: translateX(20px);
     }
 </style>
-<form id="formulario_insert" method="POST" enctype="multipart/form-data" class="needs-validation">
+<form id="formulario_update" method="POST" enctype="multipart/form-data" class="needs-validation">
 
-    <!-- <form id="formulario_insert" method="POST" enctype="multipart/form-data" class="needs-validation""> -->
     <div class=" modal-header">
         <h5 class="modal-title">Editar Accesos de Reporte</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -471,7 +470,7 @@
     function Update_Proceso() {
         Cargando();
 
-        var dataString = new FormData(document.getElementById('formulario_insert'));
+        var dataString = new FormData(document.getElementById('formulario_update'));
         var url = "{{ route('bireporte_ra.update', $get_id->id_acceso_bi_reporte) }}";
 
         $.ajax({
