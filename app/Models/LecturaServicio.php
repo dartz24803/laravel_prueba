@@ -39,20 +39,20 @@ class LecturaServicio extends Model
     public static function get_list_lectura_servicio($dato)
     {
         $parte_servicio = "";
-        if($dato['id_servicio']!="0"){
-            $parte_servicio = "ls.id_servicio=".$dato['id_servicio']." AND";
+        if ($dato['id_servicio'] != "0") {
+            $parte_servicio = "ls.id_servicio=" . $dato['id_servicio'] . " AND";
         }
         $parte_base = "";
-        if($dato['cod_base']!="0"){
-            $parte_base = "ls.cod_base='".$dato['cod_base']."' AND";
+        if ($dato['cod_base'] != "0") {
+            $parte_base = "ls.cod_base='" . $dato['cod_base'] . "' AND";
         }
         $parte_anio = "";
-        if($dato['anio']!="0"){
-            $parte_anio = "YEAR(ls.fecha)='".$dato['anio']."' AND";
+        if ($dato['anio'] != "0") {
+            $parte_anio = "YEAR(ls.fecha)='" . $dato['anio'] . "' AND";
         }
         $parte_mes = "";
-        if($dato['mes']!="0"){
-            $parte_mes = "MONTH(ls.fecha)='".$dato['mes']."' AND";
+        if ($dato['mes'] != "0") {
+            $parte_mes = "MONTH(ls.fecha)='" . $dato['mes'] . "' AND";
         }
         $sql = "SELECT ls.id,DATE_FORMAT(ls.fecha,'%d/%m/%Y') AS fecha,se.nom_servicio,ls.cod_base,
                 ds.suministro,DATE_FORMAT(ls.hora_ing,'%H:%i') AS hora_ing,ls.lect_ing,ls.img_ing,

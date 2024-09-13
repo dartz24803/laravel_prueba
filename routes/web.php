@@ -231,7 +231,7 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::delete('bireporte_ra/{id}', 'destroy_ra')->name('bireporte_ra.destroy');
     Route::get('bireporte_ra/{id}/edit', 'edit_ra')->name('bireporte_ra.edit');
     Route::put('bireporte_ra/{id}', 'update_ra')->name('bireporte_ra.update');
-    Route::post('bireporte_ra/{id}/valid', 'update_valid')->name('bireporte_ra.valid');
+    Route::post('bireporte_ra/{id}', 'update_valid')->name('bireporte_ra.valid');
     Route::get('puestos-por-areas-bi', 'getPuestosPorAreasBi')->name('puestos_por_areas_bi');
     Route::get('usuarios_por_area', 'getUsuariosPorArea')->name('usuarios_por_area');
     Route::get('areas_por_base', 'getAreasPorBase')->name('areas_por_base_bi');

@@ -15,8 +15,9 @@ use App\Models\DetalleSeguimientoCoordinador;
 use App\Models\DetalleSupervisionTienda;
 use App\Models\DiaSemana;
 use App\Models\Gerencia;
-use App\Models\IndicadorBi;
+use App\Models\IndicadorReporteBi;
 use App\Models\Mes;
+
 use App\Models\NivelJerarquico;
 use App\Models\Procesos;
 use App\Models\ProcesosHistorial;
@@ -27,6 +28,8 @@ use App\Models\TipoPortal;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -297,7 +300,7 @@ class BiReporteController extends Controller
         $presentaciones = $request->input('presentacion', []);
 
         foreach ($indicadores as $index => $indicador) {
-            IndicadorBi::create([
+            IndicadorReporteBi::create([
                 'id_acceso_bi_reporte' => $biReporteId,
                 'nom_indicador' => $indicador,
                 'estado' => 1,
@@ -399,7 +402,7 @@ class BiReporteController extends Controller
             ->get()
             ->unique('nom_area');
 
-        $list_indicadores = IndicadorBi::with('tipoIndicador')
+        $list_indicadores = IndicadorReporteBi::with('tipoIndicador')
             ->select(
                 'indicadores_bi.nom_indicador',
                 'indicadores_bi.descripcion',
