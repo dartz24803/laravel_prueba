@@ -64,4 +64,24 @@ class MercaderiaSurtida extends Model
         $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base'],$dato['cod_base'],$dato['estilo']]);
         return $query;
     }
+
+    public static function get_list_requerimiento_reposicion_vendedor($dato=null)
+    {
+        if(isset($dato['id_padre'])){
+            $sql = "SELECT id,sku,estilo,color,talla,descripcion,cantidad,stk_almacen,
+                    stk_tienda,estado,CASE WHEN estado=0 THEN 'Pendiente'
+                    WHEN estado=1 THEN 'Surtido' ELSE '' END AS nom_estado
+                    FROM mercaderia_surtida
+                    WHERE id_padre=?";
+            $query = DB::connection('sqlsrv')->select($sql, [$dato['id_padre']]);
+        }else{
+            $sql = "SELECT id,sku,estilo,color,talla,descripcion,cantidad,stk_almacen,
+                    stk_tienda,estado,CASE WHEN estado=0 THEN 'Pendiente'
+                    WHEN estado=1 THEN 'Surtido' ELSE '' END AS nom_estado
+                    FROM mercaderia_surtida
+                    WHERE tipo=2 AND base=?";
+            $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);
+        }
+        return $query;
+    }
 }

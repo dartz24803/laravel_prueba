@@ -2610,11 +2610,9 @@ class TrackingController extends Controller
     {
         if($request->tipo=="sku"){
             try {
-                $query = MercaderiaSurtida::select('id','sku','estilo','color','talla','descripcion',
-                        'cantidad','stk_almacen','stk_tienda','estado',DB::raw('CASE WHEN estado=0 THEN
-                        "Pendiente" WHEN estado=1 THEN "Surtido" ELSE "" END AS nom_estado'))
-                        ->where('tipo',2)->where('base',$request->cod_base)
-                        ->get();
+                $query = MercaderiaSurtida::get_list_requerimiento_reposicion_vendedor([
+                    'cod_base'=>$request->cod_base
+                ]);
             } catch (\Throwable $th) {
                 return response()->json([
                     'message' => "Error procesando base de datos.",
@@ -2630,7 +2628,9 @@ class TrackingController extends Controller
             return response()->json($query, 200);
         }else if($request->tipo=="estilo"){
             try {
-                $query = MercaderiaSurtidaPadre::get_list_mercaderia_surtida_padre_vendedor(['cod_base'=>$request->cod_base]);
+                $query = MercaderiaSurtidaPadre::get_list_mercaderia_surtida_padre_vendedor([
+                    'cod_base'=>$request->cod_base
+                ]);
             } catch (\Throwable $th) {
                 return response()->json([
                     'message' => "Error procesando base de datos.",
@@ -2646,7 +2646,9 @@ class TrackingController extends Controller
             return response()->json($query, 200);
         }elseif($request->id_padre){
             try {
-                $query = MercaderiaSurtida::where('id_padre', $request->id_padre)->get();
+                $query = MercaderiaSurtida::get_list_requerimiento_reposicion_vendedor([
+                    'id_padre'=>$request->id_padre
+                ]);
             } catch (\Throwable $th) {
                 return response()->json([
                     'message' => "Error procesando base de datos.",
