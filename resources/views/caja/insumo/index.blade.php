@@ -67,7 +67,8 @@
         }
 
         function Reparto_Insumo(){
-            Cargando();
+            alert('Aún no funciona');
+            /*Cargando();
 
             var url="{{ route('insumo_ra') }}";
 
@@ -81,11 +82,12 @@
                     $("#a_sins").removeClass('active');
                     $("#a_roins").removeClass('active');
                 }
-            });
+            });*/
         }
 
         function Salida_Insumo(){
-            Cargando();
+            alert('Aún no funciona');
+            /*Cargando();
 
             var url="{{ route('insumo_sa') }}";
 
@@ -99,7 +101,7 @@
                     $("#a_sins").addClass('active');
                     $("#a_roins").removeClass('active');
                 }
-            });
+            });*/
         }
 
         function Reporte_Insumo(){
