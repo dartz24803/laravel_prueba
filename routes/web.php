@@ -1011,6 +1011,11 @@ Route::controller(InsumoController::class)->group(function () {
     Route::get('insumo_sa/{id}/edit', 'edit_sa')->name('insumo_sa.edit');
     Route::put('insumo_sa/{id}', 'update_sa')->name('insumo_sa.update');
     Route::get('insumo_sa/{cod_base}/{id_insumo}/{inicio}/{fin}/excel', 'excel_sa')->name('insumo_sa.excel');
+    Route::get('insumo_ro', 'index_ro')->name('insumo_ro');
+    Route::get('insumo_ro/list_izquierda', 'list_izquierda_ro')->name('insumo_ro.list_izquierda');
+    Route::get('insumo_ro/list_derecha', 'list_derecha_ro')->name('insumo_ro.list_derecha');
+    Route::get('insumo_ro/excel_izquierda', 'excel_izquierda_ro')->name('insumo_ro.excel_izquierda');
+    Route::get('insumo_ro/excel_derecha', 'excel_derecha_ro')->name('insumo_ro.excel_derecha');
 });
 
 
