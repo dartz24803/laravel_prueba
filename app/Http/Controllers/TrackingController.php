@@ -2337,6 +2337,14 @@ class TrackingController extends Controller
                     $request->tipo_usuario,
                     $request->tipo_prenda
                 ]);
+
+                $query_tu = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_tusuario_app ?', [
+                    $request->cod_base
+                ]);
+
+                $query_tp = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_tprenda_app ?', [
+                    $request->cod_base
+                ]);
             }
         } catch (\Throwable $th) {
             return response()->json([
@@ -2350,7 +2358,17 @@ class TrackingController extends Controller
             ], 404);
         }
 
-        return response()->json($query, 200);
+        if($request->estilo){
+            return response()->json($query, 200);
+        }else{
+            $response = [
+                'data' => $query,
+                'tipo_usuario' => $query_tu,
+                'tipo_prenda' => $query_tp
+            ];
+
+            return response()->json($response, 200);
+        }
     }
 
     public function insert_mercaderia_nueva_app(Request $request, $sku)
