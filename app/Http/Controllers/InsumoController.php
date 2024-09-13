@@ -8,6 +8,7 @@ use App\Models\Insumo;
 use App\Models\Notificacion;
 use App\Models\Proveedor;
 use App\Models\RepartoInsumo;
+use App\Models\SalidaContometro;
 use App\Models\StockTotalInsumo;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -524,6 +525,126 @@ class InsumoController extends Controller
 
         $writer = new Xlsx($spreadsheet);
         $filename = 'Reparto de Insumo';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+    }
+
+    public function index_sa()
+    {
+        $list_base = Base::get_list_todas_bases_agrupadas();
+        $list_insumo = Insumo::select('id_insumo','nom_insumo')->where('estado',1)
+                        ->orderBy('nom_insumo','ASC')->get();
+        return view('caja.insumo.salida_insumo.index', compact('list_base','list_insumo'));
+    }
+
+    public function list_sa(Request $request)
+    {
+        $list_salida_insumo = SalidaContometro::get_list_salida_contometro([
+            'cod_base'=>$request->cod_base,
+            'id_insumo'=>$request->id_insumo,
+            'inicio'=>$request->inicio,
+            'fin'=>$request->fin
+        ]);
+        return view('caja.insumo.salida_insumo.lista', compact('list_salida_insumo'));
+    }
+
+    public function edit_sa($id)
+    {
+        $get_id = SalidaContometro::findOrFail($id);
+        return view('caja.insumo.salida_insumo.modal_editar', compact('get_id'));
+    }
+
+    public function update_sa(Request $request, $id)
+    {
+        $request->validate([
+            'cantidad_salidae' => 'required|gt:0'
+        ], [
+            'cantidad_salidae.required' => 'Debe ingresar cantidad.',
+            'cantidad_salidae.gt' => 'Debe ingresar cantidad mayor a 0.'
+        ]);
+
+        SalidaContometro::findOrFail($id)->update([
+            'cantidad_salida' => $request->cantidad_salidae,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function excel_sa($cod_base, $id_insumo, $inicio, $fin)
+    {
+        $list_salida_insumo = SalidaContometro::get_list_salida_contometro([
+            'cod_base'=>$cod_base,
+            'id_insumo'=>$id_insumo,
+            'inicio'=>$inicio,
+            'fin'=>$fin
+        ]);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getStyle("A1:F1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:F1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Salida de Insumo');
+
+        $sheet->setAutoFilter('A1:F1');
+
+        $sheet->getColumnDimension('A')->setWidth(15);
+        $sheet->getColumnDimension('B')->setWidth(40);
+        $sheet->getColumnDimension('C')->setWidth(40);
+        $sheet->getColumnDimension('D')->setWidth(15);
+        $sheet->getColumnDimension('E')->setWidth(15);
+        $sheet->getColumnDimension('F')->setWidth(15);
+
+        $sheet->getStyle('A1:F1')->getFont()->setBold(true);
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:F1")->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('C8C8C8');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle("A1:F1")->applyFromArray($styleThinBlackBorderOutline);
+
+        $sheet->setCellValue("A1", 'Base');
+        $sheet->setCellValue("B1", 'Insumo');
+        $sheet->setCellValue("C1", 'Usuario');
+        $sheet->setCellValue("D1", 'Cantidad');
+        $sheet->setCellValue("E1", 'Fecha');
+        $sheet->setCellValue("F1", 'Hora');
+
+        $contador = 1;
+
+        foreach ($list_salida_insumo as $list) {
+            $contador++;
+
+            $sheet->getStyle("A{$contador}:F{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("B{$contador}:C{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:F{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:F{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+
+            $sheet->setCellValue("A{$contador}", $list->cod_base); 
+            $sheet->setCellValue("B{$contador}", $list->nom_insumo); 
+            $sheet->setCellValue("C{$contador}", $list->nom_usuario); 
+            $sheet->setCellValue("D{$contador}", $list->cantidad_salida); 
+            $sheet->setCellValue("E{$contador}", Date::PHPToExcel($list->fecha));
+            $sheet->getStyle("E{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+            $sheet->setCellValue("F{$contador}", $list->hora); 
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Salida de Insumo';
         if (ob_get_contents()) ob_end_clean();
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
