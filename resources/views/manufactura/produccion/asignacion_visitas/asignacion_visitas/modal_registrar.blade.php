@@ -10,9 +10,27 @@
     /* Estilo para el campo de búsqueda dentro del select2 cuando está deshabilitado */
     .select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field:disabled {
         background-color: transparent !important;
-
     }
 
+
+    /* Añadir un contenedor para manejar el overflow de la tabla */
+    .table-responsive {
+        overflow-x: auto;
+        /* Habilita el scroll horizontal si es necesario */
+        max-width: 100%;
+        /* Asegura que la tabla no se desborde más allá de su contenedor */
+    }
+
+    .table {
+        width: 100%;
+        /* Asegura que la tabla use el 100% del espacio disponible */
+    }
+
+
+    .form-group {
+        margin: 0px;
+        /* Ajusta este valor según tus necesidades */
+    }
 
     .small-text {
         color: black;
@@ -89,7 +107,7 @@
 <form id="formulario_insert" method="POST" enctype="multipart/form-data" class="needs-validation">
 
     <div class=" modal-header">
-        <h5 class="modal-title">Registrar Nuevo Portal</h5>
+        <h5 class="modal-title">Registrar Asignación Visita</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -99,149 +117,110 @@
     </div>
 
     <div class="modal-body" style="max-height:450px; overflow:auto;">
-        <div class="row">
-            <div class="form-group col-md-4">
-                <label>Nombre: </label>
-                <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ingresar nombre">
-            </div>
-            <div class="form-group col-lg-4">
-                <label class="control-label text-bold">Tipo: </label>
-                <select class="form-control basicm" name="id_portal" id="id_portal">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_tipo as $list)
-                    <option value="{{ $list->id_tipo_portal }}" data-cod-tipo="{{ $list->cod_tipo }}">
-                        {{ $list->nom_tipo }}
-                    </option>
-                    @endforeach
-                </select>
-            </div>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="asignacion-tab" data-toggle="tab" href="#asignacion" role="tab" aria-controls="asignacion" aria-selected="true">Asignación</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="proceso-tab" data-toggle="tab" href="#proceso" role="tab" aria-controls="proceso" aria-selected="false">Proceso</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
 
-            <div class="form-group col-lg-4">
-                <label class="control-label text-bold">Fecha: </label>
+            <div class="tab-pane fade show active" id="asignacion" role="tabpanel" aria-labelledby="asignacion-tab">
+                <div class="row my-4">
 
-                <input class="form-control" type="date" name="fecha" id="fecha" value="{{ date('Y-m-d') }}">
-            </div>
-        </div>
-
-        <div class="row">
-
-            <div class="form-group col-md-8">
-                <label>Responsable: </label>
-                <select class="form-control basicm" name="id_puesto" id="id_puesto">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_responsable as $list)
-                    <option value="{{ $list->id_puesto }}" data-cod-area="{{ $list->cod_area }}">
-                        {{ $list->nom_puesto }}
-                    </option>
-                    @endforeach
-                </select>
-            </div>
-
-
-            <div class="form-group col-md-4">
-                <label for="ndocumento">N° Documento: </label>
-                <input type="number" class="form-control" id="ndocumento" name="ndocumento" placeholder="Ingresar documento">
-            </div>
-
-            <!-- <div class="form-group col-lg-6">
-                <label>Area:</label>
-
-                <select class="form-control multivalue" name="id_area[]" id="id_area" multiple="multiple">
-                    @foreach ($list_area as $list)
-                    <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
-                    @endforeach
-                </select>
-            </div> -->
-        </div>
-
-        <div class="row">
-
-            <div class="form-group col-lg-8">
-                <label>Descripción:</label>
-                <textarea name="descripcion" id="descripcion" cols="1" rows="2" class="form-control"></textarea>
-            </div>
-            <div class="form-group col-md-4">
-                <label>Código: </label>
-                <div>
-                    <input type="hidden" name="codigo" id="codigo" class="form-control">
-                    <label id="miLabel" style="color:black; font-size: 1rem;">LNU-1</label>
+                    <div class="form-group col-lg-6">
+                        <label class="control-label text-bold">Inspector: </label>
+                        <select class="form-control" name="id_inspector" id="id_inspector">
+                            @foreach ($list_inspector as $list)
+                            <option value="{{ $list->id_usuario }}">{{ $list->nombre_completo }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label class="control-label text-bold">Inspectores Acompañantes: </label>
+                        <select class="form-control multivalue" name="id_inspector_acop[]" id="id_inspector_acop" multiple="multiple">
+                            @foreach ($list_inspector as $list)
+                            <option value="{{ $list->id_usuario }}">{{ $list->nombre_completo }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label class="control-label text-bold">Fecha: </label>
+                        <input class="form-control" type="date" name="fecha" id="fecha" value="{{ date('Y-m-d') }}">
+                    </div>
                 </div>
             </div>
+            <div class="tab-pane fade" id="proceso" role="tabpanel" aria-labelledby="proceso-tab">
+                <div class="row my-4">
 
-        </div>
+                    <div class="form-group col-lg-6">
+                        <label class="control-label text-bold">Punto de Partida: </label>
+                        <select class="form-control multivalue" name="id_ptpartida" id="id_ptpartida">
+                            <option value="0">Domicilio</option>
+                            @foreach ($list_proveedor as $list)
+                            <option value="{{ $list->id_proveedor }}">{{ $list->nombre_proveedor_completo }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label class="control-label text-bold">Punto de Llegada: </label>
+                        <select class="form-control multivalue" name="id_ptllegada" id="id_ptllegada">
+                            @foreach ($list_proveedor as $list)
+                            <option value="{{ $list->id_proveedor }}">{{ $list->nombre_proveedor_completo }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label class="control-label text-bold">Modelo: </label>
+                        <select class="form-control multivalue" name="id_modelo[]" id="id_modelo">
+                            @foreach ($list_ficha_tecnica as $list)
+                            <option value="{{ $list->id_ft_produccion }}">{{ $list->modelo }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label class="control-label text-bold">Proceso: </label>
+                        <select class="form-control" name="id_proceso[]" id="id_proceso">
+                            @foreach ($list_proceso_visita as $list)
+                            <option value="{{ $list->id_procesov }}">{{ $list->nom_proceso }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-12">
+                        <button class="btn btn-success" type="button" id="btn-add-row">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="16"></line>
+                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                            </svg>
+                        </button>
+                    </div>
 
 
+                    <table class="table table-bordered table-responsive" id="selected-data-table" style="margin-top:20px; display:none;">
+                        <thead>
+                            <tr>
+                                <th>Borrar</th>
+                                <th class="col-tipo">Punto de Partida</th>
+                                <th class="col-tipo">Punta de Llegada</th>
+                                <th>Modelo</th>
+                                <th>Proceso</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
 
-        <div class="row d-flex">
-            <div class="form-group col-md-12">
-                <label class="control-label text-bold">Etiquetas: </label>
-
-                <select class="form-control multivalue" name="etiqueta[]" id="etiqueta" multiple="multiple">
-                </select>
-            </div>
-
-        </div>
-        <div class="row">
-            <div class="col-12 text-center">
-                <label class="control-label text-bold centered-label">Dar Accesos</label>
-                <div>
-                    <label class="control-label text-bold">Todos</label>
-
-                    <label class="switch">
-                        <input type="checkbox" id="acceso_todo" name="acceso_todo" onclick="Acceso_Todo()">
-                        <span class="slider"></span>
-                    </label>
                 </div>
-                <div class="divider"></div>
-
             </div>
-
         </div>
-
+    </div>
+    <div class="modal-footer">
         @csrf
-        <div class="row d-flex">
-            <div class="form-group col-md-6">
-                <label class="control-label text-bold">Acceso Área: </label>
-                <select class="form-control multivalue" name="id_area_acceso_t[]" id="id_area_acceso_t" multiple="multiple">
-                    @foreach ($list_area as $list)
-                    <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="form-group col-md-6">
-                <label class="control-label text-bold">Acceso Puesto: </label>
-                <select class="form-control multivalue" name="tipo_acceso_t[]" id="tipo_acceso_t" multiple="multiple">
-                    @foreach ($list_responsable as $puesto)
-                    <option value="{{ $puesto->id_puesto }}">{{ $puesto->nom_puesto }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="row d-flex">
-
-            <div class="form-group col-md-6">
-                <label>Archivo 1:</label>
-                <input type="file" class="form-control-file" name="archivo1" id="archivo1" onchange="Valida_Archivo('archivo1');">
-            </div>
-            <div class="form-group col-md-6">
-                <label>Documento:</label>
-                <input type="file" class="form-control-file" name="documentoa" id="documentoa" onchange="Validar_Archivo_Backup('documentoa');">
-            </div>
-            <div class="form-group col-md-6">
-                <label>Diagrama:</label>
-                <input type="file" class="form-control-file" name="diagramaa" id="diagramaa" onchange="Validar_Archivo_Backup('diagramaa');">
-            </div>
-
-        </div>
-
-        <div class="modal-footer">
-            @csrf
-            <button class="btn btn-primary" type="button" onclick="Insert_Funcion_Temporal();">Guardar</button>
-            <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
-        </div>
+        <button class="btn btn-primary" type="button">Guardar</button>
+        <button class=" btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
+    </div>
 
 </form>
 
@@ -253,137 +232,41 @@
     });
 
     $(document).ready(function() {
-        $('#id_area_acceso_t').select2({
-            tags: true,
-            tokenSeparators: [',', ' '],
-            dropdownParent: $('#ModalRegistro')
-        });
-        $('#tipo_acceso_t').select2({
-            tags: true,
-            tokenSeparators: [',', ' '],
-            dropdownParent: $('#ModalRegistro')
-        });
-        $('#id_area_acceso_t').on('change', function() {
-            const selectedAreas = $(this).val();
-            var url = "{{ route('puestos_por_areas') }}";
-            console.log('Selected Areas:', selectedAreas); // Para verificar que los valores se están obteniendo correctamente
+        // Evento click del botón "+"
+        $('#btn-add-row').on('click', function() {
+            // Obtener los valores seleccionados
+            let partida = $('#id_ptpartida').val();
+            let llegada = $('#id_ptllegada').val();
+            let modelo = $('#id_modelo').val();
+            let proceso = $('#id_proceso').val();
 
-            // Hacer una solicitud AJAX para obtener los puestos basados en las áreas seleccionadas
-            $.ajax({
-                url: url,
-                method: 'GET',
-                data: {
-                    areas: selectedAreas
-                },
-                success: function(response) {
-                    // Vaciar el segundo select antes de agregar las nuevas opciones
-                    $('#tipo_acceso_t').empty();
+            // Validar que todos los selects estén seleccionados
+            if (partida.length > 0 && llegada.length > 0 && modelo.length > 0 && proceso.length > 0) {
+                // Mostrar la tabla si está oculta
+                $('#selected-data-table').show();
 
-                    // Agregar las nuevas opciones
-                    $.each(response, function(index, puesto) {
-                        $('#tipo_acceso_t').append(
-                            `<option value="${puesto.id_puesto}">${puesto.nom_puesto}</option>`
-                        );
-                    });
-
-                    // Reinitialize select2 if needed
-                    $('#tipo_acceso_t').select2();
-                },
-                error: function(xhr) {
-                    console.error('Error al obtener puestos:', xhr);
-                }
-            });
-        });
-        // Función para actualizar el código
-        function actualizarCodigo() {
-            var selectedOptionArea = $('#id_puesto').find('option:selected');
-            var selectedOptionTipo = $('#id_portal').find('option:selected');
-
-            var codArea = selectedOptionArea.data('cod-area');
-            var codTipo = selectedOptionTipo.data('cod-tipo');
-
-            // Obtener el número de documento y asegurar que sea solo un número
-            var numeroDocumento = $('#ndocumento').val().replace(/\D/g, ''); // Reemplaza caracteres no numéricos por vacío
-            var codigoBase = 'LNU-1';
-
-            // Verifica si ambos valores están seleccionados
-            if (codArea && codTipo) {
-                var nuevoCodigo = 'LNU-' + codArea + '-' + codTipo + numeroDocumento + '-1';
-                $('#miLabel').text(nuevoCodigo);
-                $('#codigo').val(nuevoCodigo);
+                // Agregar una nueva fila a la tabla
+                let newRow = `
+                <tr>
+                    <td><button class="btn btn-danger btn-delete-row" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button></td>
+                    <td>${$('#id_ptpartida option:selected').map(function() { return $(this).text(); }).get().join(', ')}</td>
+                    <td>${$('#id_ptllegada option:selected').map(function() { return $(this).text(); }).get().join(', ')}</td>
+                    <td>${$('#id_modelo option:selected').map(function() { return $(this).text(); }).get().join(', ')}</td>
+                    <td>${$('#id_proceso option:selected').map(function() { return $(this).text(); }).get().join(', ')}</td>
+                </tr>
+            `;
+                $('#selected-data-table tbody').append(newRow);
             } else {
-                // Si no hay selección válida en ambos, muestra solo el código base
-                $('#miLabel').text(codigoBase);
-                $('#codigo').val(codigoBase);
-            }
-        }
-
-        // Evento cuando se cambia el select de Responsable (id_puesto)
-        $('#id_puesto').change(function() {
-            actualizarCodigo();
-        });
-
-        // Evento cuando se cambia el select de Tipo (id_portal)
-        $('#id_portal').change(function() {
-            actualizarCodigo();
-        });
-
-        // Evento cuando se cambia el campo de número de documento
-        $('#ndocumento').on('input', function() {
-            actualizarCodigo();
-        });
-    });
-
-
-
-
-    function Acceso_Todo() {
-        const isChecked = document.getElementById('acceso_todo').checked;
-
-        $("#id_area_acceso_t").prop('disabled', isChecked).trigger('change');
-        $("#tipo_acceso_t").prop('disabled', isChecked).trigger('change');
-
-        if (isChecked) {
-            $("#id_area_acceso_t").val(null).trigger('change');
-            $("#tipo_acceso_t").val(null).trigger('change');
-
-            $("#id_area_acceso_t").append('<option value="all" disabled selected>Seleccionado todo</option>').trigger('change');
-            $("#tipo_acceso_t").append('<option value="all" disabled selected>Seleccionado todo</option>').trigger('change');
-        } else {
-            $("#id_area_acceso_t option[value='all']").remove();
-            $("#tipo_acceso_t option[value='all']").remove();
-        }
-    }
-
-    $('#id_area_acceso_t').on('change', function() {
-        const selectedValues = $(this).val();
-        console.log('Valores seleccionados en el select de áreas:', selectedValues);
-    });
-
-
-    function Insert_Funcion_Temporal() {
-        Cargando();
-
-        var dataString = new FormData(document.getElementById('formulario_insert'));
-        var url = "{{ route('portalprocesos_lm.store') }}";
-
-        $.ajax({
-            url: url,
-            data: dataString,
-            type: "POST",
-            processData: false,
-            contentType: false,
-            success: function(data) {
-                swal.fire(
-                    'Registro Exitoso!',
-                    'Haga clic en el botón!',
-                    'success'
-                ).then(function() {
-                    Lista_Maestra();
-                    $("#ModalRegistro .close").click();
-                });
+                alert('Por favor, selecciona todos los campos.');
             }
         });
 
-    }
+        // Evento para eliminar una fila
+        $(document).on('click', '.btn-delete-row', function() {
+            $(this).closest('tr').remove();
+            if ($('#selected-data-table tbody tr').length === 0) {
+                $('#selected-data-table').hide();
+            }
+        });
+    });
 </script>

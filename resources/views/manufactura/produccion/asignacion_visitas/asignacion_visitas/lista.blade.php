@@ -19,17 +19,14 @@
 <table id="tabla_js" class="table table-hover" style="width:100%">
     <thead class="text-center">
         <tr>
-            <th>Código</th>
-            <th>Inspector</th>
-            <th>Puesto Inspector</th>
             <th>Fecha</th>
+            <th>Inspector</th>
             <th>Punto Partida</th>
             <th>Punto Llegada</th>
             <th>Modelo</th>
             <th>Proceso</th>
             <th>Tipo Transporte</th>
             <th>Costo</th>
-            <th>Observaciones</th>
             <th>Fecha Inicio Visita</th>
             <th>Fecha Fin Visita</th>
             <th>Estado</th>
@@ -39,17 +36,14 @@
     <tbody>
         @foreach ($list_asignacion as $asignacion)
         <tr class="text-center">
-            <td>{{ $asignacion->cod_asignacion }}</td>
-            <td>{{ $asignacion->id_inspector }}</td> <!-- Si tienes que mostrar el nombre del inspector, podrías hacer una relación y extraerlo -->
-            <td>{{ $asignacion->id_puesto_inspector }}</td>
             <td>{{ \Carbon\Carbon::parse($asignacion->fecha)->locale('es')->translatedFormat('D d M y') }}</td>
-            <td>{{ $asignacion->punto_partida }}</td>
-            <td>{{ $asignacion->punto_llegada }}</td>
-            <td>{{ $asignacion->id_modelo }}</td>
-            <td>{{ $asignacion->id_proceso }}</td>
-            <td>{{ $asignacion->id_tipo_transporte }}</td>
-            <td>{{ $asignacion->costo }}</td>
-            <td>{{ $asignacion->observacion }}</td>
+            <td>{{ $asignacion->nombre_completo }}</td> <!-- Si tienes que mostrar el nombre del inspector, podrías hacer una relación y extraerlo -->
+            <td>{{ $asignacion->proveedor_responsable_partida }}</td>
+            <td>{{ $asignacion->proveedor_responsable_llegada }}</td>
+            <td>{{ $asignacion->nom_modelo }}</td>
+            <td>{{ $asignacion->nom_proceso }}</td>
+            <td>{{ $asignacion->nom_tipo_transporte }}</td>
+            <td>S/{{ $asignacion->costo_total }}</td>
             <td>{{ \Carbon\Carbon::parse($asignacion->fec_ini_visita)->locale('es')->translatedFormat('D d M y H:i') }}</td>
             <td>{{ \Carbon\Carbon::parse($asignacion->fec_fin_visita)->locale('es')->translatedFormat('D d M y H:i') }}</td>
             <td>{{ $asignacion->estado == 1 ? 'Activo' : 'Inactivo' }}</td>

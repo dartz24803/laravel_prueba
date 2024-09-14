@@ -205,8 +205,7 @@
 
                     <div class="form-group col-md-12">
                         <label for="tablas">Tablas: </label>
-                        <input type="text" class="form-control" id="tablas" name="tablas"
-                            value="{{ $get_id->tablas }}" placeholder="">
+                        <textarea name="tablas" id="tablas" cols="1" rows="2" class="form-control">{{ $get_id->tablas ?? '' }}</textarea>
                     </div>
 
                 </div>
@@ -228,7 +227,7 @@
                                 <th class="col-accion">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="tabla_body">
+                        <tbody id="tabla_body2">
                             <!-- Si ya tienes valores para editar, los mostramos en la tabla -->
                             @foreach ($list_indicadores as $indicador)
                             <tr class="text-center">
@@ -288,11 +287,15 @@
 </form>
 
 <script>
+    var opcionesTipo = `
+        @foreach ($list_tipo_indicador as $list)
+            <option value="{{ $list->idtipo_indicador }}">{{ $list->nom_indicador }}</option>
+        @endforeach
+    `;
     // Función para agregar una nueva fila
     function addRow() {
-
         // Obtener el cuerpo de la tabla
-        var tableBody = document.getElementById('tabla_body');
+        var tableBody = document.getElementById('tabla_body2');
         // Crear una nueva fila
         var newRow = document.createElement('tr');
         newRow.classList.add('text-center');
@@ -302,11 +305,7 @@
         <td class="px-1"><input type="text" class="form-control" name="indicador[]"></td>
         <td class="px-1"><input type="text" class="form-control" name="descripcion[]"></td>
         <td class="px-1">
-            <select class="form-control" name="tipo[]">
-                @foreach ($list_tipo_indicador as $list)
-                    <option value="{{ $list->idtipo_indicador }}">{{ $list->nom_indicador }}</option>
-                @endforeach
-            </select>
+            <select class="form-control" name="tipo[]">` + opcionesTipo + `</select>
         </td>
         <td class="px-1">
             <select class="form-control" name="presentacion[]">
@@ -321,10 +320,11 @@
         tableBody.appendChild(newRow);
     }
 
-    // Función para eliminar una fila
+
+
     function removeRow(button) {
-        var row = button.parentNode.parentNode;
-        row.parentNode.removeChild(row);
+        // Eliminar la fila correspondiente
+        button.closest('tr').remove();
     }
 
 
@@ -441,32 +441,6 @@
     });
 
 
-
-
-    function Acceso_Todo() {
-        const isChecked = document.getElementById('acceso_todo').checked;
-
-        $("#id_area_acceso_te").prop('disabled', isChecked).trigger('change');
-        $("#tipo_acceso_te").prop('disabled', isChecked).trigger('change');
-
-        if (isChecked) {
-            $("#id_area_acceso_te").val(null).trigger('change');
-            $("#tipo_acceso_te").val(null).trigger('change');
-
-            $("#id_area_acceso_te").append('<option value="all" disabled selected>Seleccionado todo</option>').trigger('change');
-            $("#tipo_acceso_te").append('<option value="all" disabled selected>Seleccionado todo</option>').trigger('change');
-        } else {
-            $("#id_area_acceso_te option[value='all']").remove();
-            $("#tipo_acceso_te option[value='all']").remove();
-        }
-    }
-
-    $('#id_area_acceso_te').on('change', function() {
-        const selectedValues = $(this).val();
-        console.log('Valores seleccionados en el select de áreas:', selectedValues);
-    });
-
-
     function Update_Proceso() {
         Cargando();
 
@@ -511,4 +485,16 @@
             }
         });
     }
+
+    // Evitar el envío del formulario cuando se presiona Enter en otros campos, pero permitir en <textarea>
+    document.getElementById('formulario_update').addEventListener('keydown', function(event) {
+        // Si el foco está en un textarea, permitir el salto de línea
+        if (event.target.tagName.toLowerCase() === 'textarea') {
+            return; // No hacer nada, permitir el salto de línea
+        }
+        // Si se presiona Enter en otro campo, evitar el envío del formulario
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Evita que el formulario se envíe
+        }
+    });
 </script>

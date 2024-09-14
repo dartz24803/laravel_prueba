@@ -947,6 +947,18 @@ Route::controller(ProduccionController::class)->group(function () {
     Route::post('produccion_av', 'store_av')->name('produccion_av.store');
     Route::get('produccion_av/{id}/edit', 'edit_av')->name('produccion_av.edit');
     Route::put('produccion_av/{id}', 'update_av')->name('produccion_av.update');
+    // Route::get('portalprocesos_lm/create', 'create_lm')->name('portalprocesos_lm.create');
+    // Route::get('portalprocesos_lm/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_lm')->name('portalprocesos_lm.excel');
+    // Route::get('portalprocesos_lm/store', 'store_lm')->name('portalprocesos_lm.store');
+    // Route::get('portalprocesos_lm/{id}/image', 'image_lm')->name('portalprocesos_lm.image');
+    // Route::delete('portalprocesos_lm/{id}', 'destroy_lm')->name('portalprocesos_lm.destroy');
+    // Route::post('portalprocesos_lm/{id}', 'approve_lm')->name('portalprocesos_lm.approve');
+    // Route::get('portalprocesos_lm/{id}/edit', 'edit_lm')->name('portalprocesos_lm.edit');
+    // Route::put('portalprocesos_lm/{id}/version', 'version_lm')->name('portalprocesos_lm.version');
+    // Route::put('portalprocesos_lm/{id}', 'update_lm')->name('portalprocesos_lm.update');
+    // Route::get('temas_por_areas', 'getTemasPorAreas')->name('temas_por_areas');
+    // Route::get('capacitadores_por_areas', 'getCapacitadoresPorAreas')->name('capacitadores_por_areas');
+    // Route::get('puestos-por-areas', 'getPuestosPorAreas')->name('puestos_por_areas');
 });
 
 
