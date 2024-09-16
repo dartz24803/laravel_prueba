@@ -10,6 +10,7 @@ class SedeLaboral extends Model
     use HasFactory;
 
     protected $table = 'sede_laboral';
+    protected $primaryKey = 'id';
 
     public $timestamps = false;
 

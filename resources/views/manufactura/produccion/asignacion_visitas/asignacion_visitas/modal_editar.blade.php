@@ -99,7 +99,6 @@
             <div class="form-group col-lg-6">
                 <label class="control-label text-bold">Punto de Partida: </label>
                 <select class="form-control multivalue" name="id_ptpartidae" id="id_ptpartidae">
-                    <option value="0">Domicilio</option>
                     @foreach ($list_proveedor as $list)
                     <option value="{{ $list->id_proveedor }}">{{ $list->nombre_proveedor_completo }}</option>
                     @endforeach
