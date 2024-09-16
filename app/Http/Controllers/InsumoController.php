@@ -9,6 +9,7 @@ use App\Models\Notificacion;
 use App\Models\Proveedor;
 use App\Models\RepartoInsumo;
 use App\Models\SalidaContometro;
+use App\Models\StockSalidaInsumo;
 use App\Models\StockTotalInsumo;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -645,6 +646,176 @@ class InsumoController extends Controller
 
         $writer = new Xlsx($spreadsheet);
         $filename = 'Salida de Insumo';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+    }
+
+    public function index_ro()
+    {
+        return view('caja.insumo.reporte_insumo.index');
+    }
+
+    public function list_izquierda_ro()
+    {
+        $list_stock_total_insumo = StockTotalInsumo::all();
+        return view('caja.insumo.reporte_insumo.lista_izquierda', compact('list_stock_total_insumo'));
+    }
+
+    public function list_derecha_ro()
+    {
+        $list_stock_salida_insumo = StockSalidaInsumo::all();
+        return view('caja.insumo.reporte_insumo.lista_derecha', compact('list_stock_salida_insumo'));
+    }
+    
+    public function excel_izquierda_ro()
+    {
+        $list_stock_total_insumo = StockTotalInsumo::all();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getStyle("A1:B1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:B1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Stock Total Insumo');
+
+        $sheet->setAutoFilter('A1:B1');
+
+        $sheet->getColumnDimension('A')->setWidth(40);
+        $sheet->getColumnDimension('B')->setWidth(15);
+
+        $sheet->getStyle('A1:B1')->getFont()->setBold(true);
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:B1")->getFill()
+        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+        ->getStartColor()->setARGB('C8C8C8');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle("A1:B1")->applyFromArray($styleThinBlackBorderOutline);
+
+        $sheet->setCellValue("A1", 'Insumo');
+        $sheet->setCellValue("B1", 'Cantidad');
+
+        $contador = 1;
+
+        foreach ($list_stock_total_insumo as $list) {
+            $contador++;
+
+            if($list->total<10){ 
+                $spreadsheet->getActiveSheet()->getStyle("A{$contador}:B{$contador}")->getFill()
+                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('FF0000');
+            }elseif($list->total<20){ 
+                $spreadsheet->getActiveSheet()->getStyle("A{$contador}:B{$contador}")->getFill()
+                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('FFFF00');
+            }else{ 
+                $spreadsheet->getActiveSheet()->getStyle("A{$contador}:B{$contador}")->getFill()
+                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('FFFFFF');
+            }
+
+            $sheet->getStyle("A{$contador}:B{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:B{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:B{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+
+            $sheet->setCellValue("A{$contador}", $list->nom_insumo); 
+            $sheet->setCellValue("B{$contador}", $list->total);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Stock Total Insumo';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+    }
+
+    public function excel_derecha_ro()
+    {
+        $list_stock_salida_insumo = StockSalidaInsumo::all();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getStyle("A1:C1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:C1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Reporte de Insumo');
+
+        $sheet->setAutoFilter('A1:C1');
+
+        $sheet->getColumnDimension('A')->setWidth(15);
+        $sheet->getColumnDimension('B')->setWidth(40);
+        $sheet->getColumnDimension('C')->setWidth(15);
+
+        $sheet->getStyle('A1:C1')->getFont()->setBold(true);
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:C1")->getFill()
+        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+        ->getStartColor()->setARGB('C8C8C8');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle("A1:C1")->applyFromArray($styleThinBlackBorderOutline);
+
+        $sheet->setCellValue("A1", 'Base');
+        $sheet->setCellValue("B1", 'Insumo');
+        $sheet->setCellValue("C1", 'Cantidad');
+
+        $contador = 1;
+
+        foreach ($list_stock_salida_insumo as $list) { 
+            $contador++;
+
+            if($list->total<10){ 
+                $spreadsheet->getActiveSheet()->getStyle("A{$contador}:C{$contador}")->getFill()
+                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('FF0000');
+            }elseif($list->total<20){ 
+                $spreadsheet->getActiveSheet()->getStyle("A{$contador}:C{$contador}")->getFill()
+                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('FFFF00');
+            }else{ 
+                $spreadsheet->getActiveSheet()->getStyle("A{$contador}:C{$contador}")->getFill()
+                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('FFFFFF');
+            }
+
+            $sheet->getStyle("A{$contador}:C{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("B{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:C{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:C{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+
+            $sheet->setCellValue("A{$contador}", $list->cod_base); 
+            $sheet->setCellValue("B{$contador}", $list->nom_insumo); 
+            $sheet->setCellValue("C{$contador}", $list->total);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Reporte de Insumo';
         if (ob_get_contents()) ob_end_clean();
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');

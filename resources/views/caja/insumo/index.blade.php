@@ -108,7 +108,7 @@
             alert('Aún no funciona');
             /*Cargando();
 
-            var url="{{ route('linea_carrera_re') }}";
+            var url="{{ route('insumo_ro') }}";
 
             $.ajax({
                 url: url,

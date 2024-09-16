@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class StockTotalInsumo extends Model
+class StockSalidaInsumo extends Model
 {
     use HasFactory;
 
-    protected $table = 'stock_total_insumo';
+    protected $table = 'stock_salida_insumo';
 
-    public $timestamps = false; 
+    public $timestamps = false;
 
     protected $fillable = [
-        'id_insumo',
-        'nom_insumo',
+        'cod_base',
+        'nom_insumo', 
         'total'
     ];
 }
