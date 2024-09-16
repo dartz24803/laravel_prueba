@@ -22,6 +22,7 @@ use App\Http\Controllers\CajaChicaController;
 use App\Http\Controllers\CajaInicioController;
 use App\Http\Controllers\CambioPrendaConfController;
 use App\Http\Controllers\CambioPrendaController;
+use App\Http\Controllers\CapacitacionCajeroController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
 use App\Http\Controllers\ColaboradorController;
@@ -60,6 +61,7 @@ use App\Http\Controllers\ProcesosController;
 use App\Http\Controllers\ProduccionController;
 use App\Http\Controllers\RecursosHumanosInicioController;
 use App\Http\Controllers\ReporteProveedoresController;
+use App\Http\Controllers\SalidaInsumoController;
 
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
@@ -1023,8 +1025,20 @@ Route::controller(InsumoController::class)->group(function () {
     Route::get('insumo_ro/excel_izquierda', 'excel_izquierda_ro')->name('insumo_ro.excel_izquierda');
     Route::get('insumo_ro/excel_derecha', 'excel_derecha_ro')->name('insumo_ro.excel_derecha');
 });
-
-
+//CAJA - SALIDA DE INSUMO
+Route::controller(SalidaInsumoController::class)->group(function () {
+    Route::get('salida_insumo', 'index')->name('salida_insumo');
+    Route::get('salida_insumo/list_izquierda', 'list_izquierda')->name('salida_insumo.list_izquierda');
+    Route::get('salida_insumo/list_derecha', 'list_derecha')->name('salida_insumo.list_derecha');
+    Route::get('salida_insumo/create', 'create')->name('salida_insumo.create');
+    Route::post('salida_insumo', 'store')->name('salida_insumo.store');
+});
+//CAJA - CAPACITACIÓN CAJEROS
+Route::controller(CapacitacionCajeroController::class)->group(function () {
+    Route::get('capacitacion_cajero', 'index')->name('capacitacion_cajero');
+    Route::get('capacitacion_cajero/list', 'list')->name('capacitacion_cajero.list');
+    Route::get('capacitacion_cajero/excel', 'excel')->name('capacitacion_cajero.excel');
+});
 
 
 

@@ -71,6 +71,14 @@ session('usuario')->id_puesto == 148)
                 </li>
             @endif
             @if (session('usuario')->id_nivel == 1 || 
+            session('usuario')->id_puesto == 128)
+                <!--<li id="capacitaciones_cajeros">
+                    <a href="{{ route('capacitacion_cajero') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                        <p class="romperpalabra"><span id="icono_active2"></span> Capacitación cajero</p>
+                    </a>
+                </li>-->
+            @endif
+            @if (session('usuario')->id_nivel == 1 || 
             session('usuario')->id_puesto == 28 ||  
             session('usuario')->id_puesto == 128)
                 <li id="duraciones_transacciones">
@@ -120,6 +128,17 @@ session('usuario')->id_puesto == 148)
                         <p class="romperpalabra"><span id="icono_active2"></span> Observaciones</p>
                     </a>
                 </li>
+            @endif
+            @if (session('usuario')->id_nivel == 1 || 
+            session('usuario')->id_puesto == 29 || 
+            session('usuario')->id_puesto == 31 || 
+            session('usuario')->id_puesto == 32 || 
+            session('usuario')->id_puesto == 161)
+                <!--<li id="salidas_insumos">
+                    <a href="{{ route('salida_insumo') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                        <p class="romperpalabra"><span id="icono_active2"></span> Salida de insumo</p>
+                    </a>
+                </li>-->
             @endif
         </ul>
     </li>
