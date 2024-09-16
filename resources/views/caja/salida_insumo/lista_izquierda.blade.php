@@ -8,7 +8,7 @@
     <tbody>
         @foreach ($list_stock_salida_insumo as $list)
             <tr class="text-center">
-                <td class="text-left">{{ $list->nom_insumo }}</td>
+                <td class="text-left">{{ $list->nom_insumo }}</td> 
                 <td>{{ $list->total }}</td>
             </tr>
         @endforeach
