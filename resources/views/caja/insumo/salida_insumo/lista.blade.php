@@ -3,25 +3,30 @@
         <tr class="text-center">
             <th>Orden</th>
             <th>Base</th>
-            <th>Cajero</th>
-            <th>Fecha</th>
-            <th>Cantidad prendas</th>
-            <th>Hora inicio</th> 
-            <th>Hora termino</th>
-            <th>Total tiempo</th>
+            <th>Insumo</th>
+            <th>Usuario</th>
+            <th>Cantidad</th>
+            <th>Fecha</th>  
+            <th class="no-content"></th>
         </tr>
     </thead>
     <tbody>
-        @foreach ($list_duracion_transaccion as $list)
+        @foreach ($list_salida_insumo as $list)
             <tr class="text-center">
-                <td>{{ $list->FechaDocu }}</td>
-                <td class="text-left">{{ $list->NombreBase }}</td>
-                <td class="text-left">{{ $list->NomCajero }}</td>
+                <td>{{ $list->orden }}</td>
+                <td>{{ $list->cod_base }}</td>
+                <td class="text-left">{{ $list->nom_insumo }}</td>
+                <td class="text-left">{{ $list->nom_usuario }}</td>
+                <td>{{ $list->cantidad_salida }}</td>
                 <td>{{ $list->fecha }}</td>
-                <td>{{ $list->Cantidad }}</td>
-                <td>{{ $list->hora_inicial }}</td>
-                <td>{{ $list->hora_final }}</td>
-                <td class="text-left">{{ $list->min." min ".$list->seg." seg" }}</td>
+                <td>
+                    <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" 
+                    app_elim="{{ route('insumo_sa.edit', $list->id_salida_contometro) }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
+                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                        </svg>
+                    </a>
+                </td>
             </tr>
         @endforeach
     </tbody>

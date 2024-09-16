@@ -22,6 +22,7 @@ use App\Http\Controllers\CajaChicaController;
 use App\Http\Controllers\CajaInicioController;
 use App\Http\Controllers\CambioPrendaConfController;
 use App\Http\Controllers\CambioPrendaController;
+use App\Http\Controllers\CapacitacionCajeroController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
 use App\Http\Controllers\ColaboradorController;
@@ -60,6 +61,7 @@ use App\Http\Controllers\ProcesosController;
 use App\Http\Controllers\ProduccionController;
 use App\Http\Controllers\RecursosHumanosInicioController;
 use App\Http\Controllers\ReporteProveedoresController;
+use App\Http\Controllers\SalidaInsumoController;
 
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
@@ -510,6 +512,12 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Comision_AFP', 'Insert_Comision_AFP');
     Route::post('ColaboradorConfController/Update_Comision_AFP', 'Update_Comision_AFP');
     Route::post('ColaboradorConfController/Delete_Comision_AFP', 'Delete_Comision_AFP');
+    Route::post('ColaboradorConfController/Turno', 'Turno');
+    Route::get('ColaboradorConfController/Modal_Turno', 'Modal_Turno');
+    Route::get('ColaboradorConfController/Modal_Update_Turno/{id}', 'Modal_Update_Turno');
+    Route::post('ColaboradorConfController/Insert_Turno', 'Insert_Turno');
+    Route::post('ColaboradorConfController/Update_Turno', 'Update_Turno');
+    Route::post('ColaboradorConfController/Delete_Turno', 'Delete_Turno');
     /*----------------------------------------Paolo----------------------------------*/
     // ----------------------------------------bryan----------------------------------*/
 
@@ -1008,9 +1016,41 @@ Route::controller(InsumoController::class)->group(function () {
     Route::get('insumo_en/{id}/{tipo}/download', 'download_en')->name('insumo_en.download');
     Route::put('insumo_en/{id}', 'update_en')->name('insumo_en.update');
     Route::delete('insumo_en/{id}', 'destroy_en')->name('insumo_en.destroy');
+    Route::get('insumo_ra', 'index_ra')->name('insumo_ra');
+    Route::get('insumo_ra/list_izquierda', 'list_izquierda_ra')->name('insumo_ra.list_izquierda');
+    Route::get('insumo_ra/list_derecha', 'list_derecha_ra')->name('insumo_ra.list_derecha');
+    Route::get('insumo_ra/create', 'create_ra')->name('insumo_ra.create');
+    Route::post('insumo_ra', 'store_ra')->name('insumo_ra.store');
+    Route::get('insumo_ra/{id}/edit', 'edit_ra')->name('insumo_ra.edit');
+    Route::put('insumo_ra/{id}', 'update_ra')->name('insumo_ra.update');
+    Route::delete('insumo_ra/{id}', 'destroy_ra')->name('insumo_ra.destroy');
+    Route::get('insumo_ra/excel_izquierda', 'excel_izquierda_ra')->name('insumo_ra.excel_izquierda');
+    Route::get('insumo_ra/excel_derecha', 'excel_derecha_ra')->name('insumo_ra.excel_derecha');
+    Route::get('insumo_sa', 'index_sa')->name('insumo_sa');
+    Route::post('insumo_sa/list', 'list_sa')->name('insumo_sa.list');
+    Route::get('insumo_sa/{id}/edit', 'edit_sa')->name('insumo_sa.edit');
+    Route::put('insumo_sa/{id}', 'update_sa')->name('insumo_sa.update');
+    Route::get('insumo_sa/{cod_base}/{id_insumo}/{inicio}/{fin}/excel', 'excel_sa')->name('insumo_sa.excel');
+    Route::get('insumo_ro', 'index_ro')->name('insumo_ro');
+    Route::get('insumo_ro/list_izquierda', 'list_izquierda_ro')->name('insumo_ro.list_izquierda');
+    Route::get('insumo_ro/list_derecha', 'list_derecha_ro')->name('insumo_ro.list_derecha');
+    Route::get('insumo_ro/excel_izquierda', 'excel_izquierda_ro')->name('insumo_ro.excel_izquierda');
+    Route::get('insumo_ro/excel_derecha', 'excel_derecha_ro')->name('insumo_ro.excel_derecha');
 });
-
-
+//CAJA - SALIDA DE INSUMO
+Route::controller(SalidaInsumoController::class)->group(function () {
+    Route::get('salida_insumo', 'index')->name('salida_insumo');
+    Route::get('salida_insumo/list_izquierda', 'list_izquierda')->name('salida_insumo.list_izquierda');
+    Route::get('salida_insumo/list_derecha', 'list_derecha')->name('salida_insumo.list_derecha');
+    Route::get('salida_insumo/create', 'create')->name('salida_insumo.create');
+    Route::post('salida_insumo', 'store')->name('salida_insumo.store');
+});
+//CAJA - CAPACITACIÓN CAJEROS
+Route::controller(CapacitacionCajeroController::class)->group(function () {
+    Route::get('capacitacion_cajero', 'index')->name('capacitacion_cajero');
+    Route::get('capacitacion_cajero/list', 'list')->name('capacitacion_cajero.list');
+    Route::get('capacitacion_cajero/excel', 'excel')->name('capacitacion_cajero.excel');
+});
 
 
 
