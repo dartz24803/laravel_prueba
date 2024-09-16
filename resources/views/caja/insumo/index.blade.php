@@ -67,8 +67,7 @@
         }
 
         function Reparto_Insumo(){
-            alert('Aún no funciona');
-            /*Cargando();
+            Cargando();
 
             var url="{{ route('insumo_ra') }}";
 
@@ -82,12 +81,11 @@
                     $("#a_sins").removeClass('active');
                     $("#a_roins").removeClass('active');
                 }
-            });*/
+            });
         }
 
         function Salida_Insumo(){
-            alert('Aún no funciona');
-            /*Cargando();
+            Cargando();
 
             var url="{{ route('insumo_sa') }}";
 
@@ -101,12 +99,11 @@
                     $("#a_sins").addClass('active');
                     $("#a_roins").removeClass('active');
                 }
-            });*/
+            });
         }
 
         function Reporte_Insumo(){
-            alert('Aún no funciona');
-            /*Cargando();
+            Cargando();
 
             var url="{{ route('insumo_ro') }}";
 
@@ -120,7 +117,7 @@
                     $("#a_sins").removeClass('active');
                     $("#a_roins").addClass('active');
                 }
-            });*/
+            });
         }
     </script>
 @endsection

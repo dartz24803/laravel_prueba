@@ -14,7 +14,7 @@ return new class extends Migration
     {
         DB::statement("
             CREATE VIEW stock_salida_insumo AS
-            SELECT ri.cod_base,iu.nom_insumo,
+            SELECT ri.cod_base,ri.id_insumo,iu.nom_insumo,
             (CASE WHEN sa.suma_salida IS NULL THEN SUM(ri.cantidad_reparto)
             ELSE SUM(ri.cantidad_reparto)-sa.suma_salida END) AS total
             FROM reparto_insumo ri
@@ -24,7 +24,7 @@ return new class extends Migration
             GROUP BY id_insumo, cod_base) sa ON ri.id_insumo=sa.id_insumo AND ri.cod_base=sa.cod_base
             INNER JOIN insumo iu ON iu.id_insumo=ri.id_insumo
             WHERE ri.estado=1
-            GROUP BY ri.cod_base,iu.nom_insumo,sa.suma_salida
+            GROUP BY ri.cod_base,ri.id_insumo,iu.nom_insumo,sa.suma_salida
             ORDER BY ri.cod_base ASC,iu.nom_insumo ASC
         ");
     }
