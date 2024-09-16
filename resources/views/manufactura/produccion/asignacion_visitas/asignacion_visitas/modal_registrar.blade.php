@@ -122,14 +122,13 @@
                 <a class="nav-link active" id="asignacion-tab" data-toggle="tab" href="#asignacion" role="tab" aria-controls="asignacion" aria-selected="true">Asignación</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="proceso-tab" data-toggle="tab" href="#proceso" role="tab" aria-controls="proceso" aria-selected="false">Proceso</a>
+                <a class="nav-link" id="detalle-tab" data-toggle="tab" href="#detalle" role="tab" aria-controls="detalle" aria-selected="false">Detalle</a>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">
 
             <div class="tab-pane fade show active" id="asignacion" role="tabpanel" aria-labelledby="asignacion-tab">
                 <div class="row my-4">
-
                     <div class="form-group col-lg-6">
                         <label class="control-label text-bold">Inspector: </label>
                         <select class="form-control" name="id_inspector" id="id_inspector">
@@ -138,21 +137,23 @@
                             @endforeach
                         </select>
                     </div>
+
                     <div class="form-group col-lg-6">
+                        <label class="control-label text-bold">Fecha: </label>
+                        <input class="form-control" type="date" name="fecha" id="fecha" value="{{ date('Y-m-d') }}">
+                    </div>
+                    <div class="form-group col-lg-12">
                         <label class="control-label text-bold">Inspectores Acompañantes: </label>
-                        <select class="form-control multivalue" name="id_inspector_acop[]" id="id_inspector_acop" multiple="multiple">
+                        <select class="form-control multivalue" name="inspector_acompaniante[]" id="inspector_acompaniante" multiple="multiple">
                             @foreach ($list_inspector as $list)
                             <option value="{{ $list->id_usuario }}">{{ $list->nombre_completo }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="form-group col-lg-6">
-                        <label class="control-label text-bold">Fecha: </label>
-                        <input class="form-control" type="date" name="fecha" id="fecha" value="{{ date('Y-m-d') }}">
-                    </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="proceso" role="tabpanel" aria-labelledby="proceso-tab">
+
+            <div class="tab-pane fade" id="detalle" role="tabpanel" aria-labelledby="detalle-tab">
                 <div class="row my-4">
 
                     <div class="form-group col-lg-6">
@@ -174,7 +175,7 @@
                     </div>
                     <div class="form-group col-lg-6">
                         <label class="control-label text-bold">Modelo: </label>
-                        <select class="form-control multivalue" name="id_modelo[]" id="id_modelo">
+                        <select class="form-control multivalue" name="id_modelo" id="id_modelo">
                             @foreach ($list_ficha_tecnica as $list)
                             <option value="{{ $list->id_ft_produccion }}">{{ $list->modelo }}</option>
                             @endforeach
@@ -182,7 +183,7 @@
                     </div>
                     <div class="form-group col-lg-6">
                         <label class="control-label text-bold">Proceso: </label>
-                        <select class="form-control" name="id_proceso[]" id="id_proceso">
+                        <select class="form-control" name="id_proceso" id="id_proceso">
                             @foreach ($list_proceso_visita as $list)
                             <option value="{{ $list->id_procesov }}">{{ $list->nom_proceso }}</option>
                             @endforeach
@@ -218,7 +219,7 @@
     </div>
     <div class="modal-footer">
         @csrf
-        <button class="btn btn-primary" type="button">Guardar</button>
+        <button class="btn btn-primary" type="button" onclick="Insert_Funcion_Temporal();">Guardar</button>
         <button class=" btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 
@@ -233,26 +234,47 @@
 
     $(document).ready(function() {
         // Evento click del botón "+"
+
+        // Evento click del botón "+"
         $('#btn-add-row').on('click', function() {
-            // Obtener los valores seleccionados
-            let partida = $('#id_ptpartida').val();
-            let llegada = $('#id_ptllegada').val();
-            let modelo = $('#id_modelo').val();
-            let proceso = $('#id_proceso').val();
+            // Obtener los valores seleccionados (IDs)
+            let partida = $('#id_ptpartida').val() || [];
+            let llegada = $('#id_ptllegada').val() || [];
+            let modelo = $('#id_modelo').val() || [];
+            let proceso = $('#id_proceso').val() || [];
+
+            // Convertir a arrays si no lo son
+            partida = Array.isArray(partida) ? partida : [partida];
+            llegada = Array.isArray(llegada) ? llegada : [llegada];
+            modelo = Array.isArray(modelo) ? modelo : [modelo];
+            proceso = Array.isArray(proceso) ? proceso : [proceso];
+
+            // Obtener los textos seleccionados (nombres en lugar de IDs)
+            let partidaText = partida.map(id => $('#id_ptpartida option[value="' + id + '"]').text()).join(', ');
+            let llegadaText = llegada.map(id => $('#id_ptllegada option[value="' + id + '"]').text()).join(', ');
+            let modeloText = modelo.map(id => $('#id_modelo option[value="' + id + '"]').text()).join(', ');
+            let procesoText = proceso.map(id => $('#id_proceso option[value="' + id + '"]').text()).join(', ');
 
             // Validar que todos los selects estén seleccionados
             if (partida.length > 0 && llegada.length > 0 && modelo.length > 0 && proceso.length > 0) {
                 // Mostrar la tabla si está oculta
                 $('#selected-data-table').show();
 
-                // Agregar una nueva fila a la tabla
+                // Crear una nueva fila para la tabla con los nombres y los IDs en data-attributes
                 let newRow = `
                 <tr>
-                    <td><button class="btn btn-danger btn-delete-row" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button></td>
-                    <td>${$('#id_ptpartida option:selected').map(function() { return $(this).text(); }).get().join(', ')}</td>
-                    <td>${$('#id_ptllegada option:selected').map(function() { return $(this).text(); }).get().join(', ')}</td>
-                    <td>${$('#id_modelo option:selected').map(function() { return $(this).text(); }).get().join(', ')}</td>
-                    <td>${$('#id_proceso option:selected').map(function() { return $(this).text(); }).get().join(', ')}</td>
+                    <td><button class="btn btn-danger btn-delete-row" type="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                    </button></td>
+                    <td data-id="${partida.join(',')}">${partidaText}</td>
+                    <td data-id="${llegada.join(',')}">${llegadaText}</td>
+                    <td data-id="${modelo.join(',')}">${modeloText}</td>
+                    <td data-id="${proceso.join(',')}">${procesoText}</td>
                 </tr>
             `;
                 $('#selected-data-table tbody').append(newRow);
@@ -264,9 +286,68 @@
         // Evento para eliminar una fila
         $(document).on('click', '.btn-delete-row', function() {
             $(this).closest('tr').remove();
+            // Ocultar la tabla si no hay filas
+            if ($('#selected-data-table tbody tr').length === 0) {
+                $('#selected-data-table').hide();
+            }
+        });
+
+        // Evento para eliminar una fila
+        $(document).on('click', '.btn-delete-row', function() {
+            $(this).closest('tr').remove();
             if ($('#selected-data-table tbody tr').length === 0) {
                 $('#selected-data-table').hide();
             }
         });
     });
+
+    function Insert_Funcion_Temporal() {
+        Cargando();
+        // Crear un nuevo FormData a partir del formulario
+        var formData = new FormData(document.getElementById('formulario_insert'));
+        // Recolectar los datos de la tabla (IDs)
+        let tableData = [];
+        $('#selected-data-table tbody tr').each(function() {
+            let row = {
+                partida: $(this).find('td').eq(1).data('id'), // Obtener el ID desde data-id
+                llegada: $(this).find('td').eq(2).data('id'), // Obtener el ID desde data-id
+                modelo: $(this).find('td').eq(3).data('id'), // Obtener el ID desde data-id
+                proceso: $(this).find('td').eq(4).data('id') // Obtener el ID desde data-id
+            };
+            tableData.push(row);
+        });
+
+        // Añadir los datos de la tabla al FormData
+        formData.append('tableData', JSON.stringify(tableData));
+
+        // URL de tu endpoint
+        var url = "{{ route('produccion_av.store') }}";
+
+        // Enviar los datos al servidor con AJAX
+        $.ajax({
+            url: url,
+            data: formData,
+            type: "POST",
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                swal.fire(
+                    'Registro Exitoso!',
+                    'Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                    ListaAsignacionVisitas();
+                    $("#ModalRegistro .close").click();
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+                swal.fire(
+                    'Error!',
+                    'Hubo un problema al registrar.',
+                    'error'
+                );
+            }
+        });
+    }
 </script>
