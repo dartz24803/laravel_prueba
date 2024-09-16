@@ -667,7 +667,7 @@ class InsumoController extends Controller
 
     public function list_derecha_ro()
     {
-        $list_stock_salida_insumo = StockSalidaInsumo::all();
+        $list_stock_salida_insumo = StockSalidaInsumo::get_list_stock_salida_insumo();
         return view('caja.insumo.reporte_insumo.lista_derecha', compact('list_stock_salida_insumo'));
     }
     
@@ -748,7 +748,7 @@ class InsumoController extends Controller
 
     public function excel_derecha_ro()
     {
-        $list_stock_salida_insumo = StockSalidaInsumo::all();
+        $list_stock_salida_insumo = StockSalidaInsumo::get_list_stock_salida_insumo();
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
