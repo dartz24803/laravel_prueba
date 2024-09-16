@@ -47,12 +47,14 @@
         session('usuario')->id_puesto == 148 ||
         session('usuario')->id_puesto == 307 ||
         session('usuario')->id_puesto == 311 ||
+        session('usuario')->id_puesto == 314 ||
         session('usuario')->id_puesto == 315 ||
         session('usuario')->id_puesto == 209)
             @if (session('usuario')->id_nivel == 1 ||
             session('usuario')->id_puesto == 23 ||
             session('usuario')->id_puesto == 307 ||
             session('usuario')->id_puesto == 311 ||
+            session('usuario')->id_puesto == 314 ||
             session('usuario')->id_puesto == 315 ||
             session('usuario')->id_puesto == 29 ||
             session('usuario')->id_puesto == 30 ||
@@ -117,6 +119,7 @@
             session('usuario')->id_puesto == 134 ||
             session('usuario')->id_puesto == 307 ||
             session('usuario')->id_puesto == 311 ||
+            session('usuario')->id_puesto == 314 ||
             session('usuario')->id_puesto == 315 ||
             session('usuario')->id_puesto == 148)
                 <li>
@@ -135,6 +138,7 @@
             session('usuario')->id_puesto == 197 ||
             session('usuario')->id_puesto == 307 ||
             session('usuario')->id_puesto == 311 ||
+            session('usuario')->id_puesto == 314 ||
             session('usuario')->id_puesto == 315 ||
             session('usuario')->id_puesto == 148)
                 <li id="locurrencia">
@@ -198,6 +202,7 @@ session('usuario')->id_puesto == 128 ||
 session('usuario')->id_puesto == 27 ||
 session('usuario')->id_puesto == 10 ||
 session('usuario')->id_puesto == 311 ||
+session('usuario')->id_puesto == 314 ||
 session('usuario')->id_puesto == 315 ||
 //usuarios de base no deben ver configurables
 session('usuario')->id_puesto == 312) && !Str::startsWith(session('usuario')->centro_labores, 'B') ||

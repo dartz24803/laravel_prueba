@@ -64,7 +64,7 @@
                     <a href="{{ route('tracking') }}" class="btn btn-primary">Regresar</a>
                 </div>
             </div>
-            
+
             <div class="row" id="cancel-row">
                 <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                     <div class="widget-content widget-content-area br-6">
@@ -112,7 +112,7 @@
                                 <div class="toggle-switch">
                                     <input class="toggle-input" id="toggle2" type="checkbox" checked>
                                     <label class="toggle-label" for="toggle2"></label>
-                                    <span class="ml-5">SKU</span>
+                                    <span class="ml-5">Cantidad</span>
                                 </div>
                             </div>
                         </div>
@@ -152,7 +152,7 @@
                     'X-CSRF-TOKEN': csrfToken
                 },
                 success:function (resp) {
-                    $('#lista_mercaderia_nueva').html(resp);  
+                    $('#lista_mercaderia_nueva').html(resp);
                 }
             });
         }

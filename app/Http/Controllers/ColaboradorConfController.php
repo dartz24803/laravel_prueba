@@ -47,6 +47,8 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\ComisionAFP;
+use App\Models\Turno;
+use App\Models\Base;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
@@ -3253,24 +3255,24 @@ class ColaboradorConfController extends Controller
 
     public function Update_Zona(Request $request){
         $request->validate([
-            'cod_genero' => 'required',
-            'nom_genero' => 'required',
+            'numeroe' => 'required',
+            'descripcione' => 'required',
         ],[
-            'cod_genero' => 'Debe ingresar código de género',
-            'nom_genero' => 'Debe ingresar nombre de genero',
+            'numeroe' => 'Debe ingresar numero de zona',
+            'descripcione' => 'Debe ingresar nombre de zona',
         ]);
-        $valida = Zona::where('cod_genero', $request->cod_genero)
-                ->where('nom_genero', $request->nom_genero)
+        $valida = Zona::where('numero', $request->numeroe)
+                ->where('descripcion', $request->descripcione)
                 ->where('estado', 1)
                 ->exists();
         if ($valida){
             echo "error";
         }else{
-            $dato['cod_genero']= $request->input("cod_genero");
-            $dato['nom_genero']= $request->input("nom_genero");
+            $dato['numero']= $request->input("numeroe");
+            $dato['descripcion']= $request->input("descripcione");
             $dato['fec_act'] = now();
             $dato['user_act'] = session('usuario')->id_usuario;
-            Zona::findOrFail($request->input("id_genero"))->update($dato);
+            Zona::findOrFail($request->input("id_zona"))->update($dato);
         }
     }
 
@@ -3415,6 +3417,106 @@ class ColaboradorConfController extends Controller
         $dato['fec_eli'] = now();
         $dato['user_eli'] = session('usuario')->id_usuario;
         ComisionAFP::findOrFail($request->input("id_comision"))->update($dato);
+    }
+
+    public function Turno(){
+        $dato['list_turno'] = Turno::where('estado', 1)
+                            ->get();
+        return view('rrhh.administracion.colaborador.Turno.index',$dato);
+    }
+
+    public function Modal_Turno(){
+        $dato['list_base'] = Base::get_list_todas_bases_agrupadas();
+        return view('rrhh.administracion.colaborador.Turno.modal_registrar', $dato);
+    }
+
+    public function Insert_Turno(Request $request){
+        $request->validate([
+            'base' => 'required',
+            'entrada' => 'required',
+            'salida' => 'required',
+            't_refrigerio' => 'required',
+        ],[
+            'base' => 'Debe seleccionar base',
+            'entrada' => 'Debe ingresar entrada',
+            'salida' => 'Debe ingresar salida',
+            't_refrigerio' => 'Debe seleccionar tipo de refrigerio',
+        ]);
+        $valida = Turno::where('base', $request->base)
+                ->where('entrada', $request->entrada)
+                ->where('salida', $request->salida)
+                ->where('t_refrigerio', $request->t_refrigerio)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['base']= $request->input("base");
+            $dato['entrada']= $request->input("entrada");
+            $dato['salida']= $request->input("salida");
+            $dato['t_refrigerio']= $request->input("t_refrigerio");
+            $dato['ini_refri']= $request->input("ini_refri");
+            $dato['fin_refri']= $request->input("fin_refri");
+            $dato['estado_registro'] = 1;
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            Turno::create($dato);
+        }
+    }
+
+    public function Modal_Update_Turno($id_turno){
+        $dato['get_id'] = Turno::where('id_turno', $id_turno)
+                        ->get();
+        $dato['list_base'] = Base::get_list_todas_bases_agrupadas();
+        return view('rrhh.administracion.colaborador.Turno.modal_editar',$dato);
+    }
+
+    public function Update_Turno(Request $request){
+        $request->validate([
+            'basee' => 'required',
+            'entradae' => 'required',
+            'salidae' => 'required',
+            't_refrigerioe' => 'required',
+        ],[
+            'basee' => 'Debe seleccionar base',
+            'entradae' => 'Debe ingresar entrada',
+            'salidae' => 'Debe ingresar salida',
+            't_refrigerioe' => 'Debe seleccionar tipo de refrigerio',
+        ]);
+        $valida = Turno::where('base', $request->basee)
+                ->where('entrada', $request->entradae)
+                ->where('salida', $request->salidae)
+                ->where('t_refrigerio', $request->t_refrigerioe)
+                ->where('estado_registro', $request->estado_registroe)
+                ->where('estado', 1)
+                ->exists();
+        if ($valida){
+            echo "error";
+        }else{
+            $dato['base']= $request->input("basee");
+            $dato['entrada']= $request->input("entradae");
+            $dato['salida']= $request->input("salidae");
+            $dato['t_refrigerio']= $request->input("t_refrigerioe");
+            $dato['ini_refri']= $request->input("ini_refrie");
+            $dato['fin_refri']= $request->input("fin_refrie");
+            $dato['estado_registro'] = $request->estado_registroe;
+            if($dato['estado_registro']==""){
+                $dato['estado_registro']=2;
+            }
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            Turno::findOrFail($request->input("id_turno"))->update($dato);
+        }
+    }
+
+    public function Delete_Turno(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Turno::findOrFail($request->input("id_turno"))->update($dato);
     }
     /*---------------------------------------------------------Paolo*/
 
