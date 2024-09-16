@@ -510,6 +510,12 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Comision_AFP', 'Insert_Comision_AFP');
     Route::post('ColaboradorConfController/Update_Comision_AFP', 'Update_Comision_AFP');
     Route::post('ColaboradorConfController/Delete_Comision_AFP', 'Delete_Comision_AFP');
+    Route::post('ColaboradorConfController/Turno', 'Turno');
+    Route::get('ColaboradorConfController/Modal_Turno', 'Modal_Turno');
+    Route::get('ColaboradorConfController/Modal_Update_Turno/{id}', 'Modal_Update_Turno');
+    Route::post('ColaboradorConfController/Insert_Turno', 'Insert_Turno');
+    Route::post('ColaboradorConfController/Update_Turno', 'Update_Turno');
+    Route::post('ColaboradorConfController/Delete_Turno', 'Delete_Turno');
     /*----------------------------------------Paolo----------------------------------*/
     // ----------------------------------------bryan----------------------------------*/
 
