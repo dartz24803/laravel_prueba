@@ -12,7 +12,7 @@
                 <label>Fecha:</label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" value="{{ date('d/m/Y') }}" disabled>
+                <input type="date" class="form-control" value="{{ $get_id->fecha }}" disabled>
             </div>
 
             <div class="form-group col-lg-2">
