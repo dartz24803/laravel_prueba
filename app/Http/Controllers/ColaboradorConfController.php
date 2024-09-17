@@ -49,6 +49,9 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\ComisionAFP;
 use App\Models\Turno;
 use App\Models\Base;
+use App\Models\Horario;
+use App\Models\HorarioDia;
+use App\Models\ToleranciaHorario;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
@@ -3725,62 +3728,249 @@ class ColaboradorConfController extends Controller
         $dato['user_eli'] = session('usuario')->id_usuario;
         Turno::findOrFail($request->input("id_turno"))->update($dato);
     }
-/*
+
     public function Horario(){
-        $dato['list_Horario'] = Horario::where('estado', 1)
-                            ->get();
+        $dato['list_base'] = Base::get_list_base_pendiente();
         return view('rrhh.administracion.colaborador.Horario.index',$dato);
     }
 
+    public function Lista_Horario(Request $request){
+        $cod_base = $request->cod_base;
+        $dato['list_horario'] = Horario::get_list_horario_modulo($cod_base);
+        return view('rrhh.administracion.colaborador.Horario.lista',$dato);
+    }
+
     public function Modal_Horario(){
-        $dato['list_base'] = Base::get_list_todas_bases_agrupadas();
-        return view('rrhh.administracion.colaborador.Horario.modal_registrar', $dato);
+        $dato['list_base'] = Base::get_list_base_pendiente();
+        return view('rrhh.administracion.colaborador.Horario.vista_reg', $dato);
+    }
+
+    public function Busca_Turno_XBase(Request $request){
+        $cod_base = $request->input("cod_base");
+        $list_turno = Turno::get_list_turno_xbase($cod_base);
+        $select="<option value='0'>Seleccione</option>";
+        foreach($list_turno as $list){
+            $select=$select."<option value='".$list['id_turno']."'>".$list['option_select']."</option>";
+        }
+        echo $select;
     }
 
     public function Insert_Horario(Request $request){
         $request->validate([
-            'base' => 'required',
-            'entrada' => 'required',
-            'salida' => 'required',
-            't_refrigerio' => 'required',
+            'cod_base_i' => 'required',
+            'nombre_i' => 'required',
         ],[
-            'base' => 'Debe seleccionar base',
-            'entrada' => 'Debe ingresar entrada',
-            'salida' => 'Debe ingresar salida',
-            't_refrigerio' => 'Debe seleccionar tipo de refrigerio',
+            'cod_base_i' => 'Debe ingresar entrada',
+            'nombre_i' => 'Debe ingresar salida',
         ]);
-        $valida = Horario::where('base', $request->base)
-                ->where('entrada', $request->entrada)
-                ->where('salida', $request->salida)
-                ->where('t_refrigerio', $request->t_refrigerio)
+        $valida = Horario::where('nombre', $request->nombre_i)
+                ->where('cod_base', $request->cod_base_i)
                 ->where('estado', 1)
                 ->exists();
         if ($valida){
             echo "error";
         }else{
-            $dato['base']= $request->input("base");
-            $dato['entrada']= $request->input("entrada");
-            $dato['salida']= $request->input("salida");
-            $dato['t_refrigerio']= $request->input("t_refrigerio");
-            $dato['ini_refri']= $request->input("ini_refri");
-            $dato['fin_refri']= $request->input("fin_refri");
-            $dato['estado_registro'] = 1;
+            $dato['nombre']= $request->input("nombre_i");
+            $dato['cod_base']= $request->input("cod_base_i");
+            if($request->input("ch_feriado_i")){
+                $dato['feriado'] = 1;
+            }else{
+                $dato['feriado'] = "";
+            }
+            $anio=date('Y');
+            $query_id = Horario::get();
+            $totalRows_t = count($query_id);
+            $aniof=substr($anio, 2,2);
+            if($totalRows_t<9){
+                $codigofinal="H".$aniof."0000".($totalRows_t+1);
+            }
+            if($totalRows_t>8 && $totalRows_t<99){
+                    $codigofinal="H".$aniof."000".($totalRows_t+1);
+            }
+            if($totalRows_t>98 && $totalRows_t<999){
+                $codigofinal="H".$aniof."00".($totalRows_t+1);
+            }
+            if($totalRows_t>998 && $totalRows_t<9999){
+                $codigofinal="H".$aniof."0".($totalRows_t+1);
+            }
+            if($totalRows_t>9998){
+                $codigofinal="H".$aniof.($totalRows_t+1);
+            }
+            $dato['cod_horario'] = $codigofinal;
             $dato['estado'] = 1;
             $dato['fec_reg'] = now();
             $dato['fec_act'] = now();
             $dato['user_act'] = session('usuario')->id_usuario;
             $dato['user_reg'] = session('usuario')->id_usuario;
-            Horario::create($dato);
+
+            $horario = Horario::create($dato);
+
+            $dato['id_horario'] = $horario->id_horario;
+
+            
+            $dato['ch_lunes']= $request->input("ch_dia_laborado_lu_i");
+            if($dato['ch_lunes']==1){
+                $dato['id_turno'] = $request->input("id_turno_lu_i");
+                $data = Turno::get_turno_para_horario($dato['id_turno']);
+                $dato['dia'] = 1;
+                $dato['nom_dia'] = "Lunes";
+                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_lu_i");
+                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_lu_i");
+                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_lu_i");  
+                if($dato['con_descanso']==1){
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_lu_i");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_lu_i");
+                }else{
+                    $dato['hora_descanso_e'] = "00:00:00";
+                    $dato['hora_descanso_s'] = "00:00:00";
+                }
+                $dato['estado'] = 1;
+                $dato['fec_reg'] = now();
+                $dato['fec_act'] = now();
+                $dato['user_act'] = session('usuario')->id_usuario;
+                $dato['user_reg'] = session('usuario')->id_usuario;
+                HorarioDia::create($dato);
+            }
+
+            $dato['ch_martes']= $request->input("ch_dia_laborado_ma_i");
+            if($dato['ch_martes']==1){
+                $dato['id_turno']= $request->input("id_turno_ma_i");
+                $data = Turno::get_turno_para_horario($dato['id_turno']);
+                $dato['dia'] = 2;
+                $dato['nom_dia'] = "Martes";
+                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_ma_i");
+                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_ma_i");
+                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_ma_i");  
+                if($dato['con_descanso']==1){
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_ma_i");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_ma_i");
+                }else{
+                    $dato['hora_descanso_e'] = "00:00:00";
+                    $dato['hora_descanso_s'] = "00:00:00";
+                }
+                HorarioDia::create($dato);
+            }
+
+            $dato['ch_miercoles']= $request->input("ch_dia_laborado_mi_i");
+            if($dato['ch_miercoles']==1){
+                $dato['id_turno']= $request->input("id_turno_mi_i");
+                $data = Turno::get_turno_para_horario($dato['id_turno']);
+                $dato['dia'] = 3;
+                $dato['nom_dia'] = "Miércoles";
+                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_mi_i");
+                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_mi_i");
+                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_mi_i");  
+                if($dato['con_descanso']==1){
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_mi_i");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_mi_i");
+                }else{
+                    $dato['hora_descanso_e'] = "00:00:00";
+                    $dato['hora_descanso_s'] = "00:00:00";
+                }
+                HorarioDia::create($dato);
+            }
+
+            $dato['ch_jueves']= $request->input("ch_dia_laborado_ju_i");
+            if($dato['ch_jueves']==1){
+                $dato['id_turno']= $request->input("id_turno_ju_i");
+                $data = Turno::get_turno_para_horario($dato['id_turno']);
+                $dato['dia'] = 4;
+                $dato['nom_dia'] = "Jueves";
+                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_ju_i");
+                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_ju_i");
+                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_ju_i");  
+                if($dato['con_descanso']==1){
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_ju_i");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_ju_i");
+                }else{
+                    $dato['hora_descanso_e'] = "00:00:00";
+                    $dato['hora_descanso_s'] = "00:00:00";
+                }
+                HorarioDia::create($dato);
+            }
+
+            $dato['ch_viernes']= $request->input("ch_dia_laborado_vi_i");
+            if($dato['ch_viernes']==1){
+                $dato['id_turno']= $request->input("id_turno_vi_i");
+                $data = Turno::get_turno_para_horario($dato['id_turno']);
+                $dato['dia'] = 5;
+                $dato['nom_dia'] = "Viernes";
+                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_vi_i");
+                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_vi_i");
+                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_vi_i");  
+                if($dato['con_descanso']==1){
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_vi_i");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_vi_i");
+                }else{
+                    $dato['hora_descanso_e'] = "00:00:00";
+                    $dato['hora_descanso_s'] = "00:00:00";
+                }
+                HorarioDia::create($dato);
+            }
+
+            $dato['ch_sabado']= $request->input("ch_dia_laborado_sa_i");
+            if($dato['ch_sabado']==1){
+                $dato['id_turno']= $request->input("id_turno_sa_i");
+                $data = Turno::get_turno_para_horario($dato['id_turno']);
+                $dato['dia'] = 6;
+                $dato['nom_dia'] = "Sábado";
+                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_sa_i");
+                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_sa_i");
+                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_sa_i");  
+                if($dato['con_descanso']==1){
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_sa_i");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_sa_i");
+                }else{
+                    $dato['hora_descanso_s'] = "00:00:00";
+                    $dato['hora_descanso_e'] = "00:00:00";
+                }
+                HorarioDia::create($dato);
+            }
+
+            $dato['ch_domingo']= $request->input("ch_dia_laborado_do_i");
+            if($dato['ch_domingo']==1){
+                $dato['id_turno']= $request->input("id_turno_do_i");
+                $data = Turno::get_turno_para_horario($dato['id_turno']);
+                $dato['dia'] = 7;
+                $dato['nom_dia'] = "Domingo";
+                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_do_i");
+                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_do_i");
+                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_do_i");  
+                if($dato['con_descanso']==1){
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_do_i");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_do_i");
+                }else{
+                    $dato['hora_descanso_e'] = "00:00:00";
+                    $dato['hora_descanso_s'] = "00:00:00";
+                }
+                HorarioDia::create($dato);
+            }
+            /*consultar con Daniel (senior)
+            $data = ToleranciaHorario::consulta_tolerancia_horario_activo();
+            if(count($data)>0){
+                $minutos = $data[0]['minutos'];
+            }else{
+                $minutos = 0;
+            }
+            $this->Model_Corporacion->update_tolerancia_horario_cron($minutos);*/
         }
     }
 
-    public function Modal_Update_Horario($id_Horario){
-        $dato['get_id'] = Horario::where('id_Horario', $id_Horario)
-                        ->get();
-        $dato['list_base'] = Base::get_list_todas_bases_agrupadas();
-        return view('rrhh.administracion.colaborador.Horario.modal_editar',$dato);
+    public function Modal_Update_Horario($id_horario){
+        $dato['get_id'] = Horario::where('id_horario', $id_horario)
+                        ->get();/*
+        print_r($dato['get_id']);
+        print_r('base', $dato['cod_base']);*/
+        $dato['get_detalle'] = HorarioDia::where('id_horario', $id_horario)
+                        ->where('estado', 1)
+                        ->orderBy('dia', 'ASC')
+                        ->get()
+                        ->toArray();
+        $dato['list_base'] = Base::get_list_base_pendiente();
+        $dato['list_turno'] = Turno::get_list_turno_xbase($dato['get_id']);
+        return view('rrhh.administracion.colaborador.Horario.vista_edit',$dato);
     }
-
+/*
     public function Update_Horario(Request $request){
         $request->validate([
             'basee' => 'required',
