@@ -76,16 +76,25 @@
 
         <div class="row">
             <div class="form-group col-lg-2">
+                <label>Sedes:</label>
+            </div>
+            <div class="form-group col-lg-10">
+                <select class="form-control multivalue" name="sedelaboral[]" id="sedelaboral" multiple>
+                    @foreach ($list_sedes as $sede)
+                    <option value="{{ $sede->id }}">{{ $sede->descripcion }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
+        <div class="row" id="additionalSelectContainer2" style="display: none;">
+            <div class="form-group col-lg-2">
                 <label>Ubicaciones:</label>
             </div>
-            <!-- <div class="form-group col-lg-10">
-                <select class="form-control multivalue" name="ubicaciones[]" id="ubicaciones" multiple="multiple">
-                </select>
-            </div> -->
             <div class="form-group col-lg-10">
-                <select class="form-control multivalue" name="ubicaciones[]" id="ubicaciones" multiple="multiple">
-                    @foreach ($list_ubicaciones as $list)
-                    <option value="{{ $list->id_ubicacion }}">{{ $list->cod_ubi }}</option>
+                <select class="form-control multivalue" name="ubicaciones[]" id="ubicaciones" multiple>
+                    @foreach ($list_ubicaciones as $ubicacion)
+                    <option value="{{ $ubicacion->id_ubicacion }}"> {{ $ubicacion->cod_ubi }}</option>
                     @endforeach
                 </select>
             </div>
@@ -158,4 +167,24 @@
             }
         });
     }
+
+    $(document).ready(function() {
+        // Función para mostrar u ocultar el segundo select
+        function toggleAdditionalSelect() {
+            var selectedValues = $('#sedelaboral').val();
+            if (selectedValues.includes('6')) {
+                $('#additionalSelectContainer2').show();
+            } else {
+                $('#additionalSelectContainer2').hide();
+            }
+        }
+
+        // Llama a la función al cargar la página para manejar los valores seleccionados por defecto
+        toggleAdditionalSelect();
+
+        // Agrega un evento para manejar cambios en el primer select
+        $('#sedelaboral').on('change', function() {
+            toggleAdditionalSelect();
+        });
+    });
 </script>

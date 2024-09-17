@@ -105,7 +105,6 @@
             </div>
         </div>
 
-        <!-- Segundo select, inicialmente oculto -->
         <div class="row" id="additionalSelectContainer" style="display: none;">
             <div class="form-group col-lg-2">
                 <label>Ubicaciones:</label>
