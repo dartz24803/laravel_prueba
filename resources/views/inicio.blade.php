@@ -314,7 +314,7 @@
         background-repeat: no-repeat;
         background-size: 135rem auto;
     }
-/*
+
     @media screen and (min-width: 1100px) {
         #logo_logistica {
             margin-left: 39.5rem;
@@ -369,7 +369,7 @@
         #logo_tiendas {
             margin-top: 1rem
         }
-    }*/
+    }
 
     .imagen_1 {
         mix-blend-mode: multiply;
@@ -657,7 +657,7 @@
     function cambiarClaseSegunResolucion() {
         var ventanaAncho = $(window).width();
         console.log(ventanaAncho);
-        if (350 < ventanaAncho && ventanaAncho <= 1055) {
+        if (350 < ventanaAncho && ventanaAncho <= 1100) {
             $('#logo_logistica').removeClass('col-sm-8').addClass('col-sm-4 d-flex justify-content-center');
             $('#logo_comercial').removeClass('justify-content-end').addClass('justify-content-center');
             $('#logo_talento_humano').removeClass('col-sm-2').addClass('col-sm-4');
