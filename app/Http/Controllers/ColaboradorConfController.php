@@ -3909,7 +3909,6 @@ class ColaboradorConfController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
-
             // Redirigir con éxito
             return back()->with('success', 'Registro actualizado correctamente.');
         }
