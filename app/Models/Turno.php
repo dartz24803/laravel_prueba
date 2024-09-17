@@ -32,5 +32,4 @@ class Turno extends Model
         'fec_eli',
         'user_eli'
     ];
-
 }

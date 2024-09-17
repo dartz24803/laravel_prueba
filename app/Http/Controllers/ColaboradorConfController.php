@@ -3725,7 +3725,7 @@ class ColaboradorConfController extends Controller
         $dato['user_eli'] = session('usuario')->id_usuario;
         Turno::findOrFail($request->input("id_turno"))->update($dato);
     }
-/*
+    /*
     public function Horario(){
         $dato['list_Horario'] = Horario::where('estado', 1)
                             ->get();
@@ -3886,22 +3886,36 @@ class ColaboradorConfController extends Controller
     {
         $request->validate([
             'codigoe' => 'required',
+            'id_sede' => 'required|not_in:0',
         ], [
-            'codigoe.required' => 'Debe ingresar nombre.',
+            'codigoe.required' => 'Debe ingresar el código.',
+            'id_sede.required' => 'Debe seleccionar una sede.',
+            'id_sede.not_in' => 'Debe seleccionar una sede válida.',
         ]);
+        // Verificación de existencia de un registro con el mismo código pero diferente ID
+        $valida = Ubicacion::where('cod_ubi', $request->codigoe)
+            ->where('estado', 1)
+            ->where('id_ubicacion', '!=', $id)
+            ->exists();
 
-        $valida = Ubicacion::where('descripcion', $request->codigoe)->where('estado', 1)
-            ->where('id', '!=', $id)->exists();
         if ($valida) {
-            echo "error";
+            // Redirigir con error si el código ya está en uso
+            return back()->withErrors(['codigoe' => 'El código ya está en uso por otro registro.']);
         } else {
-            Ubicacion::findOrFail($id)->update([
-                'descripcion' => $request->codigoe,
+            // Actualización del registro
+            $ubicacion = Ubicacion::findOrFail($id);
+            $ubicacion->update([
+                'id_sede' => $request->id_sede,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
+
+            // Redirigir con éxito
+            return back()->with('success', 'Registro actualizado correctamente.');
         }
     }
+
+
 
     public function destroy_ubi($id)
     {
