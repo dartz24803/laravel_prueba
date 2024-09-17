@@ -262,7 +262,7 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="tabla_body2">
+                        <tbody id="tabla_body3">
                             <tr class="text-center">
                                 <td class="px-1">
                                     <select class="form-control" name="sistema[]" id="sistema">
@@ -375,7 +375,7 @@
 
     function addRowTabla() {
         // Obtener el cuerpo de la tablacodigo
-        var tableBody = document.getElementById('tabla_body2');
+        var tableBody = document.getElementById('tabla_body3');
 
         // Crear una nueva fila
         var newRow = document.createElement('tr');
@@ -502,7 +502,6 @@
                 success: function(response) {
                     // Vaciar el segundo select antes de agregar las nuevas opciones
                     $('#solicitante').empty();
-
                     // Agregar las nuevas opciones
                     $.each(response, function(index, usuario) {
                         $('#solicitante').append(

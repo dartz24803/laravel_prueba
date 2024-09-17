@@ -208,10 +208,9 @@ class BiReporteController extends Controller
                 ->orderBy('cod_base', 'ASC')
                 ->distinct('cod_base')
                 ->get()
-                ->pluck('id_base'); // Obtener solo los valores de id_area como un array
-            $idsBases = $bases->toArray(); // Convertir a un array para usar en la consulta
+                ->pluck('id_base');
+            $idsBases = $bases->toArray();
         }
-
         // Filtra las áreas basadas en los idsBases seleccionados
         $areas = Area::where(function ($query) use ($idsBases) {
             foreach ($idsBases as $idBase) {
@@ -226,7 +225,6 @@ class BiReporteController extends Controller
     public function getUsuariosPorArea(Request $request)
     {
         $areaId = $request->input('area_id');
-
         // Obtiene los usuarios cuyo id_puesto coincida con el área seleccionada
         $usuarios = Usuario::where('id_area', $areaId)
             ->where('estado', 1)  // Filtrar por usuarios activos si es necesario

@@ -244,7 +244,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <button type="button" class="btn btn-success btn-sm" onclick="addRow()">Agregar indicador</button>
+                    <button type="button" class="btn btn-success btn-sm" onclick="addRowEdit()">Agregar indicador</button>
                 </div>
             </div>
 
@@ -329,7 +329,7 @@
         @endforeach
     `;
     // Función para agregar una nueva fila
-    function addRow() {
+    function addRowEdit() {
         // Obtener el cuerpo de la tabla
         var tableBody = document.getElementById('tabla_body2');
         // Crear una nueva fila

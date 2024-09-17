@@ -364,10 +364,9 @@ class ColaboradorConfController extends Controller
         $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')->where('estado', 1)->get();
         $list_sub_gerencia = SubGerencia::select('id_sub_gerencia', 'nom_sub_gerencia')->where('estado', 1)->get();
         $list_puesto = Puesto::select('id_puesto', 'nom_puesto')->where('estado', 1)->get();
+        $list_sedes = SedeLaboral::select('id', 'descripcion')->where('estado', 1)->get();
         $list_ubicaciones = Ubicacion::select('id_ubicacion', 'cod_ubi')->where('estado', 1)->get();
-
-        // list_ubicaciones
-        return view('rrhh.administracion.colaborador.area.modal_registrar', compact('list_direccion', 'list_gerencia', 'list_sub_gerencia', 'list_puesto', 'list_ubicaciones'));
+        return view('rrhh.administracion.colaborador.area.modal_registrar', compact('list_direccion', 'list_gerencia', 'list_sub_gerencia', 'list_puesto', 'list_ubicaciones', 'list_sedes'));
     }
 
     public function traer_puesto_ar(Request $request)
@@ -404,6 +403,9 @@ class ColaboradorConfController extends Controller
                 $puestos = implode(",", $request->puestos);
             }
 
+
+
+
             $area = Area::create([
                 'id_direccion' => $request->id_direccion,
                 'id_gerencia' => $request->id_gerencia,
@@ -418,13 +420,37 @@ class ColaboradorConfController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
-            // Verifica si se han enviado ubicaciones
-            if (is_array($request->ubicaciones) && count($request->ubicaciones) > 0) {
-                // Inserta las filas correspondientes en area_ubicacion
+
+            // Obtén las sedes seleccionadas
+            $sedesSeleccionadas = $request->sedelaboral ?? [];
+
+            // Obtén las ubicaciones seleccionadas
+            $ubicacionesSeleccionadas = $request->ubicaciones ?? [];
+            if (in_array(6, $sedesSeleccionadas)) {
+                // Si se selecciona la sede con id 6, solo usa las ubicaciones seleccionadas
+                if (count($ubicacionesSeleccionadas) > 0) {
+                    // Elimina las entradas existentes para el id_area
+                    AreaUbicacion::where('id_area', $area)->delete();
+
+                    // Inserta las nuevas entradas
+                    $data = array_map(function ($id_ubicacion) use ($area) {
+                        return [
+                            'id_area' => $area->id_area,
+                            'id_ubicacion' => $id_ubicacion,
+                            'user_reg' => session('usuario')->id_usuario,
+                            'fec_act' => now(),
+                            'user_act' => session('usuario')->id_usuario,
+                        ];
+                    }, $ubicacionesSeleccionadas);
+
+                    AreaUbicacion::insert($data);
+                }
+            } else if (is_array($request->ubicaciones) && count($request->ubicaciones) > 0) {
                 $data = array_map(function ($id_ubicacion) use ($area) {
                     return [
                         'id_area' => $area->id_area,
                         'id_ubicacion' => $id_ubicacion,
+                        'user_reg' => session('usuario')->id_usuario,
                         'fec_reg' => now(),
                         'user_reg' => session('usuario')->id_usuario
                     ];
@@ -453,7 +479,7 @@ class ColaboradorConfController extends Controller
             ->where('id_sede', 6)
             ->where('estado', 1)
             ->get();
-        // dd($id_ubicaciones);
+
         $id_ubicaciones = AreaUbicacion::where('id_area', $get_id->id_area)
             ->join('ubicacion', 'area_ubicacion.id_ubicacion', '=', 'ubicacion.id_ubicacion')
             ->where('ubicacion.estado', 1)
@@ -464,7 +490,6 @@ class ColaboradorConfController extends Controller
             ->toArray();
 
 
-        // Obtener los id_ubicaciones asociados al área
         $id_ubicaciones_by_sede = AreaUbicacion::where('id_area', $get_id->id_area)
             ->pluck('id_ubicacion')
             ->toArray();
@@ -560,7 +585,6 @@ class ColaboradorConfController extends Controller
 
                     AreaUbicacion::insert($data);
                 }
-
                 // Además, si hay ubicaciones seleccionadas, agrégalas también
                 if (count($ubicacionesSeleccionadas) > 0) {
                     // Obtén las ubicaciones seleccionadas que no están en las obtenidas por sedes
