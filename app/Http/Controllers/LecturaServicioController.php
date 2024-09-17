@@ -29,8 +29,8 @@ class LecturaServicioController extends Controller
     public function index()
     {
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();            
-        return view('seguridad.lectura_servicio.index',compact('list_notificacion'));
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('seguridad.lectura_servicio.index', compact('list_notificacion'));
     }
 
     public function index_reg()
@@ -146,6 +146,7 @@ class LecturaServicioController extends Controller
 
         $valida = LecturaServicio::where('fecha', $fecha)->where('id_servicio', $request->id_servicio)
             ->where('id_datos_servicio', $request->id_datos_servicio)->where('estado', 1)->exists();
+
         if ($valida) {
             echo "error";
         } else if (($request->lect_ing - $lect_sal) > $get_suministro->$parametro) {
@@ -177,10 +178,10 @@ class LecturaServicioController extends Controller
                     echo "No se conecto";
                 }
             }
-
             LecturaServicio::create([
+                'fecha' => $request->date_input,
                 'cod_base' => $cod_base,
-                'fecha' => $fecha,
+                // 'fecha' => $fecha,
                 'hora_ing' => $request->hora_ing,
                 'lect_ing' => $request->lect_ing,
                 'img_ing' => $archivo,
@@ -276,7 +277,8 @@ class LecturaServicioController extends Controller
 
             LecturaServicio::create([
                 'cod_base' => $cod_base,
-                'fecha' => $fecha,
+                'fecha' => $request->date_input,
+                // 'fecha' => $fecha,
                 'hora_ing' => $request->hora_ing,
                 'lect_ing' => $request->lect_ing,
                 'img_ing' => $archivo,

@@ -265,6 +265,8 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('puestos-por-areas-bi', 'getPuestosPorAreasBi')->name('puestos_por_areas_bi');
     Route::get('usuarios_por_area', 'getUsuariosPorArea')->name('usuarios_por_area');
     Route::get('areas_por_base', 'getAreasPorBase')->name('areas_por_base_bi');
+    Route::get('db_por_sistema_bi', 'getDBPorSistema')->name('db_por_sistema_bi');
+
 
     // DB REPORTE
     Route::get('bireporte_db', 'index_db')->name('bireporte_db');

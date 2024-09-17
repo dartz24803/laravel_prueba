@@ -99,7 +99,7 @@
                 {{ $reporte->tipo_frecuencia }}
             </td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                {{ $reporte->tablas }}
+                {{ $reporte->nom_tablas }}
             </td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->nombre_usuario }}
@@ -148,5 +148,40 @@
         tabla.column(10).visible(visible);
         tabla.column(14).visible(visible);
         tabla.column(18).visible(visible);
+    });
+    $('#toggle-nom').change(function() {
+        var columnIndex = 1;
+        var visible = this.checked;
+        tabla.column(columnIndex).visible(visible);
+    });
+    $('#toggle-ifra').change(function() {
+        var columnIndex = 3;
+        var visible = this.checked;
+        tabla.column(columnIndex).visible(visible);
+    });
+    $('#toggle-obj').change(function() {
+        var columnIndex = 6;
+        var visible = this.checked;
+        tabla.column(columnIndex).visible(visible);
+    });
+    $('#toggle-desc').change(function() {
+        var columnIndex = 8;
+        var visible = this.checked;
+        tabla.column(columnIndex).visible(visible);
+    });
+    $('#toggle-pre').change(function() {
+        var columnIndex = 10;
+        var visible = this.checked;
+        tabla.column(columnIndex).visible(visible);
+    });
+    $('#toggle-tab').change(function() {
+        var columnIndex = 12;
+        var visible = this.checked;
+        tabla.column(columnIndex).visible(visible);
+    });
+    $('#toggle-acce').change(function() {
+        var columnIndex = 14;
+        var visible = this.checked;
+        tabla.column(columnIndex).visible(visible);
     });
 </script>
