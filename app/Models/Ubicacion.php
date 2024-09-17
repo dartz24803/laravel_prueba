@@ -11,6 +11,8 @@ class Ubicacion extends Model
 
     protected $table = 'ubicacion';
 
+    // Opcional: Si necesitas definir el nombre de la clave primaria manualmente
+    protected $primaryKey = 'id_ubicacion';
     // Deshabilitamos los timestamps automáticos de Laravel
     public $timestamps = false;
 
@@ -27,8 +29,7 @@ class Ubicacion extends Model
         'user_eli'    // Usuario que eliminó
     ];
 
-    // Opcional: Si necesitas definir el nombre de la clave primaria manualmente
-    protected $primaryKey = 'id_ubicacion';
+
 
     // Opcional: Si la clave primaria no es de tipo autoincremental, puedes definirlo aquí
     public $incrementing = true;

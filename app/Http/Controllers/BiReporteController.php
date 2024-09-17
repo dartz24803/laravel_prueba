@@ -39,6 +39,8 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use App\Models\Notificacion;
 use App\Models\Organigrama;
+use App\Models\SistemaTablas;
+use App\Models\TablaBi;
 use App\Models\TipoIndicador;
 use App\Models\Usuario;
 
@@ -162,28 +164,51 @@ class BiReporteController extends Controller
             ->where('estado', 1)
             ->get();
 
+        $list_sistemas = SistemaTablas::select('id_sistema_tablas', 'cod_sistema', 'nom_sistema')
+            ->where('estado', 1)
+            ->orderBy('cod_sistema', 'ASC')
+            ->get()
+            ->unique('cod_sistema');
+
+        $list_db = SistemaTablas::select('id_sistema_tablas', 'cod_db', 'nom_db')
+            ->where('estado', 1)
+            ->orderBy('cod_db', 'ASC')
+            ->get()
+            ->unique('cod_db');
+
         return view('interna.bi.reportes.registroacceso_reportes.modal_registrar', compact(
             'list_responsable',
             'list_area',
             'list_base',
             'list_tipo_indicador',
-            'list_colaborador'
+            'list_colaborador',
+            'list_sistemas',
+            'list_db'
         ));
+    }
+
+    public function getDBPorSistema(Request $request)
+    {
+        $sisId = $request->input('sis');
+
+        // Obtiene los usuarios cuyo id_puesto coincida con el área seleccionada
+        $dbs = SistemaTablas::where('cod_sistema', $sisId)
+            ->where('estado', 1)  // Filtrar por usuarios activos si es necesario
+            ->get(['cod_db', 'nom_db']);
+        // dd($dbs);
+        return response()->json($dbs);
     }
 
     public function getAreasPorBase(Request $request)
     {
         $idsBases = $request->input('bases');
-        // Verifica si $idsAreas es vacío o null
         if (empty($idsBases)) {
-            // Si es vacío o null, obten todos los id_area de la tabla Area
             $bases = Base::select('id_base')
                 ->where('estado', 1)
                 ->orderBy('cod_base', 'ASC')
                 ->distinct('cod_base')
                 ->get()
                 ->pluck('id_base'); // Obtener solo los valores de id_area como un array
-
             $idsBases = $bases->toArray(); // Convertir a un array para usar en la consulta
         }
 
@@ -195,11 +220,6 @@ class BiReporteController extends Controller
         })
             ->where('estado', 1)
             ->get();
-        // $areas = Area::whereIn('id_base', $idsBases)
-        //     ->where('estado', 1)
-        //     ->get();
-
-        // Filtra los puestos basados en las áreas seleccionadas
         return response()->json($areas);
     }
 
@@ -257,7 +277,7 @@ class BiReporteController extends Controller
             'nombi' => 'required',
             'iframe' => 'required',
             'tipo_acceso_t' => 'required',
-            // 'id_area_acceso_t' => 'required',
+            'tablabi' => 'required',
             'indicador.*' => 'required',
             'descripcion.*' => 'required',
             'tipo.*' => 'required',
@@ -266,7 +286,7 @@ class BiReporteController extends Controller
             'nombi.required' => 'Debe ingresar nombre bi.',
             'iframe.required' => 'Debe ingresar Iframe.',
             'tipo_acceso_t.required' => 'Debe seleccionar los Accesos por Puesto',
-            // 'id_area_acceso_t.required' => 'Debe seleccionar área.',
+            'tablabi.required' => 'Debe seleccionar tablabi.',
             'indicador.*.required' => 'Debe ingresar un indicador.',
             'descripcion.*.required' => 'Debe ingresar una descripción.',
             'tipo.*.required' => 'Debe seleccionar un tipo.',
@@ -284,7 +304,7 @@ class BiReporteController extends Controller
             'id_usuario' => $request->solicitante ?? 0,
             'frecuencia_act' => $request->frec_actualizacion ?? 1,
             'objetivo' => $request->objetivo ?? '',
-            'tablas' => $request->tablas ?? '',
+            // 'tablas' => $request->tablas ?? '',
             'iframe' => $request->iframe ?? '',
             'estado' => 1,
             'estado_valid' => 0,
@@ -298,8 +318,9 @@ class BiReporteController extends Controller
 
         // Obtener el ID del nuevo registro en bi_reportes
         $biReporteId = $biReporte->id_acceso_bi_reporte;
-        // dd($biReporteId);
+
         // Guardar los datos en la tabla indicadores_bi
+        $npaginas = $request->input('npagina', []);
         $indicadores = $request->input('indicador', []);
         $descripciones = $request->input('descripcion', []);
         $tipos = $request->input('tipo', []);
@@ -310,9 +331,30 @@ class BiReporteController extends Controller
                 'id_acceso_bi_reporte' => $biReporteId,
                 'nom_indicador' => $indicador,
                 'estado' => 1,
+                'npagina' => $npaginas[$index] ?? '',
                 'descripcion' => $descripciones[$index] ?? '',
                 'idtipo_indicador' => $tipos[$index] ?? 0,
                 'presentacion' => $presentaciones[$index] ?? 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+            ]);
+        }
+
+
+        // Guardar los datos en la tabla tabla_bi
+        $tablasbi = $request->input('tablabi', []);
+        $sistemas = $request->input('sistema', []);
+        $dbs = $request->input('db', []);
+
+        foreach ($tablasbi as $index => $tabla) {
+            TablaBi::create([
+                'id_acceso_bi_reporte' => $biReporteId,
+                'nom_tabla' => $tabla,
+                'cod_sistema' => $sistemas[$index],
+                'cod_db' => $dbs[$index],
+                'estado' => 1,
                 'fec_reg' => now(),
                 'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
@@ -399,9 +441,37 @@ class BiReporteController extends Controller
                     [
                         'estado' => 1,
                         'nom_indicador' => $indicador,
+                        'npagina' => $request->npagina[$key] ?? '',
                         'descripcion' => $request->descripcion[$key] ?? '',
                         'idtipo_indicador' => $request->tipo[$key] ?? 0,
                         'presentacion' => $request->presentacion[$key] ?? 0,
+                    ]
+                );
+            }
+        }
+        // Actualizar tablas
+        if ($request->has('tablabi')) {
+            // Primero, eliminamos los registros antiguos que no están en la solicitud
+            TablaBi::where('id_acceso_bi_reporte', $biReporte->id_acceso_bi_reporte)
+                ->whereNotIn('idtablas_bi', array_keys($request->tablabi))
+                ->delete();
+
+            // Ahora, actualizamos o creamos los registros nuevos
+            foreach ($request->tablabi as $key => $tablabi) {
+                $biTabla = TablaBi::updateOrCreate(
+                    [
+                        'id_acceso_bi_reporte' => $biReporte->id_acceso_bi_reporte,
+                        'idtablas_bi' => $key
+                    ],
+                    [
+                        'estado' => 1,
+                        'nom_tabla' => $tablabi,
+                        'cod_sistema' => $request->sistemas[$key],
+                        'cod_db' => $request->db[$key],
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
                     ]
                 );
             }
@@ -434,11 +504,7 @@ class BiReporteController extends Controller
     public function edit_ra($id)
     {
         $get_id = BiReporte::findOrFail($id);
-        $id_usuario = $get_id->id_usuario; // Asignamos el valor de id_usuario desde $get_id
-
-        // Obtener el valor del campo `id_area` y convertirlo en un array
-        // $selected_puesto_ids = explode(',', $get_id->acceso);
-        // Obtener los IDs de los puestos asociados al reporte
+        $id_usuario = $get_id->id_usuario;
         $selected_puesto_ids = DB::table('bi_puesto_acceso')
             ->where('id_acceso_bi_reporte', $id)
             ->pluck('id_puesto')
@@ -458,8 +524,10 @@ class BiReporteController extends Controller
             ->get()
             ->unique('nom_area');
 
+
         $list_indicadores = IndicadorBi::with('tipoIndicador')
             ->select(
+                'indicadores_bi.npagina',
                 'indicadores_bi.nom_indicador',
                 'indicadores_bi.descripcion',
                 'indicadores_bi.idtipo_indicador',
@@ -476,11 +544,28 @@ class BiReporteController extends Controller
             ->orderBy('nom_indicador', 'ASC')
             ->distinct('nom_indicador')->get();
 
-        // dd($id_usuario);
-
         $list_colaborador = Usuario::get_list_colaborador_usuario([
             'id_usuario' => $id_usuario // Filtro por id_usuario
         ]);
+
+        $list_sistemas = SistemaTablas::select('id_sistema_tablas', 'cod_sistema', 'nom_sistema', 'cod_db', 'nom_db')
+            ->where('estado', 1)
+            ->get();
+
+        $list_db = SistemaTablas::select('id_sistema_tablas', 'cod_db', 'nom_db')
+            ->where('estado', 1)
+            ->orderBy('cod_db', 'ASC')
+            ->get()
+            ->unique('cod_db');
+
+        $list_tablas = TablaBi::select(
+            'tablas_bi.nom_tabla',
+            'tablas_bi.cod_sistema',
+            'tablas_bi.cod_db'
+        )
+            ->where('id_acceso_bi_reporte', $id) // Filtra por el valor de $id en el campo id_acceso_bi_reporte
+            ->get();
+
 
         return view('interna.bi.reportes.registroacceso_reportes.modal_editar', compact(
             'get_id',
@@ -491,7 +576,10 @@ class BiReporteController extends Controller
             'selected_puesto_ids', // IDs de los puestos seleccionados
             'list_tipo_indicador',
             'list_base',
-            'list_indicadores'
+            'list_indicadores',
+            'list_sistemas',
+            'list_db',
+            'list_tablas'
         ));
     }
 
@@ -680,37 +768,7 @@ class BiReporteController extends Controller
     public function list_db()
     {
         // Obtener la lista de reportes con los campos requeridos de la tabla indicadores_bi
-        $list_bi_reporte = DB::table('indicadores_bi')
-            ->join('acceso_bi_reporte', 'indicadores_bi.id_acceso_bi_reporte', '=', 'acceso_bi_reporte.id_acceso_bi_reporte')
-            ->leftJoin('tipo_indicador', 'indicadores_bi.idtipo_indicador', '=', 'tipo_indicador.idtipo_indicador')
-            ->select(
-                'acceso_bi_reporte.id_acceso_bi_reporte',
-                'acceso_bi_reporte.nom_bi',
-                'acceso_bi_reporte.nom_intranet',
-                'acceso_bi_reporte.iframe',
-                'acceso_bi_reporte.actividad',
-                'acceso_bi_reporte.id_area',
-                'acceso_bi_reporte.objetivo',
-                'acceso_bi_reporte.frecuencia_act',
-                'acceso_bi_reporte.tablas',
-                'acceso_bi_reporte.id_usuario',
-                'acceso_bi_reporte.estado',
-                'acceso_bi_reporte.fec_act',
-                'acceso_bi_reporte.fec_reg',
-                'acceso_bi_reporte.fec_valid',
-                'acceso_bi_reporte.estado_valid',
-                'indicadores_bi.nom_indicador',
-                'indicadores_bi.descripcion',
-                'indicadores_bi.idtipo_indicador',
-                'indicadores_bi.presentacion',
-                'tipo_indicador.nom_indicador as tipo_indicador_nombre' // Obtenemos el nombre del indicador
-
-            )
-            ->where('acceso_bi_reporte.estado', '=', 1)
-            ->where('acceso_bi_reporte.estado_valid', '=', 1)
-            ->orderBy('acceso_bi_reporte.fec_reg', 'DESC') // Ordena por fec_reg en orden descendente
-            ->get();
-
+        $list_bi_reporte = BiReporte::getBiReportes();
         // Obtener IDs de los reportes
         $reportesIds = $list_bi_reporte->pluck('id_acceso_bi_reporte')->toArray();
         // dd($reportesIds);

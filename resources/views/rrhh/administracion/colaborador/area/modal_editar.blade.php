@@ -1,3 +1,5 @@
+<style>
+</style>
 <form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title">Editar departamento:</h5>

@@ -138,7 +138,7 @@
     var tabla = $('#tabla_js').DataTable({
         "columnDefs": [{
             "width": "300px",
-            "targets": [2] // Aplica a las columnas de Áreas y Puestos con Acceso
+            "targets": [2]
         }],
         "ordering": false,
         "autoWidth": false,
