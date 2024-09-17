@@ -448,6 +448,7 @@ class LecturaServicioController extends Controller
             }
 
             LecturaServicio::findOrFail($id)->update([
+                'fecha' => $request->input('fecha_lectura'),
                 'hora_' . $tipo => $request->input('hora_' . $tipo . 'e'),
                 'lect_' . $tipo => $request->input('lect_' . $tipo . 'e'),
                 'img_' . $tipo => $archivo,
@@ -544,6 +545,7 @@ class LecturaServicioController extends Controller
         }
 
         LecturaServicio::findOrFail($id)->update([
+            'fecha' => $request->input('fecha_lectura'),
             'hora_' . $tipo => $request->input('hora_' . $tipo . 'e'),
             'lect_' . $tipo => $request->input('lect_' . $tipo . 'e'),
             'img_' . $tipo => $archivo,

@@ -3966,6 +3966,7 @@ class ColaboradorConfController extends Controller
                         ->orderBy('dia', 'ASC')
                         ->get()
                         ->toArray();
+        print_r($dato['get_detalle']);
         $dato['list_base'] = Base::get_list_base_pendiente();
         $dato['list_turno'] = Turno::get_list_turno_xbase($dato['get_id']);
         return view('rrhh.administracion.colaborador.Horario.vista_edit',$dato);
