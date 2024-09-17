@@ -42,7 +42,7 @@ class SalidaInsumoController extends Controller
     }
 
     public function create()
-    {
+    { 
         $list_insumo = StockSalidaInsumo::select('id_insumo','nom_insumo')
                         ->where('cod_base',session('usuario')->centro_labores)
                         ->orderBy('nom_insumo','ASC')->get();

@@ -5,17 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SedeLaboral extends Model
+class FichaTecnicaProduccion extends Model
 {
     use HasFactory;
 
-    protected $table = 'sede_laboral';
-    protected $primaryKey = 'id';
+    protected $table = 'ficha_tecnica_produccion';
+    protected $primaryKey = 'id_ft_produccion';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'descripcion',
+        'cod_ft_produccion',
+        'modelo',
+        'nom_img_ft_produccion',
+        'img_ft_produccion',
         'estado',
         'fec_reg',
         'user_reg',

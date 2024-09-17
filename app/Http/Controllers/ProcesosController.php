@@ -145,9 +145,7 @@ class ProcesosController extends Controller
 
     public function create_lm()
     {
-
         $list_tipo = TipoPortal::select('id_tipo_portal', 'nom_tipo', 'cod_tipo')->get();
-
         $list_responsable = Puesto::select('puesto.id_puesto', 'puesto.nom_puesto', 'area.cod_area')
             ->join('area', 'puesto.id_area', '=', 'area.id_area')  // Realiza el INNER JOIN entre Puesto y Area
             ->where('puesto.estado', 1)

@@ -59,7 +59,7 @@
             $.ajax({
                 url: url,
                 type: "GET",
-                success:function (resp) {
+                success:function (resp) { 
                     $('#lista_izquierda').html(resp);  
                 }
             });

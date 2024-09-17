@@ -56,6 +56,7 @@
             <th>Tipo</th>
             <th>Presentación</th>
             <th>Frecuencia</th>
+            <th>Tablas</th>
             <th>Solicitante</th>
             <th>Accesos</th>
 
@@ -96,6 +97,9 @@
             </td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->tipo_frecuencia }}
+            </td>
+            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ $reporte->tablas }}
             </td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->nombre_usuario }}

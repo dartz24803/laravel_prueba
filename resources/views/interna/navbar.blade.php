@@ -36,7 +36,7 @@
         <ul class="collapse submenu list-unstyled" id="rprocesos" data-parent="#accordionExample">
             <li>
                 <a id="portalprocesos" href="{{ route('portalprocesos') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Portal Procesos222</p>
+                    <p class="romperpalabra"><span id="icono_active2"></span> Portal Procesos</p>
                 </a>
             </li>
         </ul>

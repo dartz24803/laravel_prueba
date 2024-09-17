@@ -692,6 +692,7 @@ class BiReporteController extends Controller
                 'acceso_bi_reporte.id_area',
                 'acceso_bi_reporte.objetivo',
                 'acceso_bi_reporte.frecuencia_act',
+                'acceso_bi_reporte.tablas',
                 'acceso_bi_reporte.id_usuario',
                 'acceso_bi_reporte.estado',
                 'acceso_bi_reporte.fec_act',

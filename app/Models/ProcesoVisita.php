@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SedeLaboral extends Model
+class ProcesoVisita extends Model
 {
     use HasFactory;
 
-    protected $table = 'sede_laboral';
-    protected $primaryKey = 'id';
+    protected $table = 'proceso_visita';
+    protected $primaryKey = 'id_procesov';
 
-    public $timestamps = false;
+    public $timestamps = false; // Si tu tabla tiene columnas de timestamp, cámbialo a true
 
     protected $fillable = [
-        'descripcion',
+        'nom_proceso',
         'estado',
         'fec_reg',
         'user_reg',

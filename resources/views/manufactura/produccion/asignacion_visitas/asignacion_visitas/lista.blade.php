@@ -1,6 +1,6 @@
 <style>
     #tabla_js td {
-        max-width: 180px;
+        max-width: 100px;
         /* Controla el ancho máximo */
         white-space: nowrap;
         /* Evita que el texto se divida en varias líneas */
@@ -19,17 +19,14 @@
 <table id="tabla_js" class="table table-hover" style="width:100%">
     <thead class="text-center">
         <tr>
-            <th>Código</th>
-            <th>Inspector</th>
-            <th>Puesto Inspector</th>
             <th>Fecha</th>
+            <th>Inspector</th>
             <th>Punto Partida</th>
             <th>Punto Llegada</th>
             <th>Modelo</th>
             <th>Proceso</th>
             <th>Tipo Transporte</th>
-            <th>Costo</th>
-            <th>Observaciones</th>
+            <th>Total</th>
             <th>Fecha Inicio Visita</th>
             <th>Fecha Fin Visita</th>
             <th>Estado</th>
@@ -39,17 +36,14 @@
     <tbody>
         @foreach ($list_asignacion as $asignacion)
         <tr class="text-center">
-            <td>{{ $asignacion->cod_asignacion }}</td>
-            <td>{{ $asignacion->id_inspector }}</td> <!-- Si tienes que mostrar el nombre del inspector, podrías hacer una relación y extraerlo -->
-            <td>{{ $asignacion->id_puesto_inspector }}</td>
             <td>{{ \Carbon\Carbon::parse($asignacion->fecha)->locale('es')->translatedFormat('D d M y') }}</td>
-            <td>{{ $asignacion->punto_partida }}</td>
-            <td>{{ $asignacion->punto_llegada }}</td>
-            <td>{{ $asignacion->id_modelo }}</td>
-            <td>{{ $asignacion->id_proceso }}</td>
-            <td>{{ $asignacion->id_tipo_transporte }}</td>
-            <td>{{ $asignacion->costo }}</td>
-            <td>{{ $asignacion->observacion }}</td>
+            <td>{{ $asignacion->nombre_completo }}</td> <!-- Si tienes que mostrar el nombre del inspector, podrías hacer una relación y extraerlo -->
+            <td>{{ $asignacion->proveedor_responsable_partida }}</td>
+            <td>{{ $asignacion->proveedor_responsable_llegada }}</td>
+            <td>{{ $asignacion->nom_modelo }}</td>
+            <td>{{ $asignacion->nom_proceso }}</td>
+            <td>{{ $asignacion->nom_tipo_transporte }}</td>
+            <td>S/{{ $asignacion->costo_total ?? '0' }}</td>
             <td>{{ \Carbon\Carbon::parse($asignacion->fec_ini_visita)->locale('es')->translatedFormat('D d M y H:i') }}</td>
             <td>{{ \Carbon\Carbon::parse($asignacion->fec_fin_visita)->locale('es')->translatedFormat('D d M y H:i') }}</td>
             <td>{{ $asignacion->estado == 1 ? 'Activo' : 'Inactivo' }}</td>
@@ -61,9 +55,9 @@
                 </a>
                 @if ($asignacion->estado_registro == 1)
                 <a href="javascript:void(0);" title="Aprobar" onclick="Aprobar_Asignacion('{{ $asignacion->id_asignacion_visita }}')">
-                    <svg title="Aprobar" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#007bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
                     </svg>
                 </a>
                 @endif
@@ -83,10 +77,11 @@
 <script>
     var tabla = $('#tabla_js').DataTable({
         "columnDefs": [{
-                "width": "180px",
-                "targets": 3
-            } // Aplica a la columna de Área (índice 3)
+                "width": "120px",
+                "targets": [1, 2]
+            } // Aplica el ancho específico a las columnas 2 y 3
         ],
+        "order": [],
         "autoWidth": false, // Desactiva el auto ajuste de ancho de DataTables
         "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
             "<'table-responsive'tr>" +

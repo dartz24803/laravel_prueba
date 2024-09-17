@@ -9,7 +9,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($list_salida_contometro as $list)
+        @foreach ($list_salida_contometro as $list) 
             <tr class="text-center">
                 <td>{{ $list->orden }}</td>
                 <td>{{ $list->fecha }}</td>
