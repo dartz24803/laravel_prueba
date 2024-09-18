@@ -28,7 +28,7 @@ class CapacitacionCajeroController extends Controller
     }
 
     public function list(Request $request)
-    {
+    { 
         $list_capacitacion_cajero = EvaluacionCaja::select('fec_reg AS orden',
                                     DB::raw('DATE_FORMAT(fec_reg,"%d-%m-%Y %H:%i") AS fecha'),
                                     'base','c_usua_caja','c_usua_nomb','h_ini','h_fin','tiempo')->where('estado',1)

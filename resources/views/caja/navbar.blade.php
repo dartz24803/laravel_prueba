@@ -72,11 +72,11 @@ session('usuario')->id_puesto == 148)
             @endif
             @if (session('usuario')->id_nivel == 1 || 
             session('usuario')->id_puesto == 128)
-                <!--<li id="capacitaciones_cajeros">
+                <li id="capacitaciones_cajeros">
                     <a href="{{ route('capacitacion_cajero') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                         <p class="romperpalabra"><span id="icono_active2"></span> Capacitación cajero</p>
                     </a>
-                </li>-->
+                </li>
             @endif
             @if (session('usuario')->id_nivel == 1 || 
             session('usuario')->id_puesto == 28 ||  

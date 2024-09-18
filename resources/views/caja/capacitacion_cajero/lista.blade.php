@@ -44,7 +44,7 @@
                 "sEmptyTable": "No hay datos disponibles en la tabla",
             },
             "stripeClasses": [],
-            "lengthMenu": [10, 20, 50],
+            "lengthMenu": [10, 20, 50], 
             "pageLength": 10,
             "aoColumnDefs" : [ 
                 {
