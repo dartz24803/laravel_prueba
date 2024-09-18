@@ -1,28 +1,25 @@
 <!-- CSS -->
 <style>
-    /* Establecer un ancho fijo para el select */
-    .form-control {
-        width: 100%;
-        /* Asegúrate de que el select ocupe todo el ancho disponible */
-    }
-
-    .form-control option {
+    #tabla_js2 td {
+        max-width: 180px;
+        /* Controla el ancho máximo */
         white-space: nowrap;
-        width: 100px;
+        /* Evita que el texto se divida en varias líneas */
+        overflow: hidden;
+        /* Oculta el contenido que se desborda */
+        text-overflow: ellipsis;
+        /* Añade puntos suspensivos (...) */
     }
 
-    .style-tabla {
-        width: 200px;
-    }
-
-    .table .form-control {
-        width: 100%;
-        /* Asegura que el input use el 100% del ancho de la celda */
-    }
-
-    table .table>tbody>tr>td:nth-child(23) {
-        width: 390px;
-        /* Asegura que el ancho de la columna sea de 290px */
+    #tabla_js3 td {
+        max-width: 180px;
+        /* Controla el ancho máximo */
+        white-space: nowrap;
+        /* Evita que el texto se divida en varias líneas */
+        overflow: hidden;
+        /* Oculta el contenido que se desborda */
+        text-overflow: ellipsis;
+        /* Añade puntos suspensivos (...) */
     }
 
     /* Asegúrate de que el dropdown de Select2 tenga un z-index más bajo */
@@ -31,12 +28,13 @@
         /* Debe ser menor que el z-index del modal */
     }
 
-    /* Estilo para el campo de búsqueda dentro del select2 */
-    /* Estilo para el campo de búsqueda dentro decol-accionl select2 cuando está deshabilitado */
-    .select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field:disabled {
-        background-color: transparent !important;
-
+    .select2-container {
+        margin-bottom: 0rem !important;
     }
+
+    /* Establecer una altura predeterminada para el <select> */
+
+
 
 
     .small-text {
@@ -200,10 +198,7 @@
                         </select>
 
                     </div>
-                    <!-- <div class="form-group col-md-12">
-                        <label for="tablas">Tablas: </label>
-                        <textarea name="tablas" id="tablas" cols="1" rows="2" class="form-control"></textarea>
-                    </div> -->
+
                 </div>
 
 
@@ -213,7 +208,7 @@
                 <!-- Contenido de la pestaña Otra Sección -->
                 <div class="row d-flex col-md-12 my-2">
                     <!-- Tabla para añadir filas dinámicamente -->
-                    <table id="tabla_versiones" class="table table-hover" style="width:100%">
+                    <table id="tabla_js2" class="table table-hover" style="width:100%">
                         <thead class="text-center">
                             <tr>
                                 <th>N°pagina</th>
@@ -259,32 +254,32 @@
                 <!-- Contenido de la pestaña Otra Sección -->
                 <div class="row d-flex col-md-12 my-2">
                     <!-- Tabla para añadir filas dinámicamente -->
-                    <table id="tabla_versiones" class="table table-hover" style="width:100%">
+                    <table id="tabla_js3" class="table table-hover" style="width:100%">
                         <thead class="text-center">
                             <tr>
                                 <th>Sistema</th>
-                                <th class="style-tabla">Base de Datos</th>
-                                <th class="style-tabla">Tabla</th>
+                                <th>Base de Datos</th>
+                                <th>Tabla</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="tabla_body3">
                             <tr class="text-center">
                                 <td class="px-1">
-                                    <select class="form-control" name="sistema[]" id="sistema">
+                                    <select class="form-control multivalue" name="sistema[]" id="sistema">
                                         @foreach ($list_sistemas as $list)
                                         <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema}}</option>
                                         @endforeach
                                     </select>
                                 </td>
                                 <td class="px-1">
-                                    <select class="form-control" name="db[]" id="db">
+                                    <select class="form-control multivalue" name="db[]" id="db">
                                         @foreach ($list_db as $list)
                                         <option value="{{ $list->id_sistema_tablas }}">{{ $list->nom_db}}</option>
                                         @endforeach
                                     </select>
                                 </td>
-                                <td class="px-1"><input type="text" class="form-control" name="tablabi[]"></td>
+                                <td class="px-1"><input type="text" class="form-control custom-select" name="tablabi[]"></td>
                                 <td class="px-1"><button type="button" class="btn btn-success btn-sm" onclick="addRowTabla()">+</button></td>
                             </tr>
                         </tbody>
@@ -392,34 +387,42 @@
         // Contenido HTML de la nueva fila
         newRow.innerHTML = `
         <td class="px-1">
-               <select class="form-control" name="sistema[]" id="sistema">
+               <select class="form-control multivalue2" name="sistema[]" id="sistema">
                     @foreach ($list_sistemas as $list)
                     <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema}}</option>
                     @endforeach
                </select>
         </td>
         <td class="px-1">
-               <select class="form-control" name="db[]" id="db">
+               <select class="form-control multivalue2" name="db[]" id="db">
                     @foreach ($list_db as $list)
                     <option value="{{ $list->cod_db }}">{{ $list->nom_db}}</option>
                     @endforeach
                 </select>
         </td>
-        <td class="px-1"><input type="text" class="form-control" name="tablabi[]"></td>
+        <td class="px-1"><input type="text" class="form-control custom-select-add" name="tablabi[]"></td>
         <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
         `;
 
         // Agregar la nueva fila al cuerpo de la tabla
         tableBody.appendChild(newRow);
-    }
+        $('.multivalue2').select2({
+            tags: true, // Permite crear nuevas etiquetas
+            tokenSeparators: [',', ' '], // Separa las etiquetas con comas y espacios
+            dropdownParent: $('#ModalRegistro')
+        });
 
+    }
 
     $('.multivalue').select2({
         tags: true, // Permite crear nuevas etiquetas
         tokenSeparators: [',', ' '], // Separa las etiquetas con comas y espacios
         dropdownParent: $('#ModalRegistro')
     });
-
+    $('#db').select2({
+        placeholder: "Selecciona un solicitante",
+        allowClear: true
+    });
 
     $(document).ready(function() {
 
@@ -468,8 +471,6 @@
         $('#areass').on('change', function() {
             const selectedAreaUser = $(this).val();
             var url = "{{ route('usuarios_por_area') }}";
-            console.log('Área seleccionada:', selectedAreaUser); // Verifica que el área seleccionada se está enviando correctamente
-            // Hacer una solicitud AJAX para obtener los usuarios basados en el área seleccionada
             $.ajax({
                 url: url,
                 method: 'GET',
@@ -494,7 +495,6 @@
 
         $('#sistema').on('change', function() {
             const selectedSistema = $(this).val();
-            console.log(selectedSistema);
             var url = "{{ route('db_por_sistema_bi') }}";
             $.ajax({
                 url: url,
@@ -556,7 +556,6 @@
         $('#tipo_acceso_ubi').on('change', function() {
             const selectedUbis = $(this).val();
             var url = "{{ route('areas_por_ubicacion') }}";
-            console.log(selectedUbis);
             $.ajax({
                 url: url,
                 method: 'GET',
@@ -575,6 +574,31 @@
                 },
                 error: function(xhr) {
                     console.error('Error al obtener sedes:', xhr);
+                }
+            });
+        });
+
+        $('#solicitante').on('change', function() {
+            const selectedSolicitante = $(this).val();
+            var url = "{{ route('area_por_usuario') }}";
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: {
+                    user_id: selectedSolicitante
+                },
+                success: function(response) {
+                    // Vaciar el segundo select antes de agregar las nuevas opciones
+                    $('#areass').empty();
+                    // Agregar las nuevas opciones
+                    $.each(response, function(index, area) {
+                        $('#areass').append(
+                            `<option value="${area.id_area}">${area.nom_area}</option>`
+                        );
+                    });
+                },
+                error: function(xhr) {
+                    console.error('Error al obtener usuarios:', xhr);
                 }
             });
         });
@@ -626,5 +650,55 @@
         if (event.key === 'Enter') {
             event.preventDefault(); // Evita que el formulario se envíe
         }
+    });
+
+
+
+
+    var tabla = $('#tabla_js2').DataTable({
+        "ordering": false,
+        "autoWidth": false,
+        "dom": "<'table-responsive'tr>", // Solo muestra la tabla sin buscador, resultados ni paginador
+        responsive: true,
+        "oLanguage": {
+            "oPaginate": {
+                "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
+                "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+            },
+            "sInfo": "Mostrando página _PAGE_ de _PAGES_",
+            "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+            "sSearchPlaceholder": "Buscar...",
+            "sLengthMenu": "Resultados :  _MENU_",
+            "sEmptyTable": "No hay datos disponibles en la tabla",
+        },
+        "stripeClasses": [],
+    });
+
+    var tabla = $('#tabla_js3').DataTable({
+        "columnDefs": [{
+                "width": "200px", // Ancho para la columna 0
+                "targets": [0]
+            },
+            {
+                "width": "200px", // Ancho para la columna 2
+                "targets": [1]
+            }
+        ],
+        "ordering": false,
+        "autoWidth": false,
+        "dom": "<'table-responsive'tr>", // Solo muestra la tabla sin buscador, resultados ni paginador
+        responsive: true,
+        "oLanguage": {
+            "oPaginate": {
+                "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
+                "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+            },
+            "sInfo": "Mostrando página _PAGE_ de _PAGES_",
+            "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+            "sSearchPlaceholder": "Buscar...",
+            "sLengthMenu": "Resultados :  _MENU_",
+            "sEmptyTable": "No hay datos disponibles en la tabla",
+        },
+        "stripeClasses": [],
     });
 </script>

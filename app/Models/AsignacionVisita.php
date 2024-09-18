@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AsignacionVisita extends Model
 {
@@ -60,8 +61,8 @@ class AsignacionVisita extends Model
             'asignacion_visita.id_inspector',
             'asignacion_visita.id_puesto_inspector',
             'asignacion_visita.fecha',
-            'asignacion_visita.punto_partida',
-            'asignacion_visita.punto_llegada',
+            DB::raw("IF(asignacion_visita.punto_partida = 9999, 'Domicilio', proveedor_partida.responsable) as proveedor_responsable_partida"),
+            DB::raw("IF(asignacion_visita.punto_llegada = 9999, 'Domicilio', proveedor_llegada.responsable) as proveedor_responsable_llegada"),
             'asignacion_visita.tipo_punto_partida',
             'asignacion_visita.tipo_punto_llegada',
             'asignacion_visita.id_modelo',
@@ -75,8 +76,6 @@ class AsignacionVisita extends Model
             'asignacion_visita.estado_registro',
             'asignacion_visita.estado',
             DB::raw("CONCAT(users.usuario_apater, ' ', users.usuario_amater, ' ', users.usuario_nombres) AS nombre_completo"),
-            'proveedor_partida.responsable as proveedor_responsable_partida',
-            'proveedor_llegada.responsable as proveedor_responsable_llegada',
             'ficha_tecnica_produccion.modelo as nom_modelo',
             'proceso_visita.nom_proceso as nom_proceso',
             'tipo_transporte_produccion.nom_tipo_transporte as nom_tipo_transporte'

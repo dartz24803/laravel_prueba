@@ -301,7 +301,28 @@ class BiReporteController extends Controller
         return response()->json($usuarios);
     }
 
-
+    public function getAreaPorUsuario(Request $request)
+    {
+        $userId = $request->input('user_id');
+        // Obtiene los usuarios cuyo id_puesto coincida con el área seleccionada
+        $usuarios = Usuario::where('id_usuario', $userId)
+            ->where('users.estado', 1)  // Filtrar por usuarios activos si es necesario
+            ->leftJoin('area', 'users.id_area', '=', 'area.id_area')  // Left join con la tabla Area
+            ->get([
+                'users.id_usuario',
+                'users.usuario_apater',
+                'users.usuario_amater',
+                'users.usuario_nombres',
+                'area.id_area',
+                'area.nom_area'
+            ]);
+        // Concatenar los campos en una propiedad adicional
+        $usuarios->map(function ($usuario) {
+            $usuario->nombre_completo = "{$usuario->usuario_apater} {$usuario->usuario_amater} {$usuario->usuario_nombres}";
+            return $usuario;
+        });
+        return response()->json($usuarios);
+    }
 
     public function getPuestosPorAreasBi(Request $request)
     {
@@ -606,9 +627,11 @@ class BiReporteController extends Controller
             'id_usuario' => $id_usuario // Filtro por id_usuario
         ]);
 
-        $list_sistemas = SistemaTablas::select('id_sistema_tablas', 'cod_sistema', 'nom_sistema', 'cod_db', 'nom_db')
+        $list_sistemas = SistemaTablas::select('id_sistema_tablas', 'cod_sistema', 'nom_sistema')
             ->where('estado', 1)
-            ->get();
+            ->orderBy('cod_sistema', 'ASC')
+            ->get()
+            ->unique('cod_sistema');
 
         $list_db = SistemaTablas::select('id_sistema_tablas', 'cod_db', 'nom_db')
             ->where('estado', 1)
