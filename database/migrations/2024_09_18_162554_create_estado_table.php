@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint; 
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categoria_mae', function (Blueprint $table) {
-            $table->id('id_categoria_mae');
-            $table->string('nom_categoria_mae',30)->nullable();
+        Schema::create('estado', function (Blueprint $table) {
+            $table->id('id_estado');
+            $table->string('nom_estado',30)->nullable();
+            $table->integer('id_estado_mae')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
@@ -21,7 +22,6 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            //$table->timestamps();
         });
     }
 
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categoria_mae');
+        Schema::dropIfExists('estado');
     }
 };

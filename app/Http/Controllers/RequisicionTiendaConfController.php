@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categoria;
+use App\Models\Color;
+use App\Models\Estado;
 use App\Models\Marca;
 use App\Models\Modelo;
 use App\Models\Notificacion;
@@ -189,6 +192,243 @@ class RequisicionTiendaConfController extends Controller
     public function destroy_mo($id)
     {
         Modelo::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function index_co()
+    {
+        return view('caja.administracion.requisicion_tienda.color.index');
+    }
+
+    public function list_co()
+    {
+        $list_color = Color::select('id_color','nom_color')->where('id_color_mae',1)
+                    ->where('estado', 1)
+                    ->orderBy('nom_color','ASC')->get();
+        return view('caja.administracion.requisicion_tienda.color.lista', compact('list_color'));
+    }
+
+    public function create_co()
+    {
+        return view('caja.administracion.requisicion_tienda.color.modal_registrar');
+    }
+
+    public function store_co(Request $request)
+    {
+        $request->validate([
+            'nom_color' => 'required',
+        ],[
+            'nom_color.required' => 'Debe ingresar nombre.',
+        ]);
+
+        $valida = Color::where('id_color_mae',1)->where('nom_color', $request->nom_color)
+                ->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Color::create([
+                'id_color_mae' => 1,
+                'nom_color' => $request->nom_color,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_co($id)
+    {
+        $get_id = Color::findOrFail($id);
+        return view('caja.administracion.requisicion_tienda.color.modal_editar', compact('get_id'));
+    }
+
+    public function update_co(Request $request, $id)
+    {
+        $request->validate([
+            'nom_colore' => 'required',
+        ],[
+            'nom_colore.required' => 'Debe ingresar nombre.',
+        ]);
+
+        $valida = Color::where('id_color_mae',1)->where('nom_color', $request->nom_colore)
+                ->where('estado', 1)->where('id_color', '!=', $id)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Color::findOrFail($id)->update([
+                'nom_color' => $request->nom_colore,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_co($id)
+    {
+        Color::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function index_es()
+    {
+        return view('caja.administracion.requisicion_tienda.estado.index');
+    }
+
+    public function list_es()
+    {
+        $list_estado = Estado::select('id_estado','nom_estado')->where('id_estado_mae',3)
+                        ->where('estado', 1)
+                        ->orderBy('nom_estado','ASC')->get();
+        return view('caja.administracion.requisicion_tienda.estado.lista', compact('list_estado'));
+    }
+
+    public function create_es()
+    {
+        return view('caja.administracion.requisicion_tienda.estado.modal_registrar');
+    }
+
+    public function store_es(Request $request)
+    {
+        $request->validate([
+            'nom_estado' => 'required',
+        ],[
+            'nom_estado.required' => 'Debe ingresar nombre.',
+        ]);
+
+        $valida = Estado::where('id_estado_mae',3)->where('nom_estado', $request->nom_estado)
+                ->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Estado::create([
+                'id_estado_mae' => 3,
+                'nom_estado' => $request->nom_estado,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_es($id)
+    {
+        $get_id = Estado::findOrFail($id);
+        return view('caja.administracion.requisicion_tienda.estado.modal_editar', compact('get_id'));
+    }
+
+    public function update_es(Request $request, $id)
+    {
+        $request->validate([
+            'nom_estadoe' => 'required',
+        ],[
+            'nom_estadoe.required' => 'Debe ingresar nombre.',
+        ]);
+
+        $valida = Estado::where('id_estado_mae',3)->where('nom_estado', $request->nom_estadoe)
+                ->where('estado', 1)->where('id_estado', '!=', $id)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Estado::findOrFail($id)->update([
+                'nom_estado' => $request->nom_estadoe,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_es($id)
+    {
+        Estado::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function index_ca()
+    {
+        return view('caja.administracion.requisicion_tienda.categoria.index');
+    }
+
+    public function list_ca()
+    {
+        $list_categoria = Categoria::select('id_categoria','nom_categoria')->where('id_categoria_mae',2)
+                        ->where('estado', 1)
+                        ->orderBy('nom_categoria','ASC')->get();
+        return view('caja.administracion.requisicion_tienda.categoria.lista', compact('list_categoria'));
+    }
+
+    public function create_ca()
+    {
+        return view('caja.administracion.requisicion_tienda.categoria.modal_registrar');
+    }
+
+    public function store_ca(Request $request)
+    {
+        $request->validate([
+            'nom_categoria' => 'required',
+        ],[
+            'nom_categoria.required' => 'Debe ingresar nombre.',
+        ]);
+
+        $valida = Categoria::where('id_categoria_mae',2)->where('nom_categoria', $request->nom_categoria)
+                ->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Categoria::create([
+                'id_categoria_mae' => 2,
+                'nom_categoria' => $request->nom_categoria,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_ca($id)
+    {
+        $get_id = Categoria::findOrFail($id);
+        return view('caja.administracion.requisicion_tienda.categoria.modal_editar', compact('get_id'));
+    }
+
+    public function update_ca(Request $request, $id)
+    {
+        $request->validate([
+            'nom_categoriae' => 'required',
+        ],[
+            'nom_categoriae.required' => 'Debe ingresar nombre.',
+        ]);
+
+        $valida = Categoria::where('id_categoria_mae',2)->where('nom_categoria', $request->nom_categoriae)
+                ->where('estado', 1)->where('id_categoria', '!=', $id)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Categoria::findOrFail($id)->update([
+                'nom_categoria' => $request->nom_categoriae,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_ca($id)
+    {
+        Categoria::findOrFail($id)->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario

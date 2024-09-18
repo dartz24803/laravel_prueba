@@ -88,5 +88,85 @@
                 }
             });
         }
+
+        function Color(){
+            Cargando();
+
+            var url="{{ route('requisicion_tienda_conf_co') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_requisicion_tienda_conf').html(resp);  
+                    $(".nav-link").removeClass('active');
+                    $("#a_co").addClass('active');
+                }
+            });
+        }
+
+        function Unidad_Medida(){
+            Cargando();
+
+            var url="{{ route('requisicion_tienda_conf_um') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_requisicion_tienda_conf').html(resp);  
+                    $(".nav-link").removeClass('active');
+                    $("#a_um").addClass('active');
+                }
+            });
+        }
+
+        function Estado(){
+            Cargando();
+
+            var url="{{ route('requisicion_tienda_conf_es') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_requisicion_tienda_conf').html(resp);  
+                    $(".nav-link").removeClass('active');
+                    $("#a_es").addClass('active');
+                }
+            });
+        }
+
+        function Categoria(){
+            Cargando();
+
+            var url="{{ route('requisicion_tienda_conf_ca') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_requisicion_tienda_conf').html(resp);  
+                    $(".nav-link").removeClass('active');
+                    $("#a_ca").addClass('active');
+                }
+            });
+        }
+
+        function Producto(){
+            Cargando();
+
+            var url="{{ route('requisicion_tienda_conf_pr') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_requisicion_tienda_conf').html(resp);  
+                    $(".nav-link").removeClass('active');
+                    $("#a_pr").addClass('active');
+                }
+            });
+        }
     </script>
 @endsection
