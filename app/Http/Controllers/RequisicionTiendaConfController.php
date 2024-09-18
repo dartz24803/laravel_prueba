@@ -8,6 +8,7 @@ use App\Models\Estado;
 use App\Models\Marca;
 use App\Models\Modelo;
 use App\Models\Notificacion;
+use App\Models\Unidad;
 use Illuminate\Http\Request;
 
 class RequisicionTiendaConfController extends Controller
@@ -271,6 +272,94 @@ class RequisicionTiendaConfController extends Controller
     public function destroy_co($id)
     {
         Color::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function index_um()
+    {
+        return view('caja.administracion.requisicion_tienda.unidad_medida.index');
+    }
+
+    public function list_um()
+    {
+        $list_unidad_medida = Unidad::select('id_unidad','cod_unidad','descripcion_unidad')
+                            ->where('id_unidad_mae',2)
+                            ->where('estado', 1)
+                            ->orderBy('cod_unidad','ASC')->orderBy('descripcion_unidad','ASC')->get();
+        return view('caja.administracion.requisicion_tienda.unidad_medida.lista', compact('list_unidad_medida'));
+    }
+
+    public function create_um()
+    {
+        return view('caja.administracion.requisicion_tienda.unidad_medida.modal_registrar');
+    }
+
+    public function store_um(Request $request)
+    {
+        $request->validate([
+            'cod_unidad' => 'required',
+            'descripcion_unidad' => 'required'
+        ],[
+            'cod_unidad.required' => 'Debe ingresar código.',
+            'descripcion_unidad.required' => 'Debe ingresar descripción.'
+        ]);
+
+        $valida = Unidad::where('id_unidad_mae',2)->where('cod_unidad', $request->cod_unidad)
+                ->where('descripcion_unidad', $request->descripcion_unidad)
+                ->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Unidad::create([
+                'id_unidad_mae' => 2,
+                'cod_unidad' => $request->cod_unidad,
+                'descripcion_unidad' => $request->descripcion_unidad,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_um($id)
+    {
+        $get_id = Unidad::findOrFail($id);
+        return view('caja.administracion.requisicion_tienda.unidad_medida.modal_editar', compact('get_id'));
+    }
+
+    public function update_um(Request $request, $id)
+    {
+        $request->validate([
+            'cod_unidade' => 'required',
+            'descripcion_unidade' => 'required'
+        ],[
+            'cod_unidade.required' => 'Debe ingresar código.',
+            'descripcion_unidade.required' => 'Debe ingresar descripción.'
+        ]);
+
+        $valida = Unidad::where('id_unidad_mae',2)->where('cod_unidad', $request->cod_unidade)
+                ->where('descripcion_unidad', $request->descripcion_unidade)
+                ->where('estado', 1)->where('id_unidad', '!=', $id)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Unidad::findOrFail($id)->update([
+                'cod_unidad' => $request->cod_unidade,
+                'descripcion_unidad' => $request->descripcion_unidade,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_um($id)
+    {
+        Unidad::findOrFail($id)->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario
