@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration; 
+use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categoria', function (Blueprint $table) {
-            $table->id('id_categoria');
-            $table->integer('id_ubicacion')->nullable();
-            $table->string('nom_categoria',30)->nullable();
-            $table->integer('id_categoria_mae')->nullable();
+        Schema::create('tipo_moneda', function (Blueprint $table) {
+            $table->id('id_moneda');
+            $table->string('cod_moneda',5)->nullable();
+            $table->string('cod_sunat',10)->nullable();
+            $table->string('nom_moneda',50)->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categoria');
+        Schema::dropIfExists('tipo_moneda');
     }
 };

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint; 
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categoria_mae', function (Blueprint $table) {
-            $table->id('id_categoria_mae');
-            $table->string('nom_categoria_mae',30)->nullable();
+        Schema::create('modelo', function (Blueprint $table) {
+            $table->id('id_modelo');
+            $table->integer('id_modelo_mae')->nullable();
+            $table->unsignedBigInteger('id_marca');
+            $table->string('nom_modelo',150)->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
@@ -21,7 +23,8 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            //$table->timestamps();
+            $table->foreign('id_marca', 'mod_fk_id_mar')->references('id_marca')->on('marca');
+            $table->index(['id_marca'], 'mod_idx_id_mar');
         });
     }
 
@@ -30,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categoria_mae');
+        Schema::dropIfExists('modelo');
     }
 };

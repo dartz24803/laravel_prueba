@@ -61,6 +61,7 @@ use App\Http\Controllers\ProcesosController;
 use App\Http\Controllers\ProduccionController;
 use App\Http\Controllers\RecursosHumanosInicioController;
 use App\Http\Controllers\ReporteProveedoresController;
+use App\Http\Controllers\RequisicionTiendaConfController;
 use App\Http\Controllers\SalidaInsumoController;
 
 Route::middleware([NoCache::class])->group(function () {
@@ -266,6 +267,8 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('usuarios_por_area', 'getUsuariosPorArea')->name('usuarios_por_area');
     Route::get('areas_por_base', 'getAreasPorBase')->name('areas_por_base_bi');
     Route::get('db_por_sistema_bi', 'getDBPorSistema')->name('db_por_sistema_bi');
+    Route::get('ubicacion_por_sede', 'getUbicacionPorSede')->name('ubicacion_por_sede');
+    Route::get('areas_por_ubicacion', 'getAreasPorUbicacion')->name('areas_por_ubicacion');
 
 
     // DB REPORTE
@@ -1011,6 +1014,13 @@ Route::controller(CajaChicaConfController::class)->group(function () {
 //TESORERÍA - CAJA CHICA
 Route::controller(CajaChicaController::class)->group(function () {
     Route::get('caja_chica', 'index')->name('caja_chica');
+    Route::get('caja_chica/list', 'list')->name('caja_chica.list');
+    Route::get('caja_chica/create_mo', 'create_mo')->name('caja_chica.create_mo');
+    Route::post('caja_chica/traer_sub_categoria_mo', 'traer_sub_categoria_mo')->name('caja_chica.traer_sub_categoria_mo');
+    Route::post('caja_chica/consultar_ruc', 'consultar_ruc')->name('caja_chica.consultar_ruc');
+    Route::post('caja_chica_mo', 'store_mo')->name('caja_chica.store_mo');
+    Route::get('caja_chica/create_pv', 'create_pv')->name('caja_chica.create_pv');
+    Route::post('caja_chica_pv', 'store_pv')->name('caja_chica.store_pv');
 });
 //CAJA - INSUMOS CONFIGURABLE
 Route::controller(InsumoConfController::class)->group(function () {
@@ -1076,7 +1086,59 @@ Route::controller(CapacitacionCajeroController::class)->group(function () {
     Route::get('capacitacion_cajero/list', 'list')->name('capacitacion_cajero.list');
     Route::get('capacitacion_cajero/excel', 'excel')->name('capacitacion_cajero.excel');
 });
-
+//CAJA - REQUISICIÓN TIENDA CONFIGURABLE
+Route::controller(RequisicionTiendaConfController::class)->group(function () {
+    Route::get('requisicion_tienda_conf', 'index')->name('requisicion_tienda_conf');
+    Route::get('requisicion_tienda_conf_ma', 'index_ma')->name('requisicion_tienda_conf_ma');
+    Route::get('requisicion_tienda_conf_ma/list', 'list_ma')->name('requisicion_tienda_conf_ma.list');
+    Route::get('requisicion_tienda_conf_ma/create', 'create_ma')->name('requisicion_tienda_conf_ma.create');
+    Route::post('requisicion_tienda_conf_ma', 'store_ma')->name('requisicion_tienda_conf_ma.store');
+    Route::get('requisicion_tienda_conf_ma/{id}/edit', 'edit_ma')->name('requisicion_tienda_conf_ma.edit');
+    Route::put('requisicion_tienda_conf_ma/{id}', 'update_ma')->name('requisicion_tienda_conf_ma.update');
+    Route::delete('requisicion_tienda_conf_ma/{id}', 'destroy_ma')->name('requisicion_tienda_conf_ma.destroy');
+    Route::get('requisicion_tienda_conf_mo', 'index_mo')->name('requisicion_tienda_conf_mo');
+    Route::get('requisicion_tienda_conf_mo/list', 'list_mo')->name('requisicion_tienda_conf_mo.list');
+    Route::get('requisicion_tienda_conf_mo/create', 'create_mo')->name('requisicion_tienda_conf_mo.create');
+    Route::post('requisicion_tienda_conf_mo', 'store_mo')->name('requisicion_tienda_conf_mo.store');
+    Route::get('requisicion_tienda_conf_mo/{id}/edit', 'edit_mo')->name('requisicion_tienda_conf_mo.edit');
+    Route::put('requisicion_tienda_conf_mo/{id}', 'update_mo')->name('requisicion_tienda_conf_mo.update');
+    Route::delete('requisicion_tienda_conf_mo/{id}', 'destroy_mo')->name('requisicion_tienda_conf_mo.destroy');
+    Route::get('requisicion_tienda_conf_co', 'index_co')->name('requisicion_tienda_conf_co');
+    Route::get('requisicion_tienda_conf_co/list', 'list_co')->name('requisicion_tienda_conf_co.list');
+    Route::get('requisicion_tienda_conf_co/create', 'create_co')->name('requisicion_tienda_conf_co.create');
+    Route::post('requisicion_tienda_conf_co', 'store_co')->name('requisicion_tienda_conf_co.store');
+    Route::get('requisicion_tienda_conf_co/{id}/edit', 'edit_co')->name('requisicion_tienda_conf_co.edit');
+    Route::put('requisicion_tienda_conf_co/{id}', 'update_co')->name('requisicion_tienda_conf_co.update');
+    Route::delete('requisicion_tienda_conf_co/{id}', 'destroy_co')->name('requisicion_tienda_conf_co.destroy');
+    Route::get('requisicion_tienda_conf_um', 'index_um')->name('requisicion_tienda_conf_um');
+    Route::get('requisicion_tienda_conf_um/list', 'list_um')->name('requisicion_tienda_conf_um.list');
+    Route::get('requisicion_tienda_conf_um/create', 'create_um')->name('requisicion_tienda_conf_um.create');
+    Route::post('requisicion_tienda_conf_um', 'store_um')->name('requisicion_tienda_conf_um.store');
+    Route::get('requisicion_tienda_conf_um/{id}/edit', 'edit_um')->name('requisicion_tienda_conf_um.edit');
+    Route::put('requisicion_tienda_conf_um/{id}', 'update_um')->name('requisicion_tienda_conf_um.update');
+    Route::delete('requisicion_tienda_conf_um/{id}', 'destroy_um')->name('requisicion_tienda_conf_um.destroy');
+    Route::get('requisicion_tienda_conf_es', 'index_es')->name('requisicion_tienda_conf_es');
+    Route::get('requisicion_tienda_conf_es/list', 'list_es')->name('requisicion_tienda_conf_es.list');
+    Route::get('requisicion_tienda_conf_es/create', 'create_es')->name('requisicion_tienda_conf_es.create');
+    Route::post('requisicion_tienda_conf_es', 'store_es')->name('requisicion_tienda_conf_es.store');
+    Route::get('requisicion_tienda_conf_es/{id}/edit', 'edit_es')->name('requisicion_tienda_conf_es.edit');
+    Route::put('requisicion_tienda_conf_es/{id}', 'update_es')->name('requisicion_tienda_conf_es.update');
+    Route::delete('requisicion_tienda_conf_es/{id}', 'destroy_es')->name('requisicion_tienda_conf_es.destroy');
+    Route::get('requisicion_tienda_conf_ca', 'index_ca')->name('requisicion_tienda_conf_ca');
+    Route::get('requisicion_tienda_conf_ca/list', 'list_ca')->name('requisicion_tienda_conf_ca.list');
+    Route::get('requisicion_tienda_conf_ca/create', 'create_ca')->name('requisicion_tienda_conf_ca.create');
+    Route::post('requisicion_tienda_conf_ca', 'store_ca')->name('requisicion_tienda_conf_ca.store');
+    Route::get('requisicion_tienda_conf_ca/{id}/edit', 'edit_ca')->name('requisicion_tienda_conf_ca.edit');
+    Route::put('requisicion_tienda_conf_ca/{id}', 'update_ca')->name('requisicion_tienda_conf_ca.update');
+    Route::delete('requisicion_tienda_conf_ca/{id}', 'destroy_ca')->name('requisicion_tienda_conf_ca.destroy');
+    Route::get('requisicion_tienda_conf_pr', 'index_pr')->name('requisicion_tienda_conf_pr');
+    Route::get('requisicion_tienda_conf_pr/list', 'list_pr')->name('requisicion_tienda_conf_pr.list');
+    Route::get('requisicion_tienda_conf_pr/create', 'create_pr')->name('requisicion_tienda_conf_pr.create');
+    Route::post('requisicion_tienda_conf_pr', 'store_pr')->name('requisicion_tienda_conf_pr.store');
+    Route::get('requisicion_tienda_conf_pr/{id}/edit', 'edit_pr')->name('requisicion_tienda_conf_pr.edit');
+    Route::put('requisicion_tienda_conf_pr/{id}', 'update_pr')->name('requisicion_tienda_conf_pr.update');
+    Route::delete('requisicion_tienda_conf_pr/{id}', 'destroy_pr')->name('requisicion_tienda_conf_pr.destroy');
+});
 
 
 //CUADRO CONTROL VISUAL ADMINISTRACION

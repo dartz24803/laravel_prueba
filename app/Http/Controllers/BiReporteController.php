@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ArchivoSeguimientoCoordinador;
 use App\Models\ArchivoSupervisionTienda;
 use App\Models\Area;
+use App\Models\AreaUbicacion;
 use App\Models\Base;
 use App\Models\BiPuestoAcceso;
 use App\Models\BiReporte;
@@ -39,9 +40,11 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use App\Models\Notificacion;
 use App\Models\Organigrama;
+use App\Models\SedeLaboral;
 use App\Models\SistemaTablas;
 use App\Models\TablaBi;
 use App\Models\TipoIndicador;
+use App\Models\Ubicacion;
 use App\Models\Usuario;
 
 class BiReporteController extends Controller
@@ -150,10 +153,20 @@ class BiReporteController extends Controller
             ->get()
             ->unique('nom_puesto');
 
+        $list_ubicaciones = Ubicacion::select('id_ubicacion', 'cod_ubi')
+            ->where('estado', 1)
+            ->orderBy('cod_ubi', 'ASC')
+            ->distinct('cod_ubi')->get();
+
         $list_area = Area::select('id_area', 'nom_area')
             ->where('estado', 1)
             ->orderBy('nom_area', 'ASC')
             ->distinct('nom_area')->get();
+
+        $list_sede = SedeLaboral::select('id', 'descripcion')
+            ->where('estado', 1)
+            ->orderBy('descripcion', 'ASC')
+            ->distinct('descripcion')->get();
 
         $list_tipo_indicador = TipoIndicador::select('idtipo_indicador', 'nom_indicador')
             ->where('estado', 1)
@@ -162,6 +175,7 @@ class BiReporteController extends Controller
 
         $list_colaborador = Usuario::select('id_usuario', 'usuario_apater', 'usuario_amater', 'usuario_nombres')
             ->where('estado', 1)
+            ->where('id_nivel', '!=', 8)
             ->get();
 
         $list_sistemas = SistemaTablas::select('id_sistema_tablas', 'cod_sistema', 'nom_sistema')
@@ -183,19 +197,20 @@ class BiReporteController extends Controller
             'list_tipo_indicador',
             'list_colaborador',
             'list_sistemas',
-            'list_db'
+            'list_db',
+            'list_sede',
+            'list_ubicaciones'
         ));
     }
 
     public function getDBPorSistema(Request $request)
     {
         $sisId = $request->input('sis');
-
         // Obtiene los usuarios cuyo id_puesto coincida con el área seleccionada
         $dbs = SistemaTablas::where('cod_sistema', $sisId)
             ->where('estado', 1)  // Filtrar por usuarios activos si es necesario
             ->get(['cod_db', 'nom_db']);
-        // dd($dbs);
+
         return response()->json($dbs);
     }
 
@@ -221,6 +236,53 @@ class BiReporteController extends Controller
             ->get();
         return response()->json($areas);
     }
+    public function getAreasPorUbicacion(Request $request)
+    {
+        // Obtener ids de ubicaciones seleccionadas
+        $idsUbis = $request->input('ubis');
+        // Si no hay ubicaciones seleccionadas, devolver todas las áreas
+        if (empty($idsUbis)) {
+            $areas = Area::select('id_area', 'nom_area')
+                ->where('estado', 1)
+                ->get();
+        } else {
+            // Obtener todos los id_area relacionados con las ubicaciones seleccionadas
+            $areasRelacionadas = AreaUbicacion::whereIn('id_ubicacion', $idsUbis)
+                ->pluck('id_area');
+
+            // Obtener las áreas relacionadas
+            $areas = Area::select('id_area', 'nom_area')
+                ->whereIn('id_area', $areasRelacionadas)
+                ->where('estado', 1)
+                ->get();
+        }
+
+        return response()->json($areas);
+    }
+
+
+
+    public function getUbicacionPorSede(Request $request)
+    {
+        $idsSedes = $request->input('sedes');
+        if (empty($idsSedes)) {
+            $sedes = SedeLaboral::select('id')
+                ->where('estado', 1)
+                ->orderBy('descripcion', 'ASC')
+                ->distinct('descripcion')
+                ->get()
+                ->pluck('descripcion');
+            $idsSedes = $sedes->toArray();
+        }
+        $sedes = Ubicacion::where(function ($query) use ($idsSedes) {
+            foreach ($idsSedes as $idSede) {
+                $query->orWhereRaw("FIND_IN_SET(?, id_sede)", [$idSede]);
+            }
+        })
+            ->where('estado', 1)
+            ->get();
+        return response()->json($sedes);
+    }
 
     public function getUsuariosPorArea(Request $request)
     {
@@ -244,25 +306,19 @@ class BiReporteController extends Controller
     public function getPuestosPorAreasBi(Request $request)
     {
         $idsAreas = $request->input('areas');
-        // Verifica si $idsAreas es vacío o null
         if (empty($idsAreas)) {
-            // Si es vacío o null, obten todos los id_area de la tabla Area
             $areas = Area::select('id_area')
                 ->where('estado', 1)
                 ->orderBy('nom_area', 'ASC')
                 ->distinct('nom_area')
                 ->get()
-                ->pluck('id_area'); // Obtener solo los valores de id_area como un array
-
-            $idsAreas = $areas->toArray(); // Convertir a un array para usar en la consulta
+                ->pluck('id_area');
+            $idsAreas = $areas->toArray();
         }
 
-        // Filtra los puestos basados en las áreas seleccionadas
         $puestos = Puesto::whereIn('id_area', $idsAreas)
             ->where('estado', 1)
             ->get();
-
-        // Filtra los puestos basados en las áreas seleccionadas
         return response()->json($puestos);
     }
 
@@ -290,7 +346,12 @@ class BiReporteController extends Controller
             'tipo.*.required' => 'Debe seleccionar un tipo.',
             'presentacion.*.required' => 'Debe seleccionar una presentación.',
         ]);
-
+        // Reemplaza los atributos width y height con la clase responsive-iframe
+        $iframeModificado = str_replace(
+            ['width="1140"', 'height="541.25"'],
+            ['class="responsive-iframe"'],
+            $request->iframe
+        );
         // Guardar los datos en la tabla portal_procesos_historial
         $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
         $biReporte = BiReporte::create([
@@ -302,8 +363,7 @@ class BiReporteController extends Controller
             'id_usuario' => $request->solicitante ?? 0,
             'frecuencia_act' => $request->frec_actualizacion ?? 1,
             'objetivo' => $request->objetivo ?? '',
-            // 'tablas' => $request->tablas ?? '',
-            'iframe' => $request->iframe ?? '',
+            'iframe' => $iframeModificado,
             'estado' => 1,
             'estado_valid' => 0,
             'fec_reg' => $request->fec_reg ? date('Y-m-d H:i:s', strtotime($request->fec_reg)) : now(),
