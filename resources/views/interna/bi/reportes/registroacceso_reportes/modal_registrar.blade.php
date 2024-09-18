@@ -290,23 +290,36 @@
                 <div class="row my-4">
                     @csrf
                     <div class="form-group col-md-6">
-                        <!-- <label class="control-label text-bold">Filtros</label> -->
-
+                        <label class="control-label text-bold">Filtro Sede: </label>
+                        <select class="form-control multivalue" name="tipo_acceso_sede[]" id="tipo_acceso_sede" multiple="multiple">
+                            @foreach ($list_sede as $sede)
+                            <option value="{{ $sede->id }}">{{ $sede->descripcion }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label text-bold">Filtro Ubicaciones: </label>
+                        <select class="form-control multivalue" name="tipo_acceso_ubi[]" id="tipo_acceso_ubi" multiple="multiple">
+                            @foreach ($list_ubicaciones as $ubi)
+                            <option value="{{ $ubi->id_ubicacion }}">{{ $ubi->cod_ubi }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <!-- <div class="form-group col-md-6">
                         <label class="control-label text-bold">Filtro Base: </label>
                         <select class="form-control multivalue" name="tipo_acceso_b[]" id="tipo_acceso_b" multiple="multiple">
                             @foreach ($list_base as $base)
                             <option value="{{ $base->id_base }}">{{ $base->cod_base }}</option>
                             @endforeach
                         </select>
-                    </div>
-                    <div class="form-group col-md-6">
+                    </div> -->
+                    <div class="form-group col-md-12">
                         <label class="control-label text-bold">Filtro Área: </label>
                         <select class="form-control multivalue" name="id_area_acceso_t[]" id="id_area_acceso_t" multiple="multiple">
                             @foreach ($list_area as $list)
                             <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
                             @endforeach
                         </select>
-
                     </div>
                     <!-- <div class="divider"></div> -->
 
@@ -429,37 +442,6 @@
             tokenSeparators: [',', ' '],
             dropdownParent: $('#ModalRegistro')
         });
-        $('#tipo_acceso_b').on('change', function() {
-            const selectedBases = $(this).val();
-            var url = "{{ route('areas_por_base_bi') }}";
-            console.log('Selected Bases:', selectedBases); // Para verificar que los valores se están obteniendo correctamente
-
-            // Hacer una solicitud AJAX para obtener los puestos basados en las áreas seleccionadas
-            $.ajax({
-                url: url,
-                method: 'GET',
-                data: {
-                    bases: selectedBases
-                },
-                success: function(response) {
-                    // Vaciar el segundo select antes de agregar las nuevas opciones
-                    $('#id_area_acceso_t').empty();
-
-                    // Agregar las nuevas opciones
-                    $.each(response, function(index, area) {
-                        $('#id_area_acceso_t').append(
-                            `<option value="${area.id_area}">${area.nom_area}</option>`
-                        );
-                    });
-
-                    // Reinitialize select2 if needed
-                    $('#id_area_acceso_t').select2();
-                },
-                error: function(xhr) {
-                    console.error('Error al obtener puestos:', xhr);
-                }
-            });
-        });
 
         $('#id_area_acceso_t').on('change', function() {
             const selectedAreas = $(this).val();
@@ -473,7 +455,6 @@
                 success: function(response) {
                     // Vaciar el segundo select antes de agregar las nuevas opciones
                     $('#tipo_acceso_t').empty();
-
                     // Agregar las nuevas opciones
                     $.each(response, function(index, puesto) {
                         $('#tipo_acceso_t').append(
@@ -542,7 +523,57 @@
             });
         });
 
+        $('#tipo_acceso_sede').on('change', function() {
+            const selectedSedes = $(this).val();
+            var url = "{{ route('ubicacion_por_sede') }}";
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: {
+                    sedes: selectedSedes
+                },
+                success: function(response) {
+                    // Vaciar el segundo select antes de agregar las nuevas opciones
+                    $('#tipo_acceso_ubi').empty();
 
+                    // Agregar las nuevas opciones
+                    $.each(response, function(index, sede) {
+                        $('#tipo_acceso_ubi').append(
+                            `<option value="${sede.id_ubicacion}">${sede.cod_ubi}</option>`
+                        );
+                    });
+                    $('#tipo_acceso_ubi').select2();
+                },
+                error: function(xhr) {
+                    console.error('Error al obtener sedes:', xhr);
+                }
+            });
+        });
+        $('#tipo_acceso_ubi').on('change', function() {
+            const selectedUbis = $(this).val();
+            var url = "{{ route('areas_por_ubicacion') }}";
+            console.log(selectedUbis);
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: {
+                    ubis: selectedUbis
+                },
+                success: function(response) {
+                    $('#id_area_acceso_t').empty();
+                    // Agregar las nuevas opciones
+                    $.each(response, function(index, area) {
+                        $('#id_area_acceso_t').append(
+                            `<option value="${area.id_area}">${area.nom_area}</option>`
+                        );
+                    });
+                    $('#id_area_acceso_t').select2();
+                },
+                error: function(xhr) {
+                    console.error('Error al obtener sedes:', xhr);
+                }
+            });
+        });
     });
 
 

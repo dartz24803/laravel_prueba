@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ArchivoSeguimientoCoordinador;
 use App\Models\ArchivoSupervisionTienda;
 use App\Models\Area;
+use App\Models\AreaUbicacion;
 use App\Models\Base;
 use App\Models\BiPuestoAcceso;
 use App\Models\BiReporte;
@@ -39,9 +40,11 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use App\Models\Notificacion;
 use App\Models\Organigrama;
+use App\Models\SedeLaboral;
 use App\Models\SistemaTablas;
 use App\Models\TablaBi;
 use App\Models\TipoIndicador;
+use App\Models\Ubicacion;
 use App\Models\Usuario;
 
 class BiReporteController extends Controller
@@ -150,10 +153,20 @@ class BiReporteController extends Controller
             ->get()
             ->unique('nom_puesto');
 
+        $list_ubicaciones = Ubicacion::select('id_ubicacion', 'cod_ubi')
+            ->where('estado', 1)
+            ->orderBy('cod_ubi', 'ASC')
+            ->distinct('cod_ubi')->get();
+
         $list_area = Area::select('id_area', 'nom_area')
             ->where('estado', 1)
             ->orderBy('nom_area', 'ASC')
             ->distinct('nom_area')->get();
+
+        $list_sede = SedeLaboral::select('id', 'descripcion')
+            ->where('estado', 1)
+            ->orderBy('descripcion', 'ASC')
+            ->distinct('descripcion')->get();
 
         $list_tipo_indicador = TipoIndicador::select('idtipo_indicador', 'nom_indicador')
             ->where('estado', 1)
@@ -183,19 +196,20 @@ class BiReporteController extends Controller
             'list_tipo_indicador',
             'list_colaborador',
             'list_sistemas',
-            'list_db'
+            'list_db',
+            'list_sede',
+            'list_ubicaciones'
         ));
     }
 
     public function getDBPorSistema(Request $request)
     {
         $sisId = $request->input('sis');
-
         // Obtiene los usuarios cuyo id_puesto coincida con el área seleccionada
         $dbs = SistemaTablas::where('cod_sistema', $sisId)
             ->where('estado', 1)  // Filtrar por usuarios activos si es necesario
             ->get(['cod_db', 'nom_db']);
-        // dd($dbs);
+
         return response()->json($dbs);
     }
 
@@ -220,6 +234,55 @@ class BiReporteController extends Controller
             ->where('estado', 1)
             ->get();
         return response()->json($areas);
+    }
+    public function getAreasPorUbicacion(Request $request)
+    {
+        // Obtener ids de ubicaciones seleccionadas
+        $idsUbis = $request->input('ubis');
+        // Si no hay ubicaciones seleccionadas, devolver todas las áreas
+        if (empty($idsUbis)) {
+            $areas = Area::select('id_area', 'nom_area')
+                ->where('estado', 1)
+                ->get();
+        } else {
+            // Obtener todos los id_area relacionados con las ubicaciones seleccionadas
+            $areasRelacionadas = AreaUbicacion::whereIn('id_ubicacion', $idsUbis)
+                ->pluck('id_area');
+
+            // Obtener las áreas relacionadas
+            $areas = Area::select('id_area', 'nom_area')
+                ->whereIn('id_area', $areasRelacionadas)
+                ->where('estado', 1)
+                ->get();
+        }
+
+        return response()->json($areas);
+    }
+
+
+
+    public function getUbicacionPorSede(Request $request)
+    {
+        $idsSedes = $request->input('sedes');
+        if (empty($idsSedes)) {
+            $sedes = SedeLaboral::select('id')
+                ->where('estado', 1)
+                ->orderBy('descripcion', 'ASC')
+                ->distinct('descripcion')
+                ->get()
+                ->pluck('descripcion');
+            $idsSedes = $sedes->toArray();
+        }
+
+        // Filtra las sedes basadas en los idsSedes seleccionados
+        $sedes = Ubicacion::where(function ($query) use ($idsSedes) {
+            foreach ($idsSedes as $idSede) {
+                $query->orWhereRaw("FIND_IN_SET(?, id_sede)", [$idSede]);
+            }
+        })
+            ->where('estado', 1)
+            ->get();
+        return response()->json($sedes);
     }
 
     public function getUsuariosPorArea(Request $request)
