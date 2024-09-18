@@ -992,6 +992,21 @@ Route::controller(ManufacturaInicioController::class)->group(function () {
 //TESORERÍA - CAJA CHICA CONFIGURABLE
 Route::controller(CajaChicaConfController::class)->group(function () {
     Route::get('caja_chica_conf', 'index')->name('caja_chica_conf');
+    Route::get('caja_chica_conf_ca', 'index_ca')->name('caja_chica_conf_ca');
+    Route::get('caja_chica_conf_ca/list', 'list_ca')->name('caja_chica_conf_ca.list');
+    Route::get('caja_chica_conf_ca/create', 'create_ca')->name('caja_chica_conf_ca.create');
+    Route::post('caja_chica_conf_ca', 'store_ca')->name('caja_chica_conf_ca.store');
+    Route::get('caja_chica_conf_ca/{id}/edit', 'edit_ca')->name('caja_chica_conf_ca.edit');
+    Route::put('caja_chica_conf_ca/{id}', 'update_ca')->name('caja_chica_conf_ca.update');
+    Route::delete('caja_chica_conf_ca/{id}', 'destroy_ca')->name('caja_chica_conf_ca.destroy');
+    Route::get('caja_chica_conf_sc', 'index_sc')->name('caja_chica_conf_sc');
+    Route::get('caja_chica_conf_sc/list', 'list_sc')->name('caja_chica_conf_sc.list');
+    Route::get('caja_chica_conf_sc/create', 'create_sc')->name('caja_chica_conf_sc.create');
+    Route::post('caja_chica_conf_sc/traer_categoria', 'traer_categoria_sc')->name('caja_chica_conf_sc.traer_categoria');
+    Route::post('caja_chica_conf_sc', 'store_sc')->name('caja_chica_conf_sc.store');
+    Route::get('caja_chica_conf_sc/{id}/edit', 'edit_sc')->name('caja_chica_conf_sc.edit');
+    Route::put('caja_chica_conf_sc/{id}', 'update_sc')->name('caja_chica_conf_sc.update'); 
+    Route::delete('caja_chica_conf_sc/{id}', 'destroy_sc')->name('caja_chica_conf_sc.destroy');
 });
 //TESORERÍA - CAJA CHICA
 Route::controller(CajaChicaController::class)->group(function () {
