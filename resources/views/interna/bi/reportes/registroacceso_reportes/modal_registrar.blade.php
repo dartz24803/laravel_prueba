@@ -325,7 +325,6 @@
 
                     <div class="form-group col-md-12 text-center">
                         <div class="divider"></div>
-
                         <label class="control-label text-bold">Acceso Puesto: </label>
                         <select class="form-control multivalue" name="tipo_acceso_t[]" id="tipo_acceso_t" multiple="multiple">
                             @foreach ($list_responsable as $puesto)
