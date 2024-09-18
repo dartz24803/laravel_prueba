@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class BiReporte extends Model
 {
@@ -42,5 +43,59 @@ class BiReporte extends Model
         'fec_eli',
     ];
 
-    // Puedes agregar cualquier método adicional que necesites aquí
+    public static function getBiReportes()
+    {
+        return self::select(
+            'acceso_bi_reporte.id_acceso_bi_reporte',
+            'acceso_bi_reporte.nom_bi',
+            'acceso_bi_reporte.nom_intranet',
+            'acceso_bi_reporte.iframe',
+            'acceso_bi_reporte.actividad',
+            'acceso_bi_reporte.id_area',
+            'acceso_bi_reporte.objetivo',
+            'acceso_bi_reporte.frecuencia_act',
+            'acceso_bi_reporte.tablas',
+            'acceso_bi_reporte.id_usuario',
+            'acceso_bi_reporte.estado',
+            'acceso_bi_reporte.fec_act',
+            'acceso_bi_reporte.fec_reg',
+            'acceso_bi_reporte.fec_valid',
+            'acceso_bi_reporte.estado_valid',
+            'indicadores_bi.nom_indicador',
+            'indicadores_bi.descripcion',
+            'indicadores_bi.idtipo_indicador',
+            'indicadores_bi.presentacion',
+            'tipo_indicador.nom_indicador as tipo_indicador_nombre',
+            DB::raw("GROUP_CONCAT(tablas_bi.nom_tabla SEPARATOR ', ') as nom_tablas") // Concatenamos los nombres de tablas
+        )
+            ->leftJoin('indicadores_bi', 'acceso_bi_reporte.id_acceso_bi_reporte', '=', 'indicadores_bi.id_acceso_bi_reporte')
+            ->leftJoin('tipo_indicador', 'indicadores_bi.idtipo_indicador', '=', 'tipo_indicador.idtipo_indicador')
+            ->leftJoin('tablas_bi', 'acceso_bi_reporte.id_acceso_bi_reporte', '=', 'tablas_bi.id_acceso_bi_reporte')
+            ->where('acceso_bi_reporte.estado', 1)
+            ->where('acceso_bi_reporte.estado_valid', 1)
+            ->groupBy(
+                'acceso_bi_reporte.id_acceso_bi_reporte',
+                'acceso_bi_reporte.nom_bi',
+                'acceso_bi_reporte.nom_intranet',
+                'acceso_bi_reporte.iframe',
+                'acceso_bi_reporte.actividad',
+                'acceso_bi_reporte.id_area',
+                'acceso_bi_reporte.objetivo',
+                'acceso_bi_reporte.frecuencia_act',
+                'acceso_bi_reporte.tablas',
+                'acceso_bi_reporte.id_usuario',
+                'acceso_bi_reporte.estado',
+                'acceso_bi_reporte.fec_act',
+                'acceso_bi_reporte.fec_reg',
+                'acceso_bi_reporte.fec_valid',
+                'acceso_bi_reporte.estado_valid',
+                'indicadores_bi.nom_indicador',
+                'indicadores_bi.descripcion',
+                'indicadores_bi.idtipo_indicador',
+                'indicadores_bi.presentacion',
+                'tipo_indicador.nom_indicador'
+            )
+            ->orderBy('acceso_bi_reporte.fec_reg', 'ASC')
+            ->get();
+    }
 }

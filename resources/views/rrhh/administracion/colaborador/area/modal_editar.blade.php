@@ -1,3 +1,5 @@
+<style>
+</style>
 <form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title">Editar departamento:</h5>
@@ -103,7 +105,6 @@
             </div>
         </div>
 
-        <!-- Segundo select, inicialmente oculto -->
         <div class="row" id="additionalSelectContainer" style="display: none;">
             <div class="form-group col-lg-2">
                 <label>Ubicaciones:</label>

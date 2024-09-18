@@ -265,6 +265,8 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('puestos-por-areas-bi', 'getPuestosPorAreasBi')->name('puestos_por_areas_bi');
     Route::get('usuarios_por_area', 'getUsuariosPorArea')->name('usuarios_por_area');
     Route::get('areas_por_base', 'getAreasPorBase')->name('areas_por_base_bi');
+    Route::get('db_por_sistema_bi', 'getDBPorSistema')->name('db_por_sistema_bi');
+
 
     // DB REPORTE
     Route::get('bireporte_db', 'index_db')->name('bireporte_db');
@@ -519,6 +521,8 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Update_Turno', 'Update_Turno');
     Route::post('ColaboradorConfController/Delete_Turno', 'Delete_Turno');
     Route::post('ColaboradorConfController/Horario', 'Horario');
+    Route::post('ColaboradorConfController/Lista_Horario', 'Lista_Horario');
+    Route::post('ColaboradorConfController/Busca_Turno_XBase', 'Busca_Turno_XBase');
     Route::get('ColaboradorConfController/Modal_Horario', 'Modal_Horario');
     Route::get('ColaboradorConfController/Modal_Update_Horario/{id}', 'Modal_Update_Horario');
     Route::post('ColaboradorConfController/Insert_Horario', 'Insert_Horario');

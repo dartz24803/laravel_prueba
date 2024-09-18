@@ -97,4 +97,15 @@ class Base extends Model
 
         return json_decode(json_encode($query), true);
     }
+
+    public static function get_list_base_pendiente(){
+        $sql = "SELECT cod_base FROM base 
+                WHERE estado=1 AND (cod_base LIKE 'B%' OR cod_base IN ('OFC','CD','AMT')) AND 
+                cod_base NOT IN ('B00','B01','B02','B13','B14','B17','BV')
+                GROUP BY cod_base 
+                ORDER BY cod_base ASC";
+        
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
 }

@@ -1,19 +1,5 @@
 <!-- CSS -->
 <style>
-    /* .modal-body {
-        max-height: 450px;
-        overflow: auto;
-
-    }
-
-    .nav-tabs {
-        position: sticky;
-        top: 0;
-        background-color: #fff;
-        border-bottom: 1px solid #ddd;
-        z-index: 100;
-    } */
-
     /* Asegúrate de que el dropdown de Select2 tenga un z-index más bajo */
     .select2-container--default .select2-dropdown {
         z-index: 1090;
@@ -131,6 +117,9 @@
                 <a class="nav-link" id="indicadores-tab2" data-toggle="tab" href="#indicadores" role="tab" aria-controls="indicadores" aria-selected="false">Indicadores</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" id="tablas-tab" data-toggle="tab" href="#tablas" role="tab" aria-controls="tablas" aria-selected="false">Tablas</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" id="accesos-tab2" data-toggle="tab" href="#accesos" role="tab" aria-controls="accesos" aria-selected="false">Accesos</a>
             </li>
 
@@ -203,10 +192,10 @@
                     </div>
 
 
-                    <div class="form-group col-md-12">
+                    <!-- <div class="form-group col-md-12">
                         <label for="tablas">Tablas: </label>
                         <textarea name="tablas" id="tablas" cols="1" rows="2" class="form-control">{{ $get_id->tablas ?? '' }}</textarea>
-                    </div>
+                    </div> -->
 
                 </div>
 
@@ -220,6 +209,7 @@
                     <table id="tabla_versiones" class="table table-hover" style="width:100%">
                         <thead class="text-center">
                             <tr>
+                                <th>N°pagina</th>
                                 <th>Indicador</th>
                                 <th>Descripción</th>
                                 <th class="col-tipo">Tipo</th>
@@ -231,6 +221,7 @@
                             <!-- Si ya tienes valores para editar, los mostramos en la tabla -->
                             @foreach ($list_indicadores as $indicador)
                             <tr class="text-center">
+                                <td class="px-1"><input type="text" class="form-control" name="npagina[]" value="{{ $indicador->npagina }}"></td>
                                 <td class="px-1"><input type="text" class="form-control" name="indicador[]" value="{{ $indicador->nom_indicador }}"></td>
                                 <td class="px-1"><input type="text" class="form-control" name="descripcion[]" value="{{ $indicador->descripcion }}"></td>
                                 <td class="px-1">
@@ -253,7 +244,52 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <button type="button" class="btn btn-success btn-sm" onclick="addRow()">Agregar fila</button>
+                    <button type="button" class="btn btn-success btn-sm" onclick="addRowEdit()">Agregar indicador</button>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="tablas" role="tabpanel" aria-labelledby="tablas-tab">
+                <!-- Contenido de la pestaña Otra Sección -->
+                <div class="row d-flex col-md-12 my-2">
+                    <!-- Tabla para añadir filas dinámicamente -->
+                    <table id="tabla_versiones" class="table table-hover" style="width:100%">
+                        <thead class="text-center">
+                            <tr>
+                                <th>Sistema</th>
+                                <th class="style-tabla">Base de Datos</th>
+                                <th class="style-tabla">Tabla</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla_body3">
+                            @foreach ($list_tablas as $tabla)
+                            <tr class="text-center">
+                                <td class="px-1">
+                                    <select class="form-control" name="sistemas[]">
+                                        @foreach ($list_sistemas as $list)
+                                        <option value="{{ $list->cod_sistema }}" {{ $list->cod_sistema == $tabla->cod_sistema ? 'selected' : '' }}>
+                                            {{ $list->nom_sistema }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td class="px-1">
+                                    <select class="form-control" name="db[]" id="db">
+                                        @foreach ($list_db as $list)
+                                        <option value="{{ $list->cod_db }}" {{ $list->cod_db  == $tabla->cod_db ? 'selected' : '' }}>
+                                            {{ $list->nom_db }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td class="px-1"><input type="text" class="form-control" name="tablabi[]" value="{{ $tabla->nom_tabla }}"></td>
+                                <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-success btn-sm" onclick="addRowTabla()">Agregar tabla</button>
+
                 </div>
             </div>
 
@@ -293,7 +329,7 @@
         @endforeach
     `;
     // Función para agregar una nueva fila
-    function addRow() {
+    function addRowEdit() {
         // Obtener el cuerpo de la tabla
         var tableBody = document.getElementById('tabla_body2');
         // Crear una nueva fila
@@ -302,6 +338,7 @@
 
         // Contenido HTML de la nueva fila
         newRow.innerHTML = `
+        <td class="px-1"><input type="text" class="form-control" name="npagina[]"></td>
         <td class="px-1"><input type="text" class="form-control" name="indicador[]"></td>
         <td class="px-1"><input type="text" class="form-control" name="descripcion[]"></td>
         <td class="px-1">
@@ -320,6 +357,37 @@
         tableBody.appendChild(newRow);
     }
 
+    function addRowTabla() {
+        // Obtener el cuerpo de la tablacodigo
+        var tableBody = document.getElementById('tabla_body3');
+
+        // Crear una nueva fila
+        var newRow = document.createElement('tr');
+        newRow.classList.add('text-center');
+
+        // Contenido HTML de la nueva fila
+        newRow.innerHTML = `
+        <td class="px-1">
+               <select class="form-control" name="sistemas[]" id="sistemas">
+                    @foreach ($list_sistemas as $list)
+                    <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema}}</option>
+                    @endforeach
+               </select>
+        </td>
+        <td class="px-1">
+               <select class="form-control" name="db[]" id="db">
+                    @foreach ($list_db as $list)
+                    <option value="{{ $list->cod_db }}">{{ $list->nom_db}}</option>
+                    @endforeach
+                </select>
+        </td>
+        <td class="px-1"><input type="text" class="form-control" name="tablabi[]"></td>
+        <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
+        `;
+
+        // Agregar la nueva fila al cuerpo de la tabla
+        tableBody.appendChild(newRow);
+    }
 
 
     function removeRow(button) {

@@ -1,33 +1,34 @@
 <!-- CSS -->
 <style>
-    /* .modal-body {
-        max-height: 450px;
-        overflow: auto;
-
+    /* Establecer un ancho fijo para el select */
+    .form-control {
+        width: 100%;
+        /* Asegúrate de que el select ocupe todo el ancho disponible */
     }
 
-    .nav-tabs {
-        position: sticky;
-        top: 0;
-        background-color: #fff;
-        border-bottom: 1px solid #ddd;
-        z-index: 100;
-    } */
+    .form-control option {
+        white-space: nowrap;
+        width: 100px;
+    }
+
+    .style-tabla {
+        width: 200px;
+    }
+
+    .table .form-control {
+        width: 100%;
+        /* Asegura que el input use el 100% del ancho de la celda */
+    }
+
+    table .table>tbody>tr>td:nth-child(23) {
+        width: 390px;
+        /* Asegura que el ancho de la columna sea de 290px */
+    }
 
     /* Asegúrate de que el dropdown de Select2 tenga un z-index más bajo */
     .select2-container--default .select2-dropdown {
         z-index: 1090;
         /* Debe ser menor que el z-index del modal */
-    }
-
-    .col-tipo {
-        width: 200px;
-        /* Ajusta el valor según sea necesario */
-    }
-
-    .col-accion {
-        width: 50px;
-        /* Ajusta el valor según sea necesario */
     }
 
     /* Estilo para el campo de búsqueda dentro del select2 */
@@ -110,6 +111,7 @@
         transform: translateX(20px);
     }
 </style>
+
 <form id="formulario_insert" method="POST" enctype="multipart/form-data" class="needs-validation">
 
     <div class=" modal-header">
@@ -129,6 +131,9 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="indicadores-tab" data-toggle="tab" href="#indicadores2" role="tab" aria-controls="indicadores2" aria-selected="false">Indicadores</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="tablas-tab" data-toggle="tab" href="#tablas2" role="tab" aria-controls="tablas2" aria-selected="false">Tablas</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="accesos-tab" data-toggle="tab" href="#accesos2" role="tab" aria-controls="accesos2" aria-selected="false">Accesos</a>
@@ -195,11 +200,10 @@
                         </select>
 
                     </div>
-                    <div class="form-group col-md-12">
+                    <!-- <div class="form-group col-md-12">
                         <label for="tablas">Tablas: </label>
                         <textarea name="tablas" id="tablas" cols="1" rows="2" class="form-control"></textarea>
-
-                    </div>
+                    </div> -->
                 </div>
 
 
@@ -212,15 +216,17 @@
                     <table id="tabla_versiones" class="table table-hover" style="width:100%">
                         <thead class="text-center">
                             <tr>
+                                <th>N°pagina</th>
                                 <th>Indicador</th>
                                 <th>Descripción</th>
-                                <th class="col-tipo">Tipo</th>
+                                <th class="col-tipo">Tipo Ind</th>
                                 <th class="col-tipo">Presentación</th>
                                 <th class="col-accion">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="tabla_body">
                             <tr class="text-center">
+                                <td class="px-1"><input type="text" class="form-control" name="npagina[]"></td>
                                 <td class="px-1"><input type="text" class="form-control" name="indicador[]"></td>
                                 <td class="px-1"><input type="text" class="form-control" name="descripcion[]"></td>
                                 <td class="px-1">
@@ -243,6 +249,42 @@
                 </div>
             </div>
 
+            <div class="tab-pane fade" id="tablas2" role="tabpanel" aria-labelledby="tablas-tab">
+                <!-- Contenido de la pestaña Otra Sección -->
+                <div class="row d-flex col-md-12 my-2">
+                    <!-- Tabla para añadir filas dinámicamente -->
+                    <table id="tabla_versiones" class="table table-hover" style="width:100%">
+                        <thead class="text-center">
+                            <tr>
+                                <th>Sistema</th>
+                                <th class="style-tabla">Base de Datos</th>
+                                <th class="style-tabla">Tabla</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla_body3">
+                            <tr class="text-center">
+                                <td class="px-1">
+                                    <select class="form-control" name="sistema[]" id="sistema">
+                                        @foreach ($list_sistemas as $list)
+                                        <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td class="px-1">
+                                    <select class="form-control" name="db[]" id="db">
+                                        @foreach ($list_db as $list)
+                                        <option value="{{ $list->id_sistema_tablas }}">{{ $list->nom_db}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td class="px-1"><input type="text" class="form-control" name="tablabi[]"></td>
+                                <td class="px-1"><button type="button" class="btn btn-success btn-sm" onclick="addRowTabla()">+</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
             <div class="tab-pane fade" id="accesos2" role="tabpanel" aria-labelledby="accesos-tab">
                 <div class="row my-4">
@@ -302,6 +344,7 @@
 
         // Contenido HTML de la nueva fila
         newRow.innerHTML = `
+        <td class="px-1"><input type="text" class="form-control" name="npagina[]"></td>
         <td class="px-1"><input type="text" class="form-control" name="indicador[]"></td>
         <td class="px-1"><input type="text" class="form-control" name="descripcion[]"></td>
         <td class="px-1">
@@ -329,6 +372,39 @@
         var row = button.parentNode.parentNode;
         row.parentNode.removeChild(row);
     }
+
+    function addRowTabla() {
+        // Obtener el cuerpo de la tablacodigo
+        var tableBody = document.getElementById('tabla_body3');
+
+        // Crear una nueva fila
+        var newRow = document.createElement('tr');
+        newRow.classList.add('text-center');
+
+        // Contenido HTML de la nueva fila
+        newRow.innerHTML = `
+        <td class="px-1">
+               <select class="form-control" name="sistema[]" id="sistema">
+                    @foreach ($list_sistemas as $list)
+                    <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema}}</option>
+                    @endforeach
+               </select>
+        </td>
+        <td class="px-1">
+               <select class="form-control" name="db[]" id="db">
+                    @foreach ($list_db as $list)
+                    <option value="{{ $list->cod_db }}">{{ $list->nom_db}}</option>
+                    @endforeach
+                </select>
+        </td>
+        <td class="px-1"><input type="text" class="form-control" name="tablabi[]"></td>
+        <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
+        `;
+
+        // Agregar la nueva fila al cuerpo de la tabla
+        tableBody.appendChild(newRow);
+    }
+
 
     $('.multivalue').select2({
         tags: true, // Permite crear nuevas etiquetas
@@ -426,23 +502,47 @@
                 success: function(response) {
                     // Vaciar el segundo select antes de agregar las nuevas opciones
                     $('#solicitante').empty();
-
                     // Agregar las nuevas opciones
                     $.each(response, function(index, usuario) {
                         $('#solicitante').append(
                             `<option value="${usuario.id_usuario}">${usuario.nombre_completo}</option>`
                         );
                     });
-
-
-                    // Reinitialize select2 si es necesario
-                    // $('#solicitante').select2();
                 },
                 error: function(xhr) {
                     console.error('Error al obtener usuarios:', xhr);
                 }
             });
         });
+
+        $('#sistema').on('change', function() {
+            const selectedSistema = $(this).val();
+            console.log(selectedSistema);
+            var url = "{{ route('db_por_sistema_bi') }}";
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: {
+                    sis: selectedSistema
+                },
+                success: function(response) {
+                    // Vaciar el segundo select antes de agregar las nuevas opciones
+                    $('#db').empty();
+                    // Agregar las nuevas opciones
+                    $.each(response, function(index, db) {
+                        $('#db').append(
+                            `<option value="${db.cod_db}">${db.nom_db}</option>`
+                        );
+                    });
+
+                },
+                error: function(xhr) {
+                    console.error('Error al obtener db:', xhr);
+                }
+            });
+        });
+
+
     });
 
 

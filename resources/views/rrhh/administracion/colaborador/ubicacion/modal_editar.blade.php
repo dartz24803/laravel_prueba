@@ -11,22 +11,22 @@
 
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row">
-
             <div class="form-group col-lg-6">
                 <label>Código:</label>
                 <input type="text" class="form-control" id="codigoe" name="codigoe" placeholder="Ingresar Nombre" value="{{ $get_id->cod_ubi }}">
             </div>
             <div class="form-group col-lg-6">
                 <label>Sede:</label>
-                <select class="form-control" name="id_sedee" id="id_sedee">
-                    <option value="0">Seleccione</option>
+                <select class="form-control" name="id_sede" id="id_sede">
+                    <option value="">Seleccionar</option>
                     @foreach ($list_sede as $list)
-                    <option value="{{ $list->id_sede }}"
-                        @if ($list->id==$get_id->id_sede) selected @endif>
+                    <option value="{{ $list->id }}"
+                        @if ($list->id == $get_id->id_sede) selected @endif>
                         {{ $list->descripcion }}
                     </option>
                     @endforeach
                 </select>
+
             </div>
 
         </div>
@@ -35,7 +35,7 @@
     <div class="modal-footer">
         @csrf
         @method('PUT')
-        <button class="btn btn-primary" type="button" onclick="Update_Ubicacion();">Guarda1</button>
+        <button class="btn btn-primary" type="button" onclick="Update_Ubicacion();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
@@ -45,6 +45,9 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularioe'));
+        for (var pair of dataString.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
         var url = "{{ route('colaborador_conf_ubi.update', $get_id->id_ubicacion) }}";
 
         $.ajax({

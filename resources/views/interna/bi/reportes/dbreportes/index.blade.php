@@ -53,9 +53,7 @@
 
 
 
-    <div class="col-lg-4 col-xl-6">
-
-
+    <div class="col-lg-12 col-xl-12">
         <!-- 
         <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('bireporte_ra.create') }}">
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square">
@@ -77,6 +75,42 @@
                 </g>
             </svg>
         </a>
+
+        <div class="toggle-switch">
+            <input class="toggle-input" id="toggle-nom" type="checkbox" checked>
+            <label class="toggle-label" for="toggle-nom"></label>
+            <span class="ml-5">NombreBI</span>
+        </div>
+        <div class="toggle-switch">
+            <input class="toggle-input" id="toggle-ifra" type="checkbox" checked>
+            <label class="toggle-label" for="toggle-ifra"></label>
+            <span class="ml-5">Iframe</span>
+        </div>
+        <div class="toggle-switch">
+            <input class="toggle-input" id="toggle-obj" type="checkbox" checked>
+            <label class="toggle-label" for="toggle-obj"></label>
+            <span class="ml-5">Objetivo</span>
+        </div>
+        <div class="toggle-switch">
+            <input class="toggle-input" id="toggle-desc" type="checkbox" checked>
+            <label class="toggle-label" for="toggle-desc"></label>
+            <span class="ml-5">Descripción</span>
+        </div>
+        <div class="toggle-switch">
+            <input class="toggle-input" id="toggle-pre" type="checkbox" checked>
+            <label class="toggle-label" for="toggle-pre"></label>
+            <span class="ml-5">Presentación</span>
+        </div>
+        <div class="toggle-switch">
+            <input class="toggle-input" id="toggle-tab" type="checkbox" checked>
+            <label class="toggle-label" for="toggle-tab"></label>
+            <span class="ml-5">Tablas</span>
+        </div>
+        <div class="toggle-switch">
+            <input class="toggle-input" id="toggle-acce" type="checkbox" checked>
+            <label class="toggle-label" for="toggle-acce"></label>
+            <span class="ml-5">Accesos</span>
+        </div>
     </div>
 </div>
 
