@@ -1,27 +1,24 @@
 <?php
 
-namespace App\Models; 
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class EvaluacionCaja extends Model
+class Categoria extends Model
 {
-    use HasFactory;
+    use HasFactory; 
 
-    protected $table = 'evaluacion_caja';
-    protected $primaryKey = 'id_evaluacion';
+    protected $table = 'categoria';
+    protected $primaryKey = 'id_categoria';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'base',
-        'c_usua_caja',
-        'c_usua_nomb',
-        'h_ini',
-        'h_fin',
-        'c_codi_caja',
-        'tiempo',
+        'id_area',
+        'id_ubicacion',
+        'nom_categoria',
+        'id_categoria_mae',
         'estado',
         'fec_reg',
         'user_reg',
