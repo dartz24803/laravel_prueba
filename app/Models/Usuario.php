@@ -40,14 +40,13 @@ class Usuario extends Model
 
     public static function get_list_colaborador_usuario(array $filters)
     {
-        $query = self::select('id_usuario', 'usuario_apater', 'usuario_amater', 'usuario_nombres')
+        $query = self::select('id_usuario', 'usuario_apater', 'usuario_amater', 'usuario_nombres', 'id_nivel')
             ->where('estado', 1);
 
-        // Aplica los filtros
+
         if (isset($filters['id_usuario'])) {
             $query->where('id_usuario', $filters['id_usuario']);
         }
-
         // Devuelve los resultados
         return $query->get();
     }

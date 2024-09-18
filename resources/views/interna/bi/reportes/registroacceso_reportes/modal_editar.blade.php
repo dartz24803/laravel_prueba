@@ -157,7 +157,7 @@
 
 
                     <div class="form-group col-md-6">
-                        <label for="areasse">Área1: </label>
+                        <label for="areasse">Área: </label>
                         <select class="form-control" name="areasse" id="areasse">
                             @foreach ($list_area as $list)
                             <option value="{{ $list->id_area }}"
@@ -221,7 +221,15 @@
                             <!-- Si ya tienes valores para editar, los mostramos en la tabla -->
                             @foreach ($list_indicadores as $indicador)
                             <tr class="text-center">
-                                <td class="px-1"><input type="text" class="form-control" name="npagina[]" value="{{ $indicador->npagina }}"></td>
+                                <td class="px-1">
+                                    <select class="form-control" name="npagina[]">
+                                        @for ($i = 1; $i <= 100; $i++)
+                                            <option value="{{ $i }}" {{ $i == $indicador->npagina ? 'selected' : '' }}>
+                                            {{ $i }}
+                                            </option>
+                                            @endfor
+                                    </select>
+                                </td>
                                 <td class="px-1"><input type="text" class="form-control" name="indicador[]" value="{{ $indicador->nom_indicador }}"></td>
                                 <td class="px-1"><input type="text" class="form-control" name="descripcion[]" value="{{ $indicador->descripcion }}"></td>
                                 <td class="px-1">
@@ -395,12 +403,20 @@
         button.closest('tr').remove();
     }
 
-
+    $('#areasse').select2({
+        placeholder: "Selecciona un área",
+        allowClear: true
+    });
+    $('#solicitantee').select2({
+        placeholder: "Selecciona un solicitante",
+        allowClear: true
+    });
     $('.multivalue').select2({
         tags: true, // Permite crear nuevas etiquetas
         tokenSeparators: [',', ' '], // Separa las etiquetas con comas y espacios
         dropdownParent: $('#ModalRegistro')
     });
+
 
     $(document).ready(function() {
         $('#id_area_acceso_te').select2({
