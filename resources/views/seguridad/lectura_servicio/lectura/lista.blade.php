@@ -78,7 +78,10 @@
             },
             "stripeClasses": [],
             "lengthMenu": [10, 20, 50],
-            "pageLength": 10
+            "pageLength": 10,
+            order: [
+                [0, "desc"]
+            ],
         });
     });
 </script>
