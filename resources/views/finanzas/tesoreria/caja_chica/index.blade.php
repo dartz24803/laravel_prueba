@@ -116,6 +116,7 @@
                             confirmButtonColor: '#3085d6',
                             confirmButtonText: 'OK',
                         });
+                        $('#razon_social'+v).val('');
                     }else{
                         $('#razon_social'+v).val(resp);
                     }
