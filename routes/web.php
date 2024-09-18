@@ -1011,6 +1011,13 @@ Route::controller(CajaChicaConfController::class)->group(function () {
 //TESORERÍA - CAJA CHICA
 Route::controller(CajaChicaController::class)->group(function () {
     Route::get('caja_chica', 'index')->name('caja_chica');
+    Route::get('caja_chica/list', 'list')->name('caja_chica.list');
+    Route::get('caja_chica/create_mo', 'create_mo')->name('caja_chica.create_mo');
+    Route::post('caja_chica/traer_sub_categoria_mo', 'traer_sub_categoria_mo')->name('caja_chica.traer_sub_categoria_mo');
+    Route::post('caja_chica/consultar_ruc', 'consultar_ruc')->name('caja_chica.consultar_ruc');
+    Route::post('caja_chica_mo', 'store_mo')->name('caja_chica.store_mo');
+    Route::get('caja_chica/create_pv', 'create_pv')->name('caja_chica.create_pv');
+    Route::post('caja_chica_pv', 'store_pv')->name('caja_chica.store_pv');
 });
 //CAJA - INSUMOS CONFIGURABLE
 Route::controller(InsumoConfController::class)->group(function () {
