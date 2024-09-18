@@ -175,6 +175,7 @@ class BiReporteController extends Controller
 
         $list_colaborador = Usuario::select('id_usuario', 'usuario_apater', 'usuario_amater', 'usuario_nombres')
             ->where('estado', 1)
+            ->where('id_nivel', '!=', 8)
             ->get();
 
         $list_sistemas = SistemaTablas::select('id_sistema_tablas', 'cod_sistema', 'nom_sistema')
@@ -273,8 +274,6 @@ class BiReporteController extends Controller
                 ->pluck('descripcion');
             $idsSedes = $sedes->toArray();
         }
-
-        // Filtra las sedes basadas en los idsSedes seleccionados
         $sedes = Ubicacion::where(function ($query) use ($idsSedes) {
             foreach ($idsSedes as $idSede) {
                 $query->orWhereRaw("FIND_IN_SET(?, id_sede)", [$idSede]);
@@ -307,25 +306,19 @@ class BiReporteController extends Controller
     public function getPuestosPorAreasBi(Request $request)
     {
         $idsAreas = $request->input('areas');
-        // Verifica si $idsAreas es vacío o null
         if (empty($idsAreas)) {
-            // Si es vacío o null, obten todos los id_area de la tabla Area
             $areas = Area::select('id_area')
                 ->where('estado', 1)
                 ->orderBy('nom_area', 'ASC')
                 ->distinct('nom_area')
                 ->get()
-                ->pluck('id_area'); // Obtener solo los valores de id_area como un array
-
-            $idsAreas = $areas->toArray(); // Convertir a un array para usar en la consulta
+                ->pluck('id_area');
+            $idsAreas = $areas->toArray();
         }
 
-        // Filtra los puestos basados en las áreas seleccionadas
         $puestos = Puesto::whereIn('id_area', $idsAreas)
             ->where('estado', 1)
             ->get();
-
-        // Filtra los puestos basados en las áreas seleccionadas
         return response()->json($puestos);
     }
 
@@ -353,7 +346,12 @@ class BiReporteController extends Controller
             'tipo.*.required' => 'Debe seleccionar un tipo.',
             'presentacion.*.required' => 'Debe seleccionar una presentación.',
         ]);
-
+        // Reemplaza los atributos width y height con la clase responsive-iframe
+        $iframeModificado = str_replace(
+            ['width="1140"', 'height="541.25"'],
+            ['class="responsive-iframe"'],
+            $request->iframe
+        );
         // Guardar los datos en la tabla portal_procesos_historial
         $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
         $biReporte = BiReporte::create([
@@ -365,8 +363,7 @@ class BiReporteController extends Controller
             'id_usuario' => $request->solicitante ?? 0,
             'frecuencia_act' => $request->frec_actualizacion ?? 1,
             'objetivo' => $request->objetivo ?? '',
-            // 'tablas' => $request->tablas ?? '',
-            'iframe' => $request->iframe ?? '',
+            'iframe' => $iframeModificado,
             'estado' => 1,
             'estado_valid' => 0,
             'fec_reg' => $request->fec_reg ? date('Y-m-d H:i:s', strtotime($request->fec_reg)) : now(),
