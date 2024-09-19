@@ -16,6 +16,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use App\Models\Notificacion;
+use App\Models\SubGerencia;
 
 class ColaboradorController extends Controller
 {
@@ -26,9 +27,11 @@ class ColaboradorController extends Controller
 
     public function index()
     {
+        //REPORTE BI CON ID
+        $list_subgerencia = SubGerencia::list_subgerencia(5);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('rrhh.colaborador.index', compact('list_notificacion'));
+        return view('rrhh.colaborador.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
     public function index_co()

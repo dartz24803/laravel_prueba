@@ -13,6 +13,7 @@ use App\Models\Tiendas;
 use App\Models\TiendasRonda;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\SubGerencia;
 
 class ControlCamaraConfController extends Controller
 {
@@ -23,9 +24,11 @@ class ControlCamaraConfController extends Controller
 
     public function index()
     {
+        //REPORTE BI CON ID
+        $list_subgerencia = SubGerencia::list_subgerencia(1);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('seguridad.administracion.control_camara.index',compact('list_notificacion'));
+        return view('seguridad.administracion.control_camara.index',compact('list_notificacion', 'list_subgerencia'));
     }
 
     public function index_se()

@@ -14,6 +14,7 @@ use GuzzleHttp\Psr7\Request as Psr7Request;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
+use App\Models\SubGerencia;
 
 class CajaChicaController extends Controller
 {
@@ -24,9 +25,11 @@ class CajaChicaController extends Controller
 
     public function index()
     {
+        //REPORTE BI CON ID
+        $list_subgerencia = SubGerencia::list_subgerencia(5);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('finanzas.tesoreria.caja_chica.index',compact('list_notificacion'));
+        return view('finanzas.tesoreria.caja_chica.index',compact('list_notificacion','list_subgerencia'));
     }
 
     public function list(Request $request)

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\OcurrenciaGestion;
 use App\Models\OcurrenciaConclusion;
 use App\Models\OcurrenciaTipo;
+use App\Models\SubGerencia;
 
 
 
@@ -26,9 +27,11 @@ class OcurrenciaServicioConfController extends Controller
 
     public function index()
     {
+        //REPORTE BI CON ID
+        $list_subgerencia = SubGerencia::list_subgerencia(1);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();        
-        return view('seguridad.administracion.ocurrencias.index',compact('list_notificacion'));
+        return view('seguridad.administracion.ocurrencias.index',compact('list_notificacion', 'list_subgerencia'));
     }
 
 

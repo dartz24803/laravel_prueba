@@ -66,9 +66,11 @@ class ColaboradorConfController extends Controller
 
     public function index()
     {
+        //REPORTE BI CON ID
+        $list_subgerencia = SubGerencia::list_subgerencia(5);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('rrhh.administracion.colaborador.index', compact('list_notificacion'));
+        return view('rrhh.administracion.colaborador.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
     public function traer_gerencia(Request $request)

@@ -7,11 +7,14 @@ use App\Models\Config;
 use App\Models\Mes;
 use App\Models\Usuario;
 use App\Models\Notificacion;
+use App\Models\SubGerencia;
 
 class Cumpleanios extends Controller
 {
     //cumpleanios
     public function index(){
+        //REPORTE BI CON ID
+        $list_subgerencia = SubGerencia::list_subgerencia(5);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
         $get_foto = Config::where('descrip_config', 'Foto_Colaborador')
@@ -19,7 +22,7 @@ class Cumpleanios extends Controller
                             ->get();
         $list_mes = Mes::where('estado', 1)
                             ->get();
-        return view('rrhh.Cumpleanio.index',compact('get_foto', 'list_mes', 'list_notificacion'));
+        return view('rrhh.Cumpleanio.index',compact('get_foto', 'list_mes', 'list_notificacion', 'list_subgerencia'));
     }
     
     public function Buscar_Cumpleanios(Request $request){

@@ -8,6 +8,7 @@ use App\Models\Base;
 use App\Models\Config;
 use App\Models\BolsaTrabajo;
 use App\Models\Notificacion;
+use App\Models\SubGerencia;
 class ComunicadoController extends Controller
 {
     /**
@@ -20,9 +21,11 @@ class ComunicadoController extends Controller
         $this->middleware('verificar.sesion.usuario');
     }
     public function index(){
+        //REPORTE BI CON ID
+        $list_subgerencia = SubGerencia::list_subgerencia(5);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('rrhh.Comunicado.index', compact('list_notificacion'));
+        return view('rrhh.Comunicado.index', compact('list_notificacion','list_subgerencia'));
     }
 
     public function Cargar_Slider_Rrhh(){

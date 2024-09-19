@@ -8,6 +8,7 @@ use App\Models\Notificacion;
 use App\Models\TiendaMarcacion;
 use App\Models\TiendaMarcacionDia;
 use Illuminate\Http\Request;
+use App\Models\SubGerencia;
 
 class AperturaCierreTiendaConfController extends Controller
 {
@@ -18,9 +19,11 @@ class AperturaCierreTiendaConfController extends Controller
 
     public function index()
     {
+        //REPORTE BI CON ID
+        $list_subgerencia = SubGerencia::list_subgerencia(1);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('seguridad.administracion.apertura_cierre.index',compact('list_notificacion'));
+        return view('seguridad.administracion.apertura_cierre.index',compact('list_notificacion', 'list_subgerencia'));
     }
 
     public function index_ho()

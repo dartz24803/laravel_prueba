@@ -3,7 +3,7 @@ $id_nivel = session('usuario')->id_nivel;
 $id_puesto = session('usuario')->id_puesto;
 $nivel_jerarquico = session('usuario')->nivel_jerarquico;
 ?>
-<table id="zero-config" class="table table-hover non-hover" style="width:100%">
+<table id="zero-config" class="table table-hover" style="width:100%">
     <thead>
         <tr>
             <th>Fecha</th>
@@ -105,6 +105,9 @@ $nivel_jerarquico = session('usuario')->nivel_jerarquico;
 <script>
     $(document).ready(function() {
         $('#zero-config').DataTable({
+                "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
+                "<'table-responsive'tr>" +
+                "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
             responsive: true,
             "oLanguage": {
                 "oPaginate": {
@@ -212,9 +215,3 @@ $nivel_jerarquico = session('usuario')->nivel_jerarquico;
         })
     }
 </script>
-<style>
-    #zero-config_length,
-    #zero-config_info {
-        padding: 1rem;
-    }
-</style>

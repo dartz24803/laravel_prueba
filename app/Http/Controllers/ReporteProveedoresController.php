@@ -15,6 +15,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use App\Models\SubGerencia;
 
 class ReporteProveedoresController extends Controller{
     protected $request;
@@ -25,6 +26,8 @@ class ReporteProveedoresController extends Controller{
     }
 
     public function RProveedores(){
+        //REPORTE BI CON ID
+        $dato['list_subgerencia'] = SubGerencia::list_subgerencia(1);
         //NOTIFICACIONES
         $dato['list_notificacion'] = Notificacion::get_list_notificacion();        
         $id_puesto=session('usuario')->id_puesto;

@@ -11,6 +11,7 @@ use App\Models\Gravedad_Amonestacion;
 use App\Models\Motivo_Amonestacion;
 use App\Models\Tipo_Amonestacion;
 use App\Models\Notificacion;
+use App\Models\SubGerencia;
 
 class AmonestacionController extends Controller
 {
@@ -38,9 +39,11 @@ class AmonestacionController extends Controller
     }
     
     public function Amonestacion(){
+        //REPORTE BI CON ID
+        $list_subgerencia = SubGerencia::list_subgerencia(5);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('rrhh.Amonestacion.index', compact('list_notificacion'));
+        return view('rrhh.Amonestacion.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
     public function Amonestaciones_Emitidas(){

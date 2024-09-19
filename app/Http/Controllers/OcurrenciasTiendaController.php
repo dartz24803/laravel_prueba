@@ -23,6 +23,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use App\Models\OcurrenciaTipo;
+use App\Models\SubGerencia;
 
 class OcurrenciasTiendaController extends Controller{
     protected $request;
@@ -33,6 +34,8 @@ class OcurrenciasTiendaController extends Controller{
     }
 
     public function Ocurrencia_Tienda(Request $request){
+        //REPORTE BI CON ID
+        $list_subgerencia = SubGerencia::list_subgerencia(1);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();            
         $list_base = Base::get_list_base_only();
@@ -57,7 +60,7 @@ class OcurrenciasTiendaController extends Controller{
         /*
         $dato['list_noti'] = $this->Model_Corporacion->get_list_notificacion();
         $dato['list_nav_evaluaciones'] = $this->Model_Corporacion->get_list_nav_evaluaciones();*/
-        return view('seguridad.ocurrencias_tienda.index', compact('list_notificacion','cantidad_revisadas', 'list_base', 'list_colaborador', 'list_tipo_ocurrencia'));
+        return view('seguridad.ocurrencias_tienda.index', compact('list_notificacion','cantidad_revisadas', 'list_base', 'list_colaborador', 'list_tipo_ocurrencia','list_subgerencia'));
     }
 /*
     public function Traer_Tipo_Ocurrencia_Busq(){
