@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Base;
 use App\Models\Error;
 use App\Models\Notificacion;
+use App\Models\SubGerencia;
 use App\Models\Suceso;
 use App\Models\TipoError;
 use App\Models\Usuario;
@@ -29,8 +30,9 @@ class ObservacionController extends Controller
     {
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(13);
         $list_base = Base::get_list_bases_tienda();
-        return view('caja.observacion.index',compact('list_notificacion','list_base'));
+        return view('caja.observacion.index',compact('list_notificacion','list_base','list_subgerencia'));
     }
 
     public function list_reg(Request $request)

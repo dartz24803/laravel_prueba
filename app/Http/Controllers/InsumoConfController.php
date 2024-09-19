@@ -7,6 +7,7 @@ use App\Models\Banco;
 use App\Models\Insumo;
 use App\Models\Notificacion;
 use App\Models\Proveedor;
+use App\Models\SubGerencia;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 
@@ -21,7 +22,8 @@ class InsumoConfController extends Controller
     {
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('caja.administracion.insumo.index', compact('list_notificacion'));
+        $list_subgerencia = SubGerencia::list_subgerencia(13);  
+        return view('caja.administracion.insumo.index', compact('list_notificacion','list_subgerencia'));
     }
 
     public function index_in()

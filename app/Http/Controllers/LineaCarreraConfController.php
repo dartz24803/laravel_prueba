@@ -6,6 +6,7 @@ use App\Models\Notificacion;
 use App\Models\Pregunta;
 use App\Models\PreguntaDetalle;
 use App\Models\PuestoLineaCarrera;
+use App\Models\SubGerencia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -19,8 +20,9 @@ class LineaCarreraConfController extends Controller
     public function index()
     {
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();          
-        return view('caja.administracion.linea_carrera.index',compact('list_notificacion'));
+        $list_notificacion = Notificacion::get_list_notificacion(); 
+        $list_subgerencia = SubGerencia::list_subgerencia(13);           
+        return view('caja.administracion.linea_carrera.index',compact('list_notificacion','list_subgerencia'));
     }
 
     public function index_pre()

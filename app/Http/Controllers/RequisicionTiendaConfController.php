@@ -9,6 +9,7 @@ use App\Models\Marca;
 use App\Models\Modelo;
 use App\Models\Notificacion;
 use App\Models\ProductoCaja;
+use App\Models\SubGerencia;
 use App\Models\Unidad;
 use Illuminate\Http\Request;
 
@@ -22,8 +23,9 @@ class RequisicionTiendaConfController extends Controller
     public function index()
     {
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();          
-        return view('caja.administracion.requisicion_tienda.index',compact('list_notificacion'));
+        $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(13);
+        return view('caja.administracion.requisicion_tienda.index',compact('list_notificacion','list_subgerencia'));
     }
 
     public function index_ma()

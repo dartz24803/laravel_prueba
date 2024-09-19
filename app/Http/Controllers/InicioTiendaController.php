@@ -20,9 +20,9 @@ class InicioTiendaController extends Controller
     }
     public function index()
     {
-        $list_subgerencia = SubGerencia::list_subgerencia(2);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(2);
         return view('tienda.inicio_tienda', compact('list_notificacion', 'list_subgerencia'));
     }
 }

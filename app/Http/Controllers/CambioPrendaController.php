@@ -8,6 +8,7 @@ use App\Models\CambioPrenda;
 use App\Models\CambioPrendaDetalle;
 use App\Models\MotivoCprenda;
 use App\Models\Notificacion;
+use App\Models\SubGerencia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -22,8 +23,9 @@ class CambioPrendaController extends Controller
     {
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(13);
         $list_anio = Anio::where('estado',1)->orderBy('cod_anio','DESC')->get();
-        return view('caja.cambio_prenda.index',compact('list_notificacion','list_anio'));
+        return view('caja.cambio_prenda.index',compact('list_notificacion','list_subgerencia','list_subgerencia','list_anio'));
     }
 
     public function list_reg(Request $request)
