@@ -9,19 +9,109 @@
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row">
             <div class="form-group col-lg-2">
-                <label>Código:</label>
+                <label>Marca:</label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" id="cod_unidade" name="cod_unidade" placeholder="Descripción" value="{{ $get_id->cod_unidad }}">
+                <select class="form-control" name="id_marcae" id="id_marcae" onchange="Traer_Modelo('e');">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_marca as $list)
+                        <option value="{{ $list->id_marca }}"
+                        @if ($list->id_marca==$get_id->id_marca) selected @endif>
+                            {{ $list->nom_marca }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="form-group col-lg-2">
-                <label>Descripción:</label>
+                <label>Modelo:</label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" id="descripcion_unidade" name="descripcion_unidade" placeholder="Descripción" value="{{ $get_id->descripcion_unidad }}">
+                <select class="form-control" name="id_modeloe" id="id_modeloe">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_modelo as $list)
+                        <option value="{{ $list->id_modelo }}"
+                        @if ($list->id_modelo==$get_id->id_modelo) selected @endif>
+                            {{ $list->nom_modelo }}
+                        </option>
+                    @endforeach                    
+                </select>
             </div>
-        </div>  	 	           	                	        
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Color:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <select class="form-control" name="id_colore" id="id_colore">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_color as $list)
+                        <option value="{{ $list->id_color }}"
+                        @if ($list->id_color==$get_id->id_color) selected @endif                            >
+                            {{ $list->nom_color }}
+                        </option>
+                    @endforeach                    
+                </select>
+            </div>
+
+            <div class="form-group col-lg-2">
+                <label>Categoría:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <select class="form-control" name="id_categoriae" id="id_categoriae">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_categoria as $list)
+                        <option value="{{ $list->id_categoria }}"
+                        @if ($list->id_categoria==$get_id->id_categoria) selected @endif                            >
+                            {{ $list->nom_categoria }}
+                        </option>
+                    @endforeach                       
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Unidad:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <select class="form-control" name="id_unidade" id="id_unidade">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_unidad as $list)
+                        <option value="{{ $list->id_unidad }}"
+                        @if ($list->id_unidad==$get_id->id_unidad) selected @endif                            >
+                            {{ $list->nom_unidad }}
+                        </option>
+                    @endforeach                     
+                </select>
+            </div>
+
+            <div class="form-group col-lg-2">
+                <label>Estado:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <select class="form-control" name="id_estadoe" id="id_estadoe">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_estado as $list)
+                        <option value="{{ $list->id_estado }}"
+                        @if ($list->id_estado==$get_id->id_estado) selected @endif                            >
+                            {{ $list->nom_estado }}
+                        </option>
+                    @endforeach                       
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Nombre:</label>
+            </div>
+            <div class="form-group col-lg-10">
+                <input type="text" class="form-control" name="nom_productoe" id="nom_productoe" 
+                placeholder="Nombre" value="{{ $get_id->nom_producto }}">
+            </div>
+        </div>
     </div>
 
     <div class="modal-footer">
@@ -61,7 +151,7 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Lista_Unidad_Medida();
+                        Lista_Producto();
                         $("#ModalUpdate .close").click();
                     });  
                 }

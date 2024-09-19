@@ -1143,6 +1143,7 @@ Route::controller(RequisicionTiendaConfController::class)->group(function () {
     Route::get('requisicion_tienda_conf_pr', 'index_pr')->name('requisicion_tienda_conf_pr');
     Route::get('requisicion_tienda_conf_pr/list', 'list_pr')->name('requisicion_tienda_conf_pr.list');
     Route::get('requisicion_tienda_conf_pr/create', 'create_pr')->name('requisicion_tienda_conf_pr.create');
+    Route::post('requisicion_tienda_conf_pr/traer_modelo', 'traer_modelo_pr')->name('requisicion_tienda_conf_pr.traer_modelo');
     Route::post('requisicion_tienda_conf_pr', 'store_pr')->name('requisicion_tienda_conf_pr.store');
     Route::get('requisicion_tienda_conf_pr/{id}/edit', 'edit_pr')->name('requisicion_tienda_conf_pr.edit');
     Route::put('requisicion_tienda_conf_pr/{id}', 'update_pr')->name('requisicion_tienda_conf_pr.update');
