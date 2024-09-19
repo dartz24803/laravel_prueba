@@ -47,13 +47,13 @@
             <th>Última Act</th>
             <th>Nombre BI</th>
             <th>Nombre Intranet</th>
-            <th>Iframe</th>
             <th>Actividad</th>
             <th class="col-tipo">Área</th>
             <th>Objetivo</th>
             <th>Indicador</th>
             <th>Descripción</th>
             <th>Tipo</th>
+            <th>Iframe</th>
             <th>Presentación</th>
             <th>Frecuencia</th>
             <th>Tablas</th>
@@ -68,7 +68,6 @@
             <td>{{ \Carbon\Carbon::parse($reporte->fec_act)->locale('es')->translatedFormat('D d M y') }}</td>
             <td>{{ $reporte->nom_bi }}</td>
             <td>{{ $reporte->nom_intranet }}</td>
-            <td>{{ $reporte->iframe }}</td>
             <td>
                 @if ($reporte->actividad == 1)
                 En uso
@@ -92,6 +91,7 @@
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->tipo_indicador_nombre }}
             </td>
+            <td>{{ $reporte->iframe }}</td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->tipo_presentacion }}
             </td>
@@ -119,7 +119,7 @@
     var tabla = $('#tabla_js').DataTable({
         "columnDefs": [{
             "width": "300px",
-            "targets": [2] // Aplica a las columnas de Áreas y Puestos con Acceso
+            "targets": [2]
         }],
         "ordering": false,
         "autoWidth": false,

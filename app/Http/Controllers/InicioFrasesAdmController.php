@@ -7,6 +7,7 @@ use App\Models\Base;
 use App\Models\FrasesInicio;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Notificacion;
+use App\Models\SubGerencia;
 
 class InicioFrasesAdmController extends Controller
 {
@@ -17,27 +18,34 @@ class InicioFrasesAdmController extends Controller
         $this->middleware('verificar.sesion.usuario');
     }
 
-    public function index(){
+    public function index()
+    {
+
+        $list_subgerencia = SubGerencia::list_subgerencia(9);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('interna/administracion/Inicio/frases/index', compact('list_notificacion'));
+        return view('interna/administracion/Inicio/frases/index', compact('list_notificacion', 'list_subgerencia'));
     }
 
-    public function Frases_Inicio_Listar(){
+    public function Frases_Inicio_Listar()
+    {
         $list = FrasesInicio::where('estado', 1)->get();
         return view('interna/administracion/Inicio/frases/lista', compact('list'));
     }
 
-    public function Modal_Update_Frases_Inicio($id){
+    public function Modal_Update_Frases_Inicio($id)
+    {
         $dato['get_id'] = FrasesInicio::where('id', $id)->get();
-        return view('interna/administracion/Inicio/frases/modal_editar',$dato);
+        return view('interna/administracion/Inicio/frases/modal_editar', $dato);
     }
 
-    public function Modal_Registrar_Frases_Inicio(){
+    public function Modal_Registrar_Frases_Inicio()
+    {
         return view('interna/administracion/Inicio/frases/modal_registrar');
     }
 
-    public function Registrar_Frase_Inicio(Request $request){
+    public function Registrar_Frase_Inicio(Request $request)
+    {
         $request->validate([
             'frase' => 'required',
         ], [
@@ -45,12 +53,12 @@ class InicioFrasesAdmController extends Controller
         ]);
 
         $valida = FrasesInicio::where('frase', $request->frase)
-                    ->where('estado', 1)
-                    ->exists();
+            ->where('estado', 1)
+            ->exists();
 
-        if ($valida){
+        if ($valida) {
             echo "error";
-        }else{
+        } else {
             $dato['frase'] = $request->input("frase");
             $dato['estado'] = 1;
             $dato['user_reg'] = session('usuario')->id_usuario;
@@ -61,7 +69,8 @@ class InicioFrasesAdmController extends Controller
         }
     }
 
-    public function Update_Frase_Inicio(Request $request){
+    public function Update_Frase_Inicio(Request $request)
+    {
         $request->validate([
             'frase' => 'required',
         ], [
@@ -74,7 +83,8 @@ class InicioFrasesAdmController extends Controller
         FrasesInicio::where('id', $request->input("id"))->update($dato);
     }
 
-    public function Delete_Frase(Request $request){
+    public function Delete_Frase(Request $request)
+    {
         $dato['estado'] = 2;
         $dato['user_eli'] = session('usuario')->id_usuario;
         $dato['fec_eli'] = now();

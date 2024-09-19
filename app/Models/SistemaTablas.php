@@ -19,6 +19,7 @@ class SistemaTablas extends Model
         'nom_sistema',
         'cod_db',
         'nom_db',
+        'estado',
         'descripcion_sistema',
         'descripcion_db',
         'fec_reg',
