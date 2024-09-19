@@ -272,10 +272,16 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('area_por_usuario', 'getAreaPorUsuario')->name('area_por_usuario');
 
 
-    // DB REPORTE
+    // REPORTE x INDICADORES
+    Route::get('bireporte_ind', 'index_ind')->name('bireporte_ind');
+    Route::get('bireporte_ind/list', 'list_ind')->name('bireporte_ind.list');
+    Route::get('bireporte_ind/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_rebi')->name('bireporte_ind.excel');
+
+    // REPORTE x BASE DE DATOS
     Route::get('bireporte_db', 'index_db')->name('bireporte_db');
     Route::get('bireporte_db/list', 'list_db')->name('bireporte_db.list');
     Route::get('bireporte_db/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_rebi')->name('bireporte_db.excel');
+
 
 
 

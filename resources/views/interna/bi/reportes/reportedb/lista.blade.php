@@ -48,15 +48,12 @@
             <th>Nombre BI</th>
             <th>Nombre Intranet</th>
             <th>Actividad</th>
+            <th>Tabla</th>
             <th class="col-tipo">Área</th>
             <th>Objetivo</th>
-            <th>Indicador</th>
-            <th>Descripción</th>
-            <th>Tipo</th>
             <th>Iframe</th>
             <th>Presentación</th>
             <th>Frecuencia</th>
-            <th>Tablas</th>
             <th>Solicitante</th>
             <th>Accesos</th>
 
@@ -78,28 +75,18 @@
                 @endif
             </td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ $reporte->nom_tabla }}
+            </td>
+            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->nombres_area }}
             </td>
             <td>{{ $reporte->objetivo }}</td>
-
-            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                {{ $reporte->nom_indicador }}
-            </td>
-            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                {{ $reporte->descripcion }}
-            </td>
-            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                {{ $reporte->tipo_indicador_nombre }}
-            </td>
             <td>{{ $reporte->iframe }}</td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->tipo_presentacion }}
             </td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->tipo_frecuencia }}
-            </td>
-            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                {{ $reporte->nom_tablas }}
             </td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->nombre_usuario }}
@@ -171,11 +158,6 @@
     });
     $('#toggle-pre').change(function() {
         var columnIndex = 10;
-        var visible = this.checked;
-        tabla.column(columnIndex).visible(visible);
-    });
-    $('#toggle-tab').change(function() {
-        var columnIndex = 12;
         var visible = this.checked;
         tabla.column(columnIndex).visible(visible);
     });

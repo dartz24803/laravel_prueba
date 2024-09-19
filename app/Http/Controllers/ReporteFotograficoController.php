@@ -23,6 +23,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Font;
+
 class ReporteFotograficoController extends Controller
 {
     //variables a usar
@@ -34,7 +35,8 @@ class ReporteFotograficoController extends Controller
     protected $modeloarchivotmp;
     protected $modelorfa;
 
-    public function __construct(Request $request){
+    public function __construct(Request $request)
+    {
         //constructor con variables
         $this->middleware('verificar.sesion.usuario')->except(['validar_reporte_fotografico_dia_job']);;
         $this->request = $request;
@@ -45,31 +47,35 @@ class ReporteFotograficoController extends Controller
         $this->modelorfa = new ReporteFotograficoAdm();
     }
 
-    public function index(){
+    public function index()
+    {
         //enviar listas a la vista
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(2);
-        return view('tienda.ReporteFotografico.index',compact('list_notificacion','list_subgerencia'));
+        return view('tienda.ReporteFotografico.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
-    public function Reporte_Fotografico(Request $request){
+    public function Reporte_Fotografico(Request $request)
+    {
         //retornar vista si esta logueado
         $list_bases = Base::get_list_bases_tienda();
         $today = date('Y-m-d');
-        $list_categorias = $this->modelorfa->where('estado',1)->get();
+        $list_categorias = $this->modelorfa->where('estado', 1)->get();
         return view('tienda.ReporteFotografico.tabla_rf.reportefotografico', compact('list_categorias', 'list_bases', 'today'));
     }
 
-    public function Reporte_Fotografico_Listar(Request $request){
+    public function Reporte_Fotografico_Listar(Request $request)
+    {
         $base = $request->input("base");
         $categoria = $request->input("categoria");
         $fecha = $request->input("fecha");
-        $list = $this->modelo->listar($base,$categoria,$fecha);
+        $list = $this->modelo->listar($base, $categoria, $fecha);
         return view('tienda.ReporteFotografico.tabla_rf.listar', compact('list'));
     }
 
-    public function ModalRegistroReporteFotografico(){
+    public function ModalRegistroReporteFotografico()
+    {
         // Lógica para obtener los datos necesarios
         $this->modeloarchivotmp->where('id_usuario', Session('usuario')->id_usuario)->delete();
         $list_codigos = $this->modelocodigos->listar();
@@ -77,21 +83,23 @@ class ReporteFotograficoController extends Controller
         return view('tienda.ReporteFotografico.tabla_rf.modal_registrar', compact('list_codigos'));
     }
 
-    public function ModalUpdatedReporteFotografico($id){
+    public function ModalUpdatedReporteFotografico($id)
+    {
         // Lógica para obtener los datos necesarios
         $get_id = $this->modelo->where('id', $id)->get();
         $list_codigos = $this->modelocodigos->listar();
         // Retorna la vista con los datos
-        return view('tienda.ReporteFotografico.tabla_rf.modal_editar', compact('list_codigos','get_id'));
+        return view('tienda.ReporteFotografico.tabla_rf.modal_editar', compact('list_codigos', 'get_id'));
     }
 
-    public function Previsualizacion_Captura2(){
+    public function Previsualizacion_Captura2()
+    {
         //contador de archivos temporales para validar si tomó foto o no
         //$data = $this->modeloarchivotmp->contador_archivos_rf();
         $data = $this->modeloarchivotmp->where('id_usuario', Session('usuario')->id_usuario)->get();
 
         //si esta vacío
-        if($data->isEmpty()){
+        if ($data->isEmpty()) {
             $foto_key = "photo1";
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
@@ -124,12 +132,13 @@ class ReporteFotograficoController extends Controller
                 }
             }
             return response()->json($respuesta);
-        }else{
+        } else {
             echo "error";
         }
     }
 
-    public function obtenerImagenes() {
+    public function obtenerImagenes()
+    {
         //obtener imagenes por usuario
         $imagenes = $this->modeloarchivotmp->where('id_usuario', Session('usuario')->id_usuario)->get();
         $data = array();
@@ -144,17 +153,19 @@ class ReporteFotograficoController extends Controller
         echo json_encode($data);
     }
 
-    public function Delete_Imagen_Temporal(Request $request){
+    public function Delete_Imagen_Temporal(Request $request)
+    {
         $id = $request->input('id');
         $this->modeloarchivotmp->where('id', $id)->delete();
     }
 
-    public function Registrar_Reporte_Fotografico(Request $request){
+    public function Registrar_Reporte_Fotografico(Request $request)
+    {
         $data = $this->modeloarchivotmp->where('id_usuario', Session('usuario')->id_usuario)->get();
         //print_r($data);
 
         //si hay foto procede a registrar
-        if(!$data->isEmpty()){
+        if (!$data->isEmpty()) {
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
             $ftp_pass = "Intranet2022@";
@@ -173,9 +184,9 @@ class ReporteFotograficoController extends Controller
                 //alerta de validacion
                 if ($validator->fails()) {
                     $respuesta['error'] = $validator->errors()->all();
-                }else{
-                    $nombre_actual = "REPORTE_FOTOGRAFICO/".$data[0]['ruta'];
-                    $nuevo_nombre = "REPORTE_FOTOGRAFICO/Evidencia_".date('Y-m-d H:i:s')."_".Session('usuario')->id_usuario."_".Session('usuario')->centro_labores."_captura.jpg";
+                } else {
+                    $nombre_actual = "REPORTE_FOTOGRAFICO/" . $data[0]['ruta'];
+                    $nuevo_nombre = "REPORTE_FOTOGRAFICO/Evidencia_" . date('Y-m-d H:i:s') . "_" . Session('usuario')->id_usuario . "_" . Session('usuario')->centro_labores . "_captura.jpg";
                     ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
                     $nombre = basename($nuevo_nombre);
                     //llenar array con datos para bd
@@ -192,13 +203,14 @@ class ReporteFotograficoController extends Controller
                     $respuesta['error'] = "";
                 }
             }
-        }else{
+        } else {
             $respuesta['error'][0] = "Debe tomar una fotografía";
         }
         return response()->json($respuesta);
     }
 
-    public function Delete_Reporte_Fotografico(Request $request){
+    public function Delete_Reporte_Fotografico(Request $request)
+    {
         $id = $request->input('id');
         $respuesta = array();
         try {
@@ -210,12 +222,13 @@ class ReporteFotograficoController extends Controller
             $this->modelo->where('id', $id)->update($dato);
             $respuesta['error'] = "";
         } catch (Exception $e) {
-            $respuesta['error']=$e->getMessage();
+            $respuesta['error'] = $e->getMessage();
         }
         return response()->json($respuesta);
     }
 
-    public function Update_Registro_Fotografico(Request $request){
+    public function Update_Registro_Fotografico(Request $request)
+    {
         //verificar sesión
         $id = $request->input('id');
         $respuesta = array();
@@ -227,7 +240,7 @@ class ReporteFotograficoController extends Controller
         //verificar validacion de select
         if ($validator->fails()) {
             $respuesta['error'] = $validator->errors()->all();
-        }else{
+        } else {
             try {
                 $dato = [
                     'codigo' => $request->input('codigo_e'),
@@ -239,40 +252,44 @@ class ReporteFotograficoController extends Controller
                 $respuesta['error'] = "";
                 $respuesta['ok'] = "Se Elimino Correctamente";
             } catch (Exception $e) {
-                $respuesta['error']=$e->getMessage();
+                $respuesta['error'] = $e->getMessage();
             }
         }
         return response()->json($respuesta);
     }
 
-    public function Imagenes_Reporte_Fotografico(Request $request){
+    public function Imagenes_Reporte_Fotografico(Request $request)
+    {
         $list_bases = Base::get_list_bases_tienda();
-        $list_categorias = $this->modelorfa->where('estado',1)->get();
+        $list_categorias = $this->modelorfa->where('estado', 1)->get();
         $today = date('Y-m-d');
-        $base= $request->input("base");
-        $area= $request->input("area");
-        $codigo= $request->input("codigo");
+        $base = $request->input("base");
+        $area = $request->input("area");
+        $codigo = $request->input("codigo");
         return view('tienda.ReporteFotografico.imagenes_rf.index',  compact('list_categorias', 'list_bases', 'today'));
     }
 
-    public function Listar_Imagenes_Reporte_Fotografico(Request $request){
-        $base= $request->input("base");
-        $categoria= $request->input("categoria");
+    public function Listar_Imagenes_Reporte_Fotografico(Request $request)
+    {
+        $base = $request->input("base");
+        $categoria = $request->input("categoria");
         $fecha = $request->input("fecha");
         $list_rf = $this->modelo->listar($base, $categoria, $fecha);
         //print_r($list_rf[0]);
         return view('tienda.ReporteFotografico.imagenes_rf.listar',  compact('list_rf'));
     }
 
-    public function Modal_Detalle_RF($id){
+    public function Modal_Detalle_RF($id)
+    {
         $get_id = ReporteFotografico::leftJoin('codigos_reporte_fotografico_new', 'reporte_fotografico_new.codigo', '=', 'codigos_reporte_fotografico_new.id')
-        ->select('reporte_fotografico_new.id', 'reporte_fotografico_new.foto', 'reporte_fotografico_new.base', 'reporte_fotografico_new.fec_reg', 'codigos_reporte_fotografico_new.descripcion')
-        ->where('reporte_fotografico_new.id', $id)
-        ->get();
+            ->select('reporte_fotografico_new.id', 'reporte_fotografico_new.foto', 'reporte_fotografico_new.base', 'reporte_fotografico_new.fec_reg', 'codigos_reporte_fotografico_new.descripcion')
+            ->where('reporte_fotografico_new.id', $id)
+            ->get();
         return view('tienda.ReporteFotografico.imagenes_rf.modal_detalle', compact('get_id'));
     }
     //cron ejecutandose a las 19:00 a las 13:00
-    public function validar_reporte_fotografico_dia_job_old(){
+    public function validar_reporte_fotografico_dia_job_old()
+    {
         $sql = "SELECT
                     IFNULL(rfa.categoria, 'Sin categoría') AS categoria,
                     bases.base,
@@ -306,7 +323,7 @@ class ReporteFotograficoController extends Controller
             $emailBody .= '<tr>';
             $emailBody .= '<th style="text-align: center;">BASE</th>';
             foreach ($results3 as $row) {
-                $emailBody .= '<th style="text-align: center;">' .$row->categoria. '</th>';
+                $emailBody .= '<th style="text-align: center;">' . $row->categoria . '</th>';
             }
             $emailBody .= '<th style="text-align: center;">ESTADO</th>';
             $emailBody .= '</tr>';
@@ -324,7 +341,7 @@ class ReporteFotograficoController extends Controller
                     if ($totalValues == 0) {
                         $emailBody .= '<th style="text-align: center; color:#fa2b5c; font-weight: normal">Falta</th>';
                     } else {
-                        $emailBody .= '<th style="text-align: center; font-weight: normal; color:'.($isComplete ? '#000000' : '#6376ff').'">' . ($isComplete ? 'Completo' : 'Incompleto') . '</th>';
+                        $emailBody .= '<th style="text-align: center; font-weight: normal; color:' . ($isComplete ? '#000000' : '#6376ff') . '">' . ($isComplete ? 'Completo' : 'Incompleto') . '</th>';
                     }
                     $emailBody .= '</tr>';
                 }
@@ -338,7 +355,7 @@ class ReporteFotograficoController extends Controller
                 }
 
                 // Procesa cada valor de la fila
-                $emailBody .= '<th style="text-align: center; font-weight: normal; color:'.($result->num_fotos == 0 ? '#fa2b5c' : '#000000').'">' . $result->num_fotos . '</th>';
+                $emailBody .= '<th style="text-align: center; font-weight: normal; color:' . ($result->num_fotos == 0 ? '#fa2b5c' : '#000000') . '">' . $result->num_fotos . '</th>';
 
                 // Verifica si hay algún 0 en la fila y cuenta los valores diferentes de 0
                 if ($result->num_fotos == 0) {
@@ -355,7 +372,7 @@ class ReporteFotograficoController extends Controller
             if ($totalValues == 0) {
                 $emailBody .= '<th style="text-align: center; color:#fa2b5c; font-weight: normal">Falta</th>';
             } else {
-                $emailBody .= '<th style="text-align: center; font-weight: normal; color:'.($isComplete ? '#000000' : '#6376ff').'">' . ($isComplete ? 'Completo' : 'Incompleto') . '</th>';
+                $emailBody .= '<th style="text-align: center; font-weight: normal; color:' . ($isComplete ? '#000000' : '#6376ff') . '">' . ($isComplete ? 'Completo' : 'Incompleto') . '</th>';
             }
             $emailBody .= '</tr>';
 
@@ -375,7 +392,7 @@ class ReporteFotograficoController extends Controller
                 $mail->Password   =  'lanumero1$1';
                 $mail->SMTPSecure =  'tls';
                 $mail->Port     =  587;
-                $mail->setFrom('somosuno@lanumero1.com.pe','Somos Uno');
+                $mail->setFrom('somosuno@lanumero1.com.pe', 'Somos Uno');
 
                 //$mail->addAddress("pcardenas@lanumero1.com.pe");
                 $mail->addAddress("acanales@lanumero1.com.pe");
@@ -397,10 +414,10 @@ class ReporteFotograficoController extends Controller
         } else {
             return response()->json(['message' => 'No hay bases con 0 fotos hoy.']);
         }
-
     }
 
-    public function validar_reporte_fotografico_dia_job(){
+    public function validar_reporte_fotografico_dia_job()
+    {
         $sql = "SELECT
                     IFNULL(rfa.categoria, 'Sin categoría') AS categoria,
                     bases.base,
@@ -434,7 +451,7 @@ class ReporteFotograficoController extends Controller
             $emailBody .= '<tr>';
             $emailBody .= '<th style="text-align: center;">BASE</th>';
             foreach ($results3 as $row) {
-                $emailBody .= '<th style="text-align: center;">' .$row->categoria. '</th>';
+                $emailBody .= '<th style="text-align: center;">' . $row->categoria . '</th>';
             }
             $emailBody .= '<th style="text-align: center;">ESTADO</th>';
             $emailBody .= '</tr>';
@@ -452,7 +469,7 @@ class ReporteFotograficoController extends Controller
                     if ($totalValues == 0) {
                         $emailBody .= '<th style="text-align: center; color:#fa2b5c; font-weight: normal">Falta</th>';
                     } else {
-                        $emailBody .= '<th style="text-align: center; font-weight: normal; color:'.($isComplete ? '#000000' : '#6376ff').'">' . ($isComplete ? 'Completo' : 'Incompleto') . '</th>';
+                        $emailBody .= '<th style="text-align: center; font-weight: normal; color:' . ($isComplete ? '#000000' : '#6376ff') . '">' . ($isComplete ? 'Completo' : 'Incompleto') . '</th>';
                     }
                     $emailBody .= '</tr>';
                 }
@@ -466,7 +483,7 @@ class ReporteFotograficoController extends Controller
                 }
 
                 // Procesa cada valor de la fila
-                $emailBody .= '<th style="text-align: center; font-weight: normal; color:'.($result->num_fotos == 0 ? '#fa2b5c' : '#000000').'">' . $result->num_fotos . '</th>';
+                $emailBody .= '<th style="text-align: center; font-weight: normal; color:' . ($result->num_fotos == 0 ? '#fa2b5c' : '#000000') . '">' . $result->num_fotos . '</th>';
 
                 // Verifica si hay algún 0 en la fila y cuenta los valores diferentes de 0
                 if ($result->num_fotos == 0) {
@@ -483,7 +500,7 @@ class ReporteFotograficoController extends Controller
             if ($totalValues == 0) {
                 $emailBody .= '<th style="text-align: center; color:#fa2b5c; font-weight: normal">Falta</th>';
             } else {
-                $emailBody .= '<th style="text-align: center; font-weight: normal; color:'.($isComplete ? '#000000' : '#6376ff').'">' . ($isComplete ? 'Completo' : 'Incompleto') . '</th>';
+                $emailBody .= '<th style="text-align: center; font-weight: normal; color:' . ($isComplete ? '#000000' : '#6376ff') . '">' . ($isComplete ? 'Completo' : 'Incompleto') . '</th>';
             }
             $emailBody .= '</tr>';
 
@@ -627,7 +644,7 @@ class ReporteFotograficoController extends Controller
                 $mail->Password   =  'lanumero1$1';
                 $mail->SMTPSecure =  'tls';
                 $mail->Port     =  587;
-                $mail->setFrom('somosuno@lanumero1.com.pe','Somos Uno');
+                $mail->setFrom('somosuno@lanumero1.com.pe', 'Somos Uno');
 
                 $mail->addAddress("pcardenas@lanumero1.com.pe");
                 $mail->addAddress('ogutierrez@lanumero1.com.pe');
@@ -651,6 +668,5 @@ class ReporteFotograficoController extends Controller
         } else {
             return response()->json(['message' => 'No hay bases con 0 fotos hoy.']);
         }
-
     }
 }
