@@ -3781,11 +3781,81 @@ class ColaboradorConfController extends Controller
 
     public function Insert_Horario(Request $request){
         $request->validate([
+            'id_turno_lu_i' => [
+                'required_if:ch_dia_laborado_lu_i,1',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('ch_dia_laborado_lu_i') && $value == '0') {
+                        $fail('Debe seleccionar turno para Lunes.');
+                    }
+                }
+            ],
+            'id_turno_ma_i' => [
+                'required_if:ch_dia_laborado_ma_i,1',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('ch_dia_laborado_ma_i') && $value == '0') {
+                        $fail('Debe seleccionar turno para Martes.');
+                    }
+                }
+            ],
+            'id_turno_mi_i' => [
+                'required_if:ch_dia_laborado_mi_i,1',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('ch_dia_laborado_mi_i') && $value == '0') {
+                        $fail('Debe seleccionar turno para Miércoles.');
+                    }
+                }
+            ],
+            'id_turno_ju_i' => [
+                'required_if:ch_dia_laborado_ju_i,1',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('ch_dia_laborado_ju_i') && $value == '0') {
+                        $fail('Debe seleccionar turno para Jueves.');
+                    }
+                }
+            ],
+            'id_turno_vi_i' => [
+                'required_if:ch_dia_laborado_vi_i,1',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('ch_dia_laborado_vi_i') && $value == '0') {
+                        $fail('Debe seleccionar turno para Viernes.');
+                    }
+                }
+            ],
+            'id_turno_sa_i' => [
+                'required_if:ch_dia_laborado_sa_i,1',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('ch_dia_laborado_sa_i') && $value == '0') {
+                        $fail('Debe seleccionar turno para Sábado.');
+                    }
+                }
+            ],
+            'id_turno_do_i' => [
+                'required_if:ch_dia_laborado_do_i,1',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('ch_dia_laborado_do_i') && $value == '0') {
+                        $fail('Debe seleccionar turno para Domingo.');
+                    }
+                }
+            ],
             'cod_base_i' => 'required',
             'nombre_i' => 'required',
+            'ch_dia_laborado_lu_i' => 'required_without_all:ch_dia_laborado_ma_i,ch_dia_laborado_mi_i,ch_dia_laborado_ju_i,ch_dia_laborado_vi_i,ch_dia_laborado_sa_i,ch_dia_laborado_do_i|boolean',
+            'ch_dia_laborado_ma_i' => 'required_without_all:ch_dia_laborado_lu_i,ch_dia_laborado_mi_i,ch_dia_laborado_ju_i,ch_dia_laborado_vi_i,ch_dia_laborado_sa_i,ch_dia_laborado_do_i|boolean',
+            'ch_dia_laborado_mi_i' => 'required_without_all:ch_dia_laborado_lu_i,ch_dia_laborado_ma_i,ch_dia_laborado_ju_i,ch_dia_laborado_vi_i,ch_dia_laborado_sa_i,ch_dia_laborado_do_i|boolean',
+            'ch_dia_laborado_ju_i' => 'required_without_all:ch_dia_laborado_lu_i,ch_dia_laborado_ma_i,ch_dia_laborado_mi_i,ch_dia_laborado_vi_i,ch_dia_laborado_sa_i,ch_dia_laborado_do_i|boolean',
+            'ch_dia_laborado_vi_i' => 'required_without_all:ch_dia_laborado_lu_i,ch_dia_laborado_ma_i,ch_dia_laborado_mi_i,ch_dia_laborado_ju_i,ch_dia_laborado_sa_i,ch_dia_laborado_do_i|boolean',
+            'ch_dia_laborado_sa_i' => 'required_without_all:ch_dia_laborado_lu_i,ch_dia_laborado_ma_i,ch_dia_laborado_mi_i,ch_dia_laborado_ju_i,ch_dia_laborado_vi_i,ch_dia_laborado_do_i|boolean',
+            'ch_dia_laborado_do_i' => 'required_without_all:ch_dia_laborado_lu_i,ch_dia_laborado_ma_i,ch_dia_laborado_mi_i,ch_dia_laborado_ju_i,ch_dia_laborado_vi_i,ch_dia_laborado_sa_i|boolean',
         ],[
-            'cod_base_i' => 'Debe ingresar entrada',
-            'nombre_i' => 'Debe ingresar salida',
+            'cod_base_i' => 'Debe seleccionar base',
+            'nombre_i' => 'Debe ingresar nombre',
+            'ch_dia_laborado_lu_i.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
+            'ch_dia_laborado_ma_i.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
+            'ch_dia_laborado_mi_i.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
+            'ch_dia_laborado_ju_i.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
+            'ch_dia_laborado_vi_i.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
+            'ch_dia_laborado_sa_i.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
+            'ch_dia_laborado_do_i.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
         ]);
         $valida = Horario::where('nombre', $request->nombre_i)
                 ->where('cod_base', $request->cod_base_i)
@@ -4010,11 +4080,81 @@ class ColaboradorConfController extends Controller
 
     public function Update_Horario(Request $request){
         $request->validate([
+            'id_turno_lu_u' => [
+                'required_if:ch_dia_laborado_lu_u,1',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('ch_dia_laborado_lu_u') && $value == '0') {
+                        $fail('Debe seleccionar turno para Lunes.');
+                    }
+                }
+            ],
+            'id_turno_ma_u' => [
+                'required_if:ch_dia_laborado_ma_u,1',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('ch_dia_laborado_ma_u') && $value == '0') {
+                        $fail('Debe seleccionar turno para Martes.');
+                    }
+                }
+            ],
+            'id_turno_mi_u' => [
+                'required_if:ch_dia_laborado_mi_u,1',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('ch_dia_laborado_mi_u') && $value == '0') {
+                        $fail('Debe seleccionar turno para Miércoles.');
+                    }
+                }
+            ],
+            'id_turno_ju_u' => [
+                'required_if:ch_dia_laborado_ju_u,1',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('ch_dia_laborado_ju_u') && $value == '0') {
+                        $fail('Debe seleccionar turno para Jueves.');
+                    }
+                }
+            ],
+            'id_turno_vi_u' => [
+                'required_if:ch_dia_laborado_vi_u,1',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('ch_dia_laborado_vi_u') && $value == '0') {
+                        $fail('Debe seleccionar turno para Viernes.');
+                    }
+                }
+            ],
+            'id_turno_sa_u' => [
+                'required_if:ch_dia_laborado_sa_u,1',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('ch_dia_laborado_sa_u') && $value == '0') {
+                        $fail('Debe seleccionar turno para Sábado.');
+                    }
+                }
+            ],
+            'id_turno_do_u' => [
+                'required_if:ch_dia_laborado_do_u,1',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->input('ch_dia_laborado_do_u') && $value == '0') {
+                        $fail('Debe seleccionar turno para Domingo.');
+                    }
+                }
+            ],
             'cod_base_u' => 'required',
             'nombre_u' => 'required',
+            'ch_dia_laborado_lu_u' => 'required_without_all:ch_dia_laborado_ma_u,ch_dia_laborado_mi_u,ch_dia_laborado_ju_u,u,ch_dia_laborado_sa_u,ch_dia_laborado_do_u|boolean',
+            'ch_dia_laborado_ma_u' => 'required_without_all:ch_dia_laborado_lu_u,ch_dia_laborado_mi_u,ch_dia_laborado_ju_u,u,ch_dia_laborado_sa_u,ch_dia_laborado_do_u|boolean',
+            'ch_dia_laborado_mi_u' => 'required_without_all:ch_dia_laborado_lu_u,ch_dia_laborado_ma_u,ch_dia_laborado_ju_u,u,ch_dia_laborado_sa_u,ch_dia_laborado_do_u|boolean',
+            'ch_dia_laborado_ju_u' => 'required_without_all:ch_dia_laborado_lu_u,ch_dia_laborado_ma_u,ch_dia_laborado_mi_u,u,ch_dia_laborado_sa_u,ch_dia_laborado_do_u|boolean',
+            'ch_dia_laborado_vi_u' => 'required_without_all:ch_dia_laborado_lu_u,ch_dia_laborado_ma_u,ch_dia_laborado_mi_u,u,ch_dia_laborado_sa_u,ch_dia_laborado_do_u|boolean',
+            'ch_dia_laborado_sa_u' => 'required_without_all:ch_dia_laborado_lu_u,ch_dia_laborado_ma_u,ch_dia_laborado_mi_u,u,ch_dia_laborado_vi_u,ch_dia_laborado_do_u|boolean',
+            'ch_dia_laborado_do_u' => 'required_without_all:ch_dia_laborado_lu_u,ch_dia_laborado_ma_u,ch_dia_laborado_mi_u,u,ch_dia_laborado_vi_u,ch_dia_laborado_sa_u|boolean',
         ],[
-            'cod_base_u' => 'Debe ingresar entrada',
-            'nombre_u' => 'Debe ingresar salida',
+            'cod_base_u' => 'Debe seleccionar base',
+            'nombre_u' => 'Debe ingresar nombre',
+            'ch_dia_laborado_lu_u.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
+            'ch_dia_laborado_ma_u.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
+            'ch_dia_laborado_mi_u.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
+            'ch_dia_laborado_ju_u.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
+            'ch_dia_laborado_vi_u.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
+            'ch_dia_laborado_sa_u.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
+            'ch_dia_laborado_do_u.required_without_all' => 'Debe seleccionar al menos un día de la semana.',            
         ]);
         $valida = Horario::where('nombre', $request->nombre_u)
                 ->where('cod_base', $request->cod_base_u)
