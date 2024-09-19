@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('punto_partida')->nullable();
             $table->string('punto_llegada')->nullable();
             $table->string('comprobante',100)->nullable();
+            $table->integer('estado_c')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
