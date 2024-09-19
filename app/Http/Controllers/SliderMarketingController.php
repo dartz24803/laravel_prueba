@@ -7,7 +7,7 @@ use App\Models\Slide;
 use App\Models\Base;
 use App\Models\Config;
 use App\Models\Notificacion;
-
+use App\Models\SubGerencia;
 
 class SliderMarketingController extends Controller
 {
@@ -18,6 +18,7 @@ class SliderMarketingController extends Controller
     public function index() {
         //NOTIFICACIONES
         $dato["list_notificacion"] = Notificacion::get_list_notificacion();
+        $dato['list_subgerencia'] = SubGerencia::list_subgerencia(3);
         $dato["slider"] = Slide::where('estado', 1)
                         ->where('id_area', 7)
                         ->get();

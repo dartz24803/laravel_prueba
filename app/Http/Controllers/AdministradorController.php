@@ -15,6 +15,7 @@ use App\Models\DiaSemana;
 use App\Models\Mes;
 use App\Models\Notificacion;
 use App\Models\SeguimientoCoordinador;
+use App\Models\SubGerencia;
 use App\Models\SupervisionTienda;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
@@ -29,8 +30,9 @@ class AdministradorController extends Controller
     public function index_conf()
     {
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();            
-        return view('tienda.administracion.administrador.index',compact('list_notificacion'));
+        $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(2);
+        return view('tienda.administracion.administrador.index',compact('list_notificacion','list_subgerencia'));
     }
 
     public function index_conf_st()
@@ -288,8 +290,9 @@ class AdministradorController extends Controller
     public function index()
     {
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();            
-        return view('tienda.administrador.index',compact('list_notificacion'));
+        $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(2);
+        return view('tienda.administrador.index',compact('list_notificacion','list_subgerencia'));
     }
 
     public function index_st()
