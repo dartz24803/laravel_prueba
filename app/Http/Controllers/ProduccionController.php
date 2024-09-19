@@ -11,6 +11,7 @@ use App\Models\ProcesosHistorial;
 use App\Models\ProcesoVisita;
 use App\Models\ProveedorGeneral;
 use App\Models\Puesto;
+use App\Models\SubGerencia;
 use App\Models\TipoPortal;
 use App\Models\User;
 use App\Models\Usuario;
@@ -21,11 +22,12 @@ class ProduccionController extends Controller
 {
     public function index()
     {
+        $list_subgerencia = SubGerencia::list_subgerencia(9);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_gerencia = Gerencia::where('estado', 1)->orderBy('nom_gerencia', 'ASC')->get();
 
-        return view('manufactura.produccion.asignacion_visitas.index', compact('list_notificacion', 'list_gerencia'));
+        return view('manufactura.produccion.asignacion_visitas.index', compact('list_notificacion', 'list_gerencia', 'list_subgerencia'));
     }
 
     public function index_av()

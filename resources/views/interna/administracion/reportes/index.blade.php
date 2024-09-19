@@ -13,9 +13,14 @@
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                             <li class="nav-item">
-                                <a id="a_tipind" class="nav-link" style="cursor: pointer;">Tipo Indicadores</a>
+                                <a id="a_tipind" class="nav-link" onclick="TipoIndicador();" style="cursor: pointer;">Tipo Indicadores</a>
                             </li>
-
+                            <li class="nav-item">
+                                <a id="a_sis" class="nav-link" onclick="SistemaDb();" style="cursor: pointer;">Sistema - Base de Datos</a>
+                            </li>
+                            <!-- <li class="nav-item">
+                                <a id="a_dbsis" class="nav-link" onclick="DbSis();" style="cursor: pointer;">Bases de Datos</a>
+                            </li> -->
                         </ul>
 
                         <div class="row" id="cancel-row">
@@ -51,6 +56,45 @@
             success: function(resp) {
                 $('#div_reporte_tipoind_conf').html(resp);
                 $("#a_tipind").addClass('active');
+                $("#a_sis").removeClass('active');
+                $("#a_dbsis").removeClass('active');
+
+            }
+        });
+    }
+
+    function SistemaDb() {
+        Cargando();
+
+        var url = "{{ route('bireporte_sisbd_conf') }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(resp) {
+                $('#div_reporte_tipoind_conf').html(resp);
+                $("#a_tipind").removeClass('active');
+                $("#a_sis").addClass('active');
+                $("#a_dbsis").removeClass('active');
+
+            }
+        });
+    }
+
+    function DbSis() {
+        Cargando();
+
+        var url = "{{ route('bireporte_sisbd_conf') }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(resp) {
+                $('#div_reporte_tipoind_conf').html(resp);
+                $("#a_tipind").removeClass('active');
+                $("#a_sis").removeClass('active');
+                $("#a_dbsis").addClass('active');
+
             }
         });
     }

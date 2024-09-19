@@ -69,8 +69,9 @@ class BiReporteController extends Controller
     public function index_ra_conf()
     {
 
+        $list_subgerencia = SubGerencia::list_subgerencia(9);
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('interna.administracion.reportes.index', compact('list_notificacion'));
+        return view('interna.administracion.reportes.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
 
@@ -970,6 +971,241 @@ class BiReporteController extends Controller
     }
 
     public function update_tind(Request $request, $id)
+    {
+        $request->validate([
+            'nombreindicadore' => 'required',
+            'descripcionee' => 'required',
+        ], [
+            'nombreindicadore.required' => 'Debe seleccionar nombre.',
+            'descripcionee.required' => 'Debe seleccionar descripción.',
+        ]);
+
+
+        TipoIndicador::findOrFail($id)->update([
+            'nom_indicador' => $request->nombreindicadore,
+            'descripcion' => $request->descripcionee,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    // ADMINISTRABLE SISTEMA
+    public function index_sis_conf()
+    {
+        return view('interna.administracion.reportes.sistema.index');
+    }
+
+    public function list_sis()
+    {
+        $list_sistemasdb = SistemaTablas::select('id_sistema_tablas', 'nom_sistema', 'cod_sistema', 'cod_db', 'nom_db')
+            ->where('estado', 1)
+            ->orderBy('cod_db', 'ASC')
+            ->distinct('cod_sistema')
+            ->get();
+
+
+        return view('interna.administracion.reportes.sistema.lista', compact('list_sistemasdb'));
+    }
+
+    public function edit_sis($id)
+    {
+        $list_sistemas = SistemaTablas::select('id_sistema_tablas', 'nom_sistema', 'cod_sistema')
+            ->where('estado', 1)
+            ->orderBy('cod_sistema', 'ASC')
+            ->distinct('cod_sistema')
+            ->get()
+            ->unique('cod_sistema');
+
+        $list_dbs = SistemaTablas::select('id_sistema_tablas', 'nom_db', 'cod_db')
+            ->where('estado', 1)
+            ->orderBy('nom_db', 'ASC')
+            ->distinct('nom_db')
+            ->get();
+
+        $get_id = SistemaTablas::findOrFail($id);
+        return view('interna.administracion.reportes.sistema.modal_editar',  compact('get_id', 'list_sistemas', 'list_dbs'));
+    }
+
+    public function destroy_sis($id)
+    {
+        SistemaTablas::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function create_sis()
+    {
+        $list_sistemas = SistemaTablas::select('id_sistema_tablas', 'nom_sistema', 'cod_sistema')
+            ->where('estado', 1)
+            ->orderBy('cod_sistema', 'ASC')
+            ->distinct('cod_sistema')
+            ->get()
+            ->unique('cod_sistema');
+
+        return view('interna.administracion.reportes.sistema.modal_registrar', compact('list_sistemas'));
+    }
+
+    public function create_sistema()
+    {
+        return view('interna.administracion.reportes.sistema.modal_registrar_sistema');
+    }
+
+    public function store_sis(Request $request)
+    {
+        $request->validate([
+            'nom_sistemae' => 'required',
+            'nom_bde' => 'required',
+        ], [
+            'nom_sistemae.required' => 'Debe ingresar Sistema.',
+            'nom_bde.required' => 'Debe ingresar nombre Base de Datos.',
+        ]);
+
+        // Obtener el valor más alto de cod_sistema en la tabla SistemaTablas
+        $highestCodSistema = SistemaTablas::max('cod_sistema');
+        $nextCodSistema = $this->generateNextCode($highestCodSistema, 'S', 3);
+        // Obtener el valor más alto de cod_db en la tabla SistemaTablas
+        $highestCodDb = SistemaTablas::max('cod_db');
+        $nextCodDb = $this->generateNextCode($highestCodDb, 'DB', 3);
+
+        SistemaTablas::create([
+            'cod_sistema' => $nextCodSistema,
+            'cod_db' => $nextCodDb,
+            'nom_sistema' => $request->nom_sistemae,
+            'nom_db' => $request->nom_bde,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function store_sistema(Request $request)
+    {
+        $request->validate([
+            'nom_sistema' => 'required',
+            'nom_db' => 'required',
+        ], [
+            'nom_sistema.required' => 'Debe ingresar sistema.',
+            'nom_db.required' => 'Debe ingresar base de datos.',
+        ]);
+        // Obtener el valor más alto de cod_sistema en la tabla SistemaTablas
+        $highestCodSistema = SistemaTablas::max('cod_sistema');
+        $nextCodSistema = $this->generateNextCode($highestCodSistema, 'S', 3);
+        // Obtener el valor más alto de cod_db en la tabla SistemaTablas
+        $highestCodDb = SistemaTablas::max('cod_db');
+        $nextCodDb = $this->generateNextCode($highestCodDb, 'DB', 3);
+
+        // Crear el nuevo registro con los códigos generados
+        SistemaTablas::create([
+            'cod_sistema' => $nextCodSistema,
+            'cod_db' => $nextCodDb,
+            'nom_sistema' => $request->nom_sistema,
+            'nom_db' => $request->nom_db,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    private function generateNextCode($currentCode, $prefix, $length)
+    {
+        if ($currentCode) {
+            // Remove prefix and zero-pads
+            $number = intval(substr($currentCode, strlen($prefix))) + 1;
+        } else {
+            // Start with the first number
+            $number = 1;
+        }
+
+        // Format the number with the prefix and zero-padded to the specified length
+        return $prefix . str_pad($number, $length, '0', STR_PAD_LEFT);
+    }
+
+
+    public function update_sis(Request $request, $id)
+    {
+        $request->validate([
+            'nom_sistemae' => 'required',
+            'nom_dbe' => 'required',
+        ], [
+            'nom_sistemae.required' => 'Debe seleccionar SISTEMA.',
+            'nom_dbe.required' => 'Debe seleccionar BASE DE DATOS.',
+        ]);
+
+
+        SistemaTablas::findOrFail($id)->update([
+            'nom_sistema' => $request->nom_sistemae,
+            'nom_db' => $request->nom_dbe,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+
+    // ADMINISTRABLE BASE DE DATOS
+    public function index_dbsis_conf()
+    {
+        return view('interna.administracion.reportes.sistema.index');
+    }
+
+    public function list_dbsis()
+    {
+        $list_indicadores = TipoIndicador::select('idtipo_indicador', 'nom_indicador', 'descripcion')
+            ->where('estado', 1)
+            ->orderBy('nom_indicador', 'ASC')
+            ->distinct('nom_indicador')->get();
+
+
+        return view('interna.administracion.reportes.sistema.lista', compact('list_indicadores'));
+    }
+
+    public function edit_dbsis($id)
+    {
+        $get_id = TipoIndicador::findOrFail($id);
+        return view('interna.administracion.reportes.sistema.modal_editar',  compact('get_id'));
+    }
+
+    public function destroy_dbsis($id)
+    {
+        TipoIndicador::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function create_dbsis()
+    {
+        return view('interna.administracion.reportes.sistema.modal_registrar');
+    }
+
+    public function store_dbsis(Request $request)
+    {
+        $request->validate([
+            'nom_indicador' => 'required',
+            'descripcion' => 'required',
+        ], [
+            'nom_indicador.required' => 'Debe ingresar nombre.',
+            'descripcion.required' => 'Debe ingresar descripción.',
+        ]);
+
+        TipoIndicador::create([
+            'nom_indicador' => $request->nom_indicador,
+            'descripcion' => $request->descripcion,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function update_dbsis(Request $request, $id)
     {
         $request->validate([
             'nombreindicadore' => 'required',
