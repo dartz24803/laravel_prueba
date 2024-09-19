@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EvaluacionCaja;
 use App\Models\Notificacion;
+use App\Models\SubGerencia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -24,7 +25,8 @@ class CapacitacionCajeroController extends Controller
     {
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('caja.capacitacion_cajero.index',compact('list_notificacion'));
+        $list_subgerencia = SubGerencia::list_subgerencia(13);
+        return view('caja.capacitacion_cajero.index',compact('list_notificacion','list_subgerencia'));
     }
 
     public function list(Request $request)

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Base;
 use App\Models\Notificacion;
 use App\Models\PrecioSugerido;
+use App\Models\SubGerencia;
 use Illuminate\Http\Request;
 
 class PrecioSugeridoConfController extends Controller
@@ -17,8 +18,9 @@ class PrecioSugeridoConfController extends Controller
     public function index()
     {
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();          
-        return view('control_interno.administracion.precio_sugerido.index',compact('list_notificacion'));
+        $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(13);
+        return view('control_interno.administracion.precio_sugerido.index',compact('list_notificacion','list_subgerencia'));
     }
 
     public function index_un()
