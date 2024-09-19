@@ -46,25 +46,25 @@
                 <p class="romperpalabra"><span id="icono_active2"></span> Amonestaciones</p>
             </a>
         </li>
-        @if (session('usuario')->id_nivel == 1 || 
-        session('usuario')->id_nivel == 2 || 
-        session('usuario')->id_puesto == 27 || 
+        @if (session('usuario')->id_nivel == 1 ||
+        session('usuario')->id_nivel == 2 ||
+        session('usuario')->id_puesto == 27 ||
         session('usuario')->id_puesto == 133 ||
-        session('usuario')->id_puesto == 22 || 
-        session('usuario')->id_puesto == 146 || 
-        session('usuario')->id_puesto == 21 || 
-        session('usuario')->id_puesto == 278 || 
-        session('usuario')->id_puesto == 279 || 
+        session('usuario')->id_puesto == 22 ||
+        session('usuario')->id_puesto == 146 ||
+        session('usuario')->id_puesto == 21 ||
+        session('usuario')->id_puesto == 278 ||
+        session('usuario')->id_puesto == 279 ||
         session('usuario')->id_puesto == 128 ||
-        session('usuario')->id_puesto == 148 || 
-        session('usuario')->id_puesto == 197 || 
-        session('usuario')->id_puesto == 310 || 
+        session('usuario')->id_puesto == 148 ||
+        session('usuario')->id_puesto == 197 ||
+        session('usuario')->id_puesto == 310 ||
         session('usuario')->id_puesto == 209)
-            <li>
-                <a id="colaboradores" href="{{ route('colaborador') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Colaborador <br>• Colaborador (Cesados)">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Colaboradores</p>
-                </a>
-            </li>
+        <li>
+            <a id="colaboradores" href="{{ route('colaborador') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Colaborador <br>• Colaborador (Cesados)">
+                <p class="romperpalabra"><span id="icono_active2"></span> Colaboradores</p>
+            </a>
+        </li>
         @endif
         <?php if (
             session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2 ||
@@ -109,7 +109,11 @@
 
 <li class="menu menu-heading">
     <div class="heading">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal">
+            <circle cx="12" cy="12" r="1"></circle>
+            <circle cx="19" cy="12" r="1"></circle>
+            <circle cx="5" cy="12" r="1"></circle>
+        </svg>
         <span>ADMINISTRACION</span>
     </div>
 </li>

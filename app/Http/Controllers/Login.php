@@ -22,7 +22,7 @@ class Login extends Controller
     }
 
 
-	public function ingresar(Request $request)
+    public function ingresar(Request $request)
     {
         $usuario = $request->input('Usuario');
         $password = $request->input('Password');
@@ -31,6 +31,7 @@ class Login extends Controller
 
         //$sesionlnu = $this->UsuariosModel->login($usuario);
         $sesionlnu = $this->UsuariosModel->login($usuario);
+        dd($sesionlnu);
         if ($sesionlnu) {
             $user = $sesionlnu[0];
             if (password_verify($password, $user->usuario_password)) {
@@ -47,12 +48,14 @@ class Login extends Controller
         }
     }
 
-	public function Recuperar_Password(){
+    public function Recuperar_Password()
+    {
         return view('login/recuperar_contrasenia');
     }
 
-	public function logout(Request $request){
+    public function logout(Request $request)
+    {
         $request->session()->flush();
         return redirect('/');
-   }
+    }
 }
