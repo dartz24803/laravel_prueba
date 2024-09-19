@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('id_color')->nullable();
             $table->integer('id_categoria')->nullable();
             $table->string('nom_producto')->nullable();
-            $table->integer('estado_registro')->nullable();
+            $table->integer('id_estado')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
