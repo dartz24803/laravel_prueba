@@ -768,8 +768,7 @@ Route::controller(PrecioSugeridoConfController::class)->group(function () {
     Route::put('precio_sugerido_conf_tr/{id}', 'update_tr')->name('precio_sugerido_conf_tr.update');
     Route::delete('precio_sugerido_conf_tr/{id}', 'destroy_tr')->name('precio_sugerido_conf_tr.destroy');
 });
-//SEGURIDAD - ASISTENCIATaboo - I dream of you tonight
-
+//SEGURIDAD - ASISTENCIA
 Route::controller(AsistenciaSegController::class)->group(function () {
     Route::get('asistencia_seg', 'index')->name('asistencia_seg');
     Route::get('asistencia_seg_lec', 'index_lec')->name('asistencia_seg_lec');
@@ -1143,7 +1142,6 @@ Route::controller(RequisicionTiendaConfController::class)->group(function () {
     Route::get('requisicion_tienda_conf_pr', 'index_pr')->name('requisicion_tienda_conf_pr');
     Route::get('requisicion_tienda_conf_pr/list', 'list_pr')->name('requisicion_tienda_conf_pr.list');
     Route::get('requisicion_tienda_conf_pr/create', 'create_pr')->name('requisicion_tienda_conf_pr.create');
-    Route::post('requisicion_tienda_conf_pr/traer_modelo', 'traer_modelo_pr')->name('requisicion_tienda_conf_pr.traer_modelo');
     Route::post('requisicion_tienda_conf_pr', 'store_pr')->name('requisicion_tienda_conf_pr.store');
     Route::get('requisicion_tienda_conf_pr/{id}/edit', 'edit_pr')->name('requisicion_tienda_conf_pr.edit');
     Route::put('requisicion_tienda_conf_pr/{id}', 'update_pr')->name('requisicion_tienda_conf_pr.update');
