@@ -145,10 +145,27 @@ session('usuario')->id_puesto == 148)
 @endif
 
 @if (session('usuario')->id_nivel == 1 || 
+session('usuario')->id_nivel == 2 || 
 session('usuario')->id_nivel == 7 ||
+session('usuario')->id_nivel == 5 ||
+session('usuario')->id_nivel == 11 ||
+session('usuario')->id_nivel == 4 ||
 session('usuario')->id_puesto == 80 ||
 session('usuario')->id_puesto == 128 ||
-session('usuario')->id_puesto == 148)
+session('usuario')->id_puesto == 148 ||
+session('usuario')->id_puesto == 102 ||
+session('usuario')->id_puesto == 81 ||
+session('usuario')->id_puesto == 122 ||
+session('usuario')->id_puesto == 23 ||
+session('usuario')->id_puesto == 9 ||
+session('usuario')->id_puesto == 75 ||
+session('usuario')->id_puesto == 7 ||
+session('usuario')->id_puesto == 133 ||
+session('usuario')->id_puesto == 138 ||
+session('usuario')->id_puesto == 83 ||
+session('usuario')->id_puesto == 145 ||
+session('usuario')->id_puesto == 40 ||
+session('usuario')->id_puesto == 164)
     <li class="menu menu-heading">
         <div class="heading">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
@@ -157,7 +174,27 @@ session('usuario')->id_puesto == 148)
     </li>
 
     @if (session('usuario')->id_nivel == 1 || 
-    session('usuario')->id_puesto == 128)
+    session('usuario')->id_nivel == 2 || 
+    session('usuario')->id_nivel == 7 ||
+    session('usuario')->id_nivel == 5 ||
+    session('usuario')->id_nivel == 11 ||
+    session('usuario')->id_nivel == 4 ||
+    session('usuario')->id_puesto == 80 ||
+    session('usuario')->id_puesto == 128 ||
+    session('usuario')->id_puesto == 148 ||
+    session('usuario')->id_puesto == 102 ||
+    session('usuario')->id_puesto == 81 ||
+    session('usuario')->id_puesto == 122 ||
+    session('usuario')->id_puesto == 23 ||
+    session('usuario')->id_puesto == 9 ||
+    session('usuario')->id_puesto == 75 ||
+    session('usuario')->id_puesto == 7 ||
+    session('usuario')->id_puesto == 133 ||
+    session('usuario')->id_puesto == 138 ||
+    session('usuario')->id_puesto == 83 ||
+    session('usuario')->id_puesto == 145 ||
+    session('usuario')->id_puesto == 40 ||
+    session('usuario')->id_puesto == 164)
         <li class="menu" id="conf_cajas">
             <a href="#rconf_cajas" id="hconf_cajas" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                 <div class="">
@@ -205,6 +242,34 @@ session('usuario')->id_puesto == 148)
                     <li id="conf_observaciones">
                         <a href="{{ route('observacion_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                             <p class="romperpalabra"><span id="icono_active2"></span> Observaciones</p>
+                        </a>
+                    </li>
+                @endif
+                @if (session('usuario')->id_nivel == 1 || 
+                session('usuario')->id_puesto == 128 || 
+                session('usuario')->id_nivel == 2 || 
+                session('usuario')->id_nivel == 7 || 
+                session('usuario')->id_nivel == 11 || 
+                session('usuario')->id_nivel == 5 || 
+                session('usuario')->id_nivel == 4 || 
+                session('usuario')->id_puesto == 102 || 
+                session('usuario')->id_puesto == 80 || 
+                session('usuario')->id_puesto == 81 || 
+                session('usuario')->id_puesto == 122 || 
+                session('usuario')->id_puesto == 23 || 
+                session('usuario')->id_puesto == 9 ||
+                session('usuario')->id_puesto == 75 || 
+                session('usuario')->id_puesto == 7 || 
+                session('usuario')->id_puesto == 133 ||
+                session('usuario')->id_puesto == 138 || 
+                session('usuario')->id_puesto == 83 ||
+                session('usuario')->id_puesto == 145 || 
+                session('usuario')->id_puesto == 40 || 
+                session('usuario')->id_puesto == 164 || 
+                session('usuario')->id_puesto == 148)
+                    <li id="conf_requiciones_tiendas">
+                        <a href="{{ route('requisicion_tienda_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                            <p class="romperpalabra"><span id="icono_active2"></span> Requisición tienda</p>
                         </a>
                     </li>
                 @endif
