@@ -1,3 +1,65 @@
+<style>
+    #hreportbitienda>div {
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        /* Asegura que el texto no desborde el contenedor */
+    }
+
+    /* Estilo para el texto dentro de <span> */
+    #hreportbitienda span {
+        margin-left: 8px;
+        /* Espacio entre el ícono y el texto */
+        white-space: normal;
+        /* Permite que el texto se ajuste en múltiples líneas */
+        overflow-wrap: break-word;
+        /* Rompe palabras largas si es necesario */
+        word-wrap: break-word;
+        /* Compatibilidad con navegadores más antiguos */
+    }
+
+    #rreportbitienda {
+        margin-left: -10%
+    }
+</style>
+<li class="menu menu-heading">
+    <div class="heading">
+        <span>REPORTES BI</span>
+    </div>
+</li>
+<li class="menu" id="reportbitienda">
+    <a href="#rreportbitienda" id="hreportbiinterna" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+        <div class="">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-pie-chart">
+                <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+            </svg>
+            <span>{{ $list_subgerencia['nom_sub_gerencia'] }}</span>
+        </div>
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </div>
+    </a>
+
+    <ul class="collapse submenu list-unstyled" id="rreportbitienda" data-parent="#accordionExample">
+        @foreach ($list_subgerencia['areas'] as $area)
+        @php
+        $area_id = 'conf_' . strtolower(str_replace(' ', '_', $area));
+        @endphp
+        <li id="{{ $area_id }}" clas>
+            <a href="#" data-toggle="tooltip" data-placement="right" data-html="true">
+                <p class="romperpalabra"><span id="icono_active2"></span> {{ $area }}</p>
+            </a>
+        </li>
+
+        @endforeach
+    </ul>
+</li>
+
+
+
 <li class="menu menu-heading">
     <div class="heading">
         <span>MÓDULOS</span>
@@ -57,23 +119,27 @@
 
 <li class="menu menu-heading">
     <div class="heading">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal">
+            <circle cx="12" cy="12" r="1"></circle>
+            <circle cx="19" cy="12" r="1"></circle>
+            <circle cx="5" cy="12" r="1"></circle>
+        </svg>
         <span>ADMINISTRACION</span>
     </div>
 </li>
 
 <?php if ((
-    session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 102 || session('usuario')->id_puesto == 80 ||
-    session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 23 ||
-    session('usuario')->id_puesto == 75 || session('usuario')->id_puesto == 7 || session('usuario')->id_puesto == 133 ||
-    session('usuario')->id_puesto == 138 || session('usuario')->id_puesto == 83 || session('usuario')->id_puesto == 145 ||
-    session('usuario')->id_puesto == 40 || session('usuario')->id_puesto == 164 || session('usuario')->id_puesto == 148 ||
-    session('usuario')->id_puesto == 153 || session('usuario')->id_puesto == 157 || session('usuario')->id_puesto == 6 ||
-    session('usuario')->id_puesto == 12 || session('usuario')->id_puesto == 19 || session('usuario')->id_puesto == 23 ||
-    session('usuario')->id_puesto == 38 || session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 111 ||
-    session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 137 || session('usuario')->id_puesto == 164 ||
-    session('usuario')->id_puesto == 158 || session('usuario')->id_puesto == 9 || session('usuario')->id_puesto == 128 ||
-    session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 10 || session('usuario')->id_puesto == 22
+        session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 102 || session('usuario')->id_puesto == 80 ||
+        session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 23 ||
+        session('usuario')->id_puesto == 75 || session('usuario')->id_puesto == 7 || session('usuario')->id_puesto == 133 ||
+        session('usuario')->id_puesto == 138 || session('usuario')->id_puesto == 83 || session('usuario')->id_puesto == 145 ||
+        session('usuario')->id_puesto == 40 || session('usuario')->id_puesto == 164 || session('usuario')->id_puesto == 148 ||
+        session('usuario')->id_puesto == 153 || session('usuario')->id_puesto == 157 || session('usuario')->id_puesto == 6 ||
+        session('usuario')->id_puesto == 12 || session('usuario')->id_puesto == 19 || session('usuario')->id_puesto == 23 ||
+        session('usuario')->id_puesto == 38 || session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 111 ||
+        session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 137 || session('usuario')->id_puesto == 164 ||
+        session('usuario')->id_puesto == 158 || session('usuario')->id_puesto == 9 || session('usuario')->id_puesto == 128 ||
+        session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 10 || session('usuario')->id_puesto == 22
     ) && !Str::startsWith(session('usuario')->centro_labores, 'B')
 ) { ?>
     <li class="menu" id="ccvtabla">

@@ -30,6 +30,8 @@
         /* Ajusta el tamaño según tus necesidades */
     }
 
+
+
     .centered-label {
         text-align: center;
         margin-bottom: 1rem;
@@ -269,7 +271,7 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="tabla_body3">
+                        <tbody id="tabla_body4">
                             @foreach ($list_tablas as $tabla)
                             <tr class="text-center">
                                 <td class="px-1">
@@ -290,13 +292,13 @@
                                         @endforeach
                                     </select>
                                 </td>
-                                <td class="px-1"><input type="text" class="form-control" name="tablabi[]" value="{{ $tabla->nom_tabla }}"></td>
+                                <td class="px-1"><input type="text" class="form-control tabla-sty" name="tablabi[]" value="{{ $tabla->nom_tabla }}"></td>
                                 <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
                             </tr>
                             @endforeach
                         </tbody>
                     </table>
-                    <button type="button" class="btn btn-success btn-sm" onclick="addRowTabla()">Agregar tabla</button>
+                    <button type="button" class="btn btn-success btn-sm" onclick="addRowTablaEdit()">Agregar tabla</button>
 
                 </div>
             </div>
@@ -365,36 +367,41 @@
         tableBody.appendChild(newRow);
     }
 
-    function addRowTabla() {
+    function addRowTablaEdit() {
         // Obtener el cuerpo de la tablacodigo
-        var tableBody = document.getElementById('tabla_body3');
+        var tableBody = document.getElementById('tabla_body4');
 
         // Crear una nueva fila
-        var newRow = document.createElement('tr');
-        newRow.classList.add('text-center');
+        var newRowTab = document.createElement('tr');
+        newRowTab.classList.add('text-center');
 
         // Contenido HTML de la nueva fila
-        newRow.innerHTML = `
+        newRowTab.innerHTML = `
         <td class="px-1">
-               <select class="form-control" name="sistemas[]" id="sistemas">
+               <select class="form-control multivalue" name="sistemas[]" id="sistemas">
                     @foreach ($list_sistemas as $list)
                     <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema}}</option>
                     @endforeach
                </select>
         </td>
         <td class="px-1">
-               <select class="form-control" name="db[]" id="db">
+               <select class="form-control multivalue" name="db[]" id="db">
                     @foreach ($list_db as $list)
                     <option value="{{ $list->cod_db }}">{{ $list->nom_db}}</option>
                     @endforeach
                 </select>
         </td>
-        <td class="px-1"><input type="text" class="form-control" name="tablabi[]"></td>
+        <td class="px-1"><input type="text" class="form-control tabla-sty" name="tablabi[]"></td>
         <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
         `;
 
         // Agregar la nueva fila al cuerpo de la tabla
-        tableBody.appendChild(newRow);
+        tableBody.appendChild(newRowTab);
+        $('.multivalue2').select2({
+            tags: true, // Permite crear nuevas etiquetas
+            tokenSeparators: [',', ' '], // Separa las etiquetas con comas y espacios
+            dropdownParent: $('#ModalRegistro')
+        });
     }
 
 

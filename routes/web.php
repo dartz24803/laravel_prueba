@@ -269,6 +269,7 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('db_por_sistema_bi', 'getDBPorSistema')->name('db_por_sistema_bi');
     Route::get('ubicacion_por_sede', 'getUbicacionPorSede')->name('ubicacion_por_sede');
     Route::get('areas_por_ubicacion', 'getAreasPorUbicacion')->name('areas_por_ubicacion');
+    Route::get('area_por_usuario', 'getAreaPorUsuario')->name('area_por_usuario');
 
 
     // DB REPORTE
@@ -969,6 +970,7 @@ Route::controller(ProduccionController::class)->group(function () {
     Route::get('produccion_av/{id}/edit', 'edit_av')->name('produccion_av.edit');
     Route::put('produccion_av/{id}', 'update_av')->name('produccion_av.update');
     Route::delete('produccion_av/{id}', 'destroy_av')->name('produccion_av.destroy');
+    Route::post('Produccion/ListaAsignacionVisitas/{fec_ini}/{fec_fin}', 'ListaAsignacionVisitas');
 
     // Route::get('portalprocesos_lm/create', 'create_lm')->name('portalprocesos_lm.create');
     // Route::get('portalprocesos_lm/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_lm')->name('portalprocesos_lm.excel');
@@ -1008,7 +1010,7 @@ Route::controller(CajaChicaConfController::class)->group(function () {
     Route::post('caja_chica_conf_sc/traer_categoria', 'traer_categoria_sc')->name('caja_chica_conf_sc.traer_categoria');
     Route::post('caja_chica_conf_sc', 'store_sc')->name('caja_chica_conf_sc.store');
     Route::get('caja_chica_conf_sc/{id}/edit', 'edit_sc')->name('caja_chica_conf_sc.edit');
-    Route::put('caja_chica_conf_sc/{id}', 'update_sc')->name('caja_chica_conf_sc.update'); 
+    Route::put('caja_chica_conf_sc/{id}', 'update_sc')->name('caja_chica_conf_sc.update');
     Route::delete('caja_chica_conf_sc/{id}', 'destroy_sc')->name('caja_chica_conf_sc.destroy');
 });
 //TESORERÍA - CAJA CHICA

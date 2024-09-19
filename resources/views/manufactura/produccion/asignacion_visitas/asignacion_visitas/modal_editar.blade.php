@@ -10,6 +10,9 @@
 
     }
 
+    .select2-container {
+        margin-bottom: 0rem !important;
+    }
 
     .switch {
         position: relative;
@@ -71,7 +74,7 @@
 <form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
 
     <div class="modal-header">
-        <h5 class="modal-title">Actualizar Portal</h5>
+        <h5 class="modal-title">Editar Asignación Visita</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -81,42 +84,56 @@
     </div>
 
     <div class="modal-body" style=" max-height:450px;  overflow:auto;">
-
         <div class="row my-4">
             <div class="form-group col-lg-6">
                 <label class="control-label text-bold">Inspector: </label>
                 <select class="form-control" name="id_inspectore" id="id_inspectore">
                     @foreach ($list_inspector as $list)
-                    <option value="{{ $list->id_usuario }}">{{ $list->nombre_completo }}</option>
+                    <option value="{{ $list->id_usuario }}"
+                        {{ $list->id_usuario == $get_id->id_inspector ? 'selected' : '' }}>
+                        {{ $list->nombre_completo }}
+                    </option>
                     @endforeach
                 </select>
             </div>
 
             <div class="form-group col-lg-6">
                 <label class="control-label text-bold">Fecha: </label>
-                <input class="form-control" type="date" name="fechae" id="fechae" value="{{ date('Y-m-d') }}">
+                <input class="form-control" type="date" name="fechae" id="fechae" value="{{ isset($get_id->fecha) ? date('Y-m-d', strtotime($get_id->fecha)) : date('Y-m-d') }}">
+
             </div>
             <div class="form-group col-lg-6">
                 <label class="control-label text-bold">Punto de Partida: </label>
-                <select class="form-control multivalue" name="id_ptpartidae" id="id_ptpartidae">
+                <select class="form-control" name="id_ptpartidae" id="id_ptpartidae">
+                    <option value="9999">Domicilio</option>
                     @foreach ($list_proveedor as $list)
-                    <option value="{{ $list->id_proveedor }}">{{ $list->nombre_proveedor_completo }}</option>
+                    <option value="{{ $list->id_proveedor }}"
+                        {{ $list->id_proveedor == $get_id->punto_partida ? 'selected' : '' }}>
+                        {{ $list->nombre_proveedor_completo }}
+                    </option>
                     @endforeach
                 </select>
             </div>
             <div class="form-group col-lg-6">
                 <label class="control-label text-bold">Punto de Llegada: </label>
-                <select class="form-control multivalue" name="id_ptllegadae" id="id_ptllegadae">
+                <select class="form-control" name="id_ptllegadae" id="id_ptllegadae">
+                    <option value="9999">Domicilio</option>
                     @foreach ($list_proveedor as $list)
-                    <option value="{{ $list->id_proveedor }}">{{ $list->nombre_proveedor_completo }}</option>
+                    <option value="{{ $list->id_proveedor }}"
+                        {{ $list->id_proveedor == $get_id->punto_llegada ? 'selected' : '' }}>
+                        {{ $list->nombre_proveedor_completo }}
+                    </option>
                     @endforeach
                 </select>
             </div>
             <div class="form-group col-lg-6">
                 <label class="control-label text-bold">Modelo: </label>
-                <select class="form-control multivalue" name="id_modeloe" id="id_modeloe">
+                <select class="form-control" name="id_modeloe" id="id_modeloe">
                     @foreach ($list_ficha_tecnica as $list)
-                    <option value="{{ $list->id_ft_produccion }}">{{ $list->modelo }}</option>
+                    <option value="{{ $list->id_ft_produccion }}"
+                        {{ $list->id_ft_produccion == $get_id->id_modelo ? 'selected' : '' }}>
+                        {{ $list->modelo }}
+                    </option>
                     @endforeach
                 </select>
             </div>
@@ -124,7 +141,10 @@
                 <label class="control-label text-bold">Proceso: </label>
                 <select class="form-control" name="id_procesoe" id="id_procesoe">
                     @foreach ($list_proceso_visita as $list)
-                    <option value="{{ $list->id_procesov }}">{{ $list->nom_proceso }}</option>
+                    <option value="{{ $list->id_procesov }}"
+                        {{ $list->id_procesov == $get_id->id_proceso ? 'selected' : '' }}>
+                        {{ $list->nom_proceso }}
+                    </option>
                     @endforeach
                 </select>
             </div>
@@ -148,6 +168,18 @@
         tags: true, // Permite crear nuevas etiquetas
         tokenSeparators: [',', ' '], // Separa las etiquetas con comas y espacios
         dropdownParent: $('#ModalRegistro')
+    });
+    $('#id_ptpartidae').select2({
+        placeholder: "Selecciona un Punto de Partida",
+        allowClear: true
+    });
+    $('#id_ptllegadae').select2({
+        placeholder: "Selecciona un Punto de Llegada",
+        allowClear: true
+    });
+    $('#id_modeloe').select2({
+        placeholder: "Selecciona un Modelo",
+        allowClear: true
     });
 
     function Update_Asignacion() {
@@ -179,7 +211,7 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Lista_Maestra();
+                        ListaAsignacionVisitas();
                         $("#ModalUpdate .close").click();
                     });
                 }

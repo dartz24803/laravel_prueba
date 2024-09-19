@@ -42,7 +42,7 @@ class ProduccionController extends Controller
 
         // Obtener la lista de asignaciones filtrada por fecha
         $list_asignacion = AsignacionVisita::getListAsignacion($fini, $ffin);
-
+        // dd($list_asignacion);
         return view('manufactura.produccion.asignacion_visitas.asignacion_visitas.lista', compact('list_asignacion'));
     }
 
@@ -127,42 +127,50 @@ class ProduccionController extends Controller
         } else {
             $numero = 0; // Si no hay código anterior, comenzar desde cero
         }
-        // Procesar los datos de la tabla y guardarlos
         foreach ($tableData as $index => $data) {
-            // Obtener los valores de proveedor para partida y llegada dentro del bucle
-            $proveedorpar = ProveedorGeneral::where('id_proveedor', $data['partida'])->first();
-            $proveedorlle = ProveedorGeneral::where('id_proveedor', $data['llegada'])->first();
-            $tipo_punto_partida = $proveedorpar ? $proveedorpar->id_proveedor_mae : null;
-            $tipo_punto_llegada = $proveedorlle ? $proveedorlle->id_proveedor_mae : null;
+            if ($data['partida'] == 9999) {
+                $tipo_punto_partida = 1;
+            } else {
+                $proveedorpar = ProveedorGeneral::where('id_proveedor', $data['partida'])->first();
+                $tipo_punto_partida = $proveedorpar ? $proveedorpar->id_proveedor_mae : null;
+            }
+            if ($data['llegada'] == 9999) {
+                $tipo_punto_llegada = 1;
+            } else {
+                $proveedorlle = ProveedorGeneral::where('id_proveedor', $data['llegada'])->first();
+                $tipo_punto_llegada = $proveedorlle ? $proveedorlle->id_proveedor_mae : null;
+            }
 
-            $nuevoNumero = str_pad($numero + 1 + $index, 5, '0', STR_PAD_LEFT); // Asegurarse de que tenga 5 dígitos
+            $nuevoNumero = str_pad($numero + 1 + $index, 5, '0', STR_PAD_LEFT); // Asegurar 5 dígitos
             $codAsignacion = 'V' . $nuevoNumero;
-            // Crear un nuevo registro en la tabla asignacion_visita con datos modificados según $data
+
+            // Crear un nuevo registro en la tabla asignacion_visita
             AsignacionVisita::create([
-                'cod_asignacion' => $codAsignacion, // Usar un nuevo código de asignación para cada fila
-                'id_inspector' => $request->id_inspector, // Usar el inspector del formulario
-                'id_puesto_inspector' => $idPuestoInspector, // Usar el puesto de inspector del formulario
-                'fecha' => $request->fecha, // Usar la fecha del formulario
-                'punto_partida' => $data['partida'], // Usar el valor de la tabla para el punto de partida
-                'punto_llegada' => $data['llegada'], // Usar el valor de la tabla para el punto de llegada
-                'tipo_punto_partida' => $tipo_punto_partida, // Usar el tipo de punto de partida del proveedor
-                'tipo_punto_llegada' => $tipo_punto_llegada, // Usar el tipo de punto de llegada del proveedor
-                'id_modelo' => $data['modelo'], // Usar el modelo del formulario
-                'id_proceso' => $data['proceso'], // Usar el proceso del formulario
-                'observacion_otros' => '', // Campo vacío
-                'id_tipo_transporte' => 0, // Valor por defecto
-                'costo' => $request->costo ?? 0.00, // Usar el costo del formulario o 0.00 por defecto
-                'inspector_acompaniante' => $inspectoresAcompaniante, // Usar los inspectores acompañantes del formulario
-                'observacion' => '', // Campo vacío
-                'estado_registro' => 1, // Valor por defecto
-                'estado' => 1, // Valor por defecto
-                'fec_reg' => now(), // Fecha actual
-                'user_reg' => session('usuario')->id_usuario, // Usuario que registra
-                'fec_act' => now(), // Fecha actual
-                'user_act' => session('usuario')->id_usuario, // Usuario que actualiza
-                'user_eli' => 0, // Valor por defecto
+                'cod_asignacion' => $codAsignacion,
+                'id_inspector' => $request->id_inspector,
+                'id_puesto_inspector' => $idPuestoInspector,
+                'fecha' => $request->fecha,
+                'punto_partida' => $data['partida'],
+                'punto_llegada' => $data['llegada'],
+                'tipo_punto_partida' => $tipo_punto_partida,
+                'tipo_punto_llegada' => $tipo_punto_llegada,
+                'id_modelo' => $data['modelo'],
+                'id_proceso' => $data['proceso'],
+                'observacion_otros' => '',
+                'id_tipo_transporte' => 0,
+                'costo' => $request->costo ?? 0.00,
+                'inspector_acompaniante' => $inspectoresAcompaniante,
+                'observacion' => '',
+                'estado_registro' => 1,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+                'user_eli' => 0,
             ]);
         }
+
 
         return response()->json(['message' => 'Registros creados con éxito.']);
     }
@@ -207,7 +215,6 @@ class ProduccionController extends Controller
             ->distinct('modelo')
             ->get();
 
-
         $list_proceso_visita = ProcesoVisita::select('id_procesov', 'nom_proceso')
             ->where('estado', 1)
             ->orderBy('nom_proceso', 'ASC')
@@ -221,5 +228,41 @@ class ProduccionController extends Controller
             'list_ficha_tecnica',
             'list_proceso_visita'
         ));
+    }
+
+    public function ListaAsignacionVisitas($fecha, $fecha_fin)
+    {
+        $list_asignacion = AsignacionVisita::getListAsignacion($fecha, $fecha_fin);
+
+        return view('manufactura.produccion.asignacion_visitas.asignacion_visitas.lista', compact('list_asignacion'));
+    }
+
+
+    public function update_av(Request $request, $id)
+    {
+        $request->validate([
+            'id_inspectore' => 'required',
+            'id_ptpartidae' => 'required',
+            'id_ptllegadae' => 'required',
+            'id_modeloe' => 'required',
+
+
+        ], [
+            'id_inspectore.required' => 'Debe seleccionar inspector.',
+            'id_ptpartidae.required' => 'Debe seleccionar punto partida.',
+            'id_ptllegadae.required' => 'Debe seleccionar punto llegada.',
+            'id_modeloe.required' => 'Debe seleccionar modelo.',
+
+        ]);
+
+        AsignacionVisita::findOrFail($id)->update([
+            'fecha' => $request->fechae,
+            'id_inspector' => $request->id_inspectore,
+            'punto_partida' => $request->id_ptpartidae,
+            'punto_llegada' => $request->id_areae,
+            'id_modelo' => $request->id_modeloe,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
     }
 }

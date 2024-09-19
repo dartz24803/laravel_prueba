@@ -159,7 +159,7 @@
                     <div class="form-group col-lg-6">
                         <label class="control-label text-bold">Punto de Partida: </label>
                         <select class="form-control multivalue" name="id_ptpartida" id="id_ptpartida">
-                            <option value="0">Domicilio</option>
+                            <option value="9999">Domicilio</option>
                             @foreach ($list_proveedor as $list)
                             <option value="{{ $list->id_proveedor }}">{{ $list->nombre_proveedor_completo }}</option>
                             @endforeach
@@ -168,6 +168,7 @@
                     <div class="form-group col-lg-6">
                         <label class="control-label text-bold">Punto de Llegada: </label>
                         <select class="form-control multivalue" name="id_ptllegada" id="id_ptllegada">
+                            <option value="9999">Domicilio</option>
                             @foreach ($list_proveedor as $list)
                             <option value="{{ $list->id_proveedor }}">{{ $list->nombre_proveedor_completo }}</option>
                             @endforeach
@@ -189,7 +190,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="form-group col-lg-12">
+                    <div class="form-group col-lg-12 mt-2">
                         <button class="btn btn-success" type="button" id="btn-add-row">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle">
                                 <circle cx="12" cy="12" r="10"></circle>
@@ -341,7 +342,6 @@
                 });
             },
             error: function(xhr, status, error) {
-                console.error(xhr.responseText);
                 swal.fire(
                     'Error!',
                     'Hubo un problema al registrar.',
