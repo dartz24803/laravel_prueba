@@ -55,7 +55,7 @@ class Usuario extends Model
     {
         $query = "SELECT u.id_usuario, u.usuario_nombres, u.usuario_apater, u.usuario_amater, u.usuario_codigo,
         u.id_nivel, u.centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,u.id_puesto,u.acceso,
-        u.ini_funciones,u.fec_reg,u.usuario_password,u.estado, n.nom_nivel, p.nom_puesto, a.nom_area, u.id_area,s.
+        u.ini_funciones,u.fec_reg,u.usuario_password,u.estado, n.nom_nivel, p.nom_puesto, a.nom_area, u.id_area,
         (SELECT GROUP_CONCAT(puestos) FROM area WHERE estado=1 AND orden!='') AS grupo_puestos,
         CASE WHEN u.urladm=1 THEN (select r.url_config from config r where r.descrip_config='Foto_Postulante' 
         and r.estado=1) else (select r.url_config from config r where r.descrip_config='Foto_colaborador' 
@@ -64,7 +64,6 @@ class Usuario extends Model
         FROM users u
         LEFT JOIN permiso_papeletas_salida pps ON u.id_puesto=pps.id_puesto_jefe AND pps.estado=1
         LEFT JOIN nivel n ON u.id_nivel=n.id_nivel
-        LEFT JOIN sub_gerencia s ON u.id_subgerencia=s.id_subgerencia
         LEFT JOIN puesto p ON u.id_puesto=p.id_puesto
         LEFT JOIN area a ON u.id_area=a.id_area
         WHERE u.usuario_codigo='$usuario' AND u.estado IN (1,4) AND u.desvinculacion IN (0)";

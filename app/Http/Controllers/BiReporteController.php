@@ -42,6 +42,7 @@ use App\Models\Notificacion;
 use App\Models\Organigrama;
 use App\Models\SedeLaboral;
 use App\Models\SistemaTablas;
+use App\Models\SubGerencia;
 use App\Models\TablaBi;
 use App\Models\TipoIndicador;
 use App\Models\Ubicacion;
@@ -53,8 +54,9 @@ class BiReporteController extends Controller
     public function index()
     {
         //NOTIFICACIONES
+        $list_subgerencia = SubGerencia::list_subgerencia(9);
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('interna.bi.reportes.index', compact('list_notificacion'));
+        return view('interna.bi.reportes.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
 
