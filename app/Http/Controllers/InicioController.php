@@ -30,9 +30,9 @@ class InicioController extends Controller
         $list_frases = FrasesInicio::where('estado', 1)->get();
         $list_cumple = Usuario::get_list_proximos_cumpleanios();
         $get_foto = Config::where('descrip_config', 'Foto_Colaborador')
-                            ->where('estado', 1)
-                            ->get();
-        return view('inicio', compact('list_notificacion','list_cumple','get_foto', 'list_frases', 'list_slider_inicio'));
+            ->where('estado', 1)
+            ->get();
+        return view('inicio', compact('list_notificacion', 'list_cumple', 'get_foto', 'list_frases', 'list_slider_inicio'));
     }
     /*
     public function listar()

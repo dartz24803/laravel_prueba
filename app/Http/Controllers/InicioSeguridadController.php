@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notificacion;
+use App\Models\SubGerencia;
 use Illuminate\Http\Request;
 
 class InicioSeguridadController extends Controller
@@ -19,8 +20,9 @@ class InicioSeguridadController extends Controller
     }
     public function index()
     {
+        $list_subgerencia = SubGerencia::list_subgerencia(1);
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();         
-        return view('seguridad.inicio_seguridad',compact('list_notificacion'));
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('seguridad.inicio_seguridad', compact('list_notificacion', 'list_subgerencia'));
     }
 }

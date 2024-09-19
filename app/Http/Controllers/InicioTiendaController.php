@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notificacion;
+use App\Models\SubGerencia;
 use Illuminate\Http\Request;
 
 class InicioTiendaController extends Controller
@@ -19,8 +20,9 @@ class InicioTiendaController extends Controller
     }
     public function index()
     {
+        $list_subgerencia = SubGerencia::list_subgerencia(2);
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();        
-        return view('tienda.inicio_tienda',compact('list_notificacion'));
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('tienda.inicio_tienda', compact('list_notificacion', 'list_subgerencia'));
     }
 }

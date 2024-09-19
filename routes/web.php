@@ -269,6 +269,7 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('db_por_sistema_bi', 'getDBPorSistema')->name('db_por_sistema_bi');
     Route::get('ubicacion_por_sede', 'getUbicacionPorSede')->name('ubicacion_por_sede');
     Route::get('areas_por_ubicacion', 'getAreasPorUbicacion')->name('areas_por_ubicacion');
+    Route::get('area_por_usuario', 'getAreaPorUsuario')->name('area_por_usuario');
 
 
     // DB REPORTE
@@ -969,6 +970,7 @@ Route::controller(ProduccionController::class)->group(function () {
     Route::get('produccion_av/{id}/edit', 'edit_av')->name('produccion_av.edit');
     Route::put('produccion_av/{id}', 'update_av')->name('produccion_av.update');
     Route::delete('produccion_av/{id}', 'destroy_av')->name('produccion_av.destroy');
+    Route::post('Produccion/ListaAsignacionVisitas/{fec_ini}/{fec_fin}', 'ListaAsignacionVisitas');
 
     // Route::get('portalprocesos_lm/create', 'create_lm')->name('portalprocesos_lm.create');
     // Route::get('portalprocesos_lm/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_lm')->name('portalprocesos_lm.excel');
@@ -1008,7 +1010,7 @@ Route::controller(CajaChicaConfController::class)->group(function () {
     Route::post('caja_chica_conf_sc/traer_categoria', 'traer_categoria_sc')->name('caja_chica_conf_sc.traer_categoria');
     Route::post('caja_chica_conf_sc', 'store_sc')->name('caja_chica_conf_sc.store');
     Route::get('caja_chica_conf_sc/{id}/edit', 'edit_sc')->name('caja_chica_conf_sc.edit');
-    Route::put('caja_chica_conf_sc/{id}', 'update_sc')->name('caja_chica_conf_sc.update'); 
+    Route::put('caja_chica_conf_sc/{id}', 'update_sc')->name('caja_chica_conf_sc.update');
     Route::delete('caja_chica_conf_sc/{id}', 'destroy_sc')->name('caja_chica_conf_sc.destroy');
 });
 //TESORERÍA - CAJA CHICA
@@ -1021,6 +1023,12 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::post('caja_chica_mo', 'store_mo')->name('caja_chica.store_mo');
     Route::get('caja_chica/create_pv', 'create_pv')->name('caja_chica.create_pv');
     Route::post('caja_chica_pv', 'store_pv')->name('caja_chica.store_pv');
+    Route::get('caja_chica/{id}/edit', 'edit')->name('caja_chica.edit');
+    Route::put('caja_chica_mo/{id}', 'update_mo')->name('caja_chica.update_mo');
+    Route::get('caja_chica/{id}/download', 'download')->name('caja_chica.download');
+    Route::get('caja_chica/{id}/validar', 'validar')->name('caja_chica.validar');
+    Route::put('caja_chica_mo/{id}/validar', 'validar_mo')->name('caja_chica.validar_mo');
+    Route::delete('caja_chica/{id}', 'destroy')->name('caja_chica.destroy');
 });
 //CAJA - INSUMOS CONFIGURABLE
 Route::controller(InsumoConfController::class)->group(function () {

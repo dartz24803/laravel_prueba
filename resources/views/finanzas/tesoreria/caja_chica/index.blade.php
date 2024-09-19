@@ -198,7 +198,7 @@
         }
 
         function Descargar_Archivo(id){
-            window.location.replace("{{ route('observacion.download', ':id') }}".replace(':id', id));
+            window.location.replace("{{ route('caja_chica.download', ':id') }}".replace(':id', id));
         }
 
         function Cambiar_Estado_Suceso(id) {
@@ -236,10 +236,10 @@
             })
         }
 
-        function Delete_Suceso(id) {
+        function Delete_Caja_Chica(id) {
             Cargando();
 
-            var url = "{{ route('observacion.destroy', ':id') }}".replace(':id', id);
+            var url = "{{ route('caja_chica.destroy', ':id') }}".replace(':id', id);
 
             Swal({
                 title: '¿Realmente desea eliminar el registro?',
@@ -255,7 +255,7 @@
                         type: "DELETE",
                         url: url,
                         headers: {
-                            'X-CSRF-TOKEN': csrfToken
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         },
                         success: function() {
                             Swal(
@@ -263,7 +263,7 @@
                                 'El registro ha sido eliminado satisfactoriamente.',
                                 'success'
                             ).then(function() {
-                                Lista_Observacion();
+                                Lista_Caja_Chica();
                             });    
                         }
                     });
