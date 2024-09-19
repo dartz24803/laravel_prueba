@@ -368,21 +368,20 @@
                             $("#ModalRegistroGrande .close").click()
                         });
                     }
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
                 }
             });
     }
 
     function Valida_Insert_Horario() {
-        if ($('#nombre_i').val().trim() == '') {
-            msgDate = 'Debe ingresar nombre.';
-            inputFocus = '#nombre_i';
-            return false;
-        }
-        if ($('#cod_base_i').val() == '0') {
-            msgDate = 'Debe seleccionar base.';
-            inputFocus = '#cod_base_i';
-            return false;
-        }
         if(!$('#ch_dia_laborado_lu_i').is(":checked") && !$('#ch_dia_laborado_ma_i').is(":checked") && 
         !$('#ch_dia_laborado_mi_i').is(":checked") && !$('#ch_dia_laborado_ju_i').is(":checked") && 
         !$('#ch_dia_laborado_vi_i').is(":checked") && !$('#ch_dia_laborado_sa_i').is(":checked") && 

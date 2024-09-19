@@ -179,7 +179,7 @@ class LecturaServicioController extends Controller
                 }
             }
             LecturaServicio::create([
-                'fecha' => $request->fecha,
+                'fecha' => $request->date_input,
                 'cod_base' => $cod_base,
                 // 'fecha' => $fecha,
                 'hora_ing' => $request->hora_ing,

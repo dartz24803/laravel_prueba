@@ -16,6 +16,7 @@
                     <input id="fecha_lectura" name="fecha_lectura" type="date" class="form-control" value="{{ $get_id->fecha }}">
                 </div>
             <?php }else{ ?>
+                <input type="hidden" type="date" class="form-control" name="fecha_lectura" value="{{ $get_id->fecha }}">
                 <div class="form-group col-lg-4">
                     <input type="date" class="form-control" value="{{ $get_id->fecha }}" disabled>
                 </div>
