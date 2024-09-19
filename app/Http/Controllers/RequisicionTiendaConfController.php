@@ -8,6 +8,7 @@ use App\Models\Estado;
 use App\Models\Marca;
 use App\Models\Modelo;
 use App\Models\Notificacion;
+use App\Models\ProductoCaja;
 use App\Models\Unidad;
 use Illuminate\Http\Request;
 
@@ -518,6 +519,100 @@ class RequisicionTiendaConfController extends Controller
     public function destroy_ca($id)
     {
         Categoria::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function index_pr()
+    {
+        return view('caja.administracion.requisicion_tienda.producto.index');
+    }
+
+    public function list_pr()
+    {
+        $list_producto = ProductoCaja::from('producto_caja AS pr')
+                        ->select('pr.id_producto','ma.nom_marca','mo.nom_modelo','co.nom_color',
+                        'ca.nom_categoria','un.cod_unidad','pr.nom_producto','es.nom_estado')
+                        ->join('marca AS ma','ma.id_marca','=','pr.id_marca')
+                        ->leftjoin('modelo AS mo','mo.id_modelo','=','pr.id_modelo')
+                        ->leftjoin('color AS co','co.id_color','=','pr.id_color')
+                        ->leftjoin('categoria AS ca','ca.id_categoria','=','pr.id_categoria')
+                        ->join('unidad AS un','un.id_unidad','=','pr.id_unidad')
+                        ->leftjoin('estado AS es','es.id_estado','=','pr.estado_registro')
+                        ->where('pr.estado', 1)->get();
+        return view('caja.administracion.requisicion_tienda.producto.lista', compact('list_producto'));
+    }
+
+    public function create_pr()
+    {
+        return view('caja.administracion.requisicion_tienda.producto.modal_registrar');
+    }
+
+    public function store_pr(Request $request)
+    {
+        $request->validate([
+            'id_marca' => 'gt:0',
+            'id_unidad' => 'gt:0',
+            'nom_producto' => 'required'
+        ],[
+            'id_marca.gt' => 'Debe seleccionar marca.',
+            'id_unidad.gt' => 'Debe seleccionar unidad.',
+            'nom_producto.gt' => 'Debe ingresar nombre.'
+        ]);
+
+        $valida = ProductoCaja::where('id_categoria_mae',2)->where('nom_categoria', $request->nom_categoria)
+                ->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            ProductoCaja::create([
+                'id_categoria_mae' => 2,
+                'nom_categoria' => $request->nom_categoria,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_pr($id)
+    {
+        $get_id = ProductoCaja::findOrFail($id);
+        return view('caja.administracion.requisicion_tienda.producto.modal_editar', compact('get_id'));
+    }
+
+    public function update_pr(Request $request, $id)
+    {
+        $request->validate([
+            'id_marcae' => 'gt:0',
+            'id_unidade' => 'gt:0',
+            'nom_productoe' => 'required'
+        ],[
+            'id_marcae.gt' => 'Debe seleccionar marca.',
+            'id_unidade.gt' => 'Debe seleccionar unidad.',
+            'nom_productoe.gt' => 'Debe ingresar nombre.'
+        ]);
+
+        $valida = ProductoCaja::where('id_categoria_mae',2)->where('nom_categoria', $request->nom_categoriae)
+                ->where('estado', 1)->where('id_categoria', '!=', $id)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            ProductoCaja::findOrFail($id)->update([
+                'nom_categoria' => $request->nom_categoriae,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_pr($id)
+    {
+        ProductoCaja::findOrFail($id)->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario

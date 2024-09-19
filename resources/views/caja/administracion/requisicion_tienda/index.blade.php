@@ -154,7 +154,8 @@
         }
 
         function Producto(){
-            Cargando();
+            alert('Aún falta');
+            /*Cargando();
 
             var url="{{ route('requisicion_tienda_conf_pr') }}";
 
@@ -166,7 +167,7 @@
                     $(".nav-link").removeClass('active');
                     $("#a_pr").addClass('active');
                 }
-            });
+            });*/
         }
     </script>
 @endsection
