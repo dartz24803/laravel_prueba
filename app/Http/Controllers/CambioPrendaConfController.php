@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MotivoCprenda;
 use App\Models\Notificacion;
+use App\Models\SubGerencia;
 use Illuminate\Http\Request;
 
 class CambioPrendaConfController extends Controller
@@ -17,7 +18,8 @@ class CambioPrendaConfController extends Controller
     {
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('caja.administracion.cambio_prenda.index', compact('list_notificacion'));
+        $list_subgerencia = SubGerencia::list_subgerencia(13);  
+        return view('caja.administracion.cambio_prenda.index', compact('list_notificacion','list_subgerencia'));
     }
 
     public function index_mo()

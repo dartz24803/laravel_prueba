@@ -9,30 +9,99 @@
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row">
             <div class="form-group col-lg-2">
-                <label>Código:</label>
+                <label>Marca:</label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" id="cod_unidad" name="cod_unidad" placeholder="Código">
+                <select class="form-control" name="id_marca" id="id_marca" onchange="Traer_Modelo('');">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_marca as $list)
+                        <option value="{{ $list->id_marca }}">{{ $list->nom_marca }}</option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="form-group col-lg-2">
-                <label>Descripción:</label>
+                <label>Modelo:</label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" id="descripcion_unidad" name="descripcion_unidad" placeholder="Descripción">
+                <select class="form-control" name="id_modelo" id="id_modelo">
+                    <option value="0">Seleccione</option>
+                </select>
             </div>
-        </div>  	           	                	        
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Color:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <select class="form-control" name="id_color" id="id_color">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_color as $list)
+                        <option value="{{ $list->id_color }}">{{ $list->nom_color }}</option>
+                    @endforeach                    
+                </select>
+            </div>
+
+            <div class="form-group col-lg-2">
+                <label>Categoría:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <select class="form-control" name="id_categoria" id="id_categoria">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_categoria as $list)
+                        <option value="{{ $list->id_categoria }}">{{ $list->nom_categoria }}</option>
+                    @endforeach                       
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Unidad:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <select class="form-control" name="id_unidad" id="id_unidad">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_unidad as $list)
+                        <option value="{{ $list->id_unidad }}">{{ $list->nom_unidad }}</option>
+                    @endforeach                     
+                </select>
+            </div>
+
+            <div class="form-group col-lg-2">
+                <label>Estado:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <select class="form-control" name="id_estado" id="id_estado">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_estado as $list)
+                        <option value="{{ $list->id_estado }}">{{ $list->nom_estado }}</option>
+                    @endforeach                       
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Nombre:</label>
+            </div>
+            <div class="form-group col-lg-10">
+                <input type="text" class="form-control" name="nom_producto" id="nom_producto" 
+                placeholder="Nombre">
+            </div>
+        </div>
     </div>
 
     <div class="modal-footer">
         @csrf
-        <button class="btn btn-primary" type="button" onclick="Insert_Unidad_Medida();">Guardar</button>
+        <button class="btn btn-primary" type="button" onclick="Insert_Producto();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
-    function Insert_Unidad_Medida() {
+    function Insert_Producto() {
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario'));
@@ -60,7 +129,7 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Lista_Unidad_Medida();
+                        Lista_Producto();
                         $("#ModalRegistro .close").click();
                     })
                 }

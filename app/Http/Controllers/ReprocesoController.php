@@ -6,6 +6,7 @@ use App\Models\Notificacion;
 use Illuminate\Http\Request;
 use App\Models\UsuarioReproceso;
 use App\Models\Reproceso;
+use App\Models\SubGerencia;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -24,7 +25,8 @@ class ReprocesoController extends Controller
     public function Reproceso(){
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('logistica/Reproceso/index', compact('list_notificacion'));
+        $list_subgerencia = SubGerencia::list_subgerencia(7);        
+        return view('logistica/Reproceso/index', compact('list_notificacion','list_subgerencia'));
     }
 
     public function Lista_Reproceso(){

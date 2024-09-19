@@ -10,6 +10,7 @@ use App\Models\Area;
 use App\Models\Base;
 use App\Models\Notificacion;
 use App\Models\ReporteFotograficoDetalle;
+use App\Models\SubGerencia;
 use Exception;
 
 class ReporteFotograficoAdmController extends Controller
@@ -187,8 +188,9 @@ class ReporteFotograficoAdmController extends Controller
     public function Tabla_RF(){
         //enviar listas a la vista
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();          
-        return view('tienda.administracion.ReporteFotografico.index',compact('list_notificacion'));
+        $list_notificacion = Notificacion::get_list_notificacion(); 
+        $list_subgerencia = SubGerencia::list_subgerencia(2);         
+        return view('tienda.administracion.ReporteFotografico.index',compact('list_notificacion','list_subgerencia'));
     }
 
     public function Codigos_Reporte_Fotografico(){

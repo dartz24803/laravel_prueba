@@ -7,6 +7,7 @@ use App\Models\Notificacion;
 use App\Models\SubCategoria;
 use App\Models\Ubicacion;
 use Illuminate\Http\Request;
+use App\Models\SubGerencia;
 
 class CajaChicaConfController extends Controller
 {
@@ -17,9 +18,11 @@ class CajaChicaConfController extends Controller
 
     public function index()
     {
+        //REPORTE BI CON ID
+        $list_subgerencia = SubGerencia::list_subgerencia(8);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('finanzas.tesoreria.administracion.caja_chica.index', compact('list_notificacion'));
+        return view('finanzas.tesoreria.administracion.caja_chica.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
     public function index_ca()

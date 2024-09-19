@@ -21,7 +21,7 @@ class ProductoCaja extends Model
         'id_color',
         'id_categoria',
         'nom_producto',
-        'estado_registro',
+        'id_estado',
         'estado',
         'fec_reg',
         'user_reg',

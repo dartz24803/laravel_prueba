@@ -25,6 +25,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Illuminate\Support\Facades\DB;
+use App\Models\SubGerencia;
 
 class ControlCamaraController extends Controller
 {
@@ -35,9 +36,11 @@ class ControlCamaraController extends Controller
 
     public function index()
     {
+        //REPORTE BI CON ID
+        $list_subgerencia = SubGerencia::list_subgerencia(5);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();            
-        return view('seguridad.control_camara.index',compact('list_notificacion'));
+        return view('seguridad.control_camara.index',compact('list_notificacion', 'list_subgerencia'));
     }
 
     public function index_reg()

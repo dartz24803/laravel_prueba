@@ -7,13 +7,13 @@
     </div>
 </div>
 
-<div class="table-responsive mb-4 mt-4" id="lista_unidad_medida">
+<div class="table-responsive mb-4 mt-4" id="lista_producto">
 </div>
 
 <script>
-    Lista_Unidad_Medida();
+    Lista_Producto();
 
-    function Lista_Unidad_Medida(){
+    function Lista_Producto(){
         Cargando();
 
         var url = "{{ route('requisicion_tienda_conf_pr.list') }}";
@@ -22,12 +22,31 @@
             url: url,
             type: "GET",
             success:function (resp) {
-                $('#lista_unidad_medida').html(resp);  
+                $('#lista_producto').html(resp);  
             }
         });
     }
 
-    function Delete_Unidad_Medida(id) {
+    function Traer_Modelo(v){
+        Cargando();
+
+        var url = "{{ route('requisicion_tienda_conf_pr.traer_modelo') }}";
+        var id_marca = $('#id_marca'+v).val();
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {'id_marca':id_marca},
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success:function (resp) {
+                $('#id_modelo'+v).html(resp);
+            }
+        });
+    }
+
+    function Delete_Producto(id) {
         Cargando();
 
         var url = "{{ route('requisicion_tienda_conf_pr.destroy', ':id') }}".replace(':id', id);
@@ -55,7 +74,7 @@
                             'El registro ha sido eliminado satisfactoriamente.',
                             'success'
                         ).then(function() {
-                            Lista_Unidad_Medida();
+                            Lista_Producto();
                         });    
                     }
                 });

@@ -15,9 +15,9 @@ class CajaInicioController extends Controller
 
     public function index()
     {
-        $list_subgerencia = SubGerencia::list_subgerencia(13);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('caja.index', compact('list_notificacion', 'list_subgerencia'));
+        $list_subgerencia = SubGerencia::list_subgerencia(13);
+        return view('caja.index', compact('list_notificacion','list_subgerencia'));
     }
 }

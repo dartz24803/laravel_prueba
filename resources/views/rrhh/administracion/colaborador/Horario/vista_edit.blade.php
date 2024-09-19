@@ -337,7 +337,6 @@
         var url = "{{ url('ColaboradorConfController/Update_Horario') }}";
         var csrfToken = $('input[name="_token"]').val();
 
-        if (Valida_Update_Horario()) {
             $.ajax({
                 url: url,
                 data: dataString,
@@ -348,39 +347,38 @@
                     'X-CSRF-TOKEN': csrfToken
                 },
                 success: function(data) {
-                    swal.fire(
-                        'Actualización Exitoso!',
-                        'Haga clic en el botón!',
-                        'success'
-                    ).then(function() {
-                        Lista_Horario();
-                        $("#ModalUpdateSlide .close").click()
-                    });
+                    if (data == "error") {
+                        Swal({
+                            title: 'Registro Denegado',
+                            text: "¡Existe un horario con el mismo nombre!",
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonText: 'OK',
+                        });
+                    } else {
+                        swal.fire(
+                            'Actualización Exitoso!',
+                            'Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            Lista_Horario();
+                            $("#ModalUpdateSlide .close").click()
+                        });
+                    }
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
-        }
     }
 
     function Valida_Update_Horario() {
-        if ($('#nombre_u').val().trim() == '') {
-            msgDate = 'Debe ingresar nombre.';
-            inputFocus = '#nombre_u';
-            return false;
-        }
-        if ($('#cod_base_u').val() == '0') {
-            msgDate = 'Debe seleccionar base.';
-            inputFocus = '#cod_base_u';
-            return false;
-        }
         if(!$('#ch_dia_laborado_lu_u').is(":checked") && !$('#ch_dia_laborado_ma_u').is(":checked") && 
         !$('#ch_dia_laborado_mi_u').is(":checked") && !$('#ch_dia_laborado_ju_u').is(":checked") && 
         !$('#ch_dia_laborado_vi_u').is(":checked") && !$('#ch_dia_laborado_sa_u').is(":checked") && 

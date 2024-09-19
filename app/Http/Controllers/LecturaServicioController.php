@@ -18,6 +18,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use App\Models\SubGerencia;
 
 class LecturaServicioController extends Controller
 {
@@ -28,9 +29,11 @@ class LecturaServicioController extends Controller
 
     public function index()
     {
+        //REPORTE BI CON ID
+        $list_subgerencia = SubGerencia::list_subgerencia(1);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('seguridad.lectura_servicio.index', compact('list_notificacion'));
+        return view('seguridad.lectura_servicio.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
     public function index_reg()
@@ -179,7 +182,7 @@ class LecturaServicioController extends Controller
                 }
             }
             LecturaServicio::create([
-                'fecha' => $request->fecha,
+                'fecha' => $request->date_input,
                 'cod_base' => $cod_base,
                 // 'fecha' => $fecha,
                 'hora_ing' => $request->hora_ing,

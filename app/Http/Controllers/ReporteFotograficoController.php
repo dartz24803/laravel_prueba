@@ -10,6 +10,7 @@ use App\Models\CodigosReporteFotografico;
 use App\Models\Notificacion;
 use App\Models\ReporteFotograficoArchivoTemporal;
 use App\Models\ReporteFotograficoAdm;
+use App\Models\SubGerencia;
 use Illuminate\Support\Facades\Validator;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -47,8 +48,9 @@ class ReporteFotograficoController extends Controller
     public function index(){
         //enviar listas a la vista
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();        
-        return view('tienda.ReporteFotografico.index',compact('list_notificacion'));
+        $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(2);
+        return view('tienda.ReporteFotografico.index',compact('list_notificacion','list_subgerencia'));
     }
 
     public function Reporte_Fotografico(Request $request){

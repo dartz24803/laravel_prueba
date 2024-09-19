@@ -12,6 +12,7 @@ use App\Models\Organigrama;
 use App\Models\Pregunta;
 use App\Models\Puesto;
 use App\Models\SolicitudPuesto;
+use App\Models\SubGerencia;
 use App\Models\Suceso;
 use App\Models\UsersHistoricoPuesto;
 use App\Models\Usuario;
@@ -75,8 +76,9 @@ class LineaCarreraController extends Controller
     public function index()
     {
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();          
-        return view('caja.linea_carrera.index',compact('list_notificacion'));
+        $list_notificacion = Notificacion::get_list_notificacion();      
+        $list_subgerencia = SubGerencia::list_subgerencia(13);    
+        return view('caja.linea_carrera.index',compact('list_notificacion','list_subgerencia'));
     }
 
     public function index_so()

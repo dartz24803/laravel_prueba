@@ -9,8 +9,11 @@ use App\Models\Marca;
 use App\Models\Modelo;
 use App\Models\Notificacion;
 use App\Models\ProductoCaja;
+use App\Models\SubGerencia;
 use App\Models\Unidad;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Mpdf\Tag\Q;
 
 class RequisicionTiendaConfController extends Controller
 {
@@ -22,8 +25,9 @@ class RequisicionTiendaConfController extends Controller
     public function index()
     {
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();          
-        return view('caja.administracion.requisicion_tienda.index',compact('list_notificacion'));
+        $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(13);
+        return view('caja.administracion.requisicion_tienda.index',compact('list_notificacion','list_subgerencia'));
     }
 
     public function index_ma()
@@ -540,14 +544,39 @@ class RequisicionTiendaConfController extends Controller
                         ->leftjoin('color AS co','co.id_color','=','pr.id_color')
                         ->leftjoin('categoria AS ca','ca.id_categoria','=','pr.id_categoria')
                         ->join('unidad AS un','un.id_unidad','=','pr.id_unidad')
-                        ->leftjoin('estado AS es','es.id_estado','=','pr.estado_registro')
+                        ->leftjoin('estado AS es','es.id_estado','=','pr.id_estado')
                         ->where('pr.estado', 1)->get();
         return view('caja.administracion.requisicion_tienda.producto.lista', compact('list_producto'));
     }
 
     public function create_pr()
     {
-        return view('caja.administracion.requisicion_tienda.producto.modal_registrar');
+        $list_marca = Marca::select('id_marca','nom_marca')->where('id_marca_mae',2)->where('estado',1)
+                    ->orderBy('nom_marca','ASC')->get();
+        $list_color = Color::select('id_color','nom_color')->where('id_color_mae',1)->where('estado',1)
+                    ->orderBy('nom_color','ASC')->get();
+        $list_categoria = Categoria::select('id_categoria','nom_categoria')->where('id_categoria_mae',2)
+                        ->where('estado',1)->orderBy('nom_categoria','ASC')->get();
+        $list_unidad = Unidad::select('id_unidad',
+                        DB::raw('CONCAT(descripcion_unidad," (",cod_unidad,")") AS nom_unidad'))
+                        ->where('id_unidad_mae',2)->where('estado',1)
+                        ->orderBy('descripcion_unidad','ASC')->get();
+        $list_estado = Estado::select('id_estado','nom_estado')->where('id_estado_mae',3)
+                        ->where('estado',1)->orderBy('nom_estado','ASC')->get();                        
+        return view('caja.administracion.requisicion_tienda.producto.modal_registrar',compact(
+            'list_marca',
+            'list_color',
+            'list_categoria',
+            'list_unidad',
+            'list_estado'
+        ));
+    }
+
+    public function traer_modelo_pr(Request $request){
+        $list_modelo = Modelo::select('id_modelo','nom_modelo')->where('id_modelo_mae',2)
+                        ->where('id_marca',$request->id_marca)->where('estado',1)
+                        ->orderBy('nom_modelo','ASC')->get();
+        return view('caja.administracion.requisicion_tienda.producto.modelo', compact('list_modelo'));
     }
 
     public function store_pr(Request $request)
@@ -559,17 +588,26 @@ class RequisicionTiendaConfController extends Controller
         ],[
             'id_marca.gt' => 'Debe seleccionar marca.',
             'id_unidad.gt' => 'Debe seleccionar unidad.',
-            'nom_producto.gt' => 'Debe ingresar nombre.'
+            'nom_producto.required' => 'Debe ingresar nombre.'
         ]);
 
-        $valida = ProductoCaja::where('id_categoria_mae',2)->where('nom_categoria', $request->nom_categoria)
+        $valida = ProductoCaja::where('id_marca', $request->id_marca)
+                ->where('id_modelo', $request->id_modelo)->where('id_color', $request->id_color)
+                ->where('id_unidad', $request->id_unidad)->where('id_estado', $request->id_estado)
+                ->where('id_categoria', $request->id_categoria)
+                ->where('nom_producto', $request->nom_producto)
                 ->where('estado', 1)->exists();
         if($valida){
             echo "error";
         }else{
             ProductoCaja::create([
-                'id_categoria_mae' => 2,
-                'nom_categoria' => $request->nom_categoria,
+                'id_marca' => $request->id_marca,
+                'id_modelo' => $request->id_modelo,
+                'id_color' => $request->id_color,
+                'id_categoria' => $request->id_categoria,
+                'id_unidad' => $request->id_unidad,
+                'id_estado' => $request->id_estado,
+                'nom_producto' => $request->nom_producto,
                 'estado' => 1,
                 'fec_reg' => now(),
                 'user_reg' => session('usuario')->id_usuario,
@@ -582,7 +620,30 @@ class RequisicionTiendaConfController extends Controller
     public function edit_pr($id)
     {
         $get_id = ProductoCaja::findOrFail($id);
-        return view('caja.administracion.requisicion_tienda.producto.modal_editar', compact('get_id'));
+        $list_marca = Marca::select('id_marca','nom_marca')->where('id_marca_mae',2)->where('estado',1)
+                    ->orderBy('nom_marca','ASC')->get();
+        $list_modelo = Modelo::select('id_modelo','nom_modelo')->where('id_modelo_mae',2)
+                        ->where('id_marca',$get_id->id_marca)->where('estado',1)
+                        ->orderBy('nom_modelo','ASC')->get();                    
+        $list_color = Color::select('id_color','nom_color')->where('id_color_mae',1)->where('estado',1)
+                    ->orderBy('nom_color','ASC')->get();
+        $list_categoria = Categoria::select('id_categoria','nom_categoria')->where('id_categoria_mae',2)
+                        ->where('estado',1)->orderBy('nom_categoria','ASC')->get();
+        $list_unidad = Unidad::select('id_unidad',
+                        DB::raw('CONCAT(descripcion_unidad," (",cod_unidad,")") AS nom_unidad'))
+                        ->where('id_unidad_mae',2)->where('estado',1)
+                        ->orderBy('descripcion_unidad','ASC')->get();
+        $list_estado = Estado::select('id_estado','nom_estado')->where('id_estado_mae',3)
+                        ->where('estado',1)->orderBy('nom_estado','ASC')->get();           
+        return view('caja.administracion.requisicion_tienda.producto.modal_editar', compact(
+            'get_id',
+            'list_marca',
+            'list_modelo',
+            'list_color',
+            'list_categoria',
+            'list_unidad',
+            'list_estado'
+        ));
     }
 
     public function update_pr(Request $request, $id)
@@ -594,16 +655,26 @@ class RequisicionTiendaConfController extends Controller
         ],[
             'id_marcae.gt' => 'Debe seleccionar marca.',
             'id_unidade.gt' => 'Debe seleccionar unidad.',
-            'nom_productoe.gt' => 'Debe ingresar nombre.'
+            'nom_productoe.required' => 'Debe ingresar nombre.'
         ]);
 
-        $valida = ProductoCaja::where('id_categoria_mae',2)->where('nom_categoria', $request->nom_categoriae)
-                ->where('estado', 1)->where('id_categoria', '!=', $id)->exists();
+        $valida = ProductoCaja::where('id_marca', $request->id_marcae)
+                ->where('id_modelo', $request->id_modeloe)->where('id_color', $request->id_colore)
+                ->where('id_unidad', $request->id_unidade)->where('id_estado', $request->id_estadoe)
+                ->where('id_categoria', $request->id_categoriae)
+                ->where('nom_producto', $request->nom_productoe)
+                ->where('estado', 1)->where('id_producto', '!=', $id)->exists();
         if($valida){
             echo "error";
         }else{
             ProductoCaja::findOrFail($id)->update([
-                'nom_categoria' => $request->nom_categoriae,
+                'id_marca' => $request->id_marcae,
+                'id_modelo' => $request->id_modeloe,
+                'id_color' => $request->id_colore,
+                'id_categoria' => $request->id_categoriae,
+                'id_unidad' => $request->id_unidade,
+                'id_estado' => $request->id_estadoe,
+                'nom_producto' => $request->nom_productoe,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);

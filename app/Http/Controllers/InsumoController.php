@@ -11,6 +11,7 @@ use App\Models\RepartoInsumo;
 use App\Models\SalidaContometro;
 use App\Models\StockSalidaInsumo;
 use App\Models\StockTotalInsumo;
+use App\Models\SubGerencia;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -31,8 +32,9 @@ class InsumoController extends Controller
     public function index()
     {
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();          
-        return view('caja.insumo.index',compact('list_notificacion'));
+        $list_notificacion = Notificacion::get_list_notificacion();    
+        $list_subgerencia = SubGerencia::list_subgerencia(13);      
+        return view('caja.insumo.index',compact('list_notificacion','list_subgerencia'));
     }
 
     public function index_en()

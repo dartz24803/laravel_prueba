@@ -1035,6 +1035,12 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::post('caja_chica_mo', 'store_mo')->name('caja_chica.store_mo');
     Route::get('caja_chica/create_pv', 'create_pv')->name('caja_chica.create_pv');
     Route::post('caja_chica_pv', 'store_pv')->name('caja_chica.store_pv');
+    Route::get('caja_chica/{id}/edit', 'edit')->name('caja_chica.edit');
+    Route::put('caja_chica_mo/{id}', 'update_mo')->name('caja_chica.update_mo');
+    Route::get('caja_chica/{id}/download', 'download')->name('caja_chica.download');
+    Route::get('caja_chica/{id}/validar', 'validar')->name('caja_chica.validar');
+    Route::put('caja_chica_mo/{id}/validar', 'validar_mo')->name('caja_chica.validar_mo');
+    Route::delete('caja_chica/{id}', 'destroy')->name('caja_chica.destroy');
 });
 //CAJA - INSUMOS CONFIGURABLE
 Route::controller(InsumoConfController::class)->group(function () {

@@ -11,6 +11,7 @@ use App\Models\Base;
 use App\Models\MercaderiaSurtida;
 use App\Models\MercaderiaSurtidaPadre;
 use App\Models\Notificacion;
+use App\Models\SubGerencia;
 use App\Models\TrackingArchivo;
 use App\Models\TrackingArchivoTemporal;
 use App\Models\TrackingDetalleEstado;
@@ -352,8 +353,9 @@ class TrackingController extends Controller
             }
             //NOTIFICACIONES
             $list_notificacion = Notificacion::get_list_notificacion();
+            $list_subgerencia = SubGerencia::list_subgerencia(7);
             $list_mercaderia_nueva = MercaderiaSurtida::where('anio',date('Y'))->where('semana',date('W'))->exists();
-            return view('logistica.tracking.index', compact('list_notificacion','list_mercaderia_nueva'));
+            return view('logistica.tracking.index', compact('list_notificacion','list_subgerencia','list_mercaderia_nueva'));
         }else{
             session(['redirect_url' => 'http'.(isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']]);
             return redirect('/');
@@ -441,9 +443,9 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('ogutierrez@lanumero1.com.pe');
-            $mail->addAddress('practicante3.procesos@lanumero1.com.pe');
-            /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+            //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
+            $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
             foreach($list_td as $list){
                 $mail->addAddress($list->emailp);
             }
@@ -454,7 +456,7 @@ class TrackingController extends Controller
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }*/
+            }
 
             $mail->isHTML(true);
 
@@ -554,8 +556,9 @@ class TrackingController extends Controller
     {
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(7);
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        return view('logistica.tracking.detalle_transporte', compact('list_notificacion','get_id'));
+        return view('logistica.tracking.detalle_transporte', compact('list_notificacion','list_subgerencia','get_id'));
     }
 
     public function insert_mercaderia_transito(Request $request,$id)
@@ -717,16 +720,16 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('ogutierrez@lanumero1.com.pe');
-            $mail->addAddress('practicante3.procesos@lanumero1.com.pe');
-            /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+            //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
+            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
             }
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }*/
+            }
 
             $mail->isHTML(true);
 
@@ -945,8 +948,9 @@ class TrackingController extends Controller
         }
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(7);
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        return view('logistica.tracking.verificacion_fardos', compact('list_notificacion','get_id'));
+        return view('logistica.tracking.verificacion_fardos', compact('list_notificacion','list_subgerencia','get_id'));
     }
 
     public function list_archivo(Request $request)
@@ -1123,16 +1127,16 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('ogutierrez@lanumero1.com.pe');
-            $mail->addAddress('practicante3.procesos@lanumero1.com.pe');
-            /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+            //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
+            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
             }
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }*/
+            }
 
             $mail->isHTML(true);
 
@@ -1170,9 +1174,10 @@ class TrackingController extends Controller
     public function pago_transporte($id)
     {
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();        
+        $list_notificacion = Notificacion::get_list_notificacion();   
+        $list_subgerencia = SubGerencia::list_subgerencia(7);     
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        return view('logistica.tracking.pago_transporte', compact('list_notificacion','get_id'));
+        return view('logistica.tracking.pago_transporte', compact('list_notificacion','list_subgerencia','get_id'));
     }
 
     public function previsualizacion_captura_pago()
@@ -1343,16 +1348,16 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('ogutierrez@lanumero1.com.pe');
-            $mail->addAddress('practicante3.procesos@lanumero1.com.pe');
-            /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+            //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
+            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
             }
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }*/
+            }
 
             $mail->isHTML(true);
 
@@ -1491,9 +1496,10 @@ class TrackingController extends Controller
     public function reporte_mercaderia($id)
     {
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();        
+        $list_notificacion = Notificacion::get_list_notificacion();   
+        $list_subgerencia = SubGerencia::list_subgerencia(7);     
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        return view('logistica.tracking.reporte_mercaderia', compact('list_notificacion','get_id'));
+        return view('logistica.tracking.reporte_mercaderia', compact('list_notificacion','list_subgerencia','get_id'));
     }
 
     public function insert_reporte_mercaderia(Request $request,$id)
@@ -1565,14 +1571,15 @@ class TrackingController extends Controller
     public function cuadre_diferencia($id)
     {
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();        
+        $list_notificacion = Notificacion::get_list_notificacion();    
+        $list_subgerencia = SubGerencia::list_subgerencia(7);    
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
         try {
             $list_diferencia = DB::connection('sqlsrv')->select('EXEC usp_web_ver_dif_bultos_x_req ?', [$get_id->n_requerimiento]);
         } catch (\Throwable $th) {
             $list_diferencia = [];
         }
-        return view('logistica.tracking.cuadre_diferencia', compact('list_notificacion','get_id','list_diferencia'));
+        return view('logistica.tracking.cuadre_diferencia', compact('list_notificacion','list_subgerencia','get_id','list_diferencia'));
     }
 
     public function insert_reporte_diferencia(Request $request,$id)
@@ -1611,16 +1618,16 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('ogutierrez@lanumero1.com.pe');
-            $mail->addAddress('practicante3.procesos@lanumero1.com.pe');
-            /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+            //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
+            $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
             foreach($list_td as $list){
                 $mail->addAddress($list->emailp);
             }
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }*/
+            }
 
             $mail->isHTML(true);
 
@@ -1694,9 +1701,10 @@ class TrackingController extends Controller
             }        
             //NOTIFICACIONES
             $list_notificacion = Notificacion::get_list_notificacion();
+            $list_subgerencia = SubGerencia::list_subgerencia(7);
             $get_id = Tracking::get_list_tracking(['id'=>$id]);
             if($get_id->id_estado==15){
-                return view('logistica.tracking.detalle_operacion_diferencia', compact('list_notificacion','get_id'));
+                return view('logistica.tracking.detalle_operacion_diferencia', compact('list_notificacion','list_subgerencia','get_id'));
             }else{
                 $list_mercaderia_nueva = MercaderiaSurtida::where('anio',date('Y'))->where('semana',date('W'))->exists();
                 return view('logistica.tracking.index', compact('list_notificacion','list_mercaderia_nueva'));
@@ -1752,9 +1760,9 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('ogutierrez@lanumero1.com.pe');
-            $mail->addAddress('practicante3.procesos@lanumero1.com.pe');
-            /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+            //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
+            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
             }
@@ -1765,7 +1773,7 @@ class TrackingController extends Controller
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }*/
+            }
 
             $mail->isHTML(true);
 
@@ -1844,9 +1852,10 @@ class TrackingController extends Controller
 
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(7);
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
         $list_guia_remision = TrackingGuiaRemisionDetalle::select('id','sku','descripcion','cantidad')->where('n_guia_remision',$get_id->n_guia_remision)->get();
-        return view('logistica.tracking.solicitud_devolucion', compact('list_notificacion','get_id','list_guia_remision'));
+        return view('logistica.tracking.solicitud_devolucion', compact('list_notificacion','list_subgerencia','get_id','list_guia_remision'));
     }
 
     public function modal_solicitud_devolucion($id)
@@ -1968,16 +1977,16 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                $mail->addAddress('ogutierrez@lanumero1.com.pe');
-                $mail->addAddress('practicante3.procesos@lanumero1.com.pe');
-                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+                //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
+                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
                 }
                 $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
                 foreach($list_cc as $list){
                     $mail->addCC($list->emailp);
-                }*/
+                }
     
                 $mail->isHTML(true);
     
@@ -2029,6 +2038,7 @@ class TrackingController extends Controller
             }
             //NOTIFICACIONES
             $list_notificacion = Notificacion::get_list_notificacion();
+            $list_subgerencia = SubGerencia::list_subgerencia(7);
             $get_id = Tracking::get_list_tracking(['id'=>$id]);
             if($get_id->id_estado==18){
                 TrackingEvaluacionTemporal::where('id_usuario', session('usuario')->id_usuario)->delete();
@@ -2041,7 +2051,7 @@ class TrackingController extends Controller
                 return view('logistica.tracking.evaluacion_devolucion', compact('list_notificacion','get_id','list_devolucion'));
             }else{
                 $list_mercaderia_nueva = MercaderiaSurtida::where('anio',date('Y'))->where('semana',date('W'))->exists();
-                return view('logistica.tracking.index', compact('list_notificacion','list_mercaderia_nueva'));
+                return view('logistica.tracking.index', compact('list_notificacion','list_subgerencia','list_mercaderia_nueva'));
             }
         }else{
             session(['redirect_url' => 'http'.(isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']]);
@@ -2122,9 +2132,9 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                $mail->addAddress('ogutierrez@lanumero1.com.pe');
-                $mail->addAddress('practicante3.procesos@lanumero1.com.pe');
-                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+                //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
+                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
                 }
@@ -2135,7 +2145,7 @@ class TrackingController extends Controller
                 $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
                 foreach($list_cc as $list){
                     $mail->addCC($list->emailp);
-                }*/
+                }
     
                 $mail->isHTML(true);
     
@@ -2221,12 +2231,13 @@ class TrackingController extends Controller
     {
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(7);
         $list_base = Base::get_list_bases_tienda();
         $list_usuario = DB::connection('sqlsrv')->table('vw_usuarios')
                         ->select('par_desusuario')->orderBy('par_desusuario','ASC')->get();
         $list_tipo_prenda = DB::connection('sqlsrv')->table('tge_sub_familias')
                             ->select('sfa_descrip')->orderBy('sfa_descrip','ASC')->get();
-        return view('logistica.tracking.mercaderia_nueva.index', compact('list_notificacion','list_base','list_usuario','list_tipo_prenda'));
+        return view('logistica.tracking.mercaderia_nueva.index', compact('list_notificacion','list_subgerencia','list_base','list_usuario','list_tipo_prenda'));
     }
 
     public function list_mercaderia_nueva(Request $request)

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Error;
 use App\Models\Notificacion;
+use App\Models\SubGerencia;
 use App\Models\TipoError;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,8 +19,9 @@ class ObservacionConfController extends Controller
     public function index()
     {
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();          
-        return view('caja.administracion.observacion.index',compact('list_notificacion'));
+        $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(13);
+        return view('caja.administracion.observacion.index',compact('list_notificacion','list_subgerencia'));
     }
 
     public function index_terr()

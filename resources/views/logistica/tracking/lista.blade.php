@@ -286,7 +286,7 @@ use App\Models\TrackingDetalleProceso;
                         session('usuario')->id_puesto==311 || 
                         session('usuario')->id_puesto==314 ||
                         session('usuario')->id_nivel==1) 
-                            <a href="javascript:void(0);" title="Llegada a tienda" onclick="Insert_Confirmacion_Llegada('{{ $list->id }}');">
+                            <a href="javascript:void(0);" title="Confirmación de llegada" onclick="Insert_Confirmacion_Llegada('{{ $list->id }}');">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle text-dark">
                                     <circle cx="12" cy="12" r="10"></circle>
                                     <polyline points="12 16 16 12 12 8"></polyline>

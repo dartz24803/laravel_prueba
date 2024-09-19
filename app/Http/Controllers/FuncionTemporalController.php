@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\FuncionTemporal;
 use App\Models\Notificacion;
 use App\Models\Puesto;
+use App\Models\SubGerencia;
 use App\Models\TareasFuncionTemporal;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
@@ -26,9 +27,10 @@ class FuncionTemporalController extends Controller
     public function index()
     {
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();            
+        $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(2);        
         $list_usuario = Usuario::get_list_usuario_ft();
-        return view('tienda.funcion_temporal.index', compact('list_notificacion','list_usuario'));
+        return view('tienda.funcion_temporal.index', compact('list_notificacion','list_subgerencia','list_usuario'));
     }
 
     public function list($id_usuario)
