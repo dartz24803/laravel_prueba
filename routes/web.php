@@ -62,6 +62,7 @@ use App\Http\Controllers\ProduccionController;
 use App\Http\Controllers\RecursosHumanosInicioController;
 use App\Http\Controllers\ReporteProveedoresController;
 use App\Http\Controllers\RequisicionTiendaConfController;
+use App\Http\Controllers\RequisicionTiendaController;
 use App\Http\Controllers\SalidaInsumoController;
 
 Route::middleware([NoCache::class])->group(function () {
@@ -1048,6 +1049,7 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::get('caja_chica/{id}/validar', 'validar')->name('caja_chica.validar');
     Route::put('caja_chica_mo/{id}/validar', 'validar_mo')->name('caja_chica.validar_mo');
     Route::delete('caja_chica/{id}', 'destroy')->name('caja_chica.destroy');
+    Route::get('caja_chica/excel', 'excel')->name('caja_chica.excel');
 });
 //CAJA - INSUMOS CONFIGURABLE
 Route::controller(InsumoConfController::class)->group(function () {
@@ -1161,10 +1163,25 @@ Route::controller(RequisicionTiendaConfController::class)->group(function () {
     Route::get('requisicion_tienda_conf_pr', 'index_pr')->name('requisicion_tienda_conf_pr');
     Route::get('requisicion_tienda_conf_pr/list', 'list_pr')->name('requisicion_tienda_conf_pr.list');
     Route::get('requisicion_tienda_conf_pr/create', 'create_pr')->name('requisicion_tienda_conf_pr.create');
+    Route::post('requisicion_tienda_conf_pr/traer_modelo', 'traer_modelo_pr')->name('requisicion_tienda_conf_pr.traer_modelo');
     Route::post('requisicion_tienda_conf_pr', 'store_pr')->name('requisicion_tienda_conf_pr.store');
     Route::get('requisicion_tienda_conf_pr/{id}/edit', 'edit_pr')->name('requisicion_tienda_conf_pr.edit');
     Route::put('requisicion_tienda_conf_pr/{id}', 'update_pr')->name('requisicion_tienda_conf_pr.update');
     Route::delete('requisicion_tienda_conf_pr/{id}', 'destroy_pr')->name('requisicion_tienda_conf_pr.destroy');
+});
+//CAJA - REQUISICIÓN TIENDA
+Route::controller(RequisicionTiendaController::class)->group(function () {
+    Route::get('requisicion_tienda', 'index')->name('requisicion_tienda');
+    Route::post('requisicion_tienda/list', 'list')->name('requisicion_tienda.list');
+    Route::get('requisicion_tienda/create', 'create')->name('requisicion_tienda.create');
+    Route::get('requisicion_tienda/list_tmp', 'list_tmp')->name('requisicion_tienda.list_tmp');
+    Route::post('requisicion_tienda_tmp', 'store_tmp')->name('requisicion_tienda.store_tmp');
+    Route::delete('requisicion_tienda_tmp/{id}', 'destroy_tmp')->name('requisicion_tienda.destroy_tmp');
+    Route::post('requisicion_tienda', 'store')->name('requisicion_tienda.store');
+    Route::get('requisicion_tienda/{id}/edit', 'edit')->name('requisicion_tienda.edit');
+    Route::get('requisicion_tienda/{id}/download', 'download')->name('requisicion_tienda.download');
+    Route::put('requisicion_tienda/{id}', 'update')->name('requisicion_tienda.update');
+    Route::delete('requisicion_tienda/{id}', 'destroy')->name('requisicion_tienda.destroy');
 });
 
 

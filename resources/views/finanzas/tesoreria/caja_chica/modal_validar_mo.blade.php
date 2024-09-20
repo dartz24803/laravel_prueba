@@ -1,4 +1,4 @@
-<form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
+<form id="formulariov" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title">Validación de registro - Movilidad:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -14,6 +14,9 @@
             <div class="form-group col-lg-4">
                 <select class="form-control" name="id_pagov" id="id_pagov">
                     <option value="0">Seleccione</option>
+                    @foreach ($list_pago as $list)
+                        <option value="{{ $list->id_pago }}">{{ $list->nom_pago }}</option>
+                    @endforeach
                 </select>
             </div>
 
@@ -23,6 +26,9 @@
             <div class="form-group col-lg-4">
                 <select class="form-control" name="id_tipo_pagov" id="id_tipo_pagov">
                     <option value="0">Seleccione</option>
+                    @foreach ($list_tipo_pago as $list)
+                        <option value="{{ $list->id }}">{{ $list->nombre }}</option>
+                    @endforeach
                 </select>
             </div>
         </div>
@@ -49,7 +55,7 @@
 
         <div class="row">
             <div class="form-group col-lg-2">
-                <label>Fecha:</label>
+                <label>Fecha pago:</label>
             </div>
             <div class="form-group col-lg-4">
                 <input type="date" class="form-control" name="fecha_pagov" id="fecha_pagov" value="{{ date('Y-m-d') }}">
@@ -133,22 +139,17 @@
     <div class="modal-footer">
         @csrf
         @method('PUT')
-        <button class="btn btn-primary" type="button">Validar</button> <!--onclick="Update_Caja_Chica_Mo();"-->
+        <button class="btn btn-primary" type="button" onclick="Validar_Caja_Chica_Mo();">Validar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
-    $(".basic").select2({
-        tags: true,
-        dropdownParent: $('#ModalUpdate')
-    });
-
-    function Update_Caja_Chica_Mo() {
+    function Validar_Caja_Chica_Mo() {
         Cargando();
 
-        var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('caja_chica.update_mo', $get_id->id) }}";
+        var dataString = new FormData(document.getElementById('formulariov'));
+        var url = "{{ route('caja_chica.validar_mo', $get_id->id) }}";
 
         $.ajax({
             url: url,
@@ -158,7 +159,7 @@
             contentType: false,
             success: function(data) {
                 swal.fire(
-                    '¡Actualización Exitosa!',
+                    '¡Validación Exitosa!',
                     '¡Haga clic en el botón!',
                     'success'
                 ).then(function() {

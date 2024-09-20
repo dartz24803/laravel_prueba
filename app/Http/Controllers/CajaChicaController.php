@@ -6,6 +6,7 @@ use App\Models\CajaChica;
 use App\Models\Categoria;
 use App\Models\Empresas;
 use App\Models\Notificacion;
+use App\Models\Pago;
 use App\Models\SubCategoria;
 use App\Models\TipoMoneda;
 use App\Models\Ubicacion;
@@ -13,8 +14,14 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Psr7Request;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 use App\Models\SubGerencia;
+use App\Models\TipoPago;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class CajaChicaController extends Controller
 {
@@ -34,25 +41,7 @@ class CajaChicaController extends Controller
 
     public function list(Request $request)
     {
-        $list_caja_chica = CajaChica::from('caja_chica AS cc')
-                            ->select('cc.id','cc.fecha AS orden',
-                            DB::raw('DATE_FORMAT(cc.fecha,"%d-%m-%Y") AS fecha'),'ub.cod_ubi',
-                            'ca.nom_categoria','sc.nombre','em.nom_empresa',
-                            DB::raw('CASE WHEN ca.nom_categoria="MOVILIDAD" THEN 
-                            (CASE WHEN cc.ruta=1 THEN CONCAT(cc.punto_partida," - ",cc.punto_llegada) 
-                            ELSE cc.punto_llegada END) ELSE cc.punto_partida END AS descripcion'),
-                            'cc.ruc','cc.razon_social','tc.nom_tipo_comprobante','cc.n_comprobante',
-                            DB::raw('CONCAT(tm.cod_moneda," ",cc.total) AS total'),'cc.comprobante',
-                            DB::raw('CASE WHEN cc.estado_c=1 THEN "Por revisar" 
-                            WHEN cc.estado_c=2 THEN "Completado" ELSE "" END AS nom_estado'))
-                            ->join('ubicacion AS ub','ub.id_ubicacion','=','cc.id_ubicacion')
-                            ->join('categoria AS ca','ca.id_categoria','=','cc.id_categoria')
-                            ->join('sub_categoria AS sc','sc.id','=','cc.id_sub_categoria')
-                            ->join('empresas AS em','em.id_empresa','=','cc.id_empresa')
-                            ->join('vw_tipo_comprobante AS tc','tc.id','=','cc.id_tipo_comprobante')
-                            ->join('tipo_moneda AS tm','tm.id_moneda','=','cc.id_tipo_moneda')
-                            ->where('cc.estado',1)
-                            ->get();
+        $list_caja_chica = CajaChica::get_list_caja_chica();
         return view('finanzas.tesoreria.caja_chica.lista', compact('list_caja_chica'));
     }
 
@@ -324,15 +313,44 @@ class CajaChicaController extends Controller
                 ->join('empresas AS em','em.id_empresa','=','cc.id_empresa')
                 ->where('cc.id',$id)
                 ->first();
+        $list_pago = Pago::all();
+        $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)->where('estado',1)
+                        ->orderBy('nombre','ASC')->get();
         $valida = Categoria::select('nom_categoria')->where('id_categoria',$get_id->id_categoria)
                 ->first();
         if($valida->nom_categoria=="MOVILIDAD"){
             return view('finanzas.tesoreria.caja_chica.modal_validar_mo', compact(
-                'get_id'
+                'get_id',
+                'list_pago',
+                'list_tipo_pago'
             ));
         }else{
 
         }
+    }
+
+    public function validar_mo(Request $request, $id)
+    {
+        $request->validate([
+            'id_pagov' => 'gt:0',
+            'id_tipo_pagov' => 'gt:0',
+            'fecha_pagov' => 'required'
+        ], [
+            'id_pagov.gt' => 'Debe seleccionar pago.',
+            'id_tipo_pagov.gt' => 'Debe seleccionar tipo pago.',
+            'fecha_pagov.required' => 'Debe ingresar fecha de pago.'
+        ]);
+
+        CajaChica::findOrFail($id)->update([
+            'id_pago' => $request->id_pagov,
+            'id_tipo_pago' => $request->id_tipo_pagov,
+            'cuenta_1' => $request->cuenta_1v,
+            'cuenta_2' => $request->cuenta_2v,
+            'fecha_pago' => $request->fecha_pagov,
+            'estado_c' => 2,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
     }
 
     public function destroy($id)
@@ -342,5 +360,101 @@ class CajaChicaController extends Controller
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario
         ]);
+    }
+
+    public function excel()
+    {
+        $list_caja_chica = CajaChica::get_list_caja_chica();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getStyle("A1:L1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:L1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Caja chica');
+
+        $sheet->setAutoFilter('A1:L1');
+
+        $sheet->getColumnDimension('A')->setWidth(18);
+        $sheet->getColumnDimension('B')->setWidth(15);
+        $sheet->getColumnDimension('C')->setWidth(30);
+        $sheet->getColumnDimension('D')->setWidth(30);
+        $sheet->getColumnDimension('E')->setWidth(40);
+        $sheet->getColumnDimension('F')->setWidth(40);
+        $sheet->getColumnDimension('G')->setWidth(15);
+        $sheet->getColumnDimension('H')->setWidth(30);
+        $sheet->getColumnDimension('I')->setWidth(22);
+        $sheet->getColumnDimension('J')->setWidth(20);
+        $sheet->getColumnDimension('K')->setWidth(15);
+        $sheet->getColumnDimension('L')->setWidth(15);
+
+        $sheet->getStyle('A1:L1')->getFont()->setBold(true);
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:L1")->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('C8C8C8');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle("A1:L1")->applyFromArray($styleThinBlackBorderOutline);
+
+        $sheet->setCellValue("A1", 'Fecha registro');
+        $sheet->setCellValue("B1", 'Ubicación');
+        $sheet->setCellValue("C1", 'Categoría');
+        $sheet->setCellValue("D1", 'Sub-Categoría');
+        $sheet->setCellValue("E1", 'Empresa');
+        $sheet->setCellValue("F1", 'Descripción');
+        $sheet->setCellValue("G1", 'RUC');
+        $sheet->setCellValue("H1", 'Razón social');
+        $sheet->setCellValue("I1", 'Tipo comprobante');
+        $sheet->setCellValue("J1", 'N° comprobante');
+        $sheet->setCellValue("K1", 'Monto');
+        $sheet->setCellValue("L1", 'Estado');
+
+        $contador = 1;
+
+        foreach ($list_caja_chica as $list) {
+            $contador++;
+
+            $sheet->getStyle("A{$contador}:L{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("C{$contador}:F{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("H{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("K{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            $sheet->getStyle("L{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:L{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:L{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+            $sheet->getStyle("K{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_CURRENCY_SOL_SIMPLE);
+
+            $sheet->setCellValue("A{$contador}", Date::PHPToExcel($list->fecha));
+            $sheet->getStyle("A{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+            $sheet->setCellValue("B{$contador}", $list->cod_ubi); 
+            $sheet->setCellValue("C{$contador}", $list->nom_categoria);
+            $sheet->setCellValue("D{$contador}", $list->nombre);
+            $sheet->setCellValue("E{$contador}", $list->nom_empresa);
+            $sheet->setCellValue("F{$contador}", $list->descripcion);
+            $sheet->setCellValue("G{$contador}", $list->ruc);
+            $sheet->setCellValue("H{$contador}", $list->razon_social); 
+            $sheet->setCellValue("I{$contador}", $list->nom_tipo_comprobante);
+            $sheet->setCellValue("J{$contador}", $list->n_comprobante);
+            $sheet->setCellValue("K{$contador}", $list->total);
+            $sheet->setCellValue("L{$contador}", $list->nom_estado);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Caja chica';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
     }
 }
