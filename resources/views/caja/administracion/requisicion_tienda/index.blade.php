@@ -52,7 +52,7 @@
         $(document).ready(function() {
             $("#conf_cajas").addClass('active');
             $("#hconf_cajas").attr('aria-expanded', 'true');
-            $("#conf_observaciones").addClass('active');
+            $("#conf_requiciones_tiendas").addClass('active');
 
             Marca();
         });
