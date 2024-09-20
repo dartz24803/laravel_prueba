@@ -2208,7 +2208,7 @@ class TrackingController extends Controller
                     'id_tracking' => $id,
                     'token' => $token->token,
                     'titulo' => 'CIERRE DE INCONFORMIDADES DE DEVOLUCIÓN',
-                    'contenido' => 'Hola '.$get_id->hacia.', revisar respuesta de la solicitud de la devolución para el Nro. Req',
+                    'contenido' => 'Hola, '.$get_id->desde.' - '.$get_id->hacia.' revisar respuesta de la solicitud de la devolución para el Nro. Req',
                 ];
                 $this->sendNotification($dato);
             }
