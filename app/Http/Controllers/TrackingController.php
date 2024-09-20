@@ -1922,6 +1922,16 @@ class TrackingController extends Controller
             'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
         ]);
 
+        $list_temporal = TrackingArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
+                        ->where('tipo',3)->where('id_producto',$id)->count();
+        $errors = [];
+        if ($list_temporal==0) {
+            $errors['archivo'] = ['Debe capturar con la cámara la evidencia.'];
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
         $get_producto = TrackingGuiaRemisionDetalle::findOrFail($id);
 
         if($get_producto->cantidad>=$request->cantidad){
