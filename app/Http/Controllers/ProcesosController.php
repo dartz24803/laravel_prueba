@@ -33,6 +33,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use App\Models\Notificacion;
+use App\Models\SubGerencia;
 use App\Models\User;
 
 class ProcesosController extends Controller
@@ -40,16 +41,18 @@ class ProcesosController extends Controller
 
     public function index()
     {
+        $list_subgerencia = SubGerencia::list_subgerencia(9);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('interna.procesos.portalprocesos.index', compact('list_notificacion'));
+        return view('interna.procesos.portalprocesos.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
     public function indexcap()
     {
+        $list_subgerencia = SubGerencia::list_subgerencia(9);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('interna.procesos.capacitacion.index', compact('list_notificacion'));
+        return view('interna.procesos.capacitacion.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
     public function index_lm()
@@ -1267,8 +1270,9 @@ class ProcesosController extends Controller
     public function indexcap_conf()
     {
 
+        $list_subgerencia = SubGerencia::list_subgerencia(9);
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('interna.administracion.procesos.index', compact('list_notificacion'));
+        return view('interna.administracion.procesos.index', compact('list_notificacion', 'list_subgerencia'));
     }
     public function index_cap_conf()
     {

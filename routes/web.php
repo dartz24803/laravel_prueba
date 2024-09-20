@@ -273,22 +273,40 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('area_por_usuario', 'getAreaPorUsuario')->name('area_por_usuario');
 
 
-    // DB REPORTE
+    // REPORTE x INDICADORES
+    Route::get('bireporte_ind', 'index_ind')->name('bireporte_ind');
+    Route::get('bireporte_ind/list', 'list_ind')->name('bireporte_ind.list');
+    Route::get('bireporte_ind/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_rebi')->name('bireporte_ind.excel');
+
+    // REPORTE x BASE DE DATOS
     Route::get('bireporte_db', 'index_db')->name('bireporte_db');
     Route::get('bireporte_db/list', 'list_db')->name('bireporte_db.list');
     Route::get('bireporte_db/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_rebi')->name('bireporte_db.excel');
 
 
 
+
     // ADMINISTRABLES - ADMINISTRABLES
     Route::get('bireporte_ra_conf', 'index_ra_conf')->name('bireporte_ra_conf');
     Route::get('bireporte_ti_conf', 'index_ti_conf')->name('bireporte_ti_conf');
+    Route::get('bireporte_sisbd_conf', 'index_sis_conf')->name('bireporte_sisbd_conf');
+
+    // Tipo Indicadores
     Route::get('bireporte_ti_conf/list', 'list_tind')->name('bireporte_ti_conf.list');
     Route::get('bireporte_ti_conf/{id}/edit', 'edit_tind')->name('bireporte_ti_conf.edit');
     Route::delete('bireporte_ti_conf/{id}', 'destroy_tind')->name('bireporte_ti_conf.destroy');
     Route::put('bireporte_ti_conf/{id}', 'update_tind')->name('bireporte_ti_conf.update');
     Route::get('bireporte_ti_conf/create', 'create_tind')->name('bireporte_ti_conf.create');
     Route::post('bireporte_ti_conf', 'store_tind')->name('bireporte_ti_conf.store');
+    // Sistema 
+    Route::get('bireporte_sisbd_conf/list', 'list_sis')->name('bireporte_sisbd_conf.list');
+    Route::get('bireporte_sisbd_conf/{id}/edit', 'edit_sis')->name('bireporte_sisbd_conf.edit');
+    Route::delete('bireporte_sisbd_conf/{id}', 'destroy_sis')->name('bireporte_sisbd_conf.destroy');
+    Route::put('bireporte_sisbd_conf/{id}', 'update_sis')->name('bireporte_sisbd_conf.update');
+    Route::get('bireporte_sisbd_conf/create', 'create_sis')->name('bireporte_sisbd_conf.create');
+    Route::get('bireporte_sistema_conf/create', 'create_sistema')->name('bireporte_sistema_conf.create');
+    Route::post('bireporte_sisbd_conf', 'store_sis')->name('bireporte_sisbd_conf.store');
+    Route::post('bireporte_sistema_conf', 'store_sistema')->name('bireporte_sistema_conf.store');
 });
 
 

@@ -242,7 +242,7 @@
                     <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
                     <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
                 </svg>
-                <span>ReporteBI
+                <span>Bi
 
                 </span>
             </div>
@@ -256,7 +256,7 @@
         <ul class="collapse submenu list-unstyled" id="rreportebiconf" data-parent="#accordionExample">
             <li>
                 <a id="dbreporteconf" href="{{ route('bireporte_ra_conf') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Tipo Indicadores </p>
+                    <p class="romperpalabra"><span id="icono_active2"></span> Acceso de Reportes </p>
                 </a>
             </li>
         </ul>

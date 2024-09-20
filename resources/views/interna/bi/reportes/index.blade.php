@@ -23,7 +23,10 @@
                                 <a id="a_reg" class="nav-link" onclick="ListRegistroAccesoReportes();" style="cursor: pointer;">ACCESO DE REPORTES</a>
                             </li>
                             <li class="nav-item">
-                                <a id="a_bdr" class="nav-link" onclick="ListBDReportes();" style="cursor: pointer;">BD REPORTES</a>
+                                <a id="a_reind" class="nav-link" onclick="ListBDReportesInd();" style="cursor: pointer;">REPORTE POR INDICADORES</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="a_redb" class="nav-link" onclick="ListBDReportesDb();" style="cursor: pointer;">REPORTE POR BASE DE DATOS</a>
                             </li>
                         </ul>
                         <div class="row" id="cancel-row">
@@ -59,12 +62,32 @@
             success: function(resp) {
                 $('#div_lista_maestra').html(resp);
                 $("#a_reg").addClass('active');
-                $("#a_bdr").removeClass('active');
+                $("#a_reind").removeClass('active');
+                $("#a_redb").removeClass('active');
+
             }
         });
     }
 
-    function ListBDReportes() {
+    function ListBDReportesInd() {
+        Cargando();
+
+        var url = "{{ route('bireporte_ind') }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(resp) {
+                $('#div_lista_maestra').html(resp);
+                $("#a_reg").removeClass('active');
+                $("#a_reind").addClass('active');
+                $("#a_redb").removeClass('active');
+
+            }
+        });
+    }
+
+    function ListBDReportesDb() {
         Cargando();
 
         var url = "{{ route('bireporte_db') }}";
@@ -75,7 +98,9 @@
             success: function(resp) {
                 $('#div_lista_maestra').html(resp);
                 $("#a_reg").removeClass('active');
-                $("#a_bdr").addClass('active');
+                $("#a_reind").removeClass('active');
+                $("#a_redb").addClass('active');
+
             }
         });
     }

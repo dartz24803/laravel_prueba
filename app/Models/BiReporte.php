@@ -23,8 +23,10 @@ class BiReporte extends Model
         'estado_valid',
         'id_usuario',
         'frecuencia_act',
-        'tablas',
         'objetivo',
+        'img1',
+        'img2',
+        'img3',
         'iframe',
         'acceso_todo',
         'estado',
@@ -43,7 +45,7 @@ class BiReporte extends Model
         'fec_eli',
     ];
 
-    public static function getBiReportes()
+    public static function getBiReportesxIndicador()
     {
         return self::select(
             'acceso_bi_reporte.id_acceso_bi_reporte',
@@ -54,7 +56,6 @@ class BiReporte extends Model
             'acceso_bi_reporte.id_area',
             'acceso_bi_reporte.objetivo',
             'acceso_bi_reporte.frecuencia_act',
-            'acceso_bi_reporte.tablas',
             'acceso_bi_reporte.id_usuario',
             'acceso_bi_reporte.estado',
             'acceso_bi_reporte.fec_act',
@@ -82,7 +83,6 @@ class BiReporte extends Model
                 'acceso_bi_reporte.id_area',
                 'acceso_bi_reporte.objetivo',
                 'acceso_bi_reporte.frecuencia_act',
-                'acceso_bi_reporte.tablas',
                 'acceso_bi_reporte.id_usuario',
                 'acceso_bi_reporte.estado',
                 'acceso_bi_reporte.fec_act',
@@ -94,6 +94,53 @@ class BiReporte extends Model
                 'indicadores_bi.idtipo_indicador',
                 'indicadores_bi.presentacion',
                 'tipo_indicador.nom_indicador'
+            )
+            ->orderBy('acceso_bi_reporte.fec_reg', 'ASC')
+            ->get();
+    }
+
+    public static function getBiReportesxTablas()
+    {
+        return self::select(
+            'acceso_bi_reporte.id_acceso_bi_reporte',
+            'acceso_bi_reporte.nom_bi',
+            'acceso_bi_reporte.nom_intranet',
+            'acceso_bi_reporte.iframe',
+            'acceso_bi_reporte.actividad',
+            'acceso_bi_reporte.id_area',
+            'acceso_bi_reporte.objetivo',
+            'acceso_bi_reporte.frecuencia_act',
+            'acceso_bi_reporte.id_usuario',
+            'acceso_bi_reporte.estado',
+            'acceso_bi_reporte.fec_act',
+            'acceso_bi_reporte.fec_reg',
+            'acceso_bi_reporte.fec_valid',
+            'acceso_bi_reporte.estado_valid',
+            'tablas_bi.nom_tabla',
+            'tablas_bi.cod_db',
+
+        )
+            ->leftJoin('tablas_bi', 'acceso_bi_reporte.id_acceso_bi_reporte', '=', 'tablas_bi.id_acceso_bi_reporte')
+            ->where('acceso_bi_reporte.estado', 1)
+            ->where('acceso_bi_reporte.estado_valid', 1)
+            ->groupBy(
+                'acceso_bi_reporte.id_acceso_bi_reporte',
+                'acceso_bi_reporte.nom_bi',
+                'acceso_bi_reporte.nom_intranet',
+                'acceso_bi_reporte.iframe',
+                'acceso_bi_reporte.actividad',
+                'acceso_bi_reporte.id_area',
+                'acceso_bi_reporte.objetivo',
+                'acceso_bi_reporte.frecuencia_act',
+                'acceso_bi_reporte.id_usuario',
+                'acceso_bi_reporte.estado',
+                'acceso_bi_reporte.fec_act',
+                'acceso_bi_reporte.fec_reg',
+                'acceso_bi_reporte.fec_valid',
+                'acceso_bi_reporte.estado_valid',
+                'tablas_bi.nom_tabla',
+                'tablas_bi.cod_db',
+
             )
             ->orderBy('acceso_bi_reporte.fec_reg', 'ASC')
             ->get();

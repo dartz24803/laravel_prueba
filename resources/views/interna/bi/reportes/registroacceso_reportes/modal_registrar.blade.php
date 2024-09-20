@@ -1,5 +1,23 @@
 <!-- CSS -->
 <style>
+    #drop-area {
+        border: 2px dashed #007bff;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    #drop-area.highlight {
+        border-color: green;
+    }
+
+    #preview .img-preview img {
+        max-height: 250px;
+    }
+
+    .img-preview {
+        text-align: center;
+    }
+
     #tabla_js2 td {
         max-width: 180px;
         /* Controla el ancho máximo */
@@ -110,6 +128,7 @@
     }
 </style>
 
+
 <form id="formulario_insert" method="POST" enctype="multipart/form-data" class="needs-validation">
 
     <div class=" modal-header">
@@ -134,9 +153,11 @@
                 <a class="nav-link" id="tablas-tab" data-toggle="tab" href="#tablas2" role="tab" aria-controls="tablas2" aria-selected="false">Tablas</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" id="upimagenes-tab" data-toggle="tab" href="#up_imagenes2" role="tab" aria-controls="up_imagenes2" aria-selected="false">Subir Imagenes</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" id="accesos-tab" data-toggle="tab" href="#accesos2" role="tab" aria-controls="accesos2" aria-selected="false">Accesos</a>
             </li>
-
         </ul>
         <div class="tab-content" id="myTabContent2">
             <div class="tab-pane fade show active" id="documento2" role="tabpanel" aria-labelledby="documento-tab">
@@ -284,6 +305,19 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="up_imagenes2" role="tabpanel" aria-labelledby="upimagenes-tab">
+                <div class="row my-4">
+                    <div class="col-lg-12">
+                        <div id="drop-area" class="border border-primary" style="width: 100%; height: 300px; text-align: center; padding: 20px;">
+                            <p>Arrastra hasta 3 imágenes aquí</p>
+                            <input type="file" id="fileElem" accept="image/*" onchange="handleFiles(this.files)" style="display:none" multiple>
+                            <div onclick="document.getElementById('fileElem').click();"></div>
+                            <div id="preview" style="margin-top: 20px;"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -519,7 +553,6 @@
             });
         });
 
-
         $('#tipo_acceso_sede').on('change', function() {
             const selectedSedes = $(this).val();
             var url = "{{ route('ubicacion_por_sede') }}";
@@ -653,8 +686,6 @@
     });
 
 
-
-
     var tabla = $('#tabla_js2').DataTable({
         "ordering": false,
         "autoWidth": false,
@@ -701,4 +732,96 @@
         },
         "stripeClasses": [],
     });
+
+
+
+
+    // SUBIR IMAGENES
+    let dropArea = document.getElementById('drop-area');
+    let imageCount = 0;
+    const maxImages = 3;
+
+    // Prevenir el comportamiento predeterminado
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false)
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    // Destacar el área de arrastre cuando se arrastra un archivo sobre ella
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => dropArea.classList.add('highlight'), false)
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => dropArea.classList.remove('highlight'), false)
+    });
+
+    // Manejar el evento drop
+    dropArea.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        let dt = e.dataTransfer;
+        let files = dt.files;
+        handleFiles(files);
+    }
+
+    function handleFiles(files) {
+        if (imageCount >= maxImages) {
+            alert("Solo puedes subir un máximo de 3 imágenes.");
+            return;
+        }
+
+        let filesArray = Array.from(files);
+        let newImages = filesArray.slice(0, maxImages - imageCount); // Limitar a 3 imágenes
+        imageCount += newImages.length;
+
+        newImages.forEach(previewFile);
+    }
+
+    // Previsualizar las imágenes
+    function previewFile(file) {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = function() {
+            let imgContainer = document.createElement('div');
+            imgContainer.classList.add('img-preview');
+            imgContainer.style.marginTop = '10px';
+            imgContainer.style.position = 'relative';
+            imgContainer.style.display = 'inline-block';
+            imgContainer.style.marginRight = '10px';
+
+            let img = document.createElement('img');
+            img.src = reader.result;
+            img.style.maxWidth = '220px'; // Aumenta el tamaño máximo
+            img.style.height = 'auto';
+            img.style.border = '1px solid #ccc';
+            img.style.padding = '5px';
+            img.style.cursor = 'pointer'; // Cambia el cursor para indicar que es clickeable
+
+            // SVG para eliminar
+            let deleteButton = document.createElement('button');
+            deleteButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`;
+            deleteButton.style.position = 'absolute';
+            deleteButton.style.top = '5px';
+            deleteButton.style.right = '5px';
+            deleteButton.style.backgroundColor = 'transparent';
+            deleteButton.style.border = 'none';
+            deleteButton.style.cursor = 'pointer';
+
+            // Acción para eliminar la imagen
+            deleteButton.addEventListener('click', function() {
+                imgContainer.remove();
+                imageCount--;
+            });
+
+            // Añadir la imagen y el botón al contenedor
+            imgContainer.appendChild(img);
+            imgContainer.appendChild(deleteButton);
+            document.getElementById('preview').appendChild(imgContainer);
+        }
+    }
 </script>

@@ -91,7 +91,7 @@
             <label class="toggle-label" for="toggle-obj"></label>
             <span class="ml-5">Objetivo</span>
         </div>
-        <div class="toggle-switch">
+        <!-- <div class="toggle-switch">
             <input class="toggle-input" id="toggle-desc" type="checkbox" checked>
             <label class="toggle-label" for="toggle-desc"></label>
             <span class="ml-5">Descripción</span>
@@ -100,12 +100,7 @@
             <input class="toggle-input" id="toggle-pre" type="checkbox" checked>
             <label class="toggle-label" for="toggle-pre"></label>
             <span class="ml-5">Presentación</span>
-        </div>
-        <div class="toggle-switch">
-            <input class="toggle-input" id="toggle-tab" type="checkbox" checked>
-            <label class="toggle-label" for="toggle-tab"></label>
-            <span class="ml-5">Tablas</span>
-        </div>
+        </div> -->
         <div class="toggle-switch">
             <input class="toggle-input" id="toggle-acce" type="checkbox" checked>
             <label class="toggle-label" for="toggle-acce"></label>
@@ -140,7 +135,7 @@
         var cod_base = $('#cod_baseb').val();
         var fec_ini = $('#fecha_iniciob').val();
         var fec_fin = $('#fecha_finb').val();
-        window.location = "{{ route('bireporte_db.excel', [':cod_base', ':fec_ini', ':fec_fin']) }}".replace(':cod_base', cod_base).replace(':fec_ini', fec_ini).replace(':fec_fin', fec_fin);
+        window.location = "{{ route('bireporte_ind.excel', [':cod_base', ':fec_ini', ':fec_fin']) }}".replace(':cod_base', cod_base).replace(':fec_ini', fec_ini).replace(':fec_fin', fec_fin);
     }
 
     function Delete_ReporteBI(id) {

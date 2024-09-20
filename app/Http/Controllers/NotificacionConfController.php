@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Config;
 use App\Models\Notificacion;
+use App\Models\SubGerencia;
 use Illuminate\Http\Request;
 
 class NotificacionConfController extends Controller
@@ -16,22 +17,23 @@ class NotificacionConfController extends Controller
     public function update_leido($id)
     {
         $get_id = Notificacion::findOrFail($id);
-        if($get_id->id_tipo!="46"){
+        if ($get_id->id_tipo != "46") {
             Notificacion::findOrFail($id)->update([
                 'leido' => 1,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
-        }else{
+        } else {
             echo $get_id->solicitante;
         }
     }
 
     public function index()
     {
+        $list_subgerencia = SubGerencia::list_subgerencia(9);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('interna.administracion.notificacion.index', compact('list_notificacion'));
+        return view('interna.administracion.notificacion.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
     public function index_ti()
@@ -41,8 +43,8 @@ class NotificacionConfController extends Controller
 
     public function list_ti()
     {
-        $list_tipo = Config::select('id_config','descrip_config','mensaje','icono')
-                    ->where('tipo','Notificacion')->where('estado', 1)->get();
+        $list_tipo = Config::select('id_config', 'descrip_config', 'mensaje', 'icono')
+            ->where('tipo', 'Notificacion')->where('estado', 1)->get();
         return view('interna.administracion.notificacion.tipo.lista', compact('list_tipo'));
     }
 
@@ -57,17 +59,17 @@ class NotificacionConfController extends Controller
             'descrip_config' => 'required',
             'mensaje' => 'required',
             'icono' => 'required'
-        ],[
+        ], [
             'descrip_config.required' => 'Debe ingresar nombre.',
             'mensaje.required' => 'Debe ingresar mensaje.',
             'icono.required' => 'Debe ingresar ícono.'
         ]);
 
         $valida = Config::where('descrip_config', $request->descrip_config)->where('tipo', 'Notificacion')
-                ->where('estado', 1)->exists();
-        if($valida){
+            ->where('estado', 1)->exists();
+        if ($valida) {
             echo "error";
-        }else{
+        } else {
             Config::create([
                 'descrip_config' => $request->descrip_config,
                 'mensaje' => $request->mensaje,
@@ -94,17 +96,17 @@ class NotificacionConfController extends Controller
             'descrip_confige' => 'required',
             'mensajee' => 'required',
             'iconoe' => 'required'
-        ],[
+        ], [
             'descrip_confige.required' => 'Debe ingresar nombre.',
             'mensajee.required' => 'Debe ingresar mensaje.',
             'iconoe.required' => 'Debe ingresar ícono.'
         ]);
 
         $valida = Config::where('descrip_config', $request->descrip_confige)->where('tipo', 'Notificacion')
-                ->where('estado', 1)->where('id_config', '!=', $id)->exists();
-        if($valida){
+            ->where('estado', 1)->where('id_config', '!=', $id)->exists();
+        if ($valida) {
             echo "error";
-        }else{
+        } else {
             Config::findOrFail($id)->update([
                 'descrip_config' => $request->descrip_confige,
                 'mensaje' => $request->mensajee,

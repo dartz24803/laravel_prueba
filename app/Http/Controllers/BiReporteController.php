@@ -69,8 +69,9 @@ class BiReporteController extends Controller
     public function index_ra_conf()
     {
 
+        $list_subgerencia = SubGerencia::list_subgerencia(9);
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('interna.administracion.reportes.index', compact('list_notificacion'));
+        return view('interna.administracion.reportes.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
 
@@ -496,7 +497,6 @@ class BiReporteController extends Controller
             'id_usuario' => $request->solicitantee,
             'frecuencia_act' => $request->frec_actualizacion,
             'objetivo' => $request->objetivo,
-            'tablas' => $request->tablas,
             'iframe' => $request->iframe,
             'estado' => 1,
             'estado_valid' => 0,
@@ -684,21 +684,20 @@ class BiReporteController extends Controller
                 'acceso_bi_reporte.objetivo',
                 'acceso_bi_reporte.frecuencia_act',
                 'acceso_bi_reporte.id_usuario',
-                'acceso_bi_reporte.tablas',
                 'acceso_bi_reporte.estado',
                 'acceso_bi_reporte.fec_act',
                 'acceso_bi_reporte.fec_reg',
                 'acceso_bi_reporte.fec_valid',
                 'acceso_bi_reporte.estado_valid',
                 'indicadores_bi.nom_indicador',
-                'indicadores_bi.descripcion', // Nueva columna
-                'indicadores_bi.idtipo_indicador', // Nueva columna
-                'indicadores_bi.presentacion', // Nueva columna
-                'tipo_indicador.nom_indicador as tipo_indicador_nombre' // Obtenemos el nombre del indicador
+                'indicadores_bi.descripcion',
+                'indicadores_bi.idtipo_indicador',
+                'indicadores_bi.presentacion',
+                'tipo_indicador.nom_indicador as tipo_indicador_nombre'
             )
             ->where('acceso_bi_reporte.estado', '=', 1)
             ->where('acceso_bi_reporte.estado_valid', '=', 1)
-            ->orderBy('acceso_bi_reporte.fec_reg', 'DESC') // Ordena por fec_reg en orden descendente
+            ->orderBy('acceso_bi_reporte.fec_reg', 'DESC')
             ->get();
 
         // Obtener IDs de los reportes
@@ -726,16 +725,13 @@ class BiReporteController extends Controller
 
         // Preparar un array para almacenar los nombres de las áreas y el nombre del usuario
         foreach ($list_reportes as $reporte) {
-            // Obtener nombres de los puestos asociados al reporte actual
             $nombresPuestosReporte = $puestos->get($reporte->id_acceso_bi_reporte, collect())->pluck('nom_puesto')->implode(', ');
             $reporte->nombres_puesto = $nombresPuestosReporte;
 
-            // Obtener nombres de las áreas asociadas al reporte actual
             $ids = explode(',', $reporte->id_area);
             $nombresAreas = array_intersect_key($areas, array_flip($ids));
             $reporte->nombres_area = implode(', ', $nombresAreas);
 
-            // Obtener el nombre del tipo de indicador
             $reporte->nombre_indicador = $tipoIndicadores[$reporte->idtipo_indicador] ?? 'Indicador desconocido';
         }
 
@@ -744,7 +740,7 @@ class BiReporteController extends Controller
         $sheet = $spreadsheet->getActiveSheet();
         $spreadsheet->getActiveSheet()->setTitle('Listado de Reportes');
 
-        $sheet->setAutoFilter('A1:N1'); // Actualización para incluir las nuevas columnas
+        $sheet->setAutoFilter('A1:M1'); // Actualizado para 13 columnas
 
         $columnWidths = [
             'A' => 20,
@@ -760,15 +756,14 @@ class BiReporteController extends Controller
             'K' => 20,
             'L' => 20,
             'M' => 20,
-            'N' => 20, // Nueva columna
         ];
 
         foreach ($columnWidths as $column => $width) {
             $sheet->getColumnDimension($column)->setWidth($width);
         }
 
-        $sheet->getStyle('A1:N1')->getFont()->setBold(true);
-        $sheet->getStyle('A1:N1')->applyFromArray([
+        $sheet->getStyle('A1:M1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:M1')->applyFromArray([
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => Border::BORDER_THIN,
@@ -777,7 +772,7 @@ class BiReporteController extends Controller
             ],
         ]);
 
-        $sheet->getStyle('A1:N1')->getFill()
+        $sheet->getStyle('A1:M1')->getFill()
             ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
             ->getStartColor()->setARGB('C8C8C8');
 
@@ -788,14 +783,13 @@ class BiReporteController extends Controller
         $sheet->setCellValue('D1', 'Área');
         $sheet->setCellValue('E1', 'Solicitante');
         $sheet->setCellValue('F1', 'Frecuencia');
-        $sheet->setCellValue('G1', 'Tablas');
-        $sheet->setCellValue('H1', 'Objetivo');
-        $sheet->setCellValue('I1', 'Iframe');
-        $sheet->setCellValue('J1', 'Nombre del Indicador');
-        $sheet->setCellValue('K1', 'Descripción'); // Nueva columna
-        $sheet->setCellValue('L1', 'Tipo de Indicador'); // Nueva columna
-        $sheet->setCellValue('M1', 'Presentación'); // Nueva columna
-        $sheet->setCellValue('N1', 'Fecha Registro');
+        $sheet->setCellValue('G1', 'Objetivo');
+        $sheet->setCellValue('H1', 'Iframe');
+        $sheet->setCellValue('I1', 'Nombre del Indicador');
+        $sheet->setCellValue('J1', 'Descripción');
+        $sheet->setCellValue('K1', 'Tipo de Indicador');
+        $sheet->setCellValue('L1', 'Presentación');
+        $sheet->setCellValue('M1', 'Fecha Registro');
 
         // Obtener los ids de usuario únicos de la lista de reportes
         $idsUsuarios = $list_reportes->pluck('id_usuario')->unique();
@@ -811,7 +805,6 @@ class BiReporteController extends Controller
             $frecuencia = ['1' => 'Minuto', '2' => 'Hora', '3' => 'Día', '4' => 'Mes'][$reporte->frecuencia_act] ?? 'Desconocido';
             $tipo_presentacion = ['1' => 'Tabla', '2' => 'Gráfico'][$reporte->presentacion] ?? 'Desconocido';
 
-
             $sheet->setCellValue("A{$contador}", $reporte->nom_bi);
             $sheet->setCellValue("B{$contador}", $reporte->nom_intranet);
             $sheet->setCellValue("C{$contador}", $actividad);
@@ -819,16 +812,14 @@ class BiReporteController extends Controller
             $nombreUsuario = $nombresUsuarios[$reporte->id_usuario] ?? 'Usuario desconocido';
             $sheet->setCellValue("E{$contador}", $nombreUsuario);
             $sheet->setCellValue("F{$contador}", $frecuencia);
-            $sheet->setCellValue("G{$contador}", $reporte->tablas);
-            $sheet->setCellValue("H{$contador}", $reporte->objetivo);
-            $sheet->setCellValue("I{$contador}", $reporte->iframe);
-            $sheet->setCellValue("J{$contador}", $reporte->nombre_indicador);
-            $sheet->setCellValue("K{$contador}", $reporte->descripcion); // Nueva columna
-            $sheet->setCellValue("L{$contador}", $reporte->nombre_indicador); // Nueva columna
-            $sheet->setCellValue("M{$contador}", $tipo_presentacion); // Nueva columna
-            $sheet->setCellValue("N{$contador}", $reporte->fec_reg);
+            $sheet->setCellValue("G{$contador}", $reporte->objetivo);
+            $sheet->setCellValue("H{$contador}", $reporte->iframe);
+            $sheet->setCellValue("I{$contador}", $reporte->nombre_indicador);
+            $sheet->setCellValue("J{$contador}", $reporte->descripcion);
+            $sheet->setCellValue("K{$contador}", $reporte->nombre_indicador);
+            $sheet->setCellValue("L{$contador}", $tipo_presentacion);
+            $sheet->setCellValue("M{$contador}", $reporte->fec_reg);
         }
-
 
         $writer = new Xlsx($spreadsheet);
         $filename = 'Lista Reporte BI ' . date('d-m-Y');
@@ -841,17 +832,16 @@ class BiReporteController extends Controller
         $writer->save('php://output');
     }
 
-
-    // BD REPORTES
-    public function index_db()
+    // REPORTES X INDICADORES
+    public function index_ind()
     {
-        return view('interna.bi.reportes.dbreportes.index');
+        return view('interna.bi.reportes.reporteind.index');
     }
 
-    public function list_db()
+    public function list_ind()
     {
         // Obtener la lista de reportes con los campos requeridos de la tabla indicadores_bi
-        $list_bi_reporte = BiReporte::getBiReportes();
+        $list_bi_reporte = BiReporte::getBiReportesxIndicador();
         // Obtener IDs de los reportes
         $reportesIds = $list_bi_reporte->pluck('id_acceso_bi_reporte')->toArray();
         // dd($reportesIds);
@@ -907,7 +897,78 @@ class BiReporteController extends Controller
             }
         }
 
-        return view('interna.bi.reportes.dbreportes.lista', compact('list_bi_reporte'));
+        return view('interna.bi.reportes.reporteind.lista', compact('list_bi_reporte'));
+    }
+
+
+
+    // REPORTES X BASE DE DATOS
+    public function index_db()
+    {
+        return view('interna.bi.reportes.reportedb.index');
+    }
+
+    public function list_db()
+    {
+        // Obtener la lista de reportes con los campos requeridos de la tabla indicadores_bi
+        $list_bi_reporte = BiReporte::getBiReportesxTablas();
+        // dd($list_bi_reporte);
+        // Obtener IDs de los reportes
+        $reportesIds = $list_bi_reporte->pluck('id_acceso_bi_reporte')->toArray();
+        // dd($reportesIds);
+        // Consultar nombres de los puestos asociados a los reportes
+        $puestos = DB::table('bi_puesto_acceso')
+            ->join('puesto', 'bi_puesto_acceso.id_puesto', '=', 'puesto.id_puesto')
+            ->whereIn('bi_puesto_acceso.id_acceso_bi_reporte', $reportesIds)
+            ->select('bi_puesto_acceso.id_acceso_bi_reporte', 'puesto.nom_puesto')
+            ->get()
+            ->groupBy('id_acceso_bi_reporte');
+
+        // Consultar nombres de las áreas
+        $areas = DB::table('area')
+            ->whereIn('id_area', $list_bi_reporte->pluck('id_area')->flatten()->unique())
+            ->pluck('nom_area', 'id_area')
+            ->toArray();
+
+        // Consultar los nombres de los usuarios
+        $idsUsuarios = $list_bi_reporte->pluck('id_usuario')->unique();
+        $nombresUsuarios = DB::table('users')
+            ->whereIn('id_usuario', $idsUsuarios)
+            ->select(DB::raw("id_usuario, CONCAT(usuario_nombres, ' ', usuario_apater, ' ', usuario_amater) as nombre_completo"))
+            ->pluck('nombre_completo', 'id_usuario');
+
+        // Preparar los datos para cada reporte
+        foreach ($list_bi_reporte as $reporte) {
+            // Obtener nombres de los puestos asociados al reporte actual
+            $nombresPuestosReporte = $puestos->get($reporte->id_acceso_bi_reporte, collect())->pluck('nom_puesto')->implode(', ');
+            $reporte->nombres_puesto = $nombresPuestosReporte;
+
+            // Obtener el nombre del usuario correspondiente
+            $nombreUsuario = $nombresUsuarios[$reporte->id_usuario] ?? 'Usuario desconocido'; // Acceder por id_usuario
+            $reporte->nombre_usuario = $nombreUsuario;
+
+            // Obtener nombres de las áreas asociadas al reporte actual
+            $ids = explode(',', $reporte->id_area);
+            $nombresAreas = array_intersect_key($areas, array_flip($ids));
+            $reporte->nombres_area = implode(', ', $nombresAreas);
+            $reporte->tipo_presentacion = $reporte->presentacion == 1 ? 'Tabla' : ($reporte->presentacion == 2 ? 'Gráfico' : 'Desconocido');
+            $reporte->tipo_frecuencia = $reporte->frecuencia_act == 1 ? 'Minuto' : ($reporte->frecuencia_act == 2 ? 'Hora' : ($reporte->frecuencia_act == 3 ? 'Día' : ($reporte->frecuencia_act == 4 ? 'Semana' : ($reporte->frecuencia_act == 5 ? 'Mes' : 'Desconocido'))));
+
+            // Calcular los días sin atención
+            if ($reporte->estado_valid == 1) {
+                $fec_reg = new \DateTime($reporte->fec_reg);
+                $fec_valid = new \DateTime($reporte->fec_valid);
+                $interval = $fec_valid->diff($fec_reg);
+                $reporte->dias_sin_atencion = $interval->days;
+            } else {
+                $fec_reg = new \DateTime($reporte->fec_reg);
+                $fecha_actual = new \DateTime(); // Fecha actual
+                $interval = $fecha_actual->diff($fec_reg);
+                $reporte->dias_sin_atencion = $interval->days;
+            }
+        }
+
+        return view('interna.bi.reportes.reportedb.lista', compact('list_bi_reporte'));
     }
 
 
@@ -970,6 +1031,241 @@ class BiReporteController extends Controller
     }
 
     public function update_tind(Request $request, $id)
+    {
+        $request->validate([
+            'nombreindicadore' => 'required',
+            'descripcionee' => 'required',
+        ], [
+            'nombreindicadore.required' => 'Debe seleccionar nombre.',
+            'descripcionee.required' => 'Debe seleccionar descripción.',
+        ]);
+
+
+        TipoIndicador::findOrFail($id)->update([
+            'nom_indicador' => $request->nombreindicadore,
+            'descripcion' => $request->descripcionee,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    // ADMINISTRABLE SISTEMA
+    public function index_sis_conf()
+    {
+        return view('interna.administracion.reportes.sistema.index');
+    }
+
+    public function list_sis()
+    {
+        $list_sistemasdb = SistemaTablas::select('id_sistema_tablas', 'nom_sistema', 'cod_sistema', 'cod_db', 'nom_db')
+            ->where('estado', 1)
+            ->orderBy('cod_db', 'ASC')
+            ->distinct('cod_sistema')
+            ->get();
+
+
+        return view('interna.administracion.reportes.sistema.lista', compact('list_sistemasdb'));
+    }
+
+    public function edit_sis($id)
+    {
+        $list_sistemas = SistemaTablas::select('id_sistema_tablas', 'nom_sistema', 'cod_sistema')
+            ->where('estado', 1)
+            ->orderBy('cod_sistema', 'ASC')
+            ->distinct('cod_sistema')
+            ->get()
+            ->unique('cod_sistema');
+
+        $list_dbs = SistemaTablas::select('id_sistema_tablas', 'nom_db', 'cod_db')
+            ->where('estado', 1)
+            ->orderBy('nom_db', 'ASC')
+            ->distinct('nom_db')
+            ->get();
+
+        $get_id = SistemaTablas::findOrFail($id);
+        return view('interna.administracion.reportes.sistema.modal_editar',  compact('get_id', 'list_sistemas', 'list_dbs'));
+    }
+
+    public function destroy_sis($id)
+    {
+        SistemaTablas::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function create_sis()
+    {
+        $list_sistemas = SistemaTablas::select('id_sistema_tablas', 'nom_sistema', 'cod_sistema')
+            ->where('estado', 1)
+            ->orderBy('cod_sistema', 'ASC')
+            ->distinct('cod_sistema')
+            ->get()
+            ->unique('cod_sistema');
+
+        return view('interna.administracion.reportes.sistema.modal_registrar', compact('list_sistemas'));
+    }
+
+    public function create_sistema()
+    {
+        return view('interna.administracion.reportes.sistema.modal_registrar_sistema');
+    }
+
+    public function store_sis(Request $request)
+    {
+        $request->validate([
+            'nom_sistemae' => 'required',
+            'nom_bde' => 'required',
+        ], [
+            'nom_sistemae.required' => 'Debe ingresar Sistema.',
+            'nom_bde.required' => 'Debe ingresar nombre Base de Datos.',
+        ]);
+
+        // Obtener el valor más alto de cod_sistema en la tabla SistemaTablas
+        $highestCodSistema = SistemaTablas::max('cod_sistema');
+        $nextCodSistema = $this->generateNextCode($highestCodSistema, 'S', 3);
+        // Obtener el valor más alto de cod_db en la tabla SistemaTablas
+        $highestCodDb = SistemaTablas::max('cod_db');
+        $nextCodDb = $this->generateNextCode($highestCodDb, 'DB', 3);
+
+        SistemaTablas::create([
+            'cod_sistema' => $nextCodSistema,
+            'cod_db' => $nextCodDb,
+            'nom_sistema' => $request->nom_sistemae,
+            'nom_db' => $request->nom_bde,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function store_sistema(Request $request)
+    {
+        $request->validate([
+            'nom_sistema' => 'required',
+            'nom_db' => 'required',
+        ], [
+            'nom_sistema.required' => 'Debe ingresar sistema.',
+            'nom_db.required' => 'Debe ingresar base de datos.',
+        ]);
+        // Obtener el valor más alto de cod_sistema en la tabla SistemaTablas
+        $highestCodSistema = SistemaTablas::max('cod_sistema');
+        $nextCodSistema = $this->generateNextCode($highestCodSistema, 'S', 3);
+        // Obtener el valor más alto de cod_db en la tabla SistemaTablas
+        $highestCodDb = SistemaTablas::max('cod_db');
+        $nextCodDb = $this->generateNextCode($highestCodDb, 'DB', 3);
+
+        // Crear el nuevo registro con los códigos generados
+        SistemaTablas::create([
+            'cod_sistema' => $nextCodSistema,
+            'cod_db' => $nextCodDb,
+            'nom_sistema' => $request->nom_sistema,
+            'nom_db' => $request->nom_db,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    private function generateNextCode($currentCode, $prefix, $length)
+    {
+        if ($currentCode) {
+            // Remove prefix and zero-pads
+            $number = intval(substr($currentCode, strlen($prefix))) + 1;
+        } else {
+            // Start with the first number
+            $number = 1;
+        }
+
+        // Format the number with the prefix and zero-padded to the specified length
+        return $prefix . str_pad($number, $length, '0', STR_PAD_LEFT);
+    }
+
+
+    public function update_sis(Request $request, $id)
+    {
+        $request->validate([
+            'nom_sistemae' => 'required',
+            'nom_dbe' => 'required',
+        ], [
+            'nom_sistemae.required' => 'Debe seleccionar SISTEMA.',
+            'nom_dbe.required' => 'Debe seleccionar BASE DE DATOS.',
+        ]);
+
+
+        SistemaTablas::findOrFail($id)->update([
+            'nom_sistema' => $request->nom_sistemae,
+            'nom_db' => $request->nom_dbe,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+
+    // ADMINISTRABLE BASE DE DATOS
+    public function index_dbsis_conf()
+    {
+        return view('interna.administracion.reportes.sistema.index');
+    }
+
+    public function list_dbsis()
+    {
+        $list_indicadores = TipoIndicador::select('idtipo_indicador', 'nom_indicador', 'descripcion')
+            ->where('estado', 1)
+            ->orderBy('nom_indicador', 'ASC')
+            ->distinct('nom_indicador')->get();
+
+
+        return view('interna.administracion.reportes.sistema.lista', compact('list_indicadores'));
+    }
+
+    public function edit_dbsis($id)
+    {
+        $get_id = TipoIndicador::findOrFail($id);
+        return view('interna.administracion.reportes.sistema.modal_editar',  compact('get_id'));
+    }
+
+    public function destroy_dbsis($id)
+    {
+        TipoIndicador::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function create_dbsis()
+    {
+        return view('interna.administracion.reportes.sistema.modal_registrar');
+    }
+
+    public function store_dbsis(Request $request)
+    {
+        $request->validate([
+            'nom_indicador' => 'required',
+            'descripcion' => 'required',
+        ], [
+            'nom_indicador.required' => 'Debe ingresar nombre.',
+            'descripcion.required' => 'Debe ingresar descripción.',
+        ]);
+
+        TipoIndicador::create([
+            'nom_indicador' => $request->nom_indicador,
+            'descripcion' => $request->descripcion,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function update_dbsis(Request $request, $id)
     {
         $request->validate([
             'nombreindicadore' => 'required',
