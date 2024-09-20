@@ -2141,6 +2141,8 @@ class TrackingController extends Controller
             'forma_proceder.required' => 'Debe ingresar forma de proceder.',
         ]);
 
+        TrackingEvaluacionTemporal::where('id_usuario',session('usuario')->id_usuario)
+        ->where('id_devolucion',$id)->delete();
         TrackingEvaluacionTemporal::create([
             'id_usuario' => session('usuario')->id_usuario,
             'id_devolucion' => $id,
