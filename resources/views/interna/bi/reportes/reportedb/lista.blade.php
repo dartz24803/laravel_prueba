@@ -47,12 +47,13 @@
             <th>Última Act</th>
             <th>Nombre BI</th>
             <th>Nombre Intranet</th>
+            <th>Nombre Sistema</th>
+            <th>Nombre Base de Datos</th>
             <th>Actividad</th>
             <th>Tabla</th>
             <th class="col-tipo">Área</th>
             <th>Objetivo</th>
             <th>Iframe</th>
-            <th>Presentación</th>
             <th>Frecuencia</th>
             <th>Solicitante</th>
             <th>Accesos</th>
@@ -65,6 +66,8 @@
             <td>{{ \Carbon\Carbon::parse($reporte->fec_act)->locale('es')->translatedFormat('D d M y') }}</td>
             <td>{{ $reporte->nom_bi }}</td>
             <td>{{ $reporte->nom_intranet }}</td>
+            <td>{{ $reporte->nom_sistema }}</td>
+            <td>{{ $reporte->nom_db }}</td>
             <td>
                 @if ($reporte->actividad == 1)
                 En uso
@@ -81,10 +84,12 @@
                 {{ $reporte->nombres_area }}
             </td>
             <td>{{ $reporte->objetivo }}</td>
+            @if ($reporte->actividad == 1)
             <td>{{ $reporte->iframe }}</td>
-            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                {{ $reporte->tipo_presentacion }}
-            </td>
+            @else
+            <td>No disponible</td>
+            @endif
+
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->tipo_frecuencia }}
             </td>

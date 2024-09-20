@@ -51,6 +51,7 @@
             <th class="col-tipo">Área</th>
             <th>Objetivo</th>
             <th>Indicador</th>
+            <th>NPágina</th>
             <th>Descripción</th>
             <th>Tipo</th>
             <th>Iframe</th>
@@ -85,12 +86,21 @@
                 {{ $reporte->nom_indicador }}
             </td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ $reporte->npagina }}
+            </td>
+            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->descripcion }}
             </td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->tipo_indicador_nombre }}
             </td>
+            @if ($reporte->actividad == 1)
             <td>{{ $reporte->iframe }}</td>
+            @else
+            <td>No disponible</td>
+            @endif
+
+
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->tipo_presentacion }}
             </td>

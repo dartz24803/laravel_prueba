@@ -39,8 +39,8 @@ class ControlCamaraController extends Controller
         //REPORTE BI CON ID
         $list_subgerencia = SubGerencia::list_subgerencia(5);
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();            
-        return view('seguridad.control_camara.index',compact('list_notificacion', 'list_subgerencia'));
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('seguridad.control_camara.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
     public function index_reg()

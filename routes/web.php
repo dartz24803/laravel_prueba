@@ -270,6 +270,7 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('ubicacion_por_sede', 'getUbicacionPorSede')->name('ubicacion_por_sede');
     Route::get('areas_por_ubicacion', 'getAreasPorUbicacion')->name('areas_por_ubicacion');
     Route::get('area_por_usuario', 'getAreaPorUsuario')->name('area_por_usuario');
+    Route::get('bireporte_ra/{id}/image', 'image_ra')->name('bireporte_ra.image');
 
 
     // REPORTE x INDICADORES
