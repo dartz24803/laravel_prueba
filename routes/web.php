@@ -1048,6 +1048,7 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::get('caja_chica/{id}/validar', 'validar')->name('caja_chica.validar');
     Route::put('caja_chica_mo/{id}/validar', 'validar_mo')->name('caja_chica.validar_mo');
     Route::delete('caja_chica/{id}', 'destroy')->name('caja_chica.destroy');
+    Route::get('caja_chica/excel', 'excel')->name('caja_chica.excel');
 });
 //CAJA - INSUMOS CONFIGURABLE
 Route::controller(InsumoConfController::class)->group(function () {
