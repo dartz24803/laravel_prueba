@@ -31,7 +31,7 @@
                                     <label class="control-label text-bold">Evidencia: </label>
                                 </div>
                                 <div class="form-group ml-3 ml-lg-0 d-flex align-items-center">
-                                    <input type="file" class="form-control-file" name="archivo_inspf" id="archivo_inspf" onchange="Valida_Factura_Transporte();">
+                                    <input type="file" class="form-control-file" name="archivo_inspf" id="archivo_inspf" onchange="Valida_Archivo('archivo_inspf');">
                                     <a onclick="Limpiar_Ifile();" style="cursor: pointer" title="Borrar archivo seleccionado">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x text-danger">
                                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -100,6 +100,27 @@
                     $('#lista_archivo').html(resp);  
                 }
             });
+        }
+
+        function Valida_Archivo(val){
+            var archivoInput = document.getElementById(val);
+            var archivoRuta = archivoInput.value;
+            var extPermitidas = /(.pdf|.png|.jpg|.jpeg)$/i;
+
+            if(!extPermitidas.exec(archivoRuta)){
+                Swal({
+                    title: 'Registro Denegado',
+                    text: "Asegurese de ingresar archivo con extensión .pdf|.jpg|.png|.jpeg",
+                    type: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK',
+                });
+                archivoInput.value = ''; 
+                return false;
+            }else{
+                return true;         
+            }
         }
 
         var video = document.getElementById('video');
@@ -232,36 +253,31 @@
             var dataString = new FormData(document.getElementById('formulario'));
             var url = "{{ route('tracking.reporte_inspeccion_fardo') }}";
 
-            if (Valida_Insert_Reporte_Inspeccion_Fardo()) {
-                $.ajax({
-                    url: url,
-                    data: dataString,
-                    type: "POST",
-                    processData: false,
-                    contentType: false,
-                    success: function(data) {
-                        swal.fire(
-                            '!Cambio de estado exitoso!',
-                            '!Haga clic en el botón!',
-                            'success'
-                        ).then(function() {
-                            window.location = "{{ route('tracking') }}";
-                        });
-                    }
-                });
-            }
-        }
-
-        function Valida_Insert_Reporte_Inspeccion_Fardo() {
-            if ($('#observacion_inspf').val() === '') {
-                Swal(
-                    'Ups!',
-                    'Debe ingresar observación.',
-                    'warning'
-                ).then(function() {});
-                return false;
-            }
-            return true;
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        '!Cambio de estado exitoso!',
+                        '!Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        window.location = "{{ route('tracking') }}";
+                    });
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
         }
     </script>
 @endsection

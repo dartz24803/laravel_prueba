@@ -1063,6 +1063,22 @@ class TrackingController extends Controller
 
     public function insert_reporte_inspeccion_fardo(Request $request)
     {
+        $request->validate([
+            'observacion_inspf' => 'required'
+        ],[
+            'observacion_inspf.required' => 'Debe ingresar observación.'
+        ]);
+
+        $list_temporal = TrackingArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
+                        ->where('tipo',2)->count();
+        $errors = [];
+        if ($_FILES["archivo_inspf"]["name"]=="" && $list_temporal==0) {
+            $errors['archivo'] = ['Debe adjuntar o capturar con la cámara la evidencia.'];
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
         Tracking::findOrFail($request->id)->update([
             'observacion_inspf' => $request->observacion_inspf,
             'fec_act' => now(),

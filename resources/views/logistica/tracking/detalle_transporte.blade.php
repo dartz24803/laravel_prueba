@@ -223,7 +223,7 @@
             if(!extPermitidas.exec(archivoRuta)){
                 Swal({
                     title: 'Registro Denegado',
-                    text: "Asegurese de ingresar archivos con extensiones .pdf.",
+                    text: "Asegurese de ingresar archivo con extensión .pdf|.jpg|.png|.jpeg",
                     type: 'error',
                     showCancelButton: false,
                     confirmButtonColor: '#3085d6',
