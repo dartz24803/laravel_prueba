@@ -297,7 +297,7 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::put('bireporte_ti_conf/{id}', 'update_tind')->name('bireporte_ti_conf.update');
     Route::get('bireporte_ti_conf/create', 'create_tind')->name('bireporte_ti_conf.create');
     Route::post('bireporte_ti_conf', 'store_tind')->name('bireporte_ti_conf.store');
-    // Sistema 
+    // Sistema
     Route::get('bireporte_sisbd_conf/list', 'list_sis')->name('bireporte_sisbd_conf.list');
     Route::get('bireporte_sisbd_conf/{id}/edit', 'edit_sis')->name('bireporte_sisbd_conf.edit');
     Route::delete('bireporte_sisbd_conf/{id}', 'destroy_sis')->name('bireporte_sisbd_conf.destroy');
@@ -890,6 +890,7 @@ Route::controller(ColaboradorController::class)->group(function () {
     Route::get('colaborador_ce/{id}/download', 'download_co')->name('colaborador_ce.download');
     Route::get('colaborador_ce/{id}/pdf_perfil', 'pdf_perfil_co')->name('colaborador_ce.pdf_perfil');
     Route::get('colaborador_ce/{id_gerencia}/excel', 'excel_ce')->name('colaborador_ce.excel');
+    Route::get('ColaboradorController/Mi_Perfil/{id}', 'Mi_Perfil');
 });
 //ÁREA INTERNA
 Route::controller(InternaInicioController::class)->group(function () {

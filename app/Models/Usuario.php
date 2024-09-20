@@ -57,8 +57,8 @@ class Usuario extends Model
         u.id_nivel, u.centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,u.id_puesto,u.acceso,
         u.ini_funciones,u.fec_reg,u.usuario_password,u.estado, n.nom_nivel, p.nom_puesto, a.nom_area, u.id_area,
         (SELECT GROUP_CONCAT(puestos) FROM area WHERE estado=1 AND orden!='') AS grupo_puestos,
-        CASE WHEN u.urladm=1 THEN (select r.url_config from config r where r.descrip_config='Foto_Postulante' 
-        and r.estado=1) else (select r.url_config from config r where r.descrip_config='Foto_colaborador' 
+        CASE WHEN u.urladm=1 THEN (select r.url_config from config r where r.descrip_config='Foto_Postulante'
+        and r.estado=1) else (select r.url_config from config r where r.descrip_config='Foto_colaborador'
         and r.estado=1) end as url_foto,p.id_nivel as nivel_jerarquico,u.desvinculacion,u.id_cargo,
         pps.registro_masivo, visualizar_amonestacion(u.id_puesto) AS visualizar_amonestacion
         FROM users u
@@ -221,17 +221,17 @@ class Usuario extends Model
 
     public function list_usuarios_responsables($dato)
     {
-        $sql = "SELECT 	u.id_usuario, u.usuario_nombres, u.usuario_apater, u.usuario_amater, u.usuario_codigo, 
+        $sql = "SELECT 	u.id_usuario, u.usuario_nombres, u.usuario_apater, u.usuario_amater, u.usuario_codigo,
                 u.id_nivel, u.usuario_email, u.centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,
                 u.desvinculacion, u.ini_funciones,u.fec_reg,
                 u.usuario_password,u.estado, n.nom_nivel, p.nom_puesto, u.id_area,
                 DATE_FORMAT(u.fec_nac, '%M %d,%Y') as fec_nac, u.usuario_codigo,u.id_gerencia,
                 u.foto, u.acceso, u.id_puesto, u.id_cargo, u.directorio
-                
+
                 FROM users u
                 left join nivel n on n.id_nivel=u.id_nivel
                 left join puesto p on p.id_puesto=u.id_puesto
-                
+
                 WHERE  u.estado IN (1,4) and u.desvinculacion IN (0) and u.id_nivel<>8 and u.id_puesto in (" . $dato['puestos_jefes'][0]['puestos'] . ")";
 
         $result = DB::select($sql);
@@ -291,7 +291,7 @@ class Usuario extends Model
                     left join mes m on m.id_mes=u.mes_nac
                     left join genero g on g.id_genero=u.id_genero
                     left join tipo_documento t on t.id_tipo_documento=u.id_tipo_documento
-                    left join gerencia ge on ge.id_gerencia = u.id_gerencia 
+                    left join gerencia ge on ge.id_gerencia = u.id_gerencia
                     WHERE u.id_usuario=$id_usuario";
         } else {
             $sql = "SELECT * FROM parentesco";
@@ -306,8 +306,8 @@ class Usuario extends Model
         $sql = "SELECT u.*,CONCAT(YEAR(NOW()), '-', DATE_FORMAT(a.fec_nac, '%m-%d')) as cumpleanio,
         a.usuario_nombres,a.usuario_apater,a.usuario_amater,
         concat(b.usuario_nombres,' ',b.usuario_apater) as saludado_por,
-        case when u.estado_registro=1 then 'Aprobado' when u.estado_registro=2 then 'Pendiente de aprobación' end as desc_estado_registro 
-        FROM saludo_cumpleanio_historial u 
+        case when u.estado_registro=1 then 'Aprobado' when u.estado_registro=2 then 'Pendiente de aprobación' end as desc_estado_registro
+        FROM saludo_cumpleanio_historial u
         left join users a on u.id_cumpleaniero=a.id_usuario
         left join users b on u.id_usuario=b.id_usuario
         where u.id_cumpleaniero='$id_usuario' and year(u.fec_reg)='$anio' and u.estado=1";
@@ -324,12 +324,12 @@ class Usuario extends Model
                 u.foto_nombre,CONCAT(YEAR(NOW()), '-', DATE_FORMAT(fec_nac, '%m-%d')) as cumpleanio,
                 h.id_historial,h.estado_registro,m.nom_mes,
                 LOWER(u.usuario_nombres) AS nombres_min,LOWER(u.usuario_apater) AS apater_min
-                FROM users u 
-                left join saludo_cumpleanio_historial h on h.id_usuario='$id_usuario' and 
+                FROM users u
+                left join saludo_cumpleanio_historial h on h.id_usuario='$id_usuario' and
                 h.id_cumpleaniero=u.id_usuario and year(h.fec_reg)='$anio' and h.estado=1
                 left join mes m on month(u.fec_nac)=m.cod_mes
-                WHERE (DATE_FORMAT(u.fec_nac, '%m-%d') BETWEEN DATE_FORMAT(NOW(), '%m-%d') AND 
-                DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 5 DAY), '%m-%d')) AND u.usuario_nombres NOT LIKE 'Base%' AND u.estado=1 
+                WHERE (DATE_FORMAT(u.fec_nac, '%m-%d') BETWEEN DATE_FORMAT(NOW(), '%m-%d') AND
+                DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 5 DAY), '%m-%d')) AND u.usuario_nombres NOT LIKE 'Base%' AND u.estado=1
                 ORDER BY cumpleanio ASC";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
@@ -350,7 +350,7 @@ class Usuario extends Model
                 us.centro_labores,us.usuario_apater,us.usuario_amater,us.usuario_nombres,
                 DATE_FORMAT(us.ini_funciones,'%d-%m-%Y') AS fecha_ingreso,td.cod_tipo_documento,us.num_doc,
                 us.num_celp,pu.nom_puesto,ar.nom_area,CASE WHEN SUBSTRING(us.fin_funciones,1,1)='2' THEN
-                TIMESTAMPDIFF(DAY, us.ini_funciones, us.fin_funciones) 
+                TIMESTAMPDIFF(DAY, us.ini_funciones, us.fin_funciones)
                 ELSE TIMESTAMPDIFF(DAY, us.ini_funciones, CURDATE()) END AS dias_laborados,us.verif_email,
                 us.foto,us.documento,us.fec_baja
                 FROM users us
@@ -361,5 +361,89 @@ class Usuario extends Model
                 ORDER BY us.ini_funciones DESC";
         $query = DB::select($sql);
         return $query;
+    }
+
+    public static function perfil_porcentaje($id_usuario){
+        $sql = "SELECT u.id_usuario, u.usuario_apater, u.centro_labores, td.cod_tipo_documento,
+                u.num_celp,u.num_doc, u.usuario_amater, u.usuario_nombres, n.nom_nacionalidad,
+                u.foto, u.verif_email,
+                (case when u.usuario_nombres is not null and u.usuario_apater is not null and u.usuario_amater is not null
+                and u.id_nacionalidad is not null and u.id_tipo_documento is not null
+                and u.num_doc is not null and u.id_genero is not null and u.fec_nac is not null
+                and u.id_estado_civil is not null and u.num_celp is not null and u.foto_nombre is not null
+                and (u.emailp is not null || u.usuario_email is not null)
+                then 1 else 0 end) as datos_personales,
+                (case when (select count(1) from gusto_preferencia_users where gusto_preferencia_users.id_usuario=u.id_usuario and gusto_preferencia_users.estado=1)>0 then 1 else 0 end) as gustos_preferencias,
+                (case when u.hijos=2 or (u.hijos=1 and (select count(1) from hijos where hijos.id_usuario=u.id_usuario and hijos.estado=1)>0) then 1 else 0 end) as cont_hijos,
+                (case when (select count(1) from conoci_idiomas where conoci_idiomas.id_usuario=u.id_usuario and conoci_idiomas.estado=1)>0 then 1 else 0 end) as idiomas,
+                (case when u.enfermedades=2 or (u.enfermedades=1 and (select count(1) from enfermedad_usuario where enfermedad_usuario.id_usuario=u.id_usuario and enfermedad_usuario.estado=1)>0) then 1 else 0 end) as cont_enfermedades,
+                (case when u.id_genero=1 or (select count(1) from gestacion_usuario where gestacion_usuario.id_usuario=u.id_usuario and gestacion_usuario.estado=1)>0 then 1 else 0 end) as gestacion,
+                (case when u.alergia=0 then 0 else 1 end) as cont_alergia,
+                (case when (select count(1) from referencia_convocatoria where referencia_convocatoria.id_usuario=u.id_usuario and referencia_convocatoria.estado=1)>0 then 1 else 0 end) as ref_convoc,
+                (case when e.cv_doc<>'' and e.dni_doc<>'' and e.recibo_doc<>'' then 1 else 0 end) as adj_documentacion,
+                (case when u.terminos=0 then 0 else 1 end) as cont_terminos,
+                (case when (select count(1) from curso_complementario where curso_complementario.id_usuario=u.id_usuario and curso_complementario.estado=1)>0 then 1 else 0 end) as con_cursos_compl,
+                (case when (select count(1) from otros_usuario where otros_usuario.id_usuario=u.id_usuario and otros_usuario.estado=1)>0 then 1 else 0 end) as con_otros,
+
+                (case when d.id_departamento is not null and d.id_provincia is not null and d.id_distrito is not null
+                and d.id_tipo_vivienda is not null and d.referencia is not null and d.lat is not null and d.lng is not null
+                then 1 else 0 end) as domicilio_user, (case when cb.cuenta_bancaria=2 then 1
+                when cb.id_banco is not null and cb.cuenta_bancaria is not null
+                and cb.cuenta_bancaria=1 and cb.num_cuenta_bancaria is not null
+                and cb.num_codigo_interbancario is not null then 1 else 0 end) as cuenta_bancaria,
+                (case when ru.polo is not null and ru.pantalon is not null and ru.zapato is not null
+                then 1 else 0 end) as talla_usuario, (case when ou.id_grupo_sanguineo is not null
+                then 1 else 0 end) as grupo_sanguineo,
+                /*(case when ou.cert_covid is not null then 1 else 0 end) as covid,*/
+                (case when ou.cert_vacu_covid is not null then 1 else 0 end) as covid,
+                (case when sp.id_respuestasp is not null then 1 else 0 end) as sistema_pension,
+                (case when du.cv_doc is not null and du.dni_doc is not null and du.recibo_doc is not null
+                then 1 else 0 end) as documentacion, (case when co.nl_excel is not null and
+                co.nl_word is not null and co.nl_ppoint is not null then 1 else 0 end) as office,
+                (case when (select count(1) from referencia_familiar
+                where referencia_familiar.id_usuario=u.id_usuario and referencia_familiar.nom_familiar is not null
+                and referencia_familiar.id_parentesco is not null
+                and referencia_familiar.fec_nac is not null and (referencia_familiar.celular1 is not null ||
+                referencia_familiar.celular2 is not null || referencia_familiar.fijo is not null)
+                and referencia_familiar.estado=1)>0 then 1 else 0 end) as referencia,
+                (case when (select count(1) from contacto_emergencia
+                where contacto_emergencia.id_usuario=u.id_usuario and contacto_emergencia.nom_contacto is not null
+                and contacto_emergencia.id_parentesco is not null
+                and (contacto_emergencia.celular1 is not null || contacto_emergencia.celular2 is not null ||
+                contacto_emergencia.fijo is not null) and contacto_emergencia.estado=1)>0
+                then 1 else 0 end) as contactoe,
+                (case when (select count(1) from estudios_generales
+                where estudios_generales.id_usuario=u.id_usuario and
+                estudios_generales.id_grado_instruccion is not null
+                and (estudios_generales.carrera is not null || estudios_generales.centro is not null) and
+                estudios_generales.estado=1)>0 then 1 else 0 end) as estudiosg,
+                (case when (select count(1) from experiencia_laboral
+                where experiencia_laboral.id_usuario=u.id_usuario and experiencia_laboral.empresa is not null
+                and experiencia_laboral.cargo is not null and experiencia_laboral.fec_ini is not null
+                and experiencia_laboral.fec_fin is not null and experiencia_laboral.motivo_salida is not null
+                and experiencia_laboral.remuneracion is not null and experiencia_laboral.estado=1)>0
+                then 1 else 0 end) as experiencial, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo,
+                u.usuario_email, em.nom_empresa, du.dni_doc
+                from users u
+                LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
+                LEFT JOIN area a on a.id_area=u.id_area
+                LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                LEFT JOIN cargo c on c.id_cargo=u.id_cargo
+                left join domicilio_users d on d.id_usuario=u.id_usuario
+                left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
+                LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
+                left join conoci_office co on co.id_usuario=u.id_usuario
+                left join otros_usuario ou on ou.id_usuario=u.id_usuario
+                left join documentacion_usuario du on du.id_usuario=u.id_usuario
+                left join cuenta_bancaria cb on cb.id_usuario=u.id_usuario
+                left join ropa_usuario ru on ru.id_usuario=u.id_usuario
+                left join sist_pens_usuario sp on sp.id_usuario=u.id_usuario
+                left join empresas em on em.id_empresa=u.id_empresapl
+                left join (select id_usuario,cv_doc,dni_doc,recibo_doc
+                            from documentacion_usuario where estado=1) as e on u.id_usuario=e.id_usuario
+                WHERE u.id_usuario=$id_usuario";
+
+            $result = DB::select($sql);
+            return json_decode(json_encode($result), true);
     }
 }
