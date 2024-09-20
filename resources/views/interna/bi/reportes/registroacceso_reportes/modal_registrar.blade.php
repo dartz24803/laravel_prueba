@@ -1,5 +1,73 @@
 <!-- CSS -->
 <style>
+    #paste_area_1 {
+        width: 100%;
+        /* Ancho completo */
+        padding: 10px;
+        /* Espaciado interno para separar el contenido del borde */
+        font-size: 16px;
+        /* Tamaño de fuente adecuado */
+        border: 1px solid #ccc;
+        /* Borde del textarea */
+        resize: none;
+        /* Permitir redimensionamiento vertical */
+        box-sizing: border-box;
+        /* Incluir padding y border en el ancho total */
+        cursor: text;
+        /* Cursor de texto para indicar área de entrada */
+        border-color: #3366ff;
+        /* Cambiar color del borde al enfocarse */
+        box-shadow: 0 0 5px rgba(51, 102, 255, 0.5);
+        /* Sombra al enfocarse */
+        font-size: 12px;
+
+    }
+
+    #paste_area_2 {
+        width: 100%;
+        /* Ancho completo */
+        padding: 10px;
+        /* Espaciado interno para separar el contenido del borde */
+        font-size: 16px;
+        /* Tamaño de fuente adecuado */
+        border: 1px solid #ccc;
+        /* Borde del textarea */
+        resize: none;
+        /* Permitir redimensionamiento vertical */
+        box-sizing: border-box;
+        /* Incluir padding y border en el ancho total */
+        cursor: text;
+        /* Cursor de texto para indicar área de entrada */
+        border-color: #3366ff;
+        /* Cambiar color del borde al enfocarse */
+        box-shadow: 0 0 5px rgba(51, 102, 255, 0.5);
+        /* Sombra al enfocarse */
+        font-size: 12px;
+
+    }
+
+    #paste_area_3 {
+        width: 100%;
+        /* Ancho completo */
+        padding: 10px;
+        /* Espaciado interno para separar el contenido del borde */
+        font-size: 16px;
+        /* Tamaño de fuente adecuado */
+        border: 1px solid #ccc;
+        /* Borde del textarea */
+        resize: none;
+        /* Permitir redimensionamiento vertical */
+        box-sizing: border-box;
+        /* Incluir padding y border en el ancho total */
+        cursor: text;
+        /* Cursor de texto para indicar área de entrada */
+        border-color: #3366ff;
+        /* Cambiar color del borde al enfocarse */
+        box-shadow: 0 0 5px rgba(51, 102, 255, 0.5);
+        /* Sombra al enfocarse */
+        font-size: 12px;
+    }
+
     #drop-area {
         border: 2px dashed #007bff;
         border-radius: 5px;
@@ -310,14 +378,39 @@
 
             <div class="tab-pane fade" id="up_imagenes2" role="tabpanel" aria-labelledby="upimagenes-tab">
                 <div class="row my-4">
-                    <div class="col-lg-12">
-                        <div id="drop-area" class="border border-primary" style="width: 100%; height: 300px; text-align: center; padding: 20px;">
-                            <p>Arrastra hasta 3 imágenes aquí</p>
-                            <input type="file" id="fileElem" accept="image/*" onchange="handleFiles(this.files)" style="display:none" multiple>
-                            <div onclick="document.getElementById('fileElem').click();"></div>
-                            <div id="preview" style="margin-top: 20px;"></div>
+                    <!-- Columna 1 -->
+                    <div class="col-lg-4">
+                        <div class="row p-2">
+                            <textarea id="paste_area_1" placeholder="Ctrl + V aquí para pegar la imagen" style="width: 100%" rows="1"></textarea>
+                            <div id="imageViewer_1"></div>
                         </div>
+                        <input type="file" id="archivo_base_1" name="archivo_base_1" style="display: none;">
                     </div>
+
+                    <!-- Columna 2 -->
+                    <div class="col-lg-4">
+                        <div class="row p-2">
+                            <textarea id="paste_area_2" placeholder="Ctrl + V aquí para pegar la imagen" style="width: 100%" rows="1"></textarea>
+                            <div id="imageViewer_2"></div>
+                        </div>
+                        <input type="file" id="archivo_base_2" name="archivo_base_2" style="display: none;">
+                    </div>
+
+                    <!-- Columna 3 -->
+                    <div class="col-lg-4">
+                        <div class="row p-2">
+                            <textarea id="paste_area_3" placeholder="Ctrl + V aquí para pegar la imagen" style="width: 100%" rows="1"></textarea>
+                            <div id="imageViewer_3"></div>
+                        </div>
+                        <input type="file" id="archivo_base_3" name="archivo_base_3" style="display: none;">
+                    </div>
+                    <!-- <div class="col-lg-12">
+                        <div class="row p-2">
+                            <textarea id="paste_area" placeholder="Ctrl + V aquí para pegar la imagen" style="width: 100%" rows="1"></textarea>
+                            <div id="imageViewer">
+                            </div>
+                        </div>
+                    </div> -->
                 </div>
             </div>
 
@@ -371,6 +464,62 @@
 </form>
 
 <script>
+    document.getElementById('paste_area_1').addEventListener('paste', function(e) {
+        handlePaste(e, 'archivo_base_1', 'imageViewer_1');
+    });
+
+    document.getElementById('paste_area_2').addEventListener('paste', function(e) {
+        handlePaste(e, 'archivo_base_2', 'imageViewer_2');
+    });
+
+    document.getElementById('paste_area_3').addEventListener('paste', function(e) {
+        handlePaste(e, 'archivo_base_3', 'imageViewer_3');
+    });
+
+    function handlePaste(e, fileInputId, viewerId) {
+        if (e.clipboardData && e.clipboardData.items) {
+            var items = e.clipboardData.items;
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf("image") !== -1) {
+                    var blob = items[i].getAsFile();
+
+                    // Display image in viewer div
+                    displayImage(blob, viewerId);
+
+                    // Set the image blob as form data
+                    var fileInput = document.getElementById(fileInputId);
+                    var dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(blob);
+                    fileInput.files = dataTransfer.files;
+
+                    break;
+                }
+            }
+        }
+    }
+
+    function displayImage(blob, viewerId) {
+        var reader = new FileReader();
+
+        reader.onload = function(event) {
+            var img = new Image();
+            img.src = event.target.result;
+            img.style.maxWidth = "100%";
+            img.style.marginTop = "10px"; // Ajustar el estilo según sea necesario
+
+            // Limpiar contenido anterior
+            var imageViewer = document.getElementById(viewerId);
+            imageViewer.innerHTML = '';
+
+            // Agregar nueva imagen al div de visualización
+            imageViewer.appendChild(img);
+        };
+
+        reader.readAsDataURL(blob);
+    }
+
+
+
     function addRow() {
         // Obtener el cuerpo de la tablacodigo
         var tableBody = document.getElementById('tabla_body');
@@ -459,7 +608,11 @@
     });
 
     $(document).ready(function() {
+        // CARGAR IMAGENES
 
+
+
+        // CARGAR IMAGENES
         $('#id_area_acceso_t').select2({
             tags: true,
             tokenSeparators: [',', ' '],
@@ -732,96 +885,4 @@
         },
         "stripeClasses": [],
     });
-
-
-
-
-    // SUBIR IMAGENES
-    let dropArea = document.getElementById('drop-area');
-    let imageCount = 0;
-    const maxImages = 3;
-
-    // Prevenir el comportamiento predeterminado
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, preventDefaults, false)
-    });
-
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    // Destacar el área de arrastre cuando se arrastra un archivo sobre ella
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropArea.addEventListener(eventName, () => dropArea.classList.add('highlight'), false)
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, () => dropArea.classList.remove('highlight'), false)
-    });
-
-    // Manejar el evento drop
-    dropArea.addEventListener('drop', handleDrop, false);
-
-    function handleDrop(e) {
-        let dt = e.dataTransfer;
-        let files = dt.files;
-        handleFiles(files);
-    }
-
-    function handleFiles(files) {
-        if (imageCount >= maxImages) {
-            alert("Solo puedes subir un máximo de 3 imágenes.");
-            return;
-        }
-
-        let filesArray = Array.from(files);
-        let newImages = filesArray.slice(0, maxImages - imageCount); // Limitar a 3 imágenes
-        imageCount += newImages.length;
-
-        newImages.forEach(previewFile);
-    }
-
-    // Previsualizar las imágenes
-    function previewFile(file) {
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = function() {
-            let imgContainer = document.createElement('div');
-            imgContainer.classList.add('img-preview');
-            imgContainer.style.marginTop = '10px';
-            imgContainer.style.position = 'relative';
-            imgContainer.style.display = 'inline-block';
-            imgContainer.style.marginRight = '10px';
-
-            let img = document.createElement('img');
-            img.src = reader.result;
-            img.style.maxWidth = '220px'; // Aumenta el tamaño máximo
-            img.style.height = 'auto';
-            img.style.border = '1px solid #ccc';
-            img.style.padding = '5px';
-            img.style.cursor = 'pointer'; // Cambia el cursor para indicar que es clickeable
-
-            // SVG para eliminar
-            let deleteButton = document.createElement('button');
-            deleteButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`;
-            deleteButton.style.position = 'absolute';
-            deleteButton.style.top = '5px';
-            deleteButton.style.right = '5px';
-            deleteButton.style.backgroundColor = 'transparent';
-            deleteButton.style.border = 'none';
-            deleteButton.style.cursor = 'pointer';
-
-            // Acción para eliminar la imagen
-            deleteButton.addEventListener('click', function() {
-                imgContainer.remove();
-                imageCount--;
-            });
-
-            // Añadir la imagen y el botón al contenedor
-            imgContainer.appendChild(img);
-            imgContainer.appendChild(deleteButton);
-            document.getElementById('preview').appendChild(imgContainer);
-        }
-    }
 </script>

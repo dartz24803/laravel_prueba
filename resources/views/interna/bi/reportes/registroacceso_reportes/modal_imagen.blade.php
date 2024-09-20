@@ -1,4 +1,4 @@
-<form id="formularioi" method="POST" enctype="multipart/form-data" class="needs-validation">
+<form id="formularioimage2" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title">Visualización de Archivo</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -12,28 +12,20 @@
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row">
             <div class="form-group col-lg-12 text-center">
-                <div class="col"> <label>{{ $get_id->nombre }}:</label>
-                    @if ($imageUrl)
+                <div class="col">
+                    <p id="imageName">{{ $imageUrls[0]['name'] }}</p>
                 </div>
-                @php
-                $extension = pathinfo($imageUrl, PATHINFO_EXTENSION);
-                @endphp
-
-                @if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif']))
-                <!-- Mostrar imagen -->
-                <img src="{{ $imageUrl }}" alt="Imagen" style="max-width: 100%; max-height: 400px;" />
-                @elseif (strtolower($extension) == 'pdf')
-                <!-- Mostrar PDF -->
-                <embed src="{{ $imageUrl }}" type="application/pdf" width="100%" height="500px" />
-                <!-- Si prefieres usar un iframe en lugar de embed, usa la siguiente línea: -->
-                <!-- <iframe src="{{ $imageUrl }}" width="100%" height="500px"></iframe> -->
-                @else
-                <!-- Otro tipo de archivo -->
-                <p>No se puede mostrar el archivo: {{ $extension }}</p>
-                @endif
-                @else
-                <p>No hay archivo disponible</p>
-                @endif
+                <div id="image-carousel" class="text-center">
+                    @if (!empty($imageUrls))
+                    <img id="modalImage" src="{{ $imageUrls[0]['url'] }}" alt="Imagen" style="max-width: 100%; max-height: 400px;" />
+                    <div class="m-4">
+                        <button type="button" id="prevImage" class="btn btn-secondary">Anterior</button>
+                        <button type="button" id="nextImage" class="btn btn-secondary">Siguiente</button>
+                    </div>
+                    @else
+                    <p>No hay archivos disponibles</p>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
@@ -42,3 +34,33 @@
         <button class="btn btn-primary" type="button" data-dismiss="modal">Aceptar</button>
     </div>
 </form>
+
+<script>
+    let imageIndex = 0;
+    const imageUrls = @json($imageUrls); // Asegúrate de que esto sea un array válido
+
+    const modalImage = document.getElementById('modalImage');
+    const imageName = document.getElementById('imageName');
+    const prevButton = document.getElementById('prevImage');
+    const nextButton = document.getElementById('nextImage');
+
+    function updateImage() {
+        if (imageUrls.length > 0) {
+            modalImage.src = imageUrls[imageIndex].url;
+            imageName.textContent = imageUrls[imageIndex].name; // Actualiza el nombre de la imagen
+        }
+    }
+
+    prevButton.addEventListener('click', function() {
+        imageIndex = (imageIndex > 0) ? imageIndex - 1 : imageUrls.length - 1;
+        updateImage();
+    });
+
+    nextButton.addEventListener('click', function() {
+        imageIndex = (imageIndex < imageUrls.length - 1) ? imageIndex + 1 : 0;
+        updateImage();
+    });
+
+    // Inicializa la imagen al cargar
+    updateImage();
+</script>

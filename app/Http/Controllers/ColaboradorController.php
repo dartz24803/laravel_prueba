@@ -17,7 +17,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use App\Models\Notificacion;
 use App\Models\SubGerencia;
-
+use App\Models\Config;
 class ColaboradorController extends Controller
 {
     public function __construct()
@@ -81,7 +81,7 @@ class ColaboradorController extends Controller
 
             $mail->Body =  "<h1> Hola, " . $get_id->usuario_nombres . " " . $get_id->usuario_apater . "</h1>
                             <p>Te damos la bienvenida a la gran familia La Número 1.</p>
-                            <p>A continuación deberás colocar tu nueva contraseña para ingresar a nuestro 
+                            <p>A continuación deberás colocar tu nueva contraseña para ingresar a nuestro
                             portal: $password</p>
                             <p>Gracias.<br>Atte. Grupo La Número 1</p>";
             $mail->CharSet = 'UTF-8';
@@ -178,7 +178,7 @@ class ColaboradorController extends Controller
         $sheet->getStyle("A1:BN1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle("A1:BN1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
-        $spreadsheet->getActiveSheet()->setTitle('Colaborador'); 
+        $spreadsheet->getActiveSheet()->setTitle('Colaborador');
 
         $sheet->setAutoFilter('A1:BN1');
 
@@ -230,7 +230,7 @@ class ColaboradorController extends Controller
         $sheet->getColumnDimension('AT')->setWidth(20);
         $sheet->getColumnDimension('AU')->setWidth(28);
         $sheet->getColumnDimension('AV')->setWidth(20);
-        $sheet->getColumnDimension('AW')->setWidth(20); 
+        $sheet->getColumnDimension('AW')->setWidth(20);
         $sheet->getColumnDimension('AX')->setWidth(18);
         $sheet->getColumnDimension('AY')->setWidth(18);
         $sheet->getColumnDimension('AZ')->setWidth(18);
@@ -249,7 +249,7 @@ class ColaboradorController extends Controller
         $sheet->getColumnDimension('BM')->setWidth(18);
         $sheet->getColumnDimension('BN')->setWidth(18);
 
-        $sheet->getStyle('A1:BN1')->getFont()->setBold(true);  
+        $sheet->getStyle('A1:BN1')->getFont()->setBold(true);
 
         $spreadsheet->getActiveSheet()->getStyle("A1:BN1")->getFill()
         ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
@@ -334,7 +334,7 @@ class ColaboradorController extends Controller
         $sheet->setCellValue('BN1', 'MASCOTA');
 
         $contador=1;
-        
+
         foreach($list_colaborador as $list){
             $contador++;
 
@@ -374,9 +374,9 @@ class ColaboradorController extends Controller
                 $sheet->setCellValue("P{$contador}", Date::PHPToExcel($list->fec_nac));
                 $sheet->getStyle("P{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
             }
-            $sheet->setCellValue("Q{$contador}", $list->dia_nac);    
-            $sheet->setCellValue("R{$contador}", $list->mes_nac);    
-            $sheet->setCellValue("S{$contador}", $list->usuario_email);                
+            $sheet->setCellValue("Q{$contador}", $list->dia_nac);
+            $sheet->setCellValue("R{$contador}", $list->mes_nac);
+            $sheet->setCellValue("S{$contador}", $list->usuario_email);
             $sheet->setCellValue("T{$contador}", $list->num_celp);
             $sheet->setCellValue("U{$contador}", $list->nombre_departamento);
             $sheet->setCellValue("V{$contador}", $list->nombre_provincia);
@@ -408,11 +408,11 @@ class ColaboradorController extends Controller
             if($list->covid!="0"){
                 $sheet->getCell("AU{$contador}")->getHyperlink()->setUrl($dato['url_archivo'].$list->cert_vacu_covid);
             }
-            $sheet->setCellValue("AV{$contador}", $list->horariof);   
+            $sheet->setCellValue("AV{$contador}", $list->horariof);
             $sheet->setCellValue("AW{$contador}", $list->modalidadf);
-            $sheet->setCellValue("AX{$contador}", $list->polo);   
+            $sheet->setCellValue("AX{$contador}", $list->polo);
             $sheet->setCellValue("AY{$contador}", $list->camisa);
-            $sheet->setCellValue("AZ{$contador}", $list->pantalon);   
+            $sheet->setCellValue("AZ{$contador}", $list->pantalon);
             $sheet->setCellValue("BA{$contador}", $list->zapato);
             $sheet->setCellValue("BB{$contador}", $list->nom_grupo_sanguineo);
             $sheet->setCellValue("BC{$contador}", $list->generacion);
@@ -436,10 +436,10 @@ class ColaboradorController extends Controller
         $filename ='Colaborador';
         if (ob_get_contents()) ob_end_clean();
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+        header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"');
         header('Cache-Control: max-age=0');
 
-        $writer->save('php://output'); 
+        $writer->save('php://output');
     }*/
 
     public function index_ce()
@@ -458,5 +458,57 @@ class ColaboradorController extends Controller
     {
         $get_id = Usuario::findOrFail($id);
         return view('rrhh.colaborador.cesado.modal_editar', compact('get_id'));
+    }
+
+    public function Mi_Perfil($id_usuario=null){
+        /*
+            if(isset($id_usuario) && $id_usuario > 0){
+                $id_usuario= $id_usuario;
+            }else{
+                $id_usuario= $_SESSION['usuario'][0]['id_usuario'];
+            }*/
+            $dato['usuario'] = Usuario::get_list_usuario($id_usuario);
+            /*$dato['domicilio'] = $this->Model_Corporacion->get_id_domicilio_users($id_usuario);
+
+            $dato['datosp_porcentaje'] = $this->Model_Corporacion->datosp_porcentaje($id_usuario);
+            $dato['gustos_pref'] = $this->Model_Corporacion->get_id_gustosp($id_usuario);
+            $dato['domiciliou_porcentaje'] = $this->Model_Corporacion->domiciliou_porcentaje($id_usuario);
+            $dato['referenciaf_porcentaje'] = $this->Model_Corporacion->referenciaf_porcentaje($id_usuario);
+            $dato['datoshu_porcentaje'] = $this->Model_Corporacion->datoshu_porcentaje($id_usuario);
+            $dato['contactoeu_porcentaje'] = $this->Model_Corporacion->contactoeu_porcentaje($id_usuario);
+            $dato['estudiosgu_porcentaje'] = $this->Model_Corporacion->estudiosgu_porcentaje($id_usuario);
+            $dato['oficceu_porcentaje'] = $this->Model_Corporacion->oficceu_porcentaje($id_usuario);
+            $dato['idiomau_porcentaje'] = $this->Model_Corporacion->idiomau_porcentaje($id_usuario);
+            $dato['cursocu_porcentaje'] = $this->Model_Corporacion->cursocu_porcentaje($id_usuario);
+
+            $dato['experiencialaboralu_porcentaje'] = $this->Model_Corporacion->experiencialaboralu_porcentaje($id_usuario);
+            $dato['enfermedadesu_porcentaje'] = $this->Model_Corporacion->enfermedadesu_porcentaje($id_usuario);
+            $dato['gestacionu_porcentaje'] = $this->Model_Corporacion->gestacionu_porcentaje($id_usuario);
+            $dato['alergiasu_porcentaje'] = $this->Model_Corporacion->alergiasu_porcentaje($id_usuario);
+            $dato['otrosu_porcentaje'] = $this->Model_Corporacion->otrosu_porcentaje($id_usuario);
+            $dato['referenciaconvocatoriau_porcentaje'] = $this->Model_Corporacion->referenciaconvocatoriau_porcentaje($id_usuario);
+            $dato['documentacionu_porcentaje'] = $this->Model_Corporacion->documentarionu_porcentaje($id_usuario);
+            $dato['ropau_porcentaje'] = $this->Model_Corporacion->ropau_porcentaje($id_usuario);
+            $dato['sist_pensu_porcentaje'] = $this->Model_Corporacion->sist_pensu_porcentaje($id_usuario);
+            $dato['cuentab_porcentaje'] = $this->Model_Corporacion->cuentab_porcentaje($id_usuario);*/
+
+            $dato['porcentaje'] = Usuario::perfil_porcentaje($id_usuario);
+            if($dato['usuario'][0]['urladm']=="1"){
+                //$dato['get_foto'] = $this->Model_Corporacion->get_fotoP();
+                $dato['get_foto'] = Config::where('descrip_config','Foto_Postulante')
+                                ->where('estado', 1)
+                                ->get();
+            }else{
+                //$dato['get_foto'] = $this->Model_Corporacion->get_foto();
+                $dato['get_foto'] = Config::where('descrip_config','Foto_Colaborador')
+                                ->where('estado', 1)
+                                ->get();
+            }
+
+        //REPORTE BI CON ID
+        $dato['list_subgerencia'] = SubGerencia::list_subgerencia(5);
+        //NOTIFICACIONES
+        $dato['list_notificacion'] = Notificacion::get_list_notificacion();
+        return view('rrhh.Perfil.miperfil', $dato);
     }
 }

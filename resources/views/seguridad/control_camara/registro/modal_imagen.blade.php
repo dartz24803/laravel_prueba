@@ -1,14 +1,23 @@
 <style>
     #paste_area {
-        width: 100%; /* Ancho completo */
-        padding: 10px; /* Espaciado interno para separar el contenido del borde */
-        font-size: 16px; /* Tamaño de fuente adecuado */
-        border: 1px solid #ccc; /* Borde del textarea */
-        resize: none; /* Permitir redimensionamiento vertical */
-        box-sizing: border-box; /* Incluir padding y border en el ancho total */
-        cursor: text; /* Cursor de texto para indicar área de entrada */
-        border-color: #3366ff; /* Cambiar color del borde al enfocarse */
-        box-shadow: 0 0 5px rgba(51, 102, 255, 0.5); /* Sombra al enfocarse */
+        width: 100%;
+        /* Ancho completo */
+        padding: 10px;
+        /* Espaciado interno para separar el contenido del borde */
+        font-size: 16px;
+        /* Tamaño de fuente adecuado */
+        border: 1px solid #ccc;
+        /* Borde del textarea */
+        resize: none;
+        /* Permitir redimensionamiento vertical */
+        box-sizing: border-box;
+        /* Incluir padding y border en el ancho total */
+        cursor: text;
+        /* Cursor de texto para indicar área de entrada */
+        border-color: #3366ff;
+        /* Cambiar color del borde al enfocarse */
+        box-shadow: 0 0 5px rgba(51, 102, 255, 0.5);
+        /* Sombra al enfocarse */
     }
 </style>
 
@@ -16,7 +25,10 @@
     <div class="modal-header">
         <h5 class="modal-title">Control de cámaras Bases</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
         </button>
     </div>
 
@@ -86,7 +98,7 @@
         reader.readAsDataURL(blob);
     }
 
-    function Insert_Imagen_Temporal(){
+    function Insert_Imagen_Temporal() {
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularioi'));
@@ -108,17 +120,21 @@
                     type: "POST",
                     processData: false,
                     contentType: false,
-                    success:function (data) {
+                    success: function(data) {
                         swal.fire(
                             '¡Registro Exitoso!',
                             '¡Haga clic en el botón!',
                             'success'
                         ).then(function() {
                             $("#ModalUpdate .close").click();
-                            Habilitar_Boton({{ $id_tienda }});
+                            Habilitar_Boton({
+                                {
+                                    $id_tienda
+                                }
+                            });
                         });
                     },
-                    error:function(xhr) {
+                    error: function(xhr) {
                         var errors = xhr.responseJSON.errors;
                         var firstError = Object.values(errors)[0][0];
                         Swal.fire(

@@ -192,15 +192,7 @@
                             @endforeach
                         </select>
                     </div>
-
-
-                    <!-- <div class="form-group col-md-12">
-                        <label for="tablas">Tablas: </label>
-                        <textarea name="tablas" id="tablas" cols="1" rows="2" class="form-control">{{ $get_id->tablas ?? '' }}</textarea>
-                    </div> -->
-
                 </div>
-
 
             </div>
 
