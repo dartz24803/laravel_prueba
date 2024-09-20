@@ -2104,7 +2104,12 @@ class TrackingController extends Controller
                                                         ->join('tracking_guia_remision_detalle','tracking_guia_remision_detalle.id','=','tracking_devolucion.id_producto')
                                                         ->where('tracking_devolucion.id_tracking',$id)
                                                         ->where('tracking_devolucion.estado',1)->get();
-                return view('logistica.tracking.evaluacion_devolucion', compact('list_notificacion','get_id','list_devolucion'));
+                return view('logistica.tracking.evaluacion_devolucion', compact(
+                    'list_notificacion',
+                    'list_subgerencia',
+                    'get_id',
+                    'list_devolucion'
+                ));
             }else{
                 $list_mercaderia_nueva = MercaderiaSurtida::where('anio',date('Y'))->where('semana',date('W'))->exists();
                 return view('logistica.tracking.index', compact('list_notificacion','list_subgerencia','list_mercaderia_nueva'));
