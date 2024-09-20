@@ -564,11 +564,18 @@ class TrackingController extends Controller
     public function insert_mercaderia_transito(Request $request,$id)
     {
         $request->validate([
+            'guia_transporte' => 'required',
             'peso' => 'required',
+            'paquetes' => 'required_without_all:sobres,fardos,caja|nullable',
+            'sobres' => 'required_without_all:paquetes,fardos,caja|nullable',
+            'fardos' => 'required_without_all:paquetes,sobres,caja|nullable',
+            'caja' => 'required_without_all:paquetes,sobres,fardos|nullable',
             'transporte' => 'gt:0'
         ],[
+            'guia_transporte.required' => 'Debe ingresar nro. gr transporte.',
             'peso.required' => 'Debe ingresar peso.',
-            'transporte.gt' => 'Debe seleccionar transporte.',
+            'required_without_all' => 'Debe ingresar paquetes o sobres o fardos o caja.',
+            'transporte.gt' => 'Debe seleccionar transporte.'
         ]);
 
         Tracking::findOrFail($id)->update([
