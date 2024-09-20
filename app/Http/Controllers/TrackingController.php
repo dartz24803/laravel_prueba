@@ -1260,25 +1260,60 @@ class TrackingController extends Controller
 
     public function insert_confirmacion_pago_transporte(Request $request, $id)
     {
-        $request->validate([
-            'nombre_transporte' => 'required',
-            'importe_transporte' => 'gt:0',
-            'factura_transporte' => 'required',
-            'archivo_transporte' => 'required_without:archivo_transporte_actual',
-        ],[
-            'nombre_transporte.required' => 'Debe ingresar nombre de empresa.',
-            'importe_transporte.gt' => 'Debe ingresar importe a pagar.',
-            'factura_transporte.required' => 'Debe ingresar n° de factura.',
-            'archivo_transporte.required_without' => 'Debe ingresar PDF de factura.',
-        ]);
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
+        
+        if($get_id->tipo_pago=="3"){
+            $request->validate([
+                'importe_transporte_2' => 'required|gt:0',
+                'factura_transporte_2' => 'required'
+            ],[
+                'importe_transporte_2.required' => 'Debe ingresar segundo importe.',
+                'importe_transporte_2.gt' => 'Debe ingresar segundo importe mayor a 0.',
+                'factura_transporte_2.required' => 'Debe ingresar n° de factura.'
+            ]);
 
-        Tracking::findOrFail($id)->update([
-            'nombre_transporte' => $request->nombre_transporte,
-            'importe_transporte' => $request->importe_transporte,
-            'factura_transporte' => $request->factura_transporte,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
+            $errors = [];
+            if ($_FILES["archivo_transporte"]["name"]=="" && $request->captura=="0") {
+                $errors['archivo'] = ['Debe adjuntar o capturar con la cámara la factura.'];
+            }
+            if (!empty($errors)) {
+                return response()->json(['errors' => $errors], 422);
+            }
+
+            Tracking::findOrFail($id)->update([
+                'importe_transporte_2' => $request->importe_transporte_2,
+                'factura_transporte_2' => $request->factura_transporte_2,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }else{
+            $request->validate([
+                'nombre_transporte' => 'required',
+                'importe_transporte' => 'required|gt:0',
+                'factura_transporte' => 'required'
+            ],[
+                'nombre_transporte.required' => 'Debe ingresar nombre de empresa.',
+                'importe_transporte.required' => 'Debe ingresar importe a pagar.',
+                'importe_transporte.gt' => 'Debe ingresar importe a pagar mayor a 0.',
+                'factura_transporte.required' => 'Debe ingresar n° de factura.'
+            ]);
+
+            $errors = [];
+            if ($_FILES["archivo_transporte"]["name"]=="" && $request->captura=="0") {
+                $errors['archivo'] = ['Debe adjuntar o capturar con la cámara la factura.'];
+            }
+            if (!empty($errors)) {
+                return response()->json(['errors' => $errors], 422);
+            }
+    
+            Tracking::findOrFail($id)->update([
+                'nombre_transporte' => $request->nombre_transporte,
+                'importe_transporte' => $request->importe_transporte,
+                'factura_transporte' => $request->factura_transporte,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
 
         if($_FILES["archivo_transporte"]["name"] != ""){
             $ftp_server = "lanumerounocloud.com";
@@ -1287,15 +1322,6 @@ class TrackingController extends Controller
             $con_id = ftp_connect($ftp_server);
             $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
             if($con_id && $lr){
-                //ELIMINAR ARCHIVO SI ES QUE EXISTE
-                if($request->archivo_transporte_actual!=""){
-                    $get_id = TrackingArchivo::get_list_tracking_archivo(['id_tracking'=>$id,'tipo'=>1]);
-                    $file_to_delete = "TRACKING/".$get_id->nom_archivo;
-                    if (ftp_delete($con_id, $file_to_delete)) {
-                        TrackingArchivo::where('id_tracking', $id)->where('tipo', 1)->delete();
-                    }
-                }
-                //
                 $path = $_FILES["archivo_transporte"]["name"];
                 $source_file = $_FILES['archivo_transporte']['tmp_name'];
 
@@ -1343,8 +1369,6 @@ class TrackingController extends Controller
         }
 
         //ALERTA 6
-        $get_id = Tracking::get_list_tracking(['id'=>$id]);
-
         $list_token = TrackingToken::whereIn('base', ['CD'])->get();
         foreach($list_token as $token){
             $dato = [

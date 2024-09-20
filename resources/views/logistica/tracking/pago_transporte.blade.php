@@ -5,6 +5,13 @@
 @endsection
 
 @section('content')
+    <style>
+        input[disabled] {
+            background-color: white !important;
+            color: black;
+        }
+    </style>
+
     <div id="content" class="main-content">
         <div class="layout-px-spacing">
             <div class="page-header">
@@ -22,53 +29,91 @@
                                     <label class="control-label text-bold">Nro. Req.: {{ $get_id->n_requerimiento }}</label>
                                 </div>
                             </div>
-    
-                            <div class="row">
-                                <div class="form-group col-lg-1">
-                                    <label class="control-label text-bold">Nombre de empresa: </label>
+
+                            @if ($get_id->tipo_pago=="3")
+                                <div class="row">
+                                    <div class="form-group col-lg-1">
+                                        <label class="control-label text-bold">Nombre de empresa: </label>
+                                    </div>
+                                    <div class="form-group col-lg-5">
+                                        <input type="text" class="form-control" placeholder="Nombre de empresa" value="{{ $get_id->nombre_transporte }}" disabled>
+                                    </div>
+        
+                                    <div class="form-group col-lg-1">
+                                        <label class="control-label text-bold">Primer importe: </label>
+                                    </div>
+                                    <div class="form-group col-lg-2">
+                                        <input type="text" class="form-control" placeholder="Primer importe" value="{{ $get_id->importe_transporte }}" disabled>
+                                    </div>
                                 </div>
-                                <div class="form-group col-lg-5">
-                                    <input type="text" class="form-control" name="nombre_transporte" id="nombre_transporte" placeholder="Nombre de empresa" value="{{ $get_id->nombre_transporte }}">
-                                </div>
-    
-                                <div class="form-group col-lg-1">
-                                    <label class="control-label text-bold">Importe a pagar: </label>
-                                </div>
-                                <div class="form-group col-lg-2">
-                                    <input type="text" class="form-control" name="importe_transporte" id="importe_transporte" placeholder="Importe a pagar" value="{{ $get_id->importe_transporte }}" onkeypress="return solo_Numeros_Punto(event);">
-                                </div>
-    
-                                <div class="form-group col-lg-1">
-                                    <label class="control-label text-bold">N° Factura: </label>
-                                </div>
-                                <div class="form-group col-lg-2">
-                                    <input type="text" class="form-control" name="factura_transporte" id="factura_transporte" placeholder="N° Factura" value="{{ $get_id->factura_transporte }}">
-                                </div>
-                            </div>
-    
-                            <div class="row">
-                                <div class="form-group col-lg-2">
-                                    <label class="control-label text-bold">PDF de factura: </label>
-                                    @if ($get_id->archivo_transporte!="")
-                                        <a href="javascript:void(0);" title="Descargar" onclick="Descargar_Pdf_Factura();">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download-cloud text-dark">
-                                                <polyline points="8 17 12 21 16 17"></polyline>
-                                                <line x1="12" y1="12" x2="12" y2="21"></line>
-                                                <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"></path>
+
+                                <div class="row">
+                                    <div class="form-group col-lg-1">
+                                        <label class="control-label text-bold">Segundo importe: </label>
+                                    </div>
+                                    <div class="form-group col-lg-2">
+                                        <input type="text" class="form-control" name="importe_transporte_2" id="importe_transporte_2" placeholder="Segundo importe" onkeypress="return solo_Numeros_Punto(event);">
+                                    </div>
+        
+                                    <div class="form-group col-lg-1">
+                                        <label class="control-label text-bold">N° Factura: </label>
+                                    </div>
+                                    <div class="form-group col-lg-2">
+                                        <input type="text" class="form-control" name="factura_transporte_2" id="factura_transporte_2" placeholder="N° Factura">
+                                    </div>
+
+                                    <div class="form-group col-lg-2">
+                                        <label class="control-label text-bold">PDF de factura: </label>
+                                    </div>
+                                    <div class="form-group ml-3 ml-lg-0 d-flex align-items-center">
+                                        <input type="file" class="form-control-file" name="archivo_transporte" id="archivo_transporte" onchange="Valida_Archivo('archivo_transporte');">
+                                        <a onclick="Limpiar_Ifile();" style="cursor: pointer" title="Borrar archivo seleccionado">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x text-danger">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
                                             </svg>
                                         </a>
-                                    @endif
+                                    </div>
                                 </div>
-                                <div class="form-group ml-3 ml-lg-0 d-flex align-items-center">
-                                    <input type="file" class="form-control-file" name="archivo_transporte" id="archivo_transporte" onchange="Valida_Factura_Transporte();">
-                                    <a onclick="Limpiar_Ifile();" style="cursor: pointer" title="Borrar archivo seleccionado">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x text-danger">
-                                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                                        </svg>
-                                    </a>
+                            @else
+                                <div class="row">
+                                    <div class="form-group col-lg-1">
+                                        <label class="control-label text-bold">Nombre de empresa: </label>
+                                    </div>
+                                    <div class="form-group col-lg-5">
+                                        <input type="text" class="form-control" name="nombre_transporte" id="nombre_transporte" placeholder="Nombre de empresa">
+                                    </div>
+        
+                                    <div class="form-group col-lg-1">
+                                        <label class="control-label text-bold">Importe a pagar: </label>
+                                    </div>
+                                    <div class="form-group col-lg-2">
+                                        <input type="text" class="form-control" name="importe_transporte" id="importe_transporte" placeholder="Importe a pagar" onkeypress="return solo_Numeros_Punto(event);">
+                                    </div>
+        
+                                    <div class="form-group col-lg-1">
+                                        <label class="control-label text-bold">N° Factura: </label>
+                                    </div>
+                                    <div class="form-group col-lg-2">
+                                        <input type="text" class="form-control" name="factura_transporte" id="factura_transporte" placeholder="N° Factura">
+                                    </div>
                                 </div>
-                            </div>
+
+                                <div class="row">
+                                    <div class="form-group col-lg-2">
+                                        <label class="control-label text-bold">PDF de factura: </label>
+                                    </div>
+                                    <div class="form-group ml-3 ml-lg-0 d-flex align-items-center">
+                                        <input type="file" class="form-control-file" name="archivo_transporte" id="archivo_transporte" onchange="Valida_Archivo('archivo_transporte');">
+                                        <a onclick="Limpiar_Ifile();" style="cursor: pointer" title="Borrar archivo seleccionado">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x text-danger">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
 
                             <div class="row d-flex justify-content-center mb-2 mt-2">
                                 <button type="button" class="btn btn-secondary" id="boton_camara" onclick="Activar_Camara();">Activar cámara</button>
@@ -85,7 +130,6 @@
     
                             <div class="modal-footer mt-3">
                                 @csrf
-                                <input type="hidden" name="archivo_transporte_actual" value="{{ $get_id->archivo_transporte }}">
                                 <input type="hidden" id="captura" name="captura" value="0">
                                 <button class="btn btn-primary" type="button" onclick="Insert_Confirmacion_Pago_Transporte();">Guardar</button>
                                 <a class="btn" href="{{ route('tracking') }}">Cancelar</a>
@@ -120,15 +164,15 @@
             }
         }
 
-        function Valida_Factura_Transporte(){
-            var archivoInput = document.getElementById('archivo_transporte');
+        function Valida_Archivo(val){
+            var archivoInput = document.getElementById(val);
             var archivoRuta = archivoInput.value;
-            var extPermitidas = /(.pdf)$/i;
+            var extPermitidas = /(.pdf|.png|.jpg|.jpeg)$/i;
 
             if(!extPermitidas.exec(archivoRuta)){
                 Swal({
                     title: 'Registro Denegado',
-                    text: "Asegurese de ingresar archivos con extensiones .pdf.",
+                    text: "Asegurese de ingresar archivo con extensión .pdf|.jpg|.png|.jpeg",
                     type: 'error',
                     showCancelButton: false,
                     confirmButtonColor: '#3085d6',
@@ -139,10 +183,6 @@
             }else{
                 return true;         
             }
-        }
-
-        function Descargar_Pdf_Factura(id){
-            window.open('{{ $get_id->archivo_transporte }}', '_blank');
         }
 
         var video = document.getElementById('video');
