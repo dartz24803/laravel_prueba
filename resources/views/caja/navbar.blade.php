@@ -73,7 +73,6 @@ session('usuario')->id_puesto == 32 ||
 session('usuario')->id_puesto == 36 ||
 session('usuario')->id_puesto == 23 ||
 session('usuario')->id_puesto == 98 ||
-session('usuario')->id_puesto == 128 ||
 session('usuario')->id_puesto == 26 ||
 session('usuario')->id_puesto == 27 ||
 session('usuario')->id_puesto == 16 ||
@@ -86,7 +85,16 @@ session('usuario')->id_puesto == 20 ||
 session('usuario')->id_puesto == 21 ||
 session('usuario')->id_puesto == 279 ||
 session('usuario')->id_puesto == 197 ||
-session('usuario')->id_puesto == 148)
+session('usuario')->id_puesto == 148 ||
+session('usuario')->id_puesto == 66 || 
+session('usuario')->id_puesto == 68 ||
+session('usuario')->id_puesto == 73 || 
+session('usuario')->id_puesto == 82 || 
+session('usuario')->id_puesto == 83 ||
+session('usuario')->id_puesto == 114 || 
+session('usuario')->id_puesto == 130 ||
+session('usuario')->id_puesto == 135 || 
+session('usuario')->id_puesto == 314)
 <li class="menu menu-heading">
     <div class="heading">
         <span>MÓDULOS</span>
@@ -193,6 +201,32 @@ session('usuario')->id_puesto == 148)
             </a>
         </li>
         @endif
+        @if (session('usuario')->id_nivel == 1 || 
+        session('usuario')->id_puesto == 128 || 
+        session('usuario')->id_puesto == 9 ||
+        session('usuario')->id_puesto == 16 || 
+        session('usuario')->id_puesto == 20 || 
+        session('usuario')->id_puesto == 26 ||
+        session('usuario')->id_puesto == 28 || 
+        session('usuario')->id_puesto == 30 ||
+        session('usuario')->id_puesto == 41 || 
+        session('usuario')->id_puesto == 66 || 
+        session('usuario')->id_puesto == 68 ||
+        session('usuario')->id_puesto == 73 || 
+        session('usuario')->id_puesto == 82 || 
+        session('usuario')->id_puesto == 83 ||
+        session('usuario')->id_puesto == 98 || 
+        session('usuario')->id_puesto == 114 || 
+        session('usuario')->id_puesto == 130 ||
+        session('usuario')->id_puesto == 135 || 
+        session('usuario')->id_puesto == 161 || 
+        session('usuario')->id_puesto == 314)
+        <li id="salidas_insumos">
+            <a href="{{ route('requisicion_tienda') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                <p class="romperpalabra"><span id="icono_active2"></span> Requisición tienda</p>
+            </a>
+        </li>
+        @endif        
         @if (session('usuario')->id_nivel == 1 ||
         session('usuario')->id_puesto == 29 ||
         session('usuario')->id_puesto == 31 ||
