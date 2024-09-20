@@ -570,13 +570,32 @@ class TrackingController extends Controller
             'sobres' => 'required_without_all:paquetes,fardos,caja|nullable',
             'fardos' => 'required_without_all:paquetes,sobres,caja|nullable',
             'caja' => 'required_without_all:paquetes,sobres,fardos|nullable',
-            'transporte' => 'gt:0'
+            'transporte' => 'gt:0',
+            'nombre_transporte' => 'required_if:tipo_pago,1,3',
+            'importe_transporte' => 'required_if:tipo_pago,1,3',
+            'factura_transporte' => 'required_if:tipo_pago,1,3',
+            'archivo_transporte' => 'required_if:tipo_pago,1,3',
         ],[
             'guia_transporte.required' => 'Debe ingresar nro. gr transporte.',
             'peso.required' => 'Debe ingresar peso.',
             'required_without_all' => 'Debe ingresar paquetes o sobres o fardos o caja.',
-            'transporte.gt' => 'Debe seleccionar transporte.'
+            'transporte.gt' => 'Debe seleccionar transporte.',
+            'nombre_transporte.required_if' => 'Debe ingresar nombre de empresa.',
+            'importe_transporte.required_if' => 'Debe ingresar importe a pagar.',
+            'factura_transporte.required_if' => 'Debe ingresar n° factura.',
+            'archivo_transporte.required_if' => 'Debe ingresar PDF de factura.'
         ]);
+
+        $errors = [];
+        if ($request->transporte=="1" && $request->tipo_pago=="0") {
+            $errors['tipo_pago'] = ['Debe seleccionar tipo pago.'];
+        }
+        if (($request->tipo_pago=="1" || $request->tipo_pago=="3") && $request->importe_transporte=="0") {
+            $errors['importe_transporte'] = ['Debe ingresar importe a pagar mayor a 0.'];
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
 
         Tracking::findOrFail($id)->update([
             'guia_transporte' => $request->guia_transporte,
