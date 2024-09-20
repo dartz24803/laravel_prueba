@@ -28,6 +28,7 @@ return new class extends Migration
             $table->integer('bultos')->nullable();
             $table->integer('caja')->nullable();
             $table->integer('transporte')->nullable();
+            $table->integer('tipo_pago')->nullable();
             $table->string('nombre_transporte', 1000)->nullable();
             $table->decimal('importe_transporte', 10, 2)->nullable();
             $table->string('factura_transporte', 20)->nullable();

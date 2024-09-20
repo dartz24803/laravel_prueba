@@ -605,6 +605,7 @@ class TrackingController extends Controller
             'fardos' => $request->fardos,
             'caja' => $request->caja,
             'transporte' => $request->transporte,
+            'tipo_pago' => $request->tipo_pago,
             'nombre_transporte' => $request->nombre_transporte,
             'importe_transporte' => $request->importe_transporte,
             'factura_transporte' => $request->factura_transporte,
@@ -864,7 +865,7 @@ class TrackingController extends Controller
     {
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
-        if($get_id->transporte==2 || ($get_id->transporte==1 && $get_id->importe_transporte>0)){
+        if($get_id->transporte=="2" || ($get_id->transporte=="1" && $get_id->tipo_pago=="1")){
             //ALERTA 5 (SI)
             $list_token = TrackingToken::whereIn('base', ['CD'])->get();
             foreach($list_token as $token){
