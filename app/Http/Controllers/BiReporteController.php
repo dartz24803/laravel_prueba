@@ -425,35 +425,37 @@ class BiReporteController extends Controller
             $img3 = uploadFile('archivo_base_3', $request->nombi, $sessionUserId, $con_id);
 
             // Verificar si al menos un archivo fue subido
-            if ($img1 || $img2 || $img3) {
-                // Crear el registro en la base de datos
-                $biReporte = BiReporte::create([
-                    'nom_bi' => $request->nombi ?? '',
-                    'nom_intranet' => $request->nomintranet ?? '',
-                    'actividad' => $request->actividad_bi ?? '',
-                    'acceso_todo' => $accesoTodo,
-                    'img1' => $img1 ?? '',
-                    'img2' => $img2 ?? '',
-                    'img3' => $img3 ?? '',
-                    'id_area' => $request->areass ?? 0,
-                    'id_usuario' => $request->solicitante ?? 0,
-                    'frecuencia_act' => $request->frec_actualizacion ?? 1,
-                    'objetivo' => $request->objetivo ?? '',
-                    'iframe' => $iframeModificado,
-                    'estado' => 1,
-                    'estado_valid' => 0,
-                    'fec_reg' => $request->fec_reg ? date('Y-m-d H:i:s', strtotime($request->fec_reg)) : now(),
-                    'user_reg' => $sessionUserId,
-                    'fec_act' => $request->fec_reg ? date('Y-m-d H:i:s', strtotime($request->fec_reg)) : now(),
-                    'user_act' => $sessionUserId,
-                    'fec_valid' => $request->fec_valid ? date('Y-m-d H:i:s', strtotime($request->fec_valid)) : now(),
-                ]);
-            } else {
-                echo "No se subió ningún archivo.";
-            }
+            // if ($img1 || $img2 || $img3) {
+            // Crear el registro en la base de datos
+            $biReporte = BiReporte::create([
+                'nom_bi' => $request->nombi ?? '',
+                'nom_intranet' => $request->nomintranet ?? '',
+                'actividad' => $request->actividad_bi ?? '',
+                'acceso_todo' => $accesoTodo,
+                'img1' => $img1 ?? '',
+                'img2' => $img2 ?? '',
+                'img3' => $img3 ?? '',
+                'id_area' => $request->areass ?? 0,
+                'id_area_destino' => $request->areasd ?? 0,
+                'id_usuario' => $request->solicitante ?? 0,
+                'frecuencia_act' => $request->frec_actualizacion ?? 1,
+                'objetivo' => $request->objetivo ?? '',
+                'iframe' => $iframeModificado,
+                'estado' => 1,
+                'estado_valid' => 0,
+                'fec_reg' => $request->fec_reg ? date('Y-m-d H:i:s', strtotime($request->fec_reg)) : now(),
+                'user_reg' => $sessionUserId,
+                'fec_act' => $request->fec_reg ? date('Y-m-d H:i:s', strtotime($request->fec_reg)) : now(),
+                'user_act' => $sessionUserId,
+                'fec_valid' => $request->fec_valid ? date('Y-m-d H:i:s', strtotime($request->fec_valid)) : now(),
+            ]);
+            // } else {
+            //     echo "No se subió ningún archivo.";
+            // }
         } else {
             echo "No se conectó al servidor FTP";
         }
+        // dd($biReporte->id_acceso_bi_reporte);
 
         // Obtener el ID del nuevo registro en bi_reportes
         $biReporteId = $biReporte->id_acceso_bi_reporte;
@@ -554,6 +556,7 @@ class BiReporteController extends Controller
             'actividad' => $request->actividad_bi,
             'acceso_todo' => $accesoTodo,
             'id_area' => $request->areasse,
+            'id_area_destino' => $request->areassd,
             'id_usuario' => $request->solicitantee,
             'frecuencia_act' => $request->frec_actualizacion,
             'objetivo' => $request->objetivo,
@@ -685,9 +688,13 @@ class BiReporteController extends Controller
             ->orderBy('nom_indicador', 'ASC')
             ->distinct('nom_indicador')->get();
 
-        $list_colaborador = Usuario::get_list_colaborador_usuario([
-            'id_usuario' => $id_usuario // Filtro por id_usuario
-        ]);
+        $list_colaborador = Usuario::select('id_usuario', 'usuario_apater', 'usuario_amater', 'usuario_nombres')
+            ->where('estado', 1)
+            ->where('id_nivel', '!=', 8)
+            ->get();
+        // $list_colaborador = Usuario::get_list_colaborador_usuario([
+        //     'id_usuario' => $id_usuario // Filtro por id_usuario
+        // ]);
 
         $list_sistemas = SistemaTablas::select('id_sistema_tablas', 'cod_sistema', 'nom_sistema')
             ->where('estado', 1)
@@ -972,7 +979,7 @@ class BiReporteController extends Controller
     {
         // Obtener la lista de reportes con los campos requeridos de la tabla indicadores_bi
         $list_bi_reporte = BiReporte::getBiReportesxTablas();
-        dd($list_bi_reporte);
+        // dd($list_bi_reporte);
         // Obtener IDs de los reportes
         $reportesIds = $list_bi_reporte->pluck('id_acceso_bi_reporte')->toArray();
         // dd($reportesIds);

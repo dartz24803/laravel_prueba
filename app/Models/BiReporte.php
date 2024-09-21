@@ -20,6 +20,7 @@ class BiReporte extends Model
         'nom_intranet',
         'actividad',
         'id_area',
+        'id_area_destino',
         'estado_valid',
         'id_usuario',
         'frecuencia_act',

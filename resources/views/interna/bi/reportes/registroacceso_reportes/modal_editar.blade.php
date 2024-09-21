@@ -116,7 +116,7 @@
                 <a class="nav-link active" id="documento-tab2" data-toggle="tab" href="#documento" role="tab" aria-controls="documento" aria-selected="true">Documento</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="indicadores-tab2" data-toggle="tab" href="#indicadores" role="tab" aria-controls="indicadores" aria-selected="false">Indicadores</a>
+                <a class="nav-link" id="indicadores-tab2" data-toggle="tab" href="#indicadores" role="tab" aria-controls="indicadores" aria-selected="false">Contenido</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="tablas-tab" data-toggle="tab" href="#tablas" role="tab" aria-controls="tablas" aria-selected="false">Tablas</a>
@@ -157,18 +157,19 @@
                         </select>
                     </div>
 
-
                     <div class="form-group col-md-6">
-                        <label for="areasse">Área: </label>
-                        <select class="form-control" name="areasse" id="areasse">
-                            @foreach ($list_area as $list)
-                            <option value="{{ $list->id_area }}"
-                                {{ $list->id_area == $get_id->id_area ? 'selected' : '' }}>
-                                {{ $list->nom_area }}
+                        <label for="solicitantes">Solicitante: </label>
+                        <select class="form-control" name="solicitantee" id="solicitantee">
+                            @foreach ($list_colaborador as $list)
+                            <option value="{{ $list->id_usuario }}"
+                                {{ $list->id_usuario == $get_id->id_usuario ? 'selected' : '' }}>
+                                {{ $list->usuario_apater }} {{ $list->usuario_amater }} {{ $list->usuario_nombres }}
                             </option>
                             @endforeach
                         </select>
+
                     </div>
+
                     <div class="form-group col-md-6">
                         <label class="control-label text-bold">Frec. Actualización: </label>
                         <select class="form-control" name="frec_actualizacion" id="frec_actualizacion">
@@ -182,12 +183,24 @@
                     </div>
 
                     <div class="form-group col-md-6">
-                        <label for="solicitantes">Solicitante: </label>
-                        <select class="form-control" name="solicitantee" id="solicitantee">
-                            @foreach ($list_colaborador as $list)
-                            <option value="{{ $list->id_usuario }}"
-                                {{ $list->id_usuario == $get_id->id_usuario ? 'selected' : '' }}>
-                                {{ $list->usuario_apater }} {{ $list->usuario_amater }} {{ $list->usuario_nombres }}
+                        <label for="areasse">Grupo: </label>
+                        <select class="form-control" name="areasse" id="areasse">
+                            @foreach ($list_area as $list)
+                            <option value="{{ $list->id_area }}"
+                                {{ $list->id_area == $get_id->id_area ? 'selected' : '' }}>
+                                {{ $list->nom_area }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="areassd">Área Destino: </label>
+                        <select class="form-control" name="areassd" id="areassd">
+                            @foreach ($list_area as $list)
+                            <option value="{{ $list->id_area }}"
+                                {{ $list->id_area == $get_id->id_area_destino ? 'selected' : '' }}>
+                                {{ $list->nom_area }}
                             </option>
                             @endforeach
                         </select>
@@ -204,7 +217,7 @@
                         <thead class="text-center">
                             <tr>
                                 <th>N°pagina</th>
-                                <th>Indicador</th>
+                                <th>Nombre</th>
                                 <th>Descripción</th>
                                 <th class="col-tipo">Tipo</th>
                                 <th class="col-tipo">Presentación</th>
@@ -237,8 +250,8 @@
                                 </td>
                                 <td class="px-1">
                                     <select class="form-control" name="presentacion[]">
-                                        <option value="1" {{ $indicador->presentacion == 1 ? 'selected' : '' }}>Tabla</option>
-                                        <option value="2" {{ $indicador->presentacion == 2 ? 'selected' : '' }}>Gráfico</option>
+                                        <option value="1" {{ $indicador->presentacion == 1 ? 'selected' : '' }}>Medición</option>
+                                        <option value="2" {{ $indicador->presentacion == 2 ? 'selected' : '' }}>Informativo</option>
                                     </select>
                                 </td>
                                 <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
@@ -348,8 +361,8 @@
         </td>
         <td class="px-1">
             <select class="form-control" name="presentacion[]">
-                <option value="1">Tabla</option>
-                <option value="2">Gráfico</option>
+                <option value="1">Medición</option>
+                <option value="2">Informativo</option>
             </select>
         </td>
         <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
@@ -492,34 +505,57 @@
             });
         });
 
-        $('#areasse').on('change', function() {
-            const selectedAreaUser = $(this).val();
-            var url = "{{ route('usuarios_por_area') }}";
-            console.log('Área seleccionada:', selectedAreaUser);
+        // $('#areasse').on('change', function() {
+        //     const selectedAreaUser = $(this).val();
+        //     var url = "{{ route('usuarios_por_area') }}";
+        //     console.log('Área seleccionada:', selectedAreaUser);
+        //     $.ajax({
+        //         url: url,
+        //         method: 'GET',
+        //         data: {
+        //             area_id: selectedAreaUser
+        //         },
+        //         success: function(response) {
+        //             // Vaciar el segundo select antes de agregar las nuevas opciones
+        //             $('#solicitantee').empty();
+
+        //             // Agregar las nuevas opciones
+        //             $.each(response, function(index, usuario) {
+        //                 $('#solicitantee').append(
+        //                     `<option value="${usuario.id_usuario}">${usuario.nombre_completo}</option>`
+        //                 );
+        //             });
+
+        //         },
+        //         error: function(xhr) {
+        //             console.error('Error al obtener usuarios:', xhr);
+        //         }
+        //     });
+        // });
+        $('#solicitantee').on('change', function() {
+            const selectedSolicitante = $(this).val();
+            var url = "{{ route('area_por_usuario') }}";
             $.ajax({
                 url: url,
                 method: 'GET',
                 data: {
-                    area_id: selectedAreaUser
+                    user_id: selectedSolicitante
                 },
                 success: function(response) {
                     // Vaciar el segundo select antes de agregar las nuevas opciones
-                    $('#solicitantee').empty();
-
+                    $('#areasse').empty();
                     // Agregar las nuevas opciones
-                    $.each(response, function(index, usuario) {
-                        $('#solicitantee').append(
-                            `<option value="${usuario.id_usuario}">${usuario.nombre_completo}</option>`
+                    $.each(response, function(index, area) {
+                        $('#areasse').append(
+                            `<option value="${area.id_area}">${area.nom_area}</option>`
                         );
                     });
-
                 },
                 error: function(xhr) {
                     console.error('Error al obtener usuarios:', xhr);
                 }
             });
         });
-
 
     });
 
