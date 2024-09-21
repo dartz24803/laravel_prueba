@@ -338,7 +338,8 @@ class AsistenciaSegController extends Controller
             session('usuario')->id_puesto == 19 ||
             session('usuario')->id_nivel == 1 ||
             session('usuario')->id_puesto == 24 ||
-            session('usuario')->id_puesto == 209
+            session('usuario')->id_puesto == 209 ||
+            session('usuario')->id_puesto == 277
         ) {
             if (session('usuario')->id_puesto == 24) {
                 $list_base = Base::select('cod_base')->whereIn('id_base', [15, 19, 34])->get();
