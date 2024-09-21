@@ -26,6 +26,7 @@ use App\Models\TrackingToken;
 use Google\Client as GoogleClient;
 use Illuminate\Support\Facades\DB;
 use App\Models\TrackingEstado;
+use Mpdf\Mpdf;
 
 class TrackingController extends Controller
 {
@@ -430,6 +431,14 @@ class TrackingController extends Controller
         //MENSAJE 1
         $list_detalle = TrackingGuiaRemisionDetalle::where('n_guia_remision', $request->n_requerimiento)->get();
 
+        $mpdf = new Mpdf([
+            'format' => 'A4', // Establecer tamaño A4
+            'default_font' => 'Arial', // Establecer la fuente predeterminada como Arial
+        ]);
+        $html = view('logistica.tracking.pdf', compact('get_id','list_detalle'))->render();
+        $mpdf->WriteHTML($html);
+        $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
+
         $mail = new PHPMailer(true);
 
         try {
@@ -443,8 +452,9 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('ogutierrez@lanumero1.com.pe');
-            $mail->addAddress('practicante3.procesos@lanumero1.com.pe');
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
+            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+            //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
             /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
             foreach($list_td as $list){
                 $mail->addAddress($list->emailp);
@@ -492,6 +502,7 @@ class TrackingController extends Controller
                             </FONT SIZE>';
         
             $mail->CharSet = 'UTF-8';
+            $mail->addStringAttachment($pdfContent, 'Guia_Remision.pdf');
             $mail->send();
 
             TrackingDetalleEstado::create([
