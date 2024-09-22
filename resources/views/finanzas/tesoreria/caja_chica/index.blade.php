@@ -201,39 +201,43 @@
             window.location.replace("{{ route('caja_chica.download', ':id') }}".replace(':id', id));
         }
 
-        function Cambiar_Estado_Suceso(id) {
+        function Traer_Categoria(v){
             Cargando();
 
-            var url = "{{ route('observacion.cambiar_estado', ':id') }}".replace(':id', id);
+            var url = "{{ route('caja_chica.traer_categoria_pv') }}";
+            var id_ubicacion = $('#id_ubicacion'+v).val();
 
-            Swal({
-                title: '¿Realmente desea cambiar estado de la observación?',
-                text: "La observación cambiará de estado permanentemente",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Si',
-                cancelButtonText: 'No',
-                padding: '2em'
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        type: "GET",
-                        url: url,
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        success: function(data) {
-                            Swal(
-                                'El número de la observación es:',
-                                data,
-                                'success'
-                            ).then(function() {
-                                Lista_Observacion();
-                            });    
-                        }
-                    });
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {'id_ubicacion':id_ubicacion},
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success:function (resp) {
+                    $('#id_categoria'+v).html(resp);
+                    $('#id_sub_categoria'+v).html('<option value="0">Seleccione</option>');
                 }
-            })
+            });
+        }
+
+        function Traer_Sub_Categoria_Pv(v){
+            Cargando();
+
+            var url = "{{ route('caja_chica.traer_sub_categoria_pv') }}";
+            var id_categoria = $('#id_categoria'+v).val();
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {'id_categoria':id_categoria},
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success:function (resp) {
+                    $('#id_sub_categoria'+v).html(resp);
+                }
+            });
         }
 
         function Delete_Caja_Chica(id) {

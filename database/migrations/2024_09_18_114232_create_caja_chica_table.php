@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('punto_llegada')->nullable();
             $table->string('comprobante',100)->nullable();
             $table->integer('id_pago')->nullable();
-            $table->unsignedBigInteger('id_tipo_pago');
+            $table->integer('id_tipo_pago')->nullable();
             $table->integer('cuenta_1')->nullable();
             $table->integer('cuenta_2')->nullable();
             $table->date('fecha_pago')->nullable();
