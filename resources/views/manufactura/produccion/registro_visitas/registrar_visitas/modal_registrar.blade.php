@@ -337,7 +337,7 @@
                     'Haga clic en el botón!',
                     'success'
                 ).then(function() {
-                    ListaAsignacionVisitas();
+                    Lista_Asig_Visitas();
                     $("#ModalRegistro .close").click();
                 });
             },

@@ -139,8 +139,6 @@
 
 
 
-
-
     function Buscar_Asignacion_Visita() {
         var csrfToken = $('input[name="_token"]').val();
         var fecha_inicio = $('#fini').val();

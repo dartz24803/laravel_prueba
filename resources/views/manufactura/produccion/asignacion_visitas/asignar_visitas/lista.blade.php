@@ -43,7 +43,7 @@
             <td>{{ $asignacion->nom_modelo }}</td>
             <td>{{ $asignacion->nom_proceso }}</td>
             <td>{{ $asignacion->nom_tipo_transporte }}</td>
-            <td>S/{{ $asignacion->costo_total ?? '0' }}</td>
+            <td>S/{{ $asignacion->total_costo ?? '0' }}</td>
             <td>{{ \Carbon\Carbon::parse($asignacion->fec_ini_visita)->locale('es')->translatedFormat('D d M y H:i') }}</td>
             <td>{{ \Carbon\Carbon::parse($asignacion->fec_fin_visita)->locale('es')->translatedFormat('D d M y H:i') }}</td>
             <td>{{ $asignacion->estado == 1 ? 'Activo' : 'Inactivo' }}</td>

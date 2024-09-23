@@ -23,7 +23,7 @@
                                 <a id="a_reg" class="nav-link" onclick="ListRegistroAccesoReportes();" style="cursor: pointer;">ACCESO DE REPORTES</a>
                             </li>
                             <li class="nav-item">
-                                <a id="a_reind" class="nav-link" onclick="ListBDReportesInd();" style="cursor: pointer;">INDICADORES POR REPORTE</a>
+                                <a id="a_reind" class="nav-link" onclick="ListBDReportesInd();" style="cursor: pointer;">ELEMENTOS POR REPORTE</a>
                             </li>
                             <li class="nav-item">
                                 <a id="a_redb" class="nav-link" onclick="ListBDReportesDb();" style="cursor: pointer;">BASE DE DATOS POR REPORTE</a>
