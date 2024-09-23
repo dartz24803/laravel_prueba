@@ -35,7 +35,7 @@
                 <td>{{ $list->nom_estado }}</td>
                 <td>
                     @if ($list->estado_c=="1")
-                        <a href="javascript:void(0);" title="Aprobar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('caja_chica.validar', $list->id) }}">
+                        <a href="javascript:void(0);" title="Aprobar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('caja_chica.validar', $list->id) }}">
                             <svg title="Aprobar" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle text-success">
                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
