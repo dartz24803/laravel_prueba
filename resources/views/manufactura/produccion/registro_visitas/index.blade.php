@@ -20,7 +20,7 @@
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                             <li class="nav-item">
-                                <a id="a_cap" class="nav-link" onclick="ListaCapacitaciones();" style="cursor: pointer;">Asignar Visitas</a>
+                                <a id="a_cap" class="nav-link" onclick="ListaCapacitaciones();" style="cursor: pointer;">Registrar Visita</a>
                             </li>
 
                         </ul>
@@ -42,7 +42,7 @@
     $(document).ready(function() {
         $("#manufactura").addClass('active');
         $("#manufactura").attr('aria-expanded', 'true');
-        $("#asignacion_visitas").addClass('active');
+        $("#registro_visitas").addClass('active');
 
         ListaCapacitaciones();
     });
@@ -50,7 +50,7 @@
     function ListaCapacitaciones() {
         Cargando();
 
-        var url = "{{ route('produccion_av') }}";
+        var url = "{{ route('produccion_rv') }}";
 
         $.ajax({
             url: url,

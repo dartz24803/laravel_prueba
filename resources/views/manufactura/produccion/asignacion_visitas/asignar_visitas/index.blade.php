@@ -51,6 +51,8 @@
 
 <div class="toolbar d-md-flex align-items-md-center mt-3">
 
+
+
     <div class="toolbar col-md-12 row">
         <div class="form-group col-md-2">
             <label for="" class="control-label text-bold">F.Inicio</label>
@@ -98,11 +100,6 @@
         </div>
 
     </div>
-
-    <div id="lista" class="table-responsive mb-4 mt-4" style="max-width:100%; overflow:auto;">
-    </div>
-
-
 </div>
 
 @csrf
@@ -110,11 +107,13 @@
 </div>
 
 <script>
-    ListaAsignacionVisitas();
+    Lista_Asig_Visitas();
 
-    function ListaAsignacionVisitas() {
+    function Lista_Asig_Visitas() {
         Cargando();
+
         var url = "{{ route('produccion_av.list') }}";
+
         $.ajax({
             url: url,
             type: "GET",
@@ -125,11 +124,62 @@
     }
 
 
-    function Excel_Apertura_Cierre() {
-        var cod_base = $('#cod_baseb').val();
-        var fec_ini = $('#fini').val();
-        var fec_fin = $('#ffin').val();
-        window.location = "{{ route('portalprocesos_lm.excel', [':cod_base', ':fec_ini', ':fec_fin']) }}".replace(':cod_base', cod_base).replace(':fec_ini', fec_ini).replace(':fec_fin', fec_fin);
+
+    function Delete_Asignacion(id) {
+        Cargando();
+
+        var url = "{{ route('produccion_av.destroy', ':id') }}".replace(':id', id);
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "DELETE",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function() {
+                        Swal(
+                            '¡Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            Lista_Asig_Visitas();
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+
+
+
+    function Buscar_Asignacion_Visita() {
+        var csrfToken = $('input[name="_token"]').val();
+        var fecha_inicio = $('#fini').val();
+        var fecha_fin = $('#ffin').val();
+        var url = "{{ url('Produccion/ListaRegistroVisitas') }}/" + fecha_inicio + "/" + fecha_fin;
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(data) {
+                $('#lista_asignacion_visita').html(data);
+            }
+        });
     }
 
     function Delete_Asignacion(id) {
@@ -160,106 +210,11 @@
                             'El registro ha sido eliminado satisfactoriamente.',
                             'success'
                         ).then(function() {
-                            ListaAsignacionVisitas();
+                            Lista_Asig_Visitas();
                         });
                     }
                 });
             }
         })
-    }
-
-    function Aprobar_Proceso(id) {
-        Cargando();
-
-        var url = "{{ route('portalprocesos_lm.approve', ':id') }}".replace(':id', id);
-        var csrfToken = $('input[name="_token"]').val();
-
-        Swal({
-            title: '¿Realmente desea aprobar el registro?',
-            text: "El registro será aprobado",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Si',
-            cancelButtonText: 'No',
-            padding: '2em'
-        }).then((result) => {
-            if (result.value) {
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    success: function() {
-                        Swal(
-                            'Aprobado!',
-                            'El registro ha sido Aprobado satisfactoriamente.',
-                            'success'
-                        ).then(function() {
-                            ListaAsignacionVisitas();
-                        });
-                    }
-                });
-            }
-        })
-    }
-
-
-    function Valida_Archivo(val) {
-        Cargando();
-
-        var archivoInput = document.getElementById(val);
-        var archivoRuta = archivoInput.value;
-        var extPermitidas = /(.pdf|.png|.jpg|.jpeg)$/i;
-        console.log(archivoRuta)
-        if (!extPermitidas.exec(archivoRuta)) {
-            Swal({
-                title: 'Registro Denegado11',
-                text: "Asegurese de ingresar archivo con extensión111111111 .pdf | .jpg | .png | .jpeg",
-                type: 'error',
-                showCancelButton: false,
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'OK',
-            });
-            archivoInput.value = '';
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-
-    function Validar_Archivo_Backup(v) {
-        var archivoInput = document.getElementById(v);
-        var archivoRuta = archivoInput.value;
-        var extPermitidas = /(.jpg|.jpeg|.png|.pdf|.mp4|.xlsx|.pptx|.docx|.bpm)$/i;
-        if (!extPermitidas.exec(archivoRuta)) {
-            swal.fire(
-                '!Archivo no permitido!',
-                'El archivo debe ser jpg, jpeg, png, pdf, mp4, pptx, docx o bpm',
-                'error'
-            )
-            archivoInput.value = '';
-            return false;
-        }
-    }
-
-
-    function Buscar_Asignacion_Visita() {
-        var csrfToken = $('input[name="_token"]').val();
-        var fecha_inicio = $('#fini').val();
-        var fecha_fin = $('#ffin').val();
-        var url = "{{ url('Produccion/ListaAsignacionVisitas') }}/" + fecha_inicio + "/" + fecha_fin;
-
-        $.ajax({
-            type: "POST",
-            url: url,
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
-            success: function(data) {
-                $('#lista_asignacion_visita').html(data);
-            }
-        });
     }
 </script>

@@ -53,7 +53,7 @@ class AsignacionVisita extends Model
     ];
 
 
-    public static function getListAsignacion($fini, $ffin)
+    public static function getListAsignacion($fini, $ffin, $idUsuario)
     {
         return self::select(
             'asignacion_visita.id_asignacion_visita',
@@ -89,6 +89,10 @@ class AsignacionVisita extends Model
             ->leftJoin('tipo_transporte_produccion', 'asignacion_visita_transporte.id_tipo_transporte', '=', 'tipo_transporte_produccion.id_tipo_transporte')
             ->whereBetween('asignacion_visita.fecha', [$fini, $ffin])
             ->where('asignacion_visita.estado', 1)
+            // Aquí se filtra por el id del inspector ($idUsuario)
+            ->when($idUsuario, function ($query, $idUsuario) {
+                return $query->where('asignacion_visita.id_inspector', $idUsuario);
+            })
             ->orderBy('asignacion_visita.cod_asignacion', 'DESC')
             ->get();
     }
