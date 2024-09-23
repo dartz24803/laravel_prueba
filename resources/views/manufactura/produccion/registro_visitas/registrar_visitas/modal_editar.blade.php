@@ -104,7 +104,7 @@
             </div>
             <div class="form-group col-lg-6">
                 <label class="control-label text-bold">Punto de Partida: </label>
-                <select class="form-control" name="id_ptpartidae" id="id_ptpartidae">
+                <select class="form-control multivalue2" name="id_ptpartidae" id="id_ptpartidae">
                     <option value="9999">Domicilio</option>
                     @foreach ($list_proveedor as $list)
                     <option value="{{ $list->id_proveedor }}"
@@ -116,7 +116,7 @@
             </div>
             <div class="form-group col-lg-6">
                 <label class="control-label text-bold">Punto de Llegada: </label>
-                <select class="form-control" name="id_ptllegadae" id="id_ptllegadae">
+                <select class="form-control multivalue2" name="id_ptllegadae" id="id_ptllegadae">
                     <option value="9999">Domicilio</option>
                     @foreach ($list_proveedor as $list)
                     <option value="{{ $list->id_proveedor }}"
@@ -128,7 +128,7 @@
             </div>
             <div class="form-group col-lg-6">
                 <label class="control-label text-bold">Modelo: </label>
-                <select class="form-control" name="id_modeloe" id="id_modeloe">
+                <select class="form-control multivalue2" name="id_modeloe" id="id_modeloe">
                     @foreach ($list_ficha_tecnica as $list)
                     <option value="{{ $list->id_ft_produccion }}"
                         {{ $list->id_ft_produccion == $get_id->id_modelo ? 'selected' : '' }}>
@@ -155,7 +155,7 @@
 
     <div class="modal-footer">
         @csrf
-        @method('PUT')
+        <!-- @method('PUT') -->
         <input type="hidden" id="capturae" name="capturae">
         <button id="boton_disablede" class="btn btn-primary" type="button" onclick="Update_Asignacion();">Guardar</button>
         <button class=" btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
@@ -164,22 +164,10 @@
 
 
 <script>
-    $('.multivalue').select2({
+    $('.multivalue2').select2({
         tags: true, // Permite crear nuevas etiquetas
         tokenSeparators: [',', ' '], // Separa las etiquetas con comas y espacios
-        dropdownParent: $('#ModalRegistro')
-    });
-    $('#id_ptpartidae').select2({
-        placeholder: "Selecciona un Punto de Partida",
-        allowClear: true
-    });
-    $('#id_ptllegadae').select2({
-        placeholder: "Selecciona un Punto de Llegada",
-        allowClear: true
-    });
-    $('#id_modeloe').select2({
-        placeholder: "Selecciona un Modelo",
-        allowClear: true
+        dropdownParent: $('#ModalUpdate')
     });
 
     function Update_Asignacion() {
@@ -211,7 +199,7 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        ListaAsignacionVisitas();
+                        Lista_Reg_Visitas();
                         $("#ModalUpdate .close").click();
                     });
                 }

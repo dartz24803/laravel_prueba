@@ -13,6 +13,7 @@ use App\Models\ProveedorGeneral;
 use App\Models\Puesto;
 use App\Models\SubGerencia;
 use App\Models\TipoPortal;
+use App\Models\TipoTransporteProduccion;
 use App\Models\User;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProduccionController extends Controller
 {
-    public function index()
+    public function indexav()
     {
         $list_subgerencia = SubGerencia::list_subgerencia(9);
         //NOTIFICACIONES
@@ -30,22 +31,32 @@ class ProduccionController extends Controller
         return view('manufactura.produccion.asignacion_visitas.index', compact('list_notificacion', 'list_gerencia', 'list_subgerencia'));
     }
 
-    public function index_av()
+    public function indexrev()
     {
-        return view('manufactura.produccion.asignacion_visitas.asignacion_visitas.index');
+        $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(9);
+        return view('manufactura.produccion.registro_visitas.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
+    public function index_rv()
+    {
+        return view('manufactura.produccion.registro_visitas.registrar_visitas.index');
+    }
+
+    public function index_av()
+    {
+        return view('manufactura.produccion.asignacion_visitas.asignar_visitas.index');
+    }
 
     public function list_av(Request $request)
     {
         // Obtener las fechas del request, con valores predeterminados si no se proporcionan
         $fini = $request->input('fini', date('Y-m-01')); // Primer día del mes actual
         $ffin = $request->input('ffin', date('Y-m-t')); // Último día del mes actual
-
         // Obtener la lista de asignaciones filtrada por fecha
-        $list_asignacion = AsignacionVisita::getListAsignacion($fini, $ffin);
+        $list_asignacion = AsignacionVisita::getListAsignacion($fini, $ffin, 0);
         // dd($list_asignacion);
-        return view('manufactura.produccion.asignacion_visitas.asignacion_visitas.lista', compact('list_asignacion'));
+        return view('manufactura.produccion.asignacion_visitas.asignar_visitas.lista', compact('list_asignacion'));
     }
 
 
@@ -89,7 +100,7 @@ class ProduccionController extends Controller
             ->distinct('nom_proceso')
             ->get();
 
-        return view('manufactura.produccion.asignacion_visitas.asignacion_visitas.modal_registrar', compact('list_area', 'list_inspector', 'list_proveedor', 'list_ficha_tecnica', 'list_proceso_visita'));
+        return view('manufactura.produccion.asignacion_visitas.asignar_visitas.modal_registrar', compact('list_area', 'list_inspector', 'list_proveedor', 'list_ficha_tecnica', 'list_proceso_visita'));
     }
 
 
@@ -223,7 +234,7 @@ class ProduccionController extends Controller
             ->distinct('nom_proceso')
             ->get();
 
-        return view('manufactura.produccion.asignacion_visitas.asignacion_visitas.modal_editar', compact(
+        return view('manufactura.produccion.asignacion_visitas.asignar_visitas.modal_editar', compact(
             'get_id',
             'list_inspector',
             'list_proveedor',
@@ -232,11 +243,31 @@ class ProduccionController extends Controller
         ));
     }
 
+    public function detalle_av($id)
+    {
+        $get_id = AsignacionVisita::where('id_asignacion_visita', $id)
+            ->firstOrFail();
+
+        $list_tipo_transporte = TipoTransporteProduccion::select(
+            'id_tipo_transporte',
+            'nom_tipo_transporte'
+        )
+            ->where('estado', 1)
+            ->orderBy('nom_tipo_transporte', 'ASC')
+            ->distinct('nom_tipo_transporte')
+            ->get();
+
+        return view('manufactura.produccion.asignacion_visitas.asignar_visitas.modal_detalle', compact(
+            'get_id',
+            'list_tipo_transporte',
+        ));
+    }
+
     public function ListaAsignacionVisitas($fecha, $fecha_fin)
     {
-        $list_asignacion = AsignacionVisita::getListAsignacion($fecha, $fecha_fin);
+        $list_asignacion = AsignacionVisita::getListAsignacion($fecha, $fecha_fin, 0);
 
-        return view('manufactura.produccion.asignacion_visitas.asignacion_visitas.lista', compact('list_asignacion'));
+        return view('manufactura.produccion.asignacion_visitas.asignar_visitas.lista', compact('list_asignacion'));
     }
 
 
@@ -261,10 +292,35 @@ class ProduccionController extends Controller
             'fecha' => $request->fechae,
             'id_inspector' => $request->id_inspectore,
             'punto_partida' => $request->id_ptpartidae,
-            'punto_llegada' => $request->id_areae,
+            'punto_llegada' => $request->id_ptllegadae,
             'id_modelo' => $request->id_modeloe,
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+    }
+
+
+
+    // REGISTRO DE VISITAS
+
+    public function list_rv(Request $request)
+    {
+        $idUsuario = session('usuario')->id_usuario;
+        // Obtener las fechas del request, con valores predeterminados si no se proporcionan
+        $fini = $request->input('fini', date('Y-m-01')); // Primer día del mes actual
+        $ffin = $request->input('ffin', date('Y-m-t')); // Último día del mes actual
+        // Obtener la lista de asignaciones filtrada por fecha
+        $list_asignacion = AsignacionVisita::getListAsignacion($fini, $ffin, $idUsuario);
+        // dd($list_asignacion);
+        return view('manufactura.produccion.asignacion_visitas.asignar_visitas.lista', compact('list_asignacion'));
+    }
+
+    public function ListaRegistroVisitas($fecha, $fecha_fin)
+    {
+        $idUsuario = session('usuario')->id_usuario;
+
+        $list_asignacion = AsignacionVisita::getListAsignacion($fecha, $fecha_fin, $idUsuario);
+
+        return view('manufactura.produccion.asignacion_visitas.asignar_visitas.lista', compact('list_asignacion'));
     }
 }
