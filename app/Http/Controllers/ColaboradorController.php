@@ -18,6 +18,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use App\Models\Notificacion;
 use App\Models\SubGerencia;
 use App\Models\Config;
+use App\Models\Model_Perfil;
 class ColaboradorController extends Controller
 {
     public function __construct()
@@ -460,46 +461,47 @@ class ColaboradorController extends Controller
         return view('rrhh.colaborador.cesado.modal_editar', compact('get_id'));
     }
 
+    protected $Model_Perfil;
+
     public function Mi_Perfil($id_usuario=null){
-        /*
+
             if(isset($id_usuario) && $id_usuario > 0){
                 $id_usuario= $id_usuario;
             }else{
-                $id_usuario= $_SESSION['usuario'][0]['id_usuario'];
-            }*/
+                $id_usuario= session('usuario')->id_usuario;
+            }
+            $this->Model_Perfil = new Model_Perfil();
             $dato['usuario'] = Usuario::get_list_usuario($id_usuario);
-            /*$dato['domicilio'] = $this->Model_Corporacion->get_id_domicilio_users($id_usuario);
+            $dato['domicilio'] = $this->Model_Perfil->get_id_domicilio_users($id_usuario);
 
-            $dato['datosp_porcentaje'] = $this->Model_Corporacion->datosp_porcentaje($id_usuario);
-            $dato['gustos_pref'] = $this->Model_Corporacion->get_id_gustosp($id_usuario);
-            $dato['domiciliou_porcentaje'] = $this->Model_Corporacion->domiciliou_porcentaje($id_usuario);
-            $dato['referenciaf_porcentaje'] = $this->Model_Corporacion->referenciaf_porcentaje($id_usuario);
-            $dato['datoshu_porcentaje'] = $this->Model_Corporacion->datoshu_porcentaje($id_usuario);
-            $dato['contactoeu_porcentaje'] = $this->Model_Corporacion->contactoeu_porcentaje($id_usuario);
-            $dato['estudiosgu_porcentaje'] = $this->Model_Corporacion->estudiosgu_porcentaje($id_usuario);
-            $dato['oficceu_porcentaje'] = $this->Model_Corporacion->oficceu_porcentaje($id_usuario);
-            $dato['idiomau_porcentaje'] = $this->Model_Corporacion->idiomau_porcentaje($id_usuario);
-            $dato['cursocu_porcentaje'] = $this->Model_Corporacion->cursocu_porcentaje($id_usuario);
+            $dato['datosp_porcentaje'] = $this->Model_Perfil->datosp_porcentaje($id_usuario);
+            $dato['gustos_pref'] = $this->Model_Perfil->get_id_gustosp($id_usuario);
+            $dato['domiciliou_porcentaje'] = $this->Model_Perfil->domiciliou_porcentaje($id_usuario);
+            $dato['referenciaf_porcentaje'] = $this->Model_Perfil->referenciaf_porcentaje($id_usuario);
+            $dato['datoshu_porcentaje'] = $this->Model_Perfil->datoshu_porcentaje($id_usuario);
+            $dato['contactoeu_porcentaje'] = $this->Model_Perfil->contactoeu_porcentaje($id_usuario);
+            $dato['estudiosgu_porcentaje'] = $this->Model_Perfil->estudiosgu_porcentaje($id_usuario);
+            $dato['oficceu_porcentaje'] = $this->Model_Perfil->oficceu_porcentaje($id_usuario);
+            $dato['idiomau_porcentaje'] = $this->Model_Perfil->idiomau_porcentaje($id_usuario);
+            $dato['cursocu_porcentaje'] = $this->Model_Perfil->cursocu_porcentaje($id_usuario);
 
-            $dato['experiencialaboralu_porcentaje'] = $this->Model_Corporacion->experiencialaboralu_porcentaje($id_usuario);
-            $dato['enfermedadesu_porcentaje'] = $this->Model_Corporacion->enfermedadesu_porcentaje($id_usuario);
-            $dato['gestacionu_porcentaje'] = $this->Model_Corporacion->gestacionu_porcentaje($id_usuario);
-            $dato['alergiasu_porcentaje'] = $this->Model_Corporacion->alergiasu_porcentaje($id_usuario);
-            $dato['otrosu_porcentaje'] = $this->Model_Corporacion->otrosu_porcentaje($id_usuario);
-            $dato['referenciaconvocatoriau_porcentaje'] = $this->Model_Corporacion->referenciaconvocatoriau_porcentaje($id_usuario);
-            $dato['documentacionu_porcentaje'] = $this->Model_Corporacion->documentarionu_porcentaje($id_usuario);
-            $dato['ropau_porcentaje'] = $this->Model_Corporacion->ropau_porcentaje($id_usuario);
-            $dato['sist_pensu_porcentaje'] = $this->Model_Corporacion->sist_pensu_porcentaje($id_usuario);
-            $dato['cuentab_porcentaje'] = $this->Model_Corporacion->cuentab_porcentaje($id_usuario);*/
+            $dato['experiencialaboralu_porcentaje'] = $this->Model_Perfil->experiencialaboralu_porcentaje($id_usuario);
+            $dato['enfermedadesu_porcentaje'] = $this->Model_Perfil->enfermedadesu_porcentaje($id_usuario);
+            $dato['gestacionu_porcentaje'] = $this->Model_Perfil->gestacionu_porcentaje($id_usuario);
+            $dato['alergiasu_porcentaje'] = $this->Model_Perfil->alergiasu_porcentaje($id_usuario);
+            $dato['otrosu_porcentaje'] = $this->Model_Perfil->otrosu_porcentaje($id_usuario);
+            $dato['referenciaconvocatoriau_porcentaje'] = $this->Model_Perfil->referenciaconvocatoriau_porcentaje($id_usuario);
+            $dato['documentacionu_porcentaje'] = $this->Model_Perfil->documentarionu_porcentaje($id_usuario);
+            $dato['ropau_porcentaje'] = $this->Model_Perfil->ropau_porcentaje($id_usuario);
+            $dato['sist_pensu_porcentaje'] = $this->Model_Perfil->sist_pensu_porcentaje($id_usuario);
+            $dato['cuentab_porcentaje'] = $this->Model_Perfil->cuentab_porcentaje($id_usuario);
 
             $dato['porcentaje'] = Usuario::perfil_porcentaje($id_usuario);
             if($dato['usuario'][0]['urladm']=="1"){
-                //$dato['get_foto'] = $this->Model_Corporacion->get_fotoP();
                 $dato['get_foto'] = Config::where('descrip_config','Foto_Postulante')
                                 ->where('estado', 1)
                                 ->get();
             }else{
-                //$dato['get_foto'] = $this->Model_Corporacion->get_foto();
                 $dato['get_foto'] = Config::where('descrip_config','Foto_Colaborador')
                                 ->where('estado', 1)
                                 ->get();
