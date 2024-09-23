@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CajaChica;
+use App\Models\CajaChicaPagoTemporal;
 use App\Models\Categoria;
 use App\Models\Empresas;
 use App\Models\Notificacion;
@@ -362,7 +363,7 @@ class CajaChicaController extends Controller
 
         $get_id = CajaChica::findOrFail($id);
 
-        $comprobante = "";
+        $comprobante = $get_id->comprobante;
         if ($_FILES["comprobantee"]["name"] != "") {
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
@@ -442,7 +443,7 @@ class CajaChicaController extends Controller
 
         $get_id = CajaChica::findOrFail($id);
 
-        $comprobante = "";
+        $comprobante = $get_id->comprobante;
         if ($_FILES["comprobantee"]["name"] != "") {
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
@@ -500,7 +501,8 @@ class CajaChicaController extends Controller
                 (CASE WHEN cc.ruta=1 THEN CONCAT(cc.punto_partida," - ",cc.punto_llegada) 
                 ELSE cc.punto_llegada END) ELSE cc.punto_partida END AS descripcion'),
                 DB::raw('CONCAT(tm.cod_moneda," ",cc.total) AS total'),'ub.cod_ubi','em.nom_empresa',
-                'cc.razon_social','cc.id_categoria')
+                'cc.razon_social','cc.comprobante',
+                DB::raw('SUBSTRING_INDEX(cc.comprobante,"/",-1) AS nom_comprobante'),'cc.id_categoria')
                 ->join('categoria AS ca','ca.id_categoria','=','cc.id_categoria')
                 ->join('sub_categoria AS sc','sc.id','=','cc.id_sub_categoria')
                 ->join('vw_tipo_comprobante AS tc','tc.id','=','cc.id_tipo_comprobante')
@@ -521,7 +523,12 @@ class CajaChicaController extends Controller
                 'list_tipo_pago'
             ));
         }else{
-
+            CajaChicaPagoTemporal::where('id_usuario',session('usuario')->id_usuario)->delete();
+            return view('finanzas.tesoreria.caja_chica.modal_validar_pv', compact(
+                'get_id',
+                'list_pago',
+                'list_tipo_pago'
+            ));
         }
     }
 
@@ -547,6 +554,98 @@ class CajaChicaController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+    }
+
+    public function validar_pv(Request $request, $id)
+    {
+        $request->validate([
+            'id_pagov' => 'gt:0',
+            'id_tipo_pagov' => 'gt:0'
+        ], [
+            'id_pagov.gt' => 'Debe seleccionar pago.',
+            'id_tipo_pagov.gt' => 'Debe seleccionar tipo pago.'
+        ]);
+
+        $errors = [];
+        if($request->id_pagov=="1"){
+            $errors['fecha_pagov'] = ['Debe ingresar fecha de pago.'];
+        }
+        if($request->id_pagov=="2"){
+            $get_id = CajaChica::findOrFail($id);
+            $suma = CajaChicaPagoTemporal::where('id_usuario',session('usuario')->id_usuario)->sum('monto');
+            if ($get_id->total != $suma) {
+                $errors['suma'] = ['Debe ingresar más montos para completar el total.'];
+            }
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+        
+        CajaChica::findOrFail($id)->update([
+            'id_pago' => $request->id_pagov,
+            'id_tipo_pago' => $request->id_tipo_pagov,
+            'cuenta_1' => $request->cuenta_1v,
+            'cuenta_2' => $request->cuenta_2v,
+            'fecha_pago' => $request->fecha_pagov,
+            'estado_c' => 2,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        if($request->id_pagov=="2"){
+            DB::statement('INSERT INTO caja_chica_pago (id_caja_chica,fecha,monto)
+            SELECT '.$id.',fecha,monto
+            FROM caja_chica_pago_temporal
+            WHERE id_usuario='.session('usuario')->id_usuario);
+
+            CajaChicaPagoTemporal::where('id_usuario',session('usuario')->id_usuario)->delete();
+        }
+    }
+
+    public function credito($id)
+    {
+        return view('finanzas.tesoreria.caja_chica.modal_credito',compact('id'));
+    }
+
+    public function list_credito()
+    {
+        $list_temporal = CajaChicaPagoTemporal::select(DB::raw('DATE_FORMAT(fecha,"%d-%m-%Y") AS fecha'),'monto')
+                        ->where('id_usuario',session('usuario')->id_usuario)->get();
+        return view('finanzas.tesoreria.caja_chica.lista_credito', compact(
+            'list_temporal'
+        ));
+    }
+
+    public function saldo($id)
+    {
+        $get_id = CajaChica::findOrFail($id);
+        $suma = CajaChicaPagoTemporal::where('id_usuario',session('usuario')->id_usuario)->sum('monto');
+        echo $get_id->total-$suma;
+    }
+
+    public function store_cr(Request $request, $id)
+    {
+        $request->validate([
+            'fechac' => 'required',
+            'montoc' => 'required|gt:0'
+        ], [
+            'fechac.required' => 'Debe ingresar fecha.',
+            'montoc.required' => 'Debe ingresar monto.',
+            'montoc.gt' => 'Debe ingresar monto mayor a 0.'
+        ]);
+
+        $get_id = CajaChica::findOrFail($id);
+        $suma = CajaChicaPagoTemporal::where('id_usuario',session('usuario')->id_usuario)->sum('monto');
+
+        if(($suma+$request->montoc)>$get_id->total){
+            echo "error";
+        }else{
+            CajaChicaPagoTemporal::create([
+                'id_usuario' => session('usuario')->id_usuario,
+                'fecha' => $request->fechac,
+                'monto' => $request->montoc
+            ]);
+        }
     }
 
     public function destroy($id)

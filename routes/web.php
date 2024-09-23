@@ -984,26 +984,28 @@ Route::controller(DuracionTransaccionController::class)->group(function () {
 
 //PRODUCCIÓN - PRODUCCIÓN
 Route::controller(ProduccionController::class)->group(function () {
-    Route::get('produccion', 'index')->name('produccion');
+    // ASIGNAR VISITAS
+    Route::get('produccionav', 'indexav')->name('produccionav');
+    Route::get('produccionrev', 'indexrev')->name('produccionrev');
     Route::get('produccion_av', 'index_av')->name('produccion_av');
     Route::get('produccion_av/list', 'list_av')->name('produccion_av.list');
     Route::get('produccion_av/create', 'create_av')->name('produccion_av.create');
     Route::post('produccion_av', 'store_av')->name('produccion_av.store');
     Route::get('produccion_av/{id}/edit', 'edit_av')->name('produccion_av.edit');
     Route::put('produccion_av/{id}', 'update_av')->name('produccion_av.update');
+    Route::put('produccion_detalle_av/{id}', 'update_detalle_av')->name('produccion_detalle_av.update');
+    Route::get('produccion_av/{id}/detalle', 'detalle_av')->name('produccion_av.detalle');
     Route::delete('produccion_av/{id}', 'destroy_av')->name('produccion_av.destroy');
     Route::post('Produccion/ListaAsignacionVisitas/{fec_ini}/{fec_fin}', 'ListaAsignacionVisitas');
-
-    // Route::get('portalprocesos_lm/create', 'create_lm')->name('portalprocesos_lm.create');
-    // Route::get('portalprocesos_lm/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_lm')->name('portalprocesos_lm.excel');
-    // Route::get('portalprocesos_lm/{id}/image', 'image_lm')->name('portalprocesos_lm.image');
-    // Route::post('portalprocesos_lm/{id}', 'approve_lm')->name('portalprocesos_lm.approve');
-    // Route::get('portalprocesos_lm/{id}/edit', 'edit_lm')->name('portalprocesos_lm.edit');
-    // Route::put('portalprocesos_lm/{id}/version', 'version_lm')->name('portalprocesos_lm.version');
-    // Route::put('portalprocesos_lm/{id}', 'update_lm')->name('portalprocesos_lm.update');
-    // Route::get('temas_por_areas', 'getTemasPorAreas')->name('temas_por_areas');
-    // Route::get('capacitadores_por_areas', 'getCapacitadoresPorAreas')->name('capacitadores_por_areas');
-    // Route::get('puestos-por-areas', 'getPuestosPorAreas')->name('puestos_por_areas');
+    // REGISTRAR VISITAS
+    Route::get('produccion_rv', 'index_rv')->name('produccion_rv');
+    Route::get('produccion_rv/list', 'list_rv')->name('produccion_rv.list');
+    Route::get('produccion_rv/create', 'create_rv')->name('produccion_rv.create');
+    Route::post('produccion_rv', 'store_rv')->name('produccion_rv.store');
+    Route::get('produccion_rv/{id}/edit', 'edit_rv')->name('produccion_rv.edit');
+    Route::put('produccion_rv/{id}', 'update_rv')->name('produccion_rv.update');
+    Route::delete('produccion_rv/{id}', 'destroy_rv')->name('produccion_rv.destroy');
+    Route::post('Produccion/ListaRegistroVisitas/{fec_ini}/{fec_fin}', 'ListaRegistroVisitas');
 });
 
 
@@ -1053,6 +1055,11 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::get('caja_chica/{id}/download', 'download')->name('caja_chica.download');
     Route::get('caja_chica/{id}/validar', 'validar')->name('caja_chica.validar');
     Route::put('caja_chica_mo/{id}/validar', 'validar_mo')->name('caja_chica.validar_mo');
+    Route::put('caja_chica_pv/{id}/validar', 'validar_pv')->name('caja_chica.validar_pv');
+    Route::get('caja_chica/{id}/credito', 'credito')->name('caja_chica.credito');
+    Route::get('caja_chica/list_credito', 'list_credito')->name('caja_chica.list_credito');
+    Route::get('caja_chica/{id}/saldo', 'saldo')->name('caja_chica.saldo');
+    Route::post('caja_chica_cr/{id}', 'store_cr')->name('caja_chica.store_cr');
     Route::delete('caja_chica/{id}', 'destroy')->name('caja_chica.destroy');
     Route::get('caja_chica/excel', 'excel')->name('caja_chica.excel');
 });

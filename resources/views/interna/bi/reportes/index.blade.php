@@ -23,10 +23,10 @@
                                 <a id="a_reg" class="nav-link" onclick="ListRegistroAccesoReportes();" style="cursor: pointer;">ACCESO DE REPORTES</a>
                             </li>
                             <li class="nav-item">
-                                <a id="a_reind" class="nav-link" onclick="ListBDReportesInd();" style="cursor: pointer;">REPORTE POR INDICADORES</a>
+                                <a id="a_reind" class="nav-link" onclick="ListBDReportesInd();" style="cursor: pointer;">ELEMENTOS POR REPORTE</a>
                             </li>
                             <li class="nav-item">
-                                <a id="a_redb" class="nav-link" onclick="ListBDReportesDb();" style="cursor: pointer;">REPORTE POR BASE DE DATOS</a>
+                                <a id="a_redb" class="nav-link" onclick="ListBDReportesDb();" style="cursor: pointer;">BASE DE DATOS POR REPORTE</a>
                             </li>
                         </ul>
                         <div class="row" id="cancel-row">

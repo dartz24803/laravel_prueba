@@ -199,8 +199,6 @@
                             </svg>
                         </button>
                     </div>
-
-
                     <table class="table table-bordered table-responsive" id="selected-data-table" style="margin-top:20px; display:none;">
                         <thead>
                             <tr>
@@ -337,7 +335,7 @@
                     'Haga clic en el botón!',
                     'success'
                 ).then(function() {
-                    ListaAsignacionVisitas();
+                    Lista_Asig_Visitas();
                     $("#ModalRegistro .close").click();
                 });
             },
