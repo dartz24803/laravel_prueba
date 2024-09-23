@@ -1,5 +1,73 @@
 <!-- CSS -->
 <style>
+    #paste_area_1 {
+        width: 100%;
+        /* Ancho completo */
+        padding: 10px;
+        /* Espaciado interno para separar el contenido del borde */
+        font-size: 16px;
+        /* Tamaño de fuente adecuado */
+        border: 1px solid #ccc;
+        /* Borde del textarea */
+        resize: none;
+        /* Permitir redimensionamiento vertical */
+        box-sizing: border-box;
+        /* Incluir padding y border en el ancho total */
+        cursor: text;
+        /* Cursor de texto para indicar área de entrada */
+        border-color: #3366ff;
+        /* Cambiar color del borde al enfocarse */
+        box-shadow: 0 0 5px rgba(51, 102, 255, 0.5);
+        /* Sombra al enfocarse */
+        font-size: 12px;
+
+    }
+
+    #paste_area_2 {
+        width: 100%;
+        /* Ancho completo */
+        padding: 10px;
+        /* Espaciado interno para separar el contenido del borde */
+        font-size: 16px;
+        /* Tamaño de fuente adecuado */
+        border: 1px solid #ccc;
+        /* Borde del textarea */
+        resize: none;
+        /* Permitir redimensionamiento vertical */
+        box-sizing: border-box;
+        /* Incluir padding y border en el ancho total */
+        cursor: text;
+        /* Cursor de texto para indicar área de entrada */
+        border-color: #3366ff;
+        /* Cambiar color del borde al enfocarse */
+        box-shadow: 0 0 5px rgba(51, 102, 255, 0.5);
+        /* Sombra al enfocarse */
+        font-size: 12px;
+
+    }
+
+    #paste_area_3 {
+        width: 100%;
+        /* Ancho completo */
+        padding: 10px;
+        /* Espaciado interno para separar el contenido del borde */
+        font-size: 16px;
+        /* Tamaño de fuente adecuado */
+        border: 1px solid #ccc;
+        /* Borde del textarea */
+        resize: none;
+        /* Permitir redimensionamiento vertical */
+        box-sizing: border-box;
+        /* Incluir padding y border en el ancho total */
+        cursor: text;
+        /* Cursor de texto para indicar área de entrada */
+        border-color: #3366ff;
+        /* Cambiar color del borde al enfocarse */
+        box-shadow: 0 0 5px rgba(51, 102, 255, 0.5);
+        /* Sombra al enfocarse */
+        font-size: 12px;
+    }
+
     #drop-area {
         border: 2px dashed #007bff;
         border-radius: 5px;
@@ -147,7 +215,7 @@
                 <a class="nav-link active" id="documento-tab" data-toggle="tab" href="#documento2" role="tab" aria-controls="documento2" aria-selected="true">Documento</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="indicadores-tab" data-toggle="tab" href="#indicadores2" role="tab" aria-controls="indicadores2" aria-selected="false">Indicadores</a>
+                <a class="nav-link" id="indicadores-tab" data-toggle="tab" href="#indicadores2" role="tab" aria-controls="indicadores2" aria-selected="false">Contenido</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="tablas-tab" data-toggle="tab" href="#tablas2" role="tab" aria-controls="tablas2" aria-selected="false">Tablas</a>
@@ -189,25 +257,6 @@
                             <option value="2">Suspendido</option>
                         </select>
                     </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="areass">Área: </label>
-                        <select class="form-control multivalue" name="areass" id="areass">
-                            @foreach ($list_area as $list)
-                            <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label class="control-label text-bold">Frec. Actualización: </label>
-                        <select class="form-control" name="frec_actualizacion" id="frec_actualizacion">
-                            <option value="1">Minuto</option>
-                            <option value="2">Hora</option>
-                            <option value="3">Día</option>
-                            <option value="4">Semana</option>
-                            <option value="5">Mes</option>
-                        </select>
-                    </div>
                     <div class="form-group col-md-6">
                         <label for="solicitantes">Solicitante: </label>
                         <select class="form-control multivalue" name="solicitante" id="solicitante">
@@ -220,6 +269,34 @@
 
                     </div>
 
+                    <div class="form-group col-md-6">
+                        <label class="control-label text-bold">Frec. Actualización: </label>
+                        <select class="form-control" name="frec_actualizacion" id="frec_actualizacion">
+                            <option value="1">Minuto</option>
+                            <option value="2">Hora</option>
+                            <option value="3">Día</option>
+                            <option value="4">Semana</option>
+                            <option value="5">Mes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="areass">Grupo: </label>
+                        <select class="form-control multivalue" name="areass" id="areass">
+                            @foreach ($list_area as $list)
+                            <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="areass">Área Destino: </label>
+                        <select class="form-control multivalue" name="areasd" id="areasd">
+                            @foreach ($list_area as $list)
+                            <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
 
@@ -233,7 +310,7 @@
                         <thead class="text-center">
                             <tr>
                                 <th>N°pagina</th>
-                                <th>Indicador</th>
+                                <th>Nombre</th>
                                 <th>Descripción</th>
                                 <th class="col-tipo">Tipo Ind</th>
                                 <th class="col-tipo">Presentación</th>
@@ -260,8 +337,8 @@
                                 </td>
                                 <td class="px-1">
                                     <select class="form-control" name="presentacion[]">
-                                        <option value="1">Tabla</option>
-                                        <option value="2">Gráfico</option>
+                                        <option value="1">Medición</option>
+                                        <option value="2">Informativo</option>
                                     </select>
                                 </td>
                                 <td class="px-1"><button type="button" class="btn btn-success btn-sm" onclick="addRow()">+</button></td>
@@ -287,19 +364,23 @@
                         <tbody id="tabla_body3">
                             <tr class="text-center">
                                 <td class="px-1">
-                                    <select class="form-control multivalue" name="sistema[]" id="sistema">
+                                    <select class="form-control" name="sistema[]" id="sistema">
                                         @foreach ($list_sistemas as $list)
                                         <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema}}</option>
                                         @endforeach
                                     </select>
                                 </td>
                                 <td class="px-1">
-                                    <select class="form-control multivalue" name="db[]" id="db">
+                                    <select class="form-control" name="db[]" id="db">
                                         @foreach ($list_db as $list)
-                                        <option value="{{ $list->id_sistema_tablas }}">{{ $list->nom_db}}</option>
+                                        <option value="{{ $list->cod_db }}" title="{{ $list->nom_db }}">
+                                            {{ \Illuminate\Support\Str::limit($list->nom_db, 20, '...') }}
+                                        </option>
                                         @endforeach
                                     </select>
                                 </td>
+
+
                                 <td class="px-1"><input type="text" class="form-control custom-select" name="tablabi[]"></td>
                                 <td class="px-1"><button type="button" class="btn btn-success btn-sm" onclick="addRowTabla()">+</button></td>
                             </tr>
@@ -310,14 +391,39 @@
 
             <div class="tab-pane fade" id="up_imagenes2" role="tabpanel" aria-labelledby="upimagenes-tab">
                 <div class="row my-4">
-                    <div class="col-lg-12">
-                        <div id="drop-area" class="border border-primary" style="width: 100%; height: 300px; text-align: center; padding: 20px;">
-                            <p>Arrastra hasta 3 imágenes aquí</p>
-                            <input type="file" id="fileElem" accept="image/*" onchange="handleFiles(this.files)" style="display:none" multiple>
-                            <div onclick="document.getElementById('fileElem').click();"></div>
-                            <div id="preview" style="margin-top: 20px;"></div>
+                    <!-- Columna 1 -->
+                    <div class="col-lg-4">
+                        <div class="row p-2">
+                            <textarea id="paste_area_1" placeholder="Ctrl + V aquí para pegar la imagen" style="width: 100%" rows="1"></textarea>
+                            <div id="imageViewer_1"></div>
                         </div>
+                        <input type="file" id="archivo_base_1" name="archivo_base_1" style="display: none;">
                     </div>
+
+                    <!-- Columna 2 -->
+                    <div class="col-lg-4">
+                        <div class="row p-2">
+                            <textarea id="paste_area_2" placeholder="Ctrl + V aquí para pegar la imagen" style="width: 100%" rows="1"></textarea>
+                            <div id="imageViewer_2"></div>
+                        </div>
+                        <input type="file" id="archivo_base_2" name="archivo_base_2" style="display: none;">
+                    </div>
+
+                    <!-- Columna 3 -->
+                    <div class="col-lg-4">
+                        <div class="row p-2">
+                            <textarea id="paste_area_3" placeholder="Ctrl + V aquí para pegar la imagen" style="width: 100%" rows="1"></textarea>
+                            <div id="imageViewer_3"></div>
+                        </div>
+                        <input type="file" id="archivo_base_3" name="archivo_base_3" style="display: none;">
+                    </div>
+                    <!-- <div class="col-lg-12">
+                        <div class="row p-2">
+                            <textarea id="paste_area" placeholder="Ctrl + V aquí para pegar la imagen" style="width: 100%" rows="1"></textarea>
+                            <div id="imageViewer">
+                            </div>
+                        </div>
+                    </div> -->
                 </div>
             </div>
 
@@ -371,6 +477,62 @@
 </form>
 
 <script>
+    document.getElementById('paste_area_1').addEventListener('paste', function(e) {
+        handlePaste(e, 'archivo_base_1', 'imageViewer_1');
+    });
+
+    document.getElementById('paste_area_2').addEventListener('paste', function(e) {
+        handlePaste(e, 'archivo_base_2', 'imageViewer_2');
+    });
+
+    document.getElementById('paste_area_3').addEventListener('paste', function(e) {
+        handlePaste(e, 'archivo_base_3', 'imageViewer_3');
+    });
+
+    function handlePaste(e, fileInputId, viewerId) {
+        if (e.clipboardData && e.clipboardData.items) {
+            var items = e.clipboardData.items;
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf("image") !== -1) {
+                    var blob = items[i].getAsFile();
+
+                    // Display image in viewer div
+                    displayImage(blob, viewerId);
+
+                    // Set the image blob as form data
+                    var fileInput = document.getElementById(fileInputId);
+                    var dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(blob);
+                    fileInput.files = dataTransfer.files;
+
+                    break;
+                }
+            }
+        }
+    }
+
+    function displayImage(blob, viewerId) {
+        var reader = new FileReader();
+
+        reader.onload = function(event) {
+            var img = new Image();
+            img.src = event.target.result;
+            img.style.maxWidth = "100%";
+            img.style.marginTop = "10px"; // Ajustar el estilo según sea necesario
+
+            // Limpiar contenido anterior
+            var imageViewer = document.getElementById(viewerId);
+            imageViewer.innerHTML = '';
+
+            // Agregar nueva imagen al div de visualización
+            imageViewer.appendChild(img);
+        };
+
+        reader.readAsDataURL(blob);
+    }
+
+
+
     function addRow() {
         // Obtener el cuerpo de la tablacodigo
         var tableBody = document.getElementById('tabla_body');
@@ -399,8 +561,8 @@
         </td>
         <td class="px-1">
             <select class="form-control" name="presentacion[]">
-                <option value="1">Tabla</option>
-                <option value="2">Gráfico</option>
+                <option value="1">Medición</option>
+                <option value="2">Informativo</option>
             </select>
         </td>
         <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
@@ -453,13 +615,13 @@
         tokenSeparators: [',', ' '], // Separa las etiquetas con comas y espacios
         dropdownParent: $('#ModalRegistro')
     });
-    $('#db').select2({
-        placeholder: "Selecciona un solicitante",
-        allowClear: true
-    });
+
 
     $(document).ready(function() {
+        // CARGAR IMAGENES
 
+
+        // CARGAR IMAGENES
         $('#id_area_acceso_t').select2({
             tags: true,
             tokenSeparators: [',', ' '],
@@ -476,56 +638,9 @@
             dropdownParent: $('#ModalRegistro')
         });
 
-        $('#id_area_acceso_t').on('change', function() {
-            const selectedAreas = $(this).val();
-            var url = "{{ route('puestos_por_areas_bi') }}";
-            $.ajax({
-                url: url,
-                method: 'GET',
-                data: {
-                    areas: selectedAreas
-                },
-                success: function(response) {
-                    // Vaciar el segundo select antes de agregar las nuevas opciones
-                    $('#tipo_acceso_t').empty();
-                    // Agregar las nuevas opciones
-                    $.each(response, function(index, puesto) {
-                        $('#tipo_acceso_t').append(
-                            `<option value="${puesto.id_puesto}">${puesto.nom_puesto}</option>`
-                        );
-                    });
-                    $('#tipo_acceso_t').select2();
-                },
-                error: function(xhr) {
-                    console.error('Error al obtener puestos:', xhr);
-                }
-            });
-        });
 
-        $('#areass').on('change', function() {
-            const selectedAreaUser = $(this).val();
-            var url = "{{ route('usuarios_por_area') }}";
-            $.ajax({
-                url: url,
-                method: 'GET',
-                data: {
-                    area_id: selectedAreaUser
-                },
-                success: function(response) {
-                    // Vaciar el segundo select antes de agregar las nuevas opciones
-                    $('#solicitante').empty();
-                    // Agregar las nuevas opciones
-                    $.each(response, function(index, usuario) {
-                        $('#solicitante').append(
-                            `<option value="${usuario.id_usuario}">${usuario.nombre_completo}</option>`
-                        );
-                    });
-                },
-                error: function(xhr) {
-                    console.error('Error al obtener usuarios:', xhr);
-                }
-            });
-        });
+
+
 
         $('#sistema').on('change', function() {
             const selectedSistema = $(this).val();
@@ -542,8 +657,10 @@
                     // Agregar las nuevas opciones
                     $.each(response, function(index, db) {
                         $('#db').append(
-                            `<option value="${db.cod_db}">${db.nom_db}</option>`
+                            `<option value="${db.cod_db}" title="${db.nom_db}">${db.nom_db.length > 20 ? db.nom_db.substring(0, 20) + '...' : db.nom_db}</option>`
                         );
+
+
                     });
 
                 },
@@ -553,10 +670,12 @@
             });
         });
 
+
+        let selectedUbicaciones = [];
+
         $('#tipo_acceso_sede').on('change', function() {
             const selectedSedes = $(this).val();
             var url = "{{ route('ubicacion_por_sede') }}";
-
             $.ajax({
                 url: url,
                 method: 'GET',
@@ -564,20 +683,27 @@
                     sedes: selectedSedes
                 },
                 success: function(response) {
-                    // Vaciar el segundo select antes de agregar las nuevas opciones
+                    // Guardamos las ubicaciones seleccionadas antes de limpiar
+                    selectedUbicaciones = $('#tipo_acceso_ubi').val() || [];
+                    // Eliminamos solo las opciones que ya no están asociadas a las sedes seleccionadas
+                    const currentOptions = [];
+                    $('#tipo_acceso_ubi option').each(function() {
+                        currentOptions.push($(this).val());
+                    });
+                    // Actualizamos solo las nuevas ubicaciones, manteniendo las que ya estaban seleccionadas
                     $('#tipo_acceso_ubi').empty();
-
-                    // Agregar las nuevas opciones
                     $.each(response, function(index, sede) {
                         $('#tipo_acceso_ubi').append(
                             `<option value="${sede.id_ubicacion}">${sede.cod_ubi}</option>`
                         );
                     });
-
-                    $('#tipo_acceso_ubi > option').prop('selected', true);
-
+                    // Reestablecemos las opciones previamente seleccionadas que aún están disponibles
+                    $.each(selectedUbicaciones, function(index, value) {
+                        if (currentOptions.includes(value)) {
+                            $('#tipo_acceso_ubi').find(`option[value="${value}"]`).prop('selected', true);
+                        }
+                    });
                     $('#tipo_acceso_ubi').select2();
-                    $('#tipo_acceso_ubi').trigger('change');
                 },
                 error: function(xhr) {
                     console.error('Error al obtener sedes:', xhr);
@@ -586,9 +712,13 @@
         });
 
 
+
+        let selectedAreas = [];
+
         $('#tipo_acceso_ubi').on('change', function() {
             const selectedUbis = $(this).val();
             var url = "{{ route('areas_por_ubicacion') }}";
+
             $.ajax({
                 url: url,
                 method: 'GET',
@@ -596,17 +726,84 @@
                     ubis: selectedUbis
                 },
                 success: function(response) {
+                    // Guardamos las áreas seleccionadas antes de limpiar
+                    selectedAreas = $('#id_area_acceso_t').val() || [];
+
+                    // Eliminamos solo las áreas que ya no están asociadas a las ubicaciones seleccionadas
+                    const currentOptions = [];
+                    $('#id_area_acceso_t option').each(function() {
+                        currentOptions.push($(this).val());
+                    });
+
+                    // Actualizamos solo las nuevas áreas, manteniendo las seleccionadas
                     $('#id_area_acceso_t').empty();
+
                     // Agregar las nuevas opciones
                     $.each(response, function(index, area) {
                         $('#id_area_acceso_t').append(
                             `<option value="${area.id_area}">${area.nom_area}</option>`
                         );
                     });
+
+                    // Reestablecemos las áreas seleccionadas previamente que aún están disponibles
+                    $.each(selectedAreas, function(index, value) {
+                        if (currentOptions.includes(value)) {
+                            $('#id_area_acceso_t').find(`option[value="${value}"]`).prop('selected', true);
+                        }
+                    });
+
                     $('#id_area_acceso_t').select2();
                 },
                 error: function(xhr) {
-                    console.error('Error al obtener sedes:', xhr);
+                    console.error('Error al obtener áreas:', xhr);
+                }
+            });
+        });
+
+
+        let selectedPuestos = [];
+
+        $('#id_area_acceso_t').on('change', function() {
+            const selectedAreas = $(this).val();
+            var url = "{{ route('puestos_por_areas_bi') }}";
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: {
+                    areas: selectedAreas
+                },
+                success: function(response) {
+                    // Guardamos los puestos seleccionados antes de limpiar
+                    selectedPuestos = $('#tipo_acceso_t').val() || [];
+
+                    // Guardar las opciones actuales del select antes de limpiar
+                    const currentOptions = [];
+                    $('#tipo_acceso_t option').each(function() {
+                        currentOptions.push($(this).val());
+                    });
+
+                    // Vaciar el select antes de agregar las nuevas opciones
+                    $('#tipo_acceso_t').empty();
+
+                    // Agregar las nuevas opciones
+                    $.each(response, function(index, puesto) {
+                        $('#tipo_acceso_t').append(
+                            `<option value="${puesto.id_puesto}">${puesto.nom_puesto}</option>`
+                        );
+                    });
+
+                    // Restaurar los puestos seleccionados previamente si siguen disponibles
+                    $.each(selectedPuestos, function(index, value) {
+                        if (currentOptions.includes(value)) {
+                            $('#tipo_acceso_t').find(`option[value="${value}"]`).prop('selected', true);
+                        }
+                    });
+
+                    $('#tipo_acceso_t').select2();
+                },
+                error: function(xhr) {
+                    console.error('Error al obtener puestos:', xhr);
                 }
             });
         });
@@ -732,96 +929,4 @@
         },
         "stripeClasses": [],
     });
-
-
-
-
-    // SUBIR IMAGENES
-    let dropArea = document.getElementById('drop-area');
-    let imageCount = 0;
-    const maxImages = 3;
-
-    // Prevenir el comportamiento predeterminado
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, preventDefaults, false)
-    });
-
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    // Destacar el área de arrastre cuando se arrastra un archivo sobre ella
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropArea.addEventListener(eventName, () => dropArea.classList.add('highlight'), false)
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, () => dropArea.classList.remove('highlight'), false)
-    });
-
-    // Manejar el evento drop
-    dropArea.addEventListener('drop', handleDrop, false);
-
-    function handleDrop(e) {
-        let dt = e.dataTransfer;
-        let files = dt.files;
-        handleFiles(files);
-    }
-
-    function handleFiles(files) {
-        if (imageCount >= maxImages) {
-            alert("Solo puedes subir un máximo de 3 imágenes.");
-            return;
-        }
-
-        let filesArray = Array.from(files);
-        let newImages = filesArray.slice(0, maxImages - imageCount); // Limitar a 3 imágenes
-        imageCount += newImages.length;
-
-        newImages.forEach(previewFile);
-    }
-
-    // Previsualizar las imágenes
-    function previewFile(file) {
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = function() {
-            let imgContainer = document.createElement('div');
-            imgContainer.classList.add('img-preview');
-            imgContainer.style.marginTop = '10px';
-            imgContainer.style.position = 'relative';
-            imgContainer.style.display = 'inline-block';
-            imgContainer.style.marginRight = '10px';
-
-            let img = document.createElement('img');
-            img.src = reader.result;
-            img.style.maxWidth = '220px'; // Aumenta el tamaño máximo
-            img.style.height = 'auto';
-            img.style.border = '1px solid #ccc';
-            img.style.padding = '5px';
-            img.style.cursor = 'pointer'; // Cambia el cursor para indicar que es clickeable
-
-            // SVG para eliminar
-            let deleteButton = document.createElement('button');
-            deleteButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`;
-            deleteButton.style.position = 'absolute';
-            deleteButton.style.top = '5px';
-            deleteButton.style.right = '5px';
-            deleteButton.style.backgroundColor = 'transparent';
-            deleteButton.style.border = 'none';
-            deleteButton.style.cursor = 'pointer';
-
-            // Acción para eliminar la imagen
-            deleteButton.addEventListener('click', function() {
-                imgContainer.remove();
-                imageCount--;
-            });
-
-            // Añadir la imagen y el botón al contenedor
-            imgContainer.appendChild(img);
-            imgContainer.appendChild(deleteButton);
-            document.getElementById('preview').appendChild(imgContainer);
-        }
-    }
 </script>

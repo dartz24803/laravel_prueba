@@ -88,9 +88,21 @@
                                         <option value="2">Propio</option>
                                     </select>
                                 </div>
+
+                                <div class="form-group col-lg-1 agencia" style="display: none;">
+                                    <label class="control-label text-bold">Tipo pago: </label>
+                                </div>
+                                <div class="form-group col-lg-2 agencia" style="display: none;">
+                                    <select class="form-control" name="tipo_pago" id="tipo_pago" onchange="Tipo_Pago();">
+                                        <option value="0">Seleccione</option>
+                                        <option value="1">Si pago</option>
+                                        <option value="2">No pago</option>
+                                        <option value="3">Parcial</option>
+                                    </select>
+                                </div>
                             </div>
     
-                            <div class="row agencia">
+                            <div class="row pagado" style="display: none;">
                                 <div class="form-group col-lg-1">
                                     <label class="control-label text-bold">Nombre de empresa: </label>
                                 </div>
@@ -113,7 +125,7 @@
                                 </div>
                             </div>
     
-                            <div class="row agencia">
+                            <div class="row pagado" style="display: none;">
                                 <div class="form-group col-lg-2">
                                     <label class="control-label text-bold">PDF de factura (pago adelantado): </label>
                                 </div>
@@ -146,8 +158,6 @@
             $("#logisticas").addClass('active');
             $("#hlogisticas").attr('aria-expanded', 'true');
             $("#trackings").addClass('active');
-
-            Tipo_Transporte();
         });
 
         function Limpiar_Ifile(){
@@ -184,6 +194,20 @@
                 $('.agencia').show();
             }else{
                 $('.agencia').hide();
+                $('#tipo_pago').val('0');
+                Tipo_Pago();
+            }
+        }
+
+        function Tipo_Pago() {
+            Cargando();
+
+            var tipo_pago = $('#tipo_pago').val();
+
+            if (tipo_pago=="1" || tipo_pago=="3") {
+                $('.pagado').show();
+            }else{
+                $('.pagado').hide();
                 $('#nombre_transporte').val('');
                 $('#importe_transporte').val('');
                 $('#factura_transporte').val('');
@@ -194,12 +218,12 @@
         function Valida_Factura_Transporte(){
             var archivoInput = document.getElementById('archivo_transporte');
             var archivoRuta = archivoInput.value;
-            var extPermitidas = /(.pdf)$/i;
+            var extPermitidas = /(.pdf|.png|.jpg|.jpeg)$/i;
 
             if(!extPermitidas.exec(archivoRuta)){
                 Swal({
                     title: 'Registro Denegado',
-                    text: "Asegurese de ingresar archivos con extensiones .pdf.",
+                    text: "Asegurese de ingresar archivo con extensión .pdf|.jpg|.png|.jpeg",
                     type: 'error',
                     showCancelButton: false,
                     confirmButtonColor: '#3085d6',

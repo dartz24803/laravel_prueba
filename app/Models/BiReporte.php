@@ -20,6 +20,7 @@ class BiReporte extends Model
         'nom_intranet',
         'actividad',
         'id_area',
+        'id_area_destino',
         'estado_valid',
         'id_usuario',
         'frecuencia_act',
@@ -66,6 +67,7 @@ class BiReporte extends Model
             'indicadores_bi.descripcion',
             'indicadores_bi.idtipo_indicador',
             'indicadores_bi.presentacion',
+            'indicadores_bi.npagina',
             'tipo_indicador.nom_indicador as tipo_indicador_nombre',
             DB::raw("GROUP_CONCAT(tablas_bi.nom_tabla SEPARATOR ', ') as nom_tablas") // Concatenamos los nombres de tablas
         )
@@ -91,6 +93,7 @@ class BiReporte extends Model
                 'acceso_bi_reporte.estado_valid',
                 'indicadores_bi.nom_indicador',
                 'indicadores_bi.descripcion',
+                'indicadores_bi.npagina',
                 'indicadores_bi.idtipo_indicador',
                 'indicadores_bi.presentacion',
                 'tipo_indicador.nom_indicador'
@@ -118,9 +121,13 @@ class BiReporte extends Model
             'acceso_bi_reporte.estado_valid',
             'tablas_bi.nom_tabla',
             'tablas_bi.cod_db',
+            'sistema_tablas.nom_sistema',
+            'sistema_tablas.nom_db',
 
         )
             ->leftJoin('tablas_bi', 'acceso_bi_reporte.id_acceso_bi_reporte', '=', 'tablas_bi.id_acceso_bi_reporte')
+            ->leftJoin('sistema_tablas', 'tablas_bi.cod_db', '=', 'sistema_tablas.cod_db')
+
             ->where('acceso_bi_reporte.estado', 1)
             ->where('acceso_bi_reporte.estado_valid', 1)
             ->groupBy(
@@ -140,6 +147,8 @@ class BiReporte extends Model
                 'acceso_bi_reporte.estado_valid',
                 'tablas_bi.nom_tabla',
                 'tablas_bi.cod_db',
+                'sistema_tablas.nom_sistema',
+                'sistema_tablas.nom_db',
 
             )
             ->orderBy('acceso_bi_reporte.fec_reg', 'ASC')

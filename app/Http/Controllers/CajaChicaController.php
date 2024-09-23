@@ -15,6 +15,7 @@ use GuzzleHttp\Psr7\Request as Psr7Request;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\SubGerencia;
+use App\Models\TipoComprobante;
 use App\Models\TipoPago;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -168,6 +169,112 @@ class CajaChicaController extends Controller
         ]);
     }
 
+    public function create_pv()
+    {
+        $list_ubicacion = Ubicacion::select('id_ubicacion','cod_ubi')->where('estado',1)
+                        ->orderBy('cod_ubi','ASC')->get();
+        $list_empresa = Empresas::select('id_empresa','nom_empresa')->where('activo',1)
+                        ->where('estado',1)->orderBy('nom_empresa','ASC')->get();
+        $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
+        $list_tipo_comprobante = TipoComprobante::all();
+        return view('finanzas.tesoreria.caja_chica.modal_registrar_pv', compact(
+            'list_ubicacion',
+            'list_empresa',
+            'list_tipo_moneda',
+            'list_tipo_comprobante'
+        ));
+    }
+
+    public function traer_categoria_pv(Request $request)
+    {
+        $list_categoria = Categoria::select('id_categoria','nom_categoria')->where('id_categoria_mae',3)
+                        ->where('id_ubicacion',$request->id_ubicacion)->where('nom_categoria','!=','MOVILIDAD')
+                        ->where('estado',1)->get();
+        return view('finanzas.tesoreria.caja_chica.categoria', compact('list_categoria'));
+    }
+
+    public function traer_sub_categoria_pv(Request $request)
+    {
+        $list_sub_categoria = SubCategoria::select('id','nombre')->where('id_categoria',$request->id_categoria)
+                            ->where('estado',1)->get();
+        return view('finanzas.tesoreria.caja_chica.sub_categoria', compact('list_sub_categoria'));
+    }
+
+    public function store_pv(Request $request)
+    {
+        $request->validate([
+            'id_ubicacion' => 'gt:0',
+            'id_categoria' => 'gt:0',
+            'fecha' => 'required',
+            'id_sub_categoria' => 'gt:0',
+            'id_empresa' => 'gt:0',
+            'total' => 'required|gt:0',
+            'n_comprobante' => 'required',
+            'id_tipo_comprobante' => 'gt:0',
+            'punto_partida' => 'required'
+        ], [
+            'id_ubicacion.gt' => 'Debe seleccionar ubicación.',
+            'id_categoria.gt' => 'Debe seleccionar categoría.',
+            'fecha.required' => 'Debe ingresar fecha.',
+            'id_sub_categoria.gt' => 'Debe seleccionar sub-categoría.',
+            'id_empresa.gt' => 'Debe seleccionar empresa.',
+            'total.required' => 'Debe ingresar total.',
+            'total.gt' => 'Debe ingresar total mayor a 0.',
+            'n_comprobante.required' => 'Debe ingresar n° comprobante.',
+            'id_tipo_comprobante.gt' => 'Debe seleccionar tipo comprobante.',
+            'punto_partida.required' => 'Debe ingresar descripción.'
+        ]);
+
+        $comprobante = "";
+        if ($_FILES["comprobante"]["name"] != "") {
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+            if ($con_id && $lr) {
+                $path = $_FILES["comprobante"]["name"];
+                $source_file = $_FILES['comprobante']['tmp_name'];
+
+                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                $nombre_soli = "Comprobante_" . date('YmdHis');
+                $nombre = $nombre_soli . "." . strtolower($ext);
+
+                ftp_pasv($con_id, true);
+                $subio = ftp_put($con_id, "CAJA_CHICA/" . $nombre, $source_file, FTP_BINARY);
+                if ($subio) {
+                    $comprobante = "https://lanumerounocloud.com/intranet/CAJA_CHICA/" . $nombre;
+                } else {
+                    echo "Archivo no subido correctamente";
+                }
+            } else {
+                echo "No se conecto";
+            }
+        }
+
+        CajaChica::create([
+            'id_ubicacion' => $request->id_ubicacion,
+            'id_categoria' => $request->id_categoria,
+            'fecha' => $request->fecha,
+            'id_sub_categoria' => $request->id_sub_categoria,
+            'id_empresa' => $request->id_empresa,
+            'id_tipo_moneda' => $request->id_tipo_moneda,
+            'total' => $request->total,
+            'ruc' => $request->ruc,
+            'razon_social' => $request->razon_social,
+            'n_comprobante' => $request->n_comprobante,
+            'id_tipo_comprobante' => $request->id_tipo_comprobante,
+            'punto_partida' => $request->punto_partida,
+            'comprobante' => $comprobante,
+            'estado_c' => 1,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
     public function edit($id)
     {
         $get_id = CajaChica::findOrFail($id);
@@ -189,7 +296,19 @@ class CajaChicaController extends Controller
                 'list_tipo_moneda'
             ));
         }else{
-
+            $list_categoria = Categoria::select('id_categoria','nom_categoria')->where('id_categoria_mae',3)
+                            ->where('id_ubicacion',$get_id->id_ubicacion)->where('nom_categoria','!=','MOVILIDAD')
+                            ->where('estado',1)->get();
+            $list_tipo_comprobante = TipoComprobante::all();                            
+            return view('finanzas.tesoreria.caja_chica.modal_editar_pv', compact(
+                'get_id',
+                'list_ubicacion',
+                'list_categoria',
+                'list_sub_categoria',
+                'list_empresa',
+                'list_tipo_moneda',
+                'list_tipo_comprobante'
+            ));
         }
     }
 
@@ -290,6 +409,83 @@ class CajaChicaController extends Controller
             'id_tipo_comprobante' => 1,
             'punto_partida' => $request->punto_partidae,
             'punto_llegada' => $request->punto_llegadae,
+            'comprobante' => $comprobante,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function update_pv(Request $request, $id)
+    {
+        $request->validate([
+            'id_ubicacione' => 'gt:0',
+            'id_categoriae' => 'gt:0',
+            'fechae' => 'required',
+            'id_sub_categoriae' => 'gt:0',
+            'id_empresae' => 'gt:0',
+            'totale' => 'required|gt:0',
+            'n_comprobantee' => 'required',
+            'id_tipo_comprobantee' => 'gt:0',
+            'punto_partidae' => 'required'
+        ], [
+            'id_ubicacione.gt' => 'Debe seleccionar ubicación.',
+            'id_categoriae.gt' => 'Debe seleccionar categoría.',
+            'fechae.required' => 'Debe ingresar fecha.',
+            'id_sub_categoriae.gt' => 'Debe seleccionar sub-categoría.',
+            'id_empresae.gt' => 'Debe seleccionar empresa.',
+            'totale.required' => 'Debe ingresar total.',
+            'totale.gt' => 'Debe ingresar total mayor a 0.',
+            'n_comprobantee.required' => 'Debe ingresar n° comprobante.',
+            'id_tipo_comprobantee.gt' => 'Debe seleccionar tipo comprobante.',
+            'punto_partidae.required' => 'Debe ingresar descripción.'
+        ]);
+
+        $get_id = CajaChica::findOrFail($id);
+
+        $comprobante = "";
+        if ($_FILES["comprobantee"]["name"] != "") {
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+            if ($con_id && $lr) {
+                if($get_id->comprobante!=""){
+                    ftp_delete($con_id, "CAJA_CHICA/".basename($get_id->comprobante));
+                }
+
+                $path = $_FILES["comprobantee"]["name"];
+                $source_file = $_FILES['comprobantee']['tmp_name'];
+
+                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                $nombre_soli = "Comprobante_" . date('YmdHis');
+                $nombre = $nombre_soli . "." . strtolower($ext);
+
+                ftp_pasv($con_id, true);
+                $subio = ftp_put($con_id, "CAJA_CHICA/" . $nombre, $source_file, FTP_BINARY);
+                if ($subio) {
+                    $comprobante = "https://lanumerounocloud.com/intranet/CAJA_CHICA/" . $nombre;
+                } else {
+                    echo "Archivo no subido correctamente";
+                }
+            } else {
+                echo "No se conecto";
+            }
+        }
+
+        CajaChica::findOrFail($id)->update([
+            'id_ubicacion' => $request->id_ubicacione,
+            'id_categoria' => $request->id_categoriae,
+            'fecha' => $request->fechae,
+            'id_sub_categoria' => $request->id_sub_categoriae,
+            'id_empresa' => $request->id_empresae,
+            'id_tipo_moneda' => $request->id_tipo_monedae,
+            'total' => $request->totale,
+            'ruc' => $request->ruce,
+            'razon_social' => $request->razon_sociale,
+            'n_comprobante' => $request->n_comprobantee,
+            'id_tipo_comprobante' => $request->id_tipo_comprobantee,
+            'punto_partida' => $request->punto_partidae,
             'comprobante' => $comprobante,
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario

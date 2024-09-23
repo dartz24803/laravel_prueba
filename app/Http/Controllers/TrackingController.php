@@ -26,6 +26,7 @@ use App\Models\TrackingToken;
 use Google\Client as GoogleClient;
 use Illuminate\Support\Facades\DB;
 use App\Models\TrackingEstado;
+use Mpdf\Mpdf;
 
 class TrackingController extends Controller
 {
@@ -119,6 +120,14 @@ class TrackingController extends Controller
             //MENSAJE 1
             //$list_detalle = TrackingGuiaRemisionDetalle::where('n_requerimiento', $tracking->n_requerimiento)->get();
             $list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$tracking->n_requerimiento]);
+
+            $mpdf = new Mpdf([
+                'format' => 'A4',
+                'default_font' => 'Arial'
+            ]);
+            $html = view('logistica.tracking.pdf', compact('get_id','list_detalle'))->render();
+            $mpdf->WriteHTML($html);
+            $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
     
             $mail = new PHPMailer(true);
     
@@ -133,8 +142,6 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                $mail->addAddress('ogutierrez@lanumero1.com.pe');
-                $mail->addAddress('practicante3.procesos@lanumero1.com.pe');
                 $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$tracking->hacia]);
                 foreach($list_td as $list){
                     $mail->addAddress($list->emailp);
@@ -182,6 +189,7 @@ class TrackingController extends Controller
                                 </FONT SIZE>';
             
                 $mail->CharSet = 'UTF-8';
+                $mail->addStringAttachment($pdfContent, 'Guia_Remision.pdf');
                 $mail->send();
     
                 TrackingDetalleEstado::create([
@@ -430,6 +438,14 @@ class TrackingController extends Controller
         //MENSAJE 1
         $list_detalle = TrackingGuiaRemisionDetalle::where('n_guia_remision', $request->n_requerimiento)->get();
 
+        $mpdf = new Mpdf([
+            'format' => 'A4',
+            'default_font' => 'Arial'
+        ]);
+        $html = view('logistica.tracking.pdf', compact('get_id','list_detalle'))->render();
+        $mpdf->WriteHTML($html);
+        $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
+
         $mail = new PHPMailer(true);
 
         try {
@@ -492,6 +508,7 @@ class TrackingController extends Controller
                             </FONT SIZE>';
         
             $mail->CharSet = 'UTF-8';
+            $mail->addStringAttachment($pdfContent, 'Guia_Remision.pdf');
             $mail->send();
 
             TrackingDetalleEstado::create([
@@ -564,12 +581,38 @@ class TrackingController extends Controller
     public function insert_mercaderia_transito(Request $request,$id)
     {
         $request->validate([
+            'guia_transporte' => 'required',
             'peso' => 'required',
-            'transporte' => 'gt:0'
+            'paquetes' => 'required_without_all:sobres,fardos,caja|nullable',
+            'sobres' => 'required_without_all:paquetes,fardos,caja|nullable',
+            'fardos' => 'required_without_all:paquetes,sobres,caja|nullable',
+            'caja' => 'required_without_all:paquetes,sobres,fardos|nullable',
+            'transporte' => 'gt:0',
+            'nombre_transporte' => 'required_if:tipo_pago,1,3',
+            'importe_transporte' => 'required_if:tipo_pago,1,3',
+            'factura_transporte' => 'required_if:tipo_pago,1,3',
+            'archivo_transporte' => 'required_if:tipo_pago,1,3',
         ],[
+            'guia_transporte.required' => 'Debe ingresar nro. gr transporte.',
             'peso.required' => 'Debe ingresar peso.',
+            'required_without_all' => 'Debe ingresar paquetes o sobres o fardos o caja.',
             'transporte.gt' => 'Debe seleccionar transporte.',
+            'nombre_transporte.required_if' => 'Debe ingresar nombre de empresa.',
+            'importe_transporte.required_if' => 'Debe ingresar importe a pagar.',
+            'factura_transporte.required_if' => 'Debe ingresar n° factura.',
+            'archivo_transporte.required_if' => 'Debe ingresar PDF de factura.'
         ]);
+
+        $errors = [];
+        if ($request->transporte=="1" && $request->tipo_pago=="0") {
+            $errors['tipo_pago'] = ['Debe seleccionar tipo pago.'];
+        }
+        if (($request->tipo_pago=="1" || $request->tipo_pago=="3") && $request->importe_transporte=="0") {
+            $errors['importe_transporte'] = ['Debe ingresar importe a pagar mayor a 0.'];
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
 
         Tracking::findOrFail($id)->update([
             'guia_transporte' => $request->guia_transporte,
@@ -579,6 +622,7 @@ class TrackingController extends Controller
             'fardos' => $request->fardos,
             'caja' => $request->caja,
             'transporte' => $request->transporte,
+            'tipo_pago' => $request->tipo_pago,
             'nombre_transporte' => $request->nombre_transporte,
             'importe_transporte' => $request->importe_transporte,
             'factura_transporte' => $request->factura_transporte,
@@ -838,7 +882,7 @@ class TrackingController extends Controller
     {
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
-        if($get_id->transporte==2 || ($get_id->transporte==1 && $get_id->importe_transporte>0)){
+        if($get_id->transporte=="2" || ($get_id->transporte=="1" && $get_id->tipo_pago=="1")){
             //ALERTA 5 (SI)
             $list_token = TrackingToken::whereIn('base', ['CD'])->get();
             foreach($list_token as $token){
@@ -1037,6 +1081,22 @@ class TrackingController extends Controller
 
     public function insert_reporte_inspeccion_fardo(Request $request)
     {
+        $request->validate([
+            'observacion_inspf' => 'required'
+        ],[
+            'observacion_inspf.required' => 'Debe ingresar observación.'
+        ]);
+
+        $list_temporal = TrackingArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
+                        ->where('tipo',2)->count();
+        $errors = [];
+        if ($_FILES["archivo_inspf"]["name"]=="" && $list_temporal==0) {
+            $errors['archivo'] = ['Debe adjuntar o capturar con la cámara la evidencia.'];
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
         Tracking::findOrFail($request->id)->update([
             'observacion_inspf' => $request->observacion_inspf,
             'fec_act' => now(),
@@ -1217,25 +1277,60 @@ class TrackingController extends Controller
 
     public function insert_confirmacion_pago_transporte(Request $request, $id)
     {
-        $request->validate([
-            'nombre_transporte' => 'required',
-            'importe_transporte' => 'gt:0',
-            'factura_transporte' => 'required',
-            'archivo_transporte' => 'required_without:archivo_transporte_actual',
-        ],[
-            'nombre_transporte.required' => 'Debe ingresar nombre de empresa.',
-            'importe_transporte.gt' => 'Debe ingresar importe a pagar.',
-            'factura_transporte.required' => 'Debe ingresar n° de factura.',
-            'archivo_transporte.required_without' => 'Debe ingresar PDF de factura.',
-        ]);
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
+        
+        if($get_id->tipo_pago=="3"){
+            $request->validate([
+                'importe_transporte_2' => 'required|gt:0',
+                'factura_transporte_2' => 'required'
+            ],[
+                'importe_transporte_2.required' => 'Debe ingresar segundo importe.',
+                'importe_transporte_2.gt' => 'Debe ingresar segundo importe mayor a 0.',
+                'factura_transporte_2.required' => 'Debe ingresar n° de factura.'
+            ]);
 
-        Tracking::findOrFail($id)->update([
-            'nombre_transporte' => $request->nombre_transporte,
-            'importe_transporte' => $request->importe_transporte,
-            'factura_transporte' => $request->factura_transporte,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
+            $errors = [];
+            if ($_FILES["archivo_transporte"]["name"]=="" && $request->captura=="0") {
+                $errors['archivo'] = ['Debe adjuntar o capturar con la cámara la factura.'];
+            }
+            if (!empty($errors)) {
+                return response()->json(['errors' => $errors], 422);
+            }
+
+            Tracking::findOrFail($id)->update([
+                'importe_transporte_2' => $request->importe_transporte_2,
+                'factura_transporte_2' => $request->factura_transporte_2,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }else{
+            $request->validate([
+                'nombre_transporte' => 'required',
+                'importe_transporte' => 'required|gt:0',
+                'factura_transporte' => 'required'
+            ],[
+                'nombre_transporte.required' => 'Debe ingresar nombre de empresa.',
+                'importe_transporte.required' => 'Debe ingresar importe a pagar.',
+                'importe_transporte.gt' => 'Debe ingresar importe a pagar mayor a 0.',
+                'factura_transporte.required' => 'Debe ingresar n° de factura.'
+            ]);
+
+            $errors = [];
+            if ($_FILES["archivo_transporte"]["name"]=="" && $request->captura=="0") {
+                $errors['archivo'] = ['Debe adjuntar o capturar con la cámara la factura.'];
+            }
+            if (!empty($errors)) {
+                return response()->json(['errors' => $errors], 422);
+            }
+    
+            Tracking::findOrFail($id)->update([
+                'nombre_transporte' => $request->nombre_transporte,
+                'importe_transporte' => $request->importe_transporte,
+                'factura_transporte' => $request->factura_transporte,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
 
         if($_FILES["archivo_transporte"]["name"] != ""){
             $ftp_server = "lanumerounocloud.com";
@@ -1244,15 +1339,6 @@ class TrackingController extends Controller
             $con_id = ftp_connect($ftp_server);
             $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
             if($con_id && $lr){
-                //ELIMINAR ARCHIVO SI ES QUE EXISTE
-                if($request->archivo_transporte_actual!=""){
-                    $get_id = TrackingArchivo::get_list_tracking_archivo(['id_tracking'=>$id,'tipo'=>1]);
-                    $file_to_delete = "TRACKING/".$get_id->nom_archivo;
-                    if (ftp_delete($con_id, $file_to_delete)) {
-                        TrackingArchivo::where('id_tracking', $id)->where('tipo', 1)->delete();
-                    }
-                }
-                //
                 $path = $_FILES["archivo_transporte"]["name"];
                 $source_file = $_FILES['archivo_transporte']['tmp_name'];
 
@@ -1300,8 +1386,6 @@ class TrackingController extends Controller
         }
 
         //ALERTA 6
-        $get_id = Tracking::get_list_tracking(['id'=>$id]);
-
         $list_token = TrackingToken::whereIn('base', ['CD'])->get();
         foreach($list_token as $token){
             $dato = [
@@ -1880,6 +1964,16 @@ class TrackingController extends Controller
             'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
         ]);
 
+        $list_temporal = TrackingArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
+                        ->where('tipo',3)->where('id_producto',$id)->count();
+        $errors = [];
+        if ($list_temporal==0) {
+            $errors['archivo'] = ['Debe capturar con la cámara la evidencia.'];
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
         $get_producto = TrackingGuiaRemisionDetalle::findOrFail($id);
 
         if($get_producto->cantidad>=$request->cantidad){
@@ -2052,7 +2146,12 @@ class TrackingController extends Controller
                                                         ->join('tracking_guia_remision_detalle','tracking_guia_remision_detalle.id','=','tracking_devolucion.id_producto')
                                                         ->where('tracking_devolucion.id_tracking',$id)
                                                         ->where('tracking_devolucion.estado',1)->get();
-                return view('logistica.tracking.evaluacion_devolucion', compact('list_notificacion','get_id','list_devolucion'));
+                return view('logistica.tracking.evaluacion_devolucion', compact(
+                    'list_notificacion',
+                    'list_subgerencia',
+                    'get_id',
+                    'list_devolucion'
+                ));
             }else{
                 $list_mercaderia_nueva = MercaderiaSurtida::where('anio',date('Y'))->where('semana',date('W'))->exists();
                 return view('logistica.tracking.index', compact('list_notificacion','list_subgerencia','list_mercaderia_nueva'));
@@ -2084,6 +2183,8 @@ class TrackingController extends Controller
             'forma_proceder.required' => 'Debe ingresar forma de proceder.',
         ]);
 
+        TrackingEvaluacionTemporal::where('id_usuario',session('usuario')->id_usuario)
+        ->where('id_devolucion',$id)->delete();
         TrackingEvaluacionTemporal::create([
             'id_usuario' => session('usuario')->id_usuario,
             'id_devolucion' => $id,
@@ -2208,7 +2309,7 @@ class TrackingController extends Controller
                     'id_tracking' => $id,
                     'token' => $token->token,
                     'titulo' => 'CIERRE DE INCONFORMIDADES DE DEVOLUCIÓN',
-                    'contenido' => 'Hola '.$get_id->hacia.', revisar respuesta de la solicitud de la devolución para el Nro. Req',
+                    'contenido' => 'Hola, '.$get_id->desde.' - '.$get_id->hacia.' revisar respuesta de la solicitud de la devolución para el Nro. Req',
                 ];
                 $this->sendNotification($dato);
             }

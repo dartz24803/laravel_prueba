@@ -27,7 +27,8 @@
                             session('usuario')->id_nivel==1 ||
                             session('usuario')->id_puesto==19 ||
                             session('usuario')->id_puesto==22 ||
-                            session('usuario')->id_puesto==209)
+                            session('usuario')->id_puesto==209 ||
+                            session('usuario')->id_puesto==277)
                             <li class="nav-item">
                                 <a id="a_man" class="nav-link" onclick="Manual();" style="cursor: pointer;">Manual</a>
                             </li>

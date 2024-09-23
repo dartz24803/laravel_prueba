@@ -346,8 +346,6 @@ class BiReporteController extends Controller
         return response()->json($puestos);
     }
 
-
-
     public function store_ra(Request $request)
     {
         // Validar los datos del formulario
@@ -378,25 +376,86 @@ class BiReporteController extends Controller
         );
         // Guardar los datos en la tabla portal_procesos_historial
         $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
-        $biReporte = BiReporte::create([
-            'nom_bi' => $request->nombi ?? '',
-            'nom_intranet' => $request->nomintranet ?? '',
-            'actividad' => $request->actividad_bi ?? '',
-            'acceso_todo' => $accesoTodo,
-            'id_area' => $request->areass ?? 0,
-            'id_usuario' => $request->solicitante ?? 0,
-            'frecuencia_act' => $request->frec_actualizacion ?? 1,
-            'objetivo' => $request->objetivo ?? '',
-            'iframe' => $iframeModificado,
-            'estado' => 1,
-            'estado_valid' => 0,
-            'fec_reg' => $request->fec_reg ? date('Y-m-d H:i:s', strtotime($request->fec_reg)) : now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => $request->fec_reg ? date('Y-m-d H:i:s', strtotime($request->fec_reg)) : now(),
-            'user_act' => session('usuario')->id_usuario,
-            'fec_valid' => $request->fec_valid ? date('Y-m-d H:i:s', strtotime($request->fec_valid)) : now(),
 
-        ]);
+
+
+        $sessionUserId = session('usuario')->id_usuario;
+        // Configuración FTP
+        $ftp_server = "lanumerounocloud.com";
+        $ftp_usuario = "intranet@lanumerounocloud.com";
+        $ftp_pass = "Intranet2022@";
+
+        // Conectar al servidor FTP
+        $con_id = ftp_connect($ftp_server);
+        $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+
+        if ($con_id && $lr) {
+            // Habilitar el modo pasivo FTP
+            ftp_pasv($con_id, true);
+
+            // Definir función para subir un archivo
+            function uploadFile($fileKey, $biReporteId, $sessionUserId, $con_id)
+            {
+                if ($_FILES[$fileKey]["name"] != "") {
+                    $path = $_FILES[$fileKey]["name"];
+                    $source_file = $_FILES[$fileKey]['tmp_name'];
+
+                    // Obtener extensión del archivo
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $randomDigits = rand(100, 999);
+                    // Crear el nombre del archivo
+                    $nombre_soli = "temporal_" . $biReporteId . "_" . $sessionUserId . "_" . $randomDigits;
+                    $nombre = $nombre_soli . "." . strtolower($ext);
+
+                    // Subir archivo al servidor FTP
+                    $subio = ftp_put($con_id, "REPORTE_BI/" . $nombre, $source_file, FTP_BINARY);
+                    if ($subio) {
+                        return $nombre; // Devolver el nombre del archivo si la subida fue exitosa
+                    } else {
+                        echo "Archivo $fileKey no subido correctamente";
+                        return null;
+                    }
+                }
+                return null;
+            }
+
+            // Subir los archivos
+            $img1 = uploadFile('archivo_base_1', $request->nombi, $sessionUserId, $con_id);
+            $img2 = uploadFile('archivo_base_2', $request->nombi, $sessionUserId, $con_id);
+            $img3 = uploadFile('archivo_base_3', $request->nombi, $sessionUserId, $con_id);
+
+            // Verificar si al menos un archivo fue subido
+            // if ($img1 || $img2 || $img3) {
+            // Crear el registro en la base de datos
+            $biReporte = BiReporte::create([
+                'nom_bi' => $request->nombi ?? '',
+                'nom_intranet' => $request->nomintranet ?? '',
+                'actividad' => $request->actividad_bi ?? '',
+                'acceso_todo' => $accesoTodo,
+                'img1' => $img1 ?? '',
+                'img2' => $img2 ?? '',
+                'img3' => $img3 ?? '',
+                'id_area' => $request->areass ?? 0,
+                'id_area_destino' => $request->areasd ?? 0,
+                'id_usuario' => $request->solicitante ?? 0,
+                'frecuencia_act' => $request->frec_actualizacion ?? 1,
+                'objetivo' => $request->objetivo ?? '',
+                'iframe' => $iframeModificado,
+                'estado' => 1,
+                'estado_valid' => 0,
+                'fec_reg' => $request->fec_reg ? date('Y-m-d H:i:s', strtotime($request->fec_reg)) : now(),
+                'user_reg' => $sessionUserId,
+                'fec_act' => $request->fec_reg ? date('Y-m-d H:i:s', strtotime($request->fec_reg)) : now(),
+                'user_act' => $sessionUserId,
+                'fec_valid' => $request->fec_valid ? date('Y-m-d H:i:s', strtotime($request->fec_valid)) : now(),
+            ]);
+            // } else {
+            //     echo "No se subió ningún archivo.";
+            // }
+        } else {
+            echo "No se conectó al servidor FTP";
+        }
+        // dd($biReporte->id_acceso_bi_reporte);
 
         // Obtener el ID del nuevo registro en bi_reportes
         $biReporteId = $biReporte->id_acceso_bi_reporte;
@@ -458,6 +517,8 @@ class BiReporteController extends Controller
             ]);
         }
 
+
+
         // Redirigir o devolver respuesta
         return redirect()->back()->with('success', 'Reporte registrado con éxito.');
     }
@@ -465,6 +526,7 @@ class BiReporteController extends Controller
 
     public function update_ra(Request $request, $id)
     {
+
         // Validar los datos del formulario
         $request->validate([
             'nombi' => 'required',
@@ -494,6 +556,7 @@ class BiReporteController extends Controller
             'actividad' => $request->actividad_bi,
             'acceso_todo' => $accesoTodo,
             'id_area' => $request->areasse,
+            'id_area_destino' => $request->areassd,
             'id_usuario' => $request->solicitantee,
             'frecuencia_act' => $request->frec_actualizacion,
             'objetivo' => $request->objetivo,
@@ -625,9 +688,13 @@ class BiReporteController extends Controller
             ->orderBy('nom_indicador', 'ASC')
             ->distinct('nom_indicador')->get();
 
-        $list_colaborador = Usuario::get_list_colaborador_usuario([
-            'id_usuario' => $id_usuario // Filtro por id_usuario
-        ]);
+        $list_colaborador = Usuario::select('id_usuario', 'usuario_apater', 'usuario_amater', 'usuario_nombres')
+            ->where('estado', 1)
+            ->where('id_nivel', '!=', 8)
+            ->get();
+        // $list_colaborador = Usuario::get_list_colaborador_usuario([
+        //     'id_usuario' => $id_usuario // Filtro por id_usuario
+        // ]);
 
         $list_sistemas = SistemaTablas::select('id_sistema_tablas', 'cod_sistema', 'nom_sistema')
             ->where('estado', 1)
@@ -1282,5 +1349,33 @@ class BiReporteController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+    }
+
+    public function image_ra($id)
+    {
+        $get_id = BiReporte::where('id_acceso_bi_reporte', $id)->firstOrFail();
+
+        // Construye un array con las URLs de las imágenes y sus nombres
+        $imageUrls = [];
+        if ($get_id->img1) {
+            $imageUrls[] = [
+                'url' => "https://lanumerounocloud.com/intranet/REPORTE_BI/" . $get_id->img1,
+                'name' => 'Imagen 1: ' . $get_id->img1 // Nombre de la imagen
+            ];
+        }
+        if ($get_id->img2) {
+            $imageUrls[] = [
+                'url' => "https://lanumerounocloud.com/intranet/REPORTE_BI/" . $get_id->img2,
+                'name' => 'Imagen 2: ' . $get_id->img2 // Nombre de la imagen
+            ];
+        }
+        if ($get_id->img3) {
+            $imageUrls[] = [
+                'url' => "https://lanumerounocloud.com/intranet/REPORTE_BI/" . $get_id->img3,
+                'name' => 'Imagen 3: ' . $get_id->img3 // Nombre de la imagen
+            ];
+        }
+
+        return view('interna.bi.reportes.registroacceso_reportes.modal_imagen', compact('get_id', 'imageUrls'));
     }
 }

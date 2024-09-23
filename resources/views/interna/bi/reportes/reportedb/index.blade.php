@@ -91,16 +91,11 @@
             <label class="toggle-label" for="toggle-obj"></label>
             <span class="ml-5">Objetivo</span>
         </div>
-        <!-- <div class="toggle-switch">
+        <div class="toggle-switch">
             <input class="toggle-input" id="toggle-desc" type="checkbox" checked>
             <label class="toggle-label" for="toggle-desc"></label>
             <span class="ml-5">Descripción</span>
         </div>
-        <div class="toggle-switch">
-            <input class="toggle-input" id="toggle-pre" type="checkbox" checked>
-            <label class="toggle-label" for="toggle-pre"></label>
-            <span class="ml-5">Presentación</span>
-        </div> -->
         <div class="toggle-switch">
             <input class="toggle-input" id="toggle-acce" type="checkbox" checked>
             <label class="toggle-label" for="toggle-acce"></label>
