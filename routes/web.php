@@ -893,6 +893,7 @@ Route::controller(ColaboradorController::class)->group(function () {
     Route::get('colaborador_ce/{id}/pdf_perfil', 'pdf_perfil_co')->name('colaborador_ce.pdf_perfil');
     Route::get('colaborador_ce/{id_gerencia}/excel', 'excel_ce')->name('colaborador_ce.excel');
     Route::get('ColaboradorController/Mi_Perfil/{id}', 'Mi_Perfil');
+    Route::get('ColaboradorController/Perfil/{id}', 'Perfil');
 });
 //ÁREA INTERNA
 Route::controller(InternaInicioController::class)->group(function () {

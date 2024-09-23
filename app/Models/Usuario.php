@@ -60,12 +60,14 @@ class Usuario extends Model
         CASE WHEN u.urladm=1 THEN (select r.url_config from config r where r.descrip_config='Foto_Postulante'
         and r.estado=1) else (select r.url_config from config r where r.descrip_config='Foto_colaborador'
         and r.estado=1) end as url_foto,p.id_nivel as nivel_jerarquico,u.desvinculacion,u.id_cargo,
-        pps.registro_masivo, visualizar_amonestacion(u.id_puesto) AS visualizar_amonestacion
+        pps.registro_masivo, visualizar_amonestacion(u.id_puesto) AS visualizar_amonestacion,
+        sl.descripcion AS sede_laboral
         FROM users u
         LEFT JOIN permiso_papeletas_salida pps ON u.id_puesto=pps.id_puesto_jefe AND pps.estado=1
         LEFT JOIN nivel n ON u.id_nivel=n.id_nivel
         LEFT JOIN puesto p ON u.id_puesto=p.id_puesto
         LEFT JOIN area a ON u.id_area=a.id_area
+        LEFT JOIN sede_laboral sl ON p.id_sede_laboral=sl.id
         WHERE u.usuario_codigo='$usuario' AND u.estado IN (1,4) AND u.desvinculacion IN (0)";
         $result = DB::select($query);
         return $result;
