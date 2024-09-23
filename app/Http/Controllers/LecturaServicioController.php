@@ -89,11 +89,11 @@ class LecturaServicioController extends Controller
 
     public function store_reg(Request $request)
     {
-        /*VARIA SEGÚN SI ES LECTURA O GESTIÓN, 
-        Si es Gestión se manda $request->cod_base sino se pone el centro_labores del usuario que va 
+        /*VARIA SEGÚN SI ES LECTURA O GESTIÓN,
+        Si es Gestión se manda $request->cod_base sino se pone el centro_labores del usuario que va
         registrar*/
         if ($request->cod_base) {
-            $fecha = $request->fecha;
+            $fecha = $request->date_input;
             $cod_base = $request->cod_base;
         } else {
             $fecha = date('Y-m-d');
@@ -182,9 +182,9 @@ class LecturaServicioController extends Controller
                 }
             }
             LecturaServicio::create([
-                'fecha' => $request->date_input,
+                // 'fecha' => $request->date_input,
                 'cod_base' => $cod_base,
-                // 'fecha' => $fecha,
+                'fecha' => $fecha,
                 'hora_ing' => $request->hora_ing,
                 'lect_ing' => $request->lect_ing,
                 'img_ing' => $archivo,
@@ -201,8 +201,8 @@ class LecturaServicioController extends Controller
 
     public function store_directo_reg(Request $request)
     {
-        /*VARIA SEGÚN SI ES LECTURA O GESTIÓN, 
-        Si es Gestión se manda $request->cod_base sino se pone el centro_labores del usuario que va 
+        /*VARIA SEGÚN SI ES LECTURA O GESTIÓN,
+        Si es Gestión se manda $request->cod_base sino se pone el centro_labores del usuario que va
         registrar*/
         if ($request->cod_base) {
             $fecha = $request->fecha;

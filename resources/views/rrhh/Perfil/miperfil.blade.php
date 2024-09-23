@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-
+<link rel="stylesheet" href="{{ asset('template\assets\css\users\user-profile.css')}}">
  <!--  BEGIN CONTENT AREA  -->
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
@@ -16,7 +16,7 @@
                         <div class="d-flex justify-content-between">
                             <h3 class="">Perfil</h3>
                             <?php if(session('usuario')->id_nivel=="1" || session('usuario')->id_nivel=="2"){ ?>
-                                <a type="button" class="btn btn-primary mt-2" href="<?= url('Recursos_Humanos/Colaborador') ?>">Regresar</a>
+                                <a type="button" class="btn btn-primary mt-2" href="<?= url('colaborador') ?>">Regresar</a>
                             <?php } ?>
                             <a href="<?= url('Corporacion/Perfil') ?>/<?php echo $usuario[0]['id_usuario']; ?>" class="mt-2 edit-profile"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-3"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></a>
                         </div>
@@ -248,7 +248,11 @@
     </div>
 </div>
 <!--  END CONTENT AREA  -->
-
+<style>
+    .widget-content-area{
+        padding: 20px !important;
+    }
+</style>
 <script>
     $(document).ready(function() {
         $("#usuario").addClass('active');

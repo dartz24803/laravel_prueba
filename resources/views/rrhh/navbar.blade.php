@@ -186,4 +186,36 @@
             </a>
         </li>
     </ul>
+
+</li>
+<li class="menu menu-heading">
+    <div class="heading">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle">
+            <circle cx="12" cy="12" r="10"></circle>
+        </svg>
+        <span>PERFIL</span>
+    </div>
+</li>
+<li class="menu" id="usuario">
+    <a href="#users" id="husuario" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+        <div class="">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span>Datos Personales</span>
+        </div>
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </div>
+    </a>
+    <ul class="collapse submenu list-unstyled" id="users" data-parent="#accordionExample">
+        <li id="upersonales">
+            <a href="{{ url('ColaboradorController/Perfil') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Datos Personales</p>
+            </a>
+        </li>
+    </ul>
 </li>
