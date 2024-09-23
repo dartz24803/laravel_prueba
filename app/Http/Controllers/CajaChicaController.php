@@ -363,7 +363,7 @@ class CajaChicaController extends Controller
 
         $get_id = CajaChica::findOrFail($id);
 
-        $comprobante = "";
+        $comprobante = $get_id->comprobante;
         if ($_FILES["comprobantee"]["name"] != "") {
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
@@ -443,7 +443,7 @@ class CajaChicaController extends Controller
 
         $get_id = CajaChica::findOrFail($id);
 
-        $comprobante = "";
+        $comprobante = $get_id->comprobante;
         if ($_FILES["comprobantee"]["name"] != "") {
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
