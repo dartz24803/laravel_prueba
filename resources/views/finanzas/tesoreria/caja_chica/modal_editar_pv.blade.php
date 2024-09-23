@@ -145,8 +145,7 @@
             </div>
             <div class="form-group col-lg-4">
                 <input type="text" class="form-control" name="n_comprobantee" id="n_comprobantee" 
-                placeholder="N° comprobante" onkeypress="return solo_Numeros(event);" onpaste="return false;"
-                value="{{ $get_id->n_comprobante }}">
+                placeholder="N° comprobante" value="{{ $get_id->n_comprobante }}">
             </div>
 
             <div class="form-group col-lg-2">

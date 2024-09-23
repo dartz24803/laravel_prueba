@@ -122,7 +122,7 @@
             </div>
             <div class="form-group col-lg-4">
                 <input type="text" class="form-control" name="n_comprobante" id="n_comprobante" 
-                placeholder="N° comprobante" onkeypress="return solo_Numeros(event);" onpaste="return false;">
+                placeholder="N° comprobante">
             </div>
 
             <div class="form-group col-lg-2">
