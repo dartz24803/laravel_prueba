@@ -67,7 +67,8 @@
                 <label>Fecha pago:</label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="date" class="form-control" name="fecha_pagov" id="fecha_pagov" value="{{ date('Y-m-d') }}">
+                <input type="date" class="form-control" name="fecha_pagov" id="fecha_pagov" 
+                value="{{ date('Y-m-d') }}">
             </div>
         </div>
 

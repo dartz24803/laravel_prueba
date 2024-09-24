@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CajaChica;
+use App\Models\CajaChicaPago;
 use App\Models\CajaChicaPagoTemporal;
 use App\Models\Categoria;
 use App\Models\Empresas;
@@ -543,41 +544,55 @@ class CajaChicaController extends Controller
     public function validar_mo(Request $request, $id)
     {
         $request->validate([
-            'id_pagov' => 'gt:0',
             'id_tipo_pagov' => 'gt:0',
             'fecha_pagov' => 'required'
         ], [
-            'id_pagov.gt' => 'Debe seleccionar pago.',
             'id_tipo_pagov.gt' => 'Debe seleccionar tipo pago.',
             'fecha_pagov.required' => 'Debe ingresar fecha de pago.'
         ]);
 
         CajaChica::findOrFail($id)->update([
-            'id_pago' => $request->id_pagov,
+            'id_pago' => 1,
             'id_tipo_pago' => $request->id_tipo_pagov,
             'cuenta_1' => $request->cuenta_1v,
             'cuenta_2' => $request->cuenta_2v,
-            'fecha_pago' => $request->fecha_pagov,
             'estado_c' => 2,
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
+        ]);
+
+        $get_id = CajaChica::findOrFail($id);
+        CajaChicaPago::create([
+            'id_caja_chica' => $id,
+            'fecha' => $request->fecha_pagov,
+            'monto' => $get_id->total
         ]);
     }
 
     public function validar_pv(Request $request, $id)
     {
-        $request->validate([
-            'id_pagov' => 'gt:0',
-            'id_tipo_pagov' => 'gt:0'
-        ], [
-            'id_pagov.gt' => 'Debe seleccionar pago.',
-            'id_tipo_pagov.gt' => 'Debe seleccionar tipo pago.'
-        ]);
+        if($request->id_pagov=="1"){
+            $request->validate([
+                'id_pagov' => 'gt:0',
+                'id_tipo_pagov' => 'gt:0',
+                'fecha_pagov' => 'required'
+            ], [
+                'id_pagov.gt' => 'Debe seleccionar pago.',
+                'id_tipo_pagov.gt' => 'Debe seleccionar tipo pago.',
+                'fecha_pagov.required' => 'Debe ingresar fecha de pago.'
+            ]);
+        }
+        if($request->id_pagov=="2"){
+            $request->validate([
+                'id_pagov' => 'gt:0',
+                'id_tipo_pagov' => 'gt:0'
+            ], [
+                'id_pagov.gt' => 'Debe seleccionar pago.',
+                'id_tipo_pagov.gt' => 'Debe seleccionar tipo pago.'
+            ]);
+        }
 
         $errors = [];
-        if($request->id_pagov=="1"){
-            $errors['fecha_pagov'] = ['Debe ingresar fecha de pago.'];
-        }
         if($request->id_pagov=="2"){
             $get_id = CajaChica::findOrFail($id);
             $suma = CajaChicaPagoTemporal::where('id_usuario',session('usuario')->id_usuario)->sum('monto');
@@ -594,12 +609,19 @@ class CajaChicaController extends Controller
             'id_tipo_pago' => $request->id_tipo_pagov,
             'cuenta_1' => $request->cuenta_1v,
             'cuenta_2' => $request->cuenta_2v,
-            'fecha_pago' => $request->fecha_pagov,
             'estado_c' => 2,
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
 
+        if($request->id_pagov=="1"){
+            $get_id = CajaChica::findOrFail($id);
+            CajaChicaPago::create([
+                'id_caja_chica' => $id,
+                'fecha' => $request->fecha_pagov,
+                'monto' => $get_id->total
+            ]);
+        }
         if($request->id_pagov=="2"){
             DB::statement('INSERT INTO caja_chica_pago (id_caja_chica,fecha,monto)
             SELECT '.$id.',fecha,monto
