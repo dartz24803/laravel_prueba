@@ -404,7 +404,7 @@ class BiReporteController extends Controller
                     $ext = pathinfo($path, PATHINFO_EXTENSION);
                     $randomDigits = rand(100, 999);
                     // Crear el nombre del archivo
-                    $nombre_soli = "temporal_" . $biReporteId . "_" . $sessionUserId . "_" . $randomDigits;
+                    $nombre_soli =  $biReporteId . "_" . $sessionUserId . "_" . $randomDigits;
                     $nombre = $nombre_soli . "." . strtolower($ext);
 
                     // Subir archivo al servidor FTP
@@ -449,13 +449,9 @@ class BiReporteController extends Controller
                 'user_act' => $sessionUserId,
                 'fec_valid' => $request->fec_valid ? date('Y-m-d H:i:s', strtotime($request->fec_valid)) : now(),
             ]);
-            // } else {
-            //     echo "No se subió ningún archivo.";
-            // }
         } else {
             echo "No se conectó al servidor FTP";
         }
-        // dd($biReporte->id_acceso_bi_reporte);
 
         // Obtener el ID del nuevo registro en bi_reportes
         $biReporteId = $biReporte->id_acceso_bi_reporte;
@@ -549,24 +545,91 @@ class BiReporteController extends Controller
         // dd($biReporte);
         // Actualizar los datos en la tabla
         $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
-        // dd($request->areasse);
-        $biReporte->update([
-            'nom_bi' => $request->nombi,
-            'nom_intranet' => $request->nomintranet,
-            'actividad' => $request->actividad_bi,
-            'acceso_todo' => $accesoTodo,
-            'id_area' => $request->areasse,
-            'id_area_destino' => $request->areassd,
-            'id_usuario' => $request->solicitantee,
-            'frecuencia_act' => $request->frec_actualizacion,
-            'objetivo' => $request->objetivo,
-            'iframe' => $request->iframe,
-            'estado' => 1,
-            'estado_valid' => 0,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario,
-            'fec_valid' => $request->fec_valid ? date('Y-m-d H:i:s', strtotime($request->fec_valid)) : now(),
-        ]);
+
+
+        // Configuración FTP
+        $ftp_server = "lanumerounocloud.com";
+        $ftp_usuario = "intranet@lanumerounocloud.com";
+        $ftp_pass = "Intranet2022@";
+        $con_id = ftp_connect($ftp_server);
+        $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+
+        if ($con_id && $lr) {
+            // Habilitar el modo pasivo FTP
+            ftp_pasv($con_id, true);
+
+            // Definir función para subir un archivo
+            function uploadFile($fileKey, $biReporteId, $sessionUserId, $con_id)
+            {
+                if ($_FILES[$fileKey]["name"] != "") {
+                    $path = $_FILES[$fileKey]["name"];
+                    $source_file = $_FILES[$fileKey]['tmp_name'];
+
+                    // Obtener extensión del archivo
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $randomDigits = rand(100, 999);
+                    // Crear el nombre del archivo
+                    $nombre_soli =  $biReporteId . "_" . $sessionUserId . "_" . $randomDigits;
+                    $nombre = $nombre_soli . "." . strtolower($ext);
+
+                    // Subir archivo al servidor FTP
+                    $subio = ftp_put($con_id, "REPORTE_BI/" . $nombre, $source_file, FTP_BINARY);
+                    if ($subio) {
+                        return $nombre; // Devolver el nombre del archivo si la subida fue exitosa
+                    } else {
+                        echo "Archivo $fileKey no subido correctamente";
+                        return null;
+                    }
+                }
+                return null;
+            }
+
+            $sessionUserId = session('usuario')->id_usuario;
+
+            // Subir los archivos
+            $img1 = uploadFile('archivo_basee_1', $request->nombi, $sessionUserId, $con_id);
+            $img2 = uploadFile('archivo_basee_2', $request->nombi, $sessionUserId, $con_id);
+            $img3 = uploadFile('archivo_basee_3', $request->nombi, $sessionUserId, $con_id);
+
+            // Crear un array de actualización que solo incluya las imágenes que fueron subidas
+            $updateData = [
+                'nom_bi' => $request->nombi,
+                'nom_intranet' => $request->nomintranet,
+                'actividad' => $request->actividad_bi,
+                'acceso_todo' => $accesoTodo,
+                'id_area' => $request->areasse,
+                'id_area_destino' => $request->areassd,
+                'id_usuario' => $request->solicitantee,
+                'frecuencia_act' => $request->frec_actualizacion,
+                'objetivo' => $request->objetivo,
+                'iframe' => $request->iframe,
+                'estado' => 1,
+                'estado_valid' => 0,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+                'fec_valid' => $request->fec_valid ? date('Y-m-d H:i:s', strtotime($request->fec_valid)) : now(),
+            ];
+
+            // Solo actualiza img1 si se ha subido una nueva imagen
+            if ($img1) {
+                $updateData['img1'] = $img1;
+            }
+
+            // Solo actualiza img2 si se ha subido una nueva imagen
+            if ($img2) {
+                $updateData['img2'] = $img2;
+            }
+
+            // Solo actualiza img3 si se ha subido una nueva imagen
+            if ($img3) {
+                $updateData['img3'] = $img3;
+            }
+
+            // Actualizar el registro en la base de datos una sola vez
+            $biReporte->update($updateData);
+        } else {
+            echo "No se conectó al servidor FTP";
+        }
 
         // Actualizar indicadores
         if ($request->has('indicador')) {
@@ -611,7 +674,7 @@ class BiReporteController extends Controller
                         'estado' => 1,
                         'nom_tabla' => $tablabi,
                         'cod_sistema' => $request->sistemas[$key],
-                        'cod_db' => $request->db[$key],
+                        'cod_db' => $request->dbe[$key],
                         'fec_reg' => now(),
                         'user_reg' => session('usuario')->id_usuario,
                         'fec_act' => now(),

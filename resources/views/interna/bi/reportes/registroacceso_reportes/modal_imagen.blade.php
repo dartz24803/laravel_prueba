@@ -13,9 +13,11 @@
         <div class="row">
             <div class="form-group col-lg-12 text-center">
                 <div class="col">
-                    <p id="imageName">{{ $imageUrls[0]['name'] }}</p>
+                    <!-- Texto o nombre de la imagen actual -->
+                    <p id="imageName">{{ !empty($imageUrls) ? $imageUrls[0]['name'] : 'No hay imágenes disponibles' }}</p>
                 </div>
                 <div id="image-carousel" class="text-center">
+                    <!-- Si hay imágenes, mostrar la primera -->
                     @if (!empty($imageUrls))
                     <img id="modalImage" src="{{ $imageUrls[0]['url'] }}" alt="Imagen" style="max-width: 100%; max-height: 400px;" />
                     <div class="m-4">
@@ -23,6 +25,7 @@
                         <button type="button" id="nextImage" class="btn btn-secondary">Siguiente</button>
                     </div>
                     @else
+                    <!-- Si no hay imágenes, mostrar un mensaje -->
                     <p>No hay archivos disponibles</p>
                     @endif
                 </div>
@@ -48,6 +51,11 @@
         if (imageUrls.length > 0) {
             modalImage.src = imageUrls[imageIndex].url;
             imageName.textContent = imageUrls[imageIndex].name; // Actualiza el nombre de la imagen
+        } else {
+            imageName.textContent = 'No hay imágenes disponibles';
+            modalImage.style.display = 'none'; // Ocultar la imagen si no hay ninguna
+            prevButton.style.display = 'none'; // Ocultar los botones de navegación
+            nextButton.style.display = 'none';
         }
     }
 
