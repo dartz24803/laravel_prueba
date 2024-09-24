@@ -1199,8 +1199,7 @@ Route::controller(RequisicionTiendaController::class)->group(function () {
 //TESORERÍA - TABLA MAESTRA
 Route::controller(TablaMaestraTesoreriaController::class)->group(function () {
     Route::get('tabla_maestra_tesoreria', 'index')->name('tabla_maestra_tesoreria');
-    Route::post('tabla_maestra_tesoreria/list', 'list')->name('tabla_maestra_tesoreria.list');
-    Route::get('tabla_maestra_tesoreria/{inicio}/{fin}/excel', 'excel')->name('tabla_maestra_tesoreria.excel');
+    Route::get('tabla_maestra_tesoreria/list', 'list')->name('tabla_maestra_tesoreria.list');
 });
 
 
