@@ -2339,11 +2339,11 @@ class TrackingController extends Controller
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(7);
         $list_base = Base::get_list_bases_tienda();
-        $list_usuario = DB::connection('sqlsrv')->table('vw_usuarios')
-                        ->select('par_desusuario')->orderBy('par_desusuario','ASC')->get();
-        $list_tipo_prenda = DB::connection('sqlsrv')->table('tge_sub_familias')
-                            ->select('sfa_descrip')->orderBy('sfa_descrip','ASC')->get();
-        return view('logistica.tracking.mercaderia_nueva.index', compact('list_notificacion','list_subgerencia','list_base','list_usuario','list_tipo_prenda'));
+        return view('logistica.tracking.mercaderia_nueva.index', compact(
+            'list_notificacion',
+            'list_subgerencia',
+            'list_base'
+        ));
     }
 
     public function list_mercaderia_nueva(Request $request)
@@ -2357,87 +2357,32 @@ class TrackingController extends Controller
         return view('logistica.tracking.mercaderia_nueva.lista', compact('cod_base','list_mercaderia_nueva'));
     }
 
+    public function mercaderia_nueva_tusu($cod_base)
+    {
+        $list_tipo_usuario = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_tusuario_app ?', [
+            $cod_base
+        ]);
+        return view('logistica.tracking.mercaderia_nueva.tipo_usuario', compact('list_tipo_usuario'));
+    }
+
+    public function mercaderia_nueva_tpre($cod_base)
+    {
+        $list_tipo_prenda = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_tprenda_app ?', [
+            $cod_base
+        ]);
+        return view('logistica.tracking.mercaderia_nueva.tipo_prenda', compact('list_tipo_prenda'));
+    }
+
     public function modal_mercaderia_nueva($cod_base,$estilo)
     {
-        $list_mercaderia_nueva_x_estilo = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_estilo ?,?', [
+        $list_mercaderia_nueva = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_estilo ?,?', [
             $cod_base,
             $estilo
         ]);
-        return view('logistica.tracking.mercaderia_nueva.modal_editar', compact('estilo','list_mercaderia_nueva_x_estilo'));
-    }
-
-    public function insert_mercaderia_surtida(Request $request)
-    {
-        $hasNonNull = count(array_filter($request->cantidad, function($value) {
-            return $value !== null;
-        }));
-
-        if($hasNonNull==0){
-            echo "error";
-        }else{
-            foreach($request->cantidad as $cantidad){
-
-            }
-            
-            $rules = [
-                'cantidad' => 'required'
-            ];
-    
-            $messages = [
-                'cantidad.required' => 'Debe ingresar al menos una cantidad.'
-            ];
-
-            $request->validate($rules, $messages);
-        }
-
-        /*$rules = [
-            'cod_base' => 'required',
-            'detalle.*.sku' => 'required',
-            'detalle.*.cantidad' => 'required|gt:0',
-        ];
-
-        $messages = [
-            'cod_base.required' => 'Debe ingresar base.',
-            'detalle.*.sku.required' => 'Debe ingresar sku.',
-            'detalle.*.cantidad.required' => 'Debe ingresar cantidad.',
-            'detalle.*.cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
-        ];
-
-        foreach ($request->detalle as $list => $item) {
-            $rules['tarea'] = 'gt:0';
-            $messages['tarea.gt'] = 'Debe seleccionar función.';
-        }*/
-
-        /*$request->validate([
-            'cantidad' => 'gt:0',
-        ],[
-            'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
-        ]);
-
-        $resultados = DB::connection('sqlsrv')->select('EXEC usp_new_mercaderia_nueva ?,?,?,?,?,?', [$sku,date('Y'),date('W'),$request->cod_base,'','']);
-        $get_id = $resultados[0];
-
-        if($request->cantidad>$get_id->cantidad){
-            echo "error";
-        }else{
-            MercaderiaSurtida::create([
-                'tipo' => 1,
-                'base' => $request->cod_base,
-                'anio' => date('Y'),
-                'semana' => date('W'),
-                'sku' => $sku,
-                'estilo' => $get_id->estilo,
-                'tipo_usuario' => $get_id->tipo_usuario,
-                'tipo_prenda' => $get_id->tipo_prenda,
-                'color' => $get_id->color,
-                'talla' => $get_id->talla,
-                'descripcion' => $get_id->decripcion,
-                'cantidad' => $request->cantidad,
-                'estado' => 0,
-                'fecha' => now(),
-                'usuario' => session('usuario')->id_usuario
-            ]);
-        }*/
+        return view('logistica.tracking.mercaderia_nueva.modal_detalle', compact(
+            'estilo',
+            'list_mercaderia_nueva'
+        ));
     }
 
     public function list_mercaderia_nueva_app(Request $request)

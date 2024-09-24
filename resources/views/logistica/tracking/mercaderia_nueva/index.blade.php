@@ -69,17 +69,22 @@
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
                     <div class="toolbar d-md-flex mt-3">
+                        <div class="form-group col-lg-1">
+                            <label>Semana:</label>
+                            <input type="text" class="form-control" value="{{ date('W') }}" disabled>
+                        </div>
+
                         <div class="form-group col-lg-2">
                             <label>Base:</label>
                             @if (substr(session('usuario')->centro_labores, 0, 1)=='B' && strlen(session('usuario')->centro_labores)==3)
-                            <input type="text" class="form-control" value="{{ session('usuario')->centro_labores }}" disabled>
-                            <input type="hidden" name="cod_baseb" id="cod_baseb" value="{{ session('usuario')->centro_labores }}">
+                                <input type="text" class="form-control" value="{{ session('usuario')->centro_labores }}" disabled>
+                                <input type="hidden" name="cod_baseb" id="cod_baseb" value="{{ session('usuario')->centro_labores }}">
                             @else
-                            <select class="form-control" id="cod_baseb" name="cod_baseb" onchange="Lista_Mercaderia_Nueva();">
-                                @foreach ($list_base as $list)
-                                <option value="{{ $list->cod_base }}" @if ($list->cod_base=='B03') selected @endif>{{ $list->cod_base }}</option>
-                                @endforeach
-                            </select>
+                                <select class="form-control" id="cod_baseb" name="cod_baseb" onchange="Lista_Mercaderia_Nueva(); Traer_Tipo_Usuario(); Traer_Tipo_Prenda();">
+                                    @foreach ($list_base as $list)
+                                        <option value="{{ $list->cod_base }}" @if ($list->cod_base=='B03') selected @endif>{{ $list->cod_base }}</option>
+                                    @endforeach
+                                </select>
                             @endif
                         </div>
 
@@ -87,9 +92,6 @@
                             <label>Usuario:</label>
                             <select class="form-control" id="tipo_usuariob" name="tipo_usuariob" onchange="Lista_Mercaderia_Nueva();">
                                 <option value="0">TODOS</option>
-                                @foreach ($list_usuario as $list)
-                                <option value="{{ $list->par_desusuario }}">{{ $list->par_desusuario }}</option>
-                                @endforeach
                             </select>
                         </div>
 
@@ -97,9 +99,6 @@
                             <label>Tipo de prenda:</label>
                             <select class="form-control" id="tipo_prendab" name="tipo_prendab" onchange="Lista_Mercaderia_Nueva();">
                                 <option value="0">TODOS</option>
-                                @foreach ($list_tipo_prenda as $list)
-                                <option value="{{ $list->sfa_descrip }}">{{ $list->sfa_descrip }}</option>
-                                @endforeach
                             </select>
                         </div>
 
@@ -133,6 +132,8 @@
         $("#trackings").addClass('active');
 
         Lista_Mercaderia_Nueva();
+        Traer_Tipo_Usuario();
+        Traer_Tipo_Prenda();
     });
 
     function Lista_Mercaderia_Nueva() {
@@ -161,13 +162,34 @@
         });
     }
 
-    function solo_Numeros(e) {
-        var key = event.which || event.keyCode;
-        if (key >= 48 && key <= 57) {
-            return true;
-        } else {
-            return false;
-        }
+    function Traer_Tipo_Usuario() {
+        Cargando();
+
+        var cod_base = $('#cod_baseb').val();
+        var url = "{{ route('tracking.mercaderia_nueva_tusu', ':cod_base') }}".replace(':cod_base', cod_base);;
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(resp) {
+                $('#tipo_usuariob').html(resp);
+            }
+        });
+    }
+
+    function Traer_Tipo_Prenda() {
+        Cargando();
+
+        var cod_base = $('#cod_baseb').val();
+        var url = "{{ route('tracking.mercaderia_nueva_tpre', ':cod_base') }}".replace(':cod_base', cod_base);;
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(resp) {
+                $('#tipo_prendab').html(resp);
+            }
+        });
     }
 </script>
 @endsection
