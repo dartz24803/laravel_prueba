@@ -2500,13 +2500,9 @@ class TrackingController extends Controller
         ]);
 
         try {
-            $resultados = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?,?,?', [
-                $sku,
-                date('Y'),
-                date('W'),
+            $resultados = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_sku ?,?,?,?,?,?', [
                 $request->cod_base,
-                '',
-                ''
+                $sku
             ]);
             $get_id = $resultados[0];
 
@@ -2537,7 +2533,7 @@ class TrackingController extends Controller
                     'tipo_prenda' => $get_id->tipo_prenda,
                     'color' => $get_id->color,
                     'talla' => $get_id->talla,
-                    'descripcion' => $get_id->decripcion,
+                    'descripcion' => $get_id->descripcion,
                     'cantidad' => $request->cantidad,
                     'stk_almacen' => $get_stock->stk_almacen,
                     'stk_tienda' => $get_stock->stk_tienda,
