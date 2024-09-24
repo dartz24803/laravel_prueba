@@ -2500,7 +2500,7 @@ class TrackingController extends Controller
         ]);
 
         try {
-            $resultados = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_sku ?,?,?,?,?,?', [
+            $resultados = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_sku ?,?', [
                 $request->cod_base,
                 $sku
             ]);
