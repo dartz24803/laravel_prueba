@@ -639,7 +639,8 @@ class CajaChicaController extends Controller
 
     public function list_credito()
     {
-        $list_temporal = CajaChicaPagoTemporal::select(DB::raw('DATE_FORMAT(fecha,"%d-%m-%Y") AS fecha'),'monto')
+        $list_temporal = CajaChicaPagoTemporal::select('id',
+                        DB::raw('DATE_FORMAT(fecha,"%d-%m-%Y") AS fecha'),'monto')
                         ->where('id_usuario',session('usuario')->id_usuario)->get();
         return view('finanzas.tesoreria.caja_chica.lista_credito', compact(
             'list_temporal'
@@ -676,6 +677,11 @@ class CajaChicaController extends Controller
                 'monto' => $request->montoc
             ]);
         }
+    }
+
+    public function destroy_cr($id)
+    {
+        CajaChicaPagoTemporal::destroy($id);
     }
 
     public function destroy($id)

@@ -129,4 +129,28 @@
             }
         });
     }
+
+    function Delete_Credito(id) {
+        Cargando();
+
+        var url = "{{ route('caja_chica.destroy_cr', ':id') }}".replace(':id', id);
+
+        $.ajax({
+            type: "DELETE",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function() {
+                Swal(
+                    '¡Eliminado!',
+                    'El registro ha sido eliminado satisfactoriamente.',
+                    'success'
+                ).then(function() {
+                    Lista_Credito();
+                    Saldo();
+                });    
+            }
+        });
+    }
 </script>
