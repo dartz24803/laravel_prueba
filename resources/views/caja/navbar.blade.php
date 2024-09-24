@@ -221,7 +221,7 @@ session('usuario')->id_puesto == 314)
         session('usuario')->id_puesto == 135 || 
         session('usuario')->id_puesto == 161 || 
         session('usuario')->id_puesto == 314)
-        <li id="salidas_insumos">
+        <li id="requisiciones_tiendas">
             <a href="{{ route('requisicion_tienda') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                 <p class="romperpalabra"><span id="icono_active2"></span> Requisición tienda</p>
             </a>
