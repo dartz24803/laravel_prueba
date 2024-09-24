@@ -417,13 +417,6 @@
                         </div>
                         <input type="file" id="archivo_base_3" name="archivo_base_3" style="display: none;">
                     </div>
-                    <!-- <div class="col-lg-12">
-                        <div class="row p-2">
-                            <textarea id="paste_area" placeholder="Ctrl + V aquí para pegar la imagen" style="width: 100%" rows="1"></textarea>
-                            <div id="imageViewer">
-                            </div>
-                        </div>
-                    </div> -->
                 </div>
             </div>
 
@@ -606,6 +599,9 @@
 
         // Agregar la nueva fila al cuerpo de la tabla
         tableBody.appendChild(newRow);
+
+
+
         // Asigna el evento change a los nuevos selects
         attachSistemaChangeEvent(newRow.querySelector('.sistema'));
     }
@@ -842,6 +838,7 @@
                 }
             });
         });
+
 
         $('#solicitante').on('change', function() {
             const selectedSolicitante = $(this).val();

@@ -330,7 +330,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <button type="button" class="btn btn-success btn-sm" onclick="addRowEdit()">Agregar indicador</button>
+                    <button type="button" class="btn btn-success btn-sm" onclick="addRowEdit()">Agregar contenido</button>
                 </div>
             </div>
 
@@ -368,6 +368,7 @@
                                         </option>
                                         @endforeach
                                     </select>
+
                                 </td>
                                 <td class="px-1"><input type="text" class="form-control tabla-sty" name="tablabi[]" value="{{ $tabla->nom_tabla }}"></td>
                                 <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
@@ -421,12 +422,51 @@
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="accesos" role="tabpanel" aria-labelledby="accesos-tab2">
+            <div class="tab-pane fade" id="accesos" role="tabpanel" aria-labelledby="accesos-tab">
                 <div class="row my-4">
+                    @csrf
+                    <div class="form-group col-md-6">
+                        <label class="control-label text-bold">Filtro Sede: </label>
+                        <select class="form-control multivalue" name="tipo_acceso_sedee[]" id="tipo_acceso_sedee" multiple="multiple">
+                            @foreach ($list_sede as $sede)
+                            <option value="{{ $sede->id }}"
+                                {{ in_array($sede->id, $selected_sede_ids_array) ? 'selected' : '' }}>
+                                {{ $sede->descripcion }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label class="control-label text-bold">Filtro Ubicaciones: </label>
+                        <select class="form-control multivalue" name="tipo_acceso_ubie[]" id="tipo_acceso_ubie" multiple="multiple">
+                            @foreach ($list_ubicaciones as $ubi)
+                            <option value="{{ $ubi->id_ubicacion }}"
+                                {{ in_array($ubi->id_ubicacion, $selected_ubi_ids_array) ? 'selected' : '' }}>
+                                {{ $ubi->cod_ubi }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-12 text-center">
+                        <div class="divider"></div>
+                        <label class="control-label text-bold">Filtro Área: </label>
+                        <select class="form-control multivalue" name="id_area_acceso_te[]" id="id_area_acceso_te" multiple="multiple">
+                            @foreach ($list_area as $list)
+                            <option value="{{ $list->id_area }}"
+                                {{ in_array($list->id_area, $selected_area_ids_array) ? 'selected' : '' }}>
+                                {{ $list->nom_area }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+
                     <div class="form-group col-md-12 text-center">
                         <div class="divider"></div>
                         <label class="control-label text-bold">Acceso Puesto: </label>
-                        <select disabled class="form-control multivalue" name="tipo_acceso_te[]" id="tipo_acceso_te" multiple="multiple">
+                        <select class="form-control multivalue" name="tipo_acceso_tee[]" id="tipo_acceso_tee" multiple="multiple">
                             @foreach ($list_responsable as $puesto)
                             <option value="{{ $puesto->id_puesto }}"
                                 {{ in_array($puesto->id_puesto, $selected_puesto_ids) ? 'selected' : '' }}>
@@ -627,43 +667,87 @@
         placeholder: "Selecciona un solicitante",
         allowClear: true
     });
+
     $('.multivalue').select2({
         tags: true, // Permite crear nuevas etiquetas
         tokenSeparators: [',', ' '], // Separa las etiquetas con comas y espacios
-        dropdownParent: $('#ModalRegistro')
+        dropdownParent: $('#ModalUpdate')
     });
 
 
     $(document).ready(function() {
-        $('#id_area_acceso_te').select2({
-            tags: true,
-            tokenSeparators: [',', ' '],
-            dropdownParent: $('#ModalRegistro')
-        });
-        $('#tipo_acceso_te').select2({
-            tags: true,
-            tokenSeparators: [',', ' '],
-            dropdownParent: $('#ModalRegistro')
-        });
-        $('#tipo_acceso_p').select2({
-            tags: true,
-            tokenSeparators: [',', ' '],
-            dropdownParent: $('#ModalRegistro')
-        });
-        $('#tipo_acceso_be').on('change', function() {
-            const selectedBases = $(this).val();
-            var url = "{{ route('areas_por_base_bi') }}";
-            console.log('Selected Bases:', selectedBases); // Para verificar que los valores se están obteniendo correctamente
 
-            // Hacer una solicitud AJAX para obtener los puestos basados en las áreas seleccionadas
+        let selectedPuestos = [];
+
+        $('#id_area_acceso_te').on('change', function() {
+            const selectedAreas = $(this).val();
+            var url = "{{ route('puestos_por_areas_bi') }}";
+
             $.ajax({
                 url: url,
                 method: 'GET',
                 data: {
-                    bases: selectedBases
+                    areas: selectedAreas
                 },
                 success: function(response) {
-                    // Vaciar el segundo select antes de agregar las nuevas opciones
+                    // Guardamos los puestos seleccionados antes de limpiar el select
+                    selectedPuestos = $('#tipo_acceso_tee').val() || [];
+
+                    // Guardar las opciones actuales del select antes de limpiar
+                    const currentOptions = [];
+                    $('#tipo_acceso_tee option').each(function() {
+                        currentOptions.push($(this).val());
+                    });
+
+                    // Vaciar el select antes de agregar las nuevas opciones
+                    $('#tipo_acceso_tee').empty();
+
+                    // Agregar las nuevas opciones obtenidas del servidor
+                    $.each(response, function(index, puesto) {
+                        $('#tipo_acceso_tee').append(
+                            `<option value="${puesto.id_puesto}">${puesto.nom_puesto}</option>`
+                        );
+                    });
+
+                    // Restaurar los puestos seleccionados previamente si siguen estando en las nuevas opciones
+                    $.each(selectedPuestos, function(index, value) {
+                        if (currentOptions.includes(value)) {
+                            $('#tipo_acceso_tee').find(`option[value="${value}"]`).prop('selected', true);
+                        }
+                    });
+
+                    // Volver a inicializar el select con select2 (o mantenerlo si ya estaba activo)
+                    $('#tipo_acceso_tee').select2();
+                },
+                error: function(xhr) {
+                    console.error('Error al obtener puestos:', xhr);
+                }
+            });
+        });
+
+        let selectedAreas = [];
+
+        $('#tipo_acceso_ubie').on('change', function() {
+            const selectedUbis = $(this).val();
+            var url = "{{ route('areas_por_ubicacion') }}";
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: {
+                    ubis: selectedUbis
+                },
+                success: function(response) {
+                    // Guardamos las áreas seleccionadas antes de limpiar
+                    selectedAreas = $('#id_area_acceso_te').val() || [];
+
+                    // Eliminamos solo las áreas que ya no están asociadas a las ubicaciones seleccionadas
+                    const currentOptions = [];
+                    $('#id_area_acceso_te option').each(function() {
+                        currentOptions.push($(this).val());
+                    });
+
+                    // Actualizamos solo las nuevas áreas, manteniendo las seleccionadas
                     $('#id_area_acceso_te').empty();
 
                     // Agregar las nuevas opciones
@@ -673,41 +757,63 @@
                         );
                     });
 
-                    // Reinitialize select2 if needed
+                    // Reestablecemos las áreas seleccionadas previamente que aún están disponibles
+                    $.each(selectedAreas, function(index, value) {
+                        if (currentOptions.includes(value)) {
+                            $('#id_area_acceso_te').find(`option[value="${value}"]`).prop('selected', true);
+                        }
+                    });
+
                     $('#id_area_acceso_te').select2();
                 },
                 error: function(xhr) {
-                    console.error('Error al obtener puestos:', xhr);
+                    console.error('Error al obtener áreas:', xhr);
                 }
             });
         });
 
-        $('#id_area_acceso_te').on('change', function() {
-            const selectedAreas = $(this).val();
-            var url = "{{ route('puestos_por_areas_bi') }}";
+
+
+        let selectedUbicaciones = [];
+
+        $('#tipo_acceso_sedee').on('change', function() {
+            const selectedSedes = $(this).val();
+            var url = "{{ route('ubicacion_por_sede') }}";
             $.ajax({
                 url: url,
                 method: 'GET',
                 data: {
-                    areas: selectedAreas
+                    sedes: selectedSedes
                 },
                 success: function(response) {
-                    // Vaciar el segundo select antes de agregar las nuevas opciones
-                    $('#tipo_acceso_te').empty();
-
-                    // Agregar las nuevas opciones
-                    $.each(response, function(index, puesto) {
-                        $('#tipo_acceso_te').append(
-                            `<option value="${puesto.id_puesto}">${puesto.nom_puesto}</option>`
+                    // Guardamos las ubicaciones seleccionadas antes de limpiar
+                    selectedUbicaciones = $('#tipo_acceso_ubie').val() || [];
+                    // Eliminamos solo las opciones que ya no están asociadas a las sedes seleccionadas
+                    const currentOptions = [];
+                    $('#tipo_acceso_ubie option').each(function() {
+                        currentOptions.push($(this).val());
+                    });
+                    // Actualizamos solo las nuevas ubicaciones, manteniendo las que ya estaban seleccionadas
+                    $('#tipo_acceso_ubie').empty();
+                    $.each(response, function(index, sede) {
+                        $('#tipo_acceso_ubie').append(
+                            `<option value="${sede.id_ubicacion}">${sede.cod_ubi}</option>`
                         );
                     });
-                    $('#tipo_acceso_te').select2();
+                    // Reestablecemos las opciones previamente seleccionadas que aún están disponibles
+                    $.each(selectedUbicaciones, function(index, value) {
+                        if (currentOptions.includes(value)) {
+                            $('#tipo_acceso_ubie').find(`option[value="${value}"]`).prop('selected', true);
+                        }
+                    });
+                    $('#tipo_acceso_ubie').select2();
                 },
                 error: function(xhr) {
-                    console.error('Error al obtener puestos:', xhr);
+                    console.error('Error al obtener sedes:', xhr);
                 }
             });
         });
+
 
         $('#solicitantee').on('change', function() {
             const selectedSolicitante = $(this).val();

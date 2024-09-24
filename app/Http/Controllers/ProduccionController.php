@@ -235,12 +235,13 @@ class ProduccionController extends Controller
             ->distinct('nom_proceso')
             ->get();
 
+
         return view('manufactura.produccion.asignacion_visitas.asignar_visitas.modal_editar', compact(
             'get_id',
             'list_inspector',
             'list_proveedor',
             'list_ficha_tecnica',
-            'list_proceso_visita'
+            'list_proceso_visita',
         ));
     }
 
@@ -258,9 +259,23 @@ class ProduccionController extends Controller
             ->distinct('nom_tipo_transporte')
             ->get();
 
+        $list_visita_transporte = AsignacionVisitaTransporte::select(
+            'asignacion_visita_transporte.id_tipo_transporte',
+            'tipo_transporte_produccion.nom_tipo_transporte',
+            'asignacion_visita_transporte.costo',
+            'asignacion_visita_transporte.descripcion'
+        )
+            ->join('tipo_transporte_produccion', 'asignacion_visita_transporte.id_tipo_transporte', '=', 'tipo_transporte_produccion.id_tipo_transporte')
+            ->where('asignacion_visita_transporte.estado', 1)
+            ->where('asignacion_visita_transporte.id_asignacion_visita', $id) // Filtrar por id_asignacion_visita
+            ->get();
+
+
+
         return view('manufactura.produccion.asignacion_visitas.asignar_visitas.modal_detalle', compact(
             'get_id',
             'list_tipo_transporte',
+            'list_visita_transporte'
         ));
     }
 
@@ -303,13 +318,13 @@ class ProduccionController extends Controller
 
     public function update_detalle_av(Request $request, $id)
     {
-
-
+        // Eliminar los registros existentes relacionados con la id_asignacion_visita
+        AsignacionVisitaTransporte::where('id_asignacion_visita', $id)->delete();
+        // Obtener los datos de entrada
         $ncostos = $request->input('ncosto', []);
         $descripciones = $request->input('descripcion', []);
         $id_tipotransportes = $request->input('id_tipotransporte', []);
-
-
+        // Crear nuevos registros
         foreach ($ncostos as $index => $ncosto) {
             AsignacionVisitaTransporte::create([
                 'id_asignacion_visita' => $id,
@@ -324,6 +339,7 @@ class ProduccionController extends Controller
             ]);
         }
     }
+
 
 
 
