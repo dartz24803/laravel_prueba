@@ -109,23 +109,7 @@
             </div>
 
             <div class="row col-lg-12">
-                <div class="form-group col-lg-6">
-                    <label class="control-label text-bold">Tipo de Transporte: </label>
-                    <select class="form-control" name="id_tipotransporte_principal[]" id="id_tipotransporte_principal">
-                        @foreach ($list_tipo_transporte as $item)
-                        <option value="{{ $item->id_tipo_transporte }}">{{ $item->nom_tipo_transporte }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group col-md-6">
-                    <label>Costo: </label>
-                    <input type="number" class="form-control" id="ncosto" name="ncosto">
-                </div>
-                <div class="form-group col-md-12">
-                    <label class="text-bold">Descripción:</label>
-                    <textarea name="descripcion" id="descripcion" cols="1" rows="2" class="form-control">PUNTO DE PARTIDA: 
-PUNTO DE LLEGADA:</textarea>
-                </div>
+
                 <div class="form-group col-md-12">
                     <label class="text-bold">Observación:</label>
                     <textarea name="observacion" id="observacion" cols="1" rows="1" class="form-control">{{ isset($get_id->observacion) ? $get_id->observacion : '' }}</textarea>
@@ -134,58 +118,40 @@ PUNTO DE LLEGADA:</textarea>
             </div>
 
             <div class="row m-4">
-                <div class="form-group col-lg-12 mt-2">
-                    <button class="btn btn-success" type="button" id="btn-add-row-detalle">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="16"></line>
-                            <line x1="8" y1="12" x2="16" y2="12"></line>
-                        </svg>
-                    </button>
-                </div>
-                <table id="selected-data-detalle-table" class="table table-hover" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Borrar</th>
-                            <th>Tipo de Transporte</th>
-                            <th style="width: 100px;">Costo (S/)</th>
-                            <th style="width: 300px;">Descripción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($list_visita_transporte as $item)
-                        <tr>
-                            <td class="px-1">
-                                <button type="button" class="btn btn-danger btn-delete-row">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                        <line x1="10" y1="11" x2="10" y2="17"></line>
-                                        <line x1="14" y1="11" x2="14" y2="17"></line>
-                                    </svg>
-                                </button>
-                            </td>
-                            <td class="px-1">
-                                <select class="form-control" name="id_tipotransporte[]">
+                <div class="table-responsive"> <!-- Agregando esta clase para hacer la tabla responsiva -->
+                    <table id="selected-data-detalle-table" class="table table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Tipo de Transporte</th>
+                                <th style="width: 100px;">Costo (S/)</th>
+                                <th style="width: 500px;">Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($list_visita_transporte as $item)
+                            <tr>
+                                <td class="px-1">
+                                    <!-- Muestra el tipo de transporte como texto -->
                                     @foreach ($list_tipo_transporte as $option)
-                                    <option value="{{ $option->id_tipo_transporte }}" {{ $option->id_tipo_transporte == $item->id_tipo_transporte ? 'selected' : '' }}>
-                                        {{ $option->nom_tipo_transporte }}
-                                    </option>
+                                    @if($option->id_tipo_transporte == $item->id_tipo_transporte)
+                                    {{ $option->nom_tipo_transporte }}
+                                    @endif
                                     @endforeach
-                                </select>
-                            </td>
-                            <td class="px-1">
-                                <input type="number" class="form-control" value="{{ $item->costo }}" name="ncosto[]">
-                            </td>
-                            <td class="px-1">
-                                <textarea class="form-control" rows="2" name="descripcion[]">{{ $item->descripcion }}</textarea>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                                </td>
+                                <td class="px-1">
+                                    <!-- Muestra el costo como texto -->
+                                    {{ number_format($item->costo, 2) }}
+                                </td>
+                                <td class="px-1" title="{{ $item->descripcion }}"> <!-- Agregando el título para el tooltip -->
+                                    <!-- Muestra la descripción como texto -->
+                                    {{ $item->descripcion }}
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
 
         </div>
 
@@ -196,8 +162,7 @@ PUNTO DE LLEGADA:</textarea>
         @csrf
         <!-- @method('PUT') -->
         <input type="hidden" id="capturae" name="capturae">
-        <button id="boton_disablede" class="btn btn-primary" type="button" onclick="Update_Detalle_Asignacion();">Guardar</button>
-        <button class=" btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
+        <button id="boton_disablede" class="btn btn-primary" type="button" data-dismiss="modal">Aceptar</button>
     </div>
 </form>
 

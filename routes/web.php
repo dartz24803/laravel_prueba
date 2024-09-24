@@ -1007,6 +1007,10 @@ Route::controller(ProduccionController::class)->group(function () {
     Route::put('produccion_rv/{id}', 'update_rv')->name('produccion_rv.update');
     Route::delete('produccion_rv/{id}', 'destroy_rv')->name('produccion_rv.destroy');
     Route::post('Produccion/ListaRegistroVisitas/{fec_ini}/{fec_fin}', 'ListaRegistroVisitas');
+
+    Route::post('produccion_rv/{id}/iniciar', 'iniciar_rv')->name('produccion_rv.iniciar');
+    Route::post('produccion_rv/{id}/finalizar', 'finalizar_rv')->name('produccion_rv.finalizar');
+    Route::get('produccion_rv/{id}/detalle', 'detalle_rv')->name('produccion_rv.detalle');
 });
 
 

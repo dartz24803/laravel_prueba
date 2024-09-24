@@ -40,35 +40,61 @@
             <td>{{ $asignacion->nombre_completo }}</td> <!-- Si tienes que mostrar el nombre del inspector, podrías hacer una relación y extraerlo -->
             <td>{{ $asignacion->proveedor_responsable_partida }}</td>
             <td>{{ $asignacion->proveedor_responsable_llegada }}</td>
-            <td>{{ $asignacion->nom_modelo }}</td>
+            <td title="{{$asignacion->nom_modelo }}">
+                <a href="{{ $asignacion->img_ft_produccion }}" target="_blank" style="color: blue; text-decoration: underline;">
+                    {{ $asignacion->nom_modelo }}
+                </a>
+            </td>
+
             <td>{{ $asignacion->nom_proceso }}</td>
             <td>{{ $asignacion->nom_tipo_transporte }}</td>
-            <td>S/{{ $asignacion->costo_total ?? '0' }}</td>
-            <td>{{ \Carbon\Carbon::parse($asignacion->fec_ini_visita)->locale('es')->translatedFormat('D d M y H:i') }}</td>
-            <td>{{ \Carbon\Carbon::parse($asignacion->fec_fin_visita)->locale('es')->translatedFormat('D d M y H:i') }}</td>
-            <td>{{ $asignacion->estado == 1 ? 'Activo' : 'Inactivo' }}</td>
+            <td>S/{{ $asignacion->total_costo ?? '0' }}</td>
             <td>
-                <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('produccion_av.edit', $asignacion->id_asignacion_visita) }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
-                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                {{ $asignacion->fec_ini_visita ? \Carbon\Carbon::parse($asignacion->fec_ini_visita)->locale('es')->translatedFormat('D d M y H:i') : '' }}
+            </td>
+            <td>
+                {{ $asignacion->fec_fin_visita ? \Carbon\Carbon::parse($asignacion->fec_fin_visita)->locale('es')->translatedFormat('D d M y H:i') : '' }}
+            </td>
+            <td>
+                @if ($asignacion->estado_registro == 1)
+                Por Iniciar
+                @elseif ($asignacion->estado_registro == 2)
+                Iniciado
+                @elseif ($asignacion->estado_registro == 3)
+                Finalizado
+                @else
+                Desconocido
+                @endif
+            </td>
+
+            <td>
+
+                @if ($asignacion->estado_registro == 2)
+                <a href="javascript:void(0);" title="Finalizar" onclick="Finalizar_Visita('{{ $asignacion->id_asignacion_visita }}')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-stop-circle">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <rect x="9" y="9" width="6" height="6"></rect>
                     </svg>
                 </a>
-                @if ($asignacion->estado_registro == 1)
-                <a href="javascript:void(0);" title="Aprobar" onclick="Aprobar_Asignacion('{{ $asignacion->id_asignacion_visita }}')">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">
+                @endif
+
+                @if ($asignacion->estado_registro == 2 || $asignacion->estado_registro == 3)
+                <a href="javascript:void(0);" title="Detalle" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('produccion_rv.detalle', $asignacion->id_asignacion_visita) }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="blue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                         <circle cx="12" cy="12" r="3"></circle>
                     </svg>
                 </a>
                 @endif
-                <a href="javascript:void(0);" title="Eliminar" onclick="Delete_Asignacion('{{ $asignacion->id_asignacion_visita }}')">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
-                        <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        <line x1="10" y1="11" x2="10" y2="17"></line>
-                        <line x1="14" y1="11" x2="14" y2="17"></line>
+
+                @if ($asignacion->estado_registro == 1)
+                <a href="javascript:void(0);" title="Iniciar" onclick="Iniciar_Visita('{{ $asignacion->id_asignacion_visita }}')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="green" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-play-circle">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polygon points="10 8 16 12 10 16 10 8"></polygon>
                     </svg>
                 </a>
+                @endif
             </td>
         </tr>
         @endforeach

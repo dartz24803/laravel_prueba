@@ -137,7 +137,78 @@
         })
     }
 
+    function Iniciar_Visita(id) {
+        Cargando();
 
+        var url = "{{ route('produccion_rv.iniciar', ':id') }}".replace(':id', id);
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            title: '¿Estas seguro de iniciar visita?',
+            text: "¡No podrás revertir esto!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function() {
+                        Swal(
+                            '¡Visita Iniciada!',
+                            'La visita se ha iniciado correctamente',
+                            'success'
+                        ).then(function() {
+                            Lista_Reg_Visitas();
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+
+    function Finalizar_Visita(id) {
+        Cargando();
+
+        var url = "{{ route('produccion_rv.finalizar', ':id') }}".replace(':id', id);
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            title: '¿Estas seguro de finalizar visita?',
+            text: "¡No podrás revertir esto!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function() {
+                        Swal(
+                            '¡Visita Finalizada!',
+                            'La visita se ha finalizado correctamente',
+                            'success'
+                        ).then(function() {
+                            Lista_Reg_Visitas();
+                        });
+                    }
+                });
+            }
+        })
+    }
 
     function Buscar_Asignacion_Visita() {
         var csrfToken = $('input[name="_token"]').val();

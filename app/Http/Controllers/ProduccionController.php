@@ -249,6 +249,7 @@ class ProduccionController extends Controller
     {
         $get_id = AsignacionVisita::where('id_asignacion_visita', $id)
             ->firstOrFail();
+        // dd($get_id);
 
         $list_tipo_transporte = TipoTransporteProduccion::select(
             'id_tipo_transporte',
@@ -263,7 +264,8 @@ class ProduccionController extends Controller
             'asignacion_visita_transporte.id_tipo_transporte',
             'tipo_transporte_produccion.nom_tipo_transporte',
             'asignacion_visita_transporte.costo',
-            'asignacion_visita_transporte.descripcion'
+            'asignacion_visita_transporte.descripcion',
+
         )
             ->join('tipo_transporte_produccion', 'asignacion_visita_transporte.id_tipo_transporte', '=', 'tipo_transporte_produccion.id_tipo_transporte')
             ->where('asignacion_visita_transporte.estado', 1)
@@ -316,29 +318,73 @@ class ProduccionController extends Controller
         ]);
     }
 
+    public function iniciar_rv(Request $request, $id)
+    {
+        AsignacionVisita::findOrFail($id)->update([
+            'estado_registro' => 2,
+            'fec_ini_visita' => now(),
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+
+        ]);
+    }
+
+    public function finalizar_rv(Request $request, $id)
+    {
+        AsignacionVisita::findOrFail($id)->update([
+            'estado_registro' => 3,
+            'fec_fin_visita' => now(),
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+
     public function update_detalle_av(Request $request, $id)
     {
         // Eliminar los registros existentes relacionados con la id_asignacion_visita
         AsignacionVisitaTransporte::where('id_asignacion_visita', $id)->delete();
+
         // Obtener los datos de entrada
         $ncostos = $request->input('ncosto', []);
         $descripciones = $request->input('descripcion', []);
         $id_tipotransportes = $request->input('id_tipotransporte', []);
-        // Crear nuevos registros
-        foreach ($ncostos as $index => $ncosto) {
-            AsignacionVisitaTransporte::create([
-                'id_asignacion_visita' => $id,
-                'id_tipo_transporte' =>  $id_tipotransportes[$index] ?? '',
-                'costo' => $ncosto,
-                'descripcion' => $descripciones[$index] ?? '',
-                'estado' => 1,
-                'fec_reg' => now(),
-                'user_reg' => session('usuario')->id_usuario,
+
+        $hora_inicio_almuerzo = $request->input('hora_inicio_almuerzo');
+        $hora_fin_almuerzo = $request->input('hora_fin_almuerzo');
+        $observacion = $request->input('observacion');
+        $almuerzo = $request->has('almuerzo') ? 1 : 0;
+
+        // Crear nuevos registros solo si $ncostos no está vacío
+        if (!empty($ncostos)) {
+            foreach ($ncostos as $index => $ncosto) {
+                AsignacionVisitaTransporte::create([
+                    'id_asignacion_visita' => $id,
+                    'id_tipo_transporte' =>  $id_tipotransportes[$index] ?? '',
+                    'costo' => $ncosto,
+                    'descripcion' => $descripciones[$index] ?? '',
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+            }
+        }
+
+        // Actualizar la información de Almuerzo siempre que haya datos
+        if (!empty($hora_inicio_almuerzo) || !empty($hora_fin_almuerzo) || !empty($observacion) || !isset($request->almuerzo)) {
+            AsignacionVisita::findOrFail($id)->update([
+                'ini_alm' => $hora_inicio_almuerzo,
+                'fin_alm' => $hora_fin_almuerzo,
+                'observacion' => $observacion,
+                'ch_alm' => $almuerzo,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
         }
     }
+
 
 
 
@@ -354,7 +400,7 @@ class ProduccionController extends Controller
         // Obtener la lista de asignaciones filtrada por fecha
         $list_asignacion = AsignacionVisita::getListAsignacion($fini, $ffin, $idUsuario);
         // dd($list_asignacion);
-        return view('manufactura.produccion.asignacion_visitas.asignar_visitas.lista', compact('list_asignacion'));
+        return view('manufactura.produccion.registro_visitas.registrar_visitas.lista', compact('list_asignacion'));
     }
 
     public function ListaRegistroVisitas($fecha, $fecha_fin)
@@ -364,5 +410,41 @@ class ProduccionController extends Controller
         $list_asignacion = AsignacionVisita::getListAsignacion($fecha, $fecha_fin, $idUsuario);
 
         return view('manufactura.produccion.asignacion_visitas.asignar_visitas.lista', compact('list_asignacion'));
+    }
+
+    public function detalle_rv($id)
+    {
+        $get_id = AsignacionVisita::where('id_asignacion_visita', $id)
+            ->firstOrFail();
+        // dd($get_id);
+
+        $list_tipo_transporte = TipoTransporteProduccion::select(
+            'id_tipo_transporte',
+            'nom_tipo_transporte'
+        )
+            ->where('estado', 1)
+            ->orderBy('nom_tipo_transporte', 'ASC')
+            ->distinct('nom_tipo_transporte')
+            ->get();
+
+        $list_visita_transporte = AsignacionVisitaTransporte::select(
+            'asignacion_visita_transporte.id_tipo_transporte',
+            'tipo_transporte_produccion.nom_tipo_transporte',
+            'asignacion_visita_transporte.costo',
+            'asignacion_visita_transporte.descripcion',
+
+        )
+            ->join('tipo_transporte_produccion', 'asignacion_visita_transporte.id_tipo_transporte', '=', 'tipo_transporte_produccion.id_tipo_transporte')
+            ->where('asignacion_visita_transporte.estado', 1)
+            ->where('asignacion_visita_transporte.id_asignacion_visita', $id) // Filtrar por id_asignacion_visita
+            ->get();
+
+
+
+        return view('manufactura.produccion.registro_visitas.registrar_visitas.modal_detalle', compact(
+            'get_id',
+            'list_tipo_transporte',
+            'list_visita_transporte'
+        ));
     }
 }
