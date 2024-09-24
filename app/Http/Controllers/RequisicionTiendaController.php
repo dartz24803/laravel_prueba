@@ -6,6 +6,7 @@ use App\Models\Base;
 use App\Models\Notificacion;
 use App\Models\ProductoCaja;
 use App\Models\RequisicionTda;
+use App\Models\RequisicionTdaDetalle;
 use App\Models\RequisicionTdaTemporal;
 use App\Models\SubGerencia;
 use App\Models\Usuario;
@@ -143,8 +144,6 @@ class RequisicionTiendaController extends Controller
                 'cantidad' => $request->cantidad,
                 'id_producto' => $request->id_producto,
                 'precio' => $request->precio,
-                'archivo' => $archivo,
-                'monto' => $request->monto,
                 'archivo' => $archivo
             ]);
         }
@@ -152,6 +151,18 @@ class RequisicionTiendaController extends Controller
 
     public function destroy_tmp($id)
     {
+        $get_id = RequisicionTdaTemporal::findOrFail($id);
+        if($get_id->archivo!=""){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                $file_to_delete = "CAJA/REQUISICION/".basename($get_id->archivo);
+                ftp_delete($con_id, $file_to_delete);
+            }
+        }
         RequisicionTdaTemporal::destroy($id);
     }
 
@@ -243,6 +254,200 @@ class RequisicionTiendaController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
         }
+    }
+
+    public function show($id)
+    {
+        $get_id = RequisicionTda::findOrFail($id);     
+        return view('caja.requisicion_tienda.modal_detalle',compact('get_id'));
+    }
+
+    public function list_detalle($id)
+    {
+        $list_detalle = RequisicionTdaDetalle::from('requisicion_tda_detalle AS rd')
+                        ->select('rd.id_requisicion_detalle','rd.stock','un.cod_unidad',
+                        DB::raw('CONCAT("Producto: ",pc.nom_producto," - Marca: ",ma.nom_marca,
+                        " - Modelo: ",(CASE WHEN pc.id_modelo>0 THEN mo.nom_modelo 
+                        ELSE "" END)) AS nom_producto'),'rd.cantidad',
+                        DB::raw('CONCAT("S/ ",rd.precio) AS precio'),
+                        DB::raw('CONCAT("S/ ",(rd.precio*rd.cantidad)) AS total'),'rd.archivo',
+                        DB::raw('(SELECT rt.estado_registro FROM requisicion_tda rt
+                        WHERE rt.id_requisicion=rd.id_requisicion
+                        LIMIT 1) AS estado_registro'))
+                        ->join('producto_caja AS pc','pc.id_producto','=','rd.id_producto')
+                        ->join('unidad AS un','un.id_unidad','=','pc.id_unidad')
+                        ->join('marca AS ma','ma.id_marca','=','pc.id_marca')
+                        ->leftjoin('modelo AS mo','mo.id_modelo','=','pc.id_modelo')
+                        ->where('rd.id_requisicion',$id)->get();                      
+        return view('caja.requisicion_tienda.lista_detalle', compact('list_detalle'));
+    }
+
+    public function store_detalle(Request $request, $id)
+    {
+        $request->validate([
+            'stockd' => 'required',
+            'cantidadd' => 'required|gt:0',
+            'id_productod' => 'gt:0',
+            'preciod' => 'required|gt:0'
+        ],[
+            'stockd.required' => 'Debe ingresar stock.',
+            'cantidadd.required' => 'Debe ingresar cantidad.',
+            'cantidadd.gt' => 'Debe ingresar cantidad mayor a 0.',
+            'id_productod.gt' => 'Debe seleccionar producto.',
+            'preciod.required' => 'Debe ingresar precio unitario.',
+            'preciod.gt' => 'Debe ingresar precio unitario mayor a 0.'
+        ]);
+
+        $valida = RequisicionTdaDetalle::where('id_requisicion', $id)
+                ->where('id_producto', $request->id_productod)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            $archivo = "";
+            if ($_FILES["archivod"]["name"] != "") {
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+                if ($con_id && $lr) {
+                    $path = $_FILES["archivod"]["name"];
+                    $source_file = $_FILES['archivod']['tmp_name'];
+    
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $nombre_soli = "Archivo_" . date('YmdHis');
+                    $nombre = $nombre_soli . "." . strtolower($ext);
+    
+                    ftp_pasv($con_id, true);
+                    $subio = ftp_put($con_id, "CAJA/REQUISICION/" . $nombre, $source_file, FTP_BINARY);
+                    if ($subio) {
+                        $archivo = "https://lanumerounocloud.com/intranet/CAJA/REQUISICION/" . $nombre;
+                    } else {
+                        echo "Archivo no subido correctamente";
+                    }
+                } else {
+                    echo "No se conecto";
+                }
+            }
+    
+            RequisicionTdaDetalle::create([
+                'id_requisicion' => $id,
+                'stock' => $request->stockd,
+                'cantidad' => $request->cantidadd,
+                'id_producto' => $request->id_productod,
+                'precio' => $request->preciod,
+                'archivo' => $archivo
+            ]);
+        }
+    }
+
+    public function edit_detalle($id)
+    {
+        $get_id = RequisicionTdaDetalle::findOrFail($id);
+        $list_producto = ProductoCaja::from('producto_caja AS pc')
+                        ->select('pc.id_producto',DB::raw('CONCAT(pc.nom_producto," - UM: ",
+                        un.cod_unidad," - Marca: ",ma.nom_marca," - Modelo: ",
+                        (CASE WHEN pc.id_modelo>0 THEN mo.nom_modelo ELSE "" END)) AS nom_producto'))
+                        ->join('unidad AS un','un.id_unidad','=','pc.id_unidad')
+                        ->join('marca AS ma','ma.id_marca','=','pc.id_marca')
+                        ->leftjoin('modelo AS mo','mo.id_modelo','=','pc.id_modelo')
+                        ->where('pc.estado',1)->get();
+        return view('caja.requisicion_tienda.editar_detalle',compact('get_id','list_producto'));
+    }
+
+    public function cancelar_detalle()
+    {
+        $list_producto = ProductoCaja::from('producto_caja AS pc')
+                        ->select('pc.id_producto',DB::raw('CONCAT(pc.nom_producto," - UM: ",
+                        un.cod_unidad," - Marca: ",ma.nom_marca," - Modelo: ",
+                        (CASE WHEN pc.id_modelo>0 THEN mo.nom_modelo ELSE "" END)) AS nom_producto'))
+                        ->join('unidad AS un','un.id_unidad','=','pc.id_unidad')
+                        ->join('marca AS ma','ma.id_marca','=','pc.id_marca')
+                        ->leftjoin('modelo AS mo','mo.id_modelo','=','pc.id_modelo')
+                        ->where('pc.estado',1)->get();
+        return view('caja.requisicion_tienda.cancelar_detalle',compact('list_producto'));
+    }
+
+    public function update_detalle(Request $request, $id)
+    {
+        $request->validate([
+            'stockde' => 'required',
+            'cantidadde' => 'required|gt:0',
+            'id_productode' => 'gt:0',
+            'preciode' => 'required|gt:0'
+        ],[
+            'stockde.required' => 'Debe ingresar stock.',
+            'cantidadde.required' => 'Debe ingresar cantidad.',
+            'cantidadde.gt' => 'Debe ingresar cantidad mayor a 0.',
+            'id_productode.gt' => 'Debe seleccionar producto.',
+            'preciode.required' => 'Debe ingresar precio unitario.',
+            'preciode.gt' => 'Debe ingresar precio unitario mayor a 0.'
+        ]);
+
+        $get_id = RequisicionTdaDetalle::findOrFail($id);
+
+        $valida = RequisicionTdaDetalle::where('id_requisicion', $get_id->id_requisicion)
+                ->where('id_producto', $request->id_productode)
+                ->where('id_requisicion_detalle','!=',$id)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            $archivo = "";
+            if ($_FILES["archivode"]["name"] != "") {
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+                if ($con_id && $lr) {
+                    if($get_id->archivo!=""){
+                        ftp_delete($con_id, "CAJA/REQUISICION/".basename($get_id->archivo));
+                    }
+
+                    $path = $_FILES["archivode"]["name"];
+                    $source_file = $_FILES['archivode']['tmp_name'];
+    
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $nombre_soli = "Archivo_" . date('YmdHis');
+                    $nombre = $nombre_soli . "." . strtolower($ext);
+    
+                    ftp_pasv($con_id, true);
+                    $subio = ftp_put($con_id, "CAJA/REQUISICION/" . $nombre, $source_file, FTP_BINARY);
+                    if ($subio) {
+                        $archivo = "https://lanumerounocloud.com/intranet/CAJA/REQUISICION/" . $nombre;
+                    } else {
+                        echo "Archivo no subido correctamente";
+                    }
+                } else {
+                    echo "No se conecto";
+                }
+            }
+
+            RequisicionTdaDetalle::findOrFail($id)->update([
+                'stock' => $request->stockde,
+                'cantidad' => $request->cantidadde,
+                'id_producto' => $request->id_productode,
+                'precio' => $request->preciode,
+                'archivo' => $archivo
+            ]);
+        }
+    }
+
+    public function destroy_detalle($id)
+    {
+        $get_id = RequisicionTdaDetalle::findOrFail($id);
+        if($get_id->archivo!=""){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                $file_to_delete = "CAJA/REQUISICION/".basename($get_id->archivo);
+                ftp_delete($con_id, $file_to_delete);
+            }
+        }
+        RequisicionTdaDetalle::destroy($id);
     }
 
     public function aprobar($id)

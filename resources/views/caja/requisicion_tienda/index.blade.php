@@ -115,10 +115,6 @@
             }
         }
 
-        function Descargar_Archivo(id){
-            window.location.replace("{{ route('observacion.download', ':id') }}".replace(':id', id));
-        }
-
         function Aprobar_Requisicion_Tienda(id) {
             Cargando();
 
