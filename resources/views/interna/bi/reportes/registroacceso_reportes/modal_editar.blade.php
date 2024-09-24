@@ -1,5 +1,73 @@
 <!-- CSS -->
 <style>
+    #paste_areae_1 {
+        width: 100%;
+        /* Ancho completo */
+        padding: 10px;
+        /* Espaciado interno para separar el contenido del borde */
+        font-size: 16px;
+        /* Tamaño de fuente adecuado */
+        border: 1px solid #ccc;
+        /* Borde del textarea */
+        resize: none;
+        /* Permitir redimensionamiento vertical */
+        box-sizing: border-box;
+        /* Incluir padding y border en el ancho total */
+        cursor: text;
+        /* Cursor de texto para indicar área de entrada */
+        border-color: #3366ff;
+        /* Cambiar color del borde al enfocarse */
+        box-shadow: 0 0 5px rgba(51, 102, 255, 0.5);
+        /* Sombra al enfocarse */
+        font-size: 12px;
+
+    }
+
+    #paste_areae_2 {
+        width: 100%;
+        /* Ancho completo */
+        padding: 10px;
+        /* Espaciado interno para separar el contenido del borde */
+        font-size: 16px;
+        /* Tamaño de fuente adecuado */
+        border: 1px solid #ccc;
+        /* Borde del textarea */
+        resize: none;
+        /* Permitir redimensionamiento vertical */
+        box-sizing: border-box;
+        /* Incluir padding y border en el ancho total */
+        cursor: text;
+        /* Cursor de texto para indicar área de entrada */
+        border-color: #3366ff;
+        /* Cambiar color del borde al enfocarse */
+        box-shadow: 0 0 5px rgba(51, 102, 255, 0.5);
+        /* Sombra al enfocarse */
+        font-size: 12px;
+
+    }
+
+    #paste_areae_3 {
+        width: 100%;
+        /* Ancho completo */
+        padding: 10px;
+        /* Espaciado interno para separar el contenido del borde */
+        font-size: 16px;
+        /* Tamaño de fuente adecuado */
+        border: 1px solid #ccc;
+        /* Borde del textarea */
+        resize: none;
+        /* Permitir redimensionamiento vertical */
+        box-sizing: border-box;
+        /* Incluir padding y border en el ancho total */
+        cursor: text;
+        /* Cursor de texto para indicar área de entrada */
+        border-color: #3366ff;
+        /* Cambiar color del borde al enfocarse */
+        box-shadow: 0 0 5px rgba(51, 102, 255, 0.5);
+        /* Sombra al enfocarse */
+        font-size: 12px;
+    }
+
     /* Asegúrate de que el dropdown de Select2 tenga un z-index más bajo */
     .select2-container--default .select2-dropdown {
         z-index: 1090;
@@ -120,6 +188,9 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="tablas-tab" data-toggle="tab" href="#tablas" role="tab" aria-controls="tablas" aria-selected="false">Tablas</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="upimagenes-tabe" data-toggle="tab" href="#up_imagenes" role="tab" aria-controls="up_imagenes" aria-selected="false">Subir Imagenes</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="accesos-tab2" data-toggle="tab" href="#accesos" role="tab" aria-controls="accesos" aria-selected="false">Accesos</a>
@@ -280,7 +351,7 @@
                             @foreach ($list_tablas as $tabla)
                             <tr class="text-center">
                                 <td class="px-1">
-                                    <select class="form-control" name="sistemas[]">
+                                    <select class="form-control sistema" name="sistemas[]" data-row-index="{{ $loop->index }}">
                                         @foreach ($list_sistemas as $list)
                                         <option value="{{ $list->cod_sistema }}" {{ $list->cod_sistema == $tabla->cod_sistema ? 'selected' : '' }}>
                                             {{ $list->nom_sistema }}
@@ -289,10 +360,11 @@
                                     </select>
                                 </td>
                                 <td class="px-1">
-                                    <select class="form-control" name="db[]" id="db">
+                                    <select class="form-control db" name="dbe[]" data-row-index="{{ $loop->index }}">
                                         @foreach ($list_db as $list)
-                                        <option value="{{ $list->cod_db }}" {{ $list->cod_db  == $tabla->cod_db ? 'selected' : '' }}>
-                                            {{ $list->nom_db }}
+                                        <option value="{{ $list->cod_db }}" {{ $list->cod_db == $tabla->cod_db ? 'selected' : '' }}
+                                            title="{{ $list->nom_db }}">
+                                            {{ strlen($list->nom_db) > 20 ? substr($list->nom_db, 0, 20) . '...' : $list->nom_db }}
                                         </option>
                                         @endforeach
                                     </select>
@@ -304,6 +376,47 @@
                         </tbody>
                     </table>
                     <button type="button" class="btn btn-success btn-sm" onclick="addRowTablaEdit()">Agregar tabla</button>
+                </div>
+
+            </div>
+
+            <div class="tab-pane fade" id="up_imagenes" role="tabpanel" aria-labelledby="upimagenes-tabe">
+                <div class="row my-4">
+                    <div class="col-lg-4">
+                        <div class="row p-2">
+                            <textarea id="paste_areae_1" placeholder="Ctrl + V aquí para pegar la imagen" style="width: 100%" rows="1"></textarea>
+                            <div id="imageViewer_1">
+                                @if (!empty($get_id->img1))
+                                <img src="{{ 'https://lanumerounocloud.com/intranet/REPORTE_BI/' . $get_id->img1 }}" alt="Imagen 1" style="max-width: 100%; max-height: 200px;">
+                                @endif
+                            </div>
+                        </div>
+                        <input type="file" id="archivo_basee_1" name="archivo_basee_1" style="display: none;">
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="row p-2">
+                            <textarea id="paste_areae_2" placeholder="Ctrl + V aquí para pegar la imagen" style="width: 100%" rows="1"></textarea>
+                            <div id="imageViewer_2">
+                                @if (!empty($get_id->img2))
+                                <img src="{{ 'https://lanumerounocloud.com/intranet/REPORTE_BI/' . $get_id->img2 }}" alt="Imagen 2" style="max-width: 100%; max-height: 200px;">
+                                @endif
+                            </div>
+                        </div>
+                        <input type="file" id="archivo_basee_2" name="archivo_basee_2" style="display: none;">
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="row p-2">
+                            <textarea id="paste_areae_3" placeholder="Ctrl + V aquí para pegar la imagen" style="width: 100%" rows="1"></textarea>
+                            <div id="imageViewer_3">
+                                @if (!empty($get_id->img3))
+                                <img src="{{ 'https://lanumerounocloud.com/intranet/REPORTE_BI/' . $get_id->img3 }}" alt="Imagen 3" style="max-width: 100%; max-height: 200px;">
+                                @endif
+                            </div>
+                        </div>
+                        <input type="file" id="archivo_basee_3" name="archivo_basee_3" style="display: none;">
+                    </div>
 
                 </div>
             </div>
@@ -330,7 +443,7 @@
 
     <div class="modal-footer">
         @csrf
-        @method('POST')
+        <!-- @method('POST') -->
         <button class="btn btn-primary" type="button" onclick="Update_Proceso(); ">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
@@ -338,6 +451,61 @@
 </form>
 
 <script>
+    document.getElementById('paste_areae_1').addEventListener('paste', function(e) {
+        handlePaste(e, 'archivo_basee_1', 'imageViewer_1');
+    });
+
+    document.getElementById('paste_areae_2').addEventListener('paste', function(e) {
+        handlePaste(e, 'archivo_basee_2', 'imageViewer_2');
+    });
+
+    document.getElementById('paste_areae_3').addEventListener('paste', function(e) {
+        handlePaste(e, 'archivo_basee_3', 'imageViewer_3');
+    });
+
+    function handlePaste(e, fileInputId, viewerId) {
+        if (e.clipboardData && e.clipboardData.items) {
+            var items = e.clipboardData.items;
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf("image") !== -1) {
+                    var blob = items[i].getAsFile();
+
+                    // Display image in viewer div
+                    displayImage(blob, viewerId);
+
+                    // Set the image blob as form data
+                    var fileInput = document.getElementById(fileInputId);
+                    var dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(blob);
+                    fileInput.files = dataTransfer.files;
+
+                    break;
+                }
+            }
+        }
+    }
+
+    function displayImage(blob, viewerId) {
+        var reader = new FileReader();
+
+        reader.onload = function(event) {
+            var img = new Image();
+            img.src = event.target.result;
+            img.style.maxWidth = "100%";
+            img.style.marginTop = "10px"; // Ajustar el estilo según sea necesario
+
+            // Limpiar contenido anterior
+            var imageViewer = document.getElementById(viewerId);
+            imageViewer.innerHTML = '';
+
+            // Agregar nueva imagen al div de visualización
+            imageViewer.appendChild(img);
+        };
+
+        reader.readAsDataURL(blob);
+    }
+
+
     var opcionesTipo = `
         @foreach ($list_tipo_indicador as $list)
             <option value="{{ $list->idtipo_indicador }}">{{ $list->nom_indicador }}</option>
@@ -373,7 +541,7 @@
     }
 
     function addRowTablaEdit() {
-        // Obtener el cuerpo de la tablacodigo
+        // Obtener el cuerpo de la tabla
         var tableBody = document.getElementById('tabla_body4');
 
         // Crear una nueva fila
@@ -383,31 +551,67 @@
         // Contenido HTML de la nueva fila
         newRowTab.innerHTML = `
         <td class="px-1">
-               <select class="form-control multivalue" name="sistemas[]" id="sistemas">
-                    @foreach ($list_sistemas as $list)
-                    <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema}}</option>
-                    @endforeach
-               </select>
+            <select class="form-control sistema" name="sistemas[]" data-row-index="${tableBody.children.length}">
+                @foreach ($list_sistemas as $list)
+                <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema }}</option>
+                @endforeach
+            </select>
         </td>
         <td class="px-1">
-               <select class="form-control multivalue" name="db[]" id="db">
-                    @foreach ($list_db as $list)
-                    <option value="{{ $list->cod_db }}">{{ $list->nom_db}}</option>
-                    @endforeach
-                </select>
+            <select class="form-control db" name="dbe[]" data-row-index="${tableBody.children.length}">
+                @foreach ($list_db as $list)
+                <option value="{{ $list->cod_db }}">{{ $list->nom_db }}</option>
+                @endforeach
+            </select>
         </td>
         <td class="px-1"><input type="text" class="form-control tabla-sty" name="tablabi[]"></td>
         <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
-        `;
+    `;
 
         // Agregar la nueva fila al cuerpo de la tabla
         tableBody.appendChild(newRowTab);
-        $('.multivalue2').select2({
-            tags: true, // Permite crear nuevas etiquetas
-            tokenSeparators: [',', ' '], // Separa las etiquetas con comas y espacios
-            dropdownParent: $('#ModalRegistro')
+
+        // Asignar el evento change al nuevo select de sistema
+        attachSistemaChangeEvent(newRowTab.querySelector('.sistema'));
+    }
+
+    // Función para adjuntar el evento change al select de sistema
+    function attachSistemaChangeEvent(selectElement) {
+        $(selectElement).on('change', function() {
+            const selectedSistema = $(this).val();
+            var url = "{{ route('db_por_sistema_bi') }}";
+            var rowIndex = $(this).data('row-index');
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: {
+                    sis: selectedSistema
+                },
+                success: function(response) {
+                    // Vaciar el select de db en la fila correspondiente
+                    $(`.db[data-row-index="${rowIndex}"]`).empty();
+                    // Agregar las nuevas opciones
+                    $.each(response, function(index, db) {
+                        $(`.db[data-row-index="${rowIndex}"]`).append(
+                            `<option value="${db.cod_db}" title="${db.nom_db}">${db.nom_db.length > 20 ? db.nom_db.substring(0, 20) + '...' : db.nom_db}</option>`
+                        );
+                    });
+                },
+                error: function(xhr) {
+                    console.error('Error al obtener db:', xhr);
+                }
+            });
         });
     }
+
+    // Asignar eventos a los selects existentes al cargar la página
+    $(document).ready(function() {
+        $('.sistema').each(function() {
+            attachSistemaChangeEvent(this);
+        });
+    });
+
 
 
     function removeRow(button) {
@@ -505,33 +709,6 @@
             });
         });
 
-        // $('#areasse').on('change', function() {
-        //     const selectedAreaUser = $(this).val();
-        //     var url = "{{ route('usuarios_por_area') }}";
-        //     console.log('Área seleccionada:', selectedAreaUser);
-        //     $.ajax({
-        //         url: url,
-        //         method: 'GET',
-        //         data: {
-        //             area_id: selectedAreaUser
-        //         },
-        //         success: function(response) {
-        //             // Vaciar el segundo select antes de agregar las nuevas opciones
-        //             $('#solicitantee').empty();
-
-        //             // Agregar las nuevas opciones
-        //             $.each(response, function(index, usuario) {
-        //                 $('#solicitantee').append(
-        //                     `<option value="${usuario.id_usuario}">${usuario.nombre_completo}</option>`
-        //                 );
-        //             });
-
-        //         },
-        //         error: function(xhr) {
-        //             console.error('Error al obtener usuarios:', xhr);
-        //         }
-        //     });
-        // });
         $('#solicitantee').on('change', function() {
             const selectedSolicitante = $(this).val();
             var url = "{{ route('area_por_usuario') }}";
@@ -615,5 +792,31 @@
         if (event.key === 'Enter') {
             event.preventDefault(); // Evita que el formulario se envíe
         }
+    });
+
+    $('#sistemas').on('change', function() {
+        const selectedSistema = $(this).val();
+        var url = "{{ route('db_por_sistema_bi') }}";
+        $.ajax({
+            url: url,
+            method: 'GET',
+            data: {
+                sis: selectedSistema
+            },
+            success: function(response) {
+                // Vaciar el segundo select antes de agregar las nuevas opciones
+                $('#dbe').empty();
+                // Agregar las nuevas opciones
+                $.each(response, function(index, db) {
+                    $('#dbe').append(
+                        `<option value="${db.cod_db}" title="${db.nom_db}">${db.nom_db.length > 20 ? db.nom_db.substring(0, 20) + '...' : db.nom_db}</option>`
+                    );
+                });
+
+            },
+            error: function(xhr) {
+                console.error('Error al obtener db:', xhr);
+            }
+        });
     });
 </script>

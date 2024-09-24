@@ -312,7 +312,7 @@
                                 <th>N°pagina</th>
                                 <th>Nombre</th>
                                 <th>Descripción</th>
-                                <th class="col-tipo">Tipo Ind</th>
+                                <th class="col-tipo">Concepto</th>
                                 <th class="col-tipo">Presentación</th>
                                 <th class="col-accion">Acciones</th>
                             </tr>
@@ -580,35 +580,73 @@
         var tableBody = document.getElementById('tabla_body3');
         var newRow = document.createElement('tr');
         newRow.classList.add('text-center');
+        var rowIndex = tableBody.children.length; // Obtiene el índice de la nueva fila
+
         // Contenido HTML de la nueva fila
         newRow.innerHTML = `
         <td class="px-1">
-               <select class="form-control multivalue2" name="sistema[]" id="sistema">
-                    @foreach ($list_sistemas as $list)
-                    <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema}}</option>
-                    @endforeach
-               </select>
+            <select class="form-control sistema" name="sistema[]" data-row-index="${rowIndex}">
+                @foreach ($list_sistemas as $list)
+                <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema}}</option>
+                @endforeach
+            </select>
         </td>
         <td class="px-1">
-               <select class="form-control multivalue2" name="db[]" id="db">
-                    @foreach ($list_db as $list)
-                    <option value="{{ $list->cod_db }}">{{ $list->nom_db}}</option>
-                    @endforeach
-                </select>
+            <select class="form-control db" name="db[]" data-row-index="${rowIndex}">
+                @foreach ($list_db as $list)
+                 <option value="{{ $list->cod_db }}" title="{{ $list->nom_db }}">
+                    {{ \Illuminate\Support\Str::limit($list->nom_db, 20, '...') }}
+                </option>
+                @endforeach
+            </select>
         </td>
         <td class="px-1"><input type="text" class="form-control custom-select-add" name="tablabi[]"></td>
         <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
-        `;
+    `;
 
         // Agregar la nueva fila al cuerpo de la tabla
         tableBody.appendChild(newRow);
-        $('.multivalue2').select2({
-            tags: true, // Permite crear nuevas etiquetas
-            tokenSeparators: [',', ' '], // Separa las etiquetas con comas y espacios
-            dropdownParent: $('#ModalRegistro')
-        });
-
+        // Asigna el evento change a los nuevos selects
+        attachSistemaChangeEvent(newRow.querySelector('.sistema'));
     }
+
+    // Función para adjuntar el evento change al select de sistema
+    function attachSistemaChangeEvent(selectElement) {
+        $(selectElement).on('change', function() {
+            const selectedSistema = $(this).val();
+            var url = "{{ route('db_por_sistema_bi') }}";
+            var rowIndex = $(this).data('row-index'); // Obtiene el índice de la fila
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: {
+                    sis: selectedSistema
+                },
+                success: function(response) {
+                    // Vaciar el select de db en la fila correspondiente
+                    $(`.db[data-row-index="${rowIndex}"]`).empty();
+                    // Agregar las nuevas opciones
+                    $.each(response, function(index, db) {
+                        $(`.db[data-row-index="${rowIndex}"]`).append(
+                            `<option value="${db.cod_db}" title="${db.nom_db}">${db.nom_db.length > 20 ? db.nom_db.substring(0, 20) + '...' : db.nom_db}</option>`
+                        );
+                    });
+                },
+                error: function(xhr) {
+                    console.error('Error al obtener db:', xhr);
+                }
+            });
+        });
+    }
+
+    // Asigna el evento a los selects existentes al cargar la página
+    $(document).ready(function() {
+        $('.sistema').each(function() {
+            attachSistemaChangeEvent(this);
+        });
+    });
+
 
     $('.multivalue').select2({
         tags: true, // Permite crear nuevas etiquetas
@@ -637,9 +675,6 @@
             tokenSeparators: [',', ' '],
             dropdownParent: $('#ModalRegistro')
         });
-
-
-
 
 
         $('#sistema').on('change', function() {

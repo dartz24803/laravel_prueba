@@ -92,9 +92,9 @@
             <span class="ml-5">Objetivo</span>
         </div>
         <div class="toggle-switch">
-            <input class="toggle-input" id="toggle-desc" type="checkbox" checked>
-            <label class="toggle-label" for="toggle-desc"></label>
-            <span class="ml-5">Descripción</span>
+            <input class="toggle-input" id="toggle-tabla" type="checkbox" checked>
+            <label class="toggle-label" for="toggle-tabla"></label>
+            <span class="ml-5">Tabla</span>
         </div>
         <div class="toggle-switch">
             <input class="toggle-input" id="toggle-acce" type="checkbox" checked>

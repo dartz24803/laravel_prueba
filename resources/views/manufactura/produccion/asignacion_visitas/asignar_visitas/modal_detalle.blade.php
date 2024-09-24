@@ -148,13 +148,12 @@ PUNTO DE LLEGADA:</textarea> <!-- Cambiado aquí -->
                 </table>
             </div>
 
-
         </div>
     </div>
 
     <div class="modal-footer">
         @csrf
-        @method('PUT')
+        <!-- @method('PUT') -->
         <input type="hidden" id="capturae" name="capturae">
         <button id="boton_disablede" class="btn btn-primary" type="button" onclick="Update_Detalle_Asignacion();">Guardar</button>
         <button class=" btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
@@ -241,50 +240,26 @@ PUNTO DE LLEGADA:</textarea> <!-- Cambiado aquí -->
     });
 
 
-    $(document).ready(function() {
-        // Inicializar la tabla DataTable sin mostrar resultados hasta que se agreguen filas
-        var tabla = $('#selected-data-detalle-table').DataTable({
-            "ordering": false,
-            "autoWidth": false,
-            "dom": "<'table-responsive'tr>", // Solo muestra la tabla sin buscador, resultados ni paginador
-            responsive: true,
-            "oLanguage": {
-                "oPaginate": {
-                    "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                    "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
-                },
-                "sInfo": "Mostrando página _PAGE_ de _PAGES_",
-                "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                "sSearchPlaceholder": "Buscar...",
-                "sLengthMenu": "Resultados :  _MENU_",
-                "sEmptyTable": "No hay datos disponibles en la tabla",
-            },
-            "stripeClasses": [],
-        });
+    $('#btn-add-row-detalle').on('click', function() {
+        // Obtener los datos de los campos
+        let tipoTransporteId = $('#id_tipotransporte').val();
+        let costo = $('#ncosto').val();
+        let descripcion = $('#descripcion').val();
 
-        $('#btn-add-row-detalle').on('click', function() {
-            // Obtener los datos de los campos
-            let tipoTransporteId = $('#id_tipotransporte').val();
-            let costo = $('#ncosto').val();
-            let descripcion = $('#descripcion').val();
+        // Validar que todos los campos estén completados
+        if (tipoTransporteId && costo) {
+            // Mostrar la tabla si está oculta
+            // $('#selected-data-detalle-table').show();
 
-            // Validar que todos los campos estén completados
-            if (tipoTransporteId && costo) {
-                // Mostrar la tabla si está oculta
-                $('#selected-data-detalle-table').show();
+            // Obtener el cuerpo de la tabla
+            var tableBody = document.querySelector('#selected-data-detalle-table tbody');
 
-                // Obtener el cuerpo de la tabla
-                var tableBody = document.querySelector('#selected-data-detalle-table tbody');
+            // Crear una nueva fila
+            var newRow = document.createElement('tr');
+            newRow.classList.add('text-center');
 
-                // Crear una nueva fila
-                var newRow = document.createElement('tr');
-                newRow.classList.add('text-center');
-
-                // Clonar la opción seleccionada del select original
-                let selectedOption = $('#id_tipotransporte option:selected').clone(); // Clona la opción seleccionada
-
-                // Contenido HTML de la nueva fila
-                newRow.innerHTML = `
+            // Contenido HTML de la nueva fila
+            newRow.innerHTML = `
             <td class="px-1">
                 <button type="button" class="btn btn-danger btn-delete-row">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
@@ -308,29 +283,18 @@ PUNTO DE LLEGADA:</textarea> <!-- Cambiado aquí -->
             </td>
         `;
 
-                // Agregar la opción clonada a la nueva fila y establecerla como seleccionada
-                newRow.querySelector('select[name="id_tipotransporte[]"]').append(selectedOption); // Añade la opción clonada al nuevo select
-                newRow.querySelector('select[name="id_tipotransporte[]"]').value = tipoTransporteId; // Establece el valor del nuevo select
+            // Agregar la nueva fila al cuerpo de la tabla
+            tableBody.appendChild(newRow);
 
-                // Agregar la nueva fila al cuerpo de la tabla
-                tableBody.appendChild(newRow);
+            // Seleccionar la opción correspondiente en el nuevo select
+            newRow.querySelector('select[name="id_tipotransporte[]"]').value = tipoTransporteId;
 
-                // Limpiar campos de entrada
-                $('#id_tipotransporte').val('');
-                $('#ncosto').val('');
-                $('#descripcion').val('');
-            } else {
-                alert('Por favor, completa todos los campos.');
-            }
-        });
-
-        // Evento para eliminar una fila de la tabla
-        $(document).on('click', '.btn-delete-row', function() {
-            $(this).closest('tr').remove();
-        });
-
-
-
-
+            // Limpiar campos de entrada
+            $('#id_tipotransporte').val('');
+            $('#ncosto').val('');
+            $('#descripcion').val('');
+        } else {
+            alert('Por favor, completa todos los campos.');
+        }
     });
 </script>
