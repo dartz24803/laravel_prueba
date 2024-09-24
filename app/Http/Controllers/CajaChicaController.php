@@ -102,6 +102,7 @@ class CajaChicaController extends Controller
             'id_sub_categoria' => 'gt:0',
             'id_empresa' => 'gt:0',
             'total' => 'required|gt:0',
+            'ruc' => 'nullable|size:11',
             'ruta' => 'gt:0',
             'punto_partida' => 'required_if:ruta,1',
             'punto_llegada' => 'required'
@@ -112,6 +113,7 @@ class CajaChicaController extends Controller
             'id_empresa.gt' => 'Debe seleccionar empresa.',
             'total.required' => 'Debe ingresar total.',
             'total.gt' => 'Debe ingresar total mayor a 0.',
+            'ruc.size' => 'Debe ingresar RUC válido (11 dígitos).',
             'ruta.gt' => 'Debe seleccionar ruta.',
             'punto_partida.required_if' => 'Debe ingresar punto de partida.',
             'punto_llegada.required' => 'Debe ingresar punto de llegada.'
@@ -210,6 +212,7 @@ class CajaChicaController extends Controller
             'id_sub_categoria' => 'gt:0',
             'id_empresa' => 'gt:0',
             'total' => 'required|gt:0',
+            'ruc' => 'nullable|size:11',
             'n_comprobante' => 'required',
             'id_tipo_comprobante' => 'gt:0',
             'punto_partida' => 'required'
@@ -221,6 +224,7 @@ class CajaChicaController extends Controller
             'id_empresa.gt' => 'Debe seleccionar empresa.',
             'total.required' => 'Debe ingresar total.',
             'total.gt' => 'Debe ingresar total mayor a 0.',
+            'ruc.size' => 'Debe ingresar RUC válido (11 dígitos).',
             'n_comprobante.required' => 'Debe ingresar n° comprobante.',
             'id_tipo_comprobante.gt' => 'Debe seleccionar tipo comprobante.',
             'punto_partida.required' => 'Debe ingresar descripción.'
@@ -346,6 +350,7 @@ class CajaChicaController extends Controller
             'id_sub_categoriae' => 'gt:0',
             'id_empresae' => 'gt:0',
             'totale' => 'required|gt:0',
+            'ruce' => 'nullable|size:11',
             'rutae' => 'gt:0',
             'punto_partidae' => 'required_if:ruta,1',
             'punto_llegadae' => 'required'
@@ -356,6 +361,7 @@ class CajaChicaController extends Controller
             'id_empresae.gt' => 'Debe seleccionar empresa.',
             'totale.required' => 'Debe ingresar total.',
             'totale.gt' => 'Debe ingresar total mayor a 0.',
+            'ruce.size' => 'Debe ingresar RUC válido (11 dígitos).',
             'rutae.gt' => 'Debe seleccionar ruta.',
             'punto_partidae.required_if' => 'Debe ingresar punto de partida.',
             'punto_llegadae.required' => 'Debe ingresar punto de llegada.'
@@ -425,6 +431,7 @@ class CajaChicaController extends Controller
             'id_sub_categoriae' => 'gt:0',
             'id_empresae' => 'gt:0',
             'totale' => 'required|gt:0',
+            'ruce' => 'nullable|size:11',
             'n_comprobantee' => 'required',
             'id_tipo_comprobantee' => 'gt:0',
             'punto_partidae' => 'required'
@@ -436,6 +443,7 @@ class CajaChicaController extends Controller
             'id_empresae.gt' => 'Debe seleccionar empresa.',
             'totale.required' => 'Debe ingresar total.',
             'totale.gt' => 'Debe ingresar total mayor a 0.',
+            'ruce.size' => 'Debe ingresar RUC válido (11 dígitos).',
             'n_comprobantee.required' => 'Debe ingresar n° comprobante.',
             'id_tipo_comprobantee.gt' => 'Debe seleccionar tipo comprobante.',
             'punto_partidae.required' => 'Debe ingresar descripción.'
