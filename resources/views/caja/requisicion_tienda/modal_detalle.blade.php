@@ -186,15 +186,26 @@
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
-                    success: function() {
-                        Swal(
-                            '¡Eliminado!',
-                            'El registro ha sido eliminado satisfactoriamente.',
-                            'success'
-                        ).then(function() {
-                            Lista_Detalle();
-                            Lista_Requisicion_Tienda();
-                        });    
+                    success: function(data) {
+                        if(data=="error"){
+                            Swal({
+                                title: '¡Eliminación Denegada!',
+                                text: "¡No puede eliminar todos los productos!",
+                                type: 'error',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK',
+                            });
+                        }else{
+                            Swal(
+                                '¡Eliminado!',
+                                'El registro ha sido eliminado satisfactoriamente.',
+                                'success'
+                            ).then(function() {
+                                Lista_Detalle();
+                                Lista_Requisicion_Tienda();
+                            });  
+                        }  
                     }
                 });
             }

@@ -436,18 +436,24 @@ class RequisicionTiendaController extends Controller
     public function destroy_detalle($id)
     {
         $get_id = RequisicionTdaDetalle::findOrFail($id);
-        if($get_id->archivo!=""){
-            $ftp_server = "lanumerounocloud.com";
-            $ftp_usuario = "intranet@lanumerounocloud.com";
-            $ftp_pass = "Intranet2022@";
-            $con_id = ftp_connect($ftp_server);
-            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
-            if($con_id && $lr){
-                $file_to_delete = "CAJA/REQUISICION/".basename($get_id->archivo);
-                ftp_delete($con_id, $file_to_delete);
+        $cantidad = RequisicionTdaDetalle::where('id_requisicion',$get_id->id_requisicion)->count();
+
+        if($cantidad==1){
+            echo "error";
+        }else{
+            if($get_id->archivo!=""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    $file_to_delete = "CAJA/REQUISICION/".basename($get_id->archivo);
+                    ftp_delete($con_id, $file_to_delete);
+                }
             }
+            RequisicionTdaDetalle::destroy($id);
         }
-        RequisicionTdaDetalle::destroy($id);
     }
 
     public function aprobar($id)
