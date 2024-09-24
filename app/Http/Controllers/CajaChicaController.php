@@ -230,7 +230,7 @@ class CajaChicaController extends Controller
             'n_comprobante.required' => 'Debe ingresar n° comprobante.',
             'id_tipo_comprobante.gt' => 'Debe seleccionar tipo comprobante.',
             'punto_partida.required' => 'Debe ingresar descripción.',
-            'comprobante.required' => 'Debe ingresar comprobante.'
+            'comprobante.required' => 'Debe cargar comprobante.'
         ]);
 
         $comprobante = "";
