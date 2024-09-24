@@ -67,7 +67,6 @@ session('usuario')->id_nivel == 7 ||
 session('usuario')->id_puesto == 28 ||
 session('usuario')->id_puesto == 128 ||
 session('usuario')->id_puesto == 9 ||
-session('usuario')->id_puesto == 29 ||
 session('usuario')->id_puesto == 31 ||
 session('usuario')->id_puesto == 32 ||
 session('usuario')->id_puesto == 36 ||
@@ -84,7 +83,7 @@ session('usuario')->id_puesto == 19 ||
 session('usuario')->id_puesto == 20 ||
 session('usuario')->id_puesto == 21 ||
 session('usuario')->id_puesto == 279 ||
-session('usuario')->id_puesto == 197 ||
+session('usuario')->id_puesto == 314 ||
 session('usuario')->id_puesto == 148 ||
 session('usuario')->id_puesto == 66 || 
 session('usuario')->id_puesto == 68 ||
@@ -120,7 +119,6 @@ session('usuario')->id_puesto == 314)
         @if (session('usuario')->id_nivel == 1 ||
         session('usuario')->id_puesto == 36 ||
         session('usuario')->id_puesto == 23 ||
-        session('usuario')->id_puesto == 29 ||
         session('usuario')->id_puesto == 161 ||
         session('usuario')->id_puesto == 32 ||
         session('usuario')->id_puesto == 31 ||
@@ -134,7 +132,7 @@ session('usuario')->id_puesto == 314)
         session('usuario')->id_puesto == 30 ||
         session('usuario')->id_puesto == 167 ||
         session('usuario')->id_puesto == 23 ||
-        session('usuario')->id_puesto == 197 ||
+        session('usuario')->id_puesto == 314 ||
         session('usuario')->id_puesto == 148)
         <li id="cambios_prendas">
             <a href="{{ route('cambio_prenda') }}" data-toggle="tooltip" data-placement="right" data-html="true">
@@ -174,7 +172,7 @@ session('usuario')->id_puesto == 314)
         @if (session('usuario')->id_nivel == 1 ||
         session('usuario')->id_puesto == 128 ||
         session('usuario')->id_puesto == 9 ||
-        session('usuario')->id_puesto == 29 ||
+        session('usuario')->id_puesto == 314 ||
         session('usuario')->id_puesto == 161 ||
         session('usuario')->id_puesto == 19 ||
         session('usuario')->id_puesto == 20 ||
@@ -188,13 +186,12 @@ session('usuario')->id_puesto == 314)
         @endif
         @if (session('usuario')->id_nivel == 1 ||
         session('usuario')->id_puesto == 9 ||
-        session('usuario')->id_puesto == 29 ||
         session('usuario')->id_puesto == 31 ||
         session('usuario')->id_puesto == 32 ||
         session('usuario')->id_puesto == 128 ||
         session('usuario')->id_puesto == 167 ||
         session('usuario')->id_puesto == 161 ||
-        session('usuario')->id_puesto == 197)
+        session('usuario')->id_puesto == 314)
         <li id="observaciones">
             <a href="{{ route('observacion') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                 <p class="romperpalabra"><span id="icono_active2"></span> Observaciones</p>
@@ -228,7 +225,7 @@ session('usuario')->id_puesto == 314)
         </li>
         @endif        
         @if (session('usuario')->id_nivel == 1 ||
-        session('usuario')->id_puesto == 29 ||
+        session('usuario')->id_puesto == 314 ||
         session('usuario')->id_puesto == 31 ||
         session('usuario')->id_puesto == 32 ||
         session('usuario')->id_puesto == 161)
