@@ -34,8 +34,6 @@ class Tracking extends Model
         'nombre_transporte',
         'importe_transporte',
         'factura_transporte',
-        'importe_transporte_2',
-        'factura_transporte_2',
         'observacion_inspf',
         'diferencia',
         'guia_diferencia',

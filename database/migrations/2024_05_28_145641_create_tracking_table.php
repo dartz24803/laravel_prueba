@@ -32,8 +32,6 @@ return new class extends Migration
             $table->string('nombre_transporte', 1000)->nullable();
             $table->decimal('importe_transporte', 10, 2)->nullable();
             $table->string('factura_transporte', 20)->nullable();
-            $table->decimal('importe_transporte_2', 10, 2)->nullable();
-            $table->string('factura_transporte_2', 20)->nullable();
             $table->string('observacion_inspf', 1000)->nullable();
             $table->integer('diferencia')->nullable();
             $table->string('guia_diferencia', 20)->nullable();
