@@ -10,6 +10,7 @@
         <table id="tabla_js_detalle" class="table" style="width:100%">
             <thead>
                 <tr class="text-center">
+                    <th>SKU</th>
                     <th>Color</th>
                     <th>Talla</th>
                     <th>Cantidad</th>
@@ -19,6 +20,7 @@
             <tbody>
                 @foreach ($list_mercaderia_nueva as $list)
                     <tr class="text-center">
+                        <td>{{ $list->codigo_barra }}</td>
                         <td class="text-left">{{ $list->color }}</td>
                         <td>{{ $list->talla }}</td>
                         <td>{{ $list->cantidad }}</td>
