@@ -47,16 +47,16 @@ class TrackingGuiaRemisionDetalleSeeder extends Seeder
         ];
 
         foreach ($list_tracking_guia_remision_detalle as $list) {
-            $tracking_grd = new TrackingGuiaRemisionDetalle();
-            $tracking_grd->n_requerimiento = $list['n_requerimiento'];
-            $tracking_grd->n_guia_remision = $list['n_guia_remision'];
-            $tracking_grd->sku = $list['sku'];
-            $tracking_grd->color = $list['color'];
-            $tracking_grd->estilo = $list['estilo'];
-            $tracking_grd->talla = $list['talla'];
-            $tracking_grd->descripcion = $list['descripcion'];
-            $tracking_grd->cantidad = $list['cantidad'];
-            $tracking_grd->save();
+            TrackingGuiaRemisionDetalle::create([
+                'n_requerimiento' => $list['n_requerimiento'],
+                'n_guia_remision' => $list['n_guia_remision'],
+                'sku' => $list['sku'],
+                'color' => $list['color'],
+                'estilo' => $list['estilo'],
+                'talla' => $list['talla'],
+                'descripcion' => $list['descripcion'],
+                'cantidad' => $list['cantidad']
+            ]);
         }
     }
 }
