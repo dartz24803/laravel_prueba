@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Accesorio;
+use App\Models\Banco;
+use App\Models\ComisionAFP;
 use App\Models\Gerencia;
 use App\Models\Organigrama;
 use App\Models\Usuario;
@@ -18,7 +21,24 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use App\Models\Notificacion;
 use App\Models\SubGerencia;
 use App\Models\Config;
+use App\Models\DatacorpAccesos;
+use App\Models\Empresas;
+use App\Models\EstadoCivil;
+use App\Models\GradoInstruccion;
+use App\Models\GrupoSanguineo;
+use App\Models\Idioma;
 use App\Models\Model_Perfil;
+use App\Models\PaginasWebAccesos;
+use App\Models\Parentesco;
+use App\Models\ProgramaAccesos;
+use App\Models\ReferenciaLaboral;
+use App\Models\SituacionLaboral;
+use App\Models\TipoDocumento;
+use App\Models\TipoVia;
+use App\Models\TipoVivienda;
+use App\Models\Zona;
+use Illuminate\Support\Facades\DB;
+
 class ColaboradorController extends Controller
 {
     public function __construct()
@@ -512,5 +532,161 @@ class ColaboradorController extends Controller
         //NOTIFICACIONES
         $dato['list_notificacion'] = Notificacion::get_list_notificacion();
         return view('rrhh.Perfil.miperfil', $dato);
+    }
+
+    public function Perfil($id_usuario=null){
+            if(isset($id_usuario) && $id_usuario > 0){
+                $id_usuario=$id_usuario;
+            }
+            else{
+                $id_usuario= $_SESSION['usuario'][0]['id_usuario'];
+            }
+            $this->Model_Perfil = new Model_Perfil();
+
+            $dato['id_usuario']=$id_usuario;
+            $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+            $id_gerencia = $dato['get_id'][0]['id_gerencia'];
+            $id_area = $dato['get_id'][0]['id_area'];
+            $id_puesto = $dato['get_id'][0]['id_puesto'];
+            $id_departamento = $dato['get_id'][0]['id_departamento'];
+            $id_provincia = $dato['get_id'][0]['id_provincia'];
+
+            $dato['list_tipo_documento'] = TipoDocumento::get();
+            $dato['list_situacion_laboral'] = SituacionLaboral::where('estado', 1)
+                                        ->get();
+            $dato['list_datos_planilla'] = $this->Model_Perfil->get_list_datoplanilla($id_usuario);
+            $dato['list_accesos_datacorp'] = DatacorpAccesos::where('area', $id_area)
+                                        ->where('puesto', $id_puesto)
+                                        ->get();
+            $dato['list_accesos_paginas_web'] = PaginasWebAccesos::where('area', $id_area)
+                                        ->where('puesto', $id_puesto)
+                                        ->get();
+            $dato['list_accesos_programas'] = ProgramaAccesos::where('area', $id_area)
+                                        ->where('puesto', $id_puesto)
+                                        ->get();
+            $dato['url'] = Config::where('descrip_config','Documentos_Perfil')
+                ->where('estado', 1)
+                ->get();
+            $dato['list_estado_usuario'] = $this->Model_Perfil->get_list_estado_usuario();
+            $dato['list_nacionalidad_perfil'] = $this->Model_Perfil->get_list_nacionalidad_perfil();
+            $dato['list_genero'] = $this->Model_Perfil->get_list_genero();
+            $dato['list_dia'] = $this->Model_Perfil->get_list_dia();
+            $dato['list_mes'] = $this->Model_Perfil->get_list_mes();
+            $dato['list_anio'] = $this->Model_Perfil->get_list_anio();
+            $dato['list_estado_civil'] = EstadoCivil::where('estado', 1)
+                                    ->get();
+            $dato['list_idiomas'] = Idioma::where('estado', 1)
+                                ->get();
+            $dato['list_nivel_instruccion'] = $this->Model_Perfil->get_list_nivel_instruccion();
+            $dato['list_accesorio_polo'] = $this->Model_Perfil->get_list_accesorio_polo();
+            $dato['list_accesorio_camisa'] = $this->Model_Perfil->get_list_accesorio_camisa();
+            $dato['list_accesorio_pantalon'] = $this->Model_Perfil->get_list_accesorio_pantalon();
+            $dato['list_accesorio_zapato'] = $this->Model_Perfil->get_list_accesorio_zapato();
+            $dato['list_grado_instruccion'] = GradoInstruccion::where('estado', 1)
+                                        ->get();
+            $dato['list_banco'] = Banco::where('estado', 1)
+                                ->get();
+            $dato['list_referencia_laboral'] = ReferenciaLaboral::where('estado', 1)
+                                        ->get();
+            $dato['list_zona'] = Zona::where('estado', 1)
+                                ->get();
+            $dato['list_sistema_pensionario'] = DB::table('sistema_pensionario')
+                                        ->where('estado', 1)
+                                        ->get();
+            $dato['list_afp'] = ComisionAFP::where('estado', 1)
+                            ->get();
+            $dato['list_grupo_sanguineo'] = GrupoSanguineo::where('estado', 1)
+                                ->get();
+            $dato['list_gerencia'] = $this->Model_Perfil->get_list_gerencia();
+            $dato['list_area'] = $this->Model_Perfil->get_list_area($id_gerencia);
+            $dato['list_puesto'] = $this->Model_Perfil->get_list_puesto($id_gerencia,$id_area);
+            $dato['list_cargo'] = $this->Model_Perfil->get_list_cargo($id_gerencia, $id_area, $id_puesto);
+            $dato['list_ubicacion_l'] = $this->Model_Perfil->get_list_ubicacion_l();
+            $dato['list_empresa'] = Empresas::where('estado', 1)
+                                ->get();
+            $dato['list_modalidad_laboral'] = DB::table('modalidad_laboral')
+                                    ->where('estado',1)
+                                    ->get();
+            /* Domicilio */
+            $dato['list_dtipo_via'] = TipoVia::get();
+            $dato['list_dtipo_vivienda'] = TipoVivienda::get();
+            $dato['list_departamento'] = DB::table('departamento')
+                                        ->where('estado', 1)
+                                        ->get();
+            $dato['list_provincia'] = DB::table('provincia')
+                                        ->where('id_departamento', $id_departamento)
+                                        ->where('estado', 1)
+                                        ->get();
+            $dato['list_distrito'] = DB::table('distrito')
+                                        ->where('id_departamento', $id_departamento)
+                                        ->where('id_provincia', $id_provincia)
+                                        ->where('estado', 1)
+                                        ->get();
+            $dato['get_id_d'] = $this->Model_Perfil->get_id_domicilio_users($id_usuario);
+            $dato['get_id_gp'] = $this->Model_Perfil->get_id_gustosp($id_usuario);
+            $dato['get_id_c'] = $this->Model_Perfil->get_id_conoci_office($id_usuario);
+            $dato['get_id_t'] = $this->Model_Perfil->get_id_ropa_usuario($id_usuario);
+            $dato['list_parentesco'] = Parentesco::where('estado', 1)
+                                        ->get();
+            $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario($id_usuario);
+            $dato['list_referenciafu'] = $this->Model_Perfil->get_list_referenciafu($id_usuario);
+            $dato['list_hijosu'] = $this->Model_Perfil->get_list_hijosu($id_usuario);
+            $dato['list_contactoeu'] = $this->Model_Perfil->get_list_contactoeu($id_usuario);
+            $dato['list_estudiosgu'] = $this->Model_Perfil->get_list_estudiosgu($id_usuario);
+            $dato['listar_idiomas'] = $this->Model_Perfil->get_list_idiomasu($id_usuario);
+            $dato['listar_cursosc'] = $this->Model_Perfil->get_list_cursoscu($id_usuario);
+            $dato['get_id_cuentab'] = $this->Model_Perfil->get_id_cuentab($id_usuario);
+            $dato['get_id_referenciac'] = $this->Model_Perfil->get_id_referenciac($id_usuario);
+            $dato['get_id_gestacion'] = $this->Model_Perfil->get_id_gestacion($id_usuario);
+            $dato['get_id_sist_pensu'] = $this->Model_Perfil->get_id_sist_pensu($id_usuario);
+            $dato['get_id_otros'] = $this->Model_Perfil->get_id_otros($id_usuario);
+            $dato['get_id_documentacion'] = $this->Model_Perfil->get_id_documentacion($id_usuario);
+            $dato['list_enfermedadu'] = $this->Model_Perfil->get_list_enfermedadu($id_usuario);
+            $dato['list_alergia'] = $this->Model_Perfil->get_list_alergia($id_usuario);
+            $dato['list_experiencial'] = $this->Model_Perfil->get_list_experiencial($id_usuario);
+            $dato['list_horario'] = $this->Model_Perfil->get_list_horario();
+
+            //REPORTE BI CON ID
+            $dato['list_subgerencia'] = SubGerencia::list_subgerencia(5);
+            //NOTIFICACIONES
+            $dato['list_notificacion'] = Notificacion::get_list_notificacion();
+
+            if($dato['get_id'][0]['urladm']=="1"){
+                $dato['get_foto'] = Config::where('descrip_config','Foto_Postulante')
+                                ->where('estado', 1)
+                                ->get();
+            }else{
+                $dato['get_foto'] = Config::where('descrip_config','Foto_Colaborador')
+                                ->where('estado', 1)
+                                ->get();
+            }
+
+            $dato['url_documentacion'] = Config::where('descrip_config','Documentacion_Perfil')
+                                ->where('estado', 1)
+                                ->get();
+            $dato['url_cese'] = Config::where('descrip_config','Documento_Cese')
+                                ->where('estado', 1)
+                                ->get();
+            $dato['url_docrrhh'] = Config::where('descrip_config','Documentacion_Rrhh')
+                                ->where('estado', 1)
+                                ->get();
+            $dato['url_dochijo'] = Config::where('descrip_config','Datos_Hijos')
+                                ->where('estado', 1)
+                                ->get();
+            $dato['url_estudiog'] = Config::where('descrip_config','Estudios_Generales')
+                                ->where('estado', 1)
+                                ->get();
+            $dato['url_cursosc'] = Config::where('descrip_config','Cursos_Complementarios')
+                                ->where('estado', 1)
+                                ->get();
+            $dato['url_exp'] = Config::where('descrip_config','Experiencia_Laboral')
+                                ->where('estado', 1)
+                                ->get();
+            $dato['url_otro'] = Config::where('descrip_config','Documentacion_Otro')
+                                ->where('estado', 1)
+                                ->get();
+            $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+
+            return view('rrhh.Perfil.index',$dato);
     }
 }

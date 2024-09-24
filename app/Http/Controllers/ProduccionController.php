@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Area;
 use App\Models\AsignacionVisita;
+use App\Models\AsignacionVisitaTransporte;
 use App\Models\FichaTecnicaProduccion;
 use App\Models\Gerencia;
 use App\Models\Notificacion;
@@ -296,7 +297,32 @@ class ProduccionController extends Controller
             'id_modelo' => $request->id_modeloe,
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
+
         ]);
+    }
+
+    public function update_detalle_av(Request $request, $id)
+    {
+
+
+        $ncostos = $request->input('ncosto', []);
+        $descripciones = $request->input('descripcion', []);
+        $id_tipotransportes = $request->input('id_tipotransporte', []);
+
+
+        foreach ($ncostos as $index => $ncosto) {
+            AsignacionVisitaTransporte::create([
+                'id_asignacion_visita' => $id,
+                'id_tipo_transporte' =>  $id_tipotransportes[$index] ?? '',
+                'costo' => $ncosto,
+                'descripcion' => $descripciones[$index] ?? '',
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
     }
 
 

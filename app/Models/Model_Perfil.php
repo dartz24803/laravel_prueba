@@ -513,4 +513,578 @@ class Model_Perfil extends Model
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }
+
+    function get_id_usuario($id_usuario=null){
+        $anio=date('Y');
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "SELECT u.*, n.nom_nacionalidad,
+            td.nom_tipo_documento,
+            a.id_area,a.nom_area,pu.nom_puesto,est.nom_estado_civil,du.id_departamento,du.id_provincia,
+            DATE_FORMAT(u.ini_funciones,'%d/%m/%Y') as inicio_funciones,e.nom_empresa,e.ruc_empresa,e.firma,e.direccion,
+            CASE WHEN (SELECT count(1) FROM area ar WHERE CONCAT(',', ar.puestos, ',') like CONCAT('%',u.id_puesto, '%'))>0 THEN 'SI' ELSE 'NO' END AS encargado_p,
+            u.centro_labores,(SELECT sl.nom_situacion_laboral FROM historico_colaborador hc
+            LEFT JOIN situacion_laboral sl ON sl.id_situacion_laboral=hc.id_situacion_laboral
+            WHERE hc.id_usuario=$id_usuario AND hc.estado=1
+            ORDER BY hc.fec_inicio DESC
+            LIMIT 1) AS nom_situacion_laboral,
+            case when DATE_FORMAT(u.fec_nac, '%m-%d') = DATE_FORMAT(NOW(), '%m-%d') then 1 else 0 end as cumple_anio,
+            (select count(1) FROM saludo_cumpleanio_historial c where c.id_cumpleaniero='$id_usuario' and year(c.fec_reg)='$anio' and c.estado=1 and c.estado_registro=1) as cantidad_saludos,
+            b.nom_gerencia,c.nom_modalidad_laboral,d.nombre as nom_horario,
+            (select count(1) from users_historico_puesto p where p.estado=1 and p.id_usuario=$id_usuario) as cant_historico_puesto,
+            (select count(1) from users_historico_centro_labores q where q.estado=1 and q.id_usuario=$id_usuario) as cant_historico_base,
+            (select count(1) from users_historico_modalidadl r where r.estado=1 and r.id_usuario=$id_usuario) as cant_historico_modalidad,
+            (select count(1) from users_historico_horario s where s.estado=1 and s.id_usuario=$id_usuario) as cant_historico_horario,
+            (SELECT COUNT(1) FROM users_historico_horas_semanales s
+            WHERE s.id_usuario=$id_usuario AND s.estado=1) AS cant_historico_horas_semanales,
+            CASE WHEN SUBSTRING(u.fec_nac,1,1)=0 OR u.fec_nac IS NULL THEN ''
+            ELSE DATE_FORMAT(u.fec_nac,'%d/%m/%Y') END AS fec_nac_baja,
+            CASE WHEN SUBSTRING(u.ini_funciones,1,1)=0 OR u.ini_funciones IS NULL THEN ''
+            ELSE DATE_FORMAT(u.ini_funciones,'%d/%m/%Y') END AS ini_funciones_baja,
+            CASE WHEN SUBSTRING(u.fec_baja,1,1)=0 OR u.fec_baja IS NULL THEN ''
+            ELSE DATE_FORMAT(u.fec_baja,'%d/%m/%Y') END AS fec_baja_baja,
+            LOWER(CONCAT(u.usuario_nombres,' ',u.usuario_apater,' ',u.usuario_amater)) AS nombre_completo,
+            LOWER(pu.nom_puesto) AS nom_puesto_min,sg.nom_sub_gerencia
+            from users u
+            LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
+            LEFT JOIN tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
+            LEFT JOIN area a on a.id_area=u.id_area
+            LEFT JOIN puesto pu on pu.id_puesto=u.id_puesto
+            LEFT JOIN domicilio_users du on du.id_usuario=u.id_usuario
+            LEFT JOIN estado_civil est on est.id_estado_civil =u.id_estado_civil
+            left join empresas e on e.id_empresa=u.id_empresapl
+            left join gerencia b on u.id_gerencia=b.id_gerencia
+            left join modalidad_laboral c on u.id_modalidad_laboral=c.id_modalidad_laboral
+            left join horario d on u.id_horario=d.id_horario
+            LEFT JOIN sub_gerencia sg ON u.id_sub_gerencia=sg.id_sub_gerencia
+            where u.estado in (1,2,3,4) and u.id_usuario =".$id_usuario;
+        }
+        else{
+            $sql = "SELECT * FROM users";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_datoplanilla($id_usuario){
+        $sql="SELECT h.*,e.nom_estado_usuario,s.nom_situacion_laboral,em.nom_empresa,DATE_FORMAT(h.fec_inicio,'%d/%m/%Y') as fecha_inicio,DATE_FORMAT(h.fec_fin,'%d/%m/%Y') as fecha_fin,
+        (SELECT he2.id_historico_estado_colaborador FROM historico_estado_colaborador he2 WHERE he2.id_usuario=h.id_usuario and he2.estado=1 ORDER BY  he2.id_historico_estado_colaborador desc LIMIT 1) as id_historico_estado_colaborador,
+        he.fec_fin as fec_fin_estado_colaborador,he.estado_fin_colaborador,he.id_historico_estado_colaborador as id_historico_estado_colaborador_eli,
+        case when he.id_historico_estado_colaborador IS NOT NULL then '1' else '2' end as eliminar,
+        case when h.estado=1 then 'Activo'
+        when h.estado=3 and h.flag_cesado=1 then 'Cesado'
+        when h.estado=3 and h.flag_cesado=0 then 'Terminado'
+        when h.estado=4 then 'Renovación'
+        when h.estado=5 then 'Reingreso' end as estado_colaborador,
+        (h.sueldo+h.bono) as total,m.nom_motivo
+
+        from historico_colaborador h
+        left join estado_usuario e on e.id_estado_usuario=h.estado
+        left join situacion_laboral s on s.id_situacion_laboral=h.id_situacion_laboral
+        left join empresas em on em.id_empresa=h.id_empresa
+        left join historico_estado_colaborador he on h.id_usuario=he.id_usuario and h.fec_inicio=he.fec_inicio and he.estado=1
+        left join motivo_baja_rrhh m on h.id_motivo_cese=m.id_motivo
+        where h.id_usuario='".$id_usuario."' and h.estado in (1,3,4) ORDER BY h.id_historico_colaborador DESC";
+
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_estado_usuario($id_estado_usuario=null){
+        if(isset($id_estado_usuario) && $id_estado_usuario > 0){
+            $sql = "select * from estado_usuario where id_estado_usuario =".$id_estado_usuario;
+        }
+        else
+        {
+            $sql = "select * from estado_usuario where id_estado_usuario<>2";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_nacionalidad_perfil($id_nacionalidad=null){
+        if(isset($id_nacionalidad) && $id_nacionalidad > 0){
+            $sql = "select * from nacionalidad where id_nacionalidad =".$id_nacionalidad;
+        }
+        else
+        {
+            $sql = "select * from nacionalidad";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_genero(){
+        $sql = "SELECT * FROM genero WHERE estado='1' ";
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_nivel_instruccion($id_nivel_instruccion=null){
+        if(isset($id_nivel_instruccion) && $id_nivel_instruccion > 0){
+            $sql = "select * from nivel_instruccion where id_nivel_instruccion =".$id_nivel_instruccion." and  estado=1";
+        }
+        else
+        {
+            $sql = "select * from nivel_instruccion where estado=1";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_dia(){
+        $sql = "SELECT * FROM dia WHERE estado='1' ";
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_mes(){
+        $sql = "SELECT * FROM mes WHERE estado='1' ";
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_anio(){
+        $sql = "SELECT * FROM anio WHERE estado='1' order by cod_anio DESC";
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_accesorio_polo($id_accesorio=null){
+        if(isset($id_accesorio) && $id_accesorio > 0){
+            $sql = "SELECT t.*, a.nom_accesorio, a.id_accesorio FROM talla t
+            LEFT JOIN accesorio a on a.id_accesorio=t.id_accesorio
+            WHERE t.estado='1' and a.id_accesorio=1 ";
+        }
+        else
+        {
+            $sql = "SELECT t.*, a.nom_accesorio, a.id_accesorio FROM talla t
+            LEFT JOIN accesorio a on a.id_accesorio=t.id_accesorio
+            WHERE t.estado='1' and a.id_accesorio=1";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_accesorio_camisa($id_accesorio=null){
+        if(isset($id_accesorio) && $id_accesorio > 0){
+            $sql = "SELECT t.*, a.nom_accesorio, a.id_accesorio FROM talla t
+            LEFT JOIN accesorio a on a.id_accesorio=t.id_accesorio
+            WHERE t.estado='1' and a.id_accesorio=2 ";
+        }
+        else
+        {
+            $sql = "SELECT t.*, a.nom_accesorio, a.id_accesorio FROM talla t
+            LEFT JOIN accesorio a on a.id_accesorio=t.id_accesorio
+            WHERE t.estado='1' and a.id_accesorio=2";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_accesorio_pantalon($id_accesorio=null){
+        if(isset($id_accesorio) && $id_accesorio > 0){
+            $sql = "SELECT t.*, a.nom_accesorio, a.id_accesorio FROM talla t
+            LEFT JOIN accesorio a on a.id_accesorio=t.id_accesorio
+            WHERE t.estado='1'and a.id_accesorio=3 ";
+        }
+        else
+        {
+            $sql = "SELECT t.*, a.nom_accesorio, a.id_accesorio FROM talla t
+            LEFT JOIN accesorio a on a.id_accesorio=t.id_accesorio
+            WHERE t.estado='1' and a.id_accesorio=3";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_accesorio_zapato($id_accesorio=null){
+        if(isset($id_accesorio) && $id_accesorio > 0){
+            $sql = "SELECT t.*, a.nom_accesorio, a.id_accesorio FROM talla t
+            LEFT JOIN accesorio a on a.id_accesorio=t.id_accesorio
+            WHERE t.estado='1' and a.id_accesorio=4 ";
+        }
+        else
+        {
+            $sql = "SELECT t.*, a.nom_accesorio, a.id_accesorio FROM talla t
+            LEFT JOIN accesorio a on a.id_accesorio=t.id_accesorio
+            WHERE t.estado='1' and a.id_accesorio=4";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_gerencia($id_gerencia=null){
+        if(isset($id_gerencia) && $id_gerencia > 0){
+            $sql = "SELECT * FROM gerencia WHERE estado='1' and id_gerencia=$id_gerencia";
+        }else{
+            $sql = "SELECT g.*,d.direccion FROM gerencia g
+            left join direccion d on g.id_direccion=d.id_direccion
+            WHERE g.estado='1' ";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_area($id_gerencia=null, $id_area=null){
+        if(isset($id_gerencia) && $id_gerencia > 0 && isset($id_area) && $id_area > 0){
+            $sql = "SELECT t.*, a.nom_gerencia,d.direccion FROM area t
+                    LEFT JOIN gerencia a on a.id_gerencia=t.id_gerencia
+                    left join direccion d on t.id_direccion=d.id_direccion
+                    WHERE t.estado='1' and t.id_gerencia=$id_gerencia and t.id_area=$id_area";
+        }elseif(isset($id_gerencia) && $id_gerencia > 0){
+            $sql = "SELECT t.*, a.nom_gerencia,d.direccion FROM area t
+                    LEFT JOIN gerencia a on a.id_gerencia=t.id_gerencia
+                    left join direccion d on t.id_direccion=d.id_direccion
+                    WHERE t.estado='1' and t.id_gerencia=$id_gerencia";
+        }
+        else
+        {
+            $sql = "SELECT t.*, a.nom_gerencia,d.direccion FROM area t
+                    LEFT JOIN gerencia a on a.id_gerencia=t.id_gerencia
+                    left join direccion d on t.id_direccion=d.id_direccion
+                    WHERE t.estado='1' ";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_puesto($id_gerencia=null, $id_area=null){
+        if(isset($id_gerencia) && $id_gerencia > 0 && isset($id_area) && $id_area > 0){
+            $sql = "SELECT t.*, g.nom_gerencia, a.nom_area,d.direccion,n.nom_nivel FROM puesto t
+                    LEFT JOIN gerencia g on g.id_gerencia=t.id_gerencia
+                    LEFT JOIN area a on a.id_area=t.id_area and a.id_gerencia=t.id_gerencia
+                    left join direccion d on t.id_direccion=d.id_direccion
+                    left join nivel_jerarquico n on t.id_nivel=n.id_nivel
+                    WHERE t.estado='1' and t.id_gerencia=$id_gerencia and t.id_area=$id_area";
+        }elseif(isset($id_gerencia) && $id_gerencia > 0 && $id_area==null){
+            $sql = "SELECT t.*, g.nom_gerencia, a.nom_area,d.direccion,n.nom_nivel FROM puesto t
+                LEFT JOIN gerencia g on g.id_gerencia=t.id_gerencia
+                LEFT JOIN area a on a.id_area=t.id_area and a.id_gerencia=t.id_gerencia
+                left join direccion d on t.id_direccion=d.id_direccion
+                left join nivel_jerarquico n on t.id_nivel=n.id_nivel
+                WHERE t.estado='1' and t.id_gerencia=$id_gerencia";
+        }else{
+            $sql = "SELECT t.*, g.nom_gerencia, a.nom_area,d.direccion,n.nom_nivel FROM puesto t
+                LEFT JOIN gerencia g on g.id_gerencia=t.id_gerencia
+                LEFT JOIN area a on a.id_area=t.id_area and a.id_gerencia=t.id_gerencia
+                left join direccion d on t.id_direccion=d.id_direccion
+                left join nivel_jerarquico n on t.id_nivel=n.id_nivel
+                WHERE t.estado='1'";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_cargo($id_gerencia=null, $id_area=null, $id_puesto=null){
+        if((isset($id_gerencia) && $id_gerencia > 0) && (isset($id_area) && $id_area > 0) &&
+        (isset($id_puesto) && $id_puesto > 0)){
+            $sql = "SELECT t.*, g.nom_gerencia, a.nom_area, p.nom_puesto FROM cargo t
+                    LEFT JOIN gerencia g on g.id_gerencia=t.id_gerencia
+                    LEFT JOIN area a on a.id_area=t.id_area and a.id_gerencia=t.id_gerencia
+                    LEFT JOIN puesto p on p.id_puesto=t.id_puesto and p.id_area=t.id_area and
+                    p.id_gerencia=t.id_gerencia
+                    WHERE t.estado='1' and t.id_gerencia=$id_gerencia and t.id_area=$id_area
+                    and t.id_puesto=$id_puesto";
+        }else{
+            $sql = "SELECT t.*, g.nom_gerencia, a.nom_area, p.nom_puesto FROM cargo t
+                    LEFT JOIN gerencia g on g.id_gerencia=t.id_gerencia
+                    LEFT JOIN area a on a.id_area=t.id_area and a.id_gerencia=t.id_gerencia
+                    LEFT JOIN puesto p on p.id_puesto=t.id_puesto and p.id_area=t.id_area and
+                    p.id_gerencia=t.id_gerencia
+                    WHERE t.estado='1'";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_ubicacion_l(){
+        $sql = "SELECT cod_base from base b
+        LEFT JOIN empresas e on b.id_empresa =e.id_empresa
+        LEFT JOIN departamento d on b.id_departamento =d.id_departamento
+        LEFT JOIN provincia p on b.id_provincia=p.id_provincia
+        LEFT JOIN distrito i on b.id_distrito=i.id_distrito
+        WHERE b.estado='1' group by cod_base";
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_id_conoci_office($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "select * from conoci_office where id_usuario =".$id_usuario;
+        }
+        else
+        {
+            $sql = "select * from conoci_office";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_id_ropa_usuario($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "select * from ropa_usuario where id_usuario =".$id_usuario;
+        }
+        else
+        {
+            $sql = "select * from ropa_usuario";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_usuario($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "SELECT u.*, p.nom_puesto, m.nom_mes, g.cod_genero, g.nom_genero,a.cod_area,a.nom_area,t.cod_tipo_documento,ge.nom_gerencia,
+                    u.usuario_email,(SELECT st.archivo FROM saludo_temporal st
+                    WHERE st.id_usuario=u.id_usuario
+                    LIMIT 1) AS archivo_saludo
+                    FROM users u
+                    left join area a on a.id_area=u.id_area
+                    left join puesto p on p.id_puesto=u.id_puesto
+                    left join mes m on m.id_mes=u.mes_nac
+                    left join genero g on g.id_genero=u.id_genero
+                    left join tipo_documento t on t.id_tipo_documento=u.id_tipo_documento
+                    left join gerencia ge on ge.id_gerencia = u.id_gerencia
+                    WHERE u.id_usuario=$id_usuario";
+        }else{
+            $sql = "SELECT * FROM parentesco";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_referenciafu($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "SELECT rf.*, p.id_parentesco, p.nom_parentesco from referencia_familiar rf
+                    LEFT JOIN parentesco p on p.id_parentesco=rf.id_parentesco
+                    where rf.id_usuario =".$id_usuario." and rf.estado=1";
+        }
+        else
+        {
+            $sql = "SELECT rf.*, p.id_parentesco, p.nom_parentesco from referencia_familiar rf
+            LEFT JOIN parentesco p on p.id_parentesco=rf.id_parentesco
+            where rf.estado=1";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_hijosu($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "SELECT rf.*, p.id_genero, p.nom_genero from hijos rf
+                    LEFT JOIN genero p on p.id_genero=rf.id_genero
+                    where rf.id_usuario =".$id_usuario." and rf.estado=1";
+        }
+        else
+        {
+            $sql = "SELECT rf.*, p.id_genero, p.nom_genero from hijos rf
+            LEFT JOIN genero p on p.id_genero=rf.id_genero
+            where rf.estado=1";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_contactoeu($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "SELECT rf.*, p.id_parentesco, p.nom_parentesco from contacto_emergencia rf
+                    LEFT JOIN parentesco p on p.id_parentesco=rf.id_parentesco
+                    where rf.id_usuario =".$id_usuario." and rf.estado=1";
+        }
+        else
+        {
+            $sql = "SELECT rf.*, p.id_parentesco, p.nom_parentesco from contacto_emergencia rf
+            LEFT JOIN parentesco p on p.id_parentesco=rf.id_parentesco
+            where rf.estado=1";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_estudiosgu($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "SELECT rf.*, p.id_grado_instruccion, p.nom_grado_instruccion from estudios_generales rf
+                    LEFT JOIN grado_instruccion p on p.id_grado_instruccion=rf.id_grado_instruccion
+                    where rf.id_usuario =".$id_usuario." and rf.estado=1";
+        }
+        else
+        {
+            $sql = "SELECT rf.*, p.id_grado_instruccion, p.nom_grado_instruccion from estudios_generales rf
+            LEFT JOIN grado_instruccion p on p.id_grado_instruccion=rf.id_grado_instruccion
+            where rf.estado=1";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_idiomasu($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "SELECT rf.*, pl.id_nivel_instruccion as id_nivel_instruccionl, pl.nom_nivel_instruccion
+                    as nom_nivel_instruccionl, pe.id_nivel_instruccion as id_nivel_instruccione,
+                    pe.nom_nivel_instruccion as nom_nivel_instruccione, pc.id_nivel_instruccion as id_nivel_instruccionc,
+                    pc.nom_nivel_instruccion as nom_nivel_instruccionc, i.id_idioma, i.nom_idioma
+                    from conoci_idiomas rf
+                    LEFT JOIN idioma i on i.id_idioma = rf.nom_conoci_idiomas
+                    LEFT JOIN nivel_instruccion pl on pl.id_nivel_instruccion=rf.lect_conoci_idiomas
+                    LEFT JOIN nivel_instruccion pe on pe.id_nivel_instruccion=rf.escrit_conoci_idiomas
+                    LEFT JOIN nivel_instruccion pc on pc.id_nivel_instruccion=rf.conver_conoci_idiomas
+                    where rf.id_usuario =".$id_usuario." and rf.estado=1";
+        }
+        else
+        {
+            $sql = "SELECT rf.*, pl.id_nivel_instruccion as id_nivel_instruccionl, pl.nom_nivel_instruccion
+                    as nom_nivel_instruccionl, pe.id_nivel_instruccion as id_nivel_instruccione,
+                    pe.nom_nivel_instruccion as nom_nivel_instruccione, pc.id_nivel_instruccion as id_nivel_instruccionc,
+                    pc.nom_nivel_instruccion as nom_nivel_instruccionc, i.id_idioma, i.nom_idioma
+                    from conoci_idiomas rf
+                    LEFT JOIN idioma i on i.id_idioma = rf.nom_conoci_idiomas
+                    LEFT JOIN nivel_instruccion pl on pl.id_nivel_instruccion=rf.lect_conoci_idiomas
+                    LEFT JOIN nivel_instruccion pe on pe.id_nivel_instruccion=rf.escrit_conoci_idiomas
+                    LEFT JOIN nivel_instruccion pc on pc.id_nivel_instruccion=rf.conver_conoci_idiomas
+                    where rf.estado=1";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_cursoscu($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "SELECT rf.*
+                    from curso_complementario rf where rf.id_usuario =".$id_usuario." and rf.estado=1";
+
+        }
+        else
+        {
+            $sql = "SELECT rf.*
+                    from curso_complementario rf where rf.estado=1";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_id_cuentab($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "select * from cuenta_bancaria where id_usuario =".$id_usuario;
+        }
+        else
+        {
+            $sql = "select * from cuenta_bancaria";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_id_gestacion($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "select * from gestacion_usuario where id_usuario =".$id_usuario." and estado=1";
+        }
+        else
+        {
+            $sql = "select * from gestacion_usuario where estado=1";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_id_referenciac($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "select * from referencia_convocatoria where id_usuario =".$id_usuario;
+        }
+        else
+        {
+            $sql = "select * from referencia_convocatoria";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_id_sist_pensu($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "select * from sist_pens_usuario where id_usuario =".$id_usuario." and estado=1";
+        }
+        else
+        {
+            $sql = "select * from sist_pens_usuario where estado=1";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_id_documentacion($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "select * from documentacion_usuario where id_usuario =".$id_usuario." and estado=1";
+        }
+        else{
+            $sql = "select * from documentacion_usuario where estado=1";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_id_otros($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "select * from otros_usuario where id_usuario =".$id_usuario." and estado=1";
+        }
+        else
+        {
+            $sql = "select * from otros_usuario where estado=1";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_enfermedadu($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "SELECT rf.*
+                    from enfermedad_usuario rf where rf.id_usuario =".$id_usuario." and rf.estado=1";
+        }
+        else{
+            $sql = "SELECT rf.*
+            from enfermedad_usuario rf where rf.estado=1";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_alergia($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "SELECT u.alergia, a.* FROM users u
+                    LEFT JOIN alergia_usuario a on u.id_usuario=a.id_usuario
+                    where u.id_usuario =".$id_usuario." and a.estado=1";
+        }
+        else
+        {
+            $sql = "SELECT u.alergia, a.* FROM users u
+                    LEFT JOIN alergia_usuario a on u.id_usuario=a.id_usuario
+                    where a.estado=1";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_experiencial($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "SELECT rf.*
+                    from experiencia_laboral rf where rf.id_usuario =".$id_usuario." and rf.estado=1";
+        }
+        else
+        {
+            $sql = "SELECT rf.* from experiencia_laboral rf where rf.estado=1";
+            //"SELECT rf.* from experiencia_laboral rf where rf.id_usuario =".$id_usuario." and rf.estado=1";;
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    function get_list_horario($id_horario=null){
+        if(isset($id_horario) && $id_horario>0){
+            $sql = "SELECT h.* FROM horario h
+            WHERE h.id_horario=$id_horario";
+        }else{
+            $sql = "SELECT h.*,(SELECT group_concat(distinct d.nom_dia ORDER by d.dia ASC) FROM horario_dia d WHERE d.id_horario=h.id_horario and d.estado=1) as dias FROM horario h
+            WHERE h.estado='1' ";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
 }

@@ -1,5 +1,10 @@
-<?php $this->load->view('header'); ?>
-<?php $this->load->view('nav'); ?>
+@extends('layouts.plantilla')
+
+@section('navbar')
+    @include('rrhh.navbar')
+@endsection
+
+@section('content')
 
 <style>
 
@@ -18,61 +23,61 @@
         -moz-border-radius: 10px 10px 10px 10px;
         -webkit-border-radius: 10px 10px 10px 10px;
         border: 1px dashed #4d4b4d;
-        
+
     }
 
     .fa-plus-circle:before{
         color: #28a745;
     }
 
-input.archivoInput[type="file"]{
-    display: none;
-}
+    input.archivoInput[type="file"]{
+        display: none;
+    }
 
-label.archivoInput2{
-    color:white;
-    background-image: url('template/assets/img/descarga_img.png');
-    background-repeat: no-repeat;
-    background-size: 40px 30px;
-    background-position: center;
-    position:absolute;
-    margin: 25px;
-    padding-bottom: 25px;
-    top:0;
-    bottom:0;
-    left: 0;
-    right:0;
-}
-
-
-label.archivoInput3{
-    color:white;
-    background-image: url('template/assets/img/descarga_img.png');
-    background-repeat: no-repeat;
-    background-size: 30px 20px;
-    background-position: center;
-    position:absolute;
-    margin: 25px;
-    padding-bottom: 38px;
-    top:0;
-    bottom:0;
-    left: 0;
-    right:0;
-}
-
-label.texto {
-  width: 214px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
+    label.archivoInput2{
+        color:white;
+        background-image: url('template/assets/img/descarga_img.png');
+        background-repeat: no-repeat;
+        background-size: 40px 30px;
+        background-position: center;
+        position:absolute;
+        margin: 25px;
+        padding-bottom: 25px;
+        top:0;
+        bottom:0;
+        left: 0;
+        right:0;
+    }
 
 
-    </style>
+    label.archivoInput3{
+        color:white;
+        background-image: url('template/assets/img/descarga_img.png');
+        background-repeat: no-repeat;
+        background-size: 30px 20px;
+        background-position: center;
+        position:absolute;
+        margin: 25px;
+        padding-bottom: 38px;
+        top:0;
+        bottom:0;
+        left: 0;
+        right:0;
+    }
+
+    label.texto {
+    width: 214px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    }
+
+
+</style>
 
     <div id="content" class="main-content">
-            <div class="layout-px-spacing">                
-                    
+            <div class="layout-px-spacing">
+
                 <div class="account-settings-container layout-top-spacing">
 
                     <div class="account-content">
@@ -88,7 +93,7 @@ label.texto {
                                                     <div class="row">
                                                         <div class="col-xl-2 col-lg-12 col-md-4">
                                                             <div class="upload mt-4 pr-md-4">
-                                                                <input type="file" id="foto" class="dropify" data-default-file="<?php echo base_url(); ?>template/assets/img/200x200.jpg" data-max-file-size="2M" />
+                                                                <input type="file" id="foto" class="dropify" data-default-file="{{ asset('template/assets/img/200x200.jpg') }} data-max-file-size="2M" />
                                                                 <p class="mt-2"><i class="flaticon-cloud-upload mr-1"></i> Actualizar Imagen</p>
                                                             </div>
                                                         </div>
@@ -604,9 +609,9 @@ label.texto {
                                                                                 </tr>
                                                                             </tbody>
 
-                                                                        
+
                                                                         </table>
-                                                                    </div>  
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                     </div>
@@ -633,7 +638,7 @@ label.texto {
                                                                         <table class="table table-bordered table-striped mb-4" >
                                                                             <tbody >
                                                                                 <tr>
-                                                                                    <td>    
+                                                                                    <td>
                                                                                         <div class="row">
                                                                                                     <div class="col-sm-4">
                                                                                                         <div class="form-group">
@@ -757,7 +762,7 @@ label.texto {
                                                                                                             <input type="text" class="form-control mb-4" id="dni_hijo" placeholder="" value="">
                                                                                                         </div>
                                                                                                     </div>
-                                                                                                  
+
 
                                                                                                     <div class="col-sm-4">
                                                                                                         <div class="form-group">
@@ -771,15 +776,15 @@ label.texto {
                                                                                                                 <option>Brazil</option>
                                                                                                                 <option>Norway</option>
                                                                                                                 <option>Canada</option>
-                                                                                                            </select>                                                                                                    
+                                                                                                            </select>
                                                                                                         </div>
                                                                                                     </div>
 
-                                                                                                    
+
                                                                                                     <div class="col-sm-4">
                                                                                                         <div class="form-group">
                                                                                                             <label for="dni_img">Adjuntar dni</label>
-                                                                                                                <input type="file" id="archivoInput" class="archivoInput nombre"  onchange="return validarExt()" />       
+                                                                                                                <input type="file" id="archivoInput" class="archivoInput nombre"  onchange="return validarExt()" />
                                                                                                                 <label  class=" archivoInput2 guiones2" for="archivoInput">
                                                                                                                 </label>
                                                                                                             <div>
@@ -791,16 +796,16 @@ label.texto {
                                                                                                         </div>
                                                                                                     </div>
 
-                                                                                                    
-                                                                                                    
+
+
                                                                                         </div>
                                                                                     </td>
                                                                                 </tr>
                                                                             </tbody>
 
-                                                                        
+
                                                                         </table>
-                                                                    </div>  
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                     </div>
@@ -842,7 +847,7 @@ label.texto {
                                                                                                         </div>
                                                                                                     </div>
 
-                                                                                                    
+
                                                                                                     <div class="col-sm-4">
                                                                                                         <div class="form-group">
                                                                                                             <label for="celular_contacto_emer">Celular</label>
@@ -868,9 +873,9 @@ label.texto {
                                                                                 </tr>
                                                                             </tbody>
 
-                                                                        
+
                                                                         </table>
-                                                                    </div>  
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                     </div>
@@ -921,7 +926,7 @@ label.texto {
                                                                                                         </div>
                                                                                                     </div>
 
-                                                                                                    
+
                                                                                                     <div class="col-sm-4">
                                                                                                         <div class="form-group">
                                                                                                             <label for="celular_contacto_emer">Centro de estudios</label>
@@ -933,9 +938,9 @@ label.texto {
                                                                                 </tr>
                                                                             </tbody>
 
-                                                                        
+
                                                                         </table>
-                                                                    </div>  
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                     </div>
@@ -1013,9 +1018,9 @@ label.texto {
                                                                                 </tr>
                                                                             </tbody>
 
-                                                                        
+
                                                                         </table>
-                                                                    </div>  
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                     </div>
@@ -1112,9 +1117,9 @@ label.texto {
                                                                                 </tr>
                                                                             </tbody>
 
-                                                                        
+
                                                                         </table>
-                                                                    </div>  
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                     </div>
@@ -1122,7 +1127,7 @@ label.texto {
                                             </div>
                                         </div>
                                     </form>
-                                </div>                              
+                                </div>
 
 
                                 <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
@@ -1171,14 +1176,14 @@ label.texto {
                                                                                                     <div class="col-sm-4">
                                                                                                         <div class="form-group">
                                                                                                             <label for="dni_img">Adjuntar Certificado</label>
-                                                                                                                <input type="file" id="archivoInput" class="archivoInput nombre"  onchange="return validarExt()" />       
+                                                                                                                <input type="file" id="archivoInput" class="archivoInput nombre"  onchange="return validarExt()" />
                                                                                                                 <label  class=" archivoInput2 guiones2" for="archivoInput">
                                                                                                                 </label>
                                                                                                             <div>
                                                                                                             <label  class="texto  filename" for="archivoInput">
                                                                                                             </label>
                                                                                                             </div>
-                                                                                                               
+
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
@@ -1186,9 +1191,9 @@ label.texto {
                                                                                 </tr>
                                                                             </tbody>
 
-                                                                        
+
                                                                         </table>
-                                                                    </div>  
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                     </div>
@@ -1277,7 +1282,7 @@ label.texto {
                                                                                                                         <option>30</option>
                                                                                                                     </select>
 
-                                                                                                               
+
                                                                                                                 </div>
 
                                                                                                                 <div class="col-md-4">
@@ -1346,7 +1351,7 @@ label.texto {
 
                                                                                                             <div class="row">
 
-                                                                                                            
+
                                                                                                             <div class="col-md-4">
                                                                                                                     <select class="form-control" id="end-in1">
                                                                                                                     <option selected>Día</option>
@@ -1482,7 +1487,7 @@ label.texto {
                                                                                                     <div class="col-sm-6">
                                                                                                         <div class="form-group">
                                                                                                             <label for="dni_img">Adjuntar Certificado</label>
-                                                                                                                <input type="file" id="archivoInput" class="archivoInput nombre"  onchange="return validarExt()" />       
+                                                                                                                <input type="file" id="archivoInput" class="archivoInput nombre"  onchange="return validarExt()" />
                                                                                                                 <label  class=" archivoInput2 guiones2" for="archivoInput">
                                                                                                                 </label>
                                                                                                             <div>
@@ -1490,21 +1495,21 @@ label.texto {
                                                                                                             </label>
                                                                                                             </div>
 
-                                                                                                                
+
                                                                                                         </div>
                                                                                                     </div>
 
-                                                                                            
 
-                                                                                                 
+
+
                                                                                                 </div>
                                                                                     </td>
                                                                                 </tr>
                                                                             </tbody>
 
-                                                                        
+
                                                                         </table>
-                                                                    </div>  
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                     </div>
@@ -1658,13 +1663,13 @@ label.texto {
                                                                                                     </div>
 
 
-                                                                                                
+
                                                                                                 </div>
                                                                                     </td>
                                                                                 </tr>
                                                                             </tbody>
 
-                                                                        
+
                                                                         </table>
                                                                     </div>
                                                                 </div>
@@ -1701,7 +1706,7 @@ label.texto {
                                                                                                         </div>
                                                                                                     </div>
 
-                                                                                                    
+
                                                                                                     <div class="col-sm-6">
                                                                                                         <label class="dob-input">Fecha de incio de gestación</label>
                                                                                                         <div class="d-sm-flex d-block">
@@ -1809,7 +1814,7 @@ label.texto {
                                                                                 </tr>
                                                                             </tbody>
 
-                                                                        
+
                                                                         </table>
                                                                     </div>
                                                                 </div>
@@ -1857,14 +1862,14 @@ label.texto {
                                                                                                         </div>
                                                                                                     </div>
 
-                                                                                
+
 
                                                                                                 </div>
                                                                                     </td>
                                                                                 </tr>
                                                                             </tbody>
 
-                                                                        
+
                                                                         </table>
                                                                     </div>
                                                                 </div>
@@ -1875,7 +1880,7 @@ label.texto {
 
 
 
-                                            
+
                                             <div class="row">
                                                 <div class="col-lg-11 mx-auto">
                                                     <div class="row">
@@ -1907,25 +1912,25 @@ label.texto {
                                                                                                     <div class="col-sm-4">
                                                                                                         <div class="form-group">
                                                                                                             <label for="dni_img">Adjuntar Prueba COVID</label>
-                                                                                                                <input type="file" id="archivoInput" class="archivoInput nombre"  onchange="return validarExt()" />       
+                                                                                                                <input type="file" id="archivoInput" class="archivoInput nombre"  onchange="return validarExt()" />
                                                                                                                 <label  class=" archivoInput2 guiones2" for="archivoInput">
                                                                                                                 </label>
                                                                                                             <div>
                                                                                                             <label  class="texto  filename" for="archivoInput">
                                                                                                             </label>
                                                                                                             </div>
-                                                                                                               
+
                                                                                                         </div>
                                                                                                     </div>
 
-                                                                                                    
-                                                                                                   
+
+
                                                                                                 </div>
                                                                                     </td>
                                                                                 </tr>
                                                                             </tbody>
 
-                                                                        
+
                                                                         </table>
                                                                     </div>
                                                                 </div>
@@ -1935,9 +1940,9 @@ label.texto {
                                             </div>
 
 
-                                          
 
-                                            
+
+
                                         </div>
                                     </form>
                                 </div>
@@ -1947,7 +1952,7 @@ label.texto {
                                         <div class="info">
                                             <h6 class="">Referencia de Convocatoria</h6>
                                             <div class="row">
-                                                
+
                                                 <div class="col-lg-11 mx-auto">
                                                     <div class="row">
                                                             <div class="form">
@@ -1988,9 +1993,9 @@ label.texto {
                                                                                 </tr>
                                                                             </tbody>
 
-                                                                        
+
                                                                         </table>
-                                                                    </div>  
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                     </div>
@@ -2006,7 +2011,7 @@ label.texto {
                                         <div class="info">
                                             <h6 class="">Adjuntar Documentación</h6>
                                             <div class="row">
-                                                
+
                                                 <div class="col-lg-11 mx-auto">
                                                     <div class="row">
                                                             <div class="form">
@@ -2021,7 +2026,7 @@ label.texto {
                                                                                                     <div class="col-sm-4">
                                                                                                         <div class="form-group">
                                                                                                             <label for="dni_img">Adjuntar curriculum vitae</label>
-                                                                                                                <input type="file" id="archivoInput" class="archivoInput nombre"  onchange="return validarExt()" />       
+                                                                                                                <input type="file" id="archivoInput" class="archivoInput nombre"  onchange="return validarExt()" />
                                                                                                                 <label  class=" archivoInput3 guiones2" for="archivoInput">
                                                                                                                 </label>
                                                                                                             <div>
@@ -2036,7 +2041,7 @@ label.texto {
                                                                                                     <div class="col-sm-4">
                                                                                                         <div class="form-group">
                                                                                                             <label for="dni_img">Foto DNI (ambas caras)</label>
-                                                                                                                <input type="file" id="archivoInput" class="archivoInput nombre"  onchange="return validarExt()" />       
+                                                                                                                <input type="file" id="archivoInput" class="archivoInput nombre"  onchange="return validarExt()" />
                                                                                                                 <label  class=" archivoInput3 guiones2" for="archivoInput">
                                                                                                                 </label>
                                                                                                             <div>
@@ -2052,7 +2057,7 @@ label.texto {
                                                                                                     <div class="col-sm-4">
                                                                                                         <div class="form-group">
                                                                                                             <label for="dni_img">Copia de recibo de agua y luz</label>
-                                                                                                                <input type="file" id="archivoInput" class="archivoInput nombre"  onchange="return validarExt()" />       
+                                                                                                                <input type="file" id="archivoInput" class="archivoInput nombre"  onchange="return validarExt()" />
                                                                                                                 <label  class=" archivoInput3 guiones2" for="archivoInput">
                                                                                                                 </label>
                                                                                                             <div>
@@ -2070,9 +2075,9 @@ label.texto {
                                                                                 </tr>
                                                                             </tbody>
 
-                                                                        
+
                                                                         </table>
-                                                                    </div>  
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                     </div>
@@ -2166,9 +2171,9 @@ label.texto {
                                                                                 </tr>
                                                                             </tbody>
 
-                                                                        
+
                                                                         </table>
-                                                                    </div>  
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                     </div>
@@ -2246,9 +2251,9 @@ label.texto {
                                                                                 </tr>
                                                                             </tbody>
 
-                                                                        
+
                                                                         </table>
-                                                                    </div>  
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                     </div>
@@ -2342,9 +2347,9 @@ label.texto {
                                                                                 </tr>
                                                                             </tbody>
 
-                                                                        
+
                                                                         </table>
-                                                                    </div>  
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                     </div>
@@ -2353,11 +2358,11 @@ label.texto {
                                         </div>
                                     </form>
                                 </div>
-                            
-                            
+
+
 
                         <div class="account-settings-footer">
-                            
+
                             <div class="as-footer-container">
 
                                 <button id="multiple-reset" class="btn btn-warning">reinicar todo</button>
@@ -2386,4 +2391,4 @@ label.texto {
         })
     </script>
 
-<?php $this->load->view('footer'); ?>
+@endsection

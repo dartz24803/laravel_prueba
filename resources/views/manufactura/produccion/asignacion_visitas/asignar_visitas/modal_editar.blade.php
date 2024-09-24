@@ -155,7 +155,7 @@
 
     <div class="modal-footer">
         @csrf
-        @method('PUT')
+        <!-- @method('PUT') -->
         <input type="hidden" id="capturae" name="capturae">
         <button id="boton_disablede" class="btn btn-primary" type="button" onclick="Update_Asignacion();">Guardar</button>
         <button class=" btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
@@ -164,16 +164,6 @@
 
 
 <script>
-    // $(document).ready(function() {
-    //     $('#id_ptpartidae').select2({
-    //         placeholder: "Selecciona un Punto de Partida",
-    //         allowClear: true // Esto permite limpiar la selección
-    //     });
-    //     $('#id_ptpartidae').select2({
-    //         placeholder: "Selecciona un Punto de Partida",
-    //         allowClear: true // Esto permite limpiar la selección
-    //     });
-    // });
     $('.multivalue2').select2({
         tags: true, // Permite crear nuevas etiquetas
         tokenSeparators: [',', ' '], // Separa las etiquetas con comas y espacios
@@ -209,7 +199,7 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        ListaAsignacionVisitas();
+                        Lista_Asig_Visitas();
                         $("#ModalUpdate .close").click();
                     });
                 }

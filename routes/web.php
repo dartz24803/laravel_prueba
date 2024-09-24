@@ -894,6 +894,7 @@ Route::controller(ColaboradorController::class)->group(function () {
     Route::get('colaborador_ce/{id}/pdf_perfil', 'pdf_perfil_co')->name('colaborador_ce.pdf_perfil');
     Route::get('colaborador_ce/{id_gerencia}/excel', 'excel_ce')->name('colaborador_ce.excel');
     Route::get('ColaboradorController/Mi_Perfil/{id}', 'Mi_Perfil');
+    Route::get('ColaboradorController/Perfil/{id}', 'Perfil');
 });
 //ÁREA INTERNA
 Route::controller(InternaInicioController::class)->group(function () {
@@ -993,6 +994,7 @@ Route::controller(ProduccionController::class)->group(function () {
     Route::post('produccion_av', 'store_av')->name('produccion_av.store');
     Route::get('produccion_av/{id}/edit', 'edit_av')->name('produccion_av.edit');
     Route::put('produccion_av/{id}', 'update_av')->name('produccion_av.update');
+    Route::put('produccion_detalle_av/{id}', 'update_detalle_av')->name('produccion_detalle_av.update');
     Route::get('produccion_av/{id}/detalle', 'detalle_av')->name('produccion_av.detalle');
     Route::delete('produccion_av/{id}', 'destroy_av')->name('produccion_av.destroy');
     Route::post('Produccion/ListaAsignacionVisitas/{fec_ini}/{fec_fin}', 'ListaAsignacionVisitas');

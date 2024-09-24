@@ -22,7 +22,7 @@
     }
 
 
-    #tabla_js2 td {
+    #selected-data-detalle-table td {
         max-width: 180px;
         /* Controla el ancho máximo */
         white-space: nowrap;
@@ -71,7 +71,7 @@
         transform: translateX(20px);
     }
 </style>
-<form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
+<form id="formulariodeta" method="POST" enctype="multipart/form-data" class="needs-validation">
 
     <div class="modal-header">
         <h5 class="modal-title">Detalle de Visita</h5>
@@ -88,13 +88,12 @@
             <div class="form-group col-lg-12">
                 <label class="control-label text-bold">Almuerzo: </label>
                 <label class="switch">
-                    <input type="checkbox" id="acceso_todo" name="acceso_todo" onclick="toggleAlmuerzo()" checked>
+                    <input type="checkbox" id="almuerzo" name="almuerzo" onclick="toggleAlmuerzo()">
                     <span class="slider"></span>
                 </label>
             </div>
 
-            <!-- Div para las horas que será mostrado u ocultado -->
-            <div id="horas_almuerzo" class="row col-lg-12"> <!-- Asegúrate de que ocupa toda la fila -->
+            <div id="horas_almuerzo" class="row col-lg-12" style="display: none;">
                 <div class="form-group col-lg-6">
                     <label class="control-label text-bold">Hora Inicio: </label>
                     <input type="time" class="form-control" id="hora_inicio_almuerzo" name="hora_inicio_almuerzo">
@@ -104,11 +103,10 @@
                     <input type="time" class="form-control" id="hora_fin_almuerzo" name="hora_fin_almuerzo">
                 </div>
             </div>
-
             <div class="row col-lg-12">
                 <div class="form-group col-lg-6">
                     <label class="control-label text-bold">Tipo de Transporte: </label>
-                    <select class="form-control" name="id_inspector" id="id_inspector">
+                    <select class="form-control" name="id_tipotransporte[]" id="id_tipotransporte">
                         @foreach ($list_tipo_transporte as $list)
                         <option value="{{ $list->id_tipo_transporte }}">{{ $list->nom_tipo_transporte }}</option>
                         @endforeach
@@ -116,21 +114,20 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label>Costo: </label>
-                    <input type="text" class="form-control" id="ncosto" name="ncosto">
+                    <input type="number" class="form-control" id="ncosto" name="ncosto"> <!-- Cambiado aquí -->
                 </div>
                 <div class="form-group col-md-12">
                     <label class="text-bold">Descripción:</label>
                     <div class="">
-                        <textarea name="descripcion" id="descripcion" cols="1" rows="2" class="form-control">PUNTO DE PARTIDA:
-PUNTO DE LLEGADA:
-            </textarea>
+                        <textarea name="descripcion" id="descripcion" cols="1" rows="4" class="form-control">PUNTO DE PARTIDA: 
+PUNTO DE LLEGADA:</textarea> <!-- Cambiado aquí -->
                     </div>
                 </div>
             </div>
 
             <div class="row m-4">
                 <div class="form-group col-lg-12 mt-2">
-                    <button class="btn btn-success" type="button" id="btn-add-row">
+                    <button class="btn btn-success" type="button" id="btn-add-row-detalle">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle">
                             <circle cx="12" cy="12" r="10"></circle>
                             <line x1="12" y1="8" x2="12" y2="16"></line>
@@ -138,20 +135,20 @@ PUNTO DE LLEGADA:
                         </svg>
                     </button>
                 </div>
-                <table class="table table-bordered table-responsive" id="selected-data-table" style="margin-top:20px; display:none;">
+                <table id="selected-data-detalle-table" class="table table-hover" style="width:100%">
                     <thead>
                         <tr>
                             <th>Borrar</th>
-                            <th>Hora Inicio</th>
-                            <th>Hora Fin</th>
                             <th>Tipo de Transporte</th>
-                            <th>Costo</th>
-                            <th>Descripción</th>
+                            <th style="width: 100px;">Costo (S/)</th>
+                            <th style="width: 300px;">Descripción</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
             </div>
+
+
         </div>
     </div>
 
@@ -159,35 +156,25 @@ PUNTO DE LLEGADA:
         @csrf
         @method('PUT')
         <input type="hidden" id="capturae" name="capturae">
-        <button id="boton_disablede" class="btn btn-primary" type="button" onclick="Update_Asignacion();">Guardar</button>
+        <button id="boton_disablede" class="btn btn-primary" type="button" onclick="Update_Detalle_Asignacion();">Guardar</button>
         <button class=" btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 
 <script>
-    // $(document).ready(function() {
-    //     $('#id_ptpartidae').select2({
-    //         placeholder: "Selecciona un Punto de Partida",
-    //         allowClear: true // Esto permite limpiar la selección
-    //     });
-    //     $('#id_ptpartidae').select2({
-    //         placeholder: "Selecciona un Punto de Partida",
-    //         allowClear: true // Esto permite limpiar la selección
-    //     });
-    // });
     $('.multivalue2').select2({
         tags: true, // Permite crear nuevas etiquetas
         tokenSeparators: [',', ' '], // Separa las etiquetas con comas y espacios
         dropdownParent: $('#ModalUpdate')
     });
 
-    function Update_Asignacion() {
+    function Update_Detalle_Asignacion() {
         Cargando();
 
-        var dataString = new FormData(document.getElementById('formularioe'));
+        var dataString = new FormData(document.getElementById('formulariodeta'));
 
-        var url = "{{ route('produccion_av.update', $get_id->id_asignacion_visita) }}";
+        var url = "{{ route('produccion_detalle_av.update', $get_id->id_asignacion_visita) }}";
 
         $.ajax({
             url: url,
@@ -211,7 +198,7 @@ PUNTO DE LLEGADA:
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        ListaAsignacionVisitas();
+                        Lista_Asig_Visitas();
                         $("#ModalUpdate .close").click();
                     });
                 }
@@ -229,37 +216,6 @@ PUNTO DE LLEGADA:
     }
 
 
-
-
-
-
-    var tabla = $('#tabla_js2').DataTable({
-        "columnDefs": [{
-                "width": "180px",
-                "targets": 3
-            } // Aplica a la columna de Área (índice 3)
-        ],
-        "autoWidth": false, // Desactiva el auto ajuste de ancho de DataTables
-        "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
-            "<'table-responsive'tr>" +
-            "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
-        responsive: true,
-        "oLanguage": {
-            "oPaginate": {
-                "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
-            },
-            "sInfo": "Mostrando página _PAGE_ de _PAGES_",
-            "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-            "sSearchPlaceholder": "Buscar...",
-            "sLengthMenu": "Resultados :  _MENU_",
-            "sEmptyTable": "No hay datos disponibles en la tabla",
-        },
-        "stripeClasses": [],
-        "lengthMenu": [10, 20, 50],
-        "pageLength": 10
-    });
-
     $('#toggle').change(function() {
         var visible = this.checked;
         tabla.column(6).visible(visible);
@@ -269,50 +225,112 @@ PUNTO DE LLEGADA:
     });
 
     function toggleAlmuerzo() {
-        var checkbox = document.getElementById("acceso_todo");
-        var horasAlmuerzo = document.getElementById("horas_almuerzo");
+        const almuerzoVisible = document.getElementById("almuerzo").checked;
+        const horasAlmuerzo = document.getElementById("horas_almuerzo");
 
-        if (checkbox.checked) {
-            horasAlmuerzo.classList.remove("d-none"); // Mostrar horas
+        if (almuerzoVisible) {
+            horasAlmuerzo.style.display = 'flex'; // Mostrar cuando el switch está activado
         } else {
-            horasAlmuerzo.classList.add("d-none"); // Ocultar horas
+            horasAlmuerzo.style.display = 'none'; // Ocultar cuando el switch está desactivado
         }
     }
 
-    $('#btn-add-row').on('click', function() {
-        // Obtener los valores de los campos
-        let horaInicio = $('#hora_inicio_almuerzo').val();
-        let horaFin = $('#hora_fin_almuerzo').val();
-        let tipoTransporte = $('#id_inspector').val();
-        let costo = $('#ncosto').val();
-        let descripcion = $('#descripcion').val();
+    // Para asegurarte que se oculte al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleAlmuerzo(); // Esto ocultará la sección al iniciar
+    });
 
-        // Validar que todos los campos estén llenos
-        if (horaInicio && horaFin && tipoTransporte && costo && descripcion) {
-            // Mostrar la tabla si está oculta
-            $('#selected-data-table').show();
 
-            // Crear una nueva fila para la tabla con los valores
-            let newRow = `
-            <tr>
-                <td><button class="btn btn-danger btn-delete-row" type="button">
+    $(document).ready(function() {
+        // Inicializar la tabla DataTable sin mostrar resultados hasta que se agreguen filas
+        var tabla = $('#selected-data-detalle-table').DataTable({
+            "ordering": false,
+            "autoWidth": false,
+            "dom": "<'table-responsive'tr>", // Solo muestra la tabla sin buscador, resultados ni paginador
+            responsive: true,
+            "oLanguage": {
+                "oPaginate": {
+                    "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
+                    "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+                },
+                "sInfo": "Mostrando página _PAGE_ de _PAGES_",
+                "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                "sSearchPlaceholder": "Buscar...",
+                "sLengthMenu": "Resultados :  _MENU_",
+                "sEmptyTable": "No hay datos disponibles en la tabla",
+            },
+            "stripeClasses": [],
+        });
+
+        $('#btn-add-row-detalle').on('click', function() {
+            // Obtener los datos de los campos
+            let tipoTransporteId = $('#id_tipotransporte').val();
+            let costo = $('#ncosto').val();
+            let descripcion = $('#descripcion').val();
+
+            // Validar que todos los campos estén completados
+            if (tipoTransporteId && costo) {
+                // Mostrar la tabla si está oculta
+                $('#selected-data-detalle-table').show();
+
+                // Obtener el cuerpo de la tabla
+                var tableBody = document.querySelector('#selected-data-detalle-table tbody');
+
+                // Crear una nueva fila
+                var newRow = document.createElement('tr');
+                newRow.classList.add('text-center');
+
+                // Clonar la opción seleccionada del select original
+                let selectedOption = $('#id_tipotransporte option:selected').clone(); // Clona la opción seleccionada
+
+                // Contenido HTML de la nueva fila
+                newRow.innerHTML = `
+            <td class="px-1">
+                <button type="button" class="btn btn-danger btn-delete-row">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
                         <polyline points="3 6 5 6 21 6"></polyline>
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                         <line x1="10" y1="11" x2="10" y2="17"></line>
                         <line x1="14" y1="11" x2="14" y2="17"></line>
                     </svg>
-                </button></td>
-                <td>${horaInicio}</td>
-                <td>${horaFin}</td>
-                <td>${$('#id_inspector option:selected').text()}</td>
-                <td>${costo}</td>
-                <td>${descripcion}</td>
-            </tr>
+                </button>
+            </td>
+            <td class="px-1">
+                <select class="form-control" name="id_tipotransporte[]">
+                    ${$('#id_tipotransporte').html()} <!-- Copia todas las opciones -->
+                </select>
+            </td>
+            <td class="px-1">
+                <input type="number" class="form-control" value="${costo}" name="ncosto[]">
+            </td>
+            <td class="px-1">
+                <textarea class="form-control" rows="2" name="descripcion[]">${descripcion}</textarea>
+            </td>
         `;
-            $('#selected-data-table tbody').append(newRow);
-        } else {
-            alert('Por favor, completa todos los campos.');
-        }
+
+                // Agregar la opción clonada a la nueva fila y establecerla como seleccionada
+                newRow.querySelector('select[name="id_tipotransporte[]"]').append(selectedOption); // Añade la opción clonada al nuevo select
+                newRow.querySelector('select[name="id_tipotransporte[]"]').value = tipoTransporteId; // Establece el valor del nuevo select
+
+                // Agregar la nueva fila al cuerpo de la tabla
+                tableBody.appendChild(newRow);
+
+                // Limpiar campos de entrada
+                $('#id_tipotransporte').val('');
+                $('#ncosto').val('');
+                $('#descripcion').val('');
+            } else {
+                alert('Por favor, completa todos los campos.');
+            }
+        });
+
+        // Evento para eliminar una fila de la tabla
+        $(document).on('click', '.btn-delete-row', function() {
+            $(this).closest('tr').remove();
+        });
+
+
+
+
     });
 </script>
