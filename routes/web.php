@@ -64,6 +64,7 @@ use App\Http\Controllers\ReporteProveedoresController;
 use App\Http\Controllers\RequisicionTiendaConfController;
 use App\Http\Controllers\RequisicionTiendaController;
 use App\Http\Controllers\SalidaInsumoController;
+use App\Http\Controllers\TablaMaestraTesoreriaController;
 
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
@@ -1192,6 +1193,12 @@ Route::controller(RequisicionTiendaController::class)->group(function () {
     Route::get('requisicion_tienda/{id}/download', 'download')->name('requisicion_tienda.download');
     Route::put('requisicion_tienda/{id}', 'update')->name('requisicion_tienda.update');
     Route::delete('requisicion_tienda/{id}', 'destroy')->name('requisicion_tienda.destroy');
+});
+//TESORERÍA - TABLA MAESTRA
+Route::controller(TablaMaestraTesoreriaController::class)->group(function () {
+    Route::get('tabla_maestra_tesoreria', 'index')->name('tabla_maestra_tesoreria');
+    Route::post('tabla_maestra_tesoreria/list', 'list')->name('tabla_maestra_tesoreria.list');
+    Route::get('tabla_maestra_tesoreria/{inicio}/{fin}/excel', 'excel')->name('tabla_maestra_tesoreria.excel');
 });
 
 

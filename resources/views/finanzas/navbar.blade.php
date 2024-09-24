@@ -94,6 +94,11 @@
                 <p class="romperpalabra"><span id="icono_active2"></span> Caja chica</p>
             </a>
         </li>
+        <li>
+            <a id="tablas_maestras" href="{{ route('tabla_maestra_tesoreria') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Tabla maestra</p>
+            </a>
+        </li>
     </ul>
 </li>
 
