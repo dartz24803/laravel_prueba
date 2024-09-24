@@ -103,12 +103,13 @@
                     <input type="time" class="form-control" id="hora_fin_almuerzo" name="hora_fin_almuerzo">
                 </div>
             </div>
+
             <div class="row col-lg-12">
                 <div class="form-group col-lg-6">
                     <label class="control-label text-bold">Tipo de Transporte: </label>
                     <select class="form-control" name="id_tipotransporte[]" id="id_tipotransporte">
-                        @foreach ($list_tipo_transporte as $list)
-                        <option value="{{ $list->id_tipo_transporte }}">{{ $list->nom_tipo_transporte }}</option>
+                        @foreach ($list_tipo_transporte as $item)
+                        <option value="{{ $item->id_tipo_transporte }}">{{ $item->nom_tipo_transporte }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -118,10 +119,8 @@
                 </div>
                 <div class="form-group col-md-12">
                     <label class="text-bold">Descripción:</label>
-                    <div class="">
-                        <textarea name="descripcion" id="descripcion" cols="1" rows="4" class="form-control">PUNTO DE PARTIDA: 
-PUNTO DE LLEGADA:</textarea> <!-- Cambiado aquí -->
-                    </div>
+                    <textarea name="descripcion" id="descripcion" cols="1" rows="4" class="form-control">PUNTO DE PARTIDA: 
+PUNTO DE LLEGADA:</textarea>
                 </div>
             </div>
 
@@ -144,11 +143,44 @@ PUNTO DE LLEGADA:</textarea> <!-- Cambiado aquí -->
                             <th style="width: 300px;">Descripción</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        @foreach ($list_visita_transporte as $item)
+                        <tr>
+                            <td class="px-1">
+                                <button type="button" class="btn btn-danger btn-delete-row">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                    </svg>
+                                </button>
+                            </td>
+                            <td class="px-1">
+                                <select class="form-control" name="id_tipotransporte[]">
+                                    @foreach ($list_tipo_transporte as $option)
+                                    <option value="{{ $option->id_tipo_transporte }}" {{ $option->id_tipo_transporte == $item->id_tipo_transporte ? 'selected' : '' }}>
+                                        {{ $option->nom_tipo_transporte }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td class="px-1">
+                                <input type="number" class="form-control" value="{{ $item->costo }}" name="ncosto[]">
+                            </td>
+                            <td class="px-1">
+                                <textarea class="form-control" rows="2" name="descripcion[]">{{ $item->descripcion }}</textarea>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
                 </table>
             </div>
 
+
         </div>
+
+    </div>
     </div>
 
     <div class="modal-footer">
@@ -248,9 +280,6 @@ PUNTO DE LLEGADA:</textarea> <!-- Cambiado aquí -->
 
         // Validar que todos los campos estén completados
         if (tipoTransporteId && costo) {
-            // Mostrar la tabla si está oculta
-            // $('#selected-data-detalle-table').show();
-
             // Obtener el cuerpo de la tabla
             var tableBody = document.querySelector('#selected-data-detalle-table tbody');
 
@@ -260,27 +289,27 @@ PUNTO DE LLEGADA:</textarea> <!-- Cambiado aquí -->
 
             // Contenido HTML de la nueva fila
             newRow.innerHTML = `
-            <td class="px-1">
-                <button type="button" class="btn btn-danger btn-delete-row">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
-                        <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        <line x1="10" y1="11" x2="10" y2="17"></line>
-                        <line x1="14" y1="11" x2="14" y2="17"></line>
-                    </svg>
-                </button>
-            </td>
-            <td class="px-1">
-                <select class="form-control" name="id_tipotransporte[]">
-                    ${$('#id_tipotransporte').html()} <!-- Copia todas las opciones -->
-                </select>
-            </td>
-            <td class="px-1">
-                <input type="number" class="form-control" value="${costo}" name="ncosto[]">
-            </td>
-            <td class="px-1">
-                <textarea class="form-control" rows="2" name="descripcion[]">${descripcion}</textarea>
-            </td>
+        <td>
+            <button type="button" class="btn btn-danger btn-delete-row">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+            </button>
+        </td>
+        <td class="px-1">
+            <select class="form-control" name="id_tipotransporte[]">
+                ${$('#id_tipotransporte').html()}
+            </select>
+        </td>
+        <td class="px-1">
+            <input type="number" class="form-control" value="${costo}" name="ncosto[]">
+        </td>
+        <td class="px-1">
+            <textarea class="form-control" rows="2" name="descripcion[]">${descripcion}</textarea>
+        </td>
         `;
 
             // Agregar la nueva fila al cuerpo de la tabla
@@ -289,12 +318,11 @@ PUNTO DE LLEGADA:</textarea> <!-- Cambiado aquí -->
             // Seleccionar la opción correspondiente en el nuevo select
             newRow.querySelector('select[name="id_tipotransporte[]"]').value = tipoTransporteId;
 
-            // Limpiar campos de entrada
-            $('#id_tipotransporte').val('');
-            $('#ncosto').val('');
-            $('#descripcion').val('');
         } else {
             alert('Por favor, completa todos los campos.');
         }
+    });
+    $(document).on('click', '.btn-delete-row', function() {
+        $(this).closest('tr').remove(); // Eliminar la fila correspondiente
     });
 </script>

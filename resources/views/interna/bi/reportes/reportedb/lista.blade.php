@@ -68,7 +68,7 @@
             <td>{{ $reporte->nom_intranet }}</td>
             <td>{{ $reporte->iframe }}</td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                {{ $reporte->nombres_area }}
+                {{ $reporte->codigo_area }}
             </td>
             <td>{{ $reporte->objetivo }}</td>
             <td>{{ $reporte->nom_sistema }}</td>

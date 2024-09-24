@@ -13,7 +13,7 @@
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                             <li class="nav-item">
-                                <a id="a_tipind" class="nav-link" onclick="TipoIndicador();" style="cursor: pointer;">Tipo Indicadores</a>
+                                <a id="a_tipind" class="nav-link" onclick="TipoIndicador();" style="cursor: pointer;">Tipo Concepto</a>
                             </li>
                             <li class="nav-item">
                                 <a id="a_sis" class="nav-link" onclick="SistemaDb();" style="cursor: pointer;">Sistema - Base de Datos</a>
