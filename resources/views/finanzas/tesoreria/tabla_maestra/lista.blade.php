@@ -36,8 +36,8 @@
                 <td>{{ $list->cod_ubi }}</td>
                 <td class="text-left">{{ $list->nom_macro_categoria }}</td>
                 <td class="text-left">{{ $list->nom_categoria }}</td>
-                <td>{{ $list->nom_sub_categoria }}</td>
-                <td>{{ $list->nom_empresa }}</td>
+                <td class="text-left">{{ $list->nom_sub_categoria }}</td>
+                <td class="text-left">{{ $list->nom_empresa }}</td>
                 <td>{{ $list->razon_social }}</td>
                 <td>{{ $list->nom_tipo_comprobante }}</td>
                 <td class="text-left">{{ $list->n_comprobante }}</td>

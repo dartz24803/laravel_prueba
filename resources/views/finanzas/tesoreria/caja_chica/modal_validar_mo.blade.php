@@ -12,12 +12,7 @@
                 <label>Pago:</label>
             </div>
             <div class="form-group col-lg-4">
-                <select class="form-control" name="id_pagov" id="id_pagov">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_pago as $list)
-                        <option value="{{ $list->id_pago }}">{{ $list->nom_pago }}</option>
-                    @endforeach
-                </select>
+                <input type="text" class="form-control" value="CONTADO" disabled>
             </div>
 
             <div class="form-group col-lg-2">

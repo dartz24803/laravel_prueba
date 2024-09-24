@@ -153,8 +153,9 @@ Route::controller(TrackingController::class)->group(function () {
     //MERCADERÍA NUEVA
     Route::get('tracking/mercaderia_nueva', 'mercaderia_nueva')->name('tracking.mercaderia_nueva');
     Route::post('tracking/list_mercaderia_nueva', 'list_mercaderia_nueva')->name('tracking.list_mercaderia_nueva');
+    Route::get('tracking/{cod_base}/mercaderia_nueva_tusu', 'mercaderia_nueva_tusu')->name('tracking.mercaderia_nueva_tusu');
+    Route::get('tracking/{cod_base}/mercaderia_nueva_tpre', 'mercaderia_nueva_tpre')->name('tracking.mercaderia_nueva_tpre');
     Route::get('tracking/{cod_base}/{estilo}/modal_mercaderia_nueva', 'modal_mercaderia_nueva')->name('tracking.modal_mercaderia_nueva');
-    Route::post('tracking/mercaderia_surtida', 'insert_mercaderia_surtida')->name('tracking.insert_mercaderia_surtida');
 });
 //TIENDA - FUNCIÓN TEMPORAL
 Route::controller(FuncionTemporalController::class)->group(function () {
@@ -1061,10 +1062,12 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::get('caja_chica/{id}/validar', 'validar')->name('caja_chica.validar');
     Route::put('caja_chica_mo/{id}/validar', 'validar_mo')->name('caja_chica.validar_mo');
     Route::put('caja_chica_pv/{id}/validar', 'validar_pv')->name('caja_chica.validar_pv');
+    Route::post('caja_chica/traer_tipo_pago', 'traer_tipo_pago')->name('caja_chica.traer_tipo_pago');
     Route::get('caja_chica/{id}/credito', 'credito')->name('caja_chica.credito');
     Route::get('caja_chica/list_credito', 'list_credito')->name('caja_chica.list_credito');
     Route::get('caja_chica/{id}/saldo', 'saldo')->name('caja_chica.saldo');
     Route::post('caja_chica_cr/{id}', 'store_cr')->name('caja_chica.store_cr');
+    Route::delete('caja_chica_cr/{id}', 'destroy_cr')->name('caja_chica.destroy_cr');
     Route::delete('caja_chica/{id}', 'destroy')->name('caja_chica.destroy');
     Route::get('caja_chica/excel', 'excel')->name('caja_chica.excel');
 });

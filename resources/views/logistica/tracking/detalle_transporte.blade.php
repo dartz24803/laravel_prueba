@@ -83,26 +83,24 @@
                                 </div>
                                 <div class="form-group col-lg-2">
                                     <select class="form-control" name="transporte" id="transporte" onchange="Tipo_Transporte();">
-                                        <option value="0">Seleccione</option>
-                                        <option value="1">Agencia</option>
-                                        <option value="2">Propio</option>
+                                        <option value="1" selected>Agencia - Terrestre</option>
+                                        <option value="2">Agencia - Aérea</option>
+                                        <option value="3">Propio</option>
                                     </select>
                                 </div>
 
-                                <div class="form-group col-lg-1 agencia" style="display: none;">
+                                <div class="form-group col-lg-1 agencia">
                                     <label class="control-label text-bold">Tipo pago: </label>
                                 </div>
-                                <div class="form-group col-lg-2 agencia" style="display: none;">
+                                <div class="form-group col-lg-2 agencia">
                                     <select class="form-control" name="tipo_pago" id="tipo_pago" onchange="Tipo_Pago();">
-                                        <option value="0">Seleccione</option>
                                         <option value="1">Si pago</option>
-                                        <option value="2">No pago</option>
-                                        <option value="3">Parcial</option>
+                                        <option value="2" selected>Por pagar</option>
                                     </select>
                                 </div>
                             </div>
     
-                            <div class="row pagado" style="display: none;">
+                            <div class="row agencia">
                                 <div class="form-group col-lg-1">
                                     <label class="control-label text-bold">Nombre de empresa: </label>
                                 </div>
@@ -117,15 +115,15 @@
                                     <input type="text" class="form-control" name="importe_transporte" id="importe_transporte" placeholder="Importe a pagar" onkeypress="return solo_Numeros_Punto(event);">
                                 </div>
     
-                                <div class="form-group col-lg-1">
+                                <div class="form-group col-lg-1 pagado" style="display: none;">
                                     <label class="control-label text-bold">N° Factura: </label>
                                 </div>
-                                <div class="form-group col-lg-2">
+                                <div class="form-group col-lg-2 pagado" style="display: none;">
                                     <input type="text" class="form-control" name="factura_transporte" id="factura_transporte" placeholder="N° Factura">
                                 </div>
                             </div>
     
-                            <div class="row pagado" style="display: none;">
+                            <div class="row agencia pagado" style="display: none;">
                                 <div class="form-group col-lg-2">
                                     <label class="control-label text-bold">PDF de factura (pago adelantado): </label>
                                 </div>
@@ -189,13 +187,19 @@
             Cargando();
 
             var transporte = $('#transporte').val();
+            var tipo_pago = $('#tipo_pago').val();
 
-            if (transporte=="1") {
+            if (transporte=="1" || transporte=="2") {
                 $('.agencia').show();
+                $('#tipo_pago').val(tipo_pago);
+                Tipo_Pago();
             }else{
                 $('.agencia').hide();
-                $('#tipo_pago').val('0');
-                Tipo_Pago();
+                $('#tipo_pago').val('2');
+                $('#nombre_transporte').val('');
+                $('#importe_transporte').val('');
+                $('#factura_transporte').val('');
+                $('#archivo_transporte').val('');
             }
         }
 
@@ -204,12 +208,10 @@
 
             var tipo_pago = $('#tipo_pago').val();
 
-            if (tipo_pago=="1" || tipo_pago=="3") {
+            if (tipo_pago=="1") {
                 $('.pagado').show();
             }else{
                 $('.pagado').hide();
-                $('#nombre_transporte').val('');
-                $('#importe_transporte').val('');
                 $('#factura_transporte').val('');
                 $('#archivo_transporte').val('');
             }
