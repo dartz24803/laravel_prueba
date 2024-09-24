@@ -47,16 +47,16 @@
         $(document).ready(function() {
             $("#cajas").addClass('active');
             $("#hcajas").attr('aria-expanded', 'true');
-            $("#observaciones").addClass('active');
+            $("#requisiciones_tiendas").addClass('active');
 
-            //Lista_Requisicion_Tienda();
+            Lista_Requisicion_Tienda();
         });
 
         function Lista_Requisicion_Tienda(){
             Cargando();
 
             var cod_base = $('#cod_baseb').val();
-            var url = "{{ route('observacion.list') }}";
+            var url = "{{ route('requisicion_tienda.list') }}";
 
             $.ajax({
                 url: url,
@@ -115,19 +115,15 @@
             }
         }
 
-        function Descargar_Archivo(id){
-            window.location.replace("{{ route('observacion.download', ':id') }}".replace(':id', id));
-        }
-
-        function Cambiar_Estado_Suceso(id) {
+        function Aprobar_Requisicion_Tienda(id) {
             Cargando();
 
-            var url = "{{ route('observacion.cambiar_estado', ':id') }}".replace(':id', id);
+            var url = "{{ route('requisicion_tienda.aprobar', ':id') }}".replace(':id', id);
             var csrfToken = $('input[name="_token"]').val();
 
             Swal({
-                title: '¿Realmente desea cambiar estado de la observación?',
-                text: "La observación cambiará de estado permanentemente",
+                title: '¿Realmente desea aprobar la requisición?',
+                text: "No podrás revertir esta acción",
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Si',
@@ -136,18 +132,18 @@
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        type: "GET",
+                        type: "PUT",
                         url: url,
                         headers: {
-                            'X-CSRF-TOKEN': csrfToken
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         },
                         success: function(data) {
                             Swal(
-                                'El número de la observación es:',
-                                data,
+                                '¡Aprobado!',
+                                'El registro ha sido aprobado satisfactoriamente.',
                                 'success'
                             ).then(function() {
-                                Lista_Observacion();
+                                Lista_Requisicion_Tienda();
                             });    
                         }
                     });
@@ -155,10 +151,10 @@
             })
         }
 
-        function Delete_Suceso(id) {
+        function Delete_Requisicion_Tienda(id) {
             Cargando();
 
-            var url = "{{ route('observacion.destroy', ':id') }}".replace(':id', id);
+            var url = "{{ route('requisicion_tienda.destroy', ':id') }}".replace(':id', id);
             var csrfToken = $('input[name="_token"]').val();
 
             Swal({
@@ -175,7 +171,7 @@
                         type: "DELETE",
                         url: url,
                         headers: {
-                            'X-CSRF-TOKEN': csrfToken
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         },
                         success: function() {
                             Swal(
@@ -183,20 +179,12 @@
                                 'El registro ha sido eliminado satisfactoriamente.',
                                 'success'
                             ).then(function() {
-                                Lista_Observacion();
+                                Lista_Requisicion_Tienda();
                             });    
                         }
                     });
                 }
             })
-        }
-
-        function Excel_Observacion() {
-            var estado_suceso = $('#estado_sucesob').val();
-            var cod_base = $('#cod_baseb').val();
-            var fecha_inicio = $('#fecha_iniciob').val();
-            var fecha_fin = $('#fecha_finb').val();
-            window.location = "{{ route('observacion.excel', [':estado_suceso', ':cod_base', ':fecha_inicio', ':fecha_fin']) }}".replace(':estado_suceso', estado_suceso).replace(':cod_base', cod_base).replace(':fecha_inicio', fecha_inicio).replace(':fecha_fin', fecha_fin);
         }
     </script>
 @endsection

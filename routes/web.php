@@ -1192,8 +1192,15 @@ Route::controller(RequisicionTiendaController::class)->group(function () {
     Route::delete('requisicion_tienda_tmp/{id}', 'destroy_tmp')->name('requisicion_tienda.destroy_tmp');
     Route::post('requisicion_tienda', 'store')->name('requisicion_tienda.store');
     Route::get('requisicion_tienda/{id}/edit', 'edit')->name('requisicion_tienda.edit');
-    Route::get('requisicion_tienda/{id}/download', 'download')->name('requisicion_tienda.download');
     Route::put('requisicion_tienda/{id}', 'update')->name('requisicion_tienda.update');
+    Route::get('requisicion_tienda/{id}/show', 'show')->name('requisicion_tienda.show');
+    Route::get('requisicion_tienda/{id}/list_detalle', 'list_detalle')->name('requisicion_tienda.list_detalle');
+    Route::post('requisicion_tienda/{id}/detalle', 'store_detalle')->name('requisicion_tienda.store_detalle');
+    Route::get('requisicion_tienda/{id}/edit_detalle', 'edit_detalle')->name('requisicion_tienda.edit_detalle');
+    Route::get('requisicion_tienda/cancelar_detalle', 'cancelar_detalle')->name('requisicion_tienda.cancelar_detalle');
+    Route::post('requisicion_tienda_detalle/{id}/update_detalle', 'update_detalle')->name('requisicion_tienda.update_detalle');
+    Route::delete('requisicion_tienda/{id}/detalle', 'destroy_detalle')->name('requisicion_tienda.destroy_detalle');
+    Route::put('requisicion_tienda/{id}/aprobar', 'aprobar')->name('requisicion_tienda.aprobar');
     Route::delete('requisicion_tienda/{id}', 'destroy')->name('requisicion_tienda.destroy');
 });
 //TESORERÍA - TABLA MAESTRA

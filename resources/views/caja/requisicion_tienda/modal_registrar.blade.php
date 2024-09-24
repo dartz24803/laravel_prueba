@@ -221,7 +221,7 @@
                 if(data=="error"){
                     Swal({
                         title: '¡Registro Denegado!',
-                        text: "¡El registro ya existe!",
+                        text: "¡Ya existe un registro para el mes y base seleccionado!",
                         type: 'error',
                         showCancelButton: false,
                         confirmButtonColor: '#3085d6',
@@ -233,7 +233,7 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        //Lista_Requisicion_Tienda();
+                        Lista_Requisicion_Tienda();
                         $("#ModalRegistroGrande .close").click();
                     })
                 }
