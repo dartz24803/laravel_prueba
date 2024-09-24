@@ -56,7 +56,33 @@ class CajaChica extends Model
                 CONCAT(tm.cod_moneda,' ',cc.total) AS total,cc.comprobante,
                 CASE WHEN cc.estado_c=1 THEN 'Por revisar'
                 WHEN cc.estado_c=2 THEN 'Completado' ELSE '' END AS nom_estado,
-                cc.estado_c FROM caja_chica cc
+                cc.estado_c 
+                FROM caja_chica cc
+                INNER JOIN ubicacion ub ON ub.id_ubicacion=cc.id_ubicacion
+                INNER JOIN categoria ca ON ca.id_categoria=cc.id_categoria
+                INNER JOIN sub_categoria sc ON sc.id=cc.id_sub_categoria
+                INNER JOIN empresas em ON em.id_empresa=cc.id_empresa
+                INNER JOIN vw_tipo_comprobante tc ON tc.id=cc.id_tipo_comprobante
+                INNER JOIN tipo_moneda tm ON tm.id_moneda=cc.id_tipo_moneda
+                WHERE cc.estado=1";
+        $query = DB::select($sql);
+        return $query;
+    }
+
+    public static function get_list_tabla_maestra($dato=null){
+        $sql = "SELECT cc.id,cc.fecha AS orden,
+                DATE_FORMAT(cc.fecha,'%d-%m-%Y') AS fecha,
+                pa.nom_pago,tp.nombre AS nom_tipo_pago,'' AS cuenta_1,'' AS cuenta_2,ub.cod_ubi,
+                'Caja chica' AS nom_macro_categoria,ca.nom_categoria,sc.nombre AS nom_sub_categoria,
+                em.nom_empresa,cc.razon_social,tc.nom_tipo_comprobante,cc.n_comprobante,
+                CONCAT(tm.cod_moneda,' ',cc.total) AS total,
+                CASE WHEN ca.nom_categoria='MOVILIDAD' THEN 
+                (CASE WHEN cc.ruta=1 THEN CONCAT(cc.punto_partida,' - ',cc.punto_llegada) 
+                ELSE cc.punto_llegada END) ELSE cc.punto_partida END AS descripcion,
+                cc.comprobante
+                FROM caja_chica cc
+                LEFT JOIN vw_pago pa ON pa.id_pago=cc.id_pago
+                LEFT JOIN tipo_pago tp ON tp.id=cc.id_tipo_pago
                 INNER JOIN ubicacion ub ON ub.id_ubicacion=cc.id_ubicacion
                 INNER JOIN categoria ca ON ca.id_categoria=cc.id_categoria
                 INNER JOIN sub_categoria sc ON sc.id=cc.id_sub_categoria

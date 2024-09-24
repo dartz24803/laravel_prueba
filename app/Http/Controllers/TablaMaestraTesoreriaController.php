@@ -18,7 +18,7 @@ class TablaMaestraTesoreriaController extends Controller
     {
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        $list_subgerencia = SubGerencia::list_subgerencia(5);
+        $list_subgerencia = SubGerencia::list_subgerencia(8);
         return view('finanzas.tesoreria.tabla_maestra.index',compact('list_notificacion','list_subgerencia'));
     }
 
