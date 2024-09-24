@@ -1058,6 +1058,7 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::get('caja_chica/{id}/validar', 'validar')->name('caja_chica.validar');
     Route::put('caja_chica_mo/{id}/validar', 'validar_mo')->name('caja_chica.validar_mo');
     Route::put('caja_chica_pv/{id}/validar', 'validar_pv')->name('caja_chica.validar_pv');
+    Route::post('caja_chica/traer_tipo_pago', 'traer_tipo_pago')->name('caja_chica.traer_tipo_pago');
     Route::get('caja_chica/{id}/credito', 'credito')->name('caja_chica.credito');
     Route::get('caja_chica/list_credito', 'list_credito')->name('caja_chica.list_credito');
     Route::get('caja_chica/{id}/saldo', 'saldo')->name('caja_chica.saldo');

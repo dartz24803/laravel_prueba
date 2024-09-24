@@ -21,7 +21,7 @@
                 </a>
             </div>
             <div class="form-group col-lg-4">
-                <select class="form-control" name="id_pagov" id="id_pagov" onchange="Pago();">
+                <select class="form-control" name="id_pagov" id="id_pagov" onchange="Traer_Pago();">
                     <option value="0">Seleccione</option>
                     @foreach ($list_pago as $list)
                         <option value="{{ $list->id_pago }}">{{ $list->nom_pago }}</option>
@@ -35,9 +35,6 @@
             <div class="form-group col-lg-4">
                 <select class="form-control" name="id_tipo_pagov" id="id_tipo_pagov">
                     <option value="0">Seleccione</option>
-                    @foreach ($list_tipo_pago as $list)
-                        <option value="{{ $list->id }}">{{ $list->nombre }}</option>
-                    @endforeach
                 </select>
             </div>
         </div>
@@ -173,16 +170,30 @@
 </form>
 
 <script>
-    function Pago(){
-        var pago = $('#id_pagov').val();
+    function Traer_Pago(){
+        Cargando();
 
-        if(pago=="2"){
-            $('#pago_credito').show();
-            $('#fecha_pagov').prop('disabled', true);
-        }else{
-            $('#pago_credito').hide();
-            $('#fecha_pagov').prop('disabled', false);
-        }
+        var url = "{{ route('caja_chica.traer_tipo_pago') }}";
+        var id_pago = $('#id_pagov').val();
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {'id_pago':id_pago},
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success:function (resp) {
+                $('#id_tipo_pagov').html(resp);
+                if(id_pago=="2"){
+                    $('#pago_credito').show();
+                    $('#fecha_pagov').prop('disabled', true);
+                }else{
+                    $('#pago_credito').hide();
+                    $('#fecha_pagov').prop('disabled', false);
+                }
+            }
+        });
     }
 
     function Validar_Caja_Chica_Pv() {

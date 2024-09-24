@@ -216,7 +216,8 @@ class CajaChicaController extends Controller
             'ruc' => 'nullable|size:11',
             'n_comprobante' => 'required',
             'id_tipo_comprobante' => 'gt:0',
-            'punto_partida' => 'required'
+            'punto_partida' => 'required',
+            'comprobante' => 'required'
         ], [
             'id_ubicacion.gt' => 'Debe seleccionar ubicación.',
             'id_categoria.gt' => 'Debe seleccionar categoría.',
@@ -228,7 +229,8 @@ class CajaChicaController extends Controller
             'ruc.size' => 'Debe ingresar RUC válido (11 dígitos).',
             'n_comprobante.required' => 'Debe ingresar n° comprobante.',
             'id_tipo_comprobante.gt' => 'Debe seleccionar tipo comprobante.',
-            'punto_partida.required' => 'Debe ingresar descripción.'
+            'punto_partida.required' => 'Debe ingresar descripción.',
+            'comprobante.required' => 'Debe ingresar comprobante.'
         ]);
 
         $comprobante = "";
@@ -521,11 +523,12 @@ class CajaChicaController extends Controller
                 ->where('cc.id',$id)
                 ->first();
         $list_pago = Pago::all();
-        $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)->where('estado',1)
-                        ->orderBy('nombre','ASC')->get();
         $valida = Categoria::select('nom_categoria')->where('id_categoria',$get_id->id_categoria)
                 ->first();
         if($valida->nom_categoria=="MOVILIDAD"){
+            $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
+                            ->where('estado',1)->whereIn('id',[1,2])
+                            ->orderBy('nombre','ASC')->get();
             return view('finanzas.tesoreria.caja_chica.modal_validar_mo', compact(
                 'get_id',
                 'list_pago',
@@ -535,8 +538,7 @@ class CajaChicaController extends Controller
             CajaChicaPagoTemporal::where('id_usuario',session('usuario')->id_usuario)->delete();
             return view('finanzas.tesoreria.caja_chica.modal_validar_pv', compact(
                 'get_id',
-                'list_pago',
-                'list_tipo_pago'
+                'list_pago'
             ));
         }
     }
@@ -630,6 +632,22 @@ class CajaChicaController extends Controller
 
             CajaChicaPagoTemporal::where('id_usuario',session('usuario')->id_usuario)->delete();
         }
+    }
+
+    public function traer_tipo_pago(Request $request)
+    {
+        if($request->id_pago=="1"){
+            $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
+                            ->where('estado',1)->whereIn('id',[1,2])
+                            ->orderBy('nombre','ASC')->get();
+        }elseif($request->id_pago=="2"){
+            $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
+                            ->where('estado',1)->whereIn('id',[2,3])
+                            ->orderBy('nombre','ASC')->get();
+        }else{
+            $list_tipo_pago = [];
+        }
+        return view('finanzas.tesoreria.caja_chica.tipo_pago',compact('list_tipo_pago'));
     }
 
     public function credito($id)

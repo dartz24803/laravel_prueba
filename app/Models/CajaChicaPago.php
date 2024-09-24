@@ -26,7 +26,7 @@ class CajaChicaPago extends Model
                 pa.nom_pago,tp.nombre AS nom_tipo_pago,'' AS cuenta_1,'' AS cuenta_2,ub.cod_ubi,
                 'Caja chica' AS nom_macro_categoria,ca.nom_categoria,sc.nombre AS nom_sub_categoria,
                 em.nom_empresa,cc.razon_social,tc.nom_tipo_comprobante,cc.n_comprobante,
-                CONCAT(tm.cod_moneda,' ',cc.total) AS total,
+                CONCAT(tm.cod_moneda,' ',cp.monto) AS total,
                 CASE WHEN ca.nom_categoria='MOVILIDAD' THEN 
                 (CASE WHEN cc.ruta=1 THEN CONCAT(cc.punto_partida,' - ',cc.punto_llegada) 
                 ELSE cc.punto_llegada END) ELSE cc.punto_partida END AS descripcion,
