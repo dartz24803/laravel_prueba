@@ -1194,6 +1194,7 @@ Route::controller(RequisicionTiendaController::class)->group(function () {
     Route::get('requisicion_tienda/{id}/edit', 'edit')->name('requisicion_tienda.edit');
     Route::get('requisicion_tienda/{id}/download', 'download')->name('requisicion_tienda.download');
     Route::put('requisicion_tienda/{id}', 'update')->name('requisicion_tienda.update');
+    Route::put('requisicion_tienda/{id}/aprobar', 'aprobar')->name('requisicion_tienda.aprobar');
     Route::delete('requisicion_tienda/{id}', 'destroy')->name('requisicion_tienda.destroy');
 });
 //TESORERÍA - TABLA MAESTRA

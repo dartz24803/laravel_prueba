@@ -119,15 +119,15 @@
             window.location.replace("{{ route('observacion.download', ':id') }}".replace(':id', id));
         }
 
-        function Cambiar_Estado_Suceso(id) {
+        function Aprobar_Requisicion_Tienda(id) {
             Cargando();
 
-            var url = "{{ route('observacion.cambiar_estado', ':id') }}".replace(':id', id);
+            var url = "{{ route('requisicion_tienda.aprobar', ':id') }}".replace(':id', id);
             var csrfToken = $('input[name="_token"]').val();
 
             Swal({
-                title: '¿Realmente desea cambiar estado de la observación?',
-                text: "La observación cambiará de estado permanentemente",
+                title: '¿Realmente desea aprobar la requisición?',
+                text: "No podrás revertir esta acción",
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Si',
@@ -136,18 +136,18 @@
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        type: "GET",
+                        type: "PUT",
                         url: url,
                         headers: {
-                            'X-CSRF-TOKEN': csrfToken
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         },
                         success: function(data) {
                             Swal(
-                                'El número de la observación es:',
-                                data,
+                                '¡Aprobado!',
+                                'El registro ha sido aprobado satisfactoriamente.',
                                 'success'
                             ).then(function() {
-                                Lista_Observacion();
+                                Lista_Requisicion_Tienda();
                             });    
                         }
                     });

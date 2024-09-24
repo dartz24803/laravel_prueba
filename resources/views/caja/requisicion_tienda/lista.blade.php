@@ -18,7 +18,7 @@
                 <td>{{ $list->base }}</td>
                 <td class="text-left">{{ $list->nom_usuario }}</td>
                 <td class="text-right">{{ $list->total }}</td>
-                <td>{{ $list->nom_estado }}</td>
+                <td class="text-left">{{ $list->nom_estado }}</td>
                 <td>
                     @if (session('usuario')->id_nivel=="1"||
                     session('usuario')->id_puesto=="9"||
@@ -26,6 +26,17 @@
                         <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('requisicion_tienda.edit', $list->id_requisicion) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                 <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                            </svg>
+                        </a>
+                    @endif
+                    @if ($list->estado_registro=="1" &&
+                    (session('usuario')->id_nivel=="1"||
+                    session('usuario')->id_puesto=="9"||
+                    session('usuario')->id_puesto=="128"))
+                        <a href="javascript:void(0);" title="Aprobar" onclick="Aprobar_Requisicion_Tienda('{{ $list->id_requisicion }}')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle text-success">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
                             </svg>
                         </a>
                     @endif

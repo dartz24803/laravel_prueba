@@ -245,6 +245,15 @@ class RequisicionTiendaController extends Controller
         }
     }
 
+    public function aprobar($id)
+    {
+        RequisicionTda::findOrFail($id)->update([
+            'estado_registro' => 2,
+            'fec_aprob' => now(),
+            'user_aprob' => session('usuario')->id_usuario
+        ]);
+    }
+
     public function destroy($id)
     {
         RequisicionTda::findOrFail($id)->update([
