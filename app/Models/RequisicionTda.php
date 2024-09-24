@@ -39,8 +39,8 @@ class RequisicionTda extends Model
             $parte_base = "rt.base='".$dato['base']."' AND";
         }
         $sql = "SELECT rt.id_requisicion,rt.fecha AS orden,DATE_FORMAT(rt.fecha,'%d-%m-%Y') AS fecha,
-                rt.base,CONCAT(us.usuario_nombres,' ',us.usuario_apater,' ',
-                us.usuario_amater) AS nom_usuario,
+                rt.base,CONCAT(IFNULL(us.usuario_nombres,''),' ',IFNULL(us.usuario_apater,''),' ',
+                IFNULL(us.usuario_amater,'')) AS nom_usuario,
                 CONCAT('S/ ',ROUND((SELECT SUM(rd.cantidad*rd.precio) FROM requisicion_tda_detalle rd
                 WHERE rd.id_requisicion=rt.id_requisicion),2)) AS total,
                 CASE WHEN rt.estado_registro=1 THEN 'PENDIENTE DE APROBACIÓN' 
