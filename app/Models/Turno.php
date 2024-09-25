@@ -66,4 +66,30 @@ class Turno extends Model
         // Convertir el resultado a un array
         return json_decode(json_encode($result), true);
     }
+    
+    static function get_list_turno($id_turno=null){
+        if(isset($id_turno) && $id_turno>0){
+            $sql = "SELECT a.id_turno,a.base,date_format(a.entrada,'%H:%i') as entrada,
+            date_format(a.salida,'%H:%i') as salida,a.t_refrigerio,
+            case when a.t_refrigerio=1 then date_format(a.ini_refri,'%H:%i') end as ini_refri,
+            case when a.t_refrigerio=1 then date_format(a.fin_refri, '%H:%i') end as fin_refri,
+            case when a.t_refrigerio=2 then 'Sin Refrigerio' when a.t_refrigerio=1 then 'Refrigerio Fijo' end as desc_t_refrigerio,
+            a.estado_registro
+            FROM turno a 
+            left join tolerancia_horario b on b.id_tolerancia=1
+            WHERE a.id_turno=$id_turno";
+        }else{
+            $sql = "SELECT a.id_turno,a.base,date_format(a.entrada,'%H:%i') as entrada,
+            date_format(a.salida,'%H:%i') as salida,a.t_refrigerio,
+            case when a.t_refrigerio=1 then date_format(a.ini_refri,'%H:%i') end as ini_refri,
+            case when a.t_refrigerio=1 then date_format(a.fin_refri, '%H:%i') end as fin_refri,
+            case when a.t_refrigerio=2 then 'Sin Refrigerio' when a.t_refrigerio=1 then 'Refrigerio Fijo' end as desc_t_refrigerio,
+            case when a.estado_registro=1 then 'Activo' when a.estado_registro=2 then 'Inactivo' end as desc_estado
+            FROM turno a 
+            WHERE a.estado=1";
+        }
+        $result = DB::select($sql);
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
+    }
 }

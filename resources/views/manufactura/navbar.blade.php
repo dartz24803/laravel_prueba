@@ -74,6 +74,11 @@
                 <p class="romperpalabra"><span id="icono_active2"></span> Registro de Visitas</p>
             </a>
         </li>
+        <li>
+            <a id="fichas_tecnicas" href="{{ route('produccionft') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Registrar Ficha Técnica</p>
+            </a>
+        </li>
     </ul>
 </li>
 

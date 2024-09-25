@@ -214,15 +214,6 @@ if($get_id[0]['edicion_perfil']==1){
                                                                         <div>
                                                                             <label for="" style="color:black"><b><?php echo $get_id[0]['nom_gerencia'] ?></b></label>
                                                                         </div>
-                                                                        <!--<select class="form-control" name="id_gerencia" id="id_gerencia" onchange="area()">
-                                                                        <option value="0">Seleccionar</option>
-                                                                        <?php foreach($list_gerencia as $list){
-                                                                            if($get_id[0]['id_gerencia'] == $list['id_gerencia']){ ?>
-                                                                            <option selected value="<?php echo $list['id_gerencia']; ?>"><?php echo $list['nom_gerencia'];?></option>
-                                                                        <?php }else{?>
-                                                                        <option value="<?php echo $list['id_gerencia']; ?>"><?php echo $list['nom_gerencia'];?></option>
-                                                                        <?php } } ?>
-                                                                        </select>-->
                                                                     </div>
                                                                 </div>
 
@@ -240,20 +231,6 @@ if($get_id[0]['edicion_perfil']==1){
                                                                         <label for="id_area">Área</label>
                                                                         <div id="marea">
                                                                             <label for="" style="color:black"><b><?php echo $get_id[0]['nom_area'] ?></b></label>
-                                                                            <!--<select class="form-control" name="id_area" id="id_area" onchange="puesto()">
-                                                                            <option  value="0"  selected>Seleccionar</option>
-                                                                            <?php
-                                                                            if ($get_id[0]['id_area'] != "" && isset($get_id[0]['id_area'])){
-                                                                                foreach($list_area as $list){
-                                                                                    if($get_id[0]['id_area'] == $list['id_area']){ ?>
-                                                                                    <option selected value="<?php echo $list['id_area']; ?>"><?php echo $list['nom_area'];?></option>
-                                                                                    <?php }else{?>
-                                                                                    <option value="<?php echo $list['id_area']; ?>"><?php echo $list['nom_area'];?></option>
-                                                                                    <?php }
-                                                                                }
-                                                                            }
-                                                                            ?>
-                                                                            </select>-->
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -269,24 +246,8 @@ if($get_id[0]['edicion_perfil']==1){
                                                                                 </svg>
                                                                             </a>
                                                                             <div>
-                                                                                <a href="javascrit:void(0)" title="Ver Historial" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('ColaboradorController/Modal_Detalle_Historico_Colaborador/'. $get_id[0]['id_usuario'].'/1')" style="color:#1b55e2">Ver historial de puestos (<?php echo $get_id[0]['cant_historico_puesto'] ?>)</a>
+                                                                                <a href="javascrit:void(0)" title="Ver Historial" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('ColaboradorController/Modal_Detalle_Historico_Colaborador/'. $get_id[0]['id_usuario'].'/1') }}" style="color:#1b55e2">Ver historial de puestos (<?php echo $get_id[0]['cant_historico_puesto'] ?>)</a>
                                                                             </div>
-
-
-
-                                                                            <!--<select class="form-control" name="id_puesto" id="id_puesto" onchange="cargo()">
-                                                                            <option  value="0"  selected>Seleccionar</option>
-                                                                            <?php
-                                                                            if ($get_id[0]['id_puesto'] != "" && isset($get_id[0]['id_puesto'])){
-                                                                                foreach($list_puesto as $list){
-                                                                                    if($get_id[0]['id_puesto'] == $list['id_puesto']){ ?>
-                                                                                    <option selected value="<?php echo $list['id_puesto']; ?>"><?php echo $list['nom_puesto'];?></option>
-                                                                                    <?php }else{?>
-                                                                                    <option value="<?php echo $list['id_puesto']; ?>"><?php echo $list['nom_puesto'];?></option>
-                                                                                    <?php }
-                                                                                }
-                                                                            }?>
-                                                                            </select>-->
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -294,23 +255,6 @@ if($get_id[0]['edicion_perfil']==1){
                                                         </div>
                                                         <div class="col-md-12">
                                                             <div class="row">
-                                                                <!--<div class="col-md-5">
-                                                                    <div class="form-group">
-                                                                        <label for="id_cargo">Cargo</label>
-                                                                        <div id="mcargo">
-                                                                            <select class="form-control" name="id_cargo" id="id_cargo">
-                                                                            <option  value="0"  selected>Seleccionar</option>
-                                                                            <?php foreach($list_cargo as $list){
-                                                                            if($get_id[0]['id_cargo'] == $list['id_cargo']){ ?>
-                                                                            <option selected value="<?php echo $list['id_cargo']; ?>"><?php echo $list['nom_cargo'];?></option>
-                                                                            <?php }else{?>
-                                                                            <option value="<?php echo $list['id_cargo']; ?>"><?php echo $list['nom_cargo'];?></option>
-                                                                            <?php } } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>-->
-
                                                                 <div class="col-md-2">
                                                                     <div class="form-group">
                                                                         <label for="id_base">Centro de Labores</label>
@@ -322,18 +266,9 @@ if($get_id[0]['edicion_perfil']==1){
                                                                                 </svg>
                                                                             </a>
                                                                             <div>
-                                                                                <a href="javascrit:void(0)" title="Ver Historial" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('ColaboradorController/Modal_Detalle_Historico_Colaborador/' .$get_id[0]['id_usuario'].'/2')" style="color:#1b55e2">Ver historial (<?php echo $get_id[0]['cant_historico_base'] ?>)</a>
+                                                                                <a href="javascrit:void(0)" title="Ver Historial" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('ColaboradorController/Modal_Detalle_Historico_Colaborador/' .$get_id[0]['id_usuario'].'/2') }}" style="color:#1b55e2">Ver historial (<?php echo $get_id[0]['cant_historico_base'] ?>)</a>
                                                                             </div>
                                                                         </div>
-                                                                        <!--<select class="form-control" name="centro_labores" id="centro_labores">
-                                                                        <option  value="0"  selected>Seleccionar</option>
-                                                                        <?php foreach($list_ubicacion_l as $list){
-                                                                        if($get_id[0]['centro_labores'] == $list['cod_base']){ ?>
-                                                                        <option selected value="<?php echo $list['cod_base']; ?>"><?php echo $list['cod_base'];?></option>
-                                                                        <?php }else{?>
-                                                                        <option value="<?php echo $list['cod_base']; ?>"><?php echo $list['cod_base'];?></option>
-                                                                        <?php } } ?>
-                                                                        </select>-->
                                                                     </div>
                                                                 </div>
 
@@ -351,12 +286,6 @@ if($get_id[0]['edicion_perfil']==1){
                                                                                 <a href="javascrit:void(0)" title="Ver Historial" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('ColaboradorController/Modal_Detalle_Historico_Colaborador/' .$get_id[0]['id_usuario'].'/3') }}" style="color:#1b55e2">Ver historial (<?php echo $get_id[0]['cant_historico_modalidad'] ?>)</a>
                                                                             </div>
                                                                         </div>
-                                                                        <!--<select class="form-control" name="id_modalidad_laboral" id="id_modalidad_laboral">
-                                                                            <option value="0" <?php if (!(strcmp(0, $get_id[0]['id_modalidad_laboral']))) {echo "selected=\"selected\"";} ?>>Seleccionar</option>
-                                                                            <?php foreach($list_modalidad_laboral as $list){ ?>
-                                                                                <option value="<?php echo $list->id_modalidad_laboral; ?>" <?php if (!(strcmp($list->id_modalidad_laboral, $get_id[0]['id_modalidad_laboral']))) {echo "selected=\"selected\"";} ?>><?php echo $list->nom_modalidad_laboral;?></option>
-                                                                            <?php } ?>
-                                                                        </select>-->
                                                                     </div>
                                                                 </div>
 
@@ -382,14 +311,14 @@ if($get_id[0]['edicion_perfil']==1){
                                                                         <label for="id_base">Horas semanales</label>
                                                                         <div>
                                                                             <label for="" style="color:black"><b><?php echo $get_id[0]['horas_semanales']; ?></b></label>
-                                                                            <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= url('ColaboradorController/Modal_Update_Historico_Horas_Semanales_Colaborador') ?>/<?php echo $get_id[0]['id_usuario']; ?>" >
+                                                                            <!-- <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= url('ColaboradorController/Modal_Update_Historico_Horas_Semanales_Colaborador') ?>/<?php echo $get_id[0]['id_usuario']; ?>" >
                                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                                                                     <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                                                                 </svg>
                                                                             </a>
                                                                             <div>
                                                                                 <a href="javascrit:void(0)" title="Ver Historial" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="<?= url('ColaboradorController/Modal_Detalle_Historico_Colaborador') ?>/<?php echo $get_id[0]['id_usuario']; ?>/5" style="color:#1b55e2">Ver historial (<?php echo $get_id[0]['cant_historico_horas_semanales'] ?>)</a>
-                                                                            </div>
+                                                                            </div> -->
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -417,21 +346,14 @@ if($get_id[0]['edicion_perfil']==1){
                                                     </div>
                                                     <div class="col">
                                                         <div class="col-md-12 text-right mb-5" id="btn_planilla">
-                                                            <!--<a onclick="Datos_Planilla();"  class="btn btn-primary" title="Datos Laborales" >
-                                                            Actualizar
-                                                            </a>-->
-                                                            <?php //if($get_id[0]['id_motivo_baja']==2 || ($get_id[0]['id_motivo_baja']==3 && $get_id[0]['documento']=="")){ ?>
-                                                                <!-- <a title="Agregar Familiar" class="btn btn-gray" title="Registrar" disabled>
+                                                            @csrf
+                                                            <a title="Agregar Dato Planilla" class="btn btn-danger" title="Registrar" onclick="Valida_Planilla_Activa('<?php echo $get_id[0]['id_usuario']; ?>')" >
                                                                 Agregar
-                                                                </a>  -->
-                                                            <?php //}else{ ?>
-                                                                <a title="Agregar Dato Planilla" class="btn btn-danger" title="Registrar" onclick="Valida_Planilla_Activa('<?php echo $get_id[0]['id_usuario']; ?>')" >
-                                                                Agregar
-                                                                </a>
-                                                            <?php //} ?>
-                                                            <a style="display:none" id="btn_registrar_planilla" class="btn btn-danger" title="Registrar" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="<?= url('ColaboradorController/Modal_Dato_Planilla') ?>/<?php echo $get_id[0]['id_usuario']; ?>/<?php echo count($list_datos_planilla) ?>" >
-                                                                </a>
-
+                                                            </a>
+                                                            <!-- Boton modal nuevo dato planilla-->
+                                                            <a style="display:none" id="btn_registrar_planilla" class="btn btn-danger" title="Registrar" data-toggle="modal" data-target="#ModalRegistro"
+                                                                app_reg="{{ url('ColaboradorController/Modal_Dato_Planilla/' . $get_id[0]['id_usuario'] . '/' . count($list_datos_planilla)) }}">
+                                                            </a>                                                         
                                                         </div>
                                                     </div>
                                                 </div>
@@ -856,8 +778,8 @@ if($get_id[0]['edicion_perfil']==1){
                             </div>
                         <?php } ?>
 
-                            <?php if(session('usuario')->id_nivel=="1" || session('usuario')->id_nivel=="2" || session('usuario')->id_puesto=="133" || session('usuario')->id_puesto=="209"){?>
-                                <div class=" col-xl-12 col-lg-12 col-md-12">
+                            <?php if(session('usuario')->id_nivel==1 || session('usuario')->id_nivel==2 || session('usuario')->id_puesto==133 || session('usuario')->id_puesto==209){ ?>
+                                <div class="col-xl-12 col-lg-12 col-md-12">
                                     <div style="display: inline-flex;float: right;">
                                         <label class="switch s-icons s-outline s-outline-success">
                                             <input type="checkbox" <?php if($get_id[0]['edicion_perfil']==0){echo "checked";} ?>  value="1" id="habilitar_edicion" name="habilitar_edicion" onchange="Habilitar_Edicion_Perfil('<?php echo $get_id[0]['id_usuario']; ?>');" href="javascript:void(0);">
@@ -869,7 +791,7 @@ if($get_id[0]['edicion_perfil']==1){
                                         <span class="badge badge-success" style="height: fit-content;display:<?php if($get_id[0]['perf_revisado']==1 && $get_id[0]['edicion_perfil']==1){echo "block;";}else{echo "none;";}?>">Revisado</span>
                                     </div>
                                 </div>
-                                <?php }?>
+                            <?php } ?>
                             <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
                                 <form id="edatos" enctype="multipart/form-data" class="section general-info">
                                     <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
@@ -898,16 +820,19 @@ if($get_id[0]['edicion_perfil']==1){
                                                     <div class="col-xl-2 col-lg-12 col-md-4">
                                                         <div class="upload mt-4 pr-md-4">
                                                             <input type="file" id="foto" name="foto" class="dropify" data-allowed-file-extensions="png jpg jpeg"
-                                                                data-default-file="<?php if($get_id[0]['foto_nombre']!= ""){
+                                                                data-default-file="
+                                                                <?php if($get_id[0]['foto_nombre']!= ""){
                                                                     $image_info = get_headers($get_foto[0]['url_config'].$get_id[0]['foto_nombre']);
                                                                         if (strpos($image_info[0], '200') !== false) {
                                                                             echo $get_foto[0]['url_config'].$get_id[0]['foto_nombre'];
                                                                         }else{
-                                                                            echo base_url()."template/assets/img/200x200.jpg";
+                                                                            echo asset("template/assets/img/200x200.jpg");
                                                                         }
-                                                                    }
-                                                                else {echo base_url()."template/assets/img/200x200.jpg";} ?>"
-                                                                data-max-file-size="5M" onchange="return Validar_Archivo_Img_Perfil('foto')" <?php echo $disabled ?>/>
+                                                                    }else { 
+                                                                        echo asset("template/assets/img/200x200.jpg");
+                                                                    } ?>"
+                                                                data-max-file-size="5M" onchange="return Validar_Archivo_Img_Perfil('foto')" <?php echo $disabled ?>
+                                                            />
                                                             <p class="mt-2"><i class="flaticon-cloud-upload mr-1"></i>Cargar Foto</p>
                                                         </div>
                                                     </div>
@@ -3451,10 +3376,15 @@ if($get_id[0]['edicion_perfil']==1){
 
 
 <script>
+    $(document).ready(function() {
+        $("#usuario").addClass('active');
+        $("#husuario").attr('aria-expanded','true');
+        $("#upersonales").addClass('active');
+    });
     let lista_banco =<?php echo count($list_banco); ?> ;
     function Numero_Cuenta(){
         var dataString = new FormData(document.getElementById('formulario_cuenta_bancaria'));
-        var url="<?php echo url(); ?>ColaboradorController/Update_Numero_Cuenta";
+        var url="{{ url('ColaboradorController/Update_Numero_Cuenta') }}";
             if (Valida_Numero_Cuenta()) {
                 $.ajax({
                     url: url,
@@ -3556,7 +3486,7 @@ if($get_id[0]['edicion_perfil']==1){
     });
 
     function area(){
-        var url = "<?php echo url(); ?>ColaboradorController/List_Area";
+        var url = "{{ url('ColaboradorController/List_Area') }}";
         $.ajax({
             url: url,
             type: 'POST',
@@ -3574,7 +3504,7 @@ if($get_id[0]['edicion_perfil']==1){
 
     function empresa(){
         var dataString = $("#formulario_datos_planilla").serialize();
-        var url="<?php echo url(); ?>ColaboradorController/List_Empresa";
+        var url="{{ url('ColaboradorController/List_Empresa') }}";
         var id_situacion = $('#id_situacion_laboral').val();
         if(id_situacion=="2"){
 
@@ -3607,7 +3537,7 @@ if($get_id[0]['edicion_perfil']==1){
     }
 
     function puesto(){
-        var url = "<?php echo url(); ?>ColaboradorController/List_Puesto";
+        var url = "{{ url('ColaboradorController/List_Puesto') }}";
         $.ajax({
             url: url,
             type: 'POST',
@@ -3622,7 +3552,7 @@ if($get_id[0]['edicion_perfil']==1){
     }
 
     function cargo(){
-        var url = "<?php echo url(); ?>ColaboradorController/List_Cargo";
+        var url = "{{ url('ColaboradorController/List_Cargo') }}";
         $.ajax({
 
             url: url,
@@ -3744,7 +3674,7 @@ if($get_id[0]['edicion_perfil']==1){
 
 <script>
     function provincia(){
-        var url = "<?php echo url(); ?>ColaboradorController/Provincia";
+        var url = "{{ url('ColaboradorController/Provincia') }}";
         $.ajax({
             url: url,
             type: 'POST',
@@ -3759,7 +3689,7 @@ if($get_id[0]['edicion_perfil']==1){
     }
 
     function distrito(){
-        var url = "<?php echo url(); ?>ColaboradorController/Distrito";
+        var url = "{{ url('ColaboradorController/Distrito') }}";
         $.ajax({
             url: url,
             type: 'POST',
@@ -4342,5 +4272,54 @@ if($get_id[0]['edicion_perfil']==1){
             $('#cedad').val('');
         }
 
+    }
+    
+    function List_Datos_Laborales(id_usuario){
+        Cargando();
+        var url = "{{ url('ColaboradorController/List_Datos_Laborales') }}";
+        var csrfToken = $('input[name="_token"]').val();
+        $.ajax({
+            url: url, 
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            data: {'id_usuario':id_usuario},
+            success: function(data)
+            {
+                $('#datoslaborales').html(data);
+                            
+            }
+        });
+    }
+    
+    function Valida_Planilla_Activa(id){
+        Cargando();
+        var url = "{{ url('ColaboradorController/Valida_Planilla_Activa') }}";
+        var csrfToken = $('input[name="_token"]').val();
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                'id_usuario': id
+            },
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(data) {
+                
+                if(data=="0"){
+                    $('#btn_registrar_planilla').click();
+                }else{
+                    Swal({
+                        title: 'Advertencia',
+                        text: "¡Existe un registro en estado activo! Por favor actualice Fecha Fin del último registro para continuar",
+                        type: 'warning',
+                        showCancelButton: false,
+                        confirmButtonText: 'OK',
+                    });
+                }
+            }
+        });
     }
 </script>

@@ -52,7 +52,7 @@
             <th class="col-tipo">Área</th>
             <th>Objetivo</th>
             <th>NPágina</th>
-            <th>Indicador</th>
+            <th>Contenido</th>
             <th>Descripción</th>
             <th>Tipo</th>
             <th>Presentación</th>
