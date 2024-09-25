@@ -895,6 +895,24 @@ Route::controller(ColaboradorController::class)->group(function () {
     Route::get('colaborador_ce/{id_gerencia}/excel', 'excel_ce')->name('colaborador_ce.excel');
     Route::get('ColaboradorController/Mi_Perfil/{id}', 'Mi_Perfil');
     Route::get('ColaboradorController/Perfil/{id}', 'Perfil');
+    Route::get('ColaboradorController/Modal_Update_Historico_Base_Colaborador/{id}', 'Modal_Update_Historico_Base_Colaborador');
+    Route::get('ColaboradorController/Modal_Update_Historico_Modalidad_Colaborador/{id}', 'Modal_Update_Historico_Modalidad_Colaborador');
+    Route::get('ColaboradorController/Modal_Update_Historico_Horario_Colaborador/{id}', 'Modal_Update_Historico_Horario_Colaborador');
+    Route::get('ColaboradorController/Modal_Update_Historico_Horas_Semanales_Colaborador/{id}', 'Modal_Update_Historico_Horas_Semanales_Colaborador');
+    Route::get('ColaboradorController/Modal_Detalle_Historico_Colaborador', 'Modal_Detalle_Historico_Colaborador');
+    Route::post('ColaboradorController/List_Datos_Laborales', 'List_Datos_Laborales');
+    Route::post('ColaboradorController/Update_Historico_Base', 'Update_Historico_Base');
+    Route::post('ColaboradorController/Update_Historico_Modalidad', 'Update_Historico_Modalidad');
+    Route::post('ColaboradorController/Update_Historico_Horario', 'Update_Historico_Horario');
+    Route::post('ColaboradorController/Update_Historico_Horas_Semanales', 'Update_Historico_Horas_Semanales');
+    Route::get('ColaboradorController/Modal_Update_Historico_Puesto/{id}', 'Modal_Update_Historico_Puesto');
+    Route::post('ColaboradorController/Update_Historico_Puesto', 'Update_Historico_Puesto');
+    Route::get('ColaboradorController/Busca_Sub_Gerencia_Hp', 'Busca_Sub_Gerencia_Hp');
+    Route::get('ColaboradorController/Busca_Area_Hp', 'Busca_Area_Hp');
+    Route::get('ColaboradorController/Busca_Puesto_Hp', 'Busca_Puesto_Hp');
+    Route::get('ColaboradorController/Modal_Detalle_Historico_Colaborador/{id}/{tipo}', 'Modal_Detalle_Historico_Colaborador');
+    Route::post('ColaboradorController/Valida_Planilla_Activa', 'Valida_Planilla_Activa');
+    Route::get('ColaboradorController/Modal_Dato_Planilla/{id}/{count}', 'Modal_Dato_Planilla');
 });
 //ÁREA INTERNA
 Route::controller(InternaInicioController::class)->group(function () {

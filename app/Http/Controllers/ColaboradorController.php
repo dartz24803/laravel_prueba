@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Accesorio;
+use App\Models\Area;
 use App\Models\Banco;
+use App\Models\Base;
 use App\Models\ComisionAFP;
 use App\Models\Gerencia;
 use App\Models\Organigrama;
@@ -26,16 +28,30 @@ use App\Models\Empresas;
 use App\Models\EstadoCivil;
 use App\Models\GradoInstruccion;
 use App\Models\GrupoSanguineo;
+use App\Models\HistoricoEstadoColaborador;
+use App\Models\Horario;
+use App\Models\HorarioDia;
 use App\Models\Idioma;
+use App\Models\ModalidadLaboral;
 use App\Models\Model_Perfil;
 use App\Models\PaginasWebAccesos;
 use App\Models\Parentesco;
 use App\Models\ProgramaAccesos;
+use App\Models\Puesto;
 use App\Models\ReferenciaLaboral;
+use App\Models\Regimen;
 use App\Models\SituacionLaboral;
+use App\Models\TipoContrato;
 use App\Models\TipoDocumento;
 use App\Models\TipoVia;
 use App\Models\TipoVivienda;
+use App\Models\ToleranciaHorario;
+use App\Models\Turno;
+use App\Models\UsersHistoricoCentroLabores;
+use App\Models\UsersHistoricoColaborador;
+use App\Models\UsersHistoricoHorario;
+use App\Models\UsersHistoricoModalidad;
+use App\Models\UsersHistoricoPuesto;
 use App\Models\Zona;
 use Illuminate\Support\Facades\DB;
 
@@ -688,5 +704,585 @@ class ColaboradorController extends Controller
             $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
 
             return view('rrhh.Perfil.index',$dato);
+    }
+    
+    public function Modal_Update_Historico_Base_Colaborador($id_usuario){
+        $dato['id_usuario']=$id_usuario;
+        $dato['get_historico'] = UsersHistoricoCentroLabores::where('id_usuario', $id_usuario)
+                                ->where('estado', 1)
+                                ->orderBy('fec_reg', 'DESC')
+                                ->limit(1)
+                                ->get();
+        $dato['list_base'] = Base::select('cod_base')
+                            ->where('estado', 1)
+                            ->GroupBy('cod_base')
+                            ->OrderBy('cod_base', 'ASC')
+                            ->get();
+        return view('rrhh.Perfil.Historico_Colaborador.modal_historico_base',$dato);
+    }
+
+    public function Update_Historico_Base(Request $request){
+        $request->validate([
+            'cod_base_hb' => 'required',
+            'fec_inicio_hb' => 'required',
+        ], [
+            'cod_base_hb' => 'Debe seleccionar base',
+            'fec_inicio_hb.required' => 'Debe ingresar fecha de inicio.',
+        ]);
+
+        $id_historico_centro_labores= $request->input("id_historico_centro_labores");
+        
+        if($id_historico_centro_labores!=""){
+            UsersHistoricoCentroLabores::findOrFail($id_historico_centro_labores)->update([
+                'centro_labores' => $request->cod_base_hb,
+                'id_usuario' => $request->id_usuario_hb,
+                'fec_inicio' => $request->fec_inicio_hb,
+                'fec_fin' => $request->fec_fin_hb,
+                'con_fec_fin' => $request->con_fec_fin_hb,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+            ]);
+            Usuario::findOrFail($request->id_usuario_hb)->update([
+                'centro_labores' => $request->cod_base_hb,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+            ]);
+            if($request->cod_base_bd_hb!=$request->cod_base_hb){
+                echo "crea";
+                UsersHistoricoCentroLabores::create([
+                    'id_usuario' => $request->id_usuario_hb,
+                    'cod_base' => $request->cod_base_hb,
+                    'fec_inicio' => $request->fec_inicio_hb,
+                    'fec_fin' => $request->fec_fin_hb,
+                    'con_fec_fin' => $request->con_fec_fin_hb,
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario,
+                    'user_reg' => session('usuario')->id_usuario,
+                ]);
+                Usuario::findOrFail($request->id_usuario_hb)->update([
+                    'centro_labores' => $request->cod_base_hb,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario,
+                ]);
+            }
+        }else{
+            UsersHistoricoCentroLabores::create([
+                'id_usuario' => $request->id_usuario_hb,
+                'cod_base' => $request->cod_base_hb,
+                'fec_inicio' => $request->fec_inicio_hb,
+                'fec_fin' => $request->fec_fin_hb,
+                'con_fec_fin' => $request->con_fec_fin_hb,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+                'user_reg' => session('usuario')->id_usuario,
+            ]);
+            Usuario::findOrFail($request->id_usuario_hb)->update([
+                'centro_labores' => $request->cod_base_hb,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+            ]);
+        }
+    }
+    
+    public function List_Datos_Laborales(Request $request){
+        $this->Model_Perfil = new Model_Perfil();
+        $id_usuario= $request->input("id_usuario");
+        $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+        return view('rrhh.Perfil.Historico_Colaborador.datos_laborales',$dato);
+    }
+
+    public function Modal_Update_Historico_Modalidad_Colaborador($id_usuario){
+        $dato['id_usuario']=$id_usuario;
+        $dato['get_historico'] = UsersHistoricoModalidad::where('id_usuario', $id_usuario)
+                                ->where('estado', 1)
+                                ->orderBy('fec_reg', 'DESC')
+                                ->limit(1)
+                                ->get();
+        $dato['list_modalidad_laboral'] = ModalidadLaboral::where('estado', 1)
+                            ->get();
+        return view('rrhh.Perfil.Historico_Colaborador.modal_historico_modalidad',$dato);
+    }
+
+    public function Update_Historico_Modalidad(Request $request){
+        $request->validate([
+            'id_modalidad_laboral_hm' => 'not_in:0',
+            'fec_inicio_hm' => 'required',
+        ], [
+            'id_modalidad_laboral_hm' => 'Debe seleccionar modalidad laboral',
+            'fec_inicio_hm.required' => 'Debe ingresar fecha de inicio.',
+        ]);
+
+            $id_historico_modalidadl= $request->input("id_historico_modalidadl");
+
+            if($id_historico_modalidadl!=""){
+                    UsersHistoricoModalidad::create([
+                        'id_usuario' => $request->id_usuario_hm,
+                        'id_modalidad_laboral' => $request->id_modalidad_laboral_hm,
+                        'fec_inicio' => $request->fec_inicio_hm,
+                        'fec_fin' => $request->fec_fin_hm,
+                        'con_fec_fin' => $request->con_fec_fin_hm,
+                        'estado' => 1,
+                        'fec_reg' => now(),
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                        'user_reg' => session('usuario')->id_usuario,
+                    ]);
+                    Usuario::findOrFail($request->id_usuario_hm)->update([
+                        'id_modalidad_laboral' => $request->id_modalidad_laboral_hm,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                    ]);
+                if($request->id_modalidad_laboral_bd_hm!=$request->id_modalidad_laboral_hm){
+                    UsersHistoricoModalidad::findOrFail($id_historico_modalidadl)->update([
+                        'id_usuario' => $request->id_usuario_hm,
+                        'id_modalidad_laboral' => $request->id_modalidad_laboral_hm,
+                        'fec_inicio' => $request->fec_inicio_hm,
+                        'fec_fin' => $request->fec_fin_hm,
+                        'con_fec_fin' => $request->con_fec_fin_hm,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                    ]);
+                    Usuario::findOrFail($request->id_usuario_hm)->update([
+                        'id_modalidad_laboral' => $request->id_modalidad_laboral_hm,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                    ]);
+                }
+            }else{
+                UsersHistoricoModalidad::create([
+                    'id_usuario' => $request->id_usuario_hm,
+                    'id_modalidad_laboral' => $request->id_modalidad_laboral_hm,
+                    'fec_inicio' => $request->fec_inicio_hm,
+                    'fec_fin' => $request->fec_fin_hm,
+                    'con_fec_fin' => $request->con_fec_fin_hm,
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario,
+                    'user_reg' => session('usuario')->id_usuario,
+                ]);
+                Usuario::findOrFail($request->id_usuario_hm)->update([
+                    'id_modalidad_laboral' => $request->id_modalidad_laboral_hm,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario,
+                ]);
+            }
+    }
+
+    public function Modal_Update_Historico_Horario_Colaborador($id_usuario){ 
+        $this->Model_Perfil = new Model_Perfil();
+        $get_id = $this->Model_Perfil->get_id_usuario($id_usuario);
+        $dato['id_usuario']=$id_usuario;
+        $dato['get_historico'] = UsersHistoricoHorario::where('id_usuario', $id_usuario)
+                                ->where('estado', 1)
+                                ->orderBy('fec_reg', 'DESC')
+                                ->limit(1)
+                                ->get();
+        $dato['list_horario'] = Horario::where('cod_base', $get_id[0]['centro_labores'])
+                            ->where('estado', 1)
+                            ->get();
+        return view('rrhh.Perfil.Historico_Colaborador.modal_historico_horario',$dato);
+    }
+
+    public function Update_Historico_Horario(Request $request){
+        $request->validate([
+            'id_horario_hh' => 'not_in:0',
+            'fec_inicio_hh' => 'required',
+        ], [
+            'id_horario_hh' => 'Debe seleccionar horario',
+            'fec_inicio_hh' => 'Debe ingresar fecha de inicio.',
+        ]);
+            $id_historico_horario = $request->input("id_historico_horario");
+            if($request->con_fec_fin_hh == null){
+                $con_fec_fin_hh = 0;
+            }else{
+                $con_fec_fin_hh = $request->conf_fec_fin_hh;
+            }
+            $dato['id_horario_bd']= $request->input("id_horario_bd_hh");
+            if($id_historico_horario!=""){
+                if($request->id_horario_bd_hh!=$request->id_horario_hh){
+                    UsersHistoricoHorario::create([
+                        'id_usuario' => $request->id_usuario_hh,
+                        'id_horario' => $request->id_horario_hh,
+                        'fec_inicio' => $request->fec_inicio_hh,
+                        'fec_fin' => $request->fec_fin_hh,
+                        'con_fec_fin' => $con_fec_fin_hh,
+                        'estado' => 1,
+                        'fec_reg' => now(),
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                        'user_reg' => session('usuario')->id_usuario,
+                    ]);
+                    Usuario::findOrFail($request->id_usuario_hh)->update([
+                        'id_horario' => $request->id_horario_hh,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                    ]);
+                }else{
+                    UsersHistoricoHorario::findOrFail($id_historico_horario)->update([
+                        'id_usuario' => $request->id_usuario_hh,
+                        'id_horario' => $request->id_horario_hh,
+                        'fec_inicio' => $request->fec_inicio_hh,
+                        'fec_fin' => $request->fec_fin_hh,
+                        'con_fec_fin' => $con_fec_fin_hh,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                    ]);
+                    Usuario::findOrFail($request->id_usuario_hh)->update([
+                        'id_horario' => $request->id_horario_hh,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                    ]);
+                }
+        }else{
+            UsersHistoricoHorario::create([
+                'id_usuario' => $request->id_usuario_hh,
+                'id_horario' => $request->id_horario_hh,
+                'fec_inicio' => $request->fec_inicio_hh,
+                'fec_fin' => $request->fec_fin_hh,
+                'con_fec_fin' => $con_fec_fin_hh,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+                'user_reg' => session('usuario')->id_usuario,
+            ]);
+            Usuario::findOrFail($request->id_usuario_hh)->update([
+                'id_horario' => $request->id_horario_hh,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+            ]);
+        }
+            
+            $list_inconsistencia = DB::table('asistencia_colaborador_inconsistencia')
+                                ->where('id_usuario', $request->id_usuario_hh)
+                                ->where('fecha', '>=', $request->fec_inicio_hh)
+                                ->get();
+
+            foreach($list_inconsistencia as $list){
+                $dato['id_asistencia_inconsistencia'] = $list->id_asistencia_inconsistencia;
+                $dia = $list->dia;
+                $get_horario_dia = HorarioDia::where('id_horario', $request->id_horario_hh)
+                                ->where('dia', $dia)
+                                ->get();
+
+                if(count($get_horario_dia)>0){
+                    $dato['id_turno']= $get_horario_dia[0]['id_turno'];
+                    $dato['get_id'] = Turno::get_list_turno($dato['id_turno']);
+                    $dato['entrada']= $dato['get_id'][0]['entrada'];
+                    $dato['salida']= $dato['get_id'][0]['salida'];
+                    $dato['con_descanso']= $dato['get_id'][0]['t_refrigerio'];
+                    $dato['ini_refri']= $dato['get_id'][0]['ini_refri'];
+                    $dato['fin_refri']= $dato['get_id'][0]['fin_refri'];
+    
+                    $data = ToleranciaHorario::consulta_tolerancia_horario_activo();
+                    $minutos=0;
+                    if(count($data)>0){
+                        $minutos=$data[0]['minutos'];
+                    }
+                    $id_usuario = session('usuario')->id_usuario;
+
+                    DB::table('asistencia_colaborador_inconsistencia')
+                        ->where('id_asistencia_inconsistencia', $dato['id_asistencia_inconsistencia'])
+                        ->update([
+                        'con_descanso' => $dato['con_descanso'],
+                        'hora_entrada' => $dato['entrada'],
+                        'hora_salida' => $dato['salida'],
+                        'hora_descanso_e' => $dato['ini_refri'],
+                        'hora_descanso_s' => $dato['fin_refri'],
+                        'id_turno' => $dato['id_turno'],
+                        'tipo_inconsistencia' => 0,
+                        'user_act' => $id_usuario,
+                        'fec_act' => now()
+                    ]);
+                    DB::table('asistencia_colaborador_inconsistencia')
+                    ->where('id_asistencia_inconsistencia', $dato['id_asistencia_inconsistencia'])
+                    ->update([
+                        'hora_entrada_desde' => DB::raw("DATE_FORMAT(DATE_SUB(hora_entrada, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
+                        'hora_entrada_hasta' => DB::raw("DATE_FORMAT(DATE_ADD(hora_entrada, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
+                        'hora_salida_desde' => DB::raw("DATE_FORMAT(DATE_SUB(hora_salida, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
+                        'hora_salida_hasta' => DB::raw("DATE_FORMAT(DATE_ADD(hora_salida, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
+                        'hora_descanso_e_desde' => DB::raw("CASE WHEN con_descanso=1 THEN DATE_FORMAT(DATE_SUB(hora_descanso_e, INTERVAL $minutos MINUTE), '%H:%i:%s') END"),
+                        'hora_descanso_e_hasta' => DB::raw("CASE WHEN con_descanso=1 THEN DATE_FORMAT(DATE_ADD(hora_descanso_e, INTERVAL $minutos MINUTE), '%H:%i:%s') END"),
+                        'hora_descanso_s_desde' => DB::raw("CASE WHEN con_descanso=1 THEN DATE_FORMAT(DATE_SUB(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s') END"),
+                        'hora_descanso_s_hasta' => DB::raw("CASE WHEN con_descanso=1 THEN DATE_FORMAT(DATE_ADD(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s') END"),
+                        'fec_act' => now()
+                    ]);                
+                }
+            }
+    }
+/*
+    public function Modal_Update_Historico_Horas_Semanales_Colaborador($id_usuario){
+        if ($this->session->userdata('usuario')) {
+            $dato['id_usuario'] = $id_usuario;
+            $dato['get_historico'] = $this->Model_Corporacion->get_ultimo_horas_semanales_colaborador_historico($id_usuario);
+            $this->load->view('Admin/Colaborador/Perfil/Historico_Colaborador/modal_historico_horas_semanales',$dato);
+        }else{
+            redirect('');
+        }
+    }
+
+    public function Update_Historico_Horas_Semanales(){
+        if ($this->session->userdata('usuario')) {
+            $dato['id_usuario']= $this->input->post("id_usuario_hhs");
+            $dato['horas_semanales']= $this->input->post("horas_semanales_hhs");
+            $dato['horas_semanales_bd']= $this->input->post("horas_semanales_bd_hhs");
+
+            if($dato['horas_semanales']!=$dato['horas_semanales_bd']){
+                $this->Model_Corporacion->insert_historico_horas_semanales_colaborador($dato);
+            }
+        }else{
+            redirect('');
+        }
+    }
+*/
+
+    public function Modal_Update_Historico_Puesto($id_usuario){
+            $dato['id_usuario']=$id_usuario;
+            $dato['get_historico'] = UsersHistoricoPuesto::where('id_usuario', $id_usuario)
+                                    ->where('estado', 1)
+                                    ->orderBy('fec_reg', 'DESC')
+                                    ->limit(1)
+                                    ->get();
+            $dato['list_gerencia'] = Gerencia::where('estado', 1)
+                                    ->orderby('nom_gerencia', 'ASC')
+                                    ->get();
+            $dato['list_tipo_cambio'] = DB::table('tipo_cambio_puesto')
+                                    ->where('estado',1)
+                                    ->get();
+            if(count($dato['get_historico'])>0){
+                $dato['list_sub_gerencia'] = SubGerencia::where('id_gerencia', $dato['get_historico'][0]['id_gerencia'])
+                                        ->orderBy('nom_sub_gerencia', 'ASC')
+                                        ->get();
+                $dato['list_area'] = Area::where('id_departamento', $dato['get_historico'][0]['id_sub_gerencia'])
+                                    ->where('estado', 1)
+                                    ->get();
+                $dato['list_puesto'] = Puesto::where('id_area', $dato['get_historico'][0]['id_area'])
+                                    ->where('estado', 1)
+                                    ->get();
+            }
+            return view('rrhh.Perfil.Historico_Colaborador.modal_historico_puesto',$dato);
+    }
+    
+    public function Busca_Sub_Gerencia_Hp(Request $request){
+        $id_gerencia = $request->input("id_gerencia");
+
+        $dato['list_sub_gerencia'] = SubGerencia::where('id_gerencia', $id_gerencia)
+            ->orderBy('nom_sub_gerencia', 'ASC')
+            ->get();
+        return view('rrhh.Perfil.Historico_Colaborador.cmb_sub_gerencia',$dato);
+    }
+    
+    public function Busca_Area_Hp(Request $request){
+        $id_sub_gerencia = $request->input("id_sub_gerencia");
+        $dato['list_area'] = Area::where('id_departamento', $id_sub_gerencia)
+            ->where('estado', 1)
+            ->get();
+        return view('rrhh.Perfil.Historico_Colaborador.cmb_area',$dato);
+    }
+
+    public function Busca_Puesto_Hp(Request $request){
+        $id_area = $request->input("id_area");
+        $dato['list_puesto'] = Puesto::where('id_area', $id_area)
+            ->where('estado', 1)
+            ->get();
+        return view('rrhh.Perfil.Historico_Colaborador.cmb_puesto',$dato);
+
+    }
+
+    public function Update_Historico_Puesto(Request $request){
+            $id_historico_puesto= $request->input("id_historico_puesto");
+            $dato['id_usuario']= $request->input("id_usuario_hp");
+            $dato['id_gerencia']= $request->input("id_gerencia_hp");
+            $dato['id_sub_gerencia']= $request->input("id_sub_gerencia_hp");
+            $dato['id_area']= $request->input("id_area_hp");
+            $dato['id_puesto']= $request->input("id_puesto_hp");
+            $dato['fec_inicio']= $request->input("fec_inicio_hp");
+            $dato['fec_fin']= $request->input("fec_fin_hp");
+            $dato['id_tipo_cambio']= $request->input("id_tipo_cambio_hp");
+            $dato['con_fec_fin']= $request->input("con_fec_fin_hp");
+            $dato['id_puesto_bd']= $request->input("id_puesto_bd_hp");
+            if($request->con_fec_fin_hp){
+                $con_fec_fin_hp=$request->con_fec_fin_hp;
+            }else{
+                $con_fec_fin_hp=0;
+            }
+            if($id_historico_puesto!=""){
+                if($dato['id_puesto']!=$dato['id_puesto_bd']){
+                    UsersHistoricoPuesto::create([
+                        'id_usuario' => $request->id_usuario_hp,
+                        'id_gerencia' => $request->id_gerencia_hp,
+                        'id_sub_gerencia' => $request->id_sub_gerencia_hp,
+                        'id_area' => $request->id_area_hp,
+                        'id_puesto' => $request->id_puesto_hp,
+                        'fec_inicio' => $request->fec_inicio_hp,
+                        'fec_fin' => $request->fec_fin_hp,
+                        'con_fec_fin' => $con_fec_fin_hp,
+                        'estado' => 1,
+                        'fec_reg' => now(),
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                        'user_reg' => session('usuario')->id_usuario,
+                    ]);
+                    Usuario::findOrFail($request->id_usuario_hp)->update([
+                        'id_gerencia' => $request->id_gerencia_hp,
+                        'id_sub_gerencia' => $request->id_sub_gerencia_hp,
+                        'id_area' => $request->id_area_hp,
+                        'id_puesto' => $request->id_puesto_hp,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                    ]);
+
+                    $get_id = Organigrama::where('id_usuario', $request->id_usuario_hp)
+                            ->get();
+                    Organigrama::where('id', $get_id[0]['id'])->update([
+                        'id_usuario' => 0,
+                        'fecha' => now(),
+                        'usuario' => session('usuario')->id_usuario,
+                    ]);
+                    $valida = Organigrama::where('id_puesto', $request->id_puesto_hp)
+                            ->exists();
+                    if($valida){
+                        $az = Organigrama::where('id_puesto', $request->id_puesto_hp)
+                                ->get();
+                        $dato['id'] = $az[0]['id'];
+                        Organigrama::where('id', $get_id[0]['id'])->update([
+                            'id_usuario' => $request->id_usuario_hp,
+                            'fecha' => now(),
+                            'usuario' => session('usuario')->id_usuario,
+                        ]);
+                    }else{
+                        Organigrama::create([
+                            'id_puesto' => $request->id_puesto_hp,
+                            'id_usuario' => $request->id_usuario_hp,
+                            'fecha' => now(),
+                            'usuario' => session('usuario')->id_usuario,
+                        ]);
+                    }
+                }else{
+                    UsersHistoricoPuesto::findOrfail($id_historico_puesto)->update([
+                        'id_gerencia' => $request->id_gerencia_hp,
+                        'id_sub_gerencia' => $request->id_sub_gerencia_hp,
+                        'id_area' => $request->id_area_hp,
+                        'id_puesto' => $request->id_puesto_hp,
+                        'fec_inicio' => $request->fec_inicio_hp,
+                        'id_tipo_cambio' => $request->id_tipo_cambio_hp,
+                        'con_fec_fin' => $con_fec_fin_hp,
+                        'fec_fin' => $request->fec_fin_hp,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                    ]);
+                    Usuario::findOrFail($request->id_usuario_hp)->update([
+                        'id_gerencia' => $request->id_gerencia_hp,
+                        'id_sub_gerencia' => $request->id_sub_gerencia_hp,
+                        'id_area' => $request->id_area_hp,
+                        'id_puesto' => $request->id_puesto_hp,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                    ]);
+                }
+            }else{
+                UsersHistoricoPuesto::create([
+                    'id_usuario' => $request->id_usuario_hp,
+                    'id_gerencia' => $request->id_gerencia_hp,
+                    'id_sub_gerencia' => $request->id_sub_gerencia_hp,
+                    'id_area' => $request->id_area_hp,
+                    'id_puesto' => $request->id_puesto_hp,
+                    'fec_inicio' => $request->fec_inicio_hp,
+                    'fec_fin' => $request->fec_fin_hp,
+                    'id_tipo_cambio' => $request->id_tipo_cambio_hp,
+                    'con_fec_fin' => $con_fec_fin_hp,
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario,
+                    'user_reg' => session('usuario')->id_usuario,
+                ]);
+                Usuario::findOrFail($request->id_usuario_hp)->update([
+                    'id_gerencia' => $request->id_gerencia_hp,
+                    'id_sub_gerencia' => $request->id_sub_gerencia_hp,
+                    'id_area' => $request->id_area_hp,
+                    'id_puesto' => $request->id_puesto_hp,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario,
+                ]);
+
+                $get_id = Organigrama::where('id_usuario', $request->id_usuario_hp)
+                    ->get();
+                Organigrama::findOrFail('id', $get_id[0]['id'])->update([
+                    'id_usuario' => 0,
+                    'fecha' => now(),
+                    'usuario' => session('usuario')->id_usuario,
+                ]);
+                $valida = Organigrama::where('id_puesto', $request->id_puesto_hp)
+                        ->exists();
+                if($valida){
+                    $az = Organigrama::where('id_puesto', $request->id_puesto_hp)
+                            ->get();
+                    $dato['id'] = $az[0]['id'];
+                    Organigrama::where('id', $get_id[0]['id'])->update([
+                        'id_usuario' => $request->id_usuario_hp,
+                        'fecha' => now(),
+                        'usuario' => session('usuario')->id_usuario,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                    ]);
+                }else{
+                    Organigrama::create([
+                        'id_puesto' => $request->id_puesto_hp,
+                        'id_usuario' => $request->id_usuario_hp,
+                        'fecha' => now(),
+                        'usuario' => session('usuario')->id_usuario,
+                    ]);
+                }
+            }
+    }
+    public function Modal_Detalle_Historico_Colaborador($id_usuario,$tipo){
+        $dato['id_usuario']=$id_usuario;
+        $dato['tipo']=$tipo;
+        if($tipo==1){
+            $dato['list_historico_puesto'] = UsersHistoricoPuesto::get_list_historico_puesto_colaborador($id_usuario);
+        }if($tipo==2){
+            $dato['list_historico_base'] = UsersHistoricoCentroLabores::get_list_historico_base_colaborador($id_usuario);
+        }if($tipo==3){
+            $dato['list_historico_modalidad'] = UsersHistoricoModalidad::get_list_historico_modalidadl_colaborador($id_usuario);
+        }if($tipo==4){
+            $dato['list_historico_horario'] = UsersHistoricoHorario::get_list_historico_horario_colaborador($id_usuario);
+        }/*if($tipo==5){
+            $dato['list_historico_horas_semanales'] = $this->Model_Corporacion->get_list_historico_horas_semanales_colaborador($id_usuario);
+        }*/
+            
+        return view('rrhh.Perfil.Historico_Colaborador.modal_historico_detalle',$dato);
+    }
+    
+    public function Valida_Planilla_Activa(Request $request){
+        $dato['id_usuario']= $request->input("id_usuario");
+        $dato['cant_planilla']=UsersHistoricoColaborador::valida_dato_planilla_activo($dato);
+        echo count($dato['cant_planilla']);
+    }
+
+    public function Modal_Dato_Planilla($id_usuario,$cantidad){
+        $this->Model_Perfil = new Model_Perfil();
+        $dato['id_usuario']=$id_usuario;
+        $dato['list_situacion_laboral'] = SituacionLaboral::where('estado',1)
+                                        ->get();
+        $dato['list_empresa'] = Empresas::where('estado', 1)
+                                ->where('activo',1)
+                                ->get();
+        $dato['list_regimen'] = Regimen::where('estado', 1)
+                                ->get();
+        $dato['list_tipo_contrato'] = TipoContrato::where('estado',1)
+                                ->get();
+        $dato['get_ultimo'] = $this->Model_Perfil->get_list_datoplanilla($id_usuario);
+        $dato['get_historico_estado'] = HistoricoEstadoColaborador::where('id_usuario', $id_usuario)
+                                    ->where('estado', 1)
+                                    ->orderBy('id_historico_estado_colaborador', 'DESC')
+                                    ->get();
+        $dato['cantidad']=$cantidad;
+        return view('rrhh.Perfil.Datos_Planilla.modal_registrar',$dato);   
     }
 }
