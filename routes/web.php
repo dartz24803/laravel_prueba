@@ -922,6 +922,7 @@ Route::controller(LineaCarreraController::class)->group(function () {
     Route::get('linea_carrera_re/list', 'list_re')->name('linea_carrera_re.list');
     Route::get('linea_carrera_re/{id}/edit', 'edit_re')->name('linea_carrera_re.edit');
     Route::put('linea_carrera_re/{id}', 'update_re')->name('linea_carrera_re.update');
+    Route::get('linea_carrera_re/{id}/show', 'show_re')->name('linea_carrera_re.show');
 });
 //CAJA - LÍNEA DE CARRERA CONFIGURABLE
 Route::controller(LineaCarreraConfController::class)->group(function () {
