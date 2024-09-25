@@ -14,6 +14,7 @@ use App\Models\Notificacion;
 use App\Models\SubGerencia;
 use App\Models\TrackingArchivo;
 use App\Models\TrackingArchivoTemporal;
+use App\Models\TrackingComentario;
 use App\Models\TrackingDetalleEstado;
 use App\Models\TrackingDetalleProceso;
 use App\Models\TrackingDevolucion;
@@ -681,6 +682,14 @@ class TrackingController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'DETALLE_TRANSPORTE',
+                'comentario' => $request->comentario
+            ]);
+        }
     }
 
     public function insert_confirmacion_llegada(Request $request,$id)
@@ -1232,6 +1241,14 @@ class TrackingController extends Controller
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $request->id,
+                'pantalla' => 'VERIFICACION_FARDO',
+                'comentario' => $request->comentario
+            ]);
+        }
     }
 
     public function pago_transporte($id)
@@ -1477,6 +1494,14 @@ class TrackingController extends Controller
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'PAGO_TRANSPORTE',
+                'comentario' => $request->comentario
+            ]);
+        }
     }
 
     public function insert_conteo_mercaderia(Request $request,$id)
@@ -1619,6 +1644,14 @@ class TrackingController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
         }
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'REPORTE_MERCADERIA',
+                'comentario' => $request->comentario
+            ]);
+        }
     }
 
     public function cuadre_diferencia($id)
@@ -1743,6 +1776,14 @@ class TrackingController extends Controller
             ]);
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+        }
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'CUADRE_DIFERENCIA',
+                'comentario' => $request->comentario
+            ]);
         }
     }
 
@@ -1880,6 +1921,14 @@ class TrackingController extends Controller
             }
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+        }
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'DETALLE_OPERACION_DIFERENCIA',
+                'comentario' => $request->comentario
+            ]);
         }
     }
 
@@ -2088,6 +2137,14 @@ class TrackingController extends Controller
             }catch(Exception $e) {
                 echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
             }
+
+            if($request->comentario){
+                TrackingComentario::create([
+                    'id_tracking' => $id,
+                    'pantalla' => 'SOLICITUD_DEVOLUCION',
+                    'comentario' => $request->comentario
+                ]);
+            }
         }else{
             echo "error";
         }
@@ -2292,6 +2349,14 @@ class TrackingController extends Controller
 
             //ALERTA 13
             $this->insert_mercaderia_entregada($id);
+
+            if($request->comentario){
+                TrackingComentario::create([
+                    'id_tracking' => $id,
+                    'pantalla' => 'EVALUACION_DEVOLUCION',
+                    'comentario' => $request->comentario
+                ]);
+            }
         }else{
             echo "error";
         }
