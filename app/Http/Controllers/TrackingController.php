@@ -14,6 +14,7 @@ use App\Models\Notificacion;
 use App\Models\SubGerencia;
 use App\Models\TrackingArchivo;
 use App\Models\TrackingArchivoTemporal;
+use App\Models\TrackingComentario;
 use App\Models\TrackingDetalleEstado;
 use App\Models\TrackingDetalleProceso;
 use App\Models\TrackingDevolucion;
@@ -285,12 +286,6 @@ class TrackingController extends Controller
                     'message' => "Error procesando base de datos.",
                 ], 500);
             }
-    
-            /*if (count($query)==0) {
-                return response()->json([
-                    'message' => 'Sin resultados.',
-                ], 404);
-            }*/
     
             return response()->json($query, 200);
         }else{
@@ -588,6 +583,7 @@ class TrackingController extends Controller
             'sobres' => 'required_without_all:paquetes,fardos,caja|nullable',
             'fardos' => 'required_without_all:paquetes,sobres,caja|nullable',
             'caja' => 'required_without_all:paquetes,sobres,fardos|nullable',
+            'tiempo_llegada' => 'required',
             'nombre_transporte' => 'required_if:transporte,1,2',
             'importe_transporte' => 'required_if:transporte,1,2',
             'factura_transporte' => 'required_if:tipo_pago,1',
@@ -596,6 +592,7 @@ class TrackingController extends Controller
             'guia_transporte.required' => 'Debe ingresar nro. gr transporte.',
             'peso.required' => 'Debe ingresar peso.',
             'required_without_all' => 'Debe ingresar paquetes o sobres o fardos o caja.',
+            'tiempo_llegada.required' => 'Debe ingresar tiempo de llegada', 
             'nombre_transporte.required_if' => 'Debe ingresar nombre de empresa.',
             'importe_transporte.required_if' => 'Debe ingresar importe a pagar.',
             'factura_transporte.required_if' => 'Debe ingresar n° factura.',
@@ -624,6 +621,7 @@ class TrackingController extends Controller
             'fardos' => $request->fardos,
             'caja' => $request->caja,
             'transporte' => $request->transporte,
+            'tiempo_llegada' => $request->tiempo_llegada,
             'tipo_pago' => $tipo_pago,
             'nombre_transporte' => $request->nombre_transporte,
             'importe_transporte' => $request->importe_transporte,
@@ -684,6 +682,14 @@ class TrackingController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'DETALLE_TRANSPORTE',
+                'comentario' => $request->comentario
+            ]);
+        }
     }
 
     public function insert_confirmacion_llegada(Request $request,$id)
@@ -1235,6 +1241,14 @@ class TrackingController extends Controller
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $request->id,
+                'pantalla' => 'VERIFICACION_FARDO',
+                'comentario' => $request->comentario
+            ]);
+        }
     }
 
     public function pago_transporte($id)
@@ -1480,6 +1494,14 @@ class TrackingController extends Controller
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'PAGO_TRANSPORTE',
+                'comentario' => $request->comentario
+            ]);
+        }
     }
 
     public function insert_conteo_mercaderia(Request $request,$id)
@@ -1622,6 +1644,14 @@ class TrackingController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
         }
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'REPORTE_MERCADERIA',
+                'comentario' => $request->comentario
+            ]);
+        }
     }
 
     public function cuadre_diferencia($id)
@@ -1746,6 +1776,14 @@ class TrackingController extends Controller
             ]);
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+        }
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'CUADRE_DIFERENCIA',
+                'comentario' => $request->comentario
+            ]);
         }
     }
 
@@ -1883,6 +1921,14 @@ class TrackingController extends Controller
             }
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+        }
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'DETALLE_OPERACION_DIFERENCIA',
+                'comentario' => $request->comentario
+            ]);
         }
     }
 
@@ -2091,6 +2137,14 @@ class TrackingController extends Controller
             }catch(Exception $e) {
                 echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
             }
+
+            if($request->comentario){
+                TrackingComentario::create([
+                    'id_tracking' => $id,
+                    'pantalla' => 'SOLICITUD_DEVOLUCION',
+                    'comentario' => $request->comentario
+                ]);
+            }
         }else{
             echo "error";
         }
@@ -2295,6 +2349,14 @@ class TrackingController extends Controller
 
             //ALERTA 13
             $this->insert_mercaderia_entregada($id);
+
+            if($request->comentario){
+                TrackingComentario::create([
+                    'id_tracking' => $id,
+                    'pantalla' => 'EVALUACION_DEVOLUCION',
+                    'comentario' => $request->comentario
+                ]);
+            }
         }else{
             echo "error";
         }

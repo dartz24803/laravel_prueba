@@ -82,6 +82,16 @@
                             <div class="row d-flex justify-content-center text-center" id="div_canvas" style="display:none !important;">
                                 <canvas id="canvas" width="640" height="480" style="max-width:95%;"></canvas>
                             </div>
+
+                            <div class="row mt-4">
+                                <div class="form-group col-lg-1">
+                                    <label class="control-label text-bold">Comentario: </label>
+                                </div>
+                                <div class="form-group col-lg-11">
+                                    <textarea class="form-control" name="comentario" 
+                                    id="comentario" placeholder="Comentario" rows="3"></textarea>
+                                </div>
+                            </div>
     
                             <div class="modal-footer mt-3">
                                 @csrf
