@@ -157,7 +157,7 @@
 
 
                             <div class=" form-group col-md-3">
-                                <label>Estado222: </label>
+                                <label>Estado: </label>
                                 <select class="form-control" id="estadoe" name="estadoe">
                                     <option value="0" {{ $get_id->estado_registro == 0 ? 'selected' : '' }}>Publicado</option>
                                     <option value="1" {{ $get_id->estado_registro == 1 ? 'selected' : '' }}>Por aprobar</option>

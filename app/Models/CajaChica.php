@@ -56,7 +56,8 @@ class CajaChica extends Model
                 CONCAT(tm.cod_moneda,' ',cc.total) AS total,cc.comprobante,
                 CASE WHEN cc.estado_c=1 THEN 'Por revisar'
                 WHEN cc.estado_c=2 THEN 'Completado' ELSE '' END AS nom_estado,
-                cc.estado_c FROM caja_chica cc
+                cc.estado_c 
+                FROM caja_chica cc
                 INNER JOIN ubicacion ub ON ub.id_ubicacion=cc.id_ubicacion
                 INNER JOIN categoria ca ON ca.id_categoria=cc.id_categoria
                 INNER JOIN sub_categoria sc ON sc.id=cc.id_sub_categoria

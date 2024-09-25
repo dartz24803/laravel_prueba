@@ -30,12 +30,11 @@ class Tracking extends Model
         'bultos',
         'caja',
         'transporte',
+        'tiempo_llegada',
         'tipo_pago',
         'nombre_transporte',
         'importe_transporte',
         'factura_transporte',
-        'importe_transporte_2',
-        'factura_transporte_2',
         'observacion_inspf',
         'diferencia',
         'guia_diferencia',
@@ -78,7 +77,7 @@ class Tracking extends Model
             $query = DB::select($sql);
             return $query[0];
         }elseif(isset($dato['llegada_tienda'])){
-            $sql = "SELECT tr.id,bh.cod_base AS hacia,bh.tiempo_llegada,
+            $sql = "SELECT tr.id,bh.cod_base AS hacia,tr.tiempo_llegada,
                     mp.ultimo_id AS id_detalle,de.id_estado,
                     TIMESTAMPDIFF(DAY, DATE(de.fecha), CURDATE()) AS diferencia_dias
                     FROM tracking tr
@@ -92,7 +91,7 @@ class Tracking extends Model
                     GROUP BY id_detalle) me ON mp.ultimo_id=me.id_detalle
                     LEFT JOIN tracking_detalle_estado de ON me.ultimo_id=de.id
                     WHERE de.id_estado=4 AND 
-                    TIMESTAMPDIFF(DAY, DATE(de.fecha), CURDATE())=bh.tiempo_llegada";
+                    TIMESTAMPDIFF(DAY, DATE(de.fecha), CURDATE())=tr.tiempo_llegada";
             $query = DB::select($sql);
             return $query;
         }else{

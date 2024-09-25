@@ -38,6 +38,12 @@ class ProduccionController extends Controller
         $list_subgerencia = SubGerencia::list_subgerencia(9);
         return view('manufactura.produccion.registro_visitas.index', compact('list_notificacion', 'list_subgerencia'));
     }
+    public function indexft()
+    {
+        $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(9);
+        return view('manufactura.produccion.ficha_tecnica.index', compact('list_notificacion', 'list_subgerencia'));
+    }
 
     public function index_rv()
     {
@@ -47,6 +53,10 @@ class ProduccionController extends Controller
     public function index_av()
     {
         return view('manufactura.produccion.asignacion_visitas.asignar_visitas.index');
+    }
+    public function index_ft()
+    {
+        return view('manufactura.produccion.ficha_tecnica.registrar_ficha_tecnica.index');
     }
 
     public function list_av(Request $request)
@@ -235,12 +245,13 @@ class ProduccionController extends Controller
             ->distinct('nom_proceso')
             ->get();
 
+
         return view('manufactura.produccion.asignacion_visitas.asignar_visitas.modal_editar', compact(
             'get_id',
             'list_inspector',
             'list_proveedor',
             'list_ficha_tecnica',
-            'list_proceso_visita'
+            'list_proceso_visita',
         ));
     }
 
@@ -248,6 +259,7 @@ class ProduccionController extends Controller
     {
         $get_id = AsignacionVisita::where('id_asignacion_visita', $id)
             ->firstOrFail();
+        // dd($get_id);
 
         $list_tipo_transporte = TipoTransporteProduccion::select(
             'id_tipo_transporte',
@@ -258,9 +270,24 @@ class ProduccionController extends Controller
             ->distinct('nom_tipo_transporte')
             ->get();
 
+        $list_visita_transporte = AsignacionVisitaTransporte::select(
+            'asignacion_visita_transporte.id_tipo_transporte',
+            'tipo_transporte_produccion.nom_tipo_transporte',
+            'asignacion_visita_transporte.costo',
+            'asignacion_visita_transporte.descripcion',
+
+        )
+            ->join('tipo_transporte_produccion', 'asignacion_visita_transporte.id_tipo_transporte', '=', 'tipo_transporte_produccion.id_tipo_transporte')
+            ->where('asignacion_visita_transporte.estado', 1)
+            ->where('asignacion_visita_transporte.id_asignacion_visita', $id) // Filtrar por id_asignacion_visita
+            ->get();
+
+
+
         return view('manufactura.produccion.asignacion_visitas.asignar_visitas.modal_detalle', compact(
             'get_id',
             'list_tipo_transporte',
+            'list_visita_transporte'
         ));
     }
 
@@ -301,24 +328,67 @@ class ProduccionController extends Controller
         ]);
     }
 
+    public function iniciar_rv(Request $request, $id)
+    {
+        AsignacionVisita::findOrFail($id)->update([
+            'estado_registro' => 2,
+            'fec_ini_visita' => now(),
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+
+        ]);
+    }
+
+    public function finalizar_rv(Request $request, $id)
+    {
+        AsignacionVisita::findOrFail($id)->update([
+            'estado_registro' => 3,
+            'fec_fin_visita' => now(),
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+
     public function update_detalle_av(Request $request, $id)
     {
+        // Eliminar los registros existentes relacionados con la id_asignacion_visita
+        AsignacionVisitaTransporte::where('id_asignacion_visita', $id)->delete();
 
-
+        // Obtener los datos de entrada
         $ncostos = $request->input('ncosto', []);
         $descripciones = $request->input('descripcion', []);
         $id_tipotransportes = $request->input('id_tipotransporte', []);
 
+        $hora_inicio_almuerzo = $request->input('hora_inicio_almuerzo');
+        $hora_fin_almuerzo = $request->input('hora_fin_almuerzo');
+        $observacion = $request->input('observacion');
+        $almuerzo = $request->has('almuerzo') ? 1 : 0;
 
-        foreach ($ncostos as $index => $ncosto) {
-            AsignacionVisitaTransporte::create([
-                'id_asignacion_visita' => $id,
-                'id_tipo_transporte' =>  $id_tipotransportes[$index] ?? '',
-                'costo' => $ncosto,
-                'descripcion' => $descripciones[$index] ?? '',
-                'estado' => 1,
-                'fec_reg' => now(),
-                'user_reg' => session('usuario')->id_usuario,
+        // Crear nuevos registros solo si $ncostos no está vacío
+        if (!empty($ncostos)) {
+            foreach ($ncostos as $index => $ncosto) {
+                AsignacionVisitaTransporte::create([
+                    'id_asignacion_visita' => $id,
+                    'id_tipo_transporte' =>  $id_tipotransportes[$index] ?? '',
+                    'costo' => $ncosto,
+                    'descripcion' => $descripciones[$index] ?? '',
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+            }
+        }
+
+        // Actualizar la información de Almuerzo siempre que haya datos
+        if (!empty($hora_inicio_almuerzo) || !empty($hora_fin_almuerzo) || !empty($observacion) || !isset($request->almuerzo)) {
+            AsignacionVisita::findOrFail($id)->update([
+                'ini_alm' => $hora_inicio_almuerzo,
+                'fin_alm' => $hora_fin_almuerzo,
+                'observacion' => $observacion,
+                'ch_alm' => $almuerzo,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
@@ -338,7 +408,7 @@ class ProduccionController extends Controller
         // Obtener la lista de asignaciones filtrada por fecha
         $list_asignacion = AsignacionVisita::getListAsignacion($fini, $ffin, $idUsuario);
         // dd($list_asignacion);
-        return view('manufactura.produccion.asignacion_visitas.asignar_visitas.lista', compact('list_asignacion'));
+        return view('manufactura.produccion.registro_visitas.registrar_visitas.lista', compact('list_asignacion'));
     }
 
     public function ListaRegistroVisitas($fecha, $fecha_fin)
@@ -348,5 +418,148 @@ class ProduccionController extends Controller
         $list_asignacion = AsignacionVisita::getListAsignacion($fecha, $fecha_fin, $idUsuario);
 
         return view('manufactura.produccion.asignacion_visitas.asignar_visitas.lista', compact('list_asignacion'));
+    }
+
+    public function detalle_rv($id)
+    {
+        $get_id = AsignacionVisita::where('id_asignacion_visita', $id)
+            ->firstOrFail();
+        // dd($get_id);
+
+        $list_tipo_transporte = TipoTransporteProduccion::select(
+            'id_tipo_transporte',
+            'nom_tipo_transporte'
+        )
+            ->where('estado', 1)
+            ->orderBy('nom_tipo_transporte', 'ASC')
+            ->distinct('nom_tipo_transporte')
+            ->get();
+
+        $list_visita_transporte = AsignacionVisitaTransporte::select(
+            'asignacion_visita_transporte.id_tipo_transporte',
+            'tipo_transporte_produccion.nom_tipo_transporte',
+            'asignacion_visita_transporte.costo',
+            'asignacion_visita_transporte.descripcion',
+
+        )
+            ->join('tipo_transporte_produccion', 'asignacion_visita_transporte.id_tipo_transporte', '=', 'tipo_transporte_produccion.id_tipo_transporte')
+            ->where('asignacion_visita_transporte.estado', 1)
+            ->where('asignacion_visita_transporte.id_asignacion_visita', $id) // Filtrar por id_asignacion_visita
+            ->get();
+
+        return view('manufactura.produccion.registro_visitas.registrar_visitas.modal_detalle', compact(
+            'get_id',
+            'list_tipo_transporte',
+            'list_visita_transporte'
+        ));
+    }
+
+    // FICHA TÉCNICA
+    public function list_ft(Request $request)
+    {
+        $list_ficha_tecnica = FichaTecnicaProduccion::select(
+            'ficha_tecnica_produccion.id_ft_produccion',
+            'ficha_tecnica_produccion.fec_reg',
+            'ficha_tecnica_produccion.user_reg',
+            'ficha_tecnica_produccion.modelo',
+            'ficha_tecnica_produccion.img_ft_produccion',
+            DB::raw("CONCAT(users.usuario_nombres, ' ', users.usuario_apater, ' ', users.usuario_amater) AS nombre_completo")
+        )
+            ->join('users', 'ficha_tecnica_produccion.user_reg', '=', 'users.id_usuario')
+            ->where('ficha_tecnica_produccion.estado', 1)
+            ->orderBy('ficha_tecnica_produccion.modelo', 'ASC')
+            ->distinct('ficha_tecnica_produccion.modelo')
+            ->get();
+        // dd($list_ficha_tecnica);
+        return view('manufactura.produccion.ficha_tecnica.registrar_ficha_tecnica.lista', compact('list_ficha_tecnica'));
+    }
+
+    public function create_ft()
+    {
+        $list_ficha_tecnica = FichaTecnicaProduccion::select(
+            'id_ft_produccion',
+            'fec_reg',
+            'user_reg',
+            'modelo',
+            'img_ft_produccion',
+        )
+            ->where('estado', 1)
+            ->orderBy('modelo', 'ASC')
+            ->distinct('modelo')->get();
+
+        return view('manufactura.produccion.ficha_tecnica.registrar_ficha_tecnica.modal_registrar', compact('list_ficha_tecnica'));
+    }
+
+    public function image_ft($id)
+    {
+        $get_id = FichaTecnicaProduccion::where('id_ft_produccion', $id)->firstOrFail();
+        // Construye la URL completa de la imagen
+        $imageUrl = null;
+        if ($get_id->nom_img_ft_produccion) {
+            $imageUrl = "https://lanumerounocloud.com/intranet/PRODUCCION/ficha_tecnica/" . $get_id->nom_img_ft_produccion;
+        }
+        return view('manufactura.produccion.ficha_tecnica.registrar_ficha_tecnica.modal_imagen', compact('get_id', 'imageUrl'));
+    }
+
+    public function destroy_ft($id)
+    {
+
+        FichaTecnicaProduccion::where('id_ft_produccion', $id)->firstOrFail()->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function store_ft(Request $request)
+    {
+        $request->validate([
+            'modelo' => 'required',
+        ], [
+            'modelo.required' => 'Debe ingresar nombre Modelo.',
+        ]);
+        // Conectar al servidor FTP
+        $ftp_server = "lanumerounocloud.com";
+        $ftp_usuario = "intranet@lanumerounocloud.com";
+        $ftp_pass = "Intranet2022@";
+        $con_id = ftp_connect($ftp_server);
+        $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+        // Conexión a FTP SERVER
+        if ($con_id && $lr) {
+            ftp_pasv($con_id, true);
+            // Subir archivo 1
+            if (!empty($_FILES["archivo1"]["name"])) {
+
+                $source_file = $_FILES['archivo1']['tmp_name'];
+                $nombre = $_FILES["archivo1"]["name"];
+                $nombimageUrl = "https://lanumerounocloud.com/intranet/PRODUCCION/ficha_tecnica/" . $nombre;
+
+                $subio = ftp_put($con_id, "PRODUCCION/ficha_tecnica/" . $nombre, $source_file, FTP_BINARY);
+                if ($subio) {
+                    $archivo = $nombre;
+                } else {
+                    echo "Archivo 1 no subido correctamente";
+                }
+            }
+            ftp_close($con_id); // Cerrar conexión FTP
+        } else {
+            echo "No se conectó al servidor FTP";
+        }
+
+        // Crear un nuevo registro en la tabla asignacion_visita
+        FichaTecnicaProduccion::create([
+            'modelo' =>  $request->modelo,
+            'nom_img_ft_produccion' => $nombre,
+            'img_ft_produccion' => $nombimageUrl,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario,
+            'user_eli' => 0,
+        ]);
+
+
+        return response()->json(['message' => 'Registros creados con éxito.']);
     }
 }

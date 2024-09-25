@@ -21,9 +21,9 @@
             <td class="text-left">{{ $list->tipo_prenda }}</td>
             <td class="text-left">{{ $list->descripcion }}</td>
             <td>{{ $list->cantidad }}</td>
-            <td>{{ $list->precio1 }}</td>
-            <td>{{ $list->precio2 }}</td>
-            <td>{{ $list->precio3 }}</td>
+            <td>{{ number_format($list->precio1,2) }}</td>
+            <td>{{ number_format($list->precio2,2) }}</td>
+            <td>{{ number_format($list->precio3,2) }}</td>
             <td>
                 <a href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate"
                     app_elim="{{ route('tracking.modal_mercaderia_nueva', [$cod_base, $list->estilo]) }}">

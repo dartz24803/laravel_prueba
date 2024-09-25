@@ -103,22 +103,18 @@ class BiReporteController extends Controller
             ->get()
             ->groupBy('id_acceso_bi_reporte');
 
-        // Consultar nombres de las áreas
-        $areas = DB::table('area')
-            ->whereIn('id_area', $list_bi_reporte->pluck('id_area')->flatten()->unique())
-            ->pluck('nom_area', 'id_area')
-            ->toArray();
-
         // Preparar los datos para cada reporte
         foreach ($list_bi_reporte as $reporte) {
             // Obtener nombres de los puestos asociados al reporte actual
             $nombresPuestosReporte = $puestos->get($reporte->id_acceso_bi_reporte, collect())->pluck('nom_puesto')->implode(', ');
             $reporte->nombres_puesto = $nombresPuestosReporte;
 
-            // Obtener nombres de las áreas asociadas al reporte actual
-            $ids = explode(',', $reporte->id_area);
-            $nombresAreas = array_intersect_key($areas, array_flip($ids));
-            $reporte->nombres_area = implode(', ', $nombresAreas);
+            $cod_area = BiReporte::join('area', 'acceso_bi_reporte.id_area', '=', 'area.id_area')
+                ->where('acceso_bi_reporte.id_area', $reporte->id_area)
+                ->select('acceso_bi_reporte.*', 'area.cod_area')
+                ->first();
+
+            $reporte->codigo_area = $cod_area->cod_area;
             // Calcular los días sin atención
             // Suponiendo que $reporte->estado_valid contiene el valor del estado
             if ($reporte->estado_valid == 1) {
@@ -404,7 +400,7 @@ class BiReporteController extends Controller
                     $ext = pathinfo($path, PATHINFO_EXTENSION);
                     $randomDigits = rand(100, 999);
                     // Crear el nombre del archivo
-                    $nombre_soli = "temporal_" . $biReporteId . "_" . $sessionUserId . "_" . $randomDigits;
+                    $nombre_soli =  $biReporteId . "_" . $sessionUserId . "_" . $randomDigits;
                     $nombre = $nombre_soli . "." . strtolower($ext);
 
                     // Subir archivo al servidor FTP
@@ -424,8 +420,14 @@ class BiReporteController extends Controller
             $img2 = uploadFile('archivo_base_2', $request->nombi, $sessionUserId, $con_id);
             $img3 = uploadFile('archivo_base_3', $request->nombi, $sessionUserId, $con_id);
 
-            // Verificar si al menos un archivo fue subido
-            // if ($img1 || $img2 || $img3) {
+            // Obtener los valores del select múltiple
+            $idAreasAcceso = $request->input('id_area_acceso_t', []);
+            $filtroArea = implode(',', $idAreasAcceso);
+            $idUbiAcceso = $request->input('tipo_acceso_ubi', []);
+            $filtroUbi = implode(',', $idUbiAcceso);
+            $idSedeAcceso = $request->input('tipo_acceso_sede', []);
+            $filtroSede = implode(',', $idSedeAcceso);
+
             // Crear el registro en la base de datos
             $biReporte = BiReporte::create([
                 'nom_bi' => $request->nombi ?? '',
@@ -435,6 +437,9 @@ class BiReporteController extends Controller
                 'img1' => $img1 ?? '',
                 'img2' => $img2 ?? '',
                 'img3' => $img3 ?? '',
+                'filtro_area' => $filtroArea,
+                'filtro_sede' => $filtroSede,
+                'filtro_ubicaciones' => $filtroUbi,
                 'id_area' => $request->areass ?? 0,
                 'id_area_destino' => $request->areasd ?? 0,
                 'id_usuario' => $request->solicitante ?? 0,
@@ -449,13 +454,9 @@ class BiReporteController extends Controller
                 'user_act' => $sessionUserId,
                 'fec_valid' => $request->fec_valid ? date('Y-m-d H:i:s', strtotime($request->fec_valid)) : now(),
             ]);
-            // } else {
-            //     echo "No se subió ningún archivo.";
-            // }
         } else {
             echo "No se conectó al servidor FTP";
         }
-        // dd($biReporte->id_acceso_bi_reporte);
 
         // Obtener el ID del nuevo registro en bi_reportes
         $biReporteId = $biReporte->id_acceso_bi_reporte;
@@ -517,8 +518,6 @@ class BiReporteController extends Controller
             ]);
         }
 
-
-
         // Redirigir o devolver respuesta
         return redirect()->back()->with('success', 'Reporte registrado con éxito.');
     }
@@ -549,24 +548,100 @@ class BiReporteController extends Controller
         // dd($biReporte);
         // Actualizar los datos en la tabla
         $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
-        // dd($request->areasse);
-        $biReporte->update([
-            'nom_bi' => $request->nombi,
-            'nom_intranet' => $request->nomintranet,
-            'actividad' => $request->actividad_bi,
-            'acceso_todo' => $accesoTodo,
-            'id_area' => $request->areasse,
-            'id_area_destino' => $request->areassd,
-            'id_usuario' => $request->solicitantee,
-            'frecuencia_act' => $request->frec_actualizacion,
-            'objetivo' => $request->objetivo,
-            'iframe' => $request->iframe,
-            'estado' => 1,
-            'estado_valid' => 0,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario,
-            'fec_valid' => $request->fec_valid ? date('Y-m-d H:i:s', strtotime($request->fec_valid)) : now(),
-        ]);
+
+
+        // Configuración FTP
+        $ftp_server = "lanumerounocloud.com";
+        $ftp_usuario = "intranet@lanumerounocloud.com";
+        $ftp_pass = "Intranet2022@";
+        $con_id = ftp_connect($ftp_server);
+        $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+
+        if ($con_id && $lr) {
+            // Habilitar el modo pasivo FTP
+            ftp_pasv($con_id, true);
+
+            // Definir función para subir un archivo
+            function uploadFile($fileKey, $biReporteId, $sessionUserId, $con_id)
+            {
+                if ($_FILES[$fileKey]["name"] != "") {
+                    $path = $_FILES[$fileKey]["name"];
+                    $source_file = $_FILES[$fileKey]['tmp_name'];
+
+                    // Obtener extensión del archivo
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $randomDigits = rand(100, 999);
+                    // Crear el nombre del archivo
+                    $nombre_soli =  $biReporteId . "_" . $sessionUserId . "_" . $randomDigits;
+                    $nombre = $nombre_soli . "." . strtolower($ext);
+
+                    // Subir archivo al servidor FTP
+                    $subio = ftp_put($con_id, "REPORTE_BI/" . $nombre, $source_file, FTP_BINARY);
+                    if ($subio) {
+                        return $nombre; // Devolver el nombre del archivo si la subida fue exitosa
+                    } else {
+                        echo "Archivo $fileKey no subido correctamente";
+                        return null;
+                    }
+                }
+                return null;
+            }
+
+            $sessionUserId = session('usuario')->id_usuario;
+
+            // Subir los archivos
+            $img1 = uploadFile('archivo_basee_1', $request->nombi, $sessionUserId, $con_id);
+            $img2 = uploadFile('archivo_basee_2', $request->nombi, $sessionUserId, $con_id);
+            $img3 = uploadFile('archivo_basee_3', $request->nombi, $sessionUserId, $con_id);
+            // Obtener los valores del select múltiple
+            $idAreasAcceso = $request->input('id_area_acceso_te', []);
+            $filtroArea = implode(',', $idAreasAcceso);
+            $idUbiAcceso = $request->input('tipo_acceso_ubie', []);
+            $filtroUbi = implode(',', $idUbiAcceso);
+            $idSedeAcceso = $request->input('tipo_acceso_sedee', []);
+            $filtroSede = implode(',', $idSedeAcceso);
+            // Crear un array de actualización que solo incluya las imágenes que fueron subidas
+            $updateData = [
+                'nom_bi' => $request->nombi,
+                'nom_intranet' => $request->nomintranet,
+                'actividad' => $request->actividad_bi,
+                'acceso_todo' => $accesoTodo,
+                'filtro_area' => $filtroArea,
+                'filtro_sede' => $filtroSede,
+                'filtro_ubicaciones' => $filtroUbi,
+                'id_area' => $request->areasse,
+                'id_area_destino' => $request->areassd,
+                'id_usuario' => $request->solicitantee,
+                'frecuencia_act' => $request->frec_actualizacion,
+                'objetivo' => $request->objetivo,
+                'iframe' => $request->iframe,
+                'estado' => 1,
+                'estado_valid' => 0,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+                'fec_valid' => $request->fec_valid ? date('Y-m-d H:i:s', strtotime($request->fec_valid)) : now(),
+            ];
+
+            // Solo actualiza img1 si se ha subido una nueva imagen
+            if ($img1) {
+                $updateData['img1'] = $img1;
+            }
+
+            // Solo actualiza img2 si se ha subido una nueva imagen
+            if ($img2) {
+                $updateData['img2'] = $img2;
+            }
+
+            // Solo actualiza img3 si se ha subido una nueva imagen
+            if ($img3) {
+                $updateData['img3'] = $img3;
+            }
+
+            // Actualizar el registro en la base de datos una sola vez
+            $biReporte->update($updateData);
+        } else {
+            echo "No se conectó al servidor FTP";
+        }
 
         // Actualizar indicadores
         if ($request->has('indicador')) {
@@ -611,7 +686,7 @@ class BiReporteController extends Controller
                         'estado' => 1,
                         'nom_tabla' => $tablabi,
                         'cod_sistema' => $request->sistemas[$key],
-                        'cod_db' => $request->db[$key],
+                        'cod_db' => $request->dbe[$key],
                         'fec_reg' => now(),
                         'user_reg' => session('usuario')->id_usuario,
                         'fec_act' => now(),
@@ -652,7 +727,30 @@ class BiReporteController extends Controller
         $selected_puesto_ids = DB::table('bi_puesto_acceso')
             ->where('id_acceso_bi_reporte', $id)
             ->pluck('id_puesto')
-            ->toArray(); // Convertir a array para usar en la vista
+            ->toArray();
+
+        // filtros sede
+        $selected_sede_ids = DB::table('acceso_bi_reporte')
+            ->where('id_acceso_bi_reporte', $id)
+            ->pluck('filtro_sede')
+            ->first();
+        $selected_sede_ids_array = $selected_sede_ids ? explode(',', $selected_sede_ids) : [];
+
+        // filtros ubicaciones
+        $selected_ubi_ids = DB::table('acceso_bi_reporte')
+            ->where('id_acceso_bi_reporte', $id)
+            ->pluck('filtro_ubicaciones')
+            ->first();
+        $selected_ubi_ids_array = $selected_ubi_ids ? explode(',', $selected_ubi_ids) : [];
+
+        // filtros area
+        $selected_area_ids = DB::table('acceso_bi_reporte')
+            ->where('id_acceso_bi_reporte', $id)
+            ->pluck('filtro_area')
+            ->first();
+        $selected_area_ids_array = $selected_area_ids ? explode(',', $selected_area_ids) : [];
+
+
         $list_base = Base::get_list_todas_bases_agrupadas_bi();
 
         $list_responsable = Puesto::select('puesto.id_puesto', 'puesto.nom_puesto', 'area.cod_area')
@@ -667,7 +765,6 @@ class BiReporteController extends Controller
             ->orderBy('id_area', 'ASC')
             ->get()
             ->unique('nom_area');
-
 
         $list_indicadores = IndicadorBi::with('tipoIndicador')
             ->select(
@@ -716,20 +813,33 @@ class BiReporteController extends Controller
             ->where('id_acceso_bi_reporte', $id) // Filtra por el valor de $id en el campo id_acceso_bi_reporte
             ->get();
 
+        $list_sede = SedeLaboral::select('id', 'descripcion')
+            ->where('estado', 1)
+            ->orderBy('descripcion', 'ASC')
+            ->distinct('descripcion')->get();
+        // dd($list_sede);
+        $list_ubicaciones = Ubicacion::select('id_ubicacion', 'cod_ubi')
+            ->where('estado', 1)
+            ->orderBy('cod_ubi', 'ASC')
+            ->distinct('cod_ubi')->get();
 
         return view('interna.bi.reportes.registroacceso_reportes.modal_editar', compact(
             'get_id',
             'list_responsable',
             'list_area',
             'selected_puesto_ids',
+            'selected_ubi_ids_array',
+            'selected_sede_ids_array',
+            'selected_area_ids_array',
             'list_colaborador',
-            'selected_puesto_ids', // IDs de los puestos seleccionados
             'list_tipo_indicador',
             'list_base',
             'list_indicadores',
             'list_sistemas',
             'list_db',
-            'list_tablas'
+            'list_tablas',
+            'list_sede',
+            'list_ubicaciones'
         ));
     }
 
@@ -920,12 +1030,6 @@ class BiReporteController extends Controller
             ->get()
             ->groupBy('id_acceso_bi_reporte');
 
-        // Consultar nombres de las áreas
-        $areas = DB::table('area')
-            ->whereIn('id_area', $list_bi_reporte->pluck('id_area')->flatten()->unique())
-            ->pluck('nom_area', 'id_area')
-            ->toArray();
-
         // Consultar los nombres de los usuarios
         $idsUsuarios = $list_bi_reporte->pluck('id_usuario')->unique();
         $nombresUsuarios = DB::table('users')
@@ -943,10 +1047,12 @@ class BiReporteController extends Controller
             $nombreUsuario = $nombresUsuarios[$reporte->id_usuario] ?? 'Usuario desconocido'; // Acceder por id_usuario
             $reporte->nombre_usuario = $nombreUsuario;
 
-            // Obtener nombres de las áreas asociadas al reporte actual
-            $ids = explode(',', $reporte->id_area);
-            $nombresAreas = array_intersect_key($areas, array_flip($ids));
-            $reporte->nombres_area = implode(', ', $nombresAreas);
+            $cod_area = BiReporte::join('area', 'acceso_bi_reporte.id_area', '=', 'area.id_area')
+                ->where('acceso_bi_reporte.id_area', $reporte->id_area)
+                ->select('acceso_bi_reporte.*', 'area.cod_area')
+                ->first();
+            $reporte->codigo_area = $cod_area->cod_area;
+
             $reporte->tipo_presentacion = $reporte->presentacion == 1 ? 'Tabla' : ($reporte->presentacion == 2 ? 'Gráfico' : 'Desconocido');
             $reporte->tipo_frecuencia = $reporte->frecuencia_act == 1 ? 'Minuto' : ($reporte->frecuencia_act == 2 ? 'Hora' : ($reporte->frecuencia_act == 3 ? 'Día' : ($reporte->frecuencia_act == 4 ? 'Semana' : ($reporte->frecuencia_act == 5 ? 'Mes' : 'Desconocido'))));
 
@@ -991,11 +1097,6 @@ class BiReporteController extends Controller
             ->get()
             ->groupBy('id_acceso_bi_reporte');
 
-        // Consultar nombres de las áreas
-        $areas = DB::table('area')
-            ->whereIn('id_area', $list_bi_reporte->pluck('id_area')->flatten()->unique())
-            ->pluck('nom_area', 'id_area')
-            ->toArray();
 
         // Consultar los nombres de los usuarios
         $idsUsuarios = $list_bi_reporte->pluck('id_usuario')->unique();
@@ -1014,10 +1115,13 @@ class BiReporteController extends Controller
             $nombreUsuario = $nombresUsuarios[$reporte->id_usuario] ?? 'Usuario desconocido'; // Acceder por id_usuario
             $reporte->nombre_usuario = $nombreUsuario;
 
-            // Obtener nombres de las áreas asociadas al reporte actual
-            $ids = explode(',', $reporte->id_area);
-            $nombresAreas = array_intersect_key($areas, array_flip($ids));
-            $reporte->nombres_area = implode(', ', $nombresAreas);
+            $cod_area = BiReporte::join('area', 'acceso_bi_reporte.id_area', '=', 'area.id_area')
+                ->where('acceso_bi_reporte.id_area', $reporte->id_area)
+                ->select('acceso_bi_reporte.*', 'area.cod_area')
+                ->first();
+
+            $reporte->codigo_area = $cod_area->cod_area;
+
             $reporte->tipo_presentacion = $reporte->presentacion == 1 ? 'Tabla' : ($reporte->presentacion == 2 ? 'Gráfico' : 'Desconocido');
             $reporte->tipo_frecuencia = $reporte->frecuencia_act == 1 ? 'Minuto' : ($reporte->frecuencia_act == 2 ? 'Hora' : ($reporte->frecuencia_act == 3 ? 'Día' : ($reporte->frecuencia_act == 4 ? 'Semana' : ($reporte->frecuencia_act == 5 ? 'Mes' : 'Desconocido'))));
 

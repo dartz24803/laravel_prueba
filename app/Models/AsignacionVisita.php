@@ -77,6 +77,7 @@ class AsignacionVisita extends Model
             'asignacion_visita.estado',
             DB::raw("CONCAT(users.usuario_apater, ' ', users.usuario_amater, ' ', users.usuario_nombres) AS nombre_completo"),
             'ficha_tecnica_produccion.modelo as nom_modelo',
+            'ficha_tecnica_produccion.img_ft_produccion as img_ft_produccion',
             'proceso_visita.nom_proceso as nom_proceso',
             DB::raw("GROUP_CONCAT(DISTINCT tipo_transporte_produccion.nom_tipo_transporte SEPARATOR ', ') as nom_tipo_transporte"),
             DB::raw("SUM(asignacion_visita_transporte.costo) as total_costo")
@@ -115,6 +116,7 @@ class AsignacionVisita extends Model
                 'asignacion_visita.estado_registro',
                 'asignacion_visita.estado',
                 'ficha_tecnica_produccion.modelo',
+                'ficha_tecnica_produccion.img_ft_produccion',
                 'proceso_visita.nom_proceso',
                 'proveedor_partida.responsable',
                 'proveedor_llegada.responsable',

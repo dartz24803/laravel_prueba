@@ -47,14 +47,14 @@
             <th>Última Act</th>
             <th>Nombre BI</th>
             <th>Nombre Intranet</th>
+            <th>Iframe</th>
             <th>Actividad</th>
             <th class="col-tipo">Área</th>
             <th>Objetivo</th>
-            <th>Indicador</th>
             <th>NPágina</th>
+            <th>Contenido</th>
             <th>Descripción</th>
             <th>Tipo</th>
-            <th>Iframe</th>
             <th>Presentación</th>
             <th>Frecuencia</th>
             <th>Solicitante</th>
@@ -68,6 +68,7 @@
             <td>{{ \Carbon\Carbon::parse($reporte->fec_act)->locale('es')->translatedFormat('D d M y') }}</td>
             <td>{{ $reporte->nom_bi }}</td>
             <td>{{ $reporte->nom_intranet }}</td>
+            <td>{{ $reporte->iframe }}</td>
             <td>
                 @if ($reporte->actividad == 1)
                 En uso
@@ -78,15 +79,14 @@
                 @endif
             </td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                {{ $reporte->nombres_area }}
+                {{ $reporte->codigo_area }}
             </td>
             <td>{{ $reporte->objetivo }}</td>
-
-            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                {{ $reporte->nom_indicador }}
-            </td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->npagina }}
+            </td>
+            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ $reporte->nom_indicador }}
             </td>
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->descripcion }}
@@ -95,7 +95,6 @@
                 {{ $reporte->tipo_indicador_nombre }}
             </td>
             @if ($reporte->actividad == 1)
-            <td>{{ $reporte->iframe }}</td>
             @else
             <td>No disponible</td>
             @endif
@@ -171,12 +170,12 @@
         tabla.column(columnIndex).visible(visible);
     });
     $('#toggle-desc').change(function() {
-        var columnIndex = 8;
+        var columnIndex = 9;
         var visible = this.checked;
         tabla.column(columnIndex).visible(visible);
     });
     $('#toggle-pre').change(function() {
-        var columnIndex = 10;
+        var columnIndex = 11;
         var visible = this.checked;
         tabla.column(columnIndex).visible(visible);
     });

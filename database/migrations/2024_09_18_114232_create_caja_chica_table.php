@@ -32,7 +32,6 @@ return new class extends Migration
             $table->integer('id_tipo_pago')->nullable();
             $table->integer('cuenta_1')->nullable();
             $table->integer('cuenta_2')->nullable();
-            $table->date('fecha_pago')->nullable();
             $table->integer('estado_c')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();

@@ -153,8 +153,9 @@ Route::controller(TrackingController::class)->group(function () {
     //MERCADERÍA NUEVA
     Route::get('tracking/mercaderia_nueva', 'mercaderia_nueva')->name('tracking.mercaderia_nueva');
     Route::post('tracking/list_mercaderia_nueva', 'list_mercaderia_nueva')->name('tracking.list_mercaderia_nueva');
+    Route::get('tracking/{cod_base}/mercaderia_nueva_tusu', 'mercaderia_nueva_tusu')->name('tracking.mercaderia_nueva_tusu');
+    Route::get('tracking/{cod_base}/mercaderia_nueva_tpre', 'mercaderia_nueva_tpre')->name('tracking.mercaderia_nueva_tpre');
     Route::get('tracking/{cod_base}/{estilo}/modal_mercaderia_nueva', 'modal_mercaderia_nueva')->name('tracking.modal_mercaderia_nueva');
-    Route::post('tracking/mercaderia_surtida', 'insert_mercaderia_surtida')->name('tracking.insert_mercaderia_surtida');
 });
 //TIENDA - FUNCIÓN TEMPORAL
 Route::controller(FuncionTemporalController::class)->group(function () {
@@ -939,6 +940,7 @@ Route::controller(LineaCarreraController::class)->group(function () {
     Route::get('linea_carrera_re/list', 'list_re')->name('linea_carrera_re.list');
     Route::get('linea_carrera_re/{id}/edit', 'edit_re')->name('linea_carrera_re.edit');
     Route::put('linea_carrera_re/{id}', 'update_re')->name('linea_carrera_re.update');
+    Route::get('linea_carrera_re/{id}/show', 'show_re')->name('linea_carrera_re.show');
 });
 //CAJA - LÍNEA DE CARRERA CONFIGURABLE
 Route::controller(LineaCarreraConfController::class)->group(function () {
@@ -1006,13 +1008,14 @@ Route::controller(ProduccionController::class)->group(function () {
     // ASIGNAR VISITAS
     Route::get('produccionav', 'indexav')->name('produccionav');
     Route::get('produccionrev', 'indexrev')->name('produccionrev');
+    Route::get('produccionft', 'indexft')->name('produccionft');
     Route::get('produccion_av', 'index_av')->name('produccion_av');
     Route::get('produccion_av/list', 'list_av')->name('produccion_av.list');
     Route::get('produccion_av/create', 'create_av')->name('produccion_av.create');
     Route::post('produccion_av', 'store_av')->name('produccion_av.store');
     Route::get('produccion_av/{id}/edit', 'edit_av')->name('produccion_av.edit');
     Route::put('produccion_av/{id}', 'update_av')->name('produccion_av.update');
-    Route::put('produccion_detalle_av/{id}', 'update_detalle_av')->name('produccion_detalle_av.update');
+    Route::post('produccion_detalle_av/{id}', 'update_detalle_av')->name('produccion_detalle_av.update');
     Route::get('produccion_av/{id}/detalle', 'detalle_av')->name('produccion_av.detalle');
     Route::delete('produccion_av/{id}', 'destroy_av')->name('produccion_av.destroy');
     Route::post('Produccion/ListaAsignacionVisitas/{fec_ini}/{fec_fin}', 'ListaAsignacionVisitas');
@@ -1025,6 +1028,23 @@ Route::controller(ProduccionController::class)->group(function () {
     Route::put('produccion_rv/{id}', 'update_rv')->name('produccion_rv.update');
     Route::delete('produccion_rv/{id}', 'destroy_rv')->name('produccion_rv.destroy');
     Route::post('Produccion/ListaRegistroVisitas/{fec_ini}/{fec_fin}', 'ListaRegistroVisitas');
+
+    Route::post('produccion_rv/{id}/iniciar', 'iniciar_rv')->name('produccion_rv.iniciar');
+    Route::post('produccion_rv/{id}/finalizar', 'finalizar_rv')->name('produccion_rv.finalizar');
+    Route::get('produccion_rv/{id}/detalle', 'detalle_rv')->name('produccion_rv.detalle');
+
+    // FICHAS TÉCNICAS
+    Route::get('produccion_ft', 'index_ft')->name('produccion_ft');
+    Route::get('produccion_ft/list', 'list_ft')->name('produccion_ft.list');
+    Route::get('produccion_ft/create', 'create_ft')->name('produccion_ft.create');
+    Route::post('produccion_ft', 'store_ft')->name('produccion_ft.store');
+    Route::get('produccion_ft/{id}/edit', 'edit_ft')->name('produccion_ft.edit');
+    Route::delete('produccion_ft/{id}', 'destroy_ft')->name('produccion_ft.destroy');
+    Route::get('produccion_ft/{id}/image', 'image_ft')->name('produccion_ft.image');
+
+    Route::post('produccion_ft/{id}/iniciar', 'iniciar_rv')->name('produccion_ft.iniciar');
+    Route::post('produccion_ft/{id}/finalizar', 'finalizar_rv')->name('produccion_ft.finalizar');
+    Route::get('produccion_ft/{id}/detalle', 'detalle_rv')->name('produccion_ft.detalle');
 });
 
 
@@ -1075,10 +1095,12 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::get('caja_chica/{id}/validar', 'validar')->name('caja_chica.validar');
     Route::put('caja_chica_mo/{id}/validar', 'validar_mo')->name('caja_chica.validar_mo');
     Route::put('caja_chica_pv/{id}/validar', 'validar_pv')->name('caja_chica.validar_pv');
+    Route::post('caja_chica/traer_tipo_pago', 'traer_tipo_pago')->name('caja_chica.traer_tipo_pago');
     Route::get('caja_chica/{id}/credito', 'credito')->name('caja_chica.credito');
     Route::get('caja_chica/list_credito', 'list_credito')->name('caja_chica.list_credito');
     Route::get('caja_chica/{id}/saldo', 'saldo')->name('caja_chica.saldo');
     Route::post('caja_chica_cr/{id}', 'store_cr')->name('caja_chica.store_cr');
+    Route::delete('caja_chica_cr/{id}', 'destroy_cr')->name('caja_chica.destroy_cr');
     Route::delete('caja_chica/{id}', 'destroy')->name('caja_chica.destroy');
     Route::get('caja_chica/excel', 'excel')->name('caja_chica.excel');
 });
@@ -1210,15 +1232,21 @@ Route::controller(RequisicionTiendaController::class)->group(function () {
     Route::delete('requisicion_tienda_tmp/{id}', 'destroy_tmp')->name('requisicion_tienda.destroy_tmp');
     Route::post('requisicion_tienda', 'store')->name('requisicion_tienda.store');
     Route::get('requisicion_tienda/{id}/edit', 'edit')->name('requisicion_tienda.edit');
-    Route::get('requisicion_tienda/{id}/download', 'download')->name('requisicion_tienda.download');
     Route::put('requisicion_tienda/{id}', 'update')->name('requisicion_tienda.update');
+    Route::get('requisicion_tienda/{id}/show', 'show')->name('requisicion_tienda.show');
+    Route::get('requisicion_tienda/{id}/list_detalle', 'list_detalle')->name('requisicion_tienda.list_detalle');
+    Route::post('requisicion_tienda/{id}/detalle', 'store_detalle')->name('requisicion_tienda.store_detalle');
+    Route::get('requisicion_tienda/{id}/edit_detalle', 'edit_detalle')->name('requisicion_tienda.edit_detalle');
+    Route::get('requisicion_tienda/cancelar_detalle', 'cancelar_detalle')->name('requisicion_tienda.cancelar_detalle');
+    Route::post('requisicion_tienda_detalle/{id}/update_detalle', 'update_detalle')->name('requisicion_tienda.update_detalle');
+    Route::delete('requisicion_tienda/{id}/detalle', 'destroy_detalle')->name('requisicion_tienda.destroy_detalle');
+    Route::put('requisicion_tienda/{id}/aprobar', 'aprobar')->name('requisicion_tienda.aprobar');
     Route::delete('requisicion_tienda/{id}', 'destroy')->name('requisicion_tienda.destroy');
 });
 //TESORERÍA - TABLA MAESTRA
 Route::controller(TablaMaestraTesoreriaController::class)->group(function () {
     Route::get('tabla_maestra_tesoreria', 'index')->name('tabla_maestra_tesoreria');
-    Route::post('tabla_maestra_tesoreria/list', 'list')->name('tabla_maestra_tesoreria.list');
-    Route::get('tabla_maestra_tesoreria/{inicio}/{fin}/excel', 'excel')->name('tabla_maestra_tesoreria.excel');
+    Route::get('tabla_maestra_tesoreria/list', 'list')->name('tabla_maestra_tesoreria.list');
 });
 
 

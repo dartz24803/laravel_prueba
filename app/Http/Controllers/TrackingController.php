@@ -14,6 +14,7 @@ use App\Models\Notificacion;
 use App\Models\SubGerencia;
 use App\Models\TrackingArchivo;
 use App\Models\TrackingArchivoTemporal;
+use App\Models\TrackingComentario;
 use App\Models\TrackingDetalleEstado;
 use App\Models\TrackingDetalleProceso;
 use App\Models\TrackingDevolucion;
@@ -286,12 +287,6 @@ class TrackingController extends Controller
                 ], 500);
             }
     
-            /*if (count($query)==0) {
-                return response()->json([
-                    'message' => 'Sin resultados.',
-                ], 404);
-            }*/
-    
             return response()->json($query, 200);
         }else{
             return response()->json([
@@ -438,13 +433,13 @@ class TrackingController extends Controller
         //MENSAJE 1
         $list_detalle = TrackingGuiaRemisionDetalle::where('n_guia_remision', $request->n_requerimiento)->get();
 
-        /*$mpdf = new Mpdf([
+        $mpdf = new Mpdf([
             'format' => 'A4',
             'default_font' => 'Arial'
         ]);
         $html = view('logistica.tracking.pdf', compact('get_id','list_detalle'))->render();
         $mpdf->WriteHTML($html);
-        $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);*/
+        $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
 
         $mail = new PHPMailer(true);
 
@@ -459,6 +454,7 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
             $mail->addAddress('ogutierrez@lanumero1.com.pe');
             $mail->addAddress('practicante3.procesos@lanumero1.com.pe');
             /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
@@ -508,7 +504,7 @@ class TrackingController extends Controller
                             </FONT SIZE>';
         
             $mail->CharSet = 'UTF-8';
-            //$mail->addStringAttachment($pdfContent, 'Guia_Remision.pdf');
+            $mail->addStringAttachment($pdfContent, 'Guia_Remision.pdf');
             $mail->send();
 
             TrackingDetalleEstado::create([
@@ -587,16 +583,16 @@ class TrackingController extends Controller
             'sobres' => 'required_without_all:paquetes,fardos,caja|nullable',
             'fardos' => 'required_without_all:paquetes,sobres,caja|nullable',
             'caja' => 'required_without_all:paquetes,sobres,fardos|nullable',
-            'transporte' => 'gt:0',
-            'nombre_transporte' => 'required_if:tipo_pago,1,3',
-            'importe_transporte' => 'required_if:tipo_pago,1,3',
-            'factura_transporte' => 'required_if:tipo_pago,1,3',
-            'archivo_transporte' => 'required_if:tipo_pago,1,3',
+            'tiempo_llegada' => 'required',
+            'nombre_transporte' => 'required_if:transporte,1,2',
+            'importe_transporte' => 'required_if:transporte,1,2',
+            'factura_transporte' => 'required_if:tipo_pago,1',
+            'archivo_transporte' => 'required_if:tipo_pago,1',
         ],[
             'guia_transporte.required' => 'Debe ingresar nro. gr transporte.',
             'peso.required' => 'Debe ingresar peso.',
             'required_without_all' => 'Debe ingresar paquetes o sobres o fardos o caja.',
-            'transporte.gt' => 'Debe seleccionar transporte.',
+            'tiempo_llegada.required' => 'Debe ingresar tiempo de llegada', 
             'nombre_transporte.required_if' => 'Debe ingresar nombre de empresa.',
             'importe_transporte.required_if' => 'Debe ingresar importe a pagar.',
             'factura_transporte.required_if' => 'Debe ingresar n° factura.',
@@ -604,14 +600,17 @@ class TrackingController extends Controller
         ]);
 
         $errors = [];
-        if ($request->transporte=="1" && $request->tipo_pago=="0") {
-            $errors['tipo_pago'] = ['Debe seleccionar tipo pago.'];
-        }
-        if (($request->tipo_pago=="1" || $request->tipo_pago=="3") && $request->importe_transporte=="0") {
+        if (($request->transporte=="1" || $request->transporte=="2") && $request->importe_transporte=="0") {
             $errors['importe_transporte'] = ['Debe ingresar importe a pagar mayor a 0.'];
         }
         if (!empty($errors)) {
             return response()->json(['errors' => $errors], 422);
+        }
+
+        if($request->transporte=="3"){
+            $tipo_pago = 0;
+        }else{
+            $tipo_pago = $request->tipo_pago;
         }
 
         Tracking::findOrFail($id)->update([
@@ -622,7 +621,8 @@ class TrackingController extends Controller
             'fardos' => $request->fardos,
             'caja' => $request->caja,
             'transporte' => $request->transporte,
-            'tipo_pago' => $request->tipo_pago,
+            'tiempo_llegada' => $request->tiempo_llegada,
+            'tipo_pago' => $tipo_pago,
             'nombre_transporte' => $request->nombre_transporte,
             'importe_transporte' => $request->importe_transporte,
             'factura_transporte' => $request->factura_transporte,
@@ -682,6 +682,14 @@ class TrackingController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'DETALLE_TRANSPORTE',
+                'comentario' => $request->comentario
+            ]);
+        }
     }
 
     public function insert_confirmacion_llegada(Request $request,$id)
@@ -882,7 +890,7 @@ class TrackingController extends Controller
     {
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
-        if($get_id->transporte=="2" || ($get_id->transporte=="1" && $get_id->tipo_pago=="1")){
+        if($get_id->transporte=="3" || $get_id->tipo_pago=="1"){
             //ALERTA 5 (SI)
             $list_token = TrackingToken::whereIn('base', ['CD'])->get();
             foreach($list_token as $token){
@@ -1233,6 +1241,14 @@ class TrackingController extends Controller
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $request->id,
+                'pantalla' => 'VERIFICACION_FARDO',
+                'comentario' => $request->comentario
+            ]);
+        }
     }
 
     public function pago_transporte($id)
@@ -1277,60 +1293,25 @@ class TrackingController extends Controller
 
     public function insert_confirmacion_pago_transporte(Request $request, $id)
     {
-        $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        
-        if($get_id->tipo_pago=="3"){
-            $request->validate([
-                'importe_transporte_2' => 'required|gt:0',
-                'factura_transporte_2' => 'required'
-            ],[
-                'importe_transporte_2.required' => 'Debe ingresar segundo importe.',
-                'importe_transporte_2.gt' => 'Debe ingresar segundo importe mayor a 0.',
-                'factura_transporte_2.required' => 'Debe ingresar n° de factura.'
-            ]);
+        $request->validate([
+            'factura_transporte' => 'required'
+        ],[
+            'factura_transporte.required' => 'Debe ingresar n° de factura.'
+        ]);
 
-            $errors = [];
-            if ($_FILES["archivo_transporte"]["name"]=="" && $request->captura=="0") {
-                $errors['archivo'] = ['Debe adjuntar o capturar con la cámara la factura.'];
-            }
-            if (!empty($errors)) {
-                return response()->json(['errors' => $errors], 422);
-            }
-
-            Tracking::findOrFail($id)->update([
-                'importe_transporte_2' => $request->importe_transporte_2,
-                'factura_transporte_2' => $request->factura_transporte_2,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
-        }else{
-            $request->validate([
-                'nombre_transporte' => 'required',
-                'importe_transporte' => 'required|gt:0',
-                'factura_transporte' => 'required'
-            ],[
-                'nombre_transporte.required' => 'Debe ingresar nombre de empresa.',
-                'importe_transporte.required' => 'Debe ingresar importe a pagar.',
-                'importe_transporte.gt' => 'Debe ingresar importe a pagar mayor a 0.',
-                'factura_transporte.required' => 'Debe ingresar n° de factura.'
-            ]);
-
-            $errors = [];
-            if ($_FILES["archivo_transporte"]["name"]=="" && $request->captura=="0") {
-                $errors['archivo'] = ['Debe adjuntar o capturar con la cámara la factura.'];
-            }
-            if (!empty($errors)) {
-                return response()->json(['errors' => $errors], 422);
-            }
-    
-            Tracking::findOrFail($id)->update([
-                'nombre_transporte' => $request->nombre_transporte,
-                'importe_transporte' => $request->importe_transporte,
-                'factura_transporte' => $request->factura_transporte,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
+        $errors = [];
+        if ($_FILES["archivo_transporte"]["name"]=="" && $request->captura=="0") {
+            $errors['archivo'] = ['Debe adjuntar o capturar con la cámara la factura.'];
         }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
+        Tracking::findOrFail($id)->update([
+            'factura_transporte' => $request->factura_transporte,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
 
         if($_FILES["archivo_transporte"]["name"] != ""){
             $ftp_server = "lanumerounocloud.com";
@@ -1386,6 +1367,7 @@ class TrackingController extends Controller
         }
 
         //ALERTA 6
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
         $list_token = TrackingToken::whereIn('base', ['CD'])->get();
         foreach($list_token as $token){
             $dato = [
@@ -1511,6 +1493,14 @@ class TrackingController extends Controller
             ]);
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+        }
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'PAGO_TRANSPORTE',
+                'comentario' => $request->comentario
+            ]);
         }
     }
 
@@ -1654,6 +1644,14 @@ class TrackingController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
         }
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'REPORTE_MERCADERIA',
+                'comentario' => $request->comentario
+            ]);
+        }
     }
 
     public function cuadre_diferencia($id)
@@ -1778,6 +1776,14 @@ class TrackingController extends Controller
             ]);
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+        }
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'CUADRE_DIFERENCIA',
+                'comentario' => $request->comentario
+            ]);
         }
     }
 
@@ -1915,6 +1921,14 @@ class TrackingController extends Controller
             }
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+        }
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'DETALLE_OPERACION_DIFERENCIA',
+                'comentario' => $request->comentario
+            ]);
         }
     }
 
@@ -2123,6 +2137,14 @@ class TrackingController extends Controller
             }catch(Exception $e) {
                 echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
             }
+
+            if($request->comentario){
+                TrackingComentario::create([
+                    'id_tracking' => $id,
+                    'pantalla' => 'SOLICITUD_DEVOLUCION',
+                    'comentario' => $request->comentario
+                ]);
+            }
         }else{
             echo "error";
         }
@@ -2327,6 +2349,14 @@ class TrackingController extends Controller
 
             //ALERTA 13
             $this->insert_mercaderia_entregada($id);
+
+            if($request->comentario){
+                TrackingComentario::create([
+                    'id_tracking' => $id,
+                    'pantalla' => 'EVALUACION_DEVOLUCION',
+                    'comentario' => $request->comentario
+                ]);
+            }
         }else{
             echo "error";
         }
@@ -2338,11 +2368,11 @@ class TrackingController extends Controller
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(7);
         $list_base = Base::get_list_bases_tienda();
-        $list_usuario = DB::connection('sqlsrv')->table('vw_usuarios')
-                        ->select('par_desusuario')->orderBy('par_desusuario','ASC')->get();
-        $list_tipo_prenda = DB::connection('sqlsrv')->table('tge_sub_familias')
-                            ->select('sfa_descrip')->orderBy('sfa_descrip','ASC')->get();
-        return view('logistica.tracking.mercaderia_nueva.index', compact('list_notificacion','list_subgerencia','list_base','list_usuario','list_tipo_prenda'));
+        return view('logistica.tracking.mercaderia_nueva.index', compact(
+            'list_notificacion',
+            'list_subgerencia',
+            'list_base'
+        ));
     }
 
     public function list_mercaderia_nueva(Request $request)
@@ -2356,87 +2386,32 @@ class TrackingController extends Controller
         return view('logistica.tracking.mercaderia_nueva.lista', compact('cod_base','list_mercaderia_nueva'));
     }
 
+    public function mercaderia_nueva_tusu($cod_base)
+    {
+        $list_tipo_usuario = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_tusuario_app ?', [
+            $cod_base
+        ]);
+        return view('logistica.tracking.mercaderia_nueva.tipo_usuario', compact('list_tipo_usuario'));
+    }
+
+    public function mercaderia_nueva_tpre($cod_base)
+    {
+        $list_tipo_prenda = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_tprenda_app ?', [
+            $cod_base
+        ]);
+        return view('logistica.tracking.mercaderia_nueva.tipo_prenda', compact('list_tipo_prenda'));
+    }
+
     public function modal_mercaderia_nueva($cod_base,$estilo)
     {
-        $list_mercaderia_nueva_x_estilo = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_estilo ?,?', [
+        $list_mercaderia_nueva = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_estilo ?,?', [
             $cod_base,
             $estilo
         ]);
-        return view('logistica.tracking.mercaderia_nueva.modal_editar', compact('estilo','list_mercaderia_nueva_x_estilo'));
-    }
-
-    public function insert_mercaderia_surtida(Request $request)
-    {
-        $hasNonNull = count(array_filter($request->cantidad, function($value) {
-            return $value !== null;
-        }));
-
-        if($hasNonNull==0){
-            echo "error";
-        }else{
-            foreach($request->cantidad as $cantidad){
-
-            }
-            
-            $rules = [
-                'cantidad' => 'required'
-            ];
-    
-            $messages = [
-                'cantidad.required' => 'Debe ingresar al menos una cantidad.'
-            ];
-
-            $request->validate($rules, $messages);
-        }
-
-        /*$rules = [
-            'cod_base' => 'required',
-            'detalle.*.sku' => 'required',
-            'detalle.*.cantidad' => 'required|gt:0',
-        ];
-
-        $messages = [
-            'cod_base.required' => 'Debe ingresar base.',
-            'detalle.*.sku.required' => 'Debe ingresar sku.',
-            'detalle.*.cantidad.required' => 'Debe ingresar cantidad.',
-            'detalle.*.cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
-        ];
-
-        foreach ($request->detalle as $list => $item) {
-            $rules['tarea'] = 'gt:0';
-            $messages['tarea.gt'] = 'Debe seleccionar función.';
-        }*/
-
-        /*$request->validate([
-            'cantidad' => 'gt:0',
-        ],[
-            'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
-        ]);
-
-        $resultados = DB::connection('sqlsrv')->select('EXEC usp_new_mercaderia_nueva ?,?,?,?,?,?', [$sku,date('Y'),date('W'),$request->cod_base,'','']);
-        $get_id = $resultados[0];
-
-        if($request->cantidad>$get_id->cantidad){
-            echo "error";
-        }else{
-            MercaderiaSurtida::create([
-                'tipo' => 1,
-                'base' => $request->cod_base,
-                'anio' => date('Y'),
-                'semana' => date('W'),
-                'sku' => $sku,
-                'estilo' => $get_id->estilo,
-                'tipo_usuario' => $get_id->tipo_usuario,
-                'tipo_prenda' => $get_id->tipo_prenda,
-                'color' => $get_id->color,
-                'talla' => $get_id->talla,
-                'descripcion' => $get_id->decripcion,
-                'cantidad' => $request->cantidad,
-                'estado' => 0,
-                'fecha' => now(),
-                'usuario' => session('usuario')->id_usuario
-            ]);
-        }*/
+        return view('logistica.tracking.mercaderia_nueva.modal_detalle', compact(
+            'estilo',
+            'list_mercaderia_nueva'
+        ));
     }
 
     public function list_mercaderia_nueva_app(Request $request)
@@ -2499,13 +2474,9 @@ class TrackingController extends Controller
         ]);
 
         try {
-            $resultados = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva ?,?,?,?,?,?', [
-                $sku,
-                date('Y'),
-                date('W'),
+            $resultados = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_sku ?,?', [
                 $request->cod_base,
-                '',
-                ''
+                $sku
             ]);
             $get_id = $resultados[0];
 
@@ -2536,7 +2507,7 @@ class TrackingController extends Controller
                     'tipo_prenda' => $get_id->tipo_prenda,
                     'color' => $get_id->color,
                     'talla' => $get_id->talla,
-                    'descripcion' => $get_id->decripcion,
+                    'descripcion' => $get_id->descripcion,
                     'cantidad' => $request->cantidad,
                     'stk_almacen' => $get_stock->stk_almacen,
                     'stk_tienda' => $get_stock->stk_tienda,

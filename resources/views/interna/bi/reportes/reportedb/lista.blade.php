@@ -47,13 +47,13 @@
             <th>Última Act</th>
             <th>Nombre BI</th>
             <th>Nombre Intranet</th>
+            <th>Iframe</th>
+            <th class="col-tipo">Área</th>
+            <th>Objetivo</th>
             <th>Nombre Sistema</th>
             <th>Nombre Base de Datos</th>
             <th>Actividad</th>
             <th>Tabla</th>
-            <th class="col-tipo">Área</th>
-            <th>Objetivo</th>
-            <th>Iframe</th>
             <th>Frecuencia</th>
             <th>Solicitante</th>
             <th>Accesos</th>
@@ -66,6 +66,11 @@
             <td>{{ \Carbon\Carbon::parse($reporte->fec_act)->locale('es')->translatedFormat('D d M y') }}</td>
             <td>{{ $reporte->nom_bi }}</td>
             <td>{{ $reporte->nom_intranet }}</td>
+            <td>{{ $reporte->iframe }}</td>
+            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ $reporte->codigo_area }}
+            </td>
+            <td>{{ $reporte->objetivo }}</td>
             <td>{{ $reporte->nom_sistema }}</td>
             <td>{{ $reporte->nom_db }}</td>
             <td>
@@ -80,12 +85,8 @@
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->nom_tabla }}
             </td>
-            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                {{ $reporte->nombres_area }}
-            </td>
-            <td>{{ $reporte->objetivo }}</td>
+
             @if ($reporte->actividad == 1)
-            <td>{{ $reporte->iframe }}</td>
             @else
             <td>No disponible</td>
             @endif
@@ -152,12 +153,12 @@
         tabla.column(columnIndex).visible(visible);
     });
     $('#toggle-obj').change(function() {
-        var columnIndex = 6;
+        var columnIndex = 5;
         var visible = this.checked;
         tabla.column(columnIndex).visible(visible);
     });
-    $('#toggle-desc').change(function() {
-        var columnIndex = 8;
+    $('#toggle-tabla').change(function() {
+        var columnIndex = 9;
         var visible = this.checked;
         tabla.column(columnIndex).visible(visible);
     });
@@ -167,7 +168,7 @@
         tabla.column(columnIndex).visible(visible);
     });
     $('#toggle-acce').change(function() {
-        var columnIndex = 14;
+        var columnIndex = 12;
         var visible = this.checked;
         tabla.column(columnIndex).visible(visible);
     });

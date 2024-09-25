@@ -1,6 +1,6 @@
 <form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
-        <h5 class="modal-title">Editar Tipo indicador:</h5>
+        <h5 class="modal-title">Editar Tipo Concepto:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -12,7 +12,7 @@
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row"> <!-- Add this row class to create a horizontal layout -->
             <div class="form-group col-lg-6">
-                <label for="nombreindicadore">Nombre Indicador:</label>
+                <label for="nombreindicadore">Nombre Concepto:</label>
                 <input type="text" class="form-control" id="nombreindicadore" name="nombreindicadore"
                     value="{{ $get_id->nom_indicador }}">
             </div>

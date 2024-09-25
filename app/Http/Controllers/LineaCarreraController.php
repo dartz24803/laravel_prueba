@@ -20,7 +20,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 class LineaCarreraController extends Controller
 {
@@ -514,5 +513,12 @@ class LineaCarreraController extends Controller
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
+    }
+
+    public function show_re($id)
+    {
+        $get_id = ExamenEntrenamiento::findOrFail($id);
+        $list_detalle = DetalleExamenEntrenamiento::get_list_detalle_examen_entrenamiento(['id_examen' => $id]);
+        return view('caja.linea_carrera.revision_evaluacion.modal_detalle', compact('get_id','list_detalle'));
     }
 }
