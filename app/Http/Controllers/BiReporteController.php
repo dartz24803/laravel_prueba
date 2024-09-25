@@ -695,6 +695,24 @@ class BiReporteController extends Controller
                 );
             }
         }
+
+        // Guardar los datos en la tabla bi_puesto_acceso
+        $biReporteId = $biReporte->id_acceso_bi_reporte;
+        // Eliminar los registros existentes para ese ID de reporte
+        BiPuestoAcceso::where('id_acceso_bi_reporte', $biReporteId)->delete();
+        // Obtener los nuevos puestos del request
+        $puestos = $request->input('tipo_acceso_tee', []);
+        // Crear nuevos registros
+        foreach ($puestos as $puestoId) {
+            BiPuestoAcceso::create([
+                'id_acceso_bi_reporte' => $biReporteId,
+                'id_puesto' => $puestoId,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+            ]);
+        }
     }
 
 
