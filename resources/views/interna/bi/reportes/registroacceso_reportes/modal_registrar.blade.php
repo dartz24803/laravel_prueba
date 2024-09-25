@@ -395,7 +395,7 @@
                     <div class="col-lg-4">
                         <div class="row p-2">
                             <textarea id="paste_area_1" placeholder="Ctrl + V aquí para pegar la imagen" style="width: 100%" rows="1"></textarea>
-                            <div id="imageViewer_1"></div>
+                            <div id="imageViewerReg_1"></div>
                         </div>
                         <input type="file" id="archivo_base_1" name="archivo_base_1" style="display: none;">
                     </div>
@@ -404,7 +404,7 @@
                     <div class="col-lg-4">
                         <div class="row p-2">
                             <textarea id="paste_area_2" placeholder="Ctrl + V aquí para pegar la imagen" style="width: 100%" rows="1"></textarea>
-                            <div id="imageViewer_2"></div>
+                            <div id="imageViewerReg_2"></div>
                         </div>
                         <input type="file" id="archivo_base_2" name="archivo_base_2" style="display: none;">
                     </div>
@@ -413,7 +413,7 @@
                     <div class="col-lg-4">
                         <div class="row p-2">
                             <textarea id="paste_area_3" placeholder="Ctrl + V aquí para pegar la imagen" style="width: 100%" rows="1"></textarea>
-                            <div id="imageViewer_3"></div>
+                            <div id="imageViewerReg_3"></div>
                         </div>
                         <input type="file" id="archivo_base_3" name="archivo_base_3" style="display: none;">
                     </div>
@@ -471,15 +471,15 @@
 
 <script>
     document.getElementById('paste_area_1').addEventListener('paste', function(e) {
-        handlePaste(e, 'archivo_base_1', 'imageViewer_1');
+        handlePaste(e, 'archivo_base_1', 'imageViewerReg_1');
     });
 
     document.getElementById('paste_area_2').addEventListener('paste', function(e) {
-        handlePaste(e, 'archivo_base_2', 'imageViewer_2');
+        handlePaste(e, 'archivo_base_2', 'imageViewerReg_2');
     });
 
     document.getElementById('paste_area_3').addEventListener('paste', function(e) {
-        handlePaste(e, 'archivo_base_3', 'imageViewer_3');
+        handlePaste(e, 'archivo_base_3', 'imageViewerReg_3');
     });
 
     function handlePaste(e, fileInputId, viewerId) {

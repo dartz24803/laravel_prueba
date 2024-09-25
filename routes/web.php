@@ -989,6 +989,7 @@ Route::controller(ProduccionController::class)->group(function () {
     // ASIGNAR VISITAS
     Route::get('produccionav', 'indexav')->name('produccionav');
     Route::get('produccionrev', 'indexrev')->name('produccionrev');
+    Route::get('produccionft', 'indexft')->name('produccionft');
     Route::get('produccion_av', 'index_av')->name('produccion_av');
     Route::get('produccion_av/list', 'list_av')->name('produccion_av.list');
     Route::get('produccion_av/create', 'create_av')->name('produccion_av.create');
@@ -1012,6 +1013,19 @@ Route::controller(ProduccionController::class)->group(function () {
     Route::post('produccion_rv/{id}/iniciar', 'iniciar_rv')->name('produccion_rv.iniciar');
     Route::post('produccion_rv/{id}/finalizar', 'finalizar_rv')->name('produccion_rv.finalizar');
     Route::get('produccion_rv/{id}/detalle', 'detalle_rv')->name('produccion_rv.detalle');
+
+    // FICHAS TÉCNICAS
+    Route::get('produccion_ft', 'index_ft')->name('produccion_ft');
+    Route::get('produccion_ft/list', 'list_ft')->name('produccion_ft.list');
+    Route::get('produccion_ft/create', 'create_ft')->name('produccion_ft.create');
+    Route::post('produccion_ft', 'store_ft')->name('produccion_ft.store');
+    Route::get('produccion_ft/{id}/edit', 'edit_ft')->name('produccion_ft.edit');
+    Route::delete('produccion_ft/{id}', 'destroy_ft')->name('produccion_ft.destroy');
+    Route::get('produccion_ft/{id}/image', 'image_ft')->name('produccion_ft.image');
+
+    Route::post('produccion_ft/{id}/iniciar', 'iniciar_rv')->name('produccion_ft.iniciar');
+    Route::post('produccion_ft/{id}/finalizar', 'finalizar_rv')->name('produccion_ft.finalizar');
+    Route::get('produccion_ft/{id}/detalle', 'detalle_rv')->name('produccion_ft.detalle');
 });
 
 

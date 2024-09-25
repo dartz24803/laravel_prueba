@@ -38,6 +38,12 @@ class ProduccionController extends Controller
         $list_subgerencia = SubGerencia::list_subgerencia(9);
         return view('manufactura.produccion.registro_visitas.index', compact('list_notificacion', 'list_subgerencia'));
     }
+    public function indexft()
+    {
+        $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(9);
+        return view('manufactura.produccion.ficha_tecnica.index', compact('list_notificacion', 'list_subgerencia'));
+    }
 
     public function index_rv()
     {
@@ -47,6 +53,10 @@ class ProduccionController extends Controller
     public function index_av()
     {
         return view('manufactura.produccion.asignacion_visitas.asignar_visitas.index');
+    }
+    public function index_ft()
+    {
+        return view('manufactura.produccion.ficha_tecnica.registrar_ficha_tecnica.index');
     }
 
     public function list_av(Request $request)
@@ -387,8 +397,6 @@ class ProduccionController extends Controller
 
 
 
-
-
     // REGISTRO DE VISITAS
 
     public function list_rv(Request $request)
@@ -439,12 +447,119 @@ class ProduccionController extends Controller
             ->where('asignacion_visita_transporte.id_asignacion_visita', $id) // Filtrar por id_asignacion_visita
             ->get();
 
-
-
         return view('manufactura.produccion.registro_visitas.registrar_visitas.modal_detalle', compact(
             'get_id',
             'list_tipo_transporte',
             'list_visita_transporte'
         ));
+    }
+
+    // FICHA TÉCNICA
+    public function list_ft(Request $request)
+    {
+        $list_ficha_tecnica = FichaTecnicaProduccion::select(
+            'ficha_tecnica_produccion.id_ft_produccion',
+            'ficha_tecnica_produccion.fec_reg',
+            'ficha_tecnica_produccion.user_reg',
+            'ficha_tecnica_produccion.modelo',
+            'ficha_tecnica_produccion.img_ft_produccion',
+            DB::raw("CONCAT(users.usuario_nombres, ' ', users.usuario_apater, ' ', users.usuario_amater) AS nombre_completo")
+        )
+            ->join('users', 'ficha_tecnica_produccion.user_reg', '=', 'users.id_usuario')
+            ->where('ficha_tecnica_produccion.estado', 1)
+            ->orderBy('ficha_tecnica_produccion.modelo', 'ASC')
+            ->distinct('ficha_tecnica_produccion.modelo')
+            ->get();
+        // dd($list_ficha_tecnica);
+        return view('manufactura.produccion.ficha_tecnica.registrar_ficha_tecnica.lista', compact('list_ficha_tecnica'));
+    }
+
+    public function create_ft()
+    {
+        $list_ficha_tecnica = FichaTecnicaProduccion::select(
+            'id_ft_produccion',
+            'fec_reg',
+            'user_reg',
+            'modelo',
+            'img_ft_produccion',
+        )
+            ->where('estado', 1)
+            ->orderBy('modelo', 'ASC')
+            ->distinct('modelo')->get();
+
+        return view('manufactura.produccion.ficha_tecnica.registrar_ficha_tecnica.modal_registrar', compact('list_ficha_tecnica'));
+    }
+
+    public function image_ft($id)
+    {
+        $get_id = FichaTecnicaProduccion::where('id_ft_produccion', $id)->firstOrFail();
+        // Construye la URL completa de la imagen
+        $imageUrl = null;
+        if ($get_id->nom_img_ft_produccion) {
+            $imageUrl = "https://lanumerounocloud.com/intranet/PRODUCCION/ficha_tecnica/" . $get_id->nom_img_ft_produccion;
+        }
+        return view('manufactura.produccion.ficha_tecnica.registrar_ficha_tecnica.modal_imagen', compact('get_id', 'imageUrl'));
+    }
+
+    public function destroy_ft($id)
+    {
+
+        FichaTecnicaProduccion::where('id_ft_produccion', $id)->firstOrFail()->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function store_ft(Request $request)
+    {
+        $request->validate([
+            'modelo' => 'required',
+        ], [
+            'modelo.required' => 'Debe ingresar nombre Modelo.',
+        ]);
+        // Conectar al servidor FTP
+        $ftp_server = "lanumerounocloud.com";
+        $ftp_usuario = "intranet@lanumerounocloud.com";
+        $ftp_pass = "Intranet2022@";
+        $con_id = ftp_connect($ftp_server);
+        $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+        // Conexión a FTP SERVER
+        if ($con_id && $lr) {
+            ftp_pasv($con_id, true);
+            // Subir archivo 1
+            if (!empty($_FILES["archivo1"]["name"])) {
+
+                $source_file = $_FILES['archivo1']['tmp_name'];
+                $nombre = $_FILES["archivo1"]["name"];
+                $nombimageUrl = "https://lanumerounocloud.com/intranet/PRODUCCION/ficha_tecnica/" . $nombre;
+
+                $subio = ftp_put($con_id, "PRODUCCION/ficha_tecnica/" . $nombre, $source_file, FTP_BINARY);
+                if ($subio) {
+                    $archivo = $nombre;
+                } else {
+                    echo "Archivo 1 no subido correctamente";
+                }
+            }
+            ftp_close($con_id); // Cerrar conexión FTP
+        } else {
+            echo "No se conectó al servidor FTP";
+        }
+
+        // Crear un nuevo registro en la tabla asignacion_visita
+        FichaTecnicaProduccion::create([
+            'modelo' =>  $request->modelo,
+            'nom_img_ft_produccion' => $nombre,
+            'img_ft_produccion' => $nombimageUrl,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario,
+            'user_eli' => 0,
+        ]);
+
+
+        return response()->json(['message' => 'Registros creados con éxito.']);
     }
 }
