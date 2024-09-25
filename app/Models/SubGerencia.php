@@ -34,7 +34,7 @@ class SubGerencia extends Model
         $results = DB::table('sub_gerencia')
             ->leftJoin('area', 'sub_gerencia.id_sub_gerencia', '=', 'area.id_departamento')
             ->where('sub_gerencia.id_sub_gerencia', $subgerenciaId)
-            ->select('sub_gerencia.nom_sub_gerencia', 'area.nom_area')
+            ->select('sub_gerencia.nom_sub_gerencia', 'area.id_area', 'area.nom_area') // Seleccionar también nom_area
             ->get();
 
         // Agrupar los resultados
@@ -45,7 +45,12 @@ class SubGerencia extends Model
             if (!$subgerencia) {
                 $subgerencia = $result->nom_sub_gerencia;
             }
-            $areas[] = $result->nom_area;
+            // Agregar tanto el id_area como el nom_area al array de áreas
+            $areas[] = [
+                'id_area' => $result->id_area,
+                'nom_area' => $result->nom_area,
+                'id_subgerencia' => $subgerenciaId // Agregar el id_subgerencia aquí
+            ];
         }
 
         return [

@@ -17,6 +17,7 @@ use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
 use App\Http\Controllers\AsistenciaSegController;
 use App\Http\Controllers\BiReporteController;
+use App\Http\Controllers\BiReporteDepartamentoController;
 use App\Http\Controllers\CajaChicaConfController;
 use App\Http\Controllers\CajaChicaController;
 use App\Http\Controllers\CajaInicioController;
@@ -311,6 +312,14 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::post('bireporte_sisbd_conf', 'store_sis')->name('bireporte_sisbd_conf.store');
     Route::post('bireporte_sistema_conf', 'store_sistema')->name('bireporte_sistema_conf.store');
 });
+
+//BI REPORTES - TIENDA
+Route::controller(BiReporteDepartamentoController::class)->group(function () {
+    Route::get('reportenewp/{id_area}/{id_subgerencia}', 'handleAreaP')->name('reporte_primario');
+    // Route::get('reportenewp/{id_area}/{id_subgerencia}/{id_subgerencia_sec}', 'handleAreaP')->name('reporte_primario');
+});
+
+
 
 
 //RECURSOS HUMANOS - COLABORADOR CONFIGURABLE

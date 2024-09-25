@@ -49,6 +49,11 @@ class BiReporte extends Model
         'fec_eli',
     ];
 
+    public static function getByAreaDestino($id_area_destino)
+    {
+        return self::where('id_area_destino', $id_area_destino)->get();
+    }
+
     public static function getBiReportesxIndicador()
     {
         return self::select(

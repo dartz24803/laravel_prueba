@@ -35,15 +35,10 @@
                 <div class="statbox widget box box-shadow">
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
-                            @foreach($list_reportes as $index => $reporte)
+
+                            @foreach($list_reportes as $reporte)
                             <li class="nav-item">
-                                <a
-                                    id="reporte_{{ $index }}"
-                                    class="nav-link"
-                                    style="cursor: pointer;"
-                                    onclick="showIframe('{{ $reporte->iframe }}', 'reporte_{{ $index }}');">
-                                    {{ $reporte->nom_bi }}
-                                </a>
+                                <a class="nav-link" style="cursor: pointer;" onclick="showIframe('{{ $reporte->iframe }}');">{{ $reporte->nom_bi }}</a>
                             </li>
                             @endforeach
                         </ul>
@@ -72,13 +67,9 @@
         Supervision_Tienda();
     });
 
-    function showIframe(iframeSrc, dynamicId) {
+    function showIframe(iframeSrc) {
         // Aquí se asigna el iframe al div
         $('#div_administrador').html(iframeSrc);
-
-        // Manejar la activación de la pestaña
-        $('.nav-link').removeClass('active'); // Eliminar la clase 'active' de todos los enlaces
-        $("#" + dynamicId).addClass('active'); // Añadir la clase 'active' al enlace clicado
     }
 </script>
 @endsection
