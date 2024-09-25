@@ -60,6 +60,7 @@ use App\Http\Controllers\PostulanteController;
 use App\Http\Controllers\ProcesosController;
 use App\Http\Controllers\ProduccionController;
 use App\Http\Controllers\RecursosHumanosInicioController;
+use App\Http\Controllers\RegistroLetraController;
 use App\Http\Controllers\ReporteProveedoresController;
 use App\Http\Controllers\RequisicionTiendaConfController;
 use App\Http\Controllers\RequisicionTiendaController;
@@ -1215,6 +1216,18 @@ Route::controller(RequisicionTiendaController::class)->group(function () {
 Route::controller(TablaMaestraTesoreriaController::class)->group(function () {
     Route::get('tabla_maestra_tesoreria', 'index')->name('tabla_maestra_tesoreria');
     Route::get('tabla_maestra_tesoreria/list', 'list')->name('tabla_maestra_tesoreria.list');
+});
+//TESORERÍA - REGISTRO LETRAS
+Route::controller(RegistroLetraController::class)->group(function (){
+    Route::get('registro_letra', 'index')->name('registro_letra');
+    Route::post('registro_letra/list', 'list')->name('registro_letra.list');
+    Route::get('registro_letra/create', 'create')->name('registro_letra.create');
+    Route::post('registro_letra', 'store')->name('registro_letra.store');
+    Route::get('registro_letra/{id}/{tipo}/unico', 'unico')->name('registro_letra.unico');
+    Route::put('registro_letra/{id}/update_unico', 'update_unico')->name('registro_letra.update_unico');
+    Route::get('registro_letra/{id}/{tipo}/estado', 'estado')->name('registro_letra.estado');
+    Route::put('registro_letra/{id}/update_estado', 'update_estado')->name('registro_letra.update_estado');
+    Route::delete('registro_letra/{id}', 'destroy')->name('registro_letra.destroy');
 });
 
 
