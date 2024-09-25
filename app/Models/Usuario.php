@@ -29,6 +29,7 @@ class Usuario extends Model
         'acceso',
         'verif_email',
         'documento',
+        'id_horario',
         'estado',
         'fec_reg',
         'user_reg',

@@ -40,6 +40,10 @@
         moment.locale('es');
     </script>
     <link rel="stylesheet" href="{{ asset('css/modals.css') }}">
+    <!-- CSS perfil -->
+    <link rel="stylesheet" type="text/css" href="{{ asset('template/plugins/dropify/dropify.min.css') }}">
+    <link href="{{ asset("template/assets/css/users/account-setting.css") }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('template/assets/css/forms/switches.css') }}">
 </head>
 
 <body class="alt-menu sidebar-noneoverflow">
@@ -471,6 +475,8 @@
     <!-- END MAIN CONTAINER -->
 
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
+    <script src="{{ asset('template/plugins/input-mask/jquery.inputmask.bundle.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/dropify/dropify.min.js') }}"></script>
     <script src="{{ asset('template/bootstrap/js/popper.min.js') }}"></script>
     <script src="{{ asset('template/bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('template/plugins/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
