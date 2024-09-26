@@ -12,6 +12,12 @@ use App\Models\TipoComprobante;
 use App\Models\TipoMoneda;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class RegistroLetraController extends Controller
 {
@@ -177,7 +183,6 @@ class RegistroLetraController extends Controller
         }
     }
 
-    
     public function edit($id)
     {
         $get_id = ChequesLetras::findOrFail($id);
@@ -415,5 +420,160 @@ class RegistroLetraController extends Controller
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario
         ]);
+    }
+
+    public function excel($estado,$id_empresa,$id_aceptante,$tipo_fecha,$mes,$anio)
+    {
+        $list_cheque_letra = ChequesLetras::get_list_cheques_letra([
+            'estado'=>$estado,
+            'id_empresa'=>$id_empresa,
+            'id_aceptante'=>$id_aceptante,
+            'tipo_fecha'=>$tipo_fecha,
+            'mes'=>$mes,
+            'anio'=>$anio
+        ]);
+        $list_aceptante = DB::connection('sqlsrv')->table('tge_entidades')
+                        ->select(DB::raw("CONCAT(tdo_codigo,'_',clp_numdoc) AS id_aceptante"),
+                        DB::raw("clp_razsoc AS nom_aceptante"))
+                        ->where('clp_estado','!=','*')->get()->map(function($item) {
+                            return (array) $item;
+                        })->toArray();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getStyle("A2:Q2")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->getStyle("A2:Q2")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Cheques y letras');
+
+        $sheet->setAutoFilter('A2:Q2');
+
+        $sheet->getColumnDimension('A')->setWidth(25);
+        $sheet->getColumnDimension('B')->setWidth(10);
+        $sheet->getColumnDimension('C')->setWidth(10);
+        $sheet->getColumnDimension('D')->setWidth(10);
+        $sheet->getColumnDimension('E')->setWidth(10);
+        $sheet->getColumnDimension('F')->setWidth(10);
+        $sheet->getColumnDimension('G')->setWidth(35);
+        $sheet->getColumnDimension('H')->setWidth(18);
+        $sheet->getColumnDimension('I')->setWidth(18);
+        $sheet->getColumnDimension('J')->setWidth(12);
+        $sheet->getColumnDimension('K')->setWidth(20);
+        $sheet->getColumnDimension('L')->setWidth(25);
+        $sheet->getColumnDimension('M')->setWidth(12);
+        $sheet->getColumnDimension('N')->setWidth(10);
+        $sheet->getColumnDimension('O')->setWidth(13);
+        $sheet->getColumnDimension('P')->setWidth(10);
+        $sheet->getColumnDimension('Q')->setWidth(13);
+
+        $sheet->getStyle('A1:Q2')->getFont()->setBold(true);
+
+        $spreadsheet->getActiveSheet()->getStyle("A2:Q2")->getFill()
+        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+        ->getStartColor()->setARGB('92D050');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle("A2:Q2")->applyFromArray($styleThinBlackBorderOutline);
+
+        $sheet->getStyle("A1:Q1")->getFont()->setSize(16);
+        $sheet->getStyle("A2:Q2")->getFont()->setSize(10); 
+
+        $sheet->setCellValue('E1', 'LETRA - CHEQUES - '.$anio);
+        $sheet->setCellValue('A2', 'EMPRESA');
+        $sheet->setCellValue('B2', 'F. EMISIÓN');
+        $sheet->setCellValue('C2', 'F. VENCIMIENTO');
+        $sheet->setCellValue('D2', 'DIAS ATRASO');
+        $sheet->setCellValue('E2', 'TIPO DOCUMENTO');
+        $sheet->setCellValue('F2', 'N° DOCUMENTO');
+        $sheet->setCellValue('G2', 'ACEPTANTE');
+        $sheet->setCellValue('H2', 'TIPO COMPROBANTE');
+        $sheet->setCellValue('I2', 'N° COMPROBANTE');
+        $sheet->setCellValue('J2', 'MONTO');
+        $sheet->setCellValue('K2', 'NEGOCIADO/ENDOSADO');
+        $sheet->setCellValue('L2', 'EMPRESA ENDOSADO');
+        $sheet->setCellValue('M2', 'ESTADO');
+        $sheet->setCellValue('N2', 'F. PAGO');
+        $sheet->setCellValue('O2', 'N° OPERACIÓN');
+        $sheet->setCellValue('P2', 'N° ÚNICO');
+        $sheet->setCellValue('Q2', 'BANCO');
+
+        $contador = 2;
+
+        foreach ($list_cheque_letra as $list) {
+            $contador++;
+
+            $nom_aceptante = "";
+            $empresa_vinculada = "";
+
+            $busqueda = in_array($list->id_aceptante, array_column($list_aceptante, 'id_aceptante'));
+            $posicion = array_search($list->id_aceptante, array_column($list_aceptante, 'id_aceptante'));    
+            if ($busqueda != false) {
+                $nom_aceptante = $list_aceptante[$posicion]['nom_aceptante'];
+            }
+
+            if($list->negociado_endosado=="Endosado"){
+                $busqueda = in_array($list->id_empresa_vinculada, array_column($list_aceptante, 'id_aceptante'));
+                $posicion = array_search($list->id_empresa_vinculada, array_column($list_aceptante, 'id_aceptante'));    
+                if ($busqueda != false) {
+                    $empresa_vinculada = $list_aceptante[$posicion]['nom_aceptante'];
+                }
+            }
+
+            $sheet->getStyle("A{$contador}:Q{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("G{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("J{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            $sheet->getStyle("L{$contador}:M{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("Q{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:Q{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:Q{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+            $sheet->getStyle("A{$contador}:Q{$contador}")->getFont()->setSize(10);
+            if($list->id_moneda=="1"){
+                $sheet->getStyle("J{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_CURRENCY_SOL_SIMPLE);
+            }else{
+                $sheet->getStyle("J{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_CURRENCY_USD);
+            }
+
+            $sheet->setCellValue("A{$contador}", $list->nom_empresa);
+            $sheet->setCellValue("B{$contador}", Date::PHPToExcel($list->fec_emision));
+            $sheet->getStyle("B{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DMYSLASH); 
+            $sheet->setCellValue("C{$contador}", Date::PHPToExcel($list->fec_vencimiento));
+            $sheet->getStyle("C{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DMYSLASH); 
+            $sheet->setCellValue("D{$contador}", $list->dias_atraso);
+            $sheet->setCellValue("E{$contador}", $list->nom_tipo_documento);
+            $sheet->setCellValue("F{$contador}", $list->num_doc);
+            $sheet->setCellValue("G{$contador}", $nom_aceptante);
+            $sheet->setCellValue("H{$contador}", $list->nom_tipo_comprobante);
+            $sheet->setCellValue("I{$contador}", $list->num_comprobante); 
+            $sheet->setCellValue("J{$contador}", $list->monto);
+            $sheet->setCellValue("K{$contador}", $list->negociado_endosado);
+            $sheet->setCellValue("L{$contador}", $empresa_vinculada);
+            $sheet->setCellValue("M{$contador}", $list->nom_estado);
+            if($list->fec_pago!=""){
+                $sheet->setCellValue("N{$contador}", Date::PHPToExcel($list->fec_pago));
+                $sheet->getStyle("N{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DMYSLASH); 
+            }
+            $sheet->setCellValue("O{$contador}", $list->noperacion);
+            $sheet->setCellValue("P{$contador}", $list->num_unico);
+            $sheet->setCellValue("Q{$contador}", $list->banco);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Cheques y letras';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
     }
 }

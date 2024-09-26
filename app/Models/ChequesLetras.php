@@ -103,7 +103,7 @@ class ChequesLetras extends Model
                 ELSE '' END AS num_unico,
                 CASE WHEN cl.estado_registro=1 THEN 'Por Cancelar' 
                 WHEN cl.estado_registro=2 THEN 'Cancelado' ELSE '' END AS nom_estado,cl.estado_registro,
-                cl.documento,cl.banco,cl.comprobante_pago,cl.id_moneda,cl.monto
+                cl.documento,cl.banco,cl.comprobante_pago,cl.id_moneda,cl.monto,cl.noperacion
                 FROM cheques_letras cl
                 INNER JOIN empresas em ON em.id_empresa=cl.id_empresa
                 INNER JOIN vw_tipo_comprobante tc ON tc.id=cl.id_tipo_comprobante

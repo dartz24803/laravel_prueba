@@ -473,29 +473,4 @@ class RequisicionTiendaController extends Controller
             'user_eli' => session('usuario')->id_usuario
         ]);
     }
-
-    /*public function download($id)
-    {
-        $get_id = Suceso::findOrFail($id);
-
-        // URL del archivo
-        $url = $get_id->archivo;
-
-        // Crear un cliente Guzzle
-        $client = new Client();
-
-        // Realizar la solicitud GET para obtener el archivo
-        $response = $client->get($url);
-
-        // Obtener el contenido del archivo
-        $content = $response->getBody()->getContents();
-
-        // Obtener el nombre del archivo desde la URL
-        $filename = basename($url);
-
-        // Devolver el contenido del archivo en la respuesta
-        return response($content, 200)
-                    ->header('Content-Type', $response->getHeaderLine('Content-Type'))
-                    ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
-    }*/
 }

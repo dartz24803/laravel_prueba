@@ -24,11 +24,11 @@
                 <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                     <div class="widget-content widget-content-area br-6">
                         <div class="toolbar mt-3">
-                            <div class="col-lg-12 d-flex justify-content-end">
-                                <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistroGrande" app_reg_grande="{{ route('registro_letra.create') }}">
+                            <div class="col-lg-12 text-center text-md-right">
+                                <button type="button" class="btn btn-primary mb-1 mb-md-0" title="Registrar" data-toggle="modal" data-target="#ModalRegistroGrande" app_reg_grande="{{ route('registro_letra.create') }}">
                                     Nuevo
                                 </button>
-                                <a class="btn mb-0 mr-2" style="background-color: #28a745 !important;" onclick="Lista_Cheques_Letras('2')">
+                                <a class="btn mb-1 mb-md-0" style="background-color: #28a745 !important;" onclick="Excel_Registro_Letra();">
                                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="64" height="64" viewBox="0 0 172 172" style=" fill:#000000;">
                                         <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
                                             <path d="M0,172v-172h172v172z" fill="none"></path>
@@ -38,7 +38,7 @@
                                         </g>
                                     </svg>                                
                                 </a>
-                                <a class="btn mb-0 mr-2" title="Importar Excel" style="background-color: #28a745 !important;" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('caja_chica.create_mo') }}">
+                                <a class="btn mb-1 mb-md-0" title="Importar Excel" style="background-color: #28a745 !important;" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('caja_chica.create_mo') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload-cloud text-white">
                                         <polyline points="16 16 12 12 8 16"></polyline>
                                         <line x1="12" y1="12" x2="12" y2="21"></line>
@@ -50,7 +50,7 @@
                         </div>
 
                         <div class="toolbar d-md-flex mt-2">
-                            <div class="form-group col-lg-2">
+                            <div class="form-group col-lg-2 col-xl-2">
                                 <label>Estado:</label>
                                 <select class="form-control" name="estadob" id="estadob" 
                                 onchange="Lista_Registro_Letra();">
@@ -60,7 +60,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-lg-3">
+                            <div class="form-group col-lg-2 col-xl-3">
                                 <label>Empresa:</label>
                                 <select class="form-control basicb" name="id_empresab" id="id_empresab" 
                                 onchange="Lista_Registro_Letra();">
@@ -73,7 +73,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-lg-3">
+                            <div class="form-group col-lg-2 col-xl-3">
                                 <label>Aceptante:</label>
                                 <select class="form-control basicb" name="id_aceptanteb" 
                                 id="id_aceptanteb" onchange="Lista_Registro_Letra();">
@@ -86,7 +86,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-lg-1 mb-0">
+                            <div class="form-group col-lg-2 col-xl-1">
                                 <label>Fecha</label>
                                 <div class="n-chk">
                                     <label class="new-control new-radio radio-primary">
@@ -103,7 +103,7 @@
                                 </div>
                             </div>
                             
-                            <div class="form-group col-lg-1">
+                            <div class="form-group col-lg-2 col-xl-1">
                                 <label>Mes:</label>
                                 <select class="form-control" name="mesb" id="mesb" onchange="Lista_Registro_Letra();">
                                     <option value="0">Todos</option>
@@ -116,7 +116,7 @@
                                 </select>
                             </div>
                             
-                            <div class="form-group col-lg-1">
+                            <div class="form-group col-lg-2 col-xl-1">
                                 <label>Año:</label>
                                 <select class="form-control" name="aniob" id="aniob" onchange="Lista_Registro_Letra();">
                                     <option value="0">Todos</option>
@@ -281,6 +281,16 @@
                     });
                 }
             })
+        }
+
+        function Excel_Registro_Letra() {
+            var estado = $('#estadob').val();
+            var id_empresa = $('#id_empresab').val();
+            var id_aceptante = $('#id_aceptanteb').val();
+            var tipo_fecha = $('input:radio[name=fecha_radiob]:checked').val();
+            var mes = $('#mesb').val();
+            var anio = $('#aniob').val();
+            window.location = "{{ route('registro_letra.excel', [':estado', ':id_empresa', ':id_aceptante', ':tipo_fecha', ':mes', ':anio']) }}".replace(':estado', estado).replace(':id_empresa', id_empresa).replace(':id_aceptante', id_aceptante).replace(':tipo_fecha', tipo_fecha).replace(':mes', mes).replace(':anio', anio);
         }
     </script>
 @endsection
