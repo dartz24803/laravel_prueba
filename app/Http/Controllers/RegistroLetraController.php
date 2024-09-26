@@ -205,249 +205,249 @@ class RegistroLetraController extends Controller
         $highestRow = $worksheet->getHighestRow(); 
 
         for ($row = 2; $row <= $highestRow; $row++) {
-            $dato['ruc_empresa'] = $worksheet->getCell(1, $row)->getValue();
-            $dato['nom_empresa'] = $worksheet->getCell(2, $row)->getValue();
-            $dato['f_emision'] = $worksheet->getCell(3, $row)->getValue();
-            $dato['f_vencimiento'] = $worksheet->getCell(4, $row)->getValue();
-            $dato['tipo_doc'] = $worksheet->getCell(5, $row)->getValue();
-            $dato['n_letra'] = $worksheet->getCell(6, $row)->getValue();
-            $dato['tipo_doc_aceptante'] = $worksheet->getCell(7, $row)->getValue();
-            $dato['num_doc_aceptante'] = $worksheet->getCell(8, $row)->getValue();
-            $dato['nom_aceptante'] = $worksheet->getCell(9, $row)->getValue();
-            $dato['tipo_comprobante'] = $worksheet->getCell(10, $row)->getValue();
-            $dato['n_comprobante'] = $worksheet->getCell(11, $row)->getValue();
-            $dato['tipo_moneda'] = $worksheet->getCell(12, $row)->getValue();
-            $dato['importe'] = $worksheet->getCell(13, $row)->getValue();
+            $ruc_empresa = $worksheet->getCell(1, $row)->getValue();
+            $nom_empresa = $worksheet->getCell(2, $row)->getValue();
+            $f_emision = $worksheet->getCell(3, $row)->getValue();
+            $f_vencimiento = $worksheet->getCell(4, $row)->getValue();
+            $tipo_doc = $worksheet->getCell(5, $row)->getValue();
+            $n_letra = $worksheet->getCell(6, $row)->getValue();
+            $tipo_doc_aceptante = $worksheet->getCell(7, $row)->getValue();
+            $num_doc_aceptante = $worksheet->getCell(8, $row)->getValue();
+            $nom_aceptante = $worksheet->getCell(9, $row)->getValue();
+            $tipo_comprobante = $worksheet->getCell(10, $row)->getValue();
+            $n_comprobante = $worksheet->getCell(11, $row)->getValue();
+            $tipo_moneda = $worksheet->getCell(12, $row)->getValue();
+            $importe = $worksheet->getCell(13, $row)->getValue();
             
             $validacion = true;
-            $dato['obs'] = "";
+            $obs = "";
 
             //VALIDACIONES
-            if (substr($dato['ruc_empresa'], 0, 1) === "=" || empty($dato['ruc_empresa'])){
-                $dato['obs'] = $dato['obs']."RUC empresa inválido";
+            if (substr($ruc_empresa, 0, 1) === "=" || empty($ruc_empresa)){
+                $obs = $obs."RUC empresa inválido";
                 $validacion = false;
             }
-            if (substr($dato['f_emision'], 0, 1) === "=" || empty($dato['f_emision'])){
-                $dato['obs'] = $dato['obs']."/ F. Emisión inválida";
+            if (substr($f_emision, 0, 1) === "=" || empty($f_emision)){
+                $obs = $obs."/ F. Emisión inválida";
                 $validacion = false;
             }
-            if (substr($dato['f_vencimiento'], 0, 1) === "=" || empty($dato['f_vencimiento'])){
-                $dato['obs'] = $dato['obs']."/ F. Vencimiento inválida";
+            if (substr($f_vencimiento, 0, 1) === "=" || empty($f_vencimiento)){
+                $obs = $obs."/ F. Vencimiento inválida";
                 $validacion = false;
             }
-            if (substr($dato['tipo_doc'], 0, 1) === "=" || empty($dato['tipo_doc'])){
-                $dato['obs'] = $dato['obs']."/ Tipo documento inválido (C/L)";
+            if (substr($tipo_doc, 0, 1) === "=" || empty($tipo_doc)){
+                $obs = $obs."/ Tipo documento inválido (C/L)";
                 $validacion = false;
             }
-            if (substr($dato['n_letra'], 0, 1) === "=" || empty($dato['n_letra'])){
-                $dato['obs'] = $dato['obs']."N° letra inválido";
+            if (substr($n_letra, 0, 1) === "=" || empty($n_letra)){
+                $obs = $obs."N° letra inválido";
                 $validacion = false;
             }
-            if (substr($dato['tipo_doc_aceptante'], 0, 1) === "=" || empty($dato['tipo_doc_aceptante'])){
-                $dato['obs'] = $dato['obs']."/ Tipo documento de aceptante inválida";
+            if (substr($tipo_doc_aceptante, 0, 1) === "=" || empty($tipo_doc_aceptante)){
+                $obs = $obs."/ Tipo documento de aceptante inválida";
                 $validacion = false;
             }
-            if (substr($dato['num_doc_aceptante'], 0, 1) === "=" || empty($dato['num_doc_aceptante'])){
-                $dato['obs'] = $dato['obs']."/ N° documento de aceptante inválida";
+            if (substr($num_doc_aceptante, 0, 1) === "=" || empty($num_doc_aceptante)){
+                $obs = $obs."/ N° documento de aceptante inválida";
                 $validacion = false;
             }
-            if (substr($dato['tipo_comprobante'], 0, 1) === "=" || empty($dato['tipo_comprobante'])){
-                $dato['obs'] = $dato['obs']."/ Tipo comprobante inválido (F/B/R)";
+            if (substr($tipo_comprobante, 0, 1) === "=" || empty($tipo_comprobante)){
+                $obs = $obs."/ Tipo comprobante inválido (F/B/R)";
                 $validacion = false;
             }
-            if ((isset($dato['n_comprobante']) && substr($dato['n_comprobante'], 0, 1) === "=") || 
-            empty($dato['n_comprobante'])){
-                $dato['obs'] = $dato['obs']."/ N° comprobante inválido";
+            if ((isset($n_comprobante) && substr($n_comprobante, 0, 1) === "=") || 
+            empty($n_comprobante)){
+                $obs = $obs."/ N° comprobante inválido";
                 $validacion = false;
             }
-            if (substr($dato['tipo_moneda'], 0, 1) === "=" || empty($dato['tipo_moneda'])){
-                $dato['obs'] = $dato['obs']."/ Tipo moneda inválido";
+            if (substr($tipo_moneda, 0, 1) === "=" || empty($tipo_moneda)){
+                $obs = $obs."/ Tipo moneda inválido";
                 $validacion = false;
             }
-            if (substr($dato['importe'], 0, 1) === "=" || empty($dato['importe'])){
-                $dato['obs'] = $dato['obs']."/ Importe inválido";
+            if (substr($importe, 0, 1) === "=" || empty($importe)){
+                $obs = $obs."/ Importe inválido";
                 $validacion = false;
             }
 
             if (!$validacion) {
                 ChequesLetrasTemporal::create([
-                    'num_doc' => $dato['n_letra'],
-                    'fec_emision' => $dato['f_emision'],
-                    'fec_vencimiento' => $dato['f_vencimiento'],
-                    'importe' => $dato['importe'],
-                    'n_comprobante' => $dato['n_comprobante'],
-                    'obs' => $dato['obs'],
-                    'ruc_empresa' => $dato['ruc_empresa'],
-                    'tipo_doc' => $dato['tipo_doc'],
-                    'tipo_doc_aceptante' => $dato['tipo_doc_aceptante'],
-                    'num_doc_aceptante' => $dato['num_doc_aceptante'],
-                    'tipo_comprobante' => $dato['tipo_comprobante'],
-                    'tipo_moneda' => $dato['tipo_moneda'],
-                    'nom_empresa' => $dato['nom_empresa'],
-                    'nom_aceptante' => $dato['nom_aceptante'],
+                    'num_doc' => $n_letra,
+                    'fec_emision' => $f_emision,
+                    'fec_vencimiento' => $f_vencimiento,
+                    'importe' => $importe,
+                    'n_comprobante' => $n_comprobante,
+                    'obs' => $obs,
+                    'ruc_empresa' => $ruc_empresa,
+                    'tipo_doc' => $tipo_doc,
+                    'tipo_doc_aceptante' => $tipo_doc_aceptante,
+                    'num_doc_aceptante' => $num_doc_aceptante,
+                    'tipo_comprobante' => $tipo_comprobante,
+                    'tipo_moneda' => $tipo_moneda,
+                    'nom_empresa' => $nom_empresa,
+                    'nom_aceptante' => $nom_aceptante,
                     'estado' => 1,
                     'fec_reg' => now(),
                     'user_reg' =>  session('usuario')->id_usuario
                 ]);
             }else{
-                $empresa = Empresas::select('id_empresa')->where('ruc_empresa',$dato['ruc_empresa'])
-                        ->where('estado',1)->first();
+                $empresa = Empresas::select('id_empresa')->where('ruc_empresa',$ruc_empresa)
+                            ->where('estado',1)->first();
                 if(!$empresa){
-                    $dato['obs'] = $dato['obs']."/ RUC de empresa no encontrada";
+                    $obs = $obs."/ RUC de empresa no encontrada";
                     $validacion = false;
                 }
 
-                if (is_numeric($dato['f_emision'])) {
-                    $fechaExcel = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($dato['f_emision']);
+                if (is_numeric($f_emision)) {
+                    $fechaExcel = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($f_emision);
                     $fecha_emision = $fechaExcel->format('Y-m-d');
                     if (strtotime($fecha_emision) == false) {
-                        $dato['obs'] = $dato['obs']."/ Formato de F.Emisión inválida";
+                        $obs = $obs."/ Formato de F.Emisión inválida";
                         $validacion = false;
                     }
                 }else{
-                    $dato['obs'] = $dato['obs']."/ F.Emisión inválida";
+                    $obs = $obs."/ F.Emisión inválida";
                     $validacion = false;
                 }
                 
-                if (is_numeric($dato['f_vencimiento'])) {
-                    $fechaExcel = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($dato['f_vencimiento']);
+                if (is_numeric($f_vencimiento)) {
+                    $fechaExcel = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($f_vencimiento);
                     $fecha_vencimiento = $fechaExcel->format('Y-m-d');
                     if (strtotime($fecha_vencimiento) == false) {
-                        $dato['obs'] = $dato['obs']."/ Formato de F.Vencimiento inválida";
+                        $obs = $obs."/ Formato de F.Vencimiento inválida";
                         $validacion = false;
                     }
                 }else{
-                    $dato['obs'] = $dato['obs']."/ F.Vencimiento inválida";
+                    $obs = $obs."/ F.Vencimiento inválida";
                     $validacion = false;
                 }
                 
 
-                if($dato['tipo_doc']!="C" && $dato['tipo_doc']!="L"){
-                    $dato['obs'] = $dato['obs']."/ Tipo de Documento inválido (C/L)";
+                if($tipo_doc!="C" && $tipo_doc!="L"){
+                    $obs = $obs."/ Tipo de Documento inválido (C/L)";
                     $validacion = false;
                 }
-                if($dato['tipo_doc_aceptante']!="DNI" && $dato['tipo_doc_aceptante']!="RUC"){
-                    $dato['obs'] = $dato['obs']."/ Tipo de Documento de Aceptante inválido (DNI/RUC)";
+                if($tipo_doc_aceptante!="DNI" && $tipo_doc_aceptante!="RUC"){
+                    $obs = $obs."/ Tipo de Documento de Aceptante inválido (DNI/RUC)";
                     $validacion = false;
                 }
 
                 $aceptante = DB::connection('sqlsrv')->table('tge_entidades')
                             ->select(DB::raw("CONCAT(tdo_codigo,'_',clp_numdoc) AS id_aceptante"),
                             DB::raw("CONCAT(clp_razsoc,' - ',clp_numdoc) AS nom_aceptante"))
-                            ->where('tdo_codigo',$dato['tipo_doc_aceptante'])
-                            ->where('clp_numdoc',$dato['num_doc_aceptante'])
+                            ->where('tdo_codigo',$tipo_doc_aceptante)
+                            ->where('clp_numdoc',$num_doc_aceptante)
                             ->where('clp_estado','!=','*')->get();
                 if(count($aceptante)<1){
-                    $dato['obs']=$dato['obs']."/Aceptante no encontrado";
+                    $obs=$obs."/ Aceptante no encontrado";
                     $validacion = false;
                 }
                 
-                if($dato['tipo_comprobante']!="F" && $dato['tipo_comprobante']!="B" &&
-                    $dato['tipo_comprobante']!="R"){
-                    $dato['obs'] = $dato['obs']."/ Tipo comprobante inválido  (F/B/R)";
+                if($tipo_comprobante!="F" && $tipo_comprobante!="B" &&
+                    $tipo_comprobante!="R"){
+                    $obs = $obs."/ Tipo comprobante inválido  (F/B/R)";
                     $validacion = false;
                 }
 
-                if($dato['tipo_moneda']!="S" && $dato['tipo_moneda']!="D"){
-                    $dato['obs'] = $dato['obs']."/ Tipo moneda inválido  (S/D)";
+                if($tipo_moneda!="S" && $tipo_moneda!="D"){
+                    $obs = $obs."/ Tipo moneda inválido  (S/D)";
                     $validacion = false;
                 }
 
-                if (!is_numeric($dato['importe'])) {
-                    $dato['obs'] = $dato['obs']."/ No es un Importe válido";
+                if (!is_numeric($importe)) {
+                    $obs = $obs."/ No es un Importe válido";
                     $validacion = false;
                 }
 
                 if (!$validacion) {
                     ChequesLetrasTemporal::create([
-                        'num_doc' => $dato['n_letra'],
-                        'fec_emision' => $dato['f_emision'],
-                        'fec_vencimiento' => $dato['f_vencimiento'],
-                        'importe' => $dato['importe'],
-                        'n_comprobante' => $dato['n_comprobante'],
-                        'obs' => $dato['obs'],
-                        'ruc_empresa' => $dato['ruc_empresa'],
-                        'tipo_doc' => $dato['tipo_doc'],
-                        'tipo_doc_aceptante' => $dato['tipo_doc_aceptante'],
-                        'num_doc_aceptante' => $dato['num_doc_aceptante'],
-                        'tipo_comprobante' => $dato['tipo_comprobante'],
-                        'tipo_moneda' => $dato['tipo_moneda'],
-                        'nom_empresa' => $dato['nom_empresa'],
-                        'nom_aceptante' => $dato['nom_aceptante'],
+                        'num_doc' => $n_letra,
+                        'fec_emision' => $f_emision,
+                        'fec_vencimiento' => $f_vencimiento,
+                        'importe' => $importe,
+                        'n_comprobante' => $n_comprobante,
+                        'obs' => $obs,
+                        'ruc_empresa' => $ruc_empresa,
+                        'tipo_doc' => $tipo_doc,
+                        'tipo_doc_aceptante' => $tipo_doc_aceptante,
+                        'num_doc_aceptante' => $num_doc_aceptante,
+                        'tipo_comprobante' => $tipo_comprobante,
+                        'tipo_moneda' => $tipo_moneda,
+                        'nom_empresa' => $nom_empresa,
+                        'nom_aceptante' => $nom_aceptante,
                         'estado' => 1,
                         'fec_reg' => now(),
                         'user_reg' =>  session('usuario')->id_usuario
                     ]);
                 }else{
-                    $dato['id_empresa'] = $empresa->id_empresa;
-                    $dato['fec_vencimiento'] = $fecha_vencimiento;
-                    $dato['num_doc'] = $dato['n_letra'];
+                    $id_empresa = $empresa->id_empresa;
+                    $fec_vencimiento = $fecha_vencimiento;
 
-                    $valida = ChequesLetras::where('id_empresa', $dato['id_empresa'])
-                            ->where('fec_vencimiento',$dato['fec_vencimiento'])
-                            ->where('num_doc',$dato['num_doc'])->where('estado', 1)->exists();
+                    $valida = ChequesLetras::where('id_empresa', $id_empresa)
+                            ->where('fec_vencimiento',$fec_vencimiento)
+                            ->where('num_doc',$n_letra)->where('estado', 1)->exists();
                     if($valida){
-                        $dato['obs'] = $dato['obs']."/ Existe un registro con los mismos datos (Empresa, F. vencimiento y N° letra)";
+                        $obs = $obs."/ Existe un registro con los mismos datos (Empresa, F. vencimiento y N° letra)";
                         $validacion = false;
                     }
                     
                     if (!$validacion) {
                         ChequesLetrasTemporal::create([
-                            'num_doc' => $dato['n_letra'],
-                            'fec_emision' => $dato['f_emision'],
-                            'fec_vencimiento' => $dato['f_vencimiento'],
-                            'importe' => $dato['importe'],
-                            'n_comprobante' => $dato['n_comprobante'],
-                            'obs' => $dato['obs'],
-                            'ruc_empresa' => $dato['ruc_empresa'],
-                            'tipo_doc' => $dato['tipo_doc'],
-                            'tipo_doc_aceptante' => $dato['tipo_doc_aceptante'],
-                            'num_doc_aceptante' => $dato['num_doc_aceptante'],
-                            'tipo_comprobante' => $dato['tipo_comprobante'],
-                            'tipo_moneda' => $dato['tipo_moneda'],
-                            'nom_empresa' => $dato['nom_empresa'],
-                            'nom_aceptante' => $dato['nom_aceptante'],
+                            'num_doc' => $n_letra,
+                            'fec_emision' => $f_emision,
+                            'fec_vencimiento' => $f_vencimiento,
+                            'importe' => $importe,
+                            'n_comprobante' => $n_comprobante,
+                            'obs' => $obs,
+                            'ruc_empresa' => $ruc_empresa,
+                            'tipo_doc' => $tipo_doc,
+                            'tipo_doc_aceptante' => $tipo_doc_aceptante,
+                            'num_doc_aceptante' => $num_doc_aceptante,
+                            'tipo_comprobante' => $tipo_comprobante,
+                            'tipo_moneda' => $tipo_moneda,
+                            'nom_empresa' => $nom_empresa,
+                            'nom_aceptante' => $nom_aceptante,
                             'estado' => 1,
                             'fec_reg' => now(),
                             'user_reg' =>  session('usuario')->id_usuario
                         ]);
                     }else{
-                        $dato['fec_emision'] = $fecha_emision;
-                        $dato['id_tipo_documento'] = "1";
-                        if($dato['tipo_doc']=="L"){
-                            $dato['id_tipo_documento'] = "2";
+                        $fec_emision = $fecha_emision;
+                        $id_tipo_documento = "1";
+                        if($tipo_doc=="L"){
+                            $id_tipo_documento = "2";
                         }
                         
                         $aceptante = $aceptante[0];
-                        $dato['tipo_doc_aceptante'] = $aceptante->tdo_codigo;
-                        $dato['num_doc_aceptante'] = $aceptante->clp_numdoc;
-                        $dato['id_tipo_comprobante'] = 1;
-                        if($dato['tipo_comprobante']=="B"){
-                            $dato['id_tipo_comprobante'] = 2;
-                        }elseif($dato['tipo_comprobante']=="R"){
-                            $dato['id_tipo_comprobante'] = 4;
+                        $tipo_doc_aceptante = $aceptante->tdo_codigo;
+                        $num_doc_aceptante = $aceptante->clp_numdoc;
+                        //REVISAR AQUÍ
+                        $id_tipo_comprobante = 1;
+                        if($tipo_comprobante=="B"){
+                            $id_tipo_comprobante = 2;
+                        }elseif($tipo_comprobante=="R"){
+                            $id_tipo_comprobante = 4;
                         }
-                        $dato['num_comprobante'] = $dato['n_comprobante'];
-                        $dato['id_moneda'] = 1;
-                        if($dato['tipo_moneda']=="D"){
-                            $dato['id_moneda'] = 2;
+                        //
+                        $num_comprobante = $n_comprobante;
+                        $id_moneda = 1;
+                        if($tipo_moneda=="D"){
+                            $id_moneda = 2;
                         }
-                        $dato['monto'] = $dato['importe'];
 
                         ChequesLetrasTemporal::create([
-                            'num_doc' => $dato['n_letra'],
-                            'fec_emision_ok' => $dato['fec_emision'],
-                            'fec_vencimiento_ok' => $dato['fec_vencimiento'],
-                            'importe' => $dato['importe'],
-                            'n_comprobante' => $dato['n_comprobante'],
+                            'num_doc' => $n_letra,
+                            'fec_emision_ok' => $fec_emision,
+                            'fec_vencimiento_ok' => $fec_vencimiento,
+                            'importe' => $importe,
+                            'n_comprobante' => $n_comprobante,
                             'ok' => 1,
-                            'id_empresa' => $dato['id_empresa'],
-                            'id_tipo_documento' => $dato['id_tipo_documento'],
-                            'tipo_doc_aceptante' => $dato['tipo_doc_aceptante'],
-                            'num_doc_aceptante' => $dato['num_doc_aceptante'],
-                            'id_tipo_comprobante' => $dato['id_tipo_comprobante'],
-                            'num_comprobante' => $dato['num_comprobante'],
-                            'id_moneda' => $dato['id_moneda'],
+                            'id_empresa' => $id_empresa,
+                            'id_tipo_documento' => $id_tipo_documento,
+                            'tipo_doc_aceptante' => $tipo_doc_aceptante,
+                            'num_doc_aceptante' => $num_doc_aceptante,
+                            'id_tipo_comprobante' => $id_tipo_comprobante,
+                            'num_comprobante' => $num_comprobante,
+                            'id_moneda' => $id_moneda,
                             'estado' => 1,
                             'fec_reg' => now(),
                             'user_reg' =>  session('usuario')->id_usuario
@@ -462,57 +462,40 @@ class RegistroLetraController extends Controller
                 ->where('estado',1)->where('ok',0)->count();
             
         if($temporal>0){
-            echo "1<p align='center'>Excel con errores<br>Errores: ".$temporal."<br>Total: ".($highestRow-1)."<br><a class='btn mb-2 mr-2' style='background-color: #28a745 !important;font-size: 3px!important;' href='".site_url("Administracion_Finanzas/Error_Adjunto_Cheque_Letra")."'>
+            echo "1<p align='center'>Excel con errores<br>Errores: ".$temporal."<br>Total: ".($highestRow-1)."<br><a class='btn mb-2 mr-2' style='background-color: #28a745 !important;font-size: 3px!important;' href='".route('registro_letra.excel_error')."'>
                 <svg xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' width='64' height='64' viewBox='0 0 172 172' style=' fill:#000000;'><g fill='none' fill-rule='nonzero' stroke='none' stroke-width='1' stroke-linecap='butt' stroke-linejoin='miter' stroke-miterlimit='10' stroke-dasharray='' stroke-dashoffset='0' font-family='none' font-weight='none' font-size='none' text-anchor='none' style='mix-blend-mode: normal'><path d='M0,172v-172h172v172z' fill='none'></path><g fill='#ffffff'><path d='M94.42993,6.41431c-0.58789,-0.021 -1.17578,0.0105 -1.76367,0.11548l-78.40991,13.83642c-5.14404,0.91333 -8.88135,5.3645 -8.88135,10.58203v104.72852c0,5.22803 3.7373,9.6792 8.88135,10.58203l78.40991,13.83643c0.46191,0.08398 0.93433,0.11548 1.39624,0.11548c1.88965,0 3.71631,-0.65088 5.17554,-1.87915c1.83716,-1.53272 2.88696,-3.7898 2.88696,-6.18335v-12.39819h51.0625c4.44067,0 8.0625,-3.62183 8.0625,-8.0625v-96.75c0,-4.44067 -3.62183,-8.0625 -8.0625,-8.0625h-51.0625v-12.40869c0,-2.38306 -1.0498,-4.64014 -2.88696,-6.17285c-1.36474,-1.15479 -3.05493,-1.80566 -4.8081,-1.87915zM94.34595,11.7998c0.68237,0.06299 1.17578,0.38843 1.43823,0.60889c0.36743,0.30444 0.96582,0.97632 0.96582,2.05762v137.68188c0,1.0918 -0.59839,1.76367 -0.96582,2.06812c-0.35693,0.30444 -1.11279,0.77685 -2.18359,0.58789l-78.40991,-13.83643c-2.57202,-0.45142 -4.44067,-2.677 -4.44067,-5.29102v-104.72852c0,-2.61401 1.86865,-4.8396 4.44067,-5.29102l78.39941,-13.83642c0.27295,-0.04199 0.5249,-0.05249 0.75586,-0.021zM102.125,32.25h51.0625c1.48022,0 2.6875,1.20728 2.6875,2.6875v96.75c0,1.48022 -1.20728,2.6875 -2.6875,2.6875h-51.0625v-16.125h8.0625c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875h-8.0625v-10.75h8.0625c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875h-8.0625v-10.75h8.0625c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875h-8.0625v-10.75h8.0625c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875h-8.0625v-10.75h8.0625c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875h-8.0625zM120.9375,48.375c-1.48022,0 -2.6875,1.19678 -2.6875,2.6875c0,1.49072 1.20728,2.6875 2.6875,2.6875h16.125c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875zM34.46509,53.79199c-0.34643,0.06299 -0.68237,0.18897 -0.99732,0.38843c-1.23877,0.80835 -1.5957,2.47754 -0.78735,3.72681l16.52393,25.40527l-16.52393,25.40527c-0.80835,1.24927 -0.45141,2.91846 0.78735,3.72681c0.46191,0.29395 0.96582,0.43042 1.46973,0.43042c0.87134,0 1.74268,-0.43042 2.25708,-1.21777l15.21167,-23.41064l15.21167,23.41064c0.51441,0.78735 1.38574,1.21777 2.25708,1.21777c0.50391,0 1.00781,-0.13647 1.46973,-0.43042c1.23877,-0.80835 1.5957,-2.47754 0.78735,-3.72681l-16.52393,-25.40527l16.52393,-25.40527c0.80835,-1.24927 0.45142,-2.91846 -0.78735,-3.72681c-1.24927,-0.80835 -2.91846,-0.45141 -3.72681,0.78735l-15.21167,23.41065l-15.21167,-23.41065c-0.60889,-0.93433 -1.70068,-1.36474 -2.72949,-1.17578zM120.9375,64.5c-1.48022,0 -2.6875,1.19678 -2.6875,2.6875c0,1.49072 1.20728,2.6875 2.6875,2.6875h16.125c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875zM120.9375,80.625c-1.48022,0 -2.6875,1.19678 -2.6875,2.6875c0,1.49072 1.20728,2.6875 2.6875,2.6875h16.125c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875zM120.9375,96.75c-1.48022,0 -2.6875,1.19678 -2.6875,2.6875c0,1.49072 1.20728,2.6875 2.6875,2.6875h16.125c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875zM120.9375,112.875c-1.48022,0 -2.6875,1.19678 -2.6875,2.6875c0,1.49072 1.20728,2.6875 2.6875,2.6875h16.125c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875z'></path></g></g></svg>
             </a></p>";
-        }/*else{
-            $list_temp=$this->Model_Administracion_Finanzas->get_list_cheque_temporal_ok();
-            foreach($list_temp as $list){
-                $dato['id_empresa']=$list['id_empresa'];
-                $dato['fec_emision']=$list['fec_emision_ok'];
-                $dato['fec_vencimiento']=$list['fec_vencimiento_ok'];
-                $dato['id_tipo_documento']=$list['id_tipo_documento'];
-                $dato['num_doc']=$list['num_doc'];
-                //$dato['id_proveedor']=explode("_", $this->input->post("id_proveedor"));
-                $dato['tipo_doc_aceptante']=$list['tipo_doc_aceptante'];
-                $dato['num_doc_aceptante']=$list['num_doc_aceptante'];
-                $dato['id_tipo_comprobante']=$list['id_tipo_comprobante'];
-                $dato['num_comprobante']=$list['num_comprobante'];
-                $dato['id_moneda']=$list['id_moneda'];
-                $dato['monto']=$list['importe_ok'];
-                $dato['negociado_endosado']=0;
-                $dato['tipo_doc_emp_vinculada']=0;
-                $dato['num_doc_emp_vinculada']="";
-
-                $totalRows_t = count($this->Model_Administracion_Finanzas->ultimo_cod_cheques_letras());
-                $anio=date('Y');
-                $aniof=substr($anio, 2,2);
-
-                if($totalRows_t<9)
-                {
-                    $codigo='CHL'.$aniof."-0000".($totalRows_t+1);
-                }
-                if($totalRows_t>8 && $totalRows_t<99)
-                {
-                    $codigo='CHL'.$aniof."-000".($totalRows_t+1);
-                }
-                if($totalRows_t>98 && $totalRows_t<999)
-                {
-                    $codigo='CHL'.$aniof."-00".($totalRows_t+1);
-                }
-                if($totalRows_t>998 && $totalRows_t<9999)
-                {
-                    $codigo='CHL'.$aniof."-0".($totalRows_t+1);
-                }
-                $dato['cod_registro']= $codigo;
-
-                $dato['archivo']="";
-                
-                $this->Model_Administracion_Finanzas->insert_cheques_letras($dato);
+        }else{
+            $list_temporal = ChequesLetrasTemporal::where('user_reg',session('usuario')->id_usuario)
+                        ->where('estado',1)->where('ok',1)->get();
+            foreach($list_temporal as $list){
+                ChequesLetras::create([
+                    'id_empresa' => $list->id_empresa,
+                    'fec_emision' => $list->fec_emision_ok,
+                    'fec_vencimiento' => $list->fec_vencimiento_ok,
+                    'id_tipo_documento' => $list->id_tipo_documento,
+                    'num_doc' => $list->num_doc,
+                    'tipo_doc_aceptante' => $list->tipo_doc_aceptante,
+                    'num_doc_aceptante' => $list->num_doc_aceptante,
+                    'tipo_doc_emp_vinculada' => 0,
+                    'num_doc_emp_vinculada' => "",
+                    'id_tipo_comprobante' => $list->id_tipo_comprobante,
+                    'num_comprobante' => $request->num_comprobante,
+                    'id_moneda' => $list->id_moneda,
+                    'monto' => $list->importe_ok,
+                    'negociado_endosado' => 0,
+                    'documento' => "",
+                    'estado_registro' => 1,
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
             }
-            $this->Model_Administracion_Finanzas->elimina_temporal_cheque();
+            ChequesLetrasTemporal::where('user_reg',session('usuario')->id_usuario)->delete();
             echo "2Importación Exitosa";
-        }*/
+        }
     }
 
     public function edit($id)
