@@ -1271,6 +1271,7 @@ Route::controller(RegistroLetraController::class)->group(function () {
     Route::get('registro_letra/{id}/{tipo}/estado', 'estado')->name('registro_letra.estado');
     Route::put('registro_letra/{id}/update_estado', 'update_estado')->name('registro_letra.update_estado');
     Route::delete('registro_letra/{id}', 'destroy')->name('registro_letra.destroy');
+    Route::get('registro_letra/{estado}/{id_empresa}/{id_aceptante}/{tipo_fecha}/{mes}/{anio}/excel', 'excel')->name('registro_letra.excel');
 });
 
 

@@ -44,7 +44,7 @@
     </a>
 
     <ul class="collapse submenu list-unstyled" id="rreportbifinanzas" data-parent="#accordionExample">
-        @foreach ($list_subgerencia['areas'] as $area)
+        {{--@foreach ($list_subgerencia['areas'] as $area)
         @php
         $area_id = 'conf_' . strtolower(str_replace(' ', '_', $area));
         @endphp
@@ -54,7 +54,7 @@
             </a>
         </li>
 
-        @endforeach
+        @endforeach--}}
     </ul>
 </li>
 
