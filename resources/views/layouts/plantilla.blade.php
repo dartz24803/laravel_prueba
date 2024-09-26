@@ -406,7 +406,6 @@
                             </div>
                         </a>
                     </li>
-
                     <li class="menu menu-heading">
                         <div class="heading">
                             <span>APLICACIONES</span>

@@ -70,8 +70,12 @@ class SubGerencia extends Model
             ->leftJoin('area', 'sub_gerencia.id_sub_gerencia', '=', 'area.id_departamento')
             ->where(function ($query) use ($subgerenciaId) {
                 $query->where('sub_gerencia.id_sub_gerencia', $subgerenciaId)
-                    ->orWhere('sub_gerencia.id_sub_gerencia', 7); // Validar también por id_sub_gerencia = 7
+                    ->orWhere('sub_gerencia.id_sub_gerencia', 7)
+                    ->orWhere('sub_gerencia.id_sub_gerencia', 3);
             })
+            // Omitir áreas 
+            ->whereNotIn('area.id_area', [6, 33, 35, 42, 7])
+            // Omitir áreas 
             ->select('sub_gerencia.nom_sub_gerencia', 'area.id_area', 'area.nom_area', 'area.cod_area') // Seleccionar también nom_area y cod_area
             ->get();
 

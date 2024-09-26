@@ -1,30 +1,65 @@
 @extends('layouts.plantilla')
 
-@section('navbar')
-@include('tienda.navbar')
-@endsection
-
 @section('content')
 <style>
-    /* Estilos para que el div ocupe toda la pantalla */
-    #cancel-row {
-        height: calc(100vh - 100px);
-        /* Ajusta el valor según el tamaño de tu navbar u otros elementos */
+    .radio-buttons {
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        color: white;
+    }
+
+    .radio-button {
+        display: flex;
         align-items: center;
+        margin-bottom: 10px;
+        cursor: pointer;
     }
 
-    #div_administrador {
-        width: 100%;
-        height: 100%;
+    .radio-button input[type="radio"] {
+        display: none;
     }
 
-    iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-        /* Elimina el borde del iframe */
+    .radio-circle {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid #aaa;
+        position: relative;
+        margin-right: 10px;
+    }
+
+    .radio-circle::before {
+        content: "";
+        display: block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ddd;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        transition: all 0.2s ease-in-out;
+    }
+
+    .radio-button input[type="radio"]:checked+.radio-circle::before {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    .radio-button.radio-button-si input[type="radio"]:checked+.radio-circle::before {
+        background-color: #88DC65;
+    }
+
+    .radio-button.radio-button-si input[type="radio"]:checked+.radio-circle {
+        border-color: #88DC65;
+    }
+
+    .radio-button.radio-button-no input[type="radio"]:checked+.radio-circle::before {
+        background-color: #FF0000;
+    }
+
+    .radio-button.radio-button-no input[type="radio"]:checked+.radio-circle {
+        border-color: #FF0000;
     }
 </style>
 
@@ -35,23 +70,17 @@
                 <div class="statbox widget box box-shadow">
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
-                            @foreach($list_reportes as $index => $reporte)
                             <li class="nav-item">
-                                <a
-                                    id="reporte_{{ $index }}"
-                                    class="nav-link"
-                                    style="cursor: pointer;"
-                                    onclick="showIframe('{{ $reporte->iframe }}', 'reporte_{{ $index }}');">
-                                    {{ $reporte->nom_bi }}
-                                </a>
+                                <a id="a_st" class="nav-link" onclick="Supervision_Tienda();" style="cursor: pointer;">Supervisión de tienda</a>
                             </li>
-                            @endforeach
+                            <li class="nav-item">
+                                <a id="a_sc" class="nav-link" onclick="Seguimiento_Coordinador();" style="cursor: pointer;">Seguimiento al coordinador</a>
+                            </li>
                         </ul>
 
                         <div class="row" id="cancel-row">
                             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
                                 <div id="div_administrador" class="widget-content widget-content-area p-3">
-                                    <!-- Aquí se mostrará el iframe -->
                                 </div>
                             </div>
                         </div>
@@ -64,21 +93,43 @@
 
 <script>
     $(document).ready(function() {
-        var idArea = "{{ $id_area }}";
-        $("#reportbi_primario").addClass('active');
-        $("#hreportbi_primario").attr('aria-expanded', 'true');
-        $("#" + idArea).addClass('active');
+        $("#tienda").addClass('active');
+        $("#htienda").attr('aria-expanded', 'true');
+        $("#administradores").addClass('active');
 
         Supervision_Tienda();
     });
 
-    function showIframe(iframeSrc, dynamicId) {
-        // Aquí se asigna el iframe al div
-        $('#div_administrador').html(iframeSrc);
+    function Supervision_Tienda() {
+        Cargando();
 
-        // Manejar la activación de la pestaña
-        $('.nav-link').removeClass('active'); // Eliminar la clase 'active' de todos los enlaces
-        $("#" + dynamicId).addClass('active'); // Añadir la clase 'active' al enlace clicado
+        var url = "{{ route('administrador_st') }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(resp) {
+                $('#div_administrador').html(resp);
+                $("#a_st").addClass('active');
+                $("#a_sc").removeClass('active');
+            }
+        });
+    }
+
+    function Seguimiento_Coordinador() {
+        Cargando();
+
+        var url = "{{ route('administrador_conf_sc') }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(resp) {
+                $('#div_administrador').html(resp);
+                $("#a_st").removeClass('active');
+                $("#a_sc").addClass('active');
+            }
+        });
     }
 </script>
 @endsection

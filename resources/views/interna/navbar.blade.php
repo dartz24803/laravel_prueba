@@ -20,44 +20,6 @@
         margin-left: -5%
     }
 </style>
-<li class="menu menu-heading">
-    <div class="heading">
-        <span>REPORTES BI</span>
-    </div>
-</li>
-
-<li class="menu" id="reportbi_primario">
-    <a href="#rreportbi_primario" id="hreportbi_primario" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-        <div class="">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-pie-chart">
-                <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
-                <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
-            </svg>
-            <span title="{{ $list_subgerencia['nom_sub_gerencia'] }}">{{ $list_subgerencia['nom_sub_gerencia'] }}</span>
-        </div>
-        <div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
-                <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-        </div>
-    </a>
-    <ul class="collapse submenu list-unstyled" id="rreportbi_primario" data-parent="#accordionExample">
-        @foreach ($list_subgerencia['areas'] as $area)
-        @php
-        $normalizedArea = preg_replace('/[áéíóúÁÉÍÓÚ]/', 'a', strtolower($area['nom_area'])); // Reemplazar acentos
-        $normalizedArea = preg_replace('/[.]/', '', $normalizedArea); // Eliminar puntos
-        $normalizedArea = preg_replace('/\s+/', '_', $normalizedArea); // Reemplazar espacios con guiones bajos
-        $normalizedArea = preg_replace('/[^a-z0-9_]/', '', $normalizedArea); // Eliminar caracteres no alfanuméricos
-        @endphp
-        <li id="{{ $area['id_area'] }}">
-            <a href="{{ route('reporte_primario', ['id_area' => $area['id_area'], 'id_subgerencia' => $area['id_subgerencia']]) }}" id="{{ $area['id_area'] }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                <p class="romperpalabra"><span id="icono_active2"></span> {{ $area['nom_area'] }}</p>
-            </a>
-        </li>
-        @endforeach
-
-    </ul>
-</li>
 
 
 
@@ -152,6 +114,54 @@
         </ul>
     </li>
 <?php } ?>
+
+
+
+
+
+
+
+
+
+
+<li class="menu menu-heading">
+    <div class="heading">
+        <span>REPORTES BI</span>
+    </div>
+</li>
+
+<li class="menu" id="reportbi_primario">
+    <a href="#rreportbi_primario" id="hreportbi_primario" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+        <div class="">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-pie-chart">
+                <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+            </svg>
+            <span title="{{ $list_subgerencia['nom_sub_gerencia'] }}">{{ $list_subgerencia['nom_sub_gerencia'] }}</span>
+        </div>
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </div>
+    </a>
+    <ul class="collapse submenu list-unstyled" id="rreportbi_primario" data-parent="#accordionExample">
+        @foreach ($list_subgerencia['areas'] as $area)
+        @php
+        $normalizedArea = preg_replace('/[áéíóúÁÉÍÓÚ]/', 'a', strtolower($area['nom_area'])); // Reemplazar acentos
+        $normalizedArea = preg_replace('/[.]/', '', $normalizedArea); // Eliminar puntos
+        $normalizedArea = preg_replace('/\s+/', '_', $normalizedArea); // Reemplazar espacios con guiones bajos
+        $normalizedArea = preg_replace('/[^a-z0-9_]/', '', $normalizedArea); // Eliminar caracteres no alfanuméricos
+        @endphp
+        <li id="{{ $area['id_area'] }}">
+            <a href="{{ route('reporte_primario', ['id_area' => $area['id_area'], 'id_subgerencia' => $area['id_subgerencia']]) }}" id="{{ $area['id_area'] }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                <p class="romperpalabra"><span id="icono_active2"></span> {{ $area['nom_area'] }}</p>
+            </a>
+        </li>
+        @endforeach
+    </ul>
+</li>
+
 
 
 

@@ -317,7 +317,6 @@ Route::controller(BiReporteController::class)->group(function () {
 //BI REPORTES - TIENDA
 Route::controller(BiReporteDepartamentoController::class)->group(function () {
     Route::get('reportenewp/{id_area}/{id_subgerencia}', 'handleAreaP')->name('reporte_primario');
-    // Route::get('reportenewp/{id_area}/{id_subgerencia}/{id_subgerencia_sec}', 'handleAreaP')->name('reporte_primario');
 });
 
 

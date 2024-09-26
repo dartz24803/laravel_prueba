@@ -39,9 +39,8 @@ class CuadroControlVisualController extends Controller
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(2);
-        $list_subgerencia_logis = SubGerencia::list_subgerencia(7);
         $list_bases = Base::get_list_bases_tienda();
-        return view('tienda.Cuadro_Control_Visual.index', compact('list_notificacion', 'list_subgerencia', 'list_bases', 'list_subgerencia_logis'));
+        return view('tienda.Cuadro_Control_Visual.index', compact('list_notificacion', 'list_subgerencia', 'list_bases'));
     }
 
     public function Lista_Cuadro_Control_Visual_Vista(Request $request)
