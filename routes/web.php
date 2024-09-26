@@ -17,6 +17,7 @@ use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
 use App\Http\Controllers\AsistenciaSegController;
 use App\Http\Controllers\BiReporteController;
+use App\Http\Controllers\BiReporteDepartamentoController;
 use App\Http\Controllers\CajaChicaConfController;
 use App\Http\Controllers\CajaChicaController;
 use App\Http\Controllers\CajaInicioController;
@@ -60,6 +61,7 @@ use App\Http\Controllers\PostulanteController;
 use App\Http\Controllers\ProcesosController;
 use App\Http\Controllers\ProduccionController;
 use App\Http\Controllers\RecursosHumanosInicioController;
+use App\Http\Controllers\RegistroLetraController;
 use App\Http\Controllers\ReporteProveedoresController;
 use App\Http\Controllers\RequisicionTiendaConfController;
 use App\Http\Controllers\RequisicionTiendaController;
@@ -311,6 +313,14 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::post('bireporte_sisbd_conf', 'store_sis')->name('bireporte_sisbd_conf.store');
     Route::post('bireporte_sistema_conf', 'store_sistema')->name('bireporte_sistema_conf.store');
 });
+
+//BI REPORTES - TIENDA
+Route::controller(BiReporteDepartamentoController::class)->group(function () {
+    Route::get('reportenewp/{id_area}/{id_subgerencia}', 'handleAreaP')->name('reporte_primario');
+    // Route::get('reportenewp/{id_area}/{id_subgerencia}/{id_subgerencia_sec}', 'handleAreaP')->name('reporte_primario');
+});
+
+
 
 
 //RECURSOS HUMANOS - COLABORADOR CONFIGURABLE
@@ -1258,6 +1268,20 @@ Route::controller(RequisicionTiendaController::class)->group(function () {
 Route::controller(TablaMaestraTesoreriaController::class)->group(function () {
     Route::get('tabla_maestra_tesoreria', 'index')->name('tabla_maestra_tesoreria');
     Route::get('tabla_maestra_tesoreria/list', 'list')->name('tabla_maestra_tesoreria.list');
+});
+//TESORERÍA - REGISTRO LETRAS
+Route::controller(RegistroLetraController::class)->group(function () {
+    Route::get('registro_letra', 'index')->name('registro_letra');
+    Route::post('registro_letra/list', 'list')->name('registro_letra.list');
+    Route::get('registro_letra/create', 'create')->name('registro_letra.create');
+    Route::post('registro_letra', 'store')->name('registro_letra.store');
+    Route::get('registro_letra/{id}/edit', 'edit')->name('registro_letra.edit');
+    Route::put('registro_letra/{id}', 'update')->name('registro_letra.update');
+    Route::get('registro_letra/{id}/{tipo}/unico', 'unico')->name('registro_letra.unico');
+    Route::put('registro_letra/{id}/update_unico', 'update_unico')->name('registro_letra.update_unico');
+    Route::get('registro_letra/{id}/{tipo}/estado', 'estado')->name('registro_letra.estado');
+    Route::put('registro_letra/{id}/update_estado', 'update_estado')->name('registro_letra.update_estado');
+    Route::delete('registro_letra/{id}', 'destroy')->name('registro_letra.destroy');
 });
 
 

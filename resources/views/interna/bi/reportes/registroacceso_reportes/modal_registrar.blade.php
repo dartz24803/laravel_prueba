@@ -703,7 +703,6 @@
 
 
         let selectedUbicaciones = [];
-
         $('#tipo_acceso_sede').on('change', function() {
             const selectedSedes = $(this).val();
             var url = "{{ route('ubicacion_por_sede') }}";
@@ -742,10 +741,7 @@
             });
         });
 
-
-
         let selectedAreas = [];
-
         $('#tipo_acceso_ubi').on('change', function() {
             const selectedUbis = $(this).val();
             var url = "{{ route('areas_por_ubicacion') }}";
@@ -793,7 +789,6 @@
 
 
         let selectedPuestos = [];
-
         $('#id_area_acceso_t').on('change', function() {
             const selectedAreas = $(this).val();
             var url = "{{ route('puestos_por_areas_bi') }}";
