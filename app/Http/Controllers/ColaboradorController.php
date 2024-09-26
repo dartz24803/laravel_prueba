@@ -48,12 +48,14 @@ use App\Models\TipoVivienda;
 use App\Models\ToleranciaHorario;
 use App\Models\Turno;
 use App\Models\UsersHistoricoCentroLabores;
-use App\Models\UsersHistoricoColaborador;
+use App\Models\HistoricoColaborador;
 use App\Models\UsersHistoricoHorario;
 use App\Models\UsersHistoricoModalidad;
 use App\Models\UsersHistoricoPuesto;
 use App\Models\Zona;
 use Illuminate\Support\Facades\DB;
+use Datetime;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class ColaboradorController extends Controller
 {
@@ -1261,7 +1263,7 @@ class ColaboradorController extends Controller
     
     public function Valida_Planilla_Activa(Request $request){
         $dato['id_usuario']= $request->input("id_usuario");
-        $dato['cant_planilla']=UsersHistoricoColaborador::valida_dato_planilla_activo($dato);
+        $dato['cant_planilla']=HistoricoColaborador::valida_dato_planilla_activo($dato);
         echo count($dato['cant_planilla']);
     }
 
@@ -1284,5 +1286,610 @@ class ColaboradorController extends Controller
                                     ->get();
         $dato['cantidad']=$cantidad;
         return view('rrhh.Perfil.Datos_Planilla.modal_registrar',$dato);   
+    }
+    
+    public function List_datosgenerales_planilla(Request $request){
+        $this->Model_Perfil = new Model_Perfil();
+        $id_usuario = $request->input("id_usuario");
+        $dato['list_situacion_laboral'] = SituacionLaboral::where('estado', 1)
+                                    ->get();
+        $dato['list_estado_usuario'] = $this->Model_Perfil->get_list_estado_usuario();
+        $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+        $dato['list_datos_planilla'] = $this->Model_Perfil->get_list_datoplanilla($id_usuario);
+        $dato['list_empresa'] = Empresas::where('estado', 1)
+                                ->where('activo',1)
+                                ->get();
+        $dato['list_regimen'] = Regimen::where('estado', 1)
+                                ->get();
+        $dato['list_tipo_contrato'] = TipoContrato::where('estado',1)
+                                ->get();
+        return view('rrhh.Perfil.Datos_Planilla.index_cabecera',$dato);   
+    }
+    
+    public function List_datos_planilla(Request $request){
+        $this->Model_Perfil = new Model_Perfil();
+        $id_usuario = $request->input("id_usuario");
+        $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+        $dato['list_datos_planilla'] = $this->Model_Perfil->get_list_datoplanilla($id_usuario);
+        $dato['url_cese'] = Config::where('descrip_config','Documento_Cese')
+                                ->where('estado', 1)
+                                ->get();
+        return view('rrhh.Perfil.Datos_Planilla.index',$dato);   
+    }
+    
+    public function Btn_Planilla_Perfil(Request $request){
+        $this->Model_Perfil = new Model_Perfil();
+        $id_usuario = $request->input("id_usuario");
+        $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+        $dato['list_datos_planilla'] = $this->Model_Perfil->get_list_datoplanilla($id_usuario);
+        return view('rrhh.Perfil.Datos_Planilla.btn_planilla',$dato);   
+    }
+    
+    public function Insert_Dato_Planilla(Request $request){
+        $this->Model_Perfil = new Model_Perfil();
+        $dato['id_usuario'] =$request->input("id_usuario");
+        $dato['id_situacion_laboral'] =$request->input("id_situacion_laboral");
+        $dato['fec_inicio']= $request->input("fec_inicio");
+        $dato['fec_vencimiento']= $request->input("fec_vencimiento");
+        $dato['id_empresa'] =$request->input("id_empresa");
+        $dato['id_regimen'] =$request->input("id_regimen");
+        $dato['id_tipo_contrato'] =$request->input("id_tipo_contrato");
+        $dato['sueldo'] =$request->input("sueldo");
+        $dato['id_tipo'] =$request->input("id_tipo");
+        $dato['fecha_fin_historico_estado'] =$request->input("fecha_fin_historico_estado");
+        $dato['bono'] =$request->input("bono");
+
+        Usuario::findOrFail($request->id_usuario)->update([
+            'correo_bienvenida' => null,
+            'accesos_email' => null,
+        ]);
+
+        $total=count(HistoricoColaborador::valida_dato_planilla($dato));
+        $total2=count(HistoricoColaborador::valida_dato_planilla_activo($dato));
+        if($total>0){
+            echo "error";
+        }elseif($total2>0){
+            echo "incompleto";
+        }else{
+            $dato['historico'] = HistoricoEstadoColaborador::where('id_usuario', $request->id_usuario)
+                                ->where('fec_inicio', $request->fec_inicio);
+            HistoricoColaborador::create([
+                'id_usuario' => $request->id_usuario,
+                'id_situacion_laboral' => $request->id_situacion_laboral,
+                'fec_inicio' => $request->fec_inicio,
+                'motivo_fin' => 0.00,
+                'observacion' => '',
+                'movilidad' => 0.00,
+                'refrigerio' => 0.00,
+                'asignacion_educac' => 0.00,
+                'vale_alimento' => 0.00,
+                'otra_remun' => 0.00,
+                'remun_exoner' => 0.00,
+                'hora_mes' => 0.00,
+                'estado_intermedio' => 0,
+                'id_motivo_cese' => 0,
+                'archivo_cese' => '',
+                'flag_cesado' => 0,
+                'fec_vencimiento' => $request->fec_vencimiento,
+                'id_empresa' => $request->id_empresa,
+                'id_regimen' => $request->id_regimen,
+                'id_tipo_contrato' => $request->id_tipo_contrato,
+                'id_tipo' => $request->id_tipo,
+                'sueldo' => $request->sueldo,
+                'bono' => $request->bono,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+                'user_reg' => session('usuario')->id_usuario,
+            ]);
+            $user['fec_inicio']= $request->input("fec_inicio");
+            $user['fin_funciones']= '';
+            $user['id_empresapl'] =$request->input("id_empresa");
+            $user['id_regimen'] =$request->input("id_regimen");
+            $user['id_tipo_contrato'] =$request->input("id_tipo_contrato");
+            $user['fec_act'] = now();
+            $user['fec_reg'] = now();
+            $user['user_act'] = session('usuario')->id_usuario;
+            $user['user_reg'] = session('usuario')->id_usuario;
+            Usuario::findOrFail($request->id_usuario)->update($user);
+
+            $get_id = Organigrama::where('id_usuario', $request->id_usuario)
+                ->exists();
+            
+            if($get_id){
+                $get_id = Organigrama::where('id_usuario', $request->id_usuario)
+                    ->get();
+                Organigrama::where('id', $get_id[0]['id'])->update([
+                    'id_usuario' => 0,
+                    'fecha' => now(),
+                    'usuario' => session('usuario')->id_usuario,
+                ]);
+            }
+            $get_id = $this->Model_Perfil->get_id_usuario($dato['id_usuario']);
+            $id_puesto = $get_id[0]['id_puesto'];
+            $valida = Organigrama::where('id_puesto', $id_puesto)
+                ->exists();
+            if($valida){
+                $get_id = Organigrama::where('id_usuario', $request->id_usuario)
+                    ->get();
+                $az = Organigrama::where('id_puesto', $id_puesto)
+                        ->get();
+                $dato['id'] = $az[0]['id'];
+                Organigrama::where('id', $dato['id'])->update([
+                    'id_usuario' => $request->id_usuario,
+                    'fecha' => now(),
+                    'usuario' => session('usuario')->id_usuario,
+                ]);
+            }else{
+                Organigrama::create([
+                    'id_puesto' => $id_puesto,
+                    'id_usuario' => $request->id_usuario,
+                    'fecha' => now(),
+                    'usuario' => session('usuario')->id_usuario,
+                ]);
+            }
+        }
+    }
+
+    public function Modal_Enviar_Correo_Bienvenida($id_usuario=null){
+        $this->Model_Perfil = new Model_Perfil();
+
+            if(isset($id_usuario) && $id_usuario > 0){
+                $id_usuario=$id_usuario;
+            }
+            else{
+                $id_usuario= session('usuario')->id_usuario;
+            }
+            $dato['usuario_mail'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+            $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+            //print_r($dato);
+
+            $template = imagecreatefromstring(file_get_contents( public_path('template/assets/img/Imagen_bienvenido.png')));
+
+            // Cargar la imagen del nuevo
+            if($dato['get_id'][0]['foto'] == ""){
+                $foto_perfil = public_path('template/assets/img/avatar.jpg');
+            }else{
+                $foto_perfil=$dato['get_id'][0]['foto'];
+            };
+            $photo = imagecreatefromstring(file_get_contents($foto_perfil));
+            $foto=$foto_perfil;
+            
+            $imageContent = file_get_contents($foto);
+            // Carpeta local donde se guardará la imagen
+            $carpetaLocal = public_path('ARCHIVO_TEMPORAL/');
+            //$carpetaLocal = 'https://grupolanumero1.com.pe/intranet/ARCHIVO_TEMPORAL/';
+            if (!file_exists($carpetaLocal)) {
+                mkdir($carpetaLocal, 0777, true);
+            }
+
+            // Obtener información sobre la imagen para determinar la extensión
+            $imageInfo = getimagesizefromstring($imageContent);
+
+            // Obtener la extensión de la imagen
+            $extension = image_type_to_extension($imageInfo[2], false);
+
+            // Nombre del archivo local con la extensión
+            $nombreArchivoLocal = "foto_tmp_bienvenido.". $extension;
+
+            // Ruta completa del archivo local
+            $rutaArchivoLocal = public_path('ARCHIVO_TEMPORAL/' . $nombreArchivoLocal);
+            //$rutaArchivoLocal = 'https://grupolanumero1.com.pe/intranet/ARCHIVO_TEMPORAL/' . $nombreArchivoLocal;
+
+            // Guardar la imagen descargada en la carpeta local
+            file_put_contents($rutaArchivoLocal, $imageContent);
+
+            $imagen_original = Image::make($rutaArchivoLocal);
+
+            // Obtener las dimensiones originales de la imagen
+            $original_ancho = $imagen_original->width();
+            $original_alto = $imagen_original->height();
+
+            // Definir el nuevo tamaño máximo
+            $max_alto = 1000;
+            $max_ancho = 1000;
+            $ruta_local="";
+            // Verificar si es necesario redimensionar
+            if ($original_ancho > $max_ancho || $original_alto > $max_alto) {
+                $ext = pathinfo($rutaArchivoLocal, PATHINFO_EXTENSION);
+                $nombre_soli="foto_tmp_bienvenido";
+                $nombre = $nombre_soli.".".$ext;
+
+                // Calcular nuevas dimensiones manteniendo la proporción
+                $imagen_original->resize($max_ancho, $max_alto, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+
+                // Orientar la imagen según la orientación original
+                $imagen_original->orientate();
+
+                // Guardar la imagen redimensionada localmente
+                $ruta_local = public_path("ARCHIVO_TEMPORAL/" . $nombre);
+                //$ruta_local = "https://grupolanumero1.com.pe/intranet/ARCHIVO_TEMPORAL/" . $nombre;
+                $imagen_original->save($ruta_local);
+                $photo=imagecreatefromstring(file_get_contents(public_path("ARCHIVO_TEMPORAL/" . $nombre)));
+                //$photo=imagecreatefromstring(file_get_contents("https://grupolanumero1.com.pe/intranet/ARCHIVO_TEMPORAL/" . $nombre));
+            }
+            
+            // Obtener las dimensiones de la imagen de la plantilla
+            $width = imagesx($template);
+            $height = imagesy($template);
+
+            // Crear una imagen nueva con las mismas dimensiones que la imagen de la plantilla
+            $newImage = imagecreatetruecolor($width, $height);
+
+            // Copiar la imagen de la plantilla a la nueva imagen
+            imagecopyresampled($newImage, $template, 0, 0, 0, 0, $width, $height, $width, $height);
+
+            // Obtener las dimensiones de la imagen del cumpleañero
+            $photoWidth = imagesx($photo);
+            $photoHeight = imagesy($photo);
+
+            // Obtener las dimensiones de la imagen de la plantilla
+            $width = imagesx($template);
+            $height = imagesy($template);
+
+            // Crear una imagen nueva con las mismas dimensiones que la imagen de la plantilla
+            $newImage = imagecreatetruecolor($width, $height);
+            imagesavealpha($newImage, true);
+            $transparent = imagecolorallocatealpha($newImage, 0, 0, 0, 127);
+            imagefill($newImage, 0, 0, $transparent);
+
+            // Copiar la imagen de la plantilla a la nueva imagen
+            imagecopyresampled($newImage, $template, 0, 0, 0, 0, $width, $height, $width, $height);
+
+            // Obtener las dimensiones de la imagen del cumpleañero
+            $photoWidth = imagesx($photo);
+            $photoHeight = imagesy($photo);
+
+            $newWidth = 320;
+            $newHeight = 320;
+
+            // Redimensionar la imagen del cumpleañero sin perder calidad ni proporciones
+            $resizedPhoto = imagecreatetruecolor($newWidth, $newHeight);
+            imagesavealpha($resizedPhoto, true);
+            $transparent = imagecolorallocatealpha($resizedPhoto, 0, 0, 0, 127);
+            imagefill($resizedPhoto, 0, 0, $transparent);
+            imagecopyresampled($resizedPhoto, $photo, 0, 0, 0, 0, $newWidth, $newHeight, $photoWidth, $photoHeight);
+
+            // Crear una máscara circular
+            $mask = imagecreatetruecolor($newWidth, $newHeight);
+            imagesavealpha($mask, true);
+            $transparent = imagecolorallocatealpha($mask, 0, 0, 0, 127);
+            imagefill($mask, 0, 0, $transparent);
+            $white = imagecolorallocate($mask, 255, 255, 255);
+            imagefilledellipse($mask, $newWidth / 2, $newHeight / 2, $newWidth, $newHeight, $white);
+
+            // Aplicar la máscara circular a la imagen redimensionada
+            $finalImage = imagecreatetruecolor($newWidth, $newHeight);
+            imagesavealpha($finalImage, true);
+            imagefill($finalImage, 0, 0, $transparent);
+
+            for ($x = 0; $x < $newWidth; $x++) {
+                for ($y = 0; $y < $newHeight; $y++) {
+                    $maskAlpha = imagecolorat($mask, $x, $y) & 0xFF;
+                    if ($maskAlpha > 0) {
+                        $color = imagecolorat($resizedPhoto, $x, $y);
+                        imagesetpixel($finalImage, $x, $y, $color);
+                    } else {
+                        imagesetpixel($finalImage, $x, $y, $transparent);
+                    }
+                }
+            }
+
+            // Limpiar la memoria de la máscara
+            imagedestroy($mask);
+            imagedestroy($resizedPhoto);
+
+            // Combinar la imagen final (circular) con la plantilla
+            $destX = 586; // Coordenada X en la plantilla donde se coloca la imagen circular
+            $destY = 71; // Coordenada Y en la plantilla donde se coloca la imagen circular
+            imagecopy($newImage, $finalImage, $destX, $destY, 0, 0, $newWidth, $newHeight);
+
+            // Limpiar la memoria de la imagen final
+            imagedestroy($finalImage);
+            // Agregar texto en la imagen
+            $nombre=explode(" ",$dato['get_id'][0]['usuario_nombres']);
+            $texto=mb_convert_case($nombre[0].' '.$dato['get_id'][0]['usuario_apater'], MB_CASE_TITLE, "UTF-8");
+            $tamano_fuente = 36;
+            //$fuente = 'public_path('template/assets/fonts/Poppins.TTF'); // ruta a la fuente TTF
+            $fuente = public_path('template/assets/fonts/Poppins.ttf'); // ruta a la fuente TTF
+            $bbox = imagettfbbox($tamano_fuente, 0, $fuente, $texto);
+            $texto_ancho = $bbox[2] - $bbox[0];
+            $texto_alto = $bbox[1] - $bbox[7];
+
+            $color_texto = imagecolorallocate($newImage, 255, 255, 255); // color blanco
+            $posicion_texto_x = 50; // posición horizontal del texto
+            $posicion_texto_y = 185; // posición vertical del texto
+            imagettftext($newImage, $tamano_fuente, 0, $posicion_texto_x, $posicion_texto_y, $color_texto, $fuente, $texto);
+            
+            if($dato['get_id'][0]['id_genero'] == 1){
+                $texto = "¡BIENVENIDO!";
+            }else{
+                $texto = "¡BIENVENIDA!";
+            }
+
+            $tamano_fuente = 28;
+            $bbox = imagettfbbox($tamano_fuente, 0, $fuente, $texto);
+            $texto_ancho = $bbox[2] - $bbox[0];
+            $texto_alto = $bbox[1] - $bbox[7];
+            $offset = 0.1; // Desplazamiento para el efecto de negrita
+            $color_texto2 = imagecolorallocate($newImage, 255,167,0); // color amarillo
+
+            $posicion_texto_x0 = 75; // posición horizontal del texto
+            $posicion_texto_y0 = 125; // posición vertical del texto
+            // Dibujar texto en negrita
+            for ($c1 = -1; $c1 <= 1; $c1++) {
+                for ($c2 = -1; $c2 <= 1; $c2++) {
+                    imagettftext($newImage, $tamano_fuente, 0, $posicion_texto_x0 + ($c1*$offset), $posicion_texto_y0 + ($c2*$offset), $color_texto2, $fuente, $texto);
+                }
+            }
+            //imagettftext($newImage, $tamano_fuente, 0, $posicion_texto_x0, $posicion_texto_y0, $color_texto2, $fuente, $texto);
+
+            $texto = "Por sumarte a nuestro equipo el ";
+            $tamano_fuente = 14;
+            $bbox = imagettfbbox($tamano_fuente, 0, $fuente, $texto);
+            $texto_ancho = $bbox[2] - $bbox[0];
+            $texto_alto = $bbox[1] - $bbox[7];
+
+            $posicion_texto_x = 64; // posición horizontal del texto
+            $posicion_texto_y = 250; // posición vertical del texto
+            imagettftext($newImage, $tamano_fuente, 0, $posicion_texto_x, $posicion_texto_y, $color_texto, $fuente, $texto);
+            
+            $fecha_original = $dato['get_id'][0]['ini_funciones'];
+            $fecha = new DateTime($fecha_original);
+            $fecha_formateada = $fecha->format('d/m/Y');
+            $texto = $fecha_formateada;
+            $tamano_fuente = 14;
+            $bbox = imagettfbbox($tamano_fuente, 0, $fuente, $texto);
+            $texto_ancho = $bbox[2] - $bbox[0];
+            $texto_alto = $bbox[1] - $bbox[7];
+            $offset = 0.1; // Desplazamiento para el efecto de negrita
+
+            $posicion_texto_x2 = 375; // posición horizontal del texto
+            $posicion_texto_y = 250; // posición vertical del texto
+            // Dibujar texto en negrita
+            for ($c1 = -1; $c1 <= 1; $c1++) {
+                for ($c2 = -1; $c2 <= 1; $c2++) {
+                    imagettftext($newImage, $tamano_fuente, 0, $posicion_texto_x2 + ($c1*$offset), $posicion_texto_y + ($c2*$offset), $color_texto, $fuente, $texto);
+                }
+            }
+
+            $texto = $dato['get_id'][0]['nom_puesto'];
+            $tamano_fuente = 15;
+            $bbox = imagettfbbox($tamano_fuente, 0, $fuente, $texto);
+            $texto_ancho = $bbox[2] - $bbox[0];
+            $texto_alto = $bbox[1] - $bbox[7];
+
+            $posicion_texto_x = 64; // posición horizontal del texto
+            $posicion_texto_y2 = 335; // posición vertical del texto
+            $offset = 0.1; // Desplazamiento para el efecto de negrita
+
+            // Dibujar texto en negrita
+            for ($c1 = -1; $c1 <= 1; $c1++) {
+                for ($c2 = -1; $c2 <= 1; $c2++) {
+                    imagettftext($newImage, $tamano_fuente, 0, $posicion_texto_x + ($c1*$offset), $posicion_texto_y2 + ($c2*$offset), $color_texto, $fuente, $texto);
+                }
+            }
+
+            $texto = ucfirst(strtolower($dato['get_id'][0]['nom_area']));
+            $tamano_fuente = 12;
+            $bbox = imagettfbbox($tamano_fuente, 0, $fuente, $texto);
+            $texto_ancho = $bbox[2] - $bbox[0];
+            $texto_alto = $bbox[1] - $bbox[7];
+
+            $posicion_texto_x = 64; // posición horizontal del texto
+            $posicion_texto_y3 = 360; // posición vertical del texto
+            imagettftext($newImage, $tamano_fuente, 0, $posicion_texto_x, $posicion_texto_y3, $color_texto, $fuente, $texto);
+
+            $texto = strtolower($dato['get_id'][0]['emailp']);
+            $tamano_fuente = 11;
+            $bbox = imagettfbbox($tamano_fuente, 0, $fuente, $texto);
+            $texto_ancho = $bbox[2] - $bbox[0];
+            $texto_alto = $bbox[1] - $bbox[7];
+
+            $posicion_texto_x2 = ($width - $texto_ancho) / 2 + 288; // posición horizontal del texto
+            $posicion_texto_y4 = 520; // posición vertical del texto
+            imagettftext($newImage, $tamano_fuente, 0, $posicion_texto_x2, $posicion_texto_y4, $color_texto, $fuente, $texto);
+            $config['upload_path'] =  public_path('Bienvenido_Temporales/');
+            //$config['upload_path'] =  'https://grupolanumero1.com.pe/intranet/Bienvenido_Temporales/';
+            if (!file_exists($config['upload_path'])) {
+                mkdir($config['upload_path'], 0777, true);
+                chmod($config['upload_path'], 0777);
+            }
+            ob_start();
+            imagejpeg($newImage, public_path('Bienvenido_Temporales/imagen'.$dato['get_id'][0]['id_usuario'].'.jpg'),100);
+            //imagejpeg($newImage, 'https://grupolanumero1.com.pe/intranet/Bienvenido_Temporales/imagen.jpg',100);
+            $imageContent = ob_get_clean();
+            return view('rrhh.Perfil.Accesos.modal_enviar_correo_bienvenido', $dato);
+    }
+
+    public function Enviar_Correo_Bienvenida($id_user){
+        $this->Model_Perfil = new Model_Perfil();
+            $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_user);
+
+            $mail = new PHPMailer(true);
+
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Puerto     =  587;
+                $mail->setFrom('somosuno@lanumero1.com.pe','Somos Uno');
+
+                // $mail->addAddress('pcardenas@lanumero1.com.pe');
+                // $mail->addAddress('cmarcalaya@lanumero1.com.pe');
+                // $mail->addAddress('ltaype@lanumero1.com.pe');
+                // $mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+
+                $mail->addAddress('coordinadores@lanumero1.com.pe');
+                $mail->addAddress('tiendas@lanumero1.com.pe');
+                $mail->addAddress('oficina@lanumero1.com.pe');
+                $mail->addAddress('amauta@lanumero1.com.pe');
+                $mail->addAddress('cd@lanumero1.com.pe');
+                $mail->addCC('gerencia@lanumero1.com.pe');
+                $mail->addCC($dato['get_id'][0]['emailp']);
+                $mail->AddEmbeddedImage(public_path("Bienvenido_Temporales/imagen".$dato['get_id'][0]['id_usuario'].".jpg"), "imagen", "imagen.jpg");
+
+                $mail->isHTML(true);
+                $nombreCompleto = $dato['get_id'][0]['usuario_nombres'];
+                $palabras = explode(" ", $nombreCompleto);
+
+                if($dato['get_id'][0]['id_genero']==1){
+                    $mensaje_a = "BIENVENIDO";
+                }else{
+                    $mensaje_a = "BIENVENIDA";
+                }
+                $mail->Subject =  "$mensaje_a ".$palabras[0]." ".$dato['get_id'][0]['usuario_apater']. "!";
+            
+                //$mailContent = $this->load->view('Admin/Colaborador/Perfil/Accesos/mail_bienvenido', $dato, TRUE);
+                $mail->Body = '<img src="cid:imagen">';
+            
+                $mail->CharSet = 'UTF-8';
+                $mail->send();
+
+                Usuario::findOrFail($id_user)->update([
+                    'correo_bienvenida' => now(),
+                ]);
+            }catch(Exception $e) {
+                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+            }
+            unlink( public_path("Bienvenido_Temporales/imagen".$dato['get_id'][0]['id_usuario'].".jpg"));
+            unlink( public_path("ARCHIVO_TEMPORAL/foto_tmp_bienvenido.jpeg"));
+            //unlink(FCPATH."ARCHIVO_TEMPORAL/fotodesc_tmp_bienvenido.jpeg");   
+    }
+    
+    public function Modal_Enviar_Correo_Colaborador($id_usuario=null){
+        $this->Model_Perfil = new Model_Perfil();
+            if(isset($id_usuario) && $id_usuario > 0){
+                $id_usuario=$id_usuario;
+            }
+            else{
+                $id_usuario= $_SESSION['usuario'][0]['id_usuario'];
+            }
+            $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+            $id_area = $dato['get_id'][0]['id_area'];
+            $id_puesto = $dato['get_id'][0]['id_puesto'];
+            $dato['list_fec_inicio'] = HistoricoColaborador::select('fec_inicio')
+                                    ->where('id_usuario', $id_usuario)
+                                    ->where('estado', 1)
+                                    ->get();
+            
+            $dato['list_accesos_datacorp'] = DatacorpAccesos::where('area', $id_area)
+                                    ->where('puesto', $id_puesto)
+                                    ->get()
+                                    ->toArray();
+            $dato['list_accesos_paginas_web'] = PaginasWebAccesos::where('area', $id_area)
+                                        ->where('puesto', $id_puesto)
+                                        ->get()
+                                        ->toArray();
+            $dato['list_accesos_programas'] = ProgramaAccesos::where('area', $id_area)
+                                        ->where('puesto', $id_puesto)
+                                        ->get()
+                                        ->toArray();
+            $dato['usuario_mail_soporte']=$this->Model_Perfil->get_id_usuario(173);
+            //correo asistente soporte
+            $dato['usuario_mail_soporte2']=$this->Model_Perfil->get_id_usuario(2952);
+            $dato['usuario_mail_2']=$this->Model_Perfil->get_id_usuario(136);
+            $dato['get_jefe_area'] = Usuario::get_jefe_area($id_area);
+            return view('rrhh.Perfil.Accesos.modal_enviar_correo', $dato);
+    }
+
+    public function Enviar_Correo_Colaborador(Request $request){
+        $this->Model_Perfil = new Model_Perfil();
+            $id_usuario = $request->input("id_user");
+            $dato['observaciones'] = $request->input("observaciones");
+            
+            $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+            $id_gerencia = $dato['get_id'][0]['id_gerencia'];
+            $id_area = $dato['get_id'][0]['id_area'];
+            $id_puesto = $dato['get_id'][0]['id_puesto'];
+            $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+            $id_area = $dato['get_id'][0]['id_area'];
+            $id_puesto = $dato['get_id'][0]['id_puesto'];
+            $dato['list_fec_inicio'] = HistoricoColaborador::select('fec_inicio')
+                                    ->where('id_usuario', $id_usuario)
+                                    ->where('estado', 1)
+                                    ->get();
+            
+            $dato['list_accesos_datacorp'] = DatacorpAccesos::where('area', $id_area)
+                                    ->where('puesto', $id_puesto)
+                                    ->get()
+                                    ->toArray();
+            $dato['list_accesos_paginas_web'] = PaginasWebAccesos::where('area', $id_area)
+                                        ->where('puesto', $id_puesto)
+                                        ->get()
+                                        ->toArray();
+            $dato['list_accesos_programas'] = ProgramaAccesos::where('area', $id_area)
+                                        ->where('puesto', $id_puesto)
+                                        ->get()
+                                        ->toArray();
+            $usuario_mail_soporte =$this->Model_Perfil->get_id_usuario(173);
+            //correo asistente soporte
+            $usuario_mail_soporte2 =$this->Model_Perfil->get_id_usuario(2952);
+            //correo Sr. Fernando
+            $usuario_mail_2 =$this->Model_Perfil->get_id_usuario(136);
+            $get_jefe_area  = Usuario::get_jefe_area($id_area);
+            $nombre=explode(" ",$dato['get_id'][0]['usuario_nombres']);
+
+            $mail = new PHPMailer(true);
+
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Puerto     =  587;
+                //$mail->setFrom('intranet@lanumero1.com.pe','NUEVO PERSONAL');
+                $mail->setFrom('somosuno@lanumero1.com.pe','NUEVO PERSONAL');
+
+                // $mail->addAddress('pcardenas@lanumero1.com.pe');
+                //$mail->addAddress('practicante2.procesos@lanumero1.com.pe');
+                
+                if (!empty($usuario_mail_soporte[0]['emailp'])) {
+                    $mail->addAddress($usuario_mail_soporte[0]['emailp']);
+                }
+                
+                if (!empty($usuario_mail_soporte2[0]['emailp'])) {
+                    $mail->addAddress($usuario_mail_soporte2[0]['emailp']);
+                }
+                
+                foreach($get_jefe_area as $get_jefes){
+                    $mail->addCC($get_jefes['emailp']);
+                }
+                
+                if (!empty($usuario_mail_2[0]['emailp'])) {
+                    $mail->addCC($usuario_mail_2[0]['emailp']);
+                }
+                
+                $mail->addCC("acanales@lanumero1.com.pe");
+                $mail->addCC("dtrujillano@lanumero1.com.pe");
+                $mail->addCC("dvilca@lanumero1.com.pe");
+                $mail->addCC("ltaype@lanumero1.com.pe");
+
+                $mail->isHTML(true);
+
+                $mail->Subject = "SOLICITUD DE ACCESOS Y PREPARACIÓN DE EQUIPOS - ".$nombre[0]." ".$dato['get_id'][0]['usuario_apater'];
+            
+                $mailContent = view('rrhh.Perfil.Accesos.mail_nuevo_colaborador', $dato)->render();
+                $mail->Body= $mailContent;
+            
+                $mail->CharSet = 'UTF-8';
+                $mail->send();
+
+                Usuario::findOrFail($id_usuario)->update([
+                    'accesos_email' => now(),
+                ]);
+            }catch(Exception $e) {
+                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+            }
     }
 }

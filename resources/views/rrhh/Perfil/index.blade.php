@@ -535,13 +535,13 @@ if($get_id[0]['edicion_perfil']==1){
                                                 <div class="col">
                                                     <?php if($get_id[0]['correo_bienvenida'] == null || $get_id[0]['correo_bienvenida'] == ''){ ?>
                                                     <div class="col-md-12 text-right mb-5" id="div_enviar_correo_bienvenida">
-                                                        <button type="button" title="Enviar correo" id="btn_enviar_correo1" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="<?= url('ColaboradorController/Modal_Enviar_Correo_Bienvenida') ?>/<?php echo $get_id[0]['id_usuario']; ?>">
+                                                        <button type="button" title="Enviar correo" id="btn_enviar_correo1" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ url('ColaboradorController/Modal_Enviar_Correo_Bienvenida/'. $get_id[0]['id_usuario']) }}">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                                                         </button>
                                                     </div>
                                                     <?php }else{?>
                                                     <div class="col-md-12 text-right mb-5" id="div_enviar_correo_bienvenida">
-                                                        <button type="button" title="Correo enviado" id="btn_enviar_correo1" class="btn btn-gray" title="Registrar" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="<?= url('ColaboradorController/Modal_Enviar_Correo_Bienvenida') ?>/<?php echo $get_id[0]['id_usuario']; ?>" disabled>
+                                                        <button type="button" title="Correo enviado" id="btn_enviar_correo1" class="btn btn-gray" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ url('ColaboradorController/Modal_Enviar_Correo_Bienvenida/'. $get_id[0]['id_usuario']) }}" disabled>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                                                         </button>
                                                     </div>
@@ -563,13 +563,13 @@ if($get_id[0]['edicion_perfil']==1){
                                                 <div class="col">
                                                     <?php if($get_id[0]['accesos_email'] == null || $get_id[0]['accesos_email'] == ''){ ?>
                                                     <div class="col-md-12 text-right mb-5" id="div_enviar_correo">
-                                                        <button type="button" title="Enviar correo" id="btn_enviar_correo2" class="btn btn-danger" title="Registrar" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="<?= url('ColaboradorController/Modal_Enviar_Correo_Colaborador') ?>/<?php echo $get_id[0]['id_usuario']; ?>">
+                                                        <button type="button" title="Enviar correo" id="btn_enviar_correo2" class="btn btn-danger" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="<?= url('ColaboradorController/Modal_Enviar_Correo_Colaborador') ?>/<?php echo $get_id[0]['id_usuario']; ?>">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                                                         </button>
                                                     </div>
                                                     <?php }else{?>
                                                     <div class="col-md-12 text-right mb-5" id="div_enviar_correo">
-                                                        <button type="button" title="Correo enviado" id="btn_enviar_correo2" class="btn btn-gray" title="Registrar" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="<?= url('ColaboradorController/Modal_Enviar_Correo_Colaborador') ?>/<?php echo $get_id[0]['id_usuario']; ?>" disabled>
+                                                        <button type="button" title="Correo enviado" id="btn_enviar_correo2" class="btn btn-gray" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="<?= url('ColaboradorController/Modal_Enviar_Correo_Colaborador') ?>/<?php echo $get_id[0]['id_usuario']; ?>" disabled>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                                                         </button>
                                                     </div>
