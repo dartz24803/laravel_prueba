@@ -10,7 +10,6 @@
         "doctrine/dbal": "^3.6",
         "google/apiclient": "2.15.0",
         "guzzlehttp/guzzle": "^7.2",
-        "intervention/image": "~2.0",
         "laravel-notification-channels/fcm": "^4.3",
         "laravel/framework": "^10.8",
         "laravel/sanctum": "^3.2",
