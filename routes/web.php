@@ -1259,7 +1259,7 @@ Route::controller(TablaMaestraTesoreriaController::class)->group(function () {
     Route::get('tabla_maestra_tesoreria/list', 'list')->name('tabla_maestra_tesoreria.list');
 });
 //TESORERÍA - REGISTRO LETRAS
-Route::controller(RegistroLetraController::class)->group(function (){
+Route::controller(RegistroLetraController::class)->group(function () {
     Route::get('registro_letra', 'index')->name('registro_letra');
     Route::post('registro_letra/list', 'list')->name('registro_letra.list');
     Route::get('registro_letra/create', 'create')->name('registro_letra.create');

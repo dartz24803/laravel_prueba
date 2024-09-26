@@ -33,6 +33,7 @@ class Login extends Controller
         $sesionlnu = $this->UsuariosModel->login($usuario);
         if ($sesionlnu) {
             $user = $sesionlnu[0];
+            // dd($user);
             if (password_verify($password, $user->usuario_password)) {
                 $request->session()->put('usuario', $user);
                 //return ('CarteraController');
