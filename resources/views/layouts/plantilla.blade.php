@@ -188,6 +188,29 @@
         </div>
     </div>
 
+    <div id="Modal_IMG_Link" class="modal animated zoomInUp custo-zoomInUp bd-example-modal-xl" data-backdrop="static" data-keyboard="false" role="dialog" tabindex="-1" role="dialog" aria-labelledby="ModalUpdate" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Vista Previa</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 row">
+                        <div class="form-group col-sm-12">
+                            <div id="datos_ajax"></div>
+                            <input type="hidden" name="rutaarchivo" id="rutaarchivo" value=''>
+                            <div align="center" id="archivo"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="{{ asset('template/docs/js/jquery-3.2.1.min.js') }}"></script>
 
     <link href="{{ asset('template/fileinput/css/fileinput.min.css') }}" rel="stylesheet">
@@ -289,6 +312,39 @@
                 var link = $(e.relatedTarget);
                 $(this).find(".modal-content").load(link.attr("app_upd_slide"));
             });
+            
+            $('#Modal_IMG_Link').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var imagen = button.data('imagen');
+                var titulo = button.data('title');
+                var imagen2 = imagen.substr(-3);
+                var rutapdf= $("#rutaarchivo").val();
+                var nombre_archivo= rutapdf+imagen;
+                if (imagen!=""){
+                    if (imagen2=="PDF" || imagen2=="pdf")
+                    {
+                        document.getElementById("archivo").innerHTML = "<iframe height='350px' width='100%' src='"+nombre_archivo+"' allowfullscreen></iframe>";
+                        //document.getElementById("archivo").innerHTML = "<iframe src='https://docs.google.com/gview?url="+nombre_archivo+"&pid=explorer&efh=false&a=v&chrome=false&embedded=true' style='width:100%; height:700px;' frameborder='0' class='card-img-top img-portal' alt='widget-card-2'></iframe>";
+                        //document.getElementById("archivo").innerHTML = "<iframe src='https://docs.google.com/gview?url="+nombre_archivo+"&embedded=true' style='width:100%; height:400px;' frameborder='0' class='card-img-top img-portal' alt='widget-card-2'></iframe>";
+                    }
+                    else if (imagen2=="mp4")
+                    {
+                        document.getElementById("archivo").innerHTML = "<video id='video-player'  preload='metadata'playsinline  controls controlslist='nodownload' class='card-img-top img-portal' alt='widget-card-2'><source src='"+nombre_archivo+"' type='video/mp4' ></video>";
+                    }
+                    else
+                    {
+                        document.getElementById("archivo").innerHTML = "<img style='max-width:100%;' src='"+nombre_archivo+"'>";
+                    }
+                }
+                else
+                {
+                    document.getElementById("archivo").innerHTML = "No se ha registrado ningún archivo";
+                }
+
+                var modal = $(this)
+                modal.find('.modal-title').text(titulo)
+                $('.alert').hide();//Oculto alert
+            })
         });
     </script>
     <!-- END MODAL  -->

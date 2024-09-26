@@ -4322,4 +4322,57 @@ if($get_id[0]['edicion_perfil']==1){
             }
         });
     }
+    
+    function Adjuntar_DocumentacionRRHH() {
+        Cargando();
+        var dataString = new FormData(document.getElementById('formulario_adjuntar_documentacionrrhh'));
+        var url = "{{ url('ColaboradorController/Update_Adjuntar_DocumentacionRRHH') }}";
+        var csrfToken = $('input[name="_token"]').val();
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                swal.fire(
+                    'Actualización Exitosa!',
+                    'Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                    $('#adjuntar_documentacionrrhh').html(data);
+                });
+            }
+        });
+    }
+    
+    function Actualizar_DirectorioT() {
+        Cargando();
+        var dataString = new FormData(document.getElementById('directorio_telefonico'));
+        var url = "{{ url('ColaboradorController/Insert_Directorio_Telefonico') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                swal.fire(
+                    'Actualización Exitosa!',
+                    'Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                    $('#direct_telefonico').html(data);
+                });
+            }
+        });
+    }
 </script>

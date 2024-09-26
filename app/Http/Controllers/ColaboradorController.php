@@ -24,6 +24,7 @@ use App\Models\Notificacion;
 use App\Models\SubGerencia;
 use App\Models\Config;
 use App\Models\DatacorpAccesos;
+use App\Models\DocumentacionUsuario;
 use App\Models\Empresas;
 use App\Models\EstadoCivil;
 use App\Models\GradoInstruccion;
@@ -1719,7 +1720,7 @@ class ColaboradorController extends Controller
                 $mail->Username   =  'intranet@lanumero1.com.pe';
                 $mail->Password   =  'lanumero1$1';
                 $mail->SMTPSecure =  'tls';
-                $mail->Puerto     =  587;
+                $mail->Port     =  587;
                 $mail->setFrom('somosuno@lanumero1.com.pe','Somos Uno');
 
                 // $mail->addAddress('pcardenas@lanumero1.com.pe');
@@ -1847,7 +1848,7 @@ class ColaboradorController extends Controller
                 $mail->Username   =  'intranet@lanumero1.com.pe';
                 $mail->Password   =  'lanumero1$1';
                 $mail->SMTPSecure =  'tls';
-                $mail->Puerto     =  587;
+                $mail->Port     =  587;
                 //$mail->setFrom('intranet@lanumero1.com.pe','NUEVO PERSONAL');
                 $mail->setFrom('somosuno@lanumero1.com.pe','NUEVO PERSONAL');
 
@@ -1891,5 +1892,169 @@ class ColaboradorController extends Controller
             }catch(Exception $e) {
                 echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
             }
+    }
+    
+    public function Update_Adjuntar_DocumentacionRRHH(Request $request){
+            $dato['id_usuario'] = $request->input("id_usuariodp");
+
+            $url = Config::where('id_config', 8)
+                ->get()
+                ->toArray();
+            $dato['url_archivo'] = $url[0]['url_config'];
+
+            $dato['total'] = DocumentacionUsuario::where('id_usuario', $dato['id_usuario'])
+                    ->where('estado', 1)
+                    ->get();
+            //print_r($dato['total']);
+            $dato['carta_renuncia']="";
+            $dato['eval_sicologico']="";
+            $dato['convenio_laboral']="";
+            if(count($dato['total'])>0){
+                $dato['carta_renuncia']=$dato['total'][0]['carta_renuncia'];
+                $dato['eval_sicologico']=$dato['total'][0]['eval_sicologico'];
+                $dato['convenio_laboral']=$dato['total'][0]['convenio_laboral'];
+            }
+            
+            if($_FILES["carta_renuncia"]["name"] != "" || $_FILES['eval_sicologico']['name']!="" || 
+                $_FILES['convenio_laboral']['name']){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if((!$con_id) || (!$lr)){
+                    //echo "No se conecto";
+                }else{
+                    //echo "Se conecto";
+                    $path = $_FILES['carta_renuncia']['name'];
+                    if($path!=""){
+                        $temp = explode(".",$_FILES['carta_renuncia']['name']);
+                        $source_file = $_FILES['carta_renuncia']['tmp_name'];
+
+                        $fechaHoraActual = date('Y-m-dHis');
+                        $caracteresPermitidos = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $codigoUnico = '';
+                        do {
+                            $cadenaAleatoria = '';
+                            for ($i = 0; $i < 20; $i++) {
+                                $cadenaAleatoria .= $caracteresPermitidos[rand(0, strlen($caracteresPermitidos) - 1)];
+                            }
+                            $codigoUnico = $cadenaAleatoria . $fechaHoraActual;
+                            $nombre="cartarenunc_".$dato['id_usuario']."_".$codigoUnico."_".rand(10,199).".".$ext;
+                            $nombre_archivo = "PERFIL/DOCUMENTACION/DOCUMENTACIONRRHH/".$nombre;
+                            $duplicado=0;
+                            
+                        }while ($duplicado>0);
+                        
+                        ftp_pasv($con_id, true);
+                        
+
+                        if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
+                            $dato['carta_renuncia'] = $nombre;
+                        }else{
+                            $error = error_get_last();
+                        }
+                    }
+                    
+                    //
+                    $path = $_FILES['eval_sicologico']['name'];
+                    if($path!=""){
+                        $temp = explode(".",$_FILES['eval_sicologico']['name']);
+                        $source_file = $_FILES['eval_sicologico']['tmp_name'];
+    
+                        $fechaHoraActual = date('Y-m-dHis');
+                        $caracteresPermitidos = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $codigoUnico = '';
+                        do {
+                            $cadenaAleatoria = '';
+                            for ($i = 0; $i < 20; $i++) {
+                                $cadenaAleatoria .= $caracteresPermitidos[rand(0, strlen($caracteresPermitidos) - 1)];
+                            }
+                            $codigoUnico = $cadenaAleatoria . $fechaHoraActual;
+                            $nombre="eval_psicol_".$dato['id_usuario']."_".$codigoUnico."_".rand(10,199).".".$ext;
+                            $nombre_archivo = "PERFIL/DOCUMENTACION/DOCUMENTACIONRRHH/".$nombre;
+                            $duplicado=0;
+                            
+                        }while ($duplicado>0);
+                        
+                        ftp_pasv($con_id, true);
+                        
+    
+                        if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
+                            $dato['eval_sicologico'] = $nombre;
+                        }else{
+                            $error = error_get_last();
+                        }
+                    }
+                    
+
+                    //
+                    $path = $_FILES['convenio_laboral']['name'];
+                    if($path!=""){
+                        $temp = explode(".",$_FILES['convenio_laboral']['name']);
+                        $source_file = $_FILES['convenio_laboral']['tmp_name'];
+
+                        $fechaHoraActual = date('Y-m-dHis');
+                        $caracteresPermitidos = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $codigoUnico = '';
+                        do {
+                            $cadenaAleatoria = '';
+                            for ($i = 0; $i < 20; $i++) {
+                                $cadenaAleatoria .= $caracteresPermitidos[rand(0, strlen($caracteresPermitidos) - 1)];
+                            }
+                            $codigoUnico = $cadenaAleatoria . $fechaHoraActual;
+                            $nombre="eval_psicol_".$dato['id_usuario']."_".$codigoUnico."_".rand(10,199).".".$ext;
+                            $nombre_archivo = "PERFIL/DOCUMENTACION/DOCUMENTACIONRRHH/".$nombre;
+                            $duplicado=0;
+                            
+                        }while ($duplicado>0);
+                        
+                        ftp_pasv($con_id, true);
+                        
+
+                        if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
+                            $dato['convenio_laboral'] = $nombre;
+                        }else{
+                            $error = error_get_last();
+                        }
+                    }
+                    
+                    ftp_close($con_id);
+                }   
+            }
+
+            if(count($dato['total'])>0){
+                DocumentacionUsuario::where('id_usuario', $dato['id_usuario'])->update([
+                    'carta_renuncia' => $dato['carta_renuncia'],
+                    'eval_sicologico' => $dato['eval_sicologico'],
+                    'convenio_laboral' => $dato['convenio_laboral'],
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario,
+                ]);
+            }else{
+                DocumentacionUsuario::create([
+                    'id_usuario' => $dato['id_usuario'],
+                    'carta_renuncia' => $dato['carta_renuncia'],
+                    'eval_sicologico' => $dato['eval_sicologico'],
+                    'convenio_laboral' => $dato['convenio_laboral'],
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                ]);
+            }
+            $this->Model_Perfil = new Model_Perfil();
+
+            $id_usuario= $request->input("id_usuariodp");
+
+            $dato['get_id_documentacion'] = $this->Model_Perfil->get_id_documentacion($id_usuario);
+
+            $dato['url_docrrhh'] = Config::where('descrip_config','Documentacion_Rrhh')
+                                ->where('estado', 1)
+                                ->get();
+
+            return view('rrhh.Perfil.DocumentacionRRHH', $dato);
     }
 }

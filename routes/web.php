@@ -931,9 +931,8 @@ Route::controller(ColaboradorController::class)->group(function () {
     Route::get('ColaboradorController/Modal_Enviar_Correo_Bienvenida/{id_user}', 'Modal_Enviar_Correo_Bienvenida');
     Route::post('ColaboradorController/Enviar_Correo_Colaborador', 'Enviar_Correo_Colaborador');
     Route::get('ColaboradorController/Modal_Enviar_Correo_Colaborador/{id_user}', 'Modal_Enviar_Correo_Colaborador');
-    /*
-    Route::get('ColaboradorController/Modal_Dato_Planilla/{id}/{count}', 'Modal_Dato_Planilla');
-    Route::get('ColaboradorController/List_datos_planilla', 'List_datos_planilla');
+    // Route::get('ColaboradorController/Modal_Dato_Planilla/{id}/{count}', 'Modal_Dato_Planilla');
+    Route::post('ColaboradorController/Update_Adjuntar_DocumentacionRRHH', 'Update_Adjuntar_DocumentacionRRHH');/*
     Route::get('ColaboradorController/List_datos_planilla', 'List_datos_planilla');*/
 });
 //ÁREA INTERNA
