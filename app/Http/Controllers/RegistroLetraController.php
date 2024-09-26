@@ -507,7 +507,8 @@ class RegistroLetraController extends Controller
         $sheet->setCellValue('Q2', 'BANCO');
 
         $contador = 2;
-
+        $soles = 0;
+        $dolares = 0;
         foreach ($list_cheque_letra as $list) {
             $contador++;
 
@@ -565,7 +566,25 @@ class RegistroLetraController extends Controller
             $sheet->setCellValue("O{$contador}", $list->noperacion);
             $sheet->setCellValue("P{$contador}", $list->num_unico);
             $sheet->setCellValue("Q{$contador}", $list->banco);
+
+            if($list->id_moneda=="1"){
+                $soles = $soles+$list->monto;
+            }else{
+                $dolares = $dolares+$list->monto;
+            }
         }
+        $contador = $contador+1;
+        $sheet->setCellValue("I{$contador}", 'Total Soles');
+        $sheet->setCellValue("J{$contador}", $soles);
+        $sheet->getStyle("I{$contador}:J{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+        $sheet->getStyle("I{$contador}:J{$contador}")->getFont()->setBold(true);
+        $sheet->getStyle("J{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_CURRENCY_SOL_SIMPLE);
+        $contador = $contador+1;
+        $sheet->setCellValue("I{$contador}", 'Total Dólares');
+        $sheet->setCellValue("J{$contador}", $dolares);
+        $sheet->getStyle("I{$contador}:J{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+        $sheet->getStyle("I{$contador}:J{$contador}")->getFont()->setBold(true);
+        $sheet->getStyle("J{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_CURRENCY_USD);
 
         $writer = new Xlsx($spreadsheet);
         $filename = 'Cheques y letras';
