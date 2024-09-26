@@ -1274,6 +1274,9 @@ Route::controller(RegistroLetraController::class)->group(function () {
     Route::post('registro_letra/list', 'list')->name('registro_letra.list');
     Route::get('registro_letra/create', 'create')->name('registro_letra.create');
     Route::post('registro_letra', 'store')->name('registro_letra.store');
+    Route::get('registro_letra/import', 'import')->name('registro_letra.import');
+    Route::post('registro_letra/store_imp', 'store_imp')->name('registro_letra.store_imp');
+    Route::get('registro_letra/excel_error', 'excel_error')->name('registro_letra.excel_error');
     Route::get('registro_letra/{id}/edit', 'edit')->name('registro_letra.edit');
     Route::put('registro_letra/{id}', 'update')->name('registro_letra.update');
     Route::get('registro_letra/{id}/{tipo}/unico', 'unico')->name('registro_letra.unico');

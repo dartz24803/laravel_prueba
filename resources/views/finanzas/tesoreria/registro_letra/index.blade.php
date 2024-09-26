@@ -25,10 +25,15 @@
                     <div class="widget-content widget-content-area br-6">
                         <div class="toolbar mt-3">
                             <div class="col-lg-12 text-center text-md-right">
-                                <button type="button" class="btn btn-primary mb-1 mb-md-0" title="Registrar" data-toggle="modal" data-target="#ModalRegistroGrande" app_reg_grande="{{ route('registro_letra.create') }}">
+                                <button type="button" class="btn btn-primary mb-1 mb-md-0" 
+                                title="Registrar" data-toggle="modal" 
+                                data-target="#ModalRegistroGrande" 
+                                app_reg_grande="{{ route('registro_letra.create') }}">
                                     Nuevo
                                 </button>
-                                <a class="btn mb-1 mb-md-0" style="background-color: #28a745 !important;" onclick="Excel_Registro_Letra();">
+                                <a class="btn mb-1 mb-md-0" title="Exportar excel"
+                                style="background-color: #28a745 !important;" 
+                                onclick="Excel_Registro_Letra();">
                                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="64" height="64" viewBox="0 0 172 172" style=" fill:#000000;">
                                         <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
                                             <path d="M0,172v-172h172v172z" fill="none"></path>
@@ -38,7 +43,9 @@
                                         </g>
                                     </svg>                                
                                 </a>
-                                <a class="btn mb-1 mb-md-0" title="Importar Excel" style="background-color: #28a745 !important;" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('caja_chica.create_mo') }}">
+                                <a class="btn mb-1 mb-md-0" title="Importar excel" 
+                                style="background-color: #28a745 !important;" data-toggle="modal" 
+                                data-target="#ModalRegistro" app_reg="{{ route('registro_letra.import') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload-cloud text-white">
                                         <polyline points="16 16 12 12 8 16"></polyline>
                                         <line x1="12" y1="12" x2="12" y2="21"></line>
@@ -235,6 +242,29 @@
                 Swal({
                     title: 'Registro Denegado',
                     text: "Asegurese de ingresar archivo con extensión .pdf|.jpg|.png|.jpeg",
+                    type: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK',
+                });
+                archivoInput.value = ''; 
+                return false;
+            }else{
+                return true;         
+            }
+        }
+
+        function Validar_Excel(val){
+            Cargando();
+
+            var archivoInput = document.getElementById(val);
+            var archivoRuta = archivoInput.value;
+            var extPermitidas = /(.xlsx)$/i;
+
+            if(!extPermitidas.exec(archivoRuta)){
+                Swal({
+                    title: 'Registro Denegado',
+                    text: "Asegurese de ingresar archivo con extensión .xlsx",
                     type: 'error',
                     showCancelButton: false,
                     confirmButtonColor: '#3085d6',
