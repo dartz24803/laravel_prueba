@@ -677,105 +677,7 @@
 
     $(document).ready(function() {
 
-        let selectedPuestos = [];
-
-        $('#id_area_acceso_te').on('change', function() {
-            const selectedAreas = $(this).val();
-            var url = "{{ route('puestos_por_areas_bi') }}";
-
-            $.ajax({
-                url: url,
-                method: 'GET',
-                data: {
-                    areas: selectedAreas
-                },
-                success: function(response) {
-                    // Guardamos los puestos seleccionados antes de limpiar el select
-                    selectedPuestos = $('#tipo_acceso_tee').val() || [];
-
-                    // Guardar las opciones actuales del select antes de limpiar
-                    const currentOptions = [];
-                    $('#tipo_acceso_tee option').each(function() {
-                        currentOptions.push($(this).val());
-                    });
-
-                    // Vaciar el select antes de agregar las nuevas opciones
-                    $('#tipo_acceso_tee').empty();
-
-                    // Agregar las nuevas opciones obtenidas del servidor
-                    $.each(response, function(index, puesto) {
-                        $('#tipo_acceso_tee').append(
-                            `<option value="${puesto.id_puesto}">${puesto.nom_puesto}</option>`
-                        );
-                    });
-
-                    // Restaurar los puestos seleccionados previamente si siguen estando en las nuevas opciones
-                    $.each(selectedPuestos, function(index, value) {
-                        if (currentOptions.includes(value)) {
-                            $('#tipo_acceso_tee').find(`option[value="${value}"]`).prop('selected', true);
-                        }
-                    });
-
-                    // Volver a inicializar el select con select2 (o mantenerlo si ya estaba activo)
-                    $('#tipo_acceso_tee').select2();
-                },
-                error: function(xhr) {
-                    console.error('Error al obtener puestos:', xhr);
-                }
-            });
-        });
-
-        let selectedAreas = [];
-
-        $('#tipo_acceso_ubie').on('change', function() {
-            const selectedUbis = $(this).val();
-            var url = "{{ route('areas_por_ubicacion') }}";
-
-            $.ajax({
-                url: url,
-                method: 'GET',
-                data: {
-                    ubis: selectedUbis
-                },
-                success: function(response) {
-                    // Guardamos las áreas seleccionadas antes de limpiar
-                    selectedAreas = $('#id_area_acceso_te').val() || [];
-
-                    // Eliminamos solo las áreas que ya no están asociadas a las ubicaciones seleccionadas
-                    const currentOptions = [];
-                    $('#id_area_acceso_te option').each(function() {
-                        currentOptions.push($(this).val());
-                    });
-
-                    // Actualizamos solo las nuevas áreas, manteniendo las seleccionadas
-                    $('#id_area_acceso_te').empty();
-
-                    // Agregar las nuevas opciones
-                    $.each(response, function(index, area) {
-                        $('#id_area_acceso_te').append(
-                            `<option value="${area.id_area}">${area.nom_area}</option>`
-                        );
-                    });
-
-                    // Reestablecemos las áreas seleccionadas previamente que aún están disponibles
-                    $.each(selectedAreas, function(index, value) {
-                        if (currentOptions.includes(value)) {
-                            $('#id_area_acceso_te').find(`option[value="${value}"]`).prop('selected', true);
-                        }
-                    });
-
-                    $('#id_area_acceso_te').select2();
-                },
-                error: function(xhr) {
-                    console.error('Error al obtener áreas:', xhr);
-                }
-            });
-        });
-
-
-
         let selectedUbicaciones = [];
-
         $('#tipo_acceso_sedee').on('change', function() {
             const selectedSedes = $(this).val();
             var url = "{{ route('ubicacion_por_sede') }}";
@@ -810,6 +712,99 @@
                 },
                 error: function(xhr) {
                     console.error('Error al obtener sedes:', xhr);
+                }
+            });
+        });
+
+        let selectedAreas = [];
+        $('#tipo_acceso_ubie').on('change', function() {
+            const selectedUbis = $(this).val();
+            var url = "{{ route('areas_por_ubicacion') }}";
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: {
+                    ubis: selectedUbis
+                },
+                success: function(response) {
+                    // Guardamos las áreas seleccionadas antes de limpiar
+                    selectedAreas = $('#id_area_acceso_te').val() || [];
+                    console.log(selectedAreas)
+
+                    // Eliminamos solo las áreas que ya no están asociadas a las ubicaciones seleccionadas
+                    const currentOptions = [];
+                    $('#id_area_acceso_te option').each(function() {
+                        currentOptions.push($(this).val());
+                    });
+
+                    // Actualizamos solo las nuevas áreas, manteniendo las seleccionadas
+                    $('#id_area_acceso_te').empty();
+
+                    // Agregar las nuevas opciones
+                    $.each(response, function(index, area) {
+                        $('#id_area_acceso_te').append(
+                            `<option value="${area.id_area}">${area.nom_area}</option>`
+                        );
+                    });
+
+                    // Reestablecemos las áreas seleccionadas previamente que aún están disponibles
+                    $.each(selectedAreas, function(index, value) {
+                        if (currentOptions.includes(value)) {
+                            $('#id_area_acceso_te').find(`option[value="${value}"]`).prop('selected', true);
+                        }
+                    });
+
+                    $('#id_area_acceso_te').select2();
+                },
+                error: function(xhr) {
+                    console.error('Error al obtener áreas:', xhr);
+                }
+            });
+        });
+
+        let selectedPuestos = [];
+        $('#id_area_acceso_te').on('change', function() {
+            const selectedAreas = $(this).val();
+            var url = "{{ route('puestos_por_areas_bi') }}";
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: {
+                    areas: selectedAreas
+                },
+                success: function(response) {
+                    // Guardamos los puestos seleccionados antes de limpiar el select
+                    selectedPuestos = $('#tipo_acceso_tee').val() || [];
+                    console.log(selectedPuestos)
+                    // Guardar las opciones actuales del select antes de limpiar
+                    const currentOptions = [];
+                    $('#tipo_acceso_tee option').each(function() {
+                        currentOptions.push($(this).val());
+                    });
+                    // Vaciar el select antes de agregar las nuevas opciones
+                    $('#tipo_acceso_tee').empty();
+
+                    // Agregar las nuevas opciones obtenidas del servidor
+                    $.each(response, function(index, puesto) {
+                        $('#tipo_acceso_tee').append(
+                            `<option value="${puesto.id_puesto}">${puesto.nom_puesto}</option>`
+                        );
+                    });
+
+                    // Restaurar los puestos seleccionados previamente si siguen estando en las nuevas opciones
+                    $.each(selectedPuestos, function(index, value) {
+                        if (currentOptions.includes(value)) {
+                            $('#tipo_acceso_tee').find(`option[value="${value}"]`).prop('selected', true);
+                        }
+                    });
+
+                    // Volver a inicializar el select con select2 (o mantenerlo si ya estaba activo)
+                    $('#tipo_acceso_tee').select2();
+                },
+                error: function(xhr) {
+                    console.error('Error al obtener puestos:', xhr);
                 }
             });
         });

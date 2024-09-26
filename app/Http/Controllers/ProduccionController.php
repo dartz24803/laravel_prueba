@@ -83,13 +83,14 @@ class ProduccionController extends Controller
             DB::raw("CONCAT(usuario_apater, ' ', usuario_amater, ' ', usuario_nombres) AS nombre_completo")
         )
             ->where('estado', 1)
-            ->where('id_area', 2)
-            ->orderBy('usuario_nombres', 'ASC')
-            ->distinct('usuario_nombres')
+            ->where('id_area', 49)
+            ->orderBy(DB::raw("CONCAT(usuario_apater, ' ', usuario_amater, ' ', usuario_nombres)"), 'ASC') // Ordenar por nombre completo
+            ->distinct()
             ->get();
 
         $list_proveedor = ProveedorGeneral::select(
             'id_proveedor',
+            'ruc_proveedor',
             DB::raw("CONCAT(nombre_proveedor, ' - ', ruc_proveedor, ' - ', responsable) AS nombre_proveedor_completo")
         )
             ->where('estado', 1)
@@ -219,19 +220,22 @@ class ProduccionController extends Controller
             DB::raw("CONCAT(usuario_apater, ' ', usuario_amater, ' ', usuario_nombres) AS nombre_completo")
         )
             ->where('estado', 1)
-            ->where('id_area', 2)
-            ->orderBy('usuario_nombres', 'ASC')
-            ->distinct('usuario_nombres')
+            ->where('id_area', 49)
+            ->orderBy(DB::raw("CONCAT(usuario_apater, ' ', usuario_amater, ' ', usuario_nombres)"), 'ASC') // Ordenar por nombre completo
+            ->distinct()
             ->get();
+        // dd($list_inspector);
+
         $list_proveedor = ProveedorGeneral::select(
             'id_proveedor',
+            'ruc_proveedor',
             DB::raw("CONCAT(nombre_proveedor, ' - ', ruc_proveedor, ' - ', responsable) AS nombre_proveedor_completo")
         )
             ->where('estado', 1)
-            // ->where('id_proveedor_mae', 2)
-            ->orderBy('ruc_proveedor', 'ASC')
+            ->orderBy('ruc_proveedor', 'ASC')  // Ordena por la columna que ahora está en la selección
             ->distinct('ruc_proveedor')
             ->get();
+
 
         $list_ficha_tecnica = FichaTecnicaProduccion::select('id_ft_produccion', 'modelo')
             ->where('estado', 1)
