@@ -177,6 +177,122 @@ class RegistroLetraController extends Controller
         }
     }
 
+    
+    public function edit($id)
+    {
+        $get_id = ChequesLetras::findOrFail($id);
+        $list_empresa = Empresas::select('id_empresa','nom_empresa')->where('estado',1)
+                        ->orderBy('nom_empresa','ASC')->get();
+        $list_aceptante = DB::connection('sqlsrv')->table('tge_entidades')
+                        ->select(DB::raw("CONCAT(tdo_codigo,'_',clp_numdoc) AS id_aceptante"),
+                        DB::raw("CONCAT(clp_razsoc,' - ',clp_numdoc) AS nom_aceptante"))
+                        ->where('clp_estado','!=','*')->get();
+        $list_tipo_comprobante = TipoComprobante::whereIn('id',[1,2,5])->get();
+        $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
+        return view('finanzas.tesoreria.registro_letra.modal_editar',compact(
+            'get_id',
+            'list_empresa',
+            'list_aceptante',
+            'list_tipo_comprobante',
+            'list_tipo_moneda'
+        ));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'id_empresae' => 'gt:0',
+            'fec_emisione' => 'required',
+            'fec_vencimientoe' => 'required',
+            'id_tipo_documentoe' => 'gt:0',
+            'num_doce' => 'required',
+            'id_aceptantee' => 'not_in:0',
+            'id_tipo_comprobantee' => 'gt:0',
+            'num_comprobantee' => 'required',
+            'montoe' => 'required|gt:0'
+        ],[
+            'id_empresae.gt' => 'Debe seleccionar empresa.',
+            'fec_emisione.required' => 'Debe ingresar fecha emisión.',
+            'fec_vencimientoe.required' => 'Debe ingresar fecha vencimiento.',
+            'id_tipo_documentoe.gt' => 'Debe seleccionar tipo documento.',
+            'num_doce.required' => 'Debe ingresar n° documento.',
+            'id_aceptantee.not_in' => 'Debe seleccionar aceptante.',
+            'id_tipo_comprobantee.gt' => 'Debe seleccionar tipo comprobante.',
+            'num_comprobantee.required' => 'Debe ingresar n° comprobante.',
+            'montoe.required' => 'Debe ingresar monto.',
+            'montoe.gt' => 'Debe ingresar monto mayor a 0.'
+        ]);
+
+        $valida = ChequesLetras::where('id_empresa', $request->id_empresae)
+                ->where('fec_vencimiento',$request->fec_vencimientoe)->where('num_doc',$request->num_doce)
+                ->where('estado', 1)->where('id_cheque_letra','!=',$id)->exists();
+
+        if($valida){
+            echo "error";
+        }else{
+            $aceptante = explode("_",$request->id_aceptantee);
+            $tipo_doc_empresa_vinculada = NULL;
+            $num_doc_empresa_vinculada = NULL;
+            if($request->negociado_endosadoe=="2"){
+                $empresa_vinculada = explode("_",$request->id_empresa_vinculadae);
+                $tipo_doc_empresa_vinculada = $empresa_vinculada[0];
+                $num_doc_empresa_vinculada = $empresa_vinculada[1];
+            }
+
+            $get_id = ChequesLetras::findOrFail($id);
+            $documento = $get_id->documento;
+            if ($_FILES["documentoe"]["name"] != "") {
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+                if ($con_id && $lr) {
+                    if($get_id->documento!=""){
+                        ftp_delete($con_id, "ADM_FINANZAS/CHEQUES_LETRAS/".basename($get_id->documento));
+                    }
+
+                    $path = $_FILES["documentoe"]["name"];
+                    $source_file = $_FILES['documentoe']['tmp_name'];
+    
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $nombre_soli = "Cheque_Letra_" . date('YmdHis');
+                    $nombre = $nombre_soli . "." . strtolower($ext);
+    
+                    ftp_pasv($con_id, true);
+                    $subio = ftp_put($con_id, "ADM_FINANZAS/CHEQUES_LETRAS/" . $nombre, $source_file, FTP_BINARY);
+                    if ($subio) {
+                        $documento = "https://lanumerounocloud.com/intranet/ADM_FINANZAS/CHEQUES_LETRAS/" . $nombre;
+                    } else {
+                        echo "Archivo no subido correctamente";
+                    }
+                } else {
+                    echo "No se conecto";
+                }
+            }
+
+            ChequesLetras::findOrFail($id)->update([                
+                'id_empresa' => $request->id_empresae,
+                'fec_emision' => $request->fec_emisione,
+                'fec_vencimiento' => $request->fec_vencimientoe,
+                'id_tipo_documento' => $request->id_tipo_documentoe,
+                'num_doc' => $request->num_doce,
+                'tipo_doc_aceptante' => $aceptante[0],
+                'num_doc_aceptante' => $aceptante[1],
+                'tipo_doc_emp_vinculada' => $tipo_doc_empresa_vinculada,
+                'num_doc_emp_vinculada' => $num_doc_empresa_vinculada,
+                'id_tipo_comprobante' => $request->id_tipo_comprobantee,
+                'num_comprobante' => $request->num_comprobantee,
+                'id_moneda' => $request->id_monedae,
+                'monto' => $request->montoe,
+                'negociado_endosado' => $request->negociado_endosadoe,
+                'documento' => $documento,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
     public function unico($id, $tipo)
     {
         $get_id = ChequesLetras::findOrFail($id);
