@@ -1593,8 +1593,8 @@ class ColaboradorController extends Controller
             $nombre=explode(" ",$dato['get_id'][0]['usuario_nombres']);
             $texto=mb_convert_case($nombre[0].' '.$dato['get_id'][0]['usuario_apater'], MB_CASE_TITLE, "UTF-8");
             $tamano_fuente = 36;
-            //$fuente = 'C:\xampp2\htdocs\prueba/public/template/assets/fonts/Poppins.TTF'; // ruta a la fuente TTF
-            $fuente = '/var/www/demo.grupolanumero1.com.pe/public/template/assets/fonts/Poppins.ttf'; // ruta a la fuente TTF
+            //$fuente = 'public_path('template/assets/fonts/Poppins.TTF'); // ruta a la fuente TTF
+            $fuente = public_path('template/assets/fonts/Poppins.ttf'); // ruta a la fuente TTF
             $bbox = imagettfbbox($tamano_fuente, 0, $fuente, $texto);
             $texto_ancho = $bbox[2] - $bbox[0];
             $texto_alto = $bbox[1] - $bbox[7];
