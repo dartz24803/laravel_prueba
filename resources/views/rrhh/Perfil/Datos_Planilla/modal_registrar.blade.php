@@ -212,31 +212,38 @@
                     ).then(function() {
                         var dataString1 = new FormData(document.getElementById('formulario_registrar_planilla'));
                         var url1 = "{{ url('ColaboradorController/List_datosgenerales_planilla') }}";
+                        var csrfToken = $('input[name="_token"]').val();
 
                         $.ajax({
                             type: "POST",
                             data: dataString1,
                             url: url1,
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken
+                            },
                             processData: false,
                             contentType: false,
                             success: function(resp) {
                                 $('#datosplanilla').html(resp);
-                                $("#ModalRegistroSlide .close").click();
+                                $("#ModalRegistro .close").click();
                             }
                         });
 
                         var dataString2 = new FormData(document.getElementById('formulario_registrar_planilla'));
                         var url2 = "{{ url('ColaboradorController/List_datos_planilla') }}";
+                        var csrfToken = $('input[name="_token"]').val();
 
                         $.ajax({
                             type: "POST",
                             data: dataString2,
                             url: url2,
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken
+                            },
                             processData: false,
                             contentType: false,
 
                             success: function(resp) {
-                                //$("#ModalRegistro .close").click();
                                 $('#mddatoplanilla').html(resp);
                                 
                             }
@@ -244,15 +251,19 @@
 
                         var url3 = "{{ url('ColaboradorController/Btn_Planilla_Perfil') }}";
                         var dataString3 = new FormData(document.getElementById('formulario_registrar_planilla'));
+                        var csrfToken = $('input[name="_token"]').val();
+
                         $.ajax({
                             type: "POST",
                             url: url3,
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken
+                            },
                             data: dataString3,
                             processData: false,
                             contentType: false,
 
                             success: function(resp) {
-                                //$("#ModalRegistro .close").click();
                                 $('#btn_planilla').html(resp);
                             }
                         });
