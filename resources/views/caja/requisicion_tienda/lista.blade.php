@@ -5,7 +5,11 @@
             <th>Fecha</th>
             <th>Base</th>
             <th>Colaborador</th>
-            <th>Total</th>
+            @if (session('usuario')->id_nivel == "1" ||
+            session('usuario')->id_puesto == "9" ||
+            session('usuario')->id_puesto == "128")
+                <th>Total</th>
+            @endif
             <th>Estado</th>
             <th class="no-content"></th>
         </tr>
@@ -17,7 +21,11 @@
                 <td>{{ $list->fecha }}</td>
                 <td>{{ $list->base }}</td>
                 <td class="text-left">{{ $list->nom_usuario }}</td>
-                <td class="text-right">{{ $list->total }}</td>
+                @if (session('usuario')->id_nivel == "1" ||
+                session('usuario')->id_puesto == "9" ||
+                session('usuario')->id_puesto == "128")
+                    <td class="text-right">{{ $list->total }}</td>
+                @endif
                 <td class="text-left">{{ $list->nom_estado }}</td>
                 <td>
                     @if (session('usuario')->id_nivel=="1"||

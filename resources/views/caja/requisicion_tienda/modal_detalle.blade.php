@@ -7,8 +7,12 @@
     </div>
                 
     <div class="modal-body" style="max-height:700px; overflow:auto;">
-        <div id="detalle" class="row">
-        </div>
+        @if ($get_id->estado_registro=="1" ||
+        session('usuario')->id_nivel == "1" ||
+        session('usuario')->id_puesto == "128")
+            <div id="detalle" class="row">
+            </div>
+        @endif
 
         <div id="lista_detalle" class="row">
         </div>

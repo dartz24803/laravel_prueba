@@ -8,24 +8,33 @@
                 
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Coordinador:</label>
-            </div>
-            <div class="form-group col-lg-5">
-                <select class="form-control basic" name="id_usuario" id="id_usuario">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_usuario as $list)
-                        <option value="{{ $list->id_usuario }}">{{ $list->nom_usuario }}</option>
-                    @endforeach
-                </select>
-            </div>
+            @if (session('usuario')->id_nivel == "1" ||
+            session('usuario')->id_puesto == "128")
+                <div class="form-group col-lg-2">
+                    <label>Coordinador:</label>
+                </div>
+                <div class="form-group col-lg-5">
+                    <select class="form-control basic" name="id_usuario" id="id_usuario">
+                        <option value="0">Seleccione</option>
+                        @foreach ($list_usuario as $list)
+                            <option value="{{ $list->id_usuario }}">{{ $list->nom_usuario }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            @else
+                <input type="hidden" name="id_usuario" value="{{ session('usuario')->id_usuario }}">
+            @endif
 
-            <div class="form-group col-lg-2">
-                <label>Fecha:</label>
-            </div>
-            <div class="form-group col-lg-3">
-                <input type="date" class="form-control" name="fecha" id="fecha" value="{{ date('Y-m-d') }}">
-            </div>
+            @if (session('usuario')->id_nivel == "1")
+                <div class="form-group col-lg-2">
+                    <label>Fecha:</label>
+                </div>
+                <div class="form-group col-lg-3">
+                    <input type="date" class="form-control" name="fecha" id="fecha" value="{{ date('Y-m-d') }}">
+                </div>
+            @else
+                <input type="hidden" name="fecha" value="{{ date('Y-m-d') }}">
+            @endif
         </div>
 
         <div class="row">
