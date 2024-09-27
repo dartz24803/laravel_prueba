@@ -317,7 +317,6 @@ Route::controller(BiReporteController::class)->group(function () {
 //BI REPORTES - TIENDA
 Route::controller(BiReporteDepartamentoController::class)->group(function () {
     Route::get('reportenewp/{id_area}/{id_subgerencia}', 'handleAreaP')->name('reporte_primario');
-    // Route::get('reportenewp/{id_area}/{id_subgerencia}/{id_subgerencia_sec}', 'handleAreaP')->name('reporte_primario');
 });
 
 
@@ -931,9 +930,16 @@ Route::controller(ColaboradorController::class)->group(function () {
     Route::get('ColaboradorController/Modal_Enviar_Correo_Bienvenida/{id_user}', 'Modal_Enviar_Correo_Bienvenida');
     Route::post('ColaboradorController/Enviar_Correo_Colaborador', 'Enviar_Correo_Colaborador');
     Route::get('ColaboradorController/Modal_Enviar_Correo_Colaborador/{id_user}', 'Modal_Enviar_Correo_Colaborador');
+    Route::post('ColaboradorController/Update_Adjuntar_DocumentacionRRHH', 'Update_Adjuntar_DocumentacionRRHH');
+    Route::post('ColaboradorController/Insert_Directorio_Telefonico', 'Insert_Directorio_Telefonico');
+    Route::post('ColaboradorController/Insert_Directorio_Telefonico', 'Insert_Directorio_Telefonico');/*
+    Route::post('ColaboradorController/Insert_Directorio_Telefonico', 'Insert_Directorio_Telefonico');
+    Route::post('ColaboradorController/Insert_Directorio_Telefonico', 'Insert_Directorio_Telefonico');
+    Route::post('ColaboradorController/Insert_Directorio_Telefonico', 'Insert_Directorio_Telefonico');
+    Route::post('ColaboradorController/Insert_Directorio_Telefonico', 'Insert_Directorio_Telefonico');
+    Route::post('ColaboradorController/Insert_Directorio_Telefonico', 'Insert_Directorio_Telefonico');
+    Route::post('ColaboradorController/Insert_Directorio_Telefonico', 'Insert_Directorio_Telefonico');*/
     // Route::get('ColaboradorController/Modal_Dato_Planilla/{id}/{count}', 'Modal_Dato_Planilla');
-    Route::post('ColaboradorController/Update_Adjuntar_DocumentacionRRHH', 'Update_Adjuntar_DocumentacionRRHH');/*
-    Route::get('ColaboradorController/List_datos_planilla', 'List_datos_planilla');*/
 });
 //ÁREA INTERNA
 Route::controller(InternaInicioController::class)->group(function () {

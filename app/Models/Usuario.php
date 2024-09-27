@@ -451,7 +451,7 @@ class Usuario extends Model
             $result = DB::select($sql);
             return json_decode(json_encode($result), true);
     }
-    
+
     static function get_jefe_area($id_area){
         $jefes = [];
         switch ($id_area) {
@@ -570,17 +570,17 @@ class Usuario extends Model
                 $jefes = ['JEFE DE DPTO. PLANEAMIENTO Y PRODUCCIÓN'];
                 break;
         }
-    
+
         $resultados = [];
         if($id_area != 13){
             foreach ($jefes as $jefe) {
                 $sql = "SELECT u.emailp
-                        FROM users u 
-                        JOIN puesto p ON u.id_puesto = p.id_puesto 
+                        FROM users u
+                        JOIN puesto p ON u.id_puesto = p.id_puesto
                         WHERE p.nom_puesto = '$jefe'
                         AND u.emailp IS NOT NULL
                         AND u.emailp != ''; ";
-                
+
             $result = DB::select($sql);
             $query = json_decode(json_encode($result), true);
                 // Agrega los resultados al conjunto $resultados
@@ -592,8 +592,8 @@ class Usuario extends Model
             //cuando es sistemas manda a Odile y Daniel
             foreach ($jefes as $jefe) {
                 $sql = "SELECT u.emailp
-                        FROM users u 
-                        JOIN puesto p ON u.id_puesto = p.id_puesto 
+                        FROM users u
+                        JOIN puesto p ON u.id_puesto = p.id_puesto
                         WHERE id_usuario='$jefe'
                         AND u.emailp IS NOT NULL
                         AND u.emailp != ''; ";

@@ -17,8 +17,8 @@
 
 <script>
     $(document).ready(function() {
-        $("#procesos").addClass('active');
-        $("#procesos").attr('aria-expanded', 'true');
+        $("#inicio_interna").addClass('active');
+        $("#hinicio_interna").attr('aria-expanded', 'true');
     });
 </script>
 @endsection
