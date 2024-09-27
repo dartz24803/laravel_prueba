@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('cheques_letras', function (Blueprint $table) {
             $table->id('id_cheque_letra');
-            $table->string('cod_registro',30)->nullable();
+            $table->string('cod_registro',30)->nullable(); //NO sirve
             $table->date('fec_emision')->nullable();
             $table->date('fec_vencimiento')->nullable();
             $table->integer('id_tipo_documento')->nullable();

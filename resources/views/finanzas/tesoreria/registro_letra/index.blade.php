@@ -313,6 +313,10 @@
             })
         }
 
+        function Excel_Plantilla() {
+            window.location = "{{ route('registro_letra.excel_plantilla') }}";
+        } 
+
         function Excel_Registro_Letra() {
             var estado = $('#estadob').val();
             var id_empresa = $('#id_empresab').val();

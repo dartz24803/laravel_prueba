@@ -16,8 +16,8 @@ return new class extends Migration
             $table->text('num_doc')->nullable();
             $table->text('fec_emision')->nullable();
             $table->text('fec_vencimiento')->nullable();
-            $table->date('fec_emision_ok')->date();
-            $table->date('fec_vencimiento_ok')->date();
+            $table->date('fec_emision_ok')->nullable();
+            $table->date('fec_vencimiento_ok')->nullable();
             $table->text('descripcion')->nullable();
             $table->text('importe')->nullable();
             $table->decimal('importe_ok',10,2)->nullable();
@@ -37,14 +37,14 @@ return new class extends Migration
             $table->integer('id_moneda')->nullable();
             $table->text('obs')->nullable();
             $table->integer('ok')->nullable();
-            $table->integer('id')->nullable();
-            $table->integer('estado')->nullable();
-            $table->dateTime('fec_reg')->nullable();
-            $table->integer('user_reg')->nullable();
-            $table->dateTime('fec_act')->nullable();
-            $table->integer('user_act')->nullable();
-            $table->dateTime('fec_eli')->nullable();
-            $table->integer('user_eli')->nullable();
+            $table->integer('id')->nullable(); //NO sirve
+            $table->integer('estado')->nullable(); //NO sirve
+            $table->dateTime('fec_reg')->nullable(); //NO sirve
+            $table->integer('user_reg')->nullable(); //Cambiar por id_usuario y relacionar con users
+            $table->dateTime('fec_act')->nullable(); //NO sirve
+            $table->integer('user_act')->nullable(); //NO sirve
+            $table->dateTime('fec_eli')->nullable(); //NO sirve
+            $table->integer('user_eli')->nullable(); //NO sirve
         });
     }
 

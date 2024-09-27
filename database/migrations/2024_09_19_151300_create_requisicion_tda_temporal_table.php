@@ -18,15 +18,15 @@ return new class extends Migration
             $table->integer('cantidad')->nullable();
             $table->unsignedBigInteger('id_producto');
             $table->decimal('precio',10,2)->nullable();
-            $table->decimal('total',10,2)->nullable();
+            $table->decimal('total',10,2)->nullable(); //NO sirve
             $table->string('archivo',100)->nullable();
-            $table->integer('estado')->nullable();
-            $table->dateTime('fec_reg')->nullable();
-            $table->integer('user_reg')->nullable();
-            $table->dateTime('fec_act')->nullable();
-            $table->integer('user_act')->nullable();
-            $table->dateTime('fec_eli')->nullable();
-            $table->integer('user_eli')->nullable();
+            $table->integer('estado')->nullable(); //NO sirve
+            $table->dateTime('fec_reg')->nullable(); //NO sirve
+            $table->integer('user_reg')->nullable(); //NO sirve
+            $table->dateTime('fec_act')->nullable(); //NO sirve
+            $table->integer('user_act')->nullable(); //NO sirve
+            $table->dateTime('fec_eli')->nullable(); //NO sirve
+            $table->integer('user_eli')->nullable(); //NO sirve
             $table->foreign('id_usuario', 'rttem_fk_id_usu')->references('id_usuario')->on('users');
             $table->foreign('id_producto', 'rttem_fk_id_pro')->references('id_producto')->on('producto_caja');
             $table->index(['id_usuario'], 'rttem_idx_id_usu');
