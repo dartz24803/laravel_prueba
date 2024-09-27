@@ -2133,7 +2133,6 @@ class ColaboradorController extends Controller
             }
     }
     public function Update_GDatosP(){
-        if ($this->session->userdata('usuario')) {
             $dato['postulante'] = $this->input->post("postulante");
             $dato['id_usuario'] = $this->input->post("id_usuariodp");
             $dato['foto']= $this->input->post("foto");

@@ -14,20 +14,6 @@
             <span>Inicio Talento Humano </span>
         </div>
     </a>
-
-    <ul class="collapse submenu list-unstyled" id="rreportbitalentohumano" data-parent="#accordionExample">
-        @foreach ($list_subgerencia['areas'] as $area)
-        @php
-        $area_id = 'conf_' . strtolower(str_replace(' ', '_', $area));
-        @endphp
-        <li id="{{ $area_id }}" clas>
-            <a href="#" data-toggle="tooltip" data-placement="right" data-html="true">
-                <p class="romperpalabra"><span id="icono_active2"></span> {{ $area }}</p>
-            </a>
-        </li>
-
-        @endforeach
-    </ul>
 </li>
 
 
