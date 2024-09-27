@@ -25,7 +25,7 @@ class ReprocesoController extends Controller
     public function Reproceso(){
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        $list_subgerencia = SubGerencia::list_subgerencia(7);        
+        $list_subgerencia = SubGerencia::list_subgerencia(7);
         return view('logistica/Reproceso/index', compact('list_notificacion','list_subgerencia'));
     }
 
@@ -36,7 +36,7 @@ class ReprocesoController extends Controller
 
     public function Modal_Reproceso(){
         $dato['list_usuario'] = UsuarioReproceso::get();
-        return view('logistica/Reproceso/modal_registrar', $dato);   
+        return view('logistica/Reproceso/modal_registrar', $dato);
     }
 
     public function Insert_Reproceso(Request $request){
@@ -71,28 +71,32 @@ class ReprocesoController extends Controller
         if($valida){
             echo "error";
         }else{
-            $dato['fecha_documento']= $request->input("fecha_documento"); 
-            $dato['documento']= $request->input("documento");
-            $dato['usuario']=  $request->input("usuario"); 
-            $dato['descripcion']=  $request->input("descripcion"); 
-            $dato['cantidad']=  $request->input("cantidad"); 
-            $dato['proveedor']=  $request->input("proveedor"); 
-            $dato['estado_r']=  $request->input("estado_r"); 
-            $dato['estado'] = 1;
-            $dato['fec_reg'] = now();
-            $dato['user_reg'] = session('usuario')->id_usuario;
-            $dato['fec_act'] = now();
-            $dato['user_act'] = session('usuario')->id_usuario;
-            Reproceso::create($dato);
+                for ($i = 0; $i < count($request->input('usuario')); $i++) {
+                    $datos = [
+                        'fecha_documento' => $request->input("fecha_documento"),
+                        'documento' => $request->input("documento"),
+                        'usuario' => $request->usuario[$i],
+                        'descripcion' => $request->descripcion[$i],
+                        'cantidad' => $request->cantidad[$i],
+                        'proveedor' => $request->proveedor[$i],
+                        'estado_r' => $request->estado_r[$i],
+                        'estado' => 1,
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                    ];
+                    Reproceso::create($datos);
+                }
         }
     }
 
     public function Modal_Update_Reproceso($id){
         $dato['get_id'] = Reproceso::where('id', $id)
                         ->get();
-        
+
         $dato['list_usuario'] = UsuarioReproceso::get();
-        return view('logistica/Reproceso/modal_editar', $dato);   
+        return view('logistica/Reproceso/modal_editar', $dato);
     }
 
     public function Update_Reproceso(Request $request){
@@ -127,14 +131,14 @@ class ReprocesoController extends Controller
         if($valida){
             echo "error";
         }else{
-            $id = $request->input("id"); 
-            $dato['fecha_documento'] = $request->input("fecha_documentoe"); 
+            $id = $request->input("id");
+            $dato['fecha_documento'] = $request->input("fecha_documentoe");
             $dato['documento'] = $request->input("documentoe");
-            $dato['usuario'] =  $request->input("usuarioe"); 
-            $dato['descripcion'] =  $request->input("descripcione"); 
-            $dato['cantidad'] =  $request->input("cantidade"); 
-            $dato['proveedor'] =  $request->input("proveedore"); 
-            $dato['estado_r'] =  $request->input("estado_re"); 
+            $dato['usuario'] =  $request->input("usuarioe");
+            $dato['descripcion'] =  $request->input("descripcione");
+            $dato['cantidad'] =  $request->input("cantidade");
+            $dato['proveedor'] =  $request->input("proveedore");
+            $dato['estado_r'] =  $request->input("estado_re");
             $dato['fec_act'] = now();
             $dato['user_act'] = session('usuario')->id_usuario;
             Reproceso::findOrFail($id)->update($dato);
@@ -144,12 +148,12 @@ class ReprocesoController extends Controller
     public function Modal_Ver_Reproceso($id){
         $dato['get_id'] = Reproceso::where('id', $id)
                         ->get();
-        
+
         $dato['list_usuario'] = UsuarioReproceso::get();
-        return view('logistica/Reproceso/modal_ver', $dato);   
+        return view('logistica/Reproceso/modal_ver', $dato);
     }
 
-    public function Delete_Reproceso(Request $request){ 
+    public function Delete_Reproceso(Request $request){
         $id = $request->input("id");
         $dato = [
             'estado' => 2,
@@ -175,13 +179,13 @@ class ReprocesoController extends Controller
         $sheet->getColumnDimension('A')->setWidth(15);
         $sheet->getColumnDimension('B')->setWidth(22);
         $sheet->getColumnDimension('C')->setWidth(16);
-        $sheet->getColumnDimension('D')->setWidth(15); 
+        $sheet->getColumnDimension('D')->setWidth(15);
         $sheet->getColumnDimension('E')->setWidth(70);
         $sheet->getColumnDimension('F')->setWidth(15);
-        $sheet->getColumnDimension('G')->setWidth(50); 
+        $sheet->getColumnDimension('G')->setWidth(50);
         $sheet->getColumnDimension('H')->setWidth(15);
 
-        $sheet->getStyle('A1:H1')->getFont()->setBold(true);  
+        $sheet->getStyle('A1:H1')->getFont()->setBold(true);
 
         $spreadsheet->getActiveSheet()->getStyle("A1:H1")->getFill()
         ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
@@ -198,17 +202,17 @@ class ReprocesoController extends Controller
 
         $sheet->getStyle("A1:H1")->applyFromArray($styleThinBlackBorderOutline);
 
-        $sheet->setCellValue("A1", 'Mes');     
-        $sheet->setCellValue("B1", 'Fecha documento');           
-        $sheet->setCellValue("C1", 'Documento');             
-        $sheet->setCellValue("D1", 'Usuario');             
-        $sheet->setCellValue("E1", 'Descripción');             
-        $sheet->setCellValue("F1", 'Cantidad');  
+        $sheet->setCellValue("A1", 'Mes');
+        $sheet->setCellValue("B1", 'Fecha documento');
+        $sheet->setCellValue("C1", 'Documento');
+        $sheet->setCellValue("D1", 'Usuario');
+        $sheet->setCellValue("E1", 'Descripción');
+        $sheet->setCellValue("F1", 'Cantidad');
         $sheet->setCellValue("G1", 'Proveedor');
-        $sheet->setCellValue("H1", 'Status');       
+        $sheet->setCellValue("H1", 'Status');
 
         $contador=1;
-        
+
         foreach($list_reproceso as $list){
             $contador++;
 
@@ -220,7 +224,7 @@ class ReprocesoController extends Controller
 
             $sheet->setCellValue("A{$contador}", $list['mes']);
             $sheet->setCellValue("B{$contador}", Date::PHPToExcel($list['fecha_documento']));
-            $sheet->getStyle("B{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY); 
+            $sheet->getStyle("B{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
             $sheet->setCellValue("C{$contador}", $list['documento']);
             $sheet->setCellValue("D{$contador}", $list['usuario']);
             $sheet->setCellValue("E{$contador}", $list['descripcion']);
@@ -233,9 +237,9 @@ class ReprocesoController extends Controller
         $filename ='Reproceso';
         if (ob_get_contents()) ob_end_clean();
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+        header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"');
         header('Cache-Control: max-age=0');
 
-        $writer->save('php://output'); 
+        $writer->save('php://output');
     }
 }
