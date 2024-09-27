@@ -32,9 +32,8 @@ class AdministradorController extends Controller
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(2);
-        $list_subgerencia_logis = SubGerencia::list_subgerencia(7);
 
-        return view('tienda.administracion.administrador.index', compact('list_notificacion', 'list_subgerencia', 'list_subgerencia_logis'));
+        return view('tienda.administracion.administrador.index', compact('list_notificacion', 'list_subgerencia',));
     }
 
     public function index_conf_st()
@@ -294,9 +293,8 @@ class AdministradorController extends Controller
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(2);
-        $list_subgerencia_logis = SubGerencia::list_subgerencia(7);
 
-        return view('tienda.administrador.index', compact('list_notificacion', 'list_subgerencia', 'list_subgerencia_logis'));
+        return view('tienda.administrador.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
     public function index_st()

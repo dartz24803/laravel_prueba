@@ -16,8 +16,8 @@
 </div>
 <script>
     $(document).ready(function() {
-        $("#inicio").addClass('active');
-        $("#hinicio").attr('aria-expanded', 'true');
+        $("#inicio_tienda").addClass('active');
+        $("#hinicio_tienda").attr('aria-expanded', 'true');
     });
 </script>
 @endsection

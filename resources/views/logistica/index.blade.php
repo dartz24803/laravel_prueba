@@ -17,8 +17,8 @@
 
 <script>
     $(document).ready(function() {
-        $("#logisticas").addClass('active');
-        $("#hlogisticas").attr('aria-expanded', 'true');
+        $("#inicio_logistica").addClass('active');
+        $("#hinicio_logistica").attr('aria-expanded', 'true');
     });
 </script>
 @endsection

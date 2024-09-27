@@ -1,62 +1,31 @@
-<style>
-    #hreportbicaja>div {
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-        /* Asegura que el texto no desborde el contenedor */
-    }
-
-    /* Estilo para el texto dentro de <span> */
-    #hreportbicaja span {
-        margin-left: 8px;
-        /* Espacio entre el ícono y el texto */
-        white-space: normal;
-        /* Permite que el texto se ajuste en múltiples líneas */
-        overflow-wrap: break-word;
-        /* Rompe palabras largas si es necesario */
-        word-wrap: break-word;
-        /* Compatibilidad con navegadores más antiguos */
-    }
-
-    #rreportbicaja {
-        margin-left: -10%
-    }
-</style>
 <li class="menu menu-heading">
     <div class="heading">
-        <span>REPORTES BI</span>
+        <span>INICIO CAJA</span>
     </div>
 </li>
-<li class="menu" id="reportbicaja">
-    <a href="#rreportbicaja" id="hreportbicaja" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+
+<li class="menu" id="caja">
+    <a id="hcaja" href="{{ url('caja') }}" aria-expanded="false" class="dropdown-toggle">
         <div class="">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-pie-chart">
-                <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
-                <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
             </svg>
-            <span>{{ $list_subgerencia['nom_sub_gerencia'] }}</span>
-        </div>
-        <div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
-                <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
+            <span>Inicio CAJA </span>
         </div>
     </a>
-
-    <ul class="collapse submenu list-unstyled" id="rreportbicaja" data-parent="#accordionExample">
-        @foreach ($list_subgerencia['areas'] as $area)
-        @php
-        $area_id = 'conf_' . strtolower(str_replace(' ', '_', $area));
-        @endphp
-        <li id="{{ $area_id }}" clas>
-            <a href="#" data-toggle="tooltip" data-placement="right" data-html="true">
-                <p class="romperpalabra"><span id="icono_active2"></span> {{ $area }}</p>
-            </a>
-        </li>
-
-        @endforeach
-    </ul>
 </li>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -85,14 +54,14 @@ session('usuario')->id_puesto == 21 ||
 session('usuario')->id_puesto == 279 ||
 session('usuario')->id_puesto == 314 ||
 session('usuario')->id_puesto == 148 ||
-session('usuario')->id_puesto == 66 || 
+session('usuario')->id_puesto == 66 ||
 session('usuario')->id_puesto == 68 ||
-session('usuario')->id_puesto == 73 || 
-session('usuario')->id_puesto == 82 || 
+session('usuario')->id_puesto == 73 ||
+session('usuario')->id_puesto == 82 ||
 session('usuario')->id_puesto == 83 ||
-session('usuario')->id_puesto == 114 || 
+session('usuario')->id_puesto == 114 ||
 session('usuario')->id_puesto == 130 ||
-session('usuario')->id_puesto == 135 || 
+session('usuario')->id_puesto == 135 ||
 session('usuario')->id_puesto == 314)
 <li class="menu menu-heading">
     <div class="heading">
@@ -198,32 +167,32 @@ session('usuario')->id_puesto == 314)
             </a>
         </li>
         @endif
-        @if (session('usuario')->id_nivel == 1 || 
-        session('usuario')->id_puesto == 128 || 
+        @if (session('usuario')->id_nivel == 1 ||
+        session('usuario')->id_puesto == 128 ||
         session('usuario')->id_puesto == 9 ||
-        session('usuario')->id_puesto == 16 || 
-        session('usuario')->id_puesto == 20 || 
+        session('usuario')->id_puesto == 16 ||
+        session('usuario')->id_puesto == 20 ||
         session('usuario')->id_puesto == 26 ||
-        session('usuario')->id_puesto == 28 || 
+        session('usuario')->id_puesto == 28 ||
         session('usuario')->id_puesto == 30 ||
-        session('usuario')->id_puesto == 41 || 
-        session('usuario')->id_puesto == 66 || 
+        session('usuario')->id_puesto == 41 ||
+        session('usuario')->id_puesto == 66 ||
         session('usuario')->id_puesto == 68 ||
-        session('usuario')->id_puesto == 73 || 
-        session('usuario')->id_puesto == 82 || 
+        session('usuario')->id_puesto == 73 ||
+        session('usuario')->id_puesto == 82 ||
         session('usuario')->id_puesto == 83 ||
-        session('usuario')->id_puesto == 98 || 
-        session('usuario')->id_puesto == 114 || 
+        session('usuario')->id_puesto == 98 ||
+        session('usuario')->id_puesto == 114 ||
         session('usuario')->id_puesto == 130 ||
-        session('usuario')->id_puesto == 135 || 
-        session('usuario')->id_puesto == 161 || 
+        session('usuario')->id_puesto == 135 ||
+        session('usuario')->id_puesto == 161 ||
         session('usuario')->id_puesto == 314)
         <li id="requisiciones_tiendas">
             <a href="{{ route('requisicion_tienda') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                 <p class="romperpalabra"><span id="icono_active2"></span> Requisición tienda</p>
             </a>
         </li>
-        @endif        
+        @endif
         @if (session('usuario')->id_nivel == 1 ||
         session('usuario')->id_puesto == 314 ||
         session('usuario')->id_puesto == 31 ||
@@ -238,6 +207,61 @@ session('usuario')->id_puesto == 314)
     </ul>
 </li>
 @endif
+
+
+
+
+
+
+
+
+
+<!-- REPORTE BI  -->
+<li class="menu menu-heading">
+    <div class="heading">
+        <span>REPORTES BI</span>
+    </div>
+</li>
+
+<li class="menu" id="reportbi_primario">
+    <a href="#rreportbi_primario" id="hreportbi_primario" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+        <div class="">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-pie-chart">
+                <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+            </svg>
+            <span title="{{ $list_subgerencia['nom_sub_gerencia'] }}">{{ $list_subgerencia['nom_sub_gerencia'] }}</span>
+        </div>
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </div>
+    </a>
+    <ul class="collapse submenu list-unstyled" id="rreportbi_primario" data-parent="#accordionExample">
+        @foreach ($list_subgerencia['areas'] as $area)
+        <li id="{{ $area['id_area'] }}">
+            <a href="{{ route('reporte_primario', ['id_area' => $area['id_area'], 'id_subgerencia' => $area['id_subgerencia']]) }}" id="{{ $area['id_area'] }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                <p class="romperpalabra"><span id="icono_active2"></span> {{ $area['nom_area'] }}</p>
+            </a>
+        </li>
+        @endforeach
+
+    </ul>
+</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @if (session('usuario')->id_nivel == 1 ||
 session('usuario')->id_nivel == 2 ||

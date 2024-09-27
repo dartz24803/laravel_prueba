@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('navbar')
-    @include('seguridad.navbar')
+@include('seguridad.navbar')
 @endsection
 
 @section('content')
@@ -16,8 +16,8 @@
 </div>
 <script>
     $(document).ready(function() {
-        $("#seguridades").addClass('active');
-        $("#hseguridades").attr('aria-expanded', 'true');
+        $("#inicio_seguridad").addClass('active');
+        $("#hinicio_seguridad").attr('aria-expanded', 'true');
     });
 </script>
 @endsection

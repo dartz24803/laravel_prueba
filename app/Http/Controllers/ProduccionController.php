@@ -24,7 +24,7 @@ class ProduccionController extends Controller
 {
     public function indexav()
     {
-        $list_subgerencia = SubGerencia::list_subgerencia(9);
+        $list_subgerencia = SubGerencia::list_subgerencia(4);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_gerencia = Gerencia::where('estado', 1)->orderBy('nom_gerencia', 'ASC')->get();
@@ -35,13 +35,13 @@ class ProduccionController extends Controller
     public function indexrev()
     {
         $list_notificacion = Notificacion::get_list_notificacion();
-        $list_subgerencia = SubGerencia::list_subgerencia(9);
+        $list_subgerencia = SubGerencia::list_subgerencia(4);
         return view('manufactura.produccion.registro_visitas.index', compact('list_notificacion', 'list_subgerencia'));
     }
     public function indexft()
     {
         $list_notificacion = Notificacion::get_list_notificacion();
-        $list_subgerencia = SubGerencia::list_subgerencia(9);
+        $list_subgerencia = SubGerencia::list_subgerencia(4);
         return view('manufactura.produccion.ficha_tecnica.index', compact('list_notificacion', 'list_subgerencia'));
     }
 

@@ -17,8 +17,8 @@
 
 <script>
     $(document).ready(function() {
-        $("#manufactura").addClass('active');
-        $("#manufactura").attr('aria-expanded', 'true');
+        $("#inicio_manufactura").addClass('active');
+        $("#hinicio_manufactura").attr('aria-expanded', 'true');
     });
 </script>
 @endsection
