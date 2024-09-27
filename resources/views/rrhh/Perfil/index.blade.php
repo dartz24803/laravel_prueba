@@ -353,7 +353,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                             <!-- Boton modal nuevo dato planilla-->
                                                             <a style="display:none" id="btn_registrar_planilla" class="btn btn-danger" title="Registrar" data-toggle="modal" data-target="#ModalRegistro"
                                                                 app_reg="{{ url('ColaboradorController/Modal_Dato_Planilla/' . $get_id[0]['id_usuario'] . '/' . count($list_datos_planilla)) }}">
-                                                            </a>                                                         
+                                                            </a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -828,7 +828,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                                         }else{
                                                                             echo asset("template/assets/img/200x200.jpg");
                                                                         }
-                                                                    }else { 
+                                                                    }else {
                                                                         echo asset("template/assets/img/200x200.jpg");
                                                                     } ?>"
                                                                 data-max-file-size="5M" onchange="return Validar_Archivo_Img_Perfil('foto')" <?php echo $disabled ?>
@@ -3380,6 +3380,7 @@ if($get_id[0]['edicion_perfil']==1){
         $("#usuario").addClass('active');
         $("#husuario").attr('aria-expanded','true');
         $("#upersonales").addClass('active');
+        $('.dropify').dropify();
     });
     let lista_banco =<?php echo count($list_banco); ?> ;
     function Numero_Cuenta(){
@@ -4273,13 +4274,13 @@ if($get_id[0]['edicion_perfil']==1){
         }
 
     }
-    
+
     function List_Datos_Laborales(id_usuario){
         Cargando();
         var url = "{{ url('ColaboradorController/List_Datos_Laborales') }}";
         var csrfToken = $('input[name="_token"]').val();
         $.ajax({
-            url: url, 
+            url: url,
             type: 'POST',
             headers: {
                 'X-CSRF-TOKEN': csrfToken
@@ -4288,11 +4289,11 @@ if($get_id[0]['edicion_perfil']==1){
             success: function(data)
             {
                 $('#datoslaborales').html(data);
-                            
+
             }
         });
     }
-    
+
     function Valida_Planilla_Activa(id){
         Cargando();
         var url = "{{ url('ColaboradorController/Valida_Planilla_Activa') }}";
@@ -4307,7 +4308,7 @@ if($get_id[0]['edicion_perfil']==1){
                 'X-CSRF-TOKEN': csrfToken
             },
             success: function(data) {
-                
+
                 if(data=="0"){
                     $('#btn_registrar_planilla').click();
                 }else{
@@ -4322,7 +4323,7 @@ if($get_id[0]['edicion_perfil']==1){
             }
         });
     }
-    
+
     function Adjuntar_DocumentacionRRHH() {
         Cargando();
         var dataString = new FormData(document.getElementById('formulario_adjuntar_documentacionrrhh'));
@@ -4348,7 +4349,7 @@ if($get_id[0]['edicion_perfil']==1){
             }
         });
     }
-    
+
     function Actualizar_DirectorioT() {
         Cargando();
         var dataString = new FormData(document.getElementById('directorio_telefonico'));
@@ -4372,6 +4373,73 @@ if($get_id[0]['edicion_perfil']==1){
                 ).then(function() {
                     $('#direct_telefonico').html(data);
                 });
+            }
+        });
+    }
+    function Valida_DirectorioT() {
+        if ($('#id_respuesta_directorio_telefonico').val() == '1') {
+
+            $("#num_cele").prop('disabled', false);
+            $("#num_fijoe").prop('disabled', false);
+            $("#emailp").prop('disabled', false);
+            $("#num_anexoe").prop('disabled', false);
+        }
+
+        if ($('#id_respuesta_directorio_telefonico').val() != '1') {
+            $("#num_cele").prop('disabled', true);
+            $("#num_fijoe").prop('disabled', true);
+            $("#emailp").prop('disabled', true);
+            $("#num_anexoe").prop('disabled', true);
+
+        }
+    }
+
+    function GDatosP() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('edatos'));
+        var url = "{{ url('ColaboradorController/Update_GDatosP') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Lista_GDatosP();
+                    });
+                }
+            });
+    }
+
+    function Lista_GDatosP(){
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('edatos'));
+        var url = "{{ url('ColaboradorController/Lista_GDatosP') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#mdatos').html(data);
             }
         });
     }

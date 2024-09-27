@@ -708,7 +708,7 @@ class ColaboradorController extends Controller
 
             return view('rrhh.Perfil.index',$dato);
     }
-    
+
     public function Modal_Update_Historico_Base_Colaborador($id_usuario){
         $dato['id_usuario']=$id_usuario;
         $dato['get_historico'] = UsersHistoricoCentroLabores::where('id_usuario', $id_usuario)
@@ -734,7 +734,7 @@ class ColaboradorController extends Controller
         ]);
 
         $id_historico_centro_labores= $request->input("id_historico_centro_labores");
-        
+
         if($id_historico_centro_labores!=""){
             UsersHistoricoCentroLabores::findOrFail($id_historico_centro_labores)->update([
                 'centro_labores' => $request->cod_base_hb,
@@ -790,7 +790,7 @@ class ColaboradorController extends Controller
             ]);
         }
     }
-    
+
     public function List_Datos_Laborales(Request $request){
         $this->Model_Perfil = new Model_Perfil();
         $id_usuario= $request->input("id_usuario");
@@ -876,7 +876,7 @@ class ColaboradorController extends Controller
             }
     }
 
-    public function Modal_Update_Historico_Horario_Colaborador($id_usuario){ 
+    public function Modal_Update_Historico_Horario_Colaborador($id_usuario){
         $this->Model_Perfil = new Model_Perfil();
         $get_id = $this->Model_Perfil->get_id_usuario($id_usuario);
         $dato['id_usuario']=$id_usuario;
@@ -960,7 +960,7 @@ class ColaboradorController extends Controller
                 'user_act' => session('usuario')->id_usuario,
             ]);
         }
-            
+
             $list_inconsistencia = DB::table('asistencia_colaborador_inconsistencia')
                                 ->where('id_usuario', $request->id_usuario_hh)
                                 ->where('fecha', '>=', $request->fec_inicio_hh)
@@ -981,7 +981,7 @@ class ColaboradorController extends Controller
                     $dato['con_descanso']= $dato['get_id'][0]['t_refrigerio'];
                     $dato['ini_refri']= $dato['get_id'][0]['ini_refri'];
                     $dato['fin_refri']= $dato['get_id'][0]['fin_refri'];
-    
+
                     $data = ToleranciaHorario::consulta_tolerancia_horario_activo();
                     $minutos=0;
                     if(count($data)>0){
@@ -1014,7 +1014,7 @@ class ColaboradorController extends Controller
                         'hora_descanso_s_desde' => DB::raw("CASE WHEN con_descanso=1 THEN DATE_FORMAT(DATE_SUB(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s') END"),
                         'hora_descanso_s_hasta' => DB::raw("CASE WHEN con_descanso=1 THEN DATE_FORMAT(DATE_ADD(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s') END"),
                         'fec_act' => now()
-                    ]);                
+                    ]);
                 }
             }
     }
@@ -1070,7 +1070,7 @@ class ColaboradorController extends Controller
             }
             return view('rrhh.Perfil.Historico_Colaborador.modal_historico_puesto',$dato);
     }
-    
+
     public function Busca_Sub_Gerencia_Hp(Request $request){
         $id_gerencia = $request->input("id_gerencia");
 
@@ -1079,7 +1079,7 @@ class ColaboradorController extends Controller
             ->get();
         return view('rrhh.Perfil.Historico_Colaborador.cmb_sub_gerencia',$dato);
     }
-    
+
     public function Busca_Area_Hp(Request $request){
         $id_sub_gerencia = $request->input("id_sub_gerencia");
         $dato['list_area'] = Area::where('id_departamento', $id_sub_gerencia)
@@ -1258,10 +1258,10 @@ class ColaboradorController extends Controller
         }/*if($tipo==5){
             $dato['list_historico_horas_semanales'] = $this->Model_Corporacion->get_list_historico_horas_semanales_colaborador($id_usuario);
         }*/
-            
+
         return view('rrhh.Perfil.Historico_Colaborador.modal_historico_detalle',$dato);
     }
-    
+
     public function Valida_Planilla_Activa(Request $request){
         $dato['id_usuario']= $request->input("id_usuario");
         $dato['cant_planilla']=HistoricoColaborador::valida_dato_planilla_activo($dato);
@@ -1286,9 +1286,9 @@ class ColaboradorController extends Controller
                                     ->orderBy('id_historico_estado_colaborador', 'DESC')
                                     ->get();
         $dato['cantidad']=$cantidad;
-        return view('rrhh.Perfil.Datos_Planilla.modal_registrar',$dato);   
+        return view('rrhh.Perfil.Datos_Planilla.modal_registrar',$dato);
     }
-    
+
     public function List_datosgenerales_planilla(Request $request){
         $this->Model_Perfil = new Model_Perfil();
         $id_usuario = $request->input("id_usuario");
@@ -1304,9 +1304,9 @@ class ColaboradorController extends Controller
                                 ->get();
         $dato['list_tipo_contrato'] = TipoContrato::where('estado',1)
                                 ->get();
-        return view('rrhh.Perfil.Datos_Planilla.index_cabecera',$dato);   
+        return view('rrhh.Perfil.Datos_Planilla.index_cabecera',$dato);
     }
-    
+
     public function List_datos_planilla(Request $request){
         $this->Model_Perfil = new Model_Perfil();
         $id_usuario = $request->input("id_usuario");
@@ -1315,17 +1315,17 @@ class ColaboradorController extends Controller
         $dato['url_cese'] = Config::where('descrip_config','Documento_Cese')
                                 ->where('estado', 1)
                                 ->get();
-        return view('rrhh.Perfil.Datos_Planilla.index',$dato);   
+        return view('rrhh.Perfil.Datos_Planilla.index',$dato);
     }
-    
+
     public function Btn_Planilla_Perfil(Request $request){
         $this->Model_Perfil = new Model_Perfil();
         $id_usuario = $request->input("id_usuario");
         $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
         $dato['list_datos_planilla'] = $this->Model_Perfil->get_list_datoplanilla($id_usuario);
-        return view('rrhh.Perfil.Datos_Planilla.btn_planilla',$dato);   
+        return view('rrhh.Perfil.Datos_Planilla.btn_planilla',$dato);
     }
-    
+
     public function Insert_Dato_Planilla(Request $request){
         $this->Model_Perfil = new Model_Perfil();
         $dato['id_usuario'] =$request->input("id_usuario");
@@ -1397,7 +1397,7 @@ class ColaboradorController extends Controller
 
             $get_id = Organigrama::where('id_usuario', $request->id_usuario)
                 ->exists();
-            
+
             if($get_id){
                 $get_id = Organigrama::where('id_usuario', $request->id_usuario)
                     ->get();
@@ -1456,7 +1456,7 @@ class ColaboradorController extends Controller
             };
             $photo = imagecreatefromstring(file_get_contents($foto_perfil));
             $foto=$foto_perfil;
-            
+
             $imageContent = file_get_contents($foto);
             // Carpeta local donde se guardará la imagen
             $carpetaLocal = public_path('ARCHIVO_TEMPORAL/');
@@ -1512,7 +1512,7 @@ class ColaboradorController extends Controller
                 $photo=imagecreatefromstring(file_get_contents(public_path("ARCHIVO_TEMPORAL/" . $nombre)));
                 //$photo=imagecreatefromstring(file_get_contents("https://grupolanumero1.com.pe/intranet/ARCHIVO_TEMPORAL/" . $nombre));
             }
-            
+
             // Obtener las dimensiones de la imagen de la plantilla
             $width = imagesx($template);
             $height = imagesy($template);
@@ -1604,7 +1604,7 @@ class ColaboradorController extends Controller
             $posicion_texto_x = 50; // posición horizontal del texto
             $posicion_texto_y = 185; // posición vertical del texto
             imagettftext($newImage, $tamano_fuente, 0, $posicion_texto_x, $posicion_texto_y, $color_texto, $fuente, $texto);
-            
+
             if($dato['get_id'][0]['id_genero'] == 1){
                 $texto = "¡BIENVENIDO!";
             }else{
@@ -1637,7 +1637,7 @@ class ColaboradorController extends Controller
             $posicion_texto_x = 64; // posición horizontal del texto
             $posicion_texto_y = 250; // posición vertical del texto
             imagettftext($newImage, $tamano_fuente, 0, $posicion_texto_x, $posicion_texto_y, $color_texto, $fuente, $texto);
-            
+
             $fecha_original = $dato['get_id'][0]['ini_funciones'];
             $fecha = new DateTime($fecha_original);
             $fecha_formateada = $fecha->format('d/m/Y');
@@ -1747,10 +1747,10 @@ class ColaboradorController extends Controller
                     $mensaje_a = "BIENVENIDA";
                 }
                 $mail->Subject =  "$mensaje_a ".$palabras[0]." ".$dato['get_id'][0]['usuario_apater']. "!";
-            
+
                 //$mailContent = $this->load->view('Admin/Colaborador/Perfil/Accesos/mail_bienvenido', $dato, TRUE);
                 $mail->Body = '<img src="cid:imagen">';
-            
+
                 $mail->CharSet = 'UTF-8';
                 $mail->send();
 
@@ -1762,9 +1762,9 @@ class ColaboradorController extends Controller
             }
             unlink( public_path("Bienvenido_Temporales/imagen".$dato['get_id'][0]['id_usuario'].".jpg"));
             unlink( public_path("ARCHIVO_TEMPORAL/foto_tmp_bienvenido.jpeg"));
-            //unlink(FCPATH."ARCHIVO_TEMPORAL/fotodesc_tmp_bienvenido.jpeg");   
+            //unlink(FCPATH."ARCHIVO_TEMPORAL/fotodesc_tmp_bienvenido.jpeg");
     }
-    
+
     public function Modal_Enviar_Correo_Colaborador($id_usuario=null){
         $this->Model_Perfil = new Model_Perfil();
             if(isset($id_usuario) && $id_usuario > 0){
@@ -1780,7 +1780,7 @@ class ColaboradorController extends Controller
                                     ->where('id_usuario', $id_usuario)
                                     ->where('estado', 1)
                                     ->get();
-            
+
             $dato['list_accesos_datacorp'] = DatacorpAccesos::where('area', $id_area)
                                     ->where('puesto', $id_puesto)
                                     ->get()
@@ -1805,7 +1805,7 @@ class ColaboradorController extends Controller
         $this->Model_Perfil = new Model_Perfil();
             $id_usuario = $request->input("id_user");
             $dato['observaciones'] = $request->input("observaciones");
-            
+
             $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
             $id_gerencia = $dato['get_id'][0]['id_gerencia'];
             $id_area = $dato['get_id'][0]['id_area'];
@@ -1817,7 +1817,7 @@ class ColaboradorController extends Controller
                                     ->where('id_usuario', $id_usuario)
                                     ->where('estado', 1)
                                     ->get();
-            
+
             $dato['list_accesos_datacorp'] = DatacorpAccesos::where('area', $id_area)
                                     ->where('puesto', $id_puesto)
                                     ->get()
@@ -1854,23 +1854,23 @@ class ColaboradorController extends Controller
 
                 // $mail->addAddress('pcardenas@lanumero1.com.pe');
                 //$mail->addAddress('practicante2.procesos@lanumero1.com.pe');
-                
+
                 if (!empty($usuario_mail_soporte[0]['emailp'])) {
                     $mail->addAddress($usuario_mail_soporte[0]['emailp']);
                 }
-                
+
                 if (!empty($usuario_mail_soporte2[0]['emailp'])) {
                     $mail->addAddress($usuario_mail_soporte2[0]['emailp']);
                 }
-                
+
                 foreach($get_jefe_area as $get_jefes){
                     $mail->addCC($get_jefes['emailp']);
                 }
-                
+
                 if (!empty($usuario_mail_2[0]['emailp'])) {
                     $mail->addCC($usuario_mail_2[0]['emailp']);
                 }
-                
+
                 $mail->addCC("acanales@lanumero1.com.pe");
                 $mail->addCC("dtrujillano@lanumero1.com.pe");
                 $mail->addCC("dvilca@lanumero1.com.pe");
@@ -1879,10 +1879,10 @@ class ColaboradorController extends Controller
                 $mail->isHTML(true);
 
                 $mail->Subject = "SOLICITUD DE ACCESOS Y PREPARACIÓN DE EQUIPOS - ".$nombre[0]." ".$dato['get_id'][0]['usuario_apater'];
-            
+
                 $mailContent = view('rrhh.Perfil.Accesos.mail_nuevo_colaborador', $dato)->render();
                 $mail->Body= $mailContent;
-            
+
                 $mail->CharSet = 'UTF-8';
                 $mail->send();
 
@@ -1893,7 +1893,7 @@ class ColaboradorController extends Controller
                 echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
             }
     }
-    
+
     public function Update_Adjuntar_DocumentacionRRHH(Request $request){
             $dato['id_usuario'] = $request->input("id_usuariodp");
 
@@ -1914,8 +1914,8 @@ class ColaboradorController extends Controller
                 $dato['eval_sicologico']=$dato['total'][0]['eval_sicologico'];
                 $dato['convenio_laboral']=$dato['total'][0]['convenio_laboral'];
             }
-            
-            if($_FILES["carta_renuncia"]["name"] != "" || $_FILES['eval_sicologico']['name']!="" || 
+
+            if($_FILES["carta_renuncia"]["name"] != "" || $_FILES['eval_sicologico']['name']!="" ||
                 $_FILES['convenio_laboral']['name']){
                 $ftp_server = "lanumerounocloud.com";
                 $ftp_usuario = "intranet@lanumerounocloud.com";
@@ -1944,11 +1944,11 @@ class ColaboradorController extends Controller
                             $nombre="cartarenunc_".$dato['id_usuario']."_".$codigoUnico."_".rand(10,199).".".$ext;
                             $nombre_archivo = "PERFIL/DOCUMENTACION/DOCUMENTACIONRRHH/".$nombre;
                             $duplicado=0;
-                            
+
                         }while ($duplicado>0);
-                        
+
                         ftp_pasv($con_id, true);
-                        
+
 
                         if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
                             $dato['carta_renuncia'] = $nombre;
@@ -1956,13 +1956,13 @@ class ColaboradorController extends Controller
                             $error = error_get_last();
                         }
                     }
-                    
+
                     //
                     $path = $_FILES['eval_sicologico']['name'];
                     if($path!=""){
                         $temp = explode(".",$_FILES['eval_sicologico']['name']);
                         $source_file = $_FILES['eval_sicologico']['tmp_name'];
-    
+
                         $fechaHoraActual = date('Y-m-dHis');
                         $caracteresPermitidos = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
                         $ext = pathinfo($path, PATHINFO_EXTENSION);
@@ -1976,19 +1976,19 @@ class ColaboradorController extends Controller
                             $nombre="eval_psicol_".$dato['id_usuario']."_".$codigoUnico."_".rand(10,199).".".$ext;
                             $nombre_archivo = "PERFIL/DOCUMENTACION/DOCUMENTACIONRRHH/".$nombre;
                             $duplicado=0;
-                            
+
                         }while ($duplicado>0);
-                        
+
                         ftp_pasv($con_id, true);
-                        
-    
+
+
                         if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
                             $dato['eval_sicologico'] = $nombre;
                         }else{
                             $error = error_get_last();
                         }
                     }
-                    
+
 
                     //
                     $path = $_FILES['convenio_laboral']['name'];
@@ -2009,11 +2009,11 @@ class ColaboradorController extends Controller
                             $nombre="eval_psicol_".$dato['id_usuario']."_".$codigoUnico."_".rand(10,199).".".$ext;
                             $nombre_archivo = "PERFIL/DOCUMENTACION/DOCUMENTACIONRRHH/".$nombre;
                             $duplicado=0;
-                            
+
                         }while ($duplicado>0);
-                        
+
                         ftp_pasv($con_id, true);
-                        
+
 
                         if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
                             $dato['convenio_laboral'] = $nombre;
@@ -2021,9 +2021,9 @@ class ColaboradorController extends Controller
                             $error = error_get_last();
                         }
                     }
-                    
+
                     ftp_close($con_id);
-                }   
+                }
             }
 
             if(count($dato['total'])>0){
@@ -2056,5 +2056,209 @@ class ColaboradorController extends Controller
                                 ->get();
 
             return view('rrhh.Perfil.DocumentacionRRHH', $dato);
+    }
+
+    public function Insert_Directorio_Telefonico(Request $request){
+            $dato['id_usuario'] = $request->input("id_usuariodp");
+
+            $dato['directorio'] = $request->input("id_respuesta_directorio_telefonico");
+            $dato['num_cele'] = strtoupper($request->input("num_cele"));
+            $dato['num_fijoe'] = strtoupper($request->input("num_fijoe"));
+            $dato['emailp'] = strtoupper($request->input("emailp"));
+            $dato['num_anexoe'] = strtoupper($request->input("num_anexoe"));
+
+            // Limpiar los números de teléfono de caracteres no deseados
+            $num_cele = str_replace("_", "", $dato['num_cele']);
+            $num_fijoe = str_replace("_", "", $dato['num_fijoe']);
+            $num_anexoe = str_replace("_", "", $dato['num_anexoe']);
+
+            // Usar Eloquent para actualizar los datos del usuario
+            Usuario::where('id_usuario', $dato['id_usuario'])
+                ->update([
+                    'directorio' => $dato['directorio'],
+                    'num_cele' => $num_cele,
+                    'num_fijoe' => $num_fijoe,
+                    'emailp' => $dato['emailp'],
+                    'num_anexoe' => $num_anexoe,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario,
+                ]);
+
+            $id_usuario = $request->input("id_usuariodp");
+            $this->Model_Perfil = new Model_Perfil();
+            $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+            $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario($id_usuario);
+
+            return view('rrhh.Perfil.directorio_telefonico', $dato);
+    }
+
+    public function Lista_GDatosP(Request $request){
+        $this->Model_Perfil = new Model_Perfil();
+        $dato['postulante'] = $request->input("postulante");
+
+            if($dato['postulante']==1){
+                $id_usuario= $request->input("id_usuariodp");
+
+                $dato['list_tipo_documento'] = TipoDocumento::get();
+                $dato['list_nacionalidad_perfil'] = $this->Model_Perfil->get_list_nacionalidad_perfil();
+                $dato['list_genero'] = $this->Model_Perfil->get_list_genero();
+                $dato['list_dia'] = $this->Model_Perfil->get_list_dia();
+                $dato['list_mes'] = $this->Model_Perfil->get_list_mes();
+                $dato['list_anio'] = $this->Model_Perfil->get_list_anio();
+                $dato['list_estado_civil'] = EstadoCivil::where('estado', 1)
+                                        ->get();
+                //$dato['get_id'] = $this->Model_Postulante->get_id_postulante($id_usuario);
+                session('usuario')->foto = $dato['get_id'][0]['foto'];
+
+                $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario(session('usuario')->id_usuario);
+
+                return view('Admin/Colaborador/Perfil/datospersonales_postulante', $dato);
+            }else{
+                $id_usuario= $request->input("id_usuariodp");
+
+                $dato['list_tipo_documento'] = TipoDocumento::get();
+                $dato['list_nacionalidad_perfil'] = $this->Model_Perfil->get_list_nacionalidad_perfil();
+                $dato['list_genero'] = $this->Model_Perfil->get_list_genero();
+                $dato['list_dia'] = $this->Model_Perfil->get_list_dia();
+                $dato['list_mes'] = $this->Model_Perfil->get_list_mes();
+                $dato['list_anio'] = $this->Model_Perfil->get_list_anio();
+                $dato['list_estado_civil'] = EstadoCivil::where('estado', 1)
+                                        ->get();
+                $dato['get_id'] = $this->Model_Perfil->get_id_postulante($id_usuario);
+                //session('usuario')->foto = $dato['get_id'][0]['foto'];
+
+                $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario(session('usuario')->id_usuario);
+
+                return view('rrhh.Perfil.datospersonales', $dato);
+            }
+    }
+    public function Update_GDatosP(){
+        if ($this->session->userdata('usuario')) {
+            $dato['postulante'] = $this->input->post("postulante");
+            $dato['id_usuario'] = $this->input->post("id_usuariodp");
+            $dato['foto']= $this->input->post("foto");
+
+            $dato['usuario_apater']= strtoupper($this->input->post("usuario_apater"));
+            $dato['usuario_amater']= strtoupper($this->input->post("usuario_amater"));
+            $dato['usuario_nombres']= strtoupper($this->input->post("usuario_nombres"));
+            $dato['id_nacionalidad']= $this->input->post("id_nacionalidad");
+            $dato['id_tipo_documento']= $this->input->post("id_tipo_documento");
+            $dato['num_doc']= $this->input->post("num_doc");
+            $dato['id_genero']= $this->input->post("id_genero");
+            $dato['dia_nac']= $this->input->post("dia_nac");
+            $dato['mes_nac']= $this->input->post("mes_nac");
+            $dato['anio_nac']= $this->input->post("anio_nac");
+            $dato['id_estado_civil']= $this->input->post("id_estado_civil");
+            $dato['usuario_email']= $this->input->post("usuario_email");
+            $dato['num_celp']= $this->input->post("num_celp");
+            $dato['num_fijop']= $this->input->post("num_fijop");
+            $dato['fec_nac']=$this->input->post("anio_nac")."-".$this->input->post("mes_nac")."-".$this->input->post("dia_nac");
+            $dato['fec_emision_doc']= $this->input->post("fec_emision");
+            $dato['fec_vencimiento_doc']= $this->input->post("fec_venci");
+            $dato['gusto_personales']= $this->input->post("gusto_personales");
+
+            $dato['foto_nombre']= $this->input->post("foto_nombre");
+
+            $url = $this->Model_Corporacion->ruta_archivos();
+            $dato['url_archivo'] = $url[0]['url_config'];
+
+            if($dato['postulante']==1){
+                $dato['total'] = $this->Model_Postulante->get_id_postulante($dato['id_usuario']);
+
+                $dato['foto']=$dato['total'][0]['foto'];
+                if($_FILES['foto']['name']!=""){
+                    $ftp_server = "lanumerounocloud.com";
+                    $ftp_usuario = "intranet@lanumerounocloud.com";
+                    $ftp_pass = "Intranet2022@";
+                    $con_id = ftp_connect($ftp_server);
+                    $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                    if((!$con_id) || (!$lr)){
+                        echo "No se conecto";
+                    }else{
+                        echo "Se conecto";
+                        if($_FILES['foto']['name']!=""){
+                            $path = $_FILES['foto']['name'];
+                            $temp = explode(".",$_FILES['foto']['name']);
+                            $source_file = $_FILES['foto']['tmp_name'];
+
+                            $fecha=date('Y-m-dHis');
+                            $ext = pathinfo($path, PATHINFO_EXTENSION);
+                            $nombre_soli="postulante_".$dato['id_usuario']."_".$fecha."_".rand(10,199);
+                            $nombre = $nombre_soli.".".$ext;
+
+
+
+                            ftp_pasv($con_id,true);
+                            $subio = ftp_put($con_id,"PERFIL/DOCUMENTACION/FOTO_PERFIL/".$nombre,$source_file,FTP_BINARY);
+                            if($subio){
+                                $dato['ruta'] = "https://lanumerounocloud.com/intranet/POSTULANTE/".$nombre;
+                                $dato['foto'] = $nombre;
+                                echo "Archivo subido correctamente";
+                            }else{
+                                echo "Archivo no subido correctamente";
+                            }
+                        }
+                    }
+                }
+
+                $this->Model_Postulante->update_gdatosp($dato);
+
+
+            }else{
+                $dato['total'] = $this->Model_Corporacion->get_id_usuario($dato['id_usuario']);
+
+                $dato['foto']=$dato['total'][0]['foto'];
+                $dato['foto_nombre']=$dato['total'][0]['foto_nombre'];
+                if($_FILES['foto']['name']!=""){
+                    $ftp_server = "lanumerounocloud.com";
+                    $ftp_usuario = "intranet@lanumerounocloud.com";
+                    $ftp_pass = "Intranet2022@";
+                    $con_id = ftp_connect($ftp_server);
+                    $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                    if((!$con_id) || (!$lr)){
+                        echo "No se conecto";
+                    }else{
+                        echo "Se conecto";
+                        if($_FILES['foto']['name']!=""){
+                            $path = $_FILES['foto']['name'];
+                            $temp = explode(".",$_FILES['foto']['name']);
+                            $source_file = $_FILES['foto']['tmp_name'];
+
+                            $fecha=date('Y-m-dHis');
+                            $ext = pathinfo($path, PATHINFO_EXTENSION);
+                            $nombre_soli="usuario_".$dato['id_usuario']."_".$fecha."_".rand(10,199);
+                            $nombre = $nombre_soli.".".$ext;
+
+                            ftp_pasv($con_id,true);
+                            $subio = ftp_put($con_id,"PERFIL/DOCUMENTACION/FOTO_PERFIL/".$nombre,$source_file,FTP_BINARY);
+                            if($subio){
+                                echo "Archivo subido correctamente";
+                                $dato['ruta'] = "https://lanumerounocloud.com/intranet/PERFIL/DOCUMENTACION/FOTO_PERFIL/".$nombre;
+                                $dato['foto_nombre'] = $nombre;
+                                $dato['foto']=$dato['ruta'];
+                            }else{
+                                echo "Archivo no subido correctamente";
+                            }
+                        }
+                    }
+                }
+
+                $this->Model_Corporacion->update_gdatosp($dato);
+
+                $id_usuario= $this->input->post("id_usuariodp");
+
+                $dato['list_tipo_documento'] = $this->Model_Corporacion->get_list_tipo_documento();
+                $dato['list_nacionalidad_perfil'] = $this->Model_Corporacion->get_list_nacionalidad_perfil();
+                $dato['list_genero'] = $this->Model_Corporacion->get_list_genero();
+                $dato['list_dia'] = $this->Model_Corporacion->get_list_dia();
+                $dato['list_mes'] = $this->Model_Corporacion->get_list_mes();
+                $dato['list_anio'] = $this->Model_Corporacion->get_list_anio();
+                $dato['list_estado_civil'] = $this->Model_Corporacion->get_list_estado_civil();
+                $dato['get_id'] = $this->Model_Corporacion->get_id_usuario($id_usuario);
+                $_SESSION['foto']=$dato['get_id'][0]['foto'];
+                $dato['list_usuario'] = $this->Model_Corporacion->get_list_usuario($id_usuario);
+
+                $this->load->view('Admin/Colaborador/Perfil/datospersonales', $dato);
+            }
     }
 }
