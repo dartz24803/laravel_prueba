@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('navbar')
-@include('tienda.navbar')
+@include($nominicio . '.navbar')
 @endsection
 
 @section('content')

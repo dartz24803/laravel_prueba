@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('navbar')
-    @include('comercial.navbar')
+@include('comercial.navbar')
 @endsection
 
 @section('content')
@@ -16,8 +16,8 @@
 </div>
 <script>
     $(document).ready(function() {
-        $("#marketing").addClass('active');
-        $("#hmarketing").attr('aria-expanded','true');
+        $("#inicio_comercial").addClass('active');
+        $("#hinicio_comercial").attr('aria-expanded', 'true');
     });
 </script>
 @endsection
