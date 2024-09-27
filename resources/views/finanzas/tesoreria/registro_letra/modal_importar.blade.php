@@ -12,7 +12,7 @@
                 <label>Formato:</label>
                 <div>
                     <a class="btn" style="background-color: #28a745 !important;" 
-                    onclick="Formato_Adjunto_Cheque_Letra();">
+                    onclick="Excel_Plantilla();"> 
                         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="64" height="64" viewBox="0 0 172 172" style=" fill:#000000;"><g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
                             <path d="M0,172v-172h172v172z" fill="none"></path>
                             <g fill="#ffffff">
@@ -52,10 +52,10 @@
             processData: false,
             contentType: false,
             success: function(data) {
-                if(data=="error"){
+                if (data!="") {
                     Swal({
                         title: '¡Registro Denegado!',
-                        text: "¡Existe un registro con los mismos datos (Empresa, F. vencimiento y N° documento)!",
+                        html: data,
                         type: 'error',
                         showCancelButton: false,
                         confirmButtonColor: '#3085d6',
@@ -63,13 +63,13 @@
                     });
                 }else{
                     swal.fire(
-                        '¡Registro Exitoso!',
+                        '¡Importación Exitosa!',
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Lista_Registro_Letra();
                         $("#ModalRegistro .close").click();
-                    })
+                        Lista_Registro_Letra();
+                    });
                 }
             },
             error:function(xhr) {

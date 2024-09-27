@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('requisicion_tda', function (Blueprint $table) {
             $table->id('id_requisicion');
-            $table->string('cod_requisicion',30)->nullable();
+            $table->string('cod_requisicion',30)->nullable(); //NO sirve
             $table->date('fecha')->nullable();
             $table->string('base',10)->nullable();
             $table->unsignedBigInteger('id_usuario');
