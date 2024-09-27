@@ -81,7 +81,7 @@ class RegistroLetraController extends Controller
                         ->select(DB::raw("CONCAT(tdo_codigo,'_',clp_numdoc) AS id_aceptante"),
                         DB::raw("CONCAT(clp_razsoc,' - ',clp_numdoc) AS nom_aceptante"))
                         ->where('clp_estado','!=','*')->get();
-        $list_tipo_comprobante = TipoComprobante::whereIn('id',[1,2,5])->get();
+        $list_tipo_comprobante = TipoComprobante::whereIn('id',[1,2,4])->get();
         $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
         return view('finanzas.tesoreria.registro_letra.modal_registrar',compact(
             'list_empresa',
@@ -507,7 +507,7 @@ class RegistroLetraController extends Controller
                         ->select(DB::raw("CONCAT(tdo_codigo,'_',clp_numdoc) AS id_aceptante"),
                         DB::raw("CONCAT(clp_razsoc,' - ',clp_numdoc) AS nom_aceptante"))
                         ->where('clp_estado','!=','*')->get();
-        $list_tipo_comprobante = TipoComprobante::whereIn('id',[1,2,5])->get();
+        $list_tipo_comprobante = TipoComprobante::whereIn('id',[1,2,4])->get();
         $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
         return view('finanzas.tesoreria.registro_letra.modal_editar',compact(
             'get_id',
