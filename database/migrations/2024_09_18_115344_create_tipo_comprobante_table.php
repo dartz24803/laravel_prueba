@@ -19,7 +19,7 @@ return new class extends Migration
                 descripcion AS nom_tipo_comprobante
             FROM
                 conf_general
-            WHERE codigo_primario='TIPO_COMPROBANTE'
+            WHERE codigo_primario='TIPO_COMPROBANTE_TESORERIA'
             ORDER BY descripcion ASC
         ");
     }

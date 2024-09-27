@@ -30,6 +30,8 @@ class Usuario extends Model
         'verif_email',
         'documento',
         'id_horario',
+        'accesos_email',
+        'correo_bienvenida',
         'estado',
         'fec_reg',
         'user_reg',
@@ -448,5 +450,165 @@ class Usuario extends Model
 
             $result = DB::select($sql);
             return json_decode(json_encode($result), true);
+    }
+    
+    static function get_jefe_area($id_area){
+        $jefes = [];
+        switch ($id_area) {
+            case 2:
+                $jefes = ['JEFE DE DPTO. PLANEAMIENTO Y PRODUCCIÓN'];
+                break;
+            case 5:
+                $jefes = ['GERENTE DE GESTIÓN COMERCIAL'];
+                break;
+            case 6:
+                $jefes = ['SUPERVISOR DE COMPRAS E INGRESOS','JEFE DE DTO. GESTIÓN LOGÍSTICA'];
+                break;
+            case 7:
+                $jefes = ['COORDINADOR DE MARKETING'];
+                break;
+            case 9:
+                $jefes = ['JEFE DE CONTABILIDAD Y LEGAL','ASISTENTE CONTABLE'];
+                break;
+            case 10:
+                $jefes = ['JEFE DE DTO. GESTIÓN DE INFRAESTRUCTURA'];
+                break;
+            case 11:
+                $jefes = ['JEFE DE DTO. GESTIÓN DEL TALENTO HUMANO'];
+                break;
+            case 12:
+                $jefes = ['JEFE DE DTO. GESTIÓN DE SEGURIDAD Y SALUD'];
+                break;
+            /*case 13:
+                $jefes = ['ANALISTA PROGRAMADOR SR.'];
+                break;*/
+            case 13:
+                $jefes = [815,2655];
+                break;
+            case 14:
+                $jefes = ['ADMINISTRADOR DE TIENDA','COORDINADOR JR. DE TIENDA','COORDINADOR SR. DE TIENDA','JEFE DE DTO. GESTIÓN DE VENTAS'];
+                break;
+            case 15:
+                $jefes = ['COORDINADOR SR. DE CAJA'];
+                break;
+            case 17:
+                $jefes = ['ASISTENTE DE TESORERÍA'];
+                break;
+            case 18:
+                $jefes = ['ANALISTA DE PROCESOS Y PROYECTOS'];
+                break;
+            case 19:
+                $jefes = ['COORDINADOR DE CONTROL INTERNO'];
+                break;
+            case 21:
+                $jefes = ['JEFE DE BUSINESS INTELLIGENCE'];
+                break;
+            case 25:
+                $jefes = ['COORDINADOR SR. DE SOPORTE TÉCNICO'];
+                break;
+            case 26:
+                $jefes = ['JEFE DE DTO. GESTIÓN DEL TALENTO HUMANO'];
+                break;
+            case 27:
+                $jefes = ['JEFE DE DPTO. PLANEAMIENTO Y PRODUCCIÓN'];
+                break;
+            case 28:
+                $jefes = ['JEFE DE DPTO. PLANEAMIENTO Y PRODUCCIÓN'];
+                break;
+            case 29:
+                $jefes = ['JEFE DE DTO. GESTIÓN DEL TALENTO HUMANO'];
+                break;
+            case 30:
+                $jefes = ['SUPERVISOR DE DISTRIBUCIÓN',''];
+                break;
+            case 31:
+                $jefes = ['JEFE DE DTO. GESTIÓN DE INFRAESTRUCTURA'];
+                break;
+            case 32:
+                $jefes = ['JEFE DE DTO. GESTIÓN DE SEGURIDAD Y SALUD'];
+                break;
+            case 33:
+                $jefes = ['JEFE DE DTO. GESTIÓN DE VENTAS'];
+                break;
+            case 34:
+                $jefes = ['JEFE DE DTO. GESTIÓN DEL TALENTO HUMANO'];
+                break;
+            case 35:
+                $jefes = ['JEFE DE DTO. GESTIÓN LOGÍSTICA'];
+                break;
+            case 36:
+                $jefes = ['GERENTE DE ADMINISTRACIÓN Y FINANZAS'];
+                break;
+            case 37:
+                $jefes = ['GERENTE DE OPERACIONES Y PLANEAMIENTO'];
+                break;
+            case 38:
+                $jefes = ['DIRECTOR GENERAL'];
+                break;
+            case 40:
+                $jefes = ['SUPERVISOR NACIONAL DE ABASTECIMIENTO E INVENTARIOS','JEFE DE DTO. GESTIÓN LOGÍSTICA'];
+                break;
+            case 41:
+                $jefes = ['JEFE DE DTO. GESTIÓN DE INFRAESTRUCTURA','SUPERVISOR DE MANTENIMIENTO'];
+                break;
+            case 42:
+                $jefes = ['SUPERVISOR DE PICKING E INVENTARIO','JEFE DE DTO. GESTIÓN LOGÍSTICA'];
+                break;
+            case 43:
+                $jefes = ['JEFE DE DTO. GESTIÓN DEL TALENTO HUMANO'];
+                break;
+            case 44:
+                $jefes = ['JEFE DE DTO. GESTIÓN DE SEGURIDAD Y SALUD'];
+                break;
+            case 45:
+                $jefes = ['JEFE DE DPTO. PLANEAMIENTO Y PRODUCCIÓN'];
+                break;
+            case 46:
+                $jefes = ['GERENTE DE ADQUISICIÓN DE MATERIALES'];
+                break;
+            case 47:
+                $jefes = ['JEFE DE DPTO. PLANEAMIENTO Y PRODUCCIÓN'];
+                break;
+        }
+    
+        $resultados = [];
+        if($id_area != 13){
+            foreach ($jefes as $jefe) {
+                $sql = "SELECT u.emailp
+                        FROM users u 
+                        JOIN puesto p ON u.id_puesto = p.id_puesto 
+                        WHERE p.nom_puesto = '$jefe'
+                        AND u.emailp IS NOT NULL
+                        AND u.emailp != ''; ";
+                
+            $result = DB::select($sql);
+            $query = json_decode(json_encode($result), true);
+                // Agrega los resultados al conjunto $resultados
+                foreach ($query as $row) {
+                    $resultados[] = $row;
+                }
+            }
+        }else{
+            //cuando es sistemas manda a Odile y Daniel
+            foreach ($jefes as $jefe) {
+                $sql = "SELECT u.emailp
+                        FROM users u 
+                        JOIN puesto p ON u.id_puesto = p.id_puesto 
+                        WHERE id_usuario='$jefe'
+                        AND u.emailp IS NOT NULL
+                        AND u.emailp != ''; ";
+
+                $result = DB::select($sql);
+                $query = json_decode(json_encode($result), true);
+                // Agrega los resultados al conjunto $resultados
+                foreach ($query as $row) {
+                    $resultados[] = $row;
+                }
+            }
+        }
+        // Convertir $resultados a un conjunto para eliminar duplicados
+        $resultados = array_unique($resultados, SORT_REGULAR);
+
+        return $resultados;
     }
 }

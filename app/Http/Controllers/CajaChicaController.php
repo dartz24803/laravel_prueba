@@ -180,7 +180,7 @@ class CajaChicaController extends Controller
         $list_empresa = Empresas::select('id_empresa','nom_empresa')->where('activo',1)
                         ->where('estado',1)->orderBy('nom_empresa','ASC')->get();
         $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
-        $list_tipo_comprobante = TipoComprobante::all();
+        $list_tipo_comprobante = TipoComprobante::whereIn('id',[1,2,3,6])->get();
         return view('finanzas.tesoreria.caja_chica.modal_registrar_pv', compact(
             'list_ubicacion',
             'list_empresa',
@@ -307,7 +307,7 @@ class CajaChicaController extends Controller
             $list_categoria = Categoria::select('id_categoria','nom_categoria')->where('id_categoria_mae',3)
                             ->where('id_ubicacion',$get_id->id_ubicacion)->where('nom_categoria','!=','MOVILIDAD')
                             ->where('estado',1)->get();
-            $list_tipo_comprobante = TipoComprobante::all();                            
+            $list_tipo_comprobante = TipoComprobante::whereIn('id',[1,2,3,6])->get();
             return view('finanzas.tesoreria.caja_chica.modal_editar_pv', compact(
                 'get_id',
                 'list_ubicacion',

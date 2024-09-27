@@ -923,6 +923,16 @@ Route::controller(ColaboradorController::class)->group(function () {
     Route::get('ColaboradorController/Modal_Detalle_Historico_Colaborador/{id}/{tipo}', 'Modal_Detalle_Historico_Colaborador');
     Route::post('ColaboradorController/Valida_Planilla_Activa', 'Valida_Planilla_Activa');
     Route::get('ColaboradorController/Modal_Dato_Planilla/{id}/{count}', 'Modal_Dato_Planilla');
+    Route::post('ColaboradorController/List_datosgenerales_planilla', 'List_datosgenerales_planilla');
+    Route::post('ColaboradorController/List_datos_planilla', 'List_datos_planilla');
+    Route::post('ColaboradorController/Btn_Planilla_Perfil', 'Btn_Planilla_Perfil');
+    Route::post('ColaboradorController/Enviar_Correo_Bienvenida/{id}', 'Enviar_Correo_Bienvenida');
+    Route::get('ColaboradorController/Modal_Enviar_Correo_Bienvenida/{id_user}', 'Modal_Enviar_Correo_Bienvenida');
+    Route::post('ColaboradorController/Enviar_Correo_Colaborador', 'Enviar_Correo_Colaborador');
+    Route::get('ColaboradorController/Modal_Enviar_Correo_Colaborador/{id_user}', 'Modal_Enviar_Correo_Colaborador');
+    // Route::get('ColaboradorController/Modal_Dato_Planilla/{id}/{count}', 'Modal_Dato_Planilla');
+    Route::post('ColaboradorController/Update_Adjuntar_DocumentacionRRHH', 'Update_Adjuntar_DocumentacionRRHH');/*
+    Route::get('ColaboradorController/List_datos_planilla', 'List_datos_planilla');*/
 });
 //ÁREA INTERNA
 Route::controller(InternaInicioController::class)->group(function () {
@@ -1263,11 +1273,17 @@ Route::controller(RegistroLetraController::class)->group(function () {
     Route::post('registro_letra/list', 'list')->name('registro_letra.list');
     Route::get('registro_letra/create', 'create')->name('registro_letra.create');
     Route::post('registro_letra', 'store')->name('registro_letra.store');
+    Route::get('registro_letra/import', 'import')->name('registro_letra.import');
+    Route::post('registro_letra/store_imp', 'store_imp')->name('registro_letra.store_imp');
+    Route::get('registro_letra/excel_error', 'excel_error')->name('registro_letra.excel_error');
+    Route::get('registro_letra/{id}/edit', 'edit')->name('registro_letra.edit');
+    Route::put('registro_letra/{id}', 'update')->name('registro_letra.update');
     Route::get('registro_letra/{id}/{tipo}/unico', 'unico')->name('registro_letra.unico');
     Route::put('registro_letra/{id}/update_unico', 'update_unico')->name('registro_letra.update_unico');
     Route::get('registro_letra/{id}/{tipo}/estado', 'estado')->name('registro_letra.estado');
     Route::put('registro_letra/{id}/update_estado', 'update_estado')->name('registro_letra.update_estado');
     Route::delete('registro_letra/{id}', 'destroy')->name('registro_letra.destroy');
+    Route::get('registro_letra/{estado}/{id_empresa}/{id_aceptante}/{tipo_fecha}/{mes}/{anio}/excel', 'excel')->name('registro_letra.excel');
 });
 
 
