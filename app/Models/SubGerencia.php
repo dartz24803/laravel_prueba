@@ -74,7 +74,7 @@ class SubGerencia extends Model
                     ->orWhere('sub_gerencia.id_sub_gerencia', 3);
             })
             // Omitir áreas 
-            ->whereNotIn('area.id_area', [6, 33, 35, 42, 7])
+            ->whereNotIn('area.id_area', [6, 33, 35, 42, 7, 39])
             // Omitir áreas 
             ->select('sub_gerencia.nom_sub_gerencia', 'area.id_area', 'area.nom_area', 'area.cod_area') // Seleccionar también nom_area y cod_area
             ->get();
