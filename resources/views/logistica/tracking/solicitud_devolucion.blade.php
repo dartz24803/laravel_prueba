@@ -17,6 +17,7 @@
                 <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
                     <div class="widget-content widget-content-area br-6 p-3">
                         <form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
+                            <input type="hidden" name="devoluciones" id="devoluciones">
                             <div class="row">
                                 <div class="form-group col-lg-12">
                                     <label class="control-label text-bold">Nro. Req.: {{ $get_id->n_requerimiento }}</label>
@@ -89,7 +90,7 @@
             $("#hlogisticas").attr('aria-expanded', 'true');
             $("#trackings").addClass('active');
 
-            $('#tabla_js').DataTable({
+            var tabla = $('#tabla_js').DataTable({
                 "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
                 "<'table-responsive'tr>" +
                 "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
@@ -105,6 +106,26 @@
                 "stripeClasses": [],
                 "lengthMenu": [10, 20, 50],
                 "pageLength": 10
+            });
+
+            $('#tabla_js').on('change', 'input[type="checkbox"]', function() {
+                var devoluciones = $('#devoluciones').val().split(',');
+                var checkboxValue = $(this).val();
+
+                if($(this).is(':checked')){
+                    // Si se marca, agregar el valor si no existe
+                    if (!devoluciones.includes(checkboxValue)) {
+                        devoluciones.push(checkboxValue);
+                    }
+                }else{
+                    // Si se desmarca, quitar el valor
+                    devoluciones = devoluciones.filter(function(item) {
+                        return item !== checkboxValue;
+                    });
+                }
+
+                // Actualizar el input hidden con los valores seleccionados
+                $('#devoluciones').val(devoluciones.join(','));
             });
         });
 
