@@ -16,11 +16,11 @@
                                 <a id="a_tipind" class="nav-link" onclick="TipoIndicador();" style="cursor: pointer;">Tipo Concepto</a>
                             </li>
                             <li class="nav-item">
-                                <a id="a_sis" class="nav-link" onclick="SistemaDb();" style="cursor: pointer;">Sistema - Base de Datos</a>
+                                <a id="a_sis" class="nav-link" onclick="SistemaDb();" style="cursor: pointer;">Bases de Datos</a>
                             </li>
-                            <!-- <li class="nav-item">
-                                <a id="a_dbsis" class="nav-link" onclick="DbSis();" style="cursor: pointer;">Bases de Datos</a>
-                            </li> -->
+                            <li class="nav-item">
+                                <a id="a_dbtb" class="nav-link" onclick="SistemaTablas();" style="cursor: pointer;">Tablas</a>
+                            </li>
                         </ul>
 
                         <div class="row" id="cancel-row">
@@ -57,7 +57,7 @@
                 $('#div_reporte_tipoind_conf').html(resp);
                 $("#a_tipind").addClass('active');
                 $("#a_sis").removeClass('active');
-                $("#a_dbsis").removeClass('active');
+                $("#a_dbtb").removeClass('active');
 
             }
         });
@@ -75,7 +75,25 @@
                 $('#div_reporte_tipoind_conf').html(resp);
                 $("#a_tipind").removeClass('active');
                 $("#a_sis").addClass('active');
-                $("#a_dbsis").removeClass('active');
+                $("#a_dbtb").removeClass('active');
+
+            }
+        });
+    }
+
+    function SistemaTablas() {
+        Cargando();
+
+        var url = "{{ route('bireporte_tbbd_conf') }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(resp) {
+                $('#div_reporte_tipoind_conf').html(resp);
+                $("#a_tipind").removeClass('active');
+                $("#a_sis").removeClass('active');
+                $("#a_dbtb").addClass('active');
 
             }
         });
