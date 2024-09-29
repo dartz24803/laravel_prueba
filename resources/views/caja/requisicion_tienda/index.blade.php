@@ -17,15 +17,19 @@
                 <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                     <div class="widget-content widget-content-area br-6">
                         <div class="toolbar d-md-flex align-items-md-center mt-3">
-                            <div class="form-group col-lg-2">
-                                <label>Base:</label>
-                                <select class="form-control" name="cod_baseb" id="cod_baseb" onchange="Lista_Requisicion_Tienda();">
-                                    <option value="0">Todos</option>
-                                    @foreach ($list_base as $list)
-                                        <option value="{{ $list->cod_base }}">{{ $list->cod_base }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            @if (session('usuario')->id_nivel == "1" ||
+                            session('usuario')->id_puesto == "9" ||
+                            session('usuario')->id_puesto == "128")
+                                <div class="form-group col-lg-2">
+                                    <label>Base:</label>
+                                    <select class="form-control" name="cod_baseb" id="cod_baseb" onchange="Lista_Requisicion_Tienda();">
+                                        <option value="0">Todos</option>
+                                        @foreach ($list_base as $list)
+                                            <option value="{{ $list->cod_base }}">{{ $list->cod_base }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
 
                             <div class="col-lg-10">
                                 <button type="button" class="btn btn-primary mb-2 mb-sm-0 mb-md-2 mb-lg-0" title="Registrar" data-toggle="modal" data-target="#ModalRegistroGrande" app_reg_grande="{{ route('requisicion_tienda.create') }}">

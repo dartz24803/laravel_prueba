@@ -8,30 +8,39 @@
                 
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Coordinador:</label>
-            </div>
-            <div class="form-group col-lg-10">
-                <select class="form-control basic" name="id_usuarioe" id="id_usuarioe">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_usuario as $list)
-                        <option value="{{ $list->id_usuario }}"
-                        @if ($list->id_usuario==$get_id->id_usuario) selected @endif>
-                            {{ $list->nom_usuario }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+            @if (session('usuario')->id_nivel == "1" ||
+            session('usuario')->id_puesto == "128")
+                <div class="form-group col-lg-2">
+                    <label>Coordinador:</label>
+                </div>
+                <div class="form-group col-lg-10">
+                    <select class="form-control basic" name="id_usuarioe" id="id_usuarioe">
+                        <option value="0">Seleccione</option>
+                        @foreach ($list_usuario as $list)
+                            <option value="{{ $list->id_usuario }}"
+                            @if ($list->id_usuario==$get_id->id_usuario) selected @endif>
+                                {{ $list->nom_usuario }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            @else
+                <input type="hidden" name="id_usuarioe" value="{{ $get_id->id_usuario }}">
+            @endif                
         </div>
 
         <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Fecha:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="date" class="form-control" name="fechae" id="fechae" 
-                value="{{ $get_id->fecha }}">
-            </div>
+            @if (session('usuario')->id_nivel == "1")
+                <div class="form-group col-lg-2">
+                    <label>Fecha:</label>
+                </div>
+                <div class="form-group col-lg-4">
+                    <input type="date" class="form-control" name="fechae" id="fechae" 
+                    value="{{ $get_id->fecha }}">
+                </div>
+            @else
+                <input type="hidden" name="fechae" value="{{ $get_id->fecha }}">
+            @endif
         </div>
     </div>
 

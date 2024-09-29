@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('cheques_letras', function (Blueprint $table) {
             $table->id('id_cheque_letra');
-            $table->string('cod_registro',30)->nullable();
+            $table->string('cod_registro',30)->nullable(); //NO sirve
             $table->date('fec_emision')->nullable();
             $table->date('fec_vencimiento')->nullable();
             $table->integer('id_tipo_documento')->nullable();
@@ -46,6 +46,11 @@ return new class extends Migration
             $table->integer('user_eli')->nullable();
             $table->foreign('id_empresa', 'clet_fk_id_emp')->references('id_empresa')->on('empresas');
             $table->index(['id_empresa'], 'clet_idx_id_emp');
+            $table->index(['fec_emision'], 'clet_idx_femi');
+            $table->index(['fec_vencimiento'], 'clet_idx_fven');
+            $table->index(['tipo_doc_aceptante','num_doc_aceptante'], 'clet_idx_id_ace');
+            $table->index(['estado_registro'], 'clet_idx_ereg');
+            $table->index(['estado'], 'clet_idx_est');
         });
     }
 

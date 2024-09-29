@@ -940,9 +940,16 @@ Route::controller(ColaboradorController::class)->group(function () {
     Route::get('ColaboradorController/Modal_Enviar_Correo_Bienvenida/{id_user}', 'Modal_Enviar_Correo_Bienvenida');
     Route::post('ColaboradorController/Enviar_Correo_Colaborador', 'Enviar_Correo_Colaborador');
     Route::get('ColaboradorController/Modal_Enviar_Correo_Colaborador/{id_user}', 'Modal_Enviar_Correo_Colaborador');
+    Route::post('ColaboradorController/Update_Adjuntar_DocumentacionRRHH', 'Update_Adjuntar_DocumentacionRRHH');
+    Route::post('ColaboradorController/Insert_Directorio_Telefonico', 'Insert_Directorio_Telefonico');
+    Route::post('ColaboradorController/Insert_Directorio_Telefonico', 'Insert_Directorio_Telefonico');/*
+    Route::post('ColaboradorController/Insert_Directorio_Telefonico', 'Insert_Directorio_Telefonico');
+    Route::post('ColaboradorController/Insert_Directorio_Telefonico', 'Insert_Directorio_Telefonico');
+    Route::post('ColaboradorController/Insert_Directorio_Telefonico', 'Insert_Directorio_Telefonico');
+    Route::post('ColaboradorController/Insert_Directorio_Telefonico', 'Insert_Directorio_Telefonico');
+    Route::post('ColaboradorController/Insert_Directorio_Telefonico', 'Insert_Directorio_Telefonico');
+    Route::post('ColaboradorController/Insert_Directorio_Telefonico', 'Insert_Directorio_Telefonico');*/
     // Route::get('ColaboradorController/Modal_Dato_Planilla/{id}/{count}', 'Modal_Dato_Planilla');
-    Route::post('ColaboradorController/Update_Adjuntar_DocumentacionRRHH', 'Update_Adjuntar_DocumentacionRRHH');/*
-    Route::get('ColaboradorController/List_datos_planilla', 'List_datos_planilla');*/
 });
 //ÁREA INTERNA
 Route::controller(InternaInicioController::class)->group(function () {
@@ -1284,6 +1291,7 @@ Route::controller(RegistroLetraController::class)->group(function () {
     Route::get('registro_letra/create', 'create')->name('registro_letra.create');
     Route::post('registro_letra', 'store')->name('registro_letra.store');
     Route::get('registro_letra/import', 'import')->name('registro_letra.import');
+    Route::get('registro_letra/excel_plantilla', 'excel_plantilla')->name('registro_letra.excel_plantilla'); 
     Route::post('registro_letra/store_imp', 'store_imp')->name('registro_letra.store_imp');
     Route::get('registro_letra/excel_error', 'excel_error')->name('registro_letra.excel_error');
     Route::get('registro_letra/{id}/edit', 'edit')->name('registro_letra.edit');
