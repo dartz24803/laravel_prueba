@@ -103,8 +103,7 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
-            /*EN PRODUCCIÓN ES NECESARIO ESTO
-            'trust_server_certificate' => true,*/
+            'trust_server_certificate' => true,
         ],
 
         'sqlsrv_dbmsrt' => [
@@ -117,8 +116,7 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
-            /*EN PRODUCCIÓN ES NECESARIO ESTO
-            'trust_server_certificate' => true,*/
+            'trust_server_certificate' => true,
         ],
 
     ],

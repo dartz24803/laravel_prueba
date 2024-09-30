@@ -54,6 +54,11 @@
                 <p class="romperpalabra"><span id="icono_active2"></span> Reproceso</p>
             </a>
         </li>
+        <li id="infosapstock">
+            <a href="{{ url('infosapstock') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Infosap Stock</p>
+            </a>
+        </li>
     </ul>
 </li>
 

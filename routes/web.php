@@ -66,6 +66,7 @@ use App\Http\Controllers\ReporteProveedoresController;
 use App\Http\Controllers\RequisicionTiendaConfController;
 use App\Http\Controllers\RequisicionTiendaController;
 use App\Http\Controllers\SalidaInsumoController;
+use App\Http\Controllers\StockInfosapController;
 use App\Http\Controllers\TablaMaestraTesoreriaController;
 
 Route::middleware([NoCache::class])->group(function () {
@@ -216,6 +217,16 @@ Route::controller(AdministradorController::class)->group(function () {
     Route::delete('administrador_sc/{id}', 'destroy_sc')->name('administrador_sc.destroy');
     Route::get('administrador_sc/{id}/evidencia', 'evidencia_sc')->name('administrador_sc.evidencia');
 });
+
+
+
+
+//PROCESOS - ADMINISTRADOR
+Route::controller(StockInfosapController::class)->group(function () {
+    Route::get('infosapstock', 'index')->name('infosapstock');
+    Route::get('infosapstock/list', 'list_infosap')->name('infosapstock.list');
+});
+
 
 //PROCESOS - ADMINISTRADOR
 Route::controller(ProcesosController::class)->group(function () {
@@ -1291,7 +1302,7 @@ Route::controller(RegistroLetraController::class)->group(function () {
     Route::get('registro_letra/create', 'create')->name('registro_letra.create');
     Route::post('registro_letra', 'store')->name('registro_letra.store');
     Route::get('registro_letra/import', 'import')->name('registro_letra.import');
-    Route::get('registro_letra/excel_plantilla', 'excel_plantilla')->name('registro_letra.excel_plantilla'); 
+    Route::get('registro_letra/excel_plantilla', 'excel_plantilla')->name('registro_letra.excel_plantilla');
     Route::post('registro_letra/store_imp', 'store_imp')->name('registro_letra.store_imp');
     Route::get('registro_letra/excel_error', 'excel_error')->name('registro_letra.excel_error');
     Route::get('registro_letra/{id}/edit', 'edit')->name('registro_letra.edit');
