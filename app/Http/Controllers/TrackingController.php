@@ -777,6 +777,10 @@ class TrackingController extends Controller
             //$mail->addAddress('dpalomino@lanumero1.com.pe');
             //$mail->addAddress('ogutierrez@lanumero1.com.pe');
             //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
+            $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            foreach($list_td as $list){
+                $mail->addAddress($list->emailp);
+            }
             $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
@@ -791,7 +795,7 @@ class TrackingController extends Controller
             $mail->Subject = "IDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
-                                Hola '.$get_id->desde.', la mercadería ha llegado a tienda.<br><br>
+                                Hola, la mercadería ha llegado a tienda.<br><br>
                                 <table cellpadding="3" cellspacing="0" border="1" style="width:100%;">     
                                     <tr>
                                         <td colspan="2" style="font-weight:bold;">Despacho</td>
