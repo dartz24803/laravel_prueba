@@ -1462,7 +1462,7 @@ class TrackingController extends Controller
                                 Hola '.$get_id->desde.', se ha pagado a la agencia.<br>
                                 Empresa: '.$get_id->nombre_transporte.'
                                 Monto: '.$get_id->importe_transporte.'
-                                N° factura: '.$get_id->factura_transporte;
+                                N° factura: '.$get_id->factura_transporte.'<br>';
                             if($t_comentario){
             $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
                             </FONT SIZE>';
