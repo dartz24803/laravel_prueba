@@ -1459,7 +1459,10 @@ class TrackingController extends Controller
             $mail->Subject = "MERCADERÍA PAGADA: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
-                                Hola '.$get_id->desde.', se ha pagado a la agencia.<br>';
+                                Hola '.$get_id->desde.', se ha pagado a la agencia.<br>
+                                Empresa: '.$get_id->nombre_transporte.'
+                                Monto: '.$get_id->importe_transporte.'
+                                N° factura: '.$get_id->factura_transporte;
                             if($t_comentario){
             $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
                             </FONT SIZE>';
