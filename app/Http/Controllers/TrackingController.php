@@ -1694,7 +1694,7 @@ class TrackingController extends Controller
                 'id_tracking' => $id,
                 'token' => $token->token,
                 'titulo' => 'REPORTE DE DIFERENCIAS',
-                'contenido' => 'Hola '.$get_id->hacia.', regularizar los sobrantes-faltantes indicados',
+                'contenido' => 'Hola '.$get_id->desde.' - '.$get_id->hacia.', regularizar los sobrantes-faltantes indicados',
             ];
             $this->sendNotification($dato);
         }
@@ -1750,7 +1750,7 @@ class TrackingController extends Controller
             $mail->Subject = "DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
-                                Hola '.$get_id->hacia.', regularizar los sobrantes y/o faltantes indicados.<br><br>
+                                Hola '.$get_id->desde.' - '.$get_id->hacia.', regularizar los sobrantes y/o faltantes indicados.<br><br>
                                 <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                     <thead>
                                         <tr align="center" style="background-color:#0093C6;">
@@ -1910,7 +1910,7 @@ class TrackingController extends Controller
             $mail->Subject = "REGULARIZADO - DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
-                                Hola, '.$get_id->desde.' - '.$get_id->hacia.' acaba de regularizar con la 
+                                Hola '.$get_id->desde.' - '.$get_id->hacia.', acaba de regularizar con la 
                                 GR '.$request->guia_diferencia.'. 
                                 El archivo ya se encuentra en su carpeta.<br>';
                             if($t_comentario){
