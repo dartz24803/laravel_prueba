@@ -578,6 +578,7 @@ class RegistroLetraController extends Controller
                     'negociado_endosado' => 0,
                     'documento' => "",
                     'estado_registro' => 1,
+                    'importacion' => 1,
                     'estado' => 1,
                     'fec_reg' => now(),
                     'user_reg' => session('usuario')->id_usuario,

@@ -50,12 +50,18 @@
                 <p class="romperpalabra"><span id="icono_active2"></span> Caja chica</p>
             </a>
         </li>
-        @if (session('usuario')->id_usuario == "139")
-        <li>
-            <a id="registros_letras" href="{{ route('registro_letra') }}">
-                <p class="romperpalabra"><span id="icono_active2"></span> Registro de letras</p>
-            </a>
-        </li>
+        @if (session('usuario')->id_nivel == "1" ||
+        session('usuario')->id_puesto == "10" || 
+        session('usuario')->id_puesto == "102" ||
+        session('usuario')->id_puesto == "93" ||
+        session('usuario')->id_puesto == "1" ||
+        session('usuario')->id_puesto == "138" ||
+        session('usuario')->id_puesto == "3")
+            <li>
+                <a id="registros_letras" href="{{ route('registro_letra') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Registro de letras</p>
+                </a>
+            </li>
         @endif
         <li>
             <a id="tablas_maestras" href="{{ route('tabla_maestra_tesoreria') }}">

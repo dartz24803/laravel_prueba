@@ -777,6 +777,10 @@ class TrackingController extends Controller
             //$mail->addAddress('dpalomino@lanumero1.com.pe');
             //$mail->addAddress('ogutierrez@lanumero1.com.pe');
             //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
+            $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            foreach($list_td as $list){
+                $mail->addAddress($list->emailp);
+            }
             $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
@@ -791,7 +795,7 @@ class TrackingController extends Controller
             $mail->Subject = "IDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
-                                Hola '.$get_id->desde.', la mercadería ha llegado a tienda.<br><br>
+                                Hola, la mercadería ha llegado a tienda.<br><br>
                                 <table cellpadding="3" cellspacing="0" border="1" style="width:100%;">     
                                     <tr>
                                         <td colspan="2" style="font-weight:bold;">Despacho</td>
@@ -1455,7 +1459,10 @@ class TrackingController extends Controller
             $mail->Subject = "MERCADERÍA PAGADA: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
-                                Hola '.$get_id->desde.', se ha pagado a la agencia.<br>';
+                                Hola '.$get_id->desde.', se ha pagado a la agencia.<br>
+                                Empresa: '.$get_id->nombre_transporte.'
+                                Monto: '.$get_id->importe_transporte.'
+                                N° factura: '.$get_id->factura_transporte.'<br>';
                             if($t_comentario){
             $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
                             </FONT SIZE>';
@@ -1559,7 +1566,7 @@ class TrackingController extends Controller
                 'id_tracking' => $id,
                 'token' => $token->token,
                 'titulo' => 'MERCADERÍA ENTREGADA',
-                'contenido' => 'Hola '.$get_id->desde.', la mercadería fue distribuida',
+                'contenido' => 'La mercadería fue distribuida con éxito',
             ];
             $this->sendNotification($dato);
         }
@@ -1687,7 +1694,7 @@ class TrackingController extends Controller
                 'id_tracking' => $id,
                 'token' => $token->token,
                 'titulo' => 'REPORTE DE DIFERENCIAS',
-                'contenido' => 'Hola '.$get_id->hacia.', regularizar los sobrantes-faltantes indicados',
+                'contenido' => 'Hola '.$get_id->desde.' - '.$get_id->hacia.', regularizar los sobrantes-faltantes indicados',
             ];
             $this->sendNotification($dato);
         }
@@ -1729,6 +1736,10 @@ class TrackingController extends Controller
             foreach($list_td as $list){
                 $mail->addAddress($list->emailp);
             }
+            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            foreach($list_cd as $list){
+                $mail->addAddress($list->emailp);
+            }
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
@@ -1739,7 +1750,7 @@ class TrackingController extends Controller
             $mail->Subject = "DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
-                                Hola '.$get_id->hacia.', regularizar los sobrantes y/o faltantes indicados.<br><br>
+                                Hola '.$get_id->desde.' - '.$get_id->hacia.', regularizar los sobrantes y/o faltantes indicados.<br><br>
                                 <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                     <thead>
                                         <tr align="center" style="background-color:#0093C6;">
@@ -1849,7 +1860,7 @@ class TrackingController extends Controller
                 'id_tracking' => $id,
                 'token' => $token->token,
                 'titulo' => 'DIFERENCIAS REGULARIZADAS',
-                'contenido' => 'Hola, '.$get_id->hacia.' se regularizó el Nro. Req. '.$get_id->guia_diferencia.'con la GR '.$request->guia_diferencia,
+                'contenido' => 'Hola, '.$get_id->hacia.' se regularizó el Nro. Req. '.$get_id->n_requerimiento.'con la GR '.$request->guia_diferencia,
             ];
             $this->sendNotification($dato);
         }
@@ -1899,7 +1910,7 @@ class TrackingController extends Controller
             $mail->Subject = "REGULARIZADO - DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
-                                Hola, '.$get_id->desde.' - '.$get_id->hacia.' acaba de regularizar con la 
+                                Hola '.$get_id->desde.' - '.$get_id->hacia.', acaba de regularizar con la 
                                 GR '.$request->guia_diferencia.'. 
                                 El archivo ya se encuentra en su carpeta.<br>';
                             if($t_comentario){
