@@ -40,6 +40,7 @@ class ChequesLetras extends Model
         'documento',
         'comprobante_pago',
         'estado_registro',
+        'importacion',
         'estado',
         'fec_reg',
         'user_reg',
