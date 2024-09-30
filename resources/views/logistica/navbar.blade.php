@@ -59,6 +59,11 @@
                 <p class="romperpalabra"><span id="icono_active2"></span> Infosap Stock</p>
             </a>
         </li>
+        <li id="errorespicking">
+            <a href="{{ url('errorespicking') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Errores Picking</p>
+            </a>
+        </li>
     </ul>
 </li>
 

@@ -33,6 +33,7 @@ use App\Http\Controllers\ControlCamaraController;
 use App\Http\Controllers\SliderRRHH;
 use App\Http\Controllers\Cumpleanios;
 use App\Http\Controllers\DuracionTransaccionController;
+use App\Http\Controllers\ErroresPickingController;
 use App\Http\Controllers\FinanzaInicioController;
 use App\Http\Controllers\FinanzasInicioController;
 use App\Http\Controllers\InicioAdmController;
@@ -221,12 +222,16 @@ Route::controller(AdministradorController::class)->group(function () {
 
 
 
-//PROCESOS - ADMINISTRADOR
+//STOCK INFOSAP
 Route::controller(StockInfosapController::class)->group(function () {
     Route::get('infosapstock', 'index')->name('infosapstock');
     Route::get('infosapstock/list', 'list_infosap')->name('infosapstock.list');
 });
-
+//ERRORES PICKING
+Route::controller(ErroresPickingController::class)->group(function () {
+    Route::get('errorespicking', 'index')->name('errorespicking');
+    Route::get('errorespicking/list', 'list_le')->name('errorespicking.list');
+});
 
 //PROCESOS - ADMINISTRADOR
 Route::controller(ProcesosController::class)->group(function () {
