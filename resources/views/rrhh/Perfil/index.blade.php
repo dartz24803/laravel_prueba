@@ -4211,10 +4211,6 @@ if($get_id[0]['edicion_perfil']==1){
                     $("." + geeks).show();
                 } else {
                     $(".GFG").hide();
-
-
-
-                // $(".GFG").not("." + geeks+" input").val("");
                 }
             });
         }).change();
@@ -4401,6 +4397,7 @@ if($get_id[0]['edicion_perfil']==1){
         var url = "{{ url('ColaboradorController/Update_GDatosP') }}";
         var csrfToken = $('input[name="_token"]').val();
 
+        if (Valida_GDatosP()) {
             $.ajax({
                 url: url,
                 data: dataString,
@@ -4420,6 +4417,7 @@ if($get_id[0]['edicion_perfil']==1){
                     });
                 }
             });
+        }
     }
 
     function Lista_GDatosP(){
@@ -4442,5 +4440,1870 @@ if($get_id[0]['edicion_perfil']==1){
                 $('#mdatos').html(data);
             }
         });
+    }
+
+    function Valida_GDatosP() {
+        if ($('#usuario_apater').val().trim() === '') {
+            msgDate = 'Debe ingresar apellido su paterno';
+            inputFocus = '#usuario_apater';
+            return false;
+        }
+        if ($('#usuario_amater').val().trim() === '') {
+            msgDate = 'Debe ingresar apelliedo su materno';
+            inputFocus = '#usuario_amater';
+            return false;
+        }
+        if ($('#usuario_nombres').val().trim() === '') {
+            msgDate = 'Debe ingresar su nombre';
+            inputFocus = '#usuario_nombres';
+            return false;
+        }
+        if ($('#id_nacionalidad').val() == '0') {
+            msgDate = 'Debe ingresar su nacionalidad';
+            inputFocus = '#id_nacionalidad';
+            return false;
+        }
+        if ($('#id_tipo_documento').val() == '0') {
+            msgDate = 'Debe ingresar su el tipo de documento a ingresar';
+            inputFocus = '#id_tipo_documento';
+            return false;
+        }
+        if ($('#num_doc').val().trim() === '') {
+            msgDate = 'Debe ingresar su n° de documento';
+            inputFocus = '#num_doc';
+            return false;
+        }
+        if ($('#id_genero').val() == '0') {
+            msgDate = 'Debe ingresar su genero';
+            inputFocus = '#id_genero';
+            return false;
+        }
+        if ($('#dia_nac').val() == '0') {
+            msgDate = 'Debe ingresar el día de nacimiento';
+            inputFocus = '#dia_nac';
+            return false;
+        }
+        if ($('#mes_nac').val() == '0') {
+            msgDate = 'Debe ingresar su el mes de su nacimiento';
+            inputFocus = '#mes_nac';
+            return false;
+        }
+        if ($('#anio_nac').val() == '0') {
+            msgDate = 'Debe ingresar su el año en que nació';
+            inputFocus = '#anio_nac';
+            return false;
+        }
+
+        var fec_nacimiento = "'" + $('#anio_nac').val() + "-" + $('#mes_nac').val() + "-" + $('#dia_nac').val() + "'";
+        var fecha = new Date(fec_nacimiento);
+        var dias = 2;
+        fecha.setDate(fecha.getDate() - dias);
+
+        var hoy = new Date();
+        var fecha = fecha;
+
+        var edad = hoy.getFullYear() - fecha.getFullYear();
+        var m = hoy.getMonth() - fecha.getMonth();
+
+        if (m < 0 || (m === 0 && hoy.getDate() < fecha.getDate())) {
+            edad--;
+        }
+        if (edad < 18) {
+            msgDate = 'Debe ser mayor a 18 años de edad para actualizar datos';
+            inputFocus = '#anio_nac';
+            return false;
+        }
+
+
+        if ($('#id_estado_civil').val() == '0') {
+            msgDate = 'Debe ingresar su estado civil';
+            inputFocus = '#id_estado_civil';
+            return false;
+        }
+        if ($('#usuario_email').val().trim() === '') {
+            msgDate = 'Debe ingresar su correo electronico';
+            inputFocus = '#usuario_email';
+            return false;
+        }
+        if ($('#num_celp').val().trim() === '') {
+            msgDate = 'Debe ingresar su número de celular';
+            inputFocus = '#num_celp';
+            return false;
+        }
+
+
+        return true;
+    }
+
+    function GustosP() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_gustop'));
+        var url = "{{ url('ColaboradorController/Update_GustosP') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_GustosP()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Lista_GustosP();
+                    });
+                }
+            });
+        }
+    }
+
+    function Valida_GustosP() {
+        if ($('#plato_postre').val().trim() === '' && $('#galletas_golosinas').val().trim() === '' && $('#ocio_pasatiempos').val().trim() === ''
+        && $('#artistas_banda').val().trim() === '' && $('#genero_musical').val().trim() === '' && $('#pelicula_serie').val().trim() === ''
+        && $('#colores_favorito').val().trim() === '' && $('#redes_sociales').val().trim() === '' && $('#deporte_favorito').val().trim() === ''
+        && $('#id_zona').val() === '0' && $('#mascota').val().trim() === '') {
+            msgDate = 'Debe ingresar al menos un gusto o preferencia';
+            inputFocus = '#plato_postre';
+            return false;
+        }
+
+        return true;
+    }
+
+    function Confirmar_Revision_Perfil(id_usuario){
+        Cargando();
+
+        var url = "{{ url('ColaboradorController/Confirmar_Revision_Perfil') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            title: '¿Realmente desea confirmar revisión de datos de perfil?',
+            text: "Los módulos no serán editables para el usuario",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    data: {
+                        'id_usuario':id_usuario
+                    },
+                    success: function() {
+                        Swal(
+                            'Revisado!',
+                            '',
+                            'success'
+                        ).then(function() {
+                            window.location.reload();
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+    function Habilitar_Edicion_Perfil(id_usuario){
+        Cargando();
+
+        var estado_edicion=1;
+        var titulo="deshabilitar";
+        var texto="no serán";
+        var mensaje="Deshabilitado!";
+        if($('#habilitar_edicion').is(":checked")){
+            var estado_edicion=0;
+            var titulo="habilitar";
+            var texto="serán";
+            var mensaje="Habilitado!";
+        }
+
+        var url = "{{ url('ColaboradorController/Habilitar_Edicion_Perfil') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            title: '¿Realmente desea '+titulo+' edición?',
+            text: "Los módulos "+texto+" editables para el usuario",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    data: {
+                        'estado_edicion': estado_edicion,
+                        'id_usuario':id_usuario
+                    },
+                    success: function() {
+                        Swal(
+                            mensaje,
+                            '',
+                            'success'
+                        ).then(function() {
+                            window.location.reload();
+                        });
+                    }
+                });
+            }else{
+                if($('#habilitar_edicion').is(":checked")){
+                    $('#habilitar_edicion').prop('checked', false);
+                }else{
+                    $('#habilitar_edicion').prop('checked', true);
+                }
+
+            }
+        })
+    }
+
+
+    function DomilcilioP() {
+        var dataString = new FormData(document.getElementById('formulario_domicilio'));
+        var url = "{{ url('ColaboradorController/Update_DomilcilioP') }}";
+        var url2 = "{{ url('ColaboradorController/Update_DomilcilioP_Titulo') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_DomilcilioP()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#domiciliodatos').html(data);
+                        $.ajax({
+                            url: url2,
+                            data: dataString,
+                            type: "POST",
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken
+                            },
+                            processData: false,
+                            contentType: false,
+                            success: function(data) {
+
+                                $('#domicilio_titulo').html(data);
+
+                            }
+                        });
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Valida_DomilcilioP() {
+        if ($('#id_departamento').val() == '0') {
+            msgDate = 'Debe ingresar departamento';
+            inputFocus = '#id_departamento';
+            return false;
+        }
+        if ($('#id_provincia').val() == '0') {
+            msgDate = 'Debe ingresar provincia';
+            inputFocus = '#id_provincia';
+            return false;
+        }
+        if ($('#id_distrito').val() == '0') {
+            msgDate = 'Debe ingresar distrito';
+            inputFocus = '#id_distrito';
+            return false;
+        }
+        return true;
+    }
+
+    let inputs = document.querySelectorAll('.limpiaref');
+    let selects = document.querySelectorAll('.limpiarefselect');
+
+    function ReferenciaF() {
+        var dataString = new FormData(document.getElementById('formulario_referenciaf'));
+        var url = "{{ url('ColaboradorController/Insert_ReferenciaF') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_ReferenciaF()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Registro Exitoso!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#mdreferenciaf').html(data);
+                        MDatos_ReferenciaF();
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Update_ReferenciaF() {
+        var dataString = new FormData(document.getElementById('formulario_referenciaf'));
+        var url = "{{ url('ColaboradorController/Update_ReferenciaF') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_ReferenciaF()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#mdreferenciaf').html(data);
+                        MDatos_ReferenciaF();
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function MDatos_ReferenciaF() {
+        var dataString = new FormData(document.getElementById('formulario_referenciaf'));
+        var url = "{{ url('ColaboradorController/MDatos_ReferenciaF') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#mureferenciaf').html(data);
+                $('#btnReferenciaF').html("<a onclick='ReferenciaF();' title='Agregar Familiar' class='btn btn-danger'>Agregar</a>");
+            }
+        });
+    }
+
+    function Valida_ReferenciaF() {
+        if ($('#nom_familiar').val().trim() === '') {
+            msgDate = 'Debe ingresar nombre del familiar';
+            inputFocus = '#nom_familiar';
+            return false;
+        }
+        if ($('#id_parentesco').val() == '0') {
+            msgDate = 'Debe indique el parentesco';
+            inputFocus = '#id_parentesco';
+            return false;
+        }
+        if ($('#dia_nacf').val() == '0') {
+            msgDate = 'Debe ingresar el dìa de nacimiento';
+            inputFocus = '#dia_nacf';
+            return false;
+        }
+        if ($('#mes_nacf').val() == '0') {
+            msgDate = 'Debe ingresar el mes de nacimiento ';
+            inputFocus = '#mes_nacf';
+            return false;
+        }
+        if ($('#anio_nacf').val() == '0') {
+            msgDate = 'Debe ingresar el año de nacimiento';
+            inputFocus = '#anio_nacf';
+            return false;
+        }
+        if ($('#celular1').val().trim() === '') {
+            msgDate = 'Debe ingresar el celular principal';
+            inputFocus = '#celular1';
+            return false;
+        }
+        return true;
+    }
+
+    function Detalle_Referencia_Familiar(id) {
+        var id = id;
+        var url = "{{ url('ColaboradorController/Detalle_Referencia_Familiar') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                'id_referencia_familiar': id
+            },
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(data) {
+                $('#mureferenciaf').html(data);
+                $('#btnReferenciaF').html("<a onclick='Update_ReferenciaF();' title='Actualizar Familiar' class='btn btn-primary'>Actualizar</a>");
+            }
+        });
+    }
+
+    function Delete_Referencia_Familiar(id, id_usu) {
+        var id = id;
+        var id_usu = id_usu;
+        var url = "{{ url('ColaboradorController/Delete_Referencia_Familiar') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            //title: '¿Realmente quieres eliminar el registro de '+ nombre +'?',
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    data: {
+                        'id_referencia_familiar': id,
+                        'id_usuario': id_usu
+                    },
+                    success: function(data) {
+                        Swal(
+                            'Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            $('#mdreferenciaf').html(data);
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+
+    function Hijos() {
+        let inputhijos = document.querySelectorAll('.limpiarhijos');
+        let selectshijos = document.querySelectorAll('.limpiarefselecthijos');
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_hijos'));
+        var url = "{{ url('ColaboradorController/Insert_Hijos_Usuario') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_HijosU()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Registro Exitoso!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#archivoInputdni').html('');
+                        inputhijos.forEach(input => input.value = '');
+                        selectshijos.forEach(option => option.value = '0');
+                        Lista_Hijos();
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Lista_Hijos(){
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_hijos'));
+        var url = "{{ url('ColaboradorController/Lista_Hijos') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#mdhijos').html(data);
+            }
+        });
+    }
+
+    function Update_Hijos() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_hijos'));
+        var url = "{{ url('ColaboradorController/Update_Hijos') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_HijosU()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        MDatos_Hijos();
+                        Lista_Hijos();
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function MDatos_Hijos() {
+        var dataString = new FormData(document.getElementById('formulario_hijos'));
+        var url = "{{ url('ColaboradorController/MDatos_Hijos') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#muhijos').html(data);
+                $('#btnHijos').html("<a onclick='Hijos();' title='Agregar Familiar' class='btn btn-danger'>Agregar</a>");
+                ValidaH();
+            }
+        });
+    }
+
+    function Valida_HijosU() {
+        if ($('#id_respuestah').val() == '0') {
+            msgDate = 'Debe seleccionar opción';
+            inputFocus = '#id_respuestah';
+            return false;
+        }
+
+        if ($('#id_respuestah').val() == '1') {
+            if ($('#nom_hijo').val().trim() === '') {
+                msgDate = 'Debe ingresar nombre de hijo';
+                inputFocus = '#nom_hijo';
+                return false;
+            }
+
+            if ($('#id_generoh').val() == '0') {
+                msgDate = 'Debe ingresar genero del hijo';
+                inputFocus = '#id_generoh';
+                return false;
+            }
+
+            if ($('#dia_nachj').val() == '0') {
+                msgDate = 'Debe ingresar el dìa de nacimiento';
+                inputFocus = '#dia_nachj';
+                return false;
+            }
+
+            if ($('#mes_nachj').val() == '0') {
+                msgDate = 'Debe ingresar el mes de nacimiento';
+                inputFocus = '#mes_nachj';
+                return false;
+            }
+
+            if ($('#anio_nachj').val() == '0') {
+                msgDate = 'Debe ingresar el año de nacimiento';
+                inputFocus = '#anio_nachj';
+                return false;
+            }
+
+            if ($('#num_dochj').val().trim() === '') {
+                msgDate = 'Debe ingresar número de DNI';
+                inputFocus = '#num_dochj';
+                return false;
+            }
+
+            if ($('#id_biologico').val() == '0') {
+                msgDate = 'Debe indicar si es biológico o no';
+                inputFocus = '#id_biologico';
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function Detalle_Hijos_Usuario(id) {
+        Cargando();
+        var id = id;
+        var url = "{{ url('ColaboradorController/Detalle_Hijos_Usuario') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            data: {
+                'id_hijos': id
+            },
+            success: function(data) {
+                $('#muhijos').html(data);
+                $('#btnHijos').html("<a onclick='Update_Hijos();' title='Actualizar Datos' class='btn btn-primary'>Actualizar</a>");
+            }
+        });
+    }
+
+    function Delete_Hijos_Usuario(id, id_usu) {
+        Cargando();
+
+        var id = id;
+        var id_usu = id_usu;
+        var url = "{{ url('ColaboradorController/Delete_Hijos_Usuario') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            //title: '¿Realmente quieres eliminar el registro de '+ nombre +'?',
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    data: {
+                        'id_hijos': id,
+                        'id_usuario': id_usu
+                    },
+                    success: function(data) {
+                        Swal(
+                            'Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            Lista_Hijos();
+                            ValidaH();
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+    function ValidaH() {
+        if ($('#id_respuestah').val() == '1') {
+            $("#nom_hijo").prop('disabled', false);
+            $("#id_generoh").prop('disabled', false);
+            $("#dia_nachj").prop('disabled', false);
+            $("#mes_nachj").prop('disabled', false);
+            $("#anio_nachj").prop('disabled', false);
+            $("#num_dochj").prop('disabled', false);
+            $("#id_biologico").prop('disabled', false);
+            $("#documento").prop('disabled', false);
+            $('#btnHijos').html("<a onclick='Hijos();' title='Agregar Hijos' class='btn btn-danger'>Agregar</a>");
+        }
+
+        if ($('#id_respuestah').val() != '1') {
+            $("#nom_hijo").prop('disabled', true);
+            $("#id_generoh").prop('disabled', true);
+            $("#dia_nachj").prop('disabled', true);
+            $("#mes_nachj").prop('disabled', true);
+            $("#anio_nachj").prop('disabled', true);
+            $("#num_dochj").prop('disabled', true);
+            $("#id_biologico").prop('disabled', true);
+            $("#documento").prop('disabled', true);
+            $('#btnHijos').html("<a onclick='Update_Hijos();' title='Actualizar Hijo' class='btn btn-primary'>Actualizar</a>");
+
+            $("#nom_hijo").val('');
+            $("#id_generoh").val('0');
+            $("#dia_nachj").val('0');
+            $("#mes_nachj").val('0');
+            $("#anio_nachj").val('0');
+            $("#num_dochj").val('');
+            $("#id_biologico").val('0');
+            $("#documento").val('');
+        }
+    }
+
+
+    function ContactoE() {
+        let inputContactoE = document.querySelectorAll('.limpiarContactoE');
+        let selectsContactoE = document.querySelectorAll('.limpiarefselectContactoE');
+        var dataString = new FormData(document.getElementById('formulario_contactoe'));
+        var url = "{{ url('ColaboradorController/Insert_ContactoE') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_ContactoE()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Registro Exitoso!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#mdcontactoe').html(data);
+                        inputContactoE.forEach(input => input.value = '');
+                        selectsContactoE.forEach(option => option.value = '0');
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Update_ContactoE() {
+        var dataString = new FormData(document.getElementById('formulario_contactoe'));
+        var url = "{{ url('ColaboradorController/Update_ContactoE') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_ContactoE()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#mdcontactoe').html(data);
+                        MDatos_ContactoE();
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Valida_ContactoE() {
+        if ($('#nom_contacto').val().trim() === '') {
+            msgDate = 'Debe ingresar nombre de contacto de emergencia';
+            inputFocus = '#nom_contacto';
+            return false;
+        }
+
+        if ($('#id_parentescoce').val() == '') {
+            msgDate = 'Debe indicar el parentesco del Contacto de Emergencia';
+            inputFocus = '#id_parentescoce';
+            return false;
+        }
+
+        if ($('#celular1ce').val().trim() === '') {
+            msgDate = 'Debe ingresar el celular del contacto de emergencia ';
+            inputFocus = '#celular1ce';
+            return false;
+        }
+        return true;
+    }
+
+    function MDatos_ContactoE() {
+        var dataString = new FormData(document.getElementById('formulario_contactoe'));
+        var url = "{{ url('ColaboradorController/MDatos_ContactoE') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#mucontactoe').html(data);
+                $('#btnContactoE').html("<a onclick='ContactoE();' title='Agregar Contacto de Emergencia' class='btn btn-danger'>Agregar</a>");
+            }
+        });
+    }
+
+    function Detalle_ContactoE(id) {
+        var id = id;
+        var url = "{{ url('ColaboradorController/Detalle_ContactoE') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            url: url,
+            data: {
+                'id_contacto_emergencia': id
+            },
+            success: function(data) {
+                $('#mucontactoe').html(data);
+                $('#btnContactoE').html("<a onclick='Update_ContactoE();' title='Actualizar Contacto de Emergencia' class='btn btn-primary'>Actualizar</a>");
+            }
+        });
+    }
+
+    function Delete_Contacto_Emergencia(id, id_usu) {
+        var id = id;
+        var id_usu = id_usu;
+        var url = "{{ url('ColaboradorController/Delete_ContactoE') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            //title: '¿Realmente quieres eliminar el registro de '+ nombre +'?',
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    url: url,
+                    data: {
+                        'id_contacto_emergencia': id,
+                        'id_usuario': id_usu
+                    },
+                    success: function(data) {
+                        Swal(
+                            'Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            $('#mdcontactoe').html(data);
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+    function EstudiosG() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_estudiosg'));
+        var url = "{{ url('ColaboradorController/Insert_EstudiosG') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_EstudiosG()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Registro Exitoso!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        MDatos_EstudiosG();
+                        Lista_EstudiosG();
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Lista_EstudiosG() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_estudiosg'));
+        var url = "{{ url('ColaboradorController/Lista_EstudiosG') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#mdestudiosg').html(data);
+            }
+        });
+    }
+
+    function Update_EstudiosG() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_estudiosg'));
+        var url = "{{ url('ColaboradorController/Update_EstudiosG') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_EstudiosG()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        MDatos_EstudiosG();
+                        Lista_EstudiosG();
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Valida_EstudiosG() {
+        if ($('#id_grado_instruccion').val() == '0') {
+            msgDate = 'Debe seleccionar grado de instrucción';
+            inputFocus = '#id_grado_instruccion';
+            return false;
+        }
+
+        if ($('#carrera').val().trim() === '') {
+            msgDate = 'Debe ingresar el nombre de la carrera';
+            inputFocus = '#carrera';
+            return false;
+        }
+
+        if ($('#centro').val().trim() === '') {
+            msgDate = 'Debe ingresar el nombre del centro de estudios';
+            inputFocus = '#centro';
+            return false;
+        }
+
+        return true;
+    }
+
+    function MDatos_EstudiosG() {
+        var dataString = new FormData(document.getElementById('formulario_estudiosg'));
+        var url = "{{ url('ColaboradorController/MDatos_EstudiosG') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#muestudiosg').html(data);
+                $('#btnEstudiosG').html("<a onclick='EstudiosG();' title='Agregar Estudios Generales' class='btn btn-danger'>Agregar</a>");
+            }
+        });
+    }
+
+    function Detalle_EstudiosG(id) {
+        Cargando();
+        var id = id;
+        var url = "{{ url('ColaboradorController/Detalle_EstudiosG') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+            url: url,
+            data: {
+                'id_estudios_generales': id
+            },
+            success: function(data) {
+                $('#muestudiosg').html(data);
+                $('#btnEstudiosG').html("<a onclick='Update_EstudiosG();' title='Actualizar Contacto de Emergencia' class='btn btn-primary'>Actualizar</a>");
+            }
+        });
+    }
+
+    function Delete_EstudiosG(id, id_usu) {
+        Cargando();
+
+        var id = id;
+        var id_usu = id_usu;
+        var url = "{{ url('ColaboradorController/Delete_EstudiosG') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                    url: url,
+                    data: {
+                        'id_estudios_generales': id,
+                        'id_usuario': id_usu
+                    },
+                    success: function(data) {
+                        Swal(
+                            'Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            Lista_EstudiosG();
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+    function Conoci_Idiomas() {
+        var dataString = new FormData(document.getElementById('formulario_conoci_idiomas'));
+        var url = "{{ url('ColaboradorController/Insert_Conoci_Idiomas') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_Conoci_Idiomas()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Registro Exitoso!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#mdconocimientoi').html(data);
+                        MDatos_Idiomas();
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function MDatos_Idiomas() {
+        var dataString = new FormData(document.getElementById('formulario_conoci_idiomas'));
+        var url = "{{ url('ColaboradorController/MDatos_Idiomas') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#conoci_idiomas').html(data);
+                $('#btnIdiomas').html("<a onclick='Conoci_Idiomas();' title='Agregar Idioma' class='btn btn-danger'>Agregar</a>");
+            }
+        });
+    }
+
+    function Detalle_Conoci_Idiomas(id) {
+        var id = id;
+        var url = "{{ url('ColaboradorController/Detalle_Conoci_Idiomas') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+            url: url,
+            data: {
+                'id_conoci_idiomas': id
+            },
+            success: function(data) {
+                $('#conoci_idiomas').html(data);
+                $('#btnIdiomas').html("<a onclick='Update_Conoci_Idiomas();' title='Actualizar Idioma' class='btn btn-primary'>Actualizar</a>");
+            }
+        });
+    }
+
+    function Update_Conoci_Idiomas() {
+        var dataString = new FormData(document.getElementById('formulario_conoci_idiomas'));
+        var url = "{{ url('ColaboradorController/Update_Conoci_Idiomas') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_Conoci_Idiomas()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#mdconocimientoi').html(data);
+                        MDatos_Idiomas();
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Valida_Conoci_Idiomas() {
+        if ($('#nom_conoci_idiomas').val() == '0') {
+            msgDate = 'Debe elegir un idioma';
+            inputFocus = '#nom_conoci_idiomas';
+            return false;
+        }
+
+        if ($('#lect_conoci_idiomas').val() == '0') {
+            msgDate = 'Debe elegir un nivel';
+            inputFocus = '#lect_conoci_idiomas';
+            return false;
+        }
+
+        if ($('#escrit_conoci_idiomas').val() == '0') {
+            msgDate = 'Debe elegir un nivel';
+            inputFocus = '#escrit_conoci_idiomas';
+            return false;
+        }
+
+        if ($('#conver_conoci_idiomas').val() == '0') {
+            msgDate = 'Debe elegir un nivel';
+            inputFocus = '#conver_conoci_idiomas';
+            return false;
+        }
+
+        return true;
+    }
+
+    function Delete_Conoci_Idiomas(id, id_usu) {
+        var id = id;
+        var id_usu = id_usu;
+        var url = "{{ url('ColaboradorController/Delete_Conoci_Idiomas') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            //title: '¿Realmente quieres eliminar el registro de '+ nombre +'?',
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                    url: url,
+                    data: {
+                        'id_conoci_idiomas': id,
+                        'id_usuario': id_usu
+                    },
+                    success: function(data) {
+                        Swal(
+                            'Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            $('#mdconocimientoi').html(data);
+                            MDatos_Idiomas();
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+    function CursosC() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_cursosc'));
+        var url = "{{ url('ColaboradorController/Insert_CursosC') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_CursosC()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Registro Exitoso!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        MDatos_CursosC();
+                        Lista_CursosC();
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function MDatos_CursosC() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_cursosc'));
+        var url = "{{ url('ColaboradorController/MDatos_CursosC') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#mucursos').html(data);
+                $('#btnCursosC').html("<a onclick='CursosC();' title='Agregar Curso Complementario' class='btn btn-danger'>Agregar</a>");
+            }
+        });
+    }
+
+    function Lista_CursosC() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_cursosc'));
+        var url = "{{ url('ColaboradorController/Lista_CursosC') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#mdcursos').html(data);
+            }
+        });
+    }
+
+    function Update_CursosC() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_cursosc'));
+        var url = "{{ url('ColaboradorController/Update_CursosC') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_CursosC()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        MDatos_CursosC();
+                        Lista_CursosC();
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Detalle_CursosC(id) {
+        Cargando();
+
+        var id = id;
+        var url = "{{ url('ColaboradorController/Detalle_CursosC') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+            url: url,
+            data: {
+                'id_curso_complementario': id
+            },
+            success: function(data) {
+                $('#mucursos').html(data);
+                $('#btnCursosC').html("<a onclick='Update_CursosC();' title='Actualizar Curso Complementario' class='btn btn-primary'>Actualizar</a>");
+            }
+        });
+    }
+
+    function Valida_CursosC() {
+
+        if ($('#nom_curso_complementario').val().trim() === '') {
+            msgDate = 'Debe ingresar el nombre del curso';
+            inputFocus = '#nom_curso_complementario';
+            return false;
+        }
+        if ($('#aniocc').val() == '0') {
+            msgDate = 'Debe elegir el año';
+            inputFocus = '#aniocc';
+            return false;
+        }
+
+
+        return true;
+    }
+
+    function Delete_CursosC(id, id_usu) {
+        Cargando();
+
+        var id = id;
+        var id_usu = id_usu;
+        var url = "{{ url('ColaboradorController/Delete_CursosC') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                    url: url,
+                    data: {
+                        'id_curso_complementario': id,
+                        'id_usuario': id_usu
+                    },
+                    success: function(data) {
+                        Swal(
+                            'Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            MDatos_CursosC();
+                            Lista_CursosC();
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+    function Referencia_Convocatoria() {
+        var dataString = new FormData(document.getElementById('formulario_referencia_convocatoria'));
+        var url = "{{ url('ColaboradorController/Update_Referencia_Convocatoria') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_Referencia_Convocatoria()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#referencia_convocatoria').html(data);
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Valida_Referencia_Convocatoria() {
+        if ($('#id_referencia_laboral').val() == '0') {
+            msgDate = 'Debe seleccionar opción';
+            inputFocus = '#id_referencia_laboral';
+            return false;
+        }
+
+        if ($("#id_referencia_laboral option:selected").text() == 'OTROS') {
+            if ($('#otrosel').val().trim() == '') {
+                msgDate = 'Debe llenar este dato';
+                inputFocus = '#otros';
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function ValidaRC() {
+        if ($("#id_referencia_laboral option:selected").text() == "OTROS") {
+            $("#otrosel").prop('disabled', false);
+        } else {
+            $("#otrosel").prop('disabled', true);
+
+            $("#otrosel").val('');
+        }
+    }
+
+    function ExperenciaL() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_experiencial'));
+        var url = "{{ url('ColaboradorController/Insert_ExperenciaL') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_ExperenciaL()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Registro Exitoso!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        MDatos_ExperenciaL();
+                        Lista_ExperenciaL();
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Lista_ExperenciaL() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_experiencial'));
+        var url = "{{ url('ColaboradorController/Lista_ExperenciaL') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#mdexperiencial').html(data);
+            }
+        });
+    }
+
+    function Update_ExperenciaL() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_experiencial'));
+        var url = "{{ url('ColaboradorController/Update_ExperenciaL') }}";
+                var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_ExperenciaL()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        MDatos_ExperenciaL();
+                        Lista_ExperenciaL();
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Valida_ExperenciaL() {
+        valor = $('input:checkbox[name=checkactualidad]:checked').val();
+        if ($('#empresaex').val().trim() === '') {
+            msgDate = 'Debe ingresar nombre de empresa';
+            inputFocus = '#empresaex';
+            return false;
+        }
+
+        if ($('#cargoex').val().trim() === '') {
+            msgDate = 'Debe ingresar nombre de cargo';
+            inputFocus = '#cargoex';
+            return false;
+        }
+
+        if ($('#dia_iniel').val() == '0') {
+            msgDate = 'Debe ingresar fecha de inicio';
+            inputFocus = '#dia_iniel';
+            return false;
+        }
+
+        if ($('#mes_iniel').val() == '0') {
+            msgDate = 'Debe ingresar fecha de inicio';
+            inputFocus = '#mes_iniel';
+            return false;
+        }
+
+        if ($('#anio_iniel').val() == '0') {
+            msgDate = 'Debe ingresar fecha de inicio';
+            inputFocus = '#anio_iniel';
+            return false;
+        }
+
+        if (valor != 1) {
+            if ($('#dia_finel').val() == '0') {
+                msgDate = 'Debe ingresar fecha de fin';
+                inputFocus = '#dia_finel';
+                return false;
+            }
+
+            if ($('#mes_finel').val() == '0') {
+                msgDate = 'Debe ingresar fecha de fin';
+                inputFocus = '#mes_finel';
+                return false;
+            }
+
+            if ($('#anio_finel').val() == '0') {
+                msgDate = 'Debe ingresar fecha de fin';
+                inputFocus = '#anio_finel';
+                return false;
+            }
+        }
+
+        if ($('#motivo_salida').val().trim() === '') {
+            msgDate = 'Debe ingresar el motivo de cese';
+            inputFocus = '#motivo_salida';
+            return false;
+        }
+
+        if ($('#remuneracion').val().trim() === '') {
+            msgDate = 'Debe ingresar su remuneración';
+            inputFocus = '#remuneracion';
+            return false;
+        }
+
+        return true;
+    }
+
+    function Conoci_Office() {
+        var dataString = new FormData(document.getElementById('formulario_conoci_office'));
+        var url = "{{ url('ColaboradorController/Update_Conoci_Office') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_Conoci_Office()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#conoci_office').html(data);
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+
+    function Valida_Conoci_Office() {
+        if ($('#nl_excel').val() == '0' && $('#nl_word').val() == '0' &&
+            $('#nl_ppoint').val() == '0') {
+            msgDate = 'Debe seleccionar un nivel de conocimiento';
+            inputFocus = '#nl_excel';
+            return false;
+        }
+
+        return true;
     }
 </script>

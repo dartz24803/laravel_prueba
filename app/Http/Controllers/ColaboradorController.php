@@ -23,12 +23,19 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use App\Models\Notificacion;
 use App\Models\SubGerencia;
 use App\Models\Config;
+use App\Models\ConociIdiomas;
+use App\Models\ConociOffice;
+use App\Models\ContactoEmergencia;
 use App\Models\DatacorpAccesos;
 use App\Models\DocumentacionUsuario;
+use App\Models\DomicilioUsers;
 use App\Models\Empresas;
 use App\Models\EstadoCivil;
+use App\Models\EstudiosGenerales;
 use App\Models\GradoInstruccion;
 use App\Models\GrupoSanguineo;
+use App\Models\GustoPreferenciaUsers;
+use App\Models\Hijos;
 use App\Models\HistoricoEstadoColaborador;
 use App\Models\Horario;
 use App\Models\HorarioDia;
@@ -40,6 +47,7 @@ use App\Models\Parentesco;
 use App\Models\ProgramaAccesos;
 use App\Models\Puesto;
 use App\Models\ReferenciaLaboral;
+use App\Models\ReferenciaFamiliar;
 use App\Models\Regimen;
 use App\Models\SituacionLaboral;
 use App\Models\TipoContrato;
@@ -2124,7 +2132,7 @@ class ColaboradorController extends Controller
                 $dato['list_anio'] = $this->Model_Perfil->get_list_anio();
                 $dato['list_estado_civil'] = EstadoCivil::where('estado', 1)
                                         ->get();
-                $dato['get_id'] = $this->Model_Perfil->get_id_postulante($id_usuario);
+                $dato['get_id'] = $this->Model_Perfil->get_list_usuario($id_usuario);
                 //session('usuario')->foto = $dato['get_id'][0]['foto'];
 
                 $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario(session('usuario')->id_usuario);
@@ -2132,37 +2140,42 @@ class ColaboradorController extends Controller
                 return view('rrhh.Perfil.datospersonales', $dato);
             }
     }
-    public function Update_GDatosP(){
-            $dato['postulante'] = $this->input->post("postulante");
-            $dato['id_usuario'] = $this->input->post("id_usuariodp");
-            $dato['foto']= $this->input->post("foto");
 
-            $dato['usuario_apater']= strtoupper($this->input->post("usuario_apater"));
-            $dato['usuario_amater']= strtoupper($this->input->post("usuario_amater"));
-            $dato['usuario_nombres']= strtoupper($this->input->post("usuario_nombres"));
-            $dato['id_nacionalidad']= $this->input->post("id_nacionalidad");
-            $dato['id_tipo_documento']= $this->input->post("id_tipo_documento");
-            $dato['num_doc']= $this->input->post("num_doc");
-            $dato['id_genero']= $this->input->post("id_genero");
-            $dato['dia_nac']= $this->input->post("dia_nac");
-            $dato['mes_nac']= $this->input->post("mes_nac");
-            $dato['anio_nac']= $this->input->post("anio_nac");
-            $dato['id_estado_civil']= $this->input->post("id_estado_civil");
-            $dato['usuario_email']= $this->input->post("usuario_email");
-            $dato['num_celp']= $this->input->post("num_celp");
-            $dato['num_fijop']= $this->input->post("num_fijop");
-            $dato['fec_nac']=$this->input->post("anio_nac")."-".$this->input->post("mes_nac")."-".$this->input->post("dia_nac");
-            $dato['fec_emision_doc']= $this->input->post("fec_emision");
-            $dato['fec_vencimiento_doc']= $this->input->post("fec_venci");
-            $dato['gusto_personales']= $this->input->post("gusto_personales");
+    public function Update_GDatosP(Request $request){
+            $dato['postulante'] = $request->input("ulante");
+            $dato['id_usuario'] = $request->input("id_usuariodp");
+            $dato['foto']= $request->input("foto");
 
-            $dato['foto_nombre']= $this->input->post("foto_nombre");
+            $dato['usuario_apater']= strtoupper($request->input("usuario_apater"));
+            $dato['usuario_amater']= strtoupper($request->input("usuario_amater"));
+            $dato['usuario_nombres']= strtoupper($request->input("usuario_nombres"));
+            $dato['id_nacionalidad']= $request->input("id_nacionalidad");
+            $dato['id_tipo_documento']= $request->input("id_tipo_documento");
+            $dato['num_doc']= $request->input("num_doc");
+            $dato['id_genero']= $request->input("id_genero");
+            $dato['dia_nac']= $request->input("dia_nac");
+            $dato['mes_nac']= $request->input("mes_nac");
+            $dato['anio_nac']= $request->input("anio_nac");
+            $dato['id_estado_civil']= $request->input("id_estado_civil");
+            $dato['usuario_email']= $request->input("usuario_email");
+            $dato['num_celp']= $request->input("num_celp");
+            $dato['num_fijop']= $request->input("num_fijop");
+            $dato['fec_nac']=$request->input("anio_nac")."-".$request->input("mes_nac")."-".$request->input("dia_nac");
+            $dato['fec_emision_doc']= $request->input("fec_emision");
+            $dato['fec_vencimiento_doc']= $request->input("fec_venci");
+            $dato['gusto_personales']= $request->input("gusto_personales");
 
-            $url = $this->Model_Corporacion->ruta_archivos();
+            $dato['foto_nombre']= $request->input("foto_nombre");
+            $this->Model_Perfil = new Model_Perfil();
+
+            $url = Config::where('id_config', 8)
+                ->get()
+                ->toArray();
+
             $dato['url_archivo'] = $url[0]['url_config'];
 
             if($dato['postulante']==1){
-                $dato['total'] = $this->Model_Postulante->get_id_postulante($dato['id_usuario']);
+                //$dato['total'] = $this->Model_Postulante->get_id_postulante($dato['id_usuario']);
 
                 $dato['foto']=$dato['total'][0]['foto'];
                 if($_FILES['foto']['name']!=""){
@@ -2200,11 +2213,11 @@ class ColaboradorController extends Controller
                     }
                 }
 
-                $this->Model_Postulante->update_gdatosp($dato);
+                //$this->Model_Postulante->update_gdatosp($dato);
 
 
             }else{
-                $dato['total'] = $this->Model_Corporacion->get_id_usuario($dato['id_usuario']);
+                $dato['total'] = $this->Model_Perfil->get_id_usuario($dato['id_usuario']);
 
                 $dato['foto']=$dato['total'][0]['foto'];
                 $dato['foto_nombre']=$dato['total'][0]['foto_nombre'];
@@ -2242,22 +2255,1651 @@ class ColaboradorController extends Controller
                     }
                 }
 
-                $this->Model_Corporacion->update_gdatosp($dato);
+                Usuario::where('id_usuario', $dato['id_usuario'])->update([
+                    'usuario_apater' => addslashes($dato['usuario_apater']),
+                    'usuario_amater' => addslashes($dato['usuario_amater']),
+                    'usuario_nombres' => addslashes($dato['usuario_nombres']),
+                    'id_nacionalidad' => $dato['id_nacionalidad'],
+                    'id_tipo_documento' => $dato['id_tipo_documento'],
+                    'num_doc' => $dato['num_doc'],
+                    'fec_emision_doc' => $dato['fec_emision_doc'],
+                    'fec_vencimiento_doc' => $dato['fec_vencimiento_doc'],
+                    'id_genero' => $dato['id_genero'],
+                    'dia_nac' => $dato['dia_nac'],
+                    'mes_nac' => $dato['mes_nac'],
+                    'anio_nac' => $dato['anio_nac'],
+                    'id_estado_civil' => $dato['id_estado_civil'],
+                    'usuario_email' => $dato['usuario_email'],
+                    'num_celp' => $dato['num_celp'],
+                    'num_fijop' => $dato['num_fijop'],
+                    'fec_nac' => $dato['fec_nac'],
+                    'foto' => $dato['foto'],
+                    'foto_nombre' => $dato['foto_nombre'],
+                    'gusto_personales' => $dato['gusto_personales'],
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario,
+                ]);
 
-                $id_usuario= $this->input->post("id_usuariodp");
+                $id_usuario= $request->input("id_usuariodp");
 
-                $dato['list_tipo_documento'] = $this->Model_Corporacion->get_list_tipo_documento();
-                $dato['list_nacionalidad_perfil'] = $this->Model_Corporacion->get_list_nacionalidad_perfil();
-                $dato['list_genero'] = $this->Model_Corporacion->get_list_genero();
-                $dato['list_dia'] = $this->Model_Corporacion->get_list_dia();
-                $dato['list_mes'] = $this->Model_Corporacion->get_list_mes();
-                $dato['list_anio'] = $this->Model_Corporacion->get_list_anio();
-                $dato['list_estado_civil'] = $this->Model_Corporacion->get_list_estado_civil();
-                $dato['get_id'] = $this->Model_Corporacion->get_id_usuario($id_usuario);
-                $_SESSION['foto']=$dato['get_id'][0]['foto'];
-                $dato['list_usuario'] = $this->Model_Corporacion->get_list_usuario($id_usuario);
+                $dato['list_tipo_documento'] = TipoDocumento::get();
+                $dato['list_nacionalidad_perfil'] = $this->Model_Perfil->get_list_nacionalidad_perfil();
+                $dato['list_genero'] = $this->Model_Perfil->get_list_genero();
+                $dato['list_dia'] = $this->Model_Perfil->get_list_dia();
+                $dato['list_mes'] = $this->Model_Perfil->get_list_mes();
+                $dato['list_anio'] = $this->Model_Perfil->get_list_anio();
+                $dato['list_estado_civil'] = EstadoCivil::where('estado', 1)
+                                        ->get();
+                $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+                //$_SESSION['foto']=$dato['get_id'][0]['foto'];
+                $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario($id_usuario);
 
-                $this->load->view('Admin/Colaborador/Perfil/datospersonales', $dato);
+                return view('rrhh.Perfil.datospersonales', $dato);
             }
+    }
+
+    /* Gustos y Preferencias*/
+    public function Update_GustosP(Request $request){
+            $dato['postulante'] = $request->input("postulante");
+
+            $dato['id_usuario'] = $request->input("id_usuariodp");
+
+            $dato['plato_postre']= strtoupper($request->input("plato_postre"));
+            $dato['galletas_golosinas']= strtoupper($request->input("galletas_golosinas"));
+            $dato['ocio_pasatiempos']= strtoupper($request->input("ocio_pasatiempos"));
+            $dato['artistas_banda']= strtoupper($request->input("artistas_banda"));
+            $dato['genero_musical']= strtoupper($request->input("genero_musical"));
+            $dato['pelicula_serie']= strtoupper($request->input("pelicula_serie"));
+            $dato['colores_favorito']= strtoupper($request->input("colores_favorito"));
+            $dato['redes_sociales']= strtoupper($request->input("redes_sociales"));
+            $dato['deporte_favorito']= strtoupper($request->input("deporte_favorito"));
+            $dato['tiene_mascota']= $request->input("tiene_mascota");
+            $dato['mascota']= strtoupper($request->input("mascota"));
+
+            if($dato['postulante']==1){
+                //$dato['total'] = $this->Model_Postulante->get_id_postulante($dato['id_usuario']);
+
+                //$this->Model_Postulante->update_gustos_preferencias($dato);
+
+                $id_usuario= $request->input("id_usuariodp");
+
+                $dato['list_tipo_documento'] = TipoDocumento::get();
+                $dato['list_nacionalidad_perfil'] = $this->Model_Perfil->get_list_nacionalidad_perfil();
+                $dato['list_genero'] = $this->Model_Perfil->get_list_genero();
+                //$dato['get_id'] = $this->Model_Postulante->get_id_postulante($id_usuario);
+                $_SESSION['foto']=$dato['get_id'][0]['foto'];
+
+                $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario($_SESSION['usuario'][0]['id_usuario']);
+
+                return view('rrhh.Perfil.datospersonales_postulante', $dato);
+            }else{
+                $dato['total'] = GustoPreferenciaUsers::where('id_usuario', $dato['id_usuario'])
+                            ->where('estado', 1)
+                            ->get();
+
+                if($dato['total']){
+                    GustoPreferenciaUsers::where('id_usuario', $dato['id_usuario'])->update([
+                        'plato_postre' => addslashes($dato['plato_postre']),
+                        'galletas_golosinas' => addslashes($dato['galletas_golosinas']),
+                        'ocio_pasatiempos' => addslashes($dato['ocio_pasatiempos']),
+                        'artistas_banda' => addslashes($dato['artistas_banda']),
+                        'genero_musical' => addslashes($dato['genero_musical']),
+                        'pelicula_serie' => addslashes($dato['pelicula_serie']),
+                        'colores_favorito' => addslashes($dato['colores_favorito']),
+                        'redes_sociales' => addslashes($dato['redes_sociales']),
+                        'deporte_favorito' => addslashes($dato['deporte_favorito']),
+                        'tiene_mascota' => $dato['tiene_mascota'],
+                        'mascota' => addslashes($dato['mascota']),
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                    ]);
+                }else{
+                    GustoPreferenciaUsers::create([
+                        'id_usuario' => $dato['id_usuario'],
+                        'plato_postre' => $dato['plato_postre'],
+                        'galletas_golosinas' => $dato['galletas_golosinas'],
+                        'ocio_pasatiempos' => $dato['ocio_pasatiempos'],
+                        'artistas_banda' => $dato['artistas_banda'],
+                        'genero_musical' => $dato['genero_musical'],
+                        'pelicula_serie' => $dato['pelicula_serie'],
+                        'colores_favorito' => $dato['colores_favorito'],
+                        'redes_sociales' => $dato['redes_sociales'],
+                        'deporte_favorito' => $dato['deporte_favorito'],
+                        'tiene_mascota' => $dato['tiene_mascota'],
+                        'mascota' => $dato['mascota'],
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario,
+                        'estado' => 1,
+                    ]);
+                }
+
+                $id_usuario= $request->input("id_usuariodp");
+
+                $dato['get_id_gp'] = GustoPreferenciaUsers::where('id_usuario', $id_usuario)
+                            ->where('estado', 1)
+                            ->get();
+
+                return view('rrhh.Perfil.gustosypreferencias', $dato);
+            }
+    }
+
+    public function Habilitar_Edicion_Perfil(Request $request){
+            $dato['id_usuario']= $request->input("id_usuario");
+            $dato['estado_edicion']= $request->input("estado_edicion");
+            // Verificar el valor de estado_edicion y establecer perf_revisado
+            $perf_revisado = ($dato['estado_edicion'] == 0) ? 1 : 0;
+
+            // Realizar la actualización usando Eloquent
+            Usuario::where('id_usuario', $dato['id_usuario'])
+                ->update([
+                    'edicion_perfil' => $dato['estado_edicion'],
+                    'perf_revisado' => $perf_revisado,
+                    'fec_edi_perfil' => now(),
+                    'user_edi_perfil' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario,
+                ]);
+    }
+
+    public function Confirmar_Revision_Perfil(Request $request){
+            $dato['id_usuario']= $request->input("id_usuario");
+
+            $id_usuario = session('usuario')->id_usuario;
+
+            Usuario::where('id_usuario', $dato['id_usuario'])
+                ->update([
+                    'perf_revisado' => 1,
+                    'fec_perf_revisado' => now(),
+                    'user_perf_revisado' => $id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => $id_usuario,
+                ]);
+    }
+
+    public function Update_DomilcilioP(Request $request){
+        $this->Model_Perfil = new Model_Perfil();
+            $dato['postulante'] = $request->input("ulante");
+
+            $dato['id_usuario'] = $request->input("id_usuariodp");
+
+            $dato['id_departamento']= $request->input("id_departamento");
+            $dato['id_provincia']= $request->input("id_provincia");
+            $dato['id_distrito']= $request->input("id_distrito");
+            $dato['id_tipo_via']= $request->input("id_tipo_via");
+            $dato['nom_via']= strtoupper($request->input("nom_via"));
+            $dato['num_via']= strtoupper($request->input("num_via"));
+            $dato['id_zona']= $request->input("id_zona");
+            $dato['nom_zona']= strtoupper($request->input("nom_zona"));
+            $dato['kilometro']= strtoupper($request->input("kilometro"));
+            $dato['manzana']= strtoupper($request->input("manzana"));
+            $dato['lote']= strtoupper($request->input("lote"));
+            $dato['interior']= strtoupper($request->input("interior"));
+            $dato['departamento']= strtoupper($request->input("departamento"));
+            $dato['piso']= strtoupper($request->input("piso"));
+
+            $dato['referencia']= $request->input("referenciaa");
+            $dato['id_tipo_vivienda']= $request->input("id_tipo_vivienda");
+            $dato['lat']= $request->input("coordsltd");
+            $dato['lng']= $request->input("coordslgt");
+
+            $id_usuario= $request->input("id_usuariodp");
+
+            if($dato['postulante']==1){
+                /*
+                $dato['get_id_d'] = $this->Model_Postulante->get_id_domicilio_usersp($dato['id_usuario']);
+                if(count($dato['get_id_d'])>0)
+                {
+                    $this->Model_Postulante->update_domiciliop($dato);
+                }
+                else{
+                    $this->Model_Postulante->insert_domiciliop($dato);
+                }
+
+                $dato['list_dtipo_via'] = $this->Model_Corporacion->get_id_dtipo_via();
+                $dato['list_zona'] = $this->Model_Corporacion->get_list_zona();
+                $dato['list_dtipo_vivienda'] = $this->Model_Corporacion->get_id_dtipo_vivienda();
+                $dato['list_departamento'] = $this->Model_Corporacion->get_list_departamento();
+                $dato['list_provincia'] = $this->Model_Corporacion->get_list_provincia();
+                $dato['list_distrito'] = $this->Model_Corporacion->get_list_distrito();
+                $dato['get_id_d'] = $this->Model_Postulante->get_id_domicilio_usersp($id_usuario);
+                return view('Admin/Colaborador/Perfil/domiciliop', $dato);
+                */
+            }else{
+                $dato['get_id_d'] = DomicilioUsers::get_id_domicilio_users($dato['id_usuario']);
+                if(count($dato['get_id_d'])>0)
+                {
+                    $id_usuario = session('usuario')->id_usuario;
+                    DomicilioUsers::where('id_usuario', $dato['id_usuario'])->update([
+                            'id_usuario' => $dato['id_usuario'],
+                            'id_departamento' => $dato['id_departamento'],
+                            'id_provincia' => $dato['id_provincia'],
+                            'id_distrito' => $dato['id_distrito'],
+                            'id_tipo_via' => $dato['id_tipo_via'],
+                            'nom_via' => $dato['nom_via'],
+                            'num_via' => $dato['num_via'],
+                            'id_zona' => $dato['id_zona'],
+                            'nom_zona' => $dato['nom_zona'],
+                            'referencia' => $dato['referencia'],
+                            'kilometro' => $dato['kilometro'],
+                            'manzana' => $dato['manzana'],
+                            'lote' => $dato['lote'],
+                            'interior' => $dato['interior'],
+                            'departamento' => $dato['departamento'],
+                            'piso' => $dato['piso'],
+                            'id_tipo_vivienda' => $dato['id_tipo_vivienda'],
+                            'lat' => $dato['lat'],
+                            'lng' => $dato['lng'],
+                            'fec_act' => now(),
+                            'user_act' => $id_usuario,
+                        ]);
+                }
+                else{
+                    DomicilioUsers::create([
+                        'id_usuario' => $dato['id_usuario'],
+                        'id_departamento' => $dato['id_departamento'],
+                        'id_provincia' => $dato['id_provincia'],
+                        'id_distrito' => $dato['id_distrito'],
+                        'id_tipo_via' => $dato['id_tipo_via'],
+                        'nom_via' => $dato['nom_via'],
+                        'num_via' => $dato['num_via'],
+                        'id_zona' => $dato['id_zona'],
+                        'nom_zona' => $dato['nom_zona'],
+                        'referencia' => $dato['referencia'],
+                        'id_tipo_vivienda' => $dato['id_tipo_vivienda'],
+                        'kilometro' => $dato['kilometro'],
+                        'manzana' => $dato['manzana'],
+                        'lote' => $dato['lote'],
+                        'interior' => $dato['interior'],
+                        'departamento' => $dato['departamento'],
+                        'piso' => $dato['piso'],
+                        'lat' => $dato['lat'],
+                        'lng' => $dato['lng'],
+                        'fec_reg' => now(),
+                        'user_reg' => $id_usuario,
+                        'estado' => 1
+                    ]);
+                }
+
+                $dato['list_dtipo_via'] = TipoVia::get();
+                $dato['list_zona'] = Zona::where('estado', 1)
+                                ->get();
+
+                $dato['list_dtipo_vivienda'] = TipoVivienda::get();
+                $dato['list_departamento'] = DB::table('departamento')
+                                            ->where('estado', 1)
+                                            ->get();
+                $dato['list_provincia'] = DB::table('provincia')
+                                            ->where('estado', 1)
+                                            ->get();
+                $dato['list_distrito'] = DB::table('distrito')
+                                            ->where('estado', 1)
+                                            ->get();
+                $dato['get_id_d'] = $this->Model_Perfil->get_id_domicilio_users($id_usuario);
+                return view('rrhh.Perfil.domicilio', $dato);
+            }
+    }
+
+    public function Update_DomilcilioP_Titulo(Request $request){
+        $this->Model_Perfil = new Model_Perfil();
+            $dato['id_usuario'] = $request->input("id_usuariodp");
+
+            $dato['get_id_d'] = $this->Model_Perfil->get_id_domicilio_users($dato['id_usuario']);
+            return view('rrhh.Perfil.domicilio_titulos', $dato);
+    }
+
+    /*********************************************************************************** */
+    public function Insert_ReferenciaF(Request $request){
+            $dato['id_usuario'] = $request->input("id_usuariodp");
+
+            $dato['nom_familiar'] = strtoupper($request->input("nom_familiar"));
+            $dato['id_parentesco'] = $request->input("id_parentesco");
+            $dato['dia_nacf'] = $request->input("dia_nacf");
+            $dato['mes_nacf'] = $request->input("mes_nacf");
+            $dato['anio_nacf'] = $request->input("anio_nacf");
+            $dato['celular1'] = $request->input("celular1");
+            $dato['celular2'] = $request->input("celular2");
+            $dato['fijo'] = $request->input("fijo");
+            $dato['fec_nac'] = $request->input("anio_nacf")."-".$request->input("mes_nacf")."-".$request->input("dia_nacf");
+
+            $id_usuario = session('usuario')->id_usuario; // Obtener el ID del usuario desde la sesión
+
+            ReferenciaFamiliar::create([
+                'id_usuario' => $dato['id_usuario'],
+                'nom_familiar' => $dato['nom_familiar'],
+                'id_parentesco' => $dato['id_parentesco'],
+                'dia_nac' => $dato['dia_nacf'],
+                'mes_nac' => $dato['mes_nacf'],
+                'anio_nac' => $dato['anio_nacf'],
+                'celular1' => $dato['celular1'],
+                'celular2' => $dato['celular2'],
+                'fijo' => $dato['fijo'],
+                'fec_nac' => $dato['fec_nac'],
+                'fec_reg' => now(),
+                'user_reg' => $id_usuario,
+                'estado' => 1
+            ]);
+
+            $dato['list_referenciafu'] = ReferenciaFamiliar::get_list_referenciafu($dato['id_usuario']);
+
+            return view('rrhh.Perfil.Referencia_Familiar.ldatos', $dato);
+    }
+
+    public function Detalle_Referencia_Familiar(Request $request){
+            $id_referencia_familiar= $request->input("id_referencia_familiar");
+            $this->Model_Perfil = new Model_Perfil();
+
+            $dato['list_dia'] = $this->Model_Perfil->get_list_dia();
+            $dato['list_mes'] = $this->Model_Perfil->get_list_mes();
+            $dato['list_anio'] = $this->Model_Perfil->get_list_anio();
+            $dato['list_parentesco'] = Parentesco::where('estado', 1)
+                                        ->get();
+            $dato['get_id'] = ReferenciaFamiliar::get_list_referenciaf($id_referencia_familiar);
+            return view('rrhh.Perfil.Referencia_Familiar.editar', $dato);
+    }
+
+    public function Update_ReferenciaF(Request $request){
+            $dato['id_usuario'] = $request->input("id_usuariodp");
+            $dato['id_referencia_familiar'] = $request->input("id_referencia_familiar");
+            $dato['nom_familiar'] = strtoupper($request->input("nom_familiar"));
+            $dato['id_parentesco'] = $request->input("id_parentesco");
+            $dato['dia_nacf'] = $request->input("dia_nacf");
+            $dato['mes_nacf'] = $request->input("mes_nacf");
+            $dato['anio_nacf'] = $request->input("anio_nacf");
+            $dato['celular1'] = $request->input("celular1");
+            $dato['celular2'] = $request->input("celular2");
+            $dato['fijo'] = $request->input("fijo");
+            $dato['fec_nac'] = $request->input("anio_nacf")."-".$request->input("mes_nacf")."-".$request->input("dia_nacf");
+
+            $id_usuario = session('usuario')->id_usuario;
+
+            ReferenciaFamiliar::where('id_referencia_familiar', $dato['id_referencia_familiar'])
+                ->update([
+                    'id_usuario' => $dato['id_usuario'],
+                    'nom_familiar' => $dato['nom_familiar'],
+                    'id_parentesco' => $dato['id_parentesco'],
+                    'dia_nac' => $dato['dia_nacf'],
+                    'mes_nac' => $dato['mes_nacf'],
+                    'anio_nac' => $dato['anio_nacf'],
+                    'celular1' => $dato['celular1'],
+                    'celular2' => $dato['celular2'],
+                    'fijo' => $dato['fijo'],
+                    'fec_nac' => $dato['fec_nac'],
+                    'fec_act' => now(),
+                    'user_act' => $id_usuario,
+                ]);
+
+            $data['list_referenciafu'] = ReferenciaFamiliar::get_list_referenciafu($dato['id_usuario']);
+
+            return view('rrhh.Perfil.Referencia_Familiar.ldatos', $data);
+    }
+
+    public function MDatos_ReferenciaF(){
+        $this->Model_Perfil = new Model_Perfil();
+        $dato['list_dia'] = $this->Model_Perfil->get_list_dia();
+        $dato['list_mes'] = $this->Model_Perfil->get_list_mes();
+        $dato['list_anio'] = $this->Model_Perfil->get_list_anio();
+        $dato['list_parentesco'] = Parentesco::where('estado', 1)
+                                    ->get();
+            return view('rrhh.Perfil.Referencia_Familiar.index', $dato);
+    }
+
+    public function Delete_Referencia_Familiar(Request $request, $id_referencia_familiar=null ,$id_usuario=null){
+        $this->Model_Perfil = new Model_Perfil();
+
+            $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+            $get_id = $this->Model_Perfil->get_id_usuario($id_usuario);
+            $dato['id_usuario'] = $get_id[0]['id_usuario'];
+
+            $dato['id_referencia_familiar']= $request->input("id_referencia_familiar");
+            $dato['id_usuario']= $request->input("id_usuario");
+
+            $id_usuario = session('usuario')->id_usuario;
+
+            ReferenciaFamiliar::where('id_referencia_familiar', $dato['id_referencia_familiar'])
+                ->update([
+                    'estado' => 2,
+                    'fec_eli' => now(),
+                    'user_eli' => $id_usuario,
+                ]);
+
+            $dato['list_referenciafu'] = ReferenciaFamiliar::get_list_referenciafu($dato['id_usuario']);
+            return view('rrhh.Perfil.Referencia_Familiar.ldatos', $dato);
+    }
+
+    /*********************************************************************************** */
+    public function Lista_Hijos(Request $request){
+            $id_usuario= $request->input("id_usuarioh");
+            $dato['list_hijosu'] = Hijos::get_list_hijosu($id_usuario);
+            $dato['url'] = Config::where('descrip_config','Datos_Hijos')
+                ->where('estado', 1)
+                ->get();
+            return view('rrhh.Perfil.Hijos.ldatos', $dato);
+    }
+
+    public function Insert_Hijos_Usuario(Request $request){
+            $dato['id_usuarioh'] = $request->input("id_usuarioh");
+            $dato['nom_hijo'] = strtoupper($request->input("nom_hijo"));
+            $dato['id_genero'] = $request->input("id_generoh");
+            $dato['dia_nac'] = $request->input("dia_nachj");
+            $dato['mes_nac'] = $request->input("mes_nachj");
+            $dato['anio_nac'] = $request->input("anio_nachj");
+            $dato['num_doc'] = $request->input("num_dochj");
+            $dato['id_biologico'] = $request->input("id_biologico");
+            $dato['fijo'] = $request->input("fijo");
+            $dato['fec_nac'] = $request->input("anio_nachj")."-".$request->input("mes_nachj")."-".$request->input("dia_nachj");
+            $dato['id_respuestah'] = $request->input("id_respuestah");
+            $dato['documento'] = $request->input("documento");
+
+            $dato['archivo']="";
+
+            if($_FILES["documento"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if((!$con_id) || (!$lr)){
+                    //echo "No se conecto";
+                }else{
+                    //echo "Se conecto";
+                    $path = $_FILES['documento']['name'];
+                    if($path!=""){
+                        $temp = explode(".",$_FILES['documento']['name']);
+                        $source_file = $_FILES['documento']['tmp_name'];
+
+                        $fechaHoraActual = date('Y-m-dHis');
+                        $caracteresPermitidos = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $codigoUnico = '';
+                        do {
+                            $cadenaAleatoria = '';
+                            for ($i = 0; $i < 20; $i++) {
+                                $cadenaAleatoria .= $caracteresPermitidos[rand(0, strlen($caracteresPermitidos) - 1)];
+                            }
+                            $codigoUnico = $cadenaAleatoria . $fechaHoraActual;
+                            $nombre="dochijo_".$dato['id_usuarioh']."_".$codigoUnico."_".rand(10,199).".".$ext;
+                            $nombre_archivo = "PERFIL/DOCUMENTACION/DATOS_HIJOS/".$nombre;
+                            $duplicado=0;
+
+                        }while ($duplicado>0);
+
+                        ftp_pasv($con_id, true);
+
+                    }
+                    ftp_close($con_id);
+                }
+            }
+            $id_usuario = session('usuario')->id_usuario;
+
+            Usuario::where('id_usuario', $dato['id_usuarioh'])
+                ->update([
+                    'hijos' => $dato['id_respuestah'],
+                    'fec_act' => now(),
+                    'user_act' => $id_usuario,
+                ]);
+            if ($dato['id_respuestah'] == 1) {
+                Hijos::create([
+                    'id_usuario' => $dato['id_usuarioh'],
+                    'nom_hijo' => $dato['nom_hijo'],
+                    'id_genero' => $dato['id_genero'],
+                    'dia_nac' => $dato['dia_nac'],
+                    'mes_nac' => $dato['mes_nac'],
+                    'anio_nac' => $dato['anio_nac'],
+                    'id_biologico' => $dato['id_biologico'],
+                    'num_doc' => $dato['num_doc'],
+                    'documento' => $dato['archivo'],
+                    'fec_nac' => $dato['fec_nac'],
+                    'fec_reg' => now(),
+                    'user_reg' => $id_usuario,
+                    'estado' => 1,
+                    'id_tipo_documento' => 0,
+                    'id_vinculo' => 0,
+                    'id_situacion' => 0,
+                    'id_motivo_baja' => 0,
+                    'id_tipo_via' => 0,
+                    'id_zona' => 0,
+                    'carta_medica' => 0,
+                    'n_certificado_medico' => 0,
+                    'nom_via' => 0,
+                    'num_via' => 0,
+                    'interior' => 0,
+                    'nom_zona' => 0,
+                    'referencia' => 0,
+                    'documento_nombre' => 0,
+                ]);
+            } else {
+                // Si id_respuestah no es igual a 1, se actualiza el estado de hijos
+                Hijos::where('id_usuario', $dato['id_usuarioh'])
+                    ->update([
+                        'estado' => 2,
+                        'fec_act' => now(),
+                        'user_act' => $id_usuario,
+                    ]);
+            }
+
+    }
+
+    public function Detalle_Hijos_Usuario(Request $request){
+        $this->Model_Perfil = new Model_Perfil();
+
+            $id_hijos= $request->input("id_hijos");
+            $dato['list_dia'] = $this->Model_Perfil->get_list_dia();
+            $dato['list_mes'] = $this->Model_Perfil->get_list_mes();
+            $dato['list_anio'] = $this->Model_Perfil->get_list_anio();
+            $dato['list_genero'] = $this->Model_Perfil->get_list_genero();
+            $dato['get_id'] = Hijos::get_list_hijosd($id_hijos);
+            $dato['url_dochijo'] = Config::where('descrip_config','Datos_Hijos')
+                                ->where('estado', 1)
+                                ->get();
+            return view('rrhh.Perfil.Hijos.editar', $dato);
+    }
+
+    public function Update_Hijos(Request $request){
+            $dato['id_usuarioh'] = $request->input("id_usuarioh");
+            $dato['id_hijos'] = $request->input("id_hijos");
+            $dato['nom_hijo'] = strtoupper($request->input("nom_hijo"));
+            $dato['id_genero'] = $request->input("id_generoh");
+            $dato['dia_nac'] = $request->input("dia_nachj");
+            $dato['mes_nac'] = $request->input("mes_nachj");
+            $dato['anio_nac'] = $request->input("anio_nachj");
+            $dato['num_doc'] = $request->input("num_dochj");
+            $dato['id_biologico'] = $request->input("id_biologico");
+            $dato['fec_nac'] = $request->input("anio_nachj")."-".$request->input("mes_nachj")."-".$request->input("dia_nachj");
+            $dato['id_respuestah'] = $request->input("id_respuestah");
+            $dato['documento'] = $request->input("documento");
+            $dato['documento_nombre'] = $request->input("documento_nombre");
+            $dato['total'] = Hijos::get_list_hijosu($dato['id_usuarioh']);
+
+            $dato['get_id'] = Hijos::get_list_hijosd($dato['id_hijos']);
+            $dato['archivo']=$dato['get_id'][0]['documento'];
+
+            if($_FILES["documento"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if((!$con_id) || (!$lr)){
+                }else{
+                    $path = $_FILES['documento']['name'];
+                    if($path!=""){
+                        $temp = explode(".",$_FILES['documento']['name']);
+                        $source_file = $_FILES['documento']['tmp_name'];
+
+                        $fechaHoraActual = date('Y-m-dHis');
+                        $caracteresPermitidos = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $codigoUnico = '';
+                        do {
+                            $cadenaAleatoria = '';
+                            for ($i = 0; $i < 20; $i++) {
+                                $cadenaAleatoria .= $caracteresPermitidos[rand(0, strlen($caracteresPermitidos) - 1)];
+                            }
+                            $codigoUnico = $cadenaAleatoria . $fechaHoraActual;
+                            $nombre="dochijo_".$dato['id_hijos']."_".$codigoUnico."_".rand(10,199).".".$ext;
+                            $nombre_archivo = "PERFIL/DOCUMENTACION/DATOS_HIJOS/".$nombre;
+                            $duplicado=0;
+
+                        }while ($duplicado>0);
+
+                        ftp_pasv($con_id, true);
+
+                        if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
+                            $dato['archivo'] = $nombre;
+                        }else{
+                            $error = error_get_last();
+                        }
+                        restore_error_handler();
+                    }
+                    ftp_close($con_id);
+                }
+            }
+            $id_usuario = session('usuario')->id_usuario;
+
+            Usuario::where('id_usuario', $dato['id_usuarioh'])
+                ->update([
+                    'hijos' => $dato['id_respuestah'],
+                    'fec_act' => now(),
+                    'user_act' => $id_usuario
+                ]);
+
+        if ($request->id_respuestah == 1) {
+            Hijos::where('id_hijos', $request->id_hijos)
+                ->update([
+                    'id_usuario' => $request->id_usuarioh,
+                    'nom_hijo' => $request->nom_hijo,
+                    'id_genero' => $request->id_generoh,
+                    'dia_nac' => $request->dia_nachj,
+                    'mes_nac' => $request->mes_nachj,
+                    'anio_nac' => $request->anio_nachj,
+                    'id_biologico' => $request->id_biologico,
+                    'num_doc' => $request->num_dochj,
+                    'documento' => $request->documento,
+                    'fec_nac' => $dato['fec_nac'],
+                    'fec_act' => now(),
+                    'user_act' => $id_usuario,
+                ]);
+        } else {
+            Hijos::where('id_usuario', $request->id_usuarioh)
+                ->update([
+                    'estado' => 2,
+                    'fec_act' => now(),
+                    'user_act' => $id_usuario,
+                ]);
+        }
+    }
+
+    public function MDatos_Hijos(Request $request){
+        $this->Model_Perfil = new Model_Perfil();
+
+            $id_usuario = $request->input("id_usuarioh");
+            $dato['list_genero'] = $this->Model_Perfil->get_list_genero();
+            $dato['list_dia'] = $this->Model_Perfil->get_list_dia();
+            $dato['list_mes'] = $this->Model_Perfil->get_list_mes();
+            $dato['list_anio'] = $this->Model_Perfil->get_list_anio();
+
+            $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario($id_usuario);
+            return view('rrhh.Perfil.Hijos.index', $dato);
+    }
+
+    public function Delete_Hijos_Usuario(Request $request, $id_hijos=null ,$id_usuario=null){
+        $this->Model_Perfil = new Model_Perfil();
+        $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+        $get_id = $this->Model_Perfil->get_id_usuario($id_usuario);
+        $dato['id_usuario'] = $get_id[0]['id_usuario'];
+        $dato['id_hijos']= $request->input("id_hijos");
+        $dato['id_usuario']= $request->input("id_usuario");
+
+        $id_usuario = session('usuario')->id_usuario;
+
+        Hijos::where('id_hijos', $dato['id_hijos'])
+            ->update([
+                'estado' => 2,
+                'fec_eli' => now(),
+                'user_eli' => $id_usuario,
+            ]);
+    }
+
+    /******************************* */
+    public function Insert_ContactoE(Request $request){
+            $dato['id_usuario'] = $request->input("id_usuariodp");
+
+            $dato['nom_contacto'] = strtoupper($request->input("nom_contacto"));
+            $dato['id_parentesco'] = $request->input("id_parentescoce");
+            $dato['celular1'] = $request->input("celular1ce");
+            $dato['celular2'] = $request->input("celular2ce");
+            $dato['fijo'] = $request->input("fijoce");
+
+            ContactoEmergencia::create([
+                'id_usuario' => $dato['id_usuario'],
+                'nom_contacto' => $dato['nom_contacto'],
+                'id_parentesco' => $dato['id_parentesco'],
+                'celular1' => $dato['celular1'],
+                'celular2' => $dato['celular2'],
+                'fijo' => $dato['fijo'],
+                'fec_reg' => now(), // Fecha de registro
+                'user_reg' => session('usuario')->id_usuario, // Usuario que registra
+                'estado' => 1, // Estado activo
+            ]);
+
+            $dato['list_contactoeu'] = ContactoEmergencia::get_list_contactoeu($dato['id_usuario']);
+            return view('rrhh.Perfil.Contacto_Emergencia.ldatos', $dato);
+    }
+
+    public function Update_ContactoE(Request $request){
+            $dato['id_usuario'] = $request->input("id_usuariodp");
+            $dato['id_contacto_emergencia'] = $request->input("id_contacto_emergencia");
+            $dato['nom_contacto'] = strtoupper($request->input("nom_contacto"));
+            $dato['id_parentesco'] = $request->input("id_parentescoce");
+            $dato['celular1'] = $request->input("celular1ce");
+            $dato['celular2'] = $request->input("celular2ce");
+            $dato['fijo'] = $request->input("fijoce");
+            $id_usuario = session('usuario')->id_usuario;
+
+            ContactoEmergencia::where('id_contacto_emergencia', $dato['id_contacto_emergencia'])
+            ->update([
+                'id_usuario' => $dato['id_usuario'],
+                'nom_contacto' => $dato['nom_contacto'],
+                'id_parentesco' => $dato['id_parentesco'],
+                'celular1' => $dato['celular1'],
+                'celular2' => $dato['celular2'],
+                'fijo' => $dato['fijo'],
+                'fec_act' => now(), // Fecha de actualización
+                'user_act' => $id_usuario, // Usuario que actualiza
+            ]);
+            $dato['list_contactoeu'] = ContactoEmergencia::get_list_contactoeu($dato['id_usuario']);
+            return view('rrhh.Perfil.Contacto_Emergencia.ldatos', $dato);
+    }
+
+    public function MDatos_ContactoE(){
+        $dato['list_parentesco'] = Parentesco::where('estado', 1)
+                                    ->get();
+            return view('rrhh.Perfil.Contacto_Emergencia.index', $dato);
+    }
+
+    public function Detalle_ContactoE(Request $request){
+            $id_contacto_emergencia= $request->input("id_contacto_emergencia");
+            $dato['list_parentesco'] = Parentesco::where('estado', 1)
+                                        ->get();
+
+            $dato['get_id'] = ContactoEmergencia::get_list_contactoe($id_contacto_emergencia);
+            return view('rrhh.Perfil.Contacto_Emergencia.editar', $dato);
+    }
+
+    public function Delete_ContactoE(Request $request, $id_contacto_emergencia=null ,$id_usuario=null){
+        $this->Model_Perfil = new Model_Perfil();
+
+            $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+            $get_id = $this->Model_Perfil->get_id_usuario($id_usuario);
+            $dato['id_usuario'] = $get_id[0]['id_usuario'];
+
+            $dato['id_contacto_emergencia']= $request->input("id_contacto_emergencia");
+
+            $dato['id_usuario']= $request->input("id_usuario");
+
+            ContactoEmergencia::where('id_contacto_emergencia', $dato['id_contacto_emergencia'])
+            ->update([
+                'estado' => 2, // Marcado como eliminado
+                'fec_eli' => now(), // Fecha de eliminación
+                'user_eli' => $id_usuario, // Usuario que realizó la eliminación
+            ]);
+
+            $dato['list_contactoeu'] = ContactoEmergencia::get_list_contactoeu($dato['id_usuario']);
+
+            return view('rrhh.Perfil.Contacto_Emergencia.ldatos', $dato);
+    }
+
+
+    /*********************************************************************************** */
+    public function Lista_EstudiosG(Request $request){
+            $id_usuario = $request->input("id_usuariodp");
+            $dato['list_estudiosgu'] = EstudiosGenerales::get_list_estudiosgu($id_usuario);
+            $dato['url_estudiog'] = Config::where('descrip_config','Estudios_Generales')
+                                ->where('estado', 1)
+                                ->get();
+            return view('rrhh.Perfil.Estudios_Generales.ldatos', $dato);
+    }
+
+    public function Insert_EstudiosG(Request $request){
+            $dato['id_usuario'] = $request->input("id_usuariodp");
+
+            $dato['id_grado_instruccion'] = $request->input("id_grado_instruccion");
+            $dato['carrera'] = strtoupper($request->input("carrera"));
+            $dato['centro'] = strtoupper($request->input("centro"));
+
+            $dato['archivo']="";
+
+            if($_FILES["documentoe"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if((!$con_id) || (!$lr)){
+                    //echo "No se conecto";
+                }else{
+                    //echo "Se conecto";
+                    $path = $_FILES['documentoe']['name'];
+                    if($path!=""){
+                        $temp = explode(".",$_FILES['documentoe']['name']);
+                        $source_file = $_FILES['documentoe']['tmp_name'];
+
+                        $fechaHoraActual = date('Y-m-dHis');
+                        $caracteresPermitidos = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $codigoUnico = '';
+                        do {
+                            $cadenaAleatoria = '';
+                            for ($i = 0; $i < 20; $i++) {
+                                $cadenaAleatoria .= $caracteresPermitidos[rand(0, strlen($caracteresPermitidos) - 1)];
+                            }
+                            $codigoUnico = $cadenaAleatoria . $fechaHoraActual;
+                            $nombre="docestudio_".$dato['id_usuario']."_".$codigoUnico."_".rand(10,199).".".$ext;
+                            $nombre_archivo = "PERFIL/DOCUMENTACION/ESTUDIOS_GENERALES/".$nombre;
+                            $duplicado=0;
+
+                        }while ($duplicado>0);
+
+                        ftp_pasv($con_id, true);
+
+                        if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
+                            $dato['archivo'] = $nombre;
+                        }else{
+                            $error = error_get_last();
+                        }
+                        restore_error_handler();
+                    }
+                    ftp_close($con_id);
+                }
+            }
+            $id_usuario = session('usuario')->id_usuario;
+
+            EstudiosGenerales::create([
+                'id_usuario' => $dato['id_usuario'],
+                'id_grado_instruccion' => $dato['id_grado_instruccion'],
+                'carrera' => $dato['carrera'],
+                'centro' => $dato['centro'],
+                'documentoe' => $dato['archivo'],
+                'documentoe_nombre' => 0,
+                'fec_reg' => now(),
+                'user_reg' => $id_usuario,
+                'estado' => 1
+            ]);
+    }
+
+    public function Detalle_EstudiosG(Request $request){
+            $id_estudios_generales= $request->input("id_estudios_generales");
+            $dato['list_grado_instruccion'] = GradoInstruccion::where('estado', 1)
+                                        ->get();
+            $dato['get_id'] = EstudiosGenerales::get_list_estudiosge($id_estudios_generales);
+            $dato['url_estudiog'] = Config::where('descrip_config','Estudios_Generales')
+                                ->where('estado', 1)
+                                ->get();
+            return view('rrhh.Perfil.Estudios_Generales.editar', $dato);
+    }
+
+    public function MDatos_EstudiosG(){
+            $dato['list_grado_instruccion'] = GradoInstruccion::where('estado', 1)
+                                        ->get();
+            return view('rrhh.Perfil.Estudios_Generales.index', $dato);
+    }
+
+    public function Update_EstudiosG(Request $request){
+            $dato['id_estudios_generales'] = $request->input("id_estudios_generales");
+           // $dato['id_usuario'] = $_SESSION['usuario'][0]['id_usuario'];
+           $dato['id_usuario'] = $request->input("id_usuariodp");
+
+            $dato['id_grado_instruccion'] = $request->input("id_grado_instruccion");
+            $dato['carrera'] = strtoupper($request->input("carrera"));
+            $dato['centro'] = strtoupper($request->input("centro"));
+            $dato['documentoe'] = strtoupper($request->input("documentoe"));
+            $dato['documentoe_nombre'] = strtoupper($request->input("documentoe_nombre"));
+
+            $dato['total'] = EstudiosGenerales::get_list_estudiosgu($dato['id_usuario']);
+
+            $dato['archivo']="";
+            if(count($dato['total'])>0){
+                $dato['archivo']=$dato['total'][0]['documentoe'];
+            }
+
+            if($_FILES["documentoe"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if((!$con_id) || (!$lr)){
+                    //echo "No se conecto";
+                }else{
+                    //echo "Se conecto";
+                    $path = $_FILES['documentoe']['name'];
+                    if($path!=""){
+                        $temp = explode(".",$_FILES['documentoe']['name']);
+                        $source_file = $_FILES['documentoe']['tmp_name'];
+
+                        $fechaHoraActual = date('Y-m-dHis');
+                        $caracteresPermitidos = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $codigoUnico = '';
+                        do {
+                            $cadenaAleatoria = '';
+                            for ($i = 0; $i < 20; $i++) {
+                                $cadenaAleatoria .= $caracteresPermitidos[rand(0, strlen($caracteresPermitidos) - 1)];
+                            }
+                            $codigoUnico = $cadenaAleatoria . $fechaHoraActual;
+                            $nombre="docestudio_".$dato['id_usuario']."_".$codigoUnico."_".rand(10,199).".".$ext;
+                            $nombre_archivo = "PERFIL/DOCUMENTACION/ESTUDIOS_GENERALES/".$nombre;
+                            $duplicado=0;
+
+                        }while ($duplicado>0);
+
+                        ftp_pasv($con_id, true);
+
+                        if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
+                            $dato['archivo'] = $nombre;
+                        }else{
+                            $error = error_get_last();
+                        }
+                        restore_error_handler();
+                    }
+                    ftp_close($con_id);
+                }
+            }
+            $id_usuario = session('usuario')->id_usuario;
+
+            EstudiosGenerales::where('id_estudios_generales', $dato['id_estudios_generales'])
+                ->update([
+                    'id_usuario' => $dato['id_usuario'],
+                    'id_grado_instruccion' => $dato['id_grado_instruccion'],
+                    'carrera' => $dato['carrera'],
+                    'centro' => $dato['centro'],
+                    'documentoe' => $dato['archivo'],
+                    'fec_act' => now(),
+                    'user_act' => $id_usuario
+                ]);
+    }
+
+    public function Delete_EstudiosG(Request $request, $id_estudios_generales=null ,$id_usuario=null){
+        $this->Model_Perfil = new Model_Perfil();
+
+            $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+            $get_id = $this->Model_Perfil->get_id_usuario($id_usuario);
+            $dato['id_usuario'] = $get_id[0]['id_usuario'];
+
+            $dato['id_estudios_generales']= $request->input("id_estudios_generales");
+
+            $dato['id_usuario']= $request->input("id_usuario");
+
+            $id_usuario = session('usuario')->id_usuario;
+
+            EstudiosGenerales::where('id_estudios_generales', $dato['id_estudios_generales'])
+                ->update([
+                    'estado' => 2,
+                    'fec_eli' => now(),
+                    'user_eli' => $id_usuario
+                ]);
+    }
+
+    /********************************************************* */
+    public function Update_Conoci_Office(Request $request){
+        $this->Model_Perfil = new Model_Perfil();
+
+            $dato['id_usuario'] = $request->input("id_usuariodp");
+
+            $dato['id_nivel_conocimiento']= $request->input("id_nivel_conocimiento");
+            $dato['nl_excel']= $request->input("nl_excel");
+            $dato['nl_word']= $request->input("nl_word");
+            $dato['nl_ppoint']= $request->input("nl_ppoint");
+
+            $dato['get_id_c'] = ConociOffice::get_id_conoci_office($dato['id_usuario']);
+
+            $id_usuario = session('usuario')->id_usuario;
+
+            if(count($dato['get_id_c'])>0){
+                ConociOffice::where('id_usuario', $dato['id_usuario'])
+                    ->update([
+                        'id_nivel_conocimiento' => $dato['id_nivel_conocimiento'],
+                        'nl_excel' => $dato['nl_excel'],
+                        'nl_word' => $dato['nl_word'],
+                        'nl_ppoint' => $dato['nl_ppoint'],
+                        'fec_act' => now(),
+                        'user_act' => $id_usuario
+                    ]);
+            }else{
+                ConociOffice::create([
+                    'id_usuario' => $dato['id_usuario'],
+                    'id_nivel_conocimiento' => $dato['id_nivel_conocimiento'],
+                    'nl_excel' => $dato['nl_excel'],
+                    'nl_word' => $dato['nl_word'],
+                    'nl_ppoint' => $dato['nl_ppoint'],
+                    'fec_reg' => now(),
+                    'user_reg' => $id_usuario,
+                    'estado' => 1
+                ]);
+            }
+
+            $dato['list_nivel_instruccion'] = $this->Model_Perfil->get_list_nivel_instruccion();
+            $dato['get_id_c'] = ConociOffice::get_id_conoci_office($dato['id_usuario']);
+            return view('rrhh.Perfil.conoci_office', $dato);
+    }
+
+    /******************************************************** */
+
+    public function Insert_Conoci_Idiomas(Request $request){
+            $dato['id_usuario'] = $request->input("id_usuariodp");
+
+            $dato['nom_conoci_idiomas'] = strtoupper($request->input("nom_conoci_idiomas"));
+            $dato['lect_conoci_idiomas'] = $request->input("lect_conoci_idiomas");
+            $dato['escrit_conoci_idiomas'] = $request->input("escrit_conoci_idiomas");
+            $dato['conver_conoci_idiomas'] = $request->input("conver_conoci_idiomas");
+
+            $id_usuario = session('usuario')->id_usuario;
+
+            ConociIdiomas::create([
+                'id_usuario' => $dato['id_usuario'],
+                'nom_conoci_idiomas' => $dato['nom_conoci_idiomas'],
+                'lect_conoci_idiomas' => $dato['lect_conoci_idiomas'],
+                'escrit_conoci_idiomas' => $dato['escrit_conoci_idiomas'],
+                'conver_conoci_idiomas' => $dato['conver_conoci_idiomas'],
+                'fec_reg' => now(),
+                'user_reg' => $id_usuario,
+                'estado' => 1
+            ]);
+
+            $dato['listar_idiomas'] = ConociIdiomas::get_list_idiomasu($dato['id_usuario']);
+            return view('rrhh.Perfil.Idioma.ldatos', $dato);
+    }
+
+    public function MDatos_Idiomas(){
+        $this->Model_Perfil = new Model_Perfil();
+        $dato['list_idiomas'] = Idioma::where('estado', 1)
+                            ->get();
+            $dato['list_nivel_instruccion'] = $this->Model_Perfil->get_list_nivel_instruccion();
+            return view('rrhh.Perfil.Idioma.index', $dato);
+    }
+
+    public function Update_Conoci_Idiomas(Request $request){
+            $dato['id_usuario'] = $request->input("id_usuariodp");
+
+            $dato['id_conoci_idiomas'] = $request->input("id_conoci_idiomas");
+            $dato['nom_conoci_idiomas'] = $request->input("nom_conoci_idiomas");
+            $dato['lect_conoci_idiomas'] = $request->input("lect_conoci_idiomas");
+            $dato['escrit_conoci_idiomas'] = $request->input("escrit_conoci_idiomas");
+            $dato['conver_conoci_idiomas'] = $request->input("conver_conoci_idiomas");
+
+            $id_usuario = session('usuario')->id_usuario;
+
+            ConociIdiomas::where('id_conoci_idiomas', $dato['id_conoci_idiomas'])
+                ->update([
+                    'id_usuario' => $dato['id_usuario'],
+                    'nom_conoci_idiomas' => $dato['nom_conoci_idiomas'],
+                    'lect_conoci_idiomas' => $dato['lect_conoci_idiomas'],
+                    'escrit_conoci_idiomas' => $dato['escrit_conoci_idiomas'],
+                    'conver_conoci_idiomas' => $dato['conver_conoci_idiomas'],
+                    'fec_act' => now(),
+                    'user_act' => $id_usuario
+                ]);
+
+            $dato['listar_idiomas'] = ConociIdiomas::get_list_idiomasu($dato['id_usuario']);
+            return view('rrhh.Perfil.Idioma.ldatos', $dato);
+    }
+
+    public function Detalle_Conoci_Idiomas(Request $request){
+        $this->Model_Perfil = new Model_Perfil();
+            $id_conoci_idiomas = $request->input("id_conoci_idiomas");
+            $dato['list_idiomas'] = Idioma::where('estado', 1)
+                                ->get();
+            $dato['list_nivel_instruccion'] = $this->Model_Perfil->get_list_nivel_instruccion();
+            $dato['get_id'] = ConociIdiomas::get_list_idiomase($id_conoci_idiomas);
+            return view('rrhh.Perfil.Idioma.editar', $dato);
+    }
+
+    public function Delete_Conoci_Idiomas(Request $request, $id_hijos=null ,$id_usuario=null){
+        $this->Model_Perfil = new Model_Perfil();
+            $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+            $get_id = $this->Model_Perfil->get_id_usuario($id_usuario);
+            $dato['id_usuario'] = $get_id[0]['id_usuario'];
+
+            $dato['id_usuario']= $request->input("id_usuario");
+
+
+            $dato['id_conoci_idiomas']= $request->input("id_conoci_idiomas");
+
+            $id_usuario = session('usuario')->id_usuario;
+
+            ConociIdiomas::where('id_conoci_idiomas', $dato['id_conoci_idiomas'])
+                ->update([
+                    'estado' => 2,
+                    'fec_eli' => now(),
+                    'user_eli' => $id_usuario
+                ]);
+            $dato['listar_idiomas'] = ConociIdiomas::get_list_idiomasu($dato['id_usuario']);
+
+            return view('rrhh.Perfil.Idioma.ldatos', $dato);
+    }
+    /************************************************************** */
+    public function Lista_CursosC(){
+        if ($this->session->userdata('usuario')) {
+            $id_usuario= $this->input->post("id_usuariodp");
+            $dato['listar_cursosc'] = $this->Model_Corporacion->get_list_cursoscu($id_usuario);
+            $dato['url_cursosc'] = $this->Model_Configuracion->ruta_archivos_config('Cursos_Complementarios');
+            $this->load->view('Admin/Colaborador/Perfil/Curso_Complementario/ldatos',$dato);
+        }else{
+            redirect('');
+        }
+    }
+
+    public function Insert_CursosC(){
+        if ($this->session->userdata('usuario')) {
+            $dato['id_usuario'] = $this->input->post("id_usuariodp");
+            $dato['nom_curso_complementario'] = strtoupper($this->input->post("nom_curso_complementario"));
+            $dato['anio'] = $this->input->post("aniocc");
+            $dato['actualidad'] = $this->input->post("aniocc");
+            $dato['certificado'] = $this->input->post("certificado");
+
+            $dato['archivo']="";
+
+            if($_FILES["certificado"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if((!$con_id) || (!$lr)){
+                    //echo "No se conecto";
+                }else{
+                    //echo "Se conecto";
+                    $path = $_FILES['certificado']['name'];
+                    if($path!=""){
+                        $temp = explode(".",$_FILES['certificado']['name']);
+                        $source_file = $_FILES['certificado']['tmp_name'];
+
+                        $fechaHoraActual = date('Y-m-dHis');
+                        $caracteresPermitidos = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $codigoUnico = '';
+                        do {
+                            $cadenaAleatoria = '';
+                            for ($i = 0; $i < 20; $i++) {
+                                $cadenaAleatoria .= $caracteresPermitidos[rand(0, strlen($caracteresPermitidos) - 1)];
+                            }
+                            $codigoUnico = $cadenaAleatoria . $fechaHoraActual;
+                            $nombre="cursocomp_".$dato['id_usuario']."_".$codigoUnico."_".rand(10,199).".".$ext;
+                            $nombre_archivo = "PERFIL/DOCUMENTACION/CURSOS_COMPLEMENTARIOS/".$nombre;
+                            $duplicado=0;
+
+                        }while ($duplicado>0);
+
+                        ftp_pasv($con_id, true);
+
+                        if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
+                            $dato['archivo'] = $nombre;
+                        }else{
+                            $error = error_get_last();
+                        }
+                        restore_error_handler();
+                    }
+                    ftp_close($con_id);
+                }
+            }
+            $this->Model_Corporacion->insert_cursoscu($dato);
+        }else{
+            redirect('');
+        }
+    }
+
+    public function Update_CursosC(){
+        if ($this->session->userdata('usuario')) {
+            $dato['id_usuario'] = $this->input->post("id_usuariodp");
+            $dato['id_curso_complementario'] = $this->input->post("id_curso_complementario");
+            $dato['nom_curso_complementario'] = strtoupper($this->input->post("nom_curso_complementario"));
+            $dato['anio'] = $this->input->post("aniocc");
+            $dato['actualidad'] = $this->input->post("aniocc");
+            {
+                if ($errno === E_WARNING && strpos($errstr, "ftp_put(): Disk full") !== false) {
+                    echo "2El servidor FTP está lleno. Por favor, intenta más tarde.";
+                } else {
+                    echo "2Error desconocido: $errstr";
+                }
+            }
+
+            $dato['archivo']="";
+            $dato['get_id'] = $this->Model_Corporacion->get_list_cursosce($dato['id_curso_complementario']);
+            if(count($dato['get_id'])>0){
+                $dato['archivo']=$dato['get_id'][0]['certificado'];
+            }
+            if($_FILES["certificado"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if((!$con_id) || (!$lr)){
+                    //echo "No se conecto";
+                }else{
+                    //echo "Se conecto";
+                    $path = $_FILES['certificado']['name'];
+                    if($path!=""){
+                        $temp = explode(".",$_FILES['certificado']['name']);
+                        $source_file = $_FILES['certificado']['tmp_name'];
+
+                        $fechaHoraActual = date('Y-m-dHis');
+                        $caracteresPermitidos = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $codigoUnico = '';
+                        do {
+                            $cadenaAleatoria = '';
+                            for ($i = 0; $i < 20; $i++) {
+                                $cadenaAleatoria .= $caracteresPermitidos[rand(0, strlen($caracteresPermitidos) - 1)];
+                            }
+                            $codigoUnico = $cadenaAleatoria . $fechaHoraActual;
+                            $nombre="cursocomp_".$dato['id_usuario']."_".$codigoUnico."_".rand(10,199).".".$ext;
+                            $nombre_archivo = "PERFIL/DOCUMENTACION/CURSOS_COMPLEMENTARIOS/".$nombre;
+                            $duplicado=0;
+
+                        }while ($duplicado>0);
+
+                        ftp_pasv($con_id, true);
+
+                        if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
+                            $dato['archivo'] = $nombre;
+                        }else{
+                            $error = error_get_last();
+                        }
+                        restore_error_handler();
+                    }
+                    ftp_close($con_id);
+                }
+            }
+            $this->Model_Corporacion->update_cursoscu($dato);
+        }else{
+            redirect('');
+        }
+    }
+
+    public function Detalle_CursosC(){
+        if ($this->session->userdata('usuario')) {
+            $id_curso_complementario= $this->input->post("id_curso_complementario");
+            $dato['list_anio'] = $this->Model_Corporacion->get_list_anio();
+            $dato['get_id'] = $this->Model_Corporacion->get_list_cursosce($id_curso_complementario);
+            $dato['url_cursosc'] = $this->Model_Configuracion->ruta_archivos_config('Cursos_Complementarios');
+            $this->load->view('Admin/Colaborador/Perfil/Curso_Complementario/editar', $dato);
+        }else{
+            redirect('');
+        }
+    }
+
+    public function MDatos_CursosC(){
+        if ($this->session->userdata('usuario')) {
+            $dato['list_anio'] = $this->Model_Corporacion->get_list_anio();
+            $this->load->view('Admin/Colaborador/Perfil/Curso_Complementario/index', $dato);
+        }else{
+            redirect('');
+        }
+    }
+
+    public function Delete_CursosC($id_curso_complementario=null ,$id_usuario=null){
+        if ($this->session->userdata('usuario')) {
+            $dato['get_id'] = $this->Model_Corporacion->get_id_usuario($id_usuario);
+            $get_id = $this->Model_Corporacion->get_id_usuario($id_usuario);
+            $dato['id_usuario'] = $get_id[0]['id_usuario'];
+            $dato['id_curso_complementario']= $this->input->post("id_curso_complementario");
+            $dato['id_usuario']= $this->input->post("id_usuario");
+            $this->Model_Corporacion->delete_cursoscu($dato);
+        }else{
+            redirect('');
+        }
+    }
+
+    /********************************************/
+
+    public function Colaborador()
+    {
+        if ($this->session->userdata('usuario')) {
+            $dato['id_usuario'] = $_SESSION['usuario'][0]['id_usuario'];
+            //$dato['list_colaborador'] = $this->Model_Corporacion->get_list_colaborador();
+            $dato['list_gerencia'] = $this->Model_Corporacion->get_list_gerencia();
+            $dato['list_estado_usuario'] = $this->Model_Corporacion->get_list_estado_usuario();
+            //$dato['list_tipo_documento'] = $this->Model_Corporacion->get_list_t_documento();
+            //$dato['colaborador_porcentaje'] = $this->Model_Corporacion->colaborador_porcentaje();
+            //$dato['url'] = $this->Model_Configuracion->ruta_archivos_config('Bajas_Colaborador');
+            //NOTIFICACIÓN-NO BORRAR
+            $dato['list_noti'] = $this->Model_Corporacion->get_list_notificacion();
+            $dato['list_nav_evaluaciones'] = $this->Model_Corporacion->get_list_nav_evaluaciones();
+            $this->load->view('Admin/Colaborador/index', $dato);
+        }
+        else{
+            redirect('');
+        }
+    }
+
+    public function Lista_ExperenciaL(){
+        if ($this->session->userdata('usuario')) {
+            $id_usuario= $this->input->post("id_usuariodp");
+            $dato['list_experiencial'] = $this->Model_Corporacion->get_list_experiencial($id_usuario);
+            $dato['url_exp'] = $this->Model_Configuracion->ruta_archivos_config('Experiencia_Laboral');
+            $this->load->view('Admin/Colaborador/Perfil/Experiencia_Laboral/ldatos', $dato);
+        }else{
+            redirect('');
+        }
+    }
+
+    public function Insert_ExperenciaL(){
+        if ($this->session->userdata('usuario')) {
+            //$dato['id_usuario'] = $_SESSION['usuario'][0]['id_usuario'];
+            $dato['id_usuario'] = $this->input->post("id_usuariodp");
+            $dato['empresa'] = strtoupper($this->input->post("empresaex"));
+            $dato['cargo'] = strtoupper($this->input->post("cargoex"));
+            $dato['dia_ini'] = $this->input->post("dia_iniel");
+            $dato['mes_ini'] = $this->input->post("mes_iniel");
+            $dato['anio_ini'] = $this->input->post("anio_iniel");
+            $dato['fec_ini']=$this->input->post("anio_iniel")."-".$this->input->post("mes_iniel")."-".$this->input->post("dia_iniel");
+            $dato['actualidad'] = $this->input->post("checkactualidad");
+            $dato['dia_fin'] = $this->input->post("diaº_finel");
+            $dato['mes_fin'] = $this->input->post("mes_finel");
+            $dato['anio_fin'] = $this->input->post("anio_finel");
+            $dato['fec_fin']=$this->input->post("anio_finel")."-".$this->input->post("mes_finel")."-".$this->input->post("dia_finel");
+            $dato['motivo_salida'] = $this->input->post("motivo_salida");
+            $dato['remuneracion'] = $this->input->post("remuneracion");
+            $dato['nom_referencia_labores'] = strtoupper($this->input->post("nom_referencia_labores"));
+            $dato['num_contacto'] = $this->input->post("num_contacto");
+
+            $dato['archivo']="";
+            if($_FILES["certificadolb"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if((!$con_id) || (!$lr)){
+                    //echo "No se conecto";
+                }else{
+                    //echo "Se conecto";
+                    $path = $_FILES['certificadolb']['name'];
+                    if($path!=""){
+                        $temp = explode(".",$_FILES['certificadolb']['name']);
+                        $source_file = $_FILES['certificadolb']['tmp_name'];
+
+                        $fechaHoraActual = date('Y-m-dHis');
+                        $caracteresPermitidos = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $codigoUnico = '';
+                        do {
+                            $cadenaAleatoria = '';
+                            for ($i = 0; $i < 20; $i++) {
+                                $cadenaAleatoria .= $caracteresPermitidos[rand(0, strlen($caracteresPermitidos) - 1)];
+                            }
+                            $codigoUnico = $cadenaAleatoria . $fechaHoraActual;
+                            $nombre="certificadolb_".$dato['id_usuario']."_".$codigoUnico."_".rand(10,199).".".$ext;
+                            $nombre_archivo = "PERFIL/DOCUMENTACION/EXPERIENCIA_LABORAL/".$nombre;
+                            $duplicado=0;
+
+                        }while ($duplicado>0);
+
+                        ftp_pasv($con_id, true);
+
+                        if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
+                            $dato['archivo'] = $nombre;
+                        }else{
+                            $error = error_get_last();
+                        }
+                        restore_error_handler();
+                    }
+                    ftp_close($con_id);
+                }
+            }
+            $this->Model_Corporacion->insert_experiencial($dato);
+        }
+        else{
+            redirect('');
+        }
+    }
+
+    public function Update_ExperenciaL()
+    {
+        if ($this->session->userdata('usuario')) {
+            $dato['id_experiencia_laboral'] = $this->input->post("id_experiencia_laboral");
+            $dato['id_usuario'] = $this->input->post("id_usuariodp");
+            //$dato['id_usuario'] = $_SESSION['usuario'][0]['id_usuario'];
+            $dato['empresa'] = strtoupper($this->input->post("empresaex"));
+            $dato['cargo'] = strtoupper($this->input->post("cargoex"));
+            $dato['dia_ini'] = $this->input->post("dia_iniel");
+            $dato['mes_ini'] = $this->input->post("mes_iniel");
+            $dato['anio_ini'] = $this->input->post("anio_iniel");
+            $dato['fec_ini']=$this->input->post("anio_iniel")."-".$this->input->post("mes_iniel")."-".$this->input->post("dia_iniel");
+            $dato['actualidad'] = $this->input->post("checkactualidad");
+            $dato['dia_fin'] = $this->input->post("dia_finel");
+            $dato['mes_fin'] = $this->input->post("mes_finel");
+            $dato['anio_fin'] = $this->input->post("anio_finel");
+            $dato['fec_fin']=$this->input->post("anio_finel")."-".$this->input->post("mes_finel")."-".$this->input->post("dia_finel");
+            $dato['motivo_salida'] = $this->input->post("motivo_salida");
+            $dato['remuneracion'] = $this->input->post("remuneracion");
+            $dato['nom_referencia_labores'] = strtoupper($this->input->post("nom_referencia_labores"));
+            $dato['num_contacto'] = $this->input->post("num_contacto");
+            $dato['certificadolb'] = $this->input->post("certificadolb");
+            $dato['certificado_nombre'] = $this->input->post("certificado_nombre");
+
+            $dato['total'] = $this->Model_Corporacion->get_list_experiencial($dato['id_usuario']);
+
+            $dato['archivo']="";
+            if(count($dato['total'])>0){
+                $dato['archivo']=$dato['total'][0]['certificado'];
+            }
+            if($_FILES["certificadolb"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if((!$con_id) || (!$lr)){
+                    //echo "No se conecto";
+                }else{
+                    //echo "Se conecto";
+                    $path = $_FILES['certificadolb']['name'];
+                    if($path!=""){
+                        $temp = explode(".",$_FILES['certificadolb']['name']);
+                        $source_file = $_FILES['certificadolb']['tmp_name'];
+
+                        $fechaHoraActual = date('Y-m-dHis');
+                        $caracteresPermitidos = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $codigoUnico = '';
+                        do {
+                            $cadenaAleatoria = '';
+                            for ($i = 0; $i < 20; $i++) {
+                                $cadenaAleatoria .= $caracteresPermitidos[rand(0, strlen($caracteresPermitidos) - 1)];
+                            }
+                            $codigoUnico = $cadenaAleatoria . $fechaHoraActual;
+                            $nombre="certificadolb_".$dato['id_usuario']."_".$codigoUnico."_".rand(10,199).".".$ext;
+                            $nombre_archivo = "PERFIL/DOCUMENTACION/EXPERIENCIA_LABORAL/".$nombre;
+                            $duplicado=0;
+
+                        }while ($duplicado>0);
+
+                        ftp_pasv($con_id, true);
+
+
+                        if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
+                            $dato['archivo'] = $nombre;
+                        }else{
+                            $error = error_get_last();
+                        }
+                        restore_error_handler();
+                    }
+                    ftp_close($con_id);
+                }
+            }
+            $this->Model_Corporacion->update_experiencial($dato);
+        }
+        else{
+            redirect('');
+        }
+    }
+
+    public function MDatos_ExperenciaL(){
+        if ($this->session->userdata('usuario')) {
+            $dato['list_dia'] = $this->Model_Corporacion->get_list_dia();
+            $dato['list_mes'] = $this->Model_Corporacion->get_list_mes();
+            $dato['list_anio'] = $this->Model_Corporacion->get_list_anio();
+            $this->load->view('Admin/Colaborador/Perfil/Experiencia_Laboral/index', $dato);
+        }else{
+            redirect('');
+        }
+    }
+
+    public function Detalle_ExperenciaL(){
+        if ($this->session->userdata('usuario')) {
+            $dato['id_experiencia_laboral']= $this->input->post("id_experiencia_laboral");
+            $id_experiencia_laboral= $this->input->post("id_experiencia_laboral");
+            $dato['list_dia'] = $this->Model_Corporacion->get_list_dia();
+            $dato['list_mes'] = $this->Model_Corporacion->get_list_mes();
+            $dato['list_anio'] = $this->Model_Corporacion->get_list_anio();
+            $dato['get_id'] = $this->Model_Corporacion->get_list_experienciale($id_experiencia_laboral);
+            $dato['url_exp'] = $this->Model_Configuracion->ruta_archivos_config('Experiencia_Laboral');
+            $this->load->view('Admin/Colaborador/Perfil/Experiencia_Laboral/editar', $dato);
+        }
+        else{
+            redirect('');
+        }
+    }
+
+    public function Delete_ExperenciaL($id_experiencia_laboral=null ,$id_usuario=null){
+        if ($this->session->userdata('usuario')) {
+            $dato['get_id'] = $this->Model_Corporacion->get_id_usuario($id_usuario);
+            $get_id = $this->Model_Corporacion->get_id_usuario($id_usuario);
+            $dato['id_usuario'] = $get_id[0]['id_usuario'];
+            $dato['id_experiencia_laboral']= $this->input->post("id_experiencia_laboral");
+            $dato['id_usuario']= $this->input->post("id_usuario");
+            $this->Model_Corporacion->delete_experiencial($dato);
+        }else{
+            redirect('');
+        }
+    }
+
+
+/************************************************************************/
+public function Insert_Enfermedades()
+{
+    if ($this->session->userdata('usuario')) {
+        //$dato['id_usuario'] = $_SESSION['usuario'][0]['id_usuario'];
+        $dato['id_usuario'] = $this->input->post("id_usuariodp");
+
+        $dato['id_respuestae'] = $this->input->post("id_respuestae");
+        $dato['nom_enfermedad'] = strtoupper($this->input->post("nom_enfermedad"));
+        $dato['dia_diagnostico'] = $this->input->post("dia_diagnostico");
+        $dato['mes_diagnostico'] = $this->input->post("mes_diagnostico");
+        $dato['anio_diagnostico'] = $this->input->post("anio_diagnostico");
+        $dato['fec_diagnostico']=$this->input->post("anio_diagnostico")."-".$this->input->post("mes_diagnostico")."-".$this->input->post("dia_diagnostico");
+
+        $this->Model_Corporacion->insert_enfermedad_usuariou($dato);
+
+        //$id_usuario= $_SESSION['usuario'][0]['id_usuario'];
+        $id_usuario= $this->input->post("id_usuariodp");
+
+
+        $dato['list_enfermedadu'] = $this->Model_Corporacion->get_list_enfermedadu($id_usuario);
+        $this->load->view('Admin/Colaborador/Perfil/Enfermedades/ldatos', $dato);
+    }
+    else{
+        redirect('');
+    }
+}
+
+public function Update_Enfermedades()
+{
+    if ($this->session->userdata('usuario')) {
+        //$dato['id_usuario'] = $_SESSION['usuario'][0]['id_usuario'];
+        $dato['id_usuario'] = $this->input->post("id_usuariodp");
+
+        $dato['id_enfermedad_usuario'] = $this->input->post("id_enfermedad_usuario");
+        $dato['id_respuestae'] = $this->input->post("id_respuestae");
+        $dato['nom_enfermedad'] = strtoupper($this->input->post("nom_enfermedad"));
+        $dato['dia_diagnostico'] = $this->input->post("dia_diagnostico");
+        $dato['mes_diagnostico'] = $this->input->post("mes_diagnostico");
+        $dato['anio_diagnostico'] = $this->input->post("anio_diagnostico");
+        $dato['fec_diagnostico']=$this->input->post("anio_diagnostico")."-".$this->input->post("mes_diagnostico")."-".$this->input->post("dia_diagnostico");
+
+        $this->Model_Corporacion->update_enfermedad_usuariou($dato);
+
+        //$id_usuario= $_SESSION['usuario'][0]['id_usuario'];
+        //$id_usuario= $this->input->post("id_usuariodp");
+
+
+        //$dato['list_enfermedadu'] = $this->Model_Corporacion->get_list_enfermedadu($id_usuario);
+        $dato['list_enfermedadu'] = $this->Model_Corporacion->get_list_enfermedadu($dato['id_usuario']);
+
+        $this->load->view('Admin/Colaborador/Perfil/Enfermedades/ldatos', $dato);
+    }
+    else{
+        redirect('');
+    }
+}
+
+public function Detalle_Enfermedades(){
+    if ($this->session->userdata('usuario')) {
+
+        $id_usuario= $_SESSION['usuario'][0]['id_usuario'];
+        //var_dump($id_usuario);
+        //$id_usuario= $this->input->post("id_usuariodp");
+        //$dato['id_enfermedad_usuario'] = $this->input->post("id_enfermedad_usuario");
+        //$id_enfermedad_usuario= $this->input->post("id_enfermedad_usuario");
+        $id_enfermedad_usuario= $this->input->post("id_enfermedad_usuario");
+
+        //$dato['id_enfermedad_usuario'] = $this->input->post("id_enfermedad_usuario");
+
+        $dato['list_dia'] = $this->Model_Corporacion->get_list_dia();
+        $dato['list_mes'] = $this->Model_Corporacion->get_list_mes();
+        $dato['list_anio'] = $this->Model_Corporacion->get_list_anio();
+
+        $dato['list_usuario'] = $this->Model_Corporacion->get_list_usuario($id_usuario);
+
+        $dato['get_id'] = $this->Model_Corporacion->get_list_enfermedade($id_enfermedad_usuario);
+        //$dato['get_id'] = $this->Model_Corporacion->get_list_enfermedade($id_enfermedad_usuario);
+        $this->load->view('Admin/Colaborador/Perfil/Enfermedades/editar', $dato);
+    }
+    else{
+        redirect('');
+    }
+}
+
+public function MDatos_Enfermedades(){
+    if ($this->session->userdata('usuario')) {
+        //$id_usuario= $_SESSION['usuario'][0]['id_usuario'];
+        // $id_usuario= $this->input->post("id_usuariodp");
+        $id_usuario= $this->input->post("id_usuariodp");
+
+        $dato['list_dia'] = $this->Model_Corporacion->get_list_dia();
+        $dato['list_mes'] = $this->Model_Corporacion->get_list_mes();
+        $dato['list_anio'] = $this->Model_Corporacion->get_list_anio();
+
+        $dato['list_usuario'] = $this->Model_Corporacion->get_list_usuario($id_usuario);
+        $this->load->view('Admin/Colaborador/Perfil/Enfermedades/index', $dato);
+        //}
+    }
+    else{
+        redirect('');
+    }
+}
+
+public function Delete_Enfermedades($id_enfermedad_usuario=null ,$id_usuario=null){
+    if ($this->session->userdata('usuario')) {
+        //$dato['id_usuario'] = $_SESSION['usuario'][0]['id_usuario'];
+        $dato['get_id'] = $this->Model_Corporacion->get_id_usuario($id_usuario);
+        $get_id = $this->Model_Corporacion->get_id_usuario($id_usuario);
+        $dato['id_usuario'] = $get_id[0]['id_usuario'];
+        $dato['id_usuario']= $this->input->post("id_usuario");
+
+        $dato['id_enfermedad_usuario']= $this->input->post("id_enfermedad_usuario");
+        /*$total=count($this->Model_Corporacion->valida_genero($dato));
+        if ($total>0)
+        {
+            echo "error";
+        }
+        else{*/
+        $this->Model_Corporacion->delete_enfermedadadesu($dato);
+        $dato['list_enfermedadu'] = $this->Model_Corporacion->get_list_enfermedadu($dato['id_usuario']);
+
+        $this->load->view('Admin/Colaborador/Perfil/Enfermedades/ldatos', $dato);
+        //}
+    }
+    else{
+        redirect('');
+    }
+}
+    /****************************************************************/
+    public function Update_Gestacion()
+    {
+        if ($this->session->userdata('usuario')) {
+            $dato['id_usuario'] = $this->input->post("id_usuariodp");
+
+           // $dato['id_usuario'] = $_SESSION['usuario'][0]['id_usuario'];
+            $dato['id_respuesta']= $this->input->post("id_respuesta");
+            $dato['dia_ges']= $this->input->post("dia_ges");
+            $dato['mes_ges']= $this->input->post("mes_ges");
+            $dato['anio_ges']= $this->input->post("anio_ges");
+            $dato['fec_ges']= $this->input->post("anio_ges")."-".$this->input->post("mes_ges")."-".$this->input->post("dia_ges");
+            $dato['tot_id_gestacion'] = $this->Model_Corporacion->get_id_gestacion($dato['id_usuario']);
+
+            if(count($dato['tot_id_gestacion'])>0)
+            {
+                $this->Model_Corporacion->update_gestacion($dato);
+            }
+            else{
+                $this->Model_Corporacion->insert_gestacion($dato);
+            }
+
+            //$id_usuario= $_SESSION['usuario'][0]['id_usuario'];
+            $id_usuario= $this->input->post("id_usuariodp");
+
+            $dato['list_dia'] = $this->Model_Corporacion->get_list_dia();
+            $dato['list_mes'] = $this->Model_Corporacion->get_list_mes();
+            $dato['list_anio'] = $this->Model_Corporacion->get_list_anio();
+
+            $dato['get_id_gestacion'] = $this->Model_Corporacion->get_id_gestacion($id_usuario);
+            $this->load->view('Admin/Colaborador/Perfil/Gestacion', $dato);
+        }
+        else{
+            redirect('');
+        }
     }
 }
