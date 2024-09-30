@@ -380,8 +380,16 @@
                                     </select>
                                 </td>
 
-
-                                <td class="px-1"><input type="text" class="form-control custom-select" name="tablabi[]"></td>
+                                <td class="px-1">
+                                    <select class="form-control multivalue" name="tbdb[]" id="tbdb">
+                                        @foreach ($list_tablasdb as $list)
+                                        <option value="{{ $list->idtablas_db }}" title="{{ $list->nombre }}">
+                                            {{ \Illuminate\Support\Str::limit($list->nombre, 20, '...') }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <!-- <td class="px-1"><input type="text" class="form-control custom-select" name="tablabi[]"></td> -->
                                 <td class="px-1"><button type="button" class="btn btn-success btn-sm" onclick="addRowTabla()">+</button></td>
                             </tr>
                         </tbody>
@@ -573,38 +581,54 @@
         var tableBody = document.getElementById('tabla_body3');
         var newRow = document.createElement('tr');
         newRow.classList.add('text-center');
-        var rowIndex = tableBody.children.length; // Obtiene el índice de la nueva fila
+        var rowIndex = tableBody.children.length;
 
         // Contenido HTML de la nueva fila
         newRow.innerHTML = `
-        <td class="px-1">
-            <select class="form-control sistema" name="sistema[]" data-row-index="${rowIndex}">
-                @foreach ($list_sistemas as $list)
-                <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema}}</option>
-                @endforeach
-            </select>
-        </td>
-        <td class="px-1">
-            <select class="form-control db" name="db[]" data-row-index="${rowIndex}">
-                @foreach ($list_db as $list)
-                 <option value="{{ $list->cod_db }}" title="{{ $list->nom_db }}">
-                    {{ \Illuminate\Support\Str::limit($list->nom_db, 20, '...') }}
-                </option>
-                @endforeach
-            </select>
-        </td>
-        <td class="px-1"><input type="text" class="form-control custom-select-add" name="tablabi[]"></td>
-        <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
+    <td class="px-1">
+        <select class="form-control sistema" name="sistema[]" data-row-index="${rowIndex}">
+            @foreach ($list_sistemas as $list)
+            <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema}}</option>
+            @endforeach
+        </select>
+    </td>
+    <td class="px-1">
+        <select class="form-control db" name="db[]" data-row-index="${rowIndex}">
+            @foreach ($list_db as $list)
+             <option value="{{ $list->cod_db }}" title="{{ $list->nom_db }}">
+                {{ \Illuminate\Support\Str::limit($list->nom_db, 20, '...') }}
+            </option>
+            @endforeach
+        </select>
+    </td>
+    <td class="px-1">
+        <select class="form-control tbdb" name="tbdb[]" data-row-index="${rowIndex}">
+            @foreach ($list_tablasdb as $list)
+            <option value="{{ $list->idtablas_db }}" title="{{ $list->nombre }}">
+                {{ \Illuminate\Support\Str::limit($list->nombre, 20, '...') }}
+            </option>
+            @endforeach
+        </select>
+    </td>
+    
+    <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
     `;
 
         // Agregar la nueva fila al cuerpo de la tabla
         tableBody.appendChild(newRow);
 
-
-
-        // Asigna el evento change a los nuevos selects
         attachSistemaChangeEvent(newRow.querySelector('.sistema'));
+        attachDbChangeEvent(newRow.querySelector('.db'));
+
+        $(newRow.querySelector('.tbdb')).select2({
+            tags: true,
+            tokenSeparators: [',', ' '],
+            dropdownParent: $('#ModalRegistro')
+        });
+
     }
+
+
 
     // Función para adjuntar el evento change al select de sistema
     function attachSistemaChangeEvent(selectElement) {
@@ -623,11 +647,28 @@
                     // Vaciar el select de db en la fila correspondiente
                     $(`.db[data-row-index="${rowIndex}"]`).empty();
                     // Agregar las nuevas opciones
-                    $.each(response, function(index, db) {
+                    // Verificar si solo hay una base de datos en la respuesta
+                    if (response.length === 1) {
+                        // Si solo hay una base de datos, agregarla y seleccionarla automáticamente
+                        const db = response[0];
                         $(`.db[data-row-index="${rowIndex}"]`).append(
                             `<option value="${db.cod_db}" title="${db.nom_db}">${db.nom_db.length > 20 ? db.nom_db.substring(0, 20) + '...' : db.nom_db}</option>`
                         );
-                    });
+
+                        // Llama a la función para manejar el cambio en la base de datos
+                        attachDbChangeEvent($(`.db[data-row-index="${rowIndex}"]`));
+
+                        // Llama a attachDbChangeEvent inmediatamente para filtrar tablas
+                        $(`.db[data-row-index="${rowIndex}"]`).change(); // Simula el cambio
+
+                    } else {
+                        // Si hay más de una base de datos, agregarlas todas
+                        $.each(response, function(index, db) {
+                            $(`.db[data-row-index="${rowIndex}"]`).append(
+                                `<option value="${db.cod_db}" title="${db.nom_db}">${db.nom_db.length > 20 ? db.nom_db.substring(0, 20) + '...' : db.nom_db}</option>`
+                            );
+                        });
+                    }
                 },
                 error: function(xhr) {
                     console.error('Error al obtener db:', xhr);
@@ -636,12 +677,37 @@
         });
     }
 
-    // Asigna el evento a los selects existentes al cargar la página
-    $(document).ready(function() {
-        $('.sistema').each(function() {
-            attachSistemaChangeEvent(this);
+
+    function attachDbChangeEvent(selectElement) {
+        $(selectElement).on('change', function() {
+            const selectedDB = $(this).val();
+            var url = "{{ route('tb_por_db_bi') }}";
+            var rowIndex = $(this).data('row-index'); // Obtiene el índice de la fila
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: {
+                    dbs: selectedDB
+                },
+                success: function(response) {
+                    // Vaciar el select de tbdb en la fila correspondiente
+                    // $(`.tbdb[data-row-index="${rowIndex}"]`).empty();
+
+                    // Agregar las nuevas opciones
+                    $.each(response, function(index, tbdb) {
+                        $(`.tbdb[data-row-index="${rowIndex}"]`).append(
+                            `<option value="${tbdb.idtablas_db}" title="${tbdb.nombre}">${tbdb.nombre.length > 20 ? tbdb.nombre.substring(0, 20) + '...' : tbdb.nombre}</option>`
+                        );
+                    });
+                },
+                error: function(xhr) {
+                    console.error('Error al obtener tbdb:', xhr);
+                }
+            });
         });
-    });
+    }
+
 
 
     $('.multivalue').select2({
@@ -652,9 +718,18 @@
 
 
     $(document).ready(function() {
-        // CARGAR IMAGENES
+        $('.tbdb').select2({
+            tags: true, // Permite crear nuevas etiquetas
+            tokenSeparators: [',', ' '], // Separa las etiquetas con comas y espacios
+            dropdownParent: $('#ModalRegistro')
+        });
 
-
+        $('.sistema').each(function() {
+            attachSistemaChangeEvent(this);
+        });
+        $('.db').each(function() {
+            attachDbChangeEvent(this);
+        });
         // CARGAR IMAGENES
         $('#id_area_acceso_t').select2({
             tags: true,
@@ -662,11 +737,6 @@
             dropdownParent: $('#ModalRegistro')
         });
         $('#tipo_acceso_t').select2({
-            tags: true,
-            tokenSeparators: [',', ' '],
-            dropdownParent: $('#ModalRegistro')
-        });
-        $('#tipo_acceso_p').select2({
             tags: true,
             tokenSeparators: [',', ' '],
             dropdownParent: $('#ModalRegistro')
@@ -683,23 +753,61 @@
                     sis: selectedSistema
                 },
                 success: function(response) {
-                    // Vaciar el segundo select antes de agregar las nuevas opciones
+                    // Vaciar el select de bases de datos antes de agregar las nuevas opciones
                     $('#db').empty();
-                    // Agregar las nuevas opciones
-                    $.each(response, function(index, db) {
-                        $('#db').append(
-                            `<option value="${db.cod_db}" title="${db.nom_db}">${db.nom_db.length > 20 ? db.nom_db.substring(0, 20) + '...' : db.nom_db}</option>`
-                        );
-
-
-                    });
-
+                    // Verificar si solo hay una base de datos en la respuesta
+                    if (response.length === 1) {
+                        // Si solo hay una base de datos, agregarla y seleccionarla automáticamente
+                        const db = response[0];
+                        $('#db').append(`<option value="${db.cod_db}" title="${db.nom_db}">${db.nom_db.length > 20 ? db.nom_db.substring(0, 20) + '...' : db.nom_db}</option>`);
+                        // Ejecutar automáticamente el filtrado de tablas
+                        filtrarTablasPorDB(db.cod_db);
+                    } else {
+                        // Si hay más de una base de datos, agregarlas todas
+                        $.each(response, function(index, db) {
+                            $('#db').append(
+                                `<option value="${db.cod_db}" title="${db.nom_db}">${db.nom_db.length > 20 ? db.nom_db.substring(0, 20) + '...' : db.nom_db}</option>`
+                            );
+                        });
+                    }
                 },
                 error: function(xhr) {
                     console.error('Error al obtener db:', xhr);
                 }
             });
         });
+
+        $('#db').on('change', function() {
+            const selectedDB = $(this).val();
+            filtrarTablasPorDB(selectedDB);
+        });
+
+        // Función para filtrar tablas según la base de datos seleccionada
+        function filtrarTablasPorDB(selectedDB) {
+            var url = "{{ route('tb_por_db_bi') }}";
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: {
+                    dbs: selectedDB
+                },
+                success: function(response) {
+                    // Vaciar el select de tablas antes de agregar las nuevas opciones
+                    $('#tbdb').empty();
+                    // Agregar las nuevas opciones
+                    $.each(response, function(index, tbdb) {
+                        console.log(tbdb)
+                        $('#tbdb').append(
+                            `<option value="${tbdb.idtablas_db}" title="${tbdb.nombre}">${tbdb.nombre.length > 20 ? tbdb.nombre.substring(0, 20) + '...' : tbdb.nombre}</option>`
+                        );
+                    });
+                },
+                error: function(xhr) {
+                    console.error('Error al obtener tbdb:', xhr);
+                }
+            });
+        }
+
 
 
         let selectedUbicaciones = [];
@@ -931,11 +1039,11 @@
 
     var tabla = $('#tabla_js3').DataTable({
         "columnDefs": [{
-                "width": "200px", // Ancho para la columna 0
+                "width": "150px", // Ancho para la columna 0
                 "targets": [0]
             },
             {
-                "width": "200px", // Ancho para la columna 2
+                "width": "150px", // Ancho para la columna 2
                 "targets": [1]
             }
         ],

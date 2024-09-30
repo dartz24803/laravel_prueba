@@ -9,36 +9,45 @@
         text-overflow: ellipsis;
         /* Añade puntos suspensivos (...) */
     }
+
+    .text-primary {
+        color: #007bff;
+        /* Blue color */
+    }
 </style>
-<table id="tabla_js" class="table" style="width:auto">
+
+<table id="tabla_js" class="table table-hover" style="width:100%">
     <thead>
-        <tr class="text-center">
-            <th>Cod Base de Datos</th>
-            <th>Nombre Base de Datos</th>
-            <th class="no-content">Acciones</th>
+        <tr>
+            <th>Semana</th>
+            <th>Pertenece</th>
+            <th>Encontrado</th>
+            <th>Área</th>
+            <th>Estilo</th>
+            <th>Color</th>
+            <th>Talla</th>
+            <th>Prendas Devueltas</th>
+            <th>Tipo de Error</th>
+            <th>Responsable</th>
+            <th>Solución</th>
+            <th>Observación</th>
         </tr>
     </thead>
     <tbody>
-        @foreach ($list_sistemasdb as $list)
-        <tr class="text-center">
-            <td class="text-left">{{ $list->cod_db }}</td>
-            <td class="text-left">{{ $list->nom_db }}</td>
-            <td>
-                <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('bireporte_sisbd_conf.edit', $list->id_sistema_tablas) }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
-                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                    </svg>
-                </a>
-
-                <a href="javascript:void(0);" title="Eliminar" onclick="Delete_SisDB('{{ $list->id_sistema_tablas }}')">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
-                        <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        <line x1="10" y1="11" x2="10" y2="17"></line>
-                        <line x1="14" y1="11" x2="14" y2="17"></line>
-                    </svg>
-                </a>
-            </td>
+        @foreach ($list_errores_picking as $list)
+        <tr>
+            <td>{{ $list->semana }}</td>
+            <td>{{ $list->pertenece }}</td>
+            <td>{{ $list->encontrado }}</td>
+            <td>{{ $list->area }}</td>
+            <td>{{ $list->estilo }}</td>
+            <td>{{ $list->color }}</td>
+            <td>{{ $list->talla }}</td>
+            <td>{{ $list->prendas_devueltas }}</td>
+            <td>{{ $list->tipo_error }}</td>
+            <td>{{ $list->responsable }}</td>
+            <td>{{ $list->solucion }}</td>
+            <td>{{ $list->observacion }}</td>
         </tr>
         @endforeach
     </tbody>
@@ -47,12 +56,13 @@
 <script>
     $(document).ready(function() {
         $('#tabla_js').DataTable({
-
-            "autoWidth": false, // Desactiva el auto ajuste de DataTables para que respete los anchos especificados
             "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
                 "<'table-responsive'tr>" +
                 "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
             responsive: true,
+            order: [
+                [0, "desc"]
+            ],
             "oLanguage": {
                 "oPaginate": {
                     "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
@@ -66,7 +76,7 @@
             },
             "stripeClasses": [],
             "lengthMenu": [10, 20, 50],
-            "pageLength": 10
+            "pageLength": 10,
         });
     });
 </script>

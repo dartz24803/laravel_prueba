@@ -37,6 +37,7 @@ return new class extends Migration
             $table->string('documento')->nullable();
             $table->string('comprobante_pago')->nullable();
             $table->integer('estado_registro')->nullable();
+            $table->integer('importacion')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();

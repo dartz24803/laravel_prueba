@@ -40,16 +40,6 @@
                                     </label>
                                 </div>
                             </div>
-
-                            <div class="row mt-4">
-                                <div class="form-group col-lg-1">
-                                    <label class="control-label text-bold">Comentario: </label>
-                                </div>
-                                <div class="form-group col-lg-11">
-                                    <textarea class="form-control" name="comentario" 
-                                    id="comentario" placeholder="Comentario" rows="3"></textarea>
-                                </div>
-                            </div>
     
                             <div class="modal-footer mt-3">
                                 @csrf

@@ -33,6 +33,7 @@ use App\Http\Controllers\ControlCamaraController;
 use App\Http\Controllers\SliderRRHH;
 use App\Http\Controllers\Cumpleanios;
 use App\Http\Controllers\DuracionTransaccionController;
+use App\Http\Controllers\ErroresPickingController;
 use App\Http\Controllers\FinanzaInicioController;
 use App\Http\Controllers\FinanzasInicioController;
 use App\Http\Controllers\InicioAdmController;
@@ -66,6 +67,7 @@ use App\Http\Controllers\ReporteProveedoresController;
 use App\Http\Controllers\RequisicionTiendaConfController;
 use App\Http\Controllers\RequisicionTiendaController;
 use App\Http\Controllers\SalidaInsumoController;
+use App\Http\Controllers\StockInfosapController;
 use App\Http\Controllers\TablaMaestraTesoreriaController;
 
 Route::middleware([NoCache::class])->group(function () {
@@ -217,6 +219,20 @@ Route::controller(AdministradorController::class)->group(function () {
     Route::get('administrador_sc/{id}/evidencia', 'evidencia_sc')->name('administrador_sc.evidencia');
 });
 
+
+
+
+//STOCK INFOSAP
+Route::controller(StockInfosapController::class)->group(function () {
+    Route::get('infosapstock', 'index')->name('infosapstock');
+    Route::get('infosapstock/list', 'list_infosap')->name('infosapstock.list');
+});
+//ERRORES PICKING
+Route::controller(ErroresPickingController::class)->group(function () {
+    Route::get('errorespicking', 'index')->name('errorespicking');
+    Route::get('errorespicking/list', 'list_le')->name('errorespicking.list');
+});
+
 //PROCESOS - ADMINISTRADOR
 Route::controller(ProcesosController::class)->group(function () {
     Route::get('portalprocesos', 'index')->name('portalprocesos');
@@ -272,6 +288,7 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('usuarios_por_area', 'getUsuariosPorArea')->name('usuarios_por_area');
     Route::get('areas_por_base', 'getAreasPorBase')->name('areas_por_base_bi');
     Route::get('db_por_sistema_bi', 'getDBPorSistema')->name('db_por_sistema_bi');
+    Route::get('tb_por_db_bi', 'getTBPorDB')->name('tb_por_db_bi');
     Route::get('ubicacion_por_sede', 'getUbicacionPorSede')->name('ubicacion_por_sede');
     Route::get('areas_por_ubicacion', 'getAreasPorUbicacion')->name('areas_por_ubicacion');
     Route::get('area_por_usuario', 'getAreaPorUsuario')->name('area_por_usuario');
@@ -291,10 +308,11 @@ Route::controller(BiReporteController::class)->group(function () {
 
 
 
-    // ADMINISTRABLES - ADMINISTRABLES
+    // ADMINISTRABLES - 
     Route::get('bireporte_ra_conf', 'index_ra_conf')->name('bireporte_ra_conf');
     Route::get('bireporte_ti_conf', 'index_ti_conf')->name('bireporte_ti_conf');
     Route::get('bireporte_sisbd_conf', 'index_sis_conf')->name('bireporte_sisbd_conf');
+    Route::get('bireporte_tbbd_conf', 'index_tb_conf')->name('bireporte_tbbd_conf');
 
     // Tipo Indicadores
     Route::get('bireporte_ti_conf/list', 'list_tind')->name('bireporte_ti_conf.list');
@@ -312,6 +330,14 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('bireporte_sistema_conf/create', 'create_sistema')->name('bireporte_sistema_conf.create');
     Route::post('bireporte_sisbd_conf', 'store_sis')->name('bireporte_sisbd_conf.store');
     Route::post('bireporte_sistema_conf', 'store_sistema')->name('bireporte_sistema_conf.store');
+
+    // TABLAS
+    Route::get('bireporte_tbbd_conf/list', 'list_tb')->name('bireporte_tbbd_conf.list');
+    Route::get('bireporte_tbbd_conf/{id}/edit', 'edit_tb')->name('bireporte_tbbd_conf.edit');
+    Route::delete('bireporte_tbbd_conf/{id}', 'destroy_tb')->name('bireporte_tbbd_conf.destroy');
+    Route::put('bireporte_tbbd_conf/{id}', 'update_tb')->name('bireporte_tbbd_conf.update');
+    Route::get('bireporte_tbbd_conf/create', 'create_tb')->name('bireporte_tbbd_conf.create');
+    Route::post('bireporte_tbbd_conf', 'store_tb')->name('bireporte_tbbd_conf.store');
 });
 
 //BI REPORTES - TIENDA

@@ -87,7 +87,6 @@ class BiReporte extends Model
             'indicadores_bi.presentacion',
             'indicadores_bi.npagina',
             'tipo_indicador.nom_indicador as tipo_indicador_nombre',
-            DB::raw("GROUP_CONCAT(tablas_bi.nom_tabla SEPARATOR ', ') as nom_tablas") // Concatenamos los nombres de tablas
         )
             ->leftJoin('indicadores_bi', 'acceso_bi_reporte.id_acceso_bi_reporte', '=', 'indicadores_bi.id_acceso_bi_reporte')
             ->leftJoin('tipo_indicador', 'indicadores_bi.idtipo_indicador', '=', 'tipo_indicador.idtipo_indicador')
@@ -137,17 +136,21 @@ class BiReporte extends Model
             'acceso_bi_reporte.fec_reg',
             'acceso_bi_reporte.fec_valid',
             'acceso_bi_reporte.estado_valid',
-            'tablas_bi.nom_tabla',
-            'tablas_bi.cod_db',
+            'tablas_db.nombre as nom_tabla', // Obtener el nombre de tablas_db
+            'tablas_db.cod_db', // Obtener el código de la tabla desde tablas_db
             'sistema_tablas.nom_sistema',
-            'sistema_tablas.nom_db',
-
+            'sistema_tablas.nom_db'
         )
+            // Mantener el leftJoin con tablas_bi
             ->leftJoin('tablas_bi', 'acceso_bi_reporte.id_acceso_bi_reporte', '=', 'tablas_bi.id_acceso_bi_reporte')
-            ->leftJoin('sistema_tablas', 'tablas_bi.cod_db', '=', 'sistema_tablas.cod_db')
+            // Agregar innerJoin con tablas_db usando idtablas_db
+            ->join('tablas_db', 'tablas_bi.idtablas_db', '=', 'tablas_db.idtablas_db')
+            // Relacionar con sistema_tablas
+            ->leftJoin('sistema_tablas', 'tablas_db.cod_db', '=', 'sistema_tablas.cod_db')
 
             ->where('acceso_bi_reporte.estado', 1)
             ->where('acceso_bi_reporte.estado_valid', 1)
+
             ->groupBy(
                 'acceso_bi_reporte.id_acceso_bi_reporte',
                 'acceso_bi_reporte.nom_bi',
@@ -163,11 +166,10 @@ class BiReporte extends Model
                 'acceso_bi_reporte.fec_reg',
                 'acceso_bi_reporte.fec_valid',
                 'acceso_bi_reporte.estado_valid',
-                'tablas_bi.nom_tabla',
-                'tablas_bi.cod_db',
+                'tablas_db.nombre', // Agrupar por el nombre de tablas_db
+                'tablas_db.cod_db', // Agrupar por el código de tablas_db
                 'sistema_tablas.nom_sistema',
-                'sistema_tablas.nom_db',
-
+                'sistema_tablas.nom_db'
             )
             ->orderBy('acceso_bi_reporte.fec_reg', 'ASC')
             ->get();

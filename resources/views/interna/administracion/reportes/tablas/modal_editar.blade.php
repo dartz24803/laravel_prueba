@@ -6,7 +6,7 @@
 </style>
 <form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
-        <h5 class="modal-title">Editar Base de Datos:</h5>
+        <h5 class="modal-title">Editar Tabla:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -17,25 +17,21 @@
 
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row">
-            <div class="form-group col-lg-12 d-flex justify-content-center align-items-center">
-                <label class="mr-2">Cod Base de Datos:</label>
-                <p class="form-control-static">{{ $get_id->cod_db }}</p> <!-- Texto no editable -->
-            </div>
             <div class="form-group col-lg-6">
-                <label>Sistema:</label>
-                <select class="form-control" name="nom_sistemae" id="nom_sistemae">
-                    @foreach ($list_sistemas as $list)
-                    <option value="{{ $list->nom_sistema }}"
-                        @if ($list->nom_sistema==$get_id->nom_sistema) selected @endif>
-                        {{ $list->nom_sistema }}
+                <label>Base de Datos:</label>
+                <select class="form-control" name="co_basede" id="co_basede">
+                    @foreach ($list_db as $list)
+                    <option value="{{ $list->cod_db }}"
+                        @if ($list->cod_db==$get_id->cod_db) selected @endif>
+                        {{ $list->cod_db }}
                     </option>
                     @endforeach
                 </select>
             </div>
             <div class="form-group col-lg-6">
-                <label>Base de Datos:</label>
-                <input type="text" class="form-control" name="nom_dbe" id="nom_dbe"
-                    value="{{ $get_id->nom_db ?? '' }}">
+                <label>Nombre Tabla:</label>
+                <input type="text" class="form-control" name="nom_tble" id="nom_tble"
+                    value="{{ $get_id->nombre ?? '' }}">
             </div>
 
         </div>
@@ -45,7 +41,7 @@
     <div class="modal-footer">
         @csrf
         @method('PUT')
-        <button class="btn btn-primary" type="button" onclick="Update_SisDB();">Guardar</button>
+        <button class="btn btn-primary" type="button" onclick="Update_tbDB();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
@@ -55,11 +51,11 @@
         dropdownParent: $('#ModalUpdate')
     });
 
-    function Update_SisDB() {
+    function Update_tbDB() {
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('bireporte_sisbd_conf.update', $get_id->id_sistema_tablas) }}";
+        var url = "{{ route('bireporte_tbbd_conf.update', $get_id->idtablas_db) }}";
 
         $.ajax({
             url: url,
@@ -83,7 +79,7 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Lista_SisDB();
+                        Lista_tbDB();
                         $("#ModalUpdate .close").click();
                     });
                 }

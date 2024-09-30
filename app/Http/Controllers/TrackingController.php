@@ -118,7 +118,7 @@ class TrackingController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
     
-            //MENSAJE 1
+            //EMAIL 1
             //$list_detalle = TrackingGuiaRemisionDetalle::where('n_requerimiento', $tracking->n_requerimiento)->get();
             $list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$tracking->n_requerimiento]);
 
@@ -759,6 +759,8 @@ class TrackingController extends Controller
         $intervalo = $fecha1->diff($fecha2);
         $diferencia = $intervalo->days;
 
+        $t_comentario = TrackingComentario::where('id_tracking',$id)->where('pantalla','DETALLE_TRANSPORTE')->first();
+
         $mail = new PHPMailer(true);
 
         try {
@@ -772,8 +774,13 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
             //$mail->addAddress('ogutierrez@lanumero1.com.pe');
             //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
+            $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            foreach($list_td as $list){
+                $mail->addAddress($list->emailp);
+            }
             $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
@@ -788,7 +795,7 @@ class TrackingController extends Controller
             $mail->Subject = "IDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
-                                Hola '.$get_id->desde.', la mercadería ha llegado a tienda.<br><br>
+                                Hola, la mercadería ha llegado a tienda.<br><br>
                                 <table cellpadding="3" cellspacing="0" border="1" style="width:100%;">     
                                     <tr>
                                         <td colspan="2" style="font-weight:bold;">Despacho</td>
@@ -860,8 +867,11 @@ class TrackingController extends Controller
                                 text-decoration: none !important;
                                 border-radius: 10px;">
                                     Verificar Fardo
-                                </a><br>
+                                </a><br>';
+                            if($t_comentario){
+            $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
                             </FONT SIZE>';
+                            }
         
             $mail->CharSet = 'UTF-8';
             foreach($list_archivo as $list){
@@ -1182,9 +1192,18 @@ class TrackingController extends Controller
             'user_act' => session('usuario')->id_usuario
         ]);
 
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $request->id,
+                'pantalla' => 'VERIFICACION_FARDO',
+                'comentario' => $request->comentario
+            ]);
+        }
+
         //MENSAJE 3
         $get_id = Tracking::get_list_tracking(['id'=>$request->id]);
         $list_archivo = TrackingArchivo::where('id_tracking', $request->id)->where('tipo', 2)->get();
+        $t_comentario = TrackingComentario::where('id_tracking',$request->id)->where('pantalla','VERIFICACION_FARDO')->first();
 
         $mail = new PHPMailer(true);
 
@@ -1199,6 +1218,7 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
             //$mail->addAddress('ogutierrez@lanumero1.com.pe');
             //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
             $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
@@ -1217,8 +1237,11 @@ class TrackingController extends Controller
             $mail->Body =  '<FONT SIZE=3>
                                 Hola '.$get_id->desde.', los fardos han llegado con las siguientes 
                                 observaciones:<br><br>
-                                '.$get_id->observacion_inspf.'
+                                '.nl2br($get_id->observacion_inspf).'<br>';
+                            if($t_comentario){
+            $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
                             </FONT SIZE>';
+                            }
         
             $mail->CharSet = 'UTF-8';
             foreach($list_archivo as $list){
@@ -1240,14 +1263,6 @@ class TrackingController extends Controller
             ]);
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-        }
-
-        if($request->comentario){
-            TrackingComentario::create([
-                'id_tracking' => $request->id,
-                'pantalla' => 'VERIFICACION_FARDO',
-                'comentario' => $request->comentario
-            ]);
         }
     }
 
@@ -1401,9 +1416,18 @@ class TrackingController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+        
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'PAGO_TRANSPORTE',
+                'comentario' => $request->comentario
+            ]);
+        }
 
         //MENSAJE 4
         $list_archivo = TrackingArchivo::where('id_tracking', $id)->where('tipo', 1)->get();
+        $t_comentario = TrackingComentario::where('id_tracking',$id)->where('pantalla','PAGO_TRANSPORTE')->first();
 
         $mail = new PHPMailer(true);
 
@@ -1418,6 +1442,7 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
             //$mail->addAddress('ogutierrez@lanumero1.com.pe');
             //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
             $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
@@ -1434,8 +1459,14 @@ class TrackingController extends Controller
             $mail->Subject = "MERCADERÍA PAGADA: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
-                                Hola '.$get_id->desde.', se ha pagado a la agencia
+                                Hola '.$get_id->desde.', se ha pagado a la agencia.<br>
+                                Empresa: '.$get_id->nombre_transporte.'
+                                Monto: '.$get_id->importe_transporte.'
+                                N° factura: '.$get_id->factura_transporte.'<br>';
+                            if($t_comentario){
+            $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
                             </FONT SIZE>';
+                            }
         
             $mail->CharSet = 'UTF-8';
             foreach($list_archivo as $list){
@@ -1494,14 +1525,6 @@ class TrackingController extends Controller
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
-
-        if($request->comentario){
-            TrackingComentario::create([
-                'id_tracking' => $id,
-                'pantalla' => 'PAGO_TRANSPORTE',
-                'comentario' => $request->comentario
-            ]);
-        }
     }
 
     public function insert_conteo_mercaderia(Request $request,$id)
@@ -1543,7 +1566,7 @@ class TrackingController extends Controller
                 'id_tracking' => $id,
                 'token' => $token->token,
                 'titulo' => 'MERCADERÍA ENTREGADA',
-                'contenido' => 'Hola '.$get_id->desde.', la mercadería fue distribuida',
+                'contenido' => 'La mercadería fue distribuida con éxito',
             ];
             $this->sendNotification($dato);
         }
@@ -1644,14 +1667,6 @@ class TrackingController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
         }
-
-        if($request->comentario){
-            TrackingComentario::create([
-                'id_tracking' => $id,
-                'pantalla' => 'REPORTE_MERCADERIA',
-                'comentario' => $request->comentario
-            ]);
-        }
     }
 
     public function cuadre_diferencia($id)
@@ -1679,9 +1694,17 @@ class TrackingController extends Controller
                 'id_tracking' => $id,
                 'token' => $token->token,
                 'titulo' => 'REPORTE DE DIFERENCIAS',
-                'contenido' => 'Hola '.$get_id->hacia.', regularizar los sobrantes-faltantes indicados',
+                'contenido' => 'Hola '.$get_id->desde.' - '.$get_id->hacia.', regularizar los sobrantes-faltantes indicados',
             ];
             $this->sendNotification($dato);
+        }
+        
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'CUADRE_DIFERENCIA',
+                'comentario' => $request->comentario
+            ]);
         }
 
         //MENSAJE 5
@@ -1690,6 +1713,8 @@ class TrackingController extends Controller
         } catch (\Throwable $th) {
             $list_diferencia = [];
         }
+
+        $t_comentario = TrackingComentario::where('id_tracking',$id)->where('pantalla','CUADRE_DIFERENCIA')->first();
 
         $mail = new PHPMailer(true);
 
@@ -1704,10 +1729,15 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
             //$mail->addAddress('ogutierrez@lanumero1.com.pe');
             //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
             $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
             foreach($list_td as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
             }
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
@@ -1720,7 +1750,7 @@ class TrackingController extends Controller
             $mail->Subject = "DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
-                                Hola '.$get_id->hacia.', regularizar los sobrantes y/o faltantes indicados.<br><br>
+                                Hola '.$get_id->desde.' - '.$get_id->hacia.', regularizar los sobrantes y/o faltantes indicados.<br><br>
                                 <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                     <thead>
                                         <tr align="center" style="background-color:#0093C6;">
@@ -1758,8 +1788,11 @@ class TrackingController extends Controller
                                 text-decoration: none !important;
                                 border-radius: 10px;">
                                     Detalle de Operación de Diferencias
-                                </a><br>
+                                </a><br>';
+                            if($t_comentario){
+            $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
                             </FONT SIZE>';
+                            }                                
         
             $mail->CharSet = 'UTF-8';
             $mail->send();
@@ -1776,14 +1809,6 @@ class TrackingController extends Controller
             ]);
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-        }
-
-        if($request->comentario){
-            TrackingComentario::create([
-                'id_tracking' => $id,
-                'pantalla' => 'CUADRE_DIFERENCIA',
-                'comentario' => $request->comentario
-            ]);
         }
     }
 
@@ -1835,12 +1860,22 @@ class TrackingController extends Controller
                 'id_tracking' => $id,
                 'token' => $token->token,
                 'titulo' => 'DIFERENCIAS REGULARIZADAS',
-                'contenido' => 'Hola, '.$get_id->desde.' - '.$get_id->hacia.' se regularizó el Nro. Req. '.$get_id->guia_diferencia,
+                'contenido' => 'Hola, '.$get_id->hacia.' se regularizó el Nro. Req. '.$get_id->n_requerimiento.'con la GR '.$request->guia_diferencia,
             ];
             $this->sendNotification($dato);
         }
+        
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'pantalla' => 'DETALLE_OPERACION_DIFERENCIA',
+                'comentario' => $request->comentario
+            ]);
+        }
 
         //MENSAJE 6
+        $t_comentario = TrackingComentario::where('id_tracking',$id)->where('pantalla','DETALLE_OPERACION_DIFERENCIA')->first();
+
         $mail = new PHPMailer(true);
 
         try {
@@ -1854,6 +1889,7 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
             //$mail->addAddress('ogutierrez@lanumero1.com.pe');
             //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
             $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
@@ -1874,10 +1910,13 @@ class TrackingController extends Controller
             $mail->Subject = "REGULARIZADO - DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
-                                Hola, '.$get_id->desde.' - '.$get_id->hacia.' acaba de regularizar con la 
+                                Hola '.$get_id->desde.' - '.$get_id->hacia.', acaba de regularizar con la 
                                 GR '.$request->guia_diferencia.'. 
-                                El archivo ya se encuentra en su carpeta.
+                                El archivo ya se encuentra en su carpeta.<br>';
+                            if($t_comentario){
+            $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
                             </FONT SIZE>';
+                            }
         
             $mail->CharSet = 'UTF-8';
             $mail->send();
@@ -1921,14 +1960,6 @@ class TrackingController extends Controller
             }
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-        }
-
-        if($request->comentario){
-            TrackingComentario::create([
-                'id_tracking' => $id,
-                'pantalla' => 'DETALLE_OPERACION_DIFERENCIA',
-                'comentario' => $request->comentario
-            ]);
         }
     }
 
@@ -2013,8 +2044,9 @@ class TrackingController extends Controller
         ]);
 
         $cantidad = TrackingDevolucionTemporal::where('id_usuario',session('usuario')->id_usuario)->count();
+        $array = explode(",",substr($request->devoluciones,1));
 
-        if($cantidad==count($request->devolucion)){
+        if($cantidad>=count($array)){
             //ALERTA 11
             $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
@@ -2029,7 +2061,8 @@ class TrackingController extends Controller
                 $this->sendNotification($dato);
             }
 
-            $list_devolucion = TrackingDevolucionTemporal::where('id_usuario',session('usuario')->id_usuario)->get();
+            $list_devolucion = TrackingDevolucionTemporal::where('id_usuario',session('usuario')->id_usuario)
+                                ->whereIn('id_producto',$array)->get();
 
             foreach($list_devolucion as $list){
                 TrackingDevolucion::create([
@@ -2074,8 +2107,18 @@ class TrackingController extends Controller
                 }
                 TrackingArchivoTemporal::where('id_usuario', session('usuario')->id_usuario)->where('tipo', 3)->delete();
             }
+            
+            if($request->comentario){
+                TrackingComentario::create([
+                    'id_tracking' => $id,
+                    'pantalla' => 'SOLICITUD_DEVOLUCION',
+                    'comentario' => $request->comentario
+                ]);
+            }
 
             //MENSAJE 7
+            $t_comentario = TrackingComentario::where('id_tracking',$id)->where('pantalla','SOLICITUD_DEVOLUCION')->first();
+
             $mail = new PHPMailer(true);
     
             try {
@@ -2089,6 +2132,7 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
                 //$mail->addAddress('ogutierrez@lanumero1.com.pe');
                 //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
                 $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
@@ -2118,8 +2162,11 @@ class TrackingController extends Controller
                                     text-decoration: none !important;
                                     border-radius: 10px;">
                                         Evaluación de Devolución
-                                    </a><br>
+                                    </a><br>';
+                                if($t_comentario){
+                $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
                                 </FONT SIZE>';
+                                }
             
                 $mail->CharSet = 'UTF-8';
                 $mail->send();
@@ -2136,14 +2183,6 @@ class TrackingController extends Controller
                 ]);
             }catch(Exception $e) {
                 echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-            }
-
-            if($request->comentario){
-                TrackingComentario::create([
-                    'id_tracking' => $id,
-                    'pantalla' => 'SOLICITUD_DEVOLUCION',
-                    'comentario' => $request->comentario
-                ]);
             }
         }else{
             echo "error";
@@ -2245,7 +2284,17 @@ class TrackingController extends Controller
                                                     ->where('tracking_devolucion.id_tracking',$id)
                                                     ->where('tracking_devolucion.estado',1)->get();
 
+            if($request->comentario){
+                TrackingComentario::create([
+                    'id_tracking' => $id,
+                    'pantalla' => 'EVALUACION_DEVOLUCION',
+                    'comentario' => $request->comentario
+                ]);
+            }                                                    
+
             //MENSAJE 8
+            $t_comentario = TrackingComentario::where('id_tracking',$id)->where('pantalla','EVALUACION_DEVOLUCION')->first();
+
             $mail = new PHPMailer(true);
     
             try {
@@ -2259,6 +2308,7 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
                 //$mail->addAddress('ogutierrez@lanumero1.com.pe');
                 //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
                 $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
@@ -2304,8 +2354,11 @@ class TrackingController extends Controller
                                                 </tr>';
                                 }
                 $mail->Body .=  '       </tbody>
-                                    </table>
+                                    </table>';
+                                if($t_comentario){
+                $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
                                 </FONT SIZE>';
+                                }
             
                 $mail->CharSet = 'UTF-8';
                 $mail->send(); 
@@ -2349,14 +2402,6 @@ class TrackingController extends Controller
 
             //ALERTA 13
             $this->insert_mercaderia_entregada($id);
-
-            if($request->comentario){
-                TrackingComentario::create([
-                    'id_tracking' => $id,
-                    'pantalla' => 'EVALUACION_DEVOLUCION',
-                    'comentario' => $request->comentario
-                ]);
-            }
         }else{
             echo "error";
         }
