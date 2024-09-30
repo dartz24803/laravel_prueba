@@ -19,9 +19,8 @@ class TablaBi extends Model
     protected $fillable = [
         'id_acceso_bi_reporte',
         'estado',
-        'nom_tabla',
+        'idtablas_db',
         'cod_sistema',
-        'cod_db',
         'fec_reg',
         'user_reg',
         'fec_act',

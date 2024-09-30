@@ -44,6 +44,7 @@ use App\Models\SedeLaboral;
 use App\Models\SistemaTablas;
 use App\Models\SubGerencia;
 use App\Models\TablaBi;
+use App\Models\Tablasdb;
 use App\Models\TipoIndicador;
 use App\Models\Ubicacion;
 use App\Models\Usuario;
@@ -189,6 +190,13 @@ class BiReporteController extends Controller
             ->get()
             ->unique('cod_db');
 
+        $list_tablasdb = Tablasdb::select('idtablas_db', 'nombre', 'descripcion')
+            ->where('estado', 1)
+            ->orderBy('fec_reg', 'DESC')
+            ->get();
+
+
+
         return view('interna.bi.reportes.registroacceso_reportes.modal_registrar', compact(
             'list_responsable',
             'list_area',
@@ -198,7 +206,8 @@ class BiReporteController extends Controller
             'list_sistemas',
             'list_db',
             'list_sede',
-            'list_ubicaciones'
+            'list_ubicaciones',
+            'list_tablasdb'
         ));
     }
 
@@ -212,6 +221,17 @@ class BiReporteController extends Controller
 
         return response()->json($dbs);
     }
+    public function getTBPorDB(Request $request)
+    {
+        $sisDB = $request->input('dbs');
+        // Obtiene los usuarios cuyo id_puesto coincida con el área seleccionada
+        $tbs = Tablasdb::where('idtablas_bi', 'cod_db', $sisDB)
+            ->where('estado', 1)  // Filtrar por usuarios activos si es necesario
+            ->get(['idtablas_bi', 'cod_db', 'nombre']);
+        // dd($tbs);
+        return response()->json($tbs);
+    }
+
 
     public function getAreasPorBase(Request $request)
     {
@@ -235,6 +255,8 @@ class BiReporteController extends Controller
             ->get();
         return response()->json($areas);
     }
+
+
     public function getAreasPorUbicacion(Request $request)
     {
         // Obtener ids de ubicaciones seleccionadas
@@ -349,7 +371,7 @@ class BiReporteController extends Controller
             'nombi' => 'required',
             'iframe' => 'required',
             'tipo_acceso_t' => 'required',
-            'tablabi' => 'required',
+            'tbdb' => 'required',
             'indicador.*' => 'required',
             'descripcion.*' => 'required',
             'tipo.*' => 'required',
@@ -358,7 +380,7 @@ class BiReporteController extends Controller
             'nombi.required' => 'Debe ingresar nombre bi.',
             'iframe.required' => 'Debe ingresar Iframe.',
             'tipo_acceso_t.required' => 'Debe seleccionar los Accesos por Puesto',
-            'tablabi.required' => 'Debe seleccionar tablabi.',
+            'tbdb.required' => 'Debe seleccionar tbdb.',
             'indicador.*.required' => 'Debe ingresar un indicador.',
             'descripcion.*.required' => 'Debe ingresar una descripción.',
             'tipo.*.required' => 'Debe seleccionar un tipo.',
@@ -486,16 +508,15 @@ class BiReporteController extends Controller
 
 
         // Guardar los datos en la tabla tabla_bi
-        $tablasbi = $request->input('tablabi', []);
-        $sistemas = $request->input('sistema', []);
-        $dbs = $request->input('db', []);
-
-        foreach ($tablasbi as $index => $tabla) {
+        $tablasbi = $request->input('tbdb', []); // tbdb[] ahora contiene los ids de las tablas seleccionadas
+        $sistemas = $request->input('sistema', []); // cod_sistema
+        dd($tablasbi);
+        // Recorre cada tabla seleccionada
+        foreach ($tablasbi as $index => $idTabla) {
             TablaBi::create([
                 'id_acceso_bi_reporte' => $biReporteId,
-                'nom_tabla' => $tabla,
-                'cod_sistema' => $sistemas[$index],
-                'cod_db' => $dbs[$index],
+                'idtablas_db' => $idTabla, // Guardar el idtablas_db
+                'cod_sistema' => $sistemas[$index], // Guardar el cod_sistema
                 'estado' => 1,
                 'fec_reg' => now(),
                 'user_reg' => session('usuario')->id_usuario,
@@ -503,6 +524,9 @@ class BiReporteController extends Controller
                 'user_act' => session('usuario')->id_usuario,
             ]);
         }
+
+
+
 
         // Guardar los datos en la tabla bi_puesto_acceso
         $puestos = $request->input('tipo_acceso_t', []);
@@ -677,16 +701,18 @@ class BiReporteController extends Controller
 
             // Ahora, actualizamos o creamos los registros nuevos
             foreach ($request->tablabi as $key => $tablabi) {
+                // Debugear valores
+                // dd($request->sistemas, $request->dbe, $tablabi);
+
                 $biTabla = TablaBi::updateOrCreate(
                     [
                         'id_acceso_bi_reporte' => $biReporte->id_acceso_bi_reporte,
-                        'idtablas_bi' => $key
+                        'idtablas_bi' => $key // este es el índice de la fila actual
                     ],
                     [
                         'estado' => 1,
-                        'nom_tabla' => $tablabi,
-                        'cod_sistema' => $request->sistemas[$key],
-                        'cod_db' => $request->dbe[$key],
+                        'idtablas_db' => $tablabi, // este es el id de la tabla seleccionada
+                        'cod_sistema' => $request->sistemas[$key], // obtener el sistema según el índice
                         'fec_reg' => now(),
                         'user_reg' => session('usuario')->id_usuario,
                         'fec_act' => now(),
@@ -695,6 +721,7 @@ class BiReporteController extends Controller
                 );
             }
         }
+
 
         // Guardar los datos en la tabla bi_puesto_acceso
         $biReporteId = $biReporte->id_acceso_bi_reporte;
@@ -807,9 +834,6 @@ class BiReporteController extends Controller
             ->where('estado', 1)
             ->where('id_nivel', '!=', 8)
             ->get();
-        // $list_colaborador = Usuario::get_list_colaborador_usuario([
-        //     'id_usuario' => $id_usuario // Filtro por id_usuario
-        // ]);
 
         $list_sistemas = SistemaTablas::select('id_sistema_tablas', 'cod_sistema', 'nom_sistema')
             ->where('estado', 1)
@@ -824,12 +848,14 @@ class BiReporteController extends Controller
             ->unique('cod_db');
 
         $list_tablas = TablaBi::select(
-            'tablas_bi.nom_tabla',
+            'tablas_bi.idtablas_db',
             'tablas_bi.cod_sistema',
-            'tablas_bi.cod_db'
+            'tablas_db.cod_db' // Obtener el cod_db desde la tabla tablas_db
         )
-            ->where('id_acceso_bi_reporte', $id) // Filtra por el valor de $id en el campo id_acceso_bi_reporte
+            ->join('tablas_db', 'tablas_bi.idtablas_db', '=', 'tablas_db.idtablas_db') // Relacionar tablas_bi con tablas_db por idtablas_db
+            ->where('id_acceso_bi_reporte', $id) // Filtrar por el valor de $id en el campo id_acceso_bi_reporte
             ->get();
+
 
         $list_sede = SedeLaboral::select('id', 'descripcion')
             ->where('estado', 1)
@@ -840,6 +866,12 @@ class BiReporteController extends Controller
             ->where('estado', 1)
             ->orderBy('cod_ubi', 'ASC')
             ->distinct('cod_ubi')->get();
+
+        $list_tablasdb = Tablasdb::select(
+            'tablas_db.idtablas_db',
+            'tablas_db.nombre',
+        )
+            ->get();
 
         return view('interna.bi.reportes.registroacceso_reportes.modal_editar', compact(
             'get_id',
@@ -857,7 +889,8 @@ class BiReporteController extends Controller
             'list_db',
             'list_tablas',
             'list_sede',
-            'list_ubicaciones'
+            'list_ubicaciones',
+            'list_tablasdb'
         ));
     }
 
@@ -1265,14 +1298,9 @@ class BiReporteController extends Controller
             ->get()
             ->unique('cod_sistema');
 
-        $list_dbs = SistemaTablas::select('id_sistema_tablas', 'nom_db', 'cod_db')
-            ->where('estado', 1)
-            ->orderBy('nom_db', 'ASC')
-            ->distinct('nom_db')
-            ->get();
 
         $get_id = SistemaTablas::findOrFail($id);
-        return view('interna.administracion.reportes.sistema.modal_editar',  compact('get_id', 'list_sistemas', 'list_dbs'));
+        return view('interna.administracion.reportes.sistema.modal_editar',  compact('get_id', 'list_sistemas'));
     }
 
     public function destroy_sis($id)
@@ -1499,5 +1527,101 @@ class BiReporteController extends Controller
         }
 
         return view('interna.bi.reportes.registroacceso_reportes.modal_imagen', compact('get_id', 'imageUrls'));
+    }
+
+
+
+
+
+    // ADMINISTRABLE TABLAS
+    public function index_tb_conf()
+    {
+        return view('interna.administracion.reportes.tablas.index');
+    }
+
+    public function list_tb()
+    {
+        $list_tablasdb = Tablasdb::select('idtablas_db', 'nombre', 'descripcion', 'cod_db')
+            ->where('estado', 1)
+            ->orderBy('fec_reg', 'DESC')
+            ->get();
+
+        return view('interna.administracion.reportes.tablas.lista', compact('list_tablasdb'));
+    }
+
+    public function edit_tb($id)
+    {
+        $list_db = SistemaTablas::select('id_sistema_tablas', 'nom_sistema', 'cod_db')
+            ->where('estado', 1)
+            ->orderBy('cod_db', 'ASC')
+            ->distinct('cod_db')
+            ->get()
+            ->unique('cod_db');
+
+        $get_id = Tablasdb::findOrFail($id);
+        return view('interna.administracion.reportes.tablas.modal_editar',  compact('get_id', 'list_db'));
+    }
+
+    public function destroy_tb($id)
+    {
+        Tablasdb::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function update_tb(Request $request, $id)
+    {
+        $request->validate([
+            'co_basede' => 'required',
+            'nom_tble' => 'required',
+        ], [
+            'co_basede.required' => 'Debe seleccionar BASE DE DATOS.',
+            'nom_tble.required' => 'Debe seleccionar tabla.',
+        ]);
+
+
+        Tablasdb::findOrFail($id)->update([
+            'nombre' => $request->nom_tble,
+            'cod_db' => $request->co_basede,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function create_tb()
+    {
+        $list_db = SistemaTablas::select('id_sistema_tablas', 'nom_db', 'cod_db')
+            ->where('estado', 1)
+            ->orderBy('cod_db', 'ASC')
+            ->distinct('cod_db')
+            ->get()
+            ->unique('cod_db');
+
+        return view('interna.administracion.reportes.tablas.modal_registrar', compact('list_db'));
+    }
+
+
+    public function store_tb(Request $request)
+    {
+        $request->validate([
+            'nom_tabe' => 'required',
+            'cod_dbee' => 'required',
+        ], [
+            'nom_tabe.required' => 'Debe ingresar tabla.',
+            'cod_dbee.required' => 'Debe ingresar código Base de Datos.',
+        ]);
+
+        Tablasdb::create([
+            'cod_db' => $request->cod_dbee,
+            'nombre' => $request->nom_tabe,
+            'descripcion' => $request->descripcione,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
     }
 }

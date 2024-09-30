@@ -351,7 +351,7 @@
                             @foreach ($list_tablas as $tabla)
                             <tr class="text-center">
                                 <td class="px-1">
-                                    <select class="form-control sistema" name="sistemas[]" data-row-index="{{ $loop->index }}">
+                                    <select class="form-control sistema" name="sistemas[{{ $loop->index }}]" data-row-index="{{ $loop->index }}">
                                         @foreach ($list_sistemas as $list)
                                         <option value="{{ $list->cod_sistema }}" {{ $list->cod_sistema == $tabla->cod_sistema ? 'selected' : '' }}>
                                             {{ $list->nom_sistema }}
@@ -360,7 +360,7 @@
                                     </select>
                                 </td>
                                 <td class="px-1">
-                                    <select class="form-control db" name="dbe[]" data-row-index="{{ $loop->index }}">
+                                    <select class="form-control db" name="dbe[{{ $loop->index }}]" data-row-index="{{ $loop->index }}">
                                         @foreach ($list_db as $list)
                                         <option value="{{ $list->cod_db }}" {{ $list->cod_db == $tabla->cod_db ? 'selected' : '' }}
                                             title="{{ $list->nom_db }}">
@@ -368,13 +368,22 @@
                                         </option>
                                         @endforeach
                                     </select>
-
                                 </td>
-                                <td class="px-1"><input type="text" class="form-control tabla-sty" name="tablabi[]" value="{{ $tabla->nom_tabla }}"></td>
+                                <td class="px-1">
+                                    <select class="form-control tablabi" name="tablabi[{{ $loop->index }}]" data-row-index="{{ $loop->index }}">
+                                        @foreach ($list_tablasdb as $list)
+                                        <option value="{{ $list->idtablas_db }}" {{ $list->idtablas_db == $tabla->idtablas_db ? 'selected' : '' }}
+                                            title="{{ $list->nombre }}">
+                                            {{ strlen($list->nombre) > 20 ? substr($list->nombre, 0, 20) . '...' : $list->nombre }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </td>
                                 <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
                             </tr>
                             @endforeach
                         </tbody>
+
                     </table>
                     <button type="button" class="btn btn-success btn-sm" onclick="addRowTablaEdit()">Agregar tabla</button>
                 </div>
@@ -591,29 +600,35 @@
         // Contenido HTML de la nueva fila
         newRowTab.innerHTML = `
         <td class="px-1">
-            <select class="form-control sistema" name="sistemas[]" data-row-index="${tableBody.children.length}">
+            <select class="form-control sistema" name="sistemas[${tableBody.children.length}]" data-row-index="${tableBody.children.length}">
                 @foreach ($list_sistemas as $list)
                 <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema }}</option>
                 @endforeach
             </select>
         </td>
         <td class="px-1">
-            <select class="form-control db" name="dbe[]" data-row-index="${tableBody.children.length}">
+            <select class="form-control db" name="dbe[${tableBody.children.length}]" data-row-index="${tableBody.children.length}">
                 @foreach ($list_db as $list)
                 <option value="{{ $list->cod_db }}">{{ $list->nom_db }}</option>
                 @endforeach
             </select>
         </td>
-        <td class="px-1"><input type="text" class="form-control tabla-sty" name="tablabi[]"></td>
-        <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
+        <td class="px-1">
+            <select class="form-control tablabi" name="tablabi[${tableBody.children.length}]" data-row-index="${tableBody.children.length}">
+                @foreach ($list_tablasdb as $list)
+                <option value="{{ $list->idtablas_db }}">{{ $list->nombre }}</option>
+                @endforeach
+            </select>
+        </td>
+        <td class="px-1">
+            <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button>
+        </td>
     `;
 
-        // Agregar la nueva fila al cuerpo de la tabla
+        // Añadir la nueva fila al cuerpo de la tabla
         tableBody.appendChild(newRowTab);
-
-        // Asignar el evento change al nuevo select de sistema
-        attachSistemaChangeEvent(newRowTab.querySelector('.sistema'));
     }
+
 
     // Función para adjuntar el evento change al select de sistema
     function attachSistemaChangeEvent(selectElement) {
