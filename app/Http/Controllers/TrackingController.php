@@ -1860,7 +1860,7 @@ class TrackingController extends Controller
                 'id_tracking' => $id,
                 'token' => $token->token,
                 'titulo' => 'DIFERENCIAS REGULARIZADAS',
-                'contenido' => 'Hola, '.$get_id->hacia.' se regularizó el Nro. Req. '.$get_id->guia_diferencia.'con la GR '.$request->guia_diferencia,
+                'contenido' => 'Hola, '.$get_id->hacia.' se regularizó el Nro. Req. '.$get_id->n_requerimiento.'con la GR '.$request->guia_diferencia,
             ];
             $this->sendNotification($dato);
         }
