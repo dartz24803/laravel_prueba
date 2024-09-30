@@ -1566,7 +1566,7 @@ class TrackingController extends Controller
                 'id_tracking' => $id,
                 'token' => $token->token,
                 'titulo' => 'MERCADERÍA ENTREGADA',
-                'contenido' => 'Hola '.$get_id->desde.', la mercadería fue distribuida',
+                'contenido' => 'La mercadería fue distribuida con éxito',
             ];
             $this->sendNotification($dato);
         }
