@@ -97,7 +97,14 @@ class Tracking extends Model
             return $query;
         }else{
             $sql = "SELECT tr.id,tr.n_requerimiento,bd.cod_base AS desde,bh.cod_base AS hacia,tp.descripcion AS proceso,
-                    DATE_FORMAT(de.fecha,'%d-%m-%Y') AS fecha,DATE_FORMAT(de.fecha,'%H:%i') AS hora,
+                    CONCAT(CASE WHEN DAYNAME(de.fecha)='Monday' THEN 'Lun'
+                    WHEN DAYNAME(de.fecha)='Tuesday' THEN 'Mar'
+                    WHEN DAYNAME(de.fecha)='Wednesday' THEN 'Mie'
+                    WHEN DAYNAME(de.fecha)='Thursday' THEN 'Jue'
+                    WHEN DAYNAME(de.fecha)='Friday' THEN 'Vie'
+                    WHEN DAYNAME(de.fecha)='Saturday' THEN 'Sab'
+                    WHEN DAYNAME(de.fecha)='Sunday' THEN 'Dom' ELSE '' END,' ',
+                    DATE_FORMAT(de.fecha,'%d-%m-%Y')) AS fecha,DATE_FORMAT(de.fecha,'%H:%i') AS hora,
                     CASE WHEN tr.devolucion=1 AND de.id_estado IN (14,15,16) 
                     THEN CONCAT(te.descripcion,' (PENDIENTE DEVOLUCIÓN)') ELSE te.descripcion END AS estado,
                     de.id_estado,te.id_proceso,te.descripcion
