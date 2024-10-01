@@ -18,6 +18,10 @@
                     <div class="widget-content widget-content-area br-6 p-3">
                         <form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
                             <div class="row">
+                                @include('logistica.tracking.cabecera')
+                            </div>
+                            
+                            <div class="row">
                                 <div class="form-group col-lg-1">
                                     <label class="control-label text-bold">Observación: </label>
                                 </div>

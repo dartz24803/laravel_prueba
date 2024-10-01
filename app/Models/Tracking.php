@@ -57,7 +57,7 @@ class Tracking extends Model
                     (SELECT ta.archivo FROM tracking_archivo ta
                     WHERE ta.id_tracking=tr.id AND ta.tipo=1
                     ORDER BY ta.id DESC
-                    LIMIT 1) AS archivo_transporte,md.id_dos
+                    LIMIT 1) AS archivo_transporte,md.id_dos,di.nombre_distrito
                     FROM tracking tr
                     LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base
@@ -73,6 +73,7 @@ class Tracking extends Model
                     FROM tracking_detalle_proceso
                     WHERE id_proceso=2
                     GROUP BY id_tracking) md ON tr.id=md.id_tracking
+                    LEFT JOIN distrito di ON bh.id_distrito=di.id_distrito
                     WHERE tr.id=".$dato['id'];
             $query = DB::select($sql);
             return $query[0];
@@ -113,7 +114,8 @@ class Tracking extends Model
                     GROUP BY id_detalle) me ON mp.ultimo_id=me.id_detalle
                     LEFT JOIN tracking_detalle_estado de ON me.ultimo_id=de.id
                     LEFT JOIN tracking_estado te ON de.id_estado=te.id
-                    WHERE tr.estado=1";
+                    WHERE (tr.estado=1 AND de.id_estado!=21) OR (tr.estado=1 AND de.id_estado=21 AND 
+                    DATE(de.fecha)>DATE_SUB(CURDATE(), INTERVAL 1 WEEK))";
             $query = DB::select($sql);
             return $query;
         }
