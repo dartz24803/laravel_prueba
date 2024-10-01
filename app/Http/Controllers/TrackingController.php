@@ -381,6 +381,9 @@ class TrackingController extends Controller
 
     public function store(Request $request)
     {
+        ini_set('memory_limit', '512M');
+        set_time_limit(300);
+
         $tracking = Tracking::create([
             'n_requerimiento' => $request->n_requerimiento,
             'n_guia_remision' => $request->n_requerimiento,
@@ -435,8 +438,7 @@ class TrackingController extends Controller
 
         $mpdf = new Mpdf([
             'format' => 'A4',
-            'default_font' => 'Arial',
-            'tempDir' => storage_path('app/mpdf')
+            'default_font' => 'Arial'
         ]);
         $html = view('logistica.tracking.pdf', compact('get_id','list_detalle'))->render();
         $mpdf->WriteHTML($html);
