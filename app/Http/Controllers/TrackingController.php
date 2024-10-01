@@ -381,6 +381,9 @@ class TrackingController extends Controller
 
     public function store(Request $request)
     {
+        ini_set('memory_limit', '512M');
+        set_time_limit(300);
+
         $tracking = Tracking::create([
             'n_requerimiento' => $request->n_requerimiento,
             'n_guia_remision' => $request->n_requerimiento,
@@ -431,7 +434,8 @@ class TrackingController extends Controller
         }
 
         //MENSAJE 1
-        $list_detalle = TrackingGuiaRemisionDetalle::where('n_guia_remision', $request->n_requerimiento)->get();
+        //$list_detalle = TrackingGuiaRemisionDetalle::where('n_guia_remision', $request->n_requerimiento)->get();
+        $list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$get_id->n_requerimiento]);
 
         $mpdf = new Mpdf([
             'format' => 'A4',
@@ -454,10 +458,10 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            //$mail->addAddress('dpalomino@lanumero1.com.pe');
-            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-            //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
-            $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('ogutierrez@lanumero1.com.pe');
+            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
             foreach($list_td as $list){
                 $mail->addAddress($list->emailp);
             }
@@ -468,13 +472,26 @@ class TrackingController extends Controller
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }
+            }*/
+
+            $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
+            $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+            $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
+            $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+            $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+            $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
+            $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
 
             $mail->isHTML(true);
 
             $mail->Subject = "SDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
+                                <b>Semana:</b> '.$get_id->semana.'<br>
+                                <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
+                                <b>Base:</b> '.$get_id->hacia.'<br>
+                                <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
+                                <b>Fecha:</b> '.$fecha_formateada.'<br><br>
                                 Buen día '.$get_id->hacia.'.<br><br>
                                 Se envia el reporte de la salida de Mercaderia, de la guía de remisión '.$get_id->n_requerimiento.'.<br><br>
                                 <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
@@ -774,10 +791,10 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            //$mail->addAddress('dpalomino@lanumero1.com.pe');
-            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-            //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
-            $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('ogutierrez@lanumero1.com.pe');
+            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
             foreach($list_td as $list){
                 $mail->addAddress($list->emailp);
             }
@@ -788,13 +805,26 @@ class TrackingController extends Controller
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }
+            }*/
+
+            $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
+            $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+            $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
+            $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+            $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+            $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
+            $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
 
             $mail->isHTML(true);
 
             $mail->Subject = "IDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
+                                <b>Semana:</b> '.$get_id->semana.'<br>
+                                <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
+                                <b>Base:</b> '.$get_id->hacia.'<br>
+                                <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
+                                <b>Fecha:</b> '.$fecha_formateada.'<br><br>
                                 Hola, la mercadería ha llegado a tienda.<br><br>
                                 <table cellpadding="3" cellspacing="0" border="1" style="width:100%;">     
                                     <tr>
@@ -811,8 +841,8 @@ class TrackingController extends Controller
                                         <td style="text-align:right;">'.$get_id->guia_transporte.'</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2"></td>
-                                        <td style="text-align:right;">-</td>
+                                        <td colspan="2" style="font-weight:bold;">Tipo de transporte</td>
+                                        <td style="text-align:right;">'.$get_id->tipo_transporte.'</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="font-weight:bold;">N° Factura</td>
@@ -843,9 +873,13 @@ class TrackingController extends Controller
                                         <td style="text-align:right;">S/'.$get_id->importe_formateado.'</td>
                                     </tr>
                                     <tr>
-                                        <td rowspan="3" style="font-weight:bold;">Fecha</td>
+                                        <td rowspan="4" style="font-weight:bold;">Fecha</td>
                                         <td style="font-weight:bold;">Partida</td>
                                         <td style="text-align:right;">'.$estado_4->fecha_formateada.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bold;">Tiempo estimado de llegada</td>
+                                        <td style="text-align:right;">'.$get_id->tiempo_llegada.'</td>
                                     </tr>
                                     <tr>
                                         <td style="font-weight:bold;">Llegada</td>
@@ -1218,23 +1252,36 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            //$mail->addAddress('dpalomino@lanumero1.com.pe');
-            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-            //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
-            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('ogutierrez@lanumero1.com.pe');
+            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
             }
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }
+            }*/
+
+            $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
+            $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+            $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
+            $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+            $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+            $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
+            $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
 
             $mail->isHTML(true);
 
             $mail->Subject = "REPORTE INSPECCIÓN FARDOS: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
+                                <b>Semana:</b> '.$get_id->semana.'<br>
+                                <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
+                                <b>Base:</b> '.$get_id->hacia.'<br>
+                                <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
+                                <b>Fecha:</b> '.$fecha_formateada.'<br><br>
                                 Hola '.$get_id->desde.', los fardos han llegado con las siguientes 
                                 observaciones:<br><br>
                                 '.nl2br($get_id->observacion_inspf).'<br>';
@@ -1442,26 +1489,39 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            //$mail->addAddress('dpalomino@lanumero1.com.pe');
-            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-            //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
-            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('ogutierrez@lanumero1.com.pe');
+            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
             }
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }
+            }*/
+
+            $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
+            $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+            $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
+            $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+            $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+            $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
+            $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
 
             $mail->isHTML(true);
 
             $mail->Subject = "MERCADERÍA PAGADA: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
+                                <b>Semana:</b> '.$get_id->semana.'<br>
+                                <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
+                                <b>Base:</b> '.$get_id->hacia.'<br>
+                                <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
+                                <b>Fecha:</b> '.$fecha_formateada.'<br><br>
                                 Hola '.$get_id->desde.', se ha pagado a la agencia.<br>
-                                Empresa: '.$get_id->nombre_transporte.'
-                                Monto: '.$get_id->importe_transporte.'
+                                Empresa: '.$get_id->nombre_transporte.'<br>
+                                Monto: '.$get_id->importe_transporte.'<br>
                                 N° factura: '.$get_id->factura_transporte.'<br>';
                             if($t_comentario){
             $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
@@ -1729,10 +1789,10 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            //$mail->addAddress('dpalomino@lanumero1.com.pe');
-            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-            //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
-            $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('ogutierrez@lanumero1.com.pe');
+            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
             foreach($list_td as $list){
                 $mail->addAddress($list->emailp);
             }
@@ -1743,13 +1803,26 @@ class TrackingController extends Controller
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }
+            }*/
+
+            $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
+            $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+            $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
+            $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+            $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+            $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
+            $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
 
             $mail->isHTML(true);
 
             $mail->Subject = "DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
+                                <b>Semana:</b> '.$get_id->semana.'<br>
+                                <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
+                                <b>Base:</b> '.$get_id->hacia.'<br>
+                                <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
+                                <b>Fecha:</b> '.$fecha_formateada.'<br><br>
                                 Hola '.$get_id->desde.' - '.$get_id->hacia.', regularizar los sobrantes y/o faltantes indicados.<br><br>
                                 <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                     <thead>
@@ -1889,10 +1962,10 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            //$mail->addAddress('dpalomino@lanumero1.com.pe');
-            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-            //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
-            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('ogutierrez@lanumero1.com.pe');
+            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
             }
@@ -1903,13 +1976,26 @@ class TrackingController extends Controller
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }
+            }*/
+
+            $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
+            $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+            $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
+            $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+            $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+            $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
+            $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
 
             $mail->isHTML(true);
 
             $mail->Subject = "REGULARIZADO - DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
+                                <b>Semana:</b> '.$get_id->semana.'<br>
+                                <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
+                                <b>Base:</b> '.$get_id->hacia.'<br>
+                                <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
+                                <b>Fecha:</b> '.$fecha_formateada.'<br><br>
                                 Hola '.$get_id->desde.' - '.$get_id->hacia.', acaba de regularizar con la 
                                 GR '.$request->guia_diferencia.'. 
                                 El archivo ya se encuentra en su carpeta.<br>';
@@ -2132,23 +2218,36 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                //$mail->addAddress('dpalomino@lanumero1.com.pe');
-                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-                //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
-                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('ogutierrez@lanumero1.com.pe');
+                $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
                 }
                 $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
                 foreach($list_cc as $list){
                     $mail->addCC($list->emailp);
-                }
+                }*/
+
+                $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
+                $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+                $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
+                $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+                $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+                $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
+                $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
     
                 $mail->isHTML(true);
     
                 $mail->Subject = "SOLICITUD DE DEVOLUCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
             
                 $mail->Body =  '<FONT SIZE=3>
+                                    <b>Semana:</b> '.$get_id->semana.'<br>
+                                    <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
+                                    <b>Base:</b> '.$get_id->hacia.'<br>
+                                    <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
+                                    <b>Fecha:</b> '.$fecha_formateada.'<br><br>
                                     Hola Andrea, tienes una solicitud de devolución por evaluar.
                                     <br><br>
                                     <a href="'.route('tracking.evaluacion_devolucion', $id).'" 
@@ -2308,10 +2407,10 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                //$mail->addAddress('dpalomino@lanumero1.com.pe');
-                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-                //$mail->addAddress('practicante3.procesos@lanumero1.com.pe');
-                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('ogutierrez@lanumero1.com.pe');
+                $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
                 }
@@ -2322,13 +2421,26 @@ class TrackingController extends Controller
                 $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
                 foreach($list_cc as $list){
                     $mail->addCC($list->emailp);
-                }
+                }*/
+
+                $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
+                $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+                $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
+                $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+                $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+                $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
+                $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
     
                 $mail->isHTML(true);
     
                 $mail->Subject = "RESPUESTA A SOLICITUD DE DEVOLUCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
             
                 $mail->Body =  '<FONT SIZE=3>
+                                    <b>Semana:</b> '.$get_id->semana.'<br>
+                                    <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
+                                    <b>Base:</b> '.$get_id->hacia.'<br>
+                                    <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
+                                    <b>Fecha:</b> '.$fecha_formateada.'<br><br>
                                     Hola '.$get_id->hacia.' - '.$get_id->desde.', a continuación respuesta de la solicitud de 
                                     devolución:<br><br>
                                     <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
