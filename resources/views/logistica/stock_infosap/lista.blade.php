@@ -19,7 +19,7 @@
                 <th>Descripción 3</th>
                 <th>Marca</th>
                 <th>Estilo</th>
-                <th>DEscripcion</th>
+                <th>Descripcion</th>
                 <th>Color</th>
                 <th>Talla</th>
                 <th>Barra</th>

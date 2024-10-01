@@ -395,8 +395,6 @@ class BiReporteController extends Controller
         // Guardar los datos en la tabla portal_procesos_historial
         $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
 
-
-
         $sessionUserId = session('usuario')->id_usuario;
         // Configuración FTP
         $ftp_server = "lanumerounocloud.com";
