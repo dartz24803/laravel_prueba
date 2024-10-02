@@ -1,6 +1,6 @@
 <form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
-        <h5 class="modal-title">Registrar Talla:</h5>
+        <h5 class="modal-title">Registrar Artículo:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -12,8 +12,8 @@
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row"> <!-- Add this row class to create a horizontal layout -->
             <div class="form-group col-lg-12">
-                <label for="nom_talla">Nombre:</label>
-                <input type="text" class="form-control" id="nom_talla" name="nom_talla">
+                <label for="nom_art">Nombre:</label>
+                <input type="text" class="form-control" id="nom_art" name="nom_art">
             </div>
         </div>
     </div>
@@ -30,7 +30,7 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario'));
-        var url = "{{ route('errorespicking_ta.store') }}";
+        var url = "{{ route('consumible_art.store') }}";
 
         $.ajax({
             url: url,
@@ -54,7 +54,7 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Lista_Talla();
+                        Lista_Articulos();
                         $("#ModalRegistro .close").click();
                     })
                 }

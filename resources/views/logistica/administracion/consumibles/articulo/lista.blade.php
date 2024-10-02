@@ -2,21 +2,21 @@
     <thead>
         <tr class="text-center">
             <th>Nombre</th>
-            <th class="no-content"></th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-        @foreach ($list_talla as $list)
+        @foreach ($list_articulos as $list)
         <tr class="text-center">
-            <td class="text-left">{{ $list->nombre }}</td>
+            <td class="text-center">{{ $list->nom_articulo }}</td>
             <td>
-                <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('errorespicking_ta.edit', $list->id) }}">
+                <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('consumible_art.edit', $list->id_articulo) }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                     </svg>
                 </a>
 
-                <a href="javascript:void(0);" title="Eliminar" onclick="Delete_Capacitacion('{{ $list->id }}')">
+                <a href="javascript:void(0);" title="Eliminar" onclick="Delete_Articulo('{{ $list->id_articulo }}')">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
                         <polyline points="3 6 5 6 21 6"></polyline>
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>

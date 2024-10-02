@@ -510,7 +510,7 @@ class BiReporteController extends Controller
         // Guardar los datos en la tabla tabla_bi
         $tablasbi = $request->input('tbdb', []); // tbdb[] ahora contiene los ids de las tablas seleccionadas
         $sistemas = $request->input('sistema', []); // cod_sistema
-        dd($tablasbi);
+        // dd($tablasbi);
         // Recorre cada tabla seleccionada
         foreach ($tablasbi as $index => $idTabla) {
             TablaBi::create([
