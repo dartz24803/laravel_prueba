@@ -19,6 +19,7 @@ use App\Models\TrackingDetalleEstado;
 use App\Models\TrackingDetalleProceso;
 use App\Models\TrackingDevolucion;
 use App\Models\TrackingDevolucionTemporal;
+use App\Models\TrackingDiferencia;
 use App\Models\TrackingEvaluacionTemporal;
 use App\Models\TrackingGuiaRemisionDetalle;
 use App\Models\TrackingNotificacion;
@@ -459,8 +460,8 @@ class TrackingController extends Controller
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
             $mail->addAddress('dpalomino@lanumero1.com.pe');
-            $mail->addAddress('ogutierrez@lanumero1.com.pe');
-            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+            //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
             /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
             foreach($list_td as $list){
                 $mail->addAddress($list->emailp);
@@ -703,6 +704,7 @@ class TrackingController extends Controller
         if($request->comentario){
             TrackingComentario::create([
                 'id_tracking' => $id,
+                'id_usuario' => session('usuario')->id_usuario,
                 'pantalla' => 'DETALLE_TRANSPORTE',
                 'comentario' => $request->comentario
             ]);
@@ -792,8 +794,8 @@ class TrackingController extends Controller
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
             $mail->addAddress('dpalomino@lanumero1.com.pe');
-            $mail->addAddress('ogutierrez@lanumero1.com.pe');
-            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+            //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
             /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
             foreach($list_td as $list){
                 $mail->addAddress($list->emailp);
@@ -1229,6 +1231,7 @@ class TrackingController extends Controller
         if($request->comentario){
             TrackingComentario::create([
                 'id_tracking' => $request->id,
+                'id_usuario' => session('usuario')->id_usuario,
                 'pantalla' => 'VERIFICACION_FARDO',
                 'comentario' => $request->comentario
             ]);
@@ -1253,8 +1256,8 @@ class TrackingController extends Controller
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
             $mail->addAddress('dpalomino@lanumero1.com.pe');
-            $mail->addAddress('ogutierrez@lanumero1.com.pe');
-            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+            //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
             /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
@@ -1467,6 +1470,7 @@ class TrackingController extends Controller
         if($request->comentario){
             TrackingComentario::create([
                 'id_tracking' => $id,
+                'id_usuario' => session('usuario')->id_usuario,
                 'pantalla' => 'PAGO_TRANSPORTE',
                 'comentario' => $request->comentario
             ]);
@@ -1490,8 +1494,8 @@ class TrackingController extends Controller
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
             $mail->addAddress('dpalomino@lanumero1.com.pe');
-            $mail->addAddress('ogutierrez@lanumero1.com.pe');
-            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+            //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
             /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
@@ -1745,144 +1749,275 @@ class TrackingController extends Controller
 
     public function insert_reporte_diferencia(Request $request,$id)
     {
-        //ALERTA 9
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
-        $list_token = TrackingToken::whereIn('base', [$get_id->hacia])->get();
-        foreach($list_token as $token){
-            $dato = [
-                'id_tracking' => $id,
-                'token' => $token->token,
-                'titulo' => 'REPORTE DE DIFERENCIAS',
-                'contenido' => 'Hola '.$get_id->desde.' - '.$get_id->hacia.', regularizar los sobrantes-faltantes indicados',
-            ];
-            $this->sendNotification($dato);
-        }
-        
-        if($request->comentario){
-            TrackingComentario::create([
-                'id_tracking' => $id,
-                'pantalla' => 'CUADRE_DIFERENCIA',
-                'comentario' => $request->comentario
-            ]);
-        }
-
-        //MENSAJE 5
         try {
             $list_diferencia = DB::connection('sqlsrv')->select('EXEC usp_web_ver_dif_bultos_x_req ?', [$get_id->n_requerimiento]);
         } catch (\Throwable $th) {
             $list_diferencia = [];
         }
 
+        foreach($list_diferencia as $list){
+            TrackingDiferencia::create([
+                'id_tracking' => $id,
+                'estilo' => $list->Estilo,
+                'bulto' => $list->Bulto,
+                'color_talla' => $list->Col_Tal,
+                'enviado' => $list->Enviado,
+                'recibido' => $list->Recibido
+            ]);
+        }
+                
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'id_usuario' => session('usuario')->id_usuario,
+                'pantalla' => 'CUADRE_DIFERENCIA',
+                'comentario' => $request->comentario
+            ]);
+        }
+
+        $list_sobrante = TrackingDiferencia::select('estilo','color_talla','bulto','enviado',
+                        'recibido',DB::raw('enviado-recibido AS diferencia'),
+                        DB::raw("CASE WHEN enviado<recibido THEN 'Sobrante' 
+                        WHEN enviado>recibido THEN 'Faltante' ELSE '' END AS observacion"))
+                        ->where('id_tracking',$id)->whereColumn('enviado','<','recibido')
+                        ->get();
+        $list_faltante = TrackingDiferencia::select('estilo','color_talla','bulto','enviado',
+                        'recibido',DB::raw('enviado-recibido AS diferencia'),
+                        DB::raw("CASE WHEN enviado<recibido THEN 'Sobrante' 
+                        WHEN enviado>recibido THEN 'Faltante' ELSE '' END AS observacion"))
+                        ->where('id_tracking',$id)->whereColumn('enviado','>','recibido')
+                        ->get();
+
+        //ALERTA 9
+        if($list_sobrante){
+            $list_token = TrackingToken::whereIn('base', ['CD'])->get();
+            foreach($list_token as $token){
+                $dato = [
+                    'id_tracking' => $id,
+                    'token' => $token->token,
+                    'titulo' => 'REPORTE DE DIFERENCIAS',
+                    'contenido' => 'Hola '.$get_id->desde.', regularizar los sobrantes indicados',
+                ];
+                $this->sendNotification($dato);
+            }
+        }
+        if($list_faltante){
+            $list_token = TrackingToken::whereIn('base', [$get_id->hacia])->get();
+            foreach($list_token as $token){
+                $dato = [
+                    'id_tracking' => $id,
+                    'token' => $token->token,
+                    'titulo' => 'REPORTE DE DIFERENCIAS',
+                    'contenido' => 'Hola '.$get_id->hacia.', regularizar los faltantes indicados',
+                ];
+                $this->sendNotification($dato);
+            }
+        }
+
+        //MENSAJE 5
         $t_comentario = TrackingComentario::where('id_tracking',$id)->where('pantalla','CUADRE_DIFERENCIA')->first();
 
-        $mail = new PHPMailer(true);
+        if($list_sobrante){
+            $mail = new PHPMailer(true);
 
-        try {
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host       =  'mail.lanumero1.com.pe';
-            $mail->SMTPAuth   =  true;
-            $mail->Username   =  'intranet@lanumero1.com.pe';
-            $mail->Password   =  'lanumero1$1';
-            $mail->SMTPSecure =  'tls';
-            $mail->Port     =  587; 
-            $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
-
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
-            $mail->addAddress('ogutierrez@lanumero1.com.pe');
-            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-            /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
-            foreach($list_td as $list){
-                $mail->addAddress($list->emailp);
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Port     =  587; 
+                $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
+    
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
+                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                foreach($list_cd as $list){
+                    $mail->addAddress($list->emailp);
+                }
+                $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+                foreach($list_cc as $list){
+                    $mail->addCC($list->emailp);
+                }*/
+    
+                $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
+                $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+                $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
+                $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+                $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+                $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
+                $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
+    
+                $mail->isHTML(true);
+    
+                $mail->Subject = "DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
+            
+                $mail->Body =  '<FONT SIZE=3>
+                                    <b>Semana:</b> '.$get_id->semana.'<br>
+                                    <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
+                                    <b>Base:</b> '.$get_id->hacia.'<br>
+                                    <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
+                                    <b>Fecha:</b> '.$fecha_formateada.'<br><br>
+                                    Hola '.$get_id->desde.', regularizar los sobrantes indicados.<br><br>
+                                    <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
+                                        <thead>
+                                            <tr align="center" style="background-color:#0093C6;">
+                                                <th width="20%"><b>Estilo</b></th>
+                                                <th width="20%"><b>Col_Tal</b></th>
+                                                <th width="10%"><b>Bulto</b></th>
+                                                <th width="10%"><b>Enviado</b></th>
+                                                <th width="10%"><b>Recibido</b></th>
+                                                <th width="10%"><b>Dif</b></th>
+                                                <th width="20%"><b>Orden de Regularización</b></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>';
+                                    foreach($list_sobrante as $list){
+                $mail->Body .=  '            <tr align="left">
+                                                <td>'.$list->estilo.'</td>
+                                                <td>'.$list->color_talla.'</td>
+                                                <td>'.$list->bulto.'</td>
+                                                <td>'.$list->enviado.'</td>
+                                                <td>'.$list->recibido.'</td>
+                                                <td>'.$list->diferencia.'</td>
+                                                <td>'.$list->observacion.'</td>
+                                            </tr>';
+                                    }
+                $mail->Body .=  '        </tbody>
+                                    </table><br>
+                                    <a href="'.route('tracking.detalle_operacion_diferencia', $id).'" 
+                                    title="Detalle Operación de Diferencias"
+                                    target="_blank" 
+                                    style="background-color: red;
+                                    color: white;
+                                    border: 1px solid transparent;
+                                    padding: 7px 12px;
+                                    font-size: 13px;
+                                    text-decoration: none !important;
+                                    border-radius: 10px;">
+                                        Detalle de Operación de Diferencias
+                                    </a><br>';
+                                if($t_comentario){
+                $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
+                                </FONT SIZE>';
+                                }                                
+            
+                $mail->CharSet = 'UTF-8';
+                $mail->send();
+            }catch(Exception $e) {
+                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
             }
-            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
-            foreach($list_cd as $list){
-                $mail->addAddress($list->emailp);
-            }
-            $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
-            foreach($list_cc as $list){
-                $mail->addCC($list->emailp);
-            }*/
-
-            $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
-            $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
-            $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
-            $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
-            $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
-            $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
-            $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
-
-            $mail->isHTML(true);
-
-            $mail->Subject = "DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
-        
-            $mail->Body =  '<FONT SIZE=3>
-                                <b>Semana:</b> '.$get_id->semana.'<br>
-                                <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
-                                <b>Base:</b> '.$get_id->hacia.'<br>
-                                <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
-                                <b>Fecha:</b> '.$fecha_formateada.'<br><br>
-                                Hola '.$get_id->desde.' - '.$get_id->hacia.', regularizar los sobrantes y/o faltantes indicados.<br><br>
-                                <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
-                                    <thead>
-                                        <tr align="center" style="background-color:#0093C6;">
-                                            <th width="20%"><b>Estilo</b></th>
-                                            <th width="20%"><b>Col_Tal</b></th>
-                                            <th width="10%"><b>Bulto</b></th>
-                                            <th width="10%"><b>Enviado</b></th>
-                                            <th width="10%"><b>Recibido</b></th>
-                                            <th width="10%"><b>Dif</b></th>
-                                            <th width="20%"><b>Orden de Regularización</b></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>';
-                                foreach($list_diferencia as $list){
-            $mail->Body .=  '            <tr align="left">
-                                            <td>'.$list->Estilo.'</td>
-                                            <td>'.$list->Col_Tal.'</td>
-                                            <td>'.$list->Bulto.'</td>
-                                            <td>'.$list->Enviado.'</td>
-                                            <td>'.$list->Recibido.'</td>
-                                            <td>'.($list->Recibido-$list->Enviado).'</td>
-                                            <td>'.$list->Observacion.'</td>
-                                        </tr>';
-                                }
-            $mail->Body .=  '        </tbody>
-                                </table><br>
-                                <a href="'.route('tracking.detalle_operacion_diferencia', $id).'" 
-                                title="Detalle Operación de Diferencias"
-                                target="_blank" 
-                                style="background-color: red;
-                                color: white;
-                                border: 1px solid transparent;
-                                padding: 7px 12px;
-                                font-size: 13px;
-                                text-decoration: none !important;
-                                border-radius: 10px;">
-                                    Detalle de Operación de Diferencias
-                                </a><br>';
-                            if($t_comentario){
-            $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
-                            </FONT SIZE>';
-                            }                                
-        
-            $mail->CharSet = 'UTF-8';
-            $mail->send();
-
-            TrackingDetalleEstado::create([
-                'id_detalle' => $get_id->id_detalle,
-                'id_estado' => 15,
-                'fecha' => now(),
-                'estado' => 1,
-                'fec_reg' => now(),
-                'user_reg' => session('usuario')->id_usuario,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
-        }catch(Exception $e) {
-            echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
+        if($list_faltante){
+            $mail = new PHPMailer(true);
+
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Port     =  587; 
+                $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
+    
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
+                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+                foreach($list_td as $list){
+                    $mail->addAddress($list->emailp);
+                }
+                $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+                foreach($list_cc as $list){
+                    $mail->addCC($list->emailp);
+                }*/
+    
+                $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
+                $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+                $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
+                $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+                $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+                $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
+                $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
+    
+                $mail->isHTML(true);
+    
+                $mail->Subject = "DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
+            
+                $mail->Body =  '<FONT SIZE=3>
+                                    <b>Semana:</b> '.$get_id->semana.'<br>
+                                    <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
+                                    <b>Base:</b> '.$get_id->hacia.'<br>
+                                    <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
+                                    <b>Fecha:</b> '.$fecha_formateada.'<br><br>
+                                    Hola '.$get_id->desde.', regularizar los faltantes indicados.<br><br>
+                                    <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
+                                        <thead>
+                                            <tr align="center" style="background-color:#0093C6;">
+                                                <th width="20%"><b>Estilo</b></th>
+                                                <th width="20%"><b>Col_Tal</b></th>
+                                                <th width="10%"><b>Bulto</b></th>
+                                                <th width="10%"><b>Enviado</b></th>
+                                                <th width="10%"><b>Recibido</b></th>
+                                                <th width="10%"><b>Dif</b></th>
+                                                <th width="20%"><b>Orden de Regularización</b></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>';
+                                    foreach($list_faltante as $list){
+                $mail->Body .=  '            <tr align="left">
+                                                <td>'.$list->estilo.'</td>
+                                                <td>'.$list->color_talla.'</td>
+                                                <td>'.$list->bulto.'</td>
+                                                <td>'.$list->enviado.'</td>
+                                                <td>'.$list->recibido.'</td>
+                                                <td>'.$list->diferencia.'</td>
+                                                <td>'.$list->observacion.'</td>
+                                            </tr>';
+                                    }
+                $mail->Body .=  '        </tbody>
+                                    </table><br>
+                                    <a href="'.route('tracking.detalle_operacion_diferencia', $id).'" 
+                                    title="Detalle Operación de Diferencias"
+                                    target="_blank" 
+                                    style="background-color: red;
+                                    color: white;
+                                    border: 1px solid transparent;
+                                    padding: 7px 12px;
+                                    font-size: 13px;
+                                    text-decoration: none !important;
+                                    border-radius: 10px;">
+                                        Detalle de Operación de Diferencias
+                                    </a><br>';
+                                if($t_comentario){
+                $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
+                                </FONT SIZE>';
+                                }                                
+            
+                $mail->CharSet = 'UTF-8';
+                $mail->send();
+            }catch(Exception $e) {
+                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+            }
+        }
+
+        TrackingDetalleEstado::create([
+            'id_detalle' => $get_id->id_detalle,
+            'id_estado' => 15,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
     }
 
     public function detalle_operacion_diferencia($id)
@@ -1909,143 +2044,225 @@ class TrackingController extends Controller
 
     public function insert_diferencia_regularizada(Request $request,$id)
     {
-        $rules = [
-            'guia_diferencia' => 'required|max:20',
-        ];
-        $messages = [
-            'guia_diferencia.required' => 'Debe ingresar Nro. Gr.',
-            'guia_diferencia.max' => 'Nro. Gr debe tener como máximo 20 carácteres.',
-        ];
-        $request->validate($rules, $messages);
-
-        Tracking::findOrFail($id)->update([
-            'guia_diferencia' => $request->guia_diferencia,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
-
-        //ALERTA 10
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
-        $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
-        foreach($list_token as $token){
-            $dato = [
-                'id_tracking' => $id,
-                'token' => $token->token,
-                'titulo' => 'DIFERENCIAS REGULARIZADAS',
-                'contenido' => 'Hola, '.$get_id->hacia.' se regularizó el Nro. Req. '.$get_id->n_requerimiento.'con la GR '.$request->guia_diferencia,
-            ];
-            $this->sendNotification($dato);
+        if($get_id->sobrantes>0 && 
+        $get_id->faltantes>0 &&
+        session('usuario')->id_nivel==1){
+            $request->validate([
+                'guia_sobrante' => 'required|max:20',
+                'guia_faltante' => 'required|max:20'
+            ],[
+                'guia_sobrante.required' => 'Debe ingresar Nro. Gr (Sobrante).',
+                'guia_sobrante.max' => 'Nro. Gr (Sobrante) debe tener como máximo 20 carácteres.',
+                'guia_faltante.required' => 'Debe ingresar Nro. Gr (Faltante).',
+                'guia_faltante.max' => 'Nro. Gr (Faltante) debe tener como máximo 20 carácteres.'
+            ]);
+            
+            Tracking::findOrFail($id)->update([
+                'guia_sobrante' => $request->guia_sobrante,
+                'guia_faltante' => $request->guia_faltante,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }elseif($get_id->sobrantes>0 &&
+        (session('usuario')->id_puesto==76 ||
+        session('usuario')->id_nivel==1)){
+            $request->validate([
+                'guia_sobrante' => 'required|max:20'
+            ],[
+                'guia_sobrante.required' => 'Debe ingresar Nro. Gr (Sobrante).',
+                'guia_sobrante.max' => 'Nro. Gr (Sobrante) debe tener como máximo 20 carácteres.'
+            ]);
+
+            Tracking::findOrFail($id)->update([
+                'guia_sobrante' => $request->guia_sobrante,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }elseif($get_id->faltantes>0 &&
+        (session('usuario')->id_puesto==29 || 
+        session('usuario')->id_puesto==30 || 
+        session('usuario')->id_puesto==31 || 
+        session('usuario')->id_puesto==32 || 
+        session('usuario')->id_puesto==33 || 
+        session('usuario')->id_puesto==34 || 
+        session('usuario')->id_puesto==35 || 
+        session('usuario')->id_puesto==161 || 
+        session('usuario')->id_puesto==167 || 
+        session('usuario')->id_puesto==168 ||
+        session('usuario')->id_puesto==197 || 
+        session('usuario')->id_puesto==311 || 
+        session('usuario')->id_puesto==314 ||
+        session('usuario')->id_nivel==1)){
+            $request->validate([
+                'guia_faltante' => 'required|max:20'
+            ],[
+                'guia_faltante.required' => 'Debe ingresar Nro. Gr (Faltante).',
+                'guia_faltante.max' => 'Nro. Gr (Faltante) debe tener como máximo 20 carácteres.'
+            ]);
+
+            Tracking::findOrFail($id)->update([
+                'guia_faltante' => $request->guia_faltante,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
         }
-        
+
         if($request->comentario){
             TrackingComentario::create([
                 'id_tracking' => $id,
+                'id_usuario' => session('usuario')->id_usuario,
                 'pantalla' => 'DETALLE_OPERACION_DIFERENCIA',
                 'comentario' => $request->comentario
             ]);
         }
 
-        //MENSAJE 6
-        $t_comentario = TrackingComentario::where('id_tracking',$id)->where('pantalla','DETALLE_OPERACION_DIFERENCIA')->first();
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
-        $mail = new PHPMailer(true);
-
-        try {
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host       =  'mail.lanumero1.com.pe';
-            $mail->SMTPAuth   =  true;
-            $mail->Username   =  'intranet@lanumero1.com.pe';
-            $mail->Password   =  'lanumero1$1';
-            $mail->SMTPSecure =  'tls';
-            $mail->Port     =  587; 
-            $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
-
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
-            $mail->addAddress('ogutierrez@lanumero1.com.pe');
-            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-            /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
-            foreach($list_cd as $list){
-                $mail->addAddress($list->emailp);
+        $valida = 0;
+        $mensaje = "";
+        if($get_id->sobrantes>0 && $get_id->faltantes>0){
+            if($get_id->guia_sobrante!="" && $get_id->guia_faltante!=""){
+                $valida = 1;
+                $mensaje = " con las GR (Sobrante): ".$get_id->guia_sobrante." y GR (Faltante): ".$get_id->guia_faltante;
             }
-            $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
-            foreach($list_td as $list){
-                $mail->addAddress($list->emailp);
+        }elseif($get_id->sobrantes>0){
+            if($get_id->guia_sobrante!=""){
+                $valida = 1;
+                $mensaje = " con la GR (Sobrante): ".$get_id->guia_sobrante;
             }
-            $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
-            foreach($list_cc as $list){
-                $mail->addCC($list->emailp);
-            }*/
+        }elseif($get_id->faltantes>0){
+            if($get_id->guia_faltante!=""){
+                $valida = 1;
+                $mensaje = " con la GR (Faltante): ".$get_id->guia_faltante;
+            }
+        }else{
+            $valida = 1;
+        }
 
-            $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
-            $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
-            $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
-            $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
-            $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
-            $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
-            $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
-
-            $mail->isHTML(true);
-
-            $mail->Subject = "REGULARIZADO - DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
-        
-            $mail->Body =  '<FONT SIZE=3>
-                                <b>Semana:</b> '.$get_id->semana.'<br>
-                                <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
-                                <b>Base:</b> '.$get_id->hacia.'<br>
-                                <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
-                                <b>Fecha:</b> '.$fecha_formateada.'<br><br>
-                                Hola '.$get_id->desde.' - '.$get_id->hacia.', acaba de regularizar con la 
-                                GR '.$request->guia_diferencia.'. 
-                                El archivo ya se encuentra en su carpeta.<br>';
-                            if($t_comentario){
-            $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
-                            </FONT SIZE>';
-                            }
-        
-            $mail->CharSet = 'UTF-8';
-            $mail->send();
-
-            TrackingDetalleEstado::create([
-                'id_detalle' => $get_id->id_detalle,
-                'id_estado' => 16,
-                'fecha' => now(),
-                'estado' => 1,
-                'fec_reg' => now(),
-                'user_reg' => session('usuario')->id_usuario,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
-
-            if($get_id->devolucion=="1"){
-                $tracking_dp = TrackingDetalleProceso::create([
+        if($valida==1){
+            //ALERTA 10
+            $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
+            foreach($list_token as $token){
+                $dato = [
                     'id_tracking' => $id,
-                    'id_proceso' => 8,
-                    'fecha' => now(),
-                    'estado' => 1,
-                    'fec_reg' => now(),
-                    'user_reg' => session('usuario')->id_usuario,
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario
-                ]);
-        
-                TrackingDetalleEstado::create([
-                    'id_detalle' => $tracking_dp->id,
-                    'id_estado' => 17,
-                    'fecha' => now(),
-                    'estado' => 1,
-                    'fec_reg' => now(),
-                    'user_reg' => session('usuario')->id_usuario,
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario
-                ]);
-            }else{
-                //ALERTA 13
-                $this->insert_mercaderia_entregada($id);
+                    'token' => $token->token,
+                    'titulo' => 'DIFERENCIAS REGULARIZADAS',
+                    'contenido' => 'Hola '.$get_id->desde.' - '.$get_id->hacia.', se regularizó el Nro. Req. '.$get_id->n_requerimiento.$mensaje,
+                ];
+                $this->sendNotification($dato);
             }
-        }catch(Exception $e) {
-            echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+
+            //MENSAJE 6
+            $t_comentario = TrackingComentario::from('tracking_comentario AS tc')
+                            ->select(DB::raw("CONCAT(SUBSTRING_INDEX(us.usuario_nombres,' ',1),' ',
+                            us.usuario_apater) AS nombre"),'tc.comentario')
+                            ->join('users AS us','us.id_usuario','=','tc.id_usuario')
+                            ->where('tc.id_tracking',$id)
+                            ->where('tc.pantalla','DETALLE_OPERACION_DIFERENCIA')->get();
+
+            $mail = new PHPMailer(true);
+
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Port     =  587; 
+                $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
+
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
+                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                foreach($list_cd as $list){
+                    $mail->addAddress($list->emailp);
+                }
+                $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+                foreach($list_td as $list){
+                    $mail->addAddress($list->emailp);
+                }
+                $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+                foreach($list_cc as $list){
+                    $mail->addCC($list->emailp);
+                }*/
+
+                $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
+                $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+                $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
+                $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+                $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+                $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
+                $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
+
+                $mail->isHTML(true);
+
+                $mail->Subject = "REGULARIZADO - DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
+            
+                $mail->Body =  '<FONT SIZE=3>
+                                    <b>Semana:</b> '.$get_id->semana.'<br>
+                                    <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
+                                    <b>Base:</b> '.$get_id->hacia.'<br>
+                                    <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
+                                    <b>Fecha:</b> '.$fecha_formateada.'<br><br>
+                                    Hola '.$get_id->desde.' - '.$get_id->hacia.', se acaba de 
+                                    regularizar'.$mensaje.'.
+                                    El archivo ya se encuentra en su carpeta.<br>';
+                                if(count($t_comentario)>0){
+                $mail->Body .=      '<br>Comentario:<br>';
+                                foreach($t_comentario as $list){
+                $mail->Body .=      '- '.$list->nombre.': '.nl2br($list->comentario).'<br>';
+                                }
+                $mail->Body .= '</FONT SIZE>';
+                                }
+            
+                $mail->CharSet = 'UTF-8';
+                $mail->send();
+
+                TrackingDetalleEstado::create([
+                    'id_detalle' => $get_id->id_detalle,
+                    'id_estado' => 16,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+
+                if($get_id->devolucion=="1"){
+                    $tracking_dp = TrackingDetalleProceso::create([
+                        'id_tracking' => $id,
+                        'id_proceso' => 8,
+                        'fecha' => now(),
+                        'estado' => 1,
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+            
+                    TrackingDetalleEstado::create([
+                        'id_detalle' => $tracking_dp->id,
+                        'id_estado' => 17,
+                        'fecha' => now(),
+                        'estado' => 1,
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+                }else{
+                    //ALERTA 13
+                    $this->insert_mercaderia_entregada($id);
+                }
+            }catch(Exception $e) {
+                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+            }   
         }
     }
 
@@ -2197,6 +2414,7 @@ class TrackingController extends Controller
             if($request->comentario){
                 TrackingComentario::create([
                     'id_tracking' => $id,
+                    'id_usuario' => session('usuario')->id_usuario,
                     'pantalla' => 'SOLICITUD_DEVOLUCION',
                     'comentario' => $request->comentario
                 ]);
@@ -2219,8 +2437,8 @@ class TrackingController extends Controller
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
                 $mail->addAddress('dpalomino@lanumero1.com.pe');
-                $mail->addAddress('ogutierrez@lanumero1.com.pe');
-                $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
                 /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
@@ -2386,6 +2604,7 @@ class TrackingController extends Controller
             if($request->comentario){
                 TrackingComentario::create([
                     'id_tracking' => $id,
+                    'id_usuario' => session('usuario')->id_usuario,
                     'pantalla' => 'EVALUACION_DEVOLUCION',
                     'comentario' => $request->comentario
                 ]);
@@ -2408,8 +2627,8 @@ class TrackingController extends Controller
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
                 $mail->addAddress('dpalomino@lanumero1.com.pe');
-                $mail->addAddress('ogutierrez@lanumero1.com.pe');
-                $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
                 /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
