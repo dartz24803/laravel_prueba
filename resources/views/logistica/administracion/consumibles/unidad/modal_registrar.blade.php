@@ -12,25 +12,25 @@
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row"> <!-- Add this row class to create a horizontal layout -->
             <div class="form-group col-lg-12">
-                <label for="nom_art">Nombre:</label>
-                <input type="text" class="form-control" id="nom_art" name="nom_art">
+                <label for="nom_uni">Nombre:</label>
+                <input type="text" class="form-control" id="nom_uni" name="nom_uni">
             </div>
         </div>
     </div>
 
     <div class="modal-footer">
         @csrf
-        <button class="btn btn-primary" type="button" onclick="Insert_Talla();">Guardar</button>
+        <button class="btn btn-primary" type="button" onclick="Insert_Unidad();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
-    function Insert_Talla() {
+    function Insert_Unidad() {
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario'));
-        var url = "{{ route('consumible_art.store') }}";
+        var url = "{{ route('consumible_uni.store') }}";
 
         $.ajax({
             url: url,
@@ -54,7 +54,7 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Lista_Articulos();
+                        Lista_Unidad();
                         $("#ModalRegistro .close").click();
                     })
                 }

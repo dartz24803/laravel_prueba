@@ -140,7 +140,7 @@ class ConsumibleConfController extends Controller
 
     public function edit_uni($id)
     {
-        $get_id = Articulos::findOrFail($id);
+        $get_id = UnidadLogistica::findOrFail($id);
         return view('logistica.administracion.consumibles.unidad.modal_editar', compact(
             'get_id'
         ));
@@ -155,9 +155,9 @@ class ConsumibleConfController extends Controller
     public function store_uni(Request $request)
     {
         $request->validate([
-            'nom_art' => 'required',
+            'nom_uni' => 'required',
         ], [
-            'nom_art.required' => 'Debe seleccionar nombre',
+            'nom_uni.required' => 'Debe seleccionar nombre',
 
         ]);
 
@@ -167,11 +167,11 @@ class ConsumibleConfController extends Controller
         $nuevoId = $ultimoId ? $ultimoId + 1 : 1;
 
         // Generar el código final en formato A2300001 basado en el nuevo id
-        $codigofinal = 'A' . $aniof . str_pad($nuevoId, 5, '0', STR_PAD_LEFT);
+        $codigofinal = 'U' . $aniof . str_pad($nuevoId, 5, '0', STR_PAD_LEFT);
 
-        Articulos::create([
-            'nom_articulo' => $request->nom_art ?? null,
-            'cod_articulo'  => $codigofinal,
+        UnidadLogistica::create([
+            'nom_unidad' => $request->nom_uni ?? null,
+            'cod_unidad'  => $codigofinal,
             'estado' => 1,
             'fec_reg' => now(),
             'user_reg' => session('usuario')->id_usuario,
@@ -188,14 +188,14 @@ class ConsumibleConfController extends Controller
     public function update_uni(Request $request, $id)
     {
         $request->validate([
-            'nom_arte' => 'required',
+            'nom_unie' => 'required',
         ], [
-            'nom_arte.required' => 'Debe seleccionar nombre',
+            'nom_unie.required' => 'Debe seleccionar nombre',
 
         ]);
 
-        Articulos::where('id_articulo', $id)->update([
-            'nom_articulo'  => $request->nom_arte,
+        UnidadLogistica::where('id_unidad', $id)->update([
+            'nom_unidad'  => $request->nom_unie,
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario,
 
@@ -205,7 +205,7 @@ class ConsumibleConfController extends Controller
 
     public function destroy_uni($id)
     {
-        Articulos::where('id_articulo', $id)->firstOrFail()->update([
+        UnidadLogistica::where('id_unidad', $id)->firstOrFail()->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario
