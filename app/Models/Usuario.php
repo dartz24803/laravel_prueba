@@ -368,7 +368,8 @@ class Usuario extends Model
         return $query;
     }
 
-    public static function perfil_porcentaje($id_usuario){
+    public static function perfil_porcentaje($id_usuario)
+    {
         $sql = "SELECT u.id_usuario, u.usuario_apater, u.centro_labores, td.cod_tipo_documento,
                 u.num_celp,u.num_doc, u.usuario_amater, u.usuario_nombres, n.nom_nacionalidad,
                 u.foto, u.verif_email,
@@ -448,11 +449,12 @@ class Usuario extends Model
                             from documentacion_usuario where estado=1) as e on u.id_usuario=e.id_usuario
                 WHERE u.id_usuario=$id_usuario";
 
-            $result = DB::select($sql);
-            return json_decode(json_encode($result), true);
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
     }
 
-    static function get_jefe_area($id_area){
+    static function get_jefe_area($id_area)
+    {
         $jefes = [];
         switch ($id_area) {
             case 2:
@@ -462,13 +464,13 @@ class Usuario extends Model
                 $jefes = ['GERENTE DE GESTIÓN COMERCIAL'];
                 break;
             case 6:
-                $jefes = ['SUPERVISOR DE COMPRAS E INGRESOS','JEFE DE DTO. GESTIÓN LOGÍSTICA'];
+                $jefes = ['SUPERVISOR DE COMPRAS E INGRESOS', 'JEFE DE DTO. GESTIÓN LOGÍSTICA'];
                 break;
             case 7:
                 $jefes = ['COORDINADOR DE MARKETING'];
                 break;
             case 9:
-                $jefes = ['JEFE DE CONTABILIDAD Y LEGAL','ASISTENTE CONTABLE'];
+                $jefes = ['JEFE DE CONTABILIDAD Y LEGAL', 'ASISTENTE CONTABLE'];
                 break;
             case 10:
                 $jefes = ['JEFE DE DTO. GESTIÓN DE INFRAESTRUCTURA'];
@@ -479,14 +481,14 @@ class Usuario extends Model
             case 12:
                 $jefes = ['JEFE DE DTO. GESTIÓN DE SEGURIDAD Y SALUD'];
                 break;
-            /*case 13:
+                /*case 13:
                 $jefes = ['ANALISTA PROGRAMADOR SR.'];
                 break;*/
             case 13:
-                $jefes = [815,2655];
+                $jefes = [815, 2655];
                 break;
             case 14:
-                $jefes = ['ADMINISTRADOR DE TIENDA','COORDINADOR JR. DE TIENDA','COORDINADOR SR. DE TIENDA','JEFE DE DTO. GESTIÓN DE VENTAS'];
+                $jefes = ['ADMINISTRADOR DE TIENDA', 'COORDINADOR JR. DE TIENDA', 'COORDINADOR SR. DE TIENDA', 'JEFE DE DTO. GESTIÓN DE VENTAS'];
                 break;
             case 15:
                 $jefes = ['COORDINADOR SR. DE CAJA'];
@@ -519,7 +521,7 @@ class Usuario extends Model
                 $jefes = ['JEFE DE DTO. GESTIÓN DEL TALENTO HUMANO'];
                 break;
             case 30:
-                $jefes = ['SUPERVISOR DE DISTRIBUCIÓN',''];
+                $jefes = ['SUPERVISOR DE DISTRIBUCIÓN', ''];
                 break;
             case 31:
                 $jefes = ['JEFE DE DTO. GESTIÓN DE INFRAESTRUCTURA'];
@@ -546,13 +548,13 @@ class Usuario extends Model
                 $jefes = ['DIRECTOR GENERAL'];
                 break;
             case 40:
-                $jefes = ['SUPERVISOR NACIONAL DE ABASTECIMIENTO E INVENTARIOS','JEFE DE DTO. GESTIÓN LOGÍSTICA'];
+                $jefes = ['SUPERVISOR NACIONAL DE ABASTECIMIENTO E INVENTARIOS', 'JEFE DE DTO. GESTIÓN LOGÍSTICA'];
                 break;
             case 41:
-                $jefes = ['JEFE DE DTO. GESTIÓN DE INFRAESTRUCTURA','SUPERVISOR DE MANTENIMIENTO'];
+                $jefes = ['JEFE DE DTO. GESTIÓN DE INFRAESTRUCTURA', 'SUPERVISOR DE MANTENIMIENTO'];
                 break;
             case 42:
-                $jefes = ['SUPERVISOR DE PICKING E INVENTARIO','JEFE DE DTO. GESTIÓN LOGÍSTICA'];
+                $jefes = ['SUPERVISOR DE PICKING E INVENTARIO', 'JEFE DE DTO. GESTIÓN LOGÍSTICA'];
                 break;
             case 43:
                 $jefes = ['JEFE DE DTO. GESTIÓN DEL TALENTO HUMANO'];
@@ -572,7 +574,7 @@ class Usuario extends Model
         }
 
         $resultados = [];
-        if($id_area != 13){
+        if ($id_area != 13) {
             foreach ($jefes as $jefe) {
                 $sql = "SELECT u.emailp
                         FROM users u
@@ -581,14 +583,14 @@ class Usuario extends Model
                         AND u.emailp IS NOT NULL
                         AND u.emailp != ''; ";
 
-            $result = DB::select($sql);
-            $query = json_decode(json_encode($result), true);
+                $result = DB::select($sql);
+                $query = json_decode(json_encode($result), true);
                 // Agrega los resultados al conjunto $resultados
                 foreach ($query as $row) {
                     $resultados[] = $row;
                 }
             }
-        }else{
+        } else {
             //cuando es sistemas manda a Odile y Daniel
             foreach ($jefes as $jefe) {
                 $sql = "SELECT u.emailp
@@ -610,5 +612,23 @@ class Usuario extends Model
         $resultados = array_unique($resultados, SORT_REGULAR);
 
         return $resultados;
+    }
+
+
+    static function get_list_usuario_inventario()
+    {
+        $sql = "SELECT u.*, p.nom_puesto, m.nom_mes, g.cod_genero, g.nom_genero,a.nom_area,t.cod_tipo_documento,ge.nom_gerencia,
+                u.usuario_email 
+                FROM users u
+                left join area a on a.id_area=u.id_area
+                left join puesto p on p.id_puesto=u.id_puesto
+                left join mes m on m.id_mes=u.mes_nac
+                left join genero g on g.id_genero=u.id_genero
+                left join tipo_documento t on t.id_tipo_documento=u.id_tipo_documento
+                left join gerencia ge on ge.id_gerencia = u.id_gerencia 
+                WHERE u.estado=1 and u.id_nivel in (1,9)";
+
+        $query = DB::select($sql);
+        return $query;
     }
 }

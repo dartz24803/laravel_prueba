@@ -25,13 +25,11 @@
                     <div class="widget-content widget-content-area br-6 p-3">
                         <form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
                             <div class="row">
-                                <div class="form-group col-lg-12">
-                                    <label class="control-label text-bold">Nro. Req.: {{ $get_id->n_requerimiento }}</label>
-                                </div>
+                                @include('logistica.tracking.cabecera')
                             </div>
     
                             <div class="row">
-                                <div class="table-responsive mt-4" id="lista_tracking">
+                                <div class="table-responsive" id="lista_tracking">
                                     <table id="tabla_js" class="table" style="width:100%">
                                         <thead>
                                             <tr class="text-center">

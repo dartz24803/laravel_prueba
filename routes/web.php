@@ -24,15 +24,19 @@ use App\Http\Controllers\CajaInicioController;
 use App\Http\Controllers\CambioPrendaConfController;
 use App\Http\Controllers\CambioPrendaController;
 use App\Http\Controllers\CapacitacionCajeroController;
+use App\Http\Controllers\CargaInventarioController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
 use App\Http\Controllers\ColaboradorController;
 use App\Http\Controllers\ComunicadoController;
+use App\Http\Controllers\ConsumibleConfController;
+use App\Http\Controllers\ConsumibleController;
 use App\Http\Controllers\ControlCamaraConfController;
 use App\Http\Controllers\ControlCamaraController;
 use App\Http\Controllers\SliderRRHH;
 use App\Http\Controllers\Cumpleanios;
 use App\Http\Controllers\DuracionTransaccionController;
+use App\Http\Controllers\ErroresPickingConfController;
 use App\Http\Controllers\ErroresPickingController;
 use App\Http\Controllers\FinanzaInicioController;
 use App\Http\Controllers\FinanzasInicioController;
@@ -227,11 +231,69 @@ Route::controller(StockInfosapController::class)->group(function () {
     Route::get('infosapstock', 'index')->name('infosapstock');
     Route::get('infosapstock/list', 'list_infosap')->name('infosapstock.list');
 });
+
 //ERRORES PICKING
 Route::controller(ErroresPickingController::class)->group(function () {
     Route::get('errorespicking', 'index')->name('errorespicking');
     Route::get('errorespicking/list', 'list_le')->name('errorespicking.list');
+    Route::get('errorespicking/{id}/edit', 'edit_le')->name('errorespicking.edit');
+    Route::get('errorespicking/create', 'create_le')->name('errorespicking.create');
+    Route::get('errorespicking/vercontenido', 'ver_le')->name('errorespicking.vercontenido');
+    Route::delete('errorespicking/{id}', 'destroy_le')->name('errorespicking.destroy');
+    Route::post('errorespicking/store', 'store_le')->name('errorespicking.store');
+    Route::post('errorespicking/{id}', 'update_le')->name('errorespicking.update');
+    Route::get('errorespicking/{id}/ver', 'ver_le')->name('errorespicking.ver');
 });
+
+
+Route::controller(ErroresPickingConfController::class)->group(function () {
+    // ADMINISTRABLE TALLA
+    Route::get('errorespicking_ta', 'index')->name('errorespicking_ta');
+    Route::get('errorespickingta', 'indexta_conf')->name('errorespickingta_conf');
+    Route::get('errorespicking_ta/list', 'list_ta')->name('errorespicking_ta.list');
+    Route::get('errorespicking_ta/{id}/edit', 'edit_ta')->name('errorespicking_ta.edit');
+    Route::get('errorespicking_ta/create', 'create_ta')->name('errorespicking_ta.create');
+    Route::delete('errorespicking_ta/{id}', 'destroy_ta')->name('errorespicking_ta.destroy');
+    Route::post('errorespicking_ta/store', 'store_ta')->name('errorespicking_ta.store');
+    Route::post('errorespicking_ta/{id}', 'update_ta')->name('errorespicking_ta.update');
+});
+
+
+
+// CARGA DE INVENTARIOS
+Route::controller(CargaInventarioController::class)->group(function () {
+    Route::get('cargainventario', 'index')->name('cargainventario');
+    Route::get('cargainventario/list', 'list_ci')->name('cargainventario.list');
+    Route::get('cargainventario/{id}/edit', 'edit_ci')->name('cargainventario.edit');
+    Route::get('cargainventario/create', 'create_ci')->name('cargainventario.create');
+    Route::delete('cargainventario/{id}', 'destroy_ci')->name('cargainventario.destroy');
+    Route::post('cargainventario/store', 'store_ci')->name('cargainventario.store');
+    Route::post('cargainventario/{id}', 'update_ci')->name('cargainventario.update');
+});
+
+// CONSUMIBLES
+Route::controller(ConsumibleController::class)->group(function () {
+    Route::get('consumible', 'index')->name('consumible');
+    Route::get('consumible/list', 'list_cons')->name('consumible.list');
+    Route::get('consumible/{id}/edit', 'edit_cons')->name('consumible.edit');
+    Route::get('consumible/create', 'create_cons')->name('consumible.create');
+    Route::delete('consumible/{id}', 'destroy_cons')->name('consumible.destroy');
+    Route::post('consumible/store', 'store_cons')->name('consumible.store');
+    Route::post('consumible/{id}', 'update_cons')->name('consumible.update');
+});
+
+Route::controller(ConsumibleConfController::class)->group(function () {
+
+    // ADMINISTRABLE ARTICULO
+    Route::get('consumible_art', 'index_cons')->name('consumible_art');
+    Route::get('consumible_art/list', 'list_cons')->name('consumible_art.list');
+    Route::get('consumible_art/{id}/edit', 'edit_cons')->name('consumible_art.edit');
+    Route::get('consumible_art/create', 'create_cons')->name('consumible_art.create');
+    Route::delete('consumible_art/{id}', 'destroy_cons')->name('consumible_art.destroy');
+    Route::post('consumible_art/store', 'store_cons')->name('consumible_art.store');
+    Route::post('consumible_art/{id}', 'update_cons')->name('consumible_art.update');
+});
+
 
 //PROCESOS - ADMINISTRADOR
 Route::controller(ProcesosController::class)->group(function () {

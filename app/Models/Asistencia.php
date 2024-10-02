@@ -11,29 +11,34 @@ class Asistencia extends Model
     use HasFactory;
     public $timestamps = false;
 
-    public function buscar_reporte_control_asistencia($cod_mes,$cod_anio,$cod_base,$num_doc,$tipo,$finicio,$ffin){
+    public function buscar_reporte_control_asistencia($cod_mes, $cod_anio, $cod_base, $num_doc, $tipo, $finicio, $ffin)
+    {
         //$fecha=" WHERE DATE_FORMAT(ar.punch_time,'%m') = '".$cod_mes."' ";
-        if($tipo==1){
-            $fecha=" WHERE DATE_FORMAT(ar.punch_time,'%m') = '".$cod_mes."' AND DATE_FORMAT(ar.punch_time,'%Y') = '".$cod_anio."'";
-        }else{
-            $fecha=" WHERE DATE_FORMAT(ar.punch_time,'%Y-%m-%d') BETWEEN '".$finicio."' and '".$ffin."'";
+        if ($tipo == 1) {
+            $fecha = " WHERE DATE_FORMAT(ar.punch_time,'%m') = '" . $cod_mes . "' AND DATE_FORMAT(ar.punch_time,'%Y') = '" . $cod_anio . "'";
+        } else {
+            $fecha = " WHERE DATE_FORMAT(ar.punch_time,'%Y-%m-%d') BETWEEN '" . $finicio . "' and '" . $ffin . "'";
         }
-    
-        $base_iclock="";
-        $base_ar="";
-        
 
-        $doc_iclock="";
-        $doc_ar="";
-        if($num_doc!=0){
-            if (strlen($num_doc>8)){$num_doc=substr($num_doc, 0,-1);}else{$num_doc=$num_doc;}
-            $doc_iclock=" and LPAD(ar.emp_code,8,'0') like '%".$num_doc."%'";
-            $doc_ar=" and u.num_doc = '%".$num_doc."%' ";
-        }else{
-            if($cod_base!="" && $cod_base!="0"){
+        $base_iclock = "";
+        $base_ar = "";
+
+
+        $doc_iclock = "";
+        $doc_ar = "";
+        if ($num_doc != 0) {
+            if (strlen($num_doc > 8)) {
+                $num_doc = substr($num_doc, 0, -1);
+            } else {
+                $num_doc = $num_doc;
+            }
+            $doc_iclock = " and LPAD(ar.emp_code,8,'0') like '%" . $num_doc . "%'";
+            $doc_ar = " and u.num_doc = '%" . $num_doc . "%' ";
+        } else {
+            if ($cod_base != "" && $cod_base != "0") {
                 //$base_iclock=" and ar.terminal_alias = '".$cod_base."' ";
-                $base_ar=" and u.centro_labores = '".$cod_base."' ";
-            }  
+                $base_ar = " and u.centro_labores = '" . $cod_base . "' ";
+            }
         }
 
         $vista = "SELECT
@@ -165,7 +170,7 @@ class Asistencia extends Model
                         ) todo
         ";
         //echo $vista;
-        $sql=" SELECT 
+        $sql = " SELECT 
             a.num_doc,CONCAT(a.usuario_nombres,' ',a.usuario_apater,' ',a.usuario_amater) as nombres, CONCAT(a.num_doc,'-',DATE_FORMAT(a.punch_time,'%d-%m-%Y')) as validador, DATE_FORMAT(a.punch_time,'%d/%m/%Y') as fecha,DATE_FORMAT(a.punch_time,'%d-%m-%Y') as fecha2, 
             
             (SELECT CONCAT(DATE_FORMAT(t.punch_time,'%H:%i:%s'),'--',t.id_asistencia_remota) FROM ($vista) t WHERE a.num_doc = t.num_doc and DATE_FORMAT(t.punch_time,'%Y-%m-%d')=DATE_FORMAT(a.punch_time,'%Y-%m-%d') ORDER BY t.punch_time ASC LIMIT 1) as ingreso,
@@ -183,7 +188,8 @@ class Asistencia extends Model
         return json_decode(json_encode($result), true);
     }
 
-    function get_list_usuario_xnum_doc($num_doc){
+    function get_list_usuario_xnum_doc($num_doc)
+    {
         $sql = "SELECT u.*,
         (SELECT fec_inicio h FROM historico_colaborador h where u.id_usuario=h.id_usuario and h.estado in (1,3) ORDER BY h.fec_inicio DESC,h.fec_fin DESC limit 1)as fec_inicio,
         (SELECT h.fec_fin h FROM historico_colaborador h where u.id_usuario=h.id_usuario and h.estado in (1,3) ORDER BY h.fec_inicio DESC,h.fec_fin DESC limit 1)as fec_fin
@@ -193,20 +199,21 @@ class Asistencia extends Model
         return json_decode(json_encode($result), true);
     }
 
-    function get_list_usuarios_x_baset($cod_base=null,$area=null,$estado){
-        $base="";
-        if($cod_base!="0"){
+    function get_list_usuarios_x_baset($cod_base = null, $area = null, $estado)
+    {
+        $base = "";
+        if ($cod_base != "0") {
             $base = "AND u.centro_labores='$cod_base'";
         }
-        $carea="";
-        if(isset($area) && $area > 0){
+        $carea = "";
+        if (isset($area) && $area > 0) {
             $carea = "AND u.id_area='$area' ";
         }
 
-        $id_estado="";
-        if($estado==1){
+        $id_estado = "";
+        if ($estado == 1) {
             $id_estado = "AND u.estado=1";
-        }else{
+        } else {
             $id_estado = "AND u.estado in (2,3)";
         }
         $sql = "SELECT u.*,(SELECT fec_inicio h FROM historico_colaborador h where u.id_usuario=h.id_usuario and h.estado in (1,3) ORDER BY h.fec_inicio DESC,h.fec_fin DESC limit 1)as fec_inicio,
