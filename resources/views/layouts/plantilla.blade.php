@@ -211,6 +211,30 @@
             </div>
         </div>
     </div>
+
+    
+    <div id="Modal_IMG" class="modal animated zoomInUp custo-zoomInUp bd-example-modal-xl" data-backdrop="static" data-keyboard="false" role="dialog" tabindex="-1" role="dialog" aria-labelledby="ModalUpdate" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Vista Previa</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 row">
+                        <div class="form-group col-sm-12">
+                            <div id="datos_ajax"></div>
+                            <input type="hidden" name="rutadni" id="rutadni" value=''>
+                            <div align="center" id="dni"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="{{ asset('template/docs/js/jquery-3.2.1.min.js') }}"></script>
 
     <link href="{{ asset('template/fileinput/css/fileinput.min.css') }}" rel="stylesheet">
@@ -339,6 +363,33 @@
                 else
                 {
                     document.getElementById("archivo").innerHTML = "No se ha registrado ningún archivo";
+                }
+
+                var modal = $(this)
+                modal.find('.modal-title').text(titulo)
+                $('.alert').hide();//Oculto alert
+            })
+            
+            $('#Modal_IMG').on('show.bs.modal', function (event) {
+                console.log('si')
+                var button = $(event.relatedTarget);
+                var imagen = button.data('imagen');
+                var titulo = button.data('title');
+                var imagen2 = imagen.substr(-3);
+                var rutapdf= $("#rutadni").val();
+                var nombre_archivo= rutapdf+imagen;
+                console.log(imagen2)
+                console.log(imagen)
+
+                if (imagen!=""){
+                    if (imagen2=="PDF" || imagen2=="pdf")
+                    {
+                        document.getElementById("dni").innerHTML = nombre_archivo;
+                    }else{
+                        document.getElementById("dni").innerHTML = nombre_archivo;
+                    }
+                }else{
+                    document.getElementById("dni").innerHTML = "No se ha registrado ningún archivo";
                 }
 
                 var modal = $(this)

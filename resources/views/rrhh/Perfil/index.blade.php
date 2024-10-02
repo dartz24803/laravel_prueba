@@ -3382,92 +3382,6 @@ if($get_id[0]['edicion_perfil']==1){
         $("#upersonales").addClass('active');
         $('.dropify').dropify();
     });
-    let lista_banco =<?php echo count($list_banco); ?> ;
-    function Numero_Cuenta(){
-        var dataString = new FormData(document.getElementById('formulario_cuenta_bancaria'));
-        var url="{{ url('ColaboradorController/Update_Numero_Cuenta') }}";
-            if (Valida_Numero_Cuenta()) {
-                $.ajax({
-                    url: url,
-                    data:dataString,
-                    type:"POST",
-                    processData: false,
-                    contentType: false,
-                    success:function (data) {
-                        swal.fire(
-                            'Actualización Exitosa!',
-                            'Haga clic en el botón!',
-                            'success'
-                        ).then(function() {
-                            $('#numero_cuenta').html(data);
-                        });
-                    }
-                });
-            }else{
-                bootbox.alert(msgDate)
-                var input = $(inputFocus).parent();
-                $(input).addClass("has-error");
-                $(input).on("change", function () {
-                    if ($(input).hasClass("has-error")) {
-                        $(input).removeClass("has-error");
-                    }
-                });
-            }
-    }
-    function Valida_Numero_Cuenta() {
-        if($('#cuenta_bancaria').val() == '0') {
-            msgDate = 'Debe seleccionar una opción';
-            inputFocus = '#cuenta_bancaria';
-            return false;
-        }
-        if($('#cuenta_bancaria').val()=='1'){
-        var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
-
-            if($('#id_banco').val() == '0') {
-                msgDate = 'Debe elegir un banco';
-                inputFocus = '#id_banco';
-                return false;
-            }
-            for (i = 1; i <= lista_banco; i++) {
-                console.log(i);
-
-                if($('#id_banco').val() == i) {
-
-                    if($('#num_cuenta_bancaria_'+i).val().trim() === '') {
-                        msgDate = 'Debe ingresar número de cuenta';
-                        inputFocus = '#num_cuenta_bancaria_'+i;
-                        return false;
-                    }
-
-                    var un = $('#num_cuenta_bancaria_'+i).val().trim();
-                    let dos = un.replace(/_/gi, '');
-
-                    if(dos.length != un.length ){
-                        msgDate = 'El numero de cuenta bancaria debe contener '+ un.length +' caracteres.';
-                        inputFocus = '#num_cuenta_bancaria_'+i;
-                        return false;
-                    }
-
-
-                    if($('#num_codigo_interbancario_'+i).val().trim() === '') {
-                        msgDate = 'Debe ingresar número de código interbancario';
-                        inputFocus = '#num_codigo_interbancario_'+i;
-                        return false;
-                    }
-
-                    var uno = $('#num_codigo_interbancario_'+i).val().trim();
-                    let doss = uno.replace(/_/gi, '');
-
-                    if(doss.length != uno.length ){
-                        msgDate = 'El numero de código interbancario debe contener '+ uno.length +' caracteres.';
-                        inputFocus = '#num_codigo_interbancario_'+i;
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
     var checkaractualidad = document.getElementById('checkactualidad');
     var dia_finel = document.getElementById('dia_finel');
     var mes_finel = document.getElementById('mes_finel');
@@ -4444,52 +4358,84 @@ if($get_id[0]['edicion_perfil']==1){
 
     function Valida_GDatosP() {
         if ($('#usuario_apater').val().trim() === '') {
-            msgDate = 'Debe ingresar apellido su paterno';
-            inputFocus = '#usuario_apater';
+            Swal(
+                'Ups!',
+                'Debe ingresar su apellido paterno',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#usuario_amater').val().trim() === '') {
-            msgDate = 'Debe ingresar apelliedo su materno';
-            inputFocus = '#usuario_amater';
+            Swal(
+                'Ups!',
+                'Debe ingresar su apellido materno',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#usuario_nombres').val().trim() === '') {
-            msgDate = 'Debe ingresar su nombre';
-            inputFocus = '#usuario_nombres';
+            Swal(
+                'Ups!',
+                'Debe ingresar su nombre',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#id_nacionalidad').val() == '0') {
-            msgDate = 'Debe ingresar su nacionalidad';
-            inputFocus = '#id_nacionalidad';
+            Swal(
+                'Ups!',
+                'Debe ingresar su nacionalidad',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#id_tipo_documento').val() == '0') {
-            msgDate = 'Debe ingresar su el tipo de documento a ingresar';
-            inputFocus = '#id_tipo_documento';
+            Swal(
+                'Ups!',
+                'Debe ingresar su el tipo de documento a ingresar',
+                'Debe ingresar titulo.',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#num_doc').val().trim() === '') {
-            msgDate = 'Debe ingresar su n° de documento';
-            inputFocus = '#num_doc';
+            Swal(
+                'Ups!',
+                'Debe ingresar su n° de documento',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#id_genero').val() == '0') {
-            msgDate = 'Debe ingresar su genero';
-            inputFocus = '#id_genero';
+            Swal(
+                'Ups!',
+                'Debe ingresar su genero',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#dia_nac').val() == '0') {
-            msgDate = 'Debe ingresar el día de nacimiento';
-            inputFocus = '#dia_nac';
+            Swal(
+                'Ups!',
+                'Debe ingresar el día de nacimiento',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#mes_nac').val() == '0') {
-            msgDate = 'Debe ingresar su el mes de su nacimiento';
-            inputFocus = '#mes_nac';
+            Swal(
+                'Ups!',
+                'Debe ingresar su el mes de su nacimiento',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#anio_nac').val() == '0') {
-            msgDate = 'Debe ingresar su el año en que nació';
+            Swal(
+                'Ups!',
+                'Debe ingresar su el año en que nació',
+                'warning'
+            ).then(function() { });
             inputFocus = '#anio_nac';
             return false;
         }
@@ -4509,29 +4455,39 @@ if($get_id[0]['edicion_perfil']==1){
             edad--;
         }
         if (edad < 18) {
-            msgDate = 'Debe ser mayor a 18 años de edad para actualizar datos';
-            inputFocus = '#anio_nac';
+            Swal(
+                'Ups!',
+                'Debe ser mayor a 18 años de edad para actualizar datos',
+                'warning'
+            ).then(function() { });
             return false;
         }
 
 
         if ($('#id_estado_civil').val() == '0') {
-            msgDate = 'Debe ingresar su estado civil';
-            inputFocus = '#id_estado_civil';
+            Swal(
+                'Ups!',
+                'Debe ingresar su estado civil',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#usuario_email').val().trim() === '') {
-            msgDate = 'Debe ingresar su correo electronico';
-            inputFocus = '#usuario_email';
+            Swal(
+                'Ups!',
+                'Debe ingresar su correo electronico',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#num_celp').val().trim() === '') {
-            msgDate = 'Debe ingresar su número de celular';
-            inputFocus = '#num_celp';
+            Swal(
+                'Ups!',
+                'Debe ingresar su número de celular',
+                'warning'
+            ).then(function() { });
             return false;
         }
-
-
         return true;
     }
 
@@ -4570,8 +4526,11 @@ if($get_id[0]['edicion_perfil']==1){
         && $('#artistas_banda').val().trim() === '' && $('#genero_musical').val().trim() === '' && $('#pelicula_serie').val().trim() === ''
         && $('#colores_favorito').val().trim() === '' && $('#redes_sociales').val().trim() === '' && $('#deporte_favorito').val().trim() === ''
         && $('#id_zona').val() === '0' && $('#mascota').val().trim() === '') {
-            msgDate = 'Debe ingresar al menos un gusto o preferencia';
-            inputFocus = '#plato_postre';
+            Swal(
+                'Ups!',
+                'Debe ingresar al menos un gusto o preferencia',
+                'warning'
+            ).then(function() { });
             return false;
         }
 
@@ -4715,32 +4674,32 @@ if($get_id[0]['edicion_perfil']==1){
                     });
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
         }
     }
 
     function Valida_DomilcilioP() {
         if ($('#id_departamento').val() == '0') {
-            msgDate = 'Debe ingresar departamento';
-            inputFocus = '#id_departamento';
+            Swal(
+                'Ups!',
+                'Debe ingresar departamento',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#id_provincia').val() == '0') {
-            msgDate = 'Debe ingresar provincia';
-            inputFocus = '#id_provincia';
+            Swal(
+                'Ups!',
+                'Debe ingresar provincia',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#id_distrito').val() == '0') {
-            msgDate = 'Debe ingresar distrito';
-            inputFocus = '#id_distrito';
+            Swal(
+                'Ups!',
+                'Debe ingresar distrito',
+                'warning'
+            ).then(function() { });
             return false;
         }
         return true;
@@ -4775,15 +4734,6 @@ if($get_id[0]['edicion_perfil']==1){
                     });
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
         }
     }
 
@@ -4813,15 +4763,6 @@ if($get_id[0]['edicion_perfil']==1){
                     });
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
         }
     }
 
@@ -4848,33 +4789,51 @@ if($get_id[0]['edicion_perfil']==1){
 
     function Valida_ReferenciaF() {
         if ($('#nom_familiar').val().trim() === '') {
-            msgDate = 'Debe ingresar nombre del familiar';
-            inputFocus = '#nom_familiar';
+            Swal(
+                'Ups!',
+                'Debe ingresar nombre del familiar',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#id_parentesco').val() == '0') {
-            msgDate = 'Debe indique el parentesco';
-            inputFocus = '#id_parentesco';
+            Swal(
+                'Ups!',
+                'Debe indique el parentesco',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#dia_nacf').val() == '0') {
-            msgDate = 'Debe ingresar el dìa de nacimiento';
-            inputFocus = '#dia_nacf';
+            Swal(
+                'Ups!',
+                'Debe ingresar el dìa de nacimiento',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#mes_nacf').val() == '0') {
-            msgDate = 'Debe ingresar el mes de nacimiento ';
-            inputFocus = '#mes_nacf';
+            Swal(
+                'Ups!',
+                'Debe ingresar el mes de nacimiento ',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#anio_nacf').val() == '0') {
-            msgDate = 'Debe ingresar el año de nacimiento';
-            inputFocus = '#anio_nacf';
+            Swal(
+                'Ups!',
+                'Debe ingresar el año de nacimiento',
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#celular1').val().trim() === '') {
-            msgDate = 'Debe ingresar el celular principal';
-            inputFocus = '#celular1';
+            Swal(
+                'Ups!',
+                'Debe ingresar el celular principal',
+                'warning'
+            ).then(function() { });
             return false;
         }
         return true;
@@ -4976,15 +4935,6 @@ if($get_id[0]['edicion_perfil']==1){
                     });
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
         }
     }
 
@@ -5038,15 +4988,6 @@ if($get_id[0]['edicion_perfil']==1){
                     });
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
         }
     }
 
@@ -5074,51 +5015,75 @@ if($get_id[0]['edicion_perfil']==1){
 
     function Valida_HijosU() {
         if ($('#id_respuestah').val() == '0') {
-            msgDate = 'Debe seleccionar opción';
-            inputFocus = '#id_respuestah';
+            Swal(
+                'Ups!',
+                'Debe seleccionar opción',
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         if ($('#id_respuestah').val() == '1') {
             if ($('#nom_hijo').val().trim() === '') {
-                msgDate = 'Debe ingresar nombre de hijo';
-                inputFocus = '#nom_hijo';
+            Swal(
+                'Ups!',
+                'Debe ingresar nombre de hijo',
+                'warning'
+            ).then(function() { });
                 return false;
             }
 
             if ($('#id_generoh').val() == '0') {
-                msgDate = 'Debe ingresar genero del hijo';
-                inputFocus = '#id_generoh';
+            Swal(
+                'Ups!',
+                'Debe ingresar genero del hijo',
+                'warning'
+            ).then(function() { });
                 return false;
             }
 
             if ($('#dia_nachj').val() == '0') {
-                msgDate = 'Debe ingresar el dìa de nacimiento';
-                inputFocus = '#dia_nachj';
+            Swal(
+                'Ups!',
+                'Debe ingresar el dìa de nacimiento',
+                'warning'
+            ).then(function() { });
                 return false;
             }
 
             if ($('#mes_nachj').val() == '0') {
-                msgDate = 'Debe ingresar el mes de nacimiento';
-                inputFocus = '#mes_nachj';
+            Swal(
+                'Ups!',
+                'Debe ingresar el mes de nacimiento',
+                'warning'
+            ).then(function() { });
                 return false;
             }
 
             if ($('#anio_nachj').val() == '0') {
-                msgDate = 'Debe ingresar el año de nacimiento';
-                inputFocus = '#anio_nachj';
+            Swal(
+                'Ups!',
+                'Debe ingresar el año de nacimiento',
+                'warning'
+            ).then(function() { });
                 return false;
             }
 
             if ($('#num_dochj').val().trim() === '') {
-                msgDate = 'Debe ingresar número de DNI';
-                inputFocus = '#num_dochj';
+            Swal(
+                'Ups!',
+                'Debe ingresar número de DNI',
+                'warning'
+            ).then(function() { });
                 return false;
             }
 
             if ($('#id_biologico').val() == '0') {
-                msgDate = 'Debe indicar si es biológico o no';
-                inputFocus = '#id_biologico';
+            Swal(
+                'Ups!',
+                'Debe indicar si es biológico o no',
+                'warning'
+            ).then(function() { });
                 return false;
             }
         }
@@ -5257,15 +5222,6 @@ if($get_id[0]['edicion_perfil']==1){
                     });
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
         }
     }
 
@@ -5295,34 +5251,34 @@ if($get_id[0]['edicion_perfil']==1){
                     });
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
         }
     }
 
     function Valida_ContactoE() {
         if ($('#nom_contacto').val().trim() === '') {
-            msgDate = 'Debe ingresar nombre de contacto de emergencia';
-            inputFocus = '#nom_contacto';
+            Swal(
+                'Ups!',
+                'Debe ingresar nombre de contacto de emergencia',
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         if ($('#id_parentescoce').val() == '') {
-            msgDate = 'Debe indicar el parentesco del Contacto de Emergencia';
-            inputFocus = '#id_parentescoce';
+            Swal(
+                'Ups!',
+                'Debe indicar el parentesco del Contacto de Emergencia',
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         if ($('#celular1ce').val().trim() === '') {
-            msgDate = 'Debe ingresar el celular del contacto de emergencia ';
-            inputFocus = '#celular1ce';
+            Swal(
+                'Ups!',
+                'Debe ingresar el celular del contacto de emergencia ',
+                'warning'
+            ).then(function() { });
             return false;
         }
         return true;
@@ -5413,6 +5369,7 @@ if($get_id[0]['edicion_perfil']==1){
     }
 
     function EstudiosG() {
+        console.log('estudios');
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario_estudiosg'));
@@ -5438,15 +5395,6 @@ if($get_id[0]['edicion_perfil']==1){
                         MDatos_EstudiosG();
                         Lista_EstudiosG();
                     });
-                }
-            });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
                 }
             });
         }
@@ -5503,34 +5451,34 @@ if($get_id[0]['edicion_perfil']==1){
                     });
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
         }
     }
 
     function Valida_EstudiosG() {
         if ($('#id_grado_instruccion').val() == '0') {
-            msgDate = 'Debe seleccionar grado de instrucción';
-            inputFocus = '#id_grado_instruccion';
+            Swal(
+                'Ups!',
+                'Debe seleccionar grado de instrucción',
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         if ($('#carrera').val().trim() === '') {
-            msgDate = 'Debe ingresar el nombre de la carrera';
-            inputFocus = '#carrera';
+            Swal(
+                'Ups!',
+                'Debe ingresar el nombre de la carrera',
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         if ($('#centro').val().trim() === '') {
-            msgDate = 'Debe ingresar el nombre del centro de estudios';
-            inputFocus = '#centro';
+            Swal(
+                'Ups!',
+                'Debe ingresar el nombre del centro de estudios',
+                'warning'
+            ).then(function() { });
             return false;
         }
 
@@ -5626,7 +5574,7 @@ if($get_id[0]['edicion_perfil']==1){
     function Conoci_Idiomas() {
         var dataString = new FormData(document.getElementById('formulario_conoci_idiomas'));
         var url = "{{ url('ColaboradorController/Insert_Conoci_Idiomas') }}";
-                var csrfToken = $('input[name="_token"]').val();
+        var csrfToken = $('input[name="_token"]').val();
 
         if (Valida_Conoci_Idiomas()) {
             $.ajax({
@@ -5647,15 +5595,6 @@ if($get_id[0]['edicion_perfil']==1){
                         $('#mdconocimientoi').html(data);
                         MDatos_Idiomas();
                     });
-                }
-            });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
                 }
             });
         }
@@ -5706,7 +5645,7 @@ if($get_id[0]['edicion_perfil']==1){
     function Update_Conoci_Idiomas() {
         var dataString = new FormData(document.getElementById('formulario_conoci_idiomas'));
         var url = "{{ url('ColaboradorController/Update_Conoci_Idiomas') }}";
-                var csrfToken = $('input[name="_token"]').val();
+        var csrfToken = $('input[name="_token"]').val();
 
         if (Valida_Conoci_Idiomas()) {
             $.ajax({
@@ -5729,40 +5668,47 @@ if($get_id[0]['edicion_perfil']==1){
                     });
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
         }
     }
 
     function Valida_Conoci_Idiomas() {
         if ($('#nom_conoci_idiomas').val() == '0') {
             msgDate = 'Debe elegir un idioma';
-            inputFocus = '#nom_conoci_idiomas';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         if ($('#lect_conoci_idiomas').val() == '0') {
             msgDate = 'Debe elegir un nivel';
-            inputFocus = '#lect_conoci_idiomas';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         if ($('#escrit_conoci_idiomas').val() == '0') {
             msgDate = 'Debe elegir un nivel';
-            inputFocus = '#escrit_conoci_idiomas';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         if ($('#conver_conoci_idiomas').val() == '0') {
             msgDate = 'Debe elegir un nivel';
-            inputFocus = '#conver_conoci_idiomas';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
 
@@ -5840,15 +5786,6 @@ if($get_id[0]['edicion_perfil']==1){
                     });
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
         }
     }
 
@@ -5857,7 +5794,7 @@ if($get_id[0]['edicion_perfil']==1){
 
         var dataString = new FormData(document.getElementById('formulario_cursosc'));
         var url = "{{ url('ColaboradorController/MDatos_CursosC') }}";
-                var csrfToken = $('input[name="_token"]').val();
+        var csrfToken = $('input[name="_token"]').val();
 
 
         $.ajax({
@@ -5927,15 +5864,6 @@ if($get_id[0]['edicion_perfil']==1){
                     });
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
         }
     }
 
@@ -5944,7 +5872,7 @@ if($get_id[0]['edicion_perfil']==1){
 
         var id = id;
         var url = "{{ url('ColaboradorController/Detalle_CursosC') }}";
-                var csrfToken = $('input[name="_token"]').val();
+        var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({
             type: "POST",
@@ -5966,12 +5894,20 @@ if($get_id[0]['edicion_perfil']==1){
 
         if ($('#nom_curso_complementario').val().trim() === '') {
             msgDate = 'Debe ingresar el nombre del curso';
-            inputFocus = '#nom_curso_complementario';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#aniocc').val() == '0') {
             msgDate = 'Debe elegir el año';
-            inputFocus = '#aniocc';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
 
@@ -6048,29 +5984,28 @@ if($get_id[0]['edicion_perfil']==1){
                     });
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
         }
     }
 
     function Valida_Referencia_Convocatoria() {
         if ($('#id_referencia_laboral').val() == '0') {
             msgDate = 'Debe seleccionar opción';
-            inputFocus = '#id_referencia_laboral';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         if ($("#id_referencia_laboral option:selected").text() == 'OTROS') {
             if ($('#otrosel').val().trim() == '') {
                 msgDate = 'Debe llenar este dato';
-                inputFocus = '#otros';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
                 return false;
             }
         }
@@ -6116,15 +6051,6 @@ if($get_id[0]['edicion_perfil']==1){
                     });
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
         }
     }
 
@@ -6133,7 +6059,7 @@ if($get_id[0]['edicion_perfil']==1){
 
         var dataString = new FormData(document.getElementById('formulario_experiencial'));
         var url = "{{ url('ColaboradorController/Lista_ExperenciaL') }}";
-                var csrfToken = $('input[name="_token"]').val();
+        var csrfToken = $('input[name="_token"]').val();
 
 
         $.ajax({
@@ -6156,7 +6082,7 @@ if($get_id[0]['edicion_perfil']==1){
 
         var dataString = new FormData(document.getElementById('formulario_experiencial'));
         var url = "{{ url('ColaboradorController/Update_ExperenciaL') }}";
-                var csrfToken = $('input[name="_token"]').val();
+        var csrfToken = $('input[name="_token"]').val();
 
         if (Valida_ExperenciaL()) {
             $.ajax({
@@ -6179,15 +6105,6 @@ if($get_id[0]['edicion_perfil']==1){
                     });
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
         }
     }
 
@@ -6195,67 +6112,219 @@ if($get_id[0]['edicion_perfil']==1){
         valor = $('input:checkbox[name=checkactualidad]:checked').val();
         if ($('#empresaex').val().trim() === '') {
             msgDate = 'Debe ingresar nombre de empresa';
-            inputFocus = '#empresaex';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         if ($('#cargoex').val().trim() === '') {
             msgDate = 'Debe ingresar nombre de cargo';
-            inputFocus = '#cargoex';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         if ($('#dia_iniel').val() == '0') {
             msgDate = 'Debe ingresar fecha de inicio';
-            inputFocus = '#dia_iniel';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         if ($('#mes_iniel').val() == '0') {
             msgDate = 'Debe ingresar fecha de inicio';
-            inputFocus = '#mes_iniel';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         if ($('#anio_iniel').val() == '0') {
             msgDate = 'Debe ingresar fecha de inicio';
-            inputFocus = '#anio_iniel';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         if (valor != 1) {
             if ($('#dia_finel').val() == '0') {
                 msgDate = 'Debe ingresar fecha de fin';
-                inputFocus = '#dia_finel';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
                 return false;
             }
 
             if ($('#mes_finel').val() == '0') {
                 msgDate = 'Debe ingresar fecha de fin';
-                inputFocus = '#mes_finel';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
                 return false;
             }
 
             if ($('#anio_finel').val() == '0') {
                 msgDate = 'Debe ingresar fecha de fin';
-                inputFocus = '#anio_finel';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
                 return false;
             }
         }
 
         if ($('#motivo_salida').val().trim() === '') {
             msgDate = 'Debe ingresar el motivo de cese';
-            inputFocus = '#motivo_salida';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         if ($('#remuneracion').val().trim() === '') {
             msgDate = 'Debe ingresar su remuneración';
-            inputFocus = '#remuneracion';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         return true;
+    }
+
+    function MDatos_ExperenciaL() {
+        var dataString = new FormData(document.getElementById('formulario_experiencial'));
+        var url = "{{ url('ColaboradorController/MDatos_ExperenciaL') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#muexperiencial').html(data);
+                $('#btnExperenciaL').html("<a onclick='ExperenciaL();' title='Agregar Experiencia Laboral' class='btn btn-danger'>Agregar</a>");
+            }
+        });
+    }
+
+    function Lista_ExperenciaL() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_experiencial'));
+        var url = "{{ url('ColaboradorController/Lista_ExperenciaL') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#mdexperiencial').html(data);
+            }
+        });
+    }
+
+    function Detalle_ExperenciaL(id) {
+        Cargando();
+        var id = id;
+        var url = "{{ url('ColaboradorController/Detalle_ExperenciaL') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            data: {
+                'id_experiencia_laboral': id
+            },
+            success: function(data) {
+                $('#muexperiencial').html(data);
+                $('#btnExperenciaL').html("<a onclick='Update_ExperenciaL();' title='Actualizar Experiencia Laboral' class='btn btn-primary'>Actualizar</a>");
+            }
+        });
+    }
+
+    function Delete_ExperenciaL(id, id_usu) {
+        Cargando();
+
+        var id = id;
+        var id_usu = id_usu;
+
+
+        var url = "{{ url('ColaboradorController/Delete_ExperenciaL') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            //title: '¿Realmente quieres eliminar el registro de '+ nombre +'?',
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    data: {
+                        'id_experiencia_laboral': id,
+                        'id_usuario': id_usu
+                    },
+                    success: function(data) {
+                        Swal(
+                            'Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            MDatos_ExperenciaL();
+                            Lista_ExperenciaL();
+                        });
+                    }
+                });
+            }
+        })
     }
 
     function Conoci_Office() {
@@ -6283,6 +6352,615 @@ if($get_id[0]['edicion_perfil']==1){
                     });
                 }
             });
+        }
+    }
+
+    function Valida_Conoci_Office() {
+        if ($('#nl_excel').val() == '0' && $('#nl_word').val() == '0' &&
+            $('#nl_ppoint').val() == '0') {
+            msgDate = 'Debe seleccionar un nivel de conocimiento';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+            return false;
+        }
+
+        return true;
+    }
+
+    function Enfermedades() {
+        var dataString = new FormData(document.getElementById('formulario_enfermedades'));
+        var url = "{{ url('ColaboradorController/Insert_Enfermedades') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_Enfermedades()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Registro Exitoso!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#mdenfermedades').html(data);
+                        MDatos_Enfermedades();
+                    });
+                }
+            });
+        }
+    }
+
+    function Update_Enfermedades() {
+        var dataString = new FormData(document.getElementById('formulario_enfermedades'));
+        var url = "{{ url('ColaboradorController/Update_Enfermedades') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_Enfermedades()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#mdenfermedades').html(data);
+                        MDatos_Enfermedades();
+                    });
+                }
+            });
+        }
+    }
+
+    function Detalle_Enfermedades(id) {
+        var id = id;
+        var url = "{{ url('ColaboradorController/Detalle_Enfermedades') }}";
+        var csrfToken = $('input[name="_token"]').val();
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            data: {
+                'id_enfermedad_usuario': id
+            },
+            success: function(data) {
+                $('#muenfermedades').html(data);
+                $('#btnEnfermedades').html("<a onclick='Update_Enfermedades();' title='Actualizar Enfermedad' class='btn btn-primary'>Actualizar</a>");
+            }
+        });
+    }
+
+    function MDatos_Enfermedades() {
+        var dataString = new FormData(document.getElementById('formulario_enfermedades'));
+        var url = "{{ url('ColaboradorController/MDatos_Enfermedades') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#muenfermedades').html(data);
+                $('#btnEnfermedades').html("<a onclick='Enfermedades();' title='Agregar Enfermedad' class='btn btn-danger'>Agregar</a>");
+                ValidaE();
+            }
+        });
+    }
+
+    function Valida_Enfermedades() {
+        if ($('#id_respuestae').val() == '0') {
+            msgDate = 'Seleccionar una opción.';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+            return false;
+        }
+
+        if ($('#id_respuestae').val() == '1') {
+            if ($('#nom_enfermedad').val().trim() === '') {
+                msgDate = 'Debe escribir el nombre de la enfermedad.';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+                return false;
+            }
+
+            if ($('#dia_diagnostico').val() == '0') {
+                msgDate = 'Debe seleccionar el día de diagnóstico.';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+                return false;
+            }
+
+            if ($('#mes_diagnostico').val() == '0') {
+                msgDate = 'Debe seleccionar el mes de diagnóstico.';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+                return false;
+            }
+
+            if ($('#anio_diagnostico').val() == '0') {
+                msgDate = 'Debe seleccionar el año de diagnóstico.';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function ValidaE() {
+        if ($('#id_respuestae').val() == '1') {
+            $("#nom_enfermedad").prop('disabled', false);
+            $("#dia_diagnostico").prop('disabled', false);
+            $("#mes_diagnostico").prop('disabled', false);
+            $("#anio_diagnostico").prop('disabled', false);
+            $('#btnEnfermedades').html("<a onclick='Enfermedades();' title='Agregar Enfermedad' class='btn btn-danger'>Agregar</a>");
+        }
+
+        if ($('#id_respuestae').val() != '1') {
+            $("#nom_enfermedad").prop('disabled', true);
+            $("#dia_diagnostico").prop('disabled', true);
+            $("#mes_diagnostico").prop('disabled', true);
+            $("#anio_diagnostico").prop('disabled', true);
+            $('#btnEnfermedades').html("<a onclick='Update_Enfermedades();' title='Actualizar Enfermedad' class='btn btn-primary'>Actualizar</a>");
+
+            $("#nom_enfermedad").val('');
+            $("#dia_diagnostico").val('0');
+            $("#mes_diagnostico").val('0');
+            $("#anio_diagnostico").val('0');
+        }
+    }
+
+    function Delete_Enfermedades(id, id_usu) {
+        var id = id;
+        var id_usu = id_usu;
+        var url = "{{ url('ColaboradorController/Delete_Enfermedades') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            //title: '¿Realmente quieres eliminar el registro de '+ nombre +'?',
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    data: {
+                        'id_enfermedad_usuario': id,
+                        'id_usuario': id_usu
+                    },
+                    success: function(data) {
+                        Swal(
+                            'Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            $('#mdenfermedades').html(data);
+                            MDatos_Enfermedades();
+                        });
+                    }
+                });
+            }
+        })
+    }
+    
+    function Gestacion() {
+        var dataString = new FormData(document.getElementById('formulario_gestacion'));
+        var url = "{{ url('ColaboradorController/Update_Gestacion') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_Gestacion()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#gestacion').html(data);
+                    });
+                }
+            });
+        }
+    }
+
+    function Valida_Gestacion() {
+        if ($('#id_respuesta').val() == '0') {
+            msgDate = 'Debe seleccionar una opción.';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+            return false;
+        }
+
+        if ($('#id_respuesta').val() == '1') {
+            if ($('#dia_ges').val() == '0') {
+                msgDate = 'Debe seleccionar día.';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+                return false;
+            }
+
+            if ($('#mes_ges').val() == '0') {
+                msgDate = 'Debe seleccionar mes.';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+                return false;
+            }
+
+            if ($('#anio_ges').val() == '0') {
+                msgDate = 'Debe seleccionar año.';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function Validag() {
+        if ($('#id_respuesta').val() == '1') {
+            $("#dia_ges").prop('disabled', false);
+            $("#mes_ges").prop('disabled', false);
+            $("#anio_ges").prop('disabled', false);
+        }
+
+        if ($('#id_respuesta').val() != '1') {
+            $("#dia_ges").prop('disabled', true);
+            $("#mes_ges").prop('disabled', true);
+            $("#anio_ges").prop('disabled', true);
+
+            $("#dia_ges").val('0');
+            $("#mes_ges").val('0');
+            $("#anio_ges").val('0');
+        }
+
+        return true;
+    }
+    /****************************************** */
+    function Alergia() {
+        var dataString = new FormData(document.getElementById('formulario_alergia'));
+        var url = "{{ url('ColaboradorController/Insert_Alergia') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_Alergia()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Registro Exitoso!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#mdalergias').html(data);
+                        $('#nom_alergia').val('');
+                    });
+                }
+            });
+        }
+    }
+
+    function Update_Alergia() {
+        var dataString = new FormData(document.getElementById('formulario_alergia'));
+        var url = "{{ url('ColaboradorController/Update_Alergia') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_Alergia()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#mdalergias').html(data);
+                        MDatos_Alergia();
+                    });
+                }
+            });
+        }
+    }
+
+    function Valida_Alergia() {
+        if ($('#id_respuestaau').val() == '0') {
+            msgDate = 'Seleccionar una opción.';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+            return false;
+        }
+
+        if ($('#id_respuestaau').val() == '1') {
+            if ($('#nom_alergia').val().trim() === '') {
+                msgDate = 'Debe escribir el nombre de alergia que presenta.';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function Detalle_Alergia(id) {
+        var id = id;
+        var url = "{{ url('ColaboradorController/Detalle_Alergia') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            data: {
+                'id_alergia_usuario': id
+            },
+            success: function(data) {
+                $('#mualergias').html(data);
+                $('#btnAlergia').html("<a onclick='Update_Alergia();' title='Actualizar Alergia' class='btn btn-primary'>Actualizar</a>");
+            }
+        });
+    }
+
+    function MDatos_Alergia() {
+        var dataString = new FormData(document.getElementById('formulario_alergia'));
+        var url = "{{ url('ColaboradorController/MDatos_Alergias') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#mualergias').html(data);
+                $('#btnAlergia').html("<a onclick='Alergia();' title='Agregar Alergia' class='btn btn-danger'>Agregar</a>");
+                ValidaE();
+            }
+        });
+    }
+
+    function ValidaA() {
+        if ($('#id_respuestaau').val() == '1') {
+            $("#nom_alergia").prop('disabled', false);
+            $('#btnAlergia').html("<a onclick='Alergia();' title='Agregar Alergia' class='btn btn-danger'>Agregar</a>");
+
+        }
+
+        if ($('#id_respuestaau').val() != '1') {
+            $("#nom_alergia").prop('disabled', true);
+            $('#btnAlergia').html("<a onclick='Update_Alergia();' title='Actualizar Alergia' class='btn btn-primary'>Actualizar</a>");
+
+            $("#nom_alergia").val('');
+
+        }
+    }
+
+    function Delete_Alergia(id, id_usu) {
+        var id = id;
+        var id_usu = id_usu;
+        var url = "{{ url('ColaboradorController/Delete_Alergia') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            //title: '¿Realmente quieres eliminar el registro de '+ nombre +'?',
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    data: {
+                        'id_alergia_usuario': id,
+                        'id_usuario': id_usu
+                    },
+                    success: function(data) {
+                        Swal(
+                            'Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            $('#mdalergias').html(data);
+                        });
+                    }
+                });
+            }
+        })
+    }
+    /**************************************/
+    function Otros() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_otros'));
+        var url = "{{ url('ColaboradorController/Update_Otros') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_Otros()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Lista_Otros();
+                    });
+                }
+            });
+        }
+    }
+
+    function Lista_Otros() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_otros'));
+        var url = "{{ url('ColaboradorController/Lista_Otros') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#otros').html(data);
+            }
+        });
+    }
+
+    function Valida_Otros() {
+        if ($('#id_grupo_sanguineo').val() == '0') {
+            msgDate = 'Debe seleccionar tipo de sangre.';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+            return false;
+        }
+
+        return true;
+    }
+    
+    function Referencia_Convocatoria() {
+        var dataString = new FormData(document.getElementById('formulario_referencia_convocatoria'));
+        var url = "{{ url('ColaboradorController/Update_Referencia_Convocatoria') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_Referencia_Convocatoria()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#referencia_convocatoria').html(data);
+                    });
+                }
+            });
         } else {
             bootbox.alert(msgDate)
             var input = $(inputFocus).parent();
@@ -6295,15 +6973,475 @@ if($get_id[0]['edicion_perfil']==1){
         }
     }
 
+    function Valida_Referencia_Convocatoria() {
+        if ($('#id_referencia_laboral').val() == '0') {
+            msgDate = 'Debe seleccionar opción';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+            return false;
+        }
 
-    function Valida_Conoci_Office() {
-        if ($('#nl_excel').val() == '0' && $('#nl_word').val() == '0' &&
-            $('#nl_ppoint').val() == '0') {
-            msgDate = 'Debe seleccionar un nivel de conocimiento';
-            inputFocus = '#nl_excel';
+        if ($("#id_referencia_laboral option:selected").text() == 'OTROS') {
+            if ($('#otrosel').val().trim() == '') {
+                msgDate = 'Debe llenar este dato';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    function Adjuntar_Documentacion() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_adjuntar_documentacion'));
+        var url = "{{ url('ColaboradorController/Update_Adjuntar_Documentacion') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_Adjuntar_Documentacion()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Lista_Adjuntar_Documentacion();
+                    });
+                }
+            });
+        }
+    }
+
+    function Lista_Adjuntar_Documentacion() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_adjuntar_documentacion'));
+        var url = "{{ url('ColaboradorController/Lista_Adjuntar_Documentacion') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#adjuntar_documentacion').html(data);
+            }
+        });
+    }
+
+    function Valida_Adjuntar_Documentacion() {
+        if ($('#filecv_doc').val().trim() === '' && $('#filedni_doc').val().trim() === '' && $('#filerecibo_doc').val().trim() === '') {
+            msgDate = 'Debe seleccionar al menos una opción.';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         return true;
+    }
+    
+    function Talla_Indica() {
+        var dataString = new FormData(document.getElementById('formulario_talla_indicar'));
+        var url = "{{ url('ColaboradorController/Update_Talla_Indica') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_Talla_Indica()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#talla_indicar').html(data);
+                    });
+                }
+            });
+        }
+    }
+
+    function Valida_Talla_Indica() {
+        if ($('#polo').val() == '0') {
+            msgDate = 'Debe ingresar su talla de polo';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+            return false;
+        }
+        if ($('#pantalon').val() == '0') {
+            msgDate = 'Debe ingresar su talla de pantalón';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+            return false;
+        }
+
+        if ($('#zapato').val() == '0') {
+            msgDate = 'Debe ingresar su talla de zapato';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+            return false;
+        }
+
+        return true;
+    }
+
+    function Sistema_Pensionario() {
+        var dataString = new FormData(document.getElementById('formulario_sistema_pensionario'));
+        var url = "{{ url('ColaboradorController/Update_Sistema_Pensionario') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_Sistema_Pensionario()) {
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        'Actualización Exitosa!',
+                        'Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        $('#sistema_pensionario').html(data);
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Valida_Sistema_Pensionario() {
+        if ($('#id_respuestasp').val() == '0') {
+            msgDate = 'Debe seleccionar una opción.';
+            inputFocus = '#id_respuestasp';
+            return false;
+        }
+
+        if ($('#id_respuestasp').val() == '1') {
+            if ($('#id_sistema_pensionario').val() == '0') {
+                msgDate = 'Debe seleccionar un sistema de pensión.';
+                inputFocus = '#id_sistema_pensionario';
+                return false;
+            }
+        }
+
+        if ($('#id_sistema_pensionario').val() == '2') {
+            if ($('#id_afp').val() == '0') {
+                msgDate = 'Debe seleccionar el AFP al que pertenece.';
+                inputFocus = '#id_afp';
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+    function Validasp() {
+        if ($('#id_respuestasp').val() == '1') {
+            $("#id_sistema_pensionario").prop('disabled', false);
+        }
+
+        if ($('#id_respuestasp').val() != '1') {
+            $("#id_sistema_pensionario").prop('disabled', true);
+            $("#id_afp").prop('disabled', true);
+
+            $("#id_sistema_pensionario").val('0');
+            $("#id_afp").val('0');
+        }
+    }
+
+    function ValidaAFP() {
+        if ($('#id_sistema_pensionario').val() == '2') {
+            $("#id_afp").prop('disabled', false);
+        }
+
+        if ($('#id_sistema_pensionario').val() != '2') {
+            $("#id_afp").prop('disabled', true);
+
+            $("#id_afp").val('0');
+        }
+    }
+    
+    function Numero_Cuenta(){
+        let lista_banco =<?php echo count($list_banco); ?> ;
+        var dataString = new FormData(document.getElementById('formulario_cuenta_bancaria'));
+        var url="{{ url('ColaboradorController/Update_Numero_Cuenta') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+            if (Valida_Numero_Cuenta()) {
+                $.ajax({
+                    url: url,
+                    data:dataString,
+                    type:"POST",
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    processData: false,
+                    contentType: false,
+                    success:function (data) {
+                        swal.fire(
+                            'Actualización Exitosa!',
+                            'Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            $('#numero_cuenta').html(data);
+                        });
+                    }
+                });
+            }
+    }
+
+    function Valida_Numero_Cuenta() {
+        if($('#cuenta_bancaria').val() == '0') {
+            msgDate = 'Debe seleccionar una opción';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+            return false;
+        }
+        if($('#cuenta_bancaria').val()=='1'){
+        var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
+
+            if($('#id_banco').val() == '0') {
+                msgDate = 'Debe elegir un banco';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
+                return false;
+            }
+            for (i = 1; i <= lista_banco; i++) {
+                console.log(i);
+
+                if($('#id_banco').val() == i) {
+
+                    if($('#num_cuenta_bancaria_'+i).val().trim() === '') {
+                        msgDate = 'Debe ingresar número de cuenta';
+                        Swal(
+                            'Ups!',
+                            msgDate,
+                            'warning'
+                        ).then(function() { });
+                        return false;
+                    }
+
+                    var un = $('#num_cuenta_bancaria_'+i).val().trim();
+                    let dos = un.replace(/_/gi, '');
+
+                    if(dos.length != un.length ){
+                        msgDate = 'El numero de cuenta bancaria debe contener '+ un.length +' caracteres.';
+                        Swal(
+                            'Ups!',
+                            msgDate,
+                            'warning'
+                        ).then(function() { });
+                        return false;
+                    }
+
+
+                    if($('#num_codigo_interbancario_'+i).val().trim() === '') {
+                        msgDate = 'Debe ingresar número de código interbancario';
+                        Swal(
+                            'Ups!',
+                            msgDate,
+                            'warning'
+                        ).then(function() { });
+                        return false;
+                    }
+
+                    var uno = $('#num_codigo_interbancario_'+i).val().trim();
+                    let doss = uno.replace(/_/gi, '');
+
+                    if(doss.length != uno.length ){
+                        msgDate = 'El numero de código interbancario debe contener '+ uno.length +' caracteres.';
+                        Swal(
+                            'Ups!',
+                            msgDate,
+                            'warning'
+                        ).then(function() { });
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
+    function Validaeb() {
+        if ($('#cuenta_bancaria').val() == '1') {
+            $('#id_banco').removeAttr("disabled");
+            for (i = 1; i <= lista_banco; i++) {
+                $('#num_cuenta_bancaria_' + i).removeAttr("disabled");
+                $('#num_codigo_interbancario_' + i).removeAttr("disabled");
+            }
+        }
+        if ($('#cuenta_bancaria').val() != '1') {
+            $("#id_banco").prop('disabled', true);
+            $("#num_cuenta_bancaria").prop('disabled', true);
+            $("#num_codigo_interbancario").prop('disabled', true);
+
+            for (i = 1; i <= lista_banco; i++) {
+                $('#num_cuenta_bancaria_' + i).attr("disabled", true);
+                $('#num_codigo_interbancario_' + i).attr("disabled", true);
+                $('#num_cuenta_bancaria_' + i).val('');
+                $('#num_codigo_interbancario_' + i).val('');
+            }
+
+            $("#id_banco").val('0');
+        }
+    }
+    
+    function Terminos() {
+        valor = $('input:checkbox[name=termino]:checked').val();
+        if (valor == 1) {
+            $("#termino").attr('disabled', 'disabled');
+            var dataString = new FormData(document.getElementById('formulario_termino'));
+            var url = "{{ url('ColaboradorController/Terminos') }}";
+            var csrfToken = $('input[name="_token"]').val();
+
+            Swal({
+                //title: '¿Realmente quieres eliminar el registro de '+ nombre +'?',
+                title: 'He Leído y Acepto la Política de Privacidad de la Numero 1',
+                //text: "El registro será eliminado permanentemente",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si',
+                cancelButtonText: 'No',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: url,
+                        data: dataString,
+                        type: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        processData: false,
+                        contentType: false,
+                        success: function(data) {
+                        }
+                    });
+                } else {
+                    $("#termino").removeAttr('disabled');
+                    $('#termino').prop('checked', false);
+                }
+            })
+        }
+    }
+    function GuardarCambios(n) {
+        Cargando();
+        
+        var dataString = new FormData(document.getElementById('edatos'));
+        var numero = $('#num_doc').val();
+        var url = "{{ url('ColaboradorController/GuardarCambiosCI')}}/" + numero;
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                var cadena = data;
+                validacion = cadena.substr(0, 1);
+                mensaje = cadena.substr(1);
+                if (validacion == 1) {
+                    Swal.fire({
+                        title: 'Guardado Denegado',
+                        html: "Por favor completar la(s) seccion(es): <br>"+mensaje,
+                        type:'error',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
+                    });
+                }else{
+                    var url1 = "{{ url('ColaboradorController/Update_Datos_Completos')}}/"+numero;
+                    var csrfToken = $('input[name="_token"]').val();
+                    $.ajax({
+                        url: url1,
+                        type: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        success: function(resp) {
+                            swal.fire(
+                                'Guardado Exitoso!',
+                                'Vuelve a iniciar sesión, por favor.',
+                                'success'
+                            ).then(function() {
+                                if(n!="1" && n!="2"){
+                                    window.location = "{{ url('DestruirSesion')}}";
+                                }else{
+                                    window.location.reload();
+                                }
+                                
+                            });
+                        }
+                    });
+                }
+            }
+        });
     }
 </script>
