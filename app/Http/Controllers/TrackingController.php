@@ -459,9 +459,9 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
-            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-            //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('ogutierrez@lanumero1.com.pe');
+            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
             /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
             foreach($list_td as $list){
                 $mail->addAddress($list->emailp);
@@ -793,9 +793,9 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
-            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-            //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('ogutierrez@lanumero1.com.pe');
+            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
             /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
             foreach($list_td as $list){
                 $mail->addAddress($list->emailp);
@@ -1255,9 +1255,9 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
-            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-            //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('ogutierrez@lanumero1.com.pe');
+            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
             /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
@@ -1493,9 +1493,9 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
-            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-            //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('ogutierrez@lanumero1.com.pe');
+            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
             /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
@@ -1833,9 +1833,9 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
-                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('ogutierrez@lanumero1.com.pe');
+                $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
                 /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
@@ -1927,9 +1927,9 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
-                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('ogutierrez@lanumero1.com.pe');
+                $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
                 /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
                 foreach($list_td as $list){
                     $mail->addAddress($list->emailp);
@@ -2175,9 +2175,9 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
-                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('ogutierrez@lanumero1.com.pe');
+                $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
                 /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
@@ -2436,9 +2436,9 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
-                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('ogutierrez@lanumero1.com.pe');
+                $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
                 /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
@@ -2626,9 +2626,9 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
-                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('ogutierrez@lanumero1.com.pe');
+                $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
                 /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
