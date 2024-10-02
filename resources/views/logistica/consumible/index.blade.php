@@ -61,14 +61,14 @@
     }
 
 
-    function Delete_ErroresPicking(id) {
+    function Delete_Consumible(id) {
         Cargando();
 
         var url = "{{ route('consumible.destroy', ':id') }}".replace(':id', id);
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({
-            title: '¿Realmente desea eliminar el registro?',
+            title: '¿Realmente desea eliminar el registro consumible?',
             text: "El registro será eliminado permanentemente",
             type: 'warning',
             showCancelButton: true,
