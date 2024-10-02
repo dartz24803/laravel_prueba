@@ -452,7 +452,7 @@ class TrackingController extends Controller
                 'format' => 'A4',
                 'default_font' => 'Arial'
             ]);
-            $html = view('logistica.tracking.pdf', compact('get_id','list_detalle'))->render();
+            $html = view('logistica.tracking.tracking.pdf', compact('get_id','list_detalle'))->render();
             $mpdf->WriteHTML($html);
             $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
 
