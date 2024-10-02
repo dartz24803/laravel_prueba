@@ -24,7 +24,6 @@
     </div>
 </div>
 
-@csrf
 <div class="table-responsive mt-4" id="lista_tracking">
 </div>
 

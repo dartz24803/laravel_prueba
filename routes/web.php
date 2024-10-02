@@ -166,7 +166,8 @@ Route::controller(TrackingController::class)->group(function () {
     Route::get('tracking/{cod_base}/mercaderia_nueva_tpre', 'mercaderia_nueva_tpre')->name('tracking.mercaderia_nueva_tpre');
     Route::get('tracking/{cod_base}/{estilo}/modal_mercaderia_nueva', 'modal_mercaderia_nueva')->name('tracking.modal_mercaderia_nueva');
     //BD TRACKING
-    Route::get('bd_tracking', 'index_bd')->name('bd_tracking');
+    Route::get('tracking_bd', 'index_bd')->name('tracking_bd');
+    Route::post('tracking_bd/list', 'list_bd')->name('tracking_bd.list');
 });
 //TIENDA - FUNCIÓN TEMPORAL
 Route::controller(FuncionTemporalController::class)->group(function () {

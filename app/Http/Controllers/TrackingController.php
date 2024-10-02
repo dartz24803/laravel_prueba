@@ -3190,4 +3190,10 @@ class TrackingController extends Controller
     {      
         return view('logistica.tracking.bd_tracking.index');
     }
+
+    public function list_bd()
+    {
+        $list_bd_tracking = Tracking::get_list_bd_tracking();
+        return view('logistica.tracking.bd_tracking.lista', compact('list_bd_tracking'));
+    }
 }

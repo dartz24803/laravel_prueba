@@ -61,7 +61,7 @@
         function Bd_Tracking() {
             Cargando();
 
-            var url = "{{ route('bd_tracking') }}";
+            var url = "{{ route('tracking_bd') }}";
 
             $.ajax({
                 url: url,
