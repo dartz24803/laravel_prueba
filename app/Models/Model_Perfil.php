@@ -1087,4 +1087,18 @@ class Model_Perfil extends Model
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }
+    
+    function get_list_hijosucount($id_usuario=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "SELECT COUNT(*) as totalhijos from hijos hj
+                    where hj.id_usuario =".$id_usuario." and hj.estado=1";
+        }
+        else
+        {
+            $sql = "SELECT hj.*, p.id_genero, p.nom_genero from hijos hj
+            where hj.estado=1";
+        }
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
 }
