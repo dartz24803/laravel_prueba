@@ -49,6 +49,7 @@ use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
 use App\Http\Controllers\IntencionRenunciaConfController;
 use App\Http\Controllers\InternaInicioController;
+use App\Http\Controllers\LetraCobrarController;
 use App\Http\Controllers\LineaCarreraConfController;
 use App\Http\Controllers\LineaCarreraController;
 use App\Http\Controllers\LogisticaInicioController;
@@ -1468,6 +1469,22 @@ Route::controller(RegistroLetraController::class)->group(function () {
     Route::delete('registro_letra/{id}', 'destroy')->name('registro_letra.destroy');
     Route::get('registro_letra/{estado}/{id_empresa}/{id_aceptante}/{tipo_fecha}/{mes}/{anio}/excel', 'excel')->name('registro_letra.excel');
 });
+//TESORERÍA - LETRAS POR COBRAR
+Route::controller(LetraCobrarController::class)->group(function () {
+    Route::get('letra_cobrar', 'index')->name('letra_cobrar');
+    Route::post('letra_cobrar/list', 'list')->name('letra_cobrar.list');
+    Route::get('letra_cobrar/create', 'create')->name('letra_cobrar.create');
+    Route::post('letra_cobrar', 'store')->name('letra_cobrar.store');
+    Route::get('letra_cobrar/{id}/edit', 'edit')->name('letra_cobrar.edit');
+    Route::put('letra_cobrar/{id}', 'update')->name('letra_cobrar.update');
+    Route::get('letra_cobrar/{id}/{tipo}/unico', 'unico')->name('letra_cobrar.unico');
+    Route::put('letra_cobrar/{id}/update_unico', 'update_unico')->name('letra_cobrar.update_unico');
+    Route::get('letra_cobrar/{id}/{tipo}/estado', 'estado')->name('letra_cobrar.estado');
+    Route::put('letra_cobrar/{id}/update_estado', 'update_estado')->name('letra_cobrar.update_estado');
+    Route::delete('letra_cobrar/{id}', 'destroy')->name('letra_cobrar.destroy');
+    Route::get('letra_cobrar/{estado}/{id_empresa}/{id_cliente}/{mes}/{anio}/excel', 'excel')->name('letra_cobrar.excel');
+});
+
 
 
 //CUADRO CONTROL VISUAL ADMINISTRACION

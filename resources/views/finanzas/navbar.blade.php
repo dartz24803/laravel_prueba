@@ -50,6 +50,13 @@
                 <p class="romperpalabra"><span id="icono_active2"></span> Caja chica</p>
             </a>
         </li>
+        @if (session('usuario')->id_usuario == "139")
+            <li>
+                <a id="letras_cobrar" href="{{ route('letra_cobrar') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Letras por cobrar</p>
+                </a>
+            </li>
+        @endif
         @if (session('usuario')->id_nivel == "1" ||
         session('usuario')->id_puesto == "10" || 
         session('usuario')->id_puesto == "102" ||
