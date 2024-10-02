@@ -385,149 +385,27 @@ class TrackingController extends Controller
         ini_set('memory_limit', '512M');
         set_time_limit(300);
 
-        $tracking = Tracking::create([
-            'n_requerimiento' => $request->n_requerimiento,
-            'n_guia_remision' => $request->n_requerimiento,
-            'semana' => $request->semana,
-            'id_origen_desde' => $request->id_origen_desde,
-            'id_origen_hacia' => $request->id_origen_hacia,
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
+        $valida = Tracking::where('n_requerimiento',$request->n_requerimiento)
+                ->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            $tracking = Tracking::create([
+                'n_requerimiento' => $request->n_requerimiento,
+                'n_guia_remision' => $request->n_requerimiento,
+                'semana' => $request->semana,
+                'id_origen_desde' => $request->id_origen_desde,
+                'id_origen_hacia' => $request->id_origen_hacia,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
 
-        $tracking_dp = TrackingDetalleProceso::create([
-            'id_tracking' => $tracking->id,
-            'id_proceso' => 1,
-            'fecha' => now(),
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
-
-        TrackingDetalleEstado::create([
-            'id_detalle' => $tracking_dp->id,
-            'id_estado' => 1,
-            'fecha' => now(),
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
-
-        //ALERTA 1
-        $get_id = Tracking::get_list_tracking(['id'=>$tracking->id]);
-
-        $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
-        foreach($list_token as $token){
-            $dato = [
-                'id_tracking' => $get_id->id,
-                'token' => $token->token,
-                'titulo' => 'MERCADERÍA POR SALIR',
-                'contenido' => 'Hola '.$get_id->hacia.' tu requerimiento n° '.$get_id->n_requerimiento.' está listo',
-            ];
-            $this->sendNotification($dato);
-        }
-
-        //MENSAJE 1
-        //$list_detalle = TrackingGuiaRemisionDetalle::where('n_guia_remision', $request->n_requerimiento)->get();
-        $list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$get_id->n_requerimiento]);
-
-        $mpdf = new Mpdf([
-            'format' => 'A4',
-            'default_font' => 'Arial'
-        ]);
-        $html = view('logistica.tracking.pdf', compact('get_id','list_detalle'))->render();
-        $mpdf->WriteHTML($html);
-        $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
-
-        $mail = new PHPMailer(true);
-
-        try {
-            $mail->SMTPDebug = 0;
-            $mail->isSMTP();
-            $mail->Host       =  'mail.lanumero1.com.pe';
-            $mail->SMTPAuth   =  true;
-            $mail->Username   =  'intranet@lanumero1.com.pe';
-            $mail->Password   =  'lanumero1$1';
-            $mail->SMTPSecure =  'tls';
-            $mail->Port     =  587; 
-            $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
-
-            //$mail->addAddress('dpalomino@lanumero1.com.pe');
-            $mail->addAddress('ogutierrez@lanumero1.com.pe');
-            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-            /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
-            foreach($list_td as $list){
-                $mail->addAddress($list->emailp);
-            }
-            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
-            foreach($list_cd as $list){
-                $mail->addAddress($list->emailp);
-            }
-            $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
-            foreach($list_cc as $list){
-                $mail->addCC($list->emailp);
-            }*/
-
-            $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
-            $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
-            $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
-            $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
-            $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
-            $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
-            $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
-
-            $mail->isHTML(true);
-
-            $mail->Subject = "SDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
-        
-            $mail->Body =  '<FONT SIZE=3>
-                                <b>Semana:</b> '.$get_id->semana.'<br>
-                                <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
-                                <b>Base:</b> '.$get_id->hacia.'<br>
-                                <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
-                                <b>Fecha:</b> '.$fecha_formateada.'<br><br>
-                                Buen día '.$get_id->hacia.'.<br><br>
-                                Se envia el reporte de la salida de Mercaderia, de la guía de remisión '.$get_id->n_requerimiento.'.<br><br>
-                                <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
-                                    <thead>
-                                        <tr align="center" style="background-color:#0093C6;">
-                                            <th width="10%"><b>SKU</b></th>
-                                            <th width="18%"><b>Color</b></th>
-                                            <th width="15%"><b>Estilo</b></th>
-                                            <th width="15%"><b>Talla</b></th>
-                                            <th width="32%"><b>Descripción</b></th>
-                                            <th width="10%"><b>Cantidad</b></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>';
-                                foreach($list_detalle as $list){
-            $mail->Body .=  '            <tr align="left">
-                                            <td align="center">'.$list->sku.'</td>
-                                            <td>'.$list->color.'</td>
-                                            <td>'.$list->estilo.'</td>
-                                            <td>'.$list->talla.'</td>
-                                            <td>'.$list->descripcion.'</td>
-                                            <td align="center">'.$list->cantidad.'</td>
-                                        </tr>';
-                                }
-            $mail->Body .=  '        </tbody>
-                                </table>
-                            </FONT SIZE>';
-        
-            $mail->CharSet = 'UTF-8';
-            $mail->addStringAttachment($pdfContent, 'Guia_Remision.pdf');
-            $mail->send();
-
-            TrackingDetalleEstado::create([
-                'id_detalle' => $tracking_dp->id,
-                'id_estado' => 2,
+            $tracking_dp = TrackingDetalleProceso::create([
+                'id_tracking' => $tracking->id,
+                'id_proceso' => 1,
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
@@ -535,8 +413,136 @@ class TrackingController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
-        }catch(Exception $e) {
-            echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+
+            TrackingDetalleEstado::create([
+                'id_detalle' => $tracking_dp->id,
+                'id_estado' => 1,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+
+            //ALERTA 1
+            $get_id = Tracking::get_list_tracking(['id'=>$tracking->id]);
+
+            $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
+            foreach($list_token as $token){
+                $dato = [
+                    'id_tracking' => $get_id->id,
+                    'token' => $token->token,
+                    'titulo' => 'MERCADERÍA POR SALIR',
+                    'contenido' => 'Hola '.$get_id->hacia.' tu requerimiento n° '.$get_id->n_requerimiento.' está listo',
+                ];
+                $this->sendNotification($dato);
+            }
+
+            //MENSAJE 1
+            //$list_detalle = TrackingGuiaRemisionDetalle::where('n_guia_remision', $request->n_requerimiento)->get();
+            $list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$get_id->n_requerimiento]);
+
+            $mpdf = new Mpdf([
+                'format' => 'A4',
+                'default_font' => 'Arial'
+            ]);
+            $html = view('logistica.tracking.pdf', compact('get_id','list_detalle'))->render();
+            $mpdf->WriteHTML($html);
+            $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
+
+            $mail = new PHPMailer(true);
+
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Port     =  587; 
+                $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
+
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('ogutierrez@lanumero1.com.pe');
+                $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+                foreach($list_td as $list){
+                    $mail->addAddress($list->emailp);
+                }
+                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                foreach($list_cd as $list){
+                    $mail->addAddress($list->emailp);
+                }
+                $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+                foreach($list_cc as $list){
+                    $mail->addCC($list->emailp);
+                }*/
+
+                $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
+                $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+                $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
+                $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+                $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+                $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
+                $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
+
+                $mail->isHTML(true);
+
+                $mail->Subject = "SDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
+            
+                $mail->Body =  '<FONT SIZE=3>
+                                    <b>Semana:</b> '.$get_id->semana.'<br>
+                                    <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
+                                    <b>Base:</b> '.$get_id->hacia.'<br>
+                                    <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
+                                    <b>Fecha:</b> '.$fecha_formateada.'<br><br>
+                                    Buen día '.$get_id->hacia.'.<br><br>
+                                    Se envia el reporte de la salida de Mercaderia, de la guía de remisión '.$get_id->n_requerimiento.'.<br><br>
+                                    <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
+                                        <thead>
+                                            <tr align="center" style="background-color:#0093C6;">
+                                                <th width="10%"><b>SKU</b></th>
+                                                <th width="18%"><b>Color</b></th>
+                                                <th width="15%"><b>Estilo</b></th>
+                                                <th width="15%"><b>Talla</b></th>
+                                                <th width="32%"><b>Descripción</b></th>
+                                                <th width="10%"><b>Cantidad</b></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>';
+                                    foreach($list_detalle as $list){
+                $mail->Body .=  '            <tr align="left">
+                                                <td align="center">'.$list->sku.'</td>
+                                                <td>'.$list->color.'</td>
+                                                <td>'.$list->estilo.'</td>
+                                                <td>'.$list->talla.'</td>
+                                                <td>'.$list->descripcion.'</td>
+                                                <td align="center">'.$list->cantidad.'</td>
+                                            </tr>';
+                                    }
+                $mail->Body .=  '        </tbody>
+                                    </table>
+                                </FONT SIZE>';
+            
+                $mail->CharSet = 'UTF-8';
+                $mail->addStringAttachment($pdfContent, 'Guia_Remision.pdf');
+                $mail->send();
+
+                TrackingDetalleEstado::create([
+                    'id_detalle' => $tracking_dp->id,
+                    'id_estado' => 2,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+            }catch(Exception $e) {
+                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+            }
         }
     }
     //END FORMA MANUAL
