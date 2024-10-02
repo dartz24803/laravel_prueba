@@ -17,6 +17,7 @@ use App\Models\DiaSemana;
 use App\Models\ErroresPicking;
 use App\Models\ErrorPicking;
 use App\Models\Gerencia;
+use App\Models\Inventario;
 use App\Models\Mes;
 use App\Models\NivelJerarquico;
 use App\Models\Procesos;
@@ -42,71 +43,23 @@ use App\Models\TipoErrorPicking;
 use App\Models\User;
 use App\Models\Usuario;
 
-class ErroresPickingController extends Controller
+class CargaInventarioController extends Controller
 {
-    protected $modelopuesto;
-    protected $modelousuarios;
-
-    public function __construct(Request $request)
-    {
-        //constructor con variables
-        $this->middleware('verificar.sesion.usuario');
-
-        $this->modelousuarios = new Usuario();
-        $this->modelopuesto = new Puesto();
-    }
 
     public function index()
     {
         $list_subgerencia = SubGerencia::list_subgerencia(9);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('logistica.error_picking.index', compact('list_notificacion', 'list_subgerencia'));
+        return view('logistica.carga_inventario.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
 
-
-
-    public function indexta_conf()
+    public function list_ci()
     {
-        $list_subgerencia = SubGerencia::list_subgerencia(9);
-        //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();
-        return view('logistica.administracion.index', compact('list_notificacion', 'list_subgerencia'));
-    }
-    public function index_ta()
-    {
-        return view('logistica.administracion.talla2.talla.index');
-    }
-
-    public function list_le()
-    {
-        // Obtener la lista de errores picking con los campos requeridos
-        $list_errores_picking = ErroresPicking::select(
-            'error_picking.id',
-            'error_picking.fec_reg AS orden',
-            'error_picking.semana',
-            DB::raw("CASE WHEN error_picking.pertenece = '0' THEN '' ELSE error_picking.pertenece END AS pertenece"),
-            DB::raw("CASE WHEN error_picking.encontrado = '0' THEN '' ELSE error_picking.encontrado END AS encontrado"),
-            'area_error_picking.nombre AS area',
-            'error_picking.estilo',
-            'error_picking.color',
-            'talla_error_picking.nombre AS talla',
-            'error_picking.prendas_devueltas',
-            'tipo_error_picking.nombre AS tipo_error',
-            DB::raw("CONCAT(SUBSTRING_INDEX(users.usuario_nombres, ' ', 1), ' ', users.usuario_apater) AS responsable"),
-            DB::raw("CASE WHEN error_picking.solucion = 1 THEN 'SI' WHEN error_picking.solucion = 2 THEN 'NO' ELSE '' END AS solucion"),
-            'error_picking.observacion'
-        )
-            ->leftJoin('area_error_picking', 'error_picking.id_area', '=', 'area_error_picking.id')
-            ->leftJoin('talla_error_picking', 'error_picking.id_talla', '=', 'talla_error_picking.id')
-            ->leftJoin('tipo_error_picking', 'error_picking.id_tipo_error', '=', 'tipo_error_picking.id')
-            ->leftJoin('users', 'error_picking.id_responsable', '=', 'users.id_usuario')
-            ->where('error_picking.estado', '=', 1)
-            ->orderBy('error_picking.fec_reg', 'DESC')
-            ->get();
-
-        return view('logistica.error_picking.lista', compact('list_errores_picking'));
+        $list_inventario = Inventario::get_list_inventario();
+        // dd($list_inventario);
+        return view('logistica.carga_inventario.lista', compact('list_inventario'));
     }
 
 
@@ -123,9 +76,6 @@ class ErroresPickingController extends Controller
 
         $list_base = Base::get_list_todas_bases_agrupadas_bi();
 
-        // Aquí seleccionamos los campos correctos
-        $dato['puestos_jefes'] = $this->modelopuesto->list_puestos_jefes();
-        $list_responsable = $this->modelousuarios->list_usuarios_responsables($dato);
 
         $list_area = AreaErrorPicking::select('id', 'nombre')
             ->orderBy('id', 'ASC')
@@ -135,7 +85,6 @@ class ErroresPickingController extends Controller
         return view('logistica.error_picking.modal_editar', compact(
             'list_base',
             'list_tipo_error',
-            'list_responsable',
             'list_area',
             'list_talla',
             'get_id'
@@ -144,75 +93,62 @@ class ErroresPickingController extends Controller
 
 
 
-    public function create_le()
+    public function create_ci()
     {
-        $list_tipo_error = TipoErrorPicking::select('id', 'nombre')->get();
-
-        $list_talla = TallaErrorPicking::select('id', 'nombre')
-
-            ->where('talla_error_picking.estado', 1)
-            ->get();
 
         $list_base = Base::get_list_todas_bases_agrupadas_bi();
+        $list_usuario = Usuario::get_list_usuario_inventario();
 
-        $dato['puestos_jefes'] = $this->modelopuesto->list_puestos_jefes();
-        $list_responsable = $this->modelousuarios->list_usuarios_responsables($dato);
-
-        $list_area = AreaErrorPicking::select('id', 'nombre')
-            ->get();
-
-        return view('logistica.error_picking.modal_registrar', compact(
+        return view('logistica.carga_inventario.modal_registrar', compact(
             'list_base',
-            'list_tipo_error',
-            'list_responsable',
-            'list_area',
-            'list_talla',
+            'list_usuario'
         ));
     }
 
-    public function store_le(Request $request)
+    public function store_ci(Request $request)
     {
         $request->validate([
-            'semana' => 'required',
-            'pertenece' => 'required',
-            'encontrado' => 'required',
-            'id_area' => 'required',
-            'estilo.*' => 'required',
-            'color.*' => 'required',
-            'id_talla.*' => 'required',
-            'prendas_devueltas.*' => 'required',
-            'id_tipo_error.*' => 'required',
-            'id_responsable.*' => 'required',
-            'solucion.*' => 'required',
-            'observacion.*' => 'required',
+            'fecha' => 'required',
+            'base' => 'required',
+            'responsable' => 'required',
+
         ], [
-            'semana.required' => 'Debe ingresar semana.',
-            'pertenece.required' => 'Debe ingresar pertenece.',
-            'encontrado.required' => 'Debe seleccionar encontrado',
-            'id_area.required' => 'Debe seleccionar Area.',
-            'estilo.*.required' => 'Debe ingresar un estilo.',
-            'color.*.required' => 'Debe ingresar una color.',
-            'id_talla.*.required' => 'Debe seleccionar una talla.',
-            'prendas_devueltas.*.required' => 'Debe seleccionar una prendas devueltas.',
-            'id_tipo_error.*.required' => 'Debe ingresar un tipo de error.',
-            'id_responsable.*.required' => 'Debe ingresar un responsable.',
-            'solucion.*.required' => 'Debe seleccionar una solución.',
-            'observacion.*.required' => 'Debe seleccionar una observación.',
+            'fecha.required' => 'Debe ingresar fecha.',
+            'base.required' => 'Debe ingresar nase.',
+            'responsable.required' => 'Debe seleccionar responsable',
+
         ]);
-        ErroresPicking::create([
-            'semana'  => $request->semana ?? null,
-            'pertenece' => $request->pertenece ?? null,
-            'encontrado' => $request->encontrado ?? null,
-            'id_area' => $request->id_area ?? null,
-            'estilo' => $request->estilo ?? null,
-            'color' => $request->color ?? null,
-            'id_talla' => $request->id_talla ?? null,
-            'prendas_devueltas' => $request->prendas_devueltas ?? null,
-            'id_tipo_error' => $request->id_tipo_error ?? null,
-            'id_responsable' => $request->id_responsable ?? null,
-            'solucion' => $request->solucion ?? null,
-            'observacion' => $request->observacion ?? null,
-            'estado' => $request->estado ?? 1,
+
+        $anio = date('Y');
+        $totalRows_t = DB::table('inventario')->count();
+        // $totalRows_t = count($this->Model_Logistica->cont_carga_inverntario());
+        $aniof = substr($anio, 2, 2);
+        if ($totalRows_t < 9) {
+            $codigofinal = "I" . $aniof . "0000" . ($totalRows_t + 1);
+        }
+        if ($totalRows_t > 8 && $totalRows_t < 99) {
+            $codigofinal = "I" . $aniof . "000" . ($totalRows_t + 1);
+        }
+        if ($totalRows_t > 98 && $totalRows_t < 999) {
+            $codigofinal = "I" . $aniof . "00" . ($totalRows_t + 1);
+        }
+        if ($totalRows_t > 998 && $totalRows_t < 9999) {
+            $codigofinal = "I" . $aniof . "0" . ($totalRows_t + 1);
+        }
+        if ($totalRows_t > 9998) {
+            $codigofinal = "I" . $aniof . ($totalRows_t + 1);
+        }
+        $cod_inventario = $codigofinal;
+
+        Inventario::create([
+            'cod_inventario'  => $cod_inventario,
+            'fecha' => $request->fecha ?? null,
+            'base' => $request->base ?? null,
+            'id_responsable' => $request->responsable ?? null,
+            'conteo' => 0.00,
+            'stock' => 0.00,
+            'diferencia' =>  0.00,
+            'estado' => 1,
             'fec_reg' => now(),
             'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
@@ -293,9 +229,6 @@ class ErroresPickingController extends Controller
 
         $list_base = Base::get_list_todas_bases_agrupadas_bi();
 
-        // Aquí seleccionamos los campos correctos
-        $dato['puestos_jefes'] = $this->modelopuesto->list_puestos_jefes();
-        $list_responsable = $this->modelousuarios->list_usuarios_responsables($dato);
 
         $list_area = AreaErrorPicking::select('id', 'nombre')
             ->orderBy('id', 'ASC')
@@ -305,7 +238,6 @@ class ErroresPickingController extends Controller
         return view('logistica.error_picking.modal_ver', compact(
             'list_base',
             'list_tipo_error',
-            'list_responsable',
             'list_area',
             'list_talla',
             'get_id'
@@ -316,6 +248,86 @@ class ErroresPickingController extends Controller
     public function destroy_le($id)
     {
         ErroresPicking::where('ID', $id)->firstOrFail()->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+
+    // ADMINISTRABLE TALLA 
+    public function list_ta()
+    {
+        // Obtener la lista de errores picking con los campos requeridos
+        $list_talla = TallaErrorPicking::select(
+            'talla_error_picking.id',
+            'talla_error_picking.nombre',
+        )
+            ->where('talla_error_picking.estado', '=', 1)
+            ->get();
+
+        return view('logistica.administracion.talla.lista', compact('list_talla'));
+    }
+
+
+    public function create_ta()
+    {
+        return view('logistica.administracion.talla.modal_registrar');
+    }
+
+    public function edit_ta($id)
+    {
+        $get_id = TallaErrorPicking::findOrFail($id);
+        return view('logistica.administracion.talla.modal_editar', compact('get_id'));
+    }
+
+
+    public function store_ta(Request $request)
+    {
+        $request->validate([
+            'nom_talla' => 'required',
+
+        ], [
+            'nom_talla.required' => 'Debe ingresar nombre.',
+
+        ]);
+
+        TallaErrorPicking::create([
+            'nombre'  => $request->nom_talla ?? null,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario,
+            'fec_eli' => null,
+            'user_eli' => null,
+        ]);
+    }
+
+    public function update_ta(Request $request, $id)
+    {
+        $request->validate([
+            'nom_tallae' => 'required',
+
+        ], [
+            'nom_tallae.required' => 'Debe ingresar nombre.',
+
+        ]);
+
+        TallaErrorPicking::where('id', $id)->update([
+            'nombre'  => $request->nom_tallae ?? null,
+            'estado' => 1,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario,
+
+        ]);
+    }
+
+    public function destroy_ta($id)
+    {
+
+
+        TallaErrorPicking::where('id', $id)->firstOrFail()->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario
