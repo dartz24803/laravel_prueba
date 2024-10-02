@@ -568,7 +568,11 @@ use App\Models\TrackingDetalleProceso;
                 @endif
                 @elseif($list->id_estado==15)
                 <!-- PUESTOS DE TIENDA y MAYRA TORRES (76) -->
-                @if (session('usuario')->id_puesto==29 ||
+                @if (session('usuario')->id_nivel==1 ||
+                ($list->sobrantes>0 &&
+                session('usuario')->id_puesto==76) ||
+                ($list->faltantes>0 &&
+                session('usuario')->id_puesto==29 ||
                 session('usuario')->id_puesto==30 ||
                 session('usuario')->id_puesto==31 ||
                 session('usuario')->id_puesto==32 ||
@@ -580,9 +584,7 @@ use App\Models\TrackingDetalleProceso;
                 session('usuario')->id_puesto==168 ||
                 session('usuario')->id_puesto==197 ||
                 session('usuario')->id_puesto==311 ||
-                session('usuario')->id_puesto==314 ||
-                session('usuario')->id_puesto==76 ||
-                session('usuario')->id_nivel==1)
+                session('usuario')->id_puesto==314))
                 <a href="{{ route('tracking.detalle_operacion_diferencia', $list->id) }}" title="Detalle de operaciones de diferencias">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning vibrate">
                         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>

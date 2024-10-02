@@ -5,18 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TrackingComentario extends Model
+class TrackingDiferencia extends Model
 {
     use HasFactory;
-
-    protected $table = 'tracking_comentario';
+    
+    protected $table = 'tracking_diferencia';
 
     public $timestamps = false;
 
     protected $fillable = [
         'id_tracking',
-        'id_usuario',
-        'pantalla',
-        'comentario'
+        'estilo',
+        'color_talla',
+        'bulto',
+        'enviado',
+        'recibido'
     ];
 }

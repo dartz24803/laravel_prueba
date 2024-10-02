@@ -23,17 +23,48 @@
                             
                             <div class="row">
                                 <div class="form-group col-lg-12">
-                                    <label class="control-label text-bold">Ingrese el nro de la Guía de Remisión con la que se ha regularizado la mercadería:</label>
+                                    <label class="control-label text-bold">Ingrese el número de la guía de remisión según corresponda:</label>
                                 </div>
                             </div>
-    
+
                             <div class="row">
-                                <div class="form-group col-lg-1">
-                                    <label class="control-label text-bold">Nro. GR: </label>
-                                </div>
-                                <div class="form-group col-lg-2">
-                                    <input type="text" class="form-control" name="guia_diferencia" id="guia_diferencia" placeholder="Nro. GR">
-                                </div>
+                                @if ($get_id->sobrantes>0 &&
+                                (session('usuario')->id_puesto==76 ||
+                                session('usuario')->id_nivel==1))
+                                    <div class="form-group col-lg-1">
+                                        <label class="control-label text-bold">Nro. GR (Sobrante): </label>
+                                    </div>
+                                    <div class="form-group col-lg-2">
+                                        <input type="text" class="form-control" name="guia_sobrante" 
+                                        id="guia_sobrante" placeholder="Nro. GR" 
+                                        value="{{ $get_id->guia_sobrante }}">
+                                    </div>                                    
+                                @endif
+
+                                @if ($get_id->faltantes>0 &&
+                                (session('usuario')->id_puesto==29 || 
+                                session('usuario')->id_puesto==30 || 
+                                session('usuario')->id_puesto==31 || 
+                                session('usuario')->id_puesto==32 || 
+                                session('usuario')->id_puesto==33 || 
+                                session('usuario')->id_puesto==34 || 
+                                session('usuario')->id_puesto==35 || 
+                                session('usuario')->id_puesto==161 || 
+                                session('usuario')->id_puesto==167 || 
+                                session('usuario')->id_puesto==168 ||
+                                session('usuario')->id_puesto==197 || 
+                                session('usuario')->id_puesto==311 || 
+                                session('usuario')->id_puesto==314 ||
+                                session('usuario')->id_nivel==1))
+                                    <div class="form-group col-lg-1">
+                                        <label class="control-label text-bold">Nro. GR (Faltante): </label>
+                                    </div>
+                                    <div class="form-group col-lg-2">
+                                        <input type="text" class="form-control" name="guia_faltante" 
+                                        id="guia_faltante" placeholder="Nro. GR" 
+                                        value="{{ $get_id->guia_faltante }}">
+                                    </div>
+                                @endif
                             </div>
 
                             <div class="row">

@@ -37,7 +37,8 @@ class Tracking extends Model
         'factura_transporte',
         'observacion_inspf',
         'diferencia',
-        'guia_diferencia',
+        'guia_sobrante',
+        'guia_faltante',
         'devolucion',
         'iniciar',
         'estado',
@@ -60,7 +61,11 @@ class Tracking extends Model
                     LIMIT 1) AS archivo_transporte,md.id_dos,di.nombre_distrito,
                     CASE WHEN tr.transporte='1' THEN 'Agencia - Terrestre'
                     WHEN tr.transporte='2' THEN 'Agencia - Aérea' 
-                    WHEN tr.transporte='3' THEN 'Propio' ELSE '' END AS tipo_transporte
+                    WHEN tr.transporte='3' THEN 'Propio' ELSE '' END AS tipo_transporte,
+                    (SELECT COUNT(1) FROM tracking_diferencia tdif
+                    WHERE tdif.id_tracking=tr.id AND tdif.enviado<tdif.recibido) AS sobrantes,
+                    (SELECT COUNT(1) FROM tracking_diferencia tdif
+                    WHERE tdif.id_tracking=tr.id AND tdif.enviado>tdif.recibido) AS faltantes
                     FROM tracking tr
                     LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base
@@ -110,7 +115,11 @@ class Tracking extends Model
                     DATE_FORMAT(de.fecha,'%d-%m-%Y')) AS fecha,DATE_FORMAT(de.fecha,'%H:%i') AS hora,
                     CASE WHEN tr.devolucion=1 AND de.id_estado IN (14,15,16) 
                     THEN CONCAT(te.descripcion,' (PENDIENTE DEVOLUCIÓN)') ELSE te.descripcion END AS estado,
-                    de.id_estado,te.id_proceso,te.descripcion
+                    de.id_estado,te.id_proceso,te.descripcion,
+                    (SELECT COUNT(1) FROM tracking_diferencia tdif
+                    WHERE tdif.id_tracking=tr.id AND tdif.enviado<tdif.recibido) AS sobrantes,
+                    (SELECT COUNT(1) FROM tracking_diferencia tdif
+                    WHERE tdif.id_tracking=tr.id AND tdif.enviado>tdif.recibido) AS faltantes
                     FROM tracking tr
                     LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base
