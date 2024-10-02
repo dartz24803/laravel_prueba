@@ -18,7 +18,7 @@
                     <div class="widget-content widget-content-area br-6 p-3">
                         <form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
                             <div class="row">
-                                @include('logistica.tracking.cabecera')
+                                @include('logistica.tracking.tracking.cabecera')
                             </div>
 
                             <div class="table-responsive">
