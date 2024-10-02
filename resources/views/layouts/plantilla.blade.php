@@ -225,7 +225,7 @@
                         <div class="form-group col-sm-12">
                             <div id="datos_ajax"></div>
                             <input type="hidden" name="rutadni" id="rutadni" value=''>
-                            <div align="center" id="dni"></div>
+                            <div align="center" id="dni_link"></div>
                         </div>
                     </div>
                 </div>
@@ -369,34 +369,30 @@
                 modal.find('.modal-title').text(titulo)
                 $('.alert').hide();//Oculto alert
             })
-            
-            $('#Modal_IMG').on('show.bs.modal', function (event) {
-                console.log('si')
-                var button = $(event.relatedTarget);
-                var imagen = button.data('imagen');
-                var titulo = button.data('title');
-                var imagen2 = imagen.substr(-3);
-                var rutapdf= $("#rutadni").val();
-                var nombre_archivo= rutapdf+imagen;
-                console.log(imagen2)
-                console.log(imagen)
-
-                if (imagen!=""){
-                    if (imagen2=="PDF" || imagen2=="pdf")
-                    {
-                        document.getElementById("dni").innerHTML = nombre_archivo;
-                    }else{
-                        document.getElementById("dni").innerHTML = nombre_archivo;
-                    }
-                }else{
-                    document.getElementById("dni").innerHTML = "No se ha registrado ningún archivo";
-                }
-
-                var modal = $(this)
-                modal.find('.modal-title').text(titulo)
-                $('.alert').hide();//Oculto alert
-            })
         });
+        $('#Modal_IMG').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var imagen = button.data('imagen');
+            var titulo = button.data('title');
+            var imagen2 = imagen.substr(-3).toLowerCase(); // Asegúrate de convertir a minúsculas
+            var rutapdf = $("#rutadni").val();
+            var nombre_archivo = rutapdf + imagen;
+
+            if (imagen !== "") {
+                if (imagen2 === "pdf") {
+                    document.getElementById("dni_link").innerHTML = "<iframe height='700px' width='100%' src='" + nombre_archivo + "'></iframe>";
+                } else {
+                    document.getElementById("dni_link").innerHTML = "<img style='max-width:100%;' src='" + nombre_archivo + "' alt='Archivo'>";
+                }
+            } else {
+                document.getElementById("dni_link").innerHTML = "No se ha registrado ningún archivo";
+            }
+
+            var modal = $(this);
+            modal.find('.modal-title').text(titulo);
+            $('.alert').hide(); // Oculto alert
+        });
+
     </script>
     <!-- END MODAL  -->
 
