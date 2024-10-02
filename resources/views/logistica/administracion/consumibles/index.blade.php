@@ -13,7 +13,10 @@
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                             <li class="nav-item">
-                                <a id="a_ser" class="nav-link" onclick="GestionOcurrencias();" style="cursor: pointer;">Articulo</a>
+                                <a id="art_con" class="nav-link" onclick="ArticulosdeConsumibles();" style="cursor: pointer;">Articulo</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="uni_con" class="nav-link" onclick="UnidaddeConsumibles();" style="cursor: pointer;">Unidad</a>
                             </li>
                         </ul>
 
@@ -31,61 +34,45 @@
 </div>
 
 <script>
+    logisticaconf
     $(document).ready(function() {
-        $("#errorepickingconf").addClass('active');
-        $("#herrorepickingconf").attr('aria-expanded', 'true');
+        $("#logisticaconf").addClass('active');
+        $("#hlogisticaconf").attr('aria-expanded', 'true');
         $("#consumibles").addClass('active');
 
-        GestionOcurrencias();
+        ArticulosdeConsumibles();
     });
 
-    function GestionOcurrencias() {
+    function ArticulosdeConsumibles() {
         Cargando();
 
-        var url = "{{ route('ocurrencia_conf_go') }}";
+        var url = "{{ route('consumibleart') }}";
 
         $.ajax({
             url: url,
             type: "GET",
             success: function(resp) {
                 $('#div_ocurrencias_conf').html(resp);
-                $("#a_ser").addClass('active');
-                $("#a_pser").removeClass('active');
-                $("#a_dser").removeClass('active');
+                $("#art_con").addClass('active');
+                $("#uni_con").removeClass('active');
+
             }
         });
     }
 
-    function ConclusionOcurrencias() {
+    function UnidaddeConsumibles() {
         Cargando();
 
-        var url = "{{ route('ocurrencia_conf_co') }}";
+        var url = "{{ route('consumibleuni') }}";
 
         $.ajax({
             url: url,
             type: "GET",
             success: function(resp) {
                 $('#div_ocurrencias_conf').html(resp);
-                $("#a_ser").removeClass('active');
-                $("#a_pser").addClass('active');
-                $("#a_dser").removeClass('active');
-            }
-        });
-    }
+                $("#art_con").removeClass('active');
+                $("#uni_con").addClass('active');
 
-    function TipoOcurrencias() {
-        Cargando();
-
-        var url = "{{ route('ocurrencia_conf_to') }}";
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            success: function(resp) {
-                $('#div_ocurrencias_conf').html(resp);
-                $("#a_ser").removeClass('active');
-                $("#a_pser").removeClass('active');
-                $("#a_dser").addClass('active');
             }
         });
     }

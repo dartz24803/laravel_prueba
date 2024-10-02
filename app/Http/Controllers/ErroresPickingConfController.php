@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-
+use App\Models\Articulos;
 use App\Models\Puesto;
 
 use Illuminate\Http\Request;
@@ -35,39 +35,33 @@ class ErroresPickingConfController extends Controller
         $list_notificacion = Notificacion::get_list_notificacion();
         return view('logistica.administracion.error_picking.index', compact('list_notificacion', 'list_subgerencia'));
     }
-
-    public function index_cons()
+    public function indexerpi()
     {
-        $list_subgerencia = SubGerencia::list_subgerencia(9);
-        //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();
-        return view('logistica.administracion.consumible.index', compact('list_notificacion', 'list_subgerencia'));
+        return view('logistica.administracion.error_picking.talla.index');
     }
+
 
     // ADMINISTRABLE TALLA 
     public function list_ta()
     {
         // Obtener la lista de errores picking con los campos requeridos
-        $list_talla = TallaErrorPicking::select(
-            'talla_error_picking.id',
-            'talla_error_picking.nombre',
-        )
-            ->where('talla_error_picking.estado', '=', 1)
+        $list_talla = TallaErrorPicking::select('id', 'nombre')
+            ->where('talla_error_picking.estado', 1)
             ->get();
 
-        return view('logistica.administracion.error_picking.lista', compact('list_talla'));
+        return view('logistica.administracion.error_picking.talla.lista', compact('list_talla'));
     }
 
 
     public function create_ta()
     {
-        return view('logistica.administracion.error_picking.modal_registrar');
+        return view('logistica.administracion.error_picking.talla.modal_registrar');
     }
 
     public function edit_ta($id)
     {
         $get_id = TallaErrorPicking::findOrFail($id);
-        return view('logistica.administracion.error_picking.modal_editar', compact('get_id'));
+        return view('logistica.administracion.error_picking.talla.modal_editar', compact('get_id'));
     }
 
 

@@ -1,6 +1,6 @@
-<form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
+<form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
-        <h5 class="modal-title">Editar Artículo:</h5>
+        <h5 class="modal-title">Registrar Unidad:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -12,28 +12,25 @@
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row"> <!-- Add this row class to create a horizontal layout -->
             <div class="form-group col-lg-12">
-                <label for="nom_arte">Nombre:</label>
-                <input type="text" class="form-control" id="nom_arte" name="nom_arte"
-                    value="{{ $get_id->nom_articulo }}">
+                <label for="nom_art">Nombre:</label>
+                <input type="text" class="form-control" id="nom_art" name="nom_art">
             </div>
-
         </div>
-
     </div>
 
     <div class="modal-footer">
         @csrf
-        <button class="btn btn-primary" type="button" onclick="Update_Articulo();">Guardar</button>
+        <button class="btn btn-primary" type="button" onclick="Insert_Talla();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
-    function Update_Articulo() {
+    function Insert_Talla() {
         Cargando();
 
-        var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('consumible_art.update', $get_id->id_articulo) }}";
+        var dataString = new FormData(document.getElementById('formulario'));
+        var url = "{{ route('consumible_art.store') }}";
 
         $.ajax({
             url: url,
@@ -44,7 +41,7 @@
             success: function(data) {
                 if (data == "error") {
                     Swal({
-                        title: '¡Actualización Denegada!',
+                        title: '¡Registro Denegado!',
                         text: "¡El registro ya existe!",
                         type: 'error',
                         showCancelButton: false,
@@ -53,13 +50,13 @@
                     });
                 } else {
                     swal.fire(
-                        '¡Actualización Exitosa!',
+                        '¡Registro Exitoso!',
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
                         Lista_Articulos();
-                        $("#ModalUpdate .close").click();
-                    });
+                        $("#ModalRegistro .close").click();
+                    })
                 }
             },
             error: function(xhr) {

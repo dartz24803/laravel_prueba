@@ -13,7 +13,7 @@
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                             <li class="nav-item">
-                                <a id="a_ser" class="nav-link" onclick="GestionOcurrencias();" style="cursor: pointer;">Talla</a>
+                                <a id="a_ser" class="nav-link" onclick="TalladeErroresPicking();" style="cursor: pointer;">Talla</a>
                             </li>
                         </ul>
 
@@ -32,17 +32,17 @@
 
 <script>
     $(document).ready(function() {
-        $("#errorepickingconf").addClass('active');
-        $("#herrorepickingconf").attr('aria-expanded', 'true');
+        $("#logisticaconf").addClass('active');
+        $("#hlogisticaconf").attr('aria-expanded', 'true');
         $("#errorespickingta").addClass('active');
 
-        GestionOcurrencias();
+        TalladeErroresPicking();
     });
 
-    function GestionOcurrencias() {
+    function TalladeErroresPicking() {
         Cargando();
 
-        var url = "{{ route('ocurrencia_conf_go') }}";
+        var url = "{{ route('errorespickingta') }}";
 
         $.ajax({
             url: url,
