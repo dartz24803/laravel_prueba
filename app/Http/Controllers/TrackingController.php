@@ -351,15 +351,20 @@ class TrackingController extends Controller
 
     public function index()
     {
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();   
+        $list_subgerencia = SubGerencia::list_subgerencia(7);         
+        return view('logistica.tracking.index',compact('list_notificacion', 'list_subgerencia'));
+    }
+
+    public function index_tra()
+    {
         if (session('usuario')) {
             if(session('redirect_url')){
                 session()->forget('redirect_url');
             }
-            //NOTIFICACIONES
-            $list_notificacion = Notificacion::get_list_notificacion();
-            $list_subgerencia = SubGerencia::list_subgerencia(7);
             $list_mercaderia_nueva = MercaderiaSurtida::where('anio',date('Y'))->where('semana',date('W'))->exists();
-            return view('logistica.tracking.index', compact('list_notificacion','list_subgerencia','list_mercaderia_nueva'));
+            return view('logistica.tracking.tracking.index', compact('list_mercaderia_nueva'));
         }else{
             session(['redirect_url' => 'http'.(isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']]);
             return redirect('/');
@@ -370,14 +375,14 @@ class TrackingController extends Controller
     {
         $estado = TrackingEstado::get();
         $list_tracking = Tracking::get_list_tracking();
-        return view('logistica.tracking.lista', compact('list_tracking', 'estado'));
+        return view('logistica.tracking.tracking.lista', compact('list_tracking', 'estado'));
     }
 
     //FORMA MANUAL
     public function create()
     {
         $list_base = Base::get_list_base_tracking();
-        return view('logistica.tracking.modal_registrar', compact('list_base'));
+        return view('logistica.tracking.tracking.modal_registrar', compact('list_base'));
     }
 
     public function store(Request $request)
@@ -595,7 +600,7 @@ class TrackingController extends Controller
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(7);
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        return view('logistica.tracking.detalle_transporte', compact('list_notificacion','list_subgerencia','get_id'));
+        return view('logistica.tracking.tracking.detalle_transporte', compact('list_notificacion','list_subgerencia','get_id'));
     }
 
     public function insert_mercaderia_transito(Request $request,$id)
@@ -1058,7 +1063,7 @@ class TrackingController extends Controller
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(7);
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        return view('logistica.tracking.verificacion_fardos', compact('list_notificacion','list_subgerencia','get_id'));
+        return view('logistica.tracking.tracking.verificacion_fardos', compact('list_notificacion','list_subgerencia','get_id'));
     }
 
     public function list_archivo(Request $request)
@@ -1068,7 +1073,7 @@ class TrackingController extends Controller
         }else{
             $list_archivo = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['tipo'=>$request->tipo]);
         }
-        return view('logistica.tracking.lista_archivo', compact('list_archivo'));
+        return view('logistica.tracking.tracking.lista_archivo', compact('list_archivo'));
     }
 
     public function previsualizacion_captura(Request $request)
@@ -1328,7 +1333,7 @@ class TrackingController extends Controller
         $list_notificacion = Notificacion::get_list_notificacion();   
         $list_subgerencia = SubGerencia::list_subgerencia(7);     
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        return view('logistica.tracking.pago_transporte', compact('list_notificacion','list_subgerencia','get_id'));
+        return view('logistica.tracking.tracking.pago_transporte', compact('list_notificacion','list_subgerencia','get_id'));
     }
 
     public function previsualizacion_captura_pago()
@@ -1670,7 +1675,7 @@ class TrackingController extends Controller
         $list_notificacion = Notificacion::get_list_notificacion();   
         $list_subgerencia = SubGerencia::list_subgerencia(7);     
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        return view('logistica.tracking.reporte_mercaderia', compact('list_notificacion','list_subgerencia','get_id'));
+        return view('logistica.tracking.tracking.reporte_mercaderia', compact('list_notificacion','list_subgerencia','get_id'));
     }
 
     public function insert_reporte_mercaderia(Request $request,$id)
@@ -1750,7 +1755,7 @@ class TrackingController extends Controller
         } catch (\Throwable $th) {
             $list_diferencia = [];
         }
-        return view('logistica.tracking.cuadre_diferencia', compact('list_notificacion','list_subgerencia','get_id','list_diferencia'));
+        return view('logistica.tracking.tracking.cuadre_diferencia', compact('list_notificacion','list_subgerencia','get_id','list_diferencia'));
     }
 
     public function insert_reporte_diferencia(Request $request,$id)
@@ -2037,10 +2042,10 @@ class TrackingController extends Controller
             $list_subgerencia = SubGerencia::list_subgerencia(7);
             $get_id = Tracking::get_list_tracking(['id'=>$id]);
             if($get_id->id_estado==15){
-                return view('logistica.tracking.detalle_operacion_diferencia', compact('list_notificacion','list_subgerencia','get_id'));
+                return view('logistica.tracking.tracking.detalle_operacion_diferencia', compact('list_notificacion','list_subgerencia','get_id'));
             }else{
                 $list_mercaderia_nueva = MercaderiaSurtida::where('anio',date('Y'))->where('semana',date('W'))->exists();
-                return view('logistica.tracking.index', compact('list_notificacion','list_mercaderia_nueva'));
+                return view('logistica.tracking.tracking.index', compact('list_notificacion','list_mercaderia_nueva'));
             }
         }else{
             session(['redirect_url' => 'http'.(isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']]);
@@ -2297,7 +2302,7 @@ class TrackingController extends Controller
         $list_subgerencia = SubGerencia::list_subgerencia(7);
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
         $list_guia_remision = TrackingGuiaRemisionDetalle::select('id','sku','descripcion','cantidad')->where('n_guia_remision',$get_id->n_guia_remision)->get();
-        return view('logistica.tracking.solicitud_devolucion', compact('list_notificacion','list_subgerencia','get_id','list_guia_remision'));
+        return view('logistica.tracking.tracking.solicitud_devolucion', compact('list_notificacion','list_subgerencia','get_id','list_guia_remision'));
     }
 
     public function modal_solicitud_devolucion($id)
@@ -2305,7 +2310,7 @@ class TrackingController extends Controller
         $get_producto = TrackingGuiaRemisionDetalle::findOrFail($id);
         $get_id = TrackingDevolucionTemporal::where('id_usuario',session('usuario')->id_usuario)
                                             ->where('id_producto',$id)->first();
-        return view('logistica.tracking.modal_solicitud_devolucion', compact('get_producto','get_id'));
+        return view('logistica.tracking.tracking.modal_solicitud_devolucion', compact('get_producto','get_id'));
     }
 
     public function insert_devolucion_temporal(Request $request,$id)
@@ -2530,7 +2535,7 @@ class TrackingController extends Controller
                                                         ->join('tracking_guia_remision_detalle','tracking_guia_remision_detalle.id','=','tracking_devolucion.id_producto')
                                                         ->where('tracking_devolucion.id_tracking',$id)
                                                         ->where('tracking_devolucion.estado',1)->get();
-                return view('logistica.tracking.evaluacion_devolucion', compact(
+                return view('logistica.tracking.tracking.evaluacion_devolucion', compact(
                     'list_notificacion',
                     'list_subgerencia',
                     'get_id',
@@ -2538,7 +2543,7 @@ class TrackingController extends Controller
                 ));
             }else{
                 $list_mercaderia_nueva = MercaderiaSurtida::where('anio',date('Y'))->where('semana',date('W'))->exists();
-                return view('logistica.tracking.index', compact('list_notificacion','list_subgerencia','list_mercaderia_nueva'));
+                return view('logistica.tracking.tracking.index', compact('list_notificacion','list_subgerencia','list_mercaderia_nueva'));
             }
         }else{
             session(['redirect_url' => 'http'.(isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']]);
@@ -2552,7 +2557,7 @@ class TrackingController extends Controller
         $list_archivo = TrackingArchivo::select('archivo')->where('id_producto',$get_devolucion->id_producto)->where('tipo',3)->get();
         $get_id = TrackingEvaluacionTemporal::where('id_usuario',session('usuario')->id_usuario)
                                             ->where('id_devolucion',$id)->first();
-        return view('logistica.tracking.modal_evaluacion_devolucion', compact('get_devolucion','list_archivo','get_id'));
+        return view('logistica.tracking.tracking.modal_evaluacion_devolucion', compact('get_devolucion','list_archivo','get_id'));
     }
 
     public function insert_evaluacion_temporal(Request $request,$id)
@@ -2750,7 +2755,7 @@ class TrackingController extends Controller
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(7);
         $list_base = Base::get_list_bases_tienda();
-        return view('logistica.tracking.mercaderia_nueva.index', compact(
+        return view('logistica.tracking.tracking.mercaderia_nueva.index', compact(
             'list_notificacion',
             'list_subgerencia',
             'list_base'
@@ -2765,7 +2770,7 @@ class TrackingController extends Controller
             $request->tipo_usuario,
             $request->tipo_prenda
         ]);
-        return view('logistica.tracking.mercaderia_nueva.lista', compact('cod_base','list_mercaderia_nueva'));
+        return view('logistica.tracking.tracking.mercaderia_nueva.lista', compact('cod_base','list_mercaderia_nueva'));
     }
 
     public function mercaderia_nueva_tusu($cod_base)
@@ -2773,7 +2778,7 @@ class TrackingController extends Controller
         $list_tipo_usuario = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_tusuario_app ?', [
             $cod_base
         ]);
-        return view('logistica.tracking.mercaderia_nueva.tipo_usuario', compact('list_tipo_usuario'));
+        return view('logistica.tracking.tracking.mercaderia_nueva.tipo_usuario', compact('list_tipo_usuario'));
     }
 
     public function mercaderia_nueva_tpre($cod_base)
@@ -2781,7 +2786,7 @@ class TrackingController extends Controller
         $list_tipo_prenda = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_tprenda_app ?', [
             $cod_base
         ]);
-        return view('logistica.tracking.mercaderia_nueva.tipo_prenda', compact('list_tipo_prenda'));
+        return view('logistica.tracking.tracking.mercaderia_nueva.tipo_prenda', compact('list_tipo_prenda'));
     }
 
     public function modal_mercaderia_nueva($cod_base,$estilo)
@@ -2790,7 +2795,7 @@ class TrackingController extends Controller
             $cod_base,
             $estilo
         ]);
-        return view('logistica.tracking.mercaderia_nueva.modal_detalle', compact(
+        return view('logistica.tracking.tracking.mercaderia_nueva.modal_detalle', compact(
             'estilo',
             'list_mercaderia_nueva'
         ));
@@ -3179,5 +3184,10 @@ class TrackingController extends Controller
                 'message' => "Error procesando base de datos.",
             ], 500);
         }
+    }
+    //BD TRACKING
+    public function index_bd()
+    {      
+        return view('logistica.tracking.bd_tracking.index');
     }
 }

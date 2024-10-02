@@ -121,12 +121,13 @@ Route::controller(ReporteFotograficoController::class)->group(function () {
 });
 //LOGÍSTICA - TRACKING
 Route::controller(TrackingController::class)->group(function () {
+    Route::get('tracking', 'index')->name('tracking');
     //SUBIDA DE ARCHIVOS
     Route::post('tracking/list_archivo', 'list_archivo')->name('tracking.list_archivo');
     Route::post('tracking/previsualizacion_captura', 'previsualizacion_captura')->name('tracking.previsualizacion_captura');
     Route::delete('tracking/{id}/delete_archivo_temporal', 'delete_archivo_temporal')->name('tracking.delete_archivo_temporal');
     //FIN SUBIDA ARCHIVOS
-    Route::get('tracking', 'index')->name('tracking');
+    Route::get('tracking/index', 'index_tra')->name('tracking_index');
     Route::get('tracking/iniciar_tracking', 'iniciar_tracking')->name('tracking.iniciar_tracking');
     Route::get('tracking/llegada_tienda', 'llegada_tienda')->name('tracking.llegada_tienda');
     Route::post('tracking/list', 'list')->name('tracking.list');
@@ -164,6 +165,8 @@ Route::controller(TrackingController::class)->group(function () {
     Route::get('tracking/{cod_base}/mercaderia_nueva_tusu', 'mercaderia_nueva_tusu')->name('tracking.mercaderia_nueva_tusu');
     Route::get('tracking/{cod_base}/mercaderia_nueva_tpre', 'mercaderia_nueva_tpre')->name('tracking.mercaderia_nueva_tpre');
     Route::get('tracking/{cod_base}/{estilo}/modal_mercaderia_nueva', 'modal_mercaderia_nueva')->name('tracking.modal_mercaderia_nueva');
+    //BD TRACKING
+    Route::get('bd_tracking', 'index_bd')->name('bd_tracking');
 });
 //TIENDA - FUNCIÓN TEMPORAL
 Route::controller(FuncionTemporalController::class)->group(function () {
