@@ -139,4 +139,28 @@ class Tracking extends Model
             return $query;
         }
     }
+
+    public static function get_list_bd_tracking($dato=null){
+        $sql = "SELECT tr.n_requerimiento,bd.cod_base AS desde,bh.cod_base AS hacia,
+                tp.descripcion AS proceso,
+                CONCAT(CASE WHEN DAYNAME(tde.fecha)='Monday' THEN 'Lun'
+                WHEN DAYNAME(tde.fecha)='Tuesday' THEN 'Mar'
+                WHEN DAYNAME(tde.fecha)='Wednesday' THEN 'Mie'
+                WHEN DAYNAME(tde.fecha)='Thursday' THEN 'Jue'
+                WHEN DAYNAME(tde.fecha)='Friday' THEN 'Vie'
+                WHEN DAYNAME(tde.fecha)='Saturday' THEN 'Sab'
+                WHEN DAYNAME(tde.fecha)='Sunday' THEN 'Dom' ELSE '' END,' ',
+                DATE_FORMAT(tde.fecha,'%d-%m-%Y')) AS fecha,DATE_FORMAT(tde.fecha,'%H:%i') AS hora,
+                te.descripcion AS estado
+                FROM tracking_detalle_estado tde
+                LEFT JOIN tracking_detalle_proceso tdp ON tde.id_detalle=tdp.id
+                LEFT JOIN tracking tr ON tdp.id_tracking=tr.id
+                LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
+                LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base
+                LEFT JOIN tracking_proceso tp ON tdp.id_proceso=tp.id
+                LEFT JOIN tracking_estado te ON tde.id_estado=te.id
+                WHERE tr.estado=1";
+        $query = DB::select($sql);
+        return $query;
+    }
 }
