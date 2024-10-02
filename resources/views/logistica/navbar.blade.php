@@ -133,8 +133,8 @@
 
 
 
-<li class="menu" id="errorepickingconf">
-    <a href="#rerrorepickingconf" id="herrorepickingconf" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+<li class="menu" id="logisticaconf">
+    <a href="#rlogisticaconf" id="hlogisticaconf" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
         <div class="">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-database">
                 <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
@@ -152,9 +152,9 @@
         </div>
     </a>
 
-    <ul class="collapse submenu list-unstyled" id="rerrorepickingconf" data-parent="#accordionExample">
+    <ul class="collapse submenu list-unstyled" id="rlogisticaconf" data-parent="#accordionExample">
         <li>
-            <a id="errorespickingta" href="{{ route('errorespicking_ta') }}">
+            <a id="errorespickingta" href="{{ route('errorespickingta_conf') }}">
                 <p class="romperpalabra"><span id="icono_active2"></span> Errores Picking</p>
             </a>
         </li>

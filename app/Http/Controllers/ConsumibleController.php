@@ -52,14 +52,7 @@ class ConsumibleController extends Controller
         $list_subgerencia = SubGerencia::list_subgerencia(9);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('logistica.administracion.index', compact('list_notificacion', 'list_subgerencia'));
-    }
-    public function indexcons_conf()
-    {
-        $list_subgerencia = SubGerencia::list_subgerencia(9);
-        //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();
-        return view('logistica.administracion.articulo.index', compact('list_notificacion', 'list_subgerencia'));
+        return view('logistica.consumible.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
 
@@ -90,7 +83,7 @@ class ConsumibleController extends Controller
             ->get();
 
 
-        return view('logistica.error_picking.modal_editar', compact(
+        return view('logistica.consumible.modal_editar', compact(
             'list_base',
             'list_tipo_error',
             'list_area',
