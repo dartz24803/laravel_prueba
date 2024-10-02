@@ -1174,7 +1174,6 @@ use App\Models\TrackingDetalleProceso;
         Cargando();
 
         var url = "{{ route('tracking.salida_mercaderia', ':id') }}".replace(':id', id);
-        var csrfToken = $('input[name="_token"]').val();
 
         Swal({
             title: '¿Realmente desea cambiar el estado?',
@@ -1190,7 +1189,7 @@ use App\Models\TrackingDetalleProceso;
                     type: "POST",
                     url: url,
                     headers: {
-                        'X-CSRF-TOKEN': csrfToken
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     success: function() {
                         Swal(
@@ -1210,7 +1209,6 @@ use App\Models\TrackingDetalleProceso;
         Cargando();
 
         var url = "{{ route('tracking.confirmacion_llegada', ':id') }}".replace(':id', id);
-        var csrfToken = $('input[name="_token"]').val();
 
         Swal({
             title: '¿Realmente desea cambiar el estado?',
@@ -1226,7 +1224,7 @@ use App\Models\TrackingDetalleProceso;
                     type: "POST",
                     url: url,
                     headers: {
-                        'X-CSRF-TOKEN': csrfToken
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     success: function() {
                         Swal(
@@ -1246,7 +1244,6 @@ use App\Models\TrackingDetalleProceso;
         Cargando();
 
         var url = "{{ route('tracking.cierre_inspeccion_fardos', ':id') }}".replace(':id', id);
-        var csrfToken = $('input[name="_token"]').val();
 
         Swal({
             title: '¿El fardo llegó en buenas condiciones?',
@@ -1262,7 +1259,7 @@ use App\Models\TrackingDetalleProceso;
                     type: "POST",
                     url: url,
                     headers: {
-                        'X-CSRF-TOKEN': csrfToken
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     success: function() {
                         Swal(
@@ -1284,7 +1281,6 @@ use App\Models\TrackingDetalleProceso;
         Cargando();
 
         var url = "{{ route('tracking.cierre_inspeccion_fardos', ':id') }}".replace(':id', id);
-        var csrfToken = $('input[name="_token"]').val();
 
         Swal({
             title: '¿Realmente desea cambiar el estado?',
@@ -1303,7 +1299,7 @@ use App\Models\TrackingDetalleProceso;
                         'validacion': 1
                     },
                     headers: {
-                        'X-CSRF-TOKEN': csrfToken
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     success: function() {
                         Swal(
@@ -1323,7 +1319,6 @@ use App\Models\TrackingDetalleProceso;
         Cargando();
 
         var url = "{{ route('tracking.conteo_mercaderia', ':id') }}".replace(':id', id);
-        var csrfToken = $('input[name="_token"]').val();
 
         Swal({
             title: '¿Realmente desea cambiar el estado?',
@@ -1339,7 +1334,7 @@ use App\Models\TrackingDetalleProceso;
                     type: "POST",
                     url: url,
                     headers: {
-                        'X-CSRF-TOKEN': csrfToken
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     success: function() {
                         Swal(
@@ -1359,7 +1354,6 @@ use App\Models\TrackingDetalleProceso;
         Cargando();
 
         var url = "{{ route('tracking.mercaderia_entregada', ':id') }}".replace(':id', id);
-        var csrfToken = $('input[name="_token"]').val();
 
         Swal({
             title: '¿La mercadería llegó en buenas condiciones?',
@@ -1375,7 +1369,7 @@ use App\Models\TrackingDetalleProceso;
                     type: "POST",
                     url: url,
                     headers: {
-                        'X-CSRF-TOKEN': csrfToken
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     success: function() {
                         Swal(
