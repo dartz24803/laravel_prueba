@@ -74,14 +74,25 @@
                 processData: false,
                 contentType: false,
                 success:function (data) {
-                    swal.fire(
-                        '¡Registro Exitoso!',
-                        '¡Haga clic en el botón!',
-                        'success'
-                    ).then(function() {
-                        Lista_Tracking();
-                        $("#ModalRegistro .close").click();
-                    });
+                    if(data=="error"){
+                        Swal({
+                            title: '¡Registro Denegado!',
+                            text: "¡El registro ya existe!",
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    }else{
+                        swal.fire(
+                            '¡Registro Exitoso!',
+                            '¡Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            Lista_Tracking();
+                            $("#ModalRegistro .close").click();
+                        });
+                    }
                 },
                 error:function(xhr) {
                     var errors = xhr.responseJSON.errors;
