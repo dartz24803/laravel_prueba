@@ -70,14 +70,14 @@
                     session('usuario')->id_nivel=="1"||
                     session('usuario')->id_puesto=="10")
                         <a href="javascript:void(0)" title="Actualizar" data-toggle="modal" 
-                        data-target="#ModalUpdate" app_elim="{{ route('letra_cobrar.unico', [$list->id_cheque_letra,1]) }}">
+                        data-target="#ModalUpdate" app_elim="{{ route('letra_cobrar.unico', [$list->id_letra_cobrar,1]) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-key text-warning">
                                 <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
                             </svg>
                         </a>
                     @else
                         <a href="javascript:void(0)" title="Ver" data-toggle="modal" 
-                        data-target="#ModalUpdate" app_elim="{{ route('letra_cobrar.unico', [$list->id_cheque_letra,2]) }}">
+                        data-target="#ModalUpdate" app_elim="{{ route('letra_cobrar.unico', [$list->id_letra_cobrar,2]) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-key text-warning">
                                 <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
                             </svg>
@@ -89,7 +89,7 @@
                     @if ($list->estado_registro=="1")
                         <a href="javascript:void(0)" title="Registrar Pago" data-toggle="modal" 
                         data-target="#ModalUpdate" 
-                        app_elim="{{ route('letra_cobrar.estado', [$list->id_cheque_letra,1]) }}">
+                        app_elim="{{ route('letra_cobrar.estado', [$list->id_letra_cobrar,1]) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar text-success">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -103,14 +103,14 @@
                         session('usuario')->id_puesto=="10" ||
                         session('usuario')->id_puesto=="138"))
                             <a href="javascript:void(0)" title="Actualizar Pago" data-toggle="modal" 
-                            data-target="#ModalUpdate" app_elim="{{ route('letra_cobrar.estado', [$list->id_cheque_letra,2]) }}"  role="button">
+                            data-target="#ModalUpdate" app_elim="{{ route('letra_cobrar.estado', [$list->id_letra_cobrar,2]) }}"  role="button">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                     <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                 </svg>
                             </a>
                         @else
                             <a href="javascript:void(0)" title="Ver Pago" data-toggle="modal" 
-                            data-target="#ModalUpdate" app_elim="{{ route('letra_cobrar.estado', [$list->id_cheque_letra,3]) }}"  role="button">
+                            data-target="#ModalUpdate" app_elim="{{ route('letra_cobrar.estado', [$list->id_letra_cobrar,3]) }}"  role="button">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar text-success">
                                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                     <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -138,7 +138,7 @@
                     session('usuario')->id_puesto=="10")
                         <a href="javascript:void(0);" title="Editar" data-toggle="modal" 
                         data-target="#ModalUpdateGrande" 
-                        app_upd_grande="{{ route('letra_cobrar.edit', $list->id_cheque_letra) }}">
+                        app_upd_grande="{{ route('letra_cobrar.edit', $list->id_letra_cobrar) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                 <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                             </svg>
@@ -159,7 +159,7 @@
                     session('usuario')->id_nivel=="1"||
                     session('usuario')->id_puesto=="10")
                         <a href="javascript:void(0);" title="Eliminar" 
-                        onclick="Delete_Letra_Cobrar('{{ $list->id_cheque_letra }}')">
+                        onclick="Delete_Letra_Cobrar('{{ $list->id_letra_cobrar }}')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
                                 <polyline points="3 6 5 6 21 6"></polyline>
                                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>

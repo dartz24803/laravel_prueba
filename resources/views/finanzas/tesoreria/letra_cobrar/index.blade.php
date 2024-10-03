@@ -244,7 +244,7 @@
             var id_cliente = $('#id_clienteb').val();
             var mes = $('#mesb').val();
             var anio = $('#aniob').val();
-            window.location = "{{ route('letra_cobrar.excel', [':estado', ':id_empresa', ':id_cliente', ':tipo_fecha', ':mes', ':anio']) }}".replace(':estado', estado).replace(':id_empresa', id_empresa).replace(':id_cliente', id_cliente).replace(':mes', mes).replace(':anio', anio);
+            window.location = "{{ route('letra_cobrar.excel', [':estado', ':id_empresa', ':id_cliente', ':mes', ':anio']) }}".replace(':estado', estado).replace(':id_empresa', id_empresa).replace(':id_cliente', id_cliente).replace(':mes', mes).replace(':anio', anio);
         }
     </script>
 @endsection
