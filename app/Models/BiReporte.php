@@ -136,8 +136,8 @@ class BiReporte extends Model
             'acceso_bi_reporte.fec_reg',
             'acceso_bi_reporte.fec_valid',
             'acceso_bi_reporte.estado_valid',
-            'tablas_db.nombre as nom_tabla', // Obtener el nombre de tablas_db
-            'tablas_db.cod_db', // Obtener el código de la tabla desde tablas_db
+            'tablas_db.nombre as nom_tabla',
+            'tablas_db.cod_db',
             'sistema_tablas.nom_sistema',
             'sistema_tablas.nom_db'
         )
