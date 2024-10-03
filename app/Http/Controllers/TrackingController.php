@@ -394,9 +394,6 @@ class TrackingController extends Controller
 
     public function store(Request $request)
     {
-        ini_set('memory_limit', '512M');
-        set_time_limit(300);
-
         $valida = Tracking::where('n_requerimiento',$request->n_requerimiento)
                 ->where('estado', 1)->exists();
         if($valida){
@@ -408,6 +405,7 @@ class TrackingController extends Controller
                 'semana' => $request->semana,
                 'id_origen_desde' => $request->id_origen_desde,
                 'id_origen_hacia' => $request->id_origen_hacia,
+                'iniciar' => 1,
                 'estado' => 1,
                 'fec_reg' => now(),
                 'user_reg' => session('usuario')->id_usuario,
@@ -476,7 +474,7 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
                 $mail->addAddress('ogutierrez@lanumero1.com.pe');
                 $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
                 /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
