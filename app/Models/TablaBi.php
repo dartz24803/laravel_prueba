@@ -20,7 +20,7 @@ class TablaBi extends Model
         'id_acceso_bi_reporte',
         'estado',
         'idtablas_db',
-        'cod_sistema',
+
         'fec_reg',
         'user_reg',
         'fec_act',
