@@ -27,7 +27,8 @@ class TrackingEstado extends Model
                     WHEN DAYNAME(tdp.fec_reg)='Friday' THEN 'Vie'
                     WHEN DAYNAME(tdp.fec_reg)='Saturday' THEN 'Sab'
                     WHEN DAYNAME(tdp.fec_reg)='Sunday' THEN 'Dom' ELSE '' END,' ',
-                    DATE_FORMAT(tdp.fec_reg,'%d/%m/%Y')) AS fecha
+                    DATE_FORMAT(tdp.fec_reg,'%d/%m/%Y')) AS fecha,
+                    DATE_FORMAT(tdp.fec_reg,'%H:%i:%s') AS hora
                     from tracking_detalle_proceso tdp
                     left join tracking_estado te ON te.id_proceso=tdp.id_proceso;";
         
