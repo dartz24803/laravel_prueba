@@ -104,6 +104,10 @@ class Tracking extends Model
             $query = DB::select($sql);
             return $query;
         }else{
+            $parte = "";
+            if(substr(session('usuario')->centro_labores,0,1)=="B"){
+                $parte = "bh.cod_base='".session('usuario')->centro_labores."' AND";
+            }
             $sql = "SELECT tr.id,tr.n_requerimiento,bd.cod_base AS desde,bh.cod_base AS hacia,tp.descripcion AS proceso,
                     CONCAT(CASE WHEN DAYNAME(de.fecha)='Monday' THEN 'Lun'
                     WHEN DAYNAME(de.fecha)='Tuesday' THEN 'Mar'
@@ -133,7 +137,8 @@ class Tracking extends Model
                     GROUP BY id_detalle) me ON mp.ultimo_id=me.id_detalle
                     LEFT JOIN tracking_detalle_estado de ON me.ultimo_id=de.id
                     LEFT JOIN tracking_estado te ON de.id_estado=te.id
-                    WHERE (tr.estado=1 AND de.id_estado!=21) OR (tr.estado=1 AND de.id_estado=21 AND 
+                    WHERE ($parte tr.estado=1 AND de.id_estado!=21) OR 
+                    ($parte tr.estado=1 AND de.id_estado=21 AND 
                     DATE(de.fecha)>DATE_SUB(CURDATE(), INTERVAL 1 WEEK))";
             $query = DB::select($sql);
             return $query;
@@ -141,6 +146,10 @@ class Tracking extends Model
     }
 
     public static function get_list_bd_tracking($dato=null){
+        $parte = "";
+        if(substr(session('usuario')->centro_labores,0,1)=="B"){
+            $parte = "bh.cod_base='".session('usuario')->centro_labores."' AND";
+        }
         $sql = "SELECT tr.n_requerimiento,bd.cod_base AS desde,bh.cod_base AS hacia,
                 tp.descripcion AS proceso,
                 CONCAT(CASE WHEN DAYNAME(tde.fecha)='Monday' THEN 'Lun'
@@ -159,7 +168,7 @@ class Tracking extends Model
                 LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base
                 LEFT JOIN tracking_proceso tp ON tdp.id_proceso=tp.id
                 LEFT JOIN tracking_estado te ON tde.id_estado=te.id
-                WHERE tr.estado=1";
+                WHERE $parte tr.estado=1";
         $query = DB::select($sql);
         return $query;
     }
