@@ -80,6 +80,11 @@
                     <p class="romperpalabra"><span id="icono_active2"></span> Mercadería a Extraer</p>
                 </a>
             </li>
+            <li id="controlubicacionese">
+                <a id="rcontrolubicaciones" href="{{ url('ControlUbicaciones/index') }}">
+                    <p class="romperpalabra" title="Mercadería a enviar para fotografía"><span id="icono_active2"></span> Control de Ubicaciones</p>
+                </a>
+            </li>
         <?php } ?>
     </ul>
 </li>
