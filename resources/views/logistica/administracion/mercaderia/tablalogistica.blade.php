@@ -162,14 +162,14 @@ $id_puesto = session('usuario')->id_puesto; ?>
                             <?php } ?>
                             <a class="nav-link" style="cursor: pointer;" id="Error_Picking_ar" onclick="TablaTallaErrorPicking();">Código</a>    
                         </div>
-                        
-                        <div class="row" id="cancel-row">
-                            <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
-                                <div id="lista_escogida" class="widget-content widget-content-area p-3">
-                                </div>
+                    </ul>
+
+                    <div class="row" id="cancel-row">
+                        <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
+                            <div id="lista_escogida" class="widget-content widget-content-area p-3">
                             </div>
                         </div>
-                    </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -182,11 +182,11 @@ $id_puesto = session('usuario')->id_puesto; ?>
         $("#rlogisticaconf").attr('aria-expanded','true');
         $("#mercaderiaconf").addClass('active');
         
-        <?php if($id_nivel==1 || $id_puesto==131 || $id_puesto==74){ ?> 
+        <?php //if($id_nivel==1 || $id_puesto==131 || $id_puesto==74){ ?> 
             TablaPercha();   
-        <?php }else{ ?> 
-            TablaArticulo();
-        <?php }?>
+        <?php //}else{ ?> 
+            //TablaArticulo();
+        <?php //}?>
     });
 
     function TablaPercha() {
@@ -197,12 +197,34 @@ $id_puesto = session('usuario')->id_puesto; ?>
 
         var url = "{{ url('MercaderiaConf/Percha') }}";
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: url,
             success: function(resp) {
                 $('#lista_escogida').html(resp);
             }
         });
+    }
+    
+    function TablaNicho() {
+        Cargando();
+
+        $(".nav-link").removeClass('active');
+        $("#Nichoar").addClass('active');
+
+        var url = "{{ url('MercaderiaConf/Nicho') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(resp) {
+                $('#lista_escogida').html(resp);
+            }
+        });
+
     }
 </script>
 @endsection

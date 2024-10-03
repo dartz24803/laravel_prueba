@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Model_Perfil;
 use Illuminate\Http\Request;
 use App\Models\Mercaderia;
+use App\Models\Nicho;
 use App\Models\Notificacion;
+use App\Models\Percha;
 use App\Models\SubGerencia;
+use Illuminate\Support\Facades\DB;
 
 class MercaderiaConfController extends Controller
 {
@@ -24,107 +27,165 @@ class MercaderiaConfController extends Controller
             $dato['list_subgerencia'] = SubGerencia::list_subgerencia(7);
             //NOTIFICACIONES
             $dato['list_notificacion'] = Notificacion::get_list_notificacion();
-            return view('Logistica.Administracion.mercaderia.tablalogistica',$dato);   
-    }
-/*
-    public function Percha(){
-            $dato['list_percha'] = $this->Model_Corporacion->get_list_percha($id_percha=null);
-            return view('Admin/Configuracion/Logistica/Percha/index',$dato);   
+            return view('logistica.administracion.mercaderia.tablalogistica',$dato);   
     }
 
-    public function Boton_Percha() {
-        return view('Admin/Configuracion/Logistica/Percha/boton');
-    }               
+    public function Percha(){
+            $dato['list_percha'] = Percha::where('estado',1)
+                            ->get();
+            return view('logistica.Administracion.mercaderia.Percha.index',$dato);   
+    }             
 
     public function Modal_Percha(){
-            return view('Admin/Configuracion/Logistica/Percha/modal_registrar');
+            return view('logistica.administracion.mercaderia.Percha.modal_registrar');
     }
 
     public function Insert_Percha(){
+        $this->input->validate([
+            'nom_percha' => 'required',
+        ], [
+            'nom_percha.not_in' => 'Debe escribir descripcion de percha.',
+        ]);
             $dato['nom_percha']= strtoupper($this->input->post("nom_percha"));
-            $dato['mod']=1;
-            $total=count($this->Model_Corporacion->valida_percha($dato));
-            if($total>0){
+            $total= Percha::where('nom_percha', $dato['nom_percha'])
+                ->where('estado', 1)
+                ->exists();
+            if($total){
                 echo "error";
             }else{
-                $this->Model_Corporacion->insert_percha($dato);
+                $dato['estado'] = 1;
+                $dato['fec_reg'] = now();
+                $dato['fec_act'] = now();
+                $dato['user_act'] = session('usuario')->id_usuario;
+                $dato['user_reg'] = session('usuario')->id_usuario;
+                Percha::create($dato);
             }
     }
 
     public function Modal_Update_Percha($id_percha){
-            $dato['get_id'] = $this->Model_Corporacion->get_list_percha($id_percha);
-            return view('Admin/Configuracion/Logistica/Percha/modal_editar',$dato);   
+            $dato['get_id'] = Percha::where('id_percha', $id_percha)
+                        ->get();
+            return view('logistica.administracion.mercaderia.Percha.modal_editar',$dato);   
     }
 
     public function Update_Percha(){
-            $dato['id_percha'] =$this->input->post("id_percha");
+            $id_percha =$this->input->post("id_percha");
             $dato['nom_percha']= strtoupper($this->input->post("nom_perchae"));
-            $dato['mod']=2;
-            $total=count($this->Model_Corporacion->valida_percha($dato));
-            if($total>0){
+            $total = Percha::where('nom_percha', $dato['nom_percha'])
+                ->where('id_percha', '!=', $id_percha)
+                ->where('estado', 1)
+                ->exists();
+            if($total){
                 echo "error";
             }else{
-                $this->Model_Corporacion->update_percha($dato);
+                $dato['fec_act'] = now();
+                $dato['user_act'] = session('usuario')->id_usuario;
+                Percha::where('id_percha', $id_percha)->update($dato);
             }
     }
 
     public function Delete_Percha(){
-            $dato['id_percha']= $this->input->post("id_percha");
-            $this->Model_Corporacion->delete_percha($dato);
+            $id_percha= $this->input->post("id_percha");
+            $dato['estado'] = 2;
+            $dato['fec_eli'] = now();
+            $dato['user_eli'] = session('usuario')->id_usuario;
+            Percha::findOrFail($id_percha)->update($dato);
     }
 
     //----------------nicho
     public function Nicho(){
-            $dato['list_nicho'] = $this->Model_Corporacion->get_list_nicho($id_percha=null);
-            $this->load->view('Admin/Configuracion/Logistica/Nicho/index',$dato);   
+            $dato['list_nicho'] = Nicho::select('nicho.*', 'percha.nom_percha', 
+                DB::raw("CONCAT(percha.nom_percha, nicho.numero) as nicho"))
+                ->leftJoin('percha', 'nicho.id_percha', '=', 'percha.id_percha')
+                ->where('nicho.estado', 1)
+                ->orderBy('nicho.nom_nicho')
+                ->get();
+            return view('logistica.administracion.mercaderia.Nicho.index',$dato);   
     }
-
-    public function Boton_Nicho() {
-        $this->load->view('Admin/Configuracion/Logistica/Nicho/boton');
-    }               
+          
 
     public function Modal_Nicho(){
-            $dato['list_percha'] = $this->Model_Corporacion->get_list_percha($id_percha=null);
-            $this->load->view('Admin/Configuracion/Logistica/Nicho/modal_registrar',$dato);
+        $dato['list_percha'] = Percha::where('estado',1)
+                        ->get();
+        return view('logistica.administracion.mercaderia.Nicho.modal_registrar',$dato);
     }
 
     public function Insert_Nicho(){
+            $this->input->validate([
+                'id_percha' => 'not_in:0',
+                'numero' => 'required',
+            ], [
+                'id_percha' => 'Debe escoger percha.',
+                'numero' =>  'Debe ingresar número',
+            ]);
             $dato['numero']= strtoupper($this->input->post("numero"));
-            $dato['id_percha']=$this->input->post("id_percha");
-            $dato['get_percha'] = $this->Model_Corporacion->get_list_percha($dato['id_percha']);
+            $dato['id_percha'] = $this->input->post("id_percha");
+            $dato['get_percha'] = Percha::where('id_percha', $dato['id_percha'])
+                        ->get();
             $dato['nom_nicho']=$dato['get_percha'][0]['nom_percha'].$dato['numero'];
-            $dato['mod']=1;
-            $total=count($this->Model_Corporacion->valida_nicho($dato));
-            if($total>0){
+
+            $total = Nicho::where('nom_nicho',$dato['nom_nicho'])
+                ->where('id_percha', $dato['id_percha'])
+                ->where('estado', 1)
+                ->exists();
+
+            if($total){
                 echo "error";
             }else{
-                $this->Model_Corporacion->insert_nicho($dato);
+                $dato['estado'] = 1;
+                $dato['fec_reg'] = now();
+                $dato['fec_act'] = now();
+                $dato['user_act'] = session('usuario')->id_usuario;
+                $dato['user_reg'] = session('usuario')->id_usuario;
+                Nicho::create($dato);
             }
     }
 
     public function Modal_Update_Nicho($id_nicho){
-            $dato['get_id'] = $this->Model_Corporacion->get_list_nicho($id_nicho);
-            $dato['list_percha'] = $this->Model_Corporacion->get_list_percha($id_percha=null);
-            $this->load->view('Admin/Configuracion/Logistica/Nicho/modal_editar',$dato);   
+        $dato['get_id'] = Nicho::select('nicho.*', 'percha.nom_percha')
+            ->leftJoin('percha', 'nicho.id_percha', '=', 'percha.id_percha')
+            ->where('nicho.id_nicho', $id_nicho)
+            ->get();
+            
+        $dato['list_percha'] = Percha::where('estado',1)
+                    ->get();
+
+        return view('logistica.administracion.mercaderia.Nicho.modal_editar',$dato);   
     }
 
     public function Update_Nicho(){
-            $dato['id_nicho'] =$this->input->post("id_nicho");
+            $this->input->validate([
+                'id_perchae' => 'not_in:0',
+                'numeroe' => 'required',
+            ], [
+                'id_perchae' => 'Debe escoger percha.',
+                'numeroe' =>  'Debe ingresar número',
+            ]);
+            $id_nicho =$this->input->post("id_nicho");
             $dato['id_percha']= $this->input->post("id_perchae");
             $dato['numero']= strtoupper($this->input->post("numeroe"));
-            $dato['get_percha'] = $this->Model_Corporacion->get_list_percha($dato['id_percha']);
-            $dato['nom_nicho']=$dato['get_percha'][0]['nom_percha'].$dato['numero'];
-            $dato['mod']=2;
-            $total=count($this->Model_Corporacion->valida_nicho($dato));
+            $get_percha = Percha::where('id_percha', $dato['id_percha'])
+                                ->get();
+            $dato['nom_nicho']=$get_percha[0]['nom_percha'].$dato['numero'];
+            $total = Nicho::where('nom_nicho', $dato['nom_nicho'])
+                ->where('id_percha', $dato['id_percha'])
+                ->where('id_nicho', '!=', $id_nicho)
+                ->where('estado', 1)
+                ->exists();
             if($total>0){
                 echo "error";
             }else{
-                $this->Model_Corporacion->update_nicho($dato);
+                $dato['fec_act'] = now();
+                $dato['user_act'] = session('usuario')->id_usuario;
+                Nicho::where('id_nicho', $id_nicho)->update($dato);
             }
     }
 
     public function Delete_Nicho(){
-            $dato['id_nicho']= $this->input->post("id_nicho");
-            $this->Model_Corporacion->delete_nicho($dato);
-    }*/
+        $id_nicho= $this->input->post("id_nicho");
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        Nicho::findOrFail($id_nicho)->update($dato);
+    }
 }

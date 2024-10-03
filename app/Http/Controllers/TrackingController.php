@@ -387,9 +387,8 @@ class TrackingController extends Controller
         }
     }
 
-    public function list()
-    {
-        $estado = TrackingEstado::get();
+    public function list(){
+        $estado = TrackingEstado::get_list_estado_proceso();
         $list_tracking = Tracking::get_list_tracking();
         return view('logistica.tracking.tracking.lista', compact('list_tracking', 'estado'));
     }
