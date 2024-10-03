@@ -1700,3 +1700,67 @@ Route::controller(ReprocesoController::class)->group(function () {
     Route::post('Reproceso/Delete_Reproceso', 'Delete_Reproceso');
     Route::get('Reproceso/Excel_Reproceso', 'Excel_Reproceso');
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+use App\Http\Controllers\MercaderiaExtraerController;
+Route::controller(MercaderiaExtraerController::class)->group(function () {
+    Route::get('MercaderiaExtraer/Mercaderia', 'Mercaderia');
+    Route::post('MercaderiaExtraer/Buscar_Mercaderia', 'Buscar_Mercaderia');
+    Route::get('MercaderiaExtraer/Excel_MTotal/{sem}', 'Excel_MTotal');
+    Route::post('MercaderiaExtraer/Cierre_Mercaderia', 'Cierre_Mercaderia');
+    Route::get('MercaderiaExtraer/Excel_Mercaderia/{usu}/{sem}/{anio}/{cierre}', 'Excel_Mercaderia');
+});
+
+use App\Http\Controllers\MercaderiaConfController;
+Route::controller(MercaderiaConfController::class)->group(function () {
+    Route::get('MercaderiaConf/TablaMercaderia', 'TablaMercaderia');
+    Route::get('MercaderiaConf/Percha', 'Percha');
+    Route::get('MercaderiaConf/Modal_Percha', 'Modal_Percha');
+    Route::post('MercaderiaConf/Insert_Percha', 'Insert_Percha');
+    Route::get('MercaderiaConf/Modal_Update_Percha/{id}', 'Modal_Update_Percha');
+    Route::post('MercaderiaConf/Update_Percha', 'Update_Percha');
+    Route::post('MercaderiaConf/Delete_Percha', 'Delete_Percha');
+    Route::get('MercaderiaConf/Nicho', 'Nicho');
+    Route::get('MercaderiaConf/Modal_Nicho', 'Modal_Nicho');
+    Route::post('MercaderiaConf/Insert_Nicho', 'Insert_Nicho');
+    Route::get('MercaderiaConf/Modal_Update_Nicho/{id}', 'Modal_Update_Nicho');
+    Route::post('MercaderiaConf/Update_Nicho', 'Update_Nicho');
+    Route::post('MercaderiaConf/Delete_Nicho', 'Delete_Nicho');
+});

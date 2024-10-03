@@ -1,9 +1,3 @@
-<style>
-    input[type="radio"]:disabled + label {
-        color: inherit !important;
-    }
-</style>
-
 <form id="formularios" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title"> @if ($tipo=="1") Registar @elseif ($tipo=="2") Actualizar @else Ver @endif pago:</h5>
@@ -65,7 +59,7 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularios'));
-        var url = "{{ route('letra_cobrar.update_estado', $get_id->id_cheque_letra) }}";
+        var url = "{{ route('letra_cobrar.update_estado', $get_id->id_letra_cobrar) }}";
 
         if ({{ $tipo }}=="1"){
             var titulo = "registrar";
@@ -91,25 +85,14 @@
                     processData: false,
                     contentType: false,
                     success: function(data) {
-                        if(data=="error"){
-                            Swal({
-                                title: '¡Actualización Denegada!',
-                                text: "¡Existe un registro con el mismo número único!",
-                                type: 'error',
-                                showCancelButton: false,
-                                confirmButtonColor: '#3085d6',
-                                confirmButtonText: 'OK',
-                            });
-                        }else{
-                            swal.fire(
-                                '¡Actualización Exitosa!',
-                                '¡Haga clic en el botón!',
-                                'success'
-                            ).then(function() {
-                                Lista_Letra_Cobrar();
-                                $("#ModalUpdate .close").click();
-                            })
-                        }
+                        swal.fire(
+                            '¡Actualización Exitosa!',
+                            '¡Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            Lista_Letra_Cobrar();
+                            $("#ModalUpdate .close").click();
+                        })
                     },
                     error:function(xhr) {
                         var errors = xhr.responseJSON.errors;

@@ -51,13 +51,13 @@
             </div>
 
             <div class="form-group col-lg-6">
-                <label>Aceptante:</label>
-                <select class="form-control basice" name="id_aceptantee" id="id_aceptantee">
+                <label>Cliente:</label>
+                <select class="form-control basice" name="id_clientee" id="id_clientee">
                     <option value="0">Seleccione</option>
-                    @foreach ($list_aceptante as $list)
-                        <option value="{{ $list->id_aceptante }}"
-                        @if ($list->id_aceptante==$get_id->tipo_doc_aceptante."_".$get_id->num_doc_aceptante) selected @endif>
-                            {{ $list->nom_aceptante }}
+                    @foreach ($list_cliente as $list)
+                        <option value="{{ $list->id_cliente }}"
+                        @if ($list->id_cliente==$get_id->tipo_doc_cliente."_".$get_id->num_doc_cliente) selected @endif>
+                            {{ $list->nom_cliente }}
                         </option>
                     @endforeach
                 </select>
@@ -102,32 +102,9 @@
                     value="{{ $get_id->monto }}">
                 </div>
             </div>
-
-            <div class="form-group col-lg-3">
-                <label>Negociado/Endosado:</label>
-                <select class="form-control" name="negociado_endosadoe" id="negociado_endosadoe" 
-                onchange="Negociado_Endosado('e');">
-                    <option value="0">Seleccione</option>
-                    <option value="1" @if ($get_id->negociado_endosado=="1") selected @endif>Negociado</option>
-                    <option value="2" @if ($get_id->negociado_endosado=="2") selected @endif>Endosado</option>
-                </select>
-            </div>
         </div>
 
         <div class="row">
-            <div class="form-group col-lg-6 empresa_vinculadae" @if ($get_id->negociado_endosado!="2") style="display: none;" @endif>
-                <label>Empresa vinculada:</label>
-                <select class="form-control basice" name="id_empresa_vinculadae" id="id_empresa_vinculadae">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_aceptante as $list)
-                        <option value="{{ $list->id_aceptante }}"
-                        @if ($list->id_aceptante==$get_id->tipo_doc_emp_vinculada."_".$get_id->num_doc_emp_vinculada) selected @endif>
-                            {{ $list->nom_aceptante }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
             <div class="form-group col-lg-4">
                 <label>Comprobante:</label>
                 @if ($get_id->documento!="")
@@ -165,7 +142,7 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('letra_cobrar.update', $get_id->id_cheque_letra) }}";
+        var url = "{{ route('letra_cobrar.update', $get_id->id_letra_cobrar) }}";
 
         $.ajax({
             url: url,

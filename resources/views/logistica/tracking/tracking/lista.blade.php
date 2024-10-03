@@ -460,20 +460,9 @@ use App\Models\TrackingDetalleProceso;
                 </a>
                 @endif
                 @elseif($list->id_estado==8)
-                <!-- PUESTOS DE TIENDA -->
-                @if (session('usuario')->id_puesto==29 ||
-                session('usuario')->id_puesto==30 ||
-                session('usuario')->id_puesto==31 ||
-                session('usuario')->id_puesto==32 ||
-                session('usuario')->id_puesto==33 ||
-                session('usuario')->id_puesto==34 ||
-                session('usuario')->id_puesto==35 ||
-                session('usuario')->id_puesto==161 ||
-                session('usuario')->id_puesto==167 ||
-                session('usuario')->id_puesto==168 ||
-                session('usuario')->id_puesto==197 ||
-                session('usuario')->id_puesto==311 ||
-                session('usuario')->id_puesto==314 ||
+                <!-- PUESTO DE MAYRA TORRES (76) y JAIME SAAVEDRA (97) -->
+                @if (session('usuario')->id_puesto==76 ||
+                session('usuario')->id_puesto==97 ||
                 session('usuario')->id_nivel==1)
                 <a href="javascript:void(0);" title="Cierre inspección de fardos" onclick="Insert_Cierre_Inspeccion_Fardos('{{ $list->id }}');">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock text-success">
@@ -483,8 +472,13 @@ use App\Models\TrackingDetalleProceso;
                 </a>
                 @endif
                 @elseif($list->id_estado==9)
-                <!-- PUESTOS DE TIENDA -->
-                @if (session('usuario')->id_puesto==29 ||
+                <!-- PUESTO DE MAYRA TORRES (76) y JAIME SAAVEDRA (97) -->
+                <!-- PUESTOS DE TIENDA --> 
+                @if (((session('usuario')->id_puesto==76 ||
+                session('usuario')->id_puesto==97) &&
+                ($list->hacia=="B09" || 
+                $list->hacia=="B19")) ||
+                ((session('usuario')->id_puesto==29 ||
                 session('usuario')->id_puesto==30 ||
                 session('usuario')->id_puesto==31 ||
                 session('usuario')->id_puesto==32 ||
@@ -496,7 +490,8 @@ use App\Models\TrackingDetalleProceso;
                 session('usuario')->id_puesto==168 ||
                 session('usuario')->id_puesto==197 ||
                 session('usuario')->id_puesto==311 ||
-                session('usuario')->id_puesto==314 ||
+                session('usuario')->id_puesto==314) &&
+                $list->hacia!="B09" && $list->hacia!="B19") ||
                 session('usuario')->id_nivel==1)
                 <a href="{{ route('tracking.pago_transporte', $list->id) }}" title="Pago de transporte">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card text-primary">
@@ -747,15 +742,15 @@ use App\Models\TrackingDetalleProceso;
                             <div class="card-body">
                                 <h5 class="card-title mt-3" style="color: #00ba8e">DESPACHO</h5>
                                 @foreach ($estado as $row)
-                                @if ($row['id_proceso'] == 1)
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00ba8e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                </svg>
-                                {{ $row['descripcion'] }}<br>
-                                <?php if ($row['descripcion'] == $list->descripcion) {
-                                    break;
-                                } ?>
+                                @if ($row['id_proceso'] == 1 && $row['id_tracking']==$list->id)
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00ba8e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    </svg>
+                                    {{ $row['descripcion'].' - '.$row['fecha'].' - '. $row['hora'] }}<br>
+                                    <?php if ($row['descripcion'] == $list->descripcion) {
+                                        break;
+                                    } ?>
                                 @endif
                                 @endforeach
                             </div>
@@ -764,12 +759,12 @@ use App\Models\TrackingDetalleProceso;
                             <div class="card-body">
                                 <h5 class="card-title mt-3" style="color: #00ba8e">TRASLADO</h5>
                                 @foreach ($estado as $row)
-                                @if ($row['id_proceso'] == 2)
+                                @if ($row['id_proceso'] == 2 && $row['id_tracking']==$list->id)
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00ba8e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
                                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                 </svg>
-                                {{ $row['descripcion'] }}<br>
+                                {{ $row['descripcion'].' - '.$row['fecha'].' - '. $row['hora'] }}<br>
                                 <?php if ($row['descripcion'] == $list->descripcion) {
                                     break;
                                 } ?>
@@ -781,12 +776,12 @@ use App\Models\TrackingDetalleProceso;
                             <div class="card-body">
                                 <h5 class="card-title mt-3" style="color: #ff295c">RECEPCION DE MERCADERÍA</h5>
                                 @foreach ($estado as $row)
-                                @if ($row['id_proceso'] == 3)
+                                @if ($row['id_proceso'] == 3 && $row['id_tracking']==$list->id)
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff295c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
                                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                 </svg>
-                                {{ $row['descripcion'] }}<br>
+                                {{ $row['descripcion'].' - '.$row['fecha'].' - '. $row['hora'] }}<br>
                                 <?php if ($row['descripcion'] == $list->descripcion) {
                                     break;
                                 } ?>
@@ -798,12 +793,12 @@ use App\Models\TrackingDetalleProceso;
                             <div class="card-body">
                                 <h5 class="card-title mt-3" style="color: #ff295c">INSPECCIÓN DE FARDO</h5>
                                 @foreach ($estado as $row)
-                                @if ($row['id_proceso'] == 4)
+                                @if ($row['id_proceso'] == 4 && $row['id_tracking']==$list->id)
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff295c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
                                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                 </svg>
-                                {{ $row['descripcion'] }}<br>
+                                {{ $row['descripcion'].' - '.$row['fecha'].' - '. $row['hora'] }}<br>
                                 <?php if ($row['descripcion'] == $list->descripcion) {
                                     break;
                                 } ?>
@@ -815,12 +810,12 @@ use App\Models\TrackingDetalleProceso;
                             <div class="card-body">
                                 <h5 class="card-title mt-3" style="color: #fea701">PAGO DE MERCADERÍA</h5>
                                 @foreach ($estado as $row)
-                                @if ($row['id_proceso'] == 5)
+                                @if ($row['id_proceso'] == 5 && $row['id_tracking']==$list->id)
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fea701" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
                                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                 </svg>
-                                {{ $row['descripcion'] }}<br>
+                                {{ $row['descripcion'].' - '.$row['fecha'].' - '. $row['hora'] }}<br>
                                 <?php if ($row['descripcion'] == $list->descripcion) {
                                     break;
                                 } ?>
@@ -832,12 +827,12 @@ use App\Models\TrackingDetalleProceso;
                             <div class="card-body">
                                 <h5 class="card-title mt-3" style="color: #fea701">INSPECCION DE MERCADERÍA</h5>
                                 @foreach ($estado as $row)
-                                @if ($row['id_proceso'] == 6)
+                                @if ($row['id_proceso'] == 6 && $row['id_tracking']==$list->id)
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fea701" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
                                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                 </svg>
-                                {{ $row['descripcion'] }}<br>
+                                {{ $row['descripcion'].' - '.$row['fecha'].' - '. $row['hora'] }}<br>
                                 <?php if ($row['descripcion'] == $list->descripcion) {
                                     break;
                                 } ?>
@@ -1076,12 +1071,12 @@ use App\Models\TrackingDetalleProceso;
                                 ?>
                                 @if ($contiene_proceso_7)
                                 @foreach ($estado as $row)
-                                @if ($row['id_proceso'] == 7)
+                                @if ($row['id_proceso'] == 7 && $row['id_tracking']==$list->id)
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00b1f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
                                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                 </svg>
-                                {{ $row['descripcion'] }}<br>
+                                {{ $row['descripcion'].' - '.$row['fecha'].' - '. $row['hora'] }}<br>
                                 <?php if ($row['descripcion'] == $list->descripcion) {
                                     break;
                                 } ?>
@@ -1104,12 +1099,12 @@ use App\Models\TrackingDetalleProceso;
                                 ?>
                                 @if ($contiene_proceso_8)
                                 @foreach ($estado as $row)
-                                @if ($row['id_proceso'] == 8)
+                                @if ($row['id_proceso'] == 8 && $row['id_tracking']==$list->id)
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00b1f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
                                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                 </svg>
-                                {{ $row['descripcion'] }}<br>
+                                {{ $row['descripcion'].' - '.$row['fecha'].' - '. $row['hora'] }}<br>
                                 <?php if ($row['descripcion'] == $list->descripcion) {
                                     break;
                                 } ?>
@@ -1125,12 +1120,12 @@ use App\Models\TrackingDetalleProceso;
                             <div class="card-body">
                                 <h5 class="card-title mt-3">FIN</h5>
                                 @foreach ($estado as $row)
-                                @if ($row['id_proceso'] == 9)
+                                @if ($row['id_proceso'] == 9 && $row['id_tracking']==$list->id)
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#302f30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
                                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                 </svg>
-                                {{ $row['descripcion'] }}<br>
+                                {{ $row['descripcion'].' - '.$row['fecha'].' - '. $row['hora'] }}<br>
                                 <?php if ($row['descripcion'] == $list->descripcion) {
                                     break;
                                 } ?>
