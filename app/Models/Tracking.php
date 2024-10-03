@@ -137,9 +137,9 @@ class Tracking extends Model
                     GROUP BY id_detalle) me ON mp.ultimo_id=me.id_detalle
                     LEFT JOIN tracking_detalle_estado de ON me.ultimo_id=de.id
                     LEFT JOIN tracking_estado te ON de.id_estado=te.id
-                    WHERE ($parte tr.estado=1 AND de.id_estado!=21) OR 
+                    WHERE tr.iniciar=1 AND (($parte tr.estado=1 AND de.id_estado!=21) OR 
                     ($parte tr.estado=1 AND de.id_estado=21 AND 
-                    DATE(de.fecha)>DATE_SUB(CURDATE(), INTERVAL 1 WEEK))";
+                    DATE(de.fecha)>DATE_SUB(CURDATE(), INTERVAL 1 WEEK)))";
             $query = DB::select($sql);
             return $query;
         }
