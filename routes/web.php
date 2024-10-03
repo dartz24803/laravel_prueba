@@ -1739,7 +1739,6 @@ Route::controller(ReprocesoController::class)->group(function () {
 
 
 use App\Http\Controllers\MercaderiaExtraerController;
-
 Route::controller(MercaderiaExtraerController::class)->group(function () {
     Route::get('MercaderiaExtraer/Mercaderia', 'Mercaderia');
     Route::post('MercaderiaExtraer/Buscar_Mercaderia', 'Buscar_Mercaderia');
@@ -1749,15 +1748,18 @@ Route::controller(MercaderiaExtraerController::class)->group(function () {
 });
 
 use App\Http\Controllers\MercaderiaConfController;
-
 Route::controller(MercaderiaConfController::class)->group(function () {
     Route::get('MercaderiaConf/TablaMercaderia', 'TablaMercaderia');
-    Route::post('MercaderiaConf/Lista_Reproceso', 'Lista_Reproceso');
-    Route::get('MercaderiaConf/Modal_Reproceso', 'Modal_Reproceso');
-    Route::post('MercaderiaConf/Insert_Reproceso', 'Insert_Reproceso');
-    Route::get('MercaderiaConf/Modal_Update_MercaderiaConf/{id}', 'Modal_Update_Reproceso');
-    Route::get('MercaderiaConf/Modal_Ver_MercaderiaConf/{id}', 'Modal_Ver_Reproceso');
-    Route::post('MercaderiaConf/Update_Reproceso', 'Update_Reproceso');
-    Route::post('MercaderiaConf/Delete_Reproceso', 'Delete_Reproceso');
-    Route::get('MercaderiaConf/Excel_Reproceso', 'Excel_Reproceso');
+    Route::get('MercaderiaConf/Percha', 'Percha');
+    Route::get('MercaderiaConf/Modal_Percha', 'Modal_Percha');
+    Route::post('MercaderiaConf/Insert_Percha', 'Insert_Percha');
+    Route::get('MercaderiaConf/Modal_Update_Percha/{id}', 'Modal_Update_Percha');
+    Route::post('MercaderiaConf/Update_Percha', 'Update_Percha');
+    Route::post('MercaderiaConf/Delete_Percha', 'Delete_Percha');
+    Route::get('MercaderiaConf/Nicho', 'Nicho');
+    Route::get('MercaderiaConf/Modal_Nicho', 'Modal_Nicho');
+    Route::post('MercaderiaConf/Insert_Nicho', 'Insert_Nicho');
+    Route::get('MercaderiaConf/Modal_Update_Nicho/{id}', 'Modal_Update_Nicho');
+    Route::post('MercaderiaConf/Update_Nicho', 'Update_Nicho');
+    Route::post('MercaderiaConf/Delete_Nicho', 'Delete_Nicho');
 });
