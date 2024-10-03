@@ -291,7 +291,6 @@ PUNTO DE LLEGADA:</textarea>
         if (tipoTransporteId && costo) {
             // Obtener el cuerpo de la tabla
             var tableBody = document.querySelector('#selected-data-detalle-table tbody');
-
             // Crear una nueva fila
             var newRow = document.createElement('tr');
             newRow.classList.add('text-center');

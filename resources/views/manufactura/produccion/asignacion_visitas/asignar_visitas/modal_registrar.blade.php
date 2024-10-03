@@ -233,8 +233,6 @@
 
     $(document).ready(function() {
         // Evento click del botón "+"
-
-        // Evento click del botón "+"
         $('#btn-add-row').on('click', function() {
             // Obtener los valores seleccionados (IDs)
             let partida = $('#id_ptpartida').val() || [];
@@ -291,13 +289,6 @@
             }
         });
 
-        // Evento para eliminar una fila
-        $(document).on('click', '.btn-delete-row', function() {
-            $(this).closest('tr').remove();
-            if ($('#selected-data-table tbody tr').length === 0) {
-                $('#selected-data-table').hide();
-            }
-        });
     });
 
     function Insert_Funcion_Temporal() {

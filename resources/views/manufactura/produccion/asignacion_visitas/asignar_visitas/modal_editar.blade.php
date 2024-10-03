@@ -219,8 +219,6 @@
 
 
 
-
-
     var tabla = $('#tabla_js2').DataTable({
         "columnDefs": [{
                 "width": "180px",

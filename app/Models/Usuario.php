@@ -268,6 +268,21 @@ class Usuario extends Model
         return json_decode(json_encode($result), true);
     }
 
+    static function get_list_colaborador_all()
+    {
+        $sql = "SELECT u.*,  a.nom_area, g.nom_gerencia, p.nom_puesto
+                    from users u
+                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
+                    LEFT JOIN area a on a.id_area=u.id_area
+                    LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    where u.estado=1 and u.id_nivel<>8";
+
+        $result = DB::select($sql);
+        // No es necesario convertir a array
+        return $result; // Retornar como objeto
+    }
+
+
     static function get_list_proximos_cumpleanios_admin($dato)
     {
         $anio = date('Y');
@@ -627,6 +642,21 @@ class Usuario extends Model
                 left join tipo_documento t on t.id_tipo_documento=u.id_tipo_documento
                 left join gerencia ge on ge.id_gerencia = u.id_gerencia 
                 WHERE u.estado=1 and u.id_nivel in (1,9)";
+
+        $query = DB::select($sql);
+        return $query;
+    }
+
+    function get_list_colaborador_xarea($area)
+    {
+        $sql = "SELECT u.*,  n.nom_nacionalidad, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo
+                from users u
+                LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
+                LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
+                LEFT JOIN area a on a.id_area=u.id_area
+                LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                LEFT JOIN cargo c on c.id_cargo=u.id_cargo
+                where u.estado=1 and u.id_nivel<>8 and u.id_area='" . $area . "'";
 
         $query = DB::select($sql);
         return $query;

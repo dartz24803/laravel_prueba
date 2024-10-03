@@ -312,7 +312,7 @@ class BiReporteController extends Controller
         $usuarios = Usuario::where('id_area', $areaId)
             ->where('estado', 1)  // Filtrar por usuarios activos si es necesario
             ->get(['id_usuario', 'usuario_apater', 'usuario_amater', 'usuario_nombres']);
-
+        // dd($usuarios);
         // Concatenar los campos en una propiedad adicional
         $usuarios->map(function ($usuario) {
             $usuario->nombre_completo = "{$usuario->usuario_apater} {$usuario->usuario_amater} {$usuario->usuario_nombres}";

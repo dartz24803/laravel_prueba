@@ -7,9 +7,11 @@ use App\Models\ArchivoSeguimientoCoordinador;
 use App\Models\ArchivoSupervisionTienda;
 use App\Models\Area;
 use App\Models\AreaErrorPicking;
+use App\Models\Articulos;
 use App\Models\Base;
 use App\Models\Capacitacion;
 use App\Models\Consumible;
+use App\Models\ConsumibleDetalle;
 use App\Models\ContenidoSeguimientoCoordinador;
 use App\Models\ContenidoSupervisionTienda;
 use App\Models\DetalleSeguimientoCoordinador;
@@ -41,6 +43,7 @@ use App\Models\Notificacion;
 use App\Models\SubGerencia;
 use App\Models\TallaErrorPicking;
 use App\Models\TipoErrorPicking;
+use App\Models\UnidadLogistica;
 use App\Models\User;
 use App\Models\Usuario;
 
@@ -66,28 +69,37 @@ class ConsumibleController extends Controller
 
     public function edit_cons($id)
     {
-        $get_id = ErroresPicking::findOrFail($id);
+        $get_id = Consumible::findOrFail($id);
         // dd($get_id);
 
-        $list_tipo_error = TipoErrorPicking::select('id', 'nombre')->get();
+        $list_area = Area::select('id_area', 'nom_area')
+            ->where('estado', 1)
+            ->orderBy('nom_area', 'ASC')
+            ->distinct('nom_area')->get();
 
-        $list_talla = TallaErrorPicking::select('id', 'nombre')
-            ->where('talla_error_picking.estado', 1)
+        $list_articulos = Articulos::select('id_articulo', 'nom_articulo')
+            ->where('articulo.estado', 1)
             ->get();
 
-        $list_base = Base::get_list_todas_bases_agrupadas_bi();
-
-
-        $list_area = AreaErrorPicking::select('id', 'nombre')
-            ->orderBy('id', 'ASC')
+        $list_unidades = UnidadLogistica::select('id_unidad', 'nom_unidad')
+            ->where('unidad_log.estado', 1)
             ->get();
 
+        $list_colaborador = Usuario::get_list_colaborador_all();
 
+
+        $list_consumibles_detalle = ConsumibleDetalle::select('id_detalle_consumible', 'articulo', 'unidad', 'cantidad')
+            ->where('consumible_detalle.estado', 1)
+            ->where('consumible_detalle.id_consumible', $id)
+            ->get();
+
+        // dd($list_consumibles_detalle);
         return view('logistica.consumible.modal_editar', compact(
-            'list_base',
-            'list_tipo_error',
+            'list_unidades',
+            'list_articulos',
             'list_area',
-            'list_talla',
+            'list_colaborador',
+            'list_consumibles_detalle',
             'get_id'
         ));
     }
@@ -96,59 +108,58 @@ class ConsumibleController extends Controller
 
     public function create_cons()
     {
+        $list_area = Area::select('id_area', 'nom_area')
+            ->where('estado', 1)
+            ->orderBy('nom_area', 'ASC')
+            ->distinct('nom_area')->get();
 
-        $list_base = Base::get_list_todas_bases_agrupadas_bi();
-        $list_usuario = Usuario::get_list_usuario_inventario();
+        $list_articulos = Articulos::select('id_articulo', 'nom_articulo')
+            ->where('articulo.estado', 1)
+            ->get();
+
+        $list_unidades = UnidadLogistica::select('id_unidad', 'nom_unidad')
+            ->where('unidad_log.estado', 1)
+            ->get();
+
+        $list_colaborador = Usuario::get_list_colaborador_all();
 
         return view('logistica.consumible.modal_registrar', compact(
-            'list_base',
-            'list_usuario'
+            'list_articulos',
+            'list_area',
+            'list_unidades',
+            'list_colaborador'
         ));
     }
 
     public function store_cons(Request $request)
     {
         $request->validate([
-            'fecha' => 'required',
-            'base' => 'required',
-            'responsable' => 'required',
+            'areacon' => 'required',
+            'colaborador' => 'required',
+            'cantidad' => 'required',
+            'articulo' => 'required',
 
         ], [
-            'fecha.required' => 'Debe ingresar fecha.',
-            'base.required' => 'Debe ingresar nase.',
-            'responsable.required' => 'Debe seleccionar responsable',
+            'areacon.required' => 'Debe ingresar area.',
+            'colaborador.required' => 'Debe ingresar colaborador.',
+            'articulo.required' => 'Debe seleccionar articulo',
 
         ]);
-
+        $tableData = json_decode($request->input('tableData'), true);
+        // dd($tableData);
         $anio = date('Y');
-        $totalRows_t = DB::table('inventario')->count();
-        // $totalRows_t = count($this->Model_Logistica->cont_carga_inverntario());
         $aniof = substr($anio, 2, 2);
-        if ($totalRows_t < 9) {
-            $codigofinal = "I" . $aniof . "0000" . ($totalRows_t + 1);
-        }
-        if ($totalRows_t > 8 && $totalRows_t < 99) {
-            $codigofinal = "I" . $aniof . "000" . ($totalRows_t + 1);
-        }
-        if ($totalRows_t > 98 && $totalRows_t < 999) {
-            $codigofinal = "I" . $aniof . "00" . ($totalRows_t + 1);
-        }
-        if ($totalRows_t > 998 && $totalRows_t < 9999) {
-            $codigofinal = "I" . $aniof . "0" . ($totalRows_t + 1);
-        }
-        if ($totalRows_t > 9998) {
-            $codigofinal = "I" . $aniof . ($totalRows_t + 1);
-        }
-        $cod_inventario = $codigofinal;
+        $ultimoId = DB::table('consumible')->max('id_consumible');
+        $nuevoId = $ultimoId ? $ultimoId + 1 : 1;
+        // Generar el código final en formato A2300001 basado en el nuevo id
+        $codigofinal = 'C' . $aniof . str_pad($nuevoId, 5, '0', STR_PAD_LEFT);
 
-        Inventario::create([
-            'cod_inventario'  => $cod_inventario,
-            'fecha' => $request->fecha ?? null,
-            'base' => $request->base ?? null,
-            'id_responsable' => $request->responsable ?? null,
-            'conteo' => 0.00,
-            'stock' => 0.00,
-            'diferencia' =>  0.00,
+        $consumible = Consumible::create([
+            'cod_consumible'  => $codigofinal,
+            'id_area' => $request->areacon ?? null,
+            'id_usuario' => $request->colaborador ?? null,
+            'observacion' => '',
+            'estado_consumible' => 1,
             'estado' => 1,
             'fec_reg' => now(),
             'user_reg' => session('usuario')->id_usuario,
@@ -158,61 +169,70 @@ class ConsumibleController extends Controller
             'user_eli' => null,
         ]);
 
-
+        foreach ($tableData as $index => $data) {
+            // Crear un nuevo registro en la tabla consumible_detalle
+            ConsumibleDetalle::create([
+                'id_consumible' => $consumible->id_consumible,
+                'articulo' => $data['articulo'],
+                'unidad' => $data['unidad'],
+                'cantidad' => $data['cantidad'],
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+                'user_eli' => 0,
+            ]);
+        }
         // Redirigir o devolver respuesta
         return redirect()->back()->with('success', 'Datos guardados exitosamente');
     }
 
     public function update_cons(Request $request, $id)
     {
+        // Validar los campos del formulario
         $request->validate([
-            'semanae' => 'required',
-            'pertenecee' => 'required',
-            'encontradoe' => 'required',
-            'id_areae' => 'required',
-            'estiloe.*' => 'required',
-            'colore.*' => 'required',
-            'id_tallae.*' => 'required',
-            'prendas_devueltase.*' => 'required',
-            'id_tipo_errore.*' => 'required',
-            'id_responsable.*' => 'required',
-            'solucione.*' => 'required',
-            'observacione.*' => 'required',
+            'areacon' => 'required',
+            'colaborador' => 'required',
+
         ], [
-            'semanae.required' => 'Debe ingresar semana.',
-            'pertenecee.required' => 'Debe ingresar pertenece.',
-            'encontradoe.required' => 'Debe seleccionar encontrado',
-            'id_areae.required' => 'Debe seleccionar Area.',
-            'estiloe.*.required' => 'Debe ingresar un estilo.',
-            'colore.*.required' => 'Debe ingresar una color.',
-            'id_tallae.*.required' => 'Debe seleccionar una talla.',
-            'prendas_devueltase.*.required' => 'Debe seleccionar una prendas devueltas.',
-            'id_tipo_errore.*.required' => 'Debe ingresar un tipo de error.',
-            'id_responsablee.*.required' => 'Debe ingresar un responsable.',
-            'solucione.*.required' => 'Debe seleccionar una solución.',
-            'observacione.*.required' => 'Debe seleccionar una observación.',
+            'areacon.required' => 'Debe ingresar el área.',
+            'colaborador.required' => 'Debe ingresar el colaborador.',
+
         ]);
 
-        ErroresPicking::where('id', $id)->update([
-            'semana'  => $request->semanae,
-            'pertenece' => $request->pertenecee,
-            'encontrado' => $request->encontradoe,
-            'id_area' => $request->id_areae,
-            'estilo' => $request->estiloe,
-            'color' => $request->colore,
-            'id_talla' => $request->id_tallae,
-            'prendas_devueltas' => $request->prendas_devueltase,
-            'id_tipo_error' => $request->id_tipo_errore,
-            'id_responsable' => $request->id_responsablee,
-            'solucion' => $request->solucione,
-            'observacion' => $request->observacione,
+        // Actualizar el registro del consumible
+        $consumible = Consumible::findOrFail($id);
+        $consumible->update([
+            'id_area' => $request->areacon,
+            'id_usuario' => $request->colaborador,
+            'observacion' => $request->observacion ?? '',
+            'estado_consumible' => 1,
             'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario,
-            'fec_eli' => null,
-            'user_eli' => null,
+        ]);
+        // dd($request->all());
+        // Eliminar los registros anteriores de consumible_detalle para este consumible
+        ConsumibleDetalle::where('id_consumible', $consumible->id_consumible)->delete();
+        $id_unidades = $request->input('id_unidad', []);
+        $id_articulos = $request->input('id_articulo', []);
+        $cantidades = $request->input('cantidad', []);
+        // dd($id_unidades);
+        foreach ($cantidades as $index => $cantidad) {
+            ConsumibleDetalle::create([
+                'id_consumible' => $consumible->id_consumible,
+                'articulo' => $id_articulos[$index],
+                'unidad' => $id_unidades[$index],
+                'cantidad' => $cantidad,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Consumible actualizado correctamente',
         ]);
     }
 
@@ -220,7 +240,12 @@ class ConsumibleController extends Controller
 
     public function destroy_cons($id)
     {
-        ErroresPicking::where('ID', $id)->firstOrFail()->update([
+        Consumible::where('id_consumible', $id)->firstOrFail()->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+        ConsumibleDetalle::where('id_consumible', $id)->firstOrFail()->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario

@@ -49,6 +49,7 @@ use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
 use App\Http\Controllers\IntencionRenunciaConfController;
 use App\Http\Controllers\InternaInicioController;
+use App\Http\Controllers\LetraCobrarController;
 use App\Http\Controllers\LineaCarreraConfController;
 use App\Http\Controllers\LineaCarreraController;
 use App\Http\Controllers\LogisticaInicioController;
@@ -121,12 +122,13 @@ Route::controller(ReporteFotograficoController::class)->group(function () {
 });
 //LOGÍSTICA - TRACKING
 Route::controller(TrackingController::class)->group(function () {
+    Route::get('tracking', 'index')->name('tracking');
     //SUBIDA DE ARCHIVOS
     Route::post('tracking/list_archivo', 'list_archivo')->name('tracking.list_archivo');
     Route::post('tracking/previsualizacion_captura', 'previsualizacion_captura')->name('tracking.previsualizacion_captura');
     Route::delete('tracking/{id}/delete_archivo_temporal', 'delete_archivo_temporal')->name('tracking.delete_archivo_temporal');
     //FIN SUBIDA ARCHIVOS
-    Route::get('tracking', 'index')->name('tracking');
+    Route::get('tracking/index', 'index_tra')->name('tracking_index');
     Route::get('tracking/iniciar_tracking', 'iniciar_tracking')->name('tracking.iniciar_tracking');
     Route::get('tracking/llegada_tienda', 'llegada_tienda')->name('tracking.llegada_tienda');
     Route::post('tracking/list', 'list')->name('tracking.list');
@@ -164,6 +166,9 @@ Route::controller(TrackingController::class)->group(function () {
     Route::get('tracking/{cod_base}/mercaderia_nueva_tusu', 'mercaderia_nueva_tusu')->name('tracking.mercaderia_nueva_tusu');
     Route::get('tracking/{cod_base}/mercaderia_nueva_tpre', 'mercaderia_nueva_tpre')->name('tracking.mercaderia_nueva_tpre');
     Route::get('tracking/{cod_base}/{estilo}/modal_mercaderia_nueva', 'modal_mercaderia_nueva')->name('tracking.modal_mercaderia_nueva');
+    //BD TRACKING
+    Route::get('tracking_bd', 'index_bd')->name('tracking_bd');
+    Route::post('tracking_bd/list', 'list_bd')->name('tracking_bd.list');
 });
 //TIENDA - FUNCIÓN TEMPORAL
 Route::controller(FuncionTemporalController::class)->group(function () {
@@ -1464,6 +1469,22 @@ Route::controller(RegistroLetraController::class)->group(function () {
     Route::delete('registro_letra/{id}', 'destroy')->name('registro_letra.destroy');
     Route::get('registro_letra/{estado}/{id_empresa}/{id_aceptante}/{tipo_fecha}/{mes}/{anio}/excel', 'excel')->name('registro_letra.excel');
 });
+//TESORERÍA - LETRAS POR COBRAR
+Route::controller(LetraCobrarController::class)->group(function () {
+    Route::get('letra_cobrar', 'index')->name('letra_cobrar');
+    Route::post('letra_cobrar/list', 'list')->name('letra_cobrar.list');
+    Route::get('letra_cobrar/create', 'create')->name('letra_cobrar.create');
+    Route::post('letra_cobrar', 'store')->name('letra_cobrar.store');
+    Route::get('letra_cobrar/{id}/edit', 'edit')->name('letra_cobrar.edit');
+    Route::put('letra_cobrar/{id}', 'update')->name('letra_cobrar.update');
+    Route::get('letra_cobrar/{id}/{tipo}/unico', 'unico')->name('letra_cobrar.unico');
+    Route::put('letra_cobrar/{id}/update_unico', 'update_unico')->name('letra_cobrar.update_unico');
+    Route::get('letra_cobrar/{id}/{tipo}/estado', 'estado')->name('letra_cobrar.estado');
+    Route::put('letra_cobrar/{id}/update_estado', 'update_estado')->name('letra_cobrar.update_estado');
+    Route::delete('letra_cobrar/{id}', 'destroy')->name('letra_cobrar.destroy');
+    Route::get('letra_cobrar/{estado}/{id_empresa}/{id_cliente}/{mes}/{anio}/excel', 'excel')->name('letra_cobrar.excel');
+});
+
 
 
 //CUADRO CONTROL VISUAL ADMINISTRACION
