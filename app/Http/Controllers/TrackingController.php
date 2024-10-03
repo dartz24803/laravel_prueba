@@ -359,24 +359,24 @@ class TrackingController extends Controller
 
     public function index()
     {
-        //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();   
-        $list_subgerencia = SubGerencia::list_subgerencia(7);         
-        return view('logistica.tracking.index',compact('list_notificacion', 'list_subgerencia'));
-    }
-
-    public function index_tra()
-    {
         if (session('usuario')) {
             if(session('redirect_url')){
                 session()->forget('redirect_url');
             }
-            $list_mercaderia_nueva = MercaderiaSurtida::where('anio',date('Y'))->where('semana',date('W'))->exists();
-            return view('logistica.tracking.tracking.index', compact('list_mercaderia_nueva'));
+            //NOTIFICACIONES
+            $list_notificacion = Notificacion::get_list_notificacion();   
+            $list_subgerencia = SubGerencia::list_subgerencia(7);         
+            return view('logistica.tracking.index',compact('list_notificacion', 'list_subgerencia'));
         }else{
             session(['redirect_url' => 'http'.(isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']]);
             return redirect('/');
         }
+    }
+
+    public function index_tra()
+    {
+        $list_mercaderia_nueva = MercaderiaSurtida::where('anio',date('Y'))->where('semana',date('W'))->exists();
+        return view('logistica.tracking.tracking.index', compact('list_mercaderia_nueva'));
     }
 
     public function list(){
@@ -809,7 +809,7 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
             $mail->addAddress('ogutierrez@lanumero1.com.pe');
             $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
             /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
@@ -1073,7 +1073,7 @@ class TrackingController extends Controller
 
     public function list_archivo(Request $request)
     {
-        if($request->tipo=="3"){
+        if($request->tipo=="5"){
             $list_archivo = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['id_producto'=>$request->id_producto]);
         }else{
             $list_archivo = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['tipo'=>$request->tipo]);
@@ -1083,7 +1083,11 @@ class TrackingController extends Controller
 
     public function previsualizacion_captura(Request $request)
     {
-        $valida = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['tipo'=>$request->tipo]);
+        if($request->id_producto){
+            $valida = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['id_producto'=>$request->id_producto]);
+        }else{
+            $valida = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['tipo'=>$request->tipo]);
+        }
 
         if(count($valida)==3){
             echo "error";
@@ -1107,7 +1111,7 @@ class TrackingController extends Controller
                     ftp_pasv($con_id,true); 
                     $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
                     if($subio){
-                        if($request->tipo=="3"){
+                        if($request->tipo=="5"){
                             TrackingArchivoTemporal::create([
                                 'id_usuario' => session('usuario')->id_usuario,
                                 'tipo' => $request->tipo,
@@ -1271,7 +1275,7 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
             $mail->addAddress('ogutierrez@lanumero1.com.pe');
             $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
             /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
@@ -1509,7 +1513,7 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
             $mail->addAddress('ogutierrez@lanumero1.com.pe');
             $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
             /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
@@ -1849,7 +1853,7 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
                 $mail->addAddress('ogutierrez@lanumero1.com.pe');
                 $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
                 /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
@@ -1943,7 +1947,7 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
                 $mail->addAddress('ogutierrez@lanumero1.com.pe');
                 $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
                 /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
@@ -2074,6 +2078,21 @@ class TrackingController extends Controller
                 'guia_faltante.required' => 'Debe ingresar Nro. Gr (Faltante).',
                 'guia_faltante.max' => 'Nro. Gr (Faltante) debe tener como máximo 20 carácteres.'
             ]);
+
+            $errors = [];
+            if(!isset($get_id->archivo_sobrante)){
+                if ($request->archivo_sobrante == "") {
+                    $errors['sobrante'] = ['Debe adjuntar GR (Sobrante).'];
+                }
+            }
+            if(!isset($get_id->archivo_faltante)){
+                if ($request->archivo_faltante == "") {
+                    $errors['faltante'] = ['Debe adjuntar GR (Faltante).'];
+                }
+            }
+            if (!empty($errors)) {
+                return response()->json(['errors' => $errors], 422);
+            }
             
             Tracking::findOrFail($id)->update([
                 'guia_sobrante' => $request->guia_sobrante,
@@ -2081,6 +2100,78 @@ class TrackingController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
+
+            if($_FILES["archivo_sobrante"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    if($get_id->archivo_sobrante!=""){
+                        ftp_delete($con_id, "TRACKING/".basename($get_id->archivo_sobrante));
+                        TrackingArchivo::where('id_tracking',$id)->where('tipo',3)->delete();
+                    }
+
+                    $path = $_FILES["archivo_sobrante"]["name"];
+                    $source_file = $_FILES['archivo_sobrante']['tmp_name'];
+    
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $nombre_soli = "GR_Sobrante_".$id."_".date('YmdHis');
+                    $nombre = $nombre_soli.".".strtolower($ext);
+    
+                    ftp_pasv($con_id,true); 
+                    $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
+                    if($subio){
+                        $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
+                        TrackingArchivo::create([
+                            'id_tracking' => $id,
+                            'tipo' => 3,
+                            'archivo' => $archivo
+                        ]);
+                    }else{
+                        echo "Archivo no subido correctamente";
+                    }
+                }else{
+                    echo "No se conecto";
+                }
+            }
+
+            if($_FILES["archivo_faltante"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    if($get_id->archivo_faltante!=""){
+                        ftp_delete($con_id, "TRACKING/".basename($get_id->archivo_faltante));
+                        TrackingArchivo::where('id_tracking',$id)->where('tipo',4)->delete();
+                    }
+
+                    $path = $_FILES["archivo_faltante"]["name"];
+                    $source_file = $_FILES['archivo_faltante']['tmp_name'];
+    
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $nombre_soli = "GR_Faltante_".$id."_".date('YmdHis');
+                    $nombre = $nombre_soli.".".strtolower($ext);
+    
+                    ftp_pasv($con_id,true); 
+                    $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
+                    if($subio){
+                        $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
+                        TrackingArchivo::create([
+                            'id_tracking' => $id,
+                            'tipo' => 4,
+                            'archivo' => $archivo
+                        ]);
+                    }else{
+                        echo "Archivo no subido correctamente";
+                    }
+                }else{
+                    echo "No se conecto";
+                }
+            }
         }elseif($get_id->sobrantes>0 &&
         (session('usuario')->id_puesto==76 ||
         session('usuario')->id_nivel==1)){
@@ -2091,11 +2182,57 @@ class TrackingController extends Controller
                 'guia_sobrante.max' => 'Nro. Gr (Sobrante) debe tener como máximo 20 carácteres.'
             ]);
 
+            $errors = [];
+            if(!isset($get_id->archivo_sobrante)){
+                if ($request->archivo_sobrante == "") {
+                    $errors['sobrante'] = ['Debe adjuntar GR (Sobrante).'];
+                }
+            }
+            if (!empty($errors)) {
+                return response()->json(['errors' => $errors], 422);
+            }
+
             Tracking::findOrFail($id)->update([
                 'guia_sobrante' => $request->guia_sobrante,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
+
+            if($_FILES["archivo_sobrante"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    if($get_id->archivo_sobrante!=""){
+                        ftp_delete($con_id, "TRACKING/".basename($get_id->archivo_sobrante));
+                        TrackingArchivo::where('id_tracking',$id)->where('tipo',3)->delete();
+                    }
+
+                    $path = $_FILES["archivo_sobrante"]["name"];
+                    $source_file = $_FILES['archivo_sobrante']['tmp_name'];
+    
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $nombre_soli = "GR_Sobrante_".$id."_".date('YmdHis');
+                    $nombre = $nombre_soli.".".strtolower($ext);
+    
+                    ftp_pasv($con_id,true); 
+                    $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
+                    if($subio){
+                        $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
+                        TrackingArchivo::create([
+                            'id_tracking' => $id,
+                            'tipo' => 3,
+                            'archivo' => $archivo
+                        ]);
+                    }else{
+                        echo "Archivo no subido correctamente";
+                    }
+                }else{
+                    echo "No se conecto";
+                }
+            }
         }elseif($get_id->faltantes>0 &&
         (session('usuario')->id_puesto==29 || 
         session('usuario')->id_puesto==30 || 
@@ -2118,11 +2255,57 @@ class TrackingController extends Controller
                 'guia_faltante.max' => 'Nro. Gr (Faltante) debe tener como máximo 20 carácteres.'
             ]);
 
+            $errors = [];
+            if(!isset($get_id->archivo_faltante)){
+                if ($request->archivo_faltante == "") {
+                    $errors['faltante'] = ['Debe adjuntar GR (Faltante).'];
+                }
+            }
+            if (!empty($errors)) {
+                return response()->json(['errors' => $errors], 422);
+            }
+
             Tracking::findOrFail($id)->update([
                 'guia_faltante' => $request->guia_faltante,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
+
+            if($_FILES["archivo_faltante"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    if($get_id->archivo_faltante!=""){
+                        ftp_delete($con_id, "TRACKING/".basename($get_id->archivo_faltante));
+                        TrackingArchivo::where('id_tracking',$id)->where('tipo',4)->delete();
+                    }
+
+                    $path = $_FILES["archivo_faltante"]["name"];
+                    $source_file = $_FILES['archivo_faltante']['tmp_name'];
+    
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $nombre_soli = "GR_Faltante_".$id."_".date('YmdHis');
+                    $nombre = $nombre_soli.".".strtolower($ext);
+    
+                    ftp_pasv($con_id,true); 
+                    $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
+                    if($subio){
+                        $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
+                        TrackingArchivo::create([
+                            'id_tracking' => $id,
+                            'tipo' => 4,
+                            'archivo' => $archivo
+                        ]);
+                    }else{
+                        echo "Archivo no subido correctamente";
+                    }
+                }else{
+                    echo "No se conecto";
+                }
+            }
         }
 
         if($request->comentario){
@@ -2191,7 +2374,7 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
                 $mail->addAddress('ogutierrez@lanumero1.com.pe');
                 $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
                 /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
@@ -2285,7 +2468,7 @@ class TrackingController extends Controller
     public function solicitud_devolucion($id)
     {
         TrackingDevolucionTemporal::where('id_usuario', session('usuario')->id_usuario)->delete();
-        $list_archivo = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['tipo'=>3]);
+        $list_archivo = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['tipo'=>5]);
         if(count($list_archivo)>0){
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
@@ -2329,7 +2512,7 @@ class TrackingController extends Controller
         ]);
 
         $list_temporal = TrackingArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
-                        ->where('tipo',3)->where('id_producto',$id)->count();
+                        ->where('tipo',5)->where('id_producto',$id)->count();
         $errors = [];
         if ($list_temporal==0) {
             $errors['archivo'] = ['Debe capturar con la cámara la evidencia.'];
@@ -2395,37 +2578,36 @@ class TrackingController extends Controller
                     'fec_act' => now(),
                     'user_act' => session('usuario')->id_usuario
                 ]);
-            }
-            TrackingDevolucionTemporal::where('id_usuario', session('usuario')->id_usuario)->delete();
 
-            $list_archivo = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['tipo'=>3]);
-
-            if(count($list_archivo)>0){
-                $ftp_server = "lanumerounocloud.com";
-                $ftp_usuario = "intranet@lanumerounocloud.com";
-                $ftp_pass = "Intranet2022@";
-                $con_id = ftp_connect($ftp_server);
-                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
-                if($con_id && $lr){
-                    $i = 1;
-                    foreach($list_archivo as $list){
-                        $nombre_actual = "TRACKING/".$list->nom_archivo;
-                        $nuevo_nombre = "TRACKING/Evidencia_".$id."_".date('YmdHis')."_".$i.".jpg";
-                        ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
-                        $archivo = "https://lanumerounocloud.com/intranet/".$nuevo_nombre;
-    
-                        TrackingArchivo::create([
-                            'id_tracking' => $id,
-                            'tipo' => 3,
-                            'id_producto' => $list->id_producto,
-                            'archivo' => $archivo
-                        ]);
-    
-                        $i++;
+                $list_archivo = TrackingArchivoTemporal::get_list_tracking_archivo_temporal(['id_producto'=>$list->id_producto]);
+                if(count($list_archivo)>0){
+                    $ftp_server = "lanumerounocloud.com";
+                    $ftp_usuario = "intranet@lanumerounocloud.com";
+                    $ftp_pass = "Intranet2022@";
+                    $con_id = ftp_connect($ftp_server);
+                    $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                    if($con_id && $lr){
+                        $i = 1;
+                        foreach($list_archivo as $archivo){
+                            $nombre_actual = "TRACKING/".$archivo->nom_archivo;
+                            $nuevo_nombre = "TRACKING/Evidencia_".$id."_".date('YmdHis')."_".$i.".jpg";
+                            ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
+                            $archivo = "https://lanumerounocloud.com/intranet/".$nuevo_nombre;
+        
+                            TrackingArchivo::create([
+                                'id_tracking' => $id,
+                                'tipo' => 5,
+                                'id_producto' => $list->id_producto,
+                                'archivo' => $archivo
+                            ]);
+        
+                            $i++;
+                        }
                     }
                 }
-                TrackingArchivoTemporal::where('id_usuario', session('usuario')->id_usuario)->where('tipo', 3)->delete();
             }
+            TrackingDevolucionTemporal::where('id_usuario', session('usuario')->id_usuario)->delete();
+            TrackingArchivoTemporal::where('id_usuario', session('usuario')->id_usuario)->where('tipo', 5)->delete();
             
             if($request->comentario){
                 TrackingComentario::create([
@@ -2452,7 +2634,7 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
                 $mail->addAddress('ogutierrez@lanumero1.com.pe');
                 $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
                 /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
@@ -2559,7 +2741,7 @@ class TrackingController extends Controller
     public function modal_evaluacion_devolucion($id)
     {
         $get_devolucion = TrackingDevolucion::findOrFail($id);
-        $list_archivo = TrackingArchivo::select('archivo')->where('id_producto',$get_devolucion->id_producto)->where('tipo',3)->get();
+        $list_archivo = TrackingArchivo::select('archivo')->where('id_producto',$get_devolucion->id_producto)->where('tipo',5)->get();
         $get_id = TrackingEvaluacionTemporal::where('id_usuario',session('usuario')->id_usuario)
                                             ->where('id_devolucion',$id)->first();
         return view('logistica.tracking.tracking.modal_evaluacion_devolucion', compact('get_devolucion','list_archivo','get_id'));
@@ -2642,7 +2824,7 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
                 $mail->addAddress('ogutierrez@lanumero1.com.pe');
                 $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
                 /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);

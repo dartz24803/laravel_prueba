@@ -1764,3 +1764,20 @@ Route::controller(MercaderiaConfController::class)->group(function () {
     Route::post('MercaderiaConf/Update_Nicho', 'Update_Nicho');
     Route::post('MercaderiaConf/Delete_Nicho', 'Delete_Nicho');
 });
+
+use App\Http\Controllers\ControlUbicacionesController;
+Route::controller(ControlUbicacionesController::class)->group(function () {
+    Route::get('ControlUbicaciones/index', 'index');
+    Route::get('ControlUbicaciones/Cargar_Control_Ubicacion', 'Cargar_Control_Ubicacion');
+    Route::get('ControlUbicaciones/Modal_Percha', 'Modal_Percha');
+    Route::post('ControlUbicaciones/Insert_Percha', 'Insert_Percha');
+    Route::get('ControlUbicaciones/Modal_Update_Percha/{id}', 'Modal_Update_Percha');
+    Route::post('ControlUbicaciones/Update_Percha', 'Update_Percha');
+    Route::post('ControlUbicaciones/Delete_Percha', 'Delete_Percha');
+    Route::get('MercaderiaConf/Nicho', 'Nicho');
+    Route::get('MercaderiaConf/Modal_Nicho', 'Modal_Nicho');
+    Route::post('MercaderiaConf/Insert_Nicho', 'Insert_Nicho');
+    Route::get('MercaderiaConf/Modal_Update_Nicho/{id}', 'Modal_Update_Nicho');
+    Route::post('MercaderiaConf/Update_Nicho', 'Update_Nicho');
+    Route::post('MercaderiaConf/Delete_Nicho', 'Delete_Nicho');
+});
