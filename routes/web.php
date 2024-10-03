@@ -375,6 +375,7 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('areas_por_ubicacion', 'getAreasPorUbicacion')->name('areas_por_ubicacion');
     Route::get('area_por_usuario', 'getAreaPorUsuario')->name('area_por_usuario');
     Route::get('bireporte_ra/{id}/image', 'image_ra')->name('bireporte_ra.image');
+    Route::post('bireporte_ra_excel', 'importarExcel')->name('bireporte_ra_excel.excelupdate');
 
 
     // REPORTE x INDICADORES

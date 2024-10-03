@@ -48,6 +48,7 @@ use App\Models\Tablasdb;
 use App\Models\TipoIndicador;
 use App\Models\Ubicacion;
 use App\Models\Usuario;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class BiReporteController extends Controller
 {
@@ -509,20 +510,35 @@ class BiReporteController extends Controller
 
         // Guardar los datos en la tabla tabla_bi
         $tablasbi = $request->input('tbdb', []); // tbdb[] ahora contiene los ids de las tablas seleccionadas
-        $sistemas = $request->input('sistema', []); // cod_sistema
+        $db = $request->input('db', []); // cod_sistema
+
         // dd($tablasbi);
         // Recorre cada tabla seleccionada
-        foreach ($tablasbi as $index => $idTabla) {
-            TablaBi::create([
-                'id_acceso_bi_reporte' => $biReporteId,
-                'idtablas_db' => $idTabla, // Guardar el idtablas_db
-                'cod_sistema' => $sistemas[$index], // Guardar el cod_sistema
-                'estado' => 1,
-                'fec_reg' => now(),
-                'user_reg' => session('usuario')->id_usuario,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario,
-            ]);
+        foreach ($tablasbi as $index => $nombre) {
+            $idTablaDb = DB::table('tablas_db')
+                ->where('tablas_db.cod_db', $db[$index])
+                ->where('tablas_db.nombre', $nombre)
+                ->value('tablas_db.idtablas_db');
+            // Validar si no se encuentra el idTablaDb
+            if (is_null($idTablaDb)) {
+                // Retornar una alerta o señal de error
+                return response()->json([
+                    'errors' => [
+                        'message' => "No se encontró una tabla coincidente para la base de datos '{$tablasbi[$index]}' y el nombre '{$nombre}' en la fila " . ($index + 1)
+                    ]
+                ], 422);
+            } else {
+                // dd($idTablaDb);
+                TablaBi::create([
+                    'id_acceso_bi_reporte' => $biReporte->id_acceso_bi_reporte,
+                    'idtablas_db' => $idTablaDb, // ID de la tabla seleccionada
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+            }
         }
 
 
@@ -694,33 +710,39 @@ class BiReporteController extends Controller
         }
         // Actualizar tablas
         if ($request->has('tablabi')) {
-            // Primero, eliminamos los registros antiguos que no están en la solicitud
-            TablaBi::where('id_acceso_bi_reporte', $biReporte->id_acceso_bi_reporte)
-                ->whereNotIn('idtablas_bi', array_keys($request->tablabi))
-                ->delete();
-
-            // Ahora, actualizamos o creamos los registros nuevos
-            foreach ($request->tablabi as $key => $tablabi) {
-                // Debugear valores
-                // dd($request->sistemas, $request->dbe, $tablabi);
-
-                $biTabla = TablaBi::updateOrCreate(
-                    [
+            TablaBi::where('id_acceso_bi_reporte', $biReporte->id_acceso_bi_reporte)->delete();
+            $dbtest = $request->input('dbe', []); // Bases de datos seleccionadas
+            foreach ($request->tablabi as $key => $nombre) {
+                // Obtener el idtablas_db basado en el nombre y cod_db
+                $idTablaDb = DB::table('tablas_db')
+                    ->where('tablas_db.cod_db', $dbtest[$key])
+                    ->where('tablas_db.nombre', $nombre)
+                    ->value('tablas_db.idtablas_db');
+                // Validar si no se encuentra el idTablaDb
+                if (is_null($idTablaDb)) {
+                    // Retornar una alerta o señal de error
+                    return response()->json([
+                        'errors' => [
+                            'message' => "No se encontró una tabla coincidente para la base de datos '{$dbtest[$key]}' y el nombre '{$nombre}' en la fila " . ($key + 1)
+                        ]
+                    ], 422);
+                } else {
+                    // dd($idTablaDb);
+                    TablaBi::create([
                         'id_acceso_bi_reporte' => $biReporte->id_acceso_bi_reporte,
-                        'idtablas_bi' => $key // este es el índice de la fila actual
-                    ],
-                    [
+                        'idtablas_db' => $idTablaDb, // ID de la tabla seleccionada
                         'estado' => 1,
-                        'idtablas_db' => $tablabi, // este es el id de la tabla seleccionada
-                        'cod_sistema' => $request->sistemas[$key], // obtener el sistema según el índice
                         'fec_reg' => now(),
                         'user_reg' => session('usuario')->id_usuario,
                         'fec_act' => now(),
                         'user_act' => session('usuario')->id_usuario
-                    ]
-                );
+                    ]);
+                }
+                // Insertar el nuevo registro
+
             }
         }
+
 
 
         // Guardar los datos en la tabla bi_puesto_acceso
@@ -849,12 +871,14 @@ class BiReporteController extends Controller
 
         $list_tablas = TablaBi::select(
             'tablas_bi.idtablas_db',
-            'tablas_bi.cod_sistema',
-            'tablas_db.cod_db' // Obtener el cod_db desde la tabla tablas_db
+            'sistema_tablas.cod_sistema',
+            'tablas_db.cod_db'
         )
-            ->join('tablas_db', 'tablas_bi.idtablas_db', '=', 'tablas_db.idtablas_db') // Relacionar tablas_bi con tablas_db por idtablas_db
-            ->where('id_acceso_bi_reporte', $id) // Filtrar por el valor de $id en el campo id_acceso_bi_reporte
+            ->join('tablas_db', 'tablas_bi.idtablas_db', '=', 'tablas_db.idtablas_db')
+            ->join('sistema_tablas', 'sistema_tablas.cod_db', '=', 'tablas_db.cod_db')
+            ->where('id_acceso_bi_reporte', $id)
             ->get();
+
 
 
         $list_sede = SedeLaboral::select('id', 'descripcion')
@@ -1623,5 +1647,139 @@ class BiReporteController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+    }
+
+    public function importarExcel(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|mimes:xlsx,xls',
+        ]);
+
+        $archivo = $request->file('archivo');
+        $spreadsheet = IOFactory::load($archivo->getRealPath());
+        $hoja = $spreadsheet->getActiveSheet();
+
+        $idActual = null;
+        $biReporteId = null;
+        $processedIds = [];
+
+        // Recorrer las filas de la hoja de cálculo
+        foreach ($hoja->getRowIterator() as $fila) {
+            $numeroFila = $fila->getRowIndex();
+
+            // Saltar la primera fila si es el encabezado
+            if ($numeroFila == 1) {
+                continue;
+            }
+
+            // Obtener las celdas de la fila
+            $id = $hoja->getCell('A' . $numeroFila)->getValue(); // Leer el ID
+            $nombrebi = $hoja->getCell('B' . $numeroFila)->getValue();
+            $nombreintranet = $hoja->getCell('C' . $numeroFila)->getValue();
+            $iframe = $hoja->getCell('D' . $numeroFila)->getValue();
+            $objetivo = $hoja->getCell('E' . $numeroFila)->getValue();
+            $actividad = $hoja->getCell('F' . $numeroFila)->getValue();
+            $id_usuario = $hoja->getCell('G' . $numeroFila)->getValue();
+            $frecuencia_act = $hoja->getCell('H' . $numeroFila)->getValue();
+            $grupo = $hoja->getCell('I' . $numeroFila)->getValue();
+            $area_destino = $hoja->getCell('J' . $numeroFila)->getValue();
+            // ACCESSOS
+            $filtro_ubicaciones = $hoja->getCell('K' . $numeroFila)->getValue();
+            $acceso_puestos = $hoja->getCell('L' . $numeroFila)->getValue();
+            // Tablas
+            $npagina = $hoja->getCell('M' . $numeroFila)->getValue();
+            $nombre_contenido = $hoja->getCell('N' . $numeroFila)->getValue();
+            $descripcion_contenido = $hoja->getCell('O' . $numeroFila)->getValue();
+            $concepto = $hoja->getCell('P' . $numeroFila)->getValue();
+            $presentacion = $hoja->getCell('Q' . $numeroFila)->getValue();
+            // Indicadores
+            $base_de_datos = $hoja->getCell('R' . $numeroFila)->getValue();
+            $nombre_db  = $hoja->getCell('S' . $numeroFila)->getValue();
+            $tabla = $hoja->getCell('T' . $numeroFila)->getValue();
+
+            // Comprobar si estamos en un nuevo ID y si ya ha sido procesado
+            if ($id != $idActual) {
+                // Verificar si los campos obligatorios no están vacíos
+                if (!empty($nombrebi) && !empty($nombreintranet) && !empty($iframe) && !empty($objetivo) && !empty($id_usuario)) {
+                    if (!in_array($id, $processedIds)) { // Verificar si el ID no ha sido procesado
+                        // Crear un nuevo registro en BiReporte
+                        $biReporte = BiReporte::create([
+                            'nom_bi' => $nombrebi,
+                            'nom_intranet' => $nombreintranet,
+                            'iframe' => $iframe,
+                            'objetivo' => $objetivo,
+                            'actividad' => $actividad,
+                            'id_usuario' => $id_usuario,
+                            'frecuencia_act' => $frecuencia_act,
+                            'id_area' => $grupo,
+                            'id_area_destino' => $area_destino,
+                            'filtro_ubicaciones' => $filtro_ubicaciones,
+                            'estado' => 1,
+                            'acceso_todo' => 0,
+                        ]);
+
+                        $biReporteId = $biReporte->id_acceso_bi_reporte;
+                        $idActual = $id;
+                        $processedIds[] = $id;
+                    }
+                }
+            }
+
+            // Solo crear las entradas en IndicadorBi y TablaBi si biReporteId está definido
+            if ($biReporteId) {
+                // Crear las entradas en IndicadorBi
+                IndicadorBi::create([
+                    'id_acceso_bi_reporte' => $biReporteId,
+                    'npagina' => $npagina,
+                    'nom_indicador' => $nombre_contenido,
+                    'descripcion' => $descripcion_contenido,
+                    'idtipo_indicador' => $concepto,
+                    'presentacion' => $presentacion,
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario,
+                ]);
+
+                // Buscar el idtablas_db en la tabla tablas_db usando un inner join con base_de_datos y nombre_db
+                $idTablaDb = DB::table('tablas_db')
+                    ->where('tablas_db.cod_db', $base_de_datos)
+                    ->where('tablas_db.nombre', $nombre_db)
+                    ->value('tablas_db.idtablas_db');
+                // dd($idTablaDb);
+                // Crear las entradas en TablaBi
+                TablaBi::create([
+                    'id_acceso_bi_reporte' => $biReporteId,
+                    // 'nombre_db' => $nombre_db,
+                    // 'cod_db' => $base_de_datos,
+                    'idtablas_db' => $idTablaDb,
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario,
+                ]);
+
+                // Convertir el string en un array, si solo tiene un ID no habrá problema
+                $puestos = explode(',', $acceso_puestos);
+                foreach ($puestos as $puestoId) {
+                    // Convertir a entero y filtrar valores inválidos
+                    $puestoId = intval(trim($puestoId));
+
+                    // Verificar si el puestoId es válido y existe en la base de datos
+                    if ($puestoId > 0 && DB::table('puesto')->where('id_puesto', $puestoId)->exists()) {
+                        BiPuestoAcceso::create([
+                            'id_acceso_bi_reporte' => $biReporteId,
+                            'id_puesto' => $puestoId,
+                            'fec_reg' => now(),
+                            'user_reg' => session('usuario')->id_usuario,
+                            'fec_act' => now(),
+                            'user_act' => session('usuario')->id_usuario,
+                        ]);
+                    }
+                }
+            }
+        }
     }
 }

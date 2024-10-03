@@ -55,17 +55,22 @@ class Tracking extends Model
             $sql = "SELECT tr.*,bd.cod_base AS desde,bh.cod_base AS hacia,
                     IFNULL(tr.importe_transporte,0) AS importe_formateado,
                     mp.ultimo_id AS id_detalle,de.id_estado,
-                    (SELECT ta.archivo FROM tracking_archivo ta
-                    WHERE ta.id_tracking=tr.id AND ta.tipo=1
-                    ORDER BY ta.id DESC
-                    LIMIT 1) AS archivo_transporte,md.id_dos,di.nombre_distrito,
+                    md.id_dos,di.nombre_distrito,
                     CASE WHEN tr.transporte='1' THEN 'Agencia - Terrestre'
                     WHEN tr.transporte='2' THEN 'Agencia - Aérea' 
                     WHEN tr.transporte='3' THEN 'Propio' ELSE '' END AS tipo_transporte,
                     (SELECT COUNT(1) FROM tracking_diferencia tdif
                     WHERE tdif.id_tracking=tr.id AND tdif.enviado<tdif.recibido) AS sobrantes,
                     (SELECT COUNT(1) FROM tracking_diferencia tdif
-                    WHERE tdif.id_tracking=tr.id AND tdif.enviado>tdif.recibido) AS faltantes
+                    WHERE tdif.id_tracking=tr.id AND tdif.enviado>tdif.recibido) AS faltantes,
+                    (SELECT ta.archivo FROM tracking_archivo ta
+                    WHERE ta.id_tracking=tr.id AND ta.tipo=3
+                    ORDER BY ta.id DESC
+                    LIMIT 1) AS archivo_sobrante,
+                    (SELECT ta.archivo FROM tracking_archivo ta
+                    WHERE ta.id_tracking=tr.id AND ta.tipo=4
+                    ORDER BY ta.id DESC
+                    LIMIT 1) AS archivo_faltante
                     FROM tracking tr
                     LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base
@@ -137,9 +142,9 @@ class Tracking extends Model
                     GROUP BY id_detalle) me ON mp.ultimo_id=me.id_detalle
                     LEFT JOIN tracking_detalle_estado de ON me.ultimo_id=de.id
                     LEFT JOIN tracking_estado te ON de.id_estado=te.id
-                    WHERE ($parte tr.estado=1 AND de.id_estado!=21) OR 
+                    WHERE tr.iniciar=1 AND (($parte tr.estado=1 AND de.id_estado!=21) OR 
                     ($parte tr.estado=1 AND de.id_estado=21 AND 
-                    DATE(de.fecha)>DATE_SUB(CURDATE(), INTERVAL 1 WEEK))";
+                    DATE(de.fecha)>DATE_SUB(CURDATE(), INTERVAL 1 WEEK)))";
             $query = DB::select($sql);
             return $query;
         }
