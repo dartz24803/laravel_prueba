@@ -30,14 +30,14 @@ class MercaderiaExtraerController extends Controller
             $dato['list_subgerencia'] = SubGerencia::list_subgerencia(7);
             //NOTIFICACIONES
             $dato['list_notificacion'] = Notificacion::get_list_notificacion();
-            return view('Logistica.Mercaderia.index', $dato);
+            return view('logistica.Mercaderia.index', $dato);
     }
     
     public function Buscar_Mercaderia(){
             $dato['semana']= $this->input->post("semana");
             $dato['anio']= $this->input->post("anio");
             $dato['list_mercaderia'] = Mercaderia::get_list_mercaderia($dato);
-            return view('Logistica.Mercaderia.lista', $dato);
+            return view('logistica.Mercaderia.lista', $dato);
     }
 
     public function Cierre_Mercaderia(){
