@@ -65,7 +65,7 @@
         $.ajax({
             url: url,
             type: "POST",
-            data: {'tipo':3,'id_producto':{{ $get_producto->id }}},
+            data: {'tipo':5,'id_producto':{{ $get_producto->id }}},
             headers: {
                 'X-CSRF-TOKEN': csrfToken
             },
@@ -172,7 +172,7 @@
         canvas.toBlob(function(blob) {
             // Crea un formulario para enviar la imagen al servidor
             dataString.append('photo', blob, 'photo.jpg');
-            dataString.append('tipo', 3);
+            dataString.append('tipo', 5);
             dataString.append('id_producto', {{ $get_producto->id }});
 
             // Realiza la solicitud AJAX
