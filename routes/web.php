@@ -1699,3 +1699,65 @@ Route::controller(ReprocesoController::class)->group(function () {
     Route::post('Reproceso/Delete_Reproceso', 'Delete_Reproceso');
     Route::get('Reproceso/Excel_Reproceso', 'Excel_Reproceso');
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+use App\Http\Controllers\MercaderiaExtraerController;
+
+Route::controller(MercaderiaExtraerController::class)->group(function () {
+    Route::get('MercaderiaExtraer/Mercaderia', 'Mercaderia');
+    Route::post('MercaderiaExtraer/Buscar_Mercaderia', 'Buscar_Mercaderia');
+    Route::get('MercaderiaExtraer/Excel_MTotal/{sem}', 'Excel_MTotal');
+    Route::post('MercaderiaExtraer/Cierre_Mercaderia', 'Cierre_Mercaderia');
+    Route::get('MercaderiaExtraer/Excel_Mercaderia/{usu}/{sem}/{anio}/{cierre}', 'Excel_Mercaderia');
+});
+
+use App\Http\Controllers\MercaderiaConfController;
+
+Route::controller(MercaderiaConfController::class)->group(function () {
+    Route::get('MercaderiaConf/TablaMercaderia', 'TablaMercaderia');
+    Route::post('MercaderiaConf/Lista_Reproceso', 'Lista_Reproceso');
+    Route::get('MercaderiaConf/Modal_Reproceso', 'Modal_Reproceso');
+    Route::post('MercaderiaConf/Insert_Reproceso', 'Insert_Reproceso');
+    Route::get('MercaderiaConf/Modal_Update_MercaderiaConf/{id}', 'Modal_Update_Reproceso');
+    Route::get('MercaderiaConf/Modal_Ver_MercaderiaConf/{id}', 'Modal_Ver_Reproceso');
+    Route::post('MercaderiaConf/Update_Reproceso', 'Update_Reproceso');
+    Route::post('MercaderiaConf/Delete_Reproceso', 'Delete_Reproceso');
+    Route::get('MercaderiaConf/Excel_Reproceso', 'Excel_Reproceso');
+});
