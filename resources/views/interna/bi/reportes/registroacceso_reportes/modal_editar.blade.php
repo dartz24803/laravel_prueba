@@ -372,7 +372,7 @@
                                 <td class="px-1">
                                     <select class="form-control tablabi" name="tablabi[{{ $loop->index }}]" data-row-index="{{ $loop->index }}">
                                         @foreach ($list_tablasdb as $list)
-                                        <option value="{{ $list->idtablas_db }}" {{ $list->idtablas_db == $tabla->idtablas_db ? 'selected' : '' }}
+                                        <option value="{{ $list->nombre }}" {{ $list->idtablas_db == $tabla->idtablas_db ? 'selected' : '' }}
                                             title="{{ $list->nombre }}">
                                             {{ strlen($list->nombre) > 20 ? substr($list->nombre, 0, 20) . '...' : $list->nombre }}
                                         </option>
@@ -609,16 +609,22 @@
         <td class="px-1">
             <select class="form-control db" name="dbe[${tableBody.children.length}]" data-row-index="${tableBody.children.length}">
                 @foreach ($list_db as $list)
-                <option value="{{ $list->cod_db }}">{{ $list->nom_db }}</option>
+                <option value="{{ $list->cod_db }}" title="{{ $list->nom_db }}">
+                  {{ \Illuminate\Support\Str::limit($list->nom_db, 20, '...') }}
+                 </option>
                 @endforeach
             </select>
         </td>
         <td class="px-1">
             <select class="form-control tablabi" name="tablabi[${tableBody.children.length}]" data-row-index="${tableBody.children.length}">
                 @foreach ($list_tablasdb as $list)
-                <option value="{{ $list->idtablas_db }}">{{ $list->nombre }}</option>
+                <option value="{{ $list->nombre }}"  title="{{ $list->nombre }}">
+                {{ \Illuminate\Support\Str::limit($list->nombre, 20, '...') }}
+                 </option>
                 @endforeach
             </select>
+
+              
         </td>
         <td class="px-1">
             <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button>
@@ -888,7 +894,11 @@
             },
             error: function(xhr) {
                 var errors = xhr.responseJSON.errors;
-                var firstError = Object.values(errors)[0][0];
+                console.log(Object.values(errors)[0][0])
+                console.log(Object.values(errors)[0])
+                console.log(Object.values(errors))
+
+                var firstError = Object.values(errors)[0];
                 Swal.fire(
                     '¡Ups!',
                     firstError,

@@ -383,7 +383,7 @@
                                 <td class="px-1">
                                     <select class="form-control multivalue" name="tbdb[]" id="tbdb">
                                         @foreach ($list_tablasdb as $list)
-                                        <option value="{{ $list->idtablas_db }}" title="{{ $list->nombre }}">
+                                        <option value="{{ $list->nombre }}" title="{{ $list->nombre }}">
                                             {{ \Illuminate\Support\Str::limit($list->nombre, 20, '...') }}
                                         </option>
                                         @endforeach
@@ -604,7 +604,7 @@
     <td class="px-1">
         <select class="form-control tbdb" name="tbdb[]" data-row-index="${rowIndex}">
             @foreach ($list_tablasdb as $list)
-            <option value="{{ $list->idtablas_db }}" title="{{ $list->nombre }}">
+            <option value="{{ $list->nombre }}" title="{{ $list->nombre }}">
                 {{ \Illuminate\Support\Str::limit($list->nombre, 20, '...') }}
             </option>
             @endforeach
