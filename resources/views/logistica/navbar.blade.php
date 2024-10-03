@@ -74,6 +74,13 @@
                 <p class="romperpalabra"><span id="icono_active2"></span> Consumibles</p>
             </a>
         </li>
+        <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 10 || session('usuario')->id_nivel == 9 || session('usuario')->id_puesto == 74 || session('usuario')->id_puesto == 35) { ?>
+            <li id="mercaderia">
+                <a href="{{ url('MercaderiaExtraer/Mercaderia') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Mercadería a Extraer</p>
+                </a>
+            </li>
+        <?php } ?>
     </ul>
 </li>
 
@@ -161,6 +168,11 @@
         <li>
             <a id="consumibles" href="{{ route('consumible_art') }}">
                 <p class="romperpalabra"><span id="icono_active2"></span> Consumibles</p>
+            </a>
+        </li>
+        <li id="mercaderiaconf">
+            <a href="{{ url('MercaderiaConf/TablaMercaderia') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Mercadería</p>
             </a>
         </li>
     </ul>
