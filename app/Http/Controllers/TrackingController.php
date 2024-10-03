@@ -86,9 +86,7 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
             ]);
     
             //ALERTA 1
@@ -109,9 +107,7 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'estado' => 1,
                 'fec_reg' => now(),
-                'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
             ]);
     
             //EMAIL 1
@@ -210,9 +206,7 @@ class TrackingController extends Controller
                     'fecha' => now(),
                     'estado' => 1,
                     'fec_reg' => now(),
-                    'user_reg' => session('usuario')->id_usuario,
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario
+                    'fec_act' => now()
                 ]);
             }catch(Exception $e) {
                 echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
@@ -220,8 +214,7 @@ class TrackingController extends Controller
 
             Tracking::findOrFail($get_id->id)->update([
                 'iniciar' => 1,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
+                'fec_act' => now()
             ]);
         }
     }
