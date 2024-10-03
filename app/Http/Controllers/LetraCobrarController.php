@@ -245,7 +245,7 @@ class LetraCobrarController extends Controller
                     $source_file = $_FILES['documentoe']['tmp_name'];
     
                     $ext = pathinfo($path, PATHINFO_EXTENSION);
-                    $nombre_soli = "Cheque_Letra_" . date('YmdHis');
+                    $nombre_soli = "Letra_Cobrar_" . date('YmdHis');
                     $nombre = $nombre_soli . "." . strtolower($ext);
     
                     ftp_pasv($con_id, true);
@@ -279,9 +279,9 @@ class LetraCobrarController extends Controller
         }
     }
 
-    /*public function unico($id, $tipo)
+    public function unico($id, $tipo)
     {
-        $get_id = ChequesLetras::findOrFail($id);
+        $get_id = LetrasCobrar::findOrFail($id);
         $list_banco = DB::connection('sqlsrv')->table('vw_bancos')
                     ->select(DB::raw("c_sigl_banc AS id_banco"),
                     DB::raw("CONCAT(c_desc_banc,' (',c_sigl_banc,')') AS nom_banco"))
@@ -296,38 +296,21 @@ class LetraCobrarController extends Controller
     public function update_unico(Request $request, $id)
     {
         $request->validate([
-            'tipo_nunicou' => 'required',
-            'num_unicou' => 'required_if:tipo_nunicou,1',
-            'num_cuentau' => 'required_if:tipo_nunicou,2',
+            'num_unicou' => 'required',
             'bancou' => 'not_in:0'
         ],[
-            'tipo_nunicou.required' => 'Debe seleccionar el tipo de letra.',
-            'num_unicou.required_if' => 'Debe ingresar número único.',
-            'num_cuentau.required_if' => 'Debe ingresar número de cuenta.',
+            'num_unicou.required' => 'Debe ingresar número único.',
             'bancou.not_in' => 'Debe seleccionar banco.'
         ]);
 
-        if($request->tipo_nunicou=="1"){
-            $valida = ChequesLetras::where('num_unico', $request->num_unicou)
-                    ->where('estado', 1)->where('id_cheque_letra','!=',$id)->exists();
+        $valida = LetrasCobrar::where('num_unico', $request->num_unicou)
+                ->where('estado', 1)->where('id_letra_cobrar','!=',$id)->exists();
 
-            if($valida){
-                echo "error";
-            }else{
-                ChequesLetras::findOrFail($id)->update([
-                    'tipo_nunico' => $request->tipo_nunicou,
-                    'num_unico' => $request->num_unicou,
-                    'num_cuenta' => $request->num_cuentau,
-                    'banco' => $request->bancou,
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario
-                ]);
-            }
+        if($valida){
+            echo "error";
         }else{
-            ChequesLetras::findOrFail($id)->update([
-                'tipo_nunico' => $request->tipo_nunicou,
+            LetrasCobrar::findOrFail($id)->update([
                 'num_unico' => $request->num_unicou,
-                'num_cuenta' => $request->num_cuentau,
                 'banco' => $request->bancou,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
@@ -337,7 +320,7 @@ class LetraCobrarController extends Controller
 
     public function estado($id, $tipo)
     {
-        $get_id = ChequesLetras::findOrFail($id);
+        $get_id = LetrasCobrar::findOrFail($id);
         return view('finanzas.tesoreria.letra_cobrar.modal_estado',compact('get_id','tipo'));
     }
 
@@ -351,7 +334,7 @@ class LetraCobrarController extends Controller
             'noperacions.required' => 'Debe ingresar n° operación.'
         ]);
 
-        $get_id = ChequesLetras::findOrFail($id);
+        $get_id = LetrasCobrar::findOrFail($id);
 
         $comprobante_pago = $get_id->comprobante_pago;
         if ($_FILES["comprobante_pagos"]["name"] != "") {
@@ -362,7 +345,7 @@ class LetraCobrarController extends Controller
             $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
             if ($con_id && $lr) {
                 if($get_id->comprobante_pago!=""){
-                    ftp_delete($con_id, "ADM_FINANZAS/CHEQUES_LETRAS/".basename($get_id->comprobante_pago));
+                    ftp_delete($con_id, "ADM_FINANZAS/LETRAS_COBRAR/".basename($get_id->comprobante_pago));
                 }
 
                 $path = $_FILES["comprobante_pagos"]["name"];
@@ -373,9 +356,9 @@ class LetraCobrarController extends Controller
                 $nombre = $nombre_soli . "." . strtolower($ext);
 
                 ftp_pasv($con_id, true);
-                $subio = ftp_put($con_id, "ADM_FINANZAS/CHEQUES_LETRAS/" . $nombre, $source_file, FTP_BINARY);
+                $subio = ftp_put($con_id, "ADM_FINANZAS/LETRAS_COBRAR/" . $nombre, $source_file, FTP_BINARY);
                 if ($subio) {
-                    $comprobante_pago = "https://lanumerounocloud.com/intranet/ADM_FINANZAS/CHEQUES_LETRAS/" . $nombre;
+                    $comprobante_pago = "https://lanumerounocloud.com/intranet/ADM_FINANZAS/LETRAS_COBRAR/" . $nombre;
                 } else {
                     echo "Archivo no subido correctamente";
                 }
@@ -384,7 +367,7 @@ class LetraCobrarController extends Controller
             }
         }
 
-        ChequesLetras::findOrFail($id)->update([
+        LetrasCobrar::findOrFail($id)->update([
             'fec_pago' => $request->fec_pagos,
             'noperacion' => $request->noperacions,
             'comprobante_pago' => $comprobante_pago,
@@ -392,7 +375,7 @@ class LetraCobrarController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
-    }*/
+    }
 
     public function destroy($id)
     {
@@ -516,7 +499,9 @@ class LetraCobrarController extends Controller
             $sheet->getStyle("B{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DMYSLASH); 
             $sheet->setCellValue("C{$contador}", Date::PHPToExcel($list->fec_vencimiento));
             $sheet->getStyle("C{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DMYSLASH); 
-            $sheet->setCellValue("D{$contador}", $list->dias_atraso);
+            if($list->dias_atraso>=0){
+                $sheet->setCellValue("D{$contador}", $list->dias_atraso." días");
+            }
             $sheet->setCellValue("E{$contador}", $list->nom_tipo_documento);
             $sheet->setCellValue("F{$contador}", $list->num_doc);
             $sheet->setCellValue("G{$contador}", $nom_cliente);

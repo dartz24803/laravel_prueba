@@ -32,17 +32,9 @@
                 <td>{{ $list->fec_emision }}</td>
                 <td>{{ $list->fec_vencimiento }}</td>
                 <td>
-                    <span class="badge" style="color:white; background:
-                    @php if($list->dias_atraso==0){  
-                        echo "#FF786B";
-                    }elseif($list->dias_atraso==0 && $list->estado_registro==1){
-                        echo "#E2A03F";
-                    }else{
-                        echo "#8DBF42";
-                    }
-                    @endphp">
-                        {{ $list->dias_atraso }}
-                    </span>
+                    @if ($list->dias_atraso>=0)
+                        {{ $list->dias_atraso." día(s)" }}
+                    @endif
                 </td>
                 <td>{{ $list->nom_tipo_documento }}</td>
                 <td>{{ $list->num_doc }}</td>
@@ -100,17 +92,16 @@
                     @else
                         @if ($list->estado_registro=="2" && 
                         (session('usuario')->id_nivel=="1"||
-                        session('usuario')->id_puesto=="10" ||
-                        session('usuario')->id_puesto=="138"))
+                        session('usuario')->id_puesto=="10"))
                             <a href="javascript:void(0)" title="Actualizar Pago" data-toggle="modal" 
-                            data-target="#ModalUpdate" app_elim="{{ route('letra_cobrar.estado', [$list->id_letra_cobrar,2]) }}"  role="button">
+                            data-target="#ModalUpdate" app_elim="{{ route('letra_cobrar.estado', [$list->id_letra_cobrar,2]) }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                     <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                 </svg>
                             </a>
                         @else
                             <a href="javascript:void(0)" title="Ver Pago" data-toggle="modal" 
-                            data-target="#ModalUpdate" app_elim="{{ route('letra_cobrar.estado', [$list->id_letra_cobrar,3]) }}"  role="button">
+                            data-target="#ModalUpdate" app_elim="{{ route('letra_cobrar.estado', [$list->id_letra_cobrar,3]) }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar text-success">
                                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                     <line x1="16" y1="2" x2="16" y2="6"></line>

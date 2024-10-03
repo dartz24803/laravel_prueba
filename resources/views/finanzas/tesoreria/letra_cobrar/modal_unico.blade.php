@@ -1,9 +1,3 @@
-<style>
-    input[type="radio"]:disabled + label {
-        color: inherit !important;
-    }
-</style>
-
 <form id="formulariou" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title"> @if ($tipo=="1") Actualizar @else Ver @endif N° único:</h5>
@@ -14,38 +8,10 @@
                 
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row">
-            <div class="form-group col-lg-12">
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" id="letra_descuento" name="tipo_nunicou" 
-                    class="custom-control-input" value="1" onclick="Tipo_Nunico();"
-                    @if ($get_id->tipo_nunico=="1") checked @endif
-                    @if ($tipo=="2") disabled @endif>
-                    <label class="custom-control-label" for="letra_descuento">Letra en descuento</label>
-                </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" id="letra_cartera" name="tipo_nunicou" 
-                    class="custom-control-input" value="2" onclick="Tipo_Nunico();"
-                    @if ($get_id->tipo_nunico=="2") checked @endif
-                    @if ($tipo=="2") disabled @endif>
-                    <label class="custom-control-label" for="letra_cartera">Letra en cartera</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-lg-6 div_nunicou" 
-            style="display: @php if($get_id->tipo_nunico=="1"){ echo "block;"; }else{ echo "none;"; } @endphp">
+            <div class="form-group col-lg-6">
                 <label>N° único:</label>
                 <input type="text" class="form-control" id="num_unicou" name="num_unicou" 
                 placeholder="N° único" value="{{ $get_id->num_unico }}" maxlength="20" 
-                @if ($tipo=="2") disabled @endif>
-            </div>
-
-            <div class="form-group col-lg-6 div_ncuentau"
-            style="display: @php if($get_id->tipo_nunico=="2"){ echo "block;"; }else{ echo "none;"; } @endphp">
-                <label>N° cuenta:</label>
-                <input type="text" class="form-control" id="num_cuentau" name="num_cuentau" 
-                placeholder="N° cuenta" value="{{ $get_id->num_cuenta }}" maxlength="20" 
                 @if ($tipo=="2") disabled @endif>
             </div>
 
@@ -81,31 +47,14 @@
         dropdownParent: $('#ModalUpdate')
     });
 
-    function Tipo_Nunico() {
-        $('#num_unicou').val('');
-        $('#num_cuentau').val('');
-        if ($('#letra_descuento').is(":checked")){
-            $('.div_nunicou').show();
-            $('.div_ncuentau').hide();
-        }else{
-            $('.div_nunicou').hide();
-            $('.div_ncuentau').show();
-        }
-    }
-
     function Update_Unico() {
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulariou'));
-        var url = "{{ route('letra_cobrar.update_unico', $get_id->id_cheque_letra) }}";
-
-        var texto = "número de cuenta?";
-        if ($('#letra_descuento').is(":checked")){
-            var texto = "número único?";
-        }
+        var url = "{{ route('letra_cobrar.update_unico', $get_id->id_letra_cobrar) }}";
 
         Swal({
-            title: '¿Realmente desea actualizar '+texto,
+            title: '¿Realmente desea actualizar número único?',
             text: "El registro será actualizado",
             type: 'question',
             showCancelButton: true,
