@@ -474,11 +474,11 @@ use App\Models\TrackingDetalleProceso;
                 @elseif($list->id_estado==9)
                 <!-- PUESTO DE MAYRA TORRES (76) y JAIME SAAVEDRA (97) -->
                 <!-- PUESTOS DE TIENDA --> 
-                @if ((session('usuario')->id_puesto==76 ||
-                session('usuario')->id_puesto==97 ||
-                $list->hacia=="B09" || 
-                $list->hacia=="B19") ||
-                (session('usuario')->id_puesto==29 ||
+                @if (((session('usuario')->id_puesto==76 ||
+                session('usuario')->id_puesto==97) &&
+                ($list->hacia=="B09" || 
+                $list->hacia=="B19")) ||
+                ((session('usuario')->id_puesto==29 ||
                 session('usuario')->id_puesto==30 ||
                 session('usuario')->id_puesto==31 ||
                 session('usuario')->id_puesto==32 ||
@@ -490,8 +490,8 @@ use App\Models\TrackingDetalleProceso;
                 session('usuario')->id_puesto==168 ||
                 session('usuario')->id_puesto==197 ||
                 session('usuario')->id_puesto==311 ||
-                session('usuario')->id_puesto==314 ||
-                ($list->hacia!="B09" && $list->hacia!="B19")) ||
+                session('usuario')->id_puesto==314) &&
+                $list->hacia!="B09" && $list->hacia!="B19") ||
                 session('usuario')->id_nivel==1)
                 <a href="{{ route('tracking.pago_transporte', $list->id) }}" title="Pago de transporte">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card text-primary">
