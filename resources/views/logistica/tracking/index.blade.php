@@ -12,11 +12,11 @@
                     <div class="statbox widget box box-shadow">
                         <div class="widget-content widget-content-area simple-tab">
                             <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
-                                <li class="nav-item">
-                                    <a id="a_tra" class="nav-link" onclick="Tracking();" style="cursor: pointer;">Tracking</a>
+                                <li class="nav-item" style="height: 0% !important;">
+                                    <a id="a_tra" class="nav-link" onclick="Tracking();" style="cursor: pointer; font-size: 0.875rem;">Tracking</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a id="a_btra" class="nav-link" onclick="Bd_Tracking();" style="cursor: pointer;">BD Tracking</a>
+                                <li class="nav-item" style="height: 0% !important;">
+                                    <a id="a_btra" class="nav-link" onclick="Bd_Tracking();" style="cursor: pointer; font-size: 0.875rem;">BD Tracking</a>
                                 </li>
                             </ul>
     
