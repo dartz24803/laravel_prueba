@@ -1213,7 +1213,7 @@ class BiReporteController extends Controller
                 $reporte->dias_sin_atencion = $interval->days;
             }
         }
-        dd($list_bi_reporte);
+        // dd($list_bi_reporte);
         return view('interna.bi.reportes.reportedb.lista', compact('list_bi_reporte'));
     }
 
