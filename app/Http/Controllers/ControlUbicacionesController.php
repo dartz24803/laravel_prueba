@@ -488,7 +488,7 @@ class ControlUbicacionesController extends Controller
             $dato['get_id'] = ControlUbicacion::where('id_control_ubicacion', $id_control_ubicacion)->get();
             $dato['list_nicho'] = Mercaderia::get_list_nicho();
             $dato['list_estilo'] = Mercaderia::get_list_estilo_infosap('1');
-            return view('Logistica/Control_Ubicaciones/modal_editar', $dato);
+            return view('logistica/Control_Ubicaciones/modal_editar', $dato);
     }
 
     public function Update_Control_Ubicaciones(){
