@@ -55,6 +55,7 @@ use App\Http\Controllers\LineaCarreraController;
 use App\Http\Controllers\LogisticaInicioController;
 use App\Http\Controllers\ManufacturaController;
 use App\Http\Controllers\ManufacturaInicioController;
+use App\Http\Controllers\MercaderiaEnviarFotografia;
 use App\Http\Controllers\NotificacionConfController;
 use App\Http\Controllers\ObservacionConfController;
 use App\Http\Controllers\ObservacionController;
@@ -260,6 +261,18 @@ Route::controller(ConsumibleController::class)->group(function () {
     Route::post('consumible/store', 'store_cons')->name('consumible.store');
     Route::post('consumible/{id}', 'update_cons')->name('consumible.update');
 });
+
+// MERCADERIA FOTOGRAFICA
+Route::controller(MercaderiaEnviarFotografia::class)->group(function () {
+    Route::get('mercaderiafotografia', 'index')->name('mercaderiafotografia');
+    Route::get('mercaderiafotografia/list', 'list_merc_foto')->name('mercaderiafotografia.list');
+    Route::get('mercaderiafotografia/{id}/edit', 'edit_merc_foto')->name('mercaderiafotografia.edit');
+    Route::get('mercaderiafotografia/create', 'create_merc_foto')->name('mercaderiafotografia.create');
+    Route::delete('mercaderiafotografia/{id}', 'destroy_merc_foto')->name('mercaderiafotografia.destroy');
+    Route::post('mercaderiafotografia/store', 'store_merc_foto')->name('mercaderiafotografia.store');
+    Route::post('mercaderiafotografia/{id}', 'update_merc_foto')->name('mercaderiafotografia.update');
+});
+
 
 Route::controller(ConsumibleConfController::class)->group(function () {
     // ADMINISTRABLE ARTICULO
@@ -1740,6 +1753,7 @@ Route::controller(ReprocesoController::class)->group(function () {
 
 
 use App\Http\Controllers\MercaderiaExtraerController;
+
 Route::controller(MercaderiaExtraerController::class)->group(function () {
     Route::get('MercaderiaExtraer/Mercaderia', 'Mercaderia');
     Route::post('MercaderiaExtraer/Buscar_Mercaderia', 'Buscar_Mercaderia');
@@ -1749,6 +1763,7 @@ Route::controller(MercaderiaExtraerController::class)->group(function () {
 });
 
 use App\Http\Controllers\MercaderiaConfController;
+
 Route::controller(MercaderiaConfController::class)->group(function () {
     Route::get('MercaderiaConf/TablaMercaderia', 'TablaMercaderia');
     Route::get('MercaderiaConf/Percha', 'Percha');
@@ -1766,6 +1781,7 @@ Route::controller(MercaderiaConfController::class)->group(function () {
 });
 
 use App\Http\Controllers\ControlUbicacionesController;
+
 Route::controller(ControlUbicacionesController::class)->group(function () {
     Route::get('ControlUbicaciones/index', 'index');
     Route::get('ControlUbicaciones/Cargar_Control_Ubicacion', 'Cargar_Control_Ubicacion');
