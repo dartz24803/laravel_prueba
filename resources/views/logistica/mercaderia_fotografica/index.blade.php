@@ -9,7 +9,7 @@
     <div class="layout-px-spacing">
         <div class="page-header">
             <div class="page-title">
-                <h3>Consumibles
+                <h3>Registro de Requerimiento
                 </h3>
             </div>
         </div>
