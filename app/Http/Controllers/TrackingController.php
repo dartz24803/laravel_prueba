@@ -74,8 +74,9 @@ class TrackingController extends Controller
 
         $list_tracking = Tracking::from('tracking AS tr')
                         ->select('tr.id','tr.n_requerimiento','tr.n_guia_remision',
-                        'tr.semana',DB::raw('base.cod_base AS hacia'))
+                        'tr.semana',DB::raw('base.cod_base AS hacia'),'di.nombre_distrito')
                         ->join('base','base.id_base','=','tr.id_origen_hacia')
+                        ->leftjoin('distrito','distrito.id_distrito','=','base.id_distrito')
                         ->where('tr.iniciar',0)->take(1)->get();
 
         foreach($list_tracking as $get_id){
