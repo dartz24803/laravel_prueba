@@ -56,7 +56,7 @@ class TrackingController extends Controller
 
     public function iniciar_tracking()
     {
-        /*TrackingTemporal::truncate();
+        TrackingTemporal::truncate();
         $list_tracking = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['T']);
         foreach($list_tracking as $list){
             TrackingTemporal::create([
@@ -74,8 +74,9 @@ class TrackingController extends Controller
 
         $list_tracking = Tracking::from('tracking AS tr')
                         ->select('tr.id','tr.n_requerimiento','tr.n_guia_remision',
-                        'tr.semana',DB::raw('base.cod_base AS hacia'))
+                        'tr.semana',DB::raw('base.cod_base AS hacia'),'distrito.nombre_distrito')
                         ->join('base','base.id_base','=','tr.id_origen_hacia')
+                        ->leftjoin('distrito','distrito.id_distrito','=','base.id_distrito')
                         ->where('tr.iniciar',0)->take(1)->get();
 
         foreach($list_tracking as $get_id){
@@ -133,21 +134,21 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
-                $mail->addAddress('ogutierrez@lanumero1.com.pe');
-                $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-                //$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
-                //foreach($list_td as $list){
-                //    $mail->addAddress($list->emailp);
-                //}
-                //$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
-                //foreach($list_cd as $list){
-                //   $mail->addAddress($list->emailp);
-                //}
-                //$list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
-                //foreach($list_cc as $list){
-                //    $mail->addCC($list->emailp);
-                //}
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+                foreach($list_td as $list){
+                    $mail->addAddress($list->emailp);
+                }
+                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                foreach($list_cd as $list){
+                   $mail->addAddress($list->emailp);
+                }
+                $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+                foreach($list_cc as $list){
+                    $mail->addCC($list->emailp);
+                }
 
                 $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
                 $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -215,7 +216,7 @@ class TrackingController extends Controller
                 'iniciar' => 1,
                 'fec_act' => now()
             ]);
-        }*/
+        }
     }
 
     public function llegada_tienda()
@@ -474,10 +475,10 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
-                $mail->addAddress('ogutierrez@lanumero1.com.pe');
-                $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-                /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
                 foreach($list_td as $list){
                     $mail->addAddress($list->emailp);
                 }
@@ -488,7 +489,7 @@ class TrackingController extends Controller
                 $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
                 foreach($list_cc as $list){
                     $mail->addCC($list->emailp);
-                }*/
+                }
 
                 $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
                 $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -809,10 +810,10 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
-            $mail->addAddress('ogutierrez@lanumero1.com.pe');
-            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-            /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+            //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
             foreach($list_td as $list){
                 $mail->addAddress($list->emailp);
             }
@@ -823,7 +824,7 @@ class TrackingController extends Controller
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }*/
+            }
 
             $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
             $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -1275,17 +1276,17 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
-            $mail->addAddress('ogutierrez@lanumero1.com.pe');
-            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-            /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+            //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
             }
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }*/
+            }
 
             $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
             $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -1513,17 +1514,17 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
-            $mail->addAddress('ogutierrez@lanumero1.com.pe');
-            $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-            /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+            //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
             }
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }*/
+            }
 
             $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
             $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -1853,17 +1854,17 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
-                $mail->addAddress('ogutierrez@lanumero1.com.pe');
-                $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
                 }
                 $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
                 foreach($list_cc as $list){
                     $mail->addCC($list->emailp);
-                }*/
+                }
     
                 $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
                 $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -1947,17 +1948,17 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
-                $mail->addAddress('ogutierrez@lanumero1.com.pe');
-                $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-                /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
                 foreach($list_td as $list){
                     $mail->addAddress($list->emailp);
                 }
                 $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
                 foreach($list_cc as $list){
                     $mail->addCC($list->emailp);
-                }*/
+                }
     
                 $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
                 $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -2374,10 +2375,10 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
-                $mail->addAddress('ogutierrez@lanumero1.com.pe');
-                $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
                 }
@@ -2388,7 +2389,7 @@ class TrackingController extends Controller
                 $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
                 foreach($list_cc as $list){
                     $mail->addCC($list->emailp);
-                }*/
+                }
 
                 $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
                 $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -2634,17 +2635,17 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
-                $mail->addAddress('ogutierrez@lanumero1.com.pe');
-                $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
                 }
                 $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
                 foreach($list_cc as $list){
                     $mail->addCC($list->emailp);
-                }*/
+                }
 
                 $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
                 $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -2824,10 +2825,10 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
-                $mail->addAddress('ogutierrez@lanumero1.com.pe');
-                $mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
                 }
@@ -2838,7 +2839,7 @@ class TrackingController extends Controller
                 $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
                 foreach($list_cc as $list){
                     $mail->addCC($list->emailp);
-                }*/
+                }
 
                 $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
                 $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
