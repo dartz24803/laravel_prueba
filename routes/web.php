@@ -404,7 +404,7 @@ Route::controller(BiReporteController::class)->group(function () {
 
 
 
-    // ADMINISTRABLES - 
+    // ADMINISTRABLES -
     Route::get('bireporte_ra_conf', 'index_ra_conf')->name('bireporte_ra_conf');
     Route::get('bireporte_ti_conf', 'index_ti_conf')->name('bireporte_ti_conf');
     Route::get('bireporte_sisbd_conf', 'index_sis_conf')->name('bireporte_sisbd_conf');

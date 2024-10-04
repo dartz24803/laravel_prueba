@@ -8,11 +8,11 @@ class ControlUbicacion extends Model
 {
     // Definir la tabla asociada al modelo
     protected $table = 'control_ubicacion';
-    
+
     // Definir la clave primaria
     protected $primaryKey = 'id_control_ubicacion';
     public $timestamps = false;
-    
+
     // Definir los campos que pueden ser llenados de forma masiva
     protected $fillable = [
         'cod_control',
