@@ -82,10 +82,16 @@
             </li>
             <li id="controlubicacionese">
                 <a id="rcontrolubicaciones" href="{{ url('ControlUbicaciones/index') }}">
-                    <p class="romperpalabra" title="Mercadería a enviar para fotografía"><span id="icono_active2"></span> Control de Ubicaciones</p>
+                    <p class="romperpalabra" title="Control de Ubicaciones"><span id="icono_active2"></span> Control de Ubicaciones</p>
                 </a>
             </li>
         <?php } ?>
+
+        <li id="mercaderiafotografia">
+            <a href="{{ url('mercaderiafotografia') }}">
+                <p class="romperpalabra" title="Mercadería a enviar para fotografía"><span id="icono_active2"></span> Mercadería a enviar para fotografía</p>
+            </a>
+        </li>
     </ul>
 </li>
 

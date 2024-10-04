@@ -86,11 +86,6 @@
                 {{ $reporte->nom_tabla }}
             </td>
 
-            @if ($reporte->actividad == 1)
-            @else
-            <td>No disponible</td>
-            @endif
-
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->tipo_frecuencia }}
             </td>
