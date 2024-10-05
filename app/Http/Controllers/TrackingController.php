@@ -2308,17 +2308,14 @@ class TrackingController extends Controller
                 }
             }
         }elseif($get_id->faltantes>0 &&
-        (session('usuario')->id_puesto==29 || 
-        session('usuario')->id_puesto==30 || 
+        (session('usuario')->id_puesto==30 || 
         session('usuario')->id_puesto==31 || 
         session('usuario')->id_puesto==32 || 
         session('usuario')->id_puesto==33 || 
-        session('usuario')->id_puesto==34 || 
         session('usuario')->id_puesto==35 || 
         session('usuario')->id_puesto==161 || 
         session('usuario')->id_puesto==167 || 
-        session('usuario')->id_puesto==168 ||
-        session('usuario')->id_puesto==197 || 
+        session('usuario')->id_puesto==168 || 
         session('usuario')->id_puesto==311 || 
         session('usuario')->id_puesto==314 ||
         session('usuario')->id_nivel==1)){

@@ -389,17 +389,14 @@ use App\Models\TrackingDetalleProceso;
                 @endif
                 @elseif($list->id_estado==4)
                 <!-- PUESTOS DE TIENDA -->
-                @if (session('usuario')->id_puesto==29 ||
-                session('usuario')->id_puesto==30 ||
+                @if (session('usuario')->id_puesto==30 ||
                 session('usuario')->id_puesto==31 ||
                 session('usuario')->id_puesto==32 ||
                 session('usuario')->id_puesto==33 ||
-                session('usuario')->id_puesto==34 ||
                 session('usuario')->id_puesto==35 ||
                 session('usuario')->id_puesto==161 ||
                 session('usuario')->id_puesto==167 ||
                 session('usuario')->id_puesto==168 ||
-                session('usuario')->id_puesto==197 ||
                 session('usuario')->id_puesto==311 ||
                 session('usuario')->id_puesto==314 ||
                 session('usuario')->id_nivel==1)
@@ -413,17 +410,14 @@ use App\Models\TrackingDetalleProceso;
                 @endif
                 @elseif($list->id_estado==5)
                 <!-- PUESTOS DE TIENDA -->
-                @if (session('usuario')->id_puesto==29 ||
-                session('usuario')->id_puesto==30 ||
+                @if (session('usuario')->id_puesto==30 ||
                 session('usuario')->id_puesto==31 ||
                 session('usuario')->id_puesto==32 ||
                 session('usuario')->id_puesto==33 ||
-                session('usuario')->id_puesto==34 ||
                 session('usuario')->id_puesto==35 ||
                 session('usuario')->id_puesto==161 ||
                 session('usuario')->id_puesto==167 ||
                 session('usuario')->id_puesto==168 ||
-                session('usuario')->id_puesto==197 ||
                 session('usuario')->id_puesto==311 ||
                 session('usuario')->id_puesto==314 ||
                 session('usuario')->id_nivel==1)
@@ -437,17 +431,14 @@ use App\Models\TrackingDetalleProceso;
                 @endif
                 @elseif($list->id_estado==7)
                 <!-- PUESTOS DE TIENDA -->
-                @if (session('usuario')->id_puesto==29 ||
-                session('usuario')->id_puesto==30 ||
+                @if (session('usuario')->id_puesto==30 ||
                 session('usuario')->id_puesto==31 ||
                 session('usuario')->id_puesto==32 ||
                 session('usuario')->id_puesto==33 ||
-                session('usuario')->id_puesto==34 ||
                 session('usuario')->id_puesto==35 ||
                 session('usuario')->id_puesto==161 ||
                 session('usuario')->id_puesto==167 ||
                 session('usuario')->id_puesto==168 ||
-                session('usuario')->id_puesto==197 ||
                 session('usuario')->id_puesto==311 ||
                 session('usuario')->id_puesto==314 ||
                 session('usuario')->id_nivel==1)
@@ -478,17 +469,14 @@ use App\Models\TrackingDetalleProceso;
                 session('usuario')->id_puesto==97) &&
                 ($list->hacia=="B09" || 
                 $list->hacia=="B19")) ||
-                ((session('usuario')->id_puesto==29 ||
-                session('usuario')->id_puesto==30 ||
+                ((session('usuario')->id_puesto==30 ||
                 session('usuario')->id_puesto==31 ||
                 session('usuario')->id_puesto==32 ||
                 session('usuario')->id_puesto==33 ||
-                session('usuario')->id_puesto==34 ||
                 session('usuario')->id_puesto==35 ||
                 session('usuario')->id_puesto==161 ||
                 session('usuario')->id_puesto==167 ||
                 session('usuario')->id_puesto==168 ||
-                session('usuario')->id_puesto==197 ||
                 session('usuario')->id_puesto==311 ||
                 session('usuario')->id_puesto==314) &&
                 $list->hacia!="B09" && $list->hacia!="B19") ||
@@ -502,17 +490,14 @@ use App\Models\TrackingDetalleProceso;
                 @endif
                 @elseif($list->id_estado==12)
                 <!-- PUESTOS DE TIENDA -->
-                @if (session('usuario')->id_puesto==29 ||
-                session('usuario')->id_puesto==30 ||
+                @if (session('usuario')->id_puesto==30 ||
                 session('usuario')->id_puesto==31 ||
                 session('usuario')->id_puesto==32 ||
                 session('usuario')->id_puesto==33 ||
-                session('usuario')->id_puesto==34 ||
                 session('usuario')->id_puesto==35 ||
                 session('usuario')->id_puesto==161 ||
                 session('usuario')->id_puesto==167 ||
                 session('usuario')->id_puesto==168 ||
-                session('usuario')->id_puesto==197 ||
                 session('usuario')->id_puesto==311 ||
                 session('usuario')->id_puesto==314 ||
                 session('usuario')->id_nivel==1)
@@ -525,17 +510,14 @@ use App\Models\TrackingDetalleProceso;
                 @endif
                 @elseif($list->id_estado==13)
                 <!-- PUESTOS DE TIENDA -->
-                @if (session('usuario')->id_puesto==29 ||
-                session('usuario')->id_puesto==30 ||
+                @if (session('usuario')->id_puesto==30 ||
                 session('usuario')->id_puesto==31 ||
                 session('usuario')->id_puesto==32 ||
                 session('usuario')->id_puesto==33 ||
-                session('usuario')->id_puesto==34 ||
                 session('usuario')->id_puesto==35 ||
                 session('usuario')->id_puesto==161 ||
                 session('usuario')->id_puesto==167 ||
                 session('usuario')->id_puesto==168 ||
-                session('usuario')->id_puesto==197 ||
                 session('usuario')->id_puesto==311 ||
                 session('usuario')->id_puesto==314 ||
                 session('usuario')->id_nivel==1)
@@ -567,17 +549,14 @@ use App\Models\TrackingDetalleProceso;
                 ($list->sobrantes>0 &&
                 session('usuario')->id_puesto==76) ||
                 ($list->faltantes>0 &&
-                session('usuario')->id_puesto==29 ||
                 session('usuario')->id_puesto==30 ||
                 session('usuario')->id_puesto==31 ||
                 session('usuario')->id_puesto==32 ||
                 session('usuario')->id_puesto==33 ||
-                session('usuario')->id_puesto==34 ||
                 session('usuario')->id_puesto==35 ||
                 session('usuario')->id_puesto==161 ||
                 session('usuario')->id_puesto==167 ||
                 session('usuario')->id_puesto==168 ||
-                session('usuario')->id_puesto==197 ||
                 session('usuario')->id_puesto==311 ||
                 session('usuario')->id_puesto==314))
                 <a href="{{ route('tracking.detalle_operacion_diferencia', $list->id) }}" title="Detalle de operaciones de diferencias">
@@ -590,17 +569,14 @@ use App\Models\TrackingDetalleProceso;
                 @endif
                 @elseif($list->id_estado==17)
                 <!-- PUESTOS DE TIENDA -->
-                @if (session('usuario')->id_puesto==29 ||
-                session('usuario')->id_puesto==30 ||
+                @if (session('usuario')->id_puesto==30 ||
                 session('usuario')->id_puesto==31 ||
                 session('usuario')->id_puesto==32 ||
                 session('usuario')->id_puesto==33 ||
-                session('usuario')->id_puesto==34 ||
                 session('usuario')->id_puesto==35 ||
                 session('usuario')->id_puesto==161 ||
                 session('usuario')->id_puesto==167 ||
                 session('usuario')->id_puesto==168 ||
-                session('usuario')->id_puesto==197 ||
                 session('usuario')->id_puesto==311 ||
                 session('usuario')->id_puesto==314 ||
                 session('usuario')->id_nivel==1)
