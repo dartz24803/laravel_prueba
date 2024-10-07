@@ -202,4 +202,20 @@ class Mercaderia extends Model
 
         return DB::connection('sqlsrv')->select($sql);
     }
+
+    static function buscar_control_mercaderia_activo($dato){
+        try {
+            $sql = "EXEC usp_web_ver_despachos_x_doc_central ?, ?, ?, ?";
+            $result = DB::connection('sqlsrv')->select($sql, [
+                $dato['base'],
+                $dato['f_inicio'],
+                $dato['f_fin'],
+                $dato['tvista']
+            ]);
+            return json_decode(json_encode($result), true);
+        } catch (\Exception $e) {
+            // Manejo de excepciones
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }

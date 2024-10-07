@@ -1781,19 +1781,30 @@ Route::controller(MercaderiaConfController::class)->group(function () {
 });
 
 use App\Http\Controllers\ControlUbicacionesController;
-
 Route::controller(ControlUbicacionesController::class)->group(function () {
     Route::get('ControlUbicaciones/index', 'index');
-    Route::get('ControlUbicaciones/Cargar_Control_Ubicacion', 'Cargar_Control_Ubicacion');
-    Route::get('ControlUbicaciones/Modal_Percha', 'Modal_Percha');
-    Route::post('ControlUbicaciones/Insert_Percha', 'Insert_Percha');
-    Route::get('ControlUbicaciones/Modal_Update_Percha/{id}', 'Modal_Update_Percha');
-    Route::post('ControlUbicaciones/Update_Percha', 'Update_Percha');
-    Route::post('ControlUbicaciones/Delete_Percha', 'Delete_Percha');
-    Route::get('MercaderiaConf/Nicho', 'Nicho');
-    Route::get('MercaderiaConf/Modal_Nicho', 'Modal_Nicho');
-    Route::post('MercaderiaConf/Insert_Nicho', 'Insert_Nicho');
-    Route::get('MercaderiaConf/Modal_Update_Nicho/{id}', 'Modal_Update_Nicho');
-    Route::post('MercaderiaConf/Update_Nicho', 'Update_Nicho');
-    Route::post('MercaderiaConf/Delete_Nicho', 'Delete_Nicho');
+    Route::get('ControlUbicaciones/Cargar_Control_Ubicacion/{t}', 'Cargar_Control_Ubicacion');
+    Route::get('ControlUbicaciones/Excel_Control_Ubicacion/{t}', 'Excel_Control_Ubicacion');
+    Route::get('ControlUbicaciones/Excel_Control_Ubicacion_Error', 'Excel_Control_Ubicacion_Error');
+    Route::get('ControlUbicaciones/Modal_Carga_Masiva', 'Modal_Carga_Masiva');
+    Route::get('ControlUbicaciones/Formato_Carga_Ubicacion', 'Formato_Carga_Ubicacion');
+    Route::post('ControlUbicaciones/Insert_Carga_Masiva', 'Insert_Carga_Masiva');
+    Route::get('ControlUbicaciones/Modal_Control_Ubicaciones', 'Modal_Control_Ubicaciones');
+    Route::post('ControlUbicaciones/Insert_Control_Ubicaciones', 'Insert_Control_Ubicaciones');
+    Route::get('ControlUbicaciones/Modal_Update_Control_Ubicaciones/{id}', 'Modal_Update_Control_Ubicaciones');
+    Route::post('ControlUbicaciones/Update_Control_Ubicaciones', 'Update_Control_Ubicaciones');
+    Route::post('ControlUbicaciones/Delete_Control_Ubicacion', 'Delete_Control_Ubicacion');
+});
+
+
+use App\Http\Controllers\ControlSalidaMercaderiaController;
+
+Route::controller(ControlSalidaMercaderiaController::class)->group(function () {
+    Route::get('ControlSalidaMercaderia/index', 'index');
+    Route::post('ControlSalidaMercaderia/Buscar_Control_Mercaderia_Activo', 'Buscar_Control_Mercaderia_Activo');
+    Route::post('ControlSalidaMercaderia/Update_Estado_Control_Mercaderia_Activo', 'Update_Estado_Control_Mercaderia_Activo');
+    Route::get('ControlSalidaMercaderia/Modal_Percha', 'Modal_Percha');
+    Route::get('ControlSalidaMercaderia/Modal_Update_Percha/{id}', 'Modal_Update_Percha');
+    Route::post('ControlSalidaMercaderia/Update_Percha', 'Update_Percha');
+    Route::post('ControlSalidaMercaderia/Delete_Percha', 'Delete_Percha');
 });
