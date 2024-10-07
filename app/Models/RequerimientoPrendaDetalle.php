@@ -20,7 +20,7 @@ class RequerimientoPrendaDetalle extends Model
     public $incrementing = true;
 
     // Especifica si el modelo debe manejar marcas de tiempo
-    public $timestamps = true;
+    public $timestamps = false;
 
     // Define los campos que son asignables en masa
     protected $fillable = [
@@ -90,21 +90,21 @@ class RequerimientoPrendaDetalle extends Model
     static public function getListRequerimientoPrenda($dato)
     {
 
-        $sql = "SELECT c.id_requerimientod, c.codigo, c.tipo_usuario, c.estilo, 
+        $sql = "SELECT c.id_requerimientod, c.codigo, c.tipo_usuario, c.estilo,
                     c.descripcion, c.color, c.talla, c.OFC AS cant_solicitado,
                     CASE WHEN m.cantidad IS NULL THEN '0' ELSE m.cantidad END AS empaquetado,
                     CASE WHEN m.cantidad IS NULL THEN c.OFC ELSE c.OFC - m.cantidad END AS saldo,
-                    CASE 
+                    CASE
                         WHEN c.estado_requerimiento = 1 THEN 'Solicitado'
                         WHEN c.estado_requerimiento = 2 THEN 'Empaquetado'
                         WHEN c.estado_requerimiento = 3 THEN 'Enviado a Oficina'
-                        WHEN c.estado_requerimiento = 4 THEN 'Foto Tomada' 
+                        WHEN c.estado_requerimiento = 4 THEN 'Foto Tomada'
                     END AS desc_estado_requerimiento,
                     c.estado_requerimiento, m.observacion, m.observacion_validaf, m.foto,
                     '0' AS nuevo, c.observacion AS obs_comercial, m.observacion AS obs_logistica,
                     c.ubicacion
                     FROM requerimiento_prenda_detalle c
-                    LEFT JOIN mercaderia_fotografia m ON c.codigo = m.codigo 
+                    LEFT JOIN mercaderia_fotografia m ON c.codigo = m.codigo
                     AND c.mes = '" . $dato['mes'] . "' AND c.anio = '" . $dato['anio'] . "'
                     WHERE c.estado = 1 AND c.mes = '" . $dato['mes'] . "' AND c.anio = '" . $dato['anio'] . "'";
 
