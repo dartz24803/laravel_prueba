@@ -54,6 +54,111 @@ class TrackingController extends Controller
         ]);
     }
 
+    public function list_notificacion(Request $request)
+    {
+        if($request->id_tracking){
+            try {
+                $query = TrackingNotificacion::select('titulo','contenido','fecha')
+                                                ->where('id_tracking',$request->id_tracking)->get();
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
+            }
+    
+            if (count($query)==0) {
+                return response()->json([
+                    'message' => 'Sin resultados.',
+                ], 404);
+            }
+    
+            return response()->json($query, 200);
+        }elseif($request->cod_base){
+            try {
+                if($request->cod_base=="OFI"){
+                    $query = TrackingNotificacion::select('tracking_notificacion.id_tracking',
+                            'tracking.n_requerimiento')
+                            ->join('tracking','tracking.id','=','tracking_notificacion.id_tracking')
+                            ->join('base','base.id_base','=','tracking.id_origen_hacia')
+                            ->groupBy('tracking_notificacion.id_tracking')->get();
+                }else{
+                    $query = TrackingNotificacion::select('tracking_notificacion.id_tracking',
+                            'tracking.n_requerimiento')
+                            ->join('tracking','tracking.id','=','tracking_notificacion.id_tracking')
+                            ->join('base','base.id_base','=','tracking.id_origen_hacia')
+                            ->where('base.cod_base',$request->cod_base)
+                            ->groupBy('tracking_notificacion.id_tracking')->get();
+                }
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
+            }
+    
+            return response()->json($query, 200);
+        }else{
+            return response()->json([
+                'message' => 'Sin resultados.',
+            ], 404);
+        }
+    }
+
+    public function getAccessToken()
+    {
+        $client = new GoogleClient();
+        $client->setAuthConfig(base_path('firebase_credentials.json'));
+        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+        $accessToken = $client->fetchAccessTokenWithAssertion()["access_token"];
+        return $accessToken;
+    }
+
+    public function sendNotification($dato)
+    {
+        $url = 'https://fcm.googleapis.com/v1/projects/370214896421/messages:send';            
+        $accessToken = $this->getAccessToken();
+        $headers = array("Authorization: Bearer ".$accessToken,"content-type: application/json;UTF-8");
+
+        $fields["message"] = array(
+            'token' => $dato['token'],
+            'notification' => [
+                'title' => $dato['titulo'],
+                'body' => $dato['contenido'],
+                //'image' => '',
+            ],
+        );
+
+        // Open curl connection
+        $curl = curl_init();
+        // Set the url, number of POST vars, POST data
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($fields));
+        $result = curl_exec($curl);
+        if ($result === FALSE) {
+            die('Curl failed: ' . curl_error($curl));
+        }
+        curl_close($curl);
+    }
+
+    public function insert_notificacion($dato)
+    {
+        $valida = TrackingNotificacion::where('id_tracking',$dato['id_tracking'])
+                                        ->where('titulo',$dato['titulo'])->exists();
+
+        if(!$valida){
+            TrackingNotificacion::create([
+                'id_tracking' => $dato['id_tracking'],
+                'titulo' => $dato['titulo'],
+                'contenido' => $dato['contenido'],
+                'fecha' => now()
+            ]);
+        }
+    }
+
     public function iniciar_tracking()
     {
         TrackingTemporal::truncate();
@@ -93,13 +198,18 @@ class TrackingController extends Controller
             $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
             foreach($list_token as $token){
                 $dato = [
-                    'id_tracking' => $get_id->id,
                     'token' => $token->token,
                     'titulo' => 'MERCADERÍA POR SALIR',
                     'contenido' => 'Hola '.$get_id->hacia.' tu requerimiento n° '.$get_id->n_requerimiento.' está listo',
                 ];
                 $this->sendNotification($dato);
             }
+            $dato = [
+                'id_tracking' => $get_id->id,
+                'titulo' => 'MERCADERÍA POR SALIR',
+                'contenido' => 'Hola '.$get_id->hacia.' tu requerimiento n° '.$get_id->n_requerimiento.' está listo',
+            ];
+            $this->insert_notificacion($dato);
 
             TrackingDetalleEstado::create([
                 'id_detalle' => $tracking_dp->id,
@@ -223,21 +333,26 @@ class TrackingController extends Controller
     {
         $list_tracking = Tracking::get_list_tracking(['llegada_tienda'=>1]);
 
-        foreach($list_tracking as $tracking){
+        foreach($list_tracking as $get_id){
             //ALERTA 3
-            $list_token = TrackingToken::whereIn('base', ['CD', $tracking->hacia])->get();
+            $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
             foreach($list_token as $token){
                 $dato = [
-                    'id_tracking' => $tracking->id,
                     'token' => $token->token,
                     'titulo' => 'LLEGADA A TIENDA',
-                    'contenido' => 'Hola '.$tracking->hacia.' confirma que tu mercadería haya llegado a tienda',
+                    'contenido' => 'Hola '.$get_id->hacia.' confirma que tu mercadería haya llegado a tienda',
                 ];
                 $this->sendNotification($dato);
             }
+            $dato = [
+                'id_tracking' => $get_id->id,
+                'titulo' => 'LLEGADA A TIENDA',
+                'contenido' => 'Hola '.$get_id->hacia.' confirma que tu mercadería haya llegado a tienda',
+            ];
+            $this->insert_notificacion($dato);
 
             $tracking_dp = TrackingDetalleProceso::create([
-                'id_tracking' => $tracking->id,
+                'id_tracking' => $get_id->id,
                 'id_proceso' => 3,
                 'fecha' => now(),
                 'estado' => 1,
@@ -252,108 +367,6 @@ class TrackingController extends Controller
                 'estado' => 1,
                 'fec_reg' => now(),
                 'fec_act' => now(),
-            ]);
-        }
-    }
-
-    public function list_notificacion(Request $request)
-    {
-        if($request->id_tracking){
-            try {
-                $query = TrackingNotificacion::select('titulo','contenido','fecha')
-                                                ->where('id_tracking',$request->id_tracking)->get();
-            } catch (\Throwable $th) {
-                return response()->json([
-                    'message' => "Error procesando base de datos.",
-                ], 500);
-            }
-    
-            if (count($query)==0) {
-                return response()->json([
-                    'message' => 'Sin resultados.',
-                ], 404);
-            }
-    
-            return response()->json($query, 200);
-        }elseif($request->cod_base){
-            try {
-                if($request->cod_base=="OFI"){
-                    $query = TrackingNotificacion::select('tracking_notificacion.id_tracking',
-                            'tracking.n_requerimiento')
-                            ->join('tracking','tracking.id','=','tracking_notificacion.id_tracking')
-                            ->join('base','base.id_base','=','tracking.id_origen_hacia')
-                            ->groupBy('tracking_notificacion.id_tracking')->get();
-                }else{
-                    $query = TrackingNotificacion::select('tracking_notificacion.id_tracking',
-                            'tracking.n_requerimiento')
-                            ->join('tracking','tracking.id','=','tracking_notificacion.id_tracking')
-                            ->join('base','base.id_base','=','tracking.id_origen_hacia')
-                            ->where('base.cod_base',$request->cod_base)
-                            ->groupBy('tracking_notificacion.id_tracking')->get();
-                }
-            } catch (\Throwable $th) {
-                return response()->json([
-                    'message' => "Error procesando base de datos.",
-                ], 500);
-            }
-    
-            return response()->json($query, 200);
-        }else{
-            return response()->json([
-                'message' => 'Sin resultados.',
-            ], 404);
-        }
-    }
-
-    public function getAccessToken()
-    {
-        $client = new GoogleClient();
-        $client->setAuthConfig(base_path('firebase_credentials.json'));
-        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
-        $accessToken = $client->fetchAccessTokenWithAssertion()["access_token"];
-        return $accessToken;
-    }
-
-    public function sendNotification($dato)
-    {
-        $url = 'https://fcm.googleapis.com/v1/projects/370214896421/messages:send';            
-        $accessToken = $this->getAccessToken();
-        $headers = array("Authorization: Bearer ".$accessToken,"content-type: application/json;UTF-8");
-
-        $fields["message"] = array(
-            'token' => $dato['token'],
-            'notification' => [
-                'title' => $dato['titulo'],
-                'body' => $dato['contenido'],
-                //'image' => '',
-            ],
-        );
-
-        // Open curl connection
-        $curl = curl_init();
-        // Set the url, number of POST vars, POST data
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($fields));
-        $result = curl_exec($curl);
-        if ($result === FALSE) {
-            die('Curl failed: ' . curl_error($curl));
-        }
-        curl_close($curl);
-
-        $valida = TrackingNotificacion::where('id_tracking',$dato['id_tracking'])
-                                        ->where('titulo',$dato['titulo'])->exists();
-
-        if(!$valida){
-            TrackingNotificacion::create([
-                'id_tracking' => $dato['id_tracking'],
-                'titulo' => $dato['titulo'],
-                'contenido' => $dato['contenido'],
-                'fecha' => now()
             ]);
         }
     }
@@ -442,13 +455,18 @@ class TrackingController extends Controller
             $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
             foreach($list_token as $token){
                 $dato = [
-                    'id_tracking' => $get_id->id,
                     'token' => $token->token,
                     'titulo' => 'MERCADERÍA POR SALIR',
                     'contenido' => 'Hola '.$get_id->hacia.' tu requerimiento n° '.$get_id->n_requerimiento.' está listo',
                 ];
                 $this->sendNotification($dato);
             }
+            $dato = [
+                'id_tracking' => $get_id->id,
+                'titulo' => 'MERCADERÍA POR SALIR',
+                'contenido' => 'Hola '.$get_id->hacia.' tu requerimiento n° '.$get_id->n_requerimiento.' está listo',
+            ];
+            $this->insert_notificacion($dato);
 
             //MENSAJE 1
             //$list_detalle = TrackingGuiaRemisionDetalle::where('n_guia_remision', $request->n_requerimiento)->get();
@@ -566,13 +584,18 @@ class TrackingController extends Controller
         $list_token = TrackingToken::whereIn('base', [$get_id->hacia])->get();
         foreach($list_token as $token){
             $dato = [
-                'id_tracking' => $id,
                 'token' => $token->token,
                 'titulo' => 'SALIDA DE MERCADERÍA',
                 'contenido' => 'Hola '.$get_id->hacia.' tu requerimiento n° '.$get_id->n_requerimiento.' está en camino',
             ];
             $this->sendNotification($dato);
         }
+        $dato = [
+            'id_tracking' => $get_id->id,
+            'titulo' => 'SALIDA DE MERCADERÍA',
+            'contenido' => 'Hola '.$get_id->hacia.' tu requerimiento n° '.$get_id->n_requerimiento.' está en camino',
+        ];
+        $this->insert_notificacion($dato);
 
         TrackingDetalleEstado::create([
             'id_detalle' => $get_id->id_detalle,
@@ -742,13 +765,18 @@ class TrackingController extends Controller
         $list_token = TrackingToken::whereIn('base', ['CD'])->get();
         foreach($list_token as $token){
             $dato = [
-                'id_tracking' => $id,
                 'token' => $token->token,
                 'titulo' => 'CONFIRMACIÓN DE LLEGADA',
                 'contenido' => 'Hola '.$get_id->desde.', se ha confirmado que la mercadería llegó a tienda',
             ];
             $this->sendNotification($dato);
         }
+        $dato = [
+            'id_tracking' => $get_id->id,
+            'titulo' => 'CONFIRMACIÓN DE LLEGADA',
+            'contenido' => 'Hola '.$get_id->desde.', se ha confirmado que la mercadería llegó a tienda',
+        ];
+        $this->insert_notificacion($dato);
 
         if($get_id->id_estado=="4"){
             $tracking_dp = TrackingDetalleProceso::create([
@@ -958,25 +986,35 @@ class TrackingController extends Controller
             $list_token = TrackingToken::whereIn('base', ['CD'])->get();
             foreach($list_token as $token){
                 $dato = [
-                    'id_tracking' => $id,
                     'token' => $token->token,
                     'titulo' => 'CIERRE DE INSPECCIÓN DE FARDOS',
                     'contenido' => 'Hola '.$get_id->desde.', se ha dado el cierre a la inspección de fardos',
                 ];
                 $this->sendNotification($dato);
             }
+            $dato = [
+                'id_tracking' => $get_id->id,
+                'titulo' => 'CIERRE DE INSPECCIÓN DE FARDOS',
+                'contenido' => 'Hola '.$get_id->desde.', se ha dado el cierre a la inspección de fardos',
+            ];
+            $this->insert_notificacion($dato);
 
             //ALERTA 7
             $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
             foreach($list_token as $token){
                 $dato = [
-                    'id_tracking' => $id,
                     'token' => $token->token,
                     'titulo' => 'INSPECCION DE MERCADERÍA',
                     'contenido' => 'Hola '.$get_id->desde.', se realizará la inspección de mercadería',
                 ];
                 $this->sendNotification($dato);
             }
+            $dato = [
+                'id_tracking' => $get_id->id,
+                'titulo' => 'INSPECCION DE MERCADERÍA',
+                'contenido' => 'Hola '.$get_id->desde.', se realizará la inspección de mercadería',
+            ];
+            $this->insert_notificacion($dato);
 
             $tracking_dp = TrackingDetalleProceso::create([
                 'id_tracking' => $id,
@@ -1026,13 +1064,18 @@ class TrackingController extends Controller
             }
             foreach($list_token as $token){
                 $dato = [
-                    'id_tracking' => $id,
                     'token' => $token->token,
                     'titulo' => 'CIERRE DE INSPECCIÓN DE FARDOS',
                     'contenido' => $contenido_mensaje,
                 ];
                 $this->sendNotification($dato);
             }
+            $dato = [
+                'id_tracking' => $get_id->id,
+                'titulo' => 'CIERRE DE INSPECCIÓN DE FARDOS',
+                'contenido' => $contenido_mensaje,
+            ];
+            $this->insert_notificacion($dato);
 
             TrackingDetalleEstado::create([
                 'id_detalle' => $id_detalle,
@@ -1457,13 +1500,18 @@ class TrackingController extends Controller
         $list_token = TrackingToken::whereIn('base', ['CD'])->get();
         foreach($list_token as $token){
             $dato = [
-                'id_tracking' => $id,
                 'token' => $token->token,
                 'titulo' => 'CONFIRMACIÓN DE PAGO A TRANSPORTE',
                 'contenido' => 'Hola '.$get_id->desde.', se ha pagado a la agencia',
             ];
             $this->sendNotification($dato);
         }
+        $dato = [
+            'id_tracking' => $get_id->id,
+            'titulo' => 'CONFIRMACIÓN DE PAGO A TRANSPORTE',
+            'contenido' => 'Hola '.$get_id->desde.', se ha pagado a la agencia',
+        ];
+        $this->insert_notificacion($dato);
 
         $tracking_dp = TrackingDetalleProceso::create([
             'id_tracking' => $id,
@@ -1578,13 +1626,18 @@ class TrackingController extends Controller
             $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
             foreach($list_token as $token){
                 $dato = [
-                    'id_tracking' => $id,
                     'token' => $token->token,
                     'titulo' => 'INSPECCION DE MERCADERÍA',
                     'contenido' => 'Hola '.$get_id->desde.', se realizará la inspección de mercadería',
                 ];
                 $this->sendNotification($dato);
             }
+            $dato = [
+                'id_tracking' => $id,
+                'titulo' => 'INSPECCION DE MERCADERÍA',
+                'contenido' => 'Hola '.$get_id->desde.', se realizará la inspección de mercadería',
+            ];
+            $this->insert_notificacion($dato);
 
             $tracking_dp = TrackingDetalleProceso::create([
                 'id_tracking' => $id,
@@ -1620,13 +1673,18 @@ class TrackingController extends Controller
         $list_token = TrackingToken::whereIn('base', ['CD'])->get();
         foreach($list_token as $token){
             $dato = [
-                'id_tracking' => $id,
                 'token' => $token->token,
                 'titulo' => 'CONTEO DE MERCADERÍA',
                 'contenido' => 'Hola '.$get_id->desde.', se está realizando el conteo de la mercadería',
             ];
             $this->sendNotification($dato);
         }
+        $dato = [
+            'id_tracking' => $id,
+            'titulo' => 'CONTEO DE MERCADERÍA',
+            'contenido' => 'Hola '.$get_id->desde.', se está realizando el conteo de la mercadería',
+        ];
+        $this->insert_notificacion($dato);
 
         TrackingDetalleEstado::create([
             'id_detalle' => $get_id->id_detalle,
@@ -1648,13 +1706,18 @@ class TrackingController extends Controller
         $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
         foreach($list_token as $token){
             $dato = [
-                'id_tracking' => $id,
                 'token' => $token->token,
                 'titulo' => 'MERCADERÍA ENTREGADA',
                 'contenido' => 'La mercadería fue distribuida con éxito',
             ];
             $this->sendNotification($dato);
         }
+        $dato = [
+            'id_tracking' => $id,
+            'titulo' => 'MERCADERÍA ENTREGADA',
+            'contenido' => 'La mercadería fue distribuida con éxito',
+        ];
+        $this->insert_notificacion($dato);
 
         $tracking_dp = TrackingDetalleProceso::create([
             'id_tracking' => $id,
@@ -1816,25 +1879,35 @@ class TrackingController extends Controller
             $list_token = TrackingToken::whereIn('base', ['CD'])->get();
             foreach($list_token as $token){
                 $dato = [
-                    'id_tracking' => $id,
                     'token' => $token->token,
-                    'titulo' => 'REPORTE DE DIFERENCIAS',
+                    'titulo' => 'REPORTE DE DIFERENCIAS (SOBRANTE)',
                     'contenido' => 'Hola '.$get_id->desde.', regularizar los sobrantes indicados',
                 ];
                 $this->sendNotification($dato);
             }
+            $dato = [
+                'id_tracking' => $id,
+                'titulo' => 'REPORTE DE DIFERENCIAS (SOBRANTE)',
+                'contenido' => 'Hola '.$get_id->desde.', regularizar los sobrantes indicados',
+            ];
+            $this->insert_notificacion($dato);
         }
         if($list_faltante){
             $list_token = TrackingToken::whereIn('base', [$get_id->hacia])->get();
             foreach($list_token as $token){
                 $dato = [
-                    'id_tracking' => $id,
                     'token' => $token->token,
-                    'titulo' => 'REPORTE DE DIFERENCIAS',
+                    'titulo' => 'REPORTE DE DIFERENCIAS (FALTANTE)',
                     'contenido' => 'Hola '.$get_id->hacia.', regularizar los faltantes indicados',
                 ];
                 $this->sendNotification($dato);
             }
+            $dato = [
+                'id_tracking' => $id,
+                'titulo' => 'REPORTE DE DIFERENCIAS (FALTANTE)',
+                'contenido' => 'Hola '.$get_id->hacia.', regularizar los faltantes indicados',
+            ];
+            $this->insert_notificacion($dato);
         }
 
         //MENSAJE 5
@@ -2235,17 +2308,14 @@ class TrackingController extends Controller
                 }
             }
         }elseif($get_id->faltantes>0 &&
-        (session('usuario')->id_puesto==29 || 
-        session('usuario')->id_puesto==30 || 
+        (session('usuario')->id_puesto==30 || 
         session('usuario')->id_puesto==31 || 
         session('usuario')->id_puesto==32 || 
         session('usuario')->id_puesto==33 || 
-        session('usuario')->id_puesto==34 || 
         session('usuario')->id_puesto==35 || 
         session('usuario')->id_puesto==161 || 
         session('usuario')->id_puesto==167 || 
-        session('usuario')->id_puesto==168 ||
-        session('usuario')->id_puesto==197 || 
+        session('usuario')->id_puesto==168 || 
         session('usuario')->id_puesto==311 || 
         session('usuario')->id_puesto==314 ||
         session('usuario')->id_nivel==1)){
@@ -2346,13 +2416,18 @@ class TrackingController extends Controller
             $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
             foreach($list_token as $token){
                 $dato = [
-                    'id_tracking' => $id,
                     'token' => $token->token,
                     'titulo' => 'DIFERENCIAS REGULARIZADAS',
                     'contenido' => 'Hola '.$get_id->desde.' - '.$get_id->hacia.', se regularizó el Nro. Req. '.$get_id->n_requerimiento.$mensaje,
                 ];
                 $this->sendNotification($dato);
             }
+            $dato = [
+                'id_tracking' => $id,
+                'titulo' => 'DIFERENCIAS REGULARIZADAS',
+                'contenido' => 'Hola '.$get_id->desde.' - '.$get_id->hacia.', se regularizó el Nro. Req. '.$get_id->n_requerimiento.$mensaje,
+            ];
+            $this->insert_notificacion($dato);
 
             //MENSAJE 6
             $t_comentario = TrackingComentario::from('tracking_comentario AS tc')
@@ -2556,13 +2631,18 @@ class TrackingController extends Controller
             $list_token = TrackingToken::whereIn('base', ['CD'])->get();
             foreach($list_token as $token){
                 $dato = [
-                    'id_tracking' => $id,
                     'token' => $token->token,
                     'titulo' => 'SOLICITUD DE DEVOLUCIÓN',
                     'contenido' => 'Hola Andrea, se ha encontrado mercadería para devolución, revisar correo',
                 ];
                 $this->sendNotification($dato);
             }
+            $dato = [
+                'id_tracking' => $id,
+                'titulo' => 'SOLICITUD DE DEVOLUCIÓN',
+                'contenido' => 'Hola Andrea, se ha encontrado mercadería para devolución, revisar correo',
+            ];
+            $this->insert_notificacion($dato);
 
             $list_devolucion = TrackingDevolucionTemporal::where('id_usuario',session('usuario')->id_usuario)
                                 ->whereIn('id_producto',$array)->get();
@@ -2911,13 +2991,18 @@ class TrackingController extends Controller
             $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
             foreach($list_token as $token){
                 $dato = [
-                    'id_tracking' => $id,
                     'token' => $token->token,
                     'titulo' => 'CIERRE DE INCONFORMIDADES DE DEVOLUCIÓN',
                     'contenido' => 'Hola, '.$get_id->desde.' - '.$get_id->hacia.' revisar respuesta de la solicitud de la devolución para el Nro. Req',
                 ];
                 $this->sendNotification($dato);
             }
+            $dato = [
+                'id_tracking' => $id,
+                'titulo' => 'CIERRE DE INCONFORMIDADES DE DEVOLUCIÓN',
+                'contenido' => 'Hola, '.$get_id->desde.' - '.$get_id->hacia.' revisar respuesta de la solicitud de la devolución para el Nro. Req',
+            ];
+            $this->insert_notificacion($dato);
 
             TrackingDetalleEstado::create([
                 'id_detalle' => $get_id->id_detalle,
