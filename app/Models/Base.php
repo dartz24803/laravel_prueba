@@ -35,7 +35,7 @@ class Base extends Model
 
     public static function get_list_bases_tienda()
     {
-        $sql = "SELECT id_base,cod_base FROM base 
+        $sql = "SELECT id_base,cod_base FROM base
                 WHERE id_base IN (2,3,4,5,6,7,8,9,10,31,13,27,14,37)
                 ORDER BY cod_base ASC";
         $query = DB::select($sql);
@@ -44,7 +44,7 @@ class Base extends Model
 
     public static function get_list_base_tracking()
     {
-        $sql = "SELECT id_base,cod_base FROM base 
+        $sql = "SELECT id_base,cod_base FROM base
                 WHERE id_base IN (2,3,4,5,6,7,8,9,10,31,13,27,14,37,21)
                 ORDER BY cod_base ASC";
         $query = DB::select($sql);
@@ -53,7 +53,7 @@ class Base extends Model
 
     public static function get_list_todas_bases_agrupadas()
     {
-        $sql = "SELECT cod_base FROM base 
+        $sql = "SELECT cod_base FROM base
                 WHERE estado=1 AND id_base NOT IN (1,11,12,30,33,35,36)
                 GROUP BY cod_base
                 ORDER BY cod_base ASC";
@@ -89,7 +89,7 @@ class Base extends Model
             $buscar = "";
         }
 
-        $sql = "SELECT cod_base FROM base 
+        $sql = "SELECT cod_base FROM base
                 WHERE estado=1 AND id_base NOT IN (1,11,12,30,33,35,36) $buscar
                 GROUP BY cod_base
                 ORDER BY cod_base ASC";
@@ -99,13 +99,21 @@ class Base extends Model
     }
 
     public static function get_list_base_pendiente(){
-        $sql = "SELECT cod_base FROM base 
-                WHERE estado=1 AND (cod_base LIKE 'B%' OR cod_base IN ('OFC','CD','AMT')) AND 
+        $sql = "SELECT cod_base FROM base
+                WHERE estado=1 AND (cod_base LIKE 'B%' OR cod_base IN ('OFC','CD','AMT')) AND
                 cod_base NOT IN ('B00','B01','B02','B13','B14','B17','BV')
-                GROUP BY cod_base 
+                GROUP BY cod_base
                 ORDER BY cod_base ASC";
-        
+
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
+    }
+
+    static function get_list_bases(){
+        $sql = "SELECT * from base
+        WHERE nom_base LIKE 'BASE%' order by nom_base ASC ";
+
+        $result = DB::select($sql);
+        return $result;
     }
 }
