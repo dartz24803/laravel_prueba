@@ -92,6 +92,17 @@
                 <p class="romperpalabra" title="Mercadería a enviar para fotografía"><span id="icono_active2"></span> Mercadería a enviar para fotografía</p>
             </a>
         </li>
+
+        <?php if (
+            session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 121 || session('usuario')->id_puesto == 131 ||
+            session('usuario')->id_puesto == 74 || session('usuario')->id_puesto == 76 || session('usuario')->id_puesto == 152
+        ) { ?>
+            <li id="controlmercaderiaactivoe">
+                <a id="rcontrolmercaderiaactivo" href="{{ url('ControlSalidaMercaderia/index') }}">
+                    <p class="romperpalabra" title="Control de Salida de Mercadería y Activos"><span id="icono_active2"></span> Control de Salida de Mercadería y Activos</p>
+                </a>
+            </li>
+        <?php } ?>
     </ul>
 </li>
 
