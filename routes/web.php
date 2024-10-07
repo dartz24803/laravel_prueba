@@ -270,6 +270,10 @@ Route::controller(MercaderiaEnviarFotografia::class)->group(function () {
     Route::get('mercaderiafotografia/create', 'create_merc_foto')->name('mercaderiafotografia.create');
     Route::delete('mercaderiafotografia/{id}', 'destroy_merc_foto')->name('mercaderiafotografia.destroy');
     Route::post('mercaderiafotografia/store', 'store_merc_foto')->name('mercaderiafotografia.store');
+    Route::post('mercaderiafotografia/enviar_oficina', 'enviar_oficina')->name('mercaderiafotografia.enviar_oficina');
+    Route::get('mercaderiafotografia/formato', 'formato_mercaderia_fotografica')->name('mercaderiafotografia.formato');
+    Route::get('mercaderiafotografia/requerimiento_surtido', 'requerimiento_surtido')->name('mercaderiafotografia.requerimiento_surtido');
+
     Route::post('mercaderiafotografia/{id}', 'update_merc_foto')->name('mercaderiafotografia.update');
 });
 
