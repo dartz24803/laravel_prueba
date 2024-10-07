@@ -419,12 +419,11 @@ class MercaderiaEnviarFotografia extends Controller
         $sheet->getColumnDimension('G')->setWidth(20);
         $sheet->getColumnDimension('H')->setWidth(30);
         $sheet->getColumnDimension('I')->setWidth(60);
-        // dd($spreadsheet);
+
         //final part
         $curdate = date('d-m-Y');
         $writer = new Xlsx($spreadsheet);
         $filename = 'Requerimiento_Surtido_' . date('Y-m-d') . '.xlsx';
-
 
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
