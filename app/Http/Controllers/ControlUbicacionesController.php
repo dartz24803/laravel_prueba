@@ -483,7 +483,7 @@ class ControlUbicacionesController extends Controller
                 ]);
             }
     }
-
+    //modal
     public function Modal_Update_Control_Ubicaciones($id_control_ubicacion){
             $dato['get_id'] = ControlUbicacion::where('id_control_ubicacion', $id_control_ubicacion)->get();
             $dato['list_nicho'] = Mercaderia::get_list_nicho();
