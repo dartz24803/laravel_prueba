@@ -1824,3 +1824,17 @@ Route::controller(RequerimientoPrendaController::class)->group(function () {
     Route::post('RequerimientoPrenda/Delete_Requerimiento_Prenda', 'Delete_Requerimiento_Prenda');
     Route::post('RequerimientoPrenda/Delete_Todo_Requerimiento_Prenda', 'Delete_Todo_Requerimiento_Prenda');
 });
+
+use App\Http\Controllers\RequerimientoSurtidoController;
+
+Route::controller(RequerimientoSurtidoController::class)->group(function () {
+    Route::get('RequerimientoSurtido/index', 'index');
+    Route::post('RequerimientoSurtido/Buscar_Semana', 'Buscar_Semana');
+    Route::get('RequerimientoSurtido/Modal_Requerimiento', 'Modal_Requerimiento');
+    Route::get('RequerimientoSurtido/Formato_Mercaderia_Fotografia', 'Formato_Mercaderia_Fotografia');
+    Route::post('RequerimientoSurtido/Insert_Requerimiento', 'Insert_Requerimiento');
+    Route::get('RequerimientoSurtido/Modal_Update_Requerimiento_Prenda/{cod}/{mes}/{anio}', 'Modal_Update_Requerimiento_Prenda');
+    Route::post('RequerimientoSurtido/Update_Requerimiento_Prenda', 'Update_Requerimiento_Prenda');
+    Route::post('RequerimientoSurtido/Delete_Requerimiento_Prenda', 'Delete_Requerimiento_Prenda');
+    Route::post('RequerimientoSurtido/Delete_Todo_Requerimiento_Prenda', 'Delete_Todo_Requerimiento_Prenda');
+});
