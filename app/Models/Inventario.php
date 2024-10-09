@@ -71,4 +71,46 @@ class Inventario extends Model
         $query = DB::select($sql);
         return $query;
     }
+
+    static function elimina_carga_inventario_temporal()
+    {
+        $id_usuario =  session('usuario')->id_usuario;
+
+        $sql = "DELETE FROM inventario_detalle_temporal WHERE user_reg = '$id_usuario'";
+        DB::statement($sql);
+    }
+
+    static function valida_carga_inventario($dato)
+    {
+        $v = "";
+        if ($dato['mod'] == 2) {
+            $v = " AND id_inventario != '" . $dato['id_inventario'] . "'";
+        }
+
+        $sql = "SELECT * FROM inventario WHERE estado = 1 AND fecha = '" . $dato['fecha'] . "' AND base = '" . $dato['base'] . "' AND id_responsable = '" . $dato['id_responsable'] . "' $v";
+
+        $query = DB::select($sql); // Cambia esto si utilizas un método diferente para ejecutar la consulta
+        return $query;
+    }
+
+    static function insert_carga_inventario_temporal($dato)
+    {
+        $id_usuario =  session('usuario')->id_usuario;
+
+        $sql = "INSERT INTO inventario_detalle_temporal (categoria, familia, ubicacion, barra, estilo, generico, color, talla, linea, tipo_prenda, usuario, marca, tela, descripcion, unidad, fecha_creacion, conteo, stock, diferencia, valor, poriginal, pventa, costo, validacion, caracter,
+    estado, user_reg, fec_reg) VALUES 
+            ('" . $dato['categoria'] . "', '" . $dato['familia'] . "', '" . $dato['ubicacion'] . "',
+            '" . $dato['barra'] . "', '" . $dato['estilo'] . "', '" . $dato['generico'] . "', '" . $dato['color'] . "', '" . $dato['talla'] . "', '" . $dato['linea'] . "', '" . $dato['tipo_prenda'] . "', '" . $dato['usuario'] . "', '" . $dato['marca'] . "', '" . $dato['tela'] . "', '" . $dato['descripcion'] . "', '" . $dato['unidad'] . "', '" . $dato['fcreacion'] . "', '" . $dato['conteo'] . "', '" . $dato['stock'] . "', '" . $dato['diferencia'] . "', '" . $dato['valor'] . "', '" . $dato['poriginal'] . "', '" . $dato['pventa'] . "', '" . $dato['costo'] . "', '" . $dato['validacion'] . "', '" . $dato['caracter'] . "',
+            '1', '$id_usuario', NOW())";
+
+        // Suponiendo que DB es el acceso estático a la base de datos
+        DB::statement($sql);
+    }
+
+    static function cont_carga_inventario()
+    {
+        $sql = "SELECT * FROM inventario";
+        $query = DB::select($sql);
+        return $query;
+    }
 }

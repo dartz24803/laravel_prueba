@@ -249,6 +249,8 @@ Route::controller(CargaInventarioController::class)->group(function () {
     Route::delete('cargainventario/{id}', 'destroy_ci')->name('cargainventario.destroy');
     Route::post('cargainventario/store', 'store_ci')->name('cargainventario.store');
     Route::post('cargainventario/{id}', 'update_ci')->name('cargainventario.update');
+
+    Route::get('cargainventario/formato', 'formato_carga_inventario')->name('cargainventario.formato');
 });
 
 // CONSUMIBLES

@@ -97,6 +97,21 @@
             }
         })
     }
+
+    function Validar_Archivo(v) {
+        var archivoInput = document.getElementById(v);
+        var archivoRuta = archivoInput.value;
+        var extPermitidas = /(.xlsx)$/i;
+        if (!extPermitidas.exec(archivoRuta)) {
+            swal.fire(
+                '!Archivo no permitido!',
+                'El archivo debe ser xlsx',
+                'error'
+            )
+            archivoInput.value = '';
+            return false;
+        }
+    }
 </script>
 
 @endsection
