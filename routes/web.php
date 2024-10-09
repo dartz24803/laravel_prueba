@@ -247,9 +247,11 @@ Route::controller(CargaInventarioController::class)->group(function () {
     Route::get('cargainventario/list', 'list_ci')->name('cargainventario.list');
     Route::get('cargainventario/{id}/edit', 'edit_ci')->name('cargainventario.edit');
     Route::get('cargainventario/create', 'create_ci')->name('cargainventario.create');
-    Route::delete('cargainventario/{id}', 'destroy_ci')->name('cargainventario.destroy');
+    Route::post('cargainventario/{id}/destroy', 'destroy_ci')->name('cargainventario.destroy');
     Route::post('cargainventario/store', 'store_ci')->name('cargainventario.store');
     Route::post('cargainventario/{id}', 'update_ci')->name('cargainventario.update');
+
+    Route::get('cargainventario/formato', 'formato_carga_inventario')->name('cargainventario.formato');
 });
 
 // CONSUMIBLES
@@ -269,8 +271,9 @@ Route::controller(MercaderiaEnviarFotografia::class)->group(function () {
     Route::get('mercaderiafotografia/list', 'list_merc_foto')->name('mercaderiafotografia.list');
     Route::get('mercaderiafotografia/{id}/edit', 'edit_merc_foto')->name('mercaderiafotografia.edit');
     Route::get('mercaderiafotografia/create', 'create_merc_foto')->name('mercaderiafotografia.create');
-    Route::delete('mercaderiafotografia/{id}', 'destroy_merc_foto')->name('mercaderiafotografia.destroy');
     Route::post('mercaderiafotografia/store', 'store_merc_foto')->name('mercaderiafotografia.store');
+    Route::post('mercaderiafotografia/delete', 'delete_merc_foto')->name('mercaderiafotografia.delete');
+
     Route::post('mercaderiafotografia/enviar_oficina', 'enviar_oficina')->name('mercaderiafotografia.enviar_oficina');
     Route::get('mercaderiafotografia/formato', 'formato_mercaderia_fotografica')->name('mercaderiafotografia.formato');
     Route::get('mercaderiafotografia/requerimiento_surtido', 'requerimiento_surtido')->name('mercaderiafotografia.requerimiento_surtido');
@@ -1804,6 +1807,7 @@ Route::controller(MercaderiaConfController::class)->group(function () {
 });
 
 use App\Http\Controllers\ControlUbicacionesController;
+
 Route::controller(ControlUbicacionesController::class)->group(function () {
     Route::get('ControlUbicaciones/index', 'index');
     Route::get('ControlUbicaciones/Cargar_Control_Ubicacion/{t}', 'Cargar_Control_Ubicacion');
@@ -1835,11 +1839,9 @@ Route::controller(RequerimientoPrendaController::class)->group(function () {
     Route::post('RequerimientoPrenda/Busqueda_Requerimiento_Prenda', 'Busqueda_Requerimiento_Prenda');
     Route::get('RequerimientoPrenda/Modal_Requerimiento_Prenda', 'Modal_Requerimiento_Prenda');
     Route::get('RequerimientoPrenda/Formato_Mercaderia_Fotografia', 'Formato_Mercaderia_Fotografia');
-    Route::post('RequerimientoPrenda/Insert_Control_Ubicaciones', 'Insert_Control_Ubicaciones');
+    Route::post('RequerimientoPrenda/Insert_Requerimiento_Prenda', 'Insert_Requerimiento_Prenda');
     Route::get('RequerimientoPrenda/Modal_Update_Requerimiento_Prenda/{cod}/{mes}/{anio}', 'Modal_Update_Requerimiento_Prenda');
     Route::post('RequerimientoPrenda/Update_Requerimiento_Prenda', 'Update_Requerimiento_Prenda');
     Route::post('RequerimientoPrenda/Delete_Requerimiento_Prenda', 'Delete_Requerimiento_Prenda');
-    Route::get('RequerimientoPrenda/Formato_Carga_Ubicacion', 'Formato_Carga_Ubicacion');
-    Route::post('RequerimientoPrenda/Insert_Carga_Masiva', 'Insert_Carga_Masiva');
-    Route::post('RequerimientoPrenda/Update_Estado_Control_Mercaderia_Activo', 'Update_Estado_Control_Mercaderia_Activo');
+    Route::post('RequerimientoPrenda/Delete_Todo_Requerimiento_Prenda', 'Delete_Todo_Requerimiento_Prenda');
 });

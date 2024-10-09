@@ -93,8 +93,8 @@ class MercaderiaEnviarFotografia extends Controller
     public function store_merc_foto(Request $request)
     {
         if ($this->session('usuario')->id_usuario) {
-            $dato['anio'] = $request->input('anio');
-            $dato['mes'] = $request->input('mes');
+            $dato['anio'] = $request->input('anioc');
+            $dato['mes'] = $request->input('mesc');
 
             $path = $_FILES["doc_mercaderia"]["tmp_name"];
             $id_usuario = substr($_SESSION['usuario'][0]['usuario_nombres'], 0, 1) . $_SESSION['usuario'][0]['usuario_apater'];
@@ -266,7 +266,7 @@ class MercaderiaEnviarFotografia extends Controller
             $dato['anio'] = $request->input('anio');
             $dato['mes'] = $request->input('mes');
             $dato['mod'] = 1;
-            $data = RequerimientoPrendaDetalle::get_list_requerimiento_prenda($dato);
+            $data = RequerimientoPrendaDetalle::getListRequerimientoPrenda($dato);
             $i = 0;
             foreach ($data as $d) {
                 if ($d['estado_requerimiento'] == 2) {
@@ -277,7 +277,6 @@ class MercaderiaEnviarFotografia extends Controller
                 }
             }
             echo $i;
-            //$this->Model_Logistica->delete_mercaderia_fotografia($dato);
         } else {
             redirect('');
         }
@@ -366,10 +365,14 @@ class MercaderiaEnviarFotografia extends Controller
                 ],
             ],
         ];
+        if (empty($anio) || empty($mes)) {
+            return response()->json(['error' => 'El año y el mes son obligatorios.'], 400);
+        }
         $spreadsheet->getActiveSheet()->setAutoFilter('A1:I1');
         $sheet->getStyle('A1:I1')->getFont()->setBold(true);
         $spreadsheet->getActiveSheet()->getStyle("A1:I1")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('F29D64');
 
+        // Encabezados de las columnas
         $sheet->setCellValue("A1", 'Código');
         $sheet->setCellValue("B1", "Usuario");
         $sheet->setCellValue("C1", "Estilo");
@@ -379,19 +382,21 @@ class MercaderiaEnviarFotografia extends Controller
         $sheet->setCellValue("G1", "Cantidad Solicitada");
         $sheet->setCellValue("H1", "Ubicación");
         $sheet->setCellValue("I1", "Observación");
-        //$data = $this->Model_Logistica->get_list_duplicadoser($usuario, $semana);
+
+        // Recuperar los datos
         $dato['anio'] = $anio;
-
         $dato['mes'] = $mes;
-        // dd($dato['mes']);
-        $dato['mod'] = 1;
-        $data = RequerimientoPrendaDetalle::getListRequerimientoPrenda($dato);
-        $fila = 1;
-        // dd($data); // O var_dump($data) para ver la estructura
 
+        $data = RequerimientoPrendaDetalle::getListRequerimientoPrenda($dato);
+
+        if (count($data) == 0) {
+            dd("data no tiene contenido");
+        }
+
+        $fila = 1;
+        // Iterar sobre los datos
         foreach ($data as $d) {
-            $fila = $fila + 1;
-            // dd($fila);
+            $fila++; // Incrementamos la fila
             $spreadsheet->getActiveSheet()->setCellValue("A{$fila}", $d->codigo);
             $spreadsheet->getActiveSheet()->setCellValue("B{$fila}", $d->tipo_usuario);
             $spreadsheet->getActiveSheet()->setCellValue("C{$fila}", $d->estilo);
@@ -401,15 +406,12 @@ class MercaderiaEnviarFotografia extends Controller
             $spreadsheet->getActiveSheet()->setCellValue("G{$fila}", $d->cant_solicitado);
             $spreadsheet->getActiveSheet()->setCellValue("H{$fila}", $d->ubicacion);
             $spreadsheet->getActiveSheet()->setCellValue("I{$fila}", $d->obs_comercial);
-            //border
+            // Aplicar bordes
             $sheet->getStyle("A{$fila}:I{$fila}")->applyFromArray($styleThinBlackBorderOutline);
         }
 
-
+        // Ajustes de formato
         $sheet->getStyle('A1:I1')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
-
-        //$sheet->getStyle('A2:F100')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        //Custom width for Individual Columns
         $sheet->getColumnDimension('A')->setWidth(16);
         $sheet->getColumnDimension('B')->setWidth(14);
         $sheet->getColumnDimension('C')->setWidth(45);
@@ -420,80 +422,38 @@ class MercaderiaEnviarFotografia extends Controller
         $sheet->getColumnDimension('H')->setWidth(30);
         $sheet->getColumnDimension('I')->setWidth(60);
 
-        //final part
-        $curdate = date('d-m-Y');
-        $writer = new Xlsx($spreadsheet);
-        $filename = 'Requerimiento_Surtido_' . date('Y-m-d') . '.xlsx';
-
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        // Enviar encabezados de descarga
+        ob_end_clean();
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="Requerimiento_Surtido_' . date('Y-m-d') . '.xlsx"');
         header('Cache-Control: max-age=0');
 
+        $writer = new Xlsx($spreadsheet);
         $writer->save('php://output');
     }
 
 
-    public function update_merc_foto(Request $request, $id)
+
+    public function delete_merc_foto(Request $request)
     {
-        // Validar los campos del formulario
-        $request->validate([
-            'areacon' => 'required',
-            'colaborador' => 'required',
-
-        ], [
-            'areacon.required' => 'Debe ingresar el área.',
-            'colaborador.required' => 'Debe ingresar el colaborador.',
-
-        ]);
-
-        // Actualizar el registro del consumible
-        $consumible = Consumible::findOrFail($id);
-        $consumible->update([
-            'id_area' => $request->areacon,
-            'id_usuario' => $request->colaborador,
-            'observacion' => $request->observacion ?? '',
-            'estado_consumible' => 1,
-            'estado' => 1,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario,
-        ]);
-        // dd($request->all());
-        // Eliminar los registros anteriores de consumible_detalle para este consumible
-        ConsumibleDetalle::where('id_consumible', $consumible->id_consumible)->delete();
-        $id_unidades = $request->input('id_unidad', []);
-        $id_articulos = $request->input('id_articulo', []);
-        $cantidades = $request->input('cantidad', []);
-        // dd($id_unidades);
-        foreach ($cantidades as $index => $cantidad) {
-            ConsumibleDetalle::create([
-                'id_consumible' => $consumible->id_consumible,
-                'articulo' => $id_articulos[$index],
-                'unidad' => $id_unidades[$index],
-                'cantidad' => $cantidad,
-                'estado' => 1,
-                'fec_reg' => now(),
-                'user_reg' => session('usuario')->id_usuario,
-            ]);
+        if ($this->session('usuario')->id_usuario) {
+            $dato['anio'] = $request->input('anio');
+            $dato['mes'] = $request->input('mes');
+            $dato['mod'] = 1;
+            $data = RequerimientoPrendaDetalle::getListRequerimientoPrenda($dato);
+            $i = 0;
+            foreach ($data as $d) {
+                if ($d['estado_requerimiento'] == 2) {
+                    $i++;
+                    $dato['codigo'] = $d['codigo'];
+                    $dato['get_id'] = RequerimientoPrendaDetalle::get_id_mercaderia_fotografia($dato['codigo'], $dato['anio'], $dato['mes']);
+                    $dato['get_req'] = RequerimientoPrendaDetalle::get_id_requerimiento_prenda($dato['codigo'], $dato['anio'], $dato['mes']);
+                    RequerimientoPrendaDetalle::delete_todo_mercaderia_fotografia($dato);
+                }
+            }
+            echo $i;
+        } else {
+            redirect('');
         }
-
-        return response()->json([
-            'message' => 'Consumible actualizado correctamente',
-        ]);
-    }
-
-
-
-    public function destroy_merc_foto($id)
-    {
-        Consumible::where('id_consumible', $id)->firstOrFail()->update([
-            'estado' => 2,
-            'fec_eli' => now(),
-            'user_eli' => session('usuario')->id_usuario
-        ]);
-        ConsumibleDetalle::where('id_consumible', $id)->firstOrFail()->update([
-            'estado' => 2,
-            'fec_eli' => now(),
-            'user_eli' => session('usuario')->id_usuario
-        ]);
     }
 }

@@ -1,4 +1,4 @@
-<form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
+<form id="formulario_insert" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title">Registrar Nueva Mercadería</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -13,7 +13,7 @@
         <div class="col-md-12 row mb-2">
             <div class="form-group col-lg-6">
                 <label class="control-label text-bold">Año</label>
-                <select class="form-control" id="anio" name="anio" onchange="Lista_Requerimientos_Prendas();">
+                <select class="form-control" id="anioc" name="anioc">
                     @for ($year = date('Y'); $year >= 1990; $year--) <!-- Invertir el orden -->
                     <option value="{{ $year }}" {{ date('Y') == $year ? 'selected' : '' }}>
                         {{ $year }}
@@ -23,7 +23,7 @@
             </div>
             <div class="form-group col-lg-6">
                 <label class="control-label text-bold">Mes</label>
-                <select class="form-control" id="mesi" name="mesi" onchange="Lista_Requerimientos_Prendas();">
+                <select class="form-control" id="mesic" name="mesic">
                     <option value="0">Seleccione</option>
                     @foreach ([
                     ['cod_mes' => '01', 'nom_mes' => 'Enero'],

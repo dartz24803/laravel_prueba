@@ -283,4 +283,73 @@ class RequerimientoPrendaDetalle extends Model
                 ]);
         }
     }
+
+    static function delete_todo_mercaderia_fotografia($dato)
+    {
+        $id_usuario = $_SESSION['usuario'][0]['id_usuario'];
+
+        if (count($dato['get_req']) > 0) {
+            $sql = "UPDATE requerimiento_prenda_detalle 
+                    SET estado_requerimiento = 1, user_act = $id_usuario, fec_act = NOW() 
+                    WHERE id_requerimientod = " . $dato['get_req'][0]['id_requerimientod'];
+            DB::statement($sql);
+        }
+
+        if (count($dato['get_id']) > 0) {
+            $sql = "UPDATE mercaderia_fotografia 
+                    SET estado = 2, user_eli = $id_usuario, fec_eli = NOW() 
+                    WHERE id_mercaderia = " . $dato['get_id'][0]['id_mercaderia'];
+            DB::statement($sql);
+        }
+    }
+
+    static function get_list_requerimiento_prenda($dato)
+    {
+        if ($dato['mod'] == 1) {
+            $sql = "select c.id_requerimientod, c.codigo,c.tipo_usuario,c.estilo,c.descripcion,c.color,c.talla,c.OFC as cant_solicitado,
+                    CASE WHEN m.cantidad is null THEN '0' ELSE m.cantidad END AS empaquetado,
+                    CASE WHEN m.cantidad is null THEN c.OFC ELSE c.OFC-m.cantidad END AS saldo,
+                    case when c.estado_requerimiento=1 then 'Solicitado'
+                    when c.estado_requerimiento=2 then 'Empaquetado'
+                    when c.estado_requerimiento=3 then 'Enviado a Oficina'
+                    when c.estado_requerimiento=4 then 'Foto Tomada' end as desc_estado_requerimiento,
+                    c.estado_requerimiento,m.observacion,m.observacion_validaf,m.foto,'0' as nuevo,
+                    c.observacion as obs_comercial, m.observacion as obs_logistica,c.ubicacion
+                    from requerimiento_prenda_detalle c
+                    left JOIN mercaderia_fotografia m on c.codigo=m.codigo and 
+                    c.mes=m.mes AND c.anio=m.anio 
+                    where c.estado=1 and c.mes='" . $dato['mes'] . "' and c.anio='" . $dato['anio'] . "'";
+        } else {
+            $estado1 = "";
+            $estado2 = "";
+            if ($dato['estadoi'] == 1) {
+                $estado1 = " and c.estado_requerimiento=3";
+                $estado2 = " and l.estado_requerimiento=3";
+            }
+            if ($dato['estadoi'] == 2) {
+                $estado1 = " and c.estado_requerimiento=4";
+                $estado2 = " and l.estado_requerimiento=4";
+            }
+            $sql = "SELECT l.id_mercaderia, l.codigo,l.usuario,l.estilo,l.descripcion,l.color,l.talla,
+                    CASE WHEN r.OFC is null THEN '0' ELSE r.OFC end as cant_solicitado,l.cantidad as empaquetado,
+                    CASE WHEN r.estado_requerimiento is null THEN '0' ELSE r.OFC-l.cantidad END AS saldo,
+                    CASE WHEN r.estado_requerimiento is null THEN (
+                    case when l.estado_requerimiento=1 then 'Solicitado'
+                    when l.estado_requerimiento=2 then 'Empaquetado'
+                    when l.estado_requerimiento=3 then 'Por Tomar Fotografía'
+                    when l.estado_requerimiento=4 then 'Foto Tomada' END) else (
+                    case when r.estado_requerimiento=1 then 'Solicitado'
+                    when r.estado_requerimiento=2 then 'Empaquetado'
+                    when r.estado_requerimiento=3 then 'Por Tomar Fotografía'
+                    when r.estado_requerimiento=4 then 'Foto Tomada' END) end as desc_estado_requerimiento,
+                    CASE WHEN r.estado_requerimiento is null THEN l.estado_requerimiento ELSE r.estado_requerimiento end as estado_requerimiento,l.observacion,l.observacion_validaf,l.foto,
+                    CASE WHEN r.estado_requerimiento is null THEN '1' ELSE '0' end as nuevo
+                    FROM mercaderia_fotografia l 
+                    left JOIN requerimiento_prenda_detalle r on l.codigo=r.codigo and l.mes=r.mes and l.anio=r.anio and r.estado=1
+                    where r.estado=1 AND l.estado=1 AND l.mes='" . $dato['mes'] . "' and l.anio='" . $dato['anio'] . "' $estado2)";
+        }
+
+        $query = DB::select($sql);
+        return json_decode(json_encode($query), true);
+    }
 }

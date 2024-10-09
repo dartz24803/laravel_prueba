@@ -2,9 +2,12 @@
     <div class="modal-header">
         <h5 class="modal-title">Editar servicio:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
         </button>
-    </div> 
+    </div>
 
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row">
@@ -15,8 +18,8 @@
                 <input type="text" class="form-control" id="nom_servicioe" name="nom_servicioe" placeholder="Ingresar nombre" value="{{ $get_id->nom_gestion }}">
             </div>
 
-           
-        </div>  	 	           	                	        
+
+        </div>
     </div>
 
     <div class="modal-footer">
@@ -41,7 +44,7 @@
             processData: false,
             contentType: false,
             success: function(data) {
-                if(data=="error"){
+                if (data == "error") {
                     Swal({
                         title: '¡Actualización Denegada!',
                         text: "¡El registro ya existe!",
@@ -50,7 +53,7 @@
                         confirmButtonColor: '#3085d6',
                         confirmButtonText: 'OK',
                     });
-                }else{
+                } else {
                     swal.fire(
                         '¡Actualización Exitosa!',
                         '¡Haga clic en el botón!',
@@ -58,10 +61,10 @@
                     ).then(function() {
                         Lista_Servicio();
                         $("#ModalUpdate .close").click();
-                    });  
+                    });
                 }
             },
-            error:function(xhr) {
+            error: function(xhr) {
                 var errors = xhr.responseJSON.errors;
                 var firstError = Object.values(errors)[0][0];
                 Swal.fire(
