@@ -82,6 +82,14 @@
                     </a>
                 </li>
             <?php } ?>
+
+            <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 5 || session('usuario')->id_puesto == 153 || session('usuario')->id_puesto == 66) { ?>
+                <li id="rsurtido" class="menu">
+                    <a href="{{ url('RequerimientoSurtido/index') }}">
+                        <p class="romperpalabra"><span id="icono_active2"></span> Requerimiento de Surtido</p>
+                    </a>
+                </li>
+            <?php } ?>
         </ul>
     </li>
 <?php } ?>
