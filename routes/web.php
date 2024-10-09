@@ -268,8 +268,9 @@ Route::controller(MercaderiaEnviarFotografia::class)->group(function () {
     Route::get('mercaderiafotografia/list', 'list_merc_foto')->name('mercaderiafotografia.list');
     Route::get('mercaderiafotografia/{id}/edit', 'edit_merc_foto')->name('mercaderiafotografia.edit');
     Route::get('mercaderiafotografia/create', 'create_merc_foto')->name('mercaderiafotografia.create');
-    Route::delete('mercaderiafotografia/{id}', 'destroy_merc_foto')->name('mercaderiafotografia.destroy');
     Route::post('mercaderiafotografia/store', 'store_merc_foto')->name('mercaderiafotografia.store');
+    Route::post('mercaderiafotografia/delete', 'delete_merc_foto')->name('mercaderiafotografia.delete');
+
     Route::post('mercaderiafotografia/enviar_oficina', 'enviar_oficina')->name('mercaderiafotografia.enviar_oficina');
     Route::get('mercaderiafotografia/formato', 'formato_mercaderia_fotografica')->name('mercaderiafotografia.formato');
     Route::get('mercaderiafotografia/requerimiento_surtido', 'requerimiento_surtido')->name('mercaderiafotografia.requerimiento_surtido');
@@ -1785,6 +1786,7 @@ Route::controller(MercaderiaConfController::class)->group(function () {
 });
 
 use App\Http\Controllers\ControlUbicacionesController;
+
 Route::controller(ControlUbicacionesController::class)->group(function () {
     Route::get('ControlUbicaciones/index', 'index');
     Route::get('ControlUbicaciones/Cargar_Control_Ubicacion/{t}', 'Cargar_Control_Ubicacion');
