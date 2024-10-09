@@ -94,7 +94,7 @@
                     'Haga clic en el botón!',
                     'success'
                 ).then(function() {
-                    Lista_ErroresPicking();
+                    Lista_CargaInventario();
                     $("#ModalRegistro .close").click();
                 });
             },

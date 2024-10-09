@@ -246,7 +246,7 @@ Route::controller(CargaInventarioController::class)->group(function () {
     Route::get('cargainventario/list', 'list_ci')->name('cargainventario.list');
     Route::get('cargainventario/{id}/edit', 'edit_ci')->name('cargainventario.edit');
     Route::get('cargainventario/create', 'create_ci')->name('cargainventario.create');
-    Route::delete('cargainventario/{id}', 'destroy_ci')->name('cargainventario.destroy');
+    Route::post('cargainventario/{id}/destroy', 'destroy_ci')->name('cargainventario.destroy');
     Route::post('cargainventario/store', 'store_ci')->name('cargainventario.store');
     Route::post('cargainventario/{id}', 'update_ci')->name('cargainventario.update');
 
