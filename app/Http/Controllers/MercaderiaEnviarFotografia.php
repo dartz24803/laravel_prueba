@@ -93,8 +93,8 @@ class MercaderiaEnviarFotografia extends Controller
     public function store_merc_foto(Request $request)
     {
         if ($this->session('usuario')->id_usuario) {
-            $dato['anio'] = $request->input('anio');
-            $dato['mes'] = $request->input('mes');
+            $dato['anio'] = $request->input('anioc');
+            $dato['mes'] = $request->input('mesc');
 
             $path = $_FILES["doc_mercaderia"]["tmp_name"];
             $id_usuario = substr($_SESSION['usuario'][0]['usuario_nombres'], 0, 1) . $_SESSION['usuario'][0]['usuario_apater'];
