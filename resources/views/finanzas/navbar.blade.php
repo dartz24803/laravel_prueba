@@ -68,6 +68,20 @@
                 </a>
             </li>
         @endif
+        @if (session('usuario')->id_nivel == "1" ||
+        session('usuario')->id_puesto == "10" || 
+        session('usuario')->id_puesto == "102" ||
+        session('usuario')->id_puesto == "138" ||
+        session('usuario')->id_puesto == "164" ||
+        session('usuario')->id_puesto == "1")
+            @if (session('usuario')->id_usuario == "139")
+                <li>
+                    <a id="registros_servicios" href="{{ route('registro_servicio') }}">
+                        <p class="romperpalabra"><span id="icono_active2"></span> Registro de servicios</p>
+                    </a>
+                </li>
+            @endif
+        @endif
         <li>
             <a id="tablas_maestras" href="{{ route('tabla_maestra_tesoreria') }}">
                 <p class="romperpalabra"><span id="icono_active2"></span> Tabla maestra</p>
@@ -147,5 +161,12 @@
                 <p class="romperpalabra"><span id="icono_active2"></span> Caja chica</p>
             </a>
         </li>
+        @if (session('usuario')->id_usuario == "139")
+            <li id="conf_registros_cheques">
+                <a href="{{ route('registro_cheque_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Registro de cheques</p>
+                </a>
+            </li>
+        @endif
     </ul>
 </li>

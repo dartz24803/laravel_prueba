@@ -60,6 +60,15 @@ class RequerimientoPrendaController extends Controller
 
     public function Insert_Requerimiento_Prenda()
     {
+        $this->input->validate([
+            'anio' => 'not_in:0',
+            'mes' => 'not_in:0',
+            'drequerimiento' => 'required',
+        ], [
+            'anio' => 'Debe escoger año.',
+            'mes' => 'Debe escoger mes.',
+            'drequerimiento' => 'Debe adjuntar documento',
+        ]);
         $dato['anio'] = $this->input->post("anio");
         $dato['mes'] = $this->input->post("mes");
 

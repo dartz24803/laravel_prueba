@@ -77,7 +77,7 @@ class TrackingController extends Controller
             try {
                 if($request->cod_base=="OFI"){
                     $query = TrackingNotificacion::select('tracking_notificacion.id_tracking',
-                            'tracking.n_requerimiento')
+                            DB::raw("CONCAT(tracking.n_requerimiento,' - ',base.cod_base) AS n_requerimiento"))
                             ->join('tracking','tracking.id','=','tracking_notificacion.id_tracking')
                             ->join('base','base.id_base','=','tracking.id_origen_hacia')
                             ->groupBy('tracking_notificacion.id_tracking')->get();
@@ -1875,7 +1875,7 @@ class TrackingController extends Controller
                         ->get();
 
         //ALERTA 9
-        if($list_sobrante){
+        if(count($list_sobrante)>0){
             $list_token = TrackingToken::whereIn('base', ['CD'])->get();
             foreach($list_token as $token){
                 $dato = [
@@ -1892,7 +1892,7 @@ class TrackingController extends Controller
             ];
             $this->insert_notificacion($dato);
         }
-        if($list_faltante){
+        if(count($list_faltante)>0){
             $list_token = TrackingToken::whereIn('base', [$get_id->hacia])->get();
             foreach($list_token as $token){
                 $dato = [
@@ -1913,7 +1913,7 @@ class TrackingController extends Controller
         //MENSAJE 5
         $t_comentario = TrackingComentario::where('id_tracking',$id)->where('pantalla','CUADRE_DIFERENCIA')->first();
 
-        if($list_sobrante){
+        if(count($list_sobrante)>0){
             $mail = new PHPMailer(true);
 
             try {
@@ -2007,7 +2007,7 @@ class TrackingController extends Controller
                 echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
             }
         }
-        if($list_faltante){
+        if(count($list_faltante)>0){
             $mail = new PHPMailer(true);
 
             try {
