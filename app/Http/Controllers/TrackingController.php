@@ -77,7 +77,7 @@ class TrackingController extends Controller
             try {
                 if($request->cod_base=="OFI"){
                     $query = TrackingNotificacion::select('tracking_notificacion.id_tracking',
-                            'tracking.n_requerimiento')
+                            DB::raw("CONCAT(tracking.n_requerimiento,' - ',base.cod_base) AS n_requerimiento"))
                             ->join('tracking','tracking.id','=','tracking_notificacion.id_tracking')
                             ->join('base','base.id_base','=','tracking.id_origen_hacia')
                             ->groupBy('tracking_notificacion.id_tracking')->get();
