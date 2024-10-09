@@ -1826,3 +1826,17 @@ Route::controller(RequerimientoPrendaController::class)->group(function () {
     Route::post('RequerimientoPrenda/Delete_Requerimiento_Prenda', 'Delete_Requerimiento_Prenda');
     Route::post('RequerimientoPrenda/Delete_Todo_Requerimiento_Prenda', 'Delete_Todo_Requerimiento_Prenda');
 });
+
+use App\Http\Controllers\SugerenciadePreciosController;
+
+Route::controller(SugerenciadePreciosController::class)->group(function () {
+    Route::get('SugerenciadePrecios/index', 'index');
+    Route::post('SugerenciadePrecios/Busqueda_Sugerencia_Precio', 'Busqueda_Sugerencia_Precio');
+    Route::get('RequerimientoPrenda/Modal_Requerimiento_Prenda', 'Modal_Requerimiento_Prenda');
+    Route::get('RequerimientoPrenda/Formato_Mercaderia_Fotografia', 'Formato_Mercaderia_Fotografia');
+    Route::post('RequerimientoPrenda/Insert_Requerimiento_Prenda', 'Insert_Requerimiento_Prenda');
+    Route::get('RequerimientoPrenda/Modal_Update_Requerimiento_Prenda/{cod}/{mes}/{anio}', 'Modal_Update_Requerimiento_Prenda');
+    Route::post('RequerimientoPrenda/Update_Requerimiento_Prenda', 'Update_Requerimiento_Prenda');
+    Route::post('RequerimientoPrenda/Delete_Requerimiento_Prenda', 'Delete_Requerimiento_Prenda');
+    Route::post('RequerimientoPrenda/Delete_Todo_Requerimiento_Prenda', 'Delete_Todo_Requerimiento_Prenda');
+});

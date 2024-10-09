@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Base;
 use App\Models\Model_Perfil;
 use App\Models\Notificacion;
 use App\Models\RequerimientoPrendaDetalle;
 use App\Models\RequerimientoTemporal;
 use App\Models\SubGerencia;
+use App\Models\SugerenciaPrecios;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -18,7 +20,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\DB;
 
-class RequerimientoPrendaController extends Controller
+class SugerenciadePreciosController extends Controller
 {
     protected $input;
     protected $Model_Perfil;
@@ -36,19 +38,21 @@ class RequerimientoPrendaController extends Controller
         $dato['list_subgerencia'] = SubGerencia::list_subgerencia(7);
         //NOTIFICACIONES
         $dato['list_notificacion'] = Notificacion::get_list_notificacion();
-        $dato['list_mes'] = $this->Model_Perfil->get_list_mes();
-        $dato['list_anio'] = $this->Model_Perfil->get_list_anio();
-        return view('comercial.Requerimiento_Prenda.index', $dato);
+
+        $dato['list_base'] = Base::get_list_bases_tienda();
+
+        return view('comercial.sugerencia_precios.index', $dato);
     }
 
-    public function Busqueda_Requerimiento_Prenda()
+    public function Busqueda_Sugerencia_Precio()
     {
-        $dato['anio'] = $this->input->post("anio");
-        $dato['mes'] = $this->input->post("mes");
+        $dato['base'] = $this->input->post('base');
+        $dato['categoria'] = $this->input->post('categoria');
         $dato['mod'] = 1;
-        $list_requerimiento = RequerimientoPrendaDetalle::getListRequerimientoPrenda($dato);
-        $dato['list_requerimiento'] = json_decode(json_encode($list_requerimiento), true);
-        return view('comercial.Requerimiento_Prenda.lista', $dato);
+        $list_sugerencia_precios = SugerenciaPrecios::get_list_sugerencia_precio_modulo($dato);
+        dd($list_sugerencia_precios);
+        $dato['list_sugerencia_precios'] = json_decode(json_encode($list_sugerencia_precios), true);
+        return view('comercial.sugerencia_precios.lista', $dato);
     }
 
     public function Modal_Requerimiento_Prenda()

@@ -26,7 +26,7 @@
                     </div>
                     @else
                     <!-- Si no hay imágenes, mostrar un mensaje -->
-                    <p>No hay archivos disponibles</p>
+                    <p></p>
                     @endif
                 </div>
             </div>

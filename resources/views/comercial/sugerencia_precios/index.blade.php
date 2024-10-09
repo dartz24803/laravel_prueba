@@ -10,7 +10,8 @@
 
         <div class="page-header">
             <div class="page-title">
-                <h3>Registro de Requerimiento</h3>
+                <h3>Sugerencia de Precios
+                </h3>
             </div>
         </div>
 
@@ -21,28 +22,23 @@
                     <div class="toolbar">
                         <form id="formulario" class="control">
                             <div class="col-md-12 row">
-                                <div class="form-group col-md-2">
-                                    <label class="control-label text-bold">Año</label>
-                                    <select class="form-control" id="anioi" name="anioi" onchange="Busqueda_Sugerencia_Precio();">
-                                        <option value="0">Seleccione</option>
-                                        <?php foreach ($list_anio as $list) { ?>
-                                            <option value="<?php echo $list['cod_anio']; ?>" <?php if (date('Y') == $list['cod_anio']) {
-                                                                                                    echo "selected";
-                                                                                                } ?>><?php echo $list['cod_anio']; ?></option>
+                                <div class="col-lg-2">
+                                    <label>Base:</label>
+                                    <select class="form-control" id="base_sp" name="base_sp" onchange="Lista_Sugerencia_Precio();">
+                                        <option value="0">Todos</option>
+                                        <?php foreach ($list_base as $list) { ?>
+                                            <option value="<?php echo $list['cod_base']; ?>"><?php echo $list['cod_base']; ?></option>
                                         <?php } ?>
                                     </select>
                                 </div>
-                                <div class="form-group col-md-2">
-                                    <label class="control-label text-bold">Mes</label>
-                                    <select class="form-control" id="mesi" name="mesi" onchange="Busqueda_Sugerencia_Precio();">
-                                        <option value="0">Seleccione</option>
-                                        <?php foreach ($list_mes as $list) { ?>
-                                            <option value="<?php echo $list['cod_mes']; ?>" <?php if (date('m') == $list['id_mes']) {
-                                                                                                echo "selected";
-                                                                                            } ?>><?php echo $list['nom_mes']; ?></option>
-                                        <?php } ?>
+
+                                <div class="col-lg-3 mt-2 mt-lg-0">
+                                    <label>Categoría:</label>
+                                    <select class="form-control" id="categoria_sp" name="categoria_sp" onchange="Lista_Sugerencia_Precio();">
+                                        <option value="0">Todos</option>
                                     </select>
                                 </div>
+
                                 <div class="form-group col-md-2" id="btnregistarm">
                                     <label class="control-label text-bold">&nbsp;</label>
                                     <button type="button" class="btn btn-primary mb-2 mr-2 form-control" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ url('RequerimientoPrenda/Modal_Requerimiento_Prenda') }}">
@@ -93,7 +89,7 @@
 
         $("#comercial").addClass('active');
         $("#hcomercial").attr('aria-expanded', 'true');
-        $("#rprenda").addClass('active');
+        $("#rsugerenciaprecio").addClass('active');
         Busqueda_Sugerencia_Precio();
     });
 

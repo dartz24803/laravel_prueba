@@ -82,6 +82,13 @@
                     </a>
                 </li>
             <?php } ?>
+            <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 5  || session('usuario')->id_puesto == 115) { ?>
+                <li id="rsugerenciaprecio">
+                    <a id="rsugerenciaprecio1" href="{{ url('SugerenciadePrecios/index') }}">
+                        <p class="romperpalabra" title="Sugerencia de Precios"><span id="icono_active2"></span> Segurencia de Precios</p>
+                    </a>
+                </li>
+            <?php } ?>
         </ul>
     </li>
 <?php } ?>
