@@ -284,6 +284,25 @@ class RequerimientoPrendaDetalle extends Model
         }
     }
 
+    static function delete_todo_mercaderia_fotografia($dato)
+    {
+        $id_usuario = $_SESSION['usuario'][0]['id_usuario'];
+
+        if (count($dato['get_req']) > 0) {
+            $sql = "UPDATE requerimiento_prenda_detalle 
+                    SET estado_requerimiento = 1, user_act = $id_usuario, fec_act = NOW() 
+                    WHERE id_requerimientod = " . $dato['get_req'][0]['id_requerimientod'];
+            DB::statement($sql);
+        }
+
+        if (count($dato['get_id']) > 0) {
+            $sql = "UPDATE mercaderia_fotografia 
+                    SET estado = 2, user_eli = $id_usuario, fec_eli = NOW() 
+                    WHERE id_mercaderia = " . $dato['get_id'][0]['id_mercaderia'];
+            DB::statement($sql);
+        }
+    }
+
     static function get_list_requerimiento_prenda($dato){
         if ($dato['mod'] == 1) {
             $sql = "select c.id_requerimientod, c.codigo,c.tipo_usuario,c.estilo,c.descripcion,c.color,c.talla,c.OFC as cant_solicitado,
