@@ -23,7 +23,7 @@
             <div class="form-group col-md-2">
                 <label class="col-sm-12 control-label text-bold">Mes: </label>
             </div>            
-            <div class="form-group col-sm-2">
+            <div class="form-group col-sm-3">
                 <select class="form-control" id="mes" name="mes">
                     <option value="0">Seleccione</option>
                     <?php foreach($list_mes as $list){ ?>
@@ -36,7 +36,7 @@
             <div class="form-group col-md-4">
                 <label class="col-sm-12 control-label text-bold">Adjuntar Documento: </label>
             </div>            
-            <div class="form-group col-sm-4">
+            <div class="form-group col-sm-6">
                 <input type="file" class="form-control-file" id="drequerimiento" name="drequerimiento">
             </div>
         </div>
@@ -47,3 +47,75 @@
         <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
+<script>
+    
+    function Insert_Requerimiento_Prenda() {
+        Cargando()
+
+        /**/
+        var dataString = new FormData(document.getElementById('formulario'));
+        var url = "{{ url('RequerimientoPrenda/Insert_Requerimiento_Prenda') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+
+                success: function(data) {
+                    var cadena = data.trim();
+                    validacion = cadena.substr(0, 1);
+                    mensaje = cadena.substr(1);
+                    
+                    if (validacion == 1) {
+                        swal.fire(
+                            'Carga con Errores!',
+                            mensaje,
+                            'warning'
+                        ).then(function() {
+                            window.location = "{{ url('RequerimientoPrenda/index') }}";
+                        });
+                    } else if (validacion == 2) {
+                        swal.fire(
+                            'Carga Exitosa!',
+                            mensaje,
+                            'success'
+                        ).then(function() {
+                            Buscar_Requerimiento_Prenda();
+                            $("#ModalRegistro .close").click()
+                        });
+                    } else if (validacion == 3) {
+                        swal.fire(
+                            'Archivo no subido por errores de duplicados en el mismo archivo: ',
+                            mensaje,
+                            'warning'
+                        ).then(function() {
+                            window.location = "{{ url('RequerimientoPrenda/index') }}";
+                        });
+                    } else if (validacion == 4) {
+                        swal.fire(
+                            'Archivo no subido por errores de duplicados o valores inválidos: ',
+                            mensaje,
+                            'warning'
+                        ).then(function() {
+                            window.location = "{{ url('RequerimientoPrenda/index') }}";
+                        });
+                    }
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+    }
+</script>

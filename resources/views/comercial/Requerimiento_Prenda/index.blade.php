@@ -123,7 +123,7 @@
     }
 
     function Formato_Mercaderia_Fotografia() {
-        window.location = "{ url('RequerimientoPrenda/Formato_Mercaderia_Fotografia') }}";
+        window.location = "{{ url('RequerimientoPrenda/Formato_Mercaderia_Fotografia') }}";
     }
 
     function Delete_Requerimiento_Prenda(id, anio, mes) {
@@ -162,6 +162,54 @@
                         ).then(function() {
                             Buscar_Requerimiento_Prenda();
                         });
+                    }
+                });
+            }
+        })
+    }
+    
+    function Eliminar_Todo_Requerimiento_Prenda() {
+        var url = "{{ url('RequerimientoPrenda/Delete_Todo_Requerimiento_Prenda') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        var anio=$('#anioi').val();
+        var mes=$('#mesi').val();
+        Swal({
+            title: '¿Realmente desea eliminar todos los registros?',
+            text: "Los registros serán eliminados permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    data: {'anio':anio,'mes':mes},
+                    success: function(data) {
+                        if(data=="0"){
+                            Swal(
+                                'Eliminación Denegada!',
+                                'No se encontraron registros por eliminar.',
+                                'error'
+                            ).then(function() {
+                            });
+                        }else{
+                            Swal(
+                                'Eliminado!',
+                                'Los registros han sido eliminados satisfactoriamente.',
+                                'success'
+                            ).then(function() {
+                                Buscar_Requerimiento_Prenda();
+                            });    
+                        }
+                        
                     }
                 });
             }

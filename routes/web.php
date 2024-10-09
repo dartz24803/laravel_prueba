@@ -1820,11 +1820,9 @@ Route::controller(RequerimientoPrendaController::class)->group(function () {
     Route::post('RequerimientoPrenda/Busqueda_Requerimiento_Prenda', 'Busqueda_Requerimiento_Prenda');
     Route::get('RequerimientoPrenda/Modal_Requerimiento_Prenda', 'Modal_Requerimiento_Prenda');
     Route::get('RequerimientoPrenda/Formato_Mercaderia_Fotografia', 'Formato_Mercaderia_Fotografia');
-    Route::post('RequerimientoPrenda/Insert_Control_Ubicaciones', 'Insert_Control_Ubicaciones');
+    Route::post('RequerimientoPrenda/Insert_Requerimiento_Prenda', 'Insert_Requerimiento_Prenda');
     Route::get('RequerimientoPrenda/Modal_Update_Requerimiento_Prenda/{cod}/{mes}/{anio}', 'Modal_Update_Requerimiento_Prenda');
     Route::post('RequerimientoPrenda/Update_Requerimiento_Prenda', 'Update_Requerimiento_Prenda');
     Route::post('RequerimientoPrenda/Delete_Requerimiento_Prenda', 'Delete_Requerimiento_Prenda');
-    Route::get('RequerimientoPrenda/Formato_Carga_Ubicacion', 'Formato_Carga_Ubicacion');
-    Route::post('RequerimientoPrenda/Insert_Carga_Masiva', 'Insert_Carga_Masiva');
-    Route::post('RequerimientoPrenda/Update_Estado_Control_Mercaderia_Activo', 'Update_Estado_Control_Mercaderia_Activo');
+    Route::post('RequerimientoPrenda/Delete_Todo_Requerimiento_Prenda', 'Delete_Todo_Requerimiento_Prenda');
 });
