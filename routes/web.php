@@ -69,6 +69,7 @@ use App\Http\Controllers\ProcesosController;
 use App\Http\Controllers\ProduccionController;
 use App\Http\Controllers\RecursosHumanosInicioController;
 use App\Http\Controllers\RegistroChequeConfController;
+use App\Http\Controllers\RegistroChequeController;
 use App\Http\Controllers\RegistroLetraController;
 use App\Http\Controllers\RegistroServicioController;
 use App\Http\Controllers\ReporteProveedoresController;
@@ -1535,6 +1536,17 @@ Route::controller(RegistroChequeConfController::class)->group(function () {
     Route::get('registro_cheque_conf_co/{id}/edit', 'edit_co')->name('registro_cheque_conf_co.edit');
     Route::put('registro_cheque_conf_co/{id}', 'update_co')->name('registro_cheque_conf_co.update');
     Route::delete('registro_cheque_conf_co/{id}', 'destroy_co')->name('registro_cheque_conf_co.destroy');
+});
+//TESORERÍA - REGISTRO DE CHEQUES
+Route::controller(RegistroChequeController::class)->group(function () {
+    Route::get('registro_cheque', 'index')->name('registro_cheque');
+    Route::get('registro_cheque/list', 'list')->name('registro_cheque.list');
+    Route::get('registro_cheque/create', 'create')->name('registro_cheque.create');
+    Route::post('registro_cheque', 'store')->name('registro_cheque.store');
+    Route::get('registro_cheque/{id}/edit', 'edit')->name('registro_cheque.edit');
+    Route::put('registro_cheque/{id}', 'update')->name('registro_cheque.update');
+    Route::delete('registro_cheque/{id}', 'destroy')->name('registro_cheque.destroy');
+    Route::get('registro_cheque/{todos}/{id_empresa}/{estado}/{fec_inicio}/{fec_fin}/{tipo_fecha}/excel', 'excel')->name('registro_cheque.excel');
 });
 
 
