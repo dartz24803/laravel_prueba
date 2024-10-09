@@ -155,11 +155,14 @@
 
 
     function showIframe(iframeSrc, element) {
+        console.log("###1")
         // Aquí se asigna el iframe al div
         $('#div_administrador').html(iframeSrc);
-
+        console.log(iframeSrc)
         // Remover la clase active de todos los li
         $('.nav-item .nav-link').removeClass('active-li');
+
+        console.log("###2")
 
         // Añadir la clase active solo al li clickeado
         $(element).addClass('active-li');

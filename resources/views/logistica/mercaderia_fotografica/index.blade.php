@@ -192,7 +192,7 @@
     }
 
 
-    function Eliminar_Todo_Mercaderia_Fotografia(id) {
+    function Eliminar_Todo_Mercaderia_Fotografia() {
         Cargando();
 
         var mes = $('#mesi').val();

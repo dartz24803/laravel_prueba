@@ -303,7 +303,8 @@ class RequerimientoPrendaDetalle extends Model
         }
     }
 
-    static function get_list_requerimiento_prenda($dato){
+    static function get_list_requerimiento_prenda($dato)
+    {
         if ($dato['mod'] == 1) {
             $sql = "select c.id_requerimientod, c.codigo,c.tipo_usuario,c.estilo,c.descripcion,c.color,c.talla,c.OFC as cant_solicitado,
                     CASE WHEN m.cantidad is null THEN '0' ELSE m.cantidad END AS empaquetado,
@@ -347,7 +348,7 @@ class RequerimientoPrendaDetalle extends Model
                     left JOIN requerimiento_prenda_detalle r on l.codigo=r.codigo and l.mes=r.mes and l.anio=r.anio and r.estado=1
                     where r.estado=1 AND l.estado=1 AND l.mes='" . $dato['mes'] . "' and l.anio='" . $dato['anio'] . "' $estado2)";
         }
-        
+
         $query = DB::select($sql);
         return json_decode(json_encode($query), true);
     }

@@ -68,7 +68,9 @@ use App\Http\Controllers\PostulanteController;
 use App\Http\Controllers\ProcesosController;
 use App\Http\Controllers\ProduccionController;
 use App\Http\Controllers\RecursosHumanosInicioController;
+use App\Http\Controllers\RegistroChequeConfController;
 use App\Http\Controllers\RegistroLetraController;
+use App\Http\Controllers\RegistroServicioController;
 use App\Http\Controllers\ReporteProveedoresController;
 use App\Http\Controllers\RequisicionTiendaConfController;
 use App\Http\Controllers\RequisicionTiendaController;
@@ -246,9 +248,11 @@ Route::controller(CargaInventarioController::class)->group(function () {
     Route::get('cargainventario/list', 'list_ci')->name('cargainventario.list');
     Route::get('cargainventario/{id}/edit', 'edit_ci')->name('cargainventario.edit');
     Route::get('cargainventario/create', 'create_ci')->name('cargainventario.create');
-    Route::delete('cargainventario/{id}', 'destroy_ci')->name('cargainventario.destroy');
+    Route::post('cargainventario/{id}/destroy', 'destroy_ci')->name('cargainventario.destroy');
     Route::post('cargainventario/store', 'store_ci')->name('cargainventario.store');
     Route::post('cargainventario/{id}', 'update_ci')->name('cargainventario.update');
+
+    Route::get('cargainventario/formato', 'formato_carga_inventario')->name('cargainventario.formato');
 });
 
 // CONSUMIBLES
@@ -1502,6 +1506,35 @@ Route::controller(LetraCobrarController::class)->group(function () {
     Route::put('letra_cobrar/{id}/update_estado', 'update_estado')->name('letra_cobrar.update_estado');
     Route::delete('letra_cobrar/{id}', 'destroy')->name('letra_cobrar.destroy');
     Route::get('letra_cobrar/{estado}/{id_empresa}/{id_cliente}/{mes}/{anio}/excel', 'excel')->name('letra_cobrar.excel');
+});
+//TESORERÍA - REGISTRO DE SERVICIOS
+Route::controller(RegistroServicioController::class)->group(function () {
+    Route::get('registro_servicio', 'index')->name('registro_servicio');
+    Route::post('registro_servicio/list', 'list')->name('registro_servicio.list');
+    Route::get('registro_servicio/create', 'create')->name('registro_servicio.create');
+    Route::post('registro_servicio/traer_lugar', 'traer_lugar')->name('registro_servicio.traer_lugar');
+    Route::post('registro_servicio/traer_servicio', 'traer_servicio')->name('registro_servicio.traer_servicio');
+    Route::post('registro_servicio/traer_proveedor', 'traer_proveedor')->name('registro_servicio.traer_proveedor');
+    Route::post('registro_servicio/traer_lectura', 'traer_lectura')->name('registro_servicio.traer_lectura');
+    Route::post('registro_servicio/traer_suministro', 'traer_suministro')->name('registro_servicio.traer_suministro');
+    Route::post('registro_servicio', 'store')->name('registro_servicio.store');
+    Route::get('registro_servicio/{id}/edit', 'edit')->name('registro_servicio.edit');
+    Route::put('registro_servicio/{id}', 'update')->name('registro_servicio.update');
+    Route::get('registro_servicio/{id}/estado', 'estado')->name('registro_servicio.estado');
+    Route::put('registro_servicio/{id}/update_estado', 'update_estado')->name('registro_servicio.update_estado');
+    Route::delete('registro_servicio/{id}', 'destroy')->name('registro_servicio.destroy');
+    Route::get('registro_servicio/{todos}/{cod_base}/{estado}/{id_servicio}/{id_lugar_servicio}/{mes}/{anio}/excel', 'excel')->name('registro_servicio.excel');
+});
+//TESORERÍA - REGISTRO DE CHEQUES CONFIGURABLE
+Route::controller(RegistroChequeConfController::class)->group(function () {
+    Route::get('registro_cheque_conf', 'index')->name('registro_cheque_conf');
+    Route::get('registro_cheque_conf_co', 'index_co')->name('registro_cheque_conf_co');
+    Route::get('registro_cheque_conf_co/list', 'list_co')->name('registro_cheque_conf_co.list');
+    Route::get('registro_cheque_conf_co/create', 'create_co')->name('registro_cheque_conf_co.create');
+    Route::post('registro_cheque_conf_co', 'store_co')->name('registro_cheque_conf_co.store');
+    Route::get('registro_cheque_conf_co/{id}/edit', 'edit_co')->name('registro_cheque_conf_co.edit');
+    Route::put('registro_cheque_conf_co/{id}', 'update_co')->name('registro_cheque_conf_co.update');
+    Route::delete('registro_cheque_conf_co/{id}', 'destroy_co')->name('registro_cheque_conf_co.destroy');
 });
 
 

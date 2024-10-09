@@ -44,10 +44,10 @@
         $("#hlogisticas").attr('aria-expanded', 'true');
         $("#cargainventario").addClass('active');
 
-        Lista_ErroresPicking();
+        Lista_CargaInventario();
     });
 
-    function Lista_ErroresPicking() {
+    function Lista_CargaInventario() {
         Cargando();
 
         var url = "{{ route('cargainventario.list') }}";
@@ -62,15 +62,15 @@
     }
 
 
-    function Delete_ErroresPicking(id) {
+    function Delete_CargaInventario(id) {
         Cargando();
 
         var url = "{{ route('cargainventario.destroy', ':id') }}".replace(':id', id);
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({
-            title: '¿Realmente desea eliminar el registro?',
-            text: "El registro será eliminado permanentemente",
+            title: '¿Realmente desea eliminar todos los registros?',
+            text: "Los registros serán eliminados permanentemente",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Si',
@@ -79,23 +79,96 @@
         }).then((result) => {
             if (result.value) {
                 $.ajax({
-                    type: "DELETE",
                     url: url,
+                    type: "POST",
                     headers: {
                         'X-CSRF-TOKEN': csrfToken
                     },
+                    processData: false,
+                    contentType: false,
                     success: function() {
                         Swal(
                             '¡Eliminado!',
                             'El registro ha sido eliminado satisfactoriamente.',
                             'success'
                         ).then(function() {
-                            Lista_ErroresPicking();
+                            Lista_CargaInventario();
                         });
                     }
                 });
             }
         })
+    }
+
+    function Validar_Archivo(v) {
+        var archivoInput = document.getElementById(v);
+        var archivoRuta = archivoInput.value;
+        var extPermitidas = /(.xlsx)$/i;
+        if (!extPermitidas.exec(archivoRuta)) {
+            swal.fire(
+                '!Archivo no permitido!',
+                'El archivo debe ser xlsx',
+                'error'
+            )
+            archivoInput.value = '';
+            return false;
+        }
+    }
+
+    function Update_Carga_Inventario() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formularioe'));
+        var url = "{{ route('cargainventario.update', ':id') }}"
+        if (Valida_Carga_Inventario('2')) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: dataString,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    var cadena = data.trim();
+                    validacion = cadena.substr(0, 1);
+                    mensaje = cadena.substr(1);
+                    if (validacion == 1) {
+                        swal.fire(
+                            'Actualización Denegada!',
+                            mensaje,
+                            'error'
+                        ).then(function() {
+
+                        });
+                    } else if (validacion == 2) {
+                        swal.fire(
+                            'Archivo no subido por errores en el mismo archivo: ',
+                            mensaje,
+                            'warning'
+                        ).then(function() {
+
+                        });
+                    } else if (validacion == 3) {
+                        swal.fire(
+                            'Actualización Exitosa',
+                            mensaje,
+                            'success'
+                        ).then(function() {
+                            $('#ModalUpdate .close').click();
+                            Buscar_Carga_Inventario();
+                        });
+                    }
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
     }
 </script>
 
