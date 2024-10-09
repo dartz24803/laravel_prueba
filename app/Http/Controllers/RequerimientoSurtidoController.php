@@ -363,7 +363,7 @@ class RequerimientoSurtidoController extends Controller
         $sheet->setCellValue("C1", "USUARIO");
         $sheet->setCellValue("D1", "R/N");
         $sheet->setCellValue("E1", "Caracter no permitido");
-        $data = $this->Model_Logistica->get_list_duplicado($usuario, $semana);
+        $data = $this->Model_RequerimientoSurtido->get_list_duplicado($usuario, $semana);
 
         $fila = 1;
         foreach ($data as $d) {

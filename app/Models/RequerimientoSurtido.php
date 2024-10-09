@@ -90,4 +90,15 @@ class RequerimientoSurtido extends Model
         and tipo_usuario='" . $data['tipo_usuario'] . "'";
         DB::connection('sqlsrv')->insert($sql3);
     }
+    
+    function get_list_duplicado($usuario, $semana){
+        $sql = "SELECT * FROM dpedido_lnunot where user_reg='" . $usuario . "' and 
+                semana=$semana and estado=1 and (caracter is not null or user_duplicado is not null)";
+        
+        $result = DB::connection('sqlsrv')->select($sql);
+
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
+    }
+
 }
