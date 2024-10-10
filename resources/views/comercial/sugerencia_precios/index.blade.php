@@ -5,6 +5,52 @@
 @endsection
 
 @section('content')
+
+<style>
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        height: 24px;
+        margin: 10px;
+    }
+
+    .toggle-switch .toggle-input {
+        display: none;
+    }
+
+    .toggle-switch .toggle-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 40px;
+        height: 24px;
+        background-color: gray;
+        border-radius: 34px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .toggle-switch .toggle-label::before {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        background-color: #fff;
+        box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s;
+    }
+
+    .toggle-switch .toggle-input:checked+.toggle-label {
+        background-color: #4CAF50;
+    }
+
+    .toggle-switch .toggle-input:checked+.toggle-label::before {
+        transform: translateX(16px);
+    }
+</style>
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
 
@@ -24,41 +70,34 @@
                             <div class="col-md-12 row">
                                 <div class="col-lg-2">
                                     <label>Base:</label>
-                                    <select class="form-control" id="base_sp" name="base_sp" onchange="Lista_Sugerencia_Precio();">
+                                    <select class="form-control" id="base_sp" name="base_sp" onchange="Busqueda_Sugerencia_Precio();">
                                         <option value="0">Todos</option>
                                         <?php foreach ($list_base as $list) { ?>
-                                            <option value="<?php echo $list['cod_base']; ?>"><?php echo $list['cod_base']; ?></option>
+                                            <option value="<?php echo $list->cod_base; ?>"><?php echo $list->cod_base; ?></option>
                                         <?php } ?>
                                     </select>
                                 </div>
 
+
                                 <div class="col-lg-3 mt-2 mt-lg-0">
                                     <label>Categoría:</label>
-                                    <select class="form-control" id="categoria_sp" name="categoria_sp" onchange="Lista_Sugerencia_Precio();">
+                                    <select class="form-control" id="categoria_sp" name="categoria_sp" onchange="Busqueda_Sugerencia_Precio();">
                                         <option value="0">Todos</option>
                                     </select>
                                 </div>
-
-                                <div class="form-group col-md-2" id="btnregistarm">
-                                    <label class="control-label text-bold">&nbsp;</label>
-                                    <button type="button" class="btn btn-primary mb-2 mr-2 form-control" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ url('RequerimientoPrenda/Modal_Requerimiento_Prenda') }}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square">
-                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                            <line x1="12" y1="8" x2="12" y2="16"></line>
-                                            <line x1="8" y1="12" x2="16" y2="12"></line>
-                                        </svg>
-                                        Registrar
-                                    </button>
+                                <div class="toggle-switch">
+                                    <input class="toggle-input" id="toggle-coment" type="checkbox" checked>
+                                    <label class="toggle-label" for="toggle-coment"></label>
+                                    <span class="ml-5">Comentario</span>
                                 </div>
-                                <div class="form-group col-md-1" id="btnregistarm">
-                                    <label class="control-label text-bold">&nbsp;</label>
-                                    <button type="button" class="btn btn-danger mb-2 mr-2 form-control" title="Eliminar Todo" onclick="Eliminar_Todo_Requerimiento_Prenda()">
-                                        Eliminar
-                                    </button>
+                                <div class="toggle-switch">
+                                    <input class="toggle-input" id="toggle-eviden" type="checkbox" checked>
+                                    <label class="toggle-label" for="toggle-eviden"></label>
+                                    <span class="ml-5">Evidencia</span>
                                 </div>
                                 <div class="form-group col-md-2" id="btnregistarm">
                                     <label class="control-label text-bold">&nbsp;</label>
-                                    <button class="btn btn-primary hidden-sm" type="button" onclick="Formato_Mercaderia_Fotografia();" style="margin-top:33px;background-color: #28a745!important;border-color:#28a745!important">
+                                    <button class="btn btn-primary hidden-sm" type="button" onclick="Formato_Requerimiento_Precios();" style="margin-top:33px;background-color: #28a745!important;border-color:#28a745!important">
                                         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="64" height="64" viewBox="0 0 172 172" style=" fill:#000000;">
                                             <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
                                                 <path d="M0,172v-172h172v172z" fill="none"></path>
@@ -96,8 +135,8 @@
     function Busqueda_Sugerencia_Precio() {
         Cargando();
 
-        var anio = $('#anioi').val();
-        var mes = $('#mesi').val();
+        var base = $('#base_sp').val();
+        var categoria = $('#categoria_sp').val();
         var url = "{{ url('SugerenciadePrecios/Busqueda_Sugerencia_Precio') }}";
         var csrfToken = $('input[name="_token"]').val();
 
@@ -107,8 +146,8 @@
                 'X-CSRF-TOKEN': csrfToken
             },
             data: {
-                'anio': anio,
-                'mes': mes
+                'base': base,
+                'categoria': categoria
             },
             type: "POST",
 
@@ -118,9 +157,19 @@
         });
     }
 
-    function Formato_Mercaderia_Fotografia() {
-        window.location = "{{ url('RequerimientoPrenda/Formato_Mercaderia_Fotografia') }}";
+
+    function Formato_Requerimiento_Precios() {
+        var base = $('#base_sp').val();
+        var categoria = $('#categoria_sp').val();
+        var url = "{{ route('SugerenciadePrecios.Formato_Requerimiento_Precios', ['base' => ':base', 'categoria' => ':categoria']) }}";
+
+        // Reemplazar los placeholders con los valores reales
+        url = url.replace(':base', base).replace(':categoria', categoria);
+
+        // Redirigir a la URL generada
+        window.location.href = url;
     }
+
 
     function Delete_Requerimiento_Prenda(id, anio, mes) {
         var id = id;
