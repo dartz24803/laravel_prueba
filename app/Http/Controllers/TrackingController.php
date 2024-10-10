@@ -279,7 +279,7 @@ class TrackingController extends Controller
                                     <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
                                     <b>Fecha:</b> '.$fecha_formateada.'<br><br>
                                     Buen día '.$get_id->hacia.'.<br><br>
-                                    Se envia el reporte de la salida de Mercaderia, de la guía de remisión '.$get_id->n_requerimiento.'.<br><br>
+                                    Se envia el reporte de mercadería por salir del requerimiento '.$get_id->n_requerimiento.'.<br><br>
                                     <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                         <thead>
                                             <tr align="center" style="background-color:#0093C6;">
@@ -528,7 +528,7 @@ class TrackingController extends Controller
                                     <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
                                     <b>Fecha:</b> '.$fecha_formateada.'<br><br>
                                     Buen día '.$get_id->hacia.'.<br><br>
-                                    Se envia el reporte de la salida de Mercaderia, de la guía de remisión '.$get_id->n_requerimiento.'.<br><br>
+                                    Se envia el reporte de mercadería por salir del requerimiento '.$get_id->n_requerimiento.'.<br><br>
                                     <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                         <thead>
                                             <tr align="center" style="background-color:#0093C6;">
