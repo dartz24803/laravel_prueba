@@ -29,7 +29,7 @@ class AsistenciaSegController extends Controller
         //REPORTE BI CON ID
         $list_subgerencia = SubGerencia::list_subgerencia(1);
         //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();            
+        $list_notificacion = Notificacion::get_list_notificacion();
         return view('seguridad.asistencia.index',compact('list_notificacion','list_subgerencia'));
     }
 
@@ -339,7 +339,8 @@ class AsistenciaSegController extends Controller
             session('usuario')->id_nivel == 1 ||
             session('usuario')->id_puesto == 24 ||
             session('usuario')->id_puesto == 209 ||
-            session('usuario')->id_puesto == 277
+            session('usuario')->id_puesto == 277 ||
+            session('usuario')->id_puesto==307
         ) {
             if (session('usuario')->id_puesto == 24) {
                 $list_base = Base::select('cod_base')->whereIn('id_base', [15, 19, 34])->get();
@@ -443,7 +444,7 @@ class AsistenciaSegController extends Controller
                 ->where('estado', 1)->where('id_nivel', '!=', 8)->get();
         } elseif (
             session('usuario')->id_puesto == 24 ||
-            session('usuario')->id_puesto == 36
+            session('usuario')->id_puesto == 36 || session('usuario')->id_puesto==307
         ) {
             $list_base = Base::select('cod_base')->whereIn('id_base', [15, 19, 34])->get();
             if (session('usuario')->id_puesto == 24) {

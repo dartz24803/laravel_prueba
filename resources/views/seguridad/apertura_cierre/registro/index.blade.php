@@ -50,7 +50,7 @@
 </style>
 
 <div class="toolbar d-md-flex align-items-md-center mt-3">
-    @if (session('usuario')->id_nivel=="1" || session('usuario')->id_puesto==24)
+    @if (session('usuario')->id_nivel=="1" || session('usuario')->id_puesto==24 || session('usuario')->id_puesto==307)
     <div class="form-group col-lg-2">
         <label>Base:</label>
         <select class="form-control" id="cod_baseb" name="cod_baseb" onchange="Lista_Apertura_Cierre();">

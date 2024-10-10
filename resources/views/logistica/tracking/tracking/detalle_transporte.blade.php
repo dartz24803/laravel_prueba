@@ -118,7 +118,7 @@
                                     <label class="control-label text-bold">F x prenda: </label>
                                 </div>
                                 <div class="form-group col-lg-2">
-                                    <input type="text" class="form-control" name="fardo_prenda" id="fardo_prenda" 
+                                    <input type="text" class="form-control" name="flete_prenda" id="flete_prenda" 
                                     placeholder="F x prenda" onkeypress="return solo_Numeros_Punto(event);">
                                 </div>
                             </div>

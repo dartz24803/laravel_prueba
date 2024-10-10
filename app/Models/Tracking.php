@@ -33,7 +33,7 @@ class Tracking extends Model
         'tiempo_llegada',
         'recepcion',
         'mercaderia_total',
-        'fardo_prenda',
+        'flete_prenda',
         'receptor',
         'tipo_pago',
         'nombre_transporte',
