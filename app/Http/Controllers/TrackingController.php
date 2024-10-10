@@ -270,7 +270,7 @@ class TrackingController extends Controller
 
                 $mail->isHTML(true);
 
-                $mail->Subject = "SDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
+                $mail->Subject = "MPS-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
             
                 $mail->Body =  '<FONT SIZE=3>
                                     <b>Semana:</b> '.$get_id->semana.'<br>
@@ -742,7 +742,7 @@ class TrackingController extends Controller
 
             $mail->isHTML(true);
 
-            $mail->Subject = "IDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
+            $mail->Subject = "SDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
                                 <b>Semana:</b> '.$get_id->semana.'<br>
@@ -1211,7 +1211,7 @@ class TrackingController extends Controller
 
             $mail->isHTML(true);
 
-            $mail->Subject = "IDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
+            $mail->Subject = "SDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
         
             $mail->Body =  '<FONT SIZE=3>
                                 <b>Semana:</b> '.$get_id->semana.'<br>
