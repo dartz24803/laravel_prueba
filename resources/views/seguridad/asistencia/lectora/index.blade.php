@@ -150,20 +150,42 @@
         var fec_desde = $('#fec_desde').val();
         var fec_hasta = $('#fec_hasta').val();
 
-        $.ajax({
-            url: url,
-            type: "POST",
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
-            data: {
-                'fec_desde': fec_desde,
-                'fec_hasta': fec_hasta
-            },
-            success: function(resp) {
-                $('#lista_lectora').html(resp);
-            }
-        });
+        var ini = moment(fec_desde);
+        var fin = moment(fec_hasta);
+        if (ini.isAfter(fin) == true) {
+            Swal({
+                title: '¡Selección Denegada!',
+                html: "Fecha inicio no debe ser mayor a fecha fin. <br> Por favor corrígelo. ",
+                type: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK',
+            });
+        } else if (fin.diff(ini, 'days') > 31) {
+            Swal({
+                title: '¡Selección Denegada!',
+                text: "Solo se permite búsquedas de hasta 31 días",
+                type: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK',
+            });
+        }else{
+            $.ajax({
+                url: url,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                data: {
+                    'fec_desde': fec_desde,
+                    'fec_hasta': fec_hasta
+                },
+                success: function(resp) {
+                    $('#lista_lectora').html(resp);
+                }
+            });
+        }
     }
 
     function solo_Numeros(e) {
