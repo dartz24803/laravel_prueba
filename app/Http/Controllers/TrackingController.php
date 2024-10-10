@@ -576,6 +576,15 @@ class TrackingController extends Controller
     }
     //END FORMA MANUAL
 
+    public function detalle_transporte($id)
+    {
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(7);
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
+        return view('logistica.tracking.tracking.detalle_transporte', compact('list_notificacion','list_subgerencia','get_id'));
+    }
+    
     public function insert_detalle_transporte(Request $request,$id)
     {
         $request->validate([
@@ -949,15 +958,6 @@ class TrackingController extends Controller
                 'cantidad' => $list->cantidad,
             ]);
         }
-    }
-
-    public function detalle_transporte($id)
-    {
-        //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();
-        $list_subgerencia = SubGerencia::list_subgerencia(7);
-        $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        return view('logistica.tracking.tracking.detalle_transporte', compact('list_notificacion','list_subgerencia','get_id'));
     }
 
     public function insert_mercaderia_transito(Request $request,$id)
