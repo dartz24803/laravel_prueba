@@ -1862,13 +1862,13 @@ class TrackingController extends Controller
         }
 
         $list_sobrante = TrackingDiferencia::select('estilo','color_talla','bulto','enviado',
-                        'recibido',DB::raw('enviado-recibido AS diferencia'),
+                        'recibido',DB::raw('recibido-enviado AS diferencia'),
                         DB::raw("CASE WHEN enviado<recibido THEN 'Sobrante' 
                         WHEN enviado>recibido THEN 'Faltante' ELSE '' END AS observacion"))
                         ->where('id_tracking',$id)->whereColumn('enviado','<','recibido')
                         ->get();
         $list_faltante = TrackingDiferencia::select('estilo','color_talla','bulto','enviado',
-                        'recibido',DB::raw('enviado-recibido AS diferencia'),
+                        'recibido',DB::raw('recibido-enviado AS diferencia'),
                         DB::raw("CASE WHEN enviado<recibido THEN 'Sobrante' 
                         WHEN enviado>recibido THEN 'Faltante' ELSE '' END AS observacion"))
                         ->where('id_tracking',$id)->whereColumn('enviado','>','recibido')
