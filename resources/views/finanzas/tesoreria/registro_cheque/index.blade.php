@@ -46,14 +46,14 @@
 
                             <div class="form-group col-lg-2 col-xl-2">
                                 <label>Fecha Inicio:</label>
-                                <input type="date" class="form-control" name="fec_inicio" 
-                                id="fec_inicio" value="{{ date('Y-m-01') }}">
+                                <input type="date" class="form-control" name="fec_iniciob" 
+                                id="fec_iniciob" value="{{ date('Y-m-01') }}">
                             </div>
 
                             <div class="form-group col-lg-2 col-xl-2">
                                 <label>Fecha Fin:</label>
-                                <input type="date" class="form-control" name="fec_fin" 
-                                id="fec_fin" value="{{ date('Y-m-d') }}">
+                                <input type="date" class="form-control" name="fec_finb" 
+                                id="fec_finb" value="{{ date('Y-m-d') }}">
                             </div>
 
                             <div class="form-group col-lg-2 col-xl-1">
@@ -73,21 +73,21 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-2 d-flex align-items-center justify-content-start mb-3">
-                                <a type="button" class="btn btn-primary mb-1 mb-md-0" title="Buscar" 
+                            <div class="col-lg-2 d-block d-xl-flex align-items-center justify-content-start mb-4">
+                                <a type="button" class="btn btn-primary mb-1 mb-xl-0" title="Buscar" 
                                 onclick="Lista_Registro_Cheque();">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search toggle-search">
                                         <circle cx="11" cy="11" r="8"></circle>
                                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                                     </svg>
                                 </a>
-                                <button type="button" class="btn btn-primary mb-1 mb-md-0" 
+                                <button type="button" class="btn btn-primary mb-1 mb-xl-0" 
                                 title="Registrar" data-toggle="modal" 
-                                data-target="#ModalRegistroGrande" 
-                                app_reg_grande="{{ route('registro_cheque.create') }}">
+                                data-target="#ModalRegistro" 
+                                app_reg="{{ route('registro_cheque.create') }}">
                                     Nuevo
                                 </button>
-                                <a class="btn mb-1 mb-md-0" title="Exportar excel"
+                                <a class="btn mb-1 mb-xl-0" title="Exportar excel"
                                 style="background-color: #28a745 !important;" 
                                 onclick="Excel_Registro_Cheque();">
                                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="64" height="64" viewBox="0 0 172 172" style=" fill:#000000;">
@@ -114,7 +114,7 @@
         $(document).ready(function() {
             $("#tesorerias").addClass('active');
             $("#htesorerias").attr('aria-expanded', 'true');
-            $("#registros_letras").addClass('active');
+            $("#registros_cheques").addClass('active');
 
             $(".multivalue").select2({
                 tags: true
@@ -133,24 +133,28 @@
         function Lista_Registro_Cheque(){
             Cargando();
 
-            var estado = $('#estadob').val();
+            if($('#todos').is(":checked")){
+                todos = "1";
+            }else{
+                todos = "0";
+            }
             var id_empresa = $('#id_empresab').val();
-            var id_aceptante = $('#id_aceptanteb').val();
+            var estado = $('#estadob').val();
+            var fec_inicio = $('#fec_iniciob').val();
+            var fec_fin = $('#fec_finb').val();
             var tipo_fecha = $('input:radio[name=fecha_radiob]:checked').val();
-            var mes = $('#mesb').val();
-            var anio = $('#aniob').val();
-            var url = "{{ route('registro_letra.list') }}";
+            var url = "{{ route('registro_cheque.list') }}";
 
             $.ajax({
                 url: url,
                 type: "POST",
                 data:{
-                    'estado':estado,
+                    'todos':todos,
                     'id_empresa':id_empresa,
-                    'id_aceptante':id_aceptante,
+                    'estado':estado,
+                    'fec_inicio':fec_inicio,
+                    'fec_fin':fec_fin,
                     'tipo_fecha':tipo_fecha,
-                    'mes':mes,
-                    'anio':anio
                 },
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -233,7 +237,7 @@
                                 'El registro ha sido eliminado satisfactoriamente.',
                                 'success'
                             ).then(function() {
-                                Delete_Registro_Cheque();
+                                Lista_Registro_Cheque();
                             });    
                         }
                     });

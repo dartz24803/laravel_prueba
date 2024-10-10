@@ -1540,11 +1540,20 @@ Route::controller(RegistroChequeConfController::class)->group(function () {
 //TESORERÍA - REGISTRO DE CHEQUES
 Route::controller(RegistroChequeController::class)->group(function () {
     Route::get('registro_cheque', 'index')->name('registro_cheque');
-    Route::get('registro_cheque/list', 'list')->name('registro_cheque.list');
+    Route::post('registro_cheque/list', 'list')->name('registro_cheque.list');
     Route::get('registro_cheque/create', 'create')->name('registro_cheque.create');
     Route::post('registro_cheque', 'store')->name('registro_cheque.store');
     Route::get('registro_cheque/{id}/edit', 'edit')->name('registro_cheque.edit');
     Route::put('registro_cheque/{id}', 'update')->name('registro_cheque.update');
+    Route::put('registro_cheque/{id}/update_estado', 'update_estado')->name('registro_cheque.update_estado');
+    Route::get('registro_cheque/{id}/modal_cancelar', 'modal_cancelar')->name('registro_cheque.modal_cancelar');
+    Route::put('registro_cheque/{id}/cancelar', 'cancelar')->name('registro_cheque.cancelar');
+    Route::get('registro_cheque/{id}/modal_motivo', 'modal_motivo')->name('registro_cheque.modal_motivo');
+    Route::put('registro_cheque/{id}/update_motivo', 'update_motivo')->name('registro_cheque.update_motivo');
+    Route::get('registro_cheque/{id}/modal_imagen', 'modal_imagen')->name('registro_cheque.modal_imagen');
+    Route::put('registro_cheque/{id}/update_imagen', 'update_imagen')->name('registro_cheque.update_imagen');
+    Route::get('registro_cheque/{id}/modal_anular', 'modal_anular')->name('registro_cheque.modal_anular');
+    Route::put('registro_cheque/{id}/anular', 'anular')->name('registro_cheque.anular');
     Route::delete('registro_cheque/{id}', 'destroy')->name('registro_cheque.destroy');
     Route::get('registro_cheque/{todos}/{id_empresa}/{estado}/{fec_inicio}/{fec_fin}/{tipo_fecha}/excel', 'excel')->name('registro_cheque.excel');
 });
