@@ -737,6 +737,9 @@ class TrackingController extends Controller
             $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
             $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
 
+            $fecha_partida =  date('d')." de ".date('F')." del ".date('Y');
+            $fecha_partida = str_replace($meses_ingles, $meses_espanol, $fecha_partida);
+
             $mail->isHTML(true);
 
             $mail->Subject = "IDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
@@ -823,9 +826,14 @@ class TrackingController extends Controller
                                         <td style="text-align:right;">S/'.$get_id->importe_formateado.'</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2" style="font-weight:bold;">Tiempo estimado de llegada</td>
-                                        <td style="text-align:right;">'.$get_id->tiempo_llegada.'</td>
+                                        <td rowspan="2" style="font-weight:bold;">Fecha</td>
+                                        <td style="font-weight:bold;">Partida</td>
+                                        <td style="text-align:right;">'.$fecha_partida.'</td>
                                     </tr>
+                                    <tr>
+                                        <td style="font-weight:bold;">Tiempo estimado de llegada</td>
+                                        <td style="text-align:right;">'.$get_id->tiempo_llegada.'</td>
+                                    </tr>                                  
                                 </table><br>';
                             if($t_comentario){
             $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
@@ -1141,8 +1149,19 @@ class TrackingController extends Controller
             $id_detalle_6 = $get_id->id_detalle;
         }
 
+        TrackingDetalleEstado::create([
+            'id_detalle' => $id_detalle_6,
+            'id_estado' => 7,
+            'fecha' => now(),
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
         //MENSAJE 2
-        $estado_4 = TrackingDetalleEstado::get_list_tracking_detalle_estado(['id_detalle'=>$id_detalle_4,'id_estado'=>4]);
+        /*$estado_4 = TrackingDetalleEstado::get_list_tracking_detalle_estado(['id_detalle'=>$id_detalle_4,'id_estado'=>4]);
         $estado_6 = TrackingDetalleEstado::get_list_tracking_detalle_estado(['id_detalle'=>$id_detalle_6,'id_estado'=>6]);
         $list_archivo = TrackingArchivo::where('id_tracking', $id)->where('tipo', 1)->get();
 
@@ -1166,21 +1185,21 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
             //$mail->addAddress('ogutierrez@lanumero1.com.pe');
             //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-            /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
-            foreach($list_td as $list){
-                $mail->addAddress($list->emailp);
-            }
-            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
-            foreach($list_cd as $list){
-                $mail->addAddress($list->emailp);
-            }
-            $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
-            foreach($list_cc as $list){
-                $mail->addCC($list->emailp);
-            }*/
+            //$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            //foreach($list_td as $list){
+            //    $mail->addAddress($list->emailp);
+            //}
+            //$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            //foreach($list_cd as $list){
+            //    $mail->addAddress($list->emailp);
+            //}
+            //$list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+            //foreach($list_cc as $list){
+            //    $mail->addCC($list->emailp);
+            //}
 
             $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
             $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -1302,7 +1321,7 @@ class TrackingController extends Controller
             ]);
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-        }
+        }*/
     }
 
     public function insert_cierre_inspeccion_fardos(Request $request,$id)
