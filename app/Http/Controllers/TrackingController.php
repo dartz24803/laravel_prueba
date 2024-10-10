@@ -908,12 +908,12 @@ class TrackingController extends Controller
                                         <td style="text-align:right;">'.$get_id->fardos.'</td>
                                     </tr>           
                                     <tr>
-                                        <td colspan="2" style="font-weight:bold;">Bultos</td>
-                                        <td style="text-align:right;">'.$get_id->bultos.'</td>
-                                    </tr>
-                                    <tr>
                                         <td colspan="2" style="font-weight:bold;">Caja</td>
                                         <td style="text-align:right;">'.$get_id->caja.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="font-weight:bold;">Bultos</td>
+                                        <td style="text-align:right;">'.$get_id->bultos.'</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="font-weight:bold;">Importe Pagado</td>
@@ -1844,6 +1844,7 @@ class TrackingController extends Controller
         foreach($list_diferencia as $list){
             TrackingDiferencia::create([
                 'id_tracking' => $id,
+                'sku' => $list->SKU,
                 'estilo' => $list->Estilo,
                 'bulto' => $list->Bulto,
                 'color_talla' => $list->Col_Tal,
@@ -1861,13 +1862,13 @@ class TrackingController extends Controller
             ]);
         }
 
-        $list_sobrante = TrackingDiferencia::select('estilo','color_talla','bulto','enviado',
+        $list_sobrante = TrackingDiferencia::select('sku','estilo','color_talla','bulto','enviado',
                         'recibido',DB::raw('recibido-enviado AS diferencia'),
                         DB::raw("CASE WHEN enviado<recibido THEN 'Sobrante' 
                         WHEN enviado>recibido THEN 'Faltante' ELSE '' END AS observacion"))
                         ->where('id_tracking',$id)->whereColumn('enviado','<','recibido')
                         ->get();
-        $list_faltante = TrackingDiferencia::select('estilo','color_talla','bulto','enviado',
+        $list_faltante = TrackingDiferencia::select('sku','estilo','color_talla','bulto','enviado',
                         'recibido',DB::raw('recibido-enviado AS diferencia'),
                         DB::raw("CASE WHEN enviado<recibido THEN 'Sobrante' 
                         WHEN enviado>recibido THEN 'Faltante' ELSE '' END AS observacion"))
@@ -1961,18 +1962,20 @@ class TrackingController extends Controller
                                     <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                         <thead>
                                             <tr align="center" style="background-color:#0093C6;">
+                                                <th width="10%"><b>SKU</b></th>
                                                 <th width="20%"><b>Estilo</b></th>
                                                 <th width="20%"><b>Col_Tal</b></th>
                                                 <th width="10%"><b>Bulto</b></th>
                                                 <th width="10%"><b>Enviado</b></th>
                                                 <th width="10%"><b>Recibido</b></th>
                                                 <th width="10%"><b>Dif</b></th>
-                                                <th width="20%"><b>Orden de Regularización</b></th>
+                                                <th width="10%"><b>Orden de Regularización</b></th>
                                             </tr>
                                         </thead>
                                         <tbody>';
                                     foreach($list_sobrante as $list){
                 $mail->Body .=  '            <tr align="left">
+                                                <td>'.$list->sku.'</td>
                                                 <td>'.$list->estilo.'</td>
                                                 <td>'.$list->color_talla.'</td>
                                                 <td>'.$list->bulto.'</td>
@@ -2055,18 +2058,20 @@ class TrackingController extends Controller
                                     <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                         <thead>
                                             <tr align="center" style="background-color:#0093C6;">
+                                                <th width="10%"><b>SKU</b></th>
                                                 <th width="20%"><b>Estilo</b></th>
                                                 <th width="20%"><b>Col_Tal</b></th>
                                                 <th width="10%"><b>Bulto</b></th>
                                                 <th width="10%"><b>Enviado</b></th>
                                                 <th width="10%"><b>Recibido</b></th>
                                                 <th width="10%"><b>Dif</b></th>
-                                                <th width="20%"><b>Orden de Regularización</b></th>
+                                                <th width="10%"><b>Orden de Regularización</b></th>
                                             </tr>
                                         </thead>
                                         <tbody>';
                                     foreach($list_faltante as $list){
                 $mail->Body .=  '            <tr align="left">
+                                                <td>'.$list->sku.'</td>
                                                 <td>'.$list->estilo.'</td>
                                                 <td>'.$list->color_talla.'</td>
                                                 <td>'.$list->bulto.'</td>

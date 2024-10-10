@@ -25,18 +25,20 @@
                                 <table id="tabla_js" class="table" style="width:100%">
                                     <thead>
                                         <tr class="text-center">
-                                            <th width="15%">Estilo</th>
-                                            <th width="15%">Col/Ta</th>
-                                            <th width="15%">Enviado</th>
-                                            <th width="15%">Recibido</th>
-                                            <th width="15%">Diferencia</th>
-                                            <th width="25%">Orden de regularización</th>
+                                            <th>SKU</th>
+                                            <th>Estilo</th>
+                                            <th>Col/Ta</th>
+                                            <th>Enviado</th>
+                                            <th>Recibido</th>
+                                            <th>Diferencia</th>
+                                            <th>Orden de regularización</th>
                                         </tr>
                                     </thead>
                                 
                                     <tbody>
                                         @foreach ($list_diferencia as $list)
                                             <tr class="text-center">
+                                                <td>{{ $list->SKU }}</td>
                                                 <td>{{ $list->Estilo }}</td>
                                                 <td>{{ $list->Col_Tal }}</td>
                                                 <td>{{ $list->Enviado }}</td>
