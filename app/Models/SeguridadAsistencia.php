@@ -48,7 +48,7 @@ class SeguridadAsistencia extends Model
             $query = DB::select($sql);
             return $query[0];
         }else{
-            if ($dato['fec_desde'] || $dato['fec_hasta']) {
+            if ($dato['fec_desde'] && $dato['fec_hasta']) {
                 $fec_desde = $dato['fec_desde'];
                 $fec_hasta = $dato['fec_hasta'];
                 $sql = "SELECT sa.id_seguridad_asistencia,sa.base,
