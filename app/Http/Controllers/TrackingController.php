@@ -161,19 +161,21 @@ class TrackingController extends Controller
 
     public function iniciar_tracking()
     {
-        /*TrackingTemporal::truncate();
+        TrackingTemporal::truncate();
         $list_tracking = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['T']);
         foreach($list_tracking as $list){
-            TrackingTemporal::create([
-                'n_requerimiento' => $list->n_requerimiento,
-                'n_guia_remision' => $list->n_guia_remision,
-                'semana' => $list->semana,
-                'id_origen_desde' => $list->id_origen_desde,
-                'desde' => $list->desde,
-                'id_origen_hacia' => $list->id_origen_hacia,
-                'hacia' => $list->hacia,
-                'bultos' => $list->bultos
-            ]);
+            if($list->id_origen_hacia=="4" || $list->id_origen_hacia=="6" || $list->id_origen_hacia=="10"){
+                TrackingTemporal::create([
+                    'n_requerimiento' => $list->n_requerimiento,
+                    'n_guia_remision' => $list->n_guia_remision,
+                    'semana' => $list->semana,
+                    'id_origen_desde' => $list->id_origen_desde,
+                    'desde' => $list->desde,
+                    'id_origen_hacia' => $list->id_origen_hacia,
+                    'hacia' => $list->hacia,
+                    'bultos' => $list->bultos
+                ]);
+            }
         }
         DB::statement('CALL insert_tracking()');
 
@@ -220,7 +222,7 @@ class TrackingController extends Controller
                 'fec_act' => now(),
             ]);
     
-            //EMAIL 1
+            //MENSAJE 1
             $list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$get_id->n_requerimiento]);
 
             $mpdf = new Mpdf([
@@ -326,7 +328,7 @@ class TrackingController extends Controller
                 'iniciar' => 1,
                 'fec_act' => now()
             ]);
-        }*/
+        }
     }
 
     public function llegada_tienda()
