@@ -19,6 +19,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class SugerenciadePreciosController extends Controller
 {
@@ -48,9 +49,9 @@ class SugerenciadePreciosController extends Controller
     {
         $dato['base'] = $this->input->post('base');
         $dato['categoria'] = $this->input->post('categoria');
-        $dato['mod'] = 1;
+        // dd($dato['base']);
         $list_sugerencia_precios = SugerenciaPrecios::get_list_sugerencia_precio_modulo($dato);
-        dd($list_sugerencia_precios);
+        // dd($list_sugerencia_precios);
         $dato['list_sugerencia_precios'] = json_decode(json_encode($list_sugerencia_precios), true);
         return view('comercial.sugerencia_precios.lista', $dato);
     }
@@ -452,11 +453,38 @@ class SugerenciadePreciosController extends Controller
     }
 
 
-    public function Formato_Mercaderia_Fotografia()
+    public function Formato_Requerimiento_Precios($base, $categoria)
     {
+        $dato['base'] = $base;
+        $dato['categoria'] = $categoria;
+        $list_funcion_temporal = SugerenciaPrecios::get_list_sugerencia_precio_modulo($dato);
+
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-        $spreadsheet->getActiveSheet()->setTitle('Formato Mercadería a Envíar');
+
+        $sheet->getStyle("A1:J1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:J1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Sugerencia de Precios');
+
+        $sheet->setAutoFilter('A1:J1');
+
+        $sheet->getColumnDimension('A')->setWidth(15);
+        $sheet->getColumnDimension('B')->setWidth(15);
+        $sheet->getColumnDimension('C')->setWidth(20);
+        $sheet->getColumnDimension('D')->setWidth(20);
+        $sheet->getColumnDimension('E')->setWidth(20);
+        $sheet->getColumnDimension('F')->setWidth(32);
+        $sheet->getColumnDimension('G')->setWidth(32);
+        $sheet->getColumnDimension('H')->setWidth(30);
+        $sheet->getColumnDimension('I')->setWidth(30);
+        $sheet->getColumnDimension('J')->setWidth(15);
+
+        $sheet->getStyle('A1:J1')->getFont()->setBold(true);
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:J1")->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('C8C8C8');
 
         $styleThinBlackBorderOutline = [
             'borders' => [
@@ -466,50 +494,50 @@ class SugerenciadePreciosController extends Controller
                 ],
             ],
         ];
-        $spreadsheet->getActiveSheet()->setAutoFilter('A1:I1');
-        $sheet->getStyle('A1:I1')->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle("A1:I1")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('F29D64');
 
-        $sheet->setCellValue("A1", 'Código');
-        $sheet->setCellValue("B1", "Usuario");
-        $sheet->setCellValue("C1", "Estilo");
-        $sheet->setCellValue("D1", "Descripción");
-        $sheet->setCellValue("E1", "Color");
-        $sheet->setCellValue("F1", "Talla");
-        $sheet->setCellValue("G1", "Cantidad");
-        $sheet->setCellValue("H1", "Ubicación");
-        $sheet->setCellValue("I1", "Observación");
-        $fila = 2;
-        $spreadsheet->getActiveSheet()->setCellValue("A{$fila}", "89891911159");
-        $spreadsheet->getActiveSheet()->setCellValue("B{$fila}", "BEBA");
-        $spreadsheet->getActiveSheet()->setCellValue("C{$fila}", "GAZO-105");
-        $spreadsheet->getActiveSheet()->setCellValue("D{$fila}", "PANTALONETA ARRESTME ALG. COBERTURA BEBA");
-        $spreadsheet->getActiveSheet()->setCellValue("E{$fila}", "FUCSIA");
-        $spreadsheet->getActiveSheet()->setCellValue("F{$fila}", "M");
-        $spreadsheet->getActiveSheet()->setCellValue("G{$fila}", "1");
-        $spreadsheet->getActiveSheet()->setCellValue("H{$fila}", "ALM TDA VIRTUAL");
-        $spreadsheet->getActiveSheet()->setCellValue("I{$fila}", "Observación");
-        //border
-        $sheet->getStyle("A{$fila}:I{$fila}")->applyFromArray($styleThinBlackBorderOutline);
+        $sheet->getStyle("A1:J1")->applyFromArray($styleThinBlackBorderOutline);
 
-        $sheet->getStyle('A1:I1')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->setCellValue("A1", 'Base');
+        $sheet->setCellValue("B1", 'Categoría');
+        $sheet->setCellValue("C1", 'Estilo');
+        $sheet->setCellValue("D1", 'Precio Vigente');
+        $sheet->setCellValue("E1", 'Precio Sugerido');
+        $sheet->setCellValue("F1", 'Precio Sugerido 2x (Opcional)');
+        $sheet->setCellValue("G1", 'Precio Sugerido 3x (Opcional)');
+        $sheet->setCellValue("H1", 'Motivo');
+        $sheet->setCellValue("I1", 'Comentario');
+        $sheet->setCellValue("J1", 'Evidencia');
 
-        //Custom width for Individual Columns
-        $sheet->getColumnDimension('A')->setWidth(16);
-        $sheet->getColumnDimension('B')->setWidth(14);
-        $sheet->getColumnDimension('C')->setWidth(45);
-        $sheet->getColumnDimension('D')->setWidth(50);
-        $sheet->getColumnDimension('E')->setWidth(12);
-        $sheet->getColumnDimension('F')->setWidth(12);
-        $sheet->getColumnDimension('G')->setWidth(12);
-        $sheet->getColumnDimension('H')->setWidth(30);
-        $sheet->getColumnDimension('I')->setWidth(60);
+        $contador = 1;
 
-        //final part
-        $curdate = date('d-m-Y');
+        foreach ($list_funcion_temporal as $list) {
+            $contador++;
+
+            $sheet->getStyle("A{$contador}:J{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:J{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("D{$contador}:G{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+            $sheet->getStyle("H{$contador}:I{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:J{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+            $sheet->getStyle("D{$contador}:G{$contador}")
+                ->getNumberFormat()
+                ->setFormatCode('"S/ " #,##0.00');
+
+            $sheet->setCellValue("A{$contador}", $list->cod_base);
+            $sheet->setCellValue("B{$contador}", $list->categoria);
+            $sheet->setCellValue("C{$contador}", $list->estilo);
+            $sheet->setCellValue("D{$contador}", $list->precio_vigente);
+            $sheet->setCellValue("E{$contador}", $list->precio_sug);
+            $sheet->setCellValue("F{$contador}", $list->precio_sug_2x);
+            $sheet->setCellValue("G{$contador}", $list->precio_sug_3x);
+            $sheet->setCellValue("H{$contador}", $list->motivo);
+            $sheet->setCellValue("I{$contador}", $list->comentario);
+
+            $sheet->setCellValue("J{$contador}", "");
+        }
+
         $writer = new Xlsx($spreadsheet);
-        $filename = 'Formato';
-        ob_end_clean();
+        $filename = 'Sugerencia de Precios';
+        if (ob_get_contents()) ob_end_clean();
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
         header('Cache-Control: max-age=0');

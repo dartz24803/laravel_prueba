@@ -98,7 +98,8 @@ class Base extends Model
         return json_decode(json_encode($query), true);
     }
 
-    public static function get_list_base_pendiente(){
+    public static function get_list_base_pendiente()
+    {
         $sql = "SELECT cod_base FROM base
                 WHERE estado=1 AND (cod_base LIKE 'B%' OR cod_base IN ('OFC','CD','AMT')) AND
                 cod_base NOT IN ('B00','B01','B02','B13','B14','B17','BV')
@@ -109,7 +110,8 @@ class Base extends Model
         return json_decode(json_encode($result), true);
     }
 
-    static function get_list_bases(){
+    static function get_list_bases()
+    {
         $sql = "SELECT * from base
         WHERE nom_base LIKE 'BASE%' order by nom_base ASC ";
 
