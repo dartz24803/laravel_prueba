@@ -584,7 +584,7 @@ class TrackingController extends Controller
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
         return view('logistica.tracking.tracking.detalle_transporte', compact('list_notificacion','list_subgerencia','get_id'));
     }
-    
+
     public function insert_detalle_transporte(Request $request,$id)
     {
         $request->validate([
@@ -597,7 +597,7 @@ class TrackingController extends Controller
             'tiempo_llegada' => 'required',
             'recepcion' => 'gt:0',
             'mercaderia_total' => 'required|gt:0',
-            'fardo_prenda' => 'required|gt:0',
+            'flete_prenda' => 'required|gt:0',
             'receptor' => 'required',
             'nombre_transporte' => 'required_if:transporte,1,2',
             'importe_transporte' => 'required_if:transporte,1,2',
@@ -611,8 +611,8 @@ class TrackingController extends Controller
             'recepcion.gt' => 'Debe seleccionar recepción.',
             'mercaderia_total.required' => 'Debe ingresar mercadería total.',
             'mercaderia_total.gt' => 'Debe ingresar mercadería total mayor a 0.',
-            'fardo_prenda.required' => 'Debe ingresar fardo por prenda.',
-            'fardo_prenda.gt' => 'Debe ingresar fardo por prenda mayor a 0.',
+            'flete_prenda.required' => 'Debe ingresar flete por prenda.',
+            'flete_prenda.gt' => 'Debe ingresar flete por prenda mayor a 0.',
             'receptor.required' => 'Debe ingresar receptor.',
             'nombre_transporte.required_if' => 'Debe ingresar nombre de empresa.',
             'importe_transporte.required_if' => 'Debe ingresar importe a pagar.',
@@ -645,7 +645,7 @@ class TrackingController extends Controller
             'tiempo_llegada' => $request->tiempo_llegada,
             'recepcion' => $request->recepcion,
             'mercaderia_total' => $request->mercaderia_total,
-            'fardo_prenda' => $request->fardo_prenda,
+            'flete_prenda' => $request->flete_prenda,
             'receptor' => $request->receptor,
             'tipo_pago' => $tipo_pago,
             'nombre_transporte' => $request->nombre_transporte,
@@ -807,8 +807,8 @@ class TrackingController extends Controller
                                         <td style="text-align:right;">'.$get_id->mercaderia_total.'</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2" style="font-weight:bold;">Fardo por prenda</td>
-                                        <td style="text-align:right;">S/'.$get_id->fardo_prenda.'</td>
+                                        <td colspan="2" style="font-weight:bold;">Flete por prenda</td>
+                                        <td style="text-align:right;">S/'.$get_id->flete_prenda.'</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="font-weight:bold;">Receptor</td>
