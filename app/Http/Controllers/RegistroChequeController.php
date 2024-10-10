@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Banco;
+use App\Models\ConceptoCheque;
 use App\Models\Empresas;
 use App\Models\FinanzasCheque;
 use App\Models\Notificacion;
 use App\Models\SubGerencia;
+use App\Models\TipoMoneda;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RegistroChequeController extends Controller
 {
@@ -31,23 +35,23 @@ class RegistroChequeController extends Controller
 
     public function list(Request $request)
     {
-        $list_cheque_letra = FinanzasCheque::get_list_cheques_letra([
-            'estado'=>$request->estado,
+        $list_cheque = FinanzasCheque::get_list_cheque([
+            'todos'=>$request->todos,
             'id_empresa'=>$request->id_empresa,
-            'id_aceptante'=>$request->id_aceptante,
+            'estado'=>$request->estado,
+            'fec_inicio'=>$request->fec_inicio,
+            'fec_fin'=>$request->fec_fin,
             'tipo_fecha'=>$request->tipo_fecha,
-            'mes'=>$request->mes,
-            'anio'=>$request->anio
         ]);
-        $list_aceptante = DB::connection('sqlsrv')->table('tge_entidades')
-                        ->select(DB::raw("CONCAT(tdo_codigo,'_',clp_numdoc) AS id_aceptante"),
-                        DB::raw("clp_razsoc AS nom_aceptante"))
+        $list_girado = DB::connection('sqlsrv')->table('tge_entidades')
+                        ->select(DB::raw("CONCAT(tdo_codigo,'_',clp_numdoc) AS id_girado"),
+                        DB::raw("clp_razsoc AS nom_girado"))
                         ->where('clp_estado','!=','*')->get()->map(function($item) {
                             return (array) $item;
                         })->toArray();
         return view('finanzas.tesoreria.registro_cheque.lista', compact(
-            'list_cheque_letra',
-            'list_aceptante'
+            'list_cheque',
+            'list_girado'
         ));
     }
 
@@ -55,16 +59,20 @@ class RegistroChequeController extends Controller
     {
         $list_empresa = Empresas::select('id_empresa','nom_empresa')->where('estado',1)
                         ->orderBy('nom_empresa','ASC')->get();
-        $list_aceptante = DB::connection('sqlsrv')->table('tge_entidades')
-                        ->select(DB::raw("CONCAT(tdo_codigo,'_',clp_numdoc) AS id_aceptante"),
-                        DB::raw("CONCAT(clp_razsoc,' - ',clp_numdoc) AS nom_aceptante"))
+        $list_banco = Banco::select('id_banco','nom_banco')->where('estado',1)
+                    ->orderBy('nom_banco','ASC')->get();
+        $list_girado = DB::connection('sqlsrv')->table('tge_entidades')
+                        ->select(DB::raw("CONCAT(tdo_codigo,'_',clp_numdoc) AS id_girado"),
+                        DB::raw("CONCAT(clp_razsoc,' - ',clp_numdoc) AS nom_girado"))
                         ->where('clp_estado','!=','*')->get();
-        $list_tipo_comprobante = TipoComprobante::whereIn('id',[1,2,4])->get();
-        $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
+        $list_concepto = ConceptoCheque::select('id_concepto_cheque','nom_concepto_cheque')
+                        ->where('estado',1)->orderBy('nom_concepto_cheque','ASC')->get();
+        $list_tipo_moneda = TipoMoneda::select('id_moneda','nom_moneda')->get();
         return view('finanzas.tesoreria.registro_cheque.modal_registrar',compact(
             'list_empresa',
-            'list_aceptante',
-            'list_tipo_comprobante',
+            'list_banco',
+            'list_girado',
+            'list_concepto',
             'list_tipo_moneda'
         ));
     }
@@ -73,87 +81,44 @@ class RegistroChequeController extends Controller
     {
         $request->validate([
             'id_empresa' => 'gt:0',
+            'id_banco' => 'gt:0',
+            'n_cheque' => 'required',
             'fec_emision' => 'required',
-            'fec_vencimiento' => 'required',
-            'id_tipo_documento' => 'gt:0',
-            'num_doc' => 'required',
-            'id_aceptante' => 'not_in:0',
-            'id_tipo_comprobante' => 'gt:0',
-            'num_comprobante' => 'required',
-            'monto' => 'required|gt:0'
+            'fec_vencimiento' => 'required|after_or_equal:fec_emision',
+            'importe' => 'required|gt:0'
         ],[
             'id_empresa.gt' => 'Debe seleccionar empresa.',
+            'id_banco.gt' => 'Debe seleccionar banco.',
+            'n_cheque.required' => 'Debe ingresar n° cheque.',
             'fec_emision.required' => 'Debe ingresar fecha emisión.',
             'fec_vencimiento.required' => 'Debe ingresar fecha vencimiento.',
-            'id_tipo_documento.gt' => 'Debe seleccionar tipo documento.',
-            'num_doc.required' => 'Debe ingresar n° documento.',
-            'id_aceptante.not_in' => 'Debe seleccionar aceptante.',
-            'id_tipo_comprobante.gt' => 'Debe seleccionar tipo comprobante.',
-            'num_comprobante.required' => 'Debe ingresar n° comprobante.',
-            'monto.required' => 'Debe ingresar monto.',
-            'monto.gt' => 'Debe ingresar monto mayor a 0.'
+            'fec_vencimiento.after_or_equal' => 'Fecha vencimiento no debe ser menor a la fecha emisión.',
+            'importe.required' => 'Debe ingresar importe.',
+            'importe.gt' => 'Debe ingresar importe mayor a 0.'
         ]);
 
-        $valida = ChequesLetras::where('id_empresa', $request->id_empresa)
-                ->where('fec_vencimiento',$request->fec_vencimiento)->where('num_doc',$request->num_doc)
-                ->where('estado', 1)->exists();
+        $valida = FinanzasCheque::where('id_empresa', $request->id_empresa)->where('n_cheque',$request->n_cheque)
+                ->where('id_moneda',$request->id_moneda)->where('estado', 1)->exists();
 
         if($valida){
             echo "error";
         }else{
-            $aceptante = explode("_",$request->id_aceptante);
-            $tipo_doc_empresa_vinculada = NULL;
-            $num_doc_empresa_vinculada = NULL;
-            if($request->negociado_endosado=="2"){
-                $empresa_vinculada = explode("_",$request->id_empresa_vinculada);
-                $tipo_doc_empresa_vinculada = $empresa_vinculada[0];
-                $num_doc_empresa_vinculada = $empresa_vinculada[1];
+            if($request->id_girado!="0"){
+                $girado = explode("_",$request->id_girado);
             }
 
-            $documento = "";
-            if ($_FILES["documento"]["name"] != "") {
-                $ftp_server = "lanumerounocloud.com";
-                $ftp_usuario = "intranet@lanumerounocloud.com";
-                $ftp_pass = "Intranet2022@";
-                $con_id = ftp_connect($ftp_server);
-                $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
-                if ($con_id && $lr) {
-                    $path = $_FILES["documento"]["name"];
-                    $source_file = $_FILES['documento']['tmp_name'];
-    
-                    $ext = pathinfo($path, PATHINFO_EXTENSION);
-                    $nombre_soli = "Cheque_Letra_" . date('YmdHis');
-                    $nombre = $nombre_soli . "." . strtolower($ext);
-    
-                    ftp_pasv($con_id, true);
-                    $subio = ftp_put($con_id, "ADM_FINANZAS/CHEQUES_LETRAS/" . $nombre, $source_file, FTP_BINARY);
-                    if ($subio) {
-                        $documento = "https://lanumerounocloud.com/intranet/ADM_FINANZAS/CHEQUES_LETRAS/" . $nombre;
-                    } else {
-                        echo "Archivo no subido correctamente";
-                    }
-                } else {
-                    echo "No se conecto";
-                }
-            }
-
-            ChequesLetras::create([
+            FinanzasCheque::create([
                 'id_empresa' => $request->id_empresa,
+                'id_banco' => $request->id_banco,
+                'n_cheque' => $request->n_cheque,
                 'fec_emision' => $request->fec_emision,
                 'fec_vencimiento' => $request->fec_vencimiento,
-                'id_tipo_documento' => $request->id_tipo_documento,
-                'num_doc' => $request->num_doc,
-                'tipo_doc_aceptante' => $aceptante[0],
-                'num_doc_aceptante' => $aceptante[1],
-                'tipo_doc_emp_vinculada' => $tipo_doc_empresa_vinculada,
-                'num_doc_emp_vinculada' => $num_doc_empresa_vinculada,
-                'id_tipo_comprobante' => $request->id_tipo_comprobante,
-                'num_comprobante' => $request->num_comprobante,
+                'tipo_doc' => $girado[0],
+                'num_doc' => $girado[1],
+                'concepto' => $request->concepto,
                 'id_moneda' => $request->id_moneda,
-                'monto' => $request->monto,
-                'negociado_endosado' => $request->negociado_endosado,
-                'documento' => $documento,
-                'estado_registro' => 1,
+                'importe' => $request->importe,
+                'estado_cheque' => 1,
                 'estado' => 1,
                 'fec_reg' => now(),
                 'user_reg' => session('usuario')->id_usuario,
@@ -165,20 +130,24 @@ class RegistroChequeController extends Controller
 
     public function edit($id)
     {
-        $get_id = ChequesLetras::findOrFail($id);
+        $get_id = FinanzasCheque::findOrFail($id);
         $list_empresa = Empresas::select('id_empresa','nom_empresa')->where('estado',1)
                         ->orderBy('nom_empresa','ASC')->get();
-        $list_aceptante = DB::connection('sqlsrv')->table('tge_entidades')
-                        ->select(DB::raw("CONCAT(tdo_codigo,'_',clp_numdoc) AS id_aceptante"),
-                        DB::raw("CONCAT(clp_razsoc,' - ',clp_numdoc) AS nom_aceptante"))
+        $list_banco = Banco::select('id_banco','nom_banco')->where('estado',1)
+                    ->orderBy('nom_banco','ASC')->get();
+        $list_girado = DB::connection('sqlsrv')->table('tge_entidades')
+                        ->select(DB::raw("CONCAT(tdo_codigo,'_',clp_numdoc) AS id_girado"),
+                        DB::raw("CONCAT(clp_razsoc,' - ',clp_numdoc) AS nom_girado"))
                         ->where('clp_estado','!=','*')->get();
-        $list_tipo_comprobante = TipoComprobante::whereIn('id',[1,2,4])->get();
-        $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
+        $list_concepto = ConceptoCheque::select('id_concepto_cheque','nom_concepto_cheque')
+                        ->where('estado',1)->orderBy('nom_concepto_cheque','ASC')->get();
+        $list_tipo_moneda = TipoMoneda::select('id_moneda','nom_moneda')->get();
         return view('finanzas.tesoreria.registro_cheque.modal_editar',compact(
             'get_id',
             'list_empresa',
-            'list_aceptante',
-            'list_tipo_comprobante',
+            'list_banco',
+            'list_girado',
+            'list_concepto',
             'list_tipo_moneda'
         ));
     }
@@ -208,7 +177,7 @@ class RegistroChequeController extends Controller
             'montoe.gt' => 'Debe ingresar monto mayor a 0.'
         ]);
 
-        $valida = ChequesLetras::where('id_empresa', $request->id_empresae)
+        $valida = FinanzasCheque::where('id_empresa', $request->id_empresae)
                 ->where('fec_vencimiento',$request->fec_vencimientoe)->where('num_doc',$request->num_doce)
                 ->where('estado', 1)->where('id_cheque_letra','!=',$id)->exists();
 
@@ -224,7 +193,7 @@ class RegistroChequeController extends Controller
                 $num_doc_empresa_vinculada = $empresa_vinculada[1];
             }
 
-            $get_id = ChequesLetras::findOrFail($id);
+            $get_id = FinanzasCheque::findOrFail($id);
             $documento = $get_id->documento;
             if ($_FILES["documentoe"]["name"] != "") {
                 $ftp_server = "lanumerounocloud.com";
@@ -256,7 +225,7 @@ class RegistroChequeController extends Controller
                 }
             }
 
-            ChequesLetras::findOrFail($id)->update([                
+            FinanzasCheque::findOrFail($id)->update([                
                 'id_empresa' => $request->id_empresae,
                 'fec_emision' => $request->fec_emisione,
                 'fec_vencimiento' => $request->fec_vencimientoe,
@@ -395,7 +364,7 @@ class RegistroChequeController extends Controller
 
     public function destroy($id)
     {
-        ChequesLetras::findOrFail($id)->update([
+        FinanzasCheque::findOrFail($id)->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario
