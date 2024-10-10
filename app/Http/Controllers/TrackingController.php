@@ -114,7 +114,7 @@ class TrackingController extends Controller
 
     public function sendNotification($dato)
     {
-        /*$url = 'https://fcm.googleapis.com/v1/projects/370214896421/messages:send';            
+        $url = 'https://fcm.googleapis.com/v1/projects/370214896421/messages:send';            
         $accessToken = $this->getAccessToken();
         $headers = array("Authorization: Bearer ".$accessToken,"content-type: application/json;UTF-8");
 
@@ -141,7 +141,7 @@ class TrackingController extends Controller
         if ($result === FALSE) {
             die('Curl failed: ' . curl_error($curl));
         }
-        curl_close($curl);*/
+        curl_close($curl);
     }
 
     public function insert_notificacion($dato)
