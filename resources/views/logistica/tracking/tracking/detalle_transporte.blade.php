@@ -93,6 +93,44 @@
                                     onkeypress="return solo_Numeros(event);">
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="form-group col-lg-1">
+                                    <label class="control-label text-bold">Recepción: </label>
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <select class="form-control" name="recepcion" id="recepcion">
+                                        <option value="0">Seleccione</option>
+                                        <option value="1">Agencia</option>
+                                        <option value="2">Domicilio</option>
+                                    </select>
+                                </div>
+    
+                                <div class="form-group col-lg-1">
+                                    <label class="control-label text-bold">Merc. total: </label>
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <input type="text" class="form-control" name="mercaderia_total" id="mercaderia_total" 
+                                    placeholder="Merc. total" onkeypress="return solo_Numeros(event);">
+                                </div>
+    
+                                <div class="form-group col-lg-1">
+                                    <label class="control-label text-bold">F x prenda: </label>
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <input type="text" class="form-control" name="flete_prenda" id="flete_prenda" 
+                                    placeholder="F x prenda" onkeypress="return solo_Numeros_Punto(event);">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-lg-1">
+                                    <label class="control-label text-bold">Receptor: </label>
+                                </div>
+                                <div class="form-group col-lg-5">
+                                    <input type="text" class="form-control" name="receptor" id="receptor" placeholder="Receptor">
+                                </div>
+                            </div>
     
                             <div class="row agencia">
                                 <div class="form-group col-lg-1">
@@ -163,7 +201,7 @@
                             <div class="modal-footer mt-3">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $get_id->id }}">
-                                <button class="btn btn-primary" type="button" onclick="Insert_Mercaderia_Transito();">Guardar</button>
+                                <button class="btn btn-primary" type="button" onclick="Insert_Detalle_Transporte();">Guardar</button>
                                 <a class="btn" href="{{ route('tracking') }}">Cancelar</a>
                             </div>
                         </form>
@@ -260,11 +298,11 @@
             }
         }
 
-        function Insert_Mercaderia_Transito() {
+        function Insert_Detalle_Transporte() {
             Cargando();
 
             var dataString = new FormData(document.getElementById('formulario'));
-            var url = "{{ route('tracking.mercaderia_transito', $get_id->id) }}";
+            var url = "{{ route('tracking.insert_detalle_transporte', $get_id->id) }}";
 
             $.ajax({
                 url: url,

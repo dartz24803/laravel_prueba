@@ -15,6 +15,7 @@ class TrackingDiferencia extends Model
 
     protected $fillable = [
         'id_tracking',
+        'sku',
         'estilo',
         'color_talla',
         'bulto',

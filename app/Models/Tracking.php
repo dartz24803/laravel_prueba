@@ -31,6 +31,10 @@ class Tracking extends Model
         'caja',
         'transporte',
         'tiempo_llegada',
+        'recepcion',
+        'mercaderia_total',
+        'flete_prenda',
+        'receptor',
         'tipo_pago',
         'nombre_transporte',
         'importe_transporte',
@@ -70,7 +74,11 @@ class Tracking extends Model
                     (SELECT ta.archivo FROM tracking_archivo ta
                     WHERE ta.id_tracking=tr.id AND ta.tipo=4
                     ORDER BY ta.id DESC
-                    LIMIT 1) AS archivo_faltante
+                    LIMIT 1) AS archivo_faltante,
+                    CASE WHEN tr.recepcion=1 THEN 'Agencia' WHEN tr.recepcion=2 THEN 'Domicilio' 
+                    ELSE '' END AS recepcion,
+                    CASE WHEN tr.tipo_pago=1 THEN 'Si pago' WHEN tr.tipo_pago=2 THEN 'Por pagar' 
+                    ELSE '' END AS nom_tipo_pago
                     FROM tracking tr
                     LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base
@@ -128,7 +136,7 @@ class Tracking extends Model
                     (SELECT COUNT(1) FROM tracking_diferencia tdif
                     WHERE tdif.id_tracking=tr.id AND tdif.enviado<tdif.recibido) AS sobrantes,
                     (SELECT COUNT(1) FROM tracking_diferencia tdif
-                    WHERE tdif.id_tracking=tr.id AND tdif.enviado>tdif.recibido) AS faltantes
+                    WHERE tdif.id_tracking=tr.id AND tdif.enviado>tdif.recibido) AS faltantes,tr.transporte
                     FROM tracking tr
                     LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base
