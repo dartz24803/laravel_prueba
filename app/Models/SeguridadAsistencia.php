@@ -48,14 +48,29 @@ class SeguridadAsistencia extends Model
             $query = DB::select($sql);
             return $query[0];
         }else{
-            $sql = "SELECT sa.id_seguridad_asistencia,sa.base,
-                    CONCAT(us.usuario_apater,' ',us.usuario_amater,', ',us.usuario_nombres) AS colaborador,
-                    DATE_FORMAT(sa.fecha,'%d/%m/%Y') AS f_ingreso,sa.h_ingreso,sa.cod_sede,
-                    DATE_FORMAT(sa.fecha_salida,'%d/%m/%Y') AS f_salida,sa.h_salida,sa.cod_sedes,sa.observacion,
-                    sa.imagen
-                    FROM seguridad_asistencia sa
-                    INNER JOIN users us ON sa.id_usuario=us.id_usuario
-                    WHERE (sa.fecha=CURDATE() AND sa.estado=1) OR (sa.fecha_salida=CURDATE() AND sa.estado=1)";
+            if ($dato['fec_desde'] || $dato['fec_hasta']) {
+                $fec_desde = $dato['fec_desde'];
+                $fec_hasta = $dato['fec_hasta'];
+                $sql = "SELECT sa.id_seguridad_asistencia,sa.base,
+                        CONCAT(us.usuario_apater,' ',us.usuario_amater,', ',us.usuario_nombres) AS colaborador,
+                        DATE_FORMAT(sa.fecha,'%d/%m/%Y') AS f_ingreso,sa.h_ingreso,sa.cod_sede,
+                        DATE_FORMAT(sa.fecha_salida,'%d/%m/%Y') AS f_salida,sa.h_salida,sa.cod_sedes,sa.observacion,
+                        sa.imagen
+                        FROM seguridad_asistencia sa
+                        INNER JOIN users us ON sa.id_usuario=us.id_usuario
+                        WHERE (sa.fecha BETWEEN '$fec_desde' AND '$fec_hasta')
+                        AND sa.estado = 1";
+            } else {
+                $sql = "SELECT sa.id_seguridad_asistencia,sa.base,
+                        CONCAT(us.usuario_apater,' ',us.usuario_amater,', ',us.usuario_nombres) AS colaborador,
+                        DATE_FORMAT(sa.fecha,'%d/%m/%Y') AS f_ingreso,sa.h_ingreso,sa.cod_sede,
+                        DATE_FORMAT(sa.fecha_salida,'%d/%m/%Y') AS f_salida,sa.h_salida,sa.cod_sedes,sa.observacion,
+                        sa.imagen
+                        FROM seguridad_asistencia sa
+                        INNER JOIN users us ON sa.id_usuario=us.id_usuario
+                        WHERE (sa.fecha=CURDATE() AND sa.estado=1) OR (sa.fecha_salida=CURDATE() AND sa.estado=1)";
+            }
+
             $query = DB::select($sql);
             return $query;
         }
