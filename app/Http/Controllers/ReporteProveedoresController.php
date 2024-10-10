@@ -19,7 +19,7 @@ use App\Models\SubGerencia;
 
 class ReporteProveedoresController extends Controller{
     protected $request;
-    
+
     public function __construct()
     {
         $this->middleware('verificar.sesion.usuario');
@@ -29,12 +29,12 @@ class ReporteProveedoresController extends Controller{
         //REPORTE BI CON ID
         $dato['list_subgerencia'] = SubGerencia::list_subgerencia(1);
         //NOTIFICACIONES
-        $dato['list_notificacion'] = Notificacion::get_list_notificacion();        
+        $dato['list_notificacion'] = Notificacion::get_list_notificacion();
         $id_puesto=session('usuario')->id_puesto;
         $id_nivel=session('usuario')->id_nivel;
         $dato['desde']=date('Y-m-d');
         $dato['hasta']=date('Y-m-d');
-        
+
         $dato['estado']=3;
         if($id_puesto==23 || $id_nivel==1 || $id_puesto==24){
             $dato['base']=0;
@@ -45,7 +45,7 @@ class ReporteProveedoresController extends Controller{
                                     ->groupBy('cod_base')
                                     ->orderBy('cod_base', 'ASC')
                                     ->get();
-                
+
             }else{
                 $dato['list_base'] = Base::select('cod_base')
                                     ->where('estado', 1)
@@ -54,9 +54,9 @@ class ReporteProveedoresController extends Controller{
                                     ->get();
             }
             $dato['list_rproveedor'] = CalendarioLogistico::get_list_rproveedor($dato);
-            
+
         }elseif($id_puesto==36){
-            
+
             $dato['base']=session('usuario')->centro_labores;
 
             $dato['list_rproveedor'] = CalendarioLogistico::get_list_rproveedor($dato);
@@ -79,7 +79,7 @@ class ReporteProveedoresController extends Controller{
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario,
         ]);
-        
+
         $hora=date('H:i:s');
 
         if($dato['tipo']==1){
@@ -134,7 +134,7 @@ class ReporteProveedoresController extends Controller{
                                     ->groupBy('cod_base')
                                     ->orderBy('cod_base', 'ASC')
                                     ->get();
-                
+
             }else{
                 $dato['list_base'] = Base::select('cod_base')
                                     ->where('estado', 1)
@@ -143,8 +143,8 @@ class ReporteProveedoresController extends Controller{
                                     ->get();
             }
             $dato['list_rproveedor'] = CalendarioLogistico::get_list_rproveedor($dato);
-            
-        }elseif($id_puesto==36){
+
+        }elseif($id_puesto==36 || session('usuario')->id_puesto==307){
             $dato['list_rproveedor'] = CalendarioLogistico::get_list_rproveedor($dato);
         }
 
@@ -196,7 +196,7 @@ class ReporteProveedoresController extends Controller{
         $sheet->setCellValue('I1', 'H. de Salida');
         $sheet->setCellValue('J1', 'Estado');
 
-        $spreadsheet->getActiveSheet()->setAutoFilter('A1:J1');  
+        $spreadsheet->getActiveSheet()->setAutoFilter('A1:J1');
         $sheet->getStyle('A1:J1')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
         //Le aplicamos color a la cabecera
         $spreadsheet->getActiveSheet()->getStyle("A1:J1")->getFill()
@@ -215,8 +215,8 @@ class ReporteProveedoresController extends Controller{
 		$sheet->getStyle("A1:J1")->getFont()->setSize(12);
 
         //Font BOLD
-        $sheet->getStyle('A1:J1')->getFont()->setBold(true);		
-        
+        $sheet->getStyle('A1:J1')->getFont()->setBold(true);
+
 		$start = 1;
 		foreach($data as $d){
             $start = $start+1;
@@ -234,7 +234,7 @@ class ReporteProveedoresController extends Controller{
                 $posicion = array_search($d['id_proveedor'], array_column($list_proveedor, 'clp_codigo'));
                 if ($busqueda != false) {
                     $proveedorf=$list_proveedor[$posicion]->clp_razsoc;
-                } 
+                }
             }else{
                 $busqueda = in_array($d['id_proveedor'], array_column($list_proveedor2, 'id_proveedor'));
                 $posicion = array_search($d['id_proveedor'], array_column($list_proveedor2, 'id_proveedor'));
@@ -279,14 +279,14 @@ class ReporteProveedoresController extends Controller{
         $sheet->getColumnDimension('H')->setWidth(30);
         $sheet->getColumnDimension('I')->setWidth(20);
         $sheet->getColumnDimension('j')->setWidth(20);
-        
+
         //final part
 		$curdate = $fecha_inicio;
 		$writer = new Xlsx($spreadsheet);
 		$filename = 'Reporte_Proveedores_'.$curdate;
 		if (ob_get_contents()) ob_end_clean();
 		header('Content-Type: application/vnd.ms-excel');
-		header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+		header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"');
 		header('Cache-Control: max-age=0');
 
 		$writer->save('php://output');

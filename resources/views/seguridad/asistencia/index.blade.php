@@ -28,7 +28,8 @@
                             session('usuario')->id_puesto==19 ||
                             session('usuario')->id_puesto==22 ||
                             session('usuario')->id_puesto==209 ||
-                            session('usuario')->id_puesto==277)
+                            session('usuario')->id_puesto==277 ||
+                            session('usuario')->id_puesto==307)
                             <li class="nav-item">
                                 <a id="a_man" class="nav-link" onclick="Manual();" style="cursor: pointer;">Manual</a>
                             </li>
@@ -113,7 +114,7 @@
             url: url,
             type: "GET",
             success:function (resp) {
-                $('#div_asistencia').html(resp);  
+                $('#div_asistencia').html(resp);
                 $("#a_lec").removeClass('active');
                 $("#a_man").removeClass('active');
                 $("#a_rep").addClass('active');
