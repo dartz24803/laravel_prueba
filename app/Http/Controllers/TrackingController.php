@@ -161,7 +161,7 @@ class TrackingController extends Controller
 
     public function iniciar_tracking()
     {
-        TrackingTemporal::truncate();
+        /*TrackingTemporal::truncate();
         $list_tracking = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['T']);
         foreach($list_tracking as $list){
             TrackingTemporal::create([
@@ -326,7 +326,7 @@ class TrackingController extends Controller
                 'iniciar' => 1,
                 'fec_act' => now()
             ]);
-        }
+        }*/
     }
 
     public function llegada_tienda()
