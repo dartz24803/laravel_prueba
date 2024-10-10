@@ -28,7 +28,7 @@ class RequerimientoSurtidoController extends Controller
         $this->Model_Perfil = new Model_Perfil();
         $this->Model_RequerimientoSurtido = new RequerimientoSurtido();
     }
-    
+
     public function index(){
             $dato['list_semanas'] = DB::connection('sqlsrv')
                                 ->table('pedido_lnuno')
@@ -43,7 +43,7 @@ class RequerimientoSurtidoController extends Controller
         $dato['list_notificacion'] = Notificacion::get_list_notificacion();
             return view('comercial.Requerimiento.index', $dato);
     }
-    
+
     public function Buscar_Semana(){
             $semana = $this->input->post("semana");
             $anio = $this->input->post("anio");
@@ -60,15 +60,23 @@ class RequerimientoSurtidoController extends Controller
 
             return view('comercial.Requerimiento.lista', $dato);
     }
-    
+
     public function Modal_Requerimiento(){
         $dato['list_anio'] = $this->Model_Perfil->get_list_anio();
         return view('comercial.Requerimiento.modal_registrar', $dato);
     }
-    
+
     public function Insert_Requerimiento(){
+        $this->input->validate([
+            'anio' => 'not_in:0',
+            'mes' => 'not_in:0',
+            'drequerimiento' => 'required',
+        ], [
+            'anio' => 'Debe escoger año.',
+            'mes' => 'Debe escoger mes.',
+            'drequerimiento' => 'Debe adjuntar documento',
+        ]);
             $data['anio'] = $this->input->post("anio");
-            $dato['anio'] = $this->input->post("anio");
             $dato['semana'] = $this->input->post("semana");
             $path = $_FILES["drequerimiento"]["tmp_name"];
 
@@ -131,7 +139,7 @@ class RequerimientoSurtidoController extends Controller
                 $dato['B18'] = $hojaDeProductos->getCell('AK' . $indiceFila)->getValue();
                 $dato['B19'] = $hojaDeProductos->getCell('AL' . $indiceFila)->getValue();
                 $dato['B20'] = $hojaDeProductos->getCell('AM' . $indiceFila)->getValue();
-            
+
                 # Continúa con BEC y RN
                 $dato['BEC'] = $hojaDeProductos->getCell('AN' . $indiceFila)->getValue();
                 $dato['RN'] = strtoupper($hojaDeProductos->getCell('AO' . $indiceFila)->getValue());
@@ -342,7 +350,7 @@ class RequerimientoSurtidoController extends Controller
                 }
             }
     }
-    
+
     public function Excel_Duplicado($usuario, $semana) // RRHH
     {
         $spreadsheet = new Spreadsheet();

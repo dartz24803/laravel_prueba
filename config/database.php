@@ -119,6 +119,18 @@ return [
             'trust_server_certificate' => true,
         ],
 
+        'sqlsrv_dbisig' => [
+            'driver' => 'sqlsrv',
+            'host' => env('SQLSRV_DB_HOST3', 'localhost'),
+            'port' => env('SQLSRV_DB_PORT3', '1433'),
+            'database' => env('SQLSRV_DB_DATABASE3', 'forge'),
+            'username' => env('SQLSRV_DB_USERNAME3', 'forge'),
+            'password' => env('SQLSRV_DB_PASSWORD3', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'trust_server_certificate' => true,
+        ],
     ],
 
     /*

@@ -1892,7 +1892,7 @@ Route::controller(SugerenciadePreciosController::class)->group(function () {
     Route::post('RequerimientoPrenda/Delete_Requerimiento_Prenda', 'Delete_Requerimiento_Prenda');
     Route::post('RequerimientoPrenda/Delete_Todo_Requerimiento_Prenda', 'Delete_Todo_Requerimiento_Prenda');
 });
-    
+
 use App\Http\Controllers\RequerimientoSurtidoController;
 
 Route::controller(RequerimientoSurtidoController::class)->group(function () {
@@ -1906,4 +1906,14 @@ Route::controller(RequerimientoSurtidoController::class)->group(function () {
     Route::post('RequerimientoSurtido/Delete_Requerimiento_Prenda', 'Delete_Requerimiento_Prenda');
     Route::post('RequerimientoSurtido/Delete_Todo_Requerimiento_Prenda', 'Delete_Todo_Requerimiento_Prenda');
     Route::get('RequerimientoSurtido/Excel_Duplicado/{us}/{sem}', 'Excel_Duplicado');
+});
+
+use App\Http\Controllers\ActualizacionProcedimientosController;
+
+Route::controller(ActualizacionProcedimientosController::class)->group(function () {
+    Route::get('ActualizacionProcedimientos/index', 'index');
+    Route::post('ActualizacionProcedimientos/Act_Cobertura', 'Act_Cobertura');
+    Route::post('ActualizacionProcedimientos/Act_Reporte', 'Act_Reporte');
+    Route::post('ActualizacionProcedimientos/Act_Local', 'Act_Local');
+    Route::get('ActualizacionProcedimientos/verificar-conexion', 'verificarConexion');
 });
