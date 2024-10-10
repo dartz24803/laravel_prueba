@@ -1405,7 +1405,7 @@ class TrackingController extends Controller
 
             //ALERTA 5 (SI) o (NO)
             if($request->validacion==1){
-                $list_token = TrackingToken::whereIn('base', [$get_id->hacia])->get();
+                $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
             }else{
                 $list_token = TrackingToken::whereIn('base', ['CD'])->get();
             }
