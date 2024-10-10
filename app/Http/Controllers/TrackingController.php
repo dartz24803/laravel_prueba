@@ -277,7 +277,7 @@ class TrackingController extends Controller
                                     <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
                                     <b>Base:</b> '.$get_id->hacia.'<br>
                                     <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
-                                    <b>Fecha:</b> '.$fecha_formateada.'<br><br>
+                                    <b>Fecha - Mercadería por salir:</b> '.$fecha_formateada.'<br><br>
                                     Buen día '.$get_id->hacia.'.<br><br>
                                     Se envia el reporte de mercadería por salir del requerimiento '.$get_id->n_requerimiento.'.<br><br>
                                     <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
@@ -526,7 +526,7 @@ class TrackingController extends Controller
                                     <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
                                     <b>Base:</b> '.$get_id->hacia.'<br>
                                     <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
-                                    <b>Fecha:</b> '.$fecha_formateada.'<br><br>
+                                    <b>Fecha - Mercadería por salir:</b> '.$fecha_formateada.'<br><br>
                                     Buen día '.$get_id->hacia.'.<br><br>
                                     Se envia el reporte de mercadería por salir del requerimiento '.$get_id->n_requerimiento.'.<br><br>
                                     <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
@@ -749,7 +749,7 @@ class TrackingController extends Controller
                                 <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
                                 <b>Base:</b> '.$get_id->hacia.'<br>
                                 <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
-                                <b>Fecha:</b> '.$fecha_formateada.'<br><br>
+                                <b>Fecha - Salida de mercadería:</b> '.$fecha_formateada.'<br><br>
                                 Envío el reporte de la salida de mercadería. La guías electrónicas ya se encuentran en su carpeta.<br><br>
                                 <table cellpadding="3" cellspacing="0" border="1" style="width:100%;">     
                                     <tr>
@@ -1218,7 +1218,7 @@ class TrackingController extends Controller
                                 <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
                                 <b>Base:</b> '.$get_id->hacia.'<br>
                                 <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
-                                <b>Fecha:</b> '.$fecha_formateada.'<br><br>
+                                <b>Fecha - Salida de mercadería:</b> '.$fecha_formateada.'<br><br>
                                 Hola, la mercadería ha llegado a tienda.<br><br>
                                 <table cellpadding="3" cellspacing="0" border="1" style="width:100%;">     
                                     <tr>
@@ -1695,7 +1695,7 @@ class TrackingController extends Controller
                                 <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
                                 <b>Base:</b> '.$get_id->hacia.'<br>
                                 <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
-                                <b>Fecha:</b> '.$fecha_formateada.'<br><br>
+                                <b>Fecha - Reporte de inspección de fardos:</b> '.$fecha_formateada.'<br><br>
                                 Hola '.$get_id->desde.', los fardos han llegado con las siguientes 
                                 observaciones:<br><br>
                                 '.nl2br($get_id->observacion_inspf).'<br>';
@@ -1938,7 +1938,7 @@ class TrackingController extends Controller
                                 <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
                                 <b>Base:</b> '.$get_id->hacia.'<br>
                                 <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
-                                <b>Fecha:</b> '.$fecha_formateada.'<br><br>
+                                <b>Fecha - Mercadería pagada:</b> '.$fecha_formateada.'<br><br>
                                 Hola '.$get_id->desde.', se ha pagado a la agencia.<br>
                                 Empresa: '.$get_id->nombre_transporte.'<br>
                                 Monto: '.$get_id->importe_transporte.'<br>
@@ -2304,7 +2304,7 @@ class TrackingController extends Controller
                                     <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
                                     <b>Base:</b> '.$get_id->hacia.'<br>
                                     <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
-                                    <b>Fecha:</b> '.$fecha_formateada.'<br><br>
+                                    <b>Fecha - Reporte de diferencias:</b> '.$fecha_formateada.'<br><br>
                                     Hola '.$get_id->desde.', regularizar los sobrantes indicados.<br><br>
                                     <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                         <thead>
@@ -2400,7 +2400,7 @@ class TrackingController extends Controller
                                     <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
                                     <b>Base:</b> '.$get_id->hacia.'<br>
                                     <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
-                                    <b>Fecha:</b> '.$fecha_formateada.'<br><br>
+                                    <b>Fecha - Reporte de diferencias:</b> '.$fecha_formateada.'<br><br>
                                     Hola '.$get_id->hacia.', regularizar los faltantes indicados.<br><br>
                                     <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                         <thead>
@@ -2835,7 +2835,7 @@ class TrackingController extends Controller
                                     <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
                                     <b>Base:</b> '.$get_id->hacia.'<br>
                                     <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
-                                    <b>Fecha:</b> '.$fecha_formateada.'<br><br>
+                                    <b>Fecha - Diferencias regularizadas:</b> '.$fecha_formateada.'<br><br>
                                     Hola '.$get_id->desde.' - '.$get_id->hacia.', se acaba de 
                                     regularizar'.$mensaje.'.
                                     El archivo ya se encuentra en su carpeta.<br>';
@@ -3096,7 +3096,7 @@ class TrackingController extends Controller
                                     <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
                                     <b>Base:</b> '.$get_id->hacia.'<br>
                                     <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
-                                    <b>Fecha:</b> '.$fecha_formateada.'<br><br>
+                                    <b>Fecha - Solicitud de devolución:</b> '.$fecha_formateada.'<br><br>
                                     Hola Andrea, tienes una solicitud de devolución por evaluar.
                                     <br><br>
                                     <a href="'.route('tracking.evaluacion_devolucion', $id).'" 
@@ -3290,7 +3290,7 @@ class TrackingController extends Controller
                                     <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
                                     <b>Base:</b> '.$get_id->hacia.'<br>
                                     <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
-                                    <b>Fecha:</b> '.$fecha_formateada.'<br><br>
+                                    <b>Fecha - Autorización de devolución:</b> '.$fecha_formateada.'<br><br>
                                     Hola '.$get_id->hacia.' - '.$get_id->desde.', a continuación respuesta de la solicitud de 
                                     devolución:<br><br>
                                     <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
