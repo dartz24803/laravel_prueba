@@ -1918,3 +1918,10 @@ Route::controller(ActualizacionProcedimientosController::class)->group(function 
     Route::post('ActualizacionProcedimientos/Act_Local', 'Act_Local');
     Route::get('ActualizacionProcedimientos/verificar-conexion', 'verificarConexion');
 });
+
+use App\Http\Controllers\ContadorVisitasController;
+
+Route::controller(ContadorVisitasController::class)->group(function () {
+    Route::get('ContadorVisitas/index', 'index');
+    Route::post('ContadorVisitas/Visualizar_Insert_Contador_Visitas', 'Visualizar_Insert_Contador_Visitas');
+});

@@ -36,7 +36,7 @@ class SugerenciadePreciosController extends Controller
     public function index()
     {
         //REPORTE BI CON ID
-        $dato['list_subgerencia'] = SubGerencia::list_subgerencia(7);
+        $dato['list_subgerencia'] = SubGerencia::list_subgerencia(3);
         //NOTIFICACIONES
         $dato['list_notificacion'] = Notificacion::get_list_notificacion();
 

@@ -105,6 +105,13 @@
                     </a>
                 </li>
             <?php } ?>
+            <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 40 || session('usuario')->id_puesto == 164 || session('usuario')->id_puesto == 153) { ?>
+                <li id="rvisitas">
+                    <a href="{{ url('ContadorVisitas/index') }}">
+                        <p class="romperpalabra"><span id="icono_active2"></span> Contador Visitas</p>
+                    </a>
+                </li>
+            <?php } ?>
         </ul>
     </li>
 <?php } ?>
