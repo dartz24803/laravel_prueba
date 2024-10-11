@@ -93,13 +93,11 @@
         session('usuario')->id_puesto == "138" ||
         session('usuario')->id_puesto == "164" ||
         session('usuario')->id_puesto == "1")
-            @if (session('usuario')->id_usuario == "139")
-                <li>
-                    <a id="registros_servicios" href="{{ route('registro_servicio') }}">
-                        <p class="romperpalabra"><span id="icono_active2"></span> Registro de servicios</p>
-                    </a>
-                </li>
-            @endif
+            <li>
+                <a id="registros_servicios" href="{{ route('registro_servicio') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Registro de servicios</p>
+                </a>
+            </li>
         @endif
         <li>
             <a id="tablas_maestras" href="{{ route('tabla_maestra_tesoreria') }}">

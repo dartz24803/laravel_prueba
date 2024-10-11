@@ -140,7 +140,6 @@ Route::controller(TrackingController::class)->group(function () {
     Route::post('tracking', 'store')->name('tracking.store');
     Route::get('tracking/{id}/detalle_transporte', 'detalle_transporte')->name('tracking.detalle_transporte');
     Route::post('tracking/{id}/insert_detalle_transporte', 'insert_detalle_transporte')->name('tracking.insert_detalle_transporte');
-    Route::post('tracking/{id}/salida_mercaderia', 'insert_salida_mercaderia')->name('tracking.salida_mercaderia');
     Route::post('tracking/{id}/mercaderia_transito', 'insert_mercaderia_transito')->name('tracking.mercaderia_transito');
     Route::post('tracking/{id}/confirmacion_llegada', 'insert_confirmacion_llegada')->name('tracking.confirmacion_llegada');
     Route::post('tracking/{id}/cierre_inspeccion_fardos', 'insert_cierre_inspeccion_fardos')->name('tracking.cierre_inspeccion_fardos');
@@ -1551,10 +1550,9 @@ Route::controller(RegistroChequeController::class)->group(function () {
     Route::put('registro_cheque/{id}/cancelar', 'cancelar')->name('registro_cheque.cancelar');
     Route::get('registro_cheque/{id}/modal_motivo', 'modal_motivo')->name('registro_cheque.modal_motivo');
     Route::put('registro_cheque/{id}/update_motivo', 'update_motivo')->name('registro_cheque.update_motivo');
-    Route::get('registro_cheque/{id}/modal_imagen', 'modal_imagen')->name('registro_cheque.modal_imagen');
-    Route::put('registro_cheque/{id}/update_imagen', 'update_imagen')->name('registro_cheque.update_imagen');
+    Route::get('registro_cheque/{id}/modal_archivo', 'modal_archivo')->name('registro_cheque.modal_archivo');
+    Route::put('registro_cheque/{id}/update_archivo', 'update_archivo')->name('registro_cheque.update_archivo');
     Route::get('registro_cheque/{id}/modal_anular', 'modal_anular')->name('registro_cheque.modal_anular');
-    Route::put('registro_cheque/{id}/anular', 'anular')->name('registro_cheque.anular');
     Route::delete('registro_cheque/{id}', 'destroy')->name('registro_cheque.destroy');
     Route::get('registro_cheque/{todos}/{id_empresa}/{estado}/{fec_inicio}/{fec_fin}/{tipo_fecha}/excel', 'excel')->name('registro_cheque.excel');
 });

@@ -894,11 +894,7 @@
             },
             error: function(xhr) {
                 var errors = xhr.responseJSON.errors;
-                console.log(Object.values(errors)[0][0])
-                console.log(Object.values(errors)[0])
-                console.log(Object.values(errors))
-
-                var firstError = Object.values(errors)[0];
+                var firstError = Object.values(errors)[0][0];
                 Swal.fire(
                     '¡Ups!',
                     firstError,

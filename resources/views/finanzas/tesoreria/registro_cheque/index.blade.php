@@ -209,11 +209,56 @@
             }
         }
 
+        function Update_Estado_Cheque(id,estado) {
+            Cargando();
+
+            if(estado=="2"){
+                titulo = "autorizar el cheque?";
+                texto = "El cambio será permanentemente";
+            }if(estado=="3"){
+                titulo = "cambiar a cheque sellado?";
+                texto = "El cambio será permanentemente";
+            }if(estado=="6"){
+                titulo = "anular el registro?";
+                texto = "El registro será anulado permanentemente";
+            }
+            var url = "{{ route('registro_cheque.update_estado', ':id') }}".replace(':id', id);
+
+            Swal({
+                title: '¿Realmente desea '+titulo,
+                text: texto,
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Si',
+                cancelButtonText: 'No',
+                padding: '2em'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        type: "PUT",
+                        url: url,
+                        data: {'estado':estado},
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        success: function() {
+                            Swal(
+                                '¡Actualización Exitosa!',
+                                '¡Haga clic en el botón!',
+                                'success'
+                            ).then(function() {
+                                Lista_Registro_Cheque();
+                            });    
+                        }
+                    });
+                }
+            })
+        }
+
         function Delete_Registro_Cheque(id) {
             Cargando();
 
             var url = "{{ route('registro_cheque.destroy', ':id') }}".replace(':id', id);
-            var csrfToken = $('input[name="_token"]').val();
 
             Swal({
                 title: '¿Realmente desea eliminar el registro?',
@@ -259,7 +304,7 @@
             var fec_inicio = $('#fec_iniciob').val();
             var fec_fin = $('#fec_finb').val();
             var tipo_fecha = $('input:radio[name=fecha_radiob]:checked').val();
-            window.location = "{{ route('registro_letra.excel', [':todos', ':id_empresa', ':estado', ':fec_inicio', ':fec_fin', ':tipo_fecha']) }}".replace(':todos', todos).replace(':id_empresa', id_empresa).replace(':estado', estado).replace(':fec_inicio', fec_inicio).replace(':fec_fin', fec_fin).replace(':tipo_fecha', tipo_fecha);
+            window.location = "{{ route('registro_cheque.excel', [':todos', ':id_empresa', ':estado', ':fec_inicio', ':fec_fin', ':tipo_fecha']) }}".replace(':todos', todos).replace(':id_empresa', id_empresa).replace(':estado', estado).replace(':fec_inicio', fec_inicio).replace(':fec_fin', fec_fin).replace(':tipo_fecha', tipo_fecha);
         }
     </script>
 @endsection

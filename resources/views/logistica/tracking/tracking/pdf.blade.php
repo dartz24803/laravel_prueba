@@ -33,7 +33,7 @@
     </style>
 </head>
 <body>
-    <h2>Guía de remisión - N° Req: {{ $get_id->n_requerimiento }}</h2>
+    <h2>N° Req: {{ $get_id->n_requerimiento }}</h2>
 
     <table class="tabla">
         <thead>

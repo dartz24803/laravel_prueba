@@ -49,7 +49,7 @@
                     @if ($list->estado_cheque=="1" && 
                     (session('usuario')->id_nivel=="1" ||
                     session('usuario')->id_puesto=="1"))
-                        <a class="javascript:void(0)" style="cursor:pointer" title="Actualizar estado" onclick="{{ route('registro_cheque.update_estado', [$list->id_cheque,2]) }}">
+                        <a class="javascript:void(0)" style="cursor:pointer" title="Actualizar estado" onclick="Update_Estado_Cheque('{{ $list->id_cheque }}','2');">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle text-success">
                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
@@ -59,18 +59,22 @@
                     @if ($list->estado_cheque=="2" && 
                     (session('usuario')->id_nivel=="1" ||
                     session('usuario')->id_puesto=="93"))
-                        <a class="javascript:void(0)" style="cursor:pointer" title="Actualizar estado" onclick="{{ route('registro_cheque.update_estado', [$list->id_cheque,3]) }}">
+                        <a class="javascript:void(0)" style="cursor:pointer" title="Actualizar estado" onclick="Update_Estado_Cheque('{{ $list->id_cheque }}','3');">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle text-success">
                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
                             </svg>
                         </a>
                     @endif
-                    @if ($list->estado_cheque=="3" && 
+                    @if (($list->estado_cheque=="3" && 
                     (session('usuario')->id_nivel=="1" ||
                     session('usuario')->id_puesto=="3" ||
                     session('usuario')->id_puesto=="10" ||
-                    session('usuario')->id_puesto=="138"))
+                    session('usuario')->id_puesto=="138")) || 
+                    ($list->estado_cheque=="4" && 
+                    (session('usuario')->id_nivel=="1" ||
+                    session('usuario')->id_puesto=="3" ||
+                    session('usuario')->id_puesto=="10")))
                         <a class="javascript:void(0)" style="cursor:pointer" title="Actualizar estado" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('registro_cheque.modal_cancelar', $list->id_cheque) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar text-success">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -80,20 +84,10 @@
                             </svg>
                         </a>
                     @endif
-                    @if ($list->estado_cheque=="4" && 
-                    (session('usuario')->id_nivel=="1" ||
-                    session('usuario')->id_puesto=="3" ||
-                    session('usuario')->id_puesto=="10"))
-                        <a class="javascript:void(0)" style="cursor:pointer" title="Actualizar estado cancelado" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('registro_cheque.modal_cancelar', $list->id_cheque) }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
-                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                            </svg>
-                        </a>
-                    @endif
                     @if ($list->estado_cheque=="5" && 
                     (session('usuario')->id_nivel=="1" ||
                     session('usuario')->id_puesto=="1"))
-                        <a class="javascript:void(0)" style="cursor:pointer" title="Actualizar estado" onclick="Anular_Cheque('{{ $list->id_cheque }}', '6')">
+                        <a class="javascript:void(0)" style="cursor:pointer" title="Actualizar estado" onclick="Update_Estado_Cheque('{{ $list->id_cheque }}', '6')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle text-success">
                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
@@ -112,7 +106,7 @@
                                 <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                             </svg>
                         </a>
-                    @else
+                    @endif
                 </td>
                 <td>{{ $list->fec_cobro }}</td>
                 <td>{{ $list->noperacion }}</td>
@@ -122,7 +116,7 @@
                     session('usuario')->id_puesto=="1" ||
                     session('usuario')->id_puesto=="10" ||
                     session('usuario')->id_puesto=="138")
-                        <a style="cursor:pointer;display: -webkit-inline-box;" title="Archivo" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('registro_cheque.modal_imagen', $list->id_cheque) }}">
+                        <a style="cursor:pointer;display: -webkit-inline-box;" title="Archivo" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('registro_cheque.modal_archivo', $list->id_cheque) }}">
                             <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve">
                                 <rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/>
                                 <circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/>
