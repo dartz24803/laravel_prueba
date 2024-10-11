@@ -41,7 +41,9 @@ class AsistenciaSegController extends Controller
 
     public function list_lec(Request $request)
     {
-        $list_lectora = SeguridadAsistencia::get_list_lectora();
+        $dato['fec_desde'] = $request->fec_desde;
+        $dato['fec_hasta'] = $request->fec_hasta;
+        $list_lectora = SeguridadAsistencia::get_list_lectora($dato);
         return view('seguridad.asistencia.lectora.lista', compact('list_lectora'));
     }
 

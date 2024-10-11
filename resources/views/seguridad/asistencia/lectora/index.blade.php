@@ -67,7 +67,7 @@
                 onkeydown="if(event.keyCode == 13){ Insert_Asistencia_Lectora(); }">
         </div>
 
-        <div class="col-lg-6">
+        <div class="col-lg-1">
             <a class="btn mb-2 mb-sm-0 mb-md-2 mb-lg-0" style="background-color: #28a745 !important;" onclick="Excel_Lectora();">
                 <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="64" height="64" viewBox="0 0 172 172" style=" fill:#000000;">
                     <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
@@ -78,6 +78,19 @@
                     </g>
                 </svg>
             </a>
+        </div>
+        <div class="form-group col-lg-2">
+            <label>Fecha desde: </label>
+            <input class="form-control" type="date" name="fec_desde" id="fec_desde">
+        </div>
+        <div class="form-group col-lg-2">
+            <label>Fecha hasta:</label>
+            <input class="form-control" type="date" name="fec_hasta" id="fec_hasta">
+        </div>
+        <div class="form-group col-lg-2">
+            <button type="button" class="btn btn-primary mb-2 mb-sm-0 mb-md-2 mb-lg-0" title="Registrar" onclick="Lista_Lectora();">
+                Buscar
+            </button>
         </div>
     </div>
 </form>
@@ -132,19 +145,47 @@
     function Lista_Lectora() {
         Cargando();
 
-        var url = "{{ route('asistencia_seg_lec.list') }}";
+        var url = "{{ url('asistencia_seg_lec/list') }}";
         var csrfToken = $('input[name="_token"]').val();
+        var fec_desde = $('#fec_desde').val();
+        var fec_hasta = $('#fec_hasta').val();
 
-        $.ajax({
-            url: url,
-            type: "POST",
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
-            success: function(resp) {
-                $('#lista_lectora').html(resp);
-            }
-        });
+        var ini = moment(fec_desde);
+        var fin = moment(fec_hasta);
+        if (ini.isAfter(fin) == true) {
+            Swal({
+                title: '¡Selección Denegada!',
+                html: "Fecha inicio no debe ser mayor a fecha fin. <br> Por favor corrígelo. ",
+                type: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK',
+            });
+        } else if (fin.diff(ini, 'days') > 31) {
+            Swal({
+                title: '¡Selección Denegada!',
+                text: "Solo se permite búsquedas de hasta 31 días",
+                type: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK',
+            });
+        }else{
+            $.ajax({
+                url: url,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                data: {
+                    'fec_desde': fec_desde,
+                    'fec_hasta': fec_hasta
+                },
+                success: function(resp) {
+                    $('#lista_lectora').html(resp);
+                }
+            });
+        }
     }
 
     function solo_Numeros(e) {

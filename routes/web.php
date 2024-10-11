@@ -1882,15 +1882,15 @@ Route::controller(RequerimientoPrendaController::class)->group(function () {
 use App\Http\Controllers\SugerenciadePreciosController;
 
 Route::controller(SugerenciadePreciosController::class)->group(function () {
-    Route::get('SugerenciadePrecios/index', 'index');
-    Route::post('SugerenciadePrecios/Busqueda_Sugerencia_Precio', 'Busqueda_Sugerencia_Precio');
-    Route::get('RequerimientoPrenda/Modal_Requerimiento_Prenda', 'Modal_Requerimiento_Prenda');
-    Route::get('RequerimientoPrenda/Formato_Mercaderia_Fotografia', 'Formato_Mercaderia_Fotografia');
-    Route::post('RequerimientoPrenda/Insert_Requerimiento_Prenda', 'Insert_Requerimiento_Prenda');
-    Route::get('RequerimientoPrenda/Modal_Update_Requerimiento_Prenda/{cod}/{mes}/{anio}', 'Modal_Update_Requerimiento_Prenda');
-    Route::post('RequerimientoPrenda/Update_Requerimiento_Prenda', 'Update_Requerimiento_Prenda');
-    Route::post('RequerimientoPrenda/Delete_Requerimiento_Prenda', 'Delete_Requerimiento_Prenda');
-    Route::post('RequerimientoPrenda/Delete_Todo_Requerimiento_Prenda', 'Delete_Todo_Requerimiento_Prenda');
+    Route::get('SugerenciadePrecios/index', 'index')->name('SugerenciadePrecios.index');
+    Route::post('SugerenciadePrecios/Busqueda_Sugerencia_Precio', 'Busqueda_Sugerencia_Precio')->name('SugerenciadePrecios.Busqueda_Sugerencia_Precio');
+    Route::get('SugerenciadePrecios/Modal_Requerimiento_Prenda', 'Modal_Requerimiento_Prenda')->name('SugerenciadePrecios.Modal_Requerimiento_Prenda');
+    Route::get('SugerenciadePrecios/Formato_Requerimiento_Precios/{base}/{categoria}', 'Formato_Requerimiento_Precios')->name('SugerenciadePrecios.Formato_Requerimiento_Precios');
+    Route::post('SugerenciadePrecios/Insert_Requerimiento_Prenda', 'Insert_Requerimiento_Prenda')->name('SugerenciadePrecios.Insert_Requerimiento_Prenda');
+    Route::get('SugerenciadePrecios/Modal_Update_Requerimiento_Prenda/{cod}/{mes}/{anio}', 'Modal_Update_Requerimiento_Prenda')->name('SugerenciadePrecios.Modal_Update_Requerimiento_Prenda');
+    Route::post('SugerenciadePrecios/Update_Requerimiento_Prenda', 'Update_Requerimiento_Prenda')->name('SugerenciadePrecios.Update_Requerimiento_Prenda');
+    Route::post('SugerenciadePrecios/Delete_Requerimiento_Prenda', 'Delete_Requerimiento_Prenda')->name('SugerenciadePrecios.Delete_Requerimiento_Prenda');
+    Route::post('SugerenciadePrecios/Delete_Todo_Requerimiento_Prenda', 'Delete_Todo_Requerimiento_Prenda')->name('SugerenciadePrecios.Delete_Todo_Requerimiento_Prenda');
 });
 
 use App\Http\Controllers\RequerimientoSurtidoController;
