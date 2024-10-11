@@ -78,23 +78,6 @@ class FinanzasCheque extends Model
                 WHEN fc.estado_cheque=4 THEN 'Cancelado'
                 WHEN fc.estado_cheque=5 THEN 'Anulación Pendiente'
                 WHEN fc.estado_cheque=6 THEN 'Anulado' END AS nom_estado,fc.id_moneda,fc.importe
-        
-                /*fc.*,ba.nom_banco, em.nom_empresa, tm.cod_moneda,
-                (case when fc.estado_cheque=1 then 'Pendiente de Autorización'
-                when fc.estado_cheque=2 then 'Autorizado'
-                when fc.estado_cheque=3 then 'Pendiente de Cancelación'
-                when fc.estado_cheque=4 then 'Cancelado'
-                when fc.estado_cheque=5 then 'Anulación Pendiente'
-                when fc.estado_cheque=6 then 'Anulado' end) as estado_cheque_final,
-                (case when DATE_FORMAT(fc.fec_reg, '%d/%m/%Y %H:%i:%s') <>'00/00/0000 00:00:00' 
-                then DATE_FORMAT(fc.fec_reg, '%d/%m/%Y %H:%i:%s') end) as fec_pend_autorizacion,
-                (case when DATE_FORMAT(fc.fec_autorizado, '%d/%m/%Y %H:%i:%s') <>'00/00/0000 00:00:00'
-                then DATE_FORMAT(fc.fec_autorizado, '%d/%m/%Y %H:%i:%s') end) as fec_autorizado_f,
-                (case when DATE_FORMAT(fc.fec_pend_cobro, '%d/%m/%Y %H:%i:%s') <>'00/00/0000 00:00:00'
-                then DATE_FORMAT(fc.fec_pend_cobro, '%d/%m/%Y %H:%i:%s') end) as fec_pend_cobro_f,
-                (case when DATE_FORMAT(fc.fec_cobro, '%d/%m/%Y %H:%i:%s') <>'00/00/0000 00:00:00'
-                then DATE_FORMAT(fc.fec_cobro, '%d/%m/%Y') end) as fec_cobro_f,
-                cc.nom_concepto_cheque*/
                 FROM finanzas_cheque fc 
                 INNER JOIN empresas em on fc.id_empresa=em.id_empresa
                 INNER JOIN banco ba on fc.id_banco=ba.id_banco

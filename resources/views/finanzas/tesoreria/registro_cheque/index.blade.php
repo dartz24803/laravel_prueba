@@ -304,7 +304,7 @@
             var fec_inicio = $('#fec_iniciob').val();
             var fec_fin = $('#fec_finb').val();
             var tipo_fecha = $('input:radio[name=fecha_radiob]:checked').val();
-            window.location = "{{ route('registro_letra.excel', [':todos', ':id_empresa', ':estado', ':fec_inicio', ':fec_fin', ':tipo_fecha']) }}".replace(':todos', todos).replace(':id_empresa', id_empresa).replace(':estado', estado).replace(':fec_inicio', fec_inicio).replace(':fec_fin', fec_fin).replace(':tipo_fecha', tipo_fecha);
+            window.location = "{{ route('registro_cheque.excel', [':todos', ':id_empresa', ':estado', ':fec_inicio', ':fec_fin', ':tipo_fecha']) }}".replace(':todos', todos).replace(':id_empresa', id_empresa).replace(':estado', estado).replace(':fec_inicio', fec_inicio).replace(':fec_fin', fec_fin).replace(':tipo_fecha', tipo_fecha);
         }
     </script>
 @endsection
