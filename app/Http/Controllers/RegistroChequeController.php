@@ -156,194 +156,165 @@ class RegistroChequeController extends Controller
     {
         $request->validate([
             'id_empresae' => 'gt:0',
+            'id_bancoe' => 'gt:0',
+            'n_chequee' => 'required',
             'fec_emisione' => 'required',
-            'fec_vencimientoe' => 'required',
-            'id_tipo_documentoe' => 'gt:0',
-            'num_doce' => 'required',
-            'id_aceptantee' => 'not_in:0',
-            'id_tipo_comprobantee' => 'gt:0',
-            'num_comprobantee' => 'required',
-            'montoe' => 'required|gt:0'
+            'fec_vencimientoe' => 'required|after_or_equal:fec_emisione',
+            'importee' => 'required|gt:0'
         ],[
             'id_empresae.gt' => 'Debe seleccionar empresa.',
+            'id_bancoe.gt' => 'Debe seleccionar banco.',
+            'n_chequee.required' => 'Debe ingresar n° cheque.',
             'fec_emisione.required' => 'Debe ingresar fecha emisión.',
             'fec_vencimientoe.required' => 'Debe ingresar fecha vencimiento.',
-            'id_tipo_documentoe.gt' => 'Debe seleccionar tipo documento.',
-            'num_doce.required' => 'Debe ingresar n° documento.',
-            'id_aceptantee.not_in' => 'Debe seleccionar aceptante.',
-            'id_tipo_comprobantee.gt' => 'Debe seleccionar tipo comprobante.',
-            'num_comprobantee.required' => 'Debe ingresar n° comprobante.',
-            'montoe.required' => 'Debe ingresar monto.',
-            'montoe.gt' => 'Debe ingresar monto mayor a 0.'
+            'fec_vencimientoe.after_or_equal' => 'Fecha vencimiento no debe ser menor a la fecha emisión.',
+            'importee.required' => 'Debe ingresar importe.',
+            'importee.gt' => 'Debe ingresar importe mayor a 0.'
         ]);
 
-        $valida = FinanzasCheque::where('id_empresa', $request->id_empresae)
-                ->where('fec_vencimiento',$request->fec_vencimientoe)->where('num_doc',$request->num_doce)
-                ->where('estado', 1)->where('id_cheque_letra','!=',$id)->exists();
+        $valida = FinanzasCheque::where('id_empresa', $request->id_empresae)->where('n_cheque',$request->n_chequee)
+                ->where('id_moneda',$request->id_monedae)->where('estado', 1)->where('id_cheque','!=',$id)->exists();
 
         if($valida){
             echo "error";
         }else{
-            $aceptante = explode("_",$request->id_aceptantee);
-            $tipo_doc_empresa_vinculada = NULL;
-            $num_doc_empresa_vinculada = NULL;
-            if($request->negociado_endosadoe=="2"){
-                $empresa_vinculada = explode("_",$request->id_empresa_vinculadae);
-                $tipo_doc_empresa_vinculada = $empresa_vinculada[0];
-                $num_doc_empresa_vinculada = $empresa_vinculada[1];
-            }
-
-            $get_id = FinanzasCheque::findOrFail($id);
-            $documento = $get_id->documento;
-            if ($_FILES["documentoe"]["name"] != "") {
-                $ftp_server = "lanumerounocloud.com";
-                $ftp_usuario = "intranet@lanumerounocloud.com";
-                $ftp_pass = "Intranet2022@";
-                $con_id = ftp_connect($ftp_server);
-                $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
-                if ($con_id && $lr) {
-                    if($get_id->documento!=""){
-                        ftp_delete($con_id, "ADM_FINANZAS/CHEQUES_LETRAS/".basename($get_id->documento));
-                    }
-
-                    $path = $_FILES["documentoe"]["name"];
-                    $source_file = $_FILES['documentoe']['tmp_name'];
-    
-                    $ext = pathinfo($path, PATHINFO_EXTENSION);
-                    $nombre_soli = "Cheque_Letra_" . date('YmdHis');
-                    $nombre = $nombre_soli . "." . strtolower($ext);
-    
-                    ftp_pasv($con_id, true);
-                    $subio = ftp_put($con_id, "ADM_FINANZAS/CHEQUES_LETRAS/" . $nombre, $source_file, FTP_BINARY);
-                    if ($subio) {
-                        $documento = "https://lanumerounocloud.com/intranet/ADM_FINANZAS/CHEQUES_LETRAS/" . $nombre;
-                    } else {
-                        echo "Archivo no subido correctamente";
-                    }
-                } else {
-                    echo "No se conecto";
-                }
+            if($request->id_giradoe!="0"){
+                $girado = explode("_",$request->id_giradoe);
             }
 
             FinanzasCheque::findOrFail($id)->update([                
                 'id_empresa' => $request->id_empresae,
+                'id_banco' => $request->id_bancoe,
+                'n_cheque' => $request->n_chequee,
                 'fec_emision' => $request->fec_emisione,
                 'fec_vencimiento' => $request->fec_vencimientoe,
-                'id_tipo_documento' => $request->id_tipo_documentoe,
-                'num_doc' => $request->num_doce,
-                'tipo_doc_aceptante' => $aceptante[0],
-                'num_doc_aceptante' => $aceptante[1],
-                'tipo_doc_emp_vinculada' => $tipo_doc_empresa_vinculada,
-                'num_doc_emp_vinculada' => $num_doc_empresa_vinculada,
-                'id_tipo_comprobante' => $request->id_tipo_comprobantee,
-                'num_comprobante' => $request->num_comprobantee,
+                'tipo_doc' => $girado[0],
+                'num_doc' => $girado[1],
+                'concepto' => $request->conceptoe,
                 'id_moneda' => $request->id_monedae,
-                'monto' => $request->montoe,
-                'negociado_endosado' => $request->negociado_endosadoe,
-                'documento' => $documento,
+                'importe' => $request->importee,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
         }
-    }
-
-    /*public function unico($id, $tipo)
-    {
-        $get_id = ChequesLetras::findOrFail($id);
-        $list_banco = DB::connection('sqlsrv')->table('vw_bancos')
-                    ->select(DB::raw("c_sigl_banc AS id_banco"),
-                    DB::raw("CONCAT(c_desc_banc,' (',c_sigl_banc,')') AS nom_banco"))
-                    ->orderBy('c_desc_banc','ASC')->get();
-        return view('finanzas.tesoreria.registro_cheque.modal_unico',compact(
-            'get_id',
-            'list_banco',
-            'tipo'
-        ));
-    }
-
-    public function update_unico(Request $request, $id)
-    {
-        $request->validate([
-            'tipo_nunicou' => 'required',
-            'num_unicou' => 'required_if:tipo_nunicou,1',
-            'num_cuentau' => 'required_if:tipo_nunicou,2',
-            'bancou' => 'not_in:0'
-        ],[
-            'tipo_nunicou.required' => 'Debe seleccionar el tipo de letra.',
-            'num_unicou.required_if' => 'Debe ingresar número único.',
-            'num_cuentau.required_if' => 'Debe ingresar número de cuenta.',
-            'bancou.not_in' => 'Debe seleccionar banco.'
-        ]);
-
-        if($request->tipo_nunicou=="1"){
-            $valida = ChequesLetras::where('num_unico', $request->num_unicou)
-                    ->where('estado', 1)->where('id_cheque_letra','!=',$id)->exists();
-
-            if($valida){
-                echo "error";
-            }else{
-                ChequesLetras::findOrFail($id)->update([
-                    'tipo_nunico' => $request->tipo_nunicou,
-                    'num_unico' => $request->num_unicou,
-                    'num_cuenta' => $request->num_cuentau,
-                    'banco' => $request->bancou,
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario
-                ]);
-            }
-        }else{
-            ChequesLetras::findOrFail($id)->update([
-                'tipo_nunico' => $request->tipo_nunicou,
-                'num_unico' => $request->num_unicou,
-                'num_cuenta' => $request->num_cuentau,
-                'banco' => $request->bancou,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
-        }
-    }
-
-    public function estado($id, $tipo)
-    {
-        $get_id = ChequesLetras::findOrFail($id);
-        return view('finanzas.tesoreria.registro_cheque.modal_estado',compact('get_id','tipo'));
     }
 
     public function update_estado(Request $request, $id)
     {
-        $request->validate([
-            'fec_pagos' => 'required',
-            'noperacions' => 'required'
-        ],[
-            'fec_pagos.required' => 'Debe ingresar fecha pago.',
-            'noperacions.required' => 'Debe ingresar n° operación.'
+        if($request->estado=="2"){
+            FinanzasCheque::findOrFail($id)->update([
+                'estado_cheque' => $request->estado,
+                'fec_autorizado' => now(),
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+        if($request->estado=="3"){
+            FinanzasCheque::findOrFail($id)->update([
+                'estado_cheque' => $request->estado,
+                'fec_pend_cobro' => now(),
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+        if($request->estado=="4"){
+            $request->validate([
+                'fec_cobroc' => 'required'
+            ],[
+                'fec_cobroc.required' => 'Debe ingresar fecha cobro.'
+            ]);
+
+            FinanzasCheque::findOrFail($id)->update([
+                'estado_cheque' => $request->estado,
+                'fec_cobro' => $request->fec_cobroc,
+                'noperacion' => $request->noperacionc,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+        if($request->estado=="5"){
+            $request->validate([
+                'motivo_anuladon' => 'required'
+            ],[
+                'motivo_anuladon.required' => 'Debe ingresar motivo.'
+            ]);
+    
+            FinanzasCheque::findOrFail($id)->update([
+                'motivo_anulado' => $request->motivo_anuladon,
+                'estado_cheque' => $request->estado,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+        if($request->estado=="6"){
+            FinanzasCheque::findOrFail($id)->update([
+                'estado_cheque' => $request->estado,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function modal_cancelar($id)
+    {
+        $get_id = FinanzasCheque::findOrFail($id);
+        return view('finanzas.tesoreria.registro_cheque.modal_cancelar',compact(
+            'get_id'
+        ));
+    }
+
+    public function modal_motivo($id)
+    {
+        $get_id = FinanzasCheque::findOrFail($id);
+        return view('finanzas.tesoreria.registro_cheque.modal_motivo',compact(
+            'get_id'
+        ));
+    }
+
+    public function update_motivo(Request $request, $id)
+    {
+        FinanzasCheque::findOrFail($id)->update([
+            'motivo_anulado' => $request->motivo_anuladom,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
         ]);
+    }
 
-        $get_id = ChequesLetras::findOrFail($id);
+    public function modal_archivo($id)
+    {
+        $get_id = FinanzasCheque::findOrFail($id);
+        return view('finanzas.tesoreria.registro_cheque.modal_archivo',compact(
+            'get_id'
+        ));
+    }
 
-        $comprobante_pago = $get_id->comprobante_pago;
-        if ($_FILES["comprobante_pagos"]["name"] != "") {
+    public function update_archivo(Request $request, $id)
+    {
+        $get_id = FinanzasCheque::findOrFail($id);
+
+        $img_cheque = $get_id->img_cheque;
+        if ($_FILES["img_chequea"]["name"] != "") {
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
             $ftp_pass = "Intranet2022@";
             $con_id = ftp_connect($ftp_server);
             $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
             if ($con_id && $lr) {
-                if($get_id->comprobante_pago!=""){
-                    ftp_delete($con_id, "ADM_FINANZAS/CHEQUES_LETRAS/".basename($get_id->comprobante_pago));
+                if($get_id->img_cheque!=""){
+                    ftp_delete($con_id, "ADM_FINANZAS/CHEQUES/".basename($get_id->img_cheque));
                 }
 
-                $path = $_FILES["comprobante_pagos"]["name"];
-                $source_file = $_FILES['comprobante_pagos']['tmp_name'];
+                $path = $_FILES["img_chequea"]["name"];
+                $source_file = $_FILES['img_chequea']['tmp_name'];
 
                 $ext = pathinfo($path, PATHINFO_EXTENSION);
-                $nombre_soli = "Comprobante_Pago_" . date('YmdHis');
+                $nombre_soli = "Cheques_" . date('YmdHis');
                 $nombre = $nombre_soli . "." . strtolower($ext);
 
                 ftp_pasv($con_id, true);
-                $subio = ftp_put($con_id, "ADM_FINANZAS/CHEQUES_LETRAS/" . $nombre, $source_file, FTP_BINARY);
+                $subio = ftp_put($con_id, "ADM_FINANZAS/CHEQUES/" . $nombre, $source_file, FTP_BINARY);
                 if ($subio) {
-                    $comprobante_pago = "https://lanumerounocloud.com/intranet/ADM_FINANZAS/CHEQUES_LETRAS/" . $nombre;
+                    $img_cheque = "https://lanumerounocloud.com/intranet/ADM_FINANZAS/CHEQUES/" . $nombre;
                 } else {
                     echo "Archivo no subido correctamente";
                 }
@@ -352,15 +323,20 @@ class RegistroChequeController extends Controller
             }
         }
 
-        ChequesLetras::findOrFail($id)->update([
-            'fec_pago' => $request->fec_pagos,
-            'noperacion' => $request->noperacions,
-            'comprobante_pago' => $comprobante_pago,
-            'estado_registro' => 2,
+        FinanzasCheque::findOrFail($id)->update([
+            'img_cheque' => $img_cheque,
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
-    }*/
+    }
+
+    public function modal_anular($id)
+    {
+        $get_id = FinanzasCheque::findOrFail($id);
+        return view('finanzas.tesoreria.registro_cheque.modal_anular',compact(
+            'get_id'
+        ));
+    }
 
     public function destroy($id)
     {

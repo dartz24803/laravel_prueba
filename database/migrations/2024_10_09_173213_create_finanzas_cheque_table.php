@@ -24,13 +24,13 @@ return new class extends Migration
             $table->string('tipo_doc',50)->nullable();
             $table->string('num_doc',50)->nullable();
             $table->string('razon_social')->nullable();
-            $table->text('concepto')->nullable();
+            $table->integer('concepto')->nullable();
             $table->unsignedBigInteger('id_moneda');
             $table->decimal('importe',10,2)->nullable();
             $table->integer('estado_cheque')->nullable();
             $table->dateTime('fec_autorizado')->nullable();
             $table->dateTime('fec_pend_cobro')->nullable();
-            $table->dateTime('fec_cobro')->nullable();
+            $table->date('fec_cobro')->nullable();
             $table->string('noperacion',50)->nullable();
             $table->string('motivo_anulado',150)->nullable();
             $table->string('img_cheque')->nullable();
