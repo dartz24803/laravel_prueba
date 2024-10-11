@@ -138,7 +138,7 @@
                 if(data=="error"){
                     Swal({
                         title: '¡Registro Denegado!',
-                        text: "¡Existe un registro con los mismos datos (Empresa, F. vencimiento y N° documento)!",
+                        text: "¡Existe un registro con los mismos datos! (Empresa, N° Cheque, Moneda)",
                         type: 'error',
                         showCancelButton: false,
                         confirmButtonColor: '#3085d6',
