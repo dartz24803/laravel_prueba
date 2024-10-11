@@ -92,12 +92,11 @@ class MercaderiaEnviarFotografia extends Controller
 
     public function store_merc_foto(Request $request)
     {
-        if ($this->session('usuario')->id_usuario) {
             $dato['anio'] = $request->input('anioc');
             $dato['mes'] = $request->input('mesc');
 
             $path = $_FILES["doc_mercaderia"]["tmp_name"];
-            $id_usuario = substr($_SESSION['usuario'][0]['usuario_nombres'], 0, 1) . $_SESSION['usuario'][0]['usuario_apater'];
+            //$id_usuario = substr($_SESSION['usuario'][0]['usuario_nombres'], 0, 1) . $_SESSION['usuario'][0]['usuario_apater'];
 
             $documento = IOFactory::load($path);
             $hojaDeProductos = $documento->getSheet(0);
@@ -228,8 +227,8 @@ class MercaderiaEnviarFotografia extends Controller
                     $mail->setFrom('intranet@lanumero1.com.pe', 'NUEVO REQUERIMIENTO DE PRENDAS PARA FOTOGRAFÍA');
 
                     //$mail->addAddress($_SESSION['usuario'][0]['emailp']);
+                    //$mail->addAddress('pcardenas@lanumero1.com.pe');
                     foreach ($list_correos as $list) {
-                        //$mail->addAddress('fhuertamendez2015@gmail.com');
                         $mail->addAddress($list['emailp']);
                     }
 
@@ -253,9 +252,6 @@ class MercaderiaEnviarFotografia extends Controller
                     echo "2TOTAL: $total";
                 };
             }
-        } else {
-            redirect('');
-        }
     }
 
 

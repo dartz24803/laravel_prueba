@@ -115,7 +115,7 @@ class RequerimientoPrendaDetalle extends Model
 
     static function delete_requerimiento_temporal()
     {
-        $id_usuario = $_SESSION['usuario'][0]['id_usuario'];
+        $id_usuario = session('usuario')->id_usuario;
 
         $sql = "DELETE FROM requerimiento_temporal WHERE user_reg=$id_usuario";
         DB::statement($sql);
@@ -138,7 +138,7 @@ class RequerimientoPrendaDetalle extends Model
 
     static function insert_mercaderia_fotografia_temporal($dato)
     {
-        $id_usuario = $_SESSION['usuario'][0]['id_usuario'];
+        $id_usuario = session('usuario')->id_usuario;
 
         DB::table('requerimiento_temporal')->insert([
             'codigo'       => $dato['codigo'],
@@ -150,18 +150,46 @@ class RequerimientoPrendaDetalle extends Model
             'stock'        => $dato['cantidad'],
             'ubicacion'    => $dato['ubicacion'],
             'observacion'  => $dato['observacion'],
-            'mes'          => $dato['mes'],
+            'mes'          => 0,
             'anio'         => $dato['anio'],
             'duplicado'    => $dato['duplicado'],
             'user_reg'     => $id_usuario,
             'estado'       => 1,
             'fec_reg'      => now(),  // Usamos `now()` para obtener la fecha y hora actual en Laravel
+            'pv_b4' => 0,
+            'tipo_prenda' => 0,
+            'autogenerado' => 0,
+            'total' => 0,
+            'OBS' => 0,
+            'stock' => 0,
+            'B01' => 0,
+            'B02' => 0,
+            'B03' => 0,
+            'B04' => 0,
+            'B05' => 0,
+            'B06' => 0,
+            'B07' => 0,
+            'B08' => 0,
+            'B09' => 0,
+            'B10' => 0,
+            'B11' => 0,
+            'B12' => 0,
+            'B13' => 0,
+            'B14' => 0,
+            'B15' => 0,
+            'B16' => 0,
+            'B17' => 0,
+            'B18' => 0,
+            'BEC' => 0,
+            'REQ' => 0,
+            'OFC' => 0,
+            'caracter' => 0,
         ]);
     }
 
     static function get_list_mercaderia_fotografia()
     {
-        $id_usuario = $_SESSION['usuario'][0]['id_usuario'];
+        $id_usuario = session('usuario')->id_usuario;
 
         $query = DB::table('requerimiento_temporal as t')
             ->select(
@@ -186,7 +214,7 @@ class RequerimientoPrendaDetalle extends Model
 
     static function update_mercaderia_fotografia($dato)
     {
-        $id_usuario = $_SESSION['usuario'][0]['id_usuario'];
+        $id_usuario = session('usuario')->id_usuario;
 
         DB::table('requerimiento_prenda_detalle')
             ->where('codigo', $dato['codigo'])
@@ -203,20 +231,20 @@ class RequerimientoPrendaDetalle extends Model
 
     static function insert_mercaderia_fotografia($dato)
     {
-        $id_usuario = $_SESSION['usuario'][0]['id_usuario'];
+        $id_usuario = session('usuario')->id_usuario;
 
         // Primera inserción: stock > 0
         DB::insert("
-        INSERT INTO mercaderia_fotografia (codigo, usuario, estilo, descripcion, color, talla, cantidad, ubicacion, observacion, mes, anio, estado_requerimiento, estado, fec_reg, user_reg)
-        SELECT codigo, tipo_usuario, estilo, descripcion, color, talla, stock, ubicacion, observacion, mes, anio, 2, 1, NOW(), ?
+        INSERT INTO mercaderia_fotografia (observacion_validaf, foto, user_validaf, codigo, usuario, estilo, descripcion, color, talla, cantidad, ubicacion, observacion, mes, anio, estado_requerimiento, estado, fec_reg, user_reg)
+        SELECT 0, 0, 0, codigo, tipo_usuario, estilo, descripcion, color, talla, stock, ubicacion, observacion, mes, anio, 2, 1, NOW(), ?
         FROM requerimiento_temporal
         WHERE user_reg = ? AND estado = 1 AND stock > 0
     ", [$id_usuario, $id_usuario]);
 
         // Segunda inserción: stock = 0
         DB::insert("
-        INSERT INTO mercaderia_fotografia (codigo, usuario, estilo, descripcion, color, talla, cantidad, ubicacion, observacion, mes, anio, estado, fec_reg, user_reg)
-        SELECT codigo, tipo_usuario, estilo, descripcion, color, talla, stock, ubicacion, observacion, mes, anio, 1, NOW(), ?
+        INSERT INTO mercaderia_fotografia (estado_requerimiento, observacion_validaf, foto, user_validaf, codigo, usuario, estilo, descripcion, color, talla, cantidad, ubicacion, observacion, mes, anio, estado, fec_reg, user_reg)
+        SELECT 0, 0, 0, 0, codigo, tipo_usuario, estilo, descripcion, color, talla, stock, ubicacion, observacion, mes, anio, 1, NOW(), ?
         FROM requerimiento_temporal
         WHERE user_reg = ? AND estado = 1 AND stock = 0
     ", [$id_usuario, $id_usuario]);
@@ -289,15 +317,15 @@ class RequerimientoPrendaDetalle extends Model
         $id_usuario = $_SESSION['usuario'][0]['id_usuario'];
 
         if (count($dato['get_req']) > 0) {
-            $sql = "UPDATE requerimiento_prenda_detalle 
-                    SET estado_requerimiento = 1, user_act = $id_usuario, fec_act = NOW() 
+            $sql = "UPDATE requerimiento_prenda_detalle
+                    SET estado_requerimiento = 1, user_act = $id_usuario, fec_act = NOW()
                     WHERE id_requerimientod = " . $dato['get_req'][0]['id_requerimientod'];
             DB::statement($sql);
         }
 
         if (count($dato['get_id']) > 0) {
-            $sql = "UPDATE mercaderia_fotografia 
-                    SET estado = 2, user_eli = $id_usuario, fec_eli = NOW() 
+            $sql = "UPDATE mercaderia_fotografia
+                    SET estado = 2, user_eli = $id_usuario, fec_eli = NOW()
                     WHERE id_mercaderia = " . $dato['get_id'][0]['id_mercaderia'];
             DB::statement($sql);
         }
@@ -316,8 +344,8 @@ class RequerimientoPrendaDetalle extends Model
                     c.estado_requerimiento,m.observacion,m.observacion_validaf,m.foto,'0' as nuevo,
                     c.observacion as obs_comercial, m.observacion as obs_logistica,c.ubicacion
                     from requerimiento_prenda_detalle c
-                    left JOIN mercaderia_fotografia m on c.codigo=m.codigo and 
-                    c.mes=m.mes AND c.anio=m.anio 
+                    left JOIN mercaderia_fotografia m on c.codigo=m.codigo and
+                    c.mes=m.mes AND c.anio=m.anio
                     where c.estado=1 and c.mes='" . $dato['mes'] . "' and c.anio='" . $dato['anio'] . "'";
         } else {
             $estado1 = "";
@@ -344,7 +372,7 @@ class RequerimientoPrendaDetalle extends Model
                     when r.estado_requerimiento=4 then 'Foto Tomada' END) end as desc_estado_requerimiento,
                     CASE WHEN r.estado_requerimiento is null THEN l.estado_requerimiento ELSE r.estado_requerimiento end as estado_requerimiento,l.observacion,l.observacion_validaf,l.foto,
                     CASE WHEN r.estado_requerimiento is null THEN '1' ELSE '0' end as nuevo
-                    FROM mercaderia_fotografia l 
+                    FROM mercaderia_fotografia l
                     left JOIN requerimiento_prenda_detalle r on l.codigo=r.codigo and l.mes=r.mes and l.anio=r.anio and r.estado=1
                     where r.estado=1 AND l.estado=1 AND l.mes='" . $dato['mes'] . "' and l.anio='" . $dato['anio'] . "' $estado2)";
         }

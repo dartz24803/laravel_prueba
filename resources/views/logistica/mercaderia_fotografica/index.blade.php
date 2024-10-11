@@ -239,11 +239,15 @@
 
         var dataString = new FormData(document.getElementById('formulario_insert'));
         var url = "{{ route('mercaderiafotografia.store') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({
             url: url,
             data: dataString,
             type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             processData: false,
             contentType: false,
             success: function(data) {
@@ -252,8 +256,8 @@
                     'Haga clic en el botón!',
                     'success'
                 ).then(function() {
-                    Lista_ErroresPicking();
                     $("#ModalRegistro .close").click();
+                    Lista_Requerimientos_Prendas();
                 });
             },
             error: function(xhr) {
