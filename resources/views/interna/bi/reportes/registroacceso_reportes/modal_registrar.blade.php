@@ -585,48 +585,50 @@
 
         // Contenido HTML de la nueva fila
         newRow.innerHTML = `
-    <td class="px-1">
-        <select class="form-control sistema" name="sistema[]" data-row-index="${rowIndex}">
-            @foreach ($list_sistemas as $list)
-            <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema}}</option>
-            @endforeach
-        </select>
-    </td>
-    <td class="px-1">
-        <select class="form-control db" name="db[]" data-row-index="${rowIndex}">
-            @foreach ($list_db as $list)
-             <option value="{{ $list->cod_db }}" title="{{ $list->nom_db }}">
-                {{ \Illuminate\Support\Str::limit($list->nom_db, 20, '...') }}
-            </option>
-            @endforeach
-        </select>
-    </td>
-    <td class="px-1">
-        <select class="form-control tbdb" name="tbdb[]" data-row-index="${rowIndex}">
-            @foreach ($list_tablasdb as $list)
-            <option value="{{ $list->nombre }}" title="{{ $list->nombre }}">
-                {{ \Illuminate\Support\Str::limit($list->nombre, 20, '...') }}
-            </option>
-            @endforeach
-        </select>
-    </td>
-    
-    <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
+        <td class="px-1">
+            <select class="form-control sistema" name="sistema[]" data-row-index="${rowIndex}">
+                @foreach ($list_sistemas as $list)
+                <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema }}</option>
+                @endforeach
+            </select>
+        </td>
+        <td class="px-1">
+            <select class="form-control db" name="db[]" data-row-index="${rowIndex}">
+                @foreach ($list_db as $list)
+                <option value="{{ $list->cod_db }}" title="{{ $list->nom_db }}">
+                    {{ \Illuminate\Support\Str::limit($list->nom_db, 20, '...') }}
+                </option>
+                @endforeach
+            </select>
+        </td>
+        <td class="px-1">
+            <select class="form-control tbdb" name="tbdb[]" data-row-index="${rowIndex}">
+                @foreach ($list_tablasdb as $list)
+                <option value="{{ $list->nombre }}" title="{{ $list->nombre }}">
+                    {{ \Illuminate\Support\Str::limit($list->nombre, 20, '...') }}
+                </option>
+                @endforeach
+            </select>
+        </td>
+        <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
     `;
 
         // Agregar la nueva fila al cuerpo de la tabla
         tableBody.appendChild(newRow);
 
+        // Vincula los eventos para cuando cambie el select de "sistema" y "db"
         attachSistemaChangeEvent(newRow.querySelector('.sistema'));
         attachDbChangeEvent(newRow.querySelector('.db'));
 
+        // Inicializa Select2 para el nuevo select de tbdb
         $(newRow.querySelector('.tbdb')).select2({
             tags: true,
             tokenSeparators: [',', ' '],
             dropdownParent: $('#ModalRegistro')
         });
-
     }
+
+
 
 
 
@@ -680,33 +682,37 @@
 
     function attachDbChangeEvent(selectElement) {
         $(selectElement).on('change', function() {
-            const selectedDB = $(this).val();
-            var url = "{{ route('tb_por_db_bi') }}";
-            var rowIndex = $(this).data('row-index'); // Obtiene el índice de la fila
+            const selectedDB = $(this).val(); // Obtener el valor de la base de datos seleccionada
+            var url = "{{ route('tb_por_db_bi') }}"; // Ruta para obtener las tablas por base de datos
+            var rowIndex = $(this).data('row-index'); // Índice de la fila actual
 
+            // Llamada AJAX para obtener las tablas correspondientes a la base de datos seleccionada
             $.ajax({
                 url: url,
                 method: 'GET',
                 data: {
-                    dbs: selectedDB
+                    dbs: selectedDB // Base de datos seleccionada como parámetro
                 },
                 success: function(response) {
-                    // Vaciar el select de tbdb en la fila correspondiente
-                    // $(`.tbdb[data-row-index="${rowIndex}"]`).empty();
+                    // Limpiar el select de tbdb en la fila correspondiente
+                    $(`.tbdb[data-row-index="${rowIndex}"]`).empty();
 
-                    // Agregar las nuevas opciones
+                    // Agregar las nuevas opciones de tablas devueltas por la respuesta AJAX
                     $.each(response, function(index, tbdb) {
                         $(`.tbdb[data-row-index="${rowIndex}"]`).append(
-                            `<option value="${tbdb.idtablas_db}" title="${tbdb.nombre}">${tbdb.nombre.length > 20 ? tbdb.nombre.substring(0, 20) + '...' : tbdb.nombre}</option>`
+                            `<option value="${tbdb.nombre}" title="${tbdb.nombre}">
+                            ${tbdb.nombre.length > 20 ? tbdb.nombre.substring(0, 20) + '...' : tbdb.nombre}
+                        </option>`
                         );
                     });
                 },
                 error: function(xhr) {
-                    console.error('Error al obtener tbdb:', xhr);
+                    console.error('Error al obtener las tablas:', xhr);
                 }
             });
         });
     }
+
 
 
 
@@ -779,6 +785,7 @@
 
         $('#db').on('change', function() {
             const selectedDB = $(this).val();
+            console.log(selectedDB)
             filtrarTablasPorDB(selectedDB);
         });
 
@@ -798,7 +805,7 @@
                     $.each(response, function(index, tbdb) {
                         console.log(tbdb)
                         $('#tbdb').append(
-                            `<option value="${tbdb.idtablas_db}" title="${tbdb.nombre}">${tbdb.nombre.length > 20 ? tbdb.nombre.substring(0, 20) + '...' : tbdb.nombre}</option>`
+                            `<option value="${tbdb.nombre}" title="${tbdb.nombre}">${tbdb.nombre.length > 20 ? tbdb.nombre.substring(0, 20) + '...' : tbdb.nombre}</option>`
                         );
                     });
                 },
@@ -1001,6 +1008,7 @@
                     'warning'
                 );
             }
+
         });
 
     }

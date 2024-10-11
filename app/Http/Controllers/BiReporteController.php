@@ -224,11 +224,14 @@ class BiReporteController extends Controller
     }
     public function getTBPorDB(Request $request)
     {
-        $sisDB = $request->input('dbs');
+        $codDB = $request->input('dbs');
+
         // Obtiene los usuarios cuyo id_puesto coincida con el área seleccionada
-        $tbs = Tablasdb::where('idtablas_bi', 'cod_db', $sisDB)
+        $tbs = Tablasdb::where('cod_db', $codDB)
             ->where('estado', 1)  // Filtrar por usuarios activos si es necesario
-            ->get(['idtablas_bi', 'cod_db', 'nombre']);
+            ->get(['idtablas_db', 'cod_db', 'nombre'])
+            ->toArray();
+
         // dd($tbs);
         return response()->json($tbs);
     }
@@ -313,7 +316,6 @@ class BiReporteController extends Controller
         $usuarios = Usuario::where('id_area', $areaId)
             ->where('estado', 1)  // Filtrar por usuarios activos si es necesario
             ->get(['id_usuario', 'usuario_apater', 'usuario_amater', 'usuario_nombres']);
-        // dd($usuarios);
         // Concatenar los campos en una propiedad adicional
         $usuarios->map(function ($usuario) {
             $usuario->nombre_completo = "{$usuario->usuario_apater} {$usuario->usuario_amater} {$usuario->usuario_nombres}";
@@ -512,9 +514,9 @@ class BiReporteController extends Controller
         $tablasbi = $request->input('tbdb', []); // tbdb[] ahora contiene los ids de las tablas seleccionadas
         $db = $request->input('db', []); // cod_sistema
 
-        // dd($tablasbi);
         // Recorre cada tabla seleccionada
         foreach ($tablasbi as $index => $nombre) {
+            // dd($tablasbi);
             $idTablaDb = DB::table('tablas_db')
                 ->where('tablas_db.cod_db', $db[$index])
                 ->where('tablas_db.nombre', $nombre)
@@ -524,11 +526,13 @@ class BiReporteController extends Controller
                 // Retornar una alerta o señal de error
                 return response()->json([
                     'errors' => [
-                        'message' => "No se encontró una tabla coincidente para la base de datos '{$tablasbi[$index]}' y el nombre '{$nombre}' en la fila " . ($index + 1)
+                        'tabla_db' => [
+                            "No se encontró una tabla coincidente para la base de datos '{$db[$index]}' y el nombre '{$nombre}' en la fila " . ($index + 1)
+                        ]
                     ]
                 ], 422);
             } else {
-                // dd($idTablaDb);
+
                 TablaBi::create([
                     'id_acceso_bi_reporte' => $biReporte->id_acceso_bi_reporte,
                     'idtablas_db' => $idTablaDb, // ID de la tabla seleccionada
@@ -585,7 +589,7 @@ class BiReporteController extends Controller
 
         // Buscar el registro existente
         $biReporte = BiReporte::findOrFail($id);
-        // dd($biReporte);
+
         // Actualizar los datos en la tabla
         $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
 
@@ -723,11 +727,13 @@ class BiReporteController extends Controller
                     // Retornar una alerta o señal de error
                     return response()->json([
                         'errors' => [
-                            'message' => "No se encontró una tabla coincidente para la base de datos '{$dbtest[$key]}' y el nombre '{$nombre}' en la fila " . ($key + 1)
+                            'tabla_db' => [
+                                "No se encontró una tabla coincidente para la base de datos '{$dbtest[$key]}' y el nombre '{$nombre}' en la fila " . ($key + 1)
+                            ]
                         ]
                     ], 422);
                 } else {
-                    // dd($idTablaDb);
+
                     TablaBi::create([
                         'id_acceso_bi_reporte' => $biReporte->id_acceso_bi_reporte,
                         'idtablas_db' => $idTablaDb, // ID de la tabla seleccionada
@@ -885,7 +891,7 @@ class BiReporteController extends Controller
             ->where('estado', 1)
             ->orderBy('descripcion', 'ASC')
             ->distinct('descripcion')->get();
-        // dd($list_sede);
+
         $list_ubicaciones = Ubicacion::select('id_ubicacion', 'cod_ubi')
             ->where('estado', 1)
             ->orderBy('cod_ubi', 'ASC')
@@ -1096,7 +1102,7 @@ class BiReporteController extends Controller
         $list_bi_reporte = BiReporte::getBiReportesxIndicador();
         // Obtener IDs de los reportes
         $reportesIds = $list_bi_reporte->pluck('id_acceso_bi_reporte')->toArray();
-        // dd($reportesIds);
+
         // Consultar nombres de los puestos asociados a los reportes
         $puestos = DB::table('bi_puesto_acceso')
             ->join('puesto', 'bi_puesto_acceso.id_puesto', '=', 'puesto.id_puesto')
@@ -1160,10 +1166,9 @@ class BiReporteController extends Controller
     {
         // Obtener la lista de reportes con los campos requeridos de la tabla indicadores_bi
         $list_bi_reporte = BiReporte::getBiReportesxTablas();
-        // dd($list_bi_reporte);
+
         // Obtener IDs de los reportes
         $reportesIds = $list_bi_reporte->pluck('id_acceso_bi_reporte')->toArray();
-        // dd($reportesIds);
         // Consultar nombres de los puestos asociados a los reportes
         $puestos = DB::table('bi_puesto_acceso')
             ->join('puesto', 'bi_puesto_acceso.id_puesto', '=', 'puesto.id_puesto')
@@ -1213,7 +1218,7 @@ class BiReporteController extends Controller
                 $reporte->dias_sin_atencion = $interval->days;
             }
         }
-        // dd($list_bi_reporte);
+
         return view('interna.bi.reportes.reportedb.lista', compact('list_bi_reporte'));
     }
 
