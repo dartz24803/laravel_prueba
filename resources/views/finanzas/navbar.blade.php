@@ -178,12 +178,10 @@
                 <p class="romperpalabra"><span id="icono_active2"></span> Caja chica</p>
             </a>
         </li>
-        @if (session('usuario')->id_usuario == "139")
-            <li id="conf_registros_cheques">
-                <a href="{{ route('registro_cheque_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Registro de cheques</p>
-                </a>
-            </li>
-        @endif
+        <li id="conf_registros_cheques">
+            <a href="{{ route('registro_cheque_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                <p class="romperpalabra"><span id="icono_active2"></span> Registro de cheques</p>
+            </a>
+        </li>
     </ul>
 </li>

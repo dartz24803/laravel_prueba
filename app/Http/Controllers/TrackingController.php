@@ -164,7 +164,7 @@ class TrackingController extends Controller
         TrackingTemporal::truncate();
         $list_tracking = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['T']);
         foreach($list_tracking as $list){
-            if($list->id_origen_hacia=="4" || $list->id_origen_hacia=="6" || $list->id_origen_hacia=="10"){
+            if($list->id_origen_hacia=="4" || $list->id_origen_hacia=="6"){
                 TrackingTemporal::create([
                     'n_requerimiento' => $list->n_requerimiento,
                     'n_guia_remision' => $list->n_guia_remision,
