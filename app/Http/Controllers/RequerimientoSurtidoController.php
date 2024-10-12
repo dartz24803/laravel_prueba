@@ -38,7 +38,7 @@ class RequerimientoSurtidoController extends Controller
                                 ->get();
             $dato['list_anio'] = $this->Model_Perfil->get_list_anio();
         //REPORTE BI CON ID
-        $dato['list_subgerencia'] = SubGerencia::list_subgerencia(7);
+        $dato['list_subgerencia'] = SubGerencia::list_subgerencia(3);
         //NOTIFICACIONES
         $dato['list_notificacion'] = Notificacion::get_list_notificacion();
             return view('comercial.Requerimiento.index', $dato);

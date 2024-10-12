@@ -29,4 +29,18 @@ class Model_Infosap extends Model
         // echo "si";
         DB::connection('sqlsrv_dbisig')->statement('EXEC usp_Genera_tabla_Cobertura');
     }
+    static function get_list_requerimiento($semana = null, $anio = null){
+        if (isset($semana) && $semana > 0 && isset($anio) && $anio > 0) {
+            $sql = "SELECT * FROM  pedido_lnuno WHERE estado IN (1, 3) AND semana=$semana AND anio=$anio";
+        } else {
+            $semana = date('W');
+            $anio = date('Y');
+            $sql = "SELECT * FROM  pedido_lnuno WHERE estado IN (1, 3) AND semana=$semana AND anio=$anio";
+        }
+        DB::connection('sqlsrv')->select($sql);
+    }
+    static function get_list_semanas(){
+        $sql = "SELECT semana from  pedido_lnuno group by semana ORDER BY semana ASC";
+        DB::connection('sqlsrv')->select($sql);
+    }
 }
