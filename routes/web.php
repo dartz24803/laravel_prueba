@@ -1312,12 +1312,13 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::post('caja_chica/store_tmp_mo', 'store_tmp_mo')->name('caja_chica.store_tmp_mo');
     Route::delete('caja_chica/{id}/destroy_tmp_mo', 'destroy_tmp_mo')->name('caja_chica.destroy_tmp_mo');
     Route::get('caja_chica/total_tmp_mo', 'total_tmp_mo')->name('caja_chica.total_tmp_mo');
-    Route::post('caja_chica/consultar_ruc', 'consultar_ruc')->name('caja_chica.consultar_ruc');
     Route::post('caja_chica_mo', 'store_mo')->name('caja_chica.store_mo');
     Route::get('caja_chica/create_pv', 'create_pv')->name('caja_chica.create_pv');
     Route::post('caja_chica/traer_categoria_pv', 'traer_categoria_pv')->name('caja_chica.traer_categoria_pv');
     Route::post('caja_chica/traer_sub_categoria_pv', 'traer_sub_categoria_pv')->name('caja_chica.traer_sub_categoria_pv');
+    Route::post('caja_chica/consultar_ruc', 'consultar_ruc')->name('caja_chica.consultar_ruc');
     Route::post('caja_chica_pv', 'store_pv')->name('caja_chica.store_pv');
+    Route::get('caja_chica/{id}/show', 'show')->name('caja_chica.show');
     Route::get('caja_chica/{id}/edit', 'edit')->name('caja_chica.edit');
     Route::get('caja_chica/{id}/list_ruta_mo', 'list_ruta_mo')->name('caja_chica.list_ruta_mo');
     Route::put('caja_chica/{id}/store_ruta_mo', 'store_ruta_mo')->name('caja_chica.store_ruta_mo');

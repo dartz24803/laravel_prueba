@@ -50,7 +50,9 @@ class CajaChica extends Model
                     WHERE cr.id_caja_chica=cc.id),0) AS total,ca.nom_categoria,sc.nombre,
                     CASE WHEN cc.id_tipo_comprobante=6 THEN 'TICKET' ELSE tc.nom_tipo_comprobante 
                     END AS nom_tipo_comprobante,ub.cod_ubi,em.nom_empresa,pa.nom_pago,
-                    tp.nombre AS nom_tipo_pago
+                    tp.nombre AS nom_tipo_pago,
+                    CONCAT(tm.cod_moneda,' ',IFNULL((SELECT SUM(cr.costo) FROM caja_chica_ruta cr
+                    WHERE cr.id_caja_chica=cc.id),0)) AS total_concatenado
                     FROM caja_chica cc
                     INNER JOIN categoria ca ON ca.id_categoria=cc.id_categoria
                     INNER JOIN sub_categoria sc ON sc.id=cc.id_sub_categoria
@@ -59,6 +61,7 @@ class CajaChica extends Model
                     INNER JOIN empresas em ON em.id_empresa=cc.id_empresa
                     LEFT JOIN vw_pago pa ON pa.id_pago=cc.id_pago
                     LEFT JOIN tipo_pago tp ON tp.id=cc.id_tipo_pago
+                    INNER JOIN tipo_moneda tm ON tm.id_moneda=cc.id_tipo_moneda
                     WHERE cc.id=".$dato['id'];
             $query = DB::select($sql);
             return $query[0];

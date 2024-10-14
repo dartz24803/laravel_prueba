@@ -35,7 +35,16 @@
                 <td class="text-left">{{ $list->nom_solicitante }}</td>
                 <td>{{ $list->ruc }}</td>
                 <td class="text-left">{{ $list->razon_social }}</td>
-                <td></td>
+                <td>
+                    <a href="javascript:void(0);" data-toggle="modal" 
+                    data-target="#ModalUpdate" 
+                    app_elim="{{ route('caja_chica.show', $list->id) }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye text-success">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </a>
+                </td>
                 <td class="text-left">{{ $list->descripcion }}</td>
                 <td>{{ $list->total }}</td>
                 <td>{{ $list->nom_estado }}</td>

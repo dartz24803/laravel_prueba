@@ -324,6 +324,39 @@ class CajaChicaController extends Controller
         ]);
     }
 
+    public function show($id)
+    {
+        $get_id = CajaChica::get_list_caja_chica(['id'=>$id]);
+        $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
+        $valida = Categoria::select('nom_categoria')->where('id_categoria',$get_id->id_categoria)
+                ->first();                      
+        if($valida->nom_categoria=="MOVILIDAD"){
+            $list_ruta = CajaChicaRuta::select('id','personas','punto_salida','punto_llegada',
+                            DB::raw("CASE WHEN transporte=1 THEN 'BUS' WHEN transporte=2 THEN 'TAXI'
+                            ELSE '' END AS transporte"),'motivo','costo')->where('id_caja_chica',$id)
+                            ->get();
+            return view('finanzas.tesoreria.caja_chica.modal_detalle_mo', compact(
+                'get_id',
+                'list_tipo_moneda',
+                'list_ruta'
+            ));
+        }else{
+            $list_categoria = Categoria::select('id_categoria','nom_categoria')->where('id_categoria_mae',3)
+                            ->where('id_ubicacion',$get_id->id_ubicacion)->where('nom_categoria','!=','MOVILIDAD')
+                            ->where('estado',1)->get();
+            $list_tipo_comprobante = TipoComprobante::whereIn('id',[1,2,3,6])->get();
+            return view('finanzas.tesoreria.caja_chica.modal_editar_pv', compact(
+                'get_id',
+                'list_ubicacion',
+                'list_categoria',
+                'list_sub_categoria',
+                'list_empresa',
+                'list_tipo_moneda',
+                'list_tipo_comprobante'
+            ));
+        }
+    }
+
     public function edit($id)
     {
         $get_id = CajaChica::get_list_caja_chica(['id'=>$id]);
