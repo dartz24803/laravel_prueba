@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('fecha')->nullable();
             $table->unsignedBigInteger('id_sub_categoria');
             $table->unsignedBigInteger('id_empresa');
+            $table->unsignedBigInteger('id_usuario');
             $table->unsignedBigInteger('id_tipo_moneda');
             $table->decimal('total',10,2)->nullable();
             $table->string('ruc',20)->nullable();
@@ -44,11 +45,13 @@ return new class extends Migration
             $table->foreign('id_categoria', 'cchi_fk_id_cat')->references('id_categoria')->on('categoria');
             $table->foreign('id_sub_categoria', 'cchi_fk_id_scat')->references('id')->on('sub_categoria');
             $table->foreign('id_empresa', 'cchi_fk_id_emp')->references('id_empresa')->on('empresas');
+            $table->foreign('id_usuario', 'cchi_fk_id_usu')->references('id_usuario')->on('users');
             $table->foreign('id_tipo_moneda', 'cchi_fk_id_tmon')->references('id_moneda')->on('tipo_moneda');
             $table->index(['id_ubicacion'], 'cchi_idx_id_ubi');
             $table->index(['id_categoria'], 'cchi_idx_id_cat');
             $table->index(['id_sub_categoria'], 'cchi_idx_id_scat');
             $table->index(['id_empresa'], 'cchi_idx_id_emp');
+            $table->index(['id_usuario'], 'cchi_idx_id_usu');
             $table->index(['id_tipo_moneda'], 'cchi_idx_id_tmon');
         });
     }

@@ -22,7 +22,10 @@
                 <select class="form-control" name="id_tipo_pagov" id="id_tipo_pagov">
                     <option value="0">Seleccione</option>
                     @foreach ($list_tipo_pago as $list)
-                        <option value="{{ $list->id }}">{{ $list->nombre }}</option>
+                        <option value="{{ $list->id }}"
+                        @if ($list->id==$get_id->id_tipo_pago) selected @endif>
+                            {{ $list->nombre }}
+                        </option>
                     @endforeach
                 </select>
             </div>

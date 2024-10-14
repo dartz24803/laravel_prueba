@@ -7,191 +7,247 @@
     </div>
                 
     <div class="modal-body" style="max-height:700px; overflow:auto;">
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Ubicación:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" name="id_ubicacione" id="id_ubicacione" onchange="Traer_Sub_Categoria('e');">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_ubicacion as $list)
-                        <option value="{{ $list->id_ubicacion }}"
-                        @if ($list->id_ubicacion==$get_id->id_ubicacion) selected @endif>
-                            {{ $list->cod_ubi }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="datos_mo-tabe" data-toggle="tab" href="#datos_moe" role="tab" aria-controls="datos_moe" aria-selected="true">Datos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="indicadores_mo-tabe" data-toggle="tab" href="#indicadores_moe" role="tab" aria-controls="indicadores_moe" aria-selected="false">Detalle</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="rutas_mo-tabe" data-toggle="tab" href="#rutas_moe" role="tab" aria-controls="rutas_moe" aria-selected="false">Ruta</a>
+            </li>
+        </ul>
 
-            <div class="form-group col-lg-2">
-                <label>Categoría:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="text" class="form-control" value="MOVILIDAD" disabled>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Fecha:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="date" class="form-control" name="fechae" id="fechae" 
-                value="{{ $get_id->fecha }}">
-            </div>
-
-            <div class="form-group col-lg-2">
-                <label>Sub-Categoría:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" name="id_sub_categoriae" id="id_sub_categoriae">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_sub_categoria as $list)
-                        <option value="{{ $list->id }}"
-                        @if ($list->id==$get_id->id_sub_categoria) selected @endif>
-                            {{ $list->nombre }}
-                        </option> 
-                    @endforeach
-                </select>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Empresa:</label>
-            </div>
-            <div class="form-group col-lg-10">
-                <select class="form-control basic" name="id_empresae" id="id_empresae">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_empresa as $list)
-                        <option value="{{ $list->id_empresa }}"
-                        @if ($list->id_empresa==$get_id->id_empresa) selected @endif>
-                            {{ $list->nom_empresa }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Total:</label>
-            </div>
-            <div class="form-group col-lg-4 input-group mb-4">
-                <div class="input-group-prepend">
-                    <select class="form-control" name="id_tipo_monedae" id="id_tipo_monedae">
-                        @foreach ($list_tipo_moneda as $list)
-                            <option value="{{ $list->id_moneda }}"
-                            @if ($list->id_moneda==$get_id->id_tipo_moneda) selected @endif>
-                                {{ $list->cod_moneda }}
-                            </option>
-                        @endforeach
-                    </select>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="datos_moe" role="tabpanel" aria-labelledby="datos_mo-tabe">
+                <div class="row mt-4">
+                    <div class="form-group col-lg-2">
+                        <label>Ubicación:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <select class="form-control" name="id_ubicacione" id="id_ubicacione" onchange="Traer_Sub_Categoria('e');">
+                            <option value="0">Seleccione</option>
+                            @foreach ($list_ubicacion as $list)
+                                <option value="{{ $list->id_ubicacion }}"
+                                @if ($list->id_ubicacion==$get_id->id_ubicacion) selected @endif>
+                                    {{ $list->cod_ubi }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+        
+                    <div class="form-group col-lg-2">
+                        <label>Categoría:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" value="{{ $get_id->nom_categoria }}" disabled>
+                    </div>
                 </div>
-                <input type="text" class="form-control" name="totale" id="totale" placeholder="Total" 
-                onkeypress="return solo_Numeros_Punto(event);" onpaste="return false;" 
-                value="{{ $get_id->total }}">
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="form-group col-lg-12">
-                <label style="font-weight:bolder;
-                color:black;
-                text-decoration:underline;">
-                    Parte interesada:
-                </label>
-            </div>
-        </div>
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>Empresa:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <select class="form-control basice" name="id_empresae" id="id_empresae">
+                            <option value="0">Seleccione</option>
+                            @foreach ($list_empresa as $list)
+                                <option value="{{ $list->id_empresa }}"
+                                @if ($list->id_empresa==$get_id->id_empresa) selected @endif>
+                                    {{ $list->nom_empresa }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>RUC:</label>
-                <a href="javascript:void(0);" title="Consultar RUC" onclick="Consultar_Ruc('e');">
-                    <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve">
-                        <rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/>
-                        <circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/>
-                        <path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/>
-                        <path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/>
-                        <path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/>
-                    </svg>
-                </a>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="ruce" id="ruce" placeholder="RUC" 
-                maxlength="11" onkeypress="return solo_Numeros(event);" onpaste="return false;"
-                value="{{ $get_id->ruc }}">
-            </div>
+                    <div class="form-group col-lg-2">
+                        <label>Sub-Categoría:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <select class="form-control" name="id_sub_categoriae" id="id_sub_categoriae">
+                            <option value="0">Seleccione</option>
+                            @foreach ($list_sub_categoria as $list)
+                                <option value="{{ $list->id }}"
+                                @if ($list->id==$get_id->id_sub_categoria) selected @endif>
+                                    {{ $list->nombre }}
+                                </option> 
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
 
-            <div class="form-group col-lg-2">
-                <label>Razón social:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="razon_sociale" id="razon_sociale" 
-                placeholder="Razón social" value="{{ $get_id->razon_social }}">
-            </div>
-        </div>
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>Solicitante:</label>
+                    </div>
+                    <div class="form-group col-lg-10">
+                        <select class="form-control basice" name="id_usuarioe" id="id_usuarioe">
+                            <option value="0">Seleccione</option>
+                            @foreach ($list_usuario as $list)
+                                <option value="{{ $list->id_usuario }}"
+                                @if ($list->id_usuario==$get_id->id_usuario) selected @endif                                    >
+                                    {{ $list->nom_usuario }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
 
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Ruta:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" name="rutae" id="rutae" onchange="Habilitar_Ruta('e');">
-                    <option value="0">Seleccione</option>
-                    <option value="1" @if ($get_id->ruta=="1") selected @endif>IDA Y VUELTA</option>
-                    <option value="2" @if ($get_id->ruta=="2") selected @endif>IDA</option>
-                </select>
-            </div>
-
-            <div class="form-group col-lg-2">
-                <label>Tipo comprobante:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="text" class="form-control" value="Boleta" disabled>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-lg-12">
-                <label style="font-weight:bolder;
-                color:black;">
-                    Descripción:
-                </label>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-lg-6">
-                <label>Punto de partida:</label>
-                <input type="text" class="form-control" name="punto_partidae" id="punto_partidae" 
-                placeholder="Punto de partida" value="{{ $get_id->punto_partida }}" 
-                @if ($get_id->ruta=="2") disabled @endif>
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>Tipo de movimiento:</label>
+                    </div>
+                    <div class="form-group col-lg-5">
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input type="radio" id="tipo_movimientoe" name="tipo_movimientoe" class="custom-control-input" value="2" checked>
+                            <label class="custom-control-label" for="tipo_movimientoe">Salida</label>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group col-lg-6">
-                <label>Punto de llegada:</label>
-                <input type="text" class="form-control" name="punto_llegadae" id="punto_llegadae" 
-                placeholder="Punto de llegada" value="{{ $get_id->punto_llegada }}">
-            </div>
-        </div>
+            <div class="tab-pane fade" id="indicadores_moe" role="tabpanel" aria-labelledby="indicadores_mo-tabe">
+                <div class="row mt-4">
+                    <div class="form-group col-lg-2">
+                        <label>T. comprobante:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" value="{{ $get_id->nom_tipo_comprobante }}" disabled>
+                    </div>
+        
+                    <div class="form-group col-lg-2">
+                        <label>N° comprobante:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" value="{{ $get_id->n_comprobante }}" disabled>
+                    </div>
+                </div>
 
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Cargar comprobante:</label>
-                @if ($get_id->comprobante!="")
-                    <a href="javascript:void(0);" title="Descargar" onclick="Descargar_Archivo('{{ $get_id->id }}');">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download-cloud text-dark">
-                            <polyline points="8 17 12 21 16 17"></polyline>
-                            <line x1="12" y1="12" x2="12" y2="21"></line>
-                            <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"></path>
-                        </svg>
-                    </a>
-                @endif
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>Pago:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" value="{{ $get_id->nom_pago }}" disabled>
+                    </div>
+        
+                    <div class="form-group col-lg-2">
+                        <label>Tipo pago:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" value="{{ $get_id->nom_tipo_pago }}" disabled>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>Fecha solicitud:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="date" class="form-control" name="fechae" id="fechae" 
+                        value="{{ $get_id->fecha }}">
+                    </div>
+                </div>
             </div>
-            <div class="form-group col-lg-10">
-                <input type="file" class="form-control-file" name="comprobantee" id="comprobantee" 
-                onchange="Valida_Archivo('comprobantee');">
+
+            <div class="tab-pane fade" id="rutas_moe" role="tabpanel" aria-labelledby="rutas_mo-tabe">
+                <div class="row mt-4">
+                    <div class="form-group col-lg-2">
+                        <label>Descripción:</label>
+                    </div>
+                    <div class="form-group col-lg-10">
+                        <input type="text" class="form-control" name="descripcione" id="descripcione" 
+                        placeholder="Descripción" value="{{ $get_id->descripcion }}">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>N° personas:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" name="personase" id="personase" 
+                        placeholder="N° personas" onkeypress="return solo_Numeros(event);">
+                    </div>
+        
+                    <div class="form-group col-lg-2">
+                        <label>Punto salida:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" name="punto_salidae" id="punto_salidae" 
+                        placeholder="Punto salida">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>Punto llegada:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" name="punto_llegadae" id="punto_llegadae" 
+                        placeholder="Punto llegada">
+                    </div>
+        
+                    <div class="form-group col-lg-2">
+                        <label>Transporte:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <select class="form-control" name="transportee" id="transportee">
+                            <option value="0">Seleccione</option>
+                            <option value="1">BUS</option>
+                            <option value="2">TAXI</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>Motivo:</label>
+                    </div>
+                    <div class="form-group col-lg-10">
+                        <input type="text" class="form-control" name="motivoe" id="motivoe" 
+                        placeholder="Motivo">
+                    </div>
+                </div>
+        
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>Costo:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" name="costoe" id="costoe" 
+                        placeholder="Costo" onkeypress="return solo_Numeros_Punto(event);">
+                    </div>
+                    <div class="form-group col-lg-1">
+                        <button class="btn btn-primary" type="button" onclick="Insert_Ruta();">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row justify-content-end">
+                    <div class="col-lg-2">
+                        <label>Total:</label>
+                    </div>
+                    <div class="col-lg-4 input-group">
+                        <div class="input-group-prepend">
+                            <select class="form-control" name="id_tipo_monedae" id="id_tipo_monedae">
+                                @foreach ($list_tipo_moneda as $list)
+                                    <option value="{{ $list->id_moneda }}">{{ $list->cod_moneda }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <input type="text" class="form-control" name="totale" id="totale" 
+                        placeholder="Total" value="{{ $get_id->total }}" disabled>
+                    </div>
+                </div>
+
+                <div id="lista_ruta" class="row">                  
+                </div>
             </div>
         </div>
     </div>
@@ -205,10 +261,93 @@
 </form>
 
 <script>
-    $(".basic").select2({
+    $(".basice").select2({
         tags: true,
         dropdownParent: $('#ModalUpdate')
     });
+
+    Lista_Ruta();
+    Total_Ruta();
+
+    function Lista_Ruta(){
+        Cargando();
+
+        var url = "{{ route('caja_chica.list_ruta_mo', $get_id->id) }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success:function (resp) {
+                $('#lista_ruta').html(resp);  
+            }
+        });
+    }
+
+    function Total_Ruta(){
+        Cargando();
+
+        var url = "{{ route('caja_chica.total_ruta_mo', $get_id->id) }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success:function (resp) {
+                $('#totale').val(resp);  
+            }
+        });
+    }
+
+    function Insert_Ruta(){
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formularioe'));
+        var url = "{{ route('caja_chica.store_ruta_mo', $get_id->id) }}";
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#personase').val('');
+                $('#punto_salidae').val('');
+                $('#punto_llegadae').val('');
+                $('#transportee').val('0');
+                $('#motivoe').val('');
+                $('#costoe').val('');
+                Lista_Ruta();
+                Total_Ruta();
+            },
+            error:function(xhr) {
+                var errors = xhr.responseJSON.errors;
+                var firstError = Object.values(errors)[0][0];
+                Swal.fire(
+                    '¡Ups!',
+                    firstError,
+                    'warning'
+                );
+            }
+        });
+    }
+
+    function Delete_Ruta(id) {
+        Cargando();
+
+        var url = "{{ route('caja_chica.destroy_ruta_mo', ':id') }}".replace(':id', id);
+
+        $.ajax({
+            type: "DELETE",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function() {
+                Lista_Ruta();
+                Total_Ruta();
+            }
+        });
+    }
 
     function Update_Caja_Chica_Mo() {
         Cargando();
