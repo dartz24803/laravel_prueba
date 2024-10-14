@@ -47,7 +47,7 @@
                 </td>
                 <td class="text-left">{{ $list->descripcion }}</td>
                 <td>{{ $list->total }}</td>
-                <td>{{ $list->nom_estado }}</td>
+                <td style="background-color: {{ $list->color_estado }}; color:white;">{{ $list->nom_estado }}</td>
                 <td>
                     @if ($list->estado_c=="1")
                         <a href="javascript:void(0);" title="Aprobar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('caja_chica.validar', $list->id) }}">

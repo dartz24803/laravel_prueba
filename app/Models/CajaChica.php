@@ -78,8 +78,10 @@ class CajaChica extends Model
                     IFNULL((SELECT SUM(cr.costo) FROM caja_chica_ruta cr
                     WHERE cr.id_caja_chica=cc.id),0) ELSE 0 END) AS total,
                     CASE WHEN cc.estado_c=1 THEN 'Por revisar'
-                    WHEN cc.estado_c=2 THEN 'Completado' ELSE '' END AS nom_estado,cc.comprobante,
-                    cc.estado_c 
+                    WHEN cc.estado_c=2 THEN 'Completado' ELSE '' END AS nom_estado,
+                    CASE WHEN cc.estado_c=1 THEN '#9DA7B9'
+                    WHEN cc.estado_c=2 THEN '#028B35' ELSE 'transparent' END AS color_estado,
+                    cc.comprobante,cc.estado_c
                     FROM caja_chica cc
                     INNER JOIN ubicacion ub ON ub.id_ubicacion=cc.id_ubicacion
                     INNER JOIN categoria ca ON ca.id_categoria=cc.id_categoria
