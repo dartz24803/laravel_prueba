@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('control_ubicacion', function (Blueprint $table) {
-            $table->id('id_control_ubicacion');
-            $table->string('cod_control', 50)->nullable();
-            $table->string('id_nicho', 200);
-            $table->string('estilo', 250)->nullable();
-            $table->date('fecha')->nullable();
+        Schema::create('destino', function (Blueprint $table) {
+            $table->id('id_destino');
+            $table->integer('id_motivo')->nullable();
+            $table->string('nom_destino', 50)->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
@@ -24,7 +22,6 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            $table->timestamps();
         });
     }
 
@@ -33,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('control_ubicacion');
+        Schema::dropIfExists('destino');
     }
 };
