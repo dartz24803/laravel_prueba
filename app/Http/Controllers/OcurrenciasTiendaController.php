@@ -93,7 +93,7 @@ class OcurrenciasTiendaController extends Controller{
 
     public function Modal_Ocurrencia_Tienda_Admin(){
         $dato['list_usuario'] = Usuario::where('estado', 1)
-                                ->whereIn('id_puesto', [23,24,36])
+                                ->whereIn('id_puesto', [23,24,36,307])
                                 ->get();
         $dato['list_conclusion'] = OcurrenciaConclusion::where('estado', 1)
                         ->get();
