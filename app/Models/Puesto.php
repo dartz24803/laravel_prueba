@@ -63,4 +63,33 @@ class Puesto extends Model
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }
+    
+    static function get_list_puesto($id_gerencia=null, $id_area=null){
+        if(isset($id_gerencia) && $id_gerencia > 0 && isset($id_area) && $id_area > 0){
+            $sql = "SELECT t.*, g.nom_gerencia, a.nom_area,d.direccion,n.nom_nivel FROM puesto t
+                    LEFT JOIN gerencia g on g.id_gerencia=t.id_gerencia
+                    LEFT JOIN area a on a.id_area=t.id_area and a.id_gerencia=t.id_gerencia
+                    left join direccion d on t.id_direccion=d.id_direccion
+                    left join nivel_jerarquico n on t.id_nivel=n.id_nivel
+                    WHERE t.estado='1' and t.id_gerencia=$id_gerencia and t.id_area=$id_area";
+        }elseif(isset($id_gerencia) && $id_gerencia > 0 && $id_area==null){
+            $sql = "SELECT t.*, g.nom_gerencia, a.nom_area,d.direccion,n.nom_nivel FROM puesto t
+                LEFT JOIN gerencia g on g.id_gerencia=t.id_gerencia
+                LEFT JOIN area a on a.id_area=t.id_area and a.id_gerencia=t.id_gerencia
+                left join direccion d on t.id_direccion=d.id_direccion
+                left join nivel_jerarquico n on t.id_nivel=n.id_nivel
+                WHERE t.estado='1' and t.id_gerencia=$id_gerencia";
+        }else{
+            $sql = "SELECT t.*, g.nom_gerencia, a.nom_area,d.direccion,n.nom_nivel FROM puesto t
+                LEFT JOIN gerencia g on g.id_gerencia=t.id_gerencia
+                LEFT JOIN area a on a.id_area=t.id_area and a.id_gerencia=t.id_gerencia
+                left join direccion d on t.id_direccion=d.id_direccion
+                left join nivel_jerarquico n on t.id_nivel=n.id_nivel
+                WHERE t.estado='1'";
+        }
+        
+        $result = DB::select($sql);
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
+    }
 }

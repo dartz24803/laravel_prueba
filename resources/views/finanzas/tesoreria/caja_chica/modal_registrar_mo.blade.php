@@ -7,163 +7,232 @@
     </div>
                 
     <div class="modal-body" style="max-height:700px; overflow:auto;">
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Ubicación:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" name="id_ubicacion" id="id_ubicacion" onchange="Traer_Sub_Categoria('');">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_ubicacion as $list)
-                        <option value="{{ $list->id_ubicacion }}">{{ $list->cod_ubi }}</option>
-                    @endforeach
-                </select>
-            </div>
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="datos_mo-tab" data-toggle="tab" href="#datos_mo" role="tab" aria-controls="datos_mo" aria-selected="true">Datos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="indicadores_mo-tab" data-toggle="tab" href="#indicadores_mo" role="tab" aria-controls="indicadores_mo" aria-selected="false">Detalle</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="rutas_mo-tab" data-toggle="tab" href="#rutas_mo" role="tab" aria-controls="rutas_mo" aria-selected="false">Ruta</a>
+            </li>
+        </ul>
 
-            <div class="form-group col-lg-2">
-                <label>Categoría:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="text" class="form-control" value="MOVILIDAD" disabled>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Fecha:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="date" class="form-control" name="fecha" id="fecha" value="{{ date('Y-m-d') }}">
-            </div>
-
-            <div class="form-group col-lg-2">
-                <label>Sub-Categoría:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" name="id_sub_categoria" id="id_sub_categoria">
-                    <option value="0">Seleccione</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Empresa:</label>
-            </div>
-            <div class="form-group col-lg-10">
-                <select class="form-control basic" name="id_empresa" id="id_empresa">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_empresa as $list)
-                        <option value="{{ $list->id_empresa }}">{{ $list->nom_empresa }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Total:</label>
-            </div>
-            <div class="form-group col-lg-4 input-group mb-4">
-                <div class="input-group-prepend">
-                    <select class="form-control" name="id_tipo_moneda" id="id_tipo_moneda">
-                        @foreach ($list_tipo_moneda as $list)
-                            <option value="{{ $list->id_moneda }}">{{ $list->cod_moneda }}</option>
-                        @endforeach
-                    </select>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="datos_mo" role="tabpanel" aria-labelledby="datos_mo-tab">
+                <div class="row mt-4">
+                    <div class="form-group col-lg-2">
+                        <label>Ubicación:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <select class="form-control" name="id_ubicacion" id="id_ubicacion" onchange="Traer_Sub_Categoria('');">
+                            <option value="0">Seleccione</option>
+                            @foreach ($list_ubicacion as $list)
+                                <option value="{{ $list->id_ubicacion }}">{{ $list->cod_ubi }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+        
+                    <div class="form-group col-lg-2">
+                        <label>Categoría:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" value="MOVILIDAD" disabled>
+                    </div>
                 </div>
-                <input type="text" class="form-control" name="total" id="total" placeholder="Total" 
-                onkeypress="return solo_Numeros_Punto(event);" onpaste="return false;">
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="form-group col-lg-12">
-                <label style="font-weight:bolder;
-                color:black;
-                text-decoration:underline;">
-                    Parte interesada:
-                </label>
-            </div>
-        </div>
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>Empresa:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <select class="form-control basic" name="id_empresa" id="id_empresa">
+                            <option value="0">Seleccione</option>
+                            @foreach ($list_empresa as $list)
+                                <option value="{{ $list->id_empresa }}">{{ $list->nom_empresa }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>RUC:</label>
-                <a href="javascript:void(0);" title="Consultar RUC" onclick="Consultar_Ruc('');">
-                    <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve">
-                        <rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/>
-                        <circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/>
-                        <path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/>
-                        <path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/>
-                        <path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/>
-                    </svg>
-                </a>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="ruc" id="ruc" placeholder="RUC" 
-                maxlength="11" onkeypress="return solo_Numeros(event);" onpaste="return false;">
-            </div>
+                    <div class="form-group col-lg-2">
+                        <label>Sub-Categoría:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <select class="form-control" name="id_sub_categoria" id="id_sub_categoria">
+                            <option value="0">Seleccione</option>
+                        </select>
+                    </div>
+                </div>
 
-            <div class="form-group col-lg-2">
-                <label>Razón social:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="razon_social" id="razon_social" 
-                placeholder="Razón social">
-            </div>
-        </div>
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>Solicitante:</label>
+                    </div>
+                    <div class="form-group col-lg-10">
+                        <select class="form-control basic" name="id_usuario" id="id_usuario">
+                            <option value="0">Seleccione</option>
+                            @foreach ($list_usuario as $list)
+                                <option value="{{ $list->id_usuario }}">{{ $list->nom_usuario }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
 
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Ruta:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" name="ruta" id="ruta" onchange="Habilitar_Ruta('');">
-                    <option value="0">Seleccione</option>
-                    <option value="1">IDA Y VUELTA</option>
-                    <option value="2">IDA</option>
-                </select>
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>Tipo de movimiento:</label>
+                    </div>
+                    <div class="form-group col-lg-5">
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input type="radio" id="tipo_movimiento" name="tipo_movimiento" class="custom-control-input" value="2" checked>
+                            <label class="custom-control-label" for="tipo_movimiento">Salida</label>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group col-lg-2">
-                <label>Tipo comprobante:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="text" class="form-control" value="Boleta" disabled>
-            </div>
-        </div>
+            <div class="tab-pane fade" id="indicadores_mo" role="tabpanel" aria-labelledby="indicadores_mo-tab">
+                <div class="row mt-4">
+                    <div class="form-group col-lg-2">
+                        <label>T. comprobante:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" value="TICKET" disabled>
+                    </div>
+        
+                    <div class="form-group col-lg-2">
+                        <label>N° comprobante:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" value="0000001" disabled>
+                    </div>
+                </div>
 
-        <div class="row">
-            <div class="form-group col-lg-12">
-                <label style="font-weight:bolder;
-                color:black;">
-                    Descripción:
-                </label>
-            </div>
-        </div>
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>Pago:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" value="CONTADO" disabled>
+                    </div>
+        
+                    <div class="form-group col-lg-2">
+                        <label>Tipo pago:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" value="EFECTIVO" disabled>
+                    </div>
+                </div>
 
-        <div class="row">
-            <div class="form-group col-lg-6">
-                <label>Punto de partida:</label>
-                <input type="text" class="form-control" name="punto_partida" id="punto_partida" 
-                placeholder="Punto de partida" disabled>
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>Fecha solicitud:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="date" class="form-control" name="fecha" id="fecha" 
+                        value="{{ date('Y-m-d') }}">
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group col-lg-6">
-                <label>Punto de llegada:</label>
-                <input type="text" class="form-control" name="punto_llegada" id="punto_llegada" 
-                placeholder="Punto de llegada" disabled>
-            </div>
-        </div>
+            <div class="tab-pane fade" id="rutas_mo" role="tabpanel" aria-labelledby="rutas_mo-tab">
+                <div class="row mt-4">
+                    <div class="form-group col-lg-2">
+                        <label>Descripción:</label>
+                    </div>
+                    <div class="form-group col-lg-10">
+                        <input type="text" class="form-control" name="descripcion" id="descripcion" 
+                        placeholder="Descripción">
+                    </div>
+                </div>
 
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Cargar comprobante:</label>
-            </div>
-            <div class="form-group col-lg-10">
-                <input type="file" class="form-control-file" name="comprobante" id="comprobante" 
-                onchange="Valida_Archivo('comprobante');">
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>N° personas:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" name="personas" id="personas" 
+                        placeholder="N° personas" onkeypress="return solo_Numeros(event);">
+                    </div>
+        
+                    <div class="form-group col-lg-2">
+                        <label>Punto salida:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" name="punto_salida" id="punto_salida" 
+                        placeholder="Punto salida">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>Punto llegada:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" name="punto_llegada" id="punto_llegada" 
+                        placeholder="Punto llegada">
+                    </div>
+        
+                    <div class="form-group col-lg-2">
+                        <label>Transporte:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <select class="form-control" name="transporte" id="transporte">
+                            <option value="0">Seleccione</option>
+                            <option value="1">BUS</option>
+                            <option value="2">TAXI</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>Motivo:</label>
+                    </div>
+                    <div class="form-group col-lg-10">
+                        <input type="text" class="form-control" name="motivo" id="motivo" 
+                        placeholder="Motivo">
+                    </div>
+                </div>
+        
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label>Costo:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <input type="text" class="form-control" name="costo" id="costo" 
+                        placeholder="Costo" onkeypress="return solo_Numeros_Punto(event);">
+                    </div>
+                    <div class="form-group col-lg-1">
+                        <button class="btn btn-primary" type="button" onclick="Insert_Temporal();">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row justify-content-end">
+                    <div class="col-lg-2">
+                        <label>Total:</label>
+                    </div>
+                    <div class="col-lg-4 input-group">
+                        <div class="input-group-prepend">
+                            <select class="form-control" name="id_tipo_moneda" id="id_tipo_moneda">
+                                @foreach ($list_tipo_moneda as $list)
+                                    <option value="{{ $list->id_moneda }}">{{ $list->cod_moneda }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <input type="text" class="form-control" name="total" id="total" placeholder="Total" 
+                        disabled>
+                    </div>
+                </div>
+
+                <div id="lista_temporal" class="row">
+                </div>
             </div>
         </div>
     </div>
@@ -180,6 +249,89 @@
         tags: true,
         dropdownParent: $('#ModalRegistro')
     });
+
+    Lista_Temporal();
+    Total_Temporal();
+
+    function Lista_Temporal(){
+        Cargando();
+
+        var url = "{{ route('caja_chica.list_tmp_mo') }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success:function (resp) {
+                $('#lista_temporal').html(resp);  
+            }
+        });
+    }
+
+    function Total_Temporal(){
+        Cargando();
+
+        var url = "{{ route('caja_chica.total_tmp_mo') }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success:function (resp) {
+                $('#total').val(resp);  
+            }
+        });
+    }
+
+    function Insert_Temporal(){
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario'));
+        var url = "{{ route('caja_chica.store_tmp_mo') }}";
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#personas').val('');
+                $('#punto_salida').val('');
+                $('#punto_llegada').val('');
+                $('#transporte').val('0');
+                $('#motivo').val('');
+                $('#costo').val('');
+                Lista_Temporal();
+                Total_Temporal();
+            },
+            error:function(xhr) {
+                var errors = xhr.responseJSON.errors;
+                var firstError = Object.values(errors)[0][0];
+                Swal.fire(
+                    '¡Ups!',
+                    firstError,
+                    'warning'
+                );
+            }
+        });
+    }
+
+    function Delete_Temporal(id) {
+        Cargando();
+
+        var url = "{{ route('caja_chica.destroy_tmp_mo', ':id') }}".replace(':id', id);
+
+        $.ajax({
+            type: "DELETE",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function() {
+                Lista_Temporal();
+                Total_Temporal();
+            }
+        });
+    }
 
     function Insert_Caja_Chica_Mo() {
         Cargando();

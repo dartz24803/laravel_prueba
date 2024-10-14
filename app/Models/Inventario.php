@@ -208,4 +208,34 @@ class Inventario extends Model
 
         DB::update($sql, ['id_inventario' => $id]);
     }
+    
+    static function insert_carga_inventario($dato){
+        // Obtener el id del usuario desde la sesión
+        $id_usuario = session('usuario')->id_usuario;
+        $fechaActual = now();
+    
+        // Insertar en la tabla inventario
+        DB::table('inventario')->insert([
+            'conteo' => 0.00,
+            'stock' => 0.00,
+            'diferencia' => 0.00,
+            'fecha' => $dato['fecha'],
+            'base' => $dato['base'],
+            'id_responsable' => $dato['id_responsable'],
+            'cod_inventario' => $dato['cod_inventario'],
+            'estado' => 1,
+            'user_reg' => $id_usuario,
+            'fec_reg' => $fechaActual,
+        ]);
+    
+        // Insertar en la tabla inventario_detalle
+        DB::insert("
+            INSERT INTO inventario_detalle (id_inventario, categoria, familia, ubicacion, barra, estilo, generico, color, talla, linea, tipo_prenda, usuario, marca, tela, descripcion, unidad, fecha_creacion, conteo, stock, diferencia, valor, poriginal, pventa, costo, validacion, estado, user_reg, fec_reg)
+            SELECT 
+                (SELECT id_inventario FROM inventario WHERE cod_inventario = ? AND estado = 1),
+                categoria, familia, ubicacion, barra, estilo, generico, color, talla, linea, tipo_prenda, usuario, marca, tela, descripcion, unidad, fecha_creacion, conteo, stock, diferencia, valor, poriginal, pventa, costo, validacion, '1', ?, ?
+            FROM inventario_detalle_temporal
+            WHERE estado = 1 AND caracter = '' AND user_reg = ?
+        ", [$dato['cod_inventario'], $id_usuario, $fechaActual, $id_usuario]);
+    }
 }

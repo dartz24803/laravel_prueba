@@ -257,7 +257,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                             <div class="row">
                                                                 <div class="col-md-2">
                                                                     <div class="form-group">
-                                                                        <label for="id_base">Centro de Labores</label>
+                                                                        <label for="id_base">Ubicación </label>
                                                                         <div>
                                                                             <label for="" style="color:black"><b><?php echo $get_id[0]['centro_labores'] ?></b></label>
                                                                             <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('ColaboradorController/Modal_Update_Historico_Base_Colaborador/' .$get_id[0]['id_usuario']) }}" >

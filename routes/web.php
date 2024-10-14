@@ -1329,13 +1329,22 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::get('caja_chica/list', 'list')->name('caja_chica.list');
     Route::get('caja_chica/create_mo', 'create_mo')->name('caja_chica.create_mo');
     Route::post('caja_chica/traer_sub_categoria_mo', 'traer_sub_categoria_mo')->name('caja_chica.traer_sub_categoria_mo');
-    Route::post('caja_chica/consultar_ruc', 'consultar_ruc')->name('caja_chica.consultar_ruc');
+    Route::get('caja_chica/list_tmp_mo', 'list_tmp_mo')->name('caja_chica.list_tmp_mo');
+    Route::post('caja_chica/store_tmp_mo', 'store_tmp_mo')->name('caja_chica.store_tmp_mo');
+    Route::delete('caja_chica/{id}/destroy_tmp_mo', 'destroy_tmp_mo')->name('caja_chica.destroy_tmp_mo');
+    Route::get('caja_chica/total_tmp_mo', 'total_tmp_mo')->name('caja_chica.total_tmp_mo');
     Route::post('caja_chica_mo', 'store_mo')->name('caja_chica.store_mo');
     Route::get('caja_chica/create_pv', 'create_pv')->name('caja_chica.create_pv');
     Route::post('caja_chica/traer_categoria_pv', 'traer_categoria_pv')->name('caja_chica.traer_categoria_pv');
     Route::post('caja_chica/traer_sub_categoria_pv', 'traer_sub_categoria_pv')->name('caja_chica.traer_sub_categoria_pv');
+    Route::post('caja_chica/consultar_ruc', 'consultar_ruc')->name('caja_chica.consultar_ruc');
     Route::post('caja_chica_pv', 'store_pv')->name('caja_chica.store_pv');
+    Route::get('caja_chica/{id}/show', 'show')->name('caja_chica.show');
     Route::get('caja_chica/{id}/edit', 'edit')->name('caja_chica.edit');
+    Route::get('caja_chica/{id}/list_ruta_mo', 'list_ruta_mo')->name('caja_chica.list_ruta_mo');
+    Route::put('caja_chica/{id}/store_ruta_mo', 'store_ruta_mo')->name('caja_chica.store_ruta_mo');
+    Route::delete('caja_chica/{id}/destroy_ruta_mo', 'destroy_ruta_mo')->name('caja_chica.destroy_ruta_mo');
+    Route::get('caja_chica/{id}/total_ruta_mo', 'total_ruta_mo')->name('caja_chica.total_ruta_mo');
     Route::put('caja_chica_mo/{id}', 'update_mo')->name('caja_chica.update_mo');
     Route::put('caja_chica_pv/{id}', 'update_pv')->name('caja_chica.update_pv');
     Route::get('caja_chica/{id}/download', 'download')->name('caja_chica.download');
@@ -1794,36 +1803,24 @@ Route::controller(ReprocesoController::class)->group(function () {
 });
 
 
+use App\Http\Controllers\PapeletasConfController;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Route::controller(PapeletasConfController::class)->group(function () {
+    Route::get('PapeletasConf/TablaPapeleta_Seguridad', 'TablaPapeleta_Seguridad');
+    Route::get('PapeletasConf/Permisos_Papeletas_Salidas', 'Permisos_Papeletas_Salidas');
+    Route::get('PapeletasConf/Modal_Permisos_Papeletas_Salidas', 'Modal_Permisos_Papeletas_Salidas');
+    Route::post('PapeletasConf/Insert_Permisos_Papeletas_Salidas', 'Insert_Permisos_Papeletas_Salidas');
+    Route::post('PapeletasConf/Delete_Permisos_Papeletas_Salidas', 'Delete_Permisos_Papeletas_Salidas');
+    Route::get('PapeletasConf/Destino', 'Destino');
+    Route::post('PapeletasConf/Lista_PapeletasConf', 'Lista_PapeletasConf');
+    Route::get('PapeletasConf/Modal_PapeletasConf', 'Modal_PapeletasConf');
+    Route::post('PapeletasConf/Insert_PapeletasConf', 'Insert_PapeletasConf');
+    Route::get('PapeletasConf/Modal_Update_PapeletasConf/{id}', 'Modal_Update_PapeletasConf');
+    Route::get('PapeletasConf/Modal_Ver_PapeletasConf/{id}', 'Modal_Ver_PapeletasConf');
+    Route::post('PapeletasConf/Update_PapeletasConf', 'Update_PapeletasConf');
+    Route::post('PapeletasConf/Delete_PapeletasConf', 'Delete_PapeletasConf');
+    Route::get('PapeletasConf/Excel_PapeletasConf', 'Excel_PapeletasConf');
+});
 
 
 

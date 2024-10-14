@@ -25,13 +25,13 @@
                     <div class="widget-content widget-content-area br-6">
                         <div class="toolbar mt-3">
                             <div class="col-lg-12 text-center text-md-right">
-                                <button type="button" class="btn btn-primary mb-1 mb-md-0" 
+                                <button type="button" class="btn btn-primary mb-1 mb-sm-0" 
                                 title="Registrar" data-toggle="modal" 
                                 data-target="#ModalRegistroGrande" 
                                 app_reg_grande="{{ route('registro_letra.create') }}">
                                     Nuevo
                                 </button>
-                                <a class="btn mb-1 mb-md-0" title="Exportar excel"
+                                <a class="btn mb-1 mb-sm-0" title="Exportar excel"
                                 style="background-color: #28a745 !important;" 
                                 onclick="Excel_Registro_Letra();">
                                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="64" height="64" viewBox="0 0 172 172" style=" fill:#000000;">
@@ -43,7 +43,7 @@
                                         </g>
                                     </svg>                                
                                 </a>
-                                <a class="btn mb-1 mb-md-0" title="Importar excel" 
+                                <a class="btn mb-1 mb-sm-0" title="Importar excel" 
                                 style="background-color: #28a745 !important;" data-toggle="modal" 
                                 data-target="#ModalRegistro" app_reg="{{ route('registro_letra.import') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload-cloud text-white">
@@ -56,8 +56,8 @@
                             </div>
                         </div>
 
-                        <div class="toolbar d-md-flex mt-2">
-                            <div class="form-group col-lg-2 col-xl-2">
+                        <div class="row mr-1 ml-1 mt-2">
+                            <div class="col-sm-6 col-lg-2 col-xl-2">
                                 <label>Estado:</label>
                                 <select class="form-control" name="estadob" id="estadob" 
                                 onchange="Lista_Registro_Letra();">
@@ -67,7 +67,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-lg-2 col-xl-3">
+                            <div class="col-sm-6 col-lg-2 col-xl-3">
                                 <label>Empresa:</label>
                                 <select class="form-control basicb" name="id_empresab" id="id_empresab" 
                                 onchange="Lista_Registro_Letra();">
@@ -80,7 +80,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-lg-2 col-xl-3">
+                            <div class="col-sm-6 col-lg-2 col-xl-4">
                                 <label>Aceptante:</label>
                                 <select class="form-control basicb" name="id_aceptanteb" 
                                 id="id_aceptanteb" onchange="Lista_Registro_Letra();">
@@ -93,7 +93,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-lg-2 col-xl-1">
+                            <div class="col-sm-6 col-lg-2 col-xl-1">
                                 <label>Fecha</label>
                                 <div class="n-chk">
                                     <label class="new-control new-radio radio-primary">
@@ -110,7 +110,7 @@
                                 </div>
                             </div>
                             
-                            <div class="form-group col-lg-2 col-xl-1">
+                            <div class="col-sm-6 col-lg-2 col-xl-1">
                                 <label>Mes:</label>
                                 <select class="form-control" name="mesb" id="mesb" onchange="Lista_Registro_Letra();">
                                     <option value="0">Todos</option>
@@ -123,7 +123,7 @@
                                 </select>
                             </div>
                             
-                            <div class="form-group col-lg-2 col-xl-1">
+                            <div class="col-sm-6 col-lg-2 col-xl-1">
                                 <label>Año:</label>
                                 <select class="form-control" name="aniob" id="aniob" onchange="Lista_Registro_Letra();">
                                     <option value="0">Todos</option>

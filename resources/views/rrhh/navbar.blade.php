@@ -206,6 +206,13 @@
                 <p class="romperpalabra"><span id="icono_active2"></span> Intención de renuncia</p>
             </a>
         </li>
+        <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2 || session('usuario')->id_puesto == 24) { ?>
+            <li id="rgpapeletas_salidas">
+                <a href="{{ url('PapeletasConf/TablaPapeleta_Seguridad') }}" id="hgpapeletas_salidas" data-toggle="tooltip" data-placement="right" data-html="true" title="• Permisos de papeletas de salida <br>• Destino <br>• Trámite">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Papeletas de salida</p>
+                </a>
+            </li>
+        <?php } ?>
     </ul>
 
 </li>
