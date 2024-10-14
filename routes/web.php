@@ -76,12 +76,14 @@ use App\Http\Controllers\ReporteProveedoresController;
 use App\Http\Controllers\RequisicionTiendaConfController;
 use App\Http\Controllers\RequisicionTiendaController;
 use App\Http\Controllers\SalidaInsumoController;
+use App\Http\Controllers\SoporteController;
 use App\Http\Controllers\StockInfosapController;
 use App\Http\Controllers\TablaMaestraTesoreriaController;
 
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
 });
+
 Route::post('/ReporteFotograficoAdmListar', [ReporteFotograficoAdmController::class, 'listar']);
 Route::controller(ReporteFotograficoAdmController::class)->group(function () {
     Route::get('/ReporteFotograficoAdm',  'index')->name('tienda.administracion.ReporteFotografico.reportefotograficoadm');
@@ -377,6 +379,25 @@ Route::controller(ProcesosController::class)->group(function () {
     Route::get('portalprocesos_cap_conf/create', 'create_cap_conf')->name('portalprocesos_cap_conf.create');
     Route::post('portalprocesos_cap_conf', 'store_cap_conf')->name('portalprocesos_cap_conf.store');
 });
+
+
+//SOPORTE - ADMINISTRADOR
+Route::controller(SoporteController::class)->group(function () {
+    Route::get('soporte', 'index')->name('soporte');
+    Route::get('soporte_ticket', 'index_tick')->name('soporte_ticket');
+    Route::get('soporte_ticket/list', 'list_tick')->name('soporte_ticket.list');
+    Route::get('soporte_ticket/create', 'create_tick')->name('soporte_ticket.create');
+    Route::get('soporte_ticket/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_tick')->name('soporte_ticket.excel');
+    Route::get('soporte_ticket/store', 'store_tick')->name('soporte_ticket.store');
+    Route::get('soporte_ticket/{id}/image', 'image_tick')->name('soporte_ticket.image');
+    Route::delete('soporte_ticket/{id}', 'destroy_tick')->name('soporte_ticket.destroy');
+    Route::post('soporte_ticket/{id}', 'approve_tick')->name('soporte_ticket.approve');
+    Route::get('soporte_ticket/{id}/edit', 'edit_tick')->name('soporte_ticket.edit');
+
+    Route::get('soporte_ticket_index/{id_area}/{id_subgerencia}', 'handleAreaP')->name('soporte_ticket_index');
+});
+
+
 
 //BI REPORTES -
 Route::controller(BiReporteController::class)->group(function () {

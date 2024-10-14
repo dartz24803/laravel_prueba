@@ -1,5 +1,17 @@
 <!-- CSS -->
 <style>
+    #tabla_versiones td:nth-child(6) {
+        width: 20px;
+    }
+
+    #tabla_versiones td:nth-child(1) {
+        width: 20px;
+    }
+
+    .modal-dialog {
+        max-width: 85%;
+    }
+
     #paste_area_1 {
         width: 100%;
         /* Ancho completo */
@@ -309,12 +321,12 @@
                     <table id="tabla_js2" class="table table-hover" style="width:100%">
                         <thead class="text-center">
                             <tr>
-                                <th>N°pagina</th>
+                                <th style="width: 20px;">N°Pag</th>
                                 <th>Nombre</th>
                                 <th>Descripción</th>
-                                <th class="col-tipo">Concepto</th>
-                                <th class="col-tipo">Presentación</th>
-                                <th class="col-accion">Acciones</th>
+                                <th>Concepto</th>
+                                <th>Presentación</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="tabla_body">

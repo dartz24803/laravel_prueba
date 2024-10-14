@@ -212,7 +212,7 @@
         </div>
     </div>
 
-    
+
     <div id="Modal_IMG" class="modal animated zoomInUp custo-zoomInUp bd-example-modal-xl" data-backdrop="static" data-keyboard="false" role="dialog" tabindex="-1" role="dialog" aria-labelledby="ModalUpdate" aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
@@ -336,41 +336,34 @@
                 var link = $(e.relatedTarget);
                 $(this).find(".modal-content").load(link.attr("app_upd_slide"));
             });
-            
-            $('#Modal_IMG_Link').on('show.bs.modal', function (event) {
+
+            $('#Modal_IMG_Link').on('show.bs.modal', function(event) {
                 var button = $(event.relatedTarget);
                 var imagen = button.data('imagen');
                 var titulo = button.data('title');
                 var imagen2 = imagen.substr(-3);
-                var rutapdf= $("#rutaarchivo").val();
-                var nombre_archivo= rutapdf+imagen;
-                if (imagen!=""){
-                    if (imagen2=="PDF" || imagen2=="pdf")
-                    {
-                        document.getElementById("archivo").innerHTML = "<iframe height='350px' width='100%' src='"+nombre_archivo+"' allowfullscreen></iframe>";
+                var rutapdf = $("#rutaarchivo").val();
+                var nombre_archivo = rutapdf + imagen;
+                if (imagen != "") {
+                    if (imagen2 == "PDF" || imagen2 == "pdf") {
+                        document.getElementById("archivo").innerHTML = "<iframe height='350px' width='100%' src='" + nombre_archivo + "' allowfullscreen></iframe>";
                         //document.getElementById("archivo").innerHTML = "<iframe src='https://docs.google.com/gview?url="+nombre_archivo+"&pid=explorer&efh=false&a=v&chrome=false&embedded=true' style='width:100%; height:700px;' frameborder='0' class='card-img-top img-portal' alt='widget-card-2'></iframe>";
                         //document.getElementById("archivo").innerHTML = "<iframe src='https://docs.google.com/gview?url="+nombre_archivo+"&embedded=true' style='width:100%; height:400px;' frameborder='0' class='card-img-top img-portal' alt='widget-card-2'></iframe>";
+                    } else if (imagen2 == "mp4") {
+                        document.getElementById("archivo").innerHTML = "<video id='video-player'  preload='metadata'playsinline  controls controlslist='nodownload' class='card-img-top img-portal' alt='widget-card-2'><source src='" + nombre_archivo + "' type='video/mp4' ></video>";
+                    } else {
+                        document.getElementById("archivo").innerHTML = "<img style='max-width:100%;' src='" + nombre_archivo + "'>";
                     }
-                    else if (imagen2=="mp4")
-                    {
-                        document.getElementById("archivo").innerHTML = "<video id='video-player'  preload='metadata'playsinline  controls controlslist='nodownload' class='card-img-top img-portal' alt='widget-card-2'><source src='"+nombre_archivo+"' type='video/mp4' ></video>";
-                    }
-                    else
-                    {
-                        document.getElementById("archivo").innerHTML = "<img style='max-width:100%;' src='"+nombre_archivo+"'>";
-                    }
-                }
-                else
-                {
+                } else {
                     document.getElementById("archivo").innerHTML = "No se ha registrado ningún archivo";
                 }
 
                 var modal = $(this)
                 modal.find('.modal-title').text(titulo)
-                $('.alert').hide();//Oculto alert
+                $('.alert').hide(); //Oculto alert
             })
         });
-        $('#Modal_IMG').on('show.bs.modal', function (event) {
+        $('#Modal_IMG').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget);
             var imagen = button.data('imagen');
             var titulo = button.data('title');
@@ -392,7 +385,6 @@
             modal.find('.modal-title').text(titulo);
             $('.alert').hide(); // Oculto alert
         });
-
     </script>
     <!-- END MODAL  -->
 
@@ -563,7 +555,6 @@
                             </a>
                         </li>
                     <?php } ?>
-
                     @yield('navbar')
                 </ul>
             </nav>

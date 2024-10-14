@@ -1,5 +1,17 @@
 <!-- CSS -->
 <style>
+    #tabla_versiones td:nth-child(6) {
+        width: 20px;
+    }
+
+    #tabla_versiones td:nth-child(1) {
+        width: 20px;
+    }
+
+    .modal-dialog {
+        max-width: 85%;
+    }
+
     #paste_areae_1 {
         width: 100%;
         /* Ancho completo */
@@ -75,7 +87,7 @@
     }
 
     .col-tipo {
-        width: 200px;
+        width: 100px;
         /* Ajusta el valor según sea necesario */
     }
 
@@ -168,7 +180,7 @@
 </style>
 <form id="formulario_update" method="POST" enctype="multipart/form-data" class="needs-validation">
 
-    <div class=" modal-header">
+    <div class="modal-header">
         <h5 class="modal-title">Editar Accesos de Reporte</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
@@ -287,12 +299,12 @@
                     <table id="tabla_versiones" class="table table-hover" style="width:100%">
                         <thead class="text-center">
                             <tr>
-                                <th>N°pagina</th>
+                                <th style="width: 20px;">N°Pag</th>
                                 <th>Nombre</th>
                                 <th>Descripción</th>
-                                <th class="col-tipo">Tipo</th>
-                                <th class="col-tipo">Presentación</th>
-                                <th class="col-accion">Acciones</th>
+                                <th>Tipo</th>
+                                <th>Presentación</th>
+                                <th style="width: 20px;"></th> <!-- Ajuste del ancho de la columna -->
                             </tr>
                         </thead>
                         <tbody id="tabla_body2">
@@ -309,7 +321,7 @@
                                     </select>
                                 </td>
                                 <td class="px-1"><input type="text" class="form-control" name="indicador[]" value="{{ $indicador->nom_indicador }}"></td>
-                                <td class="px-1"><input type="text" class="form-control" name="descripcion[]" value="{{ $indicador->descripcion }}"></td>
+                                <td class="px-1"><input type="text" class="form-control" name="descripcion[]" value="{{ $indicador->descripcion }}" title="{{ $indicador->descripcion  }}"></td>
                                 <td class="px-1">
                                     <select class="form-control" name="tipo[]">
                                         @foreach ($list_tipo_indicador as $list)
@@ -325,7 +337,7 @@
                                         <option value="2" {{ $indicador->presentacion == 2 ? 'selected' : '' }}>Informativo</option>
                                     </select>
                                 </td>
-                                <td class="px-1"><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
+                                <td class=""><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">-</button></td>
                             </tr>
                             @endforeach
                         </tbody>
