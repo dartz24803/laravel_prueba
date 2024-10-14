@@ -1773,36 +1773,24 @@ Route::controller(ReprocesoController::class)->group(function () {
 });
 
 
+use App\Http\Controllers\PapeletasConfController;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Route::controller(PapeletasConfController::class)->group(function () {
+    Route::get('PapeletasConf/TablaPapeleta_Seguridad', 'TablaPapeleta_Seguridad');
+    Route::get('PapeletasConf/Permisos_Papeletas_Salidas', 'Permisos_Papeletas_Salidas');
+    Route::get('PapeletasConf/Modal_Permisos_Papeletas_Salidas', 'Modal_Permisos_Papeletas_Salidas');
+    Route::post('PapeletasConf/Insert_Permisos_Papeletas_Salidas', 'Insert_Permisos_Papeletas_Salidas');
+    Route::post('PapeletasConf/Delete_Permisos_Papeletas_Salidas', 'Delete_Permisos_Papeletas_Salidas');
+    Route::get('PapeletasConf/Destino', 'Destino');
+    Route::post('PapeletasConf/Lista_PapeletasConf', 'Lista_PapeletasConf');
+    Route::get('PapeletasConf/Modal_PapeletasConf', 'Modal_PapeletasConf');
+    Route::post('PapeletasConf/Insert_PapeletasConf', 'Insert_PapeletasConf');
+    Route::get('PapeletasConf/Modal_Update_PapeletasConf/{id}', 'Modal_Update_PapeletasConf');
+    Route::get('PapeletasConf/Modal_Ver_PapeletasConf/{id}', 'Modal_Ver_PapeletasConf');
+    Route::post('PapeletasConf/Update_PapeletasConf', 'Update_PapeletasConf');
+    Route::post('PapeletasConf/Delete_PapeletasConf', 'Delete_PapeletasConf');
+    Route::get('PapeletasConf/Excel_PapeletasConf', 'Excel_PapeletasConf');
+});
 
 
 
