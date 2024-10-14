@@ -481,7 +481,7 @@ class CargaInventarioController extends Controller
                 </a><br>ERRORES: $error<br>TOTAL: $total";
             } else {
                 $anio = date('Y');
-                $totalRows_t = count(Inventario::cont_carga_inverntario());
+                $totalRows_t = count(Inventario::cont_carga_inventario());
                 $aniof = substr($anio, 2, 2);
                 if ($totalRows_t < 9) {
                     $codigofinal = "I" . $aniof . "0000" . ($totalRows_t + 1);
@@ -565,7 +565,8 @@ class CargaInventarioController extends Controller
         $sheet->setCellValue("M2", "DENIM GAVIOTA PLUS");
         $sheet->setCellValue("N2", "TORERO MAGNOLIA DENIM ST GAVIOTA PLUS M/TMG22-0101 DAMA");
         $sheet->setCellValue("O2", "UNIDAD");
-        $sheet->setCellValue("P2", "15/01/2022");
+        $sheet->setCellValue("P2", "2024/10/30");
+        $sheet->getStyle("P2")->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
         $sheet->setCellValue("Q2", "6");
         $sheet->setCellValue("R2", "6");
         $sheet->setCellValue("S2", "0");
