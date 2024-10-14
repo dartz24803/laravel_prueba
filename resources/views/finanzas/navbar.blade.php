@@ -68,13 +68,11 @@
         session('usuario')->id_puesto == "1" ||
         session('usuario')->id_puesto == "138" ||
         session('usuario')->id_puesto == "3")
-            @if (session('usuario')->id_usuario == "139")
-                <li>
-                    <a id="registros_cheques" href="{{ route('registro_cheque') }}">
-                        <p class="romperpalabra"><span id="icono_active2"></span> Registro de cheques</p>
-                    </a>
-                </li>
-            @endif
+            <li>
+                <a id="registros_cheques" href="{{ route('registro_cheque') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Registro de cheques</p>
+                </a>
+            </li>
         @endif
         @if (session('usuario')->id_nivel == "1" ||
         session('usuario')->id_puesto == "10" || 
