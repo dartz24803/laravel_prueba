@@ -50,7 +50,7 @@
             <th>Orden</th>
             <th class="no-content">Generación</th>
             <th>Sede Laboral</th>
-            <th title="Centro de labores">C. L.</th>
+            <th>Centro de labores</th>
             <th>Apellido Paterno</th>
             <th>Apellido Materno</th>
             <th>Nombres</th>
