@@ -274,6 +274,16 @@
             });
         }
 
+        function Tipo_Movimiento(v){
+            var tipo_movimiento = $('input[name="tipo_movimiento'+v+'"]:checked').val();
+
+            if(tipo_movimiento=="1"){
+                $('#proveedores_mo-tab'+v).html('Cliente');
+            }else{
+                $('#proveedores_mo-tab'+v).html('Proveedor');
+            }
+        }
+
         function Traer_Pago(v){
             Cargando();
 

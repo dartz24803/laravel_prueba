@@ -102,6 +102,11 @@
                     <p class="romperpalabra"><span id="icono_active2"></span> Funciones temporales</p>
                 </a>
             </li>
+            <li>
+                <a id="ocurrencias" href="{{ route('ocurrencia_tienda') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Ocurrencias</p>
+                </a>
+            </li>
             <li id="reportefoto">
                 <a id="reporte_foto" href="{{ url('/ReporteFotografico')}}">
                     <p class="romperpalabra"><span id="icono_active2"></span> Reporte fotográfico</p>

@@ -1744,7 +1744,7 @@ Route::controller(IntencionRenunciaConfController::class)->group(function () {
 });
 //Ocurrencias
 Route::controller(OcurrenciasTiendaController::class)->group(function () {
-    Route::get('OcurrenciaTienda/index', 'Ocurrencia_Tienda');
+    Route::get('OcurrenciaTienda/index', 'Ocurrencia_Tienda')->name('ocurrencia_tienda');
     Route::post('OcurrenciaTienda/ListaOcurrencia/{base}/{fec_ini}/{fec_fin}/{tipo}/{colaborador}', 'ListaOcurrencia');
     Route::get('OcurrenciaTienda/Modal_Ocurrencia_Tienda_Admin', 'Modal_Ocurrencia_Tienda_Admin');
     Route::post('OcurrenciaTienda/Insert_Ocurrencia_Tienda_Admin', 'Insert_Ocurrencia_Tienda_Admin');

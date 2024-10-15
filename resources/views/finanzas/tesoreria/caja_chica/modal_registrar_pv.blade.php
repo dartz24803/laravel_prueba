@@ -90,11 +90,13 @@
                     </div>
                     <div class="form-group col-lg-5">
                         <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="tipo_movimiento_ing" name="tipo_movimiento" class="custom-control-input" value="1">
+                            <input type="radio" id="tipo_movimiento_ing" name="tipo_movimiento" 
+                            class="custom-control-input" value="1" onchange="Tipo_Movimiento('');">
                             <label class="custom-control-label" for="tipo_movimiento_ing">Ingreso</label>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="tipo_movimiento_sal" name="tipo_movimiento" class="custom-control-input" value="2">
+                            <input type="radio" id="tipo_movimiento_sal" name="tipo_movimiento" 
+                            class="custom-control-input" value="2" onchange="Tipo_Movimiento('');" checked>
                             <label class="custom-control-label" for="tipo_movimiento_sal">Salida</label>
                         </div>
                     </div>

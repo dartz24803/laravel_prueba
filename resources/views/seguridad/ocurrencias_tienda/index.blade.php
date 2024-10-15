@@ -1,7 +1,13 @@
 @extends('layouts.plantilla')
 
 @section('navbar')
-@include('seguridad.navbar')
+    @if (session('usuario')->id_nivel == "1" ||
+    session('usuario')->id_area == "14" ||
+    session('usuario')->id_area == "44")
+        @include('tienda.navbar')
+    @else
+        @include('seguridad.navbar')
+    @endif
 @endsection
 
 @section('content')
@@ -198,9 +204,17 @@ $id_nivel = session('usuario')->id_nivel;
 
 <script>
     $(document).ready(function() {
-        $("#seguridades").addClass('active');
-        $("#rseguridades").attr('aria-expanded', 'true');
-        $("#hlocurrencia").addClass('active');
+        @if (session('usuario')->id_nivel == "1" ||
+        session('usuario')->id_area == "14" ||
+        session('usuario')->id_area == "44")
+            $("#tienda").addClass('active');
+            $("#rtienda").attr('aria-expanded', 'true');
+            $("#ocurrencias").addClass('active');
+        @else
+            $("#seguridades").addClass('active');
+            $("#rseguridades").attr('aria-expanded', 'true');
+            $("#hlocurrencia").addClass('active');
+        @endif
 
         Traer_Tipo_Ocurrencia_Busq();
         Cambiar_Ocurrencia_Admin();

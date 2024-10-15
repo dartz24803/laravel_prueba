@@ -112,13 +112,13 @@
                     <div class="form-group col-lg-5">
                         <div class="custom-control custom-radio custom-control-inline">
                             <input type="radio" id="tipo_movimiento_inge" name="tipo_movimientoe" 
-                            class="custom-control-input" value="1" 
+                            class="custom-control-input" value="1" onchange="Tipo_Movimiento('e');"
                             @if ($get_id->tipo_movimiento=="1") checked @endif>
                             <label class="custom-control-label" for="tipo_movimiento_inge">Ingreso</label>
                         </div>
                         <div class="custom-control custom-radio custom-control-inline">
                             <input type="radio" id="tipo_movimiento_sale" name="tipo_movimientoe" 
-                            class="custom-control-input" value="2" 
+                            class="custom-control-input" value="2" onchange="Tipo_Movimiento('e');"
                             @if ($get_id->tipo_movimiento=="2") checked @endif>
                             <label class="custom-control-label" for="tipo_movimiento_sale">Salida</label>
                         </div>
