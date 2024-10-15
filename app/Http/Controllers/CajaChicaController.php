@@ -1021,7 +1021,7 @@ class CajaChicaController extends Controller
 
         $sheet->getStyle("A1:L1")->applyFromArray($styleThinBlackBorderOutline);
 
-        $sheet->setCellValue("A1", 'Fecha registro');
+        $sheet->setCellValue("A1", 'Fecha solicitud');
         $sheet->setCellValue("B1", 'Ubicación');
         $sheet->setCellValue("C1", 'Categoría');
         $sheet->setCellValue("D1", 'Sub-Categoría');
@@ -1046,7 +1046,11 @@ class CajaChicaController extends Controller
             $sheet->getStyle("L{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
             $sheet->getStyle("A{$contador}:L{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
             $sheet->getStyle("A{$contador}:L{$contador}")->applyFromArray($styleThinBlackBorderOutline);
-            $sheet->getStyle("K{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_CURRENCY_SOL_SIMPLE);
+            if($list->id_tipo_moneda=="1"){
+                $sheet->getStyle("K{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_CURRENCY_SOL_SIMPLE);
+            }else{
+                $sheet->getStyle("K{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_CURRENCY_USD);
+            }
 
             $sheet->setCellValue("A{$contador}", Date::PHPToExcel($list->fecha));
             $sheet->getStyle("A{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
