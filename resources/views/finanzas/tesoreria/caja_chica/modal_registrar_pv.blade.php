@@ -163,9 +163,14 @@
                     <div class="form-group col-lg-2">
                         <label>Cargar comprobante:</label>
                     </div>
-                    <div class="form-group col-lg-10">
-                        <input type="file" class="form-control-file" name="comprobante" id="comprobante" 
-                        onchange="Valida_Archivo('comprobante');">
+                    <div class="form-group col-lg-4">
+                        <div class="drop-zone" id="drop-zone">
+                            <span>Arrastra y suelta el archivo aquí o haz clic para seleccionarlo</span>
+                            <input type="file" id="comprobante" name="comprobante" accept=".jpg, .jpeg, .png, .pdf"
+                            onchange="Valida_Archivo('comprobante');">
+                        </div>
+                    </div>
+                    <div id="div_comprobante" class="form-group col-lg-6 preview">
                     </div>
                 </div>
             </div>
@@ -291,6 +296,55 @@
 </form>
 
 <script>
+    $(document).ready(function() {
+        // Funciones para manejar arrastrar y soltar
+        const dropZone = document.getElementById('drop-zone');
+        const inputElement = document.getElementById('comprobante');
+
+        dropZone.addEventListener('click', () => inputElement.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drop-zone--over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drop-zone--over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drop-zone--over');
+
+            if (e.dataTransfer.files.length) {
+                const files = Array.from(e.dataTransfer.files);
+                const allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf'];
+                const isFileTypeValid = files.every(file => {
+                    const fileExtension = file.name.split('.').pop().toLowerCase();
+                    return allowedExtensions.includes(fileExtension);
+                });
+
+                if (isFileTypeValid) {
+                    inputElement.files = e.dataTransfer.files;
+                    validarArchivoImgPrevisualizar('comprobante', 'div_comprobante');
+                } else {
+                    Swal({
+                        title: 'Error',
+                        text: "Por favor, suba archivos con las siguientes extensiones: .jpg, .jpeg, .png, .pdf",
+                        type: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
+                    });
+                }
+            }
+        });
+
+        inputElement.addEventListener('change', () => {
+            validarArchivoImgPrevisualizar('comprobante', 'div_comprobante');
+        });
+    });
+
     $(".basic").select2({
         tags: true,
         dropdownParent: $('#ModalRegistro')

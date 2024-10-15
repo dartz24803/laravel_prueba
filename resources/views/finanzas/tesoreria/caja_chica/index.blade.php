@@ -50,6 +50,45 @@
             transform: translateX(16px);
         }
 
+        .drop-zone {
+            max-width: 300px;
+            height: 200px;
+            padding: 16px;
+            border: 2px dashed #007bff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            cursor: pointer;
+        }
+
+        .drop-zone--over {
+            border-style: solid;
+            background-color: #f0f0f0;
+        }
+
+        .drop-zone input {
+            display: none;
+        }
+
+        .preview {
+            margin-top: 10px;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .preview img {
+            max-width: 200px;
+            margin-bottom: 10px;
+        }
+
+        .preview embed {
+            width: 100%;
+            height: 500px;
+        }
+
         input[disabled] {
             background-color: white !important;
             color: black;
@@ -301,6 +340,39 @@
                     $('#id_tipo_pago'+v).html(resp);
                 }
             });
+        }
+
+        function validarArchivoImgPrevisualizar(inputId, previewDivId) {
+            const input = document.getElementById(inputId);
+            const previewDiv = document.getElementById(previewDivId);
+
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const fileType = file.type;
+
+                const reader = new FileReader();
+                
+                reader.onload = function (e) {
+                    previewDiv.innerHTML = '';
+
+                    if (fileType.startsWith('image/')) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        previewDiv.appendChild(img);
+                    } else if (fileType === 'application/pdf') {
+                        const embed = document.createElement('embed');
+                        embed.src = e.target.result;
+                        previewDiv.appendChild(embed);
+                    } else {
+                        previewDiv.innerHTML = 'No se puede previsualizar este tipo de archivo';
+                    }
+                };
+                
+                reader.readAsDataURL(file);
+            } else {
+                previewDiv.innerHTML = 'No se seleccionó ningún archivo';
+            }
+            return true;
         }
 
         function Valida_Archivo(val){
