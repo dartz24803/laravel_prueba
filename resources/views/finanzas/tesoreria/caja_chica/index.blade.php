@@ -86,6 +86,30 @@
                         </div>
 
                         <div class="row mr-1 ml-1 mt-2">
+                            <div class="col-sm-5 col-lg-2">
+                                <label>Fecha Inicio:</label>
+                                <input type="date" class="form-control" name="fec_iniciob" 
+                                id="fec_iniciob" value="{{ date('Y-m-01') }}">
+                            </div>
+
+                            <div class="col-sm-5 col-lg-2">
+                                <label>Fecha Fin:</label>
+                                <input type="date" class="form-control" name="fec_finb" 
+                                id="fec_finb" value="{{ date('Y-m-d') }}">
+                            </div>
+
+                            <div class="col-sm-2 col-lg-1 d-sm-flex align-items-sm-center mt-1 mt-sm-0">
+                                <a type="button" class="btn btn-primary" title="Buscar" 
+                                onclick="Lista_Caja_Chica();">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search toggle-search">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="row mr-1 ml-1 mt-3">
                             <div class="toggle-switch">
                                 <input class="toggle-input" id="toggle-sc" type="checkbox" checked>
                                 <label class="toggle-label" for="toggle-sc"></label>
@@ -135,7 +159,6 @@
             Lista_Caja_Chica();
         });
 
-
         function solo_Numeros_Punto(e) {
             var key = event.which || event.keyCode;
             if ((key >= 48 && key <= 57) || key == 46) {
@@ -160,15 +183,37 @@
         function Lista_Caja_Chica(){
             Cargando();
 
+            var fec_inicio = $('#fec_iniciob').val();
+            var fec_fin = $('#fec_finb').val();
             var url = "{{ route('caja_chica.list') }}";
 
-            $.ajax({
-                url: url,
-                type: "GET",
-                success:function (resp) {
-                    $('#lista_caja_chica').html(resp);  
-                }
-            });
+            var ini = moment(fec_inicio);
+            var fin = moment(fec_fin);
+            if (ini.isAfter(fin) == true) {
+                Swal({
+                    title: '¡Selección Denegada!',
+                    html: "Fecha inicio no debe ser mayor a fecha fin. <br> Por favor corrígelo.",
+                    type: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK',
+                });
+            }else{
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data:{
+                        'fec_inicio':fec_inicio,
+                        'fec_fin':fec_fin
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    success:function (resp) {
+                        $('#lista_caja_chica').html(resp);  
+                    }
+                });
+            }
         }
 
         function Traer_Sub_Categoria(v){
@@ -390,7 +435,23 @@
         }
 
         function Excel_Caja_Chica() {
-            window.location = "{{ route('caja_chica.excel') }}";
+            var fec_inicio = $('#fec_iniciob').val();
+            var fec_fin = $('#fec_finb').val();
+
+            var ini = moment(fec_inicio);
+            var fin = moment(fec_fin);
+            if (ini.isAfter(fin) == true) {
+                Swal({
+                    title: '¡Selección Denegada!',
+                    html: "Fecha inicio no debe ser mayor a fecha fin. <br> Por favor corrígelo.",
+                    type: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK',
+                });
+            }else{
+                window.location = "{{ route('caja_chica.excel', [':fec_inicio', ':fec_fin']) }}".replace(':fec_inicio', fec_inicio).replace(':fec_fin', fec_fin);
+            }
         }
     </script>
 @endsection

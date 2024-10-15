@@ -85,20 +85,28 @@ class CajaChica extends Model
                     CASE WHEN cc.id_tipo_comprobante=6 THEN 'TICKET' ELSE tc.nom_tipo_comprobante 
                     END AS nom_tipo_comprobante,cc.n_comprobante,
                     CONCAT(SUBSTRING_INDEX(us.usuario_nombres,' ',1),' ',us.usuario_apater) AS nom_solicitante,
-                    cc.ruc,cc.razon_social,cc.descripcion,CONCAT(tm.cod_moneda,' ',
+                    cc.ruc,cc.razon_social,cc.descripcion,
+                    CASE WHEN ca.nom_categoria='MOVILIDAD' THEN 
+                    CONCAT(tm.cod_moneda,' ',IFNULL((SELECT SUM(cr.costo) FROM caja_chica_ruta cr
+                    WHERE cr.id_caja_chica=cc.id),0)) 
+                    WHEN ca.nom_categoria!='MOVILIDAD' THEN
+                    CONCAT(tm.cod_moneda,' ',IFNULL((SELECT SUM(cp.cantidad*cp.precio) FROM caja_chica_producto cp
+                    WHERE cp.id_caja_chica=cc.id),0)) 
+                    END AS total_concatenado,
                     CASE WHEN ca.nom_categoria='MOVILIDAD' THEN 
                     IFNULL((SELECT SUM(cr.costo) FROM caja_chica_ruta cr
-                    WHERE cr.id_caja_chica=cc.id),0) 
+                    WHERE cr.id_caja_chica=cc.id),0)
                     WHEN ca.nom_categoria!='MOVILIDAD' THEN
                     IFNULL((SELECT SUM(cp.cantidad*cp.precio) FROM caja_chica_producto cp
-                    WHERE cp.id_caja_chica=cc.id),0) 
-                    ELSE 0 END) AS total,
+                    WHERE cp.id_caja_chica=cc.id),0)
+                    END AS total,
                     CASE WHEN cc.estado_c=1 THEN 'Por revisar'
                     WHEN cc.estado_c=2 THEN 'Completado' WHEN cc.estado_c=3 THEN 'Anulado' 
                     ELSE '' END AS nom_estado,
                     CASE WHEN cc.estado_c=1 THEN '#9DA7B9'
                     WHEN cc.estado_c=2 THEN '#028B35' WHEN cc.estado_c=3 THEN '#FF3131' 
-                    ELSE 'transparent' END AS color_estado,cc.comprobante,cc.estado_c,cc.id_tipo_moneda
+                    ELSE 'transparent' END AS color_estado,cc.comprobante,cc.estado_c,cc.id_tipo_moneda,
+                    cc.tipo_movimiento
                     FROM caja_chica cc
                     INNER JOIN ubicacion ub ON ub.id_ubicacion=cc.id_ubicacion
                     INNER JOIN categoria ca ON ca.id_categoria=cc.id_categoria
@@ -107,7 +115,8 @@ class CajaChica extends Model
                     INNER JOIN vw_tipo_comprobante tc ON tc.id=cc.id_tipo_comprobante
                     INNER JOIN users us ON us.id_usuario=cc.id_usuario
                     INNER JOIN tipo_moneda tm ON tm.id_moneda=cc.id_tipo_moneda
-                    WHERE cc.estado=1
+                    WHERE (cc.fecha BETWEEN '".$dato['fec_inicio']."' AND '".$dato['fec_fin']."') AND
+                    cc.estado=1
                     ORDER BY cc.fecha DESC";
             $query = DB::select($sql);
             return $query;

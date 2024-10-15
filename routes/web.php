@@ -1326,7 +1326,7 @@ Route::controller(CajaChicaConfController::class)->group(function () {
 //TESORERÍA - CAJA CHICA
 Route::controller(CajaChicaController::class)->group(function () {
     Route::get('caja_chica', 'index')->name('caja_chica');
-    Route::get('caja_chica/list', 'list')->name('caja_chica.list');
+    Route::post('caja_chica/list', 'list')->name('caja_chica.list');
     Route::get('caja_chica/create_mo', 'create_mo')->name('caja_chica.create_mo');
     Route::post('caja_chica/traer_sub_categoria_mo', 'traer_sub_categoria_mo')->name('caja_chica.traer_sub_categoria_mo');
     Route::get('caja_chica/list_tmp_mo', 'list_tmp_mo')->name('caja_chica.list_tmp_mo');
@@ -1367,7 +1367,7 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::delete('caja_chica_cr/{id}', 'destroy_cr')->name('caja_chica.destroy_cr');
     Route::put('caja_chica/{id}/anular', 'anular')->name('caja_chica.anular');
     Route::delete('caja_chica/{id}', 'destroy')->name('caja_chica.destroy');
-    Route::get('caja_chica/excel', 'excel')->name('caja_chica.excel');
+    Route::get('caja_chica/{fec_inicio}/{fec_fin}/excel', 'excel')->name('caja_chica.excel');
 });
 //CAJA - INSUMOS CONFIGURABLE
 Route::controller(InsumoConfController::class)->group(function () {
