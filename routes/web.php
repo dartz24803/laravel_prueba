@@ -1357,6 +1357,7 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::get('caja_chica/{id}/saldo', 'saldo')->name('caja_chica.saldo');
     Route::post('caja_chica_cr/{id}', 'store_cr')->name('caja_chica.store_cr');
     Route::delete('caja_chica_cr/{id}', 'destroy_cr')->name('caja_chica.destroy_cr');
+    Route::put('caja_chica/{id}/anular', 'anular')->name('caja_chica.anular');
     Route::delete('caja_chica/{id}', 'destroy')->name('caja_chica.destroy');
     Route::get('caja_chica/excel', 'excel')->name('caja_chica.excel');
 });

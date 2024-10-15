@@ -784,6 +784,15 @@ class CajaChicaController extends Controller
         CajaChicaPagoTemporal::destroy($id);
     }
 
+    public function anular($id)
+    {
+        CajaChica::findOrFail($id)->update([
+            'estado_c' => 3,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
     public function destroy($id)
     {
         CajaChica::findOrFail($id)->update([
