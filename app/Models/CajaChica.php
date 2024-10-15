@@ -26,6 +26,7 @@ class CajaChica extends Model
         'id_tipo_moneda',
         'ruc',
         'razon_social',
+        'direccion',
         'id_tipo_comprobante',
         'n_comprobante',
         'comprobante',
@@ -46,13 +47,24 @@ class CajaChica extends Model
 
     public static function get_list_caja_chica($dato=null){
         if(isset($dato['id'])){
-            $sql = "SELECT cc.*,IFNULL((SELECT SUM(cr.costo) FROM caja_chica_ruta cr
-                    WHERE cr.id_caja_chica=cc.id),0) AS total,ca.nom_categoria,sc.nombre,
+            $sql = "SELECT cc.*,ca.nom_categoria,sc.nombre,
                     CASE WHEN cc.id_tipo_comprobante=6 THEN 'TICKET' ELSE tc.nom_tipo_comprobante 
                     END AS nom_tipo_comprobante,ub.cod_ubi,em.nom_empresa,pa.nom_pago,
                     tp.nombre AS nom_tipo_pago,
+                    CASE WHEN ca.nom_categoria='MOVILIDAD' THEN 
                     CONCAT(tm.cod_moneda,' ',IFNULL((SELECT SUM(cr.costo) FROM caja_chica_ruta cr
-                    WHERE cr.id_caja_chica=cc.id),0)) AS total_concatenado
+                    WHERE cr.id_caja_chica=cc.id),0)) 
+                    WHEN ca.nom_categoria!='MOVILIDAD' THEN
+                    CONCAT(tm.cod_moneda,' ',IFNULL((SELECT SUM(cp.cantidad*cp.precio) FROM caja_chica_producto cp
+                    WHERE cp.id_caja_chica=cc.id),0)) 
+                    END AS total_concatenado,
+                    CASE WHEN ca.nom_categoria='MOVILIDAD' THEN 
+                    IFNULL((SELECT SUM(cr.costo) FROM caja_chica_ruta cr
+                    WHERE cr.id_caja_chica=cc.id),0)
+                    WHEN ca.nom_categoria!='MOVILIDAD' THEN
+                    IFNULL((SELECT SUM(cp.cantidad*cp.precio) FROM caja_chica_producto cp
+                    WHERE cp.id_caja_chica=cc.id),0)
+                    END AS total
                     FROM caja_chica cc
                     INNER JOIN categoria ca ON ca.id_categoria=cc.id_categoria
                     INNER JOIN sub_categoria sc ON sc.id=cc.id_sub_categoria
@@ -76,7 +88,11 @@ class CajaChica extends Model
                     cc.ruc,cc.razon_social,cc.descripcion,CONCAT(tm.cod_moneda,' ',
                     CASE WHEN ca.nom_categoria='MOVILIDAD' THEN 
                     IFNULL((SELECT SUM(cr.costo) FROM caja_chica_ruta cr
-                    WHERE cr.id_caja_chica=cc.id),0) ELSE 0 END) AS total,
+                    WHERE cr.id_caja_chica=cc.id),0) 
+                    WHEN ca.nom_categoria!='MOVILIDAD' THEN
+                    IFNULL((SELECT SUM(cp.cantidad*cp.precio) FROM caja_chica_producto cp
+                    WHERE cp.id_caja_chica=cc.id),0) 
+                    ELSE 0 END) AS total,
                     CASE WHEN cc.estado_c=1 THEN 'Por revisar'
                     WHEN cc.estado_c=2 THEN 'Completado' WHEN cc.estado_c=3 THEN 'Anulado' 
                     ELSE '' END AS nom_estado,
