@@ -38,7 +38,10 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use App\Models\Notificacion;
 use App\Models\SedeLaboral;
+use App\Models\SoporteUbicacion1;
+use App\Models\SoporteUbicacion2;
 use App\Models\SubGerencia;
+use App\Models\Ubicacion;
 use App\Models\User;
 
 class SoporteController extends Controller
@@ -196,8 +199,7 @@ class SoporteController extends Controller
     }
 
 
-
-    public function create_tick()
+    public function create_tick(Request $request)
     {
         $list_especialidad = Especialidad::select('id', 'nombre')->get();
         $list_elemento = ElementoSoporte::select('idsoporte_elemento', 'nombre')->get();
@@ -206,7 +208,6 @@ class SoporteController extends Controller
             ->where('estado', 1)
             ->whereNotIn('id', [3, 5]) // Excluir los id EXT y REMOTO
             ->get();
-
 
         $list_responsable = Puesto::select('puesto.id_puesto', 'puesto.nom_puesto', 'area.cod_area')
             ->join('area', 'puesto.id_area', '=', 'area.id_area')  // Realiza el INNER JOIN entre Puesto y Area
@@ -217,7 +218,6 @@ class SoporteController extends Controller
 
         $list_base = Base::get_list_todas_bases_agrupadas_bi();
 
-
         $list_area = Area::select('id_area', 'nom_area')
             ->where('estado', 1)
             ->whereIn('id_area', [41, 25])
@@ -225,9 +225,46 @@ class SoporteController extends Controller
             ->distinct('nom_area')
             ->get();
 
-
         return view('soporte.soporte.modal_registrar', compact('list_responsable', 'list_area', 'list_base', 'list_especialidad', 'list_elemento', 'list_asunto', 'list_sede'));
     }
+
+    public function getSoporteUbicacionPorSede(Request $request)
+    {
+        $idSede = $request->input('sedes');
+        // Si no se selecciona ninguna sede, devolver un arreglo vacío
+        if (empty($idSede)) {
+            return response()->json([]);
+        }
+        // Buscar ubicaciones asociadas a la sede seleccionada
+        $sedes = SoporteUbicacion1::where(function ($query) use ($idSede) {
+            $query->whereRaw("FIND_IN_SET(?, id_sede_laboral)", [$idSede]);
+        })
+            ->where('estado', 1)
+            ->get();
+
+        return response()->json($sedes);
+    }
+
+
+
+    public function getUbicacion2PorUbicacion1(Request $request)
+    {
+        $ubicacion = $request->input('ubicacion1');
+        // dd($ubicacion);
+        // Si no se selecciona ninguna sede, devolver un arreglo vacío
+        if (empty($ubicacion)) {
+            return response()->json([]);
+        }
+        // Buscar ubicaciones asociadas a la sede seleccionada
+        $ubicaciones = SoporteUbicacion2::where(function ($query) use ($ubicacion) {
+            $query->whereRaw("FIND_IN_SET(?, id_soporte_ubicacion1)", [$ubicacion]);
+        })
+            ->where('estado', 1)
+            ->get();
+
+        return response()->json($ubicaciones);
+    }
+
 
 
     public function update_tick(Request $request, $id)
