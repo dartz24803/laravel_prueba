@@ -32,4 +32,54 @@
         <button class="btn btn-primary mt-3" type="button" onclick="Insert_Destino();">Guardar</button>
         <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
-</form> 
+</form>
+
+<script>
+    
+    function Insert_Destino() {
+        Cargando();
+
+        var dataString = $("#formulario_registrar_destino").serialize();
+        var url = "{{ url('PapeletasConf/Insert_Destino') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                data: dataString,
+                success: function(data) {
+                    if (data == "error") {
+                        Swal({
+                            title: 'Registro Denegado',
+                            text: "¡El registro ya existe!",
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    } else {
+                        swal.fire(
+                            'Registro Exitoso!',
+                            'Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            $("#ModalRegistro .close").click()
+                            TablaDestino();
+                        });
+                    }
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+    }
+</script>

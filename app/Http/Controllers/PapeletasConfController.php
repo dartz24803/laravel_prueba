@@ -7,8 +7,10 @@ use App\Models\Notificacion;
 use App\Models\PermisoPapeletasSalida;
 use App\Models\Puesto;
 use App\Models\SubGerencia;
+use App\Models\Tramite;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PapeletasConfController extends Controller
 {
@@ -64,7 +66,6 @@ class PapeletasConfController extends Controller
                     if($this->input->checkmasivo){
                         $registro = $this->input->checkmasivo;
                     }
-                    print_r($registro);
                     PermisoPapeletasSalida::create([
                         'id_puesto_permitido' => $centro,
                         'id_puesto_jefe' => $dato['id_puesto'],
@@ -114,158 +115,169 @@ class PapeletasConfController extends Controller
                             ->where('estado', 1)
                             ->get();
             
-            return view('rrhh.Administracion.Destino.index',$dato);
+            return view('rrhh.administracion.papeletas.Destino.index',$dato);
     }
-    /*
-    public function Destino_boton(){
-        if($this->session->userdata('usuario')) {
-            $this->load->view('Admin/Configuracion/Destino/boton');
-        }else{
-            redirect('');
-        }
-    }
-
+    
     public function Modal_Destino(){
-        if ($this->session->userdata('usuario')) {
-            $this->load->view('Admin/Configuracion/Destino/modal_registrar');   
-        }else{
-            redirect('');
-        }
+            return view('rrhh.administracion.papeletas.Destino.modal_registrar');   
     }
 
     public function Insert_Destino(){
-        if ($this->session->userdata('usuario')) {
             $dato['id_motivo']= $this->input->post("id_motivo"); 
             $dato['nom_destino']= $this->input->post("nom_destino"); 
-            $valida = $this->Model_Corporacion->valida_insert_destino($dato);
-            if(count($valida)>0){
+            $valida = Destino::where('id_motivo', $dato['id_motivo'])
+                    ->where('nom_destino', $dato['nom_destino'])
+                    ->where('estado', 1)
+                    ->exists();
+            if($valida){
                 echo "error";
             }else{
-                $this->Model_Corporacion->insert_destino($dato);
+                Destino::create([
+                    'id_motivo' => $dato['id_motivo'],
+                    'nom_destino' => $dato['nom_destino'],
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                ]);
             }
-        }else{
-            redirect('');
-        }
     }
 
     public function Modal_Update_Destino($id_destino){
-        if ($this->session->userdata('usuario')) {
-            $dato['get_id'] = $this->Model_Corporacion->get_list_destino($id_destino);
-            $this->load->view('Admin/Configuracion/Destino/modal_editar',$dato);   
-        }else{
-            redirect('');
-        }
+            $dato['get_id'] = Destino::where('id_destino', $id_destino)
+                            ->get();
+            return view('rrhh.administracion.papeletas.Destino.modal_editar',$dato);   
     }
 
     public function Update_Destino(){
-        if ($this->session->userdata('usuario')) {
             $dato['id_destino']= $this->input->post("id_destino"); 
             $dato['id_motivo']= $this->input->post("id_motivo"); 
-            $dato['nom_destino']= $this->input->post("nom_destino"); 
-            $valida = $this->Model_Corporacion->valida_update_destino($dato);
-            if(count($valida)>0){
+            $dato['nom_destino']= $this->input->post("nom_destino");
+            $valida = Destino::where('id_motivo', $dato['id_motivo'])
+                    ->where('nom_destino', $dato['nom_destino'])
+                    ->where('estado', 1)
+                    ->exists();
+            if($valida){
                 echo "error";
             }else{
-                $this->Model_Corporacion->update_destino($dato);
+                Destino::where('id_destino', $dato['id_destino'])
+                    ->update([
+                        'id_motivo' => $dato['id_motivo'],
+                        'nom_destino' => $dato['nom_destino'],
+                        'fec_act' => now(), // Fecha de actualización actual
+                        'user_act' => session('usuario')->id_usuario, // Usuario que actualiza
+                    ]);
+
             }
-        }else{
-            redirect('');
-        }
     }
 
     public function Delete_Destino(){
-        if ($this->session->userdata('usuario')) {
             $dato['id_destino']= $this->input->post("id_destino");
-            $this->Model_Corporacion->delete_destino($dato);
-        }else{
-            redirect('');
-        }
+            Destino::where('id_destino', $dato['id_destino'])
+                ->update([
+                    'estado' => 2, // Cambiar estado a 2
+                    'fec_eli' => now(), // Fecha de eliminación actual
+                    'user_eli' => session('usuario')->id_usuario, // Usuario que elimina
+                ]);
     }
     //------------------------------TRÁMITE-------------------------------
-    public function Tramite(){
-        if($this->session->userdata('usuario')) {
-            $dato['list_tramite'] = $this->Model_Corporacion->get_list_tramite();
-            $this->load->view('Admin/Configuracion/Tramite/index',$dato);
-        }else{
-            redirect('');
-        }
-    }
     
-    public function Tramite_boton(){
-        if($this->session->userdata('usuario')) {
-            $this->load->view('Admin/Configuracion/Tramite/boton');
-        }else{
-            redirect('');
-        }
+    public function Tramite(){
+            $dato['list_tramite'] = Tramite::select(
+                            'tramite.*', 
+                            DB::raw("CASE 
+                                        WHEN destino.id_motivo = 1 THEN 'Laboral' 
+                                        WHEN destino.id_motivo = 2 THEN 'Personal' 
+                                        ELSE '' 
+                                    END AS nom_motivo"), 
+                            'destino.nom_destino'
+                        )
+                        ->leftJoin('destino', 'destino.id_destino', '=', 'tramite.id_destino')
+                        ->where('tramite.estado', 1)
+                        ->get();
+            return view('rrhh.administracion.papeletas.Tramite.index',$dato);
     }
 
     public function Modal_Tramite(){
-        if ($this->session->userdata('usuario')) {
-            $this->load->view('Admin/Configuracion/Tramite/modal_registrar');   
-        }else{
-            redirect('');
-        }
+            return view('rrhh.administracion.papeletas.Tramite.modal_registrar');
     }
 
     public function Traer_Destino(){
-        if ($this->session->userdata('usuario')) {
             $id_motivo = $this->input->post("id_motivo"); 
-            $dato['list_destino'] = $this->Model_Corporacion->get_list_motivo_destino($id_motivo);
-            $this->load->view('Admin/Configuracion/Tramite/destino',$dato);   
-        }else{
-            redirect('');
-        }
+            $dato['list_destino'] = Destino::where('id_motivo', $id_motivo)
+                                    ->where('estado', 1)
+                                    ->get()
+                                    ->toArray();
+            return view('rrhh.administracion.papeletas.Tramite.destino',$dato);   
     }
 
     public function Insert_Tramite(){
-        if ($this->session->userdata('usuario')) {
             $dato['id_destino']= $this->input->post("id_destino"); 
             $dato['nom_tramite']= $this->input->post("nom_tramite"); 
             $dato['cantidad_uso']= $this->input->post("cantidad_uso"); 
-            $valida = $this->Model_Corporacion->valida_insert_tramite($dato);
-            if(count($valida)>0){
+            $valida = Tramite::where('id_destino', $dato['id_destino'])
+                ->where('nom_tramite', $dato['nom_tramite'])
+                ->where('estado', 1)
+                ->exists();
+            if($valida){
                 echo "error";
             }else{
-                $this->Model_Corporacion->insert_tramite($dato);
+                Tramite::create([
+                    'id_destino' => $dato['id_destino'],
+                    'nom_tramite' => $dato['nom_tramite'],
+                    'cantidad_uso' => $dato['cantidad_uso'],
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                ]);
             }
-        }else{
-            redirect('');
-        }
     }
 
     public function Modal_Update_Tramite($id_tramite){
-        if ($this->session->userdata('usuario')) {
-            $dato['get_id'] = $this->Model_Corporacion->get_list_tramite($id_tramite);
-            $dato['list_destino'] = $this->Model_Corporacion->get_list_destino();
-            $this->load->view('Admin/Configuracion/Tramite/modal_editar',$dato);   
-        }else{
-            redirect('');
-        }
+            $dato['get_id'] = Tramite::select('tr.*', 'de.id_motivo')
+                        ->from('tramite as tr')
+                        ->leftJoin('destino as de', 'de.id_destino', '=', 'tr.id_destino')
+                        ->where('tr.id_tramite', $id_tramite)
+                        ->get();
+            $dato['list_destino'] = Destino::select('*')
+                                ->selectRaw("CASE 
+                                                WHEN id_motivo = 1 THEN 'Laboral' 
+                                                WHEN id_motivo = 2 THEN 'Personal' 
+                                                ELSE '' 
+                                            END AS nom_motivo")
+                                ->where('estado', 1)
+                                ->get();
+            return view('rrhh.administracion.papeletas.Tramite.modal_editar',$dato);   
     }
 
     public function Update_Tramite(){
-        if ($this->session->userdata('usuario')) {
             $dato['id_tramite']= $this->input->post("id_tramite"); 
             $dato['id_destino']= $this->input->post("id_destino"); 
             $dato['nom_tramite']= $this->input->post("nom_tramite"); 
             $dato['cantidad_uso']= $this->input->post("cantidad_uso"); 
-            $valida = $this->Model_Corporacion->valida_update_tramite($dato);
-            if(count($valida)>0){
+            $valida = Tramite::where('id_destino', $dato['id_destino'])
+                ->where('nom_tramite', $dato['nom_tramite'])
+                ->where('estado', 1)
+                ->exists();
+            
+            if($valida){
                 echo "error";
             }else{
-                $this->Model_Corporacion->update_tramite($dato);
+                Tramite::where('id_tramite', $dato['id_tramite'])->update([
+                    'id_destino' => $dato['id_destino'],
+                    'nom_tramite' => $dato['nom_tramite'],
+                    'cantidad_uso' => $dato['cantidad_uso'],
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario,
+                ]);
             }
-        }else{
-            redirect('');
-        }
     }
 
     public function Delete_Tramite(){
-        if ($this->session->userdata('usuario')) {
             $dato['id_tramite']= $this->input->post("id_tramite");
-            $this->Model_Corporacion->delete_tramite($dato);
-        }else{
-            redirect('');
-        }
-    }*/
+            Tramite::where('id_tramite', $dato['id_tramite'])->update([
+                'estado' => 2,
+                'fec_eli' => now(),
+                'user_eli' => session('usuario')->id_usuario,
+            ]);
+    }
 }
