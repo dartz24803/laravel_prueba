@@ -108,6 +108,26 @@
                 </a>
             </li>
         <?php } ?>
+        <?php 
+        if(session('usuario')->id_nivel==1 || session('usuario')->id_puesto==19 || session('usuario')->id_puesto==21 || session('usuario')->id_puesto == 278 || 
+        session('usuario')->id_puesto == 279 || session('usuario')->id_puesto==23 || session('usuario')->id_puesto==40 || session('usuario')->id_puesto==10 || 
+        session('usuario')->id_puesto==93){
+            $hpapeletas2 = "<br>• Aprobación ";
+        }else{
+            $hpapeletas2 = "";
+        }
+        if(session('usuario')->id_nivel==1 || session('usuario')->id_puesto==23 || session('usuario')->id_puesto==36 || session('usuario')->id_puesto==24 || session('usuario')->id_puesto==26 || session('usuario')->id_puesto==128 ||
+        session('usuario')->id_puesto==21 || session('usuario')->id_puesto == 279 || session('usuario')->id_puesto==19 || session('usuario')->id_puesto==314){
+            $hpapeletas3 = "<br>• Control";
+        }else{
+            $hpapeletas3 = "";
+        }
+        ?>
+        <li id="papeletas">
+            <a id="hpapeletas" href="{{ url('PapeletasConf/Lista_Papeletas_Salida_seguridad') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Registro <?= $hpapeletas2 ?> <?= $hpapeletas3 ?>">
+                <p class="romperpalabra"><span id="icono_active2"></span> Papeletas de Salida</p>
+            </a>
+        </li>
         <?php if (
             session('usuario')->id_nivel == 1 ||
             session('usuario')->id_nivel == 2 ||
