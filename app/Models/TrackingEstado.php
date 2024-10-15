@@ -20,17 +20,19 @@ class TrackingEstado extends Model
     ];
 
     static function get_list_estado_proceso() {
-        $query = "select *, CONCAT(CASE WHEN DAYNAME(tdp.fec_reg)='Monday' THEN 'Lun'
-                    WHEN DAYNAME(tdp.fec_reg)='Tuesday' THEN 'Mar'
-                    WHEN DAYNAME(tdp.fec_reg)='Wednesday' THEN 'Mie'
-                    WHEN DAYNAME(tdp.fec_reg)='Thursday' THEN 'Jue'
-                    WHEN DAYNAME(tdp.fec_reg)='Friday' THEN 'Vie'
-                    WHEN DAYNAME(tdp.fec_reg)='Saturday' THEN 'Sab'
-                    WHEN DAYNAME(tdp.fec_reg)='Sunday' THEN 'Dom' ELSE '' END,' ',
-                    DATE_FORMAT(tdp.fec_reg,'%d/%m/%Y')) AS fecha,
-                    DATE_FORMAT(tdp.fec_reg,'%H:%i:%s') AS hora
-                    from tracking_detalle_proceso tdp
-                    left join tracking_estado te ON te.id_proceso=tdp.id_proceso;";
+        $query = "select tdp.id, tdp.id_tracking, te.descripcion, te.id_proceso,
+                CONCAT(CASE WHEN DAYNAME(tde.fec_reg)='Monday' THEN 'Lun'
+                                    WHEN DAYNAME(tde.fec_reg)='Tuesday' THEN 'Mar'
+                                    WHEN DAYNAME(tde.fec_reg)='Wednesday' THEN 'Mie'
+                                    WHEN DAYNAME(tde.fec_reg)='Thursday' THEN 'Jue'
+                                    WHEN DAYNAME(tde.fec_reg)='Friday' THEN 'Vie'
+                                    WHEN DAYNAME(tde.fec_reg)='Saturday' THEN 'Sab'
+                                    WHEN DAYNAME(tde.fec_reg)='Sunday' THEN 'Dom' ELSE '' END,' ',
+                                    DATE_FORMAT(tde.fec_reg,'%d/%m/%Y')) AS fecha,
+                                    DATE_FORMAT(tde.fec_reg,'%H:%i:%s') AS hora
+                from tracking_detalle_estado tde
+                left join tracking_detalle_proceso tdp ON tde.id_detalle=tdp.id
+                left join tracking_estado te ON tde.id_estado=te.id;";
         
         $result = DB::select($query);
         return json_decode(json_encode($result), true);

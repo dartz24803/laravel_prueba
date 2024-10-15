@@ -235,7 +235,7 @@
     session('usuario')->id_puesto == 38 || session('usuario')->id_puesto == 81 || session('usuario')->id_puesto == 111 ||
     session('usuario')->id_puesto == 122 || session('usuario')->id_puesto == 137 || session('usuario')->id_puesto == 164 ||
     session('usuario')->id_puesto == 158 || session('usuario')->id_puesto == 9 || session('usuario')->id_puesto == 128 ||
-    session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 10
+    session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 10 || session('usuario')->id_puesto == 312
 ) { ?>
     <li class="menu" id="reporteconf">
         <a href="#rreportebiconf" id="hreportebiconf" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
