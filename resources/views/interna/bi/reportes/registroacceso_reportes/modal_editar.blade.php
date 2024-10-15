@@ -569,7 +569,13 @@
 
         // Contenido HTML de la nueva fila
         newRow.innerHTML = `
-        <td class="px-1"><input type="text" class="form-control" name="npagina[]"></td>
+        <td class="px-1">
+            <select class="form-control" name="npagina[]">
+                @for ($i = 1; $i <= 100; $i++)
+                    <option value="{{ $i }}">{{ $i }}</option>
+                @endfor
+            </select>
+        </td>
         <td class="px-1"><input type="text" class="form-control" name="indicador[]"></td>
         <td class="px-1"><input type="text" class="form-control" name="descripcion[]"></td>
         <td class="px-1">
