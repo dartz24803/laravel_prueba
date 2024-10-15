@@ -21,10 +21,13 @@
                 </a>
             </div>
             <div class="form-group col-lg-4">
-                <select class="form-control" name="id_pagov" id="id_pagov" onchange="Traer_Pago();">
+                <select class="form-control" name="id_pagov" id="id_pagov" onchange="Traer_Pago('v'); Mostrar_Credito();">
                     <option value="0">Seleccione</option>
                     @foreach ($list_pago as $list)
-                        <option value="{{ $list->id_pago }}">{{ $list->nom_pago }}</option>
+                        <option value="{{ $list->id_pago }}"
+                        @if ($list->id_pago==$get_id->id_pago) selected @endif>
+                            {{ $list->nom_pago }}
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -34,7 +37,12 @@
             </div>
             <div class="form-group col-lg-4">
                 <select class="form-control" name="id_tipo_pagov" id="id_tipo_pagov">
-                    <option value="0">Seleccione</option>
+                    @foreach ($list_tipo_pago as $list)
+                        <option value="{{ $list->id }}"
+                        @if ($list->id==$get_id->id_tipo_pago) selected @endif>
+                            {{ $list->nombre }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
         </div>
@@ -115,7 +123,7 @@
                 <label>Monto:</label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" value="{{ $get_id->total }}" disabled>
+                <input type="text" class="form-control" value="{{ $get_id->total_concatenado }}" disabled>
             </div>
 
             <div class="form-group col-lg-2">
@@ -170,30 +178,20 @@
 </form>
 
 <script>
-    function Traer_Pago(){
+    Mostrar_Credito();
+
+    function Mostrar_Credito(){
         Cargando();
 
-        var url = "{{ route('caja_chica.traer_tipo_pago') }}";
         var id_pago = $('#id_pagov').val();
 
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: {'id_pago':id_pago},
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            success:function (resp) {
-                $('#id_tipo_pagov').html(resp);
-                if(id_pago=="2"){
-                    $('#pago_credito').show();
-                    $('#fecha_pagov').prop('disabled', true);
-                }else{
-                    $('#pago_credito').hide();
-                    $('#fecha_pagov').prop('disabled', false);
-                }
-            }
-        });
+        if(id_pago=="2"){
+            $('#pago_credito').show();
+            $('#fecha_pagov').prop('disabled', true);
+        }else{
+            $('#pago_credito').hide();
+            $('#fecha_pagov').prop('disabled', false);
+        }
     }
 
     function Validar_Caja_Chica_Pv() {

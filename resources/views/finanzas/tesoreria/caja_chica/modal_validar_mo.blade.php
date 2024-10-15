@@ -106,7 +106,7 @@
                 <label>Monto:</label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" value="{{ $get_id->total }}" disabled>
+                <input type="text" class="form-control" value="{{ $get_id->total_concatenado }}" disabled>
             </div>
 
             <div class="form-group col-lg-2">
@@ -121,15 +121,8 @@
             <div class="form-group col-lg-2">
                 <label>Empresa:</label>
             </div>
-            <div class="form-group col-lg-4">
+            <div class="form-group col-lg-10">
                 <input type="text" class="form-control" value="{{ $get_id->nom_empresa }}" disabled>
-            </div>
-
-            <div class="form-group col-lg-2">
-                <label>Parte interesada:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="text" class="form-control" value="{{ $get_id->razon_social }}" disabled>
             </div>
         </div>
     </div>

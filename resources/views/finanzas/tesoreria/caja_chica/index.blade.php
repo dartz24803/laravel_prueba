@@ -135,6 +135,28 @@
             Lista_Caja_Chica();
         });
 
+
+        function solo_Numeros_Punto(e) {
+            var key = event.which || event.keyCode;
+            if ((key >= 48 && key <= 57) || key == 46) {
+                if (key == 46 && event.target.value.indexOf('.') !== -1) {
+                    return false;
+                }
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function solo_Numeros(e) {
+            var key = event.which || event.keyCode;
+            if (key >= 48 && key <= 57) {
+                return true;
+            } else {
+                return false;
+            }
+        }        
+
         function Lista_Caja_Chica(){
             Cargando();
 
@@ -166,116 +188,6 @@
                     $('#id_sub_categoria'+v).html(resp);
                 }
             });
-        }
-
-        function Consultar_Ruc(v){
-            Cargando();
-
-            var url = "{{ route('caja_chica.consultar_ruc') }}";
-            var ruc = $('#ruc'+v).val();
-
-            $.ajax({
-                url: url,
-                type: "POST",
-                data: {'ruc':ruc},
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                success:function (resp) {
-                    var texto = resp.trim();
-                    var partes = texto.split('@@@');
-                    if(partes[0]=="error"){
-                        Swal({
-                            title: '¡Búsqueda Denegada!',
-                            text: partes[1],
-                            type: 'error',
-                            showCancelButton: false,
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'OK',
-                        });
-                        $('#razon_social'+v).val('');
-                    }else{
-                        $('#razon_social'+v).val(resp);
-                    }
-                },
-                error:function(xhr) {
-                    var errors = xhr.responseJSON.errors;
-                    var firstError = Object.values(errors)[0][0];
-                    Swal.fire(
-                        '¡Ups!',
-                        firstError,
-                        'warning'
-                    );
-                }
-            });
-        }
-
-        function Habilitar_Ruta(v){
-            Cargando();
-
-            var ruta = $('#ruta'+v).val();
-
-            if(ruta=="1"){
-                $('#punto_partida'+v).prop('disabled', false);
-                $('#punto_llegada'+v).prop('disabled', false);
-            }else if(ruta=="2"){
-                $('#punto_partida'+v).prop('disabled', true);
-                $('#punto_llegada'+v).prop('disabled', false);
-                $('#punto_partida'+v).val('');
-            }else{
-                $('#punto_partida'+v).prop('disabled', true);
-                $('#punto_llegada'+v).prop('disabled', true);
-                $('#punto_partida'+v).val('');
-                $('#punto_llegada'+v).val('');
-            }
-        }
-
-        function solo_Numeros_Punto(e) {
-            var key = event.which || event.keyCode;
-            if ((key >= 48 && key <= 57) || key == 46) {
-                if (key == 46 && event.target.value.indexOf('.') !== -1) {
-                    return false;
-                }
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        function solo_Numeros(e) {
-            var key = event.which || event.keyCode;
-            if (key >= 48 && key <= 57) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        function Valida_Archivo(val){
-            Cargando();
-
-            var archivoInput = document.getElementById(val);
-            var archivoRuta = archivoInput.value;
-            var extPermitidas = /(.pdf|.png|.jpg|.jpeg)$/i;
-
-            if(!extPermitidas.exec(archivoRuta)){
-                Swal({
-                    title: '¡Carga Denegada!',
-                    text: "Asegurese de ingresar archivo con extensión .pdf|.jpg|.png|.jpeg",
-                    type: 'error',
-                    showCancelButton: false,
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'OK',
-                });
-                archivoInput.value = ''; 
-                return false;
-            }else{
-                return true;         
-            }
-        }
-
-        function Descargar_Archivo(id){
-            window.location.replace("{{ route('caja_chica.download', ':id') }}".replace(':id', id));
         }
 
         function Traer_Categoria(v){
@@ -317,7 +229,96 @@
             });
         }
 
-        
+        function Traer_Pago(v){
+            Cargando();
+
+            var url = "{{ route('caja_chica.traer_tipo_pago') }}";
+            var id_pago = $('#id_pago'+v).val();
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {'id_pago':id_pago},
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success:function (resp) {
+                    $('#id_tipo_pago'+v).html(resp);
+                }
+            });
+        }
+
+        function Valida_Archivo(val){
+            Cargando();
+
+            var archivoInput = document.getElementById(val);
+            var archivoRuta = archivoInput.value;
+            var extPermitidas = /(.pdf|.png|.jpg|.jpeg)$/i;
+
+            if(!extPermitidas.exec(archivoRuta)){
+                Swal({
+                    title: '¡Carga Denegada!',
+                    text: "Asegurese de ingresar archivo con extensión .pdf|.jpg|.png|.jpeg",
+                    type: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK',
+                });
+                archivoInput.value = ''; 
+                return false;
+            }else{
+                return true;         
+            }
+        }
+
+        function Consultar_Ruc(v){
+            Cargando();
+
+            var url = "{{ route('caja_chica.consultar_ruc') }}";
+            var ruc = $('#ruc'+v).val();
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {'ruc':ruc},
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success:function (resp) {
+                    var texto = resp.trim();
+                    var partes = texto.split('@@@');
+                    if(partes[0]=="error"){
+                        Swal({
+                            title: '¡Búsqueda Denegada!',
+                            text: partes[1],
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                        $('#razon_social'+v).val('');
+                        $('#direccion'+v).val('');
+                    }else{
+                        $('#razon_social'+v).val(partes[0]);
+                        $('#direccion'+v).val(partes[1]);
+                    }
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+        }
+
+        function Descargar_Archivo(id){
+            window.location.replace("{{ route('caja_chica.download', ':id') }}".replace(':id', id));
+        }
+
         function Anular_Caja_Chica(id) {
             Cargando();
 

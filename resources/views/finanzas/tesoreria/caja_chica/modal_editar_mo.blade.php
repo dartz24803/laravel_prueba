@@ -237,12 +237,15 @@
                         <div class="input-group-prepend">
                             <select class="form-control" name="id_tipo_monedae" id="id_tipo_monedae">
                                 @foreach ($list_tipo_moneda as $list)
-                                    <option value="{{ $list->id_moneda }}">{{ $list->cod_moneda }}</option>
+                                    <option value="{{ $list->id_moneda }}"
+                                    @if ($list->id_moneda==$get_id->id_tipo_moneda) selected @endif>
+                                        {{ $list->cod_moneda }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
                         <input type="text" class="form-control" name="totale" id="totale" 
-                        placeholder="Total" value="{{ $get_id->total }}" disabled>
+                        placeholder="Total" disabled>
                     </div>
                 </div>
 
@@ -342,9 +345,20 @@
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            success: function() {
-                Lista_Ruta();
-                Total_Ruta();
+            success: function(resp) {
+                if(resp=="error"){
+                    Swal({
+                        title: '¡Eliminación Denegada!',
+                        text: "¡Tiene que haber como mínimo una ruta!",
+                        type: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
+                    });
+                }else{
+                    Lista_Ruta();
+                    Total_Ruta();
+                }
             }
         });
     }
