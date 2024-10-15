@@ -40,16 +40,23 @@ class CajaChicaController extends Controller
 
     public function index()
     {
-        //REPORTE BI CON ID
-        $list_subgerencia = SubGerencia::list_subgerencia(8);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('finanzas.tesoreria.caja_chica.index',compact('list_notificacion','list_subgerencia'));
+        $list_subgerencia = SubGerencia::list_subgerencia(8);
+        $list_tipo_moneda = TipoMoneda::select('id_moneda','nom_moneda')->where('estado',1)->get();
+        return view('finanzas.tesoreria.caja_chica.index',compact(
+            'list_notificacion',
+            'list_subgerencia',
+            'list_tipo_moneda'
+        ));
     }
 
     public function list(Request $request)
     {
-        $list_caja_chica = CajaChica::get_list_caja_chica();
+        $list_caja_chica = CajaChica::get_list_caja_chica([
+            'fec_inicio'=>$request->fec_inicio,
+            'fec_fin'=>$request->fec_fin
+        ]);
         return view('finanzas.tesoreria.caja_chica.lista', compact('list_caja_chica'));
     }
 
@@ -63,7 +70,7 @@ class CajaChicaController extends Controller
         $list_usuario = Usuario::select('id_usuario',
                         DB::raw("CONCAT(num_doc,' - ',usuario_apater,' ',usuario_amater,', ',
                         usuario_nombres) AS nom_usuario"))->where('estado',1)->get();
-        $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();                        
+        $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
         return view('finanzas.tesoreria.caja_chica.modal_registrar_mo', compact(
             'list_ubicacion',
             'list_empresa',
@@ -977,9 +984,12 @@ class CajaChicaController extends Controller
         ]);
     }
 
-    public function excel()
+    public function excel($fec_inicio, $fec_fin)
     {
-        $list_caja_chica = CajaChica::get_list_caja_chica();
+        $list_caja_chica = CajaChica::get_list_caja_chica([
+            'fec_inicio'=>$fec_inicio,
+            'fec_fin'=>$fec_fin
+        ]);
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();

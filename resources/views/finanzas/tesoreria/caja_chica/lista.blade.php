@@ -21,7 +21,27 @@
         </tr>
     </thead>
     <tbody>
+        @php 
+            $ing_soles = 0; 
+            $ing_dolares = 0; 
+            $sal_soles = 0; 
+            $sal_dolares = 0; 
+        @endphp
         @foreach ($list_caja_chica as $list)
+            @php
+                if($list->id_tipo_moneda=="1" && $list->tipo_movimiento=="1"){
+                    $ing_soles = $ing_soles+$list->total;
+                }
+                if($list->id_tipo_moneda=="2" && $list->tipo_movimiento=="1"){
+                    $ing_dolares = $ing_dolares+$list->total;
+                }
+                if($list->id_tipo_moneda=="1" && $list->tipo_movimiento=="2"){
+                    $sal_soles = $sal_soles+$list->total;
+                }
+                if($list->id_tipo_moneda=="2" && $list->tipo_movimiento=="2"){
+                    $sal_dolares = $sal_dolares+$list->total;
+                }
+            @endphp
             <tr class="text-center">
                 <td>{{ $list->orden }}</td>
                 <td>{{ $list->fecha }}</td>
@@ -46,7 +66,7 @@
                     </a>
                 </td>
                 <td class="text-left">{{ $list->descripcion }}</td>
-                <td>{{ $list->total }}</td>
+                <td>{{ $list->total_concatenado }}</td>
                 <td style="background-color: {{ $list->color_estado }}; color:white;">{{ $list->nom_estado }}</td>
                 <td>
                     @if ($list->estado_c=="1")
@@ -95,7 +115,38 @@
             </tr>
         @endforeach
     </tbody>
-</table>    
+</table>
+
+<div class="row mr-1 ml-1 mb-2">
+    <div class="col-sm-5 col-lg-2">
+        <label>Ingresos (Soles):</label>
+        <input type="text" class="form-control" value="{{ "S/ ".$ing_soles }}" disabled>
+    </div>
+
+    <div class="col-sm-5 col-lg-2">
+        <label>Salidas (Soles):</label>
+        <input type="text" class="form-control" value="{{ "S/ ".$sal_soles }}" disabled>
+    </div>
+
+    <div class="col-sm-5 col-lg-2">
+        <label>Saldo (Soles):</label>
+        <input type="text" class="form-control" value="{{ "S/ ".($ing_soles-$sal_soles) }}" disabled>
+    </div>
+</div>
+<div class="row mr-1 ml-1 mb-4">
+    <div class="col-sm-5 col-lg-2">
+        <label>Ingresos (Dólares):</label>
+        <input type="text" class="form-control" value="{{ "$ ".$ing_dolares }}" disabled>
+    </div>
+    <div class="col-sm-5 col-lg-2">
+        <label>Salidas (Dólares):</label>
+        <input type="text" class="form-control" value="{{ "$ ".$sal_dolares }}" disabled>
+    </div>
+    <div class="col-sm-5 col-lg-2">
+        <label>Saldo (Dólares):</label>
+        <input type="text" class="form-control" value="{{ "$ ".($ing_dolares-$sal_dolares) }}" disabled>
+    </div>
+</div>
 
 <script>
     var tabla = $('#tabla_js').DataTable({
