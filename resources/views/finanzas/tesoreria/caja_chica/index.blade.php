@@ -317,6 +317,42 @@
             });
         }
 
+        
+        function Anular_Caja_Chica(id) {
+            Cargando();
+
+            var url = "{{ route('caja_chica.anular', ':id') }}".replace(':id', id);
+
+            Swal({
+                title: '¿Realmente desea anular el registro?',
+                text: "El registro será anulado permanentemente",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Si',
+                cancelButtonText: 'No',
+                padding: '2em'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        type: "PUT",
+                        url: url,
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        success: function() {
+                            Swal(
+                                '¡Anulado!',
+                                'El registro ha sido anulado satisfactoriamente.',
+                                'success'
+                            ).then(function() {
+                                Lista_Caja_Chica();
+                            });    
+                        }
+                    });
+                }
+            })
+        }
+
         function Delete_Caja_Chica(id) {
             Cargando();
 

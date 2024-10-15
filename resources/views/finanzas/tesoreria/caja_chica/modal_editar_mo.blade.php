@@ -12,7 +12,7 @@
                 <a class="nav-link active" id="datos_mo-tabe" data-toggle="tab" href="#datos_moe" role="tab" aria-controls="datos_moe" aria-selected="true">Datos</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="indicadores_mo-tabe" data-toggle="tab" href="#indicadores_moe" role="tab" aria-controls="indicadores_moe" aria-selected="false">Detalle</a>
+                <a class="nav-link" id="detalles_mo-tabe" data-toggle="tab" href="#detalles_moe" role="tab" aria-controls="detalles_moe" aria-selected="false">Detalle</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="rutas_mo-tabe" data-toggle="tab" href="#rutas_moe" role="tab" aria-controls="rutas_moe" aria-selected="false">Ruta</a>
@@ -107,7 +107,7 @@
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="indicadores_moe" role="tabpanel" aria-labelledby="indicadores_mo-tabe">
+            <div class="tab-pane fade" id="detalles_moe" role="tabpanel" aria-labelledby="detalles_mo-tabe">
                 <div class="row mt-4">
                     <div class="form-group col-lg-2">
                         <label>T. comprobante:</label>
