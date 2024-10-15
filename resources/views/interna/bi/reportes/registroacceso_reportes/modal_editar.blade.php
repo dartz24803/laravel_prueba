@@ -1,13 +1,5 @@
 <!-- CSS -->
 <style>
-    #tabla_versiones td:nth-child(6) {
-        width: 20px;
-    }
-
-    #tabla_versiones td:nth-child(1) {
-        width: 20px;
-    }
-
     .modal-dialog {
         max-width: 85%;
     }
@@ -86,15 +78,11 @@
         /* Debe ser menor que el z-index del modal */
     }
 
-    .col-tipo {
-        width: 100px;
-        /* Ajusta el valor según sea necesario */
+    .select2-container {
+        margin-bottom: 0rem !important;
     }
 
-    .col-accion {
-        width: 50px;
-        /* Ajusta el valor según sea necesario */
-    }
+
 
     /* Estilo para el campo de búsqueda dentro del select2 */
     /* Estilo para el campo de búsqueda dentro decol-accionl select2 cuando está deshabilitado */
@@ -296,15 +284,15 @@
                 <!-- Contenido de la pestaña Otra Sección -->
                 <div class="row d-flex col-md-12 my-2">
                     <!-- Tabla para añadir filas dinámicamente -->
-                    <table id="tabla_versiones" class="table table-hover" style="width:100%">
+                    <table id="tabla_econt" class="table table-hover" style="width:100%">
                         <thead class="text-center">
                             <tr>
-                                <th style="width: 20px;">N°Pag</th>
+                                <th>N°Pag</th>
                                 <th>Nombre</th>
                                 <th>Descripción</th>
                                 <th>Tipo</th>
                                 <th>Presentación</th>
-                                <th style="width: 20px;"></th> <!-- Ajuste del ancho de la columna -->
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="tabla_body2">
@@ -350,20 +338,20 @@
                 <!-- Contenido de la pestaña Otra Sección -->
                 <div class="row d-flex col-md-12 my-2">
                     <!-- Tabla para añadir filas dinámicamente -->
-                    <table id="tabla_versiones" class="table table-hover" style="width:100%">
+                    <table id="tabla_ejs3" class="table table-hover" style="width:100%">
                         <thead class="text-center">
                             <tr>
                                 <th>Sistema</th>
                                 <th class="style-tabla">Base de Datos</th>
                                 <th class="style-tabla">Tabla</th>
-                                <th>Acciones</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="tabla_body4">
                             @foreach ($list_tablas as $tabla)
                             <tr class="text-center">
                                 <td class="px-1">
-                                    <select class="form-control sistema" name="sistemas[{{ $loop->index }}]" data-row-index="{{ $loop->index }}">
+                                    <select class="form-control sistema" name="sistemase[{{ $loop->index }}]" data-row-index="{{ $loop->index }}">
                                         @foreach ($list_sistemas as $list)
                                         <option value="{{ $list->cod_sistema }}" {{ $list->cod_sistema == $tabla->cod_sistema ? 'selected' : '' }}>
                                             {{ $list->nom_sistema }}
@@ -374,19 +362,17 @@
                                 <td class="px-1">
                                     <select class="form-control db" name="dbe[{{ $loop->index }}]" data-row-index="{{ $loop->index }}">
                                         @foreach ($list_db as $list)
-                                        <option value="{{ $list->cod_db }}" {{ $list->cod_db == $tabla->cod_db ? 'selected' : '' }}
-                                            title="{{ $list->nom_db }}">
-                                            {{ strlen($list->nom_db) > 20 ? substr($list->nom_db, 0, 20) . '...' : $list->nom_db }}
+                                        <option value="{{ $list->cod_db }}" {{ $list->cod_db == $tabla->cod_db ? 'selected' : '' }} title="{{ $list->nom_db }}">
+                                            {{ strlen($list->nom_db) > 40 ? substr($list->nom_db, 0, 40) . '...' : $list->nom_db }}
                                         </option>
                                         @endforeach
                                     </select>
                                 </td>
                                 <td class="px-1">
-                                    <select class="form-control tablabi" name="tablabi[{{ $loop->index }}]" data-row-index="{{ $loop->index }}">
+                                    <select class="form-control tablabi multivalue" name="tablabi[{{ $loop->index }}]" data-row-index="{{ $loop->index }}">
                                         @foreach ($list_tablasdb as $list)
-                                        <option value="{{ $list->nombre }}" {{ $list->idtablas_db == $tabla->idtablas_db ? 'selected' : '' }}
-                                            title="{{ $list->nombre }}">
-                                            {{ strlen($list->nombre) > 20 ? substr($list->nombre, 0, 20) . '...' : $list->nombre }}
+                                        <option value="{{ $list->nombre }}" {{ $list->idtablas_db == $tabla->idtablas_db ? 'selected' : '' }} title="{{ $list->nombre }}">
+                                            {{ strlen($list->nombre) > 40 ? substr($list->nombre, 0, 40) . '...' : $list->nombre }}
                                         </option>
                                         @endforeach
                                     </select>
@@ -395,6 +381,7 @@
                             </tr>
                             @endforeach
                         </tbody>
+
 
                     </table>
                     <button type="button" class="btn btn-success btn-sm" onclick="addRowTablaEdit()">Agregar tabla</button>
@@ -608,30 +595,31 @@
         // Crear una nueva fila
         var newRowTab = document.createElement('tr');
         newRowTab.classList.add('text-center');
+        var rowIndex = tableBody.children.length;
 
         // Contenido HTML de la nueva fila
         newRowTab.innerHTML = `
         <td class="px-1">
-            <select class="form-control sistema" name="sistemas[${tableBody.children.length}]" data-row-index="${tableBody.children.length}">
+            <select class="form-control sistema" name="sistemase[${rowIndex}]" data-row-index="${rowIndex}">
                 @foreach ($list_sistemas as $list)
                 <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema }}</option>
                 @endforeach
             </select>
         </td>
         <td class="px-1">
-            <select class="form-control db" name="dbe[${tableBody.children.length}]" data-row-index="${tableBody.children.length}">
+            <select class="form-control db" name="dbe[${rowIndex}]" data-row-index="${rowIndex}">
                 @foreach ($list_db as $list)
                 <option value="{{ $list->cod_db }}" title="{{ $list->nom_db }}">
-                  {{ \Illuminate\Support\Str::limit($list->nom_db, 20, '...') }}
+                  {{ \Illuminate\Support\Str::limit($list->nom_db, 40, '...') }}
                  </option>
                 @endforeach
             </select>
         </td>
         <td class="px-1">
-            <select class="form-control tablabi" name="tablabi[${tableBody.children.length}]" data-row-index="${tableBody.children.length}">
+            <select class="form-control tablabi" name="tablabi[${rowIndex}]" data-row-index="${rowIndex}">
                 @foreach ($list_tablasdb as $list)
                 <option value="{{ $list->nombre }}"  title="{{ $list->nombre }}">
-                {{ \Illuminate\Support\Str::limit($list->nombre, 20, '...') }}
+                {{ \Illuminate\Support\Str::limit($list->nombre, 40, '...') }}
                  </option>
                 @endforeach
             </select>
@@ -645,6 +633,12 @@
 
         // Añadir la nueva fila al cuerpo de la tabla
         tableBody.appendChild(newRowTab);
+
+        $(newRowTab.querySelector('.tablabi')).select2({
+            tags: true,
+            tokenSeparators: [',', ' '],
+            dropdownParent: $('#ModalUpdate')
+        });
     }
 
 
@@ -667,7 +661,7 @@
                     // Agregar las nuevas opciones
                     $.each(response, function(index, db) {
                         $(`.db[data-row-index="${rowIndex}"]`).append(
-                            `<option value="${db.cod_db}" title="${db.nom_db}">${db.nom_db.length > 20 ? db.nom_db.substring(0, 20) + '...' : db.nom_db}</option>`
+                            `<option value="${db.cod_db}" title="${db.nom_db}">${db.nom_db.length > 40 ? db.nom_db.substring(0, 40) + '...' : db.nom_db}</option>`
                         );
                     });
                 },
@@ -678,12 +672,6 @@
         });
     }
 
-    // Asignar eventos a los selects existentes al cargar la página
-    $(document).ready(function() {
-        $('.sistema').each(function() {
-            attachSistemaChangeEvent(this);
-        });
-    });
 
 
 
@@ -711,6 +699,7 @@
     $(document).ready(function() {
 
         let selectedUbicaciones = [];
+
         $('#tipo_acceso_sedee').on('change', function() {
             const selectedSedes = $(this).val();
             var url = "{{ route('ubicacion_por_sede') }}";
@@ -868,6 +857,82 @@
             });
         });
 
+        $(document).on('change', '.sistema', function() {
+            const selectedSistema = $(this).val();
+            const rowIndex = $(this).data('row-index');
+            console.log('Sistema seleccionado:', selectedSistema, 'Fila:', rowIndex);
+
+            var url = "{{ route('db_por_sistema_bi') }}";
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: {
+                    sis: selectedSistema
+                },
+                success: function(response) {
+                    console.log("###00");
+                    // Encontrar el select correspondiente a la fila actual usando rowIndex
+                    const dbSelect = $(`select.db[data-row-index='${rowIndex}']`);
+                    dbSelect.empty();
+
+                    // Si solo hay una base de datos, agregarla y seleccionarla automáticamente
+                    if (response.length === 1) {
+                        const db = response[0];
+                        dbSelect.append(`<option value="${db.cod_db}" title="${db.nom_db}">${db.nom_db.length > 40 ? db.nom_db.substring(0, 40) + '...' : db.nom_db}</option>`);
+                        // Ejecutar automáticamente el filtrado de tablas
+                        filtrarTablasPorDB(db.cod_db, rowIndex);
+                    } else {
+                        // Si hay más de una base de datos, agregarlas todas
+                        $.each(response, function(index, db) {
+                            dbSelect.append(
+                                `<option value="${db.cod_db}" title="${db.nom_db}">${db.nom_db.length > 40 ? db.nom_db.substring(0, 40) + '...' : db.nom_db}</option>`
+                            );
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Error al obtener db:', xhr);
+                }
+            });
+        });
+
+
+        $(document).on('change', '.db', function() {
+            const selectedDB = $(this).val();
+            const rowIndex = $(this).data('row-index');
+            console.log('DB seleccionada:', selectedDB);
+
+            // Filtramos las tablas por DB para la fila correspondiente
+            filtrarTablasPorDB(selectedDB, rowIndex);
+        });
+
+        function filtrarTablasPorDB(selectedDB, rowIndex) {
+            var url = "{{ route('tb_por_db_bi') }}";
+            $.ajax({
+                url: url,
+                method: 'GET',
+                data: {
+                    dbs: selectedDB
+                },
+                success: function(response) {
+                    // Vaciar el select de la tabla en la fila correspondiente
+                    $(`.tablabi[data-row-index="${rowIndex}"]`).empty();
+
+                    // Agregar las nuevas opciones
+                    $.each(response, function(index, tbdb) {
+                        $(`.tablabi[data-row-index="${rowIndex}"]`).append(
+                            `<option value="${tbdb.nombre}" title="${tbdb.nombre}">${tbdb.nombre.length > 40 ? tbdb.nombre.substring(0, 40) + '...' : tbdb.nombre}</option>`
+                        );
+                    });
+                },
+                error: function(xhr) {
+                    console.error('Error al obtener tablabi:', xhr);
+                }
+            });
+        }
+
+
     });
 
 
@@ -928,29 +993,73 @@
         }
     });
 
-    $('#sistemas').on('change', function() {
-        const selectedSistema = $(this).val();
-        var url = "{{ route('db_por_sistema_bi') }}";
-        $.ajax({
-            url: url,
-            method: 'GET',
-            data: {
-                sis: selectedSistema
-            },
-            success: function(response) {
-                // Vaciar el segundo select antes de agregar las nuevas opciones
-                $('#dbe').empty();
-                // Agregar las nuevas opciones
-                $.each(response, function(index, db) {
-                    $('#dbe').append(
-                        `<option value="${db.cod_db}" title="${db.nom_db}">${db.nom_db.length > 20 ? db.nom_db.substring(0, 20) + '...' : db.nom_db}</option>`
-                    );
-                });
 
+
+
+    var tabla = $('#tabla_ejs3').DataTable({
+        "columnDefs": [{
+                "width": "200px", // Ancho para la columna 0
+                "targets": [0]
             },
-            error: function(xhr) {
-                console.error('Error al obtener db:', xhr);
+            {
+                "width": "300px", // Ancho para la columna 2
+                "targets": [1]
+            },
+            {
+                "width": "50px", // Ancho para la columna 2
+                "targets": [3]
             }
-        });
+        ],
+        "ordering": false,
+        "autoWidth": false,
+        "dom": "<'table-responsive'tr>", // Solo muestra la tabla sin buscador, resultados ni paginador
+        responsive: true,
+        "oLanguage": {
+            "oPaginate": {
+                "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
+                "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+            },
+            "sInfo": "Mostrando página _PAGE_ de _PAGES_",
+            "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+            "sSearchPlaceholder": "Buscar...",
+            "sLengthMenu": "Resultados :  _MENU_",
+            "sEmptyTable": "No hay datos disponibles en la tabla",
+        },
+        "stripeClasses": [],
+    });
+    var tabla_econt = $('#tabla_econt').DataTable({
+        "columnDefs": [{
+                "width": "50px", // Ancho para la columna 0
+                "targets": [0]
+            },
+            {
+                "width": "200px", // Ancho para la columna 2
+                "targets": [1]
+            },
+            {
+                "width": "300px", // Ancho para la columna 2
+                "targets": [2]
+            },
+            {
+                "width": "50px", // Ancho para la columna 2
+                "targets": [5]
+            }
+        ],
+        "ordering": false,
+        "autoWidth": false,
+        "dom": "<'table-responsive'tr>", // Solo muestra la tabla sin buscador, resultados ni paginador
+        responsive: true,
+        "oLanguage": {
+            "oPaginate": {
+                "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
+                "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+            },
+            "sInfo": "Mostrando página _PAGE_ de _PAGES_",
+            "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+            "sSearchPlaceholder": "Buscar...",
+            "sLengthMenu": "Resultados :  _MENU_",
+            "sEmptyTable": "No hay datos disponibles en la tabla",
+        },
+        "stripeClasses": [],
     });
 </script>
