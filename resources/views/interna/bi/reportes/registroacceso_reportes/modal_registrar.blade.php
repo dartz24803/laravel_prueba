@@ -1,5 +1,17 @@
 <!-- CSS -->
 <style>
+    #tabla_versiones td:nth-child(6) {
+        width: 20px;
+    }
+
+    #tabla_versiones td:nth-child(1) {
+        width: 20px;
+    }
+
+    .modal-dialog {
+        max-width: 85%;
+    }
+
     #paste_area_1 {
         width: 100%;
         /* Ancho completo */
@@ -309,12 +321,12 @@
                     <table id="tabla_js2" class="table table-hover" style="width:100%">
                         <thead class="text-center">
                             <tr>
-                                <th>N°pagina</th>
+                                <th style="width: 20px;">N°Pag</th>
                                 <th>Nombre</th>
                                 <th>Descripción</th>
-                                <th class="col-tipo">Concepto</th>
-                                <th class="col-tipo">Presentación</th>
-                                <th class="col-accion">Acciones</th>
+                                <th>Concepto</th>
+                                <th>Presentación</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="tabla_body">
@@ -326,8 +338,8 @@
                                             @endfor
                                     </select>
                                 </td>
-                                <td class="px-1"><input type="text" class="form-control" name="indicador[]"></td>
-                                <td class="px-1"><input type="text" class="form-control" name="descripcion[]"></td>
+                                <td class="px-1"><input type="text" class="form-control" name="indicador[]" oninput="this.setAttribute('title', this.value)"></td>
+                                <td class="px-1"><input type="text" class="form-control" name="descripcion[]" oninput="this.setAttribute('title', this.value)"></td>
                                 <td class="px-1">
                                     <select class="form-control " name="tipo[]" id="tipo">
                                         @foreach ($list_tipo_indicador as $list)
@@ -341,7 +353,7 @@
                                         <option value="2">Informativo</option>
                                     </select>
                                 </td>
-                                <td class="px-1"><button type="button" class="btn btn-success btn-sm" onclick="addRow()">+</button></td>
+                                <td><button type="button" class="btn btn-success btn-sm" onclick="addRow()">+</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -358,7 +370,7 @@
                                 <th>Sistema</th>
                                 <th>Base de Datos</th>
                                 <th>Tabla</th>
-                                <th>Acciones</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="tabla_body3">
@@ -374,7 +386,7 @@
                                     <select class="form-control" name="db[]" id="db">
                                         @foreach ($list_db as $list)
                                         <option value="{{ $list->cod_db }}" title="{{ $list->nom_db }}">
-                                            {{ \Illuminate\Support\Str::limit($list->nom_db, 20, '...') }}
+                                            {{ \Illuminate\Support\Str::limit($list->nom_db, 40, '...') }}
                                         </option>
                                         @endforeach
                                     </select>
@@ -384,13 +396,12 @@
                                     <select class="form-control multivalue" name="tbdb[]" id="tbdb">
                                         @foreach ($list_tablasdb as $list)
                                         <option value="{{ $list->nombre }}" title="{{ $list->nombre }}">
-                                            {{ \Illuminate\Support\Str::limit($list->nombre, 20, '...') }}
+                                            {{ \Illuminate\Support\Str::limit($list->nombre, 40, '...') }}
                                         </option>
                                         @endforeach
                                     </select>
                                 </td>
-                                <!-- <td class="px-1"><input type="text" class="form-control custom-select" name="tablabi[]"></td> -->
-                                <td class="px-1"><button type="button" class="btn btn-success btn-sm" onclick="addRowTabla()">+</button></td>
+                                <td><button type="button" class="btn btn-success btn-sm" onclick="addRowTabla()">+</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -596,7 +607,7 @@
             <select class="form-control db" name="db[]" data-row-index="${rowIndex}">
                 @foreach ($list_db as $list)
                 <option value="{{ $list->cod_db }}" title="{{ $list->nom_db }}">
-                    {{ \Illuminate\Support\Str::limit($list->nom_db, 20, '...') }}
+                    {{ \Illuminate\Support\Str::limit($list->nom_db, 40, '...') }}
                 </option>
                 @endforeach
             </select>
@@ -605,7 +616,7 @@
             <select class="form-control tbdb" name="tbdb[]" data-row-index="${rowIndex}">
                 @foreach ($list_tablasdb as $list)
                 <option value="{{ $list->nombre }}" title="{{ $list->nombre }}">
-                    {{ \Illuminate\Support\Str::limit($list->nombre, 20, '...') }}
+                    {{ \Illuminate\Support\Str::limit($list->nombre, 40, '...') }}
                 </option>
                 @endforeach
             </select>
@@ -1047,12 +1058,16 @@
 
     var tabla = $('#tabla_js3').DataTable({
         "columnDefs": [{
-                "width": "150px", // Ancho para la columna 0
+                "width": "200px", // Ancho para la columna 0
                 "targets": [0]
             },
             {
-                "width": "150px", // Ancho para la columna 2
+                "width": "300px", // Ancho para la columna 2
                 "targets": [1]
+            },
+            {
+                "width": "50px", // Ancho para la columna 2
+                "targets": [3]
             }
         ],
         "ordering": false,

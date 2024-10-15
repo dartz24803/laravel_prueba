@@ -55,6 +55,7 @@ class BiReporte extends Model
             ->join('bi_puesto_acceso', 'acceso_bi_reporte.id_acceso_bi_reporte', '=', 'bi_puesto_acceso.id_acceso_bi_reporte')
             ->where('acceso_bi_reporte.id_area_destino', $id_area_destino)
             ->where('acceso_bi_reporte.estado', 1)
+            ->where('acceso_bi_reporte.actividad', 1)
             ->where('acceso_bi_reporte.estado_valid', 1)
             ->where('bi_puesto_acceso.id_puesto', $id_puesto)
             ->get();

@@ -76,12 +76,14 @@ use App\Http\Controllers\ReporteProveedoresController;
 use App\Http\Controllers\RequisicionTiendaConfController;
 use App\Http\Controllers\RequisicionTiendaController;
 use App\Http\Controllers\SalidaInsumoController;
+use App\Http\Controllers\SoporteController;
 use App\Http\Controllers\StockInfosapController;
 use App\Http\Controllers\TablaMaestraTesoreriaController;
 
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
 });
+
 Route::post('/ReporteFotograficoAdmListar', [ReporteFotograficoAdmController::class, 'listar']);
 Route::controller(ReporteFotograficoAdmController::class)->group(function () {
     Route::get('/ReporteFotograficoAdm',  'index')->name('tienda.administracion.ReporteFotografico.reportefotograficoadm');
@@ -377,6 +379,25 @@ Route::controller(ProcesosController::class)->group(function () {
     Route::get('portalprocesos_cap_conf/create', 'create_cap_conf')->name('portalprocesos_cap_conf.create');
     Route::post('portalprocesos_cap_conf', 'store_cap_conf')->name('portalprocesos_cap_conf.store');
 });
+
+
+//SOPORTE - ADMINISTRADOR
+Route::controller(SoporteController::class)->group(function () {
+    Route::get('soporte', 'index')->name('soporte');
+    Route::get('soporte_ticket', 'index_tick')->name('soporte_ticket');
+    Route::get('soporte_ticket/list', 'list_tick')->name('soporte_ticket.list');
+    Route::get('soporte_ticket/create', 'create_tick')->name('soporte_ticket.create');
+    Route::get('soporte_ticket/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_tick')->name('soporte_ticket.excel');
+    Route::get('soporte_ticket/store', 'store_tick')->name('soporte_ticket.store');
+    Route::get('soporte_ticket/{id}/image', 'image_tick')->name('soporte_ticket.image');
+    Route::delete('soporte_ticket/{id}', 'destroy_tick')->name('soporte_ticket.destroy');
+    Route::post('soporte_ticket/{id}', 'approve_tick')->name('soporte_ticket.approve');
+    Route::get('soporte_ticket/{id}/edit', 'edit_tick')->name('soporte_ticket.edit');
+
+    Route::get('soporte_ticket_index/{id_area}/{id_subgerencia}', 'handleAreaP')->name('soporte_ticket_index');
+});
+
+
 
 //BI REPORTES -
 Route::controller(BiReporteController::class)->group(function () {
@@ -1308,25 +1329,43 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::get('caja_chica/list', 'list')->name('caja_chica.list');
     Route::get('caja_chica/create_mo', 'create_mo')->name('caja_chica.create_mo');
     Route::post('caja_chica/traer_sub_categoria_mo', 'traer_sub_categoria_mo')->name('caja_chica.traer_sub_categoria_mo');
-    Route::post('caja_chica/consultar_ruc', 'consultar_ruc')->name('caja_chica.consultar_ruc');
+    Route::get('caja_chica/list_tmp_mo', 'list_tmp_mo')->name('caja_chica.list_tmp_mo');
+    Route::post('caja_chica/store_tmp_mo', 'store_tmp_mo')->name('caja_chica.store_tmp_mo');
+    Route::delete('caja_chica/{id}/destroy_tmp_mo', 'destroy_tmp_mo')->name('caja_chica.destroy_tmp_mo');
+    Route::get('caja_chica/total_tmp_mo', 'total_tmp_mo')->name('caja_chica.total_tmp_mo');
     Route::post('caja_chica_mo', 'store_mo')->name('caja_chica.store_mo');
     Route::get('caja_chica/create_pv', 'create_pv')->name('caja_chica.create_pv');
     Route::post('caja_chica/traer_categoria_pv', 'traer_categoria_pv')->name('caja_chica.traer_categoria_pv');
     Route::post('caja_chica/traer_sub_categoria_pv', 'traer_sub_categoria_pv')->name('caja_chica.traer_sub_categoria_pv');
+    Route::post('caja_chica/traer_tipo_pago', 'traer_tipo_pago')->name('caja_chica.traer_tipo_pago');
+    Route::post('caja_chica/consultar_ruc', 'consultar_ruc')->name('caja_chica.consultar_ruc');
+    Route::get('caja_chica/list_tmp_pv', 'list_tmp_pv')->name('caja_chica.list_tmp_pv');
+    Route::post('caja_chica/store_tmp_pv', 'store_tmp_pv')->name('caja_chica.store_tmp_pv');
+    Route::delete('caja_chica/{id}/destroy_tmp_pv', 'destroy_tmp_pv')->name('caja_chica.destroy_tmp_pv');
+    Route::get('caja_chica/total_tmp_pv', 'total_tmp_pv')->name('caja_chica.total_tmp_pv');
     Route::post('caja_chica_pv', 'store_pv')->name('caja_chica.store_pv');
+    Route::get('caja_chica/{id}/show', 'show')->name('caja_chica.show');
     Route::get('caja_chica/{id}/edit', 'edit')->name('caja_chica.edit');
+    Route::get('caja_chica/{id}/list_ruta_mo', 'list_ruta_mo')->name('caja_chica.list_ruta_mo');
+    Route::put('caja_chica/{id}/store_ruta_mo', 'store_ruta_mo')->name('caja_chica.store_ruta_mo');
+    Route::delete('caja_chica/{id}/destroy_ruta_mo', 'destroy_ruta_mo')->name('caja_chica.destroy_ruta_mo');
+    Route::get('caja_chica/{id}/total_ruta_mo', 'total_ruta_mo')->name('caja_chica.total_ruta_mo');
     Route::put('caja_chica_mo/{id}', 'update_mo')->name('caja_chica.update_mo');
+    Route::get('caja_chica/{id}/list_producto_pv', 'list_producto_pv')->name('caja_chica.list_producto_pv');
+    Route::put('caja_chica/{id}/store_producto_pv', 'store_producto_pv')->name('caja_chica.store_producto_pv');
+    Route::delete('caja_chica/{id}/destroy_producto_pv', 'destroy_producto_pv')->name('caja_chica.destroy_producto_pv');
+    Route::get('caja_chica/{id}/total_producto_pv', 'total_producto_pv')->name('caja_chica.total_producto_pv');
     Route::put('caja_chica_pv/{id}', 'update_pv')->name('caja_chica.update_pv');
     Route::get('caja_chica/{id}/download', 'download')->name('caja_chica.download');
     Route::get('caja_chica/{id}/validar', 'validar')->name('caja_chica.validar');
     Route::put('caja_chica_mo/{id}/validar', 'validar_mo')->name('caja_chica.validar_mo');
     Route::put('caja_chica_pv/{id}/validar', 'validar_pv')->name('caja_chica.validar_pv');
-    Route::post('caja_chica/traer_tipo_pago', 'traer_tipo_pago')->name('caja_chica.traer_tipo_pago');
     Route::get('caja_chica/{id}/credito', 'credito')->name('caja_chica.credito');
     Route::get('caja_chica/list_credito', 'list_credito')->name('caja_chica.list_credito');
     Route::get('caja_chica/{id}/saldo', 'saldo')->name('caja_chica.saldo');
     Route::post('caja_chica_cr/{id}', 'store_cr')->name('caja_chica.store_cr');
     Route::delete('caja_chica_cr/{id}', 'destroy_cr')->name('caja_chica.destroy_cr');
+    Route::put('caja_chica/{id}/anular', 'anular')->name('caja_chica.anular');
     Route::delete('caja_chica/{id}', 'destroy')->name('caja_chica.destroy');
     Route::get('caja_chica/excel', 'excel')->name('caja_chica.excel');
 });

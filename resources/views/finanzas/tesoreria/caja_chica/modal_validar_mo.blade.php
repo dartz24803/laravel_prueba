@@ -22,7 +22,10 @@
                 <select class="form-control" name="id_tipo_pagov" id="id_tipo_pagov">
                     <option value="0">Seleccione</option>
                     @foreach ($list_tipo_pago as $list)
-                        <option value="{{ $list->id }}">{{ $list->nombre }}</option>
+                        <option value="{{ $list->id }}"
+                        @if ($list->id==$get_id->id_tipo_pago) selected @endif>
+                            {{ $list->nombre }}
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -103,7 +106,7 @@
                 <label>Monto:</label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" value="{{ $get_id->total }}" disabled>
+                <input type="text" class="form-control" value="{{ $get_id->total_concatenado }}" disabled>
             </div>
 
             <div class="form-group col-lg-2">
@@ -118,15 +121,8 @@
             <div class="form-group col-lg-2">
                 <label>Empresa:</label>
             </div>
-            <div class="form-group col-lg-4">
+            <div class="form-group col-lg-10">
                 <input type="text" class="form-control" value="{{ $get_id->nom_empresa }}" disabled>
-            </div>
-
-            <div class="form-group col-lg-2">
-                <label>Parte interesada:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="text" class="form-control" value="{{ $get_id->razon_social }}" disabled>
             </div>
         </div>
     </div>

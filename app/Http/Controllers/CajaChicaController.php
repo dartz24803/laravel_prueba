@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\CajaChica;
 use App\Models\CajaChicaPago;
 use App\Models\CajaChicaPagoTemporal;
+use App\Models\CajaChicaProducto;
+use App\Models\CajaChicaProductoTmp;
+use App\Models\CajaChicaRuta;
+use App\Models\CajaChicaRutaTmp;
 use App\Models\Categoria;
 use App\Models\Empresas;
 use App\Models\Notificacion;
@@ -19,6 +23,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\SubGerencia;
 use App\Models\TipoComprobante;
 use App\Models\TipoPago;
+use App\Models\Usuario;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -50,12 +55,21 @@ class CajaChicaController extends Controller
 
     public function create_mo()
     {
+        CajaChicaRutaTmp::where('id_usuario',session('usuario')->id_usuario)->delete();
         $list_ubicacion = Ubicacion::select('id_ubicacion','cod_ubi')->where('estado',1)
                         ->orderBy('cod_ubi','ASC')->get();
         $list_empresa = Empresas::select('id_empresa','nom_empresa')->where('activo',1)
                         ->where('estado',1)->orderBy('nom_empresa','ASC')->get();
-        $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
-        return view('finanzas.tesoreria.caja_chica.modal_registrar_mo', compact('list_ubicacion','list_empresa','list_tipo_moneda'));
+        $list_usuario = Usuario::select('id_usuario',
+                        DB::raw("CONCAT(num_doc,' - ',usuario_apater,' ',usuario_amater,', ',
+                        usuario_nombres) AS nom_usuario"))->where('estado',1)->get();
+        $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();                        
+        return view('finanzas.tesoreria.caja_chica.modal_registrar_mo', compact(
+            'list_ubicacion',
+            'list_empresa',
+            'list_usuario',
+            'list_tipo_moneda'
+        ));
     }
 
     public function traer_sub_categoria_mo(Request $request)
@@ -71,6 +85,168 @@ class CajaChicaController extends Controller
             $list_sub_categoria = [];
         }
         return view('finanzas.tesoreria.caja_chica.sub_categoria', compact('list_sub_categoria'));
+    }
+
+    public function list_tmp_mo(Request $request)
+    {
+        $list_temporal = CajaChicaRutaTmp::where('id_usuario',session('usuario')->id_usuario)->get();
+        return view('finanzas.tesoreria.caja_chica.lista_temporal_mo', compact('list_temporal'));
+    }
+
+    public function store_tmp_mo(Request $request)
+    {
+        $request->validate([
+            'personas' => 'required|gt:0',
+            'punto_salida' => 'required',
+            'punto_llegada' => 'required',
+            'transporte' => 'gt:0',
+            'motivo' => 'required',
+            'costo' => 'required|gt:0'
+        ],[
+            'personas.required' => 'Debe ingresar n° personas.',
+            'personas.gt' => 'Debe ingresar n° personas mayor a 0.',
+            'punto_salida.required' => 'Debe ingresar punto salida.',
+            'punto_llegada.required' => 'Debe ingresar punto llegada.',
+            'transporte.gt' => 'Debe seleccionar transporte.',
+            'motivo.required' => 'Debe ingresar motivo.',
+            'costo.required' => 'Debe ingresar costo.',
+            'costo.gt' => 'Debe ingresar costo mayor a 0.'
+        ]);
+
+        CajaChicaRutaTmp::create([
+            'id_usuario' => session('usuario')->id_usuario,
+            'personas' => $request->personas,
+            'punto_salida' => $request->punto_salida,
+            'punto_llegada' => $request->punto_llegada,
+            'transporte' => $request->transporte,
+            'motivo' => $request->motivo,
+            'costo' => $request->costo
+        ]);
+    }
+
+    public function destroy_tmp_mo($id)
+    {
+        CajaChicaRutaTmp::destroy($id);
+    }
+
+    public function total_tmp_mo()
+    {
+        $suma = CajaChicaRutaTmp::where('id_usuario',session('usuario')->id_usuario)->sum('costo');
+        echo $suma;
+    }
+
+    public function store_mo(Request $request)
+    {
+        $request->validate([
+            'id_ubicacion' => 'gt:0',
+            'id_empresa' => 'gt:0',
+            'id_sub_categoria' => 'gt:0',
+            'id_usuario' => 'gt:0',
+            'fecha' => 'required',
+            'descripcion' => 'required'
+        ], [
+            'id_ubicacion.gt' => 'Debe seleccionar ubicación.',
+            'id_empresa.gt' => 'Debe seleccionar empresa.',
+            'id_sub_categoria.gt' => 'Debe seleccionar sub-categoría.',
+            'id_usuario.gt' => 'Debe seleccionar solicitante.',
+            'fecha.required' => 'Debe ingresar fecha solicitud.',
+            'descripcion.required' => 'Debe ingresar descripción.'
+        ]);
+
+        $errors = [];
+        $list_temporal = CajaChicaRutaTmp::where('id_usuario',session('usuario')->id_usuario)
+                        ->count();
+        if($list_temporal=="0"){
+            $errors['temporal'] = ['Debe adicionar al menos una ruta.'];
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
+        $get_id = SubCategoria::findOrFail($request->id_sub_categoria);
+
+        $caja_chica = CajaChica::create([
+            'id_ubicacion' => $request->id_ubicacion,
+            'id_categoria' => $get_id->id_categoria,
+            'id_empresa' => $request->id_empresa,
+            'id_sub_categoria' => $request->id_sub_categoria,
+            'id_usuario' => $request->id_usuario,
+            'tipo_movimiento' => $request->tipo_movimiento,
+            'fecha' => $request->fecha,
+            'descripcion' => $request->descripcion,
+            'id_tipo_moneda' => $request->id_tipo_moneda,
+            'id_tipo_comprobante' => 6,
+            'id_pago' => 1,
+            'id_tipo_pago' => 1,
+            'estado_c' => 1,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        DB::statement('INSERT INTO caja_chica_ruta (id_caja_chica,personas,punto_salida,
+        punto_llegada,transporte,motivo,costo)
+        SELECT '.$caja_chica->id.',personas,punto_salida,punto_llegada,transporte,motivo,costo
+        FROM caja_chica_ruta_tmp
+        WHERE id_usuario='.session('usuario')->id_usuario);
+
+        CajaChicaRutaTmp::where('id_usuario',session('usuario')->id_usuario)->delete();
+    }
+
+    public function create_pv()
+    {
+        CajaChicaProductoTmp::where('id_usuario',session('usuario')->id_usuario)->delete();
+        $list_ubicacion = Ubicacion::select('id_ubicacion','cod_ubi')->where('estado',1)
+                        ->orderBy('cod_ubi','ASC')->get();
+        $list_empresa = Empresas::select('id_empresa','nom_empresa')->where('activo',1)
+                        ->where('estado',1)->orderBy('nom_empresa','ASC')->get();
+        $list_usuario = Usuario::select('id_usuario',
+                        DB::raw("CONCAT(num_doc,' - ',usuario_apater,' ',usuario_amater,', ',
+                        usuario_nombres) AS nom_usuario"))->where('estado',1)->get();
+        $list_tipo_comprobante = TipoComprobante::whereIn('id',[1,2,3,6])->get();
+        $list_pago = Pago::all();
+        $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
+        return view('finanzas.tesoreria.caja_chica.modal_registrar_pv', compact(
+            'list_ubicacion',
+            'list_empresa',
+            'list_usuario',
+            'list_tipo_comprobante',
+            'list_pago',
+            'list_tipo_moneda',
+        ));
+    }
+
+    public function traer_categoria_pv(Request $request)
+    {
+        $list_categoria = Categoria::select('id_categoria','nom_categoria')->where('id_categoria_mae',3)
+                        ->where('id_ubicacion',$request->id_ubicacion)->where('nom_categoria','!=','MOVILIDAD')
+                        ->where('estado',1)->get();
+        return view('finanzas.tesoreria.caja_chica.categoria', compact('list_categoria'));
+    }
+
+    public function traer_sub_categoria_pv(Request $request)
+    {
+        $list_sub_categoria = SubCategoria::select('id','nombre')->where('id_categoria',$request->id_categoria)
+                            ->where('estado',1)->get();
+        return view('finanzas.tesoreria.caja_chica.sub_categoria', compact('list_sub_categoria'));
+    }
+    
+    public function traer_tipo_pago(Request $request)
+    {
+        if($request->id_pago=="1"){
+            $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
+                            ->where('estado',1)->whereIn('id',[1,2])
+                            ->orderBy('nombre','ASC')->get();
+        }elseif($request->id_pago=="2"){
+            $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
+                            ->where('estado',1)->whereIn('id',[2,3])
+                            ->orderBy('nombre','ASC')->get();
+        }else{
+            $list_tipo_pago = [];
+        }
+        return view('finanzas.tesoreria.caja_chica.tipo_pago',compact('list_tipo_pago'));
     }
 
     public function consultar_ruc(Request $request)
@@ -91,117 +267,50 @@ class CajaChicaController extends Controller
         if(isset($responseData['success'])){
             echo "error@@@".$responseData['message'];
         }else{
-            echo $responseData['razonSocial'];
+            echo $responseData['razonSocial']."@@@".$responseData['direccion'];
         }
     }
 
-    public function store_mo(Request $request)
+    public function list_tmp_pv(Request $request)
+    {
+        $list_temporal = CajaChicaProductoTmp::select('id','cantidad','producto','precio',
+                        DB::raw('cantidad*precio AS total'))
+                        ->where('id_usuario',session('usuario')->id_usuario)->get();
+        return view('finanzas.tesoreria.caja_chica.lista_temporal_pv', compact('list_temporal'));
+    }
+
+    public function store_tmp_pv(Request $request)
     {
         $request->validate([
-            'id_ubicacion' => 'gt:0',
-            'fecha' => 'required',
-            'id_sub_categoria' => 'gt:0',
-            'id_empresa' => 'gt:0',
-            'total' => 'required|gt:0',
-            'ruc' => 'nullable|size:11',
-            'ruta' => 'gt:0',
-            'punto_partida' => 'required_if:ruta,1',
-            'punto_llegada' => 'required'
-        ], [
-            'id_ubicacion.gt' => 'Debe seleccionar ubicación.',
-            'fecha.required' => 'Debe ingresar fecha.',
-            'id_sub_categoria.gt' => 'Debe seleccionar sub-categoría.',
-            'id_empresa.gt' => 'Debe seleccionar empresa.',
-            'total.required' => 'Debe ingresar total.',
-            'total.gt' => 'Debe ingresar total mayor a 0.',
-            'ruc.size' => 'Debe ingresar RUC válido (11 dígitos).',
-            'ruta.gt' => 'Debe seleccionar ruta.',
-            'punto_partida.required_if' => 'Debe ingresar punto de partida.',
-            'punto_llegada.required' => 'Debe ingresar punto de llegada.'
+            'cantidad' => 'required|gt:0',
+            'producto' => 'required',
+            'precio' => 'required|gt:0'
+        ],[
+            'cantidad.required' => 'Debe ingresar cantidad.',
+            'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
+            'producto.required' => 'Debe ingresar producto.',
+            'precio.required' => 'Debe ingresar precio unitario.',
+            'precio.gt' => 'Debe ingresar precio unitario mayor a 0.'
         ]);
 
-        $comprobante = "";
-        if ($_FILES["comprobante"]["name"] != "") {
-            $ftp_server = "lanumerounocloud.com";
-            $ftp_usuario = "intranet@lanumerounocloud.com";
-            $ftp_pass = "Intranet2022@";
-            $con_id = ftp_connect($ftp_server);
-            $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
-            if ($con_id && $lr) {
-                $path = $_FILES["comprobante"]["name"];
-                $source_file = $_FILES['comprobante']['tmp_name'];
-
-                $ext = pathinfo($path, PATHINFO_EXTENSION);
-                $nombre_soli = "Comprobante_" . date('YmdHis');
-                $nombre = $nombre_soli . "." . strtolower($ext);
-
-                ftp_pasv($con_id, true);
-                $subio = ftp_put($con_id, "CAJA_CHICA/" . $nombre, $source_file, FTP_BINARY);
-                if ($subio) {
-                    $comprobante = "https://lanumerounocloud.com/intranet/CAJA_CHICA/" . $nombre;
-                } else {
-                    echo "Archivo no subido correctamente";
-                }
-            } else {
-                echo "No se conecto";
-            }
-        }
-
-        $get_id = SubCategoria::findOrFail($request->id_sub_categoria);
-
-        CajaChica::create([
-            'id_ubicacion' => $request->id_ubicacion,
-            'id_categoria' => $get_id->id_categoria,
-            'fecha' => $request->fecha,
-            'id_sub_categoria' => $request->id_sub_categoria,
-            'id_empresa' => $request->id_empresa,
-            'id_tipo_moneda' => $request->id_tipo_moneda,
-            'total' => $request->total,
-            'ruc' => $request->ruc,
-            'razon_social' => $request->razon_social,
-            'ruta' => $request->ruta,
-            'id_tipo_comprobante' => 1,
-            'punto_partida' => $request->punto_partida,
-            'punto_llegada' => $request->punto_llegada,
-            'comprobante' => $comprobante,
-            'estado_c' => 1,
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
+        CajaChicaProductoTmp::create([
+            'id_usuario' => session('usuario')->id_usuario,
+            'cantidad' => $request->cantidad,
+            'producto' => $request->producto,
+            'precio' => $request->precio
         ]);
     }
 
-    public function create_pv()
+    public function destroy_tmp_pv($id)
     {
-        $list_ubicacion = Ubicacion::select('id_ubicacion','cod_ubi')->where('estado',1)
-                        ->orderBy('cod_ubi','ASC')->get();
-        $list_empresa = Empresas::select('id_empresa','nom_empresa')->where('activo',1)
-                        ->where('estado',1)->orderBy('nom_empresa','ASC')->get();
-        $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
-        $list_tipo_comprobante = TipoComprobante::whereIn('id',[1,2,3,6])->get();
-        return view('finanzas.tesoreria.caja_chica.modal_registrar_pv', compact(
-            'list_ubicacion',
-            'list_empresa',
-            'list_tipo_moneda',
-            'list_tipo_comprobante'
-        ));
+        CajaChicaProductoTmp::destroy($id);
     }
 
-    public function traer_categoria_pv(Request $request)
+    public function total_tmp_pv()
     {
-        $list_categoria = Categoria::select('id_categoria','nom_categoria')->where('id_categoria_mae',3)
-                        ->where('id_ubicacion',$request->id_ubicacion)->where('nom_categoria','!=','MOVILIDAD')
-                        ->where('estado',1)->get();
-        return view('finanzas.tesoreria.caja_chica.categoria', compact('list_categoria'));
-    }
-
-    public function traer_sub_categoria_pv(Request $request)
-    {
-        $list_sub_categoria = SubCategoria::select('id','nombre')->where('id_categoria',$request->id_categoria)
-                            ->where('estado',1)->get();
-        return view('finanzas.tesoreria.caja_chica.sub_categoria', compact('list_sub_categoria'));
+        $suma = CajaChicaProductoTmp::where('id_usuario',session('usuario')->id_usuario)
+                ->sum(DB::raw('cantidad*precio'));
+        echo $suma;
     }
 
     public function store_pv(Request $request)
@@ -209,29 +318,46 @@ class CajaChicaController extends Controller
         $request->validate([
             'id_ubicacion' => 'gt:0',
             'id_categoria' => 'gt:0',
-            'fecha' => 'required',
-            'id_sub_categoria' => 'gt:0',
             'id_empresa' => 'gt:0',
-            'total' => 'required|gt:0',
-            'ruc' => 'nullable|size:11',
-            'n_comprobante' => 'required',
+            'id_sub_categoria' => 'gt:0',
+            'id_usuario' => 'gt:0',
+            'tipo_movimiento' => 'required',
             'id_tipo_comprobante' => 'gt:0',
-            'punto_partida' => 'required',
-            'comprobante' => 'required'
+            'n_comprobante' => 'required',
+            'id_pago' => 'gt:0',
+            'id_tipo_pago' => 'gt:0',
+            'fecha' => 'required',
+            'comprobante' => 'required',
+            'ruc' => 'nullable|size:11',
+            'razon_social' => 'required',
+            'descripcion' => 'required'
         ], [
             'id_ubicacion.gt' => 'Debe seleccionar ubicación.',
             'id_categoria.gt' => 'Debe seleccionar categoría.',
-            'fecha.required' => 'Debe ingresar fecha.',
-            'id_sub_categoria.gt' => 'Debe seleccionar sub-categoría.',
             'id_empresa.gt' => 'Debe seleccionar empresa.',
-            'total.required' => 'Debe ingresar total.',
-            'total.gt' => 'Debe ingresar total mayor a 0.',
-            'ruc.size' => 'Debe ingresar RUC válido (11 dígitos).',
-            'n_comprobante.required' => 'Debe ingresar n° comprobante.',
+            'id_sub_categoria.gt' => 'Debe seleccionar sub-categoría.',
+            'id_usuario.gt' => 'Debe seleccionar solicitante.',
+            'tipo_movimiento.required' => 'Debe seleccionar tipo de movimiento.',
             'id_tipo_comprobante.gt' => 'Debe seleccionar tipo comprobante.',
-            'punto_partida.required' => 'Debe ingresar descripción.',
-            'comprobante.required' => 'Debe cargar comprobante.'
+            'n_comprobante.required' => 'Debe ingresar n° comprobante.',
+            'id_pago.gt' => 'Debe seleccionar pago.',
+            'id_tipo_pago.gt' => 'Debe seleccionar tipo pago.',
+            'fecha.required' => 'Debe ingresar fecha solicitud.',
+            'comprobante.required' => 'Debe cargar comprobante.',
+            'ruc.size' => 'Debe ingresar RUC válido (11 dígitos).',
+            'razon_social.required' => 'Debe ingresar razón social.',
+            'descripcion.required' => 'Debe ingresar descripción.'
         ]);
+
+        $errors = [];
+        $list_temporal = CajaChicaProductoTmp::where('id_usuario',session('usuario')->id_usuario)
+                        ->count();
+        if($list_temporal=="0"){
+            $errors['temporal'] = ['Debe adicionar al menos un producto.'];
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
 
         $comprobante = "";
         if ($_FILES["comprobante"]["name"] != "") {
@@ -260,20 +386,24 @@ class CajaChicaController extends Controller
             }
         }
 
-        CajaChica::create([
+        $caja_chica = CajaChica::create([
             'id_ubicacion' => $request->id_ubicacion,
             'id_categoria' => $request->id_categoria,
-            'fecha' => $request->fecha,
-            'id_sub_categoria' => $request->id_sub_categoria,
             'id_empresa' => $request->id_empresa,
-            'id_tipo_moneda' => $request->id_tipo_moneda,
-            'total' => $request->total,
+            'id_sub_categoria' => $request->id_sub_categoria,
+            'id_usuario' => $request->id_usuario,
+            'tipo_movimiento' => $request->tipo_movimiento,
+            'id_tipo_comprobante' => $request->id_tipo_comprobante,
+            'n_comprobante' => $request->n_comprobante,
+            'id_pago' => $request->id_pago,
+            'id_tipo_pago' => $request->id_tipo_pago,
+            'fecha' => $request->fecha,
+            'comprobante' => $comprobante,
             'ruc' => $request->ruc,
             'razon_social' => $request->razon_social,
-            'n_comprobante' => $request->n_comprobante,
-            'id_tipo_comprobante' => $request->id_tipo_comprobante,
-            'punto_partida' => $request->punto_partida,
-            'comprobante' => $comprobante,
+            'direccion' => $request->direccion,
+            'descripcion' => $request->descripcion,
+            'id_tipo_moneda' => $request->id_tipo_moneda,
             'estado_c' => 1,
             'estado' => 1,
             'fec_reg' => now(),
@@ -281,43 +411,246 @@ class CajaChicaController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+
+        DB::statement('INSERT INTO caja_chica_producto (id_caja_chica,cantidad,producto,precio)
+        SELECT '.$caja_chica->id.',cantidad,producto,precio
+        FROM caja_chica_producto_tmp
+        WHERE id_usuario='.session('usuario')->id_usuario);
+
+        CajaChicaProductoTmp::where('id_usuario',session('usuario')->id_usuario)->delete();
     }
 
-    public function edit($id)
+    public function show($id)
     {
-        $get_id = CajaChica::findOrFail($id);
-        $list_ubicacion = Ubicacion::select('id_ubicacion','cod_ubi')->where('estado',1)
-                        ->orderBy('cod_ubi','ASC')->get();
-        $list_sub_categoria = SubCategoria::where('id_categoria',$get_id->id_categoria)
-                            ->where('estado',1)->orderBy('nombre','ASC')->get();
-        $list_empresa = Empresas::select('id_empresa','nom_empresa')->where('activo',1)
-                        ->where('estado',1)->orderBy('nom_empresa','ASC')->get();
+        $get_id = CajaChica::get_list_caja_chica(['id'=>$id]);
         $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
         $valida = Categoria::select('nom_categoria')->where('id_categoria',$get_id->id_categoria)
                 ->first();                      
         if($valida->nom_categoria=="MOVILIDAD"){
+            $list_ruta = CajaChicaRuta::select('id','personas','punto_salida','punto_llegada',
+                            DB::raw("CASE WHEN transporte=1 THEN 'BUS' WHEN transporte=2 THEN 'TAXI'
+                            ELSE '' END AS transporte"),'motivo','costo')->where('id_caja_chica',$id)
+                            ->get();
+            return view('finanzas.tesoreria.caja_chica.modal_detalle_mo', compact(
+                'get_id',
+                'list_tipo_moneda',
+                'list_ruta'
+            ));
+        }else{
+            $list_producto = CajaChicaProducto::select('id','cantidad','producto','precio',
+                            DB::raw('cantidad*precio AS total'))->where('id_caja_chica',$id)->get();
+            return view('finanzas.tesoreria.caja_chica.modal_detalle_pv', compact(
+                'get_id',
+                'list_tipo_moneda',
+                'list_producto'
+            ));
+        }
+    }
+
+    public function edit($id)
+    {
+        $get_id = CajaChica::get_list_caja_chica(['id'=>$id]);
+        $list_ubicacion = Ubicacion::select('id_ubicacion','cod_ubi')->where('estado',1)
+                        ->orderBy('cod_ubi','ASC')->get();
+        $list_empresa = Empresas::select('id_empresa','nom_empresa')->where('activo',1)
+                        ->where('estado',1)->orderBy('nom_empresa','ASC')->get();
+        $list_sub_categoria = SubCategoria::where('id_categoria',$get_id->id_categoria)
+                            ->where('estado',1)->orderBy('nombre','ASC')->get();
+        $list_usuario = Usuario::select('id_usuario',
+                        DB::raw("CONCAT(num_doc,' - ',usuario_apater,' ',usuario_amater,', ',
+                        usuario_nombres) AS nom_usuario"))->where('estado',1)->get();
+        $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
+        $valida = Categoria::select('nom_categoria')->where('id_categoria',$get_id->id_categoria)
+                ->first();
+        if($valida->nom_categoria=="MOVILIDAD"){
+            $list_ruta = CajaChicaRuta::select('id','personas','punto_salida','punto_llegada',
+                            DB::raw("CASE WHEN transporte=1 THEN 'BUS' WHEN transporte=2 THEN 'TAXI'
+                            ELSE '' END AS transporte"),'motivo','costo')->where('id_caja_chica',$id)
+                            ->get();
             return view('finanzas.tesoreria.caja_chica.modal_editar_mo', compact(
                 'get_id',
                 'list_ubicacion',
-                'list_sub_categoria',
                 'list_empresa',
-                'list_tipo_moneda'
+                'list_sub_categoria',
+                'list_usuario',
+                'list_tipo_moneda',
+                'list_ruta'
             ));
         }else{
             $list_categoria = Categoria::select('id_categoria','nom_categoria')->where('id_categoria_mae',3)
                             ->where('id_ubicacion',$get_id->id_ubicacion)->where('nom_categoria','!=','MOVILIDAD')
                             ->where('estado',1)->get();
+            $list_pago = Pago::all();
             $list_tipo_comprobante = TipoComprobante::whereIn('id',[1,2,3,6])->get();
+            if($get_id->id_pago=="1"){
+                $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
+                                ->where('estado',1)->whereIn('id',[1,2])
+                                ->orderBy('nombre','ASC')->get();
+            }elseif($get_id->id_pago=="2"){
+                $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
+                                ->where('estado',1)->whereIn('id',[2,3])
+                                ->orderBy('nombre','ASC')->get();
+            }else{
+                $list_tipo_pago = [];
+            }            
             return view('finanzas.tesoreria.caja_chica.modal_editar_pv', compact(
                 'get_id',
                 'list_ubicacion',
                 'list_categoria',
-                'list_sub_categoria',
                 'list_empresa',
-                'list_tipo_moneda',
-                'list_tipo_comprobante'
+                'list_sub_categoria',
+                'list_usuario',
+                'list_tipo_comprobante',
+                'list_pago',
+                'list_tipo_pago',
+                'list_tipo_moneda'
             ));
         }
+    }
+
+    public function list_ruta_mo($id)
+    {
+        $list_ruta = CajaChicaRuta::select('id','personas','punto_salida','punto_llegada',
+                    DB::raw("CASE WHEN transporte=1 THEN 'BUS' WHEN transporte=2 THEN 'TAXI'
+                    ELSE '' END AS transporte"),'motivo','costo')->where('id_caja_chica',$id)
+                    ->get();
+        return view('finanzas.tesoreria.caja_chica.lista_ruta_mo', compact('list_ruta'));
+    }
+
+    public function store_ruta_mo(Request $request, $id)
+    {
+        $request->validate([
+            'personase' => 'required|gt:0',
+            'punto_salidae' => 'required',
+            'punto_llegadae' => 'required',
+            'transportee' => 'gt:0',
+            'motivoe' => 'required',
+            'costoe' => 'required|gt:0'
+        ],[
+            'personase.required' => 'Debe ingresar n° personas.',
+            'personase.gt' => 'Debe ingresar n° personas mayor a 0.',
+            'punto_salidae.required' => 'Debe ingresar punto salida.',
+            'punto_llegadae.required' => 'Debe ingresar punto llegada.',
+            'transportee.gt' => 'Debe seleccionar transporte.',
+            'motivoe.required' => 'Debe ingresar motivo.',
+            'costoe.required' => 'Debe ingresar costo.',
+            'costoe.gt' => 'Debe ingresar costo mayor a 0.'
+        ]);
+
+        CajaChicaRuta::create([
+            'id_caja_chica' => $id,
+            'personas' => $request->personase,
+            'punto_salida' => $request->punto_salidae,
+            'punto_llegada' => $request->punto_llegadae,
+            'transporte' => $request->transportee,
+            'motivo' => $request->motivoe,
+            'costo' => $request->costoe
+        ]);
+    }
+
+    public function destroy_ruta_mo($id)
+    {
+        $valida = CajaChicaRuta::where('id_caja_chica', $id)->count();
+        if ($valida<=1) {
+            echo "error";
+        }else{
+            CajaChicaRuta::destroy($id);
+        }
+    }
+
+    public function total_ruta_mo($id)
+    {
+        $suma = CajaChicaRuta::where('id_caja_chica',$id)->sum('costo');
+        echo $suma;
+    }
+
+    public function update_mo(Request $request, $id)
+    {
+        $request->validate([
+            'id_ubicacione' => 'gt:0',
+            'id_empresae' => 'gt:0',
+            'id_sub_categoriae' => 'gt:0',
+            'id_usuarioe' => 'gt:0',
+            'fechae' => 'required',
+            'descripcione' => 'required'
+        ], [
+            'id_ubicacione.gt' => 'Debe seleccionar ubicación.',
+            'id_empresae.gt' => 'Debe seleccionar empresa.',
+            'id_sub_categoriae.gt' => 'Debe seleccionar sub-categoría.',
+            'id_usuarioe.gt' => 'Debe seleccionar solicitante.',
+            'fechae.required' => 'Debe ingresar fecha de solicitud.',
+            'descripcione.required' => 'Debe ingresar descripción.'
+        ]);
+
+        $errors = [];
+        $list_temporal = CajaChicaRuta::where('id_caja_chica',$id)->count();
+        if($list_temporal=="0"){
+            $errors['temporal'] = ['Debe adicionar al menos una ruta.'];
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
+        $get_id = SubCategoria::findOrFail($request->id_sub_categoriae);
+
+        CajaChica::findOrFail($id)->update([
+            'id_ubicacion' => $request->id_ubicacione,
+            'id_categoria' => $get_id->id_categoria,
+            'id_empresa' => $request->id_empresae,
+            'id_sub_categoria' => $request->id_sub_categoriae,
+            'id_usuario' => $request->id_usuarioe,
+            'tipo_movimiento' => $request->tipo_movimientoe,
+            'fecha' => $request->fechae,
+            'descripcion' => $request->descripcione,
+            'id_tipo_moneda' => $request->id_tipo_monedae,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function list_producto_pv($id)
+    {
+        $list_producto = CajaChicaProducto::select('id','cantidad','producto','precio',
+                        DB::raw('cantidad*precio AS total'))->where('id_caja_chica',$id)->get();
+        return view('finanzas.tesoreria.caja_chica.lista_producto_pv', compact('list_producto'));
+    }
+
+    public function store_producto_pv(Request $request, $id)
+    {
+        $request->validate([
+            'cantidade' => 'required|gt:0',
+            'productoe' => 'required',
+            'precioe' => 'required|gt:0'
+        ],[
+            'cantidade.required' => 'Debe ingresar cantidad.',
+            'cantidade.gt' => 'Debe ingresar cantidad mayor a 0.',
+            'productoe.required' => 'Debe ingresar producto.',
+            'precioe.required' => 'Debe ingresar precio unitario.',
+            'precioe.gt' => 'Debe ingresar precio unitario mayor a 0.'
+        ]);
+
+        CajaChicaProducto::create([
+            'id_caja_chica' => $id,
+            'cantidad' => $request->cantidade,
+            'producto' => $request->productoe,
+            'precio' => $request->precioe
+        ]);
+    }
+
+    public function destroy_producto_pv($id)
+    {
+        $valida = CajaChicaProducto::where('id_caja_chica', $id)->count();
+        if ($valida<=1) {
+            echo "error";
+        }else{
+            CajaChicaProducto::destroy($id);
+        }
+    }
+
+    public function total_producto_pv($id)
+    {
+        $suma = CajaChicaProducto::where('id_caja_chica',$id)->sum(DB::raw('cantidad*precio'));
+        echo $suma;
     }
 
     public function download($id)
@@ -345,114 +678,53 @@ class CajaChicaController extends Controller
                     ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
 
-    public function update_mo(Request $request, $id)
-    {
-        $request->validate([
-            'id_ubicacione' => 'gt:0',
-            'fechae' => 'required',
-            'id_sub_categoriae' => 'gt:0',
-            'id_empresae' => 'gt:0',
-            'totale' => 'required|gt:0',
-            'ruce' => 'nullable|size:11',
-            'rutae' => 'gt:0',
-            'punto_partidae' => 'required_if:ruta,1',
-            'punto_llegadae' => 'required'
-        ], [
-            'id_ubicacione.gt' => 'Debe seleccionar ubicación.',
-            'fechae.required' => 'Debe ingresar fecha.',
-            'id_sub_categoriae.gt' => 'Debe seleccionar sub-categoría.',
-            'id_empresae.gt' => 'Debe seleccionar empresa.',
-            'totale.required' => 'Debe ingresar total.',
-            'totale.gt' => 'Debe ingresar total mayor a 0.',
-            'ruce.size' => 'Debe ingresar RUC válido (11 dígitos).',
-            'rutae.gt' => 'Debe seleccionar ruta.',
-            'punto_partidae.required_if' => 'Debe ingresar punto de partida.',
-            'punto_llegadae.required' => 'Debe ingresar punto de llegada.'
-        ]);
-
-        $get_id = CajaChica::findOrFail($id);
-
-        $comprobante = $get_id->comprobante;
-        if ($_FILES["comprobantee"]["name"] != "") {
-            $ftp_server = "lanumerounocloud.com";
-            $ftp_usuario = "intranet@lanumerounocloud.com";
-            $ftp_pass = "Intranet2022@";
-            $con_id = ftp_connect($ftp_server);
-            $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
-            if ($con_id && $lr) {
-                if($get_id->comprobante!=""){
-                    ftp_delete($con_id, "CAJA_CHICA/".basename($get_id->comprobante));
-                }
-
-                $path = $_FILES["comprobantee"]["name"];
-                $source_file = $_FILES['comprobantee']['tmp_name'];
-
-                $ext = pathinfo($path, PATHINFO_EXTENSION);
-                $nombre_soli = "Comprobante_" . date('YmdHis');
-                $nombre = $nombre_soli . "." . strtolower($ext);
-
-                ftp_pasv($con_id, true);
-                $subio = ftp_put($con_id, "CAJA_CHICA/" . $nombre, $source_file, FTP_BINARY);
-                if ($subio) {
-                    $comprobante = "https://lanumerounocloud.com/intranet/CAJA_CHICA/" . $nombre;
-                } else {
-                    echo "Archivo no subido correctamente";
-                }
-            } else {
-                echo "No se conecto";
-            }
-        }
-
-        $get_id = SubCategoria::findOrFail($request->id_sub_categoriae);
-
-        CajaChica::findOrFail($id)->update([
-            'id_ubicacion' => $request->id_ubicacione,
-            'id_categoria' => $get_id->id_categoria,
-            'fecha' => $request->fechae,
-            'id_sub_categoria' => $request->id_sub_categoriae,
-            'id_empresa' => $request->id_empresae,
-            'id_tipo_moneda' => $request->id_tipo_monedae,
-            'total' => $request->totale,
-            'ruc' => $request->ruce,
-            'razon_social' => $request->razon_sociale,
-            'ruta' => $request->rutae,
-            'id_tipo_comprobante' => 1,
-            'punto_partida' => $request->punto_partidae,
-            'punto_llegada' => $request->punto_llegadae,
-            'comprobante' => $comprobante,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
-    }
-
     public function update_pv(Request $request, $id)
     {
         $request->validate([
             'id_ubicacione' => 'gt:0',
             'id_categoriae' => 'gt:0',
-            'fechae' => 'required',
-            'id_sub_categoriae' => 'gt:0',
             'id_empresae' => 'gt:0',
-            'totale' => 'required|gt:0',
-            'ruce' => 'nullable|size:11',
-            'n_comprobantee' => 'required',
+            'id_sub_categoriae' => 'gt:0',
+            'id_usuarioe' => 'gt:0',
+            'tipo_movimientoe' => 'required',
             'id_tipo_comprobantee' => 'gt:0',
-            'punto_partidae' => 'required'
+            'n_comprobantee' => 'required',
+            'id_pagoe' => 'gt:0',
+            'id_tipo_pagoe' => 'gt:0',
+            'fechae' => 'required',
+            'ruce' => 'nullable|size:11',
+            'razon_sociale' => 'required',
+            'descripcione' => 'required'
         ], [
             'id_ubicacione.gt' => 'Debe seleccionar ubicación.',
             'id_categoriae.gt' => 'Debe seleccionar categoría.',
-            'fechae.required' => 'Debe ingresar fecha.',
-            'id_sub_categoriae.gt' => 'Debe seleccionar sub-categoría.',
             'id_empresae.gt' => 'Debe seleccionar empresa.',
-            'totale.required' => 'Debe ingresar total.',
-            'totale.gt' => 'Debe ingresar total mayor a 0.',
-            'ruce.size' => 'Debe ingresar RUC válido (11 dígitos).',
-            'n_comprobantee.required' => 'Debe ingresar n° comprobante.',
+            'id_sub_categoriae.gt' => 'Debe seleccionar sub-categoría.',
+            'id_usuarioe.gt' => 'Debe seleccionar solicitante.',
+            'tipo_movimientoe.required' => 'Debe seleccionar tipo de movimiento.',
             'id_tipo_comprobantee.gt' => 'Debe seleccionar tipo comprobante.',
-            'punto_partidae.required' => 'Debe ingresar descripción.'
+            'n_comprobantee.required' => 'Debe ingresar n° comprobante.',
+            'id_pagoe.gt' => 'Debe seleccionar pago.',
+            'id_tipo_pagoe.gt' => 'Debe seleccionar tipo pago.',
+            'fechae.required' => 'Debe ingresar fecha solicitud.',
+            'ruce.size' => 'Debe ingresar RUC válido (11 dígitos).',
+            'razon_sociale.required' => 'Debe ingresar razón social.',
+            'descripcione.required' => 'Debe ingresar descripción.'
         ]);
 
         $get_id = CajaChica::findOrFail($id);
+
+        $errors = [];
+        if($get_id->comprobante==""){
+            $errors['comprobante'] = ['Debe cargar comprobante.'];
+        }
+        $list_temporal = CajaChicaProducto::where('id_caja_chica',$id)->count();
+        if($list_temporal=="0"){
+            $errors['temporal'] = ['Debe adicionar al menos un producto.'];
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
 
         $comprobante = $get_id->comprobante;
         if ($_FILES["comprobantee"]["name"] != "") {
@@ -488,17 +760,21 @@ class CajaChicaController extends Controller
         CajaChica::findOrFail($id)->update([
             'id_ubicacion' => $request->id_ubicacione,
             'id_categoria' => $request->id_categoriae,
-            'fecha' => $request->fechae,
-            'id_sub_categoria' => $request->id_sub_categoriae,
             'id_empresa' => $request->id_empresae,
-            'id_tipo_moneda' => $request->id_tipo_monedae,
-            'total' => $request->totale,
+            'id_sub_categoria' => $request->id_sub_categoriae,
+            'id_usuario' => $request->id_usuarioe,
+            'tipo_movimiento' => $request->tipo_movimientoe,
+            'id_tipo_comprobante' => $request->id_tipo_comprobantee,
+            'n_comprobante' => $request->n_comprobantee,
+            'id_pago' => $request->id_pagoe,
+            'id_tipo_pago' => $request->id_tipo_pagoe,
+            'fecha' => $request->fechae,
+            'comprobante' => $comprobante,
             'ruc' => $request->ruce,
             'razon_social' => $request->razon_sociale,
-            'n_comprobante' => $request->n_comprobantee,
-            'id_tipo_comprobante' => $request->id_tipo_comprobantee,
-            'punto_partida' => $request->punto_partidae,
-            'comprobante' => $comprobante,
+            'direccion' => $request->direccione,
+            'descripcion' => $request->descripcione,
+            'id_tipo_moneda' => $request->id_tipo_monedae,
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
@@ -506,22 +782,7 @@ class CajaChicaController extends Controller
 
     public function validar($id)
     {
-        $get_id = CajaChica::from('caja_chica AS cc')
-                ->select('cc.id','ca.nom_categoria','sc.nombre','tc.nom_tipo_comprobante',
-                'cc.n_comprobante',DB::raw('CASE WHEN ca.nom_categoria="MOVILIDAD" THEN 
-                (CASE WHEN cc.ruta=1 THEN CONCAT(cc.punto_partida," - ",cc.punto_llegada) 
-                ELSE cc.punto_llegada END) ELSE cc.punto_partida END AS descripcion'),
-                DB::raw('CONCAT(tm.cod_moneda," ",cc.total) AS total'),'ub.cod_ubi','em.nom_empresa',
-                'cc.razon_social','cc.comprobante',
-                DB::raw('SUBSTRING_INDEX(cc.comprobante,"/",-1) AS nom_comprobante'),'cc.id_categoria')
-                ->join('categoria AS ca','ca.id_categoria','=','cc.id_categoria')
-                ->join('sub_categoria AS sc','sc.id','=','cc.id_sub_categoria')
-                ->join('vw_tipo_comprobante AS tc','tc.id','=','cc.id_tipo_comprobante')
-                ->join('tipo_moneda AS tm','tm.id_moneda','=','cc.id_tipo_moneda')
-                ->join('ubicacion AS ub','ub.id_ubicacion','=','cc.id_ubicacion')
-                ->join('empresas AS em','em.id_empresa','=','cc.id_empresa')
-                ->where('cc.id',$id)
-                ->first();
+        $get_id = CajaChica::get_list_caja_chica(['id'=>$id]);
         $list_pago = Pago::all();
         $valida = Categoria::select('nom_categoria')->where('id_categoria',$get_id->id_categoria)
                 ->first();
@@ -535,10 +796,22 @@ class CajaChicaController extends Controller
                 'list_tipo_pago'
             ));
         }else{
+            if($get_id->id_pago=="1"){
+                $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
+                                ->where('estado',1)->whereIn('id',[1,2])
+                                ->orderBy('nombre','ASC')->get();
+            }elseif($get_id->id_pago=="2"){
+                $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
+                                ->where('estado',1)->whereIn('id',[2,3])
+                                ->orderBy('nombre','ASC')->get();
+            }else{
+                $list_tipo_pago = [];
+            }
             CajaChicaPagoTemporal::where('id_usuario',session('usuario')->id_usuario)->delete();
             return view('finanzas.tesoreria.caja_chica.modal_validar_pv', compact(
                 'get_id',
-                'list_pago'
+                'list_pago',
+                'list_tipo_pago'
             ));
         }
     }
@@ -563,7 +836,7 @@ class CajaChicaController extends Controller
             'user_act' => session('usuario')->id_usuario
         ]);
 
-        $get_id = CajaChica::findOrFail($id);
+        $get_id = CajaChica::get_list_caja_chica(['id'=>$id]);
         CajaChicaPago::create([
             'id_caja_chica' => $id,
             'fecha' => $request->fecha_pagov,
@@ -596,7 +869,7 @@ class CajaChicaController extends Controller
 
         $errors = [];
         if($request->id_pagov=="2"){
-            $get_id = CajaChica::findOrFail($id);
+            $get_id = CajaChica::get_list_caja_chica(['id'=>$id]);
             $suma = CajaChicaPagoTemporal::where('id_usuario',session('usuario')->id_usuario)->sum('monto');
             if ($get_id->total != $suma) {
                 $errors['suma'] = ['Debe ingresar más montos para completar el total.'];
@@ -617,7 +890,7 @@ class CajaChicaController extends Controller
         ]);
 
         if($request->id_pagov=="1"){
-            $get_id = CajaChica::findOrFail($id);
+            $get_id = CajaChica::get_list_caja_chica(['id'=>$id]);
             CajaChicaPago::create([
                 'id_caja_chica' => $id,
                 'fecha' => $request->fecha_pagov,
@@ -632,22 +905,6 @@ class CajaChicaController extends Controller
 
             CajaChicaPagoTemporal::where('id_usuario',session('usuario')->id_usuario)->delete();
         }
-    }
-
-    public function traer_tipo_pago(Request $request)
-    {
-        if($request->id_pago=="1"){
-            $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
-                            ->where('estado',1)->whereIn('id',[1,2])
-                            ->orderBy('nombre','ASC')->get();
-        }elseif($request->id_pago=="2"){
-            $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
-                            ->where('estado',1)->whereIn('id',[2,3])
-                            ->orderBy('nombre','ASC')->get();
-        }else{
-            $list_tipo_pago = [];
-        }
-        return view('finanzas.tesoreria.caja_chica.tipo_pago',compact('list_tipo_pago'));
     }
 
     public function credito($id)
@@ -667,7 +924,7 @@ class CajaChicaController extends Controller
 
     public function saldo($id)
     {
-        $get_id = CajaChica::findOrFail($id);
+        $get_id = CajaChica::get_list_caja_chica(['id'=>$id]);
         $suma = CajaChicaPagoTemporal::where('id_usuario',session('usuario')->id_usuario)->sum('monto');
         echo $get_id->total-$suma;
     }
@@ -683,7 +940,7 @@ class CajaChicaController extends Controller
             'montoc.gt' => 'Debe ingresar monto mayor a 0.'
         ]);
 
-        $get_id = CajaChica::findOrFail($id);
+        $get_id = CajaChica::get_list_caja_chica(['id'=>$id]);
         $suma = CajaChicaPagoTemporal::where('id_usuario',session('usuario')->id_usuario)->sum('monto');
 
         if(($suma+$request->montoc)>$get_id->total){
@@ -700,6 +957,15 @@ class CajaChicaController extends Controller
     public function destroy_cr($id)
     {
         CajaChicaPagoTemporal::destroy($id);
+    }
+
+    public function anular($id)
+    {
+        CajaChica::findOrFail($id)->update([
+            'estado_c' => 3,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
     }
 
     public function destroy($id)
@@ -755,7 +1021,7 @@ class CajaChicaController extends Controller
 
         $sheet->getStyle("A1:L1")->applyFromArray($styleThinBlackBorderOutline);
 
-        $sheet->setCellValue("A1", 'Fecha registro');
+        $sheet->setCellValue("A1", 'Fecha solicitud');
         $sheet->setCellValue("B1", 'Ubicación');
         $sheet->setCellValue("C1", 'Categoría');
         $sheet->setCellValue("D1", 'Sub-Categoría');
@@ -780,7 +1046,11 @@ class CajaChicaController extends Controller
             $sheet->getStyle("L{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
             $sheet->getStyle("A{$contador}:L{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
             $sheet->getStyle("A{$contador}:L{$contador}")->applyFromArray($styleThinBlackBorderOutline);
-            $sheet->getStyle("K{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_CURRENCY_SOL_SIMPLE);
+            if($list->id_tipo_moneda=="1"){
+                $sheet->getStyle("K{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_CURRENCY_SOL_SIMPLE);
+            }else{
+                $sheet->getStyle("K{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_CURRENCY_USD);
+            }
 
             $sheet->setCellValue("A{$contador}", Date::PHPToExcel($list->fecha));
             $sheet->getStyle("A{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
