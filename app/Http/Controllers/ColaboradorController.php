@@ -681,6 +681,9 @@ class ColaboradorController extends Controller
             $dato['list_enfermedadu'] = $this->Model_Perfil->get_list_enfermedadu($id_usuario);
             $dato['list_alergia'] = $this->Model_Perfil->get_list_alergia($id_usuario);
             $dato['list_experiencial'] = $this->Model_Perfil->get_list_experiencial($id_usuario);
+            $dato['list_regimen'] = Regimen::where('estado', 1)
+                                ->get();
+                                
             $dato['list_horario'] = $this->Model_Perfil->get_list_horario();
 
             //REPORTE BI CON ID

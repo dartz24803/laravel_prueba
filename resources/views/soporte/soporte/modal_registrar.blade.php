@@ -11,24 +11,25 @@
 
     <div class="modal-body" style="max-height:450px; overflow:auto;">
         <div class="row">
-            <!-- Semana -->
             <div class="form-group col-lg-2">
                 <label class="control-label text-bold">Especialidad:</label>
             </div>
             <div class="form-group col-lg-4">
                 <select class="form-control" id="especialidad" name="especialidad">
                     <option value="0">Seleccione</option>
+                    <option value="otros">Otros</option>
                     @foreach ($list_especialidad as $list)
                     <option value="{{ $list->id }}">{{ $list->nombre }}</option>
                     @endforeach
                 </select>
             </div>
 
-            <!-- Pertenece -->
-            <div class="form-group col-lg-2">
+
+
+            <div class="form-group col-lg-2" id="elemento-cont">
                 <label class="control-label text-bold">Elemento:</label>
             </div>
-            <div class="form-group col-lg-4">
+            <div class="form-group col-lg-4" id="elemento-container">
                 <select class="form-control" id="elemento" name="elemento">
                     <option value="0">Seleccione</option>
                     @foreach ($list_elemento as $list)
@@ -37,11 +38,25 @@
                 </select>
             </div>
         </div>
-        <div class="row">
+
+        <div class="row" id="area-row" style="display: none;">
             <div class="form-group col-lg-2">
+                <label class="control-label text-bold">Área:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <select class="form-control" id="area" name="area">
+                    <option value="0">Seleccione</option>
+                    <option value="1">Área 1</option>
+                    <option value="2">Área 2</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2" id="asunto-cont">
                 <label class="control-label text-bold">Asunto:</label>
             </div>
-            <div class="form-group col-lg-10">
+            <div class="form-group col-lg-10" id="asunto-container">
                 <select class="form-control" id="asunto" name="asunto">
                     <option value="0">Seleccione</option>
                     @foreach ($list_asunto as $list)
@@ -51,98 +66,33 @@
             </div>
         </div>
 
-
         <div class="row">
-            <!-- Estilo -->
             <div class="form-group col-lg-2">
-                <label class="control-label text-bold">Estilo:</label>
+                <label class="control-label text-bold">Ubicación:</label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="estilo" id="estilo" placeholder="Estilo">
-            </div>
-
-            <!-- Color -->
-            <div class="form-group col-lg-2">
-                <label class="control-label text-bold">Color:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="color" id="color" placeholder="Color">
-            </div>
-        </div>
-
-        <div class="row">
-            <!-- Talla -->
-            <div class="form-group col-lg-2">
-                <label class="control-label text-bold">Talla:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" id="id_talla" name="id_talla">
+                <select class="form-control" id="sede" name="sede">
                     <option value="0">Seleccione</option>
-                    @foreach ($list_responsable as $list)
-                    <option value="{{ $list['id_usuario'] }}">{{ $list['usuario_nombres'] }}</option>
+                    @foreach ($list_sede as $list)
+                    <option value="{{ $list->id }}">{{ $list->descripcion }}</option>
                     @endforeach
                 </select>
             </div>
 
-            <!-- Prendas devueltas -->
             <div class="form-group col-lg-2">
-                <label class="control-label text-bold">Prendas devueltas:</label>
+                <label>Vencimiento: </label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="prendas_devueltas" id="prendas_devueltas" placeholder="Prendas devueltas" onkeypress="return soloNumeros(event)">
+                <input type="date" class="form-control" name="fecha" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
             </div>
         </div>
 
         <div class="row">
-            <!-- Tipo de error -->
             <div class="form-group col-lg-2">
-                <label class="control-label text-bold">Tipo de error:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" name="id_tipo_error" id="id_tipo_error">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_responsable as $list)
-                    <option value="{{ $list['id_usuario'] }}">{{ $list['usuario_nombres'] }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <!-- Responsable -->
-            <div class="form-group col-lg-2">
-                <label class="control-label text-bold">Responsable:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" name="id_responsable" id="id_responsable">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_responsable as $list)
-                    <option value="{{ $list['id_usuario'] }}">{{ $list['usuario_nombres'] }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-        </div>
-
-        <div class="row">
-            <!-- Solución -->
-            <div class="form-group col-lg-2">
-                <label class="control-label text-bold">Solución:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" id="solucion" name="solucion">
-                    <option value="0">Seleccione</option>
-                    <option value="1">SI</option>
-                    <option value="2">NO</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="row">
-            <!-- Observación -->
-            <div class="form-group col-lg-2">
-                <label class="control-label text-bold">Observación:</label>
+                <label class="control-label text-bold">Descripción:</label>
             </div>
             <div class="form-group col-lg-10">
-                <textarea class="form-control" name="observacion" id="observacion" rows="5" placeholder="Observación"></textarea>
+                <textarea class="form-control" name="descripcion" id="descripcion" rows="3" placeholder="Observación"></textarea>
             </div>
         </div>
     </div>
@@ -189,4 +139,33 @@
         });
 
     }
+
+    const especialidadSelect = document.getElementById('especialidad');
+    const elementoSelect = document.getElementById('elemento');
+    const elementCont = document.getElementById('elemento-cont');
+    const asuntoCont = document.getElementById(' asunto-con');
+
+    const asuntoSelect = document.getElementById('asunto');
+
+    const areaRow = document.getElementById('area-row');
+    const elementoContainer = document.getElementById('elemento-container');
+    const asuntoContainer = document.getElementById('asunto-container');
+
+    especialidadSelect.addEventListener('change', function() {
+        if (this.value === 'otros') {
+            // Ocultar selects de elemento y asunto y eliminar su espacio
+            elementoContainer.style.display = 'none';
+            elementCont.style.display = 'none';
+            asuntoContainer.style.display = 'none';
+            // Mostrar select de área y asegurarse de que su espacio sea visible
+            areaRow.style.display = 'block'; // Cambia esto a 'block' para que ocupe espacio
+        } else {
+            // Mostrar selects de elemento y asunto y asegurarse de que ocupen espacio
+            elementoContainer.style.display = 'block'; // Ocupar espacio
+            elementCont.style.display = 'block'; // Ocupar espacio
+            asuntoContainer.style.display = 'block'; // Ocupar espacio
+            // Ocultar select de área y eliminar su espacio
+            areaRow.style.display = 'none'; // Ocultar completamente
+        }
+    });
 </script>
