@@ -265,6 +265,8 @@
                     </div>
                 </div>
 
+                <hr class="bg-primary" style="height: 0.1px;">
+
                 <div class="row">
                     <div class="form-group col-lg-2">
                         <label>Cantidad:</label>
