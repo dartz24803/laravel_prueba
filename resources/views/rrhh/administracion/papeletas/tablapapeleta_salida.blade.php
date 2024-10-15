@@ -77,6 +77,26 @@
             }
         });
     }
+    function TablaTramite() {
+        Cargando();
 
+        $("#Permisospstres").removeClass('active');
+        $("#DestinoArriba").removeClass('active');
+        $("#TramiteArriba").addClass('active');
+        
+        var url = "{{ url('PapeletasConf/Tramite') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(resp) {
+                $('#lista_escogida').html(resp);
+            }
+        });
+    }
 </script>
 @endsection

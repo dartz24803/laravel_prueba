@@ -98,7 +98,7 @@ class CajaChica extends Model
                     ELSE '' END AS nom_estado,
                     CASE WHEN cc.estado_c=1 THEN '#9DA7B9'
                     WHEN cc.estado_c=2 THEN '#028B35' WHEN cc.estado_c=3 THEN '#FF3131' 
-                    ELSE 'transparent' END AS color_estado,cc.comprobante,cc.estado_c
+                    ELSE 'transparent' END AS color_estado,cc.comprobante,cc.estado_c,cc.id_tipo_moneda
                     FROM caja_chica cc
                     INNER JOIN ubicacion ub ON ub.id_ubicacion=cc.id_ubicacion
                     INNER JOIN categoria ca ON ca.id_categoria=cc.id_categoria
@@ -107,7 +107,8 @@ class CajaChica extends Model
                     INNER JOIN vw_tipo_comprobante tc ON tc.id=cc.id_tipo_comprobante
                     INNER JOIN users us ON us.id_usuario=cc.id_usuario
                     INNER JOIN tipo_moneda tm ON tm.id_moneda=cc.id_tipo_moneda
-                    WHERE cc.estado=1";
+                    WHERE cc.estado=1
+                    ORDER BY cc.fecha DESC";
             $query = DB::select($sql);
             return $query;
         }

@@ -78,7 +78,7 @@ $id_puesto=session('usuario')->id_puesto;
 
         <div class="row" id="cancel-row">
             <div class="col-xl-12 col-lg-12 col-sm-12  layou<t-spacing">
-                <div class="widget-content widget-content-area br-6">
+                <div class="widget-content widget-content-area br-6 p-3">
                     <div class="toolbar">    
                         <div class="row">
                             <input type="hidden" id="puesto" name="puesto" value="<?php echo $id_puesto ?>">
