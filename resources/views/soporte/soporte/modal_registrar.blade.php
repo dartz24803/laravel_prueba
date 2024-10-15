@@ -1,6 +1,6 @@
 <form id="formulario_insert" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
-        <h5 class="modal-title">Nuevo error de picking</h5>
+        <h5 class="modal-title">Registro de Soporte</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -13,54 +13,44 @@
         <div class="row">
             <!-- Semana -->
             <div class="form-group col-lg-2">
-                <label class="control-label text-bold">Semana:</label>
+                <label class="control-label text-bold">Especialidad:</label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="semana" id="semana" placeholder="Semana" onkeypress="return soloNumeros(event)">
-            </div>
-
-            <!-- Pertenece -->
-            <div class="form-group col-lg-2">
-                <label class="control-label text-bold">Pertenece:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" id="pertenece" name="pertenece">
+                <select class="form-control" id="especialidad" name="especialidad">
                     <option value="0">Seleccione</option>
-                    @foreach ($list_base as $list)
-                    <option value="{{ $list->cod_base }}">{{ $list->cod_base }}</option>
-                    @endforeach
-                    <option value="BEC">BEC</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="row">
-            <!-- Encontrado -->
-            <div class="form-group col-lg-2">
-                <label class="control-label text-bold">Encontrado:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" id="encontrado" name="encontrado">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_base as $list)
-                    <option value="{{ $list->cod_base }}">{{ $list->cod_base }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <!-- Área -->
-            <div class="form-group col-lg-2">
-                <label class="control-label text-bold">Área:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" id="id_area" name="id_area">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_area as $list)
+                    @foreach ($list_especialidad as $list)
                     <option value="{{ $list->id }}">{{ $list->nombre }}</option>
                     @endforeach
                 </select>
             </div>
+
+            <!-- Pertenece -->
+            <div class="form-group col-lg-2">
+                <label class="control-label text-bold">Elemento:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <select class="form-control" id="elemento" name="elemento">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_elemento as $list)
+                    <option value="{{ $list->idsoporte_elemento }}">{{ $list->nombre }}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label class="control-label text-bold">Asunto:</label>
+            </div>
+            <div class="form-group col-lg-10">
+                <select class="form-control" id="asunto" name="asunto">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_asunto as $list)
+                    <option value="{{ $list->idsoporte_asunto }}">{{ $list->nombre }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
 
         <div class="row">
             <!-- Estilo -->
@@ -88,8 +78,8 @@
             <div class="form-group col-lg-4">
                 <select class="form-control" id="id_talla" name="id_talla">
                     <option value="0">Seleccione</option>
-                    @foreach ($list_talla as $list)
-                    <option value="{{ $list->id }}">{{ $list->nombre }}</option>
+                    @foreach ($list_responsable as $list)
+                    <option value="{{ $list['id_usuario'] }}">{{ $list['usuario_nombres'] }}</option>
                     @endforeach
                 </select>
             </div>
@@ -111,8 +101,8 @@
             <div class="form-group col-lg-4">
                 <select class="form-control" name="id_tipo_error" id="id_tipo_error">
                     <option value="0">Seleccione</option>
-                    @foreach ($list_tipo_error as $list)
-                    <option value="{{ $list->id }}">{{ $list->nombre }}</option>
+                    @foreach ($list_responsable as $list)
+                    <option value="{{ $list['id_usuario'] }}">{{ $list['usuario_nombres'] }}</option>
                     @endforeach
                 </select>
             </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ArchivoSeguimientoCoordinador;
 use App\Models\ArchivoSupervisionTienda;
 use App\Models\Area;
+use App\Models\AsuntoSoporte;
 use App\Models\Base;
 use App\Models\BiReporte;
 use App\Models\Capacitacion;
@@ -14,6 +15,8 @@ use App\Models\ContenidoSupervisionTienda;
 use App\Models\DetalleSeguimientoCoordinador;
 use App\Models\DetalleSupervisionTienda;
 use App\Models\DiaSemana;
+use App\Models\ElementoSoporte;
+use App\Models\Especialidad;
 use App\Models\Gerencia;
 use App\Models\Mes;
 use App\Models\NivelJerarquico;
@@ -195,7 +198,10 @@ class SoporteController extends Controller
 
     public function create_tick()
     {
-        $list_tipo = TipoPortal::select('id_tipo_portal', 'nom_tipo', 'cod_tipo')->get();
+        $list_especialidad = Especialidad::select('id', 'nombre')->get();
+        $list_elemento = ElementoSoporte::select('idsoporte_elemento', 'nombre')->get();
+        $list_asunto = AsuntoSoporte::select('idsoporte_asunto', 'nombre')->get();
+
         $list_responsable = Puesto::select('puesto.id_puesto', 'puesto.nom_puesto', 'area.cod_area')
             ->join('area', 'puesto.id_area', '=', 'area.id_area')  // Realiza el INNER JOIN entre Puesto y Area
             ->where('puesto.estado', 1)
@@ -204,8 +210,6 @@ class SoporteController extends Controller
             ->unique('nom_puesto');
 
         $list_base = Base::get_list_todas_bases_agrupadas_bi();
-        $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')->where('estado', 1)->get();
-        $list_nivel = NivelJerarquico::select('id_nivel', 'nom_nivel')->where('estado', 1)->get();
 
         // $list_puesto = NivelJerarquico::select('id_nivel', 'nom_nivel')
         //     ->where('estado', 1)
@@ -215,7 +219,7 @@ class SoporteController extends Controller
             ->orderBy('nom_area', 'ASC')
             ->distinct('nom_area')->get();
 
-        return view('interna.procesos.portalprocesos.listamaestra.modal_registrar', compact('list_tipo', 'list_responsable', 'list_area', 'list_base', 'list_gerencia', 'list_nivel'));
+        return view('soporte.soporte.modal_registrar', compact('list_responsable', 'list_area', 'list_base', 'list_especialidad', 'list_elemento', 'list_asunto'));
     }
 
 
