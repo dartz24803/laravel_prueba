@@ -44,65 +44,119 @@
         </div>
     </a>
     <ul class="collapse submenu list-unstyled" id="rlogisticas" data-parent="#accordionExample">
-        <li id="trackings">
-            <a href="{{ route('tracking') }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                <p class="romperpalabra"><span id="icono_active2"></span> Tracking</p>
-            </a>
-        </li>
-        <li id="reprocesos">
-            <a href="{{ url('Reproceso/index') }}">
-                <p class="romperpalabra"><span id="icono_active2"></span> Reproceso</p>
-            </a>
-        </li>
-        <li id="infosapstock">
-            <a href="{{ url('infosapstock') }}">
-                <p class="romperpalabra"><span id="icono_active2"></span> Infosap Stock</p>
-            </a>
-        </li>
-        <li id="errorespicking">
-            <a href="{{ url('errorespicking') }}">
-                <p class="romperpalabra"><span id="icono_active2"></span> Errores Picking</p>
-            </a>
-        </li>
-        <li id="cargainventario">
-            <a href="{{ url('cargainventario') }}">
-                <p class="romperpalabra"><span id="icono_active2"></span> Carga de Inventarios</p>
-            </a>
-        </li>
-        <li id="consumible">
-            <a href="{{ url('consumible') }}">
-                <p class="romperpalabra"><span id="icono_active2"></span> Consumibles</p>
-            </a>
-        </li>
-        <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 10 || session('usuario')->id_nivel == 9 || session('usuario')->id_puesto == 74 || session('usuario')->id_puesto == 35) { ?>
-            <li id="mercaderia">
-                <a href="{{ url('MercaderiaExtraer/Mercaderia') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Mercadería a Extraer</p>
+        @if (session('usuario')->id_nivel == 1 || 
+        session('usuario')->id_puesto == 131 ||
+        session('usuario')->id_puesto == 152)
+            <li id="cargainventario">
+                <a href="{{ url('cargainventario') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Carga de Inventarios</p>
                 </a>
             </li>
-            <li id="controlubicacionese">
-                <a id="rcontrolubicaciones" href="{{ url('ControlUbicaciones/index') }}">
-                    <p class="romperpalabra" title="Control de Ubicaciones"><span id="icono_active2"></span> Control de Ubicaciones</p>
+        @endif
+        @if (session('usuario')->id_nivel == 1 || 
+        session('usuario')->id_puesto == 97 ||
+        session('usuario')->id_puesto == 121 ||
+        session('usuario')->id_puesto == 131 ||
+        session('usuario')->id_puesto == 152)
+            <li id="consumible">
+                <a href="{{ url('consumible') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Consumibles</p>
                 </a>
             </li>
-        <?php } ?>
-
-        <li id="mercaderiafotografia">
-            <a href="{{ url('mercaderiafotografia') }}">
-                <p class="romperpalabra" title="Mercadería a enviar para fotografía"><span id="icono_active2"></span> Mercadería a enviar para fotografía</p>
-            </a>
-        </li>
-
-        <?php if (
-            session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 121 || session('usuario')->id_puesto == 131 ||
-            session('usuario')->id_puesto == 74 || session('usuario')->id_puesto == 76 || session('usuario')->id_puesto == 152
-        ) { ?>
+        @endif
+        @if (session('usuario')->id_nivel == 1 || 
+        session('usuario')->id_puesto == 74 || 
+        session('usuario')->id_puesto == 76 || 
+        session('usuario')->id_puesto == 121 || 
+        session('usuario')->id_puesto == 131 ||
+        session('usuario')->id_puesto == 152)
             <li id="controlmercaderiaactivoe">
                 <a id="rcontrolmercaderiaactivo" href="{{ url('ControlSalidaMercaderia/index') }}">
                     <p class="romperpalabra" title="Control de Salida de Mercadería y Activos"><span id="icono_active2"></span> Control de Salida de Mercadería y Activos</p>
                 </a>
             </li>
-        <?php } ?>
+        @endif
+        @if (session('usuario')->id_nivel == 1 || 
+        session('usuario')->id_nivel == 9 || 
+        session('usuario')->id_nivel == 10 || 
+        session('usuario')->id_puesto == 35 || 
+        session('usuario')->id_puesto == 74)
+            <li id="controlubicacionese">
+                <a id="rcontrolubicaciones" href="{{ url('ControlUbicaciones/index') }}">
+                    <p class="romperpalabra" title="Control de Ubicaciones"><span id="icono_active2"></span> Control de Ubicaciones</p>
+                </a>
+            </li>
+        @endif
+        @if (session('usuario')->id_nivel == 1 || 
+        session('usuario')->id_nivel == 5 || 
+        session('usuario')->id_nivel == 8 || 
+        session('usuario')->id_nivel == 9 ||
+        session('usuario')->id_nivel == 10 || 
+        session('usuario')->id_puesto == 35 || 
+        session('usuario')->id_puesto == 74 || 
+        session('usuario')->id_puesto == 76 || 
+        session('usuario')->id_puesto == 97 || 
+        session('usuario')->id_puesto == 121 || 
+        session('usuario')->id_puesto == 131 ||
+        session('usuario')->id_puesto == 152)
+            <li id="errorespicking">
+                <a href="{{ url('errorespicking') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Errores Picking</p>
+                </a>
+            </li>
+
+            <li id="infosapstock">
+                <a href="{{ url('infosapstock') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Infosap Stock</p>
+                </a>
+            </li>
+        @endif
+        @if (session('usuario')->id_nivel == 1 || 
+        session('usuario')->id_puesto == 74 || 
+        session('usuario')->id_puesto == 76 || 
+        session('usuario')->id_puesto == 121 || 
+        session('usuario')->id_puesto == 131 ||
+        session('usuario')->id_puesto == 152)
+            <li id="mercaderiafotografia">
+                <a href="{{ url('mercaderiafotografia') }}">
+                    <p class="romperpalabra" title="Mercadería a enviar para fotografía"><span id="icono_active2"></span> Mercadería a enviar para fotografía</p>
+                </a>
+            </li>
+        @endif
+        @if (session('usuario')->id_nivel == 1 || 
+        session('usuario')->id_nivel == 9 || 
+        session('usuario')->id_nivel == 10 || 
+        session('usuario')->id_puesto == 35 ||
+        session('usuario')->id_puesto == 74)
+            <li id="mercaderia">
+                <a href="{{ url('MercaderiaExtraer/Mercaderia') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Mercadería a Extraer</p>
+                </a>
+            </li>
+        @endif
+        @if (session('usuario')->id_nivel == 1 || 
+        session('usuario')->id_nivel == 5 || 
+        session('usuario')->id_nivel == 8 || 
+        session('usuario')->id_nivel == 9 ||
+        session('usuario')->id_nivel == 10 || 
+        session('usuario')->id_puesto == 35 || 
+        session('usuario')->id_puesto == 74 || 
+        session('usuario')->id_puesto == 76 || 
+        session('usuario')->id_puesto == 97 || 
+        session('usuario')->id_puesto == 121 || 
+        session('usuario')->id_puesto == 131 ||
+        session('usuario')->id_puesto == 152)
+            <li id="reprocesos">
+                <a href="{{ url('Reproceso/index') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Reproceso</p>
+                </a>
+            </li>
+        @endif
+        <li id="trackings">
+            <a href="{{ route('tracking') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                <p class="romperpalabra"><span id="icono_active2"></span> Tracking</p>
+            </a>
+        </li>
     </ul>
 </li>
 

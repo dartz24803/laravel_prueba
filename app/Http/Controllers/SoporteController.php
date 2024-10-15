@@ -37,6 +37,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use App\Models\Notificacion;
+use App\Models\SedeLaboral;
 use App\Models\SubGerencia;
 use App\Models\User;
 
@@ -201,6 +202,11 @@ class SoporteController extends Controller
         $list_especialidad = Especialidad::select('id', 'nombre')->get();
         $list_elemento = ElementoSoporte::select('idsoporte_elemento', 'nombre')->get();
         $list_asunto = AsuntoSoporte::select('idsoporte_asunto', 'nombre')->get();
+        $list_sede = SedeLaboral::select('id', 'descripcion')
+            ->where('estado', 1)
+            ->whereNotIn('id', [3, 5]) // Excluir los id EXT y REMOTO
+            ->get();
+
 
         $list_responsable = Puesto::select('puesto.id_puesto', 'puesto.nom_puesto', 'area.cod_area')
             ->join('area', 'puesto.id_area', '=', 'area.id_area')  // Realiza el INNER JOIN entre Puesto y Area
@@ -211,15 +217,16 @@ class SoporteController extends Controller
 
         $list_base = Base::get_list_todas_bases_agrupadas_bi();
 
-        // $list_puesto = NivelJerarquico::select('id_nivel', 'nom_nivel')
-        //     ->where('estado', 1)
-        //     ->get();
+
         $list_area = Area::select('id_area', 'nom_area')
             ->where('estado', 1)
+            ->whereIn('id_area', [41, 25])
             ->orderBy('nom_area', 'ASC')
-            ->distinct('nom_area')->get();
+            ->distinct('nom_area')
+            ->get();
 
-        return view('soporte.soporte.modal_registrar', compact('list_responsable', 'list_area', 'list_base', 'list_especialidad', 'list_elemento', 'list_asunto'));
+
+        return view('soporte.soporte.modal_registrar', compact('list_responsable', 'list_area', 'list_base', 'list_especialidad', 'list_elemento', 'list_asunto', 'list_sede'));
     }
 
 
