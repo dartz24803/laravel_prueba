@@ -796,10 +796,22 @@ class CajaChicaController extends Controller
                 'list_tipo_pago'
             ));
         }else{
+            if($get_id->id_pago=="1"){
+                $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
+                                ->where('estado',1)->whereIn('id',[1,2])
+                                ->orderBy('nombre','ASC')->get();
+            }elseif($get_id->id_pago=="2"){
+                $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
+                                ->where('estado',1)->whereIn('id',[2,3])
+                                ->orderBy('nombre','ASC')->get();
+            }else{
+                $list_tipo_pago = [];
+            }
             CajaChicaPagoTemporal::where('id_usuario',session('usuario')->id_usuario)->delete();
             return view('finanzas.tesoreria.caja_chica.modal_validar_pv', compact(
                 'get_id',
-                'list_pago'
+                'list_pago',
+                'list_tipo_pago'
             ));
         }
     }
@@ -857,7 +869,7 @@ class CajaChicaController extends Controller
 
         $errors = [];
         if($request->id_pagov=="2"){
-            $get_id = CajaChica::findOrFail($id);
+            $get_id = CajaChica::get_list_caja_chica(['id'=>$id]);
             $suma = CajaChicaPagoTemporal::where('id_usuario',session('usuario')->id_usuario)->sum('monto');
             if ($get_id->total != $suma) {
                 $errors['suma'] = ['Debe ingresar más montos para completar el total.'];
@@ -878,7 +890,7 @@ class CajaChicaController extends Controller
         ]);
 
         if($request->id_pagov=="1"){
-            $get_id = CajaChica::findOrFail($id);
+            $get_id = CajaChica::get_list_caja_chica(['id'=>$id]);
             CajaChicaPago::create([
                 'id_caja_chica' => $id,
                 'fecha' => $request->fecha_pagov,
@@ -912,7 +924,7 @@ class CajaChicaController extends Controller
 
     public function saldo($id)
     {
-        $get_id = CajaChica::findOrFail($id);
+        $get_id = CajaChica::get_list_caja_chica(['id'=>$id]);
         $suma = CajaChicaPagoTemporal::where('id_usuario',session('usuario')->id_usuario)->sum('monto');
         echo $get_id->total-$suma;
     }
@@ -928,7 +940,7 @@ class CajaChicaController extends Controller
             'montoc.gt' => 'Debe ingresar monto mayor a 0.'
         ]);
 
-        $get_id = CajaChica::findOrFail($id);
+        $get_id = CajaChica::get_list_caja_chica(['id'=>$id]);
         $suma = CajaChicaPagoTemporal::where('id_usuario',session('usuario')->id_usuario)->sum('monto');
 
         if(($suma+$request->montoc)>$get_id->total){

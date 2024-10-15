@@ -190,26 +190,6 @@
             });
         }
 
-        /*function Habilitar_Ruta(v){
-            Cargando();
-
-            var ruta = $('#ruta'+v).val();
-
-            if(ruta=="1"){
-                $('#punto_partida'+v).prop('disabled', false);
-                $('#punto_llegada'+v).prop('disabled', false);
-            }else if(ruta=="2"){
-                $('#punto_partida'+v).prop('disabled', true);
-                $('#punto_llegada'+v).prop('disabled', false);
-                $('#punto_partida'+v).val('');
-            }else{
-                $('#punto_partida'+v).prop('disabled', true);
-                $('#punto_llegada'+v).prop('disabled', true);
-                $('#punto_partida'+v).val('');
-                $('#punto_llegada'+v).val('');
-            }
-        }*/
-
         function Traer_Categoria(v){
             Cargando();
 
@@ -264,15 +244,6 @@
                 },
                 success:function (resp) {
                     $('#id_tipo_pago'+v).html(resp);
-                    if(v=="v"){
-                        if(id_pago=="2"){
-                            $('#pago_credito').show();
-                            $('#fecha_pagov').prop('disabled', true);
-                        }else{
-                            $('#pago_credito').hide();
-                            $('#fecha_pagov').prop('disabled', false);
-                        }
-                    }
                 }
             });
         }

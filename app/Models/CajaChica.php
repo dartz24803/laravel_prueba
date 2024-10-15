@@ -64,7 +64,7 @@ class CajaChica extends Model
                     WHEN ca.nom_categoria!='MOVILIDAD' THEN
                     IFNULL((SELECT SUM(cp.cantidad*cp.precio) FROM caja_chica_producto cp
                     WHERE cp.id_caja_chica=cc.id),0)
-                    END AS total
+                    END AS total,SUBSTRING_INDEX(cc.comprobante,'/',-1) AS nom_comprobante
                     FROM caja_chica cc
                     INNER JOIN categoria ca ON ca.id_categoria=cc.id_categoria
                     INNER JOIN sub_categoria sc ON sc.id=cc.id_sub_categoria
