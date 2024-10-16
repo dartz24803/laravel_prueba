@@ -18,6 +18,7 @@ class UsersHistoricoCentroLabores extends Model
 
     protected $fillable = [
         'id_usuario',
+        'id_ubicacion',
         'centro_labores',
         'con_fec_fin',
         'fec_inicio',

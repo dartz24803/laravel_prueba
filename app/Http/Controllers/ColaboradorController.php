@@ -68,6 +68,7 @@ use App\Models\ToleranciaHorario;
 use App\Models\Turno;
 use App\Models\UsersHistoricoCentroLabores;
 use App\Models\HistoricoColaborador;
+use App\Models\Ubicacion;
 use App\Models\UsersHistoricoHorario;
 use App\Models\UsersHistoricoModalidad;
 use App\Models\UsersHistoricoPuesto;
@@ -735,47 +736,33 @@ class ColaboradorController extends Controller
         $dato['get_historico'] = UsersHistoricoCentroLabores::where('id_usuario', $id_usuario)
                                 ->where('estado', 1)
                                 ->orderBy('fec_reg', 'DESC')
-                                ->limit(1)
-                                ->get();
-        $dato['list_base'] = Base::select('cod_base')
+                                ->first();
+        /*$dato['list_base'] = Base::select('cod_base')
                             ->where('estado', 1)
                             ->GroupBy('cod_base')
                             ->OrderBy('cod_base', 'ASC')
-                            ->get();
+                            ->get();*/
+        $dato['list_ubicacion'] = Ubicacion::select('id_ubicacion','cod_ubi')->where('estado',1)
+                                ->orderBy('cod_ubi','ASC')->get();
         return view('rrhh.Perfil.Historico_Colaborador.modal_historico_base',$dato);
     }
 
     public function Update_Historico_Base(Request $request){
         $request->validate([
-            'cod_base_hb' => 'required',
+            'cod_base_hb' => 'gt:0',
             'fec_inicio_hb' => 'required',
         ], [
-            'cod_base_hb' => 'Debe seleccionar base',
+            'cod_base_hb.gt' => 'Debe seleccionar ubicación.',
             'fec_inicio_hb.required' => 'Debe ingresar fecha de inicio.',
         ]);
 
         $id_historico_centro_labores= $request->input("id_historico_centro_labores");
 
         if($id_historico_centro_labores!=""){
-            UsersHistoricoCentroLabores::findOrFail($id_historico_centro_labores)->update([
-                'centro_labores' => $request->cod_base_hb,
-                'id_usuario' => $request->id_usuario_hb,
-                'fec_inicio' => $request->fec_inicio_hb,
-                'fec_fin' => $request->fec_fin_hb,
-                'con_fec_fin' => $request->con_fec_fin_hb,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario,
-            ]);
-            Usuario::findOrFail($request->id_usuario_hb)->update([
-                'centro_labores' => $request->cod_base_hb,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario,
-            ]);
             if($request->cod_base_bd_hb!=$request->cod_base_hb){
-                echo "crea";
                 UsersHistoricoCentroLabores::create([
                     'id_usuario' => $request->id_usuario_hb,
-                    'cod_base' => $request->cod_base_hb,
+                    'id_ubicacion' => $request->cod_base_hb,
                     'fec_inicio' => $request->fec_inicio_hb,
                     'fec_fin' => $request->fec_fin_hb,
                     'con_fec_fin' => $request->con_fec_fin_hb,
@@ -786,7 +773,22 @@ class ColaboradorController extends Controller
                     'user_reg' => session('usuario')->id_usuario,
                 ]);
                 Usuario::findOrFail($request->id_usuario_hb)->update([
-                    'centro_labores' => $request->cod_base_hb,
+                    'id_ubicacion' => $request->cod_base_hb,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario,
+                ]);
+            }else{
+                UsersHistoricoCentroLabores::findOrFail($id_historico_centro_labores)->update([
+                    'id_ubicacion' => $request->cod_base_hb,
+                    'id_usuario' => $request->id_usuario_hb,
+                    'fec_inicio' => $request->fec_inicio_hb,
+                    'fec_fin' => $request->fec_fin_hb,
+                    'con_fec_fin' => $request->con_fec_fin_hb,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario,
+                ]);
+                Usuario::findOrFail($request->id_usuario_hb)->update([
+                    'id_ubicacion' => $request->cod_base_hb,
                     'fec_act' => now(),
                     'user_act' => session('usuario')->id_usuario,
                 ]);
@@ -794,7 +796,7 @@ class ColaboradorController extends Controller
         }else{
             UsersHistoricoCentroLabores::create([
                 'id_usuario' => $request->id_usuario_hb,
-                'cod_base' => $request->cod_base_hb,
+                'id_ubicacion' => $request->cod_base_hb,
                 'fec_inicio' => $request->fec_inicio_hb,
                 'fec_fin' => $request->fec_fin_hb,
                 'con_fec_fin' => $request->con_fec_fin_hb,
@@ -805,7 +807,7 @@ class ColaboradorController extends Controller
                 'user_reg' => session('usuario')->id_usuario,
             ]);
             Usuario::findOrFail($request->id_usuario_hb)->update([
-                'centro_labores' => $request->cod_base_hb,
+                'id_ubicacion' => $request->cod_base_hb,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario,
             ]);
