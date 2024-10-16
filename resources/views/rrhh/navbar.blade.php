@@ -124,7 +124,7 @@
         }
         ?>
         <li id="papeletas">
-            <a id="hpapeletas" href="{{ url('PapeletasConf/Lista_Papeletas_Salida_seguridad') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Registro <?= $hpapeletas2 ?> <?= $hpapeletas3 ?>">
+            <a id="hpapeletas" href="{{ url('Papeletas/Lista_Papeletas_Salida_seguridad') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Registro <?= $hpapeletas2 ?> <?= $hpapeletas3 ?>">
                 <p class="romperpalabra"><span id="icono_active2"></span> Papeletas de Salida</p>
             </a>
         </li>

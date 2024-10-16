@@ -57,7 +57,7 @@ class Usuario extends Model
     public function login($usuario)
     {
         $query = "SELECT u.id_usuario, u.usuario_nombres, u.usuario_apater, u.usuario_amater, u.usuario_codigo,
-        u.id_nivel, u.centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,u.id_puesto,u.acceso,
+        u.id_nivel, ub.cod_ubi AS centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,u.id_puesto,u.acceso,
         u.ini_funciones,u.fec_reg,u.usuario_password,u.estado, n.nom_nivel, p.nom_puesto, a.nom_area, u.id_area,
         (SELECT GROUP_CONCAT(puestos) FROM area WHERE estado=1 AND orden!='') AS grupo_puestos,
         CASE WHEN u.urladm=1 THEN (select r.url_config from config r where r.descrip_config='Foto_Postulante'
@@ -71,6 +71,7 @@ class Usuario extends Model
         LEFT JOIN puesto p ON u.id_puesto=p.id_puesto
         LEFT JOIN area a ON u.id_area=a.id_area
         LEFT JOIN sede_laboral sl ON p.id_sede_laboral=sl.id
+        LEFT JOIN ubicacion ub ON u.id_centro_labor=ub.id_ubicacion
         WHERE u.usuario_codigo='$usuario' AND u.estado IN (1,4) AND u.desvinculacion IN (0)";
         $result = DB::select($query);
         return $result;
@@ -660,5 +661,14 @@ class Usuario extends Model
 
         $query = DB::select($sql);
         return $query;
+    }
+
+    static function get_list_usuarios_x_base($cod_base){
+        $sql = "SELECT * from users where estado=1 and centro_labores='$cod_base' and id_nivel<>8";
+        
+        $result = DB::select($sql);
+
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
     }
 }

@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('sub_gerencia', function (Blueprint $table) {
             $table->id('id_sub_gerencia');
-            $table->unsignedBigInteger('id_direccion');
             $table->unsignedBigInteger('id_gerencia');
             $table->string('nom_sub_gerencia', 100)->nullable();
             $table->integer('estado')->nullable();
@@ -23,9 +22,8 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            $table->foreign('id_direccion','sub_fk_id_dir')->references('id_direccion')->on('direccion');
-            $table->foreign('id_gerencia','sub_fk_id_ger')->references('id_gerencia')->on('gerencia');
-            //$table->timestamps();
+            $table->foreign('id_gerencia','sger_fk_id_ger')->references('id_gerencia')->on('gerencia');
+            $table->index(['id_gerencia'], 'sger_idx_id_ger');
         });
     }
 

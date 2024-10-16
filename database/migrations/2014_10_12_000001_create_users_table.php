@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id('id_usuario');
+            $table->unsignedBigInteger('id_centro_labor');
+            $table->unsignedBigInteger('id_ubicacion');
             $table->string('usuario_nombres', '100')->nullable();
             $table->string('usuario_apater', '100')->nullable();
             $table->string('usuario_amater', '100')->nullable();
@@ -152,6 +154,10 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
+            $table->foreign('id_centro_labor','use_fk_id_clab')->references('id_ubicacion')->on('ubicacion');
+            $table->foreign('id_ubicacion','use_fk_id_ubi')->references('id_ubicacion')->on('ubicacion');
+            $table->index(['id_centro_labor'], 'use_idx_id_clab');
+            $table->index(['id_ubicacion'], 'use_idx_id_ubi');
             $table->index(['id_gerencia'], 'idx_id_ger');
             $table->index(['estado'], 'idx_est');
         });

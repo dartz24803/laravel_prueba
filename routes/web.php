@@ -1959,3 +1959,142 @@ Route::controller(ContadorVisitasController::class)->group(function () {
     Route::get('ContadorVisitas/index', 'index');
     Route::post('ContadorVisitas/Visualizar_Insert_Contador_Visitas', 'Visualizar_Insert_Contador_Visitas');
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+use App\Http\Controllers\PapeletasController;
+
+Route::controller(PapeletasController::class)->group(function () {
+    Route::get('Papeletas/Lista_Papeletas_Salida_seguridad', 'Lista_Papeletas_Salida_seguridad');
+    Route::get('Papeletas/Permisos_Papeletas_Salidas', 'Permisos_Papeletas_Salidas');
+    // Route::get('Papeletas/Modal_Permisos_Papeletas_Salidas', 'Modal_Permisos_Papeletas_Salidas');
+    // Route::post('Papeletas/Insert_Permisos_Papeletas_Salidas', 'Insert_Permisos_Papeletas_Salidas');
+    // Route::post('Papeletas/Delete_Permisos_Papeletas_Salidas', 'Delete_Permisos_Papeletas_Salidas');
+    // Route::get('Papeletas/Destino', 'Destino');
+    // Route::get('Papeletas/Modal_Destino', 'Modal_Destino');
+    // Route::post('Papeletas/Insert_Destino', 'Insert_Destino');
+    // Route::get('Papeletas/Modal_Update_Destino/{id}', 'Modal_Update_Destino');
+    // Route::post('Papeletas/Update_Destino', 'Update_Destino');
+    // Route::post('Papeletas/Delete_Destino', 'Delete_Destino');
+    // Route::get('Papeletas/Tramite', 'Tramite');
+    // Route::post('Papeletas/Traer_Destino', 'Traer_Destino');
+    // Route::get('Papeletas/Modal_Tramite', 'Modal_Tramite');
+    // Route::post('Papeletas/Insert_Tramite', 'Insert_Tramite');
+    // Route::get('Papeletas/Modal_Update_Tramite/{id}', 'Modal_Update_Tramite');
+    // Route::post('Papeletas/Update_Tramite', 'Update_Tramite');
+    // Route::post('Papeletas/Delete_Tramite', 'Delete_Tramite');
+});
