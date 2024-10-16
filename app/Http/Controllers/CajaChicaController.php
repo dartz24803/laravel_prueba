@@ -465,9 +465,11 @@ class CajaChicaController extends Controller
                 ->first();                      
         if($valida->nom_categoria=="MOVILIDAD"){
             $list_ruta = CajaChicaRuta::select('id','personas','punto_salida','punto_llegada',
-                            DB::raw("CASE WHEN transporte=1 THEN 'BUS' WHEN transporte=2 THEN 'TAXI'
-                            ELSE '' END AS transporte"),'motivo','costo')->where('id_caja_chica',$id)
-                            ->get();
+                        DB::raw("CASE WHEN transporte=1 THEN 'A PIE' WHEN transporte=2 THEN 'BUS'
+                        WHEN transporte=3 THEN 'COLECTIVO' WHEN transporte=4 THEN 'METRO'
+                        WHEN transporte=5 THEN 'TAXI' WHEN transporte=6 THEN 'TREN'
+                        ELSE '' END AS transporte"),'motivo','costo')->where('id_caja_chica',$id)
+                        ->get();
             return view('finanzas.tesoreria.caja_chica.modal_detalle_mo', compact(
                 'get_id',
                 'list_tipo_moneda',
