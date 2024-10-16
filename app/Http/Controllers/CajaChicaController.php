@@ -460,10 +460,8 @@ class CajaChicaController extends Controller
     public function show($id)
     {
         $get_id = CajaChica::get_list_caja_chica(['id'=>$id]);
-        $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
-        $valida = Categoria::select('nom_categoria')->where('id_categoria',$get_id->id_categoria)
-                ->first();                      
-        if($valida->nom_categoria=="MOVILIDAD"){
+        $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();                   
+        if($get_id->tipo=="MO"){
             $list_ruta = CajaChicaRuta::select('id','personas','punto_salida','punto_llegada',
                         DB::raw("CASE WHEN transporte=1 THEN 'A PIE' WHEN transporte=2 THEN 'BUS'
                         WHEN transporte=3 THEN 'COLECTIVO' WHEN transporte=4 THEN 'METRO'
@@ -499,9 +497,7 @@ class CajaChicaController extends Controller
                         DB::raw("CONCAT(num_doc,' - ',usuario_apater,' ',usuario_amater,', ',
                         usuario_nombres) AS nom_usuario"))->where('estado',1)->get();
         $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
-        $valida = Categoria::select('nom_categoria')->where('id_categoria',$get_id->id_categoria)
-                ->first();
-        if($valida->nom_categoria=="MOVILIDAD"){
+        if($get_id->tipo=="MO"){
             $list_ruta = CajaChicaRuta::select('id','personas','punto_salida','punto_llegada',
                             DB::raw("CASE WHEN transporte=1 THEN 'BUS' WHEN transporte=2 THEN 'TAXI'
                             ELSE '' END AS transporte"),'motivo','costo')->where('id_caja_chica',$id)
@@ -824,9 +820,7 @@ class CajaChicaController extends Controller
     {
         $get_id = CajaChica::get_list_caja_chica(['id'=>$id]);
         $list_pago = Pago::all();
-        $valida = Categoria::select('nom_categoria')->where('id_categoria',$get_id->id_categoria)
-                ->first();
-        if($valida->nom_categoria=="MOVILIDAD"){
+        if($get_id->tipo=="MO"){
             $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
                             ->where('estado',1)->whereIn('id',[1,2])
                             ->orderBy('nombre','ASC')->get();
