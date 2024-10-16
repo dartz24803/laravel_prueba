@@ -261,7 +261,7 @@
     </a>
     <ul class="collapse submenu list-unstyled" id="users" data-parent="#accordionExample">
         <li id="upersonales">
-            <a href="{{ url('ColaboradorController/Perfil') }}">
+            <a href="{{ url('ColaboradorController/Mi_Perfil/'. session('usuario')->id_usuario) }}">
                 <p class="romperpalabra"><span id="icono_active2"></span> Datos Personales</p>
             </a>
         </li>
