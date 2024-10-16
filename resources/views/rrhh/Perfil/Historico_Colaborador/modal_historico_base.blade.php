@@ -42,7 +42,7 @@
     </div>
 
     <div class="modal-footer">
-        <input name="cod_base_bd_hb" type="hidden" class="form-control" id="cod_base_bd_hb" value="<?php if(count($get_historico)>0){echo $get_historico[0]['centro_labores'];} ?>">
+        <input name="cod_base_bd_hb" type="hidden" class="form-control" id="cod_base_bd_hb" value="<?php if(count($get_historico)>0){echo $get_historico[0]['id_ubicacion'];} ?>">
         <input name="id_usuario_hb" type="hidden" class="form-control" id="id_usuario_hb" value="<?php echo $id_usuario; ?>">
         <input name="id_historico_centro_labores" type="hidden" class="form-control" id="id_historico_centro_labores" value="<?php if(count($get_historico)>0){echo $get_historico[0]['id_historico_centro_labores'];} ?>">
         @csrf

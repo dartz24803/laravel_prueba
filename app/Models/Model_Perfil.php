@@ -543,7 +543,7 @@ class Model_Perfil extends Model
             CASE WHEN SUBSTRING(u.fec_baja,1,1)=0 OR u.fec_baja IS NULL THEN ''
             ELSE DATE_FORMAT(u.fec_baja,'%d/%m/%Y') END AS fec_baja_baja,
             LOWER(CONCAT(u.usuario_nombres,' ',u.usuario_apater,' ',u.usuario_amater)) AS nombre_completo,
-            LOWER(pu.nom_puesto) AS nom_puesto_min,sg.nom_sub_gerencia
+            LOWER(pu.nom_puesto) AS nom_puesto_min,sg.nom_sub_gerencia,ub.cod_ubi AS ubicacion
             from users u
             LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
             LEFT JOIN tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
@@ -556,6 +556,7 @@ class Model_Perfil extends Model
             left join modalidad_laboral c on u.id_modalidad_laboral=c.id_modalidad_laboral
             left join horario d on u.id_horario=d.id_horario
             LEFT JOIN sub_gerencia sg ON u.id_sub_gerencia=sg.id_sub_gerencia
+            LEFT JOIN ubicacion ub ON ub.id_ubicacion=u.id_ubicacion
             where u.estado in (1,2,3,4) and u.id_usuario =".$id_usuario;
         }
         else{
