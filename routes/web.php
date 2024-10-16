@@ -76,6 +76,7 @@ use App\Http\Controllers\ReporteProveedoresController;
 use App\Http\Controllers\RequisicionTiendaConfController;
 use App\Http\Controllers\RequisicionTiendaController;
 use App\Http\Controllers\SalidaInsumoController;
+use App\Http\Controllers\SoporteConfController;
 use App\Http\Controllers\SoporteController;
 use App\Http\Controllers\StockInfosapController;
 use App\Http\Controllers\TablaMaestraTesoreriaController;
@@ -401,6 +402,39 @@ Route::controller(SoporteController::class)->group(function () {
     Route::get('elemento_por_especialidad', 'getElementoPorEspecialidad')->name('elemento_por_especialidad');
     Route::get('asunto_por_elemento', 'getAsuntoPorElemento')->name('asunto_por_elemento');
 });
+
+// ADMINISTRABLES - TICKETS SOPORTE
+
+Route::controller(SoporteConfController::class)->group(function () {
+
+    Route::get('soporteticket_conf', 'indexsop_conf')->name('soporteticket_conf');
+    Route::get('soporte_asunto_conf', 'index_asu_conf')->name('soporte_asunto_conf');
+    Route::get('soporte_elemento_conf', 'index_ele_conf')->name('soporte_elemento_conf');
+    Route::get('soporte_especialidad_conf', 'index_esp_conf')->name('soporte_especialidad_conf');
+
+    // ADMINISTRABLE ASUNTO
+    Route::get('soporte_asunto_conf/list', 'list_asunto_conf')->name('soporte_asunto_conf.list');
+    Route::get('soporte_asunto_conf/{id}/edit', 'edit_asuntfo_conf')->name('soporte_asunto_conf.edit');
+    Route::post('soporte_asunto_conf/delete/{id}', 'destroy_asunto_conf')->name('soporte_asunto_conf.destroy');
+    Route::post('soporte_asunto_conf/{id}', 'update_asunto_conf')->name('soporte_asunto_conf.update');
+    Route::get('soporte_asunto_conf/create', 'create_asunto_conf')->name('soporte_asunto_conf.create');
+    Route::post('soporte_asunto_conf', 'store_asunto_conf')->name('soporte_asunto_conf.store');
+    // ADMINISTRABLE ELEMENTO
+    Route::get('soporte_elemento_conf/list', 'list_elemento_conf')->name('soporte_elemento_conf.list');
+    Route::get('soporte_elemento_conf/{id}/edit', 'edit_elemento_conf')->name('soporte_elemento_conf.edit');
+    Route::post('soporte_elemento_conf/delete/{id}', 'destroy_elemento_conf')->name('soporte_elemento_conf.destroy');
+    Route::post('soporte_elemento_conf/{id}', 'update_elemento_conf')->name('soporte_elemento_conf.update');
+    Route::get('soporte_elemento_conf/create', 'create_elemento_conf')->name('soporte_elemento_conf.create');
+    Route::post('soporte_elemento_conf', 'store_elemento_conf')->name('soporte_elemento_conf.store');
+    // ADMINISTRABLE ESPECIALIDAD
+    Route::get('soporte_especialidad_conf/list', 'list_especialidad_conf')->name('soporte_especialidad_conf.list');
+    Route::get('soporte_especialidad_conf/{id}/edit', 'edit_especialidad_conf')->name('soporte_especialidad_conf.edit');
+    Route::post('soporte_especialidad_conf/{id}/destroy', 'destroy_especialidad_conf')->name('soporte_especialidad_conf.destroy');
+    // Route::post('soporte_especialidad_conf/{id}', 'update_especialidad_conf')->name('soporte_especialidad_conf.update');
+    Route::get('soporte_especialidad_conf/create', 'create_especialidad_conf')->name('soporte_especialidad_conf.create');
+    Route::post('soporte_especialidad_conf', 'store_especialidad_conf')->name('soporte_especialidad_conf.store');
+});
+
 
 
 

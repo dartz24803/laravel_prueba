@@ -20,16 +20,16 @@
                         <div class="widget-content widget-content-area simple-tab">
                             <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                                 <li class="nav-item">
-                                    <a id="a_reg" class="nav-link" onclick="ListRegistroAccesoReportes();"
-                                        style="cursor: pointer;">ACCESO DE REPORTES</a>
+                                    <a id="especialidad" class="nav-link" style="cursor: pointer;"
+                                        onclick="ListEspecialidad();">Especialidad</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a id="a_reind" class="nav-link" onclick="ListBDReportesInd();"
-                                        style="cursor: pointer;">ELEMENTOS POR REPORTE</a>
+                                    <a id="elemento" class="nav-link" style="cursor: pointer;"
+                                        onclick="ListElementos();">Elemento</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a id="a_redb" class="nav-link" onclick="ListBDReportesDb();"
-                                        style="cursor: pointer;">BASE DE DATOS POR REPORTE</a>
+                                    <a id="asunto" class="nav-link" style="cursor: pointer;"
+                                        onclick="ListAsuntos();">Asunto</a>
                                 </li>
                             </ul>
                             <div class="row" id="cancel-row">
@@ -47,62 +47,65 @@
 
     <script>
         $(document).ready(function() {
-            $("#bi").addClass('active');
-            $("#bi").attr('aria-expanded', 'true');
-            $("#bireporte").addClass('active');
+            $("#soporteconf").addClass('active');
+            $("#hsoporteconf").attr('aria-expanded', 'true');
 
-            ListRegistroAccesoReportes();
+            $("#especialidad").addClass('active');
+            $("#elemento").removeClass('active');
+            $("#asunto").removeClass('active');
+
+            ListEspecialidad();
         });
 
-        function ListRegistroAccesoReportes() {
+        function ListEspecialidad() {
             Cargando();
 
-            var url = "{{ route('bireporte_ra') }}";
+            var url = "{{ route('soporte_especialidad_conf') }}";
 
             $.ajax({
                 url: url,
                 type: "GET",
                 success: function(resp) {
                     $('#div_lista_maestra').html(resp);
-                    $("#a_reg").addClass('active');
-                    $("#a_reind").removeClass('active');
-                    $("#a_redb").removeClass('active');
+                    $("#especialidad").addClass('active');
+                    $("#elemento").removeClass('active');
+                    $("#asunto").removeClass('active');
 
                 }
             });
         }
 
-        function ListBDReportesInd() {
+        function ListElementos() {
             Cargando();
 
-            var url = "{{ route('bireporte_ind') }}";
+            var url = "{{ route('soporte_elemento_conf') }}";
 
             $.ajax({
                 url: url,
                 type: "GET",
                 success: function(resp) {
                     $('#div_lista_maestra').html(resp);
-                    $("#a_reg").removeClass('active');
-                    $("#a_reind").addClass('active');
-                    $("#a_redb").removeClass('active');
+                    $("#especialidad").removeClass('active');
+                    $("#elemento").addClass('active');
+                    $("#asunto").removeClass('active');
 
                 }
             });
         }
 
-        function ListBDReportesDb() {
+        function ListAsuntos() {
             Cargando();
 
-            var url = "{{ route('bireporte_db') }}";
+            var url = "{{ route('soporte_asunto_conf') }}";
 
             $.ajax({
                 url: url,
                 type: "GET",
                 success: function(resp) {
                     $('#div_lista_maestra').html(resp);
-                    $("#a_reg").removeClass('active');
-                    $("#a_reind").removeClass('active');
-                    $("#a_redb").addClass('active');
+                    $("#especialidad").removeClass('active');
+                    $("#elemento").removeClass('active');
+                    $("#asunto").addClass('active');
 
                 }
             });
