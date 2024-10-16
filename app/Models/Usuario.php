@@ -661,4 +661,13 @@ class Usuario extends Model
         $query = DB::select($sql);
         return $query;
     }
+
+    static function get_list_usuarios_x_base($cod_base){
+        $sql = "SELECT * from users where estado=1 and centro_labores='$cod_base' and id_nivel<>8";
+        
+        $result = DB::select($sql);
+
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
+    }
 }
