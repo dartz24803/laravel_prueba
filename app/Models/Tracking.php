@@ -118,9 +118,7 @@ class Tracking extends Model
             return $query;
         }else{
             $parte = "";
-            if(substr(session('usuario')->centro_labores,0,1)=="B" && 
-            (session('usuario')->id_area=="14" || 
-            session('usuario')->id_area=="44")){
+            if(substr(session('usuario')->centro_labores,0,1)=="B"){
                 $parte = "bh.cod_base='".session('usuario')->centro_labores."' AND";
             }
             $sql = "SELECT tr.id,tr.n_requerimiento,bd.cod_base AS desde,bh.cod_base AS hacia,tp.descripcion AS proceso,
