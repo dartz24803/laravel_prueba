@@ -44,113 +44,113 @@
         </div>
     </a>
     <ul class="collapse submenu list-unstyled" id="rlogisticas" data-parent="#accordionExample">
-        @if (session('usuario')->id_nivel == 1 || 
+        @if (session('usuario')->id_nivel == 1 ||
         session('usuario')->id_puesto == 131 ||
         session('usuario')->id_puesto == 152)
-            <li id="cargainventario">
-                <a href="{{ url('cargainventario') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Carga de Inventarios</p>
-                </a>
-            </li>
+        <li id="cargainventario">
+            <a href="{{ url('cargainventario') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Carga de Inventarios</p>
+            </a>
+        </li>
         @endif
-        @if (session('usuario')->id_nivel == 1 || 
+        @if (session('usuario')->id_nivel == 1 ||
         session('usuario')->id_puesto == 97 ||
         session('usuario')->id_puesto == 121 ||
         session('usuario')->id_puesto == 131 ||
         session('usuario')->id_puesto == 152)
-            <li id="consumible">
-                <a href="{{ url('consumible') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Consumibles</p>
-                </a>
-            </li>
+        <li id="consumible">
+            <a href="{{ url('consumible') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Consumibles</p>
+            </a>
+        </li>
         @endif
-        @if (session('usuario')->id_nivel == 1 || 
-        session('usuario')->id_puesto == 74 || 
-        session('usuario')->id_puesto == 76 || 
-        session('usuario')->id_puesto == 121 || 
+        @if (session('usuario')->id_nivel == 1 ||
+        session('usuario')->id_puesto == 74 ||
+        session('usuario')->id_puesto == 76 ||
+        session('usuario')->id_puesto == 121 ||
         session('usuario')->id_puesto == 131 ||
         session('usuario')->id_puesto == 152)
-            <li id="controlmercaderiaactivoe">
-                <a id="rcontrolmercaderiaactivo" href="{{ url('ControlSalidaMercaderia/index') }}">
-                    <p class="romperpalabra" title="Control de Salida de Mercadería y Activos"><span id="icono_active2"></span> Control de Salida de Mercadería y Activos</p>
-                </a>
-            </li>
+        <li id="controlmercaderiaactivoe">
+            <a id="rcontrolmercaderiaactivo" href="{{ url('ControlSalidaMercaderia/index') }}">
+                <p class="romperpalabra" title="Control de Salida de Mercadería y Activos"><span id="icono_active2"></span> Control de Salida de Mercadería y Activos</p>
+            </a>
+        </li>
         @endif
-        @if (session('usuario')->id_nivel == 1 || 
-        session('usuario')->id_nivel == 9 || 
-        session('usuario')->id_nivel == 10 || 
-        session('usuario')->id_puesto == 35 || 
-        session('usuario')->id_puesto == 74)
-            <li id="controlubicacionese">
-                <a id="rcontrolubicaciones" href="{{ url('ControlUbicaciones/index') }}">
-                    <p class="romperpalabra" title="Control de Ubicaciones"><span id="icono_active2"></span> Control de Ubicaciones</p>
-                </a>
-            </li>
-        @endif
-        @if (session('usuario')->id_nivel == 1 || 
-        session('usuario')->id_nivel == 5 || 
-        session('usuario')->id_nivel == 8 || 
+        @if (session('usuario')->id_nivel == 1 ||
         session('usuario')->id_nivel == 9 ||
-        session('usuario')->id_nivel == 10 || 
-        session('usuario')->id_puesto == 35 || 
-        session('usuario')->id_puesto == 74 || 
-        session('usuario')->id_puesto == 76 || 
-        session('usuario')->id_puesto == 97 || 
-        session('usuario')->id_puesto == 121 || 
-        session('usuario')->id_puesto == 131 ||
-        session('usuario')->id_puesto == 152)
-            <li id="errorespicking">
-                <a href="{{ url('errorespicking') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Errores Picking</p>
-                </a>
-            </li>
-
-            <li id="infosapstock">
-                <a href="{{ url('infosapstock') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Infosap Stock</p>
-                </a>
-            </li>
-        @endif
-        @if (session('usuario')->id_nivel == 1 || 
-        session('usuario')->id_puesto == 74 || 
-        session('usuario')->id_puesto == 76 || 
-        session('usuario')->id_puesto == 121 || 
-        session('usuario')->id_puesto == 131 ||
-        session('usuario')->id_puesto == 152)
-            <li id="mercaderiafotografia">
-                <a href="{{ url('mercaderiafotografia') }}">
-                    <p class="romperpalabra" title="Mercadería a enviar para fotografía"><span id="icono_active2"></span> Mercadería a enviar para fotografía</p>
-                </a>
-            </li>
-        @endif
-        @if (session('usuario')->id_nivel == 1 || 
-        session('usuario')->id_nivel == 9 || 
-        session('usuario')->id_nivel == 10 || 
+        session('usuario')->id_nivel == 10 ||
         session('usuario')->id_puesto == 35 ||
         session('usuario')->id_puesto == 74)
-            <li id="mercaderia">
-                <a href="{{ url('MercaderiaExtraer/Mercaderia') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Mercadería a Extraer</p>
-                </a>
-            </li>
+        <li id="controlubicacionese">
+            <a id="rcontrolubicaciones" href="{{ url('ControlUbicaciones/index') }}">
+                <p class="romperpalabra" title="Control de Ubicaciones"><span id="icono_active2"></span> Control de Ubicaciones</p>
+            </a>
+        </li>
         @endif
-        @if (session('usuario')->id_nivel == 1 || 
-        session('usuario')->id_nivel == 5 || 
-        session('usuario')->id_nivel == 8 || 
+        @if (session('usuario')->id_nivel == 1 ||
+        session('usuario')->id_nivel == 5 ||
+        session('usuario')->id_nivel == 8 ||
         session('usuario')->id_nivel == 9 ||
-        session('usuario')->id_nivel == 10 || 
-        session('usuario')->id_puesto == 35 || 
-        session('usuario')->id_puesto == 74 || 
-        session('usuario')->id_puesto == 76 || 
-        session('usuario')->id_puesto == 97 || 
-        session('usuario')->id_puesto == 121 || 
+        session('usuario')->id_nivel == 10 ||
+        session('usuario')->id_puesto == 35 ||
+        session('usuario')->id_puesto == 74 ||
+        session('usuario')->id_puesto == 76 ||
+        session('usuario')->id_puesto == 97 ||
+        session('usuario')->id_puesto == 121 ||
         session('usuario')->id_puesto == 131 ||
         session('usuario')->id_puesto == 152)
-            <li id="reprocesos">
-                <a href="{{ url('Reproceso/index') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Reproceso</p>
-                </a>
-            </li>
+        <li id="errorespicking">
+            <a href="{{ url('errorespicking') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Errores Picking</p>
+            </a>
+        </li>
+
+        <li id="infosapstock">
+            <a href="{{ url('infosapstock') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Infosap Stock</p>
+            </a>
+        </li>
+        @endif
+        @if (session('usuario')->id_nivel == 1 ||
+        session('usuario')->id_puesto == 74 ||
+        session('usuario')->id_puesto == 76 ||
+        session('usuario')->id_puesto == 121 ||
+        session('usuario')->id_puesto == 131 ||
+        session('usuario')->id_puesto == 152)
+        <li id="mercaderiafotografia">
+            <a href="{{ url('mercaderiafotografia') }}">
+                <p class="romperpalabra" title="Mercadería a enviar para fotografía"><span id="icono_active2"></span> Mercadería a enviar para fotografía</p>
+            </a>
+        </li>
+        @endif
+        @if (session('usuario')->id_nivel == 1 ||
+        session('usuario')->id_nivel == 9 ||
+        session('usuario')->id_nivel == 10 ||
+        session('usuario')->id_puesto == 35 ||
+        session('usuario')->id_puesto == 74)
+        <li id="mercaderia">
+            <a href="{{ url('MercaderiaExtraer/Mercaderia') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Mercadería a Extraer</p>
+            </a>
+        </li>
+        @endif
+        @if (session('usuario')->id_nivel == 1 ||
+        session('usuario')->id_nivel == 5 ||
+        session('usuario')->id_nivel == 8 ||
+        session('usuario')->id_nivel == 9 ||
+        session('usuario')->id_nivel == 10 ||
+        session('usuario')->id_puesto == 35 ||
+        session('usuario')->id_puesto == 74 ||
+        session('usuario')->id_puesto == 76 ||
+        session('usuario')->id_puesto == 97 ||
+        session('usuario')->id_puesto == 121 ||
+        session('usuario')->id_puesto == 131 ||
+        session('usuario')->id_puesto == 152)
+        <li id="reprocesos">
+            <a href="{{ url('Reproceso/index') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Reproceso</p>
+            </a>
+        </li>
         @endif
         <li id="trackings">
             <a href="{{ route('tracking') }}" data-toggle="tooltip" data-placement="right" data-html="true">
@@ -159,23 +159,6 @@
         </li>
     </ul>
 </li>
-
-<!-- MODULO SOPORTE -->
-
-<li class="menu" id="soporte">
-
-    <a href="{{ url('soporte') }}" id="hsoporte" aria-expanded="false" class="dropdown-toggle">
-        <div class="">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-            <span>Soporte</span>
-        </div>
-    </a>
-
-</li>
-
 
 
 
