@@ -49,8 +49,8 @@
         <tr>
             <th>Orden</th>
             <th class="no-content">Generación</th>
-            <th>Sede Laboral</th>
             <th>Centro de labores</th>
+            <th>Ubicación</th>
             <th>Apellido Paterno</th>
             <th>Apellido Materno</th>
             <th>Nombres</th>
@@ -99,7 +99,7 @@
                 </div>
                 @endif
             </td>
-            <td>{{ $list->sede_laboral }}</td>
+            <td>{{ $list->centro_labor }}</td>
             <td>{{ $list->ubicacion }}</td>
             <td class="text-left">{{ $list->usuario_apater }}</td>
             <td class="text-left">{{ $list->usuario_amater }}</td>

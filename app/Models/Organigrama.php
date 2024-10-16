@@ -133,7 +133,7 @@ class Organigrama extends Model
                     WHEN YEAR(us.fec_nac) BETWEEN 1981 AND 1996 THEN 'Y'
                     WHEN YEAR(us.fec_nac) BETWEEN 1997 AND 2012 THEN 'Z'
                     WHEN YEAR(us.fec_nac) >= 2013 THEN '&alpha;' ELSE '' END AS generacion,
-                    sl.descripcion AS sede_laboral,us.centro_labores AS ubicacion,us.usuario_apater,
+                    cl.cod_ubi AS centro_labor,ub.cod_ubi AS ubicacion,us.usuario_apater,
                     us.usuario_amater,us.usuario_nombres,pu.nom_puesto,ar.nom_area,sg.nom_sub_gerencia,
                     ge.nom_gerencia,DATE_FORMAT(us.ini_funciones,'%d-%m-%Y') AS fecha_ingreso,
                     td.cod_tipo_documento,us.num_doc,us.num_celp,
@@ -141,11 +141,12 @@ class Organigrama extends Model
                     us.foto,us.documento,us.fec_baja
                     FROM organigrama og
                     LEFT JOIN users us ON og.id_usuario=us.id_usuario
+                    LEFT JOIN ubicacion cl ON us.id_centro_labor=cl.id_ubicacion
+                    LEFT JOIN ubicacion ub ON us.id_ubicacion=ub.id_ubicacion
                     LEFT JOIN puesto pu ON og.id_puesto=pu.id_puesto
-                    LEFT JOIN sede_laboral sl ON pu.id_sede_laboral=sl.id
-                    LEFT JOIN area ar ON us.id_area=ar.id_area
-                    LEFT JOIN sub_gerencia sg ON us.id_sub_gerencia=sg.id_sub_gerencia
-                    LEFT JOIN gerencia ge ON us.id_gerencia=ge.id_gerencia
+                    LEFT JOIN area ar ON pu.id_area=ar.id_area
+                    LEFT JOIN sub_gerencia sg ON ar.id_departamento=sg.id_sub_gerencia
+                    LEFT JOIN gerencia ge ON sg.id_gerencia=ge.id_gerencia
                     LEFT JOIN tipo_documento td ON us.id_tipo_documento=td.id_tipo_documento
                     LEFT JOIN motivo_baja_rrhh mt ON us.id_motivo_baja=mt.id_motivo
                     $parte_gerencia

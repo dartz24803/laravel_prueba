@@ -38,6 +38,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use App\Models\Notificacion;
 use App\Models\SedeLaboral;
+use App\Models\Soporte;
 use App\Models\SoporteUbicacion1;
 use App\Models\SoporteUbicacion2;
 use App\Models\SubGerencia;
@@ -201,7 +202,15 @@ class SoporteController extends Controller
 
     public function create_tick(Request $request)
     {
-        $list_especialidad = Especialidad::select('id', 'nombre')->get();
+        $list_especialidad = Especialidad::select('id', 'nombre')
+            ->where('id', '!=', 4)
+            ->get();
+        $especialidadConId4 = Especialidad::select('id', 'nombre')
+            ->where('id', 4)
+            ->first();
+        if ($especialidadConId4) {
+            $list_especialidad->push($especialidadConId4);
+        }
         $list_elemento = ElementoSoporte::select('idsoporte_elemento', 'nombre')->get();
         $list_asunto = AsuntoSoporte::select('idsoporte_asunto', 'nombre')->get();
         $list_sede = SedeLaboral::select('id', 'descripcion')
@@ -266,6 +275,84 @@ class SoporteController extends Controller
     }
 
 
+    public function getElementoPorEspecialidad(Request $request)
+    {
+        $idEspecialidad = $request->input('especialidad');
+        // Si no se selecciona ninguna sede, devolver un arreglo vacío
+        if (empty($idEspecialidad)) {
+            return response()->json([]);
+        }
+        // Buscar ubicaciones asociadas a la sede seleccionada
+        $elementos = ElementoSoporte::where(function ($query) use ($idEspecialidad) {
+            $query->whereRaw("FIND_IN_SET(?, id_especialidad)", [$idEspecialidad]);
+        })
+            ->where('estado', 1)
+            ->get();
+
+        return response()->json($elementos);
+    }
+
+    public function getAsuntoPorElemento(Request $request)
+    {
+        $idElemento = $request->input('elemento');
+        // Si no se selecciona ninguna sede, devolver un arreglo vacío
+        if (empty($idElemento)) {
+            return response()->json([]);
+        }
+        // Buscar ubicaciones asociadas a la sede seleccionada
+        $asuntos = AsuntoSoporte::where(function ($query) use ($idElemento) {
+            $query->whereRaw("FIND_IN_SET(?, idsoporte_elemento)", [$idElemento]);
+        })
+            ->where('estado', 1)
+            ->get();
+
+        return response()->json($asuntos);
+    }
+
+
+
+    public function store_tick(Request $request)
+    {
+
+        $request->validate([
+            'especialidad' => 'gt:0',
+            'elemento' => 'gt:0',
+            'asunto' => 'gt:0',
+            'sede' => 'gt:0',
+            'idsoporte_ubicacion' => 'gt:0',
+            'vencimiento' => 'required',
+            'descripcion' => 'required',
+
+        ], [
+            'especialidad.gt' => 'Debe seleccionar especialidad.',
+            'elemento.gt' => 'Debe seleccionar elemento.',
+            'asunto.gt' => 'Debe seleccionar asunto.',
+            'sede.gt' => 'Debe seleccionar sede.',
+            'idsoporte_ubicacion.gt' => 'Debe ingresar Ubicaciòn.',
+            'vencimiento.required' => 'Debe ingresar vencimiento.',
+            'descripcion.required' => 'Debe ingresar descripcion.',
+
+        ]);
+        // dd($request->all());
+        Soporte::create([
+            'id_especialidad' => $request->especialidad,
+            'id_elemento' => $request->elemento,
+            'id_asunto' => $request->asunto,
+            'id_sede' => $request->sede,
+            'idsoporte_ubicacion' => $request->idsoporte_ubicacion,
+            'idsoporte_ubicacion2' => $request->idsoporte_ubicacion2 ?? 0,
+            'id_area' => $request->area ?? 0,
+            'fec_vencimiento' => $request->vencimiento,
+            'descripcion' => $request->descripcion,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        return redirect()->back()->with('success', 'Reporte registrado con éxito.');
+    }
 
     public function update_tick(Request $request, $id)
     {
