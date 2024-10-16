@@ -399,6 +399,29 @@ class BiReporteController extends Controller
             ['class="responsive-iframe"'],
             $request->iframe
         );
+
+        // Validar todas las tablas seleccionadas antes de crear los registros
+        $tablasbi = $request->input('tbdb', []); // Nombres de las tablas seleccionadas
+        $db = $request->input('db', []); // Cod_sistema
+
+        foreach ($tablasbi as $index => $nombre) {
+            $idTablaDb = DB::table('tablas_db')
+                ->where('tablas_db.cod_db', $db[$index])
+                ->where('tablas_db.nombre', $nombre)
+                ->value('tablas_db.idtablas_db');
+
+            // Si no se encuentra el ID de la tabla, retorna error y no continúes
+            if (is_null($idTablaDb)) {
+                return response()->json([
+                    'errors' => [
+                        'tabla_db' => [
+                            "No se encontró una tabla con el nombre '{$nombre}' para la base de dato, en la fila " . ($index + 1)
+                        ]
+                    ]
+                ], 422);
+            }
+        }
+
         // Guardar los datos en la tabla portal_procesos_historial
         $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
 
@@ -512,42 +535,6 @@ class BiReporteController extends Controller
         }
 
 
-        // Guardar los datos en la tabla tabla_bi
-        $tablasbi = $request->input('tbdb', []); // tbdb[] ahora contiene los ids de las tablas seleccionadas
-        $db = $request->input('db', []); // cod_sistema
-
-        // Recorre cada tabla seleccionada
-        foreach ($tablasbi as $index => $nombre) {
-            // dd($tablasbi);
-            $idTablaDb = DB::table('tablas_db')
-                ->where('tablas_db.cod_db', $db[$index])
-                ->where('tablas_db.nombre', $nombre)
-                ->value('tablas_db.idtablas_db');
-            // Validar si no se encuentra el idTablaDb
-            if (is_null($idTablaDb)) {
-                // Retornar una alerta o señal de error
-                return response()->json([
-                    'errors' => [
-                        'tabla_db' => [
-                            "No se encontró una tabla coincidente para la base de datos '{$db[$index]}' y el nombre '{$nombre}' en la fila " . ($index + 1)
-                        ]
-                    ]
-                ], 422);
-            } else {
-
-                TablaBi::create([
-                    'id_acceso_bi_reporte' => $biReporte->id_acceso_bi_reporte,
-                    'idtablas_db' => $idTablaDb, // ID de la tabla seleccionada
-                    'estado' => 1,
-                    'fec_reg' => now(),
-                    'user_reg' => session('usuario')->id_usuario,
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario
-                ]);
-            }
-        }
-
-
 
 
         // Guardar los datos en la tabla bi_puesto_acceso
@@ -599,6 +586,44 @@ class BiReporteController extends Controller
         // Actualizar los datos en la tabla
         $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
 
+
+        // Actualizar tablas
+        if ($request->has('tablabi')) {
+            TablaBi::where('id_acceso_bi_reporte', $biReporte->id_acceso_bi_reporte)->delete();
+            $dbtest = $request->input('dbe', []); // Bases de datos seleccionadas
+
+            foreach ($request->tablabi as $key => $nombre) {
+                // Obtener el idtablas_db basado en el nombre y cod_db
+                $idTablaDb = DB::table('tablas_db')
+                    ->where('tablas_db.cod_db', $dbtest[$key])
+                    ->where('tablas_db.nombre', $nombre)
+                    ->value('tablas_db.idtablas_db');
+                // Validar si no se encuentra el idTablaDb
+                if (is_null($idTablaDb)) {
+                    // Retornar una alerta o señal de error
+                    return response()->json([
+                        'errors' => [
+                            'tabla_db' => [
+                                "No se encontró una tabla con el nombre '{$nombre}' para la base de dato, en la fila " . ($key + 1)
+                            ]
+                        ]
+                    ], 422);
+                } else {
+
+                    TablaBi::create([
+                        'id_acceso_bi_reporte' => $biReporte->id_acceso_bi_reporte,
+                        'idtablas_db' => $idTablaDb, // ID de la tabla seleccionada
+                        'estado' => 1,
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+                }
+                // Insertar el nuevo registro
+
+            }
+        }
 
         // Configuración FTP
         $ftp_server = "lanumerounocloud.com";
@@ -718,42 +743,7 @@ class BiReporteController extends Controller
                 );
             }
         }
-        // Actualizar tablas
-        if ($request->has('tablabi')) {
-            TablaBi::where('id_acceso_bi_reporte', $biReporte->id_acceso_bi_reporte)->delete();
-            $dbtest = $request->input('dbe', []); // Bases de datos seleccionadas
-            foreach ($request->tablabi as $key => $nombre) {
-                // Obtener el idtablas_db basado en el nombre y cod_db
-                $idTablaDb = DB::table('tablas_db')
-                    ->where('tablas_db.cod_db', $dbtest[$key])
-                    ->where('tablas_db.nombre', $nombre)
-                    ->value('tablas_db.idtablas_db');
-                // Validar si no se encuentra el idTablaDb
-                if (is_null($idTablaDb)) {
-                    // Retornar una alerta o señal de error
-                    return response()->json([
-                        'errors' => [
-                            'tabla_db' => [
-                                "No se encontró una tabla coincidente para la base de datos '{$dbtest[$key]}' y el nombre '{$nombre}' en la fila " . ($key + 1)
-                            ]
-                        ]
-                    ], 422);
-                } else {
 
-                    TablaBi::create([
-                        'id_acceso_bi_reporte' => $biReporte->id_acceso_bi_reporte,
-                        'idtablas_db' => $idTablaDb, // ID de la tabla seleccionada
-                        'estado' => 1,
-                        'fec_reg' => now(),
-                        'user_reg' => session('usuario')->id_usuario,
-                        'fec_act' => now(),
-                        'user_act' => session('usuario')->id_usuario
-                    ]);
-                }
-                // Insertar el nuevo registro
-
-            }
-        }
 
 
 
