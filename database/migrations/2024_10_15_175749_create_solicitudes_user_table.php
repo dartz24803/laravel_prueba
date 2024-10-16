@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('solicitudes_user', function (Blueprint $table) {
             $table->id('id_solicitudes_user');
-            $table->BigInteger('id_usuario');
+            $table->unsignedBigInteger('id_usuario');
             $table->integer('id_solicitudes');
             $table->string('cod_solicitud', 15);
             $table->string('cod_base', 5)->nullable();
-            $table->BigInteger('id_gerencia');
+            $table->unsignedBigInteger('id_gerencia');
             $table->string('anio', 4);
             $table->date('fec_desde');
             $table->date('fec_hasta');
@@ -42,15 +42,14 @@ return new class extends Migration
             $table->integer('sin_retorno')->nullable();
             $table->integer('mediodia')->nullable();
             $table->text('observacion')->nullable();
-            $table->integer('estado');
-            $table->dateTime('fec_reg');
-            $table->integer('user_reg');
+            $table->integer('estado')->nullable();
+            $table->dateTime('fec_reg')->nullable();
+            $table->integer('user_reg')->nullable();
             $table->dateTime('fec_act')->nullable();
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-
-            $table->foreign('id_usuario', 'solicitudes_user_fk_id_usuario')->references('id_usuario')->on('usuario');
+            $table->foreign('id_usuario', 'solicitudes_user_fk_id_usuario')->references('id_usuario')->on('users');
             $table->foreign('id_gerencia', 'solicitudes_user_fk_id_gerencia')->references('id_gerencia')->on('gerencia');
         });
     }
