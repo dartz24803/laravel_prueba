@@ -167,7 +167,7 @@
         "pageLength": 10,
         "aoColumnDefs" : [ 
             {
-                'targets' : [ 0 ],
+                'targets' : [ 0,4,5,6,8,10,12 ],
                 'visible' : false
             } 
         ]
