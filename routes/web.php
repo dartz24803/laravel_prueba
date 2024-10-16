@@ -395,6 +395,9 @@ Route::controller(SoporteController::class)->group(function () {
     Route::get('soporte_ticket/{id}/edit', 'edit_tick')->name('soporte_ticket.edit');
 
     Route::get('soporte_ticket_index/{id_area}/{id_subgerencia}', 'handleAreaP')->name('soporte_ticket_index');
+
+    Route::get('soporte_ubicacion_por_sede', 'getSoporteUbicacionPorSede')->name('soporte_ubicacion_por_sede');
+    Route::get('soporte_ubicacion2_por_ubicacion1', 'getUbicacion2PorUbicacion1')->name('soporte_ubicacion2_por_ubicacion1');
 });
 
 

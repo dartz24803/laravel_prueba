@@ -262,10 +262,12 @@ class ColaboradorConfController extends Controller
 
     public function list_sg()
     {
-        $list_sub_gerencia = SubGerencia::select('sub_gerencia.id_sub_gerencia', 'direccion.direccion', 'gerencia.nom_gerencia', 'sub_gerencia.nom_sub_gerencia')
-            ->join('direccion', 'direccion.id_direccion', '=', 'sub_gerencia.id_direccion')
-            ->join('gerencia', 'gerencia.id_gerencia', '=', 'sub_gerencia.id_gerencia')
-            ->where('sub_gerencia.estado', 1)->get();
+        $list_sub_gerencia = SubGerencia::from('sub_gerencia AS sg')
+                            ->select('sg.id_sub_gerencia','di.direccion','ge.nom_gerencia',
+                            'sg.nom_sub_gerencia')
+                            ->join('gerencia AS ge', 'ge.id_gerencia', '=', 'sg.id_gerencia')
+                            ->join('direccion AS di', 'di.id_direccion', '=', 'ge.id_direccion')
+                            ->where('sg.estado', 1)->get();
         return view('rrhh.administracion.colaborador.sub_gerencia.lista', compact('list_sub_gerencia'));
     }
 
@@ -287,13 +289,12 @@ class ColaboradorConfController extends Controller
             'nom_sub_gerencia.required' => 'Debe ingresar descripción.',
         ]);
 
-        $valida = SubGerencia::where('id_direccion', $request->id_direccion)->where('id_gerencia', $request->id_gerencia)
-            ->where('nom_sub_gerencia', $request->nom_sub_gerencia)->where('estado', 1)->exists();
+        $valida = SubGerencia::where('id_gerencia', $request->id_gerencia)
+                ->where('nom_sub_gerencia', $request->nom_sub_gerencia)->where('estado', 1)->exists();
         if ($valida) {
             echo "error";
         } else {
             SubGerencia::create([
-                'id_direccion' => $request->id_direccion,
                 'id_gerencia' => $request->id_gerencia,
                 'nom_sub_gerencia' => $request->nom_sub_gerencia,
                 'estado' => 1,
@@ -307,10 +308,18 @@ class ColaboradorConfController extends Controller
 
     public function edit_sg($id)
     {
-        $get_id = SubGerencia::findOrFail($id);
+        $get_id = SubGerencia::from('sub_gerencia AS sg')
+                ->select('sg.*','ge.id_direccion')
+                ->join('gerencia AS ge','ge.id_gerencia','=','sg.id_gerencia')
+                ->where('id_sub_gerencia',$id)->first();
         $list_direccion = Direccion::select('id_direccion', 'direccion')->where('estado', 1)->get();
-        $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')->where('id_direccion', $get_id->id_direccion)->where('estado', 1)->get();
-        return view('rrhh.administracion.colaborador.sub_gerencia.modal_editar', compact('get_id', 'list_direccion', 'list_gerencia'));
+        $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')
+                        ->where('id_direccion', $get_id->id_direccion)->where('estado', 1)->get();
+        return view('rrhh.administracion.colaborador.sub_gerencia.modal_editar', compact(
+            'get_id',
+            'list_direccion',
+            'list_gerencia'
+        ));
     }
 
     public function update_sg(Request $request, $id)
@@ -325,13 +334,12 @@ class ColaboradorConfController extends Controller
             'nom_sub_gerenciae.required' => 'Debe ingresar descripción.',
         ]);
 
-        $valida = SubGerencia::where('id_direccion', $request->id_direccione)->where('id_gerencia', $request->id_gerenciae)
-            ->where('nom_sub_gerencia', $request->nom_sub_gerenciae)->where('estado', 1)->where('id_sub_gerencia', '!=', $id)->exists();
+        $valida = SubGerencia::where('id_gerencia', $request->id_gerenciae)
+                ->where('nom_sub_gerencia', $request->nom_sub_gerenciae)->where('estado', 1)->where('id_sub_gerencia', '!=', $id)->exists();
         if ($valida) {
             echo "error";
         } else {
             SubGerencia::findOrFail($id)->update([
-                'id_direccion' => $request->id_direccione,
                 'id_gerencia' => $request->id_gerenciae,
                 'nom_sub_gerencia' => $request->nom_sub_gerenciae,
                 'fec_act' => now(),
