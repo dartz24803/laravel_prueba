@@ -736,7 +736,8 @@ class ColaboradorController extends Controller
         $dato['get_historico'] = UsersHistoricoCentroLabores::where('id_usuario', $id_usuario)
                                 ->where('estado', 1)
                                 ->orderBy('fec_reg', 'DESC')
-                                ->first();
+                                ->limit(1)
+                                ->get();
         /*$dato['list_base'] = Base::select('cod_base')
                             ->where('estado', 1)
                             ->GroupBy('cod_base')

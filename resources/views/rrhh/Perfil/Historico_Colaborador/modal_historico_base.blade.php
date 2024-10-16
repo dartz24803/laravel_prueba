@@ -14,9 +14,9 @@
                     <select class="form-control" name="cod_base_hb" id="cod_base_hb" onchange="Limpiar_Fechas_Historico_Base()">
                         <option value="0">Seleccionar</option>
                         @foreach ($list_ubicacion as $list)
-                            <option value="{{ $list->id_ubicacion }}"
-                            @if (isset($get_historico[0]) && $get_historico[0]['centro_labores'] == $list->id_ubicacion) selected @endif>
-                                {{ $list->cod_ubi }}
+                            <option value="{{ $list['id_ubicacion'] }}"
+                            @php if(count($get_historico)>0 && $get_historico[0]['id_ubicacion'] == $list['id_ubicacion']){ echo "selected"; } @endphp>
+                                {{ $list['cod_ubi'] }}
                             </option>
                         @endforeach
                     </select>
