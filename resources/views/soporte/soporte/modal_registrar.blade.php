@@ -72,7 +72,6 @@
             <div class="form-group col-lg-4">
                 <select class="form-control" id="especialidad" name="especialidad">
                     <option value="0">Seleccione</option>
-                    <option value="otros">Otros</option>
                     @foreach ($list_especialidad as $list)
                     <option value="{{ $list->id }}">{{ $list->nombre }}</option>
                     @endforeach
@@ -85,9 +84,7 @@
             <div class="form-group col-lg-4" id="elemento-container">
                 <select class="form-control" id="elemento" name="elemento">
                     <option value="0">Seleccione</option>
-                    @foreach ($list_elemento as $list)
-                    <option value="{{ $list->idsoporte_elemento }}">{{ $list->nombre }}</option>
-                    @endforeach
+
                 </select>
             </div>
             <div class="form-group col-lg-1" id="elemento-area" style="display: none;">
@@ -101,7 +98,6 @@
                     @endforeach
                 </select>
             </div>
-
         </div>
 
 
@@ -113,9 +109,8 @@
             <div class="form-group col-lg-10" id="asunto-container">
                 <select class="form-control" id="asunto" name="asunto">
                     <option value="0">Seleccione</option>
-                    @foreach ($list_asunto as $list)
-                    <option value="{{ $list->idsoporte_asunto }}">{{ $list->nombre }}</option>
-                    @endforeach
+                    <option value="9">Otros</option>
+
                 </select>
             </div>
         </div>
@@ -129,9 +124,8 @@
                         <label class="control-label text-bold">Ubicación:</label>
                     </div>
 
-                    <!-- Primer select "Sede" -->
                     <div class="form-group col-lg-4">
-                        <select class="form-control" id="sede">
+                        <select class="form-control" id="sede" name="sede">
                             <option value="0">Seleccione</option>
                             @foreach ($list_sede as $sede)
                             <option value="{{ $sede->id }}">{{ $sede->descripcion }}</option>
@@ -140,7 +134,7 @@
                     </div>
 
                     <div class="form-group col-lg-6" id="sublist-container">
-                        <select class="form-control" id="sub-sede">
+                        <select class="form-control" id="idsoporte_ubicacion" name="idsoporte_ubicacion">
                             <option value="0">Seleccione Ubicación</option>
                         </select>
                     </div>
@@ -152,7 +146,7 @@
                 <div class="row">
                     <!-- Tercer select (Thirdlist-container), siempre presente pero con visibilidad controlada -->
                     <div class="form-group col-lg-4 offset-lg-2" id="thirdlist-container" style="visibility: hidden;">
-                        <select class="form-control" id="third-sede">
+                        <select class="form-control" id="idsoporte_ubicacion2" name="idsoporte_ubicacion2">
                             <option value="0">Seleccione SubUbicación</option>
                         </select>
                     </div>
@@ -168,7 +162,7 @@
 
                     <!-- Input de fecha (Vencimiento) -->
                     <div class="form-group col-lg-4">
-                        <input type="date" class="form-control" name="fecha" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
+                        <input type="date" class="form-control" id="vencimiento" name="vencimiento" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
                     </div>
                 </div>
             </div>
@@ -179,54 +173,19 @@
                 <label class="control-label text-bold">Descripción:</label>
             </div>
             <div class="form-group col-lg-10">
-                <textarea class="form-control" name="descripcion" id="descripcion" rows="3" placeholder="Ingresar descripción"></textarea>
+                <textarea class="form-control" id="descripcion" name="descripcion" rows="3" placeholder="Ingresar descripción"></textarea>
             </div>
         </div>
     </div>
 
     <div class="modal-footer">
         @csrf
-        <button class="btn btn-primary" type="button" onclick="Insert_Error_Picking();">Guardar</button>
+        <button class="btn btn-primary" type="button" onclick="Insert_Registro_Soporte();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
-    function Insert_Error_Picking() {
-        Cargando();
-
-        var dataString = new FormData(document.getElementById('formulario_insert'));
-        var url = "{{ route('errorespicking.store') }}";
-
-        $.ajax({
-            url: url,
-            data: dataString,
-            type: "POST",
-            processData: false,
-            contentType: false,
-            success: function(data) {
-                swal.fire(
-                    'Registro Exitoso!',
-                    'Haga clic en el botón!',
-                    'success'
-                ).then(function() {
-                    Lista_ErroresPicking();
-                    $("#ModalRegistro .close").click();
-                });
-            },
-            error: function(xhr) {
-                var errors = xhr.responseJSON.errors;
-                var firstError = Object.values(errors)[0][0];
-                Swal.fire(
-                    '¡Ups!',
-                    firstError,
-                    'warning'
-                );
-            }
-        });
-
-    }
-
     const especialidadSelect = document.getElementById('especialidad');
     const elementoSelect = document.getElementById('elemento');
     const elementCont = document.getElementById('elemento-cont');
@@ -239,34 +198,28 @@
 
 
     especialidadSelect.addEventListener('change', function() {
-        if (this.value === 'otros') {
-            // Ocultar selects de elemento y asunto y eliminar su espacio
+
+        if (this.value === '4') {
             elementoContainer.style.display = 'none';
             elementCont.style.display = 'none';
             asuntoCont.style.display = 'none';
             asuntoContainer.style.display = 'none';
-            // Mostrar select de área y asegurarse de que su espacio sea visible
             areaRow.style.display = 'block';
             areaElementoRow.style.display = 'block';
         } else {
-            // Mostrar selects de elemento y asunto y asegurarse de que ocupen espacio
             elementoContainer.style.display = 'block';
             elementCont.style.display = 'block';
             asuntoCont.style.display = 'block';
             asuntoContainer.style.display = 'block';
-            // Ocultar select de área y eliminar su espacio
             areaRow.style.display = 'none';
             areaElementoRow.style.display = 'none';
         }
     });
 
 
-
-
-
     const sedeSelect = document.getElementById('sede');
-    const subSedeSelect = document.getElementById('sub-sede');
-    const thirdSedeSelect = document.getElementById('third-sede');
+    const subSedeSelect = document.getElementById('idsoporte_ubicacion');
+    const thirdSedeSelect = document.getElementById('idsoporte_ubicacion2');
     const sublistContainer = document.getElementById('sublist-container');
     const thirdContainer = document.getElementById('thirdlist-container');
     const subUbicacionCont = document.getElementById('sububicacion-container');
@@ -300,16 +253,16 @@
                 sedes: selectedSede
             },
             success: function(response) {
-                $('#sub-sede').empty().append('<option value="0">Seleccione Ubicación</option>');
+                $('#idsoporte_ubicacion').empty().append('<option value="0">Seleccione Ubicación</option>');
                 console.log(response)
                 // Verificar si hay respuestas
                 if (response.length > 0) {
                     $.each(response, function(index, sede) {
-                        $('#sub-sede').append(
+                        $('#idsoporte_ubicacion').append(
                             `<option value="${sede.idsoporte_ubicacion1}">${sede.nombre}</option>`
                         );
                     });
-                    $('#sublist-container').show(); // Mostrar el contenedor de sub-sede
+                    $('#sublist-container').show(); // Mostrar el contenedor de idsoporte_ubicacion
                 } else {
                     $('#sublist-container').hide(); // Ocultar si no hay ubicaciones
                 }
@@ -320,8 +273,8 @@
         });
     });
 
-    $('#sub-sede').on('change', function() {
-        const selectedubicacion1 = $(this).val(); // Obtenemos el valor de la sede seleccionada
+    $('#idsoporte_ubicacion').on('change', function() {
+        const selectedubicacion1 = $(this).val();
         var url = "{{ route('soporte_ubicacion2_por_ubicacion1') }}";
         $.ajax({
             url: url,
@@ -330,12 +283,12 @@
                 ubicacion1: selectedubicacion1
             },
             success: function(response) {
-                $('#third-sede').empty().append('<option value="0">Seleccione SubUbicación</option>');
+                $('#idsoporte_ubicacion2').empty().append('<option value="0">Seleccione SubUbicación</option>');
                 // Verificar si hay respuestas
                 if (response.length > 0) {
-                    $('#third-sede').empty().append('<option value="0">Seleccione SubUbicación</option>');
+                    $('#idsoporte_ubicacion2').empty().append('<option value="0">Seleccione SubUbicación</option>');
                     $.each(response, function(index, ubicacion) {
-                        $('#third-sede').append(`<option value="${ubicacion.idsoporte_ubicacion2}">${ubicacion.nombre}</option>`);
+                        $('#idsoporte_ubicacion2').append(`<option value="${ubicacion.idsoporte_ubicacion2}">${ubicacion.nombre}</option>`);
                     });
                     $('#thirdlist-container').css('visibility', 'visible');
                     subUbicacionCont.style.display = 'block';
@@ -352,4 +305,103 @@
             }
         });
     });
+
+    $('#especialidad').on('change', function() {
+        const selectedEspecialidad = $(this).val();
+        var url = "{{ route('elemento_por_especialidad') }}";
+        $.ajax({
+            url: url,
+            method: 'GET',
+            data: {
+                especialidad: selectedEspecialidad
+            },
+            success: function(response) {
+                $('#elemento').empty().append('<option value="0">Seleccione</option>');
+                if (response.length > 0) {
+                    $.each(response, function(index, elementos) {
+                        $('#elemento').append(
+                            `<option value="${elementos.idsoporte_elemento}">${elementos.nombre}</option>`
+                        );
+
+                        if (selectedEspecialidad == 4) {
+                            setTimeout(function() {
+                                if ($('#elemento option[value="6"]').length > 0) {
+                                    $('#elemento').val(6);
+                                }
+                                if ($('#asunto option[value="9"]').length > 0) {
+                                    $('#asunto').val(9);
+                                }
+                            }, 100);
+                        }
+                    });
+                }
+            },
+            error: function(xhr) {
+                console.error('Error al obtener elementos:', xhr);
+            }
+        });
+    });
+
+    $('#elemento').on('change', function() {
+        const selectedElemento = $(this).val();
+        var url = "{{ route('asunto_por_elemento') }}";
+        $.ajax({
+            url: url,
+            method: 'GET',
+            data: {
+                elemento: selectedElemento
+            },
+            success: function(response) {
+                $('#asunto').empty().append('<option value="0">Seleccione</option>');
+                console.log(response)
+                // Verificar si hay respuestas
+                if (response.length > 0) {
+                    $.each(response, function(index, asuntos) {
+                        $('#asunto').append(
+                            `<option value="${asuntos.idsoporte_asunto}">${asuntos.nombre}</option>`
+                        );
+                    });
+
+                } else {}
+            },
+            error: function(xhr) {
+                console.error('Error al obtener elementos:', xhr);
+            }
+        });
+    });
+
+    function Insert_Registro_Soporte() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_insert'));
+        var url = "{{ route('soporte_ticket.store') }}";
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                swal.fire(
+                    'Registro Exitoso!',
+                    'Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                    Lista_Tickets_Soporte();
+                    $("#ModalRegistro .close").click();
+                });
+            },
+            error: function(xhr) {
+                var errors = xhr.responseJSON.errors;
+                var firstError = Object.values(errors)[0][0];
+                Swal.fire(
+                    '¡Ups!',
+                    firstError,
+                    'warning'
+                );
+            }
+        });
+
+    }
 </script>

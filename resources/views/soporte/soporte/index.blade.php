@@ -1,7 +1,5 @@
 @extends('layouts.plantilla')
-
 @section('navbar')
-@include('logistica.navbar')
 @endsection
 
 @section('content')
@@ -9,7 +7,7 @@
     <div class="layout-px-spacing">
         <div class="page-header">
             <div class="page-title">
-                <h3>Soporte
+                <h3>Registro de Soporte
                 </h3>
             </div>
         </div>
@@ -25,7 +23,7 @@
                                 <line x1="12" y1="8" x2="12" y2="16"></line>
                                 <line x1="8" y1="12" x2="16" y2="12"></line>
                             </svg>
-                            Registrar
+                            Nueva Tarea
                         </button>
                     </div>
                     @csrf
@@ -44,6 +42,8 @@
 
         Lista_Tickets_Soporte();
     });
+
+
 
     function Lista_Tickets_Soporte() {
         Cargando();

@@ -388,7 +388,7 @@ Route::controller(SoporteController::class)->group(function () {
     Route::get('soporte_ticket/list', 'list_tick')->name('soporte_ticket.list');
     Route::get('soporte_ticket/create', 'create_tick')->name('soporte_ticket.create');
     Route::get('soporte_ticket/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_tick')->name('soporte_ticket.excel');
-    Route::get('soporte_ticket/store', 'store_tick')->name('soporte_ticket.store');
+    Route::post('soporte_ticket/store', 'store_tick')->name('soporte_ticket.store');
     Route::get('soporte_ticket/{id}/image', 'image_tick')->name('soporte_ticket.image');
     Route::delete('soporte_ticket/{id}', 'destroy_tick')->name('soporte_ticket.destroy');
     Route::post('soporte_ticket/{id}', 'approve_tick')->name('soporte_ticket.approve');
@@ -398,6 +398,8 @@ Route::controller(SoporteController::class)->group(function () {
 
     Route::get('soporte_ubicacion_por_sede', 'getSoporteUbicacionPorSede')->name('soporte_ubicacion_por_sede');
     Route::get('soporte_ubicacion2_por_ubicacion1', 'getUbicacion2PorUbicacion1')->name('soporte_ubicacion2_por_ubicacion1');
+    Route::get('elemento_por_especialidad', 'getElementoPorEspecialidad')->name('elemento_por_especialidad');
+    Route::get('asunto_por_elemento', 'getAsuntoPorElemento')->name('asunto_por_elemento');
 });
 
 
