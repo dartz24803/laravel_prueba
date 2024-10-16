@@ -23,6 +23,18 @@
             <div class="tab-pane fade show active" id="datos_moe" role="tabpanel" aria-labelledby="datos_mo-tabe">
                 <div class="row mt-4">
                     <div class="form-group col-lg-2">
+                        <label>Tipo de movimiento:</label>
+                    </div>
+                    <div class="form-group col-lg-5">
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input type="radio" id="tipo_movimientoe" name="tipo_movimientoe" class="custom-control-input" value="2" checked>
+                            <label class="custom-control-label" for="tipo_movimientoe">Salida</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-lg-2">
                         <label>Ubicación:</label>
                     </div>
                     <div class="form-group col-lg-4">
@@ -91,18 +103,6 @@
                                 </option>
                             @endforeach
                         </select>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-lg-2">
-                        <label>Tipo de movimiento:</label>
-                    </div>
-                    <div class="form-group col-lg-5">
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="tipo_movimientoe" name="tipo_movimientoe" class="custom-control-input" value="2" checked>
-                            <label class="custom-control-label" for="tipo_movimientoe">Salida</label>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -197,8 +197,12 @@
                     <div class="form-group col-lg-4">
                         <select class="form-control" name="transportee" id="transportee">
                             <option value="0">Seleccione</option>
-                            <option value="1">BUS</option>
-                            <option value="2">TAXI</option>
+                            <option value="1">A PIE</option>
+                            <option value="2">BUS</option>
+                            <option value="3">COLECTIVO</option>
+                            <option value="4">METRO</option>
+                            <option value="5">TAXI</option>
+                            <option value="6">TREN</option>
                         </select>
                     </div>
                 </div>

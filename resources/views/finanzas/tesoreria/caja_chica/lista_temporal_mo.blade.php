@@ -16,7 +16,7 @@
                 <td>{{ $list->personas }}</td>
                 <td class="text-left">{{ $list->punto_salida }}</td>
                 <td class="text-left">{{ $list->punto_llegada }}</td>
-                <td>{{ $list->transporte }}</td>
+                <td class="text-left">{{ $list->transporte }}</td>
                 <td class="text-left">{{ $list->motivo }}</td>
                 <td>{{ $list->costo }}</td>
                 <td>

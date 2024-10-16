@@ -150,32 +150,32 @@
 
                         <div class="row mr-1 ml-1 mt-3">
                             <div class="toggle-switch">
-                                <input class="toggle-input" id="toggle-sc" type="checkbox" checked>
+                                <input class="toggle-input" id="toggle-sc" type="checkbox">
                                 <label class="toggle-label" for="toggle-sc"></label>
                                 <span class="ml-5">Sub-Categoría</span>
                             </div>
                             <div class="toggle-switch">
-                                <input class="toggle-input" id="toggle-em" type="checkbox" checked>
+                                <input class="toggle-input" id="toggle-em" type="checkbox">
                                 <label class="toggle-label" for="toggle-em"></label>
                                 <span class="ml-5">Empresa</span>
                             </div>
                             <div class="toggle-switch">
-                                <input class="toggle-input" id="toggle-mo" type="checkbox" checked>
+                                <input class="toggle-input" id="toggle-mo" type="checkbox">
                                 <label class="toggle-label" for="toggle-mo"></label>
                                 <span class="ml-5">Movimiento</span>
                             </div>
                             <div class="toggle-switch">
-                                <input class="toggle-input" id="toggle-nc" type="checkbox" checked>
+                                <input class="toggle-input" id="toggle-nc" type="checkbox">
                                 <label class="toggle-label" for="toggle-nc"></label>
                                 <span class="ml-5">N° de comprobante</span>
                             </div>
                             <div class="toggle-switch">
-                                <input class="toggle-input" id="toggle-ru" type="checkbox" checked>
+                                <input class="toggle-input" id="toggle-ru" type="checkbox">
                                 <label class="toggle-label" for="toggle-ru"></label>
                                 <span class="ml-5">RUC</span>
                             </div>
                             <div class="toggle-switch">
-                                <input class="toggle-input" id="toggle-de" type="checkbox" checked>
+                                <input class="toggle-input" id="toggle-de" type="checkbox">
                                 <label class="toggle-label" for="toggle-de"></label>
                                 <span class="ml-5">Detalle</span>
                             </div>
@@ -320,6 +320,16 @@
                 $('#proveedores_mo-tab'+v).html('Cliente');
             }else{
                 $('#proveedores_mo-tab'+v).html('Proveedor');
+            }
+        }
+
+        function Cambiar_Nombre_Comprobante(v){
+            var id_tipo_comprobante = $('#id_tipo_comprobante'+v).val();
+
+            if(id_tipo_comprobante=="6"){
+                $('#nombre_comprobante'+v).html('N° ticket:');
+            }else{
+                $('#nombre_comprobante'+v).html('N° comprobante:');
             }
         }
 

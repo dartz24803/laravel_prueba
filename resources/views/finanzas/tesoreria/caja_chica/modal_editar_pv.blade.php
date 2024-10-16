@@ -26,6 +26,26 @@
             <div class="tab-pane fade show active" id="datos_moe" role="tabpanel" aria-labelledby="datos_mo-tabe">
                 <div class="row mt-4">
                     <div class="form-group col-lg-2">
+                        <label>Tipo de movimiento:</label>
+                    </div>
+                    <div class="form-group col-lg-5">
+                        <div class="custom-control custom-radio custom-control-inline" style="display: none;">
+                            <input type="radio" id="tipo_movimiento_inge" name="tipo_movimientoe" 
+                            class="custom-control-input" value="1" onchange="Tipo_Movimiento('e');"
+                            @if ($get_id->tipo_movimiento=="1") checked @endif>
+                            <label class="custom-control-label" for="tipo_movimiento_inge">Ingreso</label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input type="radio" id="tipo_movimiento_sale" name="tipo_movimientoe" 
+                            class="custom-control-input" value="2" onchange="Tipo_Movimiento('e');"
+                            @if ($get_id->tipo_movimiento=="2") checked @endif>
+                            <label class="custom-control-label" for="tipo_movimiento_sale">Salida</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-lg-2">
                         <label>Ubicación:</label>
                     </div>
                     <div class="form-group col-lg-4">
@@ -104,26 +124,6 @@
                         </select>
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="form-group col-lg-2">
-                        <label>Tipo de movimiento:</label>
-                    </div>
-                    <div class="form-group col-lg-5">
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="tipo_movimiento_inge" name="tipo_movimientoe" 
-                            class="custom-control-input" value="1" onchange="Tipo_Movimiento('e');"
-                            @if ($get_id->tipo_movimiento=="1") checked @endif>
-                            <label class="custom-control-label" for="tipo_movimiento_inge">Ingreso</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="tipo_movimiento_sale" name="tipo_movimientoe" 
-                            class="custom-control-input" value="2" onchange="Tipo_Movimiento('e');"
-                            @if ($get_id->tipo_movimiento=="2") checked @endif>
-                            <label class="custom-control-label" for="tipo_movimiento_sale">Salida</label>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="tab-pane fade" id="documentos_moe" role="tabpanel" aria-labelledby="documentos_mo-tabe">
@@ -132,7 +132,7 @@
                         <label>T. comprobante:</label>
                     </div>
                     <div class="form-group col-lg-4">
-                        <select class="form-control" name="id_tipo_comprobantee" id="id_tipo_comprobantee">
+                        <select class="form-control" name="id_tipo_comprobantee" id="id_tipo_comprobantee" onchange="Cambiar_Nombre_Comprobante('e');">
                             <option value="0">Seleccione</option>
                             @foreach ($list_tipo_comprobante as $list)
                                 <option value="{{ $list->id }}"
@@ -144,7 +144,7 @@
                     </div>
         
                     <div class="form-group col-lg-2">
-                        <label>N° comprobante:</label>
+                        <label id="nombre_comprobantee">@if ($get_id->id_tipo_comprobante=="6") N° ticket: @else N° comprobante: @endif</label>
                     </div>
                     <div class="form-group col-lg-4">
                         <input type="text" class="form-control" name="n_comprobantee" id="n_comprobantee" 
