@@ -16,6 +16,8 @@ class Usuario extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'id_centro_labor',
+        'id_ubicacion',
         'usuario_apater',
         'usuario_amater',
         'usuario_nombres',

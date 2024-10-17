@@ -18,6 +18,7 @@ class UsersHistoricoCentroLabores extends Model
 
     protected $fillable = [
         'id_usuario',
+        'id_ubicacion',
         'centro_labores',
         'con_fec_fin',
         'fec_inicio',
@@ -32,9 +33,11 @@ class UsersHistoricoCentroLabores extends Model
     ];
     
     static function get_list_historico_base_colaborador($id_usuario){
-        $sql = "SELECT a.* FROM users_historico_centro_labores a WHERE a.estado=1 and a.id_usuario=$id_usuario 
-        order by a.fec_reg desc";
-        
+        $sql = "SELECT uc.*,ub.cod_ubi AS centro_labores
+                FROM users_historico_centro_labores uc
+                LEFT JOIN ubicacion ub ON ub.id_ubicacion=uc.id_ubicacion
+                WHERE uc.estado=1 AND uc.id_usuario=$id_usuario 
+                ORDER BY uc.fec_reg DESC";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }

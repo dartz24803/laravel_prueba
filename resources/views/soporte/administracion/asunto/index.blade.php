@@ -13,9 +13,14 @@
                         <div class="widget-content widget-content-area simple-tab">
                             <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                                 <li class="nav-item">
-                                    <a id="a_capac" class="nav-link" style="cursor: pointer;">Tema Capacitaciones</a>
+                                    <a id="especialidad" class="nav-link" style="cursor: pointer;">Especialidad</a>
                                 </li>
-
+                                <li class="nav-item">
+                                    <a id="elemento" class="nav-link" style="cursor: pointer;">Elemento</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a id="asunto" class="nav-link" style="cursor: pointer;">Asunto</a>
+                                </li>
                             </ul>
 
                             <div class="row" id="cancel-row">
@@ -34,8 +39,8 @@
     <script>
         $(document).ready(function() {
 
-            $("#procesoconf").addClass('active');
-            $("#hprocesosconf").attr('aria-expanded', 'true');
+            $("#soporteconf").addClass('active');
+            $("#hsoporteconf").attr('aria-expanded', 'true');
 
             TipoIndicador();
         });
@@ -50,7 +55,10 @@
                 type: "GET",
                 success: function(resp) {
                     $('#div_reporte_tipoind_conf').html(resp);
-                    $("#a_capac").addClass('active');
+                    $("#especialidad").addClass('active');
+                    $("#especialidad").removeClass('active');
+                    $("#especialidad").removeClass('active');
+
                 }
             });
         }

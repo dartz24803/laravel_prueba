@@ -26,6 +26,24 @@
             <div class="tab-pane fade show active" id="datos_mo" role="tabpanel" aria-labelledby="datos_mo-tab">
                 <div class="row mt-4">
                     <div class="form-group col-lg-2">
+                        <label>Tipo de movimiento:</label>
+                    </div>
+                    <div class="form-group col-lg-5">
+                        <div class="custom-control custom-radio custom-control-inline" style="display: none;">
+                            <input type="radio" id="tipo_movimiento_ing" name="tipo_movimiento" 
+                            class="custom-control-input" value="1" onchange="Tipo_Movimiento('');">
+                            <label class="custom-control-label" for="tipo_movimiento_ing">Ingreso</label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input type="radio" id="tipo_movimiento_sal" name="tipo_movimiento" 
+                            class="custom-control-input" value="2" onchange="Tipo_Movimiento('');" checked>
+                            <label class="custom-control-label" for="tipo_movimiento_sal">Salida</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-lg-2">
                         <label>Ubicación:</label>
                     </div>
                     <div class="form-group col-lg-4">
@@ -83,24 +101,6 @@
                         </select>
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="form-group col-lg-2">
-                        <label>Tipo de movimiento:</label>
-                    </div>
-                    <div class="form-group col-lg-5">
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="tipo_movimiento_ing" name="tipo_movimiento" 
-                            class="custom-control-input" value="1" onchange="Tipo_Movimiento('');">
-                            <label class="custom-control-label" for="tipo_movimiento_ing">Ingreso</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" id="tipo_movimiento_sal" name="tipo_movimiento" 
-                            class="custom-control-input" value="2" onchange="Tipo_Movimiento('');" checked>
-                            <label class="custom-control-label" for="tipo_movimiento_sal">Salida</label>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="tab-pane fade" id="documentos_mo" role="tabpanel" aria-labelledby="documentos_mo-tab">
@@ -109,7 +109,7 @@
                         <label>T. comprobante:</label>
                     </div>
                     <div class="form-group col-lg-4">
-                        <select class="form-control" name="id_tipo_comprobante" id="id_tipo_comprobante">
+                        <select class="form-control" name="id_tipo_comprobante" id="id_tipo_comprobante" onchange="Cambiar_Nombre_Comprobante('');">
                             <option value="0">Seleccione</option>
                             @foreach ($list_tipo_comprobante as $list)
                                 <option value="{{ $list->id }}">{{ $list->nom_tipo_comprobante }}</option>
@@ -118,7 +118,7 @@
                     </div>
         
                     <div class="form-group col-lg-2">
-                        <label>N° comprobante:</label>
+                        <label id="nombre_comprobante">N° comprobante:</label>
                     </div>
                     <div class="form-group col-lg-4">
                         <input type="text" class="form-control" name="n_comprobante" id="n_comprobante" 

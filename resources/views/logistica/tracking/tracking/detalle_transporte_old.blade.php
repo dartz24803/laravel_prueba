@@ -71,7 +71,41 @@
                                     <input type="text" class="form-control" name="caja" id="caja" 
                                     placeholder="Caja" onkeypress="return solo_Numeros(event);">
                                 </div>
+    
+                                <div class="form-group col-lg-1">
+                                    <label class="control-label text-bold">Transporte: </label>
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <select class="form-control" name="transporte" id="transporte" 
+                                    onchange="Tipo_Transporte();">
+                                        <option value="1" selected>Agencia - Terrestre</option>
+                                        <option value="2">Agencia - Aérea</option>
+                                        <option value="3">Propio</option>
+                                    </select>
+                                </div>
 
+                                <div class="form-group col-lg-1">
+                                    <label class="control-label text-bold">Tiempo llegada: </label>
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <input type="text" class="form-control" name="tiempo_llegada" 
+                                    id="tiempo_llegada" placeholder="Tiempo llegada" 
+                                    onkeypress="return solo_Numeros(event);">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-lg-1">
+                                    <label class="control-label text-bold">Recepción: </label>
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <select class="form-control" name="recepcion" id="recepcion">
+                                        <option value="0">Seleccione</option>
+                                        <option value="1">Agencia</option>
+                                        <option value="2">Domicilio</option>
+                                    </select>
+                                </div>
+    
                                 <div class="form-group col-lg-1">
                                     <label class="control-label text-bold">Merc. total: </label>
                                 </div>
@@ -86,6 +120,71 @@
                                 <div class="form-group col-lg-2">
                                     <input type="text" class="form-control" name="flete_prenda" id="flete_prenda" 
                                     placeholder="F x prenda" onkeypress="return solo_Numeros_Punto(event);">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-lg-1">
+                                    <label class="control-label text-bold">Receptor: </label>
+                                </div>
+                                <div class="form-group col-lg-5">
+                                    <input type="text" class="form-control" name="receptor" id="receptor" placeholder="Receptor">
+                                </div>
+                            </div>
+    
+                            <div class="row agencia">
+                                <div class="form-group col-lg-1">
+                                    <label class="control-label text-bold">Tipo pago: </label>
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <select class="form-control" name="tipo_pago" id="tipo_pago" 
+                                    onchange="Tipo_Pago();">
+                                        <option value="1">Si pago</option>
+                                        <option value="2" selected>Por pagar</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-lg-1">
+                                    <label class="control-label text-bold">Nombre de empresa: </label>
+                                </div>
+                                <div class="form-group col-lg-5">
+                                    <input type="text" class="form-control" name="nombre_transporte" 
+                                    id="nombre_transporte" placeholder="Nombre de empresa">
+                                </div>
+    
+                                <div class="form-group col-lg-1">
+                                    <label class="control-label text-bold">Importe a pagar: </label>
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <input type="text" class="form-control" name="importe_transporte" 
+                                    id="importe_transporte" placeholder="Importe a pagar" 
+                                    onkeypress="return solo_Numeros_Punto(event);">
+                                </div>
+                            </div>
+    
+                            <div class="row agencia pagado" style="display: none;">
+                                <div class="form-group col-lg-1">
+                                    <label class="control-label text-bold">N° Factura: </label>
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <input type="text" class="form-control" name="factura_transporte" 
+                                    id="factura_transporte" placeholder="N° Factura">
+                                </div>
+
+                                <div class="form-group col-lg-2">
+                                    <label class="control-label text-bold">PDF de factura (pago adelantado): </label>
+                                </div>
+                                <div class="form-group ml-3 ml-lg-0 d-flex align-items-center">
+                                    <input type="file" class="form-control-file" 
+                                    name="archivo_transporte" id="archivo_transporte" 
+                                    onchange="Valida_Factura_Transporte();">
+                                    <a onclick="Limpiar_Ifile();" style="cursor: pointer" 
+                                    title="Borrar archivo seleccionado">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x text-danger">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </a>
                                 </div>
                             </div>
 

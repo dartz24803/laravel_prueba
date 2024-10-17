@@ -76,6 +76,7 @@ use App\Http\Controllers\ReporteProveedoresController;
 use App\Http\Controllers\RequisicionTiendaConfController;
 use App\Http\Controllers\RequisicionTiendaController;
 use App\Http\Controllers\SalidaInsumoController;
+use App\Http\Controllers\SoporteConfController;
 use App\Http\Controllers\SoporteController;
 use App\Http\Controllers\StockInfosapController;
 use App\Http\Controllers\TablaMaestraTesoreriaController;
@@ -140,6 +141,8 @@ Route::controller(TrackingController::class)->group(function () {
     Route::post('tracking/list', 'list')->name('tracking.list');
     Route::get('tracking/create', 'create')->name('tracking.create');
     Route::post('tracking', 'store')->name('tracking.store');
+    Route::get('tracking/detalle_transporte_inicial', 'detalle_transporte_inicial')->name('tracking.detalle_transporte_inicial');
+    Route::post('tracking/insert_detalle_transporte_inicial', 'insert_detalle_transporte_inicial')->name('tracking.insert_detalle_transporte_inicial');
     Route::get('tracking/{id}/detalle_transporte', 'detalle_transporte')->name('tracking.detalle_transporte');
     Route::post('tracking/{id}/insert_detalle_transporte', 'insert_detalle_transporte')->name('tracking.insert_detalle_transporte');
     Route::post('tracking/{id}/mercaderia_transito', 'insert_mercaderia_transito')->name('tracking.mercaderia_transito');
@@ -383,8 +386,7 @@ Route::controller(ProcesosController::class)->group(function () {
 
 //SOPORTE - ADMINISTRADOR
 Route::controller(SoporteController::class)->group(function () {
-    Route::get('soporte', 'index')->name('soporte');
-    Route::get('soporte_ticket', 'index_tick')->name('soporte_ticket');
+    Route::get('soporte', 'index')->name('soporte');;
     Route::get('soporte_ticket/list', 'list_tick')->name('soporte_ticket.list');
     Route::get('soporte_ticket/create', 'create_tick')->name('soporte_ticket.create');
     Route::get('soporte_ticket/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_tick')->name('soporte_ticket.excel');
@@ -394,14 +396,47 @@ Route::controller(SoporteController::class)->group(function () {
     Route::post('soporte_ticket/{id}', 'approve_tick')->name('soporte_ticket.approve');
     Route::get('soporte_ticket/{id}/edit', 'edit_tick')->name('soporte_ticket.edit');
 
-    Route::get('soporte_ticket_index/{id_area}/{id_subgerencia}', 'handleAreaP')->name('soporte_ticket_index');
-
     Route::get('soporte_ubicacion_por_sede', 'getSoporteUbicacionPorSede')->name('soporte_ubicacion_por_sede');
     Route::get('soporte_ubicacion2_por_ubicacion1', 'getUbicacion2PorUbicacion1')->name('soporte_ubicacion2_por_ubicacion1');
     Route::get('elemento_por_especialidad', 'getElementoPorEspecialidad')->name('elemento_por_especialidad');
     Route::get('asunto_por_elemento', 'getAsuntoPorElemento')->name('asunto_por_elemento');
+
+
+    // SOPORTE MASTER
+    Route::get('soporte_master', 'index_master')->name('soporte_master');
 });
 
+// ADMINISTRABLES - TICKETS SOPORTE
+
+Route::controller(SoporteConfController::class)->group(function () {
+
+    Route::get('soporteticket_conf', 'indexsop_conf')->name('soporteticket_conf');
+    Route::get('soporte_asunto_conf', 'index_asu_conf')->name('soporte_asunto_conf');
+    Route::get('soporte_elemento_conf', 'index_ele_conf')->name('soporte_elemento_conf');
+    Route::get('soporte_especialidad_conf', 'index_esp_conf')->name('soporte_especialidad_conf');
+
+    // ADMINISTRABLE ASUNTO
+    Route::get('soporte_asunto_conf/list', 'list_asunto_conf')->name('soporte_asunto_conf.list');
+    Route::get('soporte_asunto_conf/{id}/edit', 'edit_asuntfo_conf')->name('soporte_asunto_conf.edit');
+    Route::post('soporte_asunto_conf/delete/{id}', 'destroy_asunto_conf')->name('soporte_asunto_conf.destroy');
+    Route::post('soporte_asunto_conf/{id}', 'update_asunto_conf')->name('soporte_asunto_conf.update');
+    Route::get('soporte_asunto_conf/create', 'create_asunto_conf')->name('soporte_asunto_conf.create');
+    Route::post('soporte_asunto_conf', 'store_asunto_conf')->name('soporte_asunto_conf.store');
+    // ADMINISTRABLE ELEMENTO
+    Route::get('soporte_elemento_conf/list', 'list_elemento_conf')->name('soporte_elemento_conf.list');
+    Route::get('soporte_elemento_conf/{id}/edit', 'edit_elemento_conf')->name('soporte_elemento_conf.edit');
+    Route::post('soporte_elemento_conf/delete/{id}', 'destroy_elemento_conf')->name('soporte_elemento_conf.destroy');
+    Route::post('soporte_elemento_conf/{id}', 'update_elemento_conf')->name('soporte_elemento_conf.update');
+    Route::get('soporte_elemento_conf/create', 'create_elemento_conf')->name('soporte_elemento_conf.create');
+    Route::post('soporte_elemento_conf', 'store_elemento_conf')->name('soporte_elemento_conf.store');
+    // ADMINISTRABLE ESPECIALIDAD
+    Route::get('soporte_especialidad_conf/list', 'list_especialidad_conf')->name('soporte_especialidad_conf.list');
+    Route::get('soporte_especialidad_conf/{id}/edit', 'edit_especialidad_conf')->name('soporte_especialidad_conf.edit');
+    Route::post('soporte_especialidad_conf/{id}/destroy', 'destroy_especialidad_conf')->name('soporte_especialidad_conf.destroy');
+    // Route::post('soporte_especialidad_conf/{id}', 'update_especialidad_conf')->name('soporte_especialidad_conf.update');
+    Route::get('soporte_especialidad_conf/create', 'create_especialidad_conf')->name('soporte_especialidad_conf.create');
+    Route::post('soporte_especialidad_conf', 'store_especialidad_conf')->name('soporte_especialidad_conf.store');
+});
 
 
 //BI REPORTES -

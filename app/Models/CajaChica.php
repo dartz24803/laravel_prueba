@@ -15,6 +15,7 @@ class CajaChica extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'tipo',
         'tipo_movimiento',
         'id_ubicacion',
         'id_categoria',
