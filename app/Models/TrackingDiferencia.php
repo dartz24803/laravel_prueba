@@ -20,6 +20,7 @@ class TrackingDiferencia extends Model
         'color_talla',
         'bulto',
         'enviado',
-        'recibido'
+        'recibido',
+        'observacion'
     ];
 }

@@ -75,11 +75,11 @@ class Entrenamiento extends Model
                     LIMIT 1) IS NOT NULL THEN 'Pendiente de revisión' ELSE '' END) AS nom_evaluacion,
                     CASE WHEN (SELECT COUNT(1) FROM examen_entrenamiento ee
                     WHERE ee.id_entrenamiento=en.id AND ee.estado=1)=2 THEN 1
-                    ELSE (SELECT CASE WHEN ee.nota>=14 OR ee.fecha_revision IS NULL THEN 1 ELSE 0 END 
+                    ELSE IFNULL((SELECT CASE WHEN ee.nota>=14 OR ee.fecha_revision IS NULL THEN 1 ELSE 0 END 
                     FROM examen_entrenamiento ee
                     WHERE ee.id_entrenamiento=en.id AND ee.estado=1
                     ORDER BY ee.id DESC
-                    LIMIT 1) END AS examen_asignado,
+                    LIMIT 1),0) END AS examen_asignado,
                     CASE WHEN (SELECT COUNT(1) FROM pregunta pr 
                     WHERE pr.id_puesto=sp.id_puesto_aspirado AND pr.id_tipo=1 AND pr.estado=1)>=15 AND 
                     (SELECT COUNT(1) FROM pregunta pr 
@@ -109,7 +109,7 @@ class Entrenamiento extends Model
                 FROM examen_entrenamiento ee
                 WHERE ee.id_entrenamiento=en.id AND ee.estado=1
                 ORDER BY ee.id DESC
-                LIMIT 1),1) END AS examen_asignado,
+                LIMIT 1),0) END AS examen_asignado,
                 CASE WHEN (SELECT COUNT(1) FROM pregunta pr 
                 WHERE pr.id_puesto=sp.id_puesto_aspirado AND pr.id_tipo=1 AND pr.estado=1)>=15 AND 
                 (SELECT COUNT(1) FROM pregunta pr 

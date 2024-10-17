@@ -41,4 +41,18 @@ class PermisoPapeletasSalida extends Model
         // Convertir el resultado a un array
         return json_decode(json_encode($result), true);
     }
+
+    public function permiso_pps_puestos_gest_dinamico(){
+        $id_puesto = session('usuario')->id_puesto;
+        $sql = "SELECT pps.id_puesto_permitido
+            FROM permiso_papeletas_salida pps
+            LEFT JOIN puesto p on p.id_puesto=pps.id_puesto_permitido 
+            WHERE pps.estado='1' and id_puesto_jefe=$id_puesto";
+        
+        
+        $result = DB::select($sql);
+
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
+    }
 }

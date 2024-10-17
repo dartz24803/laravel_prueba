@@ -117,11 +117,13 @@ class Tracking extends Model
             $query = DB::select($sql);
             return $query;
         }else{
+            $semana = date('W');
             $parte = "";
             if(substr(session('usuario')->centro_labores,0,1)=="B"){
                 $parte = "bh.cod_base='".session('usuario')->centro_labores."' AND";
             }
-            $sql = "SELECT tr.id,tr.n_requerimiento,bd.cod_base AS desde,bh.cod_base AS hacia,tp.descripcion AS proceso,
+            $sql = "SELECT tr.id,tr.n_requerimiento,bd.cod_base AS desde,bh.cod_base AS hacia,
+                    tp.descripcion AS proceso,
                     CONCAT(CASE WHEN DAYNAME(de.fecha)='Monday' THEN 'Lun'
                     WHEN DAYNAME(de.fecha)='Tuesday' THEN 'Mar'
                     WHEN DAYNAME(de.fecha)='Wednesday' THEN 'Mie'
@@ -131,12 +133,16 @@ class Tracking extends Model
                     WHEN DAYNAME(de.fecha)='Sunday' THEN 'Dom' ELSE '' END,' ',
                     DATE_FORMAT(de.fecha,'%d-%m-%Y')) AS fecha,DATE_FORMAT(de.fecha,'%H:%i') AS hora,
                     CASE WHEN tr.devolucion=1 AND de.id_estado IN (14,15,16) 
-                    THEN CONCAT(te.descripcion,' (PENDIENTE DEVOLUCIÓN)') ELSE te.descripcion END AS estado,
+                    THEN CONCAT(te.descripcion,' (PENDIENTE DEVOLUCIÓN)') 
+                    ELSE te.descripcion END AS estado,
                     de.id_estado,te.id_proceso,te.descripcion,
                     (SELECT COUNT(1) FROM tracking_diferencia tdif
                     WHERE tdif.id_tracking=tr.id AND tdif.enviado<tdif.recibido) AS sobrantes,
                     (SELECT COUNT(1) FROM tracking_diferencia tdif
-                    WHERE tdif.id_tracking=tr.id AND tdif.enviado>tdif.recibido) AS faltantes,tr.transporte
+                    WHERE tdif.id_tracking=tr.id AND tdif.enviado>tdif.recibido) AS faltantes,
+                    tr.transporte,(SELECT COUNT(1) FROM tracking_transporte tt
+                    WHERE tt.id_base=tr.id_origen_hacia AND 
+                    tt.semana='$semana') AS transporte_inicial
                     FROM tracking tr
                     LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base

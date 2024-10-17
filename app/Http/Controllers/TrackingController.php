@@ -28,6 +28,7 @@ use App\Models\TrackingToken;
 use Google\Client as GoogleClient;
 use Illuminate\Support\Facades\DB;
 use App\Models\TrackingEstado;
+use App\Models\TrackingTransporte;
 use Mpdf\Mpdf;
 
 class TrackingController extends Controller
@@ -161,7 +162,7 @@ class TrackingController extends Controller
 
     public function iniciar_tracking()
     {
-        TrackingTemporal::truncate();
+        /*TrackingTemporal::truncate();
         $list_tracking = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['T']);
         foreach($list_tracking as $list){
             if($list->id_origen_hacia=="4" || $list->id_origen_hacia=="6"){
@@ -328,7 +329,7 @@ class TrackingController extends Controller
                 'iniciar' => 1,
                 'fec_act' => now()
             ]);
-        }
+        }*/
     }
 
     public function llegada_tienda()
@@ -471,7 +472,6 @@ class TrackingController extends Controller
             $this->insert_notificacion($dato);
 
             //MENSAJE 1
-            //$list_detalle = TrackingGuiaRemisionDetalle::where('n_guia_remision', $request->n_requerimiento)->get();
             $list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$get_id->n_requerimiento]);
 
             $mpdf = new Mpdf([
@@ -578,6 +578,108 @@ class TrackingController extends Controller
     }
     //END FORMA MANUAL
 
+    public function detalle_transporte_inicial()
+    {
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(7);
+        $list_base = Base::get_list_bases_tienda();
+        return view('logistica.tracking.tracking.detalle_transporte_inicial', compact(
+            'list_notificacion',
+            'list_subgerencia',
+            'list_base'
+        ));
+    }
+
+    public function insert_detalle_transporte_inicial(Request $request)
+    {
+        $request->validate([
+            'id_base' => 'gt:0',
+            'tiempo_llegada' => 'required',
+            'recepcion' => 'gt:0',
+            'receptor' => 'required',
+            'nombre_transporte' => 'required_if:transporte,1,2',
+            'importe_transporte' => 'required_if:transporte,1,2',
+            'factura_transporte' => 'required_if:tipo_pago,1',
+            'archivo_transporte' => 'required_if:tipo_pago,1',
+        ],[
+            'id_base.gt' => 'Debe seleccionar base.',
+            'guia_transporte.required' => 'Debe ingresar nro. gr transporte.',
+            'peso.required' => 'Debe ingresar peso.',
+            'required_without_all' => 'Debe ingresar paquetes o sobres o fardos o caja.',
+            'tiempo_llegada.required' => 'Debe ingresar tiempo de llegada',
+            'recepcion.gt' => 'Debe seleccionar recepción.',
+            'receptor.required' => 'Debe ingresar receptor.',
+            'nombre_transporte.required_if' => 'Debe ingresar nombre de empresa.',
+            'importe_transporte.required_if' => 'Debe ingresar importe a pagar.',
+            'factura_transporte.required_if' => 'Debe ingresar n° factura.',
+            'archivo_transporte.required_if' => 'Debe ingresar PDF de factura.'
+        ]);
+
+        $errors = [];
+        if (($request->transporte=="1" || $request->transporte=="2") && $request->importe_transporte=="0") {
+            $errors['importe_transporte'] = ['Debe ingresar importe a pagar mayor a 0.'];
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
+        $valida = TrackingTransporte::where('id_base',$request->id_base)->where('semana',date('W'))
+                ->exists();
+        if($valida){
+            echo "error";
+        }else{
+            if($request->transporte=="3"){
+                $tipo_pago = 0;
+            }else{
+                $tipo_pago = $request->tipo_pago;
+            }
+
+            $archivo = "";
+            if($_FILES["archivo_transporte"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    $path = $_FILES["archivo_transporte"]["name"];
+                    $source_file = $_FILES['archivo_transporte']['tmp_name'];
+
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $nombre_soli = "Factura_".$request->id_base."_".date('YmdHis');
+                    $nombre = $nombre_soli.".".strtolower($ext);
+
+                    ftp_pasv($con_id,true);
+                    $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
+                    if($subio){
+                        $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
+                    }else{
+                        echo "Archivo no subido correctamente";
+                    }
+                }else{
+                    echo "No se conecto";
+                }
+            }
+
+            TrackingTransporte::create([
+                'id_base' => $request->id_base,
+                'semana' => date('W'),
+                'transporte' => $request->transporte,
+                'tiempo_llegada' => $request->tiempo_llegada,
+                'recepcion' => $request->recepcion,
+                'receptor' => $request->receptor,
+                'tipo_pago' => $tipo_pago,
+                'nombre_transporte' => $request->nombre_transporte,
+                'importe_transporte' => $request->importe_transporte,
+                'factura_transporte' => $request->factura_transporte,
+                'archivo_transporte' => $archivo,
+                'fecha' => now(),
+                'usuario' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
     public function detalle_transporte($id)
     {
         //NOTIFICACIONES
@@ -587,7 +689,7 @@ class TrackingController extends Controller
         return view('logistica.tracking.tracking.detalle_transporte', compact('list_notificacion','list_subgerencia','get_id'));
     }
 
-    public function insert_detalle_transporte(Request $request,$id)
+    /*public function insert_detalle_transporte(Request $request,$id)
     {
         $request->validate([
             'guia_transporte' => 'required',
@@ -695,6 +797,236 @@ class TrackingController extends Controller
             }else{
                 echo "No se conecto";
             }
+        }
+
+        //MENSAJE 2
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
+        $t_comentario = TrackingComentario::where('id_tracking',$id)->where('pantalla','DETALLE_TRANSPORTE')->first();
+        $list_archivo = TrackingArchivo::where('id_tracking', $id)->where('tipo', 1)->get();
+
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->SMTPDebug = 0;
+            $mail->isSMTP();
+            $mail->Host       =  'mail.lanumero1.com.pe';
+            $mail->SMTPAuth   =  true;
+            $mail->Username   =  'intranet@lanumero1.com.pe';
+            $mail->Password   =  'lanumero1$1';
+            $mail->SMTPSecure =  'tls';
+            $mail->Port     =  587; 
+            $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
+
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+            //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            foreach($list_td as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            foreach($list_cd as $list){
+                $mail->addAddress($list->emailp);
+            }
+            $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+            foreach($list_cc as $list){
+                $mail->addCC($list->emailp);
+            }
+
+            $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
+            $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+            $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
+            $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+            $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+            $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
+            $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
+
+            $fecha_partida =  date('d')." de ".date('F')." del ".date('Y');
+            $fecha_partida = str_replace($meses_ingles, $meses_espanol, $fecha_partida);
+
+            $mail->isHTML(true);
+
+            $mail->Subject = "SDM-SEM".$get_id->semana."-".substr(date('Y'),-2)." RQ-".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
+        
+            $mail->Body =  '<FONT SIZE=3>
+                                <b>Semana:</b> '.$get_id->semana.'<br>
+                                <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
+                                <b>Base:</b> '.$get_id->hacia.'<br>
+                                <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
+                                <b>Fecha - Salida de mercadería:</b> '.$fecha_formateada.'<br><br>
+                                Envío el reporte de la salida de mercadería. La guías electrónicas ya se encuentran en su carpeta.<br><br>
+                                <table cellpadding="3" cellspacing="0" border="1" style="width:100%;">     
+                                    <tr>
+                                        <td colspan="2" style="font-weight:bold;">Despacho</td>
+                                        <td style="text-align:right;">SEM-'.$get_id->semana.'-'.substr(date('Y'),-2).'</td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2" style="font-weight:bold;">Guía Remisión</td>
+                                        <td style="font-weight:bold;">Nuestra</td>
+                                        <td style="text-align:right;">'.$get_id->n_guia_remision.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bold;">Transporte.</td>
+                                        <td style="text-align:right;">'.$get_id->guia_transporte.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="font-weight:bold;">Tipo de transporte</td>
+                                        <td style="text-align:right;">'.$get_id->tipo_transporte.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="font-weight:bold;">Nombre de transporte</td>
+                                        <td style="text-align:right;">'.$get_id->nombre_transporte.'</td>
+                                    </tr>                                    
+                                    <tr>
+                                        <td colspan="2" style="font-weight:bold;">N° Factura</td>
+                                        <td style="text-align:right;">'.$get_id->factura_transporte.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="font-weight:bold;">Peso</td>
+                                        <td style="text-align:right;">'.$get_id->peso.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="font-weight:bold;">Paquetes</td>
+                                        <td style="text-align:right;">'.$get_id->paquetes.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="font-weight:bold;">Sobres</td>
+                                        <td style="text-align:right;">'.$get_id->sobres.'</td>
+                                    </tr>          
+                                    <tr>
+                                        <td colspan="2" style="font-weight:bold;">Fardos</td>
+                                        <td style="text-align:right;">'.$get_id->fardos.'</td>
+                                    </tr>           
+                                    <tr>
+                                        <td colspan="2" style="font-weight:bold;">Caja</td>
+                                        <td style="text-align:right;">'.$get_id->caja.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="font-weight:bold;">Bultos</td>
+                                        <td style="text-align:right;">'.$get_id->bultos.'</td>
+                                    </tr>                                 
+                                    <tr>
+                                        <td colspan="2" style="font-weight:bold;">Recepción</td>
+                                        <td style="text-align:right;">'.$get_id->recepcion.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="font-weight:bold;">Mercadería total</td>
+                                        <td style="text-align:right;">'.$get_id->mercaderia_total.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="font-weight:bold;">Flete por prenda</td>
+                                        <td style="text-align:right;">S/'.$get_id->flete_prenda.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="font-weight:bold;">Receptor</td>
+                                        <td style="text-align:right;">'.$get_id->receptor.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="font-weight:bold;">Tipo pago</td>
+                                        <td style="text-align:right;">'.$get_id->nom_tipo_pago.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="font-weight:bold;">Importe Pagado</td>
+                                        <td style="text-align:right;">S/'.$get_id->importe_formateado.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2" style="font-weight:bold;">Fecha</td>
+                                        <td style="font-weight:bold;">Partida</td>
+                                        <td style="text-align:right;">'.$fecha_partida.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bold;">Tiempo estimado de llegada</td>
+                                        <td style="text-align:right;">'.$get_id->tiempo_llegada.'</td>
+                                    </tr>                                  
+                                </table><br>';
+                            if($t_comentario){
+            $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
+                            </FONT SIZE>';
+                            }
+        
+            $mail->CharSet = 'UTF-8';
+            foreach($list_archivo as $list){
+                $archivo_contenido = file_get_contents($list->archivo);
+                $nombre_archivo = basename($list->archivo);
+                $mail->addStringAttachment($archivo_contenido, $nombre_archivo);
+            }
+            $mail->send();
+
+            TrackingDetalleEstado::create([
+                'id_detalle' => $get_id->id_detalle,
+                'id_estado' => 3,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }catch(Exception $e) {
+            echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+        }
+    }*/
+    public function insert_detalle_transporte(Request $request,$id)
+    {
+        $request->validate([
+            'guia_transporte' => 'required',
+            'peso' => 'required',
+            'paquetes' => 'required_without_all:sobres,fardos,caja|nullable',
+            'sobres' => 'required_without_all:paquetes,fardos,caja|nullable',
+            'fardos' => 'required_without_all:paquetes,sobres,caja|nullable',
+            'caja' => 'required_without_all:paquetes,sobres,fardos|nullable',
+            'mercaderia_total' => 'required|gt:0',
+            'flete_prenda' => 'required|gt:0'
+        ],[
+            'guia_transporte.required' => 'Debe ingresar nro. gr transporte.',
+            'peso.required' => 'Debe ingresar peso.',
+            'required_without_all' => 'Debe ingresar paquetes o sobres o fardos o caja.',
+            'mercaderia_total.required' => 'Debe ingresar mercadería total.',
+            'mercaderia_total.gt' => 'Debe ingresar mercadería total mayor a 0.',
+            'flete_prenda.required' => 'Debe ingresar flete por prenda.',
+            'flete_prenda.gt' => 'Debe ingresar flete por prenda mayor a 0.'
+        ]);
+
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
+        $get_transporte = TrackingTransporte::where('id_base',$get_id->id_origen_hacia)
+                        ->where('semana',date('W'))->first();
+
+        Tracking::findOrFail($id)->update([
+            'guia_transporte' => $request->guia_transporte,
+            'peso' => $request->peso,
+            'paquetes' => $request->paquetes,
+            'sobres' => $request->sobres,
+            'fardos' => $request->fardos,
+            'caja' => $request->caja,
+            'transporte' => $get_transporte->transporte,
+            'tiempo_llegada' => $get_transporte->tiempo_llegada,
+            'recepcion' => $get_transporte->recepcion,
+            'mercaderia_total' => $request->mercaderia_total,
+            'flete_prenda' => $request->flete_prenda,
+            'receptor' => $get_transporte->receptor,
+            'tipo_pago' => $get_transporte->tipo_pago,
+            'nombre_transporte' => $get_transporte->nombre_transporte,
+            'importe_transporte' => $get_transporte->importe_transporte,
+            'factura_transporte' => $get_transporte->factura_transporte,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        if($request->comentario){
+            TrackingComentario::create([
+                'id_tracking' => $id,
+                'id_usuario' => session('usuario')->id_usuario,
+                'pantalla' => 'DETALLE_TRANSPORTE',
+                'comentario' => $request->comentario
+            ]);
+        }
+
+        if($get_transporte->archivo_transporte != ""){
+            TrackingArchivo::create([
+                'id_tracking' => $id,
+                'tipo' => 1,
+                'archivo' => $get_transporte->archivo_transporte
+            ]);
         }
 
         //MENSAJE 2
@@ -1863,7 +2195,8 @@ class TrackingController extends Controller
                 'bulto' => $list->Bulto,
                 'color_talla' => $list->Col_Tal,
                 'enviado' => $list->Enviado,
-                'recibido' => $list->Recibido
+                'recibido' => $list->Recibido,
+                'observacion' => $list->Cruce
             ]);
         }
                 
@@ -1879,13 +2212,15 @@ class TrackingController extends Controller
         $list_sobrante = TrackingDiferencia::select('sku','estilo','color_talla','bulto','enviado',
                         'recibido',DB::raw('recibido-enviado AS diferencia'),
                         DB::raw("CASE WHEN enviado<recibido THEN 'Sobrante' 
-                        WHEN enviado>recibido THEN 'Faltante' ELSE '' END AS observacion"))
+                        WHEN enviado>recibido THEN 'Faltante' ELSE '' END AS observacion"),
+                        'observacion AS cruce')
                         ->where('id_tracking',$id)->whereColumn('enviado','<','recibido')
                         ->get();
         $list_faltante = TrackingDiferencia::select('sku','estilo','color_talla','bulto','enviado',
                         'recibido',DB::raw('recibido-enviado AS diferencia'),
                         DB::raw("CASE WHEN enviado<recibido THEN 'Sobrante' 
-                        WHEN enviado>recibido THEN 'Faltante' ELSE '' END AS observacion"))
+                        WHEN enviado>recibido THEN 'Faltante' ELSE '' END AS observacion"),
+                        'observacion AS cruce')
                         ->where('id_tracking',$id)->whereColumn('enviado','>','recibido')
                         ->get();
 
@@ -1976,14 +2311,15 @@ class TrackingController extends Controller
                                     <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                         <thead>
                                             <tr align="center" style="background-color:#0093C6;">
-                                                <th width="10%"><b>SKU</b></th>
-                                                <th width="20%"><b>Estilo</b></th>
-                                                <th width="20%"><b>Col_Tal</b></th>
-                                                <th width="10%"><b>Bulto</b></th>
-                                                <th width="10%"><b>Enviado</b></th>
-                                                <th width="10%"><b>Recibido</b></th>
-                                                <th width="10%"><b>Dif</b></th>
-                                                <th width="10%"><b>Orden de Regularización</b></th>
+                                                <th><b>SKU</b></th>
+                                                <th><b>Estilo</b></th>
+                                                <th><b>Col_Tal</b></th>
+                                                <th><b>Bulto</b></th>
+                                                <th><b>Enviado</b></th>
+                                                <th><b>Recibido</b></th>
+                                                <th><b>Dif</b></th>
+                                                <th><b>Orden de Regularización</b></th>
+                                                <th><b>Observación</b></th>
                                             </tr>
                                         </thead>
                                         <tbody>';
@@ -1997,6 +2333,7 @@ class TrackingController extends Controller
                                                 <td>'.$list->recibido.'</td>
                                                 <td>'.$list->diferencia.'</td>
                                                 <td>'.$list->observacion.'</td>
+                                                <td>'.$list->cruce.'</td>
                                             </tr>';
                                     }
                 $mail->Body .=  '        </tbody>
@@ -2072,14 +2409,15 @@ class TrackingController extends Controller
                                     <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                         <thead>
                                             <tr align="center" style="background-color:#0093C6;">
-                                                <th width="10%"><b>SKU</b></th>
-                                                <th width="20%"><b>Estilo</b></th>
-                                                <th width="20%"><b>Col_Tal</b></th>
-                                                <th width="10%"><b>Bulto</b></th>
-                                                <th width="10%"><b>Enviado</b></th>
-                                                <th width="10%"><b>Recibido</b></th>
-                                                <th width="10%"><b>Dif</b></th>
-                                                <th width="10%"><b>Orden de Regularización</b></th>
+                                                <th><b>SKU</b></th>
+                                                <th><b>Estilo</b></th>
+                                                <th><b>Col_Tal</b></th>
+                                                <th><b>Bulto</b></th>
+                                                <th><b>Enviado</b></th>
+                                                <th><b>Recibido</b></th>
+                                                <th><b>Dif</b></th>
+                                                <th><b>Orden de Regularización</b></th>
+                                                <th><b>Observación</b></th>
                                             </tr>
                                         </thead>
                                         <tbody>';
@@ -2093,6 +2431,7 @@ class TrackingController extends Controller
                                                 <td>'.$list->recibido.'</td>
                                                 <td>'.$list->diferencia.'</td>
                                                 <td>'.$list->observacion.'</td>
+                                                <td>'.$list->cruce.'</td>
                                             </tr>';
                                     }
                 $mail->Body .=  '        </tbody>
