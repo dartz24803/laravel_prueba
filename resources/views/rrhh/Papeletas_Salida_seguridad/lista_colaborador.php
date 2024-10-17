@@ -1,8 +1,7 @@
 <?php
-    $sesion =  $_SESSION['usuario'][0];
-    $id_puesto=$_SESSION['usuario'][0]['id_puesto'];
-    $id_nivel=$_SESSION['usuario'][0]['id_nivel'];
-    $centro_labores=$_SESSION['usuario'][0]['centro_labores'];
+    $id_puesto = session('usuario')->id_puesto;
+    $id_nivel = session('usuario')->id_nivel;
+    $centro_labores = session('usuario')->centro_labores;
 ?>
 
 <table id="style-322" class="table " style="width:100%">

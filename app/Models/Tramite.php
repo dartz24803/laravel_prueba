@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Tramite extends Model
 {
@@ -25,4 +26,21 @@ class Tramite extends Model
         'user_eli'
     ];
 
+    static function get_list_tramite($id_tramite=null){
+        if(isset($id_tramite) && $id_tramite>0){
+            $sql = "SELECT tr.*,de.id_motivo FROM tramite tr
+                    LEFT JOIN destino de ON de.id_destino=tr.id_destino
+                    WHERE tr.id_tramite=$id_tramite";
+        }else{
+            $sql = "SELECT tr.*,CASE WHEN de.id_motivo=1 THEN 'Laboral' WHEN de.id_motivo=2 THEN 'Personal' ELSE '' END AS nom_motivo,
+                    de.nom_destino
+                    FROM tramite tr
+                    LEFT JOIN destino de ON de.id_destino=tr.id_destino
+                    WHERE tr.estado=1";
+        }
+        
+        $result = DB::select($sql);
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
+    }
 }

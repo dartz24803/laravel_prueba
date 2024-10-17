@@ -59,12 +59,13 @@ class Usuario extends Model
         $query = "SELECT u.id_usuario, u.usuario_nombres, u.usuario_apater, u.usuario_amater, u.usuario_codigo,
         u.id_nivel, ub.cod_ubi AS centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,u.id_puesto,u.acceso,
         u.ini_funciones,u.fec_reg,u.usuario_password,u.estado, n.nom_nivel, p.nom_puesto, a.nom_area, u.id_area,
-        (SELECT GROUP_CONCAT(puestos) FROM area WHERE estado=1 AND orden!='') AS grupo_puestos,
+        (SELECT GROUP_CONCAT(puestos) FROM area WHERE estado=1 AND orden!='') AS grupo_puestos, u.id_gerencia,
         CASE WHEN u.urladm=1 THEN (select r.url_config from config r where r.descrip_config='Foto_Postulante'
         and r.estado=1) else (select r.url_config from config r where r.descrip_config='Foto_colaborador'
         and r.estado=1) end as url_foto,p.id_nivel as nivel_jerarquico,u.desvinculacion,u.id_cargo,
         pps.registro_masivo, visualizar_amonestacion(u.id_puesto) AS visualizar_amonestacion,
-        sl.descripcion AS sede_laboral
+        sl.descripcion AS sede_laboral,
+        pps.estado as estadopps, pps.registro_masivo, pps.id_puesto_permitido
         FROM users u
         LEFT JOIN permiso_papeletas_salida pps ON u.id_puesto=pps.id_puesto_jefe AND pps.estado=1
         LEFT JOIN nivel n ON u.id_nivel=n.id_nivel
@@ -668,6 +669,35 @@ class Usuario extends Model
         
         $result = DB::select($sql);
 
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
+    }
+
+    static function get_list_vendedor($centro_labores=NULL, $id_puesto=null){
+        $id_nivel= session('usuario')->id_nivel;
+        $id_pueston= session('usuario')->id_puesto;
+        
+        if(isset($id_puesto) && $id_puesto!='0' && $id_puesto!=''){
+            $buscar = "id_puesto in ($id_puesto) AND";
+        }else{
+            $buscar = "";
+        }
+
+        if($id_nivel==1 || $id_pueston==39){
+            $sql = "SELECT * FROM users
+                    WHERE $buscar id_nivel NOT IN (8,12) AND estado=1
+                    ORDER BY usuario_apater ASC, usuario_amater ASC, usuario_nombres ASC";
+        }elseif(isset($centro_labores) && $centro_labores!='0'){
+            $sql = "SELECT * FROM users
+                    WHERE $buscar centro_labores='$centro_labores' AND id_nivel NOT IN (8,12) AND estado=1
+                    ORDER BY usuario_apater ASC, usuario_amater ASC, usuario_nombres ASC";
+        }else{
+            $sql = "SELECT * FROM users e 
+                    WHERE $buscar id_nivel NOT IN (8,12) AND estado=1
+                    ORDER BY usuario_apater ASC, usuario_amater ASC, usuario_nombres ASC";
+        }
+        
+        $result = DB::select($sql);
         // Convertir el resultado a un array
         return json_decode(json_encode($result), true);
     }

@@ -299,14 +299,14 @@ class CargaInventarioController extends Controller
     {
         $request->validate([
             'fecha' => 'required',
-            'base' => 'required',
-            'responsable' => 'required',
-
+            'base' => 'not_in:0',
+            'responsable' => 'not_in:0',
+            'archivo' => 'required'
         ], [
             'fecha.required' => 'Debe ingresar fecha.',
-            'base.required' => 'Debe ingresar nase.',
-            'responsable.required' => 'Debe seleccionar responsable',
-
+            'base.not_in' => 'Debe ingresar base.',
+            'responsable.not_in' => 'Debe seleccionar responsable',
+            'archivo' => 'Debe ingresar archivo'
         ]);
 
         $dato['fecha'] = $request->fecha;
