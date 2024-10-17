@@ -718,34 +718,4 @@ class Usuario extends Model
         $query = DB::select($sql);
         return $query;
     }
-
-    static function get_list_vendedor($centro_labores = NULL, $id_puesto = null)
-    {
-        $id_nivel = session('usuario')->id_nivel;
-        $id_pueston = session('usuario')->id_puesto;
-
-        if (isset($id_puesto) && $id_puesto != '0' && $id_puesto != '') {
-            $buscar = "id_puesto in ($id_puesto) AND";
-        } else {
-            $buscar = "";
-        }
-
-        if ($id_nivel == 1 || $id_pueston == 39) {
-            $sql = "SELECT * FROM users
-                    WHERE $buscar id_nivel NOT IN (8,12) AND estado=1
-                    ORDER BY usuario_apater ASC, usuario_amater ASC, usuario_nombres ASC";
-        } elseif (isset($centro_labores) && $centro_labores != '0') {
-            $sql = "SELECT * FROM users
-                    WHERE $buscar centro_labores='$centro_labores' AND id_nivel NOT IN (8,12) AND estado=1
-                    ORDER BY usuario_apater ASC, usuario_amater ASC, usuario_nombres ASC";
-        } else {
-            $sql = "SELECT * FROM users e 
-                    WHERE $buscar id_nivel NOT IN (8,12) AND estado=1
-                    ORDER BY usuario_apater ASC, usuario_amater ASC, usuario_nombres ASC";
-        }
-
-        $result = DB::select($sql);
-        // Convertir el resultado a un array
-        return json_decode(json_encode($result), true);
-    }
 }
