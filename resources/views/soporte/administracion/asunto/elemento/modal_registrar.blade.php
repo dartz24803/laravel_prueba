@@ -1,8 +1,10 @@
 <form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
-        <h5 class="modal-title">Registrar Unidad:</h5>
+        <h5 class="modal-title">Registrar Nuevo Elemento:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-x">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
@@ -10,27 +12,41 @@
     </div>
 
     <div class="modal-body" style="max-height:700px; overflow:auto;">
-        <div class="row"> <!-- Add this row class to create a horizontal layout -->
+        <div class="row">
+            <div class="form-group col-lg-6">
+                <label>Especialidad:</label>
+                <select class="form-control" name="id_espe" id="id_espe">
+                    @foreach ($list_especialidad as $list)
+                        <option value="{{ $list->id }}">{{ $list->nombre }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group col-lg-6">
+                <label for="nom_ele">Nombre Elemento:</label>
+                <input type="text" class="form-control" id="nom_ele" name="nom_ele">
+            </div>
+
             <div class="form-group col-lg-12">
-                <label for="nom_uni">Nombre:</label>
-                <input type="text" class="form-control" id="nom_uni" name="nom_uni">
+                <label for="descripcione">Descripción:</label>
+                <textarea name="descripcione" id="descripcione" cols="1" rows="2" class="form-control"></textarea>
             </div>
         </div>
+
     </div>
 
     <div class="modal-footer">
         @csrf
-        <button class="btn btn-primary" type="button" onclick="Insert_Unidad();">Guardar</button>
+        <button class="btn btn-primary" type="button" onclick="Insert_Elemento();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
-    function Insert_Unidad() {
+    function Insert_Elemento() {
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario'));
-        var url = "{{ route('consumible_uni.store') }}";
+        var url = "{{ route('soporte_elemento_conf.store') }}";
 
         $.ajax({
             url: url,
@@ -54,7 +70,7 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Lista_Unidad();
+                        Lista_Elementos();
                         $("#ModalRegistro .close").click();
                     })
                 }

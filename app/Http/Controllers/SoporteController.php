@@ -56,147 +56,14 @@ class SoporteController extends Controller
         return view('soporte.soporte.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
-    public function index_tick()
-    {
-        return view('interna.procesos.portalprocesos.listamaestra.index');
-    }
-    public function handleAreaP($id_area, $id_subgerencia)
-    {
-        $list_notificacion = Notificacion::get_list_notificacion();
 
-        if ($id_subgerencia == 2) {
-            $list_subgerencia = SubGerencia::list_subgerencia_with_validation($id_subgerencia);
-        } else {
-            $list_subgerencia = SubGerencia::list_subgerencia($id_subgerencia);
-        }
-
-        $id_puesto = session('usuario')->id_puesto;
-        $list_reportes = BiReporte::getByAreaDestino($id_area, $id_puesto);
-
-        // Asignar el valor de $nominicio basado en $id_subgerencia
-        switch ($id_subgerencia) {
-            case 1:
-                $nominicio = 'seguridad';
-                break;
-            case 2:
-                $nominicio = 'tienda';
-                break;
-            case 3:
-                $nominicio = 'comercial';
-                break;
-            case 4:
-                $nominicio = 'manufactura';
-                break;
-            case 5:
-                $nominicio = 'rrhh';
-                break;
-            case 6:
-                $nominicio = 'general';
-                break;
-            case 7:
-                $nominicio = 'logistica';
-                break;
-            case 8:
-                $nominicio = 'finanzas';
-                break;
-            case 9:
-                $nominicio = 'interna'; // Repetido, asegúrate de que este valor sea correcto
-                break;
-            case 10:
-                $nominicio = 'infraestructura';
-                break;
-            case 11:
-                $nominicio = 'materiales';
-                break;
-            case 12:
-                $nominicio = 'finanzas'; // Repetido, asegúrate de que este valor sea correcto
-                break;
-            case 13:
-                $nominicio = 'caja';
-                break;
-            default:
-                $nominicio = 'default'; // Valor por defecto si no coincide con ningún caso
-                break;
-        }
-
-        return view('soporte.index', compact('id_area', 'list_notificacion', 'list_subgerencia', 'list_reportes', 'nominicio'));
-    }
     public function list_tick()
     {
-
         // Obtener la lista de procesos con los campos requeridos
-        $list_procesos = ProcesosHistorial::select(
-            'portal_procesos_historial.id_portal_historial',
-            'portal_procesos_historial.id_portal',
-            'portal_procesos_historial.codigo',
-            'portal_procesos_historial.nombre',
-            'portal_procesos_historial.version',
-            'portal_procesos_historial.id_tipo',
-            'portal_procesos_historial.id_area',
-            'portal_procesos_historial.id_responsable',
-            'portal_procesos_historial.fecha',
-            'portal_procesos_historial.estado_registro'
-        )
-            ->join(
-                DB::raw('(SELECT id_portal, MAX(version) AS max_version 
-                         FROM portal_procesos_historial 
-                         GROUP BY id_portal) as max_versions'),
-                'portal_procesos_historial.id_portal',
-                '=',
-                'max_versions.id_portal'
-            )
-            ->whereColumn('portal_procesos_historial.version', 'max_versions.max_version')
-            ->whereNotNull('portal_procesos_historial.codigo')
-            ->where('portal_procesos_historial.codigo', '!=', '')
-            ->where('portal_procesos_historial.estado', '=', 1)
-            ->orderBy('portal_procesos_historial.codigo', 'ASC')
-            ->get();
+        $list_tickets_soporte = Soporte::listTicketsSoporte();
 
-
-        // Preparar un array para almacenar los nombres de las áreas y del responsable
-        foreach ($list_procesos as $proceso) {
-            // Obtener nombres de las áreas
-            $ids = explode(',', $proceso->id_area);
-            $nombresAreas = DB::table('area')
-                ->whereIn('id_area', $ids)
-                ->pluck('nom_area');
-
-            // Asignar nombres de las áreas al proceso
-            $proceso->nombres_area = $nombresAreas->implode(', ');
-            // Obtener nombre del responsable
-            $nombreResponsable = DB::table('puesto')
-                ->where('id_puesto', $proceso->id_responsable)
-                ->value('nom_puesto'); // Asumiendo que la columna del nombre es 'nombre'
-            // Obtener nombre del tipo portal
-            $nombreTipoPortal = DB::table('tipo_portal')
-                ->where('id_tipo_portal', $proceso->id_tipo)
-                ->value('nom_tipo'); // Asumiendo que la columna del nombre es 'nombre'
-
-            // Asignar nombre del responsable al proceso
-            $proceso->nombre_responsable = $nombreResponsable;
-            $proceso->nombre_tipo_portal = $nombreTipoPortal;
-
-            // Asignar texto basado en el estado
-            switch ($proceso->estado_registro) {
-                case 0:
-                    $proceso->estado_texto = 'Publicado';
-                    break;
-                case 1:
-                    $proceso->estado_texto = 'Por aprobar';
-                    break;
-                case 2:
-                    $proceso->estado_texto = 'Publicado';
-                    break;
-                case 3:
-                    $proceso->estado_texto = 'Por actualizar';
-                    break;
-                default:
-                    $proceso->estado_texto = 'Desconocido';
-                    break;
-            }
-        }
-
-        return view('interna.procesos.portalprocesos.listamaestra.lista', compact('list_procesos'));
+        // dd($list_tickets_soporte);
+        return view('soporte.soporte.lista', compact('list_tickets_soporte'));
     }
 
 
@@ -313,7 +180,6 @@ class SoporteController extends Controller
 
     public function store_tick(Request $request)
     {
-
         $request->validate([
             'especialidad' => 'gt:0',
             'elemento' => 'gt:0',
@@ -345,6 +211,7 @@ class SoporteController extends Controller
             'fec_vencimiento' => $request->vencimiento,
             'descripcion' => $request->descripcion,
             'estado' => 1,
+            'estado_registro' => 1,
             'fec_reg' => now(),
             'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
