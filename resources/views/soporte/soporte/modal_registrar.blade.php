@@ -276,7 +276,7 @@
                 if (response.length > 0) {
                     $.each(response, function(index, sede) {
                         $('#idsoporte_ubicacion').append(
-                            `<option value="${sede.idsoporte_ubicacion1}">${sede.nombre}</option>`
+                            `<option value="${sede.idsoporte_nivel}">${sede.nombre}</option>`
                         );
                     });
                     $('#sublist-container').show(); // Mostrar el contenedor de idsoporte_ubicacion

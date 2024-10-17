@@ -1,4 +1,4 @@
-@extends('layouts.plantilla')
+@extends('layouts.plantilla_sinsoporte')
 
 @section('navbar')
     @include('interna.navbar')

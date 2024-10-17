@@ -402,6 +402,9 @@ Route::controller(SoporteController::class)->group(function () {
 
     // SOPORTE MASTER
     Route::get('soporte_master', 'index_master')->name('soporte_master');
+    Route::get('soporte_ticket_master/list', 'list_tick_master')->name('soporte_ticket_master.list');
+    Route::get('soporte_ticket_master/ver/{id}', 'ver_tick_master')->name('soporte_ticket_master.ver');
+    Route::get('soporte_ticket_master/edit/{id}', 'edit_tick_master')->name('soporte_ticket_master.edit');
 });
 
 // ADMINISTRABLES - TICKETS SOPORTE

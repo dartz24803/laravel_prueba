@@ -2,6 +2,7 @@
     <thead>
         <tr class="text-center">
             <th>Nombre</th>
+            <th>Tipo de Soporte</th>
             <th>Descripción</th>
             <th class="no-content"></th>
         </tr>
@@ -9,7 +10,8 @@
     <tbody>
         @foreach ($list_asunto as $list)
             <tr class="text-center">
-                <td class="text-left">{{ $list->nombre }}</td>
+                <td class="text-left">{{ $list->asunto_nombre }}</td>
+                <td class="text-left">{{ $list->nom_tiposoporte }}</td>
                 <td class="text-left">{{ $list->descripcion }}</td>
 
                 <td>

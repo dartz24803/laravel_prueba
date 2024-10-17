@@ -214,7 +214,9 @@
     <div class=" modal-header">
         <h5 class="modal-title">Registrar Accesos de Reporte</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-x">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
@@ -224,19 +226,24 @@
     <div class="modal-body" style="max-height:450px; overflow:auto;">
         <ul class="nav nav-tabs" id="myTab2" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="documento-tab" data-toggle="tab" href="#documento2" role="tab" aria-controls="documento2" aria-selected="true">Documento</a>
+                <a class="nav-link active" id="documento-tab" data-toggle="tab" href="#documento2" role="tab"
+                    aria-controls="documento2" aria-selected="true">Documento</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="indicadores-tab" data-toggle="tab" href="#indicadores2" role="tab" aria-controls="indicadores2" aria-selected="false">Contenido</a>
+                <a class="nav-link" id="indicadores-tab" data-toggle="tab" href="#indicadores2" role="tab"
+                    aria-controls="indicadores2" aria-selected="false">Contenido</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="tablas-tab" data-toggle="tab" href="#tablas2" role="tab" aria-controls="tablas2" aria-selected="false">Tablas</a>
+                <a class="nav-link" id="tablas-tab" data-toggle="tab" href="#tablas2" role="tab"
+                    aria-controls="tablas2" aria-selected="false">Tablas</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="upimagenes-tab" data-toggle="tab" href="#up_imagenes2" role="tab" aria-controls="up_imagenes2" aria-selected="false">Subir Imagenes</a>
+                <a class="nav-link" id="upimagenes-tab" data-toggle="tab" href="#up_imagenes2" role="tab"
+                    aria-controls="up_imagenes2" aria-selected="false">Subir Imagenes</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="accesos-tab" data-toggle="tab" href="#accesos2" role="tab" aria-controls="accesos2" aria-selected="false">Accesos</a>
+                <a class="nav-link" id="accesos-tab" data-toggle="tab" href="#accesos2" role="tab"
+                    aria-controls="accesos2" aria-selected="false">Accesos</a>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent2">
@@ -273,9 +280,9 @@
                         <label for="solicitantes">Solicitante: </label>
                         <select class="form-control multivalue" name="solicitante" id="solicitante">
                             @foreach ($list_colaborador as $list)
-                            <option value="{{ $list->id_usuario }}">
-                                {{ $list->usuario_apater }} {{ $list->usuario_amater }} {{ $list->usuario_nombres }}
-                            </option>
+                                <option value="{{ $list->id_usuario }}">
+                                    {{ $list->usuario_apater }} {{ $list->usuario_amater }} {{ $list->usuario_nombres }}
+                                </option>
                             @endforeach
                         </select>
 
@@ -296,7 +303,7 @@
                         <label for="areass">Grupo: </label>
                         <select class="form-control multivalue" name="areass" id="areass">
                             @foreach ($list_area as $list)
-                            <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
+                                <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -305,7 +312,7 @@
                         <label for="areass">Área Destino: </label>
                         <select class="form-control multivalue" name="areasd" id="areasd">
                             @foreach ($list_area as $list)
-                            <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
+                                <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -335,15 +342,18 @@
                                     <select class="form-control" name="npagina[]">
                                         @for ($i = 1; $i <= 100; $i++)
                                             <option value="{{ $i }}">{{ $i }}</option>
-                                            @endfor
+                                        @endfor
                                     </select>
                                 </td>
-                                <td class="px-1"><input type="text" class="form-control" name="indicador[]" oninput="this.setAttribute('title', this.value)"></td>
-                                <td class="px-1"><input type="text" class="form-control" name="descripcion[]" oninput="this.setAttribute('title', this.value)"></td>
+                                <td class="px-1"><input type="text" class="form-control" name="indicador[]"
+                                        oninput="this.setAttribute('title', this.value)"></td>
+                                <td class="px-1"><input type="text" class="form-control" name="descripcion[]"
+                                        oninput="this.setAttribute('title', this.value)"></td>
                                 <td class="px-1">
                                     <select class="form-control " name="tipo[]" id="tipo">
                                         @foreach ($list_tipo_indicador as $list)
-                                        <option value="{{ $list->idtipo_indicador }}">{{ $list->nom_indicador}}</option>
+                                            <option value="{{ $list->idtipo_indicador }}">{{ $list->nom_indicador }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -353,7 +363,8 @@
                                         <option value="2">Informativo</option>
                                     </select>
                                 </td>
-                                <td><button type="button" class="btn btn-success btn-sm" onclick="addRow()">+</button></td>
+                                <td><button type="button" class="btn btn-success btn-sm"
+                                        onclick="addRow()">+</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -378,16 +389,17 @@
                                 <td class="px-1">
                                     <select class="form-control" name="sistema[]" id="sistema">
                                         @foreach ($list_sistemas as $list)
-                                        <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema}}</option>
+                                            <option value="{{ $list->cod_sistema }}">{{ $list->nom_sistema }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </td>
                                 <td class="px-1">
                                     <select class="form-control" name="db[]" id="db">
                                         @foreach ($list_db as $list)
-                                        <option value="{{ $list->cod_db }}" title="{{ $list->nom_db }}">
-                                            {{ \Illuminate\Support\Str::limit($list->nom_db, 40, '...') }}
-                                        </option>
+                                            <option value="{{ $list->cod_db }}" title="{{ $list->nom_db }}">
+                                                {{ \Illuminate\Support\Str::limit($list->nom_db, 40, '...') }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -395,13 +407,14 @@
                                 <td class="px-1">
                                     <select class="form-control multivalue" name="tbdb[]" id="tbdb">
                                         @foreach ($list_tablasdb as $list)
-                                        <option value="{{ $list->nombre }}" title="{{ $list->nombre }}">
-                                            {{ \Illuminate\Support\Str::limit($list->nombre, 40, '...') }}
-                                        </option>
+                                            <option value="{{ $list->nombre }}" title="{{ $list->nombre }}">
+                                                {{ \Illuminate\Support\Str::limit($list->nombre, 40, '...') }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </td>
-                                <td><button type="button" class="btn btn-success btn-sm" onclick="addRowTabla()">+</button></td>
+                                <td><button type="button" class="btn btn-success btn-sm"
+                                        onclick="addRowTabla()">+</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -444,34 +457,38 @@
                     @csrf
                     <div class="form-group col-md-6">
                         <label class="control-label text-bold">Filtro Sede: </label>
-                        <select class="form-control multivalue" name="tipo_acceso_sede[]" id="tipo_acceso_sede" multiple="multiple">
+                        <select class="form-control multivalue" name="tipo_acceso_sede[]" id="tipo_acceso_sede"
+                            multiple="multiple">
                             @foreach ($list_sede as $sede)
-                            <option value="{{ $sede->id }}">{{ $sede->descripcion }}</option>
+                                <option value="{{ $sede->id }}">{{ $sede->descripcion }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group col-md-6">
                         <label class="control-label text-bold">Filtro Ubicaciones: </label>
-                        <select class="form-control multivalue" name="tipo_acceso_ubi[]" id="tipo_acceso_ubi" multiple="multiple">
+                        <select class="form-control multivalue" name="tipo_acceso_ubi[]" id="tipo_acceso_ubi"
+                            multiple="multiple">
                             @foreach ($list_ubicaciones as $ubi)
-                            <option value="{{ $ubi->id_ubicacion }}">{{ $ubi->cod_ubi }}</option>
+                                <option value="{{ $ubi->id_ubicacion }}">{{ $ubi->cod_ubi }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group col-md-12">
                         <label class="control-label text-bold">Filtro Área: </label>
-                        <select class="form-control multivalue" name="id_area_acceso_t[]" id="id_area_acceso_t" multiple="multiple">
+                        <select class="form-control multivalue" name="id_area_acceso_t[]" id="id_area_acceso_t"
+                            multiple="multiple">
                             @foreach ($list_area as $list)
-                            <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
+                                <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group col-md-12 text-center">
                         <div class="divider"></div>
                         <label class="control-label text-bold">Acceso Puesto: </label>
-                        <select class="form-control multivalue" name="tipo_acceso_t[]" id="tipo_acceso_t" multiple="multiple">
+                        <select class="form-control multivalue" name="tipo_acceso_t[]" id="tipo_acceso_t"
+                            multiple="multiple">
                             @foreach ($list_responsable as $puesto)
-                            <option value="{{ $puesto->id_puesto }}">{{ $puesto->nom_puesto }}</option>
+                                <option value="{{ $puesto->id_puesto }}">{{ $puesto->nom_puesto }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -776,7 +793,9 @@
                     if (response.length === 1) {
                         // Si solo hay una base de datos, agregarla y seleccionarla automáticamente
                         const db = response[0];
-                        $('#db').append(`<option value="${db.cod_db}" title="${db.nom_db}">${db.nom_db.length > 20 ? db.nom_db.substring(0, 20) + '...' : db.nom_db}</option>`);
+                        $('#db').append(
+                            `<option value="${db.cod_db}" title="${db.nom_db}">${db.nom_db.length > 20 ? db.nom_db.substring(0, 20) + '...' : db.nom_db}</option>`
+                        );
                         // Ejecutar automáticamente el filtrado de tablas
                         filtrarTablasPorDB(db.cod_db);
                     } else {
@@ -856,7 +875,8 @@
                     // Reestablecemos las opciones previamente seleccionadas que aún están disponibles
                     $.each(selectedUbicaciones, function(index, value) {
                         if (currentOptions.includes(value)) {
-                            $('#tipo_acceso_ubi').find(`option[value="${value}"]`).prop('selected', true);
+                            $('#tipo_acceso_ubi').find(`option[value="${value}"]`)
+                                .prop('selected', true);
                         }
                     });
                     $('#tipo_acceso_ubi').select2();
@@ -901,7 +921,8 @@
                     // Reestablecemos las áreas seleccionadas previamente que aún están disponibles
                     $.each(selectedAreas, function(index, value) {
                         if (currentOptions.includes(value)) {
-                            $('#id_area_acceso_t').find(`option[value="${value}"]`).prop('selected', true);
+                            $('#id_area_acceso_t').find(`option[value="${value}"]`)
+                                .prop('selected', true);
                         }
                     });
 
@@ -948,7 +969,8 @@
                     // Restaurar los puestos seleccionados previamente si siguen disponibles
                     $.each(selectedPuestos, function(index, value) {
                         if (currentOptions.includes(value)) {
-                            $('#tipo_acceso_t').find(`option[value="${value}"]`).prop('selected', true);
+                            $('#tipo_acceso_t').find(`option[value="${value}"]`)
+                                .prop('selected', true);
                         }
                     });
 

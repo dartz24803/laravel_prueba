@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AsuntoSoporte extends Model
+class SoporteTipo extends Model
 {
     // Definir el nombre de la tabla
-    protected $table = 'soporte_asunto';
+    protected $table = 'soporte_tipo';
 
     // Clave primaria
-    protected $primaryKey = 'idsoporte_asunto';
+    protected $primaryKey = 'idsoporte_tipo';
 
     // Evitar que Laravel maneje automáticamente las columnas created_at y updated_at
     public $timestamps = false;
@@ -18,15 +18,5 @@ class AsuntoSoporte extends Model
     // Definir los campos que pueden ser rellenados de forma masiva
     protected $fillable = [
         'nombre',
-        'descripcion',
-        'idsoporte_elemento',
-        'idsoporte_tipo',
-        'estado',
-        'fec_reg',
-        'user_reg',
-        'fec_act',
-        'user_act',
-        'fec_eli',
-        'user_eli'
     ];
 }

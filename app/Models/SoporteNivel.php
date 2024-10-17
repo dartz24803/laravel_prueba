@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SoporteUbicacion2 extends Model
+class SoporteNivel extends Model
 {
     use HasFactory;
 
-    protected $table = 'soporte_ubicacion2';
+    protected $table = 'soporte_nivel';
 
     // Opcional: Si necesitas definir el nombre de la clave primaria manualmente
-    protected $primaryKey = 'idsoporte_ubicacion2';
+    protected $primaryKey = 'idsoporte_nivel';
     // Deshabilitamos los timestamps automáticos de Laravel
     public $timestamps = false;
 
@@ -20,7 +20,7 @@ class SoporteUbicacion2 extends Model
     protected $fillable = [
         'nombre',
         'descripcion',
-        'id_soporte_ubicacion1',
+        'id_sede_laboral',
         'estado',
         'fec_reg',    // Fecha de registro
         'user_reg',   // Usuario que registró

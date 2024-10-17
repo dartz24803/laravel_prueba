@@ -18,7 +18,7 @@
     <tbody>
         @foreach ($list_tickets_soporte as $list)
             <tr>
-                <td>{{ $list->fec_reg }}</td>
+                <td>{{ \Carbon\Carbon::parse($list->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
                 <td>{{ $list->usuario_nombre }}</td>
                 <td>{{ $list->nombre_especialidad }}</td>
                 <td>{{ $list->descripcion }}</td>

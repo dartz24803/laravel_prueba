@@ -39,11 +39,13 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use App\Models\Notificacion;
 use App\Models\SedeLaboral;
 use App\Models\Soporte;
-use App\Models\SoporteUbicacion1;
-use App\Models\SoporteUbicacion2;
+use App\Models\SoporteAreaEspecifica;
+use App\Models\SoporteNivel;
+use App\Models\SoporteSolucion;
 use App\Models\SubGerencia;
 use App\Models\Ubicacion;
 use App\Models\User;
+use App\Models\Usuario;
 
 class SoporteController extends Controller
 {
@@ -56,14 +58,6 @@ class SoporteController extends Controller
         return view('soporte.soporte.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
-
-    public function index_master()
-    {
-        $list_subgerencia = SubGerencia::list_subgerencia(9);
-        //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();
-        return view('soporte.soporte_master.index', compact('list_notificacion', 'list_subgerencia'));
-    }
 
     public function list_tick()
     {
@@ -88,6 +82,7 @@ class SoporteController extends Controller
         }
         $list_elemento = ElementoSoporte::select('idsoporte_elemento', 'nombre')->get();
         $list_asunto = AsuntoSoporte::select('idsoporte_asunto', 'nombre')->get();
+
         $list_sede = SedeLaboral::select('id', 'descripcion')
             ->where('estado', 1)
             ->whereNotIn('id', [3, 5]) // Excluir los id EXT y REMOTO
@@ -120,7 +115,7 @@ class SoporteController extends Controller
             return response()->json([]);
         }
         // Buscar ubicaciones asociadas a la sede seleccionada
-        $sedes = SoporteUbicacion1::where(function ($query) use ($idSede) {
+        $sedes = SoporteNivel::where(function ($query) use ($idSede) {
             $query->whereRaw("FIND_IN_SET(?, id_sede_laboral)", [$idSede]);
         })
             ->where('estado', 1)
@@ -140,7 +135,7 @@ class SoporteController extends Controller
             return response()->json([]);
         }
         // Buscar ubicaciones asociadas a la sede seleccionada
-        $ubicaciones = SoporteUbicacion2::where(function ($query) use ($ubicacion) {
+        $ubicaciones = SoporteAreaEspecifica::where(function ($query) use ($ubicacion) {
             $query->whereRaw("FIND_IN_SET(?, id_soporte_ubicacion1)", [$ubicacion]);
         })
             ->where('estado', 1)
@@ -207,17 +202,54 @@ class SoporteController extends Controller
             'descripcion.required' => 'Debe ingresar descripcion.',
 
         ]);
-        // dd($request->all());
+
+
+        $idsoporte_tipo = DB::table('soporte_asunto as sa')
+            ->leftJoin('soporte_tipo as st', 'st.idsoporte_tipo', '=', 'sa.idsoporte_tipo')
+            ->where('sa.idsoporte_asunto', $request->asunto)
+            ->select('sa.idsoporte_tipo')
+            ->first();
+
+        // Verifica que se haya encontrado un tipo de soporte
+        if ($idsoporte_tipo) {
+            // Determinar el prefijo basado en el tipo de soporte
+            $prefijo = $idsoporte_tipo->idsoporte_tipo == 1 ? 'RQ-TI-' : 'INC-TI-';
+            $contador = Soporte::where('idsoporte_tipo', $idsoporte_tipo->idsoporte_tipo)->count();
+            $numero_formateado = str_pad($contador, 3, '0', STR_PAD_LEFT);
+            // Generar el código final
+            $codigo_generado = $prefijo . $numero_formateado;
+        } else {
+            // Manejar el caso en el que no se encuentra el tipo de soporte
+            $codigo_generado = 'Código no disponible';
+        }
+        $soporte_solucion = SoporteSolucion::create([
+            'id_responsable' => null,
+            'comentario' => '',
+            'fec_comentario' => null,
+            'tipo_soporte' => $request->tipo_soporte,
+            'estado_solucion' => 0,
+            'archivo_solucion' => 0,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
         Soporte::create([
+            'codigo' => $codigo_generado,
             'id_especialidad' => $request->especialidad,
             'id_elemento' => $request->elemento,
             'id_asunto' => $request->asunto,
             'id_sede' => $request->sede,
-            'idsoporte_ubicacion' => $request->idsoporte_ubicacion,
-            'idsoporte_ubicacion2' => $request->idsoporte_ubicacion2 ?? 0,
+            'idsoporte_nivel' => $request->idsoporte_ubicacion,
+            'idsoporte_area_especifica' => $request->idsoporte_ubicacion2 ?? 0,
             'id_area' => $request->area ?? 0,
+            'id_responsable' => null,
+            'idsoporte_solucion' => $soporte_solucion->idsoporte_solucion,
             'fec_vencimiento' => $request->vencimiento,
             'descripcion' => $request->descripcion,
+            'tipo_soporte' => $request->tipo_soporte,
             'estado' => 1,
             'estado_registro' => 1,
             'fec_reg' => now(),
@@ -225,6 +257,7 @@ class SoporteController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+        // dd($idsoporte->id_soporte);
 
         return redirect()->back()->with('success', 'Reporte registrado con éxito.');
     }
@@ -337,5 +370,48 @@ class SoporteController extends Controller
             'fec_aprob' => now(),
             'user_aprob' => session('usuario')->id_usuario
         ]);
+    }
+
+
+
+    // SOPORTE MASTER 
+    public function index_master()
+    {
+        $list_subgerencia = SubGerencia::list_subgerencia(9);
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('soporte.soporte_master.index', compact('list_notificacion', 'list_subgerencia'));
+    }
+
+    public function list_tick_master()
+    {
+        // Obtener la lista de procesos con los campos requeridos
+        $list_tickets_soporte = Soporte::listTicketsSoporteMaster();
+
+        // dd($list_tickets_soporte);
+        return view('soporte.soporte_master.lista', compact('list_tickets_soporte'));
+    }
+
+
+    public function ver_tick_master($id_soporte)
+    {
+        $get_id = Soporte::getTicketById($id_soporte);
+        return view('soporte.soporte_master.modal_ver', compact('get_id'));
+    }
+
+    public function edit_tick_master($id_soporte)
+    {
+
+        $get_id = Soporte::getTicketById($id_soporte);
+        $area = DB::table('especialidad')
+            ->leftJoin('area', 'especialidad.id_area', '=', 'area.id_area')
+            ->where('especialidad.id', $get_id->id_especialidad)
+            ->select('especialidad.*', 'area.nom_area') // Selecciona los campos que necesites
+            ->first();
+        $list_responsable = Usuario::get_list_colaborador_xarea_static($area->id_area);
+
+        // dd($area);
+
+        return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area'));
     }
 }

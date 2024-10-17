@@ -8,23 +8,33 @@
 <table id="tabla_js" class="table table-hover" style="width:100%">
     <thead>
         <tr>
-            <th>F.de Registro</th>
-            <th>Usuario de Registro</th>
+            <th>Código</th>
+            <th>Base</th>
+            <th>F. de Registro</th>
+            <th>U. de Registro</th>
+            <th>Tipo</th>
             <th>Especialidad</th>
-            <th>Descripción</th>
+            <th>Elemento</th>
+            <th>Asunto</th>
+            <th>Responsable</th>
             <th>Estado</th>
         </tr>
     </thead>
     <tbody>
         @foreach ($list_tickets_soporte as $list)
             <tr>
-                <td>{{ $list->fec_reg }}</td>
+                <td>{{ $list->codigo }}</td>
+                <td>{{ $list->base }}</td>
+                <td>{{ \Carbon\Carbon::parse($list->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
                 <td>{{ $list->usuario_nombre }}</td>
+                <td>{{ $list->nombre_tipo }}</td>
                 <td>{{ $list->nombre_especialidad }}</td>
-                <td>{{ $list->descripcion }}</td>
+                <td>{{ $list->nombre_elemento }}</td>
+                <td>{{ $list->nombre_asunto }}</td>
+                <td>{{ $list->nombre_responsable }}</td>
 
                 <td class="text-center">
-                    <div style="display: flex; align-items: center; justify-content: center;">
+                    <div style="display: flex; align-items: center; justify-content: start;">
                         <div
                             style="display: inline-block; 
             background-color: 
@@ -51,7 +61,7 @@
                             @endif
                         </div>
                         <div class="dropdown">
-                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink1"
+                            <a class="dropdown-toggle px-2" href="#" role="button" id="dropdownMenuLink1"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -64,10 +74,13 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
                                 <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
-                                    data-target="#ModalUpdateSlide" {{-- app_upd_slide="{{ url('RecursosHumanos/Modal_Lista_Saludo_Cumpleanio/' . $list['id_usuario']) }}" --}}>Ver</a>
-                                @if ($list->estado_registro == 5)
-                                    <a class="dropdown-item" target="_blank" {{-- href="{{ url('Corporacion/Imprimir_Saludo/' . $list['id_usuario']) }}" --}}>Corregir</a>
-                                @endif
+                                    data-target="#ModalUpdate"
+                                    app_elim="{{ url('soporte_ticket_master/ver/' . $list['id_soporte']) }}">Ver</a>
+
+                                <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
+                                    data-target="#ModalUpdate"
+                                    app_elim="{{ url('soporte_ticket_master/edit/' . $list['id_soporte']) }}">Editar</a>
+
                             </div>
                         </div>
                     </div>

@@ -22,6 +22,14 @@
                 </select>
             </div>
             <div class="form-group col-lg-6">
+                <label>Tipo de Soporte:</label>
+                <select class="form-control" name="tipo_soporte" id="tipo_soporte">
+                    @foreach ($list_tipo as $list)
+                        <option value="{{ $list->idsoporte_tipo }}">{{ $list->nombre }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group col-lg-12">
                 <label for="nom_asunt">Nombre Asunto:</label>
                 <input type="text" class="form-control" id="nom_asunt" name="nom_asunt">
             </div>

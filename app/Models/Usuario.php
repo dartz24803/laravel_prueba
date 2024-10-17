@@ -665,12 +665,26 @@ class Usuario extends Model
         return $query;
     }
 
-    static function get_list_usuarios_x_base($cod_base){
+    static function get_list_usuarios_x_base($cod_base)
+    {
         $sql = "SELECT * from users where estado=1 and centro_labores='$cod_base' and id_nivel<>8";
-        
+
         $result = DB::select($sql);
 
         // Convertir el resultado a un array
         return json_decode(json_encode($result), true);
+    }
+
+    static function get_list_colaborador_xarea_static($area)
+    {
+        $sql = "SELECT u.*,  a.nom_area, g.nom_gerencia, p.nom_puesto
+                from users u
+                LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
+                LEFT JOIN area a on a.id_area=u.id_area
+                LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                where u.estado=1 and u.id_nivel<>8 and u.id_area='" . $area . "'";
+
+        $query = DB::select($sql);
+        return $query;
     }
 }

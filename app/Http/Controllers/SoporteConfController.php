@@ -39,8 +39,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use App\Models\Notificacion;
 use App\Models\SedeLaboral;
 use App\Models\Soporte;
-use App\Models\SoporteUbicacion1;
-use App\Models\SoporteUbicacion2;
+use App\Models\SoporteTipo;
 use App\Models\SubGerencia;
 use App\Models\Ubicacion;
 
@@ -70,9 +69,16 @@ class SoporteConfController extends Controller
     }
     public function list_asunto_conf()
     {
-        $list_asunto = AsuntoSoporte::select('soporte_asunto.idsoporte_asunto', 'soporte_asunto.nombre', 'soporte_asunto.descripcion')
+        $list_asunto = AsuntoSoporte::select(
+            'soporte_asunto.idsoporte_asunto',
+            'soporte_asunto.nombre AS asunto_nombre',
+            'soporte_asunto.descripcion',
+            'soporte_tipo.nombre AS nom_tiposoporte'
+        )
+            ->leftJoin('soporte_tipo', 'soporte_asunto.idsoporte_tipo', '=', 'soporte_tipo.idsoporte_tipo') // Realiza el LEFT JOIN
             ->where('soporte_asunto.estado', 1)
             ->get();
+
         return view('soporte.administracion.asunto.asunto.lista', compact('list_asunto'));
     }
 
@@ -81,7 +87,9 @@ class SoporteConfController extends Controller
         $list_elementos = ElementoSoporte::select('soporte_elemento.idsoporte_elemento', 'soporte_elemento.nombre', 'soporte_elemento.descripcion')
             ->where('soporte_elemento.estado', 1)
             ->get();
-        return view('soporte.administracion.asunto.asunto.modal_registrar', compact('list_elementos'));
+        $list_tipo = SoporteTipo::select('soporte_tipo.idsoporte_tipo', 'soporte_tipo.nombre')
+            ->get();
+        return view('soporte.administracion.asunto.asunto.modal_registrar', compact('list_elementos', 'list_tipo'));
     }
 
 
@@ -89,16 +97,19 @@ class SoporteConfController extends Controller
     {
         $request->validate([
             'id_elemento' => 'gt:0',
+            'tipo_soporte' => 'gt:0',
             'nom_asunt' => 'required',
 
         ], [
-            'id_elemento.gt' => 'Debe seleccionar area.',
+            'id_elemento.gt' => 'Debe seleccionar Elemento.',
+            'tipo_soporte.gt' => 'Debe seleccionar Tipo de Soporte.',
             'nom_asunt.required' => 'Debe ingresar nombre de especialidad.',
 
         ]);
         // dd($request->all());
         AsuntoSoporte::create([
             'idsoporte_elemento' => $request->id_elemento,
+            'idsoporte_tipo' => $request->tipo_soporte,
             'nombre' => $request->nom_asunt,
             'descripcion' => $request->descripciona ?? '',
             'estado' => 1,
@@ -139,6 +150,7 @@ class SoporteConfController extends Controller
     {
         $list_especialidad = Especialidad::select('especialidad.id', 'especialidad.nombre')
             ->get();
+
         return view('soporte.administracion.asunto.elemento.modal_registrar', compact('list_especialidad'));
     }
 

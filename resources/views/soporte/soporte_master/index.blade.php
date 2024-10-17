@@ -18,7 +18,7 @@
                     <div class="widget-content widget-content-area br-2">
                         <div class="toolbar d-flex p-4">
 
-                            <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal"
+                            {{-- <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal"
                                 data-target="#ModalRegistro" app_reg="{{ route('soporte_ticket.create') }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -28,7 +28,7 @@
                                     <line x1="8" y1="12" x2="16" y2="12"></line>
                                 </svg>
                                 Nueva Tarea
-                            </button>
+                            </button> --}}
                         </div>
                         @csrf
                         <div class="table-responsive mb-4 mt-4" id="lista_reproceso">
@@ -52,7 +52,7 @@
         function Lista_Tickets_Soporte() {
             Cargando();
 
-            var url = "{{ route('soporte_ticket.list') }}";
+            var url = "{{ route('soporte_ticket_master.list') }}";
 
             $.ajax({
                 url: url,
