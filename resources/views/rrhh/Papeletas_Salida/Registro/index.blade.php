@@ -8,7 +8,7 @@
 
     $registro_masivo = session('usuario')->registro_masivo;
 ?>
-                                    <div class="row" id="cancel-row">{{ print_r(session('usuario')->centro_labores) }}
+                                    <div class="row" id="cancel-row">
                                         <div class="col-xl-12 col-lg-12 col-sm-12 p-3 layout-spacing">
                                             <div class="toolbar">
                                                 <div class="row align-items-center">

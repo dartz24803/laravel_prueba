@@ -34,7 +34,7 @@ class PapeletasController extends Controller
         $dato['list_subgerencia'] = SubGerencia::list_subgerencia(5);
         //NOTIFICACIONES
         $dato['list_notificacion'] = Notificacion::get_list_notificacion();
-                return view('rrhh.Papeletas_Salida_seguridad.index',$dato);
+                return view('rrhh.Papeletas_Salida.index',$dato);
     }
 
     public function Buscar_Papeleta_Registro(){
