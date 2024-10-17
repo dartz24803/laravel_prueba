@@ -32,6 +32,7 @@
                                             <th>Recibido</th>
                                             <th>Diferencia</th>
                                             <th>Orden de regularización</th>
+                                            <th>Observacion</th>
                                         </tr>
                                     </thead>
                                 
@@ -40,11 +41,12 @@
                                             <tr class="text-center">
                                                 <td>{{ $list->SKU }}</td>
                                                 <td>{{ $list->Estilo }}</td>
-                                                <td>{{ $list->Col_Tal }}</td>
+                                                <td class="text-left">{{ $list->Col_Tal }}</td>
                                                 <td>{{ $list->Enviado }}</td>
                                                 <td>{{ $list->Recibido }}</td>
                                                 <td>{{ $list->Recibido-$list->Enviado }}</td>
                                                 <td>{{ $list->Observacion }}</td>
+                                                <td class="text-left">{{ $list->Cruce }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
