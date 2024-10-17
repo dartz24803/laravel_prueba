@@ -384,8 +384,7 @@ Route::controller(ProcesosController::class)->group(function () {
 
 //SOPORTE - ADMINISTRADOR
 Route::controller(SoporteController::class)->group(function () {
-    Route::get('soporte', 'index')->name('soporte');
-    Route::get('soporte_ticket', 'index_tick')->name('soporte_ticket');
+    Route::get('soporte', 'index')->name('soporte');;
     Route::get('soporte_ticket/list', 'list_tick')->name('soporte_ticket.list');
     Route::get('soporte_ticket/create', 'create_tick')->name('soporte_ticket.create');
     Route::get('soporte_ticket/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_tick')->name('soporte_ticket.excel');
@@ -395,12 +394,14 @@ Route::controller(SoporteController::class)->group(function () {
     Route::post('soporte_ticket/{id}', 'approve_tick')->name('soporte_ticket.approve');
     Route::get('soporte_ticket/{id}/edit', 'edit_tick')->name('soporte_ticket.edit');
 
-    Route::get('soporte_ticket_index/{id_area}/{id_subgerencia}', 'handleAreaP')->name('soporte_ticket_index');
-
     Route::get('soporte_ubicacion_por_sede', 'getSoporteUbicacionPorSede')->name('soporte_ubicacion_por_sede');
     Route::get('soporte_ubicacion2_por_ubicacion1', 'getUbicacion2PorUbicacion1')->name('soporte_ubicacion2_por_ubicacion1');
     Route::get('elemento_por_especialidad', 'getElementoPorEspecialidad')->name('elemento_por_especialidad');
     Route::get('asunto_por_elemento', 'getAsuntoPorElemento')->name('asunto_por_elemento');
+
+
+    // SOPORTE MASTER
+    Route::get('soporte_master', 'index_master')->name('soporte_master');
 });
 
 // ADMINISTRABLES - TICKETS SOPORTE
@@ -434,8 +435,6 @@ Route::controller(SoporteConfController::class)->group(function () {
     Route::get('soporte_especialidad_conf/create', 'create_especialidad_conf')->name('soporte_especialidad_conf.create');
     Route::post('soporte_especialidad_conf', 'store_especialidad_conf')->name('soporte_especialidad_conf.store');
 });
-
-
 
 
 //BI REPORTES -
