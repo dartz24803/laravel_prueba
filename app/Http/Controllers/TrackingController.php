@@ -28,6 +28,7 @@ use App\Models\TrackingToken;
 use Google\Client as GoogleClient;
 use Illuminate\Support\Facades\DB;
 use App\Models\TrackingEstado;
+use App\Models\TrackingTransporte;
 use Mpdf\Mpdf;
 
 class TrackingController extends Controller
@@ -577,6 +578,108 @@ class TrackingController extends Controller
         }
     }
     //END FORMA MANUAL
+
+    public function detalle_transporte_inicial()
+    {
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(7);
+        $list_base = Base::get_list_bases_tienda();
+        return view('logistica.tracking.tracking.detalle_transporte_inicial', compact(
+            'list_notificacion',
+            'list_subgerencia',
+            'list_base'
+        ));
+    }
+
+    public function insert_detalle_transporte_inicial(Request $request)
+    {
+        $request->validate([
+            'id_base' => 'gt:0',
+            'tiempo_llegada' => 'required',
+            'recepcion' => 'gt:0',
+            'receptor' => 'required',
+            'nombre_transporte' => 'required_if:transporte,1,2',
+            'importe_transporte' => 'required_if:transporte,1,2',
+            'factura_transporte' => 'required_if:tipo_pago,1',
+            'archivo_transporte' => 'required_if:tipo_pago,1',
+        ],[
+            'id_base.gt' => 'Debe seleccionar base.',
+            'guia_transporte.required' => 'Debe ingresar nro. gr transporte.',
+            'peso.required' => 'Debe ingresar peso.',
+            'required_without_all' => 'Debe ingresar paquetes o sobres o fardos o caja.',
+            'tiempo_llegada.required' => 'Debe ingresar tiempo de llegada',
+            'recepcion.gt' => 'Debe seleccionar recepción.',
+            'receptor.required' => 'Debe ingresar receptor.',
+            'nombre_transporte.required_if' => 'Debe ingresar nombre de empresa.',
+            'importe_transporte.required_if' => 'Debe ingresar importe a pagar.',
+            'factura_transporte.required_if' => 'Debe ingresar n° factura.',
+            'archivo_transporte.required_if' => 'Debe ingresar PDF de factura.'
+        ]);
+
+        $errors = [];
+        if (($request->transporte=="1" || $request->transporte=="2") && $request->importe_transporte=="0") {
+            $errors['importe_transporte'] = ['Debe ingresar importe a pagar mayor a 0.'];
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
+        $valida = TrackingTransporte::where('id_base',$request->id_base)->where('semana',date('W'))
+                ->exists();
+        if($valida){
+            echo "error";
+        }else{
+            if($request->transporte=="3"){
+                $tipo_pago = 0;
+            }else{
+                $tipo_pago = $request->tipo_pago;
+            }
+
+            $archivo = "";
+            if($_FILES["archivo_transporte"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    $path = $_FILES["archivo_transporte"]["name"];
+                    $source_file = $_FILES['archivo_transporte']['tmp_name'];
+
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $nombre_soli = "Factura_".$request->id_base."_".date('YmdHis');
+                    $nombre = $nombre_soli.".".strtolower($ext);
+
+                    ftp_pasv($con_id,true);
+                    $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
+                    if($subio){
+                        $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
+                    }else{
+                        echo "Archivo no subido correctamente";
+                    }
+                }else{
+                    echo "No se conecto";
+                }
+            }
+
+            TrackingTransporte::create([
+                'id_base' => $request->id_base,
+                'semana' => date('W'),
+                'transporte' => $request->transporte,
+                'tiempo_llegada' => $request->tiempo_llegada,
+                'recepcion' => $request->recepcion,
+                'receptor' => $request->receptor,
+                'tipo_pago' => $tipo_pago,
+                'nombre_transporte' => $request->nombre_transporte,
+                'importe_transporte' => $request->importe_transporte,
+                'factura_transporte' => $request->factura_transporte,
+                'archivo_transporte' => $archivo,
+                'fecha' => now(),
+                'usuario' => session('usuario')->id_usuario
+            ]);
+        }
+    }
 
     public function detalle_transporte($id)
     {

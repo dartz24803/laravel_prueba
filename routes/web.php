@@ -141,6 +141,8 @@ Route::controller(TrackingController::class)->group(function () {
     Route::post('tracking/list', 'list')->name('tracking.list');
     Route::get('tracking/create', 'create')->name('tracking.create');
     Route::post('tracking', 'store')->name('tracking.store');
+    Route::get('tracking/detalle_transporte_inicial', 'detalle_transporte_inicial')->name('tracking.detalle_transporte_inicial');
+    Route::post('tracking/insert_detalle_transporte_inicial', 'insert_detalle_transporte_inicial')->name('tracking.insert_detalle_transporte_inicial');
     Route::get('tracking/{id}/detalle_transporte', 'detalle_transporte')->name('tracking.detalle_transporte');
     Route::post('tracking/{id}/insert_detalle_transporte', 'insert_detalle_transporte')->name('tracking.insert_detalle_transporte');
     Route::post('tracking/{id}/mercaderia_transito', 'insert_mercaderia_transito')->name('tracking.mercaderia_transito');
