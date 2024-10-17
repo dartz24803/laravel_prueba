@@ -1,5 +1,6 @@
-@extends('layouts.plantilla')
+@extends('layouts.plantilla_sinsoporte')
 @section('navbar')
+    @include('interna.navbar')
 @endsection
 
 @section('content')
@@ -7,7 +8,7 @@
         <div class="layout-px-spacing">
             <div class="page-header">
                 <div class="page-title">
-                    <h3>Registro de Soporte
+                    <h3>Registro de Soporte Master
                     </h3>
                 </div>
             </div>
@@ -40,8 +41,8 @@
 
     <script>
         $(document).ready(function() {
-            $("#soporte").addClass('active');
-            $("#hsoporte").attr('aria-expanded', 'true');
+            $("#soporte_master").addClass('active');
+            $("#hsoporte_master").attr('aria-expanded', 'true');
 
             Lista_Tickets_Soporte();
         });

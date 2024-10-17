@@ -57,6 +57,14 @@ class SoporteController extends Controller
     }
 
 
+    public function index_master()
+    {
+        $list_subgerencia = SubGerencia::list_subgerencia(9);
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('soporte.soporte_master.index', compact('list_notificacion', 'list_subgerencia'));
+    }
+
     public function list_tick()
     {
         // Obtener la lista de procesos con los campos requeridos
