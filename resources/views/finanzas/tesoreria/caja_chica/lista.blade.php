@@ -29,16 +29,16 @@
         @endphp
         @foreach ($list_caja_chica as $list)
             @php
-                if($list->id_tipo_moneda=="1" && $list->tipo_movimiento=="1"){
+                if($list->id_tipo_moneda=="1" && $list->tipo_movimiento=="1" && $list->estado_c!="3"){
                     $ing_soles = $ing_soles+$list->total;
                 }
-                if($list->id_tipo_moneda=="2" && $list->tipo_movimiento=="1"){
+                if($list->id_tipo_moneda=="2" && $list->tipo_movimiento=="1" && $list->estado_c!="3"){
                     $ing_dolares = $ing_dolares+$list->total;
                 }
-                if($list->id_tipo_moneda=="1" && $list->tipo_movimiento=="2"){
+                if($list->id_tipo_moneda=="1" && $list->tipo_movimiento=="2" && $list->estado_c!="3"){
                     $sal_soles = $sal_soles+$list->total;
                 }
-                if($list->id_tipo_moneda=="2" && $list->tipo_movimiento=="2"){
+                if($list->id_tipo_moneda=="2" && $list->tipo_movimiento=="2" && $list->estado_c!="3"){
                     $sal_dolares = $sal_dolares+$list->total;
                 }
             @endphp
