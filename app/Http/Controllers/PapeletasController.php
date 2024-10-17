@@ -61,7 +61,7 @@ class PapeletasController extends Controller
             
             $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida($estado_solicitud);
             
-            return view('rrhh.Papeletas_Salida.registro.lista_colaborador', $dato);
+            return view('rrhh.Papeletas_Salida.Registro.lista_colaborador', $dato);
     }
     
     public function Modal_Papeletas_Salida($parametro){
@@ -74,21 +74,21 @@ class PapeletasController extends Controller
                 $dato['list_vendedor'] = Usuario::get_list_vendedor($centro_labores, $separado_por_comas_puestos);
             }
 
-            return view('rrhh.Papeletas_Salida.registro.modal_registrar', $dato);   
+            return view('rrhh.Papeletas_Salida.Registro.modal_registrar', $dato);   
     }
     
     public function Cambiar_Motivo(){
             $dato['id_motivo'] = $this->input->post("id_motivo");
             $dato['list_destino'] = Destino::where('id_motivo', $dato['id_motivo'])
                                 ->get();
-            return view('rrhh.Papeletas_Salida.registro.destino', $dato);   
+            return view('rrhh.Papeletas_Salida.Registro.destino', $dato);   
     }
     
     public function Traer_Tramite(){
             $id_destino = $this->input->post("id_destino");
             $dato['list_tramite'] = Tramite::where('id_destino', $id_destino)
                                 ->get();
-            return view('rrhh.Papeletas_Salida.registro.tramite', $dato);   
+            return view('rrhh.Papeletas_Salida.Registro.tramite', $dato);   
     }
 
     public function Buscar_Papeletas_Salida_Gestion(){
