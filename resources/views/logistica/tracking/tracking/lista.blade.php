@@ -1173,7 +1173,7 @@ use App\Models\TrackingDetalleProceso;
 
         Swal({
             title: '¿Realmente desea cambiar el estado?',
-            text: "El cambio será permanentemente",
+            text: "Se cambiará al estado MERCADERÍA EN TRÁNSITO",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Si',
@@ -1208,7 +1208,7 @@ use App\Models\TrackingDetalleProceso;
 
         Swal({
             title: '¿Realmente desea cambiar el estado?',
-            text: "El cambio será permanentemente",
+            text: "Se cambiará al estado CONFIRMACIÓN DE LLEGADA",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Si',
@@ -1243,7 +1243,7 @@ use App\Models\TrackingDetalleProceso;
 
         Swal({
             title: '¿El fardo llegó en buenas condiciones?',
-            text: "El cambio será permanentemente",
+            text: "Debe escoger una de las opciones (SI o NO)",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Si',
@@ -1280,7 +1280,7 @@ use App\Models\TrackingDetalleProceso;
 
         Swal({
             title: '¿Realmente desea cambiar el estado?',
-            text: "El cambio será permanentemente",
+            text: "Se cambiará al estado CIERRE INSPECCIÓN DE FARDOS",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Si',
@@ -1318,7 +1318,7 @@ use App\Models\TrackingDetalleProceso;
 
         Swal({
             title: '¿Realmente desea cambiar el estado?',
-            text: "El cambio será permanentemente",
+            text: "Se cambiará al estado CONTEO DE MERCADERÍA",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Si',
@@ -1353,7 +1353,7 @@ use App\Models\TrackingDetalleProceso;
 
         Swal({
             title: '¿La mercadería llegó en buenas condiciones?',
-            text: "El cambio será permanentemente",
+            text: "Debe escoger una de las opciones (SI o NO)",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Si',
