@@ -24,3 +24,7 @@ Route::post('list_requerimiento_reposicion_vendedor', [TrackingController::class
 Route::put('tracking/{id}/requerimiento_reposicion', [TrackingController::class, 'update_requerimiento_reposicion_app'])->name('tracking.update_requerimiento_reposicion_app');
 //ELIMINAR MERCADERÍA NUEVA O RQ DE REPOSICIÓN
 Route::delete('mercaderia_surtida/{id}', [TrackingController::class, 'delete_mercaderia_surtida_app'])->name('mercaderia_surtida.destroy');
+//NUEVAS RUTAS MERCADERÍA NUEVA
+Route::post('list_mercaderia_nueva', [TrackingController::class, 'list_mercaderia_nueva_app_new'])->name('tracking.list_mercaderia_nueva_app_new');
+//NUEVAS RUTAS REQUERIMIENTO DE REPOSICIÓN
+Route::post('list_requerimiento_reposicion', [TrackingController::class, 'list_requerimiento_reposicion_app_new'])->name('tracking.list_requerimiento_reposicion_app_new');

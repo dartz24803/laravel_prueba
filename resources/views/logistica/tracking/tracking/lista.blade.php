@@ -343,6 +343,17 @@ use App\Models\TrackingDetalleProceso;
     }
 </style>
 
+@php 
+    $terminados = count(array_filter($list_tracking, fn($item) => $item->id_estado == "21"));
+    $total = count($list_tracking);
+    $porcentaje = 100*$terminados/$total;
+@endphp
+@if (session('usuario')->id_usuario=="139")
+    <div class="progress mb-3">
+        <div class="progress-bar bg-secondary" role="progressbar" style="width: {{ $porcentaje }}%;" aria-valuenow="{{ $porcentaje }}" aria-valuemin="0" aria-valuemax="100">{{ $porcentaje }}</div>
+    </div>
+@endif
+
 <table id="tabla_js" class="table" style="width:100%">
     <thead>
         <tr class="text-center">
@@ -1162,7 +1173,7 @@ use App\Models\TrackingDetalleProceso;
 
         Swal({
             title: '¿Realmente desea cambiar el estado?',
-            text: "El cambio será permanentemente",
+            text: "Se cambiará al estado MERCADERÍA EN TRÁNSITO",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Si',
@@ -1197,7 +1208,7 @@ use App\Models\TrackingDetalleProceso;
 
         Swal({
             title: '¿Realmente desea cambiar el estado?',
-            text: "El cambio será permanentemente",
+            text: "Se cambiará al estado CONFIRMACIÓN DE LLEGADA",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Si',
@@ -1232,7 +1243,7 @@ use App\Models\TrackingDetalleProceso;
 
         Swal({
             title: '¿El fardo llegó en buenas condiciones?',
-            text: "El cambio será permanentemente",
+            text: "Debe escoger una de las opciones (SI o NO)",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Si',
@@ -1269,7 +1280,7 @@ use App\Models\TrackingDetalleProceso;
 
         Swal({
             title: '¿Realmente desea cambiar el estado?',
-            text: "El cambio será permanentemente",
+            text: "Se cambiará al estado CIERRE INSPECCIÓN DE FARDOS",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Si',
@@ -1307,7 +1318,7 @@ use App\Models\TrackingDetalleProceso;
 
         Swal({
             title: '¿Realmente desea cambiar el estado?',
-            text: "El cambio será permanentemente",
+            text: "Se cambiará al estado CONTEO DE MERCADERÍA",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Si',
@@ -1342,7 +1353,7 @@ use App\Models\TrackingDetalleProceso;
 
         Swal({
             title: '¿La mercadería llegó en buenas condiciones?',
-            text: "El cambio será permanentemente",
+            text: "Debe escoger una de las opciones (SI o NO)",
             type: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Si',

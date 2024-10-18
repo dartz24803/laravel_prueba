@@ -158,7 +158,8 @@ class Tracking extends Model
                     LEFT JOIN tracking_estado te ON de.id_estado=te.id
                     WHERE tr.iniciar=1 AND (($parte tr.estado=1 AND de.id_estado!=21) OR 
                     ($parte tr.estado=1 AND de.id_estado=21 AND 
-                    DATE(de.fecha)>DATE_SUB(CURDATE(), INTERVAL 1 WEEK)))";
+                    DATE(de.fecha)>DATE_SUB(CURDATE(), INTERVAL 1 WEEK)))
+                    ORDER BY de.fecha DESC";
             $query = DB::select($sql);
             return $query;
         }
