@@ -343,6 +343,17 @@ use App\Models\TrackingDetalleProceso;
     }
 </style>
 
+@php 
+    $terminados = count(array_filter($list_tracking, fn($item) => $item->id_estado == "21"));
+    $total = count($list_tracking);
+    $porcentaje = 100*$terminados/$total;
+@endphp
+@if (session('usuario')->id_usuario=="139")
+    <div class="progress mb-3">
+        <div class="progress-bar bg-secondary" role="progressbar" style="width: {{ $porcentaje }}%;" aria-valuenow="{{ $porcentaje }}" aria-valuemin="0" aria-valuemax="100">{{ $porcentaje }}</div>
+    </div>
+@endif
+
 <table id="tabla_js" class="table" style="width:100%">
     <thead>
         <tr class="text-center">
