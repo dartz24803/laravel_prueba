@@ -18,6 +18,13 @@ class Especialidad extends Model
     // Definir los campos que pueden ser rellenados de forma masiva
     protected $fillable = [
         'nombre',
-        'id_area'
+        'id_area',
+        'estado',
+        'fec_reg',
+        'user_reg',
+        'fec_act',
+        'user_act',
+        'fec_eli',
+        'user_eli'
     ];
 }

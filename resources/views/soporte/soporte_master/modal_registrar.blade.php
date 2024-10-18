@@ -75,7 +75,7 @@
                 <select class="form-control" id="especialidad" name="especialidad">
                     <option value="0">Seleccione</option>
                     @foreach ($list_especialidad as $list)
-                        <option value="{{ $list->id }}">{{ $list->nombre }}</option>
+                    <option value="{{ $list->id }}">{{ $list->nombre }}</option>
                     @endforeach
                 </select>
             </div>
@@ -96,7 +96,7 @@
                 <select class="form-control" id="area" name="area">
                     <option value="0">Seleccione</option>
                     @foreach ($list_area as $list)
-                        <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
+                    <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
                     @endforeach
                 </select>
             </div>
@@ -130,7 +130,7 @@
                         <select class="form-control" id="sede" name="sede">
                             <option value="0">Seleccione</option>
                             @foreach ($list_sede as $sede)
-                                <option value="{{ $sede->id }}">{{ $sede->descripcion }}</option>
+                            <option value="{{ $sede->id }}">{{ $sede->descripcion }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -261,7 +261,7 @@
 
     $('#sede').on('change', function() {
         const selectedSede = $(this).val(); // Obtenemos el valor de la sede seleccionada
-        var url = "{{ route('soporte_ubicacion_por_sede') }}";
+        var url = "{{ route('soporte_nivel_por_sede') }}";
         $.ajax({
             url: url,
             method: 'GET',
@@ -292,7 +292,7 @@
 
     $('#idsoporte_ubicacion').on('change', function() {
         const selectedubicacion1 = $(this).val();
-        var url = "{{ route('soporte_ubicacion2_por_ubicacion1') }}";
+        var url = "{{ route('soporte_areaespecifica_por_nivel') }}";
         $.ajax({
             url: url,
             method: 'GET',

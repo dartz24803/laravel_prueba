@@ -20,7 +20,7 @@ class SoporteAreaEspecifica extends Model
     protected $fillable = [
         'nombre',
         'descripcion',
-        'id_soporte_ubicacion1',
+        'id_soporte_nivel',
         'estado',
         'fec_reg',    // Fecha de registro
         'user_reg',   // Usuario que registró

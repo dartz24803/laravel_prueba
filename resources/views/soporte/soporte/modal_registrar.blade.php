@@ -67,77 +67,25 @@
     </div>
 
     <div class="modal-body" style="max-height:450px; overflow:auto;">
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label class="control-label text-bold">Especialidad:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" id="especialidad" name="especialidad">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_especialidad as $list)
-                        <option value="{{ $list->id }}">{{ $list->nombre }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="form-group col-lg-2" id="elemento-cont">
-                <label class="control-label text-bold">Elemento:</label>
-            </div>
-            <div class="form-group col-lg-4" id="elemento-container">
-                <select class="form-control" id="elemento" name="elemento">
-                    <option value="0">Seleccione</option>
-
-                </select>
-            </div>
-            <div class="form-group col-lg-1" id="elemento-area" style="display: none;">
-                <label class="control-label text-bold">Area:</label>
-            </div>
-            <div class="form-group col-lg-5" id="area-row" style="display: none;">
-                <select class="form-control" id="area" name="area">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_area as $list)
-                        <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-
-
 
         <div class="row">
-            <div class="form-group col-lg-2" id="asunto-cont">
-                <label class="control-label text-bold">Asunto:</label>
-            </div>
-            <div class="form-group col-lg-10" id="asunto-container">
-                <select class="form-control" id="asunto" name="asunto">
-                    <option value="0">Seleccione</option>
-                    <option value="9">Otros</option>
-
-                </select>
-            </div>
-        </div>
-
-        <div class="row">
-            <!-- Primera fila: Ubicación y sublist-container -->
             <div class="col-lg-12">
                 <div class="row">
-                    <!-- Label de "Ubicación" -->
                     <div class="form-group col-lg-2">
                         <label class="control-label text-bold">Ubicación:</label>
                     </div>
-
                     <div class="form-group col-lg-4">
                         <select class="form-control" id="sede" name="sede">
                             <option value="0">Seleccione</option>
                             @foreach ($list_sede as $sede)
-                                <option value="{{ $sede->id }}">{{ $sede->descripcion }}</option>
+                            <option value="{{ $sede->id }}">{{ $sede->descripcion }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div class="form-group col-lg-6" id="sublist-container">
-                        <select class="form-control" id="idsoporte_ubicacion" name="idsoporte_ubicacion">
-                            <option value="0">Seleccione Ubicación</option>
+                        <select class="form-control" id="idsoporte_nivel" name="idsoporte_nivel">
+                            <option value="0">Seleccione </option>
                         </select>
                     </div>
                 </div>
@@ -148,8 +96,8 @@
                 <div class="row">
                     <!-- Tercer select (Thirdlist-container), siempre presente pero con visibilidad controlada -->
                     <div class="form-group col-lg-4 offset-lg-2" id="thirdlist-container" style="visibility: hidden;">
-                        <select class="form-control" id="idsoporte_ubicacion2" name="idsoporte_ubicacion2">
-                            <option value="0">Seleccione SubUbicación</option>
+                        <select class="form-control" id="idsoporte_area_especifica" name="idsoporte_area_especifica">
+                            <option value="0">Seleccione Área Esp.</option>
                         </select>
                     </div>
                 </div>
@@ -170,6 +118,59 @@
                 </div>
             </div>
         </div>
+
+
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label class="control-label text-bold">Especialidad:</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <select class="form-control" id="especialidad" name="especialidad">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_especialidad as $list)
+                    <option value="{{ $list->id }}">{{ $list->nombre }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="form-group col-lg-2" id="elemento-cont">
+                <label class="control-label text-bold">Elemento:</label>
+            </div>
+            <div class="form-group col-lg-4" id="elemento-container">
+                <select class="form-control" id="elemento" name="elemento">
+                    <option value="0">Seleccione</option>
+
+                </select>
+            </div>
+            <div class="form-group col-lg-1" id="elemento-area" style="display: none;">
+                <label class="control-label text-bold">Area:</label>
+            </div>
+            <div class="form-group col-lg-5" id="area-row" style="display: none;">
+                <select class="form-control" id="area" name="area">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_area as $list)
+                    <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div class="form-group col-lg-2" id="asunto-cont">
+                <label class="control-label text-bold">Asunto:</label>
+            </div>
+            <div class="form-group col-lg-10" id="asunto-container">
+                <select class="form-control" id="asunto" name="asunto">
+                    <option value="0">Seleccione</option>
+                    <option value="9">Otros</option>
+
+                </select>
+            </div>
+        </div>
+
+
 
         <div class="row">
             <div class="form-group col-lg-2">
@@ -229,8 +230,8 @@
 
         // Variables para el manejo de "sede"
         var sedeSelect = document.getElementById('sede');
-        var subSedeSelect = document.getElementById('idsoporte_ubicacion');
-        var thirdSedeSelect = document.getElementById('idsoporte_ubicacion2');
+        var subSedeSelect = document.getElementById('idsoporte_nivel');
+        var thirdSedeSelect = document.getElementById('idsoporte_area_especifica');
         var sublistContainer = document.getElementById('sublist-container');
         var thirdContainer = document.getElementById('thirdlist-container');
 
@@ -261,7 +262,7 @@
 
     $('#sede').on('change', function() {
         const selectedSede = $(this).val(); // Obtenemos el valor de la sede seleccionada
-        var url = "{{ route('soporte_ubicacion_por_sede') }}";
+        var url = "{{ route('soporte_nivel_por_sede') }}";
         $.ajax({
             url: url,
             method: 'GET',
@@ -269,17 +270,17 @@
                 sedes: selectedSede
             },
             success: function(response) {
-                $('#idsoporte_ubicacion').empty().append(
-                    '<option value="0">Seleccione Ubicación</option>');
+                $('#idsoporte_nivel').empty().append(
+                    '<option value="0">Seleccione </option>');
                 console.log(response)
                 // Verificar si hay respuestas
                 if (response.length > 0) {
                     $.each(response, function(index, sede) {
-                        $('#idsoporte_ubicacion').append(
+                        $('#idsoporte_nivel').append(
                             `<option value="${sede.idsoporte_nivel}">${sede.nombre}</option>`
                         );
                     });
-                    $('#sublist-container').show(); // Mostrar el contenedor de idsoporte_ubicacion
+                    $('#sublist-container').show(); // Mostrar el contenedor de idsoporte_nivel
                 } else {
                     $('#sublist-container').hide(); // Ocultar si no hay ubicaciones
                 }
@@ -290,9 +291,9 @@
         });
     });
 
-    $('#idsoporte_ubicacion').on('change', function() {
+    $('#idsoporte_nivel').on('change', function() {
         const selectedubicacion1 = $(this).val();
-        var url = "{{ route('soporte_ubicacion2_por_ubicacion1') }}";
+        var url = "{{ route('soporte_areaespecifica_por_nivel') }}";
         $.ajax({
             url: url,
             method: 'GET',
@@ -300,15 +301,15 @@
                 ubicacion1: selectedubicacion1
             },
             success: function(response) {
-                $('#idsoporte_ubicacion2').empty().append(
-                    '<option value="0">Seleccione SubUbicación</option>');
+                $('#idsoporte_area_especifica').empty().append(
+                    '<option value="0">Seleccione Área Esp.</option>');
                 // Verificar si hay respuestas
                 if (response.length > 0) {
-                    $('#idsoporte_ubicacion2').empty().append(
-                        '<option value="0">Seleccione SubUbicación</option>');
+                    $('#idsoporte_area_especifica').empty().append(
+                        '<option value="0">Seleccione Área Esp.</option>');
                     $.each(response, function(index, ubicacion) {
-                        $('#idsoporte_ubicacion2').append(
-                            `<option value="${ubicacion.idsoporte_ubicacion2}">${ubicacion.nombre}</option>`
+                        $('#idsoporte_area_especifica').append(
+                            `<option value="${ubicacion.idsoporte_area_especifica}">${ubicacion.nombre}</option>`
                         );
                     });
                     $('#thirdlist-container').css('visibility', 'visible');

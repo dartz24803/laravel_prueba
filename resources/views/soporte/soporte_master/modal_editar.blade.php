@@ -36,18 +36,22 @@
                 <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
-                            <div class="form-group col-md-2 mb-0">
+                            <div class="form-group col-md-2">
                                 <label class="control-label text-bold" ">Responsable:</label>
                             </div>
-                            <div class="form-group col-md-10 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                {{-- <span class="form-control border-0">{{ $get_id->nombre_responsable }}</span> --}}
-                                     <select class="form-control" id="especialidad" name="especialidad">
-                                    <option value="0">SIN DESIGNAR</option>
-                                             @foreach ($list_responsable as $list)
-                                    <option value="{{ $list->id_usuario }}">{{ $list->usuario_nombres }}</option>
-                                    @endforeach
+                            <div class=" form-group col-md-10">
+                                    <select class="form-control" id="id_responsablee" name="id_responsablee">
+                                        <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
+                                        <option value="0" {{ is_null($get_id->id_responsable) ? 'selected' : '' }}>SIN DESIGNAR</option>
+                                        @foreach ($list_responsable as $list)
+                                        <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
+                                        <option value="{{ $list->id_usuario }}" {{ $get_id->id_responsable == $list->id_usuario ? 'selected' : '' }}>
+                                            {{ $list->nombre_completo }}
+                                        </option>
+                                        @endforeach
                                     </select>
                             </div>
+
 
                         </div>
                     </div>
@@ -56,35 +60,49 @@
                 <div class="row" id="cancel-row" style="flex: 1;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
-                            <div class="form-group col-md-2 mb-0">
-                                <label class="control-label text-bold" ">Estado:</label>
+                            <!-- Campo Estado -->
+                            <div class="form-group col-md-2">
+                                <label class="control-label text-bold">Estado:</label>
                             </div>
-                            <div class="form-group col-md-4 mb-0">
-                                <span class="form-control border-0">{{ $get_id->estado_registro }}</span>
+                            <div class="form-group col-md-4" id="estado-container">
+                                <select class="form-control" id="estado_registroe" name="estado_registroe">
+                                    <option value="1" {{ $get_id->estado_registro == 1 ? 'selected' : '' }}>Por Iniciar</option>
+                                    <option value="2" {{ $get_id->estado_registro == 2 ? 'selected' : '' }}>En Proceso</option>
+                                    <option value="3" {{ $get_id->estado_registro == 3 ? 'selected' : '' }}>Completado</option>
+                                    <option value="4" {{ $get_id->estado_registro == 4 ? 'selected' : '' }}>Stand By</option>
+                                    <option value="5" {{ $get_id->estado_registro == 5 ? 'selected' : '' }}>Cancelado</option>
+                                </select>
                             </div>
-                            <div class="form-group col-md-2 mb-0">
-                                <label class="control-label text-bold" ">Cierre:</label>
+
+                            <!-- Campos Cierre, inicialmente ocultos -->
+                            <div class="form-group col-md-2" id="cierre-label" style="display: none;">
+                                <label class="control-label text-bold">Cierre:</label>
                             </div>
-                            <div class="form-group col-md-4 mb-0">
-                                <span class="form-control border-0">{{ $get_id->fec_reg }}</span>
+                            <div class="form-group col-md-4" id="cierre-field" style="display: none;">
+                                <input type="date" class="form-control" id="fec_cierree" name="fec_cierree"
+                                    value="{{ $get_id->fec_cierre ? \Carbon\Carbon::parse($get_id->fec_cierre)->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
                             </div>
+
                         </div>
                     </div>
                 </div>
+
+
+
                 <div class="row" id="cancel-row" style="flex: 1;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
                             <div class="form-group col-md-2 mb-0">
                                 <label class="control-label text-bold" ">Base:</label>
                             </div>
-                            <div class="form-group col-md-4 mb-0">
-                                <span class="form-control border-0">{{ $get_id->base }}</span>
+                            <div class=" form-group col-md-4 mb-0">
+                                    <span class="form-control border-0">{{ $get_id->base }}</span>
                             </div>
                             <div class="form-group col-md-2 mb-0">
                                 <label class="control-label text-bold" ">Tipo:</label>
                             </div>
-                            <div class="form-group col-md-4 mb-0">
-                                <span class="form-control border-0">{{ $get_id->nombre_tipo }}</span>
+                            <div class=" form-group col-md-4 mb-0">
+                                    <span class="form-control border-0">{{ $get_id->nombre_tipo }}</span>
                             </div>
                         </div>
                     </div>
@@ -96,8 +114,8 @@
                             <div class="form-group col-md-2 mb-0">
                                 <label class="control-label text-bold" ">Usuario:</label>
                             </div>
-                            <div class="form-group col-md-10 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                <span class="form-control border-0">{{ $get_id->usuario_nombre }}</span>
+                            <div class=" form-group col-md-10 mb-0"> <!-- Ajustar la columna a col-md-10 -->
+                                    <span class="form-control border-0">{{ $get_id->usuario_nombre }}</span>
                             </div>
                         </div>
                     </div>
@@ -105,17 +123,17 @@
                 <div class="row" id="cancel-row" style="flex: 1;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
-                            <div class="form-group col-md-2 mb-0">
+                            <div class="form-group col-md-2">
                                 <label class="control-label text-bold" ">Especialidad:</label>
                             </div>
-                            <div class="form-group col-md-4 mb-0">
-                                <span class="form-control border-0">{{ $get_id->nombre_especialidad }}</span>
+                            <div class=" form-group col-md-4">
+                                    <span class="form-control border-0">{{ $get_id->nombre_especialidad }}</span>
                             </div>
-                            <div class="form-group col-md-2 mb-0">
+                            <div class="form-group col-md-2">
                                 <label class="control-label text-bold" ">Elemento:</label>
                             </div>
-                            <div class="form-group col-md-4 mb-0">
-                                <span class="form-control border-0">{{ $get_id->nombre_elemento }}</span>
+                            <div class=" form-group col-md-4">
+                                    <span class="form-control border-0">{{ $get_id->nombre_elemento }}</span>
                             </div>
                         </div>
                     </div>
@@ -126,8 +144,8 @@
                             <div class="form-group col-md-2 mb-0">
                                 <label class="control-label text-bold" ">Asunto:</label>
                             </div>
-                            <div class="form-group col-md-10 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                <span class="form-control border-0">{{ $get_id->nombre_asunto }}</span>
+                            <div class=" form-group col-md-10 mb-0"> <!-- Ajustar la columna a col-md-10 -->
+                                    <span class="form-control border-0">{{ $get_id->nombre_asunto }}</span>
                             </div>
                         </div>
                     </div>
@@ -138,14 +156,14 @@
                             <div class="form-group col-md-2 mb-0">
                                 <label class="control-label text-bold" ">Ubicación:</label>
                             </div>
-                            <div class="form-group col-md-4 mb-0">
-                                <span class="form-control border-0">{{ $get_id->nombre_ubicacion }}</span>
+                            <div class=" form-group col-md-4 mb-0">
+                                    <span class="form-control border-0">{{ $get_id->nombre_ubicacion }}</span>
                             </div>
                             <div class="form-group col-md-2 mb-0">
                                 <label class="control-label text-bold" ">Vencimiento:</label>
                             </div>
-                            <div class="form-group col-md-4 mb-0">
-                                <span class="form-control border-0">{{ $get_id->fec_vencimiento }}</span>
+                            <div class=" form-group col-md-4 mb-0">
+                                    <span class="form-control border-0">{{ $get_id->fec_vencimiento }}</span>
                             </div>
                         </div>
                     </div>
@@ -156,8 +174,8 @@
                             <div class="form-group col-md-2 mb-0">
                                 <label class="control-label text-bold" ">Descripción:</label>
                             </div>
-                            <div class="form-group col-md-10 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                <span class="form-control border-0">{{ $get_id->descripcion }}</span>
+                            <div class=" form-group col-md-10 mb-0"> <!-- Ajustar la columna a col-md-10 -->
+                                    <span class="form-control border-0">{{ $get_id->descripcion }}</span>
                             </div>
                         </div>
                     </div>
@@ -173,8 +191,8 @@
                             <div class="form-group col-md-6 mb-0">
                                 <label class="control-label text-bold" ">Ejecutor:</label>
                             </div>
-                            <div class="form-group col-md-6 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                <span class="form-control border-0">{{ $get_id->nombre_responsable }}</span>
+                            <div class=" form-group col-md-6 mb-0"> <!-- Ajustar la columna a col-md-10 -->
+                                    <span class="form-control border-0">{{ $get_id->nombre_responsable }}</span>
                             </div>
                         </div>
                     </div>
@@ -184,40 +202,112 @@
                 <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
-                            <div class="form-group col-md-8 mb-0">
+                            <div class="form-group col-md-12 mb-0">
                                 <label class="control-label text-bold" ">Solucion Aplicada:</label>
                             </div>
-                            <div class="form-group col-md-4 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                <span class="form-control border-0">{{ $get_id->fec_reg }}</span>
+                           
+                        </div>
+                    </div>
+                </div>
+                <div class=" row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
+                                    <div class="col-xl-12 col-lg-12 col-sm-12">
+                                        <div class="row align-items-center">
+                                            <div class=" form-group col-md-12 mb-0"> <!-- Ajustar la columna a col-md-10 -->
+                                                <textarea class="form-control" id="descripcione_solucion" name="descripcione_solucion" rows="5"
+                                                    placeholder="Ingresar descripción">{{ $get_id->descripcion_solucion }}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
-                    <div class="col-xl-12 col-lg-12 col-sm-12">
-                        <div class="row align-items-center">
-                            <div class="form-group col-md-2 mb-0 text-center">
-                                <img src="{{ asset('img/user-default.jpg') }}" alt="User Image"
-                                    class="img-fluid rounded-circle" style="max-width: 100px;">
-                            </div>
 
-                            <!-- Columna para la descripción -->
-                            <div class="form-group col-md-8 mb-0">
-                                <p>{{ $get_id->nombre_responsable }}</p>
-                                <p>{{ $get_id->descripcion }}</p>
-                            </div>
-
-                        </div>
-                    </div>
+                <div class="modal-footer">
+                    @csrf
+                    <button class="btn btn-primary" type="button" onclick="Update_Soporte_Master();">Guardar</button>
+                    <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-footer">
-        @csrf
-        @method('PUT')
-        <input type="hidden" id="capturae" name="capturae">
-        <button class="btn btn-primary" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cerrar</button>
-    </div>
 </form>
+
+<script>
+    $(document).ready(function() {
+
+        toggleCierre()
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleCierre(); // Llama a la función para ajustar el estado al cargar el documento
+    });
+
+    function toggleCierre() {
+        var estado = document.getElementById('estado_registroe').value;
+        var cierreLabel = document.getElementById('cierre-label');
+        var cierreField = document.getElementById('cierre-field');
+        var estadoContainer = document.getElementById('estado-container');
+        console.log("######")
+        if (estado == 3 || estado == 4) {
+            // Mostrar los campos de Cierre
+            cierreLabel.style.display = 'block';
+            cierreField.style.display = 'block';
+            estadoContainer.classList.remove('col-md-10');
+            estadoContainer.classList.add('col-md-4');
+        } else {
+            // Ocultar los campos de Cierre
+            cierreLabel.style.display = 'none';
+            cierreField.style.display = 'none';
+            estadoContainer.classList.remove('col-md-4');
+            estadoContainer.classList.add('col-md-10');
+        }
+    }
+
+    // También puedes agregar un evento 'change' al select para manejar cambios de estado
+    document.getElementById('estado_registroe').addEventListener('change', toggleCierre);
+
+
+    function Update_Soporte_Master() {
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_update'));
+        var url = "{{ route('soporte_ticket_master.update', $get_id->id_soporte) }}";
+
+        $.ajax({
+            url: url,
+            data: dataString,
+            type: "POST",
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                if (data == "error") {
+                    Swal({
+                        title: '¡Actualización Denegada!',
+                        text: "¡El registro ya existe!",
+                        type: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
+                    });
+                } else {
+                    swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Lista_Tickets_Soporte();
+                        $("#ModalUpdate .close").click();
+                    });
+                }
+            },
+            error: function(xhr) {
+                var errors = xhr.responseJSON.errors;
+                var firstError = Object.values(errors)[0][0];
+                Swal.fire(
+                    '¡Ups!',
+                    firstError,
+                    'warning'
+                );
+            }
+        });
+    }
+</script>

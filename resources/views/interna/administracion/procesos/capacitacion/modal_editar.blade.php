@@ -25,6 +25,8 @@
                     </option>
                     @endforeach
                 </select>
+
+
             </div>
             <div class="form-group col-lg-12">
                 <label for="descripcionee">Descripción:</label>

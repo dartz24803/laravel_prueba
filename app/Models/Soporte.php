@@ -29,6 +29,7 @@ class Soporte extends Model
         'idsoporte_solucion',
         'id_responsable',
         'fec_vencimiento',
+        'fec_cierre',
         'descripcion',
         'estado',
         'estado_registro',
@@ -52,6 +53,7 @@ class Soporte extends Model
             'soporte_nivel.nombre as nombre_ubicacion',
             'soporte_area_especifica.nombre as nombre_ubicacion2',
             'area.nom_area as nombre_area',
+            'users.centro_labores as base',
             'users.usuario_nombres as usuario_nombre'
 
         )
@@ -107,6 +109,7 @@ class Soporte extends Model
             'soporte_elemento.nombre as nombre_elemento',
             'especialidad.nombre as nombre_especialidad',
             'soporte_asunto.nombre as nombre_asunto',
+            'soporte_solucion.comentario as descripcion_solucion',
             'sede_laboral.descripcion as nombre_sede',
             'soporte_nivel.nombre as nombre_ubicacion',
             'soporte_area_especifica.nombre as nombre_ubicacion2',
@@ -123,6 +126,7 @@ class Soporte extends Model
             ->leftJoin('especialidad', 'soporte.id_especialidad', '=', 'especialidad.id')
             ->leftJoin('soporte_elemento', 'soporte.id_elemento', '=', 'soporte_elemento.idsoporte_elemento')
             ->leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
+            ->leftJoin('soporte_solucion', 'soporte.idsoporte_solucion', '=', 'soporte_solucion.idsoporte_solucion')
             ->leftJoin('sede_laboral', 'soporte.id_sede', '=', 'sede_laboral.id')
             ->leftJoin('soporte_nivel', 'soporte.idsoporte_nivel', '=', 'soporte_nivel.idsoporte_nivel')
             ->leftJoin('soporte_area_especifica', 'soporte.idsoporte_area_especifica', '=', 'soporte_area_especifica.idsoporte_area_especifica')

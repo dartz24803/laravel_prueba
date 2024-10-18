@@ -17,7 +17,7 @@
                 <label>Elemento:</label>
                 <select class="form-control" name="id_elemento" id="id_elemento">
                     @foreach ($list_elementos as $list)
-                        <option value="{{ $list->idsoporte_elemento }}">{{ $list->nombre }}</option>
+                    <option value="{{ $list->idsoporte_elemento }}">{{ $list->nombre }}</option>
                     @endforeach
                 </select>
             </div>
@@ -25,7 +25,7 @@
                 <label>Tipo de Soporte:</label>
                 <select class="form-control" name="tipo_soporte" id="tipo_soporte">
                     @foreach ($list_tipo as $list)
-                        <option value="{{ $list->idsoporte_tipo }}">{{ $list->nombre }}</option>
+                    <option value="{{ $list->idsoporte_tipo }}">{{ $list->nombre }}</option>
                     @endforeach
                 </select>
             </div>

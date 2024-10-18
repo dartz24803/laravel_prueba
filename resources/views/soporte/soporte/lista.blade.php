@@ -9,6 +9,7 @@
     <thead>
         <tr>
             <th>F.de Registro</th>
+            <th>Sede Laboral</th>
             <th>Usuario de Registro</th>
             <th>Especialidad</th>
             <th>Descripción</th>
@@ -17,16 +18,17 @@
     </thead>
     <tbody>
         @foreach ($list_tickets_soporte as $list)
-            <tr>
-                <td>{{ \Carbon\Carbon::parse($list->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
-                <td>{{ $list->usuario_nombre }}</td>
-                <td>{{ $list->nombre_especialidad }}</td>
-                <td>{{ $list->descripcion }}</td>
+        <tr>
+            <td>{{ \Carbon\Carbon::parse($list->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
+            <td>{{ $list->base }}</td>
+            <td>{{ $list->usuario_nombre }}</td>
+            <td>{{ $list->nombre_especialidad }}</td>
+            <td>{{ $list->descripcion }}</td>
 
-                <td class="text-center">
-                    <div style="display: flex; align-items: center; justify-content: center;">
-                        <div
-                            style="display: inline-block; 
+            <td class="text-center">
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <div
+                        style="display: inline-block; 
             background-color: 
             {{ $list->estado_registro == 1
                 ? '#f5996d'
@@ -38,42 +40,42 @@
                             ? '#f3b952'
                             : '#9edef8'))) }};
             border-radius: 14px; padding: 1px; width: 80px; color: white; text-align: center; margin-right: 10px;">
-                            @if ($list->estado_registro == 1)
-                                Por Iniciar
-                            @elseif ($list->estado_registro == 2)
-                                En Proceso
-                            @elseif ($list->estado_registro == 3)
-                                Completado
-                            @elseif ($list->estado_registro == 4)
-                                Stand By
-                            @elseif ($list->estado_registro == 5)
-                                Cancelado
+                        @if ($list->estado_registro == 1)
+                        Por Iniciar
+                        @elseif ($list->estado_registro == 2)
+                        En Proceso
+                        @elseif ($list->estado_registro == 3)
+                        Completado
+                        @elseif ($list->estado_registro == 4)
+                        Stand By
+                        @elseif ($list->estado_registro == 5)
+                        Cancelado
+                        @endif
+                    </div>
+                    <div class="dropdown">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink1"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round"
+                                class="feather feather-more-vertical">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="12" cy="5" r="1"></circle>
+                                <circle cx="12" cy="19" r="1"></circle>
+                            </svg>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
+                            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
+                                data-target="#ModalUpdateSlide" {{-- app_upd_slide="{{ url('RecursosHumanos/Modal_Lista_Saludo_Cumpleanio/' . $list['id_usuario']) }}" --}}>Ver</a>
+                            @if ($list->estado_registro == 5)
+                            <a class="dropdown-item" target="_blank" {{-- href="{{ url('Corporacion/Imprimir_Saludo/' . $list['id_usuario']) }}" --}}>Corregir</a>
                             @endif
                         </div>
-                        <div class="dropdown">
-                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink1"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="feather feather-more-vertical">
-                                    <circle cx="12" cy="12" r="1"></circle>
-                                    <circle cx="12" cy="5" r="1"></circle>
-                                    <circle cx="12" cy="19" r="1"></circle>
-                                </svg>
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
-                                <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
-                                    data-target="#ModalUpdateSlide" {{-- app_upd_slide="{{ url('RecursosHumanos/Modal_Lista_Saludo_Cumpleanio/' . $list['id_usuario']) }}" --}}>Ver</a>
-                                @if ($list->estado_registro == 5)
-                                    <a class="dropdown-item" target="_blank" {{-- href="{{ url('Corporacion/Imprimir_Saludo/' . $list['id_usuario']) }}" --}}>Corregir</a>
-                                @endif
-                            </div>
-                        </div>
                     </div>
-                </td>
+                </div>
+            </td>
 
-            </tr>
+        </tr>
         @endforeach
     </tbody>
 </table>
