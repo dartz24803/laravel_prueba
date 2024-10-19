@@ -27,6 +27,7 @@ class Soporte extends Model
         'codigo',
         'idsoporte_tipo',
         'idsoporte_solucion',
+        'idsoporte_ejecutor',
         'id_responsable',
         'fec_vencimiento',
         'fec_cierre',

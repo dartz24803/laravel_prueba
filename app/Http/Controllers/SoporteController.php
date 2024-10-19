@@ -15,6 +15,7 @@ use App\Models\ContenidoSupervisionTienda;
 use App\Models\DetalleSeguimientoCoordinador;
 use App\Models\DetalleSupervisionTienda;
 use App\Models\DiaSemana;
+use App\Models\EjecutorResponsable;
 use App\Models\ElementoSoporte;
 use App\Models\Especialidad;
 use App\Models\Gerencia;
@@ -40,6 +41,7 @@ use App\Models\Notificacion;
 use App\Models\SedeLaboral;
 use App\Models\Soporte;
 use App\Models\SoporteAreaEspecifica;
+use App\Models\SoporteEjecutor;
 use App\Models\SoporteNivel;
 use App\Models\SoporteSolucion;
 use App\Models\SubGerencia;
@@ -237,7 +239,20 @@ class SoporteController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
-
+        $soporte_ejecutor = SoporteEjecutor::create([
+            'idejecutor_responsable' => null,
+            'fec_inicio_proyecto' => null,
+            'nombre_proyecto' => '',
+            'proveedor' => '',
+            'nombre_contratista' => '',
+            'dni_prestador_servicio' => '',
+            'ruc' => '',
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
         // dd($request->idsoporte_area_especifica);
         Soporte::create([
             'codigo' => $codigo_generado,
@@ -250,6 +265,7 @@ class SoporteController extends Controller
             'id_area' => $request->area ?? 0,
             'id_responsable' => null,
             'idsoporte_solucion' => $soporte_solucion->idsoporte_solucion,
+            'idsoporte_ejecutor' => $soporte_ejecutor->idsoporte_ejecutor,
             'fec_vencimiento' => $request->vencimiento,
             'descripcion' => $request->descripcion,
             'tipo_soporte' => $request->tipo_soporte,
@@ -412,8 +428,9 @@ class SoporteController extends Controller
             ->select('especialidad.*', 'area.nom_area') // Selecciona los campos que necesites
             ->first();
         $list_responsable = Usuario::get_list_colaborador_xarea_static($area->id_area);
+        $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad(1);
 
-        // dd($area);
+        dd($list_ejecutores_responsables);
 
         return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area'));
     }

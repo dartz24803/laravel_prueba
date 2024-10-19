@@ -188,11 +188,22 @@
                 <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
-                            <div class="form-group col-md-6 mb-0">
+                            <div class="form-group col-md-2 mb-0">
                                 <label class="control-label text-bold" ">Ejecutor:</label>
                             </div>
-                            <div class=" form-group col-md-6 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                    <span class="form-control border-0">{{ $get_id->nombre_responsable }}</span>
+                            <div class=" form-group col-md-10 mb-0"> <!-- Ajustar la columna a col-md-10 -->
+
+                                    <select class="form-control" id="ejecutor_responsable" name="ejecutor_responsable">
+                                        <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
+                                        <option value="0" {{ is_null($get_id->id_responsable) ? 'selected' : '' }}>SIN DESIGNAR</option>
+                                        @foreach ($list_responsable as $list)
+                                        <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
+                                        <option value="{{ $list->id_usuario }}" {{ $get_id->id_responsable == $list->id_usuario ? 'selected' : '' }}>
+                                            {{ $list->nombre_completo }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+
                             </div>
                         </div>
                     </div>
