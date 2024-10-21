@@ -43,6 +43,8 @@ class Tracking extends Model
         'diferencia',
         'guia_sobrante',
         'guia_faltante',
+        'v_sobrante',
+        'v_faltante',
         'devolucion',
         'iniciar',
         'estado',
@@ -78,7 +80,7 @@ class Tracking extends Model
                     CASE WHEN tr.recepcion=1 THEN 'Agencia' WHEN tr.recepcion=2 THEN 'Domicilio' 
                     ELSE '' END AS recepcion,
                     CASE WHEN tr.tipo_pago=1 THEN 'Si pago' WHEN tr.tipo_pago=2 THEN 'Por pagar' 
-                    ELSE '' END AS nom_tipo_pago
+                    ELSE '' END AS nom_tipo_pago,YEAR(tr.fec_reg) AS anio
                     FROM tracking tr
                     LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base
@@ -117,7 +119,6 @@ class Tracking extends Model
             $query = DB::select($sql);
             return $query;
         }else{
-            $semana = date('W');
             $parte = "";
             if(substr(session('usuario')->centro_labores,0,1)=="B"){
                 $parte = "bh.cod_base='".session('usuario')->centro_labores."' AND";
@@ -141,8 +142,8 @@ class Tracking extends Model
                     (SELECT COUNT(1) FROM tracking_diferencia tdif
                     WHERE tdif.id_tracking=tr.id AND tdif.enviado>tdif.recibido) AS faltantes,
                     tr.transporte,(SELECT COUNT(1) FROM tracking_transporte tt
-                    WHERE tt.id_base=tr.id_origen_hacia AND 
-                    tt.semana='$semana') AS transporte_inicial
+                    WHERE tt.id_base=tr.id_origen_hacia AND tt.anio=YEAR(tr.fec_reg) AND
+                    tt.semana=tr.semana) AS transporte_inicial,tr.v_sobrante,tr.v_faltante
                     FROM tracking tr
                     LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base

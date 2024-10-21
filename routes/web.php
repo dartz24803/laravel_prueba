@@ -161,6 +161,7 @@ Route::controller(TrackingController::class)->group(function () {
     Route::post('tracking/{id}/reporte_diferencia', 'insert_reporte_diferencia')->name('tracking.insert_reporte_diferencia');
     Route::get('tracking/{id}/detalle_operacion_diferencia', 'detalle_operacion_diferencia')->name('tracking.detalle_operacion_diferencia');
     Route::post('tracking/{id}/diferencia_regularizada', 'insert_diferencia_regularizada')->name('tracking.insert_diferencia_regularizada');
+    Route::post('tracking/{id}/validacion_diferencia', 'validacion_diferencia')->name('tracking.validacion_diferencia');
     Route::get('tracking/{id}/solicitud_devolucion', 'solicitud_devolucion')->name('tracking.solicitud_devolucion');
     Route::get('tracking/{id}/modal_solicitud_devolucion', 'modal_solicitud_devolucion')->name('tracking.modal_solicitud_devolucion');
     Route::post('tracking/{id}/devolucion_temporal', 'insert_devolucion_temporal')->name('tracking.insert_devolucion_temporal');
