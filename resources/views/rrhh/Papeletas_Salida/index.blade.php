@@ -78,7 +78,7 @@ $id_nivel=session('usuario')->id_nivel;
     $centro_labores = session('usuario')->centro_labores;
 
     $usuario_codigo = session('usuario')->usuario_codigo;
-    $permiso_pps =   session('usuario')->estadopps; 
+    $permiso_pps =   session('usuario')->estadopps;
 
     $registro_masivo = session('usuario')->registro_masivo;
 ?>
@@ -93,20 +93,20 @@ $id_nivel=session('usuario')->id_nivel;
                                 <li class="nav-item">
                                     <a class="nav-link active" id="registro-tab" data-toggle="tab" href="#registro" role="tab" aria-controls="home" aria-selected="true" onclick="Buscar_Papeleta_Registro()">Registro</a>
                                 </li>
-                            <?php if($permiso_pps==1 || $id_nivel==1 || $id_puesto==19 || $id_puesto==21 || $id_puesto==23 || $id_puesto==40 || 
-                                    $id_puesto==10 || $id_puesto==93 || $id_puesto==314 || $id_puesto==315){?> 
+                            <?php if($permiso_pps==1 || $id_nivel==1 || $id_puesto==19 || $id_puesto==21 || $id_puesto==23 || $id_puesto==40 ||
+                                    $id_puesto==10 || $id_puesto==93 || $id_puesto==314 || $id_puesto==315){?>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="aprobacion-tab" data-toggle="tab" href="#aprobacion" role="tab" aria-controls="home" aria-selected="true" onclick="Buscar_Papeletas_Salida_Gestion()">Aprobación</a>
+                                    <a class="nav-link" id="aprobacion-tab" data-toggle="tab" href="#aprobacion" role="tab" aria-controls="home" aria-selected="true" onclick="Buscar_Papeleta_Aprobacion()">Aprobación</a>
                                 </li>
                             <?php }?>
-                            <?php if($id_nivel==1 || $id_puesto==23 || $id_puesto==36 || $id_puesto==24 || $id_puesto==26 || $id_puesto==128 || 
+                            <?php if($id_nivel==1 || $id_puesto==23 || $id_puesto==36 || $id_puesto==24 || $id_puesto==26 || $id_puesto==128 ||
                             $id_puesto==21 || $id_puesto==19 || $id_puesto==279 || $id_puesto==209 || $id_puesto==307 || $id_puesto==315){?>
                                 <li class="nav-item">
                                     <a class="nav-link" id="control-tab" data-toggle="tab" href="#control" role="tab" aria-controls="home" aria-selected="true" onclick="Buscar_Estado_Solicitud_Papeletas_Salida_Seguridad()">Control</a>
-                                </li>    
+                                </li>
                             <?php }?>
                         </ul>
-                        
+
                         <div class="row" id="cancel-row">
                             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
                                 <div id="div_papeletas" class="widget-content widget-content-area p-3">
@@ -118,7 +118,7 @@ $id_nivel=session('usuario')->id_nivel;
             </div>
 
         </div>
-                
+
     </div>
 </div>
 
@@ -153,138 +153,19 @@ $id_nivel=session('usuario')->id_nivel;
         });
     }
 
-    function Buscar_Estado_Solicitud_Papeletas_Salida_Seguridad() {
+    function Buscar_Papeleta_Aprobacion(){
         Cargando();
 
-        var base = $('#base').val();
-        var num_doc = $('#num_doc_control').val();
-        var estado_solicitud = $('#estado_solicitud3').val();
-        //var id_area = $('#id_area').val();
-        var fecha_revision = $('#fecha_revision3').val();
-        var fecha_revision_fin = $('#fecha_revision_fin3').val();
-        var url = "{{ url('Papeletas/Buscar_Base_Papeletas_Seguridad') }}";
-        var ini = moment(fecha_revision);
-        var fin = moment(fecha_revision_fin);
-        var csrfToken = $('input[name="_token"]').val();
+        var url = "{{ url('Papeletas/Buscar_Papeleta_Aprobacion') }}";
 
-        if (ini.isAfter(fin) == true) {
-            msgDate = 'La Fecha de Inicio no debe ser mayor a la de Fecha de Fin. <br> Porfavor corrígelo. ';
-            inputFocus = '#hora_salida_hoy';
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
-        } else if (fecha_revision != '' && fecha_revision_fin === '') {
-            msgDate = 'Si va buscar por rango de fechas porfavor ponga la fecha final también  ';
-            inputFocus = '#hora_salida_hoy';
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
-
-        } else if (fecha_revision === '' && fecha_revision_fin != '') {
-            msgDate = 'Si va buscar por rango de fechas porfavor ponga la fecha inicial también  ';
-            inputFocus = '#hora_salida_hoy';
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
-        } else {
-            $.ajax({
-                type: "POST",
-                url: url,
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                data: {
-                    'base': base,
-                    'estado_solicitud': estado_solicitud,
-                    'fecha_revision': fecha_revision,
-                    'fecha_revision_fin': fecha_revision_fin,
-                    'num_doc':num_doc
-                },
-                success: function(data) {
-                    $('#lista_colaborador3').html(data);
-                }
-            });
-        }
-
-    }
-
-    function Buscar_Papeletas_Salida_Gestion() {
-        Cargando();
-        var estado_solicitud = $('#estado_solicitud2').val();
-        var fecha_revision = $('#fecha_revision').val();
-        var fecha_revision_fin = $('#fecha_revision_fin').val();
-        var url = "{{ url('Papeletas/Buscar_Papeletas_Salida_Gestion') }}";
-        var csrfToken = $('input[name="_token"]').val();
-
-        var ini = moment(fecha_revision);
-        var fin = moment(fecha_revision_fin);
-
-        if (ini.isAfter(fin) == true) {
-            msgDate = 'La Fecha de Inicio no debe ser mayor a la de Fecha de Fin. <br> Porfavor corrígelo. ';
-            inputFocus = '#hora_salida_hoy';
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
-        } else if (fecha_revision != '' && fecha_revision_fin === '') {
-            msgDate = 'Si va buscar por rango de fechas porfavor ponga la fecha final también  ';
-            inputFocus = '#hora_salida_hoy';
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
-
-        } else if (fecha_revision === '' && fecha_revision_fin != '') {
-            msgDate = 'Si va buscar por rango de fechas porfavor ponga la fecha inicial también  ';
-            inputFocus = '#hora_salida_hoy';
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
-        } else {
-            $.ajax({
-                type: "POST",
-                url: url,
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                data: {
-                    'estado_solicitud': estado_solicitud,
-                    'fecha_revision': fecha_revision,
-                    'fecha_revision_fin': fecha_revision_fin
-                },
-                success: function(data) {
-                    $('#lista_colaborador2').html(data);
-                }
-            });
-        }
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(resp) {
+                $('#div_papeletas').html(resp);
+                $("#aprobacion-tab").addClass('active');
+            }
+        });
     }
 
     function Busca_Registro_Papeleta(){
@@ -305,12 +186,12 @@ $id_nivel=session('usuario')->id_nivel;
             }
         });
     }
-   
+
 </script>
 @endsection
 
 <script>
-    
+
     /***********primero tooltip */
     var anchors = document.querySelectorAll('.anchor-tooltip');
     anchors.forEach(function(anchor) {
@@ -329,14 +210,14 @@ $id_nivel=session('usuario')->id_nivel;
     });
 
     function Vista_Imagen_Perfil(image_url,imageTitle){
-        $('#modelTitle').html(imageTitle); 
+        $('#modelTitle').html(imageTitle);
         $('#modalImgs').attr('src',image_url);
         $('#profileModal').modal('show');
         //var nombredeusu= $("#id_usuarioactual").val();
         var nombredeusu= 'p';
         document.getElementById("descargarcertificado_estudiog").innerHTML = "<a href='"+image_url+"' id='imga' class='btn buttonDownload' download='qr_"+nombredeusu+".jpg'>Descargar</a>"
     }
-    
+
 </script>
 
 <!----segundo tab aprobacion-->
