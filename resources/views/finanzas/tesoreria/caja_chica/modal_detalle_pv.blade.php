@@ -21,6 +21,7 @@
             <thead>
                 <tr class="text-center">
                     <th>Cantidad</th>
+                    <th>Unidad</th>
                     <th>Producto</th>
                     <th>Precio Unitario</th>
                     <th>Total</th>
@@ -30,6 +31,7 @@
                 @foreach ($list_producto as $list)
                     <tr class="text-center">
                         <td>{{ $list->cantidad }}</td>
+                        <td>{{ $list->nom_unidad }}</td>
                         <td class="text-left">{{ $list->producto }}</td>
                         <td>{{ $list->precio }}</td>
                         <td>{{ $list->total }}</td>

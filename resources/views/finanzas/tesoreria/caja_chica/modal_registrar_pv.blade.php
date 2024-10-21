@@ -235,6 +235,18 @@
                         <input type="text" class="form-control" name="cantidad" id="cantidad" 
                         placeholder="Cantidad" onkeypress="return solo_Numeros(event);">
                     </div>
+
+                    <div class="form-group col-lg-2">
+                        <label>Unidades:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <select class="form-control" name="id_unidad" id="id_unidad">
+                            <option value="0">Seleccione</option>
+                            @foreach ($list_unidad as $list)
+                                <option value="{{ $list->id_unidad }}">{{ $list->nom_unidad }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
         
                 <div class="row">
@@ -397,6 +409,7 @@
                 $('#cantidad').val('');
                 $('#producto').val('');
                 $('#precio').val('');
+                $('#id_unidad').val('0');
                 Lista_Temporal();
                 Total_Temporal();
             },

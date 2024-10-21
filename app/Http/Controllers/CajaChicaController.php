@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\SubGerencia;
 use App\Models\TipoComprobante;
 use App\Models\TipoPago;
+use App\Models\UnidadCC;
 use App\Models\Usuario;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -30,6 +31,8 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+
+use function PHPSTORM_META\map;
 
 class CajaChicaController extends Controller
 {
@@ -244,6 +247,7 @@ class CajaChicaController extends Controller
         $list_tipo_comprobante = TipoComprobante::whereIn('id',[1,2,3,6])->get();
         $list_pago = Pago::all();
         $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
+        $list_unidad = UnidadCC::all();
         return view('finanzas.tesoreria.caja_chica.modal_registrar_pv', compact(
             'list_ubicacion',
             'list_empresa',
@@ -251,6 +255,7 @@ class CajaChicaController extends Controller
             'list_tipo_comprobante',
             'list_pago',
             'list_tipo_moneda',
+            'list_unidad'
         ));
     }
 
@@ -309,9 +314,11 @@ class CajaChicaController extends Controller
 
     public function list_tmp_pv(Request $request)
     {
-        $list_temporal = CajaChicaProductoTmp::select('id','cantidad','producto','precio',
-                        DB::raw('cantidad*precio AS total'))
-                        ->where('id_usuario',session('usuario')->id_usuario)->get();
+        $list_temporal = CajaChicaProductoTmp::from('caja_chica_producto_tmp AS cp')
+                        ->select('cp.id','cp.cantidad','un.nom_unidad','cp.producto','cp.precio',
+                        DB::raw('cp.cantidad*cp.precio AS total'))
+                        ->join('vw_unidad_caja_chica AS un','un.id_unidad','=','cp.id_unidad')
+                        ->where('cp.id_usuario',session('usuario')->id_usuario)->get();
         return view('finanzas.tesoreria.caja_chica.lista_temporal_pv', compact('list_temporal'));
     }
 
@@ -319,11 +326,13 @@ class CajaChicaController extends Controller
     {
         $request->validate([
             'cantidad' => 'required|gt:0',
+            'id_unidad' => 'gt:0',
             'producto' => 'required',
             'precio' => 'required|gt:0'
         ],[
             'cantidad.required' => 'Debe ingresar cantidad.',
             'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
+            'id_unidad.gt' => 'Debe seleccionar unidad.',
             'producto.required' => 'Debe ingresar producto.',
             'precio.required' => 'Debe ingresar precio unitario.',
             'precio.gt' => 'Debe ingresar precio unitario mayor a 0.'
@@ -332,6 +341,7 @@ class CajaChicaController extends Controller
         CajaChicaProductoTmp::create([
             'id_usuario' => session('usuario')->id_usuario,
             'cantidad' => $request->cantidad,
+            'id_unidad' => $request->id_unidad,
             'producto' => $request->producto,
             'precio' => $request->precio
         ]);
@@ -449,8 +459,8 @@ class CajaChicaController extends Controller
             'user_act' => session('usuario')->id_usuario
         ]);
 
-        DB::statement('INSERT INTO caja_chica_producto (id_caja_chica,cantidad,producto,precio)
-        SELECT '.$caja_chica->id.',cantidad,producto,precio
+        DB::statement('INSERT INTO caja_chica_producto (id_caja_chica,cantidad,id_unidad,producto,precio)
+        SELECT '.$caja_chica->id.',cantidad,id_unidad,producto,precio
         FROM caja_chica_producto_tmp
         WHERE id_usuario='.session('usuario')->id_usuario);
 
@@ -474,8 +484,11 @@ class CajaChicaController extends Controller
                 'list_ruta'
             ));
         }else{
-            $list_producto = CajaChicaProducto::select('id','cantidad','producto','precio',
-                            DB::raw('cantidad*precio AS total'))->where('id_caja_chica',$id)->get();
+            $list_producto = CajaChicaProducto::from('caja_chica_producto AS cp')
+                            ->select('cp.id','cp.cantidad','un.nom_unidad','cp.producto','cp.precio',
+                            DB::raw('cp.cantidad*cp.precio AS total'))
+                            ->join('vw_unidad_caja_chica AS un','un.id_unidad','=','cp.id_unidad')
+                            ->where('cp.id_caja_chica',$id)->get();                            
             return view('finanzas.tesoreria.caja_chica.modal_detalle_pv', compact(
                 'get_id',
                 'list_tipo_moneda',
@@ -527,7 +540,8 @@ class CajaChicaController extends Controller
                                 ->orderBy('nombre','ASC')->get();
             }else{
                 $list_tipo_pago = [];
-            }            
+            }
+            $list_unidad = UnidadCC::all();
             return view('finanzas.tesoreria.caja_chica.modal_editar_pv', compact(
                 'get_id',
                 'list_ubicacion',
@@ -538,7 +552,8 @@ class CajaChicaController extends Controller
                 'list_tipo_comprobante',
                 'list_pago',
                 'list_tipo_pago',
-                'list_tipo_moneda'
+                'list_tipo_moneda',
+                'list_unidad'
             ));
         }
     }
@@ -646,8 +661,11 @@ class CajaChicaController extends Controller
 
     public function list_producto_pv($id)
     {
-        $list_producto = CajaChicaProducto::select('id','cantidad','producto','precio',
-                        DB::raw('cantidad*precio AS total'))->where('id_caja_chica',$id)->get();
+        $list_producto = CajaChicaProducto::from('caja_chica_producto AS cp')
+                        ->select('cp.id','cp.cantidad','un.nom_unidad','cp.producto','cp.precio',
+                        DB::raw('cp.cantidad*cp.precio AS total'))
+                        ->join('vw_unidad_caja_chica AS un','un.id_unidad','=','cp.id_unidad')
+                        ->where('cp.id_caja_chica',$id)->get();
         return view('finanzas.tesoreria.caja_chica.lista_producto_pv', compact('list_producto'));
     }
 
@@ -655,11 +673,13 @@ class CajaChicaController extends Controller
     {
         $request->validate([
             'cantidade' => 'required|gt:0',
+            'id_unidade' => 'gt:0',
             'productoe' => 'required',
             'precioe' => 'required|gt:0'
         ],[
             'cantidade.required' => 'Debe ingresar cantidad.',
             'cantidade.gt' => 'Debe ingresar cantidad mayor a 0.',
+            'id_unidade.gt' => 'Debe seleccionar unidad.',
             'productoe.required' => 'Debe ingresar producto.',
             'precioe.required' => 'Debe ingresar precio unitario.',
             'precioe.gt' => 'Debe ingresar precio unitario mayor a 0.'
@@ -668,6 +688,7 @@ class CajaChicaController extends Controller
         CajaChicaProducto::create([
             'id_caja_chica' => $id,
             'cantidad' => $request->cantidade,
+            'id_unidad' => $request->id_unidade,
             'producto' => $request->productoe,
             'precio' => $request->precioe
         ]);

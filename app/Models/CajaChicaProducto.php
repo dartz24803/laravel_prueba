@@ -16,6 +16,7 @@ class CajaChicaProducto extends Model
     protected $fillable = [
         'id_caja_chica',
         'cantidad',
+        'id_unidad',
         'producto',
         'precio'
     ];
