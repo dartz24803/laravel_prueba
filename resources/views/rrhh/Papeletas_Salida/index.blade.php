@@ -102,7 +102,7 @@ $id_nivel=session('usuario')->id_nivel;
                             <?php if($id_nivel==1 || $id_puesto==23 || $id_puesto==36 || $id_puesto==24 || $id_puesto==26 || $id_puesto==128 ||
                             $id_puesto==21 || $id_puesto==19 || $id_puesto==279 || $id_puesto==209 || $id_puesto==307 || $id_puesto==315){?>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="control-tab" data-toggle="tab" href="#control" role="tab" aria-controls="home" aria-selected="true" onclick="Buscar_Estado_Solicitud_Papeletas_Salida_Seguridad()">Control</a>
+                                    <a class="nav-link" id="control-tab" data-toggle="tab" href="#control" role="tab" aria-controls="home" aria-selected="true" onclick="Buscar_Papeleta_Control()">Control</a>
                                 </li>
                             <?php }?>
                         </ul>
@@ -128,10 +128,6 @@ $id_nivel=session('usuario')->id_nivel;
         $("#hrhumanos").attr('aria-expanded','true');
         $("#papeletas").addClass('active');
         Buscar_Papeleta_Registro();
-        //$("#busqueda_papeleta_seguridad").trigger("click");
-        /*if('<?php echo $permiso_pps ?>'==1 || '<?php echo $id_nivel ?>'==1 || '<?php echo $usuario_codigo ?>'==="44582537" || '<?php echo $usuario_codigo ?>'==="46553611" || '<?php echo $usuario_codigo ?>'==="29426417" || '<?php echo $usuario_codigo ?>'==="08584691" || '<?php echo $usuario_codigo ?>'==="46156858" || '<?php echo $id_puesto ?>'==19 || '<?php echo $id_puesto ?>'==21 || '<?php echo $id_puesto ?>'==279 || '<?php echo $id_puesto ?>'==23 || '<?php echo $id_puesto ?>'==40){
-            Busca_Registro_Papeleta()
-        }*/
     });
 
     function Buscar_Papeleta_Registro(){
@@ -187,6 +183,22 @@ $id_nivel=session('usuario')->id_nivel;
         });
     }
 
+    function Buscar_Papeleta_Control(){
+        Cargando();
+        var url = "{{ url('Papeletas/Buscar_Papeleta_Control') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type:"POST",
+            url:url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success:function (data) {
+                $('#div_papeletas').html(data);
+            }
+        });
+    }
 </script>
 @endsection
 

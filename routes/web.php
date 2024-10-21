@@ -2136,8 +2136,9 @@ Route::controller(PapeletasController::class)->group(function () {
     Route::post('Papeletas/Buscar_Papeletas_Salida_Aprobacion', 'Buscar_Papeletas_Salida_Aprobacion');
     Route::post('Papeletas/Aprobado_solicitud_papeletas_1', 'Aprobado_solicitud_papeletas_1');
     Route::post('Papeletas/Anular_solicitud_papeletas_1', 'Anular_solicitud_papeletas_1');
-    // Route::get('Papeletas/Destino', 'Destino');
-    // Route::get('Papeletas/Modal_Destino', 'Modal_Destino');
-    // Route::get('Papeletas/Modal_Update_Destino/{id}', 'Modal_Update_Destino');
-    // Route::post('Papeletas/Update_Destino', 'Update_Destino');
+    Route::get('Papeletas/Aprobar_Papeleta_Salida/{id}', 'Aprobar_Papeleta_Salida');
+    Route::post('Papeletas/Buscar_Papeleta_Control', 'Buscar_Papeleta_Control');
+    Route::post('Papeletas/Buscar_Base_Papeletas_Seguiridad', 'Buscar_Base_Papeletas_Seguiridad');
+    Route::post('Papeletas/Busca_Colaborador_Control', 'Busca_Colaborador_Control');
+    Route::get('Papeletas/Excel_Estado_Solicitud_Papeletas_Salida_Seguridad/{base}/{estado}/{fec_rev}/{fec_fin}/{num_doc}', 'Excel_Estado_Solicitud_Papeletas_Salida_Seguridad');
 });
