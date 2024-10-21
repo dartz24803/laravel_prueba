@@ -166,11 +166,14 @@
 
                 <div class="row">
                     <div class="form-group col-lg-2">
-                        <label>N° personas:</label>
+                        <label>Personas:</label>
                     </div>
                     <div class="form-group col-lg-4">
-                        <input type="text" class="form-control" name="personase" id="personase" 
-                        placeholder="N° personas" onkeypress="return solo_Numeros(event);">
+                        <select class="form-control multivaluee" name="personase[]" id="personase" multiple="multiple">
+                            @foreach ($list_usuario as $list)
+                                <option value="{{ $list->id_usuario }}">{{ $list->nom_usuario }}</option>
+                            @endforeach
+                        </select>
                     </div>
         
                     <div class="form-group col-lg-2">
@@ -275,6 +278,10 @@
         dropdownParent: $('#ModalUpdate')
     });
 
+    $('.multivaluee').select2({
+        dropdownParent: $('#ModalUpdate')
+    });
+
     Lista_Ruta();
     Total_Ruta();
 
@@ -319,12 +326,14 @@
             processData: false,
             contentType: false,
             success: function(data) {
-                $('#personase').val('');
                 $('#punto_salidae').val('');
                 $('#punto_llegadae').val('');
                 $('#transportee').val('0');
                 $('#motivoe').val('');
                 $('#costoe').val('');
+                $('.multivaluee').select2({
+                    dropdownParent: $('#ModalUpdate')
+                });
                 Lista_Ruta();
                 Total_Ruta();
             },

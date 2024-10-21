@@ -199,6 +199,13 @@
         </div>
     </div>
 
+    <div id="ModalDetail" data-backdrop="static" data-keyboard="false" class="modal animated fadeInRight custo-fadeInRight bd-example-modal-lg scrollpagina" tabindex="-1" role="dialog" aria-labelledby="ModalDetail" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+
     <div id="Modal_IMG_Link" class="modal animated zoomInUp custo-zoomInUp bd-example-modal-xl" data-backdrop="static" data-keyboard="false" role="dialog" tabindex="-1" role="dialog" aria-labelledby="ModalUpdate" aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
@@ -347,7 +354,10 @@
                 var link = $(e.relatedTarget);
                 $(this).find(".modal-content").load(link.attr("app_upd_slide"));
             });
-
+            $("#ModalDetail").on("show.bs.modal", function(e) {
+                var link = $(e.relatedTarget);
+                $(this).find(".modal-content").load(link.attr("app_detalle"));
+            });
             $('#Modal_IMG_Link').on('show.bs.modal', function(event) {
                 var button = $(event.relatedTarget);
                 var imagen = button.data('imagen');

@@ -1379,6 +1379,7 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::post('caja_chica/store_tmp_mo', 'store_tmp_mo')->name('caja_chica.store_tmp_mo');
     Route::delete('caja_chica/{id}/destroy_tmp_mo', 'destroy_tmp_mo')->name('caja_chica.destroy_tmp_mo');
     Route::get('caja_chica/total_tmp_mo', 'total_tmp_mo')->name('caja_chica.total_tmp_mo');
+    Route::get('caja_chica/{id}/modal_detalle_tmp_mo', 'modal_detalle_tmp_mo')->name('caja_chica.modal_detalle_tmp_mo');
     Route::post('caja_chica_mo', 'store_mo')->name('caja_chica.store_mo');
     Route::get('caja_chica/create_pv', 'create_pv')->name('caja_chica.create_pv');
     Route::post('caja_chica/traer_categoria_pv', 'traer_categoria_pv')->name('caja_chica.traer_categoria_pv');
@@ -1396,6 +1397,7 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::put('caja_chica/{id}/store_ruta_mo', 'store_ruta_mo')->name('caja_chica.store_ruta_mo');
     Route::delete('caja_chica/{id}/destroy_ruta_mo', 'destroy_ruta_mo')->name('caja_chica.destroy_ruta_mo');
     Route::get('caja_chica/{id}/total_ruta_mo', 'total_ruta_mo')->name('caja_chica.total_ruta_mo');
+    Route::get('caja_chica/{id}/modal_detalle_mo', 'modal_detalle_mo')->name('caja_chica.modal_detalle_mo');
     Route::put('caja_chica_mo/{id}', 'update_mo')->name('caja_chica.update_mo');
     Route::get('caja_chica/{id}/list_producto_pv', 'list_producto_pv')->name('caja_chica.list_producto_pv');
     Route::put('caja_chica/{id}/store_producto_pv', 'store_producto_pv')->name('caja_chica.store_producto_pv');
