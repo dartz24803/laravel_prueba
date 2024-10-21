@@ -15,7 +15,6 @@ class CajaChicaRutaTmp extends Model
 
     protected $fillable = [
         'id_usuario',
-        'personas',
         'punto_salida',
         'punto_llegada',
         'transporte',

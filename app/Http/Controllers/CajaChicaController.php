@@ -9,6 +9,8 @@ use App\Models\CajaChicaProducto;
 use App\Models\CajaChicaProductoTmp;
 use App\Models\CajaChicaRuta;
 use App\Models\CajaChicaRutaTmp;
+use App\Models\CajaChicaRutaTransporte;
+use App\Models\CajaChicaRutaTransporteTmp;
 use App\Models\Categoria;
 use App\Models\Empresas;
 use App\Models\Notificacion;
@@ -23,6 +25,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\SubGerencia;
 use App\Models\TipoComprobante;
 use App\Models\TipoPago;
+use App\Models\UnidadCC;
 use App\Models\Usuario;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -30,6 +33,8 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+
+use function PHPSTORM_META\map;
 
 class CajaChicaController extends Controller
 {
@@ -63,6 +68,7 @@ class CajaChicaController extends Controller
     public function create_mo()
     {
         CajaChicaRutaTmp::where('id_usuario',session('usuario')->id_usuario)->delete();
+        CajaChicaRutaTransporteTmp::where('id_usuario',session('usuario')->id_usuario)->delete();
         $list_ubicacion = Ubicacion::select('id_ubicacion','cod_ubi')->where('estado',1)
                         ->orderBy('cod_ubi','ASC')->get();
         $list_empresa = Empresas::select('id_empresa','nom_empresa')->where('activo',1)
@@ -96,27 +102,28 @@ class CajaChicaController extends Controller
 
     public function list_tmp_mo(Request $request)
     {
-        $list_temporal = CajaChicaRutaTmp::select('id','personas','punto_salida','punto_llegada',
-                        DB::raw("CASE WHEN transporte=1 THEN 'A PIE' WHEN transporte=2 THEN 'BUS'
-                        WHEN transporte=3 THEN 'COLECTIVO' WHEN transporte=4 THEN 'METRO'
-                        WHEN transporte=5 THEN 'TAXI' WHEN transporte=6 THEN 'TREN'
-                        ELSE '' END AS transporte"),'motivo','costo')
-                        ->where('id_usuario',session('usuario')->id_usuario)->get();
+        $list_temporal = CajaChicaRutaTmp::from('caja_chica_ruta_tmp AS cr')
+                        ->select('cr.id',DB::raw('(SELECT COUNT(1) FROM caja_chica_ruta_transporte_tmp ct
+                        WHERE ct.id_caja_chica_ruta=cr.id) AS personas'),'cr.punto_salida','cr.punto_llegada',
+                        DB::raw("CASE WHEN cr.transporte=1 THEN 'A PIE' WHEN cr.transporte=2 THEN 'BUS'
+                        WHEN cr.transporte=3 THEN 'COLECTIVO' WHEN cr.transporte=4 THEN 'METRO'
+                        WHEN cr.transporte=5 THEN 'TAXI' WHEN cr.transporte=6 THEN 'TREN'
+                        ELSE '' END AS transporte"),'cr.motivo','cr.costo')
+                        ->where('cr.id_usuario',session('usuario')->id_usuario)->get();
         return view('finanzas.tesoreria.caja_chica.lista_temporal_mo', compact('list_temporal'));
     }
 
     public function store_tmp_mo(Request $request)
     {
         $request->validate([
-            'personas' => 'required|gt:0',
+            'personas' => 'required',
             'punto_salida' => 'required',
             'punto_llegada' => 'required',
             'transporte' => 'gt:0',
             'motivo' => 'required',
             'costo' => 'required'
         ],[
-            'personas.required' => 'Debe ingresar n° personas.',
-            'personas.gt' => 'Debe ingresar n° personas mayor a 0.',
+            'personas.required' => 'Debe seleccionar al menos una persona.',
             'punto_salida.required' => 'Debe ingresar punto salida.',
             'punto_llegada.required' => 'Debe ingresar punto llegada.',
             'transporte.gt' => 'Debe seleccionar transporte.',
@@ -124,19 +131,27 @@ class CajaChicaController extends Controller
             'costo.required' => 'Debe ingresar costo.'
         ]);
 
-        CajaChicaRutaTmp::create([
+        $caja_chica_ruta = CajaChicaRutaTmp::create([
             'id_usuario' => session('usuario')->id_usuario,
-            'personas' => $request->personas,
             'punto_salida' => $request->punto_salida,
             'punto_llegada' => $request->punto_llegada,
             'transporte' => $request->transporte,
             'motivo' => $request->motivo,
             'costo' => $request->costo
         ]);
+
+        foreach($request->personas as $id_usuario){
+            CajaChicaRutaTransporteTmp::create([
+                'id_caja_chica_ruta' => $caja_chica_ruta->id,
+                'id_usuario' => session('usuario')->id_usuario,
+                'usuario' => $id_usuario
+            ]);
+        }
     }
 
     public function destroy_tmp_mo($id)
     {
+        CajaChicaRutaTransporteTmp::where('id_caja_chica_ruta',$id)->delete();
         CajaChicaRutaTmp::destroy($id);
     }
 
@@ -144,6 +159,16 @@ class CajaChicaController extends Controller
     {
         $suma = CajaChicaRutaTmp::where('id_usuario',session('usuario')->id_usuario)->sum('costo');
         echo $suma;
+    }
+
+    public function modal_detalle_tmp_mo($id)
+    {
+        $list_persona = CajaChicaRutaTransporteTmp::from('caja_chica_ruta_transporte_tmp AS ct')
+                        ->select(DB::raw("CONCAT(us.usuario_apater,' ',us.usuario_amater,', ',
+                        us.usuario_nombres) AS nom_usuario"))
+                        ->join('users AS us','us.id_usuario','=','ct.usuario')
+                        ->where('ct.id_caja_chica_ruta',$id)->get();
+        return view('finanzas.tesoreria.caja_chica.modal_detalle_persona_mo', compact('list_persona'));                        
     }
 
     public function store_mo(Request $request)
@@ -222,12 +247,25 @@ class CajaChicaController extends Controller
             'user_act' => session('usuario')->id_usuario
         ]);
 
-        DB::statement('INSERT INTO caja_chica_ruta (id_caja_chica,personas,punto_salida,
-        punto_llegada,transporte,motivo,costo)
-        SELECT '.$caja_chica->id.',personas,punto_salida,punto_llegada,transporte,motivo,costo
-        FROM caja_chica_ruta_tmp
-        WHERE id_usuario='.session('usuario')->id_usuario);
+        $list_caja_chica_ruta = CajaChicaRutaTmp::where('id_usuario',session('usuario')->id_usuario)->get();
 
+        foreach($list_caja_chica_ruta as $list){
+            $caja_chica_ruta = CajaChicaRuta::create([
+                'id_caja_chica' => $caja_chica->id,
+                'punto_salida' => $list->punto_salida,
+                'punto_llegada' => $list->punto_llegada,
+                'transporte' => $list->transporte,
+                'motivo' => $list->motivo,
+                'costo' => $list->costo
+            ]);
+
+            DB::statement('INSERT INTO caja_chica_ruta_transporte (id_caja_chica_ruta,id_usuario)
+            SELECT '.$caja_chica_ruta->id.',usuario
+            FROM caja_chica_ruta_transporte_tmp
+            WHERE id_caja_chica_ruta='.$list->id);
+        }
+
+        CajaChicaRutaTransporteTmp::where('id_usuario',session('usuario')->id_usuario)->delete();
         CajaChicaRutaTmp::where('id_usuario',session('usuario')->id_usuario)->delete();
     }
 
@@ -244,6 +282,7 @@ class CajaChicaController extends Controller
         $list_tipo_comprobante = TipoComprobante::whereIn('id',[1,2,3,6])->get();
         $list_pago = Pago::all();
         $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
+        $list_unidad = UnidadCC::all();
         return view('finanzas.tesoreria.caja_chica.modal_registrar_pv', compact(
             'list_ubicacion',
             'list_empresa',
@@ -251,6 +290,7 @@ class CajaChicaController extends Controller
             'list_tipo_comprobante',
             'list_pago',
             'list_tipo_moneda',
+            'list_unidad'
         ));
     }
 
@@ -277,7 +317,7 @@ class CajaChicaController extends Controller
                             ->orderBy('nombre','ASC')->get();
         }elseif($request->id_pago=="2"){
             $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
-                            ->where('estado',1)->whereIn('id',[2,3])
+                            ->where('estado',1)->whereIn('id',[2])
                             ->orderBy('nombre','ASC')->get();
         }else{
             $list_tipo_pago = [];
@@ -309,9 +349,11 @@ class CajaChicaController extends Controller
 
     public function list_tmp_pv(Request $request)
     {
-        $list_temporal = CajaChicaProductoTmp::select('id','cantidad','producto','precio',
-                        DB::raw('cantidad*precio AS total'))
-                        ->where('id_usuario',session('usuario')->id_usuario)->get();
+        $list_temporal = CajaChicaProductoTmp::from('caja_chica_producto_tmp AS cp')
+                        ->select('cp.id','cp.cantidad','un.nom_unidad','cp.producto','cp.precio',
+                        DB::raw('cp.cantidad*cp.precio AS total'))
+                        ->join('vw_unidad_caja_chica AS un','un.id_unidad','=','cp.id_unidad')
+                        ->where('cp.id_usuario',session('usuario')->id_usuario)->get();
         return view('finanzas.tesoreria.caja_chica.lista_temporal_pv', compact('list_temporal'));
     }
 
@@ -319,11 +361,13 @@ class CajaChicaController extends Controller
     {
         $request->validate([
             'cantidad' => 'required|gt:0',
+            'id_unidad' => 'gt:0',
             'producto' => 'required',
             'precio' => 'required|gt:0'
         ],[
             'cantidad.required' => 'Debe ingresar cantidad.',
             'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
+            'id_unidad.gt' => 'Debe seleccionar unidad.',
             'producto.required' => 'Debe ingresar producto.',
             'precio.required' => 'Debe ingresar precio unitario.',
             'precio.gt' => 'Debe ingresar precio unitario mayor a 0.'
@@ -332,6 +376,7 @@ class CajaChicaController extends Controller
         CajaChicaProductoTmp::create([
             'id_usuario' => session('usuario')->id_usuario,
             'cantidad' => $request->cantidad,
+            'id_unidad' => $request->id_unidad,
             'producto' => $request->producto,
             'precio' => $request->precio
         ]);
@@ -449,8 +494,8 @@ class CajaChicaController extends Controller
             'user_act' => session('usuario')->id_usuario
         ]);
 
-        DB::statement('INSERT INTO caja_chica_producto (id_caja_chica,cantidad,producto,precio)
-        SELECT '.$caja_chica->id.',cantidad,producto,precio
+        DB::statement('INSERT INTO caja_chica_producto (id_caja_chica,cantidad,id_unidad,producto,precio)
+        SELECT '.$caja_chica->id.',cantidad,id_unidad,producto,precio
         FROM caja_chica_producto_tmp
         WHERE id_usuario='.session('usuario')->id_usuario);
 
@@ -462,11 +507,13 @@ class CajaChicaController extends Controller
         $get_id = CajaChica::get_list_caja_chica(['id'=>$id]);
         $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();                   
         if($get_id->tipo=="MO"){
-            $list_ruta = CajaChicaRuta::select('id','personas','punto_salida','punto_llegada',
-                        DB::raw("CASE WHEN transporte=1 THEN 'A PIE' WHEN transporte=2 THEN 'BUS'
-                        WHEN transporte=3 THEN 'COLECTIVO' WHEN transporte=4 THEN 'METRO'
-                        WHEN transporte=5 THEN 'TAXI' WHEN transporte=6 THEN 'TREN'
-                        ELSE '' END AS transporte"),'motivo','costo')->where('id_caja_chica',$id)
+            $list_ruta = CajaChicaRuta::from('caja_chica_ruta AS cr')
+                        ->select('cr.id',DB::raw('(SELECT COUNT(1) FROM caja_chica_ruta_transporte ct
+                        WHERE ct.id_caja_chica_ruta=cr.id) AS personas'),'cr.punto_salida','cr.punto_llegada',
+                        DB::raw("CASE WHEN cr.transporte=1 THEN 'A PIE' WHEN cr.transporte=2 THEN 'BUS'
+                        WHEN cr.transporte=3 THEN 'COLECTIVO' WHEN cr.transporte=4 THEN 'METRO'
+                        WHEN cr.transporte=5 THEN 'TAXI' WHEN cr.transporte=6 THEN 'TREN'
+                        ELSE '' END AS transporte"),'cr.motivo','cr.costo')->where('cr.id_caja_chica',$id)
                         ->get();
             return view('finanzas.tesoreria.caja_chica.modal_detalle_mo', compact(
                 'get_id',
@@ -474,8 +521,11 @@ class CajaChicaController extends Controller
                 'list_ruta'
             ));
         }else{
-            $list_producto = CajaChicaProducto::select('id','cantidad','producto','precio',
-                            DB::raw('cantidad*precio AS total'))->where('id_caja_chica',$id)->get();
+            $list_producto = CajaChicaProducto::from('caja_chica_producto AS cp')
+                            ->select('cp.id','cp.cantidad','un.nom_unidad','cp.producto','cp.precio',
+                            DB::raw('cp.cantidad*cp.precio AS total'))
+                            ->join('vw_unidad_caja_chica AS un','un.id_unidad','=','cp.id_unidad')
+                            ->where('cp.id_caja_chica',$id)->get();                            
             return view('finanzas.tesoreria.caja_chica.modal_detalle_pv', compact(
                 'get_id',
                 'list_tipo_moneda',
@@ -498,18 +548,13 @@ class CajaChicaController extends Controller
                         usuario_nombres) AS nom_usuario"))->where('estado',1)->get();
         $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
         if($get_id->tipo=="MO"){
-            $list_ruta = CajaChicaRuta::select('id','personas','punto_salida','punto_llegada',
-                            DB::raw("CASE WHEN transporte=1 THEN 'BUS' WHEN transporte=2 THEN 'TAXI'
-                            ELSE '' END AS transporte"),'motivo','costo')->where('id_caja_chica',$id)
-                            ->get();
             return view('finanzas.tesoreria.caja_chica.modal_editar_mo', compact(
                 'get_id',
                 'list_ubicacion',
                 'list_empresa',
                 'list_sub_categoria',
                 'list_usuario',
-                'list_tipo_moneda',
-                'list_ruta'
+                'list_tipo_moneda'
             ));
         }else{
             $list_categoria = Categoria::select('id_categoria','nom_categoria')->where('id_categoria_mae',3)
@@ -523,11 +568,12 @@ class CajaChicaController extends Controller
                                 ->orderBy('nombre','ASC')->get();
             }elseif($get_id->id_pago=="2"){
                 $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
-                                ->where('estado',1)->whereIn('id',[2,3])
+                                ->where('estado',1)->whereIn('id',[2])
                                 ->orderBy('nombre','ASC')->get();
             }else{
                 $list_tipo_pago = [];
-            }            
+            }
+            $list_unidad = UnidadCC::all();
             return view('finanzas.tesoreria.caja_chica.modal_editar_pv', compact(
                 'get_id',
                 'list_ubicacion',
@@ -538,18 +584,21 @@ class CajaChicaController extends Controller
                 'list_tipo_comprobante',
                 'list_pago',
                 'list_tipo_pago',
-                'list_tipo_moneda'
+                'list_tipo_moneda',
+                'list_unidad'
             ));
         }
     }
 
     public function list_ruta_mo($id)
     {
-        $list_ruta = CajaChicaRuta::select('id','personas','punto_salida','punto_llegada',
-                    DB::raw("CASE WHEN transporte=1 THEN 'A PIE' WHEN transporte=2 THEN 'BUS'
-                    WHEN transporte=3 THEN 'COLECTIVO' WHEN transporte=4 THEN 'METRO'
-                    WHEN transporte=5 THEN 'TAXI' WHEN transporte=6 THEN 'TREN'
-                    ELSE '' END AS transporte"),'motivo','costo')->where('id_caja_chica',$id)
+        $list_ruta = CajaChicaRuta::from('caja_chica_ruta AS cr')
+                    ->select('cr.id',DB::raw('(SELECT COUNT(1) FROM caja_chica_ruta_transporte ct
+                    WHERE ct.id_caja_chica_ruta=cr.id) AS personas'),'cr.punto_salida','cr.punto_llegada',
+                    DB::raw("CASE WHEN cr.transporte=1 THEN 'A PIE' WHEN cr.transporte=2 THEN 'BUS'
+                    WHEN cr.transporte=3 THEN 'COLECTIVO' WHEN cr.transporte=4 THEN 'METRO'
+                    WHEN cr.transporte=5 THEN 'TAXI' WHEN cr.transporte=6 THEN 'TREN'
+                    ELSE '' END AS transporte"),'cr.motivo','cr.costo')->where('id_caja_chica',$id)
                     ->get();
         return view('finanzas.tesoreria.caja_chica.lista_ruta_mo', compact('list_ruta'));
     }
@@ -557,15 +606,14 @@ class CajaChicaController extends Controller
     public function store_ruta_mo(Request $request, $id)
     {
         $request->validate([
-            'personase' => 'required|gt:0',
+            'personase' => 'required',
             'punto_salidae' => 'required',
             'punto_llegadae' => 'required',
             'transportee' => 'gt:0',
             'motivoe' => 'required',
             'costoe' => 'required'
         ],[
-            'personase.required' => 'Debe ingresar n° personas.',
-            'personase.gt' => 'Debe ingresar n° personas mayor a 0.',
+            'personase.required' => 'Debe seleccionar al menos una persona.',
             'punto_salidae.required' => 'Debe ingresar punto salida.',
             'punto_llegadae.required' => 'Debe ingresar punto llegada.',
             'transportee.gt' => 'Debe seleccionar transporte.',
@@ -573,23 +621,31 @@ class CajaChicaController extends Controller
             'costoe.required' => 'Debe ingresar costo.'
         ]);
 
-        CajaChicaRuta::create([
+        $caja_chica_ruta = CajaChicaRuta::create([
             'id_caja_chica' => $id,
-            'personas' => $request->personase,
             'punto_salida' => $request->punto_salidae,
             'punto_llegada' => $request->punto_llegadae,
             'transporte' => $request->transportee,
             'motivo' => $request->motivoe,
             'costo' => $request->costoe
         ]);
+
+        foreach($request->personase as $id_usuario){
+            CajaChicaRutaTransporte::create([
+                'id_caja_chica_ruta' => $caja_chica_ruta->id,
+                'id_usuario' => $id_usuario
+            ]);
+        }
     }
 
     public function destroy_ruta_mo($id)
     {
-        $valida = CajaChicaRuta::where('id_caja_chica', $id)->count();
+        $get_id = CajaChicaRuta::findOrFail($id);
+        $valida = CajaChicaRuta::where('id_caja_chica', $get_id->id_caja_chica)->count();
         if ($valida<=1) {
             echo "error";
         }else{
+            CajaChicaRutaTransporte::where('id_caja_chica_ruta',$id)->delete();
             CajaChicaRuta::destroy($id);
         }
     }
@@ -598,6 +654,16 @@ class CajaChicaController extends Controller
     {
         $suma = CajaChicaRuta::where('id_caja_chica',$id)->sum('costo');
         echo $suma;
+    }
+
+    public function modal_detalle_mo($id)
+    {
+        $list_persona = CajaChicaRutaTransporte::from('caja_chica_ruta_transporte AS ct')
+                        ->select(DB::raw("CONCAT(us.usuario_apater,' ',us.usuario_amater,', ',
+                        us.usuario_nombres) AS nom_usuario"))
+                        ->join('users AS us','us.id_usuario','=','ct.id_usuario')
+                        ->where('ct.id_caja_chica_ruta',$id)->get();
+        return view('finanzas.tesoreria.caja_chica.modal_detalle_persona_mo', compact('list_persona'));                        
     }
 
     public function update_mo(Request $request, $id)
@@ -646,8 +712,11 @@ class CajaChicaController extends Controller
 
     public function list_producto_pv($id)
     {
-        $list_producto = CajaChicaProducto::select('id','cantidad','producto','precio',
-                        DB::raw('cantidad*precio AS total'))->where('id_caja_chica',$id)->get();
+        $list_producto = CajaChicaProducto::from('caja_chica_producto AS cp')
+                        ->select('cp.id','cp.cantidad','un.nom_unidad','cp.producto','cp.precio',
+                        DB::raw('cp.cantidad*cp.precio AS total'))
+                        ->join('vw_unidad_caja_chica AS un','un.id_unidad','=','cp.id_unidad')
+                        ->where('cp.id_caja_chica',$id)->get();
         return view('finanzas.tesoreria.caja_chica.lista_producto_pv', compact('list_producto'));
     }
 
@@ -655,11 +724,13 @@ class CajaChicaController extends Controller
     {
         $request->validate([
             'cantidade' => 'required|gt:0',
+            'id_unidade' => 'gt:0',
             'productoe' => 'required',
             'precioe' => 'required|gt:0'
         ],[
             'cantidade.required' => 'Debe ingresar cantidad.',
             'cantidade.gt' => 'Debe ingresar cantidad mayor a 0.',
+            'id_unidade.gt' => 'Debe seleccionar unidad.',
             'productoe.required' => 'Debe ingresar producto.',
             'precioe.required' => 'Debe ingresar precio unitario.',
             'precioe.gt' => 'Debe ingresar precio unitario mayor a 0.'
@@ -668,6 +739,7 @@ class CajaChicaController extends Controller
         CajaChicaProducto::create([
             'id_caja_chica' => $id,
             'cantidad' => $request->cantidade,
+            'id_unidad' => $request->id_unidade,
             'producto' => $request->productoe,
             'precio' => $request->precioe
         ]);
@@ -836,7 +908,7 @@ class CajaChicaController extends Controller
                                 ->orderBy('nombre','ASC')->get();
             }elseif($get_id->id_pago=="2"){
                 $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
-                                ->where('estado',1)->whereIn('id',[2,3])
+                                ->where('estado',1)->whereIn('id',[2])
                                 ->orderBy('nombre','ASC')->get();
             }else{
                 $list_tipo_pago = [];

@@ -5,19 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CajaChicaProductoTmp extends Model
+class CajaChicaRutaTransporte extends Model
 {
     use HasFactory;
 
-    protected $table = 'caja_chica_producto_tmp';
+    protected $table = 'caja_chica_ruta_transporte';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'id_usuario',
-        'cantidad',
-        'id_unidad',
-        'producto',
-        'precio'
+        'id_caja_chica_ruta',
+        'id_usuario'
     ];
 }

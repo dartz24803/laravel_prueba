@@ -280,6 +280,18 @@
                         <input type="text" class="form-control" name="cantidade" id="cantidade" 
                         placeholder="Cantidad" onkeypress="return solo_Numeros(event);">
                     </div>
+
+                    <div class="form-group col-lg-2">
+                        <label>Unidades:</label>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <select class="form-control" name="id_unidade" id="id_unidade">
+                            <option value="0">Seleccione</option>
+                            @foreach ($list_unidad as $list)
+                                <option value="{{ $list->id_unidad }}">{{ $list->nom_unidad }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
         
                 <div class="row">
@@ -447,6 +459,7 @@
                 $('#cantidade').val('');
                 $('#productoe').val('');
                 $('#precioe').val('');
+                $('#id_unidade').val('0');
                 Lista_Producto();
                 Total_Producto();
             },

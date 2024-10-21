@@ -161,6 +161,7 @@ Route::controller(TrackingController::class)->group(function () {
     Route::post('tracking/{id}/reporte_diferencia', 'insert_reporte_diferencia')->name('tracking.insert_reporte_diferencia');
     Route::get('tracking/{id}/detalle_operacion_diferencia', 'detalle_operacion_diferencia')->name('tracking.detalle_operacion_diferencia');
     Route::post('tracking/{id}/diferencia_regularizada', 'insert_diferencia_regularizada')->name('tracking.insert_diferencia_regularizada');
+    Route::post('tracking/{id}/validacion_diferencia', 'validacion_diferencia')->name('tracking.validacion_diferencia');
     Route::get('tracking/{id}/solicitud_devolucion', 'solicitud_devolucion')->name('tracking.solicitud_devolucion');
     Route::get('tracking/{id}/modal_solicitud_devolucion', 'modal_solicitud_devolucion')->name('tracking.modal_solicitud_devolucion');
     Route::post('tracking/{id}/devolucion_temporal', 'insert_devolucion_temporal')->name('tracking.insert_devolucion_temporal');
@@ -1378,6 +1379,7 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::post('caja_chica/store_tmp_mo', 'store_tmp_mo')->name('caja_chica.store_tmp_mo');
     Route::delete('caja_chica/{id}/destroy_tmp_mo', 'destroy_tmp_mo')->name('caja_chica.destroy_tmp_mo');
     Route::get('caja_chica/total_tmp_mo', 'total_tmp_mo')->name('caja_chica.total_tmp_mo');
+    Route::get('caja_chica/{id}/modal_detalle_tmp_mo', 'modal_detalle_tmp_mo')->name('caja_chica.modal_detalle_tmp_mo');
     Route::post('caja_chica_mo', 'store_mo')->name('caja_chica.store_mo');
     Route::get('caja_chica/create_pv', 'create_pv')->name('caja_chica.create_pv');
     Route::post('caja_chica/traer_categoria_pv', 'traer_categoria_pv')->name('caja_chica.traer_categoria_pv');
@@ -1395,6 +1397,7 @@ Route::controller(CajaChicaController::class)->group(function () {
     Route::put('caja_chica/{id}/store_ruta_mo', 'store_ruta_mo')->name('caja_chica.store_ruta_mo');
     Route::delete('caja_chica/{id}/destroy_ruta_mo', 'destroy_ruta_mo')->name('caja_chica.destroy_ruta_mo');
     Route::get('caja_chica/{id}/total_ruta_mo', 'total_ruta_mo')->name('caja_chica.total_ruta_mo');
+    Route::get('caja_chica/{id}/modal_detalle_mo', 'modal_detalle_mo')->name('caja_chica.modal_detalle_mo');
     Route::put('caja_chica_mo/{id}', 'update_mo')->name('caja_chica.update_mo');
     Route::get('caja_chica/{id}/list_producto_pv', 'list_producto_pv')->name('caja_chica.list_producto_pv');
     Route::put('caja_chica/{id}/store_producto_pv', 'store_producto_pv')->name('caja_chica.store_producto_pv');
@@ -2133,8 +2136,9 @@ Route::controller(PapeletasController::class)->group(function () {
     Route::post('Papeletas/Buscar_Papeletas_Salida_Aprobacion', 'Buscar_Papeletas_Salida_Aprobacion');
     Route::post('Papeletas/Aprobado_solicitud_papeletas_1', 'Aprobado_solicitud_papeletas_1');
     Route::post('Papeletas/Anular_solicitud_papeletas_1', 'Anular_solicitud_papeletas_1');
-    // Route::get('Papeletas/Destino', 'Destino');
-    // Route::get('Papeletas/Modal_Destino', 'Modal_Destino');
-    // Route::get('Papeletas/Modal_Update_Destino/{id}', 'Modal_Update_Destino');
-    // Route::post('Papeletas/Update_Destino', 'Update_Destino');
+    Route::get('Papeletas/Aprobar_Papeleta_Salida/{id}', 'Aprobar_Papeleta_Salida');
+    Route::post('Papeletas/Buscar_Papeleta_Control', 'Buscar_Papeleta_Control');
+    Route::post('Papeletas/Buscar_Base_Papeletas_Seguiridad', 'Buscar_Base_Papeletas_Seguiridad');
+    Route::post('Papeletas/Busca_Colaborador_Control', 'Busca_Colaborador_Control');
+    Route::get('Papeletas/Excel_Estado_Solicitud_Papeletas_Salida_Seguridad/{base}/{estado}/{fec_rev}/{fec_fin}/{num_doc}', 'Excel_Estado_Solicitud_Papeletas_Salida_Seguridad');
 });

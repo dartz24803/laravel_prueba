@@ -588,6 +588,40 @@ use App\Models\TrackingDetalleProceso;
                     </a>
                     Detalle de operaciones de diferencias
                 @endif
+                @elseif($list->id_estado==22)
+                    <!-- PUESTOS DE TIENDA -->
+                    @if ((session('usuario')->id_puesto==30 ||
+                    session('usuario')->id_puesto==31 ||
+                    session('usuario')->id_puesto==32 ||
+                    session('usuario')->id_puesto==33 ||
+                    session('usuario')->id_puesto==35 ||
+                    session('usuario')->id_puesto==161 ||
+                    session('usuario')->id_puesto==167 ||
+                    session('usuario')->id_puesto==168 ||
+                    session('usuario')->id_puesto==311 ||
+                    session('usuario')->id_puesto==314 ||
+                    session('usuario')->id_nivel==1) &&
+                    $list->v_sobrante=="0")
+                        <a href="javascript:void(0);" title="Validación de diferencia (sobrante)" onclick="Validacion_Diferencia('{{ $list->id }}','sobrante');">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock text-success">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </a>
+                    @endif
+                    <!-- PUESTO DE MAYRA TORRES (76) y JAIME SAAVEDRA (97) -->
+                    @if ((session('usuario')->id_puesto==76 ||
+                    session('usuario')->id_puesto==97 ||
+                    session('usuario')->id_nivel==1) &&
+                    $list->v_faltante=="0")
+                        <a href="javascript:void(0);" title="Validación de diferencia (faltante)" onclick="Validacion_Diferencia('{{ $list->id }}','faltante');">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock text-success">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </a>
+                    @endif
+                    Validación de diferencia
                 @elseif($list->id_estado==17)
                 <!-- PUESTOS DE TIENDA -->
                 @if (session('usuario')->id_puesto==30 ||
@@ -1380,6 +1414,31 @@ use App\Models\TrackingDetalleProceso;
             }
         })
     }
+
+    function Validacion_Diferencia(id,tipo) {
+        Cargando();
+
+        var url = "{{ route('tracking.validacion_diferencia', ':id') }}".replace(':id', id);
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {'tipo':tipo},
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function() {
+                Swal(
+                    '¡Validación exitosa!',
+                    '¡Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                    Lista_Tracking();
+                });
+            }
+        });
+    }
+
     $(function() {
         <?php
         foreach ($list_tracking as $list) :
