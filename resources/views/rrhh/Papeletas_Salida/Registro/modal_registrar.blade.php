@@ -16,13 +16,13 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
-    </div> 
+    </div>
 
     <div class="modal-body" style="max-height:500px; overflow:auto;" >
         <div class="col-md-12 row">
             <div class="form-group col-md-2">
                 <label class="col-sm-12 control-label text-bold">Motivo de Salida: </label>
-            </div>            
+            </div>
             <div class="form-group col-sm-3">
                 <div class="n-chk">
                     <label class="new-control new-radio radio-primary">
@@ -45,11 +45,11 @@
             <div class="col-md-12 row mb-2 mt-2">
                 <div class="form-group col-md-2">
                     <label class="col-sm-12 control-label text-bold">Fecha de Solicitud: </label>
-                </div>            
+                </div>
                 <div class="form-group col-sm-3">
-                    <input  style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" 
+                    <input  style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;"
                     type="date" placeholder="Seleccione Fecha.."
-                    class="form-control" 
+                    class="form-control"
                     id="fec_solicitud" name="fec_solicitud" value="" placeholder="Ingresar fecha solicitud">
                 </div>
                 <div class="form-group col-sm-7 p-2">
@@ -67,7 +67,7 @@
             </div>
 
             <?php if($parametro==1) { ?>
-                
+
             <div class="col-md-12 row">
                 <div class="form-group col-md-2">
                     <label class="col-sm-12 control-label text-bold">Colaborador:</label>
@@ -81,11 +81,11 @@
                     </select>
                 </div>
             </div>
-            <?php } ?> 
-            
+            <?php } ?>
+
             <div class="form-group col-md-2">
                 <label class="col-sm-12 control-label text-bold">Destino: </label>
-            </div>            
+            </div>
             <div id="select_destino" class="form-group col-sm-4">
                 <select class="form-control" id="destino" name="destino">
                     <option value="0">Seleccione</option>
@@ -94,40 +94,40 @@
 
             <div class="form-group col-md-2">
                 <label class="col-sm-12 control-label text-bold">Especifique: </label>
-            </div>   
+            </div>
             <div class="form-group col-sm-4">
                 <input style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="text" class="form-control" id="especificacion_destino" name="especificacion_destino" value="" placeholder="Especifique destino">
             </div>
 
             <div class="form-group col-md-2">
                 <label class="col-sm-12 control-label text-bold">Trámite: </label>
-            </div>            
+            </div>
             <div id="select_tramite" class="form-group col-sm-4">
                 <select class="form-control" id="tramite" name="tramite"><option value="0">Seleccione</option></select>
             </div>
 
             <div class="form-group col-md-2">
                 <label class="col-sm-12 control-label text-bold">Especifique: </label>
-            </div>   
+            </div>
             <div class="form-group col-sm-4">
                 <input style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="text" class="form-control" id="especificacion_tramite" name="especificacion_tramite" value="" placeholder="Especifique trámite">
             </div>
 
             <div class="form-group col-md-2">
                 <label class="col-sm-12 control-label text-bold">Hora Salida: </label>
-            </div>            
+            </div>
             <div class="form-group col-sm-2">
                 <input  style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;"
-                type="time" step="3600000" class="form-control group2" id="hora_salida" 
+                type="time" step="3600000" class="form-control group2" id="hora_salida"
                 name="hora_salida" value="" placeholder="Ingresar hora de salida" autofocus>
             </div>
 
             <div class="form-group col-md-2">
                 <label class="col-sm-12 control-label text-bold">Hora Retorno: </label>
-            </div>            
+            </div>
             <div class="form-group col-sm-2">
                 <input  style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;"
-                type="time" step="3600000" class="form-control group1" id="hora_retorno" 
+                type="time" step="3600000" class="form-control group1" id="hora_retorno"
                 name="hora_retorno" value="" placeholder="" autofocus>
             </div>
         </div>
@@ -161,7 +161,7 @@
         var csrfToken = $('input[name="_token"]').val();
 
 
-        $.ajax({    
+        $.ajax({
             type:"POST",
             url:url,
             headers: {
@@ -176,12 +176,12 @@
 
     function Traer_Tramite(){
         Cargando();
-        
+
         var id_destino=$('#destino').val();
         var url="{{ url('Papeletas/Traer_Tramite') }}";
         var csrfToken = $('input[name="_token"]').val();
 
-        $.ajax({    
+        $.ajax({
             type:"POST",
             url:url,
             headers: {
@@ -193,7 +193,7 @@
             }
         });
     }
-    
+
     function Insert_Papeletas_Salida() {
         Cargando();
 
@@ -201,6 +201,7 @@
         var url = "{{ url('Papeletas/Insert_or_Update_Papeletas_Salida') }}";
         var csrfToken = $('input[name="_token"]').val();
 
+        if (Valida_Papeletas_Salida()) {
             $.ajax({
                 type: "POST",
                 url: url,
@@ -228,14 +229,98 @@
                             $("#ModalRegistroGrande .close").click()
                         });
                     }
+                },
+                error: function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
                 }
             });
+        }
+    }
+
+    function Valida_Papeletas_Salida() {
+        valor = $('[name=id_motivo]:checked').val();
+        if (valor == 3) {
+            if ($("#otros").val() === '') {
+                msgDate = 'Debe especificar sus razones en otros';
+                Swal.fire(
+                    '¡Ups!',
+                    msgDate,
+                    'warning'
+                );
+                return false;
+            }
+        }
+        if (!valor) {
+            msgDate = 'Debe seleccionar motivo.';
+                Swal.fire(
+                    '¡Ups!',
+                    msgDate,
+                    'warning'
+                );
+            return false;
+        }
+
+        if ($('#parametro').val() == 1) {
+            if ($('#colaborador_p').val() == '0' || $('#colaborador_p').val() == '') {
+                msgDate = 'Debe seleccionar al colaborador.';
+                Swal.fire(
+                    '¡Ups!',
+                    msgDate,
+                    'warning'
+                );
+                return false;
+            }
+        }
+
+        if (!$('#sin_ingreso').is(":checked")) {
+            if ($('#hora_salida').val() === '') {
+                msgDate = 'Debe ingresar hora de salida.';
+                Swal.fire(
+                    '¡Ups!',
+                    msgDate,
+                    'warning'
+                );
+                return false;
+            }
+        }
+
+        if (!$('#sin_retorno').is(":checked")) {
+            if ($('#hora_retorno').val() === '') {
+                msgDate = 'Debe ingresar hora de retorno.';
+                Swal.fire(
+                    '¡Ups!',
+                    msgDate,
+                    'warning'
+                );
+                return false;
+            }
+        }
+
+        if (!$('#sin_ingreso').is(":checked") && !$('#sin_retorno').is(":checked")) {
+            if ($('#hora_retorno').val() <= $('#hora_salida').val()) {
+                msgDate = 'Hora de retorno debe ser mayor a hora de salida';
+                Swal.fire(
+                    '¡Ups!',
+                    msgDate,
+                    'warning'
+                );
+                return false;
+            }
+        }
+
+        return true;
     }
 </script>
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $('.selectt').hide(); 
+        $('.selectt').hide();
         $('input[type="radio"]').click(function() {
             var inputValue = $(this).attr("value");
             var targetBox = $("." + inputValue);
@@ -245,8 +330,8 @@
     });
 
     var check_date_today = moment();
-    var hor_min_act  = check_date_today.format('H:mm '); 
-            
+    var hor_min_act  = check_date_today.format('H:mm ');
+
     $(function() {
         enable_cd();
         $("#sin_ingreso").click(enable_cd);

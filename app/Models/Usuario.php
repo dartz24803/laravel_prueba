@@ -637,14 +637,14 @@ class Usuario extends Model
     static function get_list_usuario_inventario()
     {
         $sql = "SELECT u.*, p.nom_puesto, m.nom_mes, g.cod_genero, g.nom_genero,a.nom_area,t.cod_tipo_documento,ge.nom_gerencia,
-                u.usuario_email 
+                u.usuario_email
                 FROM users u
                 left join area a on a.id_area=u.id_area
                 left join puesto p on p.id_puesto=u.id_puesto
                 left join mes m on m.id_mes=u.mes_nac
                 left join genero g on g.id_genero=u.id_genero
                 left join tipo_documento t on t.id_tipo_documento=u.id_tipo_documento
-                left join gerencia ge on ge.id_gerencia = u.id_gerencia 
+                left join gerencia ge on ge.id_gerencia = u.id_gerencia
                 WHERE u.estado=1 and u.id_nivel in (1,9)";
 
         $query = DB::select($sql);
@@ -696,7 +696,7 @@ class Usuario extends Model
                     WHERE $buscar centro_labores='$centro_labores' AND id_nivel NOT IN (8,12) AND estado=1
                     ORDER BY usuario_apater ASC, usuario_amater ASC, usuario_nombres ASC";
         } else {
-            $sql = "SELECT * FROM users e 
+            $sql = "SELECT * FROM users e
                     WHERE $buscar id_nivel NOT IN (8,12) AND estado=1
                     ORDER BY usuario_apater ASC, usuario_amater ASC, usuario_nombres ASC";
         }
@@ -717,5 +717,41 @@ class Usuario extends Model
 
         $query = DB::select($sql);
         return $query;
+    }
+
+    static function get_list_colaboradort($id_usuario=null,$estado=null){
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "SELECT u.*, n.nom_nacionalidad, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo
+                    from users u
+                    LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
+                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
+                    LEFT JOIN area a on a.id_area=u.id_area
+                    LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN cargo c on c.id_cargo=u.id_cargo
+                    where id_usuario =".$id_usuario;
+        }
+        else
+        {
+            $id_estado="";
+            if(isset($estado) && $estado > 0){
+                if($estado==1){
+                    $id_estado=" and u.estado=".$estado;
+                }else{
+                    $id_estado=" and u.estado in (2,3)";
+                }
+
+            }
+            $sql = "SELECT u.*,  n.nom_nacionalidad, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo
+                    from users u
+                    LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
+                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
+                    LEFT JOIN area a on a.id_area=u.id_area
+                    LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN cargo c on c.id_cargo=u.id_cargo
+                    where u.id_nivel<>8 $id_estado";
+        }
+        $result = DB::select($sql);
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
     }
 }
