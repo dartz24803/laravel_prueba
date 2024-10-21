@@ -349,7 +349,7 @@ use App\Models\TrackingDetalleProceso;
     $porcentaje = 100*$terminados/$total;
 @endphp
 <div class="progress mb-3">
-    <div class="progress-bar bg-secondary" role="progressbar" style="width: {{ $porcentaje }}%;" aria-valuenow="{{ $porcentaje }}" aria-valuemin="0" aria-valuemax="100">{{ $porcentaje }}</div>
+    <div class="progress-bar bg-secondary" role="progressbar" style="width: {{ $porcentaje }}%;" aria-valuenow="{{ $porcentaje }}" aria-valuemin="0" aria-valuemax="100">{{ number_format($porcentaje,2) }}</div>
 </div>
 
 <table id="tabla_js" class="table" style="width:100%">
