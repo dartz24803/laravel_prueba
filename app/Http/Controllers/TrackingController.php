@@ -43,11 +43,13 @@ class TrackingController extends Controller
             'llegada_tienda',
             'list_notificacion',
             'list_mercaderia_nueva_app',
+            'list_mercaderia_nueva_app_new',
             'insert_mercaderia_nueva_app',
             'list_surtido_mercaderia_nueva',
             'insert_requerimiento_reposicion_app',
             'insert_requerimiento_reposicion_estilo_app',
             'list_requerimiento_reposicion_app',
+            'list_requerimiento_reposicion_app_new',
             'update_requerimiento_reposicion_app',
             'delete_mercaderia_surtida_app',
             'list_mercaderia_nueva_vendedor_app',
@@ -162,10 +164,10 @@ class TrackingController extends Controller
 
     public function iniciar_tracking()
     {
-        /*TrackingTemporal::truncate();
+        TrackingTemporal::truncate();
         $list_tracking = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['T']);
         foreach($list_tracking as $list){
-            if($list->id_origen_hacia=="4" || $list->id_origen_hacia=="6"){
+            if($list->id_origen_hacia=="4" || $list->id_origen_hacia=="6" || $list->id_origen_hacia=="10"){
                 TrackingTemporal::create([
                     'n_requerimiento' => $list->n_requerimiento,
                     'n_guia_remision' => $list->n_guia_remision,
@@ -329,7 +331,7 @@ class TrackingController extends Controller
                 'iniciar' => 1,
                 'fec_act' => now()
             ]);
-        }*/
+        }
     }
 
     public function llegada_tienda()
@@ -397,9 +399,12 @@ class TrackingController extends Controller
     }
 
     public function list(){
-        $estado = TrackingEstado::get_list_estado_proceso();
         $list_tracking = Tracking::get_list_tracking();
-        return view('logistica.tracking.tracking.lista', compact('list_tracking', 'estado'));
+        $estado = TrackingEstado::get_list_estado_proceso();
+        return view('logistica.tracking.tracking.lista', compact(
+            'list_tracking',
+            'estado'
+        ));
     }
 
     //FORMA MANUAL
@@ -624,8 +629,8 @@ class TrackingController extends Controller
             return response()->json(['errors' => $errors], 422);
         }
 
-        $valida = TrackingTransporte::where('id_base',$request->id_base)->where('semana',date('W'))
-                ->exists();
+        $valida = TrackingTransporte::where('id_base',$request->id_base)->where('anio',date('Y'))
+                ->where('semana',date('W'))->exists();
         if($valida){
             echo "error";
         }else{
@@ -664,6 +669,7 @@ class TrackingController extends Controller
 
             TrackingTransporte::create([
                 'id_base' => $request->id_base,
+                'anio' => date('Y'),
                 'semana' => date('W'),
                 'transporte' => $request->transporte,
                 'tiempo_llegada' => $request->tiempo_llegada,
@@ -989,7 +995,7 @@ class TrackingController extends Controller
 
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
         $get_transporte = TrackingTransporte::where('id_base',$get_id->id_origen_hacia)
-                        ->where('semana',date('W'))->first();
+                        ->where('anio',date('Y'))->where('semana',date('W'))->first();
 
         Tracking::findOrFail($id)->update([
             'guia_transporte' => $request->guia_transporte,
@@ -2284,6 +2290,10 @@ class TrackingController extends Controller
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
                 }
+                $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+                foreach($list_td as $list){
+                    $mail->addAddress($list->emailp);
+                }
                 $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
                 foreach($list_cc as $list){
                     $mail->addCC($list->emailp);
@@ -2378,6 +2388,10 @@ class TrackingController extends Controller
                 //$mail->addAddress('dpalomino@lanumero1.com.pe');
                 //$mail->addAddress('ogutierrez@lanumero1.com.pe');
                 //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                foreach($list_cd as $list){
+                    $mail->addAddress($list->emailp);
+                }
                 $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
                 foreach($list_td as $list){
                     $mail->addAddress($list->emailp);
@@ -3422,9 +3436,11 @@ class TrackingController extends Controller
 
     public function modal_mercaderia_nueva($cod_base,$estilo)
     {
-        $list_mercaderia_nueva = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_estilo ?,?', [
+        $list_mercaderia_nueva = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_estilo ?,?,?,?', [
             $cod_base,
-            $estilo
+            $estilo,
+            '',
+            ''
         ]);
         return view('logistica.tracking.tracking.mercaderia_nueva.modal_detalle', compact(
             'estilo',
@@ -3436,9 +3452,68 @@ class TrackingController extends Controller
     {
         try { 
             if($request->estilo){
-                $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_estilo ?,?', [
+                $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_estilo ?,?,?,?', [
                     $request->cod_base,
-                    $request->estilo
+                    $request->estilo,
+                    '',
+                    ''
+                ]);
+            }else{
+                $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_app ?,?,?', [
+                    $request->cod_base,
+                    $request->tipo_usuario,
+                    $request->tipo_prenda
+                ]);
+
+                $query_tu = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_tusuario_app ?', [
+                    $request->cod_base
+                ]);
+
+                $query_tp = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_tprenda_app ?', [
+                    $request->cod_base
+                ]);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => "Error procesando base de datos.",
+            ], 500);
+        }
+
+        if (count($query)==0) {
+            return response()->json([
+                'message' => 'Sin resultados.',
+            ], 404);
+        }
+
+        if($request->estilo){
+            return response()->json($query, 200);
+        }else{
+            $response = [
+                'data' => $query,
+                'tipo_usuario' => $query_tu,
+                'tipo_prenda' => $query_tp
+            ];
+
+            return response()->json($response, 200);
+        }
+    }
+
+    public function list_mercaderia_nueva_app_new(Request $request)
+    {
+        try { 
+            if($request->color){
+                $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_estilo ?,?,?,?', [
+                    $request->cod_base,
+                    $request->estilo,
+                    'SI',
+                    $request->color
+                ]);
+            }elseif($request->estilo){
+                $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_estilo ?,?,?,?', [
+                    $request->cod_base,
+                    $request->estilo,
+                    'NO',
+                    ''
                 ]);
             }else{
                 $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_app ?,?,?', [
@@ -3637,36 +3712,45 @@ class TrackingController extends Controller
             'estilo.required' => 'Debe ingresar estilo.',
         ]);
 
-        try {
-            $padre = MercaderiaSurtidaPadre::create([
-                'base' => $request->cod_base,
-                'estilo' => $request->estilo,
-                'fecha' => now()
-            ]);
-
-            foreach ($request->detalle as $list) {
-                MercaderiaSurtida::create([
-                    'id_padre' => $padre->id,
-                    'tipo' => 3,
-                    'base' => $request->cod_base,
-                    'anio' => date('Y'),
-                    'semana' => date('W'),
-                    'estilo' => $request->estilo,
-                    'tipo_usuario' => $list['tipo_usuario'],
-                    'descripcion' => $list['descripcion'],
-                    'color'=> $list['color'],
-                    'talla' => $list['talla'],
-                    'cantidad' => $list['cantidad'],
-                    'stk_almacen' => $list['stk_almacen'],
-                    'stk_tienda' => $list['stk_tienda'],
-                    'estado' => 0,
-                    'fecha' => now()
-                ]);
-            }
-        } catch (\Throwable $th) {
+        
+        $valida = MercaderiaSurtida::where('tipo', 3)->where('base', $request->cod_base)
+                ->where('estilo', $request->estilo)->where('estado', 0)->exists();
+        if($valida){
             return response()->json([
                 'message' => "Error procesando base de datos.",
             ], 500);
+        }else{
+            try {
+                $padre = MercaderiaSurtidaPadre::create([
+                    'base' => $request->cod_base,
+                    'estilo' => $request->estilo,
+                    'fecha' => now()
+                ]);
+
+                foreach ($request->detalle as $list) {
+                    MercaderiaSurtida::create([
+                        'id_padre' => $padre->id,
+                        'tipo' => 3,
+                        'base' => $request->cod_base,
+                        'anio' => date('Y'),
+                        'semana' => date('W'),
+                        'estilo' => $request->estilo,
+                        'tipo_usuario' => $list['tipo_usuario'],
+                        'descripcion' => $list['descripcion'],
+                        'color'=> $list['color'],
+                        'talla' => $list['talla'],
+                        'cantidad' => $list['cantidad'],
+                        'stk_almacen' => $list['stk_almacen'],
+                        'stk_tienda' => $list['stk_tienda'],
+                        'estado' => 0,
+                        'fecha' => now()
+                    ]);
+                }
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
+            }
         }
     }
 
@@ -3721,6 +3805,90 @@ class TrackingController extends Controller
                 ], 404);
             }
     
+            return response()->json($query, 200);
+        }else{
+            return response()->json([
+                'message' => 'Sin resultados.',
+            ], 404);
+        }
+    }
+
+    public function list_requerimiento_reposicion_app_new(Request $request)
+    {
+        if($request->tipo=="sku"){
+            try {
+                if($request->tipo_usuario=="0"){
+                    $query = MercaderiaSurtida::where('tipo',2)->where('base',$request->cod_base)
+                            ->where('estado',0)->get();
+                }else{
+                    $query = MercaderiaSurtida::where('tipo',2)->where('base',$request->cod_base)
+                            ->where('tipo_usuario',$request->tipo_usuario)
+                            ->where('estado',0)->get();
+                }
+
+                $query_tu = MercaderiaSurtida::select('tipo_usuario')->where('tipo',2)->where('base',$request->cod_base)
+                            ->where('estado',0)->groupBy('tipo_usuario')->get();
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
+            }
+    
+            if (count($query)==0) {
+                return response()->json([
+                    'message' => 'Sin resultados.',
+                ], 404);
+            }
+
+            $response = [
+                'data' => $query,
+                'tipo_usuario' => $query_tu
+            ];
+
+            return response()->json($response, 200);
+        }else if($request->tipo=="estilo"){
+            try {
+                $query = MercaderiaSurtida::get_list_req_repo_vend_x_est([
+                    'cod_base' => $request->cod_base,
+                    'tipo_usuario' => $request->tipo_usuario
+                ]);
+
+                $query_tu = MercaderiaSurtida::select('tipo_usuario')->where('tipo',3)->where('base',$request->cod_base)
+                            ->where('estado',0)->groupBy('tipo_usuario')->get();
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
+            }
+    
+            if (count($query)==0) {
+                return response()->json([
+                    'message' => 'Sin resultados.',
+                ], 404);
+            }
+    
+            $response = [
+                'data' => $query,
+                'tipo_usuario' => $query_tu
+            ];
+
+            return response()->json($response, 200);
+        }elseif($request->id_padre){
+            try {
+                $query = MercaderiaSurtida::where('id_padre', $request->id_padre)
+                                            ->where('estado',0)->get();
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'message' => "Error procesando base de datos.",
+                ], 500);
+            }
+    
+            if (count($query)==0) {
+                return response()->json([
+                    'message' => 'Sin resultados.',
+                ], 404);
+            }
+
             return response()->json($query, 200);
         }else{
             return response()->json([

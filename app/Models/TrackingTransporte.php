@@ -15,6 +15,7 @@ class TrackingTransporte extends Model
 
     protected $fillable = [
         'id_base',
+        'anio',
         'semana',
         'transporte',
         'tiempo_llegada',

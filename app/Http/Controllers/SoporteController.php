@@ -15,6 +15,7 @@ use App\Models\ContenidoSupervisionTienda;
 use App\Models\DetalleSeguimientoCoordinador;
 use App\Models\DetalleSupervisionTienda;
 use App\Models\DiaSemana;
+use App\Models\EjecutorResponsable;
 use App\Models\ElementoSoporte;
 use App\Models\Especialidad;
 use App\Models\Gerencia;
@@ -40,12 +41,14 @@ use App\Models\Notificacion;
 use App\Models\SedeLaboral;
 use App\Models\Soporte;
 use App\Models\SoporteAreaEspecifica;
+use App\Models\SoporteEjecutor;
 use App\Models\SoporteNivel;
 use App\Models\SoporteSolucion;
 use App\Models\SubGerencia;
 use App\Models\Ubicacion;
 use App\Models\User;
 use App\Models\Usuario;
+use Carbon\Carbon;
 
 class SoporteController extends Controller
 {
@@ -72,6 +75,7 @@ class SoporteController extends Controller
     public function create_tick(Request $request)
     {
         $list_especialidad = Especialidad::select('id', 'nombre')
+            ->where('especialidad.estado', 1)
             ->where('id', '!=', 4)
             ->get();
         $especialidadConId4 = Especialidad::select('id', 'nombre')
@@ -107,7 +111,7 @@ class SoporteController extends Controller
         return view('soporte.soporte.modal_registrar', compact('list_responsable', 'list_area', 'list_base', 'list_especialidad', 'list_elemento', 'list_asunto', 'list_sede'));
     }
 
-    public function getSoporteUbicacionPorSede(Request $request)
+    public function getSoporteNivelPorSede(Request $request)
     {
         $idSede = $request->input('sedes');
         // Si no se selecciona ninguna sede, devolver un arreglo vacío
@@ -126,7 +130,7 @@ class SoporteController extends Controller
 
 
 
-    public function getUbicacion2PorUbicacion1(Request $request)
+    public function getAreaEspeficaPorNivel(Request $request)
     {
         $ubicacion = $request->input('ubicacion1');
         // dd($ubicacion);
@@ -136,11 +140,11 @@ class SoporteController extends Controller
         }
         // Buscar ubicaciones asociadas a la sede seleccionada
         $ubicaciones = SoporteAreaEspecifica::where(function ($query) use ($ubicacion) {
-            $query->whereRaw("FIND_IN_SET(?, id_soporte_ubicacion1)", [$ubicacion]);
+            $query->whereRaw("FIND_IN_SET(?, id_soporte_nivel)", [$ubicacion]);
         })
             ->where('estado', 1)
             ->get();
-
+        // dd($ubicaciones);
         return response()->json($ubicaciones);
     }
 
@@ -188,7 +192,7 @@ class SoporteController extends Controller
             'elemento' => 'gt:0',
             'asunto' => 'gt:0',
             'sede' => 'gt:0',
-            'idsoporte_ubicacion' => 'gt:0',
+            'idsoporte_nivel' => 'gt:0',
             'vencimiento' => 'required',
             'descripcion' => 'required',
 
@@ -197,7 +201,7 @@ class SoporteController extends Controller
             'elemento.gt' => 'Debe seleccionar elemento.',
             'asunto.gt' => 'Debe seleccionar asunto.',
             'sede.gt' => 'Debe seleccionar sede.',
-            'idsoporte_ubicacion.gt' => 'Debe ingresar Ubicaciòn.',
+            'idsoporte_nivel.gt' => 'Debe ingresar Ubicaciòn.',
             'vencimiento.required' => 'Debe ingresar vencimiento.',
             'descripcion.required' => 'Debe ingresar descripcion.',
 
@@ -235,18 +239,33 @@ class SoporteController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
-
+        $soporte_ejecutor = SoporteEjecutor::create([
+            'idejecutor_responsable' => null,
+            'fec_inicio_proyecto' => null,
+            'nombre_proyecto' => '',
+            'proveedor' => '',
+            'nombre_contratista' => '',
+            'dni_prestador_servicio' => '',
+            'ruc' => '',
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+        // dd($request->idsoporte_area_especifica);
         Soporte::create([
             'codigo' => $codigo_generado,
             'id_especialidad' => $request->especialidad,
             'id_elemento' => $request->elemento,
             'id_asunto' => $request->asunto,
             'id_sede' => $request->sede,
-            'idsoporte_nivel' => $request->idsoporte_ubicacion,
-            'idsoporte_area_especifica' => $request->idsoporte_ubicacion2 ?? 0,
+            'idsoporte_nivel' => $request->idsoporte_nivel,
+            'idsoporte_area_especifica' => $request->idsoporte_area_especifica ?? 0,
             'id_area' => $request->area ?? 0,
             'id_responsable' => null,
             'idsoporte_solucion' => $soporte_solucion->idsoporte_solucion,
+            'idsoporte_ejecutor' => $soporte_ejecutor->idsoporte_ejecutor,
             'fec_vencimiento' => $request->vencimiento,
             'descripcion' => $request->descripcion,
             'tipo_soporte' => $request->tipo_soporte,
@@ -409,9 +428,45 @@ class SoporteController extends Controller
             ->select('especialidad.*', 'area.nom_area') // Selecciona los campos que necesites
             ->first();
         $list_responsable = Usuario::get_list_colaborador_xarea_static($area->id_area);
+        $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad(1);
 
-        // dd($area);
+        dd($list_ejecutores_responsables);
 
         return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area'));
+    }
+
+    public function update_tick_master(Request $request, $id)
+    {
+
+        $get_id = Soporte::getTicketById($id);
+
+        Soporte::findOrFail($id)->update([
+            'id_responsable' => $request->id_responsablee,
+            'fec_cierre' => $request->fec_cierree,
+            'estado_registro' => $request->estado_registroe,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+        // dd($get_id->idsoporte_solucion);
+
+        $soporteSolucion = SoporteSolucion::findOrFail($get_id->idsoporte_solucion);
+        // Verifica si 'descripcione_solucion' ha cambiado
+        $fec_comentario = $soporteSolucion->comentario !== $request->descripcione_solucion
+            ? now()
+            : $soporteSolucion->fec_comentario; // Mantiene la fecha actual si no ha cambiado
+        $soporteSolucion->update([
+            'id_responsable' => $request->id_responsablee,
+            'comentario' => $request->descripcione_solucion,
+            'fec_comentario' => $fec_comentario,
+            'tipo_soporte' => $request->tipo_soporte,
+            'estado_solucion' => 0,
+            'archivo_solucion' => 0,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        // dd($idsoporte->id_soporte);
+
+        return redirect()->back()->with('success', 'Reporte registrado con éxito.');
     }
 }

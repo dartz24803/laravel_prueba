@@ -1,6 +1,6 @@
 <form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
-        <h5 class="modal-title">Editar Tipo indicador:</h5>
+        <h5 class="modal-title">Editar Especialidad:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -10,44 +10,48 @@
     </div>
 
     <div class="modal-body" style="max-height:700px; overflow:auto;">
-        <div class="row"> <!-- Add this row class to create a horizontal layout -->
+        <div class="row">
             <div class="form-group col-lg-6">
-                <label for="nombrecapa">Nombre Indicador:</label>
-                <input type="text" class="form-control" id="nombrecapae" name="nombrecapae"
-                    value="{{ $get_id->nom_capacitacion }}">
-            </div>
-            <div class="form-group col-lg-6">
-                <label>Área:</label>
-                <select class="form-control" name="id_areae" id="id_areae">
+                <label>Área Responsable:</label>
+                <select class="form-control multivalue" name="id_areaee[]" id="id_areaee" multiple="multiple">
                     @foreach ($list_area as $list)
-                    <option value="{{ $list->id_area }}" {{ $list->id_area == $get_id->id_area ? 'selected' : '' }}>
+                    <option value="{{ $list->id_area }}"
+                        @if(in_array($list->id_area, explode(',', $get_id->id_area))) selected @endif>
                         {{ $list->nom_area }}
                     </option>
                     @endforeach
                 </select>
             </div>
-            <div class="form-group col-lg-12">
-                <label for="descripcionee">Descripción:</label>
-                <textarea name="descripcionee" id="descripcionee" cols="1" rows="2" class="form-control">{{ $get_id->descripcion }}</textarea>
 
+
+            <div class="form-group col-lg-6">
+                <label for="nom_esp">Nombre Especialidad:</label>
+                <input type="text" class="form-control" id="nom_espe" name="nom_espe"
+                    value="{{ $get_id->nombre }}">
             </div>
+
         </div>
 
     </div>
 
+
     <div class="modal-footer">
         @csrf
-        <button class="btn btn-primary" type="button" onclick="Update_Capa();">Guardar</button>
+        <button class="btn btn-primary" type="button" onclick="Update_Especialidad();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
-    function Update_Capa() {
+    $('.multivalue').select2({
+        dropdownParent: $('#ModalUpdate')
+    });
+
+    function Update_Especialidad() {
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('portalprocesos_cap_conf.update', $get_id->id_capacitacion) }}";
+        var url = "{{ route('soporte_especialidad_conf.update', $get_id->id) }}";
 
         $.ajax({
             url: url,
@@ -71,7 +75,7 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Lista_Capacitaciones();
+                        Lista_Especialidad();
                         $("#ModalUpdate .close").click();
                     });
                 }
