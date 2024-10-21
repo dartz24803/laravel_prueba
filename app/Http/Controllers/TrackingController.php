@@ -629,8 +629,8 @@ class TrackingController extends Controller
             return response()->json(['errors' => $errors], 422);
         }
 
-        $valida = TrackingTransporte::where('id_base',$request->id_base)->where('semana',date('W'))
-                ->exists();
+        $valida = TrackingTransporte::where('id_base',$request->id_base)->where('anio',date('Y'))
+                ->where('semana',date('W'))->exists();
         if($valida){
             echo "error";
         }else{
@@ -669,6 +669,7 @@ class TrackingController extends Controller
 
             TrackingTransporte::create([
                 'id_base' => $request->id_base,
+                'anio' => date('Y'),
                 'semana' => date('W'),
                 'transporte' => $request->transporte,
                 'tiempo_llegada' => $request->tiempo_llegada,
@@ -994,7 +995,7 @@ class TrackingController extends Controller
 
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
         $get_transporte = TrackingTransporte::where('id_base',$get_id->id_origen_hacia)
-                        ->where('semana',date('W'))->first();
+                        ->where('anio',date('Y'))->where('semana',date('W'))->first();
 
         Tracking::findOrFail($id)->update([
             'guia_transporte' => $request->guia_transporte,
