@@ -188,22 +188,72 @@
                 <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
-                            <div class="form-group col-md-2 mb-0">
+                            <div class="form-group col-md-2">
                                 <label class="control-label text-bold" ">Ejecutor:</label>
                             </div>
-                            <div class=" form-group col-md-10 mb-0"> <!-- Ajustar la columna a col-md-10 -->
+                            <div class=" form-group col-md-10"> <!-- Ajustar la columna a col-md-10 -->
 
                                     <select class="form-control" id="ejecutor_responsable" name="ejecutor_responsable">
                                         <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
-                                        <option value="0" {{ is_null($get_id->id_responsable) ? 'selected' : '' }}>SIN DESIGNAR</option>
-                                        @foreach ($list_responsable as $list)
+                                        <option value="0" {{ is_null($get_id->idejecutor_responsable) ? 'selected' : '' }}>SELECCIONAR</option>
+                                        @foreach ($list_ejecutores_responsables as $list)
                                         <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
-                                        <option value="{{ $list->id_usuario }}" {{ $get_id->id_responsable == $list->id_usuario ? 'selected' : '' }}>
-                                            {{ $list->nombre_completo }}
+                                        <option value="{{ $list->idejecutor_responsable }}" {{ $get_id->idejecutor_responsable == $list->idejecutor_responsable ? 'selected' : '' }}>
+                                            {{ $list->nombre }}
                                         </option>
                                         @endforeach
                                     </select>
+                            </div>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="form-group col-md-2" id="nom_proyecto-label">
+                                <label class="control-label text-bold">Nombre del Proyecto:</label>
+                            </div>
+                            <div class="form-group col-md-4" id="nom_proyecto-field">
+                                <input type="text" class="form-control" id="nom_proyecto" name="nom_proyecto" value="{{ $get_id->nombre_proyecto }}">
 
+                            </div>
+
+                            <div class="form-group col-md-3" id="fec_ini_proyecto-label">
+                                <label class="control-label text-bold">Fecha de Inicio del Proyecto:</label>
+                            </div>
+                            <div class="form-group col-md-3" id="fec_ini_proyecto-field">
+                                <input type="date" class="form-control" id="fec_ini_proyecto" name="fec_ini_proyecto"
+                                    value="{{ $get_id->fec_inicio_proyecto ? \Carbon\Carbon::parse($get_id->fec_inicio_proyecto)->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center">
+                            <div class="form-group col-md-2" id="proveedor-label">
+                                <label class="control-label text-bold">Proveedor:</label>
+                            </div>
+                            <div class="form-group col-md-10" id="proveedor-field">
+                                <input type="text" class="form-control" id="proveedor" name="proveedor" value="{{ $get_id->proveedor }}">
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center">
+                            <div class="form-group col-md-2" id="nom_contratista-label">
+                                <label class="control-label text-bold">Nombre del Contratista:</label>
+                            </div>
+                            <div class="form-group col-md-10" id="nom_contratista-field">
+                                <input type="text" class="form-control" id="nom_contratista" name="nom_contratista" value="{{ $get_id->nombre_contratista }}">
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center">
+                            <div class="form-group col-md-2" id="dni_prestador-label">
+                                <label class="control-label text-bold">DNI del prestador de Servicio:</label>
+                            </div>
+                            <div class="form-group col-md-4" id="dni_prestador-field">
+                                <input type="text" class="form-control" id="dni_prestador" name="dni_prestador" value="{{ $get_id->dni_prestador_servicio }}">
+                            </div>
+
+                            <div class="form-group col-md-2" id="ruc-label">
+                                <label class="control-label text-bold">Ruc:</label>
+                            </div>
+                            <div class="form-group col-md-4" id="ruc-field">
+                                <input type="text" class="form-control" id="ruc" name="ruc" value="{{ $get_id->ruc }}">
                             </div>
                         </div>
                     </div>
@@ -243,13 +293,18 @@
 
 <script>
     $(document).ready(function() {
+        toggleCierre();
+        toggleEjecutor();
 
-        toggleCierre()
-    });
+        // Agregar el evento change para el select de estado
+        $('#estado_registroe').on('change', function() {
+            toggleCierre();
+        });
 
-
-    document.addEventListener('DOMContentLoaded', function() {
-        toggleCierre(); // Llama a la función para ajustar el estado al cargar el documento
+        // Agregar el evento change para el select de ejecutor
+        $('#ejecutor_responsable').on('change', function() {
+            toggleEjecutor();
+        });
     });
 
     function toggleCierre() {
@@ -257,7 +312,7 @@
         var cierreLabel = document.getElementById('cierre-label');
         var cierreField = document.getElementById('cierre-field');
         var estadoContainer = document.getElementById('estado-container');
-        console.log("######")
+
         if (estado == 3 || estado == 4) {
             // Mostrar los campos de Cierre
             cierreLabel.style.display = 'block';
@@ -273,8 +328,51 @@
         }
     }
 
-    // También puedes agregar un evento 'change' al select para manejar cambios de estado
-    document.getElementById('estado_registroe').addEventListener('change', toggleCierre);
+    function toggleEjecutor() {
+        var ejecutor_responsable = document.getElementById('ejecutor_responsable').value;
+        var nomproyectoLabel = document.getElementById('nom_proyecto-label');
+        var nomproyectoField = document.getElementById('nom_proyecto-field');
+        var fecIniProLabel = document.getElementById('fec_ini_proyecto-label');
+        var fecIniProField = document.getElementById('fec_ini_proyecto-field');
+        var proveedorLabel = document.getElementById('proveedor-label');
+        var proveedorField = document.getElementById('proveedor-field');
+        var nomContratistaLabel = document.getElementById('nom_contratista-label');
+        var nomContratistaField = document.getElementById('nom_contratista-field');
+        var dniPrestadorLabel = document.getElementById('dni_prestador-label');
+        var dniPrestadorField = document.getElementById('dni_prestador-field');
+        var rucLabel = document.getElementById('ruc-label');
+        var rucField = document.getElementById('ruc-field');
+
+        if (ejecutor_responsable == 2) {
+            // Mostrar los campos de Proyecto
+            nomproyectoLabel.style.display = 'block';
+            nomproyectoField.style.display = 'block';
+            fecIniProLabel.style.display = 'block';
+            fecIniProField.style.display = 'block';
+            proveedorLabel.style.display = 'block';
+            proveedorField.style.display = 'block';
+            nomContratistaLabel.style.display = 'block';
+            nomContratistaField.style.display = 'block';
+            dniPrestadorLabel.style.display = 'block';
+            dniPrestadorField.style.display = 'block';
+            rucLabel.style.display = 'block';
+            rucField.style.display = 'block';
+        } else {
+            // Ocultar los campos de Proyecto
+            nomproyectoLabel.style.display = 'none';
+            nomproyectoField.style.display = 'none';
+            fecIniProLabel.style.display = 'none';
+            fecIniProField.style.display = 'none';
+            proveedorLabel.style.display = 'none';
+            proveedorField.style.display = 'none';
+            nomContratistaLabel.style.display = 'none';
+            nomContratistaField.style.display = 'none';
+            dniPrestadorLabel.style.display = 'none';
+            dniPrestadorField.style.display = 'none';
+            rucLabel.style.display = 'none';
+            rucField.style.display = 'none';
+        }
+    }
 
 
     function Update_Soporte_Master() {

@@ -187,6 +187,7 @@ class SoporteController extends Controller
 
     public function store_tick(Request $request)
     {
+
         $request->validate([
             'especialidad' => 'gt:0',
             'elemento' => 'gt:0',
@@ -206,6 +207,7 @@ class SoporteController extends Controller
             'descripcion.required' => 'Debe ingresar descripcion.',
 
         ]);
+
 
 
         $idsoporte_tipo = DB::table('soporte_asunto as sa')
@@ -415,6 +417,7 @@ class SoporteController extends Controller
     public function ver_tick_master($id_soporte)
     {
         $get_id = Soporte::getTicketById($id_soporte);
+        // dd($get_id->idejecutor_responsable);
         return view('soporte.soporte_master.modal_ver', compact('get_id'));
     }
 
@@ -428,15 +431,45 @@ class SoporteController extends Controller
             ->select('especialidad.*', 'area.nom_area') // Selecciona los campos que necesites
             ->first();
         $list_responsable = Usuario::get_list_colaborador_xarea_static($area->id_area);
-        $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad(1);
+        $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_especialidad);
 
-        dd($list_ejecutores_responsables);
+        // dd($list_ejecutores_responsables);
 
-        return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area'));
+        return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables'));
     }
 
     public function update_tick_master(Request $request, $id)
     {
+        $rules = [
+            'id_responsablee' => 'gt:0',
+            'descripcione_solucion' => 'required|max:250',
+        ];
+        $messages = [
+            'id_responsablee.gt' => 'Debe ingresar Responsable',
+            'descripcione_solucion' => 'Comentario de Solución debe tener como máximo 250 caracteres.',
+        ];
+
+        if ($request->ejecutor_responsable == 2) {
+            $rules = array_merge($rules, [
+                'nom_proyecto' => 'required',
+                'proveedor' => 'required',
+                'nom_contratista' => 'required',
+                'dni_prestador' => 'required|max:8',
+                'ruc' => 'required|max:11'
+            ]);
+
+            $messages = array_merge($messages, [
+                'nom_proyecto.required' => 'Debe ingresar Nombre del Proyecto',
+                'proveedor.required' => 'Debe ingresar Nombre Proveedor',
+                'nom_contratista.required' => 'Debe ingresar Nombre Contratista',
+                'dni_prestador.required' => 'Debe ingresar DNI (Prestador).',
+                'dni_prestador.max' => 'Nro. DNI (Prestador) debe tener como máximo 8 caracteres.',
+                'ruc.required' => 'Debe ingresar Nro. RUC',
+                'ruc.max' => 'Nro. RUC debe tener como máximo 11 caracteres.'
+            ]);
+        }
+
+        $request->validate($rules, $messages);
 
         $get_id = Soporte::getTicketById($id);
 
@@ -450,12 +483,16 @@ class SoporteController extends Controller
         // dd($get_id->idsoporte_solucion);
 
         $soporteSolucion = SoporteSolucion::findOrFail($get_id->idsoporte_solucion);
+        $soporteEjecutor = SoporteEjecutor::findOrFail($get_id->idsoporte_ejecutor);
+
+
         // Verifica si 'descripcione_solucion' ha cambiado
         $fec_comentario = $soporteSolucion->comentario !== $request->descripcione_solucion
             ? now()
             : $soporteSolucion->fec_comentario; // Mantiene la fecha actual si no ha cambiado
+
         $soporteSolucion->update([
-            'id_responsable' => $request->id_responsablee,
+            'id_responsable' => session('usuario')->id_usuario,
             'comentario' => $request->descripcione_solucion,
             'fec_comentario' => $fec_comentario,
             'tipo_soporte' => $request->tipo_soporte,
@@ -464,7 +501,18 @@ class SoporteController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
-
+        // dd($request->fec_ini_proyecto);
+        $soporteEjecutor->update([
+            'idejecutor_responsable' => $request->ejecutor_responsable,
+            'fec_inicio_proyecto' => $request->fec_ini_proyecto,
+            'nombre_proyecto' => $request->nom_proyecto,
+            'proveedor' => $request->proveedor,
+            'nombre_contratista' => $request->nom_contratista,
+            'dni_prestador_servicio' => $request->dni_prestador,
+            'ruc' => $request->ruc,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
         // dd($idsoporte->id_soporte);
 
         return redirect()->back()->with('success', 'Reporte registrado con éxito.');

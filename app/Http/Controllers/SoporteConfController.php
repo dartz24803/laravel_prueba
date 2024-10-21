@@ -341,7 +341,7 @@ class SoporteConfController extends Controller
     {
         $list_area = Area::select('id_area', 'nom_area')
             ->where('estado', 1)
-            ->whereIn('id_area', [41, 25])
+            ->whereIn('id_area', [41, 25, 12])
             ->orderBy('nom_area', 'ASC')
             ->distinct('nom_area')
             ->get();

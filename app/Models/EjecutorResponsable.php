@@ -22,16 +22,22 @@ class EjecutorResponsable extends Model
 
     public static function obtenerListadoConEspecialidad($id_especialidad)
     {
-        $sql = "SELECT er.*, 
-                       e.nombre as nombre_especialidad, 
-                       CONCAT(er.nombre, ' - ', e.nombre) AS descripcion_completa 
-                FROM ejecutor_responsable er
-                INNER JOIN especialidad e 
-                    ON FIND_IN_SET(e.id_area, er.id_area) > 0
-                WHERE e.id = ?";
+        // Primero, obtenemos las áreas relacionadas con el id_especialidad
+        $especialidad = DB::table('especialidad')
+            ->where('id', $id_especialidad)
+            ->first();
 
-        // Ejecutar la consulta y retornar los resultados
-        $query = DB::select($sql, [$id_especialidad]);
-        return $query;
+        // Descomponemos el campo id_area en un array
+        $idAreas = explode(',', $especialidad->id_area);
+        // dd($idAreas);
+        $idAreas = array_merge($idAreas, ["19", "22"]); // PARA AGREGAR A LA LISTA (BASE Y TERCEROS)
+        // Construimos la consulta para ejecutar contra los ids descompuestos
+        $sql = "SELECT er.*
+            FROM ejecutor_responsable er
+            WHERE er.id_area IN (" . implode(',', array_fill(0, count($idAreas), '?')) . ")";
+        // Ejecutar la consulta con los ids descompuestos
+        $query = DB::select($sql, $idAreas);
+
+        return array_values($query); // Retornar como array indexado
     }
 }
