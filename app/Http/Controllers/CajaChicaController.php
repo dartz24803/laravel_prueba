@@ -277,7 +277,7 @@ class CajaChicaController extends Controller
                             ->orderBy('nombre','ASC')->get();
         }elseif($request->id_pago=="2"){
             $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
-                            ->where('estado',1)->whereIn('id',[2,3])
+                            ->where('estado',1)->whereIn('id',[2])
                             ->orderBy('nombre','ASC')->get();
         }else{
             $list_tipo_pago = [];
@@ -523,7 +523,7 @@ class CajaChicaController extends Controller
                                 ->orderBy('nombre','ASC')->get();
             }elseif($get_id->id_pago=="2"){
                 $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
-                                ->where('estado',1)->whereIn('id',[2,3])
+                                ->where('estado',1)->whereIn('id',[2])
                                 ->orderBy('nombre','ASC')->get();
             }else{
                 $list_tipo_pago = [];
@@ -836,7 +836,7 @@ class CajaChicaController extends Controller
                                 ->orderBy('nombre','ASC')->get();
             }elseif($get_id->id_pago=="2"){
                 $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
-                                ->where('estado',1)->whereIn('id',[2,3])
+                                ->where('estado',1)->whereIn('id',[2])
                                 ->orderBy('nombre','ASC')->get();
             }else{
                 $list_tipo_pago = [];
