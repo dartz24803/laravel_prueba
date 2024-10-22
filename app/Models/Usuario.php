@@ -67,7 +67,7 @@ class Usuario extends Model
         and r.estado=1) end as url_foto,p.id_nivel as nivel_jerarquico,u.desvinculacion,u.id_cargo,
         pps.registro_masivo, visualizar_amonestacion(u.id_puesto) AS visualizar_amonestacion,
         sl.descripcion AS sede_laboral,
-        pps.estado as estadopps, pps.registro_masivo, pps.id_puesto_permitido
+        pps.estado as estadopps, pps.registro_masivo, pps.id_puesto_permitido, u.id_centro_labor
         FROM users u
         LEFT JOIN permiso_papeletas_salida pps ON u.id_puesto=pps.id_puesto_jefe AND pps.estado=1
         LEFT JOIN nivel n ON u.id_nivel=n.id_nivel
