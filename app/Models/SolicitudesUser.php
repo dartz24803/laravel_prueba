@@ -397,7 +397,7 @@ class SolicitudesUser extends Model
                         upload_time,emp_id,is_mask,temperature,work_code)
                         values ('".$dato['num_doc']."','".date('Y-m-d')." ".$dato['horario'][0]['hora_entrada']."',0,1,1,9,
                         '".date('Y-m-d')." ".$dato['horario'][0]['hora_entrada']."',(SELECT id from personnel_employee where LPAD(emp_code,8,'0')='".$dato['num_doc']."'),'255','255.0','PAPELETA SIN INGRESO')";
-                        //$this->db5->query($sql);
+                        DB::connection('second_mysql')->insert($sql);
                     }
 
                 if(count($dato['horario'])>0 && $dato['sin_retorno']==1){
@@ -406,7 +406,7 @@ class SolicitudesUser extends Model
                         upload_time,emp_id,is_mask,temperature,work_code)
                         values ('".$dato['num_doc']."','".date('Y-m-d')." ".$dato['horario'][0]['hora_salida']."',0,1,1,9,
                         '".date('Y-m-d')." ".$dato['horario'][0]['hora_salida']."',(SELECT id from personnel_employee where LPAD(emp_code,8,'0')='".$dato['num_doc']."'),'255','255.0','PAPELETA SIN RETORNO')";
-                    //$this->db5->query($sql);
+                    DB::connection('second_mysql')->insert($sql);
                     }
             }else{//gerencia aprueba a estado 5 -> "aprobacion de rh"
                 $sql = "UPDATE solicitudes_user SET estado_solicitud=5
@@ -467,5 +467,9 @@ class SolicitudesUser extends Model
                 fec_act=NOW(), user_act=$id_usuario $parte
                 WHERE id_solicitudes_user = ".$dato['id_solicitudes_user']."";
         DB::update($sql);
+    }
+
+    public function verificacion_papeletas(){
+        DB::statement("CALL Papeletas_de_Salida(NULL)");
     }
 }

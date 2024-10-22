@@ -145,7 +145,6 @@ Route::controller(TrackingController::class)->group(function () {
     Route::post('tracking/insert_detalle_transporte_inicial', 'insert_detalle_transporte_inicial')->name('tracking.insert_detalle_transporte_inicial');
     Route::get('tracking/{id}/detalle_transporte', 'detalle_transporte')->name('tracking.detalle_transporte');
     Route::post('tracking/{id}/insert_detalle_transporte', 'insert_detalle_transporte')->name('tracking.insert_detalle_transporte');
-    Route::post('tracking/{id}/mercaderia_transito', 'insert_mercaderia_transito')->name('tracking.mercaderia_transito');
     Route::post('tracking/{id}/confirmacion_llegada', 'insert_confirmacion_llegada')->name('tracking.confirmacion_llegada');
     Route::post('tracking/{id}/cierre_inspeccion_fardos', 'insert_cierre_inspeccion_fardos')->name('tracking.cierre_inspeccion_fardos');
     Route::get('tracking/{id}/verificacion_fardos', 'verificacion_fardos')->name('tracking.verificacion_fardos');
@@ -2154,4 +2153,6 @@ Route::controller(PapeletasController::class)->group(function () {
     Route::post('Papeletas/Buscar_Base_Papeletas_Seguiridad', 'Buscar_Base_Papeletas_Seguiridad');
     Route::post('Papeletas/Busca_Colaborador_Control', 'Busca_Colaborador_Control');
     Route::get('Papeletas/Excel_Estado_Solicitud_Papeletas_Salida_Seguridad/{base}/{estado}/{fec_rev}/{fec_fin}/{num_doc}', 'Excel_Estado_Solicitud_Papeletas_Salida_Seguridad');
+    Route::post('Papeletas/Update_Papeletas_Salida_seguridad_Retorno', 'Update_Papeletas_Salida_seguridad_Retorno');
+    Route::post('Papeletas/Cambiar_solicitud_papeletas_seguridad', 'Cambiar_solicitud_papeletas_seguridad');
 });

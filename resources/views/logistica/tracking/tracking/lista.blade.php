@@ -343,10 +343,14 @@ use App\Models\TrackingDetalleProceso;
     }
 </style>
 
-@php 
-    $terminados = count(array_filter($list_tracking, fn($item) => $item->id_estado == "21"));
+@php
     $total = count($list_tracking);
-    $porcentaje = 100*$terminados/$total;
+    if($total>0){
+        $terminados = count(array_filter($list_tracking, fn($item) => $item->id_estado == "21"));
+        $porcentaje = 100*$terminados/$total;
+    }else{
+        $porcentaje = 0;
+    }
 @endphp
 <div class="progress mb-3">
     <div class="progress-bar bg-secondary" role="progressbar" style="width: {{ $porcentaje }}%;" aria-valuenow="{{ $porcentaje }}" aria-valuemin="0" aria-valuemax="100">{{ number_format($porcentaje,2) }}</div>
@@ -384,20 +388,6 @@ use App\Models\TrackingDetalleProceso;
                         </svg>
                     </a>
                     Detalle de transporte
-                @endif
-                @elseif($list->id_estado==3)
-                <!-- PUESTO DE MAYRA TORRES (76) y JAIME SAAVEDRA (97) -->
-                @if (session('usuario')->id_puesto==76 ||
-                session('usuario')->id_puesto==97 ||
-                session('usuario')->id_nivel==1)
-                    <a href="javascript:void(0);" title="Mercadería en tránsito" onclick="Insert_Mercaderia_Transito('{{ $list->id }}');">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle text-dark">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12 16 16 12 12 8"></polyline>
-                            <line x1="8" y1="12" x2="16" y2="12"></line>
-                        </svg>
-                    </a>
-                    Mercadería en tránsito
                 @endif
                 @elseif($list->id_estado==4)
                 <!-- PUESTOS DE TIENDA -->
@@ -1197,41 +1187,6 @@ use App\Models\TrackingDetalleProceso;
             "pageLength": 10
         });
     });
-
-    function Insert_Mercaderia_Transito(id) {
-        Cargando();
-
-        var url = "{{ route('tracking.mercaderia_transito', ':id') }}".replace(':id', id);
-
-        Swal({
-            title: '¿Realmente desea cambiar el estado?',
-            text: "Se cambiará al estado MERCADERÍA EN TRÁNSITO",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Si',
-            cancelButtonText: 'No',
-            padding: '2em'
-        }).then((result) => {
-            if (result.value) {
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    success: function() {
-                        Swal(
-                            '¡Cambio de estado exitoso!',
-                            '¡Haga clic en el botón!',
-                            'success'
-                        ).then(function() {
-                            Lista_Tracking();
-                        });
-                    }
-                });
-            }
-        })
-    }
 
     function Insert_Confirmacion_Llegada(id) {
         Cargando();
