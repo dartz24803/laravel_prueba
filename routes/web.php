@@ -416,10 +416,14 @@ Route::controller(SoporteController::class)->group(function () {
 
 Route::controller(SoporteConfController::class)->group(function () {
 
-    Route::get('soporteticket_conf', 'indexsop_conf')->name('soporteticket_conf');
+    Route::get('soporteasuntos_conf', 'indexsopasunto_conf')->name('soporteasuntos_conf');
+    Route::get('soporteubicaciones_conf', 'indexubicaciones_conf')->name('soporteubicaciones_conf');
+
     Route::get('soporte_asunto_conf', 'index_asu_conf')->name('soporte_asunto_conf');
     Route::get('soporte_elemento_conf', 'index_ele_conf')->name('soporte_elemento_conf');
     Route::get('soporte_especialidad_conf', 'index_esp_conf')->name('soporte_especialidad_conf');
+    Route::get('soporte_area_esp_conf', 'index_area_esp_conf')->name('soporte_area_esp_conf');
+
 
     // ADMINISTRABLE ASUNTO
     Route::get('soporte_asunto_conf/list', 'list_asunto_conf')->name('soporte_asunto_conf.list');
@@ -442,6 +446,15 @@ Route::controller(SoporteConfController::class)->group(function () {
     Route::post('soporte_especialidad_conf/{id}', 'update_especialidad_conf')->name('soporte_especialidad_conf.update');
     Route::get('soporte_especialidad_conf/create', 'create_especialidad_conf')->name('soporte_especialidad_conf.create');
     Route::post('soporte_especialidad_conf', 'store_especialidad_conf')->name('soporte_especialidad_conf.store');
+
+    // ADMINISTRABLE AREA ESPECIFICA
+    Route::get('soporte_area_esp_conf/list', 'list_area_esp_conf')->name('soporte_area_esp_conf.list');
+    Route::get('soporte_area_esp_conf/{id}/edit', 'edit_area_esp_conf')->name('soporte_area_esp_conf.edit');
+    Route::post('soporte_area_esp_conf/{id}/destroy', 'destroy_area_esp_conf')->name('soporte_area_esp_conf.destroy');
+    Route::post('soporte_area_esp_conf/{id}', 'update_area_esp_conf')->name('soporte_area_esp_conf.update');
+    Route::get('soporte_area_esp_conf/create', 'create_area_esp_conf')->name('soporte_area_esp_conf.create');
+    Route::post('soporte_area_esp_conf', 'store_area_esp_conf')->name('soporte_area_esp_conf.store');
+    Route::get('area_especifica_por_sede', 'getAreaEspecificaPorSede')->name('area_especifica_por_sede');
 });
 
 

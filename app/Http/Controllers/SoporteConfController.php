@@ -39,6 +39,8 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use App\Models\Notificacion;
 use App\Models\SedeLaboral;
 use App\Models\Soporte;
+use App\Models\SoporteAreaEspecifica;
+use App\Models\SoporteNivel;
 use App\Models\SoporteTipo;
 use App\Models\SubGerencia;
 use App\Models\Ubicacion;
@@ -48,26 +50,38 @@ use App\Models\User;
 class SoporteConfController extends Controller
 {
 
-    public function indexsop_conf()
+    public function indexsopasunto_conf()
     {
         $list_subgerencia = SubGerencia::list_subgerencia(9);
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('soporte.administracion.index', compact('list_notificacion', 'list_subgerencia'));
+        return view('soporte.administracion.asunto_soporte.index', compact('list_notificacion', 'list_subgerencia'));
+    }
+
+    public function indexubicaciones_conf()
+    {
+        $list_subgerencia = SubGerencia::list_subgerencia(9);
+        $list_notificacion = Notificacion::get_list_notificacion();
+        return view('soporte.administracion.ubicacion.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
     public function index_asu_conf()
     {
-        return view('soporte.administracion.asunto.asunto.index');
+        return view('soporte.administracion.asunto_soporte.asunto.index');
     }
 
     public function index_ele_conf()
     {
-        return view('soporte.administracion.asunto.elemento.index');
+        return view('soporte.administracion.asunto_soporte.elemento.index');
     }
 
     public function index_esp_conf()
     {
-        return view('soporte.administracion.asunto.especialidad.index');
+        return view('soporte.administracion.asunto_soporte.especialidad.index');
+    }
+
+    public function index_area_esp_conf()
+    {
+        return view('soporte.administracion.ubicacion.area_especifica.index');
     }
 
     public function list_asunto_conf()
@@ -87,7 +101,7 @@ class SoporteConfController extends Controller
             ->orderBy('fec_reg', 'DESC')
             ->get();
 
-        return view('soporte.administracion.asunto.asunto.lista', compact('list_asunto'));
+        return view('soporte.administracion.asunto_soporte.asunto.lista', compact('list_asunto'));
     }
 
     public function create_asunto_conf()
@@ -97,7 +111,7 @@ class SoporteConfController extends Controller
             ->get();
         $list_tipo = SoporteTipo::select('soporte_tipo.idsoporte_tipo', 'soporte_tipo.nombre')
             ->get();
-        return view('soporte.administracion.asunto.asunto.modal_registrar', compact('list_elementos', 'list_tipo'));
+        return view('soporte.administracion.asunto_soporte.asunto.modal_registrar', compact('list_elementos', 'list_tipo'));
     }
 
 
@@ -139,7 +153,7 @@ class SoporteConfController extends Controller
             ->get();
         $get_id = AsuntoSoporte::findOrFail($id);
         // dd($get_id);
-        return view('soporte.administracion.asunto.asunto.modal_editar', compact('get_id', 'list_elementos', 'list_tipo'));
+        return view('soporte.administracion.asunto_soporte.asunto.modal_editar', compact('get_id', 'list_elementos', 'list_tipo'));
     }
 
 
@@ -187,7 +201,7 @@ class SoporteConfController extends Controller
             ->orderBy('fec_reg', 'DESC')
             ->get();
 
-        return view('soporte.administracion.asunto.elemento.lista', compact('list_elementos'));
+        return view('soporte.administracion.asunto_soporte.elemento.lista', compact('list_elementos'));
     }
 
     public function create_elemento_conf()
@@ -196,7 +210,7 @@ class SoporteConfController extends Controller
             ->where('especialidad.estado', 1)
             ->get();
 
-        return view('soporte.administracion.asunto.elemento.modal_registrar', compact('list_especialidad'));
+        return view('soporte.administracion.asunto_soporte.elemento.modal_registrar', compact('list_especialidad'));
     }
 
     public function store_elemento_conf(Request $request)
@@ -232,7 +246,7 @@ class SoporteConfController extends Controller
             ->get();
         $get_id = ElementoSoporte::findOrFail($id);
         // dd($list_especialidad);
-        return view('soporte.administracion.asunto.elemento.modal_editar', compact('get_id', 'list_especialidad'));
+        return view('soporte.administracion.asunto_soporte.elemento.modal_editar', compact('get_id', 'list_especialidad'));
     }
 
 
@@ -279,6 +293,7 @@ class SoporteConfController extends Controller
 
 
 
+
     public function list_especialidad_conf()
     {
         $list_especialidad = Especialidad::select(
@@ -293,7 +308,7 @@ class SoporteConfController extends Controller
             ->orderBy('fec_reg', 'DESC')
             ->get();
 
-        return view('soporte.administracion.asunto.especialidad.lista', compact('list_especialidad'));
+        return view('soporte.administracion.asunto_soporte.especialidad.lista', compact('list_especialidad'));
     }
 
 
@@ -306,7 +321,7 @@ class SoporteConfController extends Controller
             ->distinct('nom_area')
             ->get();
 
-        return view('soporte.administracion.asunto.especialidad.modal_registrar', compact('list_area'));
+        return view('soporte.administracion.asunto_soporte.especialidad.modal_registrar', compact('list_area'));
     }
 
     public function store_especialidad_conf(Request $request)
@@ -347,7 +362,7 @@ class SoporteConfController extends Controller
             ->get();
 
         $get_id = Especialidad::findOrFail($id);
-        return view('soporte.administracion.asunto.especialidad.modal_editar', compact('get_id', 'list_area'));
+        return view('soporte.administracion.asunto_soporte.especialidad.modal_editar', compact('get_id', 'list_area'));
     }
 
 
@@ -394,5 +409,129 @@ class SoporteConfController extends Controller
                     'estado' => 2
                 ]);
         }
+    }
+
+
+
+
+
+
+
+
+
+    //  ÁREA ESPECÍFICA
+    public function list_area_esp_conf()
+    {
+        $list_area_especificas = SoporteAreaEspecifica::select(
+            'soporte_area_especifica.idsoporte_area_especifica',
+            'soporte_area_especifica.nombre',
+            'soporte_area_especifica.fec_reg',
+        )
+            ->where('soporte_area_especifica.estado', 1)
+            ->orderBy('fec_reg', 'DESC')
+            ->get();
+
+        return view('soporte.administracion.ubicacion.area_especifica.lista', compact('list_area_especificas'));
+    }
+
+
+    public function create_area_esp_conf()
+    {
+        $list_nivel = SoporteNivel::select('idsoporte_nivel', 'nombre')
+            ->where('estado', 1)
+            ->distinct('nombre')
+            ->get();
+
+        $list_sede = SedeLaboral::select('id', 'descripcion')
+            ->where('estado', 1)
+            ->whereNotIn('id', [3, 5]) // Excluir los id EXT y REMOTO
+            ->get();
+
+        return view('soporte.administracion.ubicacion.area_especifica.modal_registrar', compact('list_nivel', 'list_sede'));
+    }
+
+    public function store_area_esp_conf(Request $request)
+    {
+        $request->validate([
+            'sede_laboral' => 'gt:0',
+            'soporte_nivel' =>  'gt:0',
+
+        ], [
+            'sede_laboral.gt' => 'Debe seleccionar al menos una sede.',
+            'soporte_nivel.gt' => 'Debe seleccionar al menos un nivel.',
+
+        ]);
+
+        // dd($request->all());
+        SoporteAreaEspecifica::create([
+            'id_soporte_nivel' => $request->soporte_nivel,
+            'nombre' => $request->nom_area_esp,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        return redirect()->back()->with('success', 'Reporte registrado con éxito.');
+    }
+
+
+    public function edit_area_esp_conf($id)
+    {
+        $list_nivel = SoporteNivel::select('idsoporte_nivel', 'nombre')
+            ->where('estado', 1)
+            ->distinct('nombre')
+            ->get();
+
+        $list_sede = SedeLaboral::select('id', 'descripcion')
+            ->where('estado', 1)
+            ->whereNotIn('id', [3, 5])
+            ->get();
+
+        $get_id = SoporteAreaEspecifica::listAreaEspecifica($id);
+        // dd($get_id);
+        return view('soporte.administracion.ubicacion.area_especifica.modal_editar', compact('get_id', 'list_nivel', 'list_sede'));
+    }
+
+
+    public function update_area_esp_conf(Request $request, $id)
+    {
+        $request->validate([
+            'sede_laborale' => 'gt:0',
+            'soporte_nivele' =>  'gt:0',
+
+        ], [
+            'sede_laboral.gt' => 'Debe seleccionar al menos una sede.',
+            'soporte_nivel.gt' => 'Debe seleccionar al menos un nivel.',
+
+        ]);
+
+        SoporteAreaEspecifica::findOrFail($id)->update([
+            'id_soporte_nivel' => $request->soporte_nivele,
+            'nombre' => $request->nom_area_espe,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function destroy_area_esp_conf($id)
+    {
+        SoporteAreaEspecifica::where('idsoporte_area_especifica', $id)->firstOrFail()->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+
+    public function getAreaEspecificaPorSede(Request $request)
+    {
+        $sedeId = $request->input('sede');
+        // Obtiene toda la lista de soporte_nivel que coincida con id_sede_laboral
+        $niveles = SoporteNivel::where('id_sede_laboral', $sedeId)
+            ->where('estado', 1)
+            ->get();
+        return response()->json($niveles);
     }
 }

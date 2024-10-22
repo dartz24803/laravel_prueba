@@ -21,15 +21,7 @@
                             <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                                 <li class="nav-item">
                                     <a id="especialidad" class="nav-link" style="cursor: pointer;"
-                                        onclick="ListEspecialidad();">Especialidad</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a id="elemento" class="nav-link" style="cursor: pointer;"
-                                        onclick="ListElementos();">Elemento</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a id="asunto" class="nav-link" style="cursor: pointer;"
-                                        onclick="ListAsuntos();">Asunto</a>
+                                        onclick="ListAreaEspecificas();">Área Específica</a>
                                 </li>
                             </ul>
                             <div class="row" id="cancel-row">
@@ -49,18 +41,19 @@
         $(document).ready(function() {
             $("#soporteconf").addClass('active');
             $("#hsoporteconf").attr('aria-expanded', 'true');
+            $("#rubicacionessoporte").addClass('active');
 
             $("#especialidad").addClass('active');
             $("#elemento").removeClass('active');
             $("#asunto").removeClass('active');
 
-            ListEspecialidad();
+            ListAreaEspecificas();
         });
 
-        function ListEspecialidad() {
+        function ListAreaEspecificas() {
             Cargando();
 
-            var url = "{{ route('soporte_especialidad_conf') }}";
+            var url = "{{ route('soporte_area_esp_conf') }}";
 
             $.ajax({
                 url: url,
@@ -70,42 +63,6 @@
                     $("#especialidad").addClass('active');
                     $("#elemento").removeClass('active');
                     $("#asunto").removeClass('active');
-
-                }
-            });
-        }
-
-        function ListElementos() {
-            Cargando();
-
-            var url = "{{ route('soporte_elemento_conf') }}";
-
-            $.ajax({
-                url: url,
-                type: "GET",
-                success: function(resp) {
-                    $('#div_lista_maestra').html(resp);
-                    $("#especialidad").removeClass('active');
-                    $("#elemento").addClass('active');
-                    $("#asunto").removeClass('active');
-
-                }
-            });
-        }
-
-        function ListAsuntos() {
-            Cargando();
-
-            var url = "{{ route('soporte_asunto_conf') }}";
-
-            $.ajax({
-                url: url,
-                type: "GET",
-                success: function(resp) {
-                    $('#div_lista_maestra').html(resp);
-                    $("#especialidad").removeClass('active');
-                    $("#elemento").removeClass('active');
-                    $("#asunto").addClass('active');
 
                 }
             });
