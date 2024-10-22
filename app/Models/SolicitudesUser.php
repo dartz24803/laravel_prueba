@@ -189,15 +189,6 @@ class SolicitudesUser extends Model
         if ($id_nivel == 1 || $id_puesto == 23 || $id_puesto == 19) {
             $gerencia = "";
             $puesto = "";
-        } elseif ($usuario_codigo === "46553611" || $usuario_codigo === "46156858" || $usuario_codigo === "08584691" || $id_puesto == 40) {
-            $gerencia = " and u.id_gerencia=$id_gerencia ";
-            $puesto = "";
-        } elseif ($usuario_codigo === "29426417") {
-            $gerencia = " and u.id_gerencia in ($id_gerencia, 1) ";
-            $puesto = "";
-        } elseif ($usuario_codigo === "44582537") {
-            $gerencia = " and u.id_gerencia in ($id_gerencia, 2) ";
-            $puesto = "";
         } elseif ($id_puesto == 10) {
             $gerencia = "";
             $puesto = "";
