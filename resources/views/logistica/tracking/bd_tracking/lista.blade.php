@@ -1,26 +1,28 @@
 <table id="tabla_js" class="table" style="width:100%">
     <thead>
         <tr class="text-center">
+            <th>Orden</th>
             <th>N° requerimiento</th>
             <th>Desde</th>
             <th>Hacia</th>
             <th>Proceso</th>
+            <th>Estado</th>
             <th>Fecha</th>
             <th>Hora</th>
-            <th>Estado</th>
         </tr>
     </thead>
 
     <tbody>
         @foreach ($list_bd_tracking as $list)
             <tr class="text-center">
+                <td>{{ $list->orden }}</td>
                 <td>{{ $list->n_requerimiento }}</td>
                 <td>{{ $list->desde }}</td>
                 <td>{{ $list->hacia }}</td>
                 <td class="text-left">{{ $list->proceso }}</td>
+                <td class="text-left">{{ $list->estado }}</td>
                 <td>{{ $list->fecha }}</td>
                 <td>{{ $list->hora }}</td>
-                <td class="text-left">{{ $list->estado }}</td>
             </tr>
         @endforeach
     </tbody>
@@ -33,6 +35,7 @@
                 "<'table-responsive'tr>" +
                 "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
             responsive: true,
+            order: [[0,"desc"]],
             "oLanguage": {
                 "oPaginate": {
                     "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
@@ -46,7 +49,13 @@
             },
             "stripeClasses": [],
             "lengthMenu": [10, 20, 50],
-            "pageLength": 10
+            "pageLength": 10,
+            "aoColumnDefs" : [ 
+                {
+                    'targets' : [ 0 ],
+                    'visible' : false
+                } 
+            ]
         });
     });
 </script>

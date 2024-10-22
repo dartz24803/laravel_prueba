@@ -172,7 +172,7 @@ class Tracking extends Model
         if(substr(session('usuario')->centro_labores,0,1)=="B"){
             $parte = "bh.cod_base='".session('usuario')->centro_labores."' AND";
         }
-        $sql = "SELECT tr.n_requerimiento,bd.cod_base AS desde,bh.cod_base AS hacia,
+        $sql = "SELECT tde.fecha AS orden,tr.n_requerimiento,bd.cod_base AS desde,bh.cod_base AS hacia,
                 tp.descripcion AS proceso,
                 CONCAT(CASE WHEN DAYNAME(tde.fecha)='Monday' THEN 'Lun'
                 WHEN DAYNAME(tde.fecha)='Tuesday' THEN 'Mar'
@@ -190,7 +190,8 @@ class Tracking extends Model
                 LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base
                 LEFT JOIN tracking_proceso tp ON tdp.id_proceso=tp.id
                 LEFT JOIN tracking_estado te ON tde.id_estado=te.id
-                WHERE $parte tr.estado=1";
+                WHERE $parte tr.estado=1
+                ORDER BY tde.fecha DESC";
         $query = DB::select($sql);
         return $query;
     }
