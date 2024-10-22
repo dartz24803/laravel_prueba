@@ -164,7 +164,7 @@ class TrackingController extends Controller
 
     public function iniciar_tracking()
     {
-        TrackingTemporal::truncate();
+        /*TrackingTemporal::truncate();
         $list_tracking = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['T']);
         foreach($list_tracking as $list){
             if($list->id_origen_hacia=="4" || $list->id_origen_hacia=="6" || $list->id_origen_hacia=="10"){
@@ -331,7 +331,7 @@ class TrackingController extends Controller
                 'iniciar' => 1,
                 'fec_act' => now()
             ]);
-        }
+        }*/
     }
 
     public function llegada_tienda()
@@ -911,6 +911,7 @@ class TrackingController extends Controller
             }
             $mail->send();
 
+            //SALIDA DE MERCADERÍA
             TrackingDetalleEstado::create([
                 'id_detalle' => $get_id->id_detalle,
                 'id_estado' => 3,
@@ -921,66 +922,47 @@ class TrackingController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
-        }catch(Exception $e) {
-            echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-        }
-    }
 
-    public function insert_mercaderia_transito(Request $request,$id)
-    {
-        //ALERTA 2
-        $get_id = Tracking::get_list_tracking(['id'=>$id]);
-
-        $list_token = TrackingToken::whereIn('base', [$get_id->hacia])->get();
-        foreach($list_token as $token){
+            //MERCADERÍA EN TRÁNSITO
+            $list_token = TrackingToken::whereIn('base', [$get_id->hacia])->get();
+            foreach($list_token as $token){
+                $dato = [
+                    'token' => $token->token,
+                    'titulo' => 'SALIDA DE MERCADERÍA',
+                    'contenido' => 'Hola '.$get_id->hacia.' tu requerimiento n° '.$get_id->n_requerimiento.' está en camino',
+                ];
+                $this->sendNotification($dato);
+            }
             $dato = [
-                'token' => $token->token,
+                'id_tracking' => $get_id->id,
                 'titulo' => 'SALIDA DE MERCADERÍA',
                 'contenido' => 'Hola '.$get_id->hacia.' tu requerimiento n° '.$get_id->n_requerimiento.' está en camino',
             ];
-            $this->sendNotification($dato);
-        }
-        $dato = [
-            'id_tracking' => $get_id->id,
-            'titulo' => 'SALIDA DE MERCADERÍA',
-            'contenido' => 'Hola '.$get_id->hacia.' tu requerimiento n° '.$get_id->n_requerimiento.' está en camino',
-        ];
-        $this->insert_notificacion($dato);
+            $this->insert_notificacion($dato);
 
-        $tracking_dp = TrackingDetalleProceso::create([
-            'id_tracking' => $id,
-            'id_proceso' => 2,
-            'fecha' => now(),
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
-
-        TrackingDetalleEstado::create([
-            'id_detalle' => $tracking_dp->id,
-            'id_estado' => 4,
-            'fecha' => now(),
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
-
-        $list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$get_id->n_requerimiento]);
-        foreach($list_detalle as $list){
-            TrackingGuiaRemisionDetalle::create([
-                'n_requerimiento' => $get_id->n_requerimiento,
-                'n_guia_remision' => $get_id->n_requerimiento,
-                'sku' => $list->sku,
-                'color' => $list->color,
-                'estilo' => $list->estilo,
-                'talla' => $list->talla,
-                'descripcion' => $list->descripcion,
-                'cantidad' => $list->cantidad,
+            $tracking_dp = TrackingDetalleProceso::create([
+                'id_tracking' => $id,
+                'id_proceso' => 2,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
             ]);
+    
+            TrackingDetalleEstado::create([
+                'id_detalle' => $tracking_dp->id,
+                'id_estado' => 4,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }catch(Exception $e) {
+            echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
     }
 
@@ -1050,6 +1032,20 @@ class TrackingController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+
+        /*$list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$get_id->n_requerimiento]);
+        foreach($list_detalle as $list){
+            TrackingGuiaRemisionDetalle::create([
+                'n_requerimiento' => $get_id->n_requerimiento,
+                'n_guia_remision' => $get_id->n_requerimiento,
+                'sku' => $list->sku,
+                'color' => $list->color,
+                'estilo' => $list->estilo,
+                'talla' => $list->talla,
+                'descripcion' => $list->descripcion,
+                'cantidad' => $list->cantidad,
+            ]);
+        }*/
     }
 
     public function insert_cierre_inspeccion_fardos(Request $request,$id)
