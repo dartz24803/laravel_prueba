@@ -164,7 +164,7 @@ class TrackingController extends Controller
 
     public function iniciar_tracking()
     {
-        TrackingTemporal::truncate();
+        /*TrackingTemporal::truncate();
         $list_tracking = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['T']);
         foreach($list_tracking as $list){
             if($list->id_origen_hacia=="4" || $list->id_origen_hacia=="6" || $list->id_origen_hacia=="10"){
@@ -249,10 +249,10 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
                 //$mail->addAddress('ogutierrez@lanumero1.com.pe');
                 //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-                /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+                $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
                 foreach($list_td as $list){
                     $mail->addAddress($list->emailp);
                 }
@@ -263,7 +263,7 @@ class TrackingController extends Controller
                 $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
                 foreach($list_cc as $list){
                     $mail->addCC($list->emailp);
-                }*/
+                }
 
                 $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
                 $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -331,7 +331,7 @@ class TrackingController extends Controller
                 'iniciar' => 1,
                 'fec_act' => now()
             ]);
-        }
+        }*/
     }
 
     public function llegada_tienda()
@@ -1033,7 +1033,7 @@ class TrackingController extends Controller
             'user_act' => session('usuario')->id_usuario
         ]);
 
-        $list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$get_id->n_requerimiento]);
+        /*$list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$get_id->n_requerimiento]);
         foreach($list_detalle as $list){
             TrackingGuiaRemisionDetalle::create([
                 'n_requerimiento' => $get_id->n_requerimiento,
@@ -1045,7 +1045,7 @@ class TrackingController extends Controller
                 'descripcion' => $list->descripcion,
                 'cantidad' => $list->cantidad,
             ]);
-        }
+        }*/
     }
 
     public function insert_cierre_inspeccion_fardos(Request $request,$id)
