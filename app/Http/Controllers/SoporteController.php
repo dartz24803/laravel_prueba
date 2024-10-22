@@ -42,6 +42,7 @@ use App\Models\SedeLaboral;
 use App\Models\Soporte;
 use App\Models\SoporteAreaEspecifica;
 use App\Models\SoporteEjecutor;
+use App\Models\SoporteMotivoCancelacion;
 use App\Models\SoporteNivel;
 use App\Models\SoporteSolucion;
 use App\Models\SubGerencia;
@@ -78,6 +79,7 @@ class SoporteController extends Controller
             ->where('especialidad.estado', 1)
             ->where('id', '!=', 4)
             ->get();
+
         $especialidadConId4 = Especialidad::select('id', 'nombre')
             ->where('id', 4)
             ->first();
@@ -156,13 +158,14 @@ class SoporteController extends Controller
         if (empty($idEspecialidad)) {
             return response()->json([]);
         }
+        // dd($idEspecialidad);
         // Buscar ubicaciones asociadas a la sede seleccionada
         $elementos = ElementoSoporte::where(function ($query) use ($idEspecialidad) {
             $query->whereRaw("FIND_IN_SET(?, id_especialidad)", [$idEspecialidad]);
         })
             ->where('estado', 1)
             ->get();
-
+        // dd($elementos);
         return response()->json($elementos);
     }
 
@@ -216,23 +219,21 @@ class SoporteController extends Controller
             ->select('sa.idsoporte_tipo')
             ->first();
 
-        // Verifica que se haya encontrado un tipo de soporte
         if ($idsoporte_tipo) {
-            // Determinar el prefijo basado en el tipo de soporte
             $prefijo = $idsoporte_tipo->idsoporte_tipo == 1 ? 'RQ-TI-' : 'INC-TI-';
             $contador = Soporte::where('idsoporte_tipo', $idsoporte_tipo->idsoporte_tipo)->count();
-            $numero_formateado = str_pad($contador, 3, '0', STR_PAD_LEFT);
-            // Generar el código final
+            $nuevo_numero = $contador + 1;
+            $numero_formateado = str_pad($nuevo_numero, 3, '0', STR_PAD_LEFT);
             $codigo_generado = $prefijo . $numero_formateado;
         } else {
-            // Manejar el caso en el que no se encuentra el tipo de soporte
             $codigo_generado = 'Código no disponible';
         }
+
+
         $soporte_solucion = SoporteSolucion::create([
             'id_responsable' => null,
             'comentario' => '',
             'fec_comentario' => null,
-            'tipo_soporte' => $request->tipo_soporte,
             'estado_solucion' => 0,
             'archivo_solucion' => 0,
             'estado' => 1,
@@ -266,11 +267,13 @@ class SoporteController extends Controller
             'idsoporte_area_especifica' => $request->idsoporte_area_especifica ?? 0,
             'id_area' => $request->area ?? 0,
             'id_responsable' => null,
+            'area_cancelacion' => 0,
+            'idsoporte_motivo_cancelacion' => null,
             'idsoporte_solucion' => $soporte_solucion->idsoporte_solucion,
             'idsoporte_ejecutor' => $soporte_ejecutor->idsoporte_ejecutor,
             'fec_vencimiento' => $request->vencimiento,
             'descripcion' => $request->descripcion,
-            'tipo_soporte' => $request->tipo_soporte,
+            'idsoporte_tipo' => $idsoporte_tipo->idsoporte_tipo ?? 1,
             'estado' => 1,
             'estado_registro' => 1,
             'fec_reg' => now(),
@@ -278,103 +281,40 @@ class SoporteController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
-        // dd($idsoporte->id_soporte);
 
         return redirect()->back()->with('success', 'Reporte registrado con éxito.');
+    }
+
+    public function ver_tick($id_soporte)
+    {
+        $get_id = Soporte::getTicketById($id_soporte);
+        // dd($get_id->idejecutor_responsable);
+        return view('soporte.soporte.modal_ver', compact('get_id'));
     }
 
     public function update_tick(Request $request, $id)
     {
 
-        // Obtener el registro del historial de procesos
-        $get_id = ProcesosHistorial::where('id_portal_historial', $id)->firstOrFail();
+        Soporte::findOrFail($id)->update([
+            'id_sede' =>  $request->sedee,
+            'idsoporte_nivel' =>  $request->idsoporte_nivele,
+            'idsoporte_area_especifica' => $request->idsoporte_area_especificae,
+            'fec_vencimiento' =>  $request->fec_vencimiento,
+            'id_especialidad' =>  $request->especialidade,
+            'id_elemento' => $request->elementoe  ?? 6,
+            'id_asunto' => $request->asuntoe ?? 9,
+            'descripcion' => $request->descripcione,
+            'id_area' => $request->areae,
+            'estado_registro' => 1,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+        // dd($get_id->idsoporte_solucion);
 
-        // Inicializar variables para los archivos
-        $archivo = $get_id->archivo;
-        $documento = $get_id->archivo4;
-        $diagrama = $get_id->archivo5;
-
-        // Conectar al servidor FTP
-        $ftp_server = "lanumerounocloud.com";
-        $ftp_usuario = "intranet@lanumerounocloud.com";
-        $ftp_pass = "Intranet2022@";
-        $con_id = ftp_connect($ftp_server);
-        $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
-
-        if ($con_id && $lr) {
-            ftp_pasv($con_id, true);
-
-            // Subir archivo 1 si se ha cargado
-            if ($request->hasFile('archivo1e')) {
-                if ($get_id->archivo) {
-                    ftp_delete($con_id, 'PORTAL_PROCESOS/' . basename($get_id->archivo));
-                }
-                $archivo = $request->file('archivo1e')->getClientOriginalName();
-                $request->file('archivo1e')->move(storage_path('app/temp'), $archivo);
-                $source_file = storage_path('app/temp/' . $archivo);
-                $subio = ftp_put($con_id, "PORTAL_PROCESOS/" . $archivo, $source_file, FTP_BINARY);
-                if (!$subio) {
-                    echo "Archivo 1 no subido correctamente";
-                }
-            }
-
-            // Subir documento si se ha cargado
-            if ($request->hasFile('documentoae')) {
-                if ($get_id->archivo4) {
-                    ftp_delete($con_id, 'PORTAL_PROCESOS/' . basename($get_id->archivo4));
-                }
-                $documento = $request->file('documentoae')->getClientOriginalName();
-                $request->file('documentoae')->move(storage_path('app/temp'), $documento);
-                $source_file_doc = storage_path('app/temp/' . $documento);
-                $subio_doc = ftp_put($con_id, "PORTAL_PROCESOS/" . $documento, $source_file_doc, FTP_BINARY);
-                if (!$subio_doc) {
-                    echo "Documento no subido correctamente";
-                }
-            }
-
-            // Subir diagrama si se ha cargado
-            if ($request->hasFile('diagramaae')) {
-                if ($get_id->archivo5) {
-                    ftp_delete($con_id, 'PORTAL_PROCESOS/' . basename($get_id->archivo5));
-                }
-                $diagrama = $request->file('diagramaae')->getClientOriginalName();
-                $request->file('diagramaae')->move(storage_path('app/temp'), $diagrama);
-                $source_file_diag = storage_path('app/temp/' . $diagrama);
-                $subio_diag = ftp_put($con_id, "PORTAL_PROCESOS/" . $diagrama, $source_file_diag, FTP_BINARY);
-                if (!$subio_diag) {
-                    echo "Diagrama no subido correctamente";
-                }
-            }
-
-            ftp_close($con_id); // Cerrar conexión FTP
-        } else {
-            echo "No se conectó al servidor FTP";
-        }
-
-        // Actualiza la tabla 'ProcesosHistorial'
-        DB::table('portal_procesos_historial')
-            ->where('id_portal_historial', $id)
-            ->update([
-                'nombre' => $request->nombre,
-                'id_tipo' => $request->id_tipo,
-                'fecha' => $request->fecha,
-                'id_responsable' => $request->id_responsablee,
-                'codigo' => $request->codigo,
-                'numero' => $request->ndocumento,
-                'version' => $request->versione,
-                'estado_registro' => $request->estadoe,
-                'descripcion' => $request->descripcione ?? '',
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario,
-                'archivo' => $archivo,
-                'archivo4' => $documento,
-                'archivo5' => $diagrama,
-            ]);
     }
 
     public function destroy_tick($id)
     {
-
         ProcesosHistorial::where('id_portal_historial', $id)->firstOrFail()->update([
             'estado' => 2,
             'fec_eli' => now(),
@@ -420,6 +360,46 @@ class SoporteController extends Controller
         // dd($get_id->idejecutor_responsable);
         return view('soporte.soporte_master.modal_ver', compact('get_id'));
     }
+
+    public function edit_tick($id_soporte)
+    {
+
+        $get_id = Soporte::getTicketById($id_soporte);
+
+        $list_area = Area::select('id_area', 'nom_area')
+            ->where('estado', 1)
+            ->orderBy('nom_area', 'ASC')
+            ->distinct('nom_area')
+            ->get();
+
+        $list_especialidad = Especialidad::select('id', 'nombre')
+            ->where('especialidad.estado', 1)
+            ->where('id', '!=', 4)
+            ->get();
+
+        $especialidadConId4 = Especialidad::select('id', 'nombre')
+            ->where('id', 4)
+            ->first();
+        if ($especialidadConId4) {
+            $list_especialidad->push($especialidadConId4);
+        }
+
+        $list_sede = SedeLaboral::select('id', 'descripcion')
+            ->where('estado', 1)
+            ->whereNotIn('id', [3, 5]) // Excluir los id EXT y REMOTO
+            ->get();
+
+        $list_elementos = ElementoSoporte::select('idsoporte_elemento', 'nombre')
+            ->where('estado', 1)
+            ->get();
+
+        $list_asunto = AsuntoSoporte::select('idsoporte_asunto', 'nombre')->get();
+
+        // dd($list_asunto);
+        // dd($get_id->id_asunto);
+        return view('soporte.soporte.modal_editar', compact('get_id', 'list_especialidad', 'list_area', 'list_sede', 'list_elementos', 'list_asunto'));
+    }
+
 
     public function edit_tick_master($id_soporte)
     {
@@ -513,8 +493,24 @@ class SoporteController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
-        // dd($idsoporte->id_soporte);
+    }
 
-        return redirect()->back()->with('success', 'Reporte registrado con éxito.');
+    public function cancelar_tick_master(Request $request, $id)
+    {
+        $list_area = Area::select('id_area', 'nom_area')
+            ->where('estado', 1)
+            ->orderBy('nom_area', 'ASC')
+            ->distinct('nom_area')
+            ->get();
+
+        $list_motivos_cancelacion = SoporteMotivoCancelacion::select('idsoporte_motivo_cancelacion', 'motivo')
+            ->orderBy('motivo', 'ASC')
+            ->distinct('motivo')
+            ->get();
+
+
+        $get_id = Soporte::getTicketById($id);
+        // dd($get_id->idejecutor_responsable);
+        return view('soporte.soporte_master.modal_cancelar', compact('get_id', 'list_area', 'list_motivos_cancelacion'));
     }
 }

@@ -43,12 +43,13 @@
                                     <select class="form-control" id="id_responsablee" name="id_responsablee">
                                         <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
                                         <option value="0" {{ is_null($get_id->id_responsable) ? 'selected' : '' }}>SIN DESIGNAR</option>
-                                        @foreach ($list_responsable as $list)
-                                        <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
-                                        <option value="{{ $list->id_usuario }}" {{ $get_id->id_responsable == $list->id_usuario ? 'selected' : '' }}>
-                                            {{ $list->nombre_completo }}
-                                        </option>
-                                        @endforeach
+                                              @foreach ($list_responsable as $list)
+                                    <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
+                                    <option value="{{ $list->id_usuario }}"
+                                        {{ $get_id->id_responsable == $list->id_usuario ? 'selected' : '' }}>
+                                        {{ $list->nombre_completo }}
+                                    </option>
+                                    @endforeach
                                     </select>
                             </div>
 
@@ -66,11 +67,14 @@
                             </div>
                             <div class="form-group col-md-4" id="estado-container">
                                 <select class="form-control" id="estado_registroe" name="estado_registroe">
-                                    <option value="1" {{ $get_id->estado_registro == 1 ? 'selected' : '' }}>Por Iniciar</option>
-                                    <option value="2" {{ $get_id->estado_registro == 2 ? 'selected' : '' }}>En Proceso</option>
-                                    <option value="3" {{ $get_id->estado_registro == 3 ? 'selected' : '' }}>Completado</option>
-                                    <option value="4" {{ $get_id->estado_registro == 4 ? 'selected' : '' }}>Stand By</option>
-                                    <option value="5" {{ $get_id->estado_registro == 5 ? 'selected' : '' }}>Cancelado</option>
+                                    <option value="1" {{ $get_id->estado_registro == 1 ? 'selected' : '' }}>Por
+                                        Iniciar</option>
+                                    <option value="2" {{ $get_id->estado_registro == 2 ? 'selected' : '' }}>En
+                                        Proceso</option>
+                                    <option value="3" {{ $get_id->estado_registro == 3 ? 'selected' : '' }}>
+                                        Completado</option>
+                                    <option value="4" {{ $get_id->estado_registro == 4 ? 'selected' : '' }}>Stand
+                                        By</option>
                                 </select>
                             </div>
 
@@ -102,7 +106,7 @@
                                 <label class="control-label text-bold" ">Tipo:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0">
-                                    <span class="form-control border-0">{{ $get_id->nombre_tipo }}</span>
+                                <span class="form-control border-0">{{ $get_id->nombre_tipo }}</span>
                             </div>
                         </div>
                     </div>
@@ -127,7 +131,7 @@
                                 <label class="control-label text-bold" ">Especialidad:</label>
                             </div>
                             <div class=" form-group col-md-4">
-                                    <span class="form-control border-0">{{ $get_id->nombre_especialidad }}</span>
+                                <span class="form-control border-0">{{ $get_id->nombre_especialidad }}</span>
                             </div>
                             <div class="form-group col-md-2">
                                 <label class="control-label text-bold" ">Elemento:</label>
@@ -145,7 +149,7 @@
                                 <label class="control-label text-bold" ">Asunto:</label>
                             </div>
                             <div class=" form-group col-md-10 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                    <span class="form-control border-0">{{ $get_id->nombre_asunto }}</span>
+                                <span class="form-control border-0">{{ $get_id->nombre_asunto }}</span>
                             </div>
                         </div>
                     </div>
@@ -163,7 +167,7 @@
                                 <label class="control-label text-bold" ">Vencimiento:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0">
-                                    <span class="form-control border-0">{{ $get_id->fec_vencimiento }}</span>
+                                <span class="form-control border-0">{{ $get_id->fec_vencimiento }}</span>
                             </div>
                         </div>
                     </div>
@@ -193,16 +197,19 @@
                             </div>
                             <div class=" form-group col-md-10"> <!-- Ajustar la columna a col-md-10 -->
 
-                                    <select class="form-control" id="ejecutor_responsable" name="ejecutor_responsable">
-                                        <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
-                                        <option value="0" {{ is_null($get_id->idejecutor_responsable) ? 'selected' : '' }}>SELECCIONAR</option>
-                                        @foreach ($list_ejecutores_responsables as $list)
+                                <select class="form-control" id="ejecutor_responsable" name="ejecutor_responsable">
+                                    <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
+                                    <option value="0"
+                                        {{ is_null($get_id->idejecutor_responsable) ? 'selected' : '' }}>SELECCIONAR
+                                    </option>
+                                    @foreach ($list_ejecutores_responsables as $list)
                                         <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
-                                        <option value="{{ $list->idejecutor_responsable }}" {{ $get_id->idejecutor_responsable == $list->idejecutor_responsable ? 'selected' : '' }}>
+                                        <option value="{{ $list->idejecutor_responsable }}"
+                                            {{ $get_id->idejecutor_responsable == $list->idejecutor_responsable ? 'selected' : '' }}>
                                             {{ $list->nombre }}
                                         </option>
-                                        @endforeach
-                                    </select>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="row align-items-center">
@@ -210,7 +217,8 @@
                                 <label class="control-label text-bold">Nombre del Proyecto:</label>
                             </div>
                             <div class="form-group col-md-4" id="nom_proyecto-field">
-                                <input type="text" class="form-control" id="nom_proyecto" name="nom_proyecto" value="{{ $get_id->nombre_proyecto }}">
+                                <input type="text" class="form-control" id="nom_proyecto" name="nom_proyecto"
+                                    value="{{ $get_id->nombre_proyecto }}">
 
                             </div>
 
@@ -218,7 +226,8 @@
                                 <label class="control-label text-bold">Fecha de Inicio del Proyecto:</label>
                             </div>
                             <div class="form-group col-md-3" id="fec_ini_proyecto-field">
-                                <input type="date" class="form-control" id="fec_ini_proyecto" name="fec_ini_proyecto"
+                                <input type="date" class="form-control" id="fec_ini_proyecto"
+                                    name="fec_ini_proyecto"
                                     value="{{ $get_id->fec_inicio_proyecto ? \Carbon\Carbon::parse($get_id->fec_inicio_proyecto)->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
                             </div>
                         </div>
@@ -228,7 +237,8 @@
                                 <label class="control-label text-bold">Proveedor:</label>
                             </div>
                             <div class="form-group col-md-10" id="proveedor-field">
-                                <input type="text" class="form-control" id="proveedor" name="proveedor" value="{{ $get_id->proveedor }}">
+                                <input type="text" class="form-control" id="proveedor" name="proveedor"
+                                    value="{{ $get_id->proveedor }}">
                             </div>
                         </div>
 
@@ -237,7 +247,8 @@
                                 <label class="control-label text-bold">Nombre del Contratista:</label>
                             </div>
                             <div class="form-group col-md-10" id="nom_contratista-field">
-                                <input type="text" class="form-control" id="nom_contratista" name="nom_contratista" value="{{ $get_id->nombre_contratista }}">
+                                <input type="text" class="form-control" id="nom_contratista"
+                                    name="nom_contratista" value="{{ $get_id->nombre_contratista }}">
                             </div>
                         </div>
 
@@ -246,14 +257,16 @@
                                 <label class="control-label text-bold">DNI del prestador de Servicio:</label>
                             </div>
                             <div class="form-group col-md-4" id="dni_prestador-field">
-                                <input type="text" class="form-control" id="dni_prestador" name="dni_prestador" value="{{ $get_id->dni_prestador_servicio }}">
+                                <input type="text" class="form-control" id="dni_prestador" name="dni_prestador"
+                                    value="{{ $get_id->dni_prestador_servicio }}">
                             </div>
 
                             <div class="form-group col-md-2" id="ruc-label">
                                 <label class="control-label text-bold">Ruc:</label>
                             </div>
                             <div class="form-group col-md-4" id="ruc-field">
-                                <input type="text" class="form-control" id="ruc" name="ruc" value="{{ $get_id->ruc }}">
+                                <input type="text" class="form-control" id="ruc" name="ruc"
+                                    value="{{ $get_id->ruc }}">
                             </div>
                         </div>
                     </div>
@@ -296,12 +309,10 @@
         toggleCierre();
         toggleEjecutor();
 
-        // Agregar el evento change para el select de estado
         $('#estado_registroe').on('change', function() {
             toggleCierre();
         });
 
-        // Agregar el evento change para el select de ejecutor
         $('#ejecutor_responsable').on('change', function() {
             toggleEjecutor();
         });

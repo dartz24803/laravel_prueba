@@ -394,7 +394,9 @@ Route::controller(SoporteController::class)->group(function () {
     Route::get('soporte_ticket/{id}/image', 'image_tick')->name('soporte_ticket.image');
     Route::delete('soporte_ticket/{id}', 'destroy_tick')->name('soporte_ticket.destroy');
     Route::post('soporte_ticket/{id}', 'approve_tick')->name('soporte_ticket.approve');
-    Route::get('soporte_ticket/{id}/edit', 'edit_tick')->name('soporte_ticket.edit');
+    Route::get('soporte_ticket/edit/{id}', 'edit_tick')->name('soporte_ticket.edit');
+    Route::get('soporte_ticket/ver/{id}', 'ver_tick')->name('soporte_ticket.ver');
+    Route::post('soporte_ticket/{id}', 'update_tick')->name('soporte_ticket.update');
 
     Route::get('soporte_nivel_por_sede', 'getSoporteNivelPorSede')->name('soporte_nivel_por_sede');
     Route::get('soporte_areaespecifica_por_nivel', 'getAreaEspeficaPorNivel')->name('soporte_areaespecifica_por_nivel');
@@ -407,7 +409,7 @@ Route::controller(SoporteController::class)->group(function () {
     Route::get('soporte_ticket_master/list', 'list_tick_master')->name('soporte_ticket_master.list');
     Route::get('soporte_ticket_master/ver/{id}', 'ver_tick_master')->name('soporte_ticket_master.ver');
     Route::get('soporte_ticket_master/edit/{id}', 'edit_tick_master')->name('soporte_ticket_master.edit');
-    Route::get('soporte_ticket_master/edit/{id}', 'edit_tick_master')->name('soporte_ticket_master.edit');
+    Route::get('soporte_ticket_master/cancelar/{id}', 'cancelar_tick_master')->name('soporte_ticket_master.cancelar');
     Route::post('soporte_ticket_master/{id}', 'update_tick_master')->name('soporte_ticket_master.update');
 });
 

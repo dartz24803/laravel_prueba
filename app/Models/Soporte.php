@@ -25,7 +25,9 @@ class Soporte extends Model
         'idsoporte_nivel',
         'idsoporte_area_especifica',
         'codigo',
+        'idsoporte_motivo_cancelacion',
         'idsoporte_tipo',
+        'area_cancelacion',
         'idsoporte_solucion',
         'idsoporte_ejecutor',
         'id_responsable',
@@ -55,13 +57,16 @@ class Soporte extends Model
             'soporte_area_especifica.nombre as nombre_ubicacion2',
             'area.nom_area as nombre_area',
             'users.centro_labores as base',
-            'users.usuario_nombres as usuario_nombre'
+            'users.usuario_nombres as usuario_nombre',
+            'soporte_motivo_cancelacion.idsoporte_motivo_cancelacion as idsoporte_motivo_cancelacion'
+
 
         )
             ->leftjoin('especialidad', 'soporte.id_especialidad', '=', 'especialidad.id')
             ->leftjoin('soporte_elemento', 'soporte.id_elemento', '=', 'soporte_elemento.idsoporte_elemento')
             ->leftjoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
             ->leftjoin('sede_laboral', 'soporte.id_sede', '=', 'sede_laboral.id')
+            ->leftjoin('soporte_motivo_cancelacion', 'soporte.idsoporte_motivo_cancelacion', '=', 'soporte_motivo_cancelacion.idsoporte_motivo_cancelacion')
             ->leftjoin('soporte_nivel', 'soporte.idsoporte_nivel', '=', 'soporte_nivel.idsoporte_nivel')
             ->leftjoin('soporte_area_especifica', 'soporte.idsoporte_area_especifica', '=', 'soporte_area_especifica.idsoporte_area_especifica')
             ->leftjoin('area', 'soporte.id_area', '=', 'area.id_area')
@@ -144,6 +149,7 @@ class Soporte extends Model
             ->leftJoin('soporte_elemento', 'soporte.id_elemento', '=', 'soporte_elemento.idsoporte_elemento')
             ->leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
             ->leftJoin('soporte_ejecutor', 'soporte.idsoporte_ejecutor', '=', 'soporte_ejecutor.idsoporte_ejecutor')
+            ->leftJoin('soporte_motivo_cancelacion', 'soporte.idsoporte_motivo_cancelacion', '=', 'soporte_motivo_cancelacion.idsoporte_motivo_cancelacion')
             ->leftJoin('soporte_solucion', 'soporte.idsoporte_solucion', '=', 'soporte_solucion.idsoporte_solucion')
             ->leftJoin('sede_laboral', 'soporte.id_sede', '=', 'sede_laboral.id')
             ->leftJoin('soporte_nivel', 'soporte.idsoporte_nivel', '=', 'soporte_nivel.idsoporte_nivel')
