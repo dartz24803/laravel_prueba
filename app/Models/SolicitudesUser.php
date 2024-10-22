@@ -218,7 +218,6 @@ class SolicitudesUser extends Model
                 FROM solicitudes_user su
                 LEFT JOIN users u ON su.id_usuario = u.id_usuario
                 LEFT JOIN area a ON u.id_area = a.id_area
-                LEFT JOIN gerencia g ON u.id_gerencia = g.id_gerencia
                 LEFT JOIN destino de ON de.id_destino = su.destino
                 LEFT JOIN tramite tr ON tr.id_tramite = su.tramite
                 WHERE su.estado IN (1, 3) $gerencia $area $puesto $motivo $solicitud $buscar $fecha_filter
