@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class SoporteAreaEspecifica extends Model
 {
@@ -42,5 +43,21 @@ class SoporteAreaEspecifica extends Model
     public function sede()
     {
         return $this->belongsTo(SedeLaboral::class, 'id_sede', 'id');
+    }
+
+
+
+    public static function listAreaEspecifica($id)
+    {
+        return DB::table('soporte_area_especifica')
+            ->leftJoin('soporte_nivel', 'soporte_area_especifica.id_soporte_nivel', '=', 'soporte_nivel.idsoporte_nivel')
+            ->select(
+                'soporte_area_especifica.*',
+                'soporte_nivel.id_sede_laboral as id_sede_laboral',
+                'soporte_nivel.idsoporte_nivel as idsoporte_nivel',
+
+            )
+            ->where('soporte_area_especifica.idsoporte_area_especifica', '=', $id)
+            ->first();
     }
 }
