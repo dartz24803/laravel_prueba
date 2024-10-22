@@ -80,7 +80,8 @@ class Tracking extends Model
                     CASE WHEN tr.recepcion=1 THEN 'Agencia' WHEN tr.recepcion=2 THEN 'Domicilio' 
                     ELSE '' END AS recepcion,
                     CASE WHEN tr.tipo_pago=1 THEN 'Si pago' WHEN tr.tipo_pago=2 THEN 'Por pagar' 
-                    ELSE '' END AS nom_tipo_pago,YEAR(tr.fec_reg) AS anio
+                    ELSE '' END AS nom_tipo_pago,YEAR(tr.fec_reg) AS anio,
+                    (IFNULL(paquetes,0)+IFNULL(sobres,0)+IFNULL(fardos,0)+IFNULL(caja,0)) AS bultos
                     FROM tracking tr
                     LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base
