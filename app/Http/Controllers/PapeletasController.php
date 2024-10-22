@@ -603,11 +603,48 @@ class PapeletasController extends Controller
                 'user_horar_entrada' => session('usuario')->id_usuario
             ]);
     }
+
     public function Cambiar_solicitud_papeletas_seguridad() {
         $this->Model_Solicitudes->where('id_solicitudes_user', $this->input->post("id_solicitudes_user"))
             ->update([
                 'sin_retorno' => 1,
                 'user_horar_entrada' => session('usuario')->id_usuario
             ]);
+    }
+    
+    public function Update_Papeletas_Salida_seguridad_Salida() {
+            $this->Model_Solicitudes->verificacion_papeletas();
+
+            $dato['id_solicitudes_user']= $this->input->post("id_solicitudes_user");
+
+            $get_id= $this->Model_Solicitudes::where('id_solicitudes_user', $dato['id_solicitudes_user'])
+                ->get();
+            $motivo=$get_id[0]['id_motivo'];
+            if($get_id[0]['estado_solicitud']==3){
+                echo "error";
+            }else{
+                if($motivo==1){
+                    $this->Model_Solicitudes->where('id_solicitudes_user', $this->input->post("id_solicitudes_user"))
+                        ->update([
+                            'horar_salida' => DB::raw('CURTIME()'),
+                            'user_horar_entrada' => session('usuario')->id_usuario
+                        ]);
+                }
+                else{
+                    $valida = $this->Model_Solicitudes::where('id_solicitudes_user', $dato['id_solicitudes_user'])
+                        ->where('hora_salida', '<', DB::raw('TIME(NOW())'))
+                        ->exists();
+
+                    if($valida>0){
+                        $this->Model_Solicitudes->where('id_solicitudes_user', $this->input->post("id_solicitudes_user"))
+                            ->update([
+                                'horar_salida' => DB::raw('CURTIME()'),
+                                'user_horar_entrada' => session('usuario')->id_usuario
+                            ]);
+                    }else{
+                        echo "falta";
+                    }
+                }
+            }
     }
 }

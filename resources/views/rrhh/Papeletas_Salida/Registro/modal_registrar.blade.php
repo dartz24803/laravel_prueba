@@ -145,6 +145,8 @@
     $(document).ready(function() {
         var today = new Date().toISOString().split('T')[0];
         $('#fec_solicitud').val(today);
+        // Establecer el valor mínimo en el campo de fecha
+        document.getElementById('fec_solicitud').setAttribute('min', today);
     });
 
     var ss = $(".multivalue").select2({

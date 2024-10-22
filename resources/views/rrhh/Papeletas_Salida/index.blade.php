@@ -150,7 +150,6 @@ $id_nivel=session('usuario')->id_nivel;
     }
 
     function Buscar_Papeleta_Aprobacion(){
-        Cargando();
 
         var url = "{{ url('Papeletas/Buscar_Papeleta_Aprobacion') }}";
 
@@ -165,7 +164,6 @@ $id_nivel=session('usuario')->id_nivel;
     }
 
     function Busca_Registro_Papeleta(){
-        Cargando();
         var estado_solicitud = $('#estado_solicitud').val();//this.value;
         var url = "{{ url('Papeletas/Buscar_Estado_Solicitud_Papeletas_Salida_Usuario') }}";
         var csrfToken = $('input[name="_token"]').val();
@@ -184,7 +182,6 @@ $id_nivel=session('usuario')->id_nivel;
     }
 
     function Buscar_Papeleta_Control(){
-        Cargando();
         var url = "{{ url('Papeletas/Buscar_Papeleta_Control') }}";
         var csrfToken = $('input[name="_token"]').val();
 

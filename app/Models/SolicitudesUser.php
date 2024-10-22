@@ -189,15 +189,6 @@ class SolicitudesUser extends Model
         if ($id_nivel == 1 || $id_puesto == 23 || $id_puesto == 19) {
             $gerencia = "";
             $puesto = "";
-        } elseif ($usuario_codigo === "46553611" || $usuario_codigo === "46156858" || $usuario_codigo === "08584691" || $id_puesto == 40) {
-            $gerencia = " and u.id_gerencia=$id_gerencia ";
-            $puesto = "";
-        } elseif ($usuario_codigo === "29426417") {
-            $gerencia = " and u.id_gerencia in ($id_gerencia, 1) ";
-            $puesto = "";
-        } elseif ($usuario_codigo === "44582537") {
-            $gerencia = " and u.id_gerencia in ($id_gerencia, 2) ";
-            $puesto = "";
         } elseif ($id_puesto == 10) {
             $gerencia = "";
             $puesto = "";
@@ -227,7 +218,6 @@ class SolicitudesUser extends Model
                 FROM solicitudes_user su
                 LEFT JOIN users u ON su.id_usuario = u.id_usuario
                 LEFT JOIN area a ON u.id_area = a.id_area
-                LEFT JOIN gerencia g ON u.id_gerencia = g.id_gerencia
                 LEFT JOIN destino de ON de.id_destino = su.destino
                 LEFT JOIN tramite tr ON tr.id_tramite = su.tramite
                 WHERE su.estado IN (1, 3) $gerencia $area $puesto $motivo $solicitud $buscar $fecha_filter

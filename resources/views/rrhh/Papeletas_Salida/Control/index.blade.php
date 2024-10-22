@@ -81,10 +81,7 @@ $id_nivel=session('usuario')->id_nivel;
 <script>
     $(document).ready(function() {
         Buscar_Estado_Solicitud_Papeletas_Salida_Seguridad();
-        const today = new Date().toISOString().split('T')[0];
-        // Establecer el valor mínimo en el campo de fecha
-        document.getElementById('fecha_revision_fin3').setAttribute('min', today);
-        document.getElementById('fecha_revision3').setAttribute('min', today);
+        $('.basic').select2();
     });
 
     function Buscar_Estado_Solicitud_Papeletas_Salida_Seguridad() {

@@ -53,6 +53,7 @@
 <script>
     $(document).ready(function() {
         Buscar_Papeletas_Salida_Aprobacion();
+        $('.basic').select2();
     });
 
     function Buscar_Papeletas_Salida_Aprobacion() {
