@@ -2141,4 +2141,6 @@ Route::controller(PapeletasController::class)->group(function () {
     Route::post('Papeletas/Buscar_Base_Papeletas_Seguiridad', 'Buscar_Base_Papeletas_Seguiridad');
     Route::post('Papeletas/Busca_Colaborador_Control', 'Busca_Colaborador_Control');
     Route::get('Papeletas/Excel_Estado_Solicitud_Papeletas_Salida_Seguridad/{base}/{estado}/{fec_rev}/{fec_fin}/{num_doc}', 'Excel_Estado_Solicitud_Papeletas_Salida_Seguridad');
+    Route::post('Papeletas/Update_Papeletas_Salida_seguridad_Retorno', 'Update_Papeletas_Salida_seguridad_Retorno');
+    Route::post('Papeletas/Cambiar_solicitud_papeletas_seguridad', 'Cambiar_solicitud_papeletas_seguridad');
 });

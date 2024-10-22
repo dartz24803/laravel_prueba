@@ -214,22 +214,4 @@ $id_nivel=session('usuario')->id_nivel;
         anchor.appendChild(toolTip);
     });
     /***********primero tooltip. */
-
-    $('.buttonDownload[download]').each(function() {
-        var $a = $(this),
-        fileUrl = $a.attr('href');
-        $a.attr('href', 'data:application/octet-stream,' + encodeURIComponent(fileUrl));
-    });
-
-    function Vista_Imagen_Perfil(image_url,imageTitle){
-        $('#modelTitle').html(imageTitle);
-        $('#modalImgs').attr('src',image_url);
-        $('#profileModal').modal('show');
-        //var nombredeusu= $("#id_usuarioactual").val();
-        var nombredeusu= 'p';
-        document.getElementById("descargarcertificado_estudiog").innerHTML = "<a href='"+image_url+"' id='imga' class='btn buttonDownload' download='qr_"+nombredeusu+".jpg'>Descargar</a>"
-    }
-
 </script>
-
-<!----segundo tab aprobacion-->
