@@ -189,15 +189,6 @@ class SolicitudesUser extends Model
         if ($id_nivel == 1 || $id_puesto == 23 || $id_puesto == 19) {
             $gerencia = "";
             $puesto = "";
-        } elseif ($usuario_codigo === "46553611" || $usuario_codigo === "46156858" || $usuario_codigo === "08584691" || $id_puesto == 40) {
-            $gerencia = " and u.id_gerencia=$id_gerencia ";
-            $puesto = "";
-        } elseif ($usuario_codigo === "29426417") {
-            $gerencia = " and u.id_gerencia in ($id_gerencia, 1) ";
-            $puesto = "";
-        } elseif ($usuario_codigo === "44582537") {
-            $gerencia = " and u.id_gerencia in ($id_gerencia, 2) ";
-            $puesto = "";
         } elseif ($id_puesto == 10) {
             $gerencia = "";
             $puesto = "";
@@ -227,7 +218,6 @@ class SolicitudesUser extends Model
                 FROM solicitudes_user su
                 LEFT JOIN users u ON su.id_usuario = u.id_usuario
                 LEFT JOIN area a ON u.id_area = a.id_area
-                LEFT JOIN gerencia g ON u.id_gerencia = g.id_gerencia
                 LEFT JOIN destino de ON de.id_destino = su.destino
                 LEFT JOIN tramite tr ON tr.id_tramite = su.tramite
                 WHERE su.estado IN (1, 3) $gerencia $area $puesto $motivo $solicitud $buscar $fecha_filter
@@ -397,7 +387,7 @@ class SolicitudesUser extends Model
                         upload_time,emp_id,is_mask,temperature,work_code)
                         values ('".$dato['num_doc']."','".date('Y-m-d')." ".$dato['horario'][0]['hora_entrada']."',0,1,1,9,
                         '".date('Y-m-d')." ".$dato['horario'][0]['hora_entrada']."',(SELECT id from personnel_employee where LPAD(emp_code,8,'0')='".$dato['num_doc']."'),'255','255.0','PAPELETA SIN INGRESO')";
-                        //$this->db5->query($sql);
+                        DB::connection('second_mysql')->insert($sql);
                     }
 
                 if(count($dato['horario'])>0 && $dato['sin_retorno']==1){
@@ -406,7 +396,7 @@ class SolicitudesUser extends Model
                         upload_time,emp_id,is_mask,temperature,work_code)
                         values ('".$dato['num_doc']."','".date('Y-m-d')." ".$dato['horario'][0]['hora_salida']."',0,1,1,9,
                         '".date('Y-m-d')." ".$dato['horario'][0]['hora_salida']."',(SELECT id from personnel_employee where LPAD(emp_code,8,'0')='".$dato['num_doc']."'),'255','255.0','PAPELETA SIN RETORNO')";
-                    //$this->db5->query($sql);
+                    DB::connection('second_mysql')->insert($sql);
                     }
             }else{//gerencia aprueba a estado 5 -> "aprobacion de rh"
                 $sql = "UPDATE solicitudes_user SET estado_solicitud=5
@@ -467,5 +457,9 @@ class SolicitudesUser extends Model
                 fec_act=NOW(), user_act=$id_usuario $parte
                 WHERE id_solicitudes_user = ".$dato['id_solicitudes_user']."";
         DB::update($sql);
+    }
+
+    public function verificacion_papeletas(){
+        DB::statement("CALL Papeletas_de_Salida(NULL)");
     }
 }

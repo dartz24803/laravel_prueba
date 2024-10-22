@@ -14,6 +14,7 @@ use App\Models\Tramite;
 use App\Models\Usuario;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use PHPMailer\PHPMailer\PHPMailer;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -62,7 +63,7 @@ class PapeletasController extends Controller
     public function Buscar_Estado_Solicitud_Papeletas_Salida_Usuario(){
             $estado_solicitud = $this->input->post("estado_solicitud");
 
-            //$this->Model_Corporacion->verificacion_papeletas();
+            $this->Model_Solicitudes->verificacion_papeletas();
 
             $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida($estado_solicitud);
 
@@ -97,7 +98,7 @@ class PapeletasController extends Controller
     }
 
     public function Buscar_Base_Papeletas_Seguridad(){
-            //$this->Model_Corporacion->verificacion_papeletas();
+            $this->Model_Solicitudes->verificacion_papeletas();
 
             $id_puesto = session('usuario')->id_puesto;
             $estado_solicitud = $this->input->post("estado_solicitud");
@@ -323,7 +324,7 @@ class PapeletasController extends Controller
             $lista_puesto_gest_array = $this->Model_Permiso->permiso_pps_puestos_gest_dinamico();
             $separado_por_comas_puestos = implode(",", array_column($lista_puesto_gest_array, 'id_puesto_permitido'));
 
-            //$this->Model_Corporacion->verificacion_papeletas();
+            $this->Model_Solicitudes->verificacion_papeletas();
 
             $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida_gestion($estado_solicitud,$fecha_revision, $fecha_revision_fin, $separado_por_comas_puestos);
             $dato['acciones']=1;
@@ -419,7 +420,7 @@ class PapeletasController extends Controller
     }
 
     public function Buscar_Base_Papeletas_Seguiridad(){
-            //$this->Model_Corporacion->verificacion_papeletas();
+            $this->Model_Solicitudes->verificacion_papeletas();
 
             $id_puesto = session('usuario')->id_puesto;
             $estado_solicitud = $this->input->post("estado_solicitud");
@@ -593,5 +594,57 @@ class PapeletasController extends Controller
 		header('Cache-Control: max-age=0');
 
 		$writer->save('php://output');
+    }
+    
+    public function Update_Papeletas_Salida_seguridad_Retorno() {
+        $this->Model_Solicitudes->where('id_solicitudes_user', $this->input->post("id_solicitudes_user"))
+            ->update([
+                'horar_retorno' => DB::raw('CURTIME()'),
+                'user_horar_entrada' => session('usuario')->id_usuario
+            ]);
+    }
+
+    public function Cambiar_solicitud_papeletas_seguridad() {
+        $this->Model_Solicitudes->where('id_solicitudes_user', $this->input->post("id_solicitudes_user"))
+            ->update([
+                'sin_retorno' => 1,
+                'user_horar_entrada' => session('usuario')->id_usuario
+            ]);
+    }
+    
+    public function Update_Papeletas_Salida_seguridad_Salida() {
+            $this->Model_Solicitudes->verificacion_papeletas();
+
+            $dato['id_solicitudes_user']= $this->input->post("id_solicitudes_user");
+
+            $get_id= $this->Model_Solicitudes::where('id_solicitudes_user', $dato['id_solicitudes_user'])
+                ->get();
+            $motivo=$get_id[0]['id_motivo'];
+            if($get_id[0]['estado_solicitud']==3){
+                echo "error";
+            }else{
+                if($motivo==1){
+                    $this->Model_Solicitudes->where('id_solicitudes_user', $this->input->post("id_solicitudes_user"))
+                        ->update([
+                            'horar_salida' => DB::raw('CURTIME()'),
+                            'user_horar_entrada' => session('usuario')->id_usuario
+                        ]);
+                }
+                else{
+                    $valida = $this->Model_Solicitudes::where('id_solicitudes_user', $dato['id_solicitudes_user'])
+                        ->where('hora_salida', '<', DB::raw('TIME(NOW())'))
+                        ->exists();
+
+                    if($valida>0){
+                        $this->Model_Solicitudes->where('id_solicitudes_user', $this->input->post("id_solicitudes_user"))
+                            ->update([
+                                'horar_salida' => DB::raw('CURTIME()'),
+                                'user_horar_entrada' => session('usuario')->id_usuario
+                            ]);
+                    }else{
+                        echo "falta";
+                    }
+                }
+            }
     }
 }

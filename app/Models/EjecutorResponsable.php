@@ -29,7 +29,7 @@ class EjecutorResponsable extends Model
 
         // Descomponemos el campo id_area en un array
         $idAreas = explode(',', $especialidad->id_area);
-        dd($idAreas);
+        // dd($idAreas);
         $idAreas = array_merge($idAreas, ["19", "22"]); // PARA AGREGAR A LA LISTA (BASE Y TERCEROS)
         // Construimos la consulta para ejecutar contra los ids descompuestos
         $sql = "SELECT er.*

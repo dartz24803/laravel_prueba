@@ -389,8 +389,13 @@
 
     <ul class="collapse submenu list-unstyled" id="rsoporteconf" data-parent="#accordionExample">
         <li>
-            <a id="rticksoporte" href="{{ route('soporteticket_conf') }}">
+            <a id="rasuntosoporte" href="{{ route('soporteasuntos_conf') }}">
                 <p class="romperpalabra"><span id="icono_active2"></span> Asunto Soporte</p>
+            </a>
+        </li>
+        <li>
+            <a id="rubicacionessoporte" href="{{ route('soporteubicaciones_conf') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Ubicaciones Soporte</p>
             </a>
         </li>
     </ul>

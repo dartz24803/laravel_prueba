@@ -2,7 +2,9 @@
     <div class="modal-header">
         <h5 class="modal-title">Editar error de picking:</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-x">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
@@ -15,7 +17,8 @@
                 <label class="control-label text-bold">Semana: </label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="semanae" id="semanae" placeholder="Semana" value="{{ $get_id->semana }}" onkeypress="return soloNumeros(event)">
+                <input type="text" class="form-control" name="semanae" id="semanae" placeholder="Semana"
+                    value="{{ $get_id->semana }}" onkeypress="return soloNumeros(event)">
             </div>
 
             <div class="form-group col-lg-2">
@@ -25,11 +28,11 @@
                 <select class="form-control" id="pertenecee" name="pertenecee">
                     <option value="0">Seleccione</option>
                     @foreach ($list_base as $list)
-                    <option value="{{ $list->cod_base }}" {{ $list->cod_base == $get_id->pertenece ? 'selected' : '' }}>
-                        {{ $list->cod_base }}
-                    </option>
+                        <option value="{{ $list->cod_base }}"
+                            {{ $list->cod_base == $get_id->pertenece ? 'selected' : '' }}>
+                            {{ $list->cod_base }}
+                        </option>
                     @endforeach
-                    <option value="BEC" {{ $get_id->pertenece == 'BEC' ? 'selected' : '' }}>BEC</option>
                 </select>
 
             </div>
@@ -43,9 +46,10 @@
                 <select class="form-control" id="encontradoe" name="encontradoe">
                     <option value="0">Seleccione</option>
                     @foreach ($list_base as $list)
-                    <option value="{{ $list->cod_base }}" {{ $list->cod_base == $get_id->encontrado ? 'selected' : '' }}>
-                        {{ $list->cod_base }}
-                    </option>
+                        <option value="{{ $list->cod_base }}"
+                            {{ $list->cod_base == $get_id->encontrado ? 'selected' : '' }}>
+                            {{ $list->cod_base }}
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -57,9 +61,9 @@
                 <select class="form-control" id="id_areae" name="id_areae">
                     <option value="0">Seleccione</option>
                     @foreach ($list_area as $list)
-                    <option value="{{ $list->id }}" {{ $list->id == $get_id->id_area ? 'selected' : '' }}>
-                        {{ $list->nombre }}
-                    </option>
+                        <option value="{{ $list->id }}" {{ $list->id == $get_id->id_area ? 'selected' : '' }}>
+                            {{ $list->nombre }}
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -70,14 +74,16 @@
                 <label class="control-label text-bold">Estilo: </label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="estiloe" id="estiloe" placeholder="Estilo" value="{{ $get_id->estilo }}">
+                <input type="text" class="form-control" name="estiloe" id="estiloe" placeholder="Estilo"
+                    value="{{ $get_id->estilo }}">
             </div>
 
             <div class="form-group col-lg-2">
                 <label class="control-label text-bold">Color: </label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="colore" id="colore" placeholder="Color" value="{{ $get_id->color }}">
+                <input type="text" class="form-control" name="colore" id="colore" placeholder="Color"
+                    value="{{ $get_id->color }}">
             </div>
         </div>
 
@@ -89,9 +95,9 @@
                 <select class="form-control" id="id_tallae" name="id_tallae">
                     <option value="0">Seleccione</option>
                     @foreach ($list_talla as $list)
-                    <option value="{{ $list->id }}" {{ $list->id == $get_id->id_talla ? 'selected' : '' }}>
-                        {{ $list->nombre }}
-                    </option>
+                        <option value="{{ $list->id }}" {{ $list->id == $get_id->id_talla ? 'selected' : '' }}>
+                            {{ $list->nombre }}
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -100,7 +106,9 @@
                 <label class="control-label text-bold">Prendas devueltas: </label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="prendas_devueltase" id="prendas_devueltase" placeholder="Prendas devueltas" value="{{ $get_id->prendas_devueltas }}" onkeypress="return soloNumeros(event)">
+                <input type="text" class="form-control" name="prendas_devueltase" id="prendas_devueltase"
+                    placeholder="Prendas devueltas" value="{{ $get_id->prendas_devueltas }}"
+                    onkeypress="return soloNumeros(event)">
             </div>
         </div>
 
@@ -112,9 +120,10 @@
                 <select class="form-control" name="id_tipo_errore" id="id_tipo_errore">
                     <option value="0">Seleccione</option>
                     @foreach ($list_tipo_error as $list)
-                    <option value="{{ $list->id }}" {{ $list->id == $get_id->id_tipo_error ? 'selected' : '' }}>
-                        {{ $list->nombre }}
-                    </option>
+                        <option value="{{ $list->id }}"
+                            {{ $list->id == $get_id->id_tipo_error ? 'selected' : '' }}>
+                            {{ $list->nombre }}
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -126,9 +135,10 @@
                 <select class="form-control" name="id_responsablee" id="id_responsablee">
                     <option value="0">Seleccione</option>
                     @foreach ($list_responsable as $list)
-                    <option value="{{ $list['id_usuario'] }}" {{ $list['id_usuario'] == $get_id->id_responsable ? 'selected' : '' }}>
-                        {{ $list['usuario_nombres'] }}
-                    </option>
+                        <option value="{{ $list['id_usuario'] }}"
+                            {{ $list['id_usuario'] == $get_id->id_responsable ? 'selected' : '' }}>
+                            {{ $list['usuario_nombres'] }}
+                        </option>
                     @endforeach
                 </select>
             </div>
