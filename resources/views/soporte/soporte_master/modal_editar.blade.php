@@ -43,17 +43,15 @@
                                     <select class="form-control" id="id_responsablee" name="id_responsablee">
                                         <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
                                         <option value="0" {{ is_null($get_id->id_responsable) ? 'selected' : '' }}>SIN DESIGNAR</option>
-                                              @foreach ($list_responsable as $list)
-                                    <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
-                                    <option value="{{ $list->id_usuario }}"
-                                        {{ $get_id->id_responsable == $list->id_usuario ? 'selected' : '' }}>
-                                        {{ $list->nombre_completo }}
-                                    </option>
-                                    @endforeach
+                                        @foreach ($list_responsable as $list)
+                                        <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
+                                        <option value="{{ $list->id_usuario }}"
+                                            {{ $get_id->id_responsable == $list->id_usuario ? 'selected' : '' }}>
+                                            {{ $list->nombre_completo }}
+                                        </option>
+                                        @endforeach
                                     </select>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
@@ -106,7 +104,7 @@
                                 <label class="control-label text-bold" ">Tipo:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0">
-                                <span class="form-control border-0">{{ $get_id->nombre_tipo }}</span>
+                                    <span class="form-control border-0">{{ $get_id->nombre_tipo }}</span>
                             </div>
                         </div>
                     </div>
@@ -131,7 +129,7 @@
                                 <label class="control-label text-bold" ">Especialidad:</label>
                             </div>
                             <div class=" form-group col-md-4">
-                                <span class="form-control border-0">{{ $get_id->nombre_especialidad }}</span>
+                                    <span class="form-control border-0">{{ $get_id->nombre_especialidad }}</span>
                             </div>
                             <div class="form-group col-md-2">
                                 <label class="control-label text-bold" ">Elemento:</label>
@@ -149,7 +147,7 @@
                                 <label class="control-label text-bold" ">Asunto:</label>
                             </div>
                             <div class=" form-group col-md-10 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                <span class="form-control border-0">{{ $get_id->nombre_asunto }}</span>
+                                    <span class="form-control border-0">{{ $get_id->nombre_asunto }}</span>
                             </div>
                         </div>
                     </div>
@@ -167,7 +165,7 @@
                                 <label class="control-label text-bold" ">Vencimiento:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0">
-                                <span class="form-control border-0">{{ $get_id->fec_vencimiento }}</span>
+                                    <span class="form-control border-0">{{ $get_id->fec_vencimiento }}</span>
                             </div>
                         </div>
                     </div>
@@ -197,19 +195,19 @@
                             </div>
                             <div class=" form-group col-md-10"> <!-- Ajustar la columna a col-md-10 -->
 
-                                <select class="form-control" id="ejecutor_responsable" name="ejecutor_responsable">
-                                    <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
-                                    <option value="0"
-                                        {{ is_null($get_id->idejecutor_responsable) ? 'selected' : '' }}>SELECCIONAR
-                                    </option>
-                                    @foreach ($list_ejecutores_responsables as $list)
+                                    <select class="form-control" id="ejecutor_responsable" name="ejecutor_responsable">
+                                        <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
+                                        <option value="0"
+                                            {{ is_null($get_id->idejecutor_responsable) ? 'selected' : '' }}>SELECCIONAR
+                                        </option>
+                                        @foreach ($list_ejecutores_responsables as $list)
                                         <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
                                         <option value="{{ $list->idejecutor_responsable }}"
                                             {{ $get_id->idejecutor_responsable == $list->idejecutor_responsable ? 'selected' : '' }}>
                                             {{ $list->nombre }}
                                         </option>
-                                    @endforeach
-                                </select>
+                                        @endforeach
+                                    </select>
                             </div>
                         </div>
                         <div class="row align-items-center">

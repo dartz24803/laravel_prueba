@@ -38,6 +38,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use App\Models\Notificacion;
+use App\Models\Pendiente;
 use App\Models\SedeLaboral;
 use App\Models\Soporte;
 use App\Models\SoporteAreaEspecifica;
@@ -50,6 +51,8 @@ use App\Models\Ubicacion;
 use App\Models\User;
 use App\Models\Usuario;
 use Carbon\Carbon;
+use Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class SoporteController extends Controller
 {
@@ -422,11 +425,14 @@ class SoporteController extends Controller
     {
         $rules = [
             'id_responsablee' => 'gt:0',
+            'ejecutor_responsable' => 'gt:0',
             'descripcione_solucion' => 'required|max:250',
         ];
         $messages = [
-            'id_responsablee.gt' => 'Debe ingresar Responsable',
-            'descripcione_solucion' => 'Comentario de Solución debe tener como máximo 250 caracteres.',
+            'id_responsablee.gt' => 'Debe seleccionar Responsable',
+            'ejecutor_responsable.gt' => 'Debe seleccionar Ejecutor Responsable',
+
+            'descripcione_solucion.max' => 'Comentario de Solución debe tener como máximo 250 caracteres.',
         ];
 
         if ($request->ejecutor_responsable == 2) {
@@ -512,5 +518,122 @@ class SoporteController extends Controller
         $get_id = Soporte::getTicketById($id);
         // dd($get_id->idejecutor_responsable);
         return view('soporte.soporte_master.modal_cancelar', compact('get_id', 'list_area', 'list_motivos_cancelacion'));
+    }
+
+
+    public function cancel_update_tick_master(Request $request, $id)
+    {
+        $get_id = Soporte::getTicketById($id);
+        if ($request->motivo == 1) {
+            // dd($request->id_areac);
+            $soporteActualizado  = Soporte::findOrFail($id)->update([
+                'idsoporte_motivo_cancelacion' => $request->motivo,
+                'area_cancelacion' => $request->id_areac,
+                'estado_registro' => 5,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+            if ($soporteActualizado) {
+                // LÓGICA DE ANTIGUO INTRANET PARA CREAR CÓDIGO_PENDIENTE EN TAREAS
+                if ($get_id->idsoporte_tipo == 1) {
+                    $requerimiento = "REQ";
+                } elseif ($get_id->idsoporte_tipo == 2) {
+                    $requerimiento = "INC";
+                }
+                $dato['id_tipo'] = $get_id->idsoporte_tipo;
+                $dato['id_area'] = $request->id_areac;
+                // dd($get_id);
+                $cod_area = $get_id->cod_area;
+                $query_id = Pendiente::ultimoAnioCodPendiente($dato);
+                $totalRows_t = count($query_id);
+
+                if ($totalRows_t < 9) {
+                    $codigofinal = $requerimiento . "-" . $cod_area . "-00000" . ($totalRows_t + 1);
+                }
+                if ($totalRows_t > 8 && $totalRows_t < 99) {
+                    $codigofinal = $requerimiento . "-" . $cod_area . "-0000" . ($totalRows_t + 1);
+                }
+                if ($totalRows_t > 98 && $totalRows_t < 999) {
+                    $codigofinal = $requerimiento . "-" . $cod_area . "-000" . ($totalRows_t + 1);
+                }
+                if ($totalRows_t > 998 && $totalRows_t < 9999) {
+                    $codigofinal = $requerimiento . "-" . $cod_area . "-00" . ($totalRows_t + 1);
+                }
+                if ($totalRows_t > 9998) {
+                    $codigofinal = $requerimiento . "-" . $cod_area . "-0" . ($totalRows_t + 1);
+                }
+                $dato['cod_pendiente'] = $codigofinal;
+                // LÓGICA DE ANTIGUO INTRANET PARA CREAR CÓDIGO_PENDIENTE EN TAREAS
+                // dd($codigofinal);
+                if (is_null($get_id->id_responsable)) {
+                    return response()->json(['error' => 'No hay responsable asignado.'], 400);
+                }
+
+                Pendiente::create([
+                    'id_usuario' => $get_id->user_reg,
+                    'cod_base' => $get_id->base,
+                    'cod_pendiente' =>  $codigofinal,
+                    'titulo' => $get_id->nombre_especialidad . '-' . $get_id->nombre_elemento,
+                    'id_tipo' => $get_id->idsoporte_tipo,
+                    'id_area' => $request->id_areac,
+                    'id_item' => 0,
+                    'id_subitem' => 0,
+                    'id_subsubitem' => 0,
+                    'id_responsable' =>  $get_id->id_responsable,
+                    'id_prioridad' => 0,
+                    'descripcion' => $get_id->nombre_asunto . '-' . $get_id->descripcion,
+                    'envio_mail' => 0,
+                    'conforme' => 0,
+                    'calificacion' => 0,
+                    'flag_programado' => 0,
+                    'id_programacion' => 0,
+                    'equipo_i' => '',
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+            }
+        } else {
+            $mail = new PHPMailer(true);
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Port     =  587;
+                $mail->setFrom('intranet@lanumero1.com.pe', 'La Número 1');
+
+                $mail->addAddress($get_id->usuario_email);
+
+                $mail->isHTML(true);
+
+                $mail->Subject = "Prueba de Soporte";
+
+                $mail->Body =  "<h1> Hola, " . $get_id->usuario_nombre . "</h1>
+                                <p>Su solicitud no puede proceder debido a la siguiente razón:</p>
+                                <p>Necesitamos más detalle y/o brindenos una mejor sustentación, le invitamos a que lo corriga.
+                                </p>
+                                <p>Gracias.<br>Atte. Grupo La Número 1</p>";
+                $mail->CharSet = 'UTF-8';
+                $mail->send();
+
+
+                echo 'Nombre y Apellidos ' . $get_id->usuario_nombres .
+                    $get_id->usuario_amater . '<br>Correo: ' . $get_id->usuario_email;
+            } catch (Exception $e) {
+                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+            }
+            Soporte::findOrFail($id)->update([
+                'idsoporte_motivo_cancelacion' => $request->motivo,
+                'estado_registro' => 5,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
     }
 }
