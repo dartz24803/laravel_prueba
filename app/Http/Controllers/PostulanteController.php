@@ -6,6 +6,7 @@ use App\Models\Area;
 use App\Models\Base;
 use App\Models\Cargo;
 use App\Models\Gerencia;
+use App\Models\HistoricoPostulante;
 use App\Models\Notificacion;
 use App\Models\Postulante;
 use App\Models\Puesto;
@@ -58,8 +59,8 @@ class PostulanteController extends Controller
                                 ->where('estado',1)->orderBy('cod_tipo_documento','ASC')->get();
         $list_gerencia = Gerencia::select('id_gerencia','nom_gerencia')->where('estado',1)
                         ->orderBy('nom_gerencia','ASC')->get();
-        $list_puesto_evaluador = Puesto::select('id_puesto','nom_puesto')->where('estado',1)
-                                ->orderBy('nom_puesto','ASC')->get();
+        $list_puesto_evaluador = Puesto::select('id_puesto','nom_puesto')->where('evaluador',1)
+                                ->where('estado',1)->orderBy('nom_puesto','ASC')->get();
         return view('rrhh.postulante.registro.modal_registrar', compact(
             'list_tipo_documento',
             'list_gerencia',
@@ -172,7 +173,7 @@ class PostulanteController extends Controller
                 }
                 $postulante_password = password_hash($request->num_doce, PASSWORD_DEFAULT);
 
-                Postulante::create([
+                $postulante = Postulante::create([
                     'id_centro_labor' => $id_centro_labor,
                     'postulante_codigo' => $request->num_doc,
                     'postulante_password' => $postulante_password,
@@ -184,6 +185,16 @@ class PostulanteController extends Controller
                     'id_evaluador' => $id_evaluador,
                     'estado_postulacion' => 1,
                     'id_cargo' => $id_cargo,
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+
+                HistoricoPostulante::create([
+                    'id_postulante' => $postulante->id_postulante,
+                    'observacion' => 'Primer histórico',
                     'estado' => 1,
                     'fec_reg' => now(),
                     'user_reg' => session('usuario')->id_usuario,
