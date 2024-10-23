@@ -66,10 +66,10 @@ class Tracking extends Model
                     WHEN tr.transporte='2' THEN 'Agencia - Aérea' 
                     WHEN tr.transporte='3' THEN 'Propio' ELSE '' END AS tipo_transporte,
                     (SELECT COUNT(1) FROM tracking_diferencia tdif
-                    WHERE tdif.id_tracking=tr.id AND tdif.observacion IS NULL AND 
+                    WHERE tdif.id_tracking=tr.id AND tdif.observacion='' AND 
                     tdif.enviado<tdif.recibido) AS sobrantes,
                     (SELECT COUNT(1) FROM tracking_diferencia tdif
-                    WHERE tdif.id_tracking=tr.id AND tdif.observacion IS NULL AND 
+                    WHERE tdif.id_tracking=tr.id AND tdif.observacion='' AND 
                     tdif.enviado>tdif.recibido) AS faltantes,
                     (SELECT ta.archivo FROM tracking_archivo ta
                     WHERE ta.id_tracking=tr.id AND ta.tipo=3
