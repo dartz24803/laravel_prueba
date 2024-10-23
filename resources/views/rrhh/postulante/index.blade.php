@@ -15,9 +15,11 @@
                                 <li class="nav-item">
                                     <a id="a_reg" class="nav-link" onclick="Registro();" style="cursor: pointer;">Registro y Evaluación</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a id="a_tod" class="nav-link" onclick="Todos();" style="cursor: pointer;">Todos los postulantes</a>
-                                </li>
+                                @if (session('usuario')->id_puesto!=314)
+                                    <li class="nav-item">
+                                        <a id="a_tod" class="nav-link" onclick="Todos();" style="cursor: pointer;">Todos los postulantes</a>
+                                    </li>
+                                @endif
                             </ul>
 
                             <div class="row" id="cancel-row">

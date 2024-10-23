@@ -39,8 +39,13 @@ class PostulanteController extends Controller
 
     public function index_reg()
     {
-        $list_area = Area::select('id_area','nom_area')->where('estado',1)->orderBy('nom_area','ASC')
-                    ->get();
+        if(session('usuario')->id_puesto!=314){
+            $list_area = Area::select('id_area','nom_area')->where('estado',1)->orderBy('nom_area','ASC')
+                        ->get();
+        }else{
+            $list_area = Area::select('id_area','nom_area')->whereIn('id_area',[14,44])->orderBy('nom_area','ASC')
+                        ->get();                        
+        }
         return view('rrhh.postulante.registro.index', compact('list_area'));
     }
 
