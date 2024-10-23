@@ -115,6 +115,7 @@ class Soporte extends Model
             'soporte_elemento.nombre as nombre_elemento',
             'especialidad.nombre as nombre_especialidad',
             'soporte_asunto.nombre as nombre_asunto',
+            'soporte_asunto.idsoporte_tipo as idsoporte_tipo',
             'soporte_solucion.comentario as descripcion_solucion',
             'soporte_solucion.fec_comentario as fecha_comentario',
             'sede_laboral.descripcion as nombre_sede',
@@ -128,7 +129,9 @@ class Soporte extends Model
             'soporte_ejecutor.idejecutor_responsable as idejecutor_responsable',
             'soporte_area_especifica.nombre as nombre_ubicacion2',
             'area.nom_area as nombre_area',
+            'area_cancelacion.cod_area as cod_area',
             'users.usuario_nombres as usuario_nombre',
+            'users.usuario_email as usuario_email',
             'users.centro_labores as base',
             'st.nombre as nombre_tipo',
 
@@ -140,7 +143,6 @@ class Soporte extends Model
                 WHEN soporte_solucion.id_responsable IS NULL 
                 THEN 'SIN DESIGNAR' 
                 ELSE CONCAT(usr.usuario_nombres, ' ', usr.usuario_apater, ' ', usr.usuario_amater) END as nombre_responsable_solucion"),
-            // Aquí está la corrección para seleccionar el nombre desde 'ejecutor_responsable'
             'se.nombre as nombre_ejecutor_responsable',
             'usr.foto as foto_responsable_solucion'
 
@@ -154,17 +156,16 @@ class Soporte extends Model
             ->leftJoin('sede_laboral', 'soporte.id_sede', '=', 'sede_laboral.id')
             ->leftJoin('soporte_nivel', 'soporte.idsoporte_nivel', '=', 'soporte_nivel.idsoporte_nivel')
             ->leftJoin('soporte_area_especifica', 'soporte.idsoporte_area_especifica', '=', 'soporte_area_especifica.idsoporte_area_especifica')
-            ->leftJoin('area', 'soporte.id_area', '=', 'area.id_area')
+            ->leftJoin('area as area', 'soporte.id_area', '=', 'area.id_area')
+            ->leftJoin('area as area_cancelacion', 'soporte.area_cancelacion', '=', 'area_cancelacion.id_area')
             ->leftJoin('users', 'soporte.user_reg', '=', 'users.id_usuario')
             ->leftJoin('soporte_asunto as sa', 'soporte.id_asunto', '=', 'sa.idsoporte_asunto')
             ->leftJoin('users as us', 'soporte.id_responsable', '=', 'us.id_usuario')
             ->leftJoin('users as usr', 'soporte_solucion.id_responsable', '=', 'usr.id_usuario')
-
-            // Aquí corregimos el alias para la tabla 'ejecutor_responsable' como 'se'
             ->leftJoin('ejecutor_responsable as se', 'soporte_ejecutor.idejecutor_responsable', '=', 'se.idejecutor_responsable')
             ->leftJoin('soporte_tipo as st', 'sa.idsoporte_tipo', '=', 'st.idsoporte_tipo')
-            ->where('soporte.id_soporte', $id_soporte)  // Filtrar por ID del soporte
-            ->where('soporte.estado', 1)  // Asegurarse de que el estado sea 1
-            ->first();  // Obtener el primer registro (único)
+            ->where('soporte.id_soporte', $id_soporte)
+            ->where('soporte.estado', 1)
+            ->first();
     }
 }

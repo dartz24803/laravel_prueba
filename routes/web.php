@@ -411,6 +411,7 @@ Route::controller(SoporteController::class)->group(function () {
     Route::get('soporte_ticket_master/edit/{id}', 'edit_tick_master')->name('soporte_ticket_master.edit');
     Route::get('soporte_ticket_master/cancelar/{id}', 'cancelar_tick_master')->name('soporte_ticket_master.cancelar');
     Route::post('soporte_ticket_master/{id}', 'update_tick_master')->name('soporte_ticket_master.update');
+    Route::post('soporte_ticket_master/cancel/update/{id}', 'cancel_update_tick_master')->name('soporte_ticket_master.cancelupdate');
 });
 
 // ADMINISTRABLES - TICKETS SOPORTE

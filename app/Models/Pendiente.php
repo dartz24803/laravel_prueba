@@ -9,8 +9,10 @@ class Pendiente extends Model
 {
     use HasFactory;
 
-    protected $table = 'pendientes';
+    protected $table = 'pendiente';
+    protected $primaryKey = 'id_pendiente';
 
+    public $timestamps = false;
     // Definir los campos que se pueden asignar masivamente
     protected $fillable = [
         'id_usuario',
@@ -47,4 +49,13 @@ class Pendiente extends Model
         'fec_eli',
         'user_eli',
     ];
+
+
+    public static function ultimoAnioCodPendiente($dato)
+    {
+        return self::where('id_tipo', $dato['id_tipo'])
+            ->where('id_area', $dato['id_area'])
+            ->where('estado', 1)
+            ->get();
+    }
 }

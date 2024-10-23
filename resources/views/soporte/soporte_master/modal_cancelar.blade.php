@@ -20,10 +20,10 @@
                 <select class="form-control" id="motivo" name="motivo">
                     <option value="0">Seleccione</option>
                     @foreach ($list_motivos_cancelacion as $list)
-                        <option value="{{ $list->idsoporte_motivo_cancelacion }}"
-                            {{ $list->idsoporte_motivo_cancelacion == $get_id->idsoporte_motivo_cancelacion ? 'selected' : '' }}>
-                            {{ $list->motivo }}
-                        </option>
+                    <option value="{{ $list->idsoporte_motivo_cancelacion }}"
+                        {{ $list->idsoporte_motivo_cancelacion == $get_id->idsoporte_motivo_cancelacion ? 'selected' : '' }}>
+                        {{ $list->motivo }}
+                    </option>
                     @endforeach
                 </select>
 
@@ -38,10 +38,10 @@
                 <select class="form-control" id="id_areac" name="id_areac">
                     <option value="0">Seleccione</option>
                     @foreach ($list_area as $list)
-                        <option value="{{ $list->id_area }}"
-                            {{ $list->id_area == $get_id->area_cancelacion ? 'selected' : '' }}>
-                            {{ $list->nom_area }}
-                        </option>
+                    <option value="{{ $list->id_area }}"
+                        {{ $list->id_area == $get_id->area_cancelacion ? 'selected' : '' }}>
+                        {{ $list->nom_area }}
+                    </option>
                     @endforeach
                 </select>
             </div>
@@ -51,16 +51,16 @@
 
     <div class="modal-footer">
         @csrf
-        <button class="btn btn-primary" type="button" onclick="Insert_Cancelar_Soporte();">Guardar</button>
+        <button class="btn btn-primary" type="button" onclick="Cancelar_Soporte();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 <script>
-    function Insert_Cancelar_Soporte() {
+    function Cancelar_Soporte() {
         Cargando();
 
-        var dataString = new FormData(document.getElementById('formulario_insert'));
-        var url = "{{ route('soporte_ticket.store') }}";
+        var dataString = new FormData(document.getElementById('formulario_update'));
+        var url = "{{ route('soporte_ticket_master.cancelupdate', $get_id->id_soporte) }}";
 
         $.ajax({
             url: url,
@@ -69,27 +69,78 @@
             processData: false,
             contentType: false,
             success: function(data) {
-                swal.fire(
-                    'Registro Exitoso!',
-                    'Haga clic en el botón!',
-                    'success'
-                ).then(function() {
-                    Lista_Tickets_Soporte();
-                    $("#ModalRegistro .close").click();
-                });
+                if (data == "error") {
+                    Swal({
+                        title: '¡Actualización Denegada!',
+                        text: "¡El registro ya existe!",
+                        type: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
+                    });
+                } else {
+                    swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Lista_Tickets_Soporte();
+                        $("#ModalUpdate .close").click();
+                    });
+                }
             },
             error: function(xhr) {
-                var errors = xhr.responseJSON.errors;
-                var firstError = Object.values(errors)[0][0];
-                Swal.fire(
-                    '¡Ups!',
-                    firstError,
-                    'warning'
-                );
+                // Verificar si el error es debido a un responsable no asignado
+                if (xhr.status === 400 && xhr.responseJSON.error === 'No hay responsable asignado.') {
+                    Swal.fire(
+                        '¡Error!',
+                        'No hay responsable asignado. Por favor seleccione un responsable.',
+                        'error'
+                    );
+                } else {
+                    // Manejar otros errores
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            }
+
+        });
+    }
+
+    function Envio_Email(id) {
+        Cargando();
+
+        var url = "{{ route('soporte_ticket_master.mail') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                'id_usuario': id
+            },
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(resp) {
+                swal.fire(
+                    'Correo Enviado con exito!',
+                    resp,
+                    'success'
+                ).then(function() {
+                    Lista_Cesado();
+                });
             }
         });
-
     }
+
+
+
 
     $(document).ready(function() {
         toggleMotivo();
@@ -107,7 +158,7 @@
         var cierreField = document.getElementById('id_areac');
         var estadoContainer = document.getElementById('estado-container');
         console.log(idmotivo);
-        if (idmotivo == 2) {
+        if (idmotivo == 1) {
             // Mostrar los campos de Cierre
             cierreLabel.style.display = 'block';
             cierreField.style.display = 'block';
