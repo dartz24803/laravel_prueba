@@ -1942,17 +1942,17 @@ class TrackingController extends Controller
         $list_sobrante = TrackingDiferencia::select('sku','estilo','color_talla','bulto','enviado',
                         'recibido',DB::raw('recibido-enviado AS diferencia'),
                         DB::raw("CASE WHEN enviado<recibido THEN 'Sobrante' 
-                        WHEN enviado>recibido THEN 'Faltante' ELSE '' END AS observacion"),
+                        WHEN enviado>recibido THEN 'Faltante' ELSE '' END AS regularizacion"),
                         'observacion AS cruce')
-                        ->where('id_tracking',$id)->whereColumn('enviado','<','recibido')
-                        ->get();
+                        ->where('id_tracking',$id)->whereNull('observacion')
+                        ->whereColumn('enviado','<','recibido')->get();
         $list_faltante = TrackingDiferencia::select('sku','estilo','color_talla','bulto','enviado',
                         'recibido',DB::raw('recibido-enviado AS diferencia'),
                         DB::raw("CASE WHEN enviado<recibido THEN 'Sobrante' 
-                        WHEN enviado>recibido THEN 'Faltante' ELSE '' END AS observacion"),
+                        WHEN enviado>recibido THEN 'Faltante' ELSE '' END AS regularizacion"),
                         'observacion AS cruce')
-                        ->where('id_tracking',$id)->whereColumn('enviado','>','recibido')
-                        ->get();
+                        ->where('id_tracking',$id)->whereNull('observacion')
+                        ->whereColumn('enviado','>','recibido')->get();
 
         //ALERTA 9
         if(count($list_sobrante)>0){
@@ -2066,7 +2066,7 @@ class TrackingController extends Controller
                                                 <td>'.$list->enviado.'</td>
                                                 <td>'.$list->recibido.'</td>
                                                 <td>'.$list->diferencia.'</td>
-                                                <td>'.$list->observacion.'</td>
+                                                <td>'.$list->regularizacion.'</td>
                                                 <td>'.$list->cruce.'</td>
                                             </tr>';
                                     }
@@ -2172,7 +2172,7 @@ class TrackingController extends Controller
                                                 <td>'.$list->enviado.'</td>
                                                 <td>'.$list->recibido.'</td>
                                                 <td>'.$list->diferencia.'</td>
-                                                <td>'.$list->observacion.'</td>
+                                                <td>'.$list->regularizacion.'</td>
                                                 <td>'.$list->cruce.'</td>
                                             </tr>';
                                     }
