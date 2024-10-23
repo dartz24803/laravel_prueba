@@ -112,32 +112,6 @@
         });
     }
 
-    function Envio_Email(id) {
-        Cargando();
-
-        var url = "{{ route('soporte_ticket_master.mail') }}";
-        var csrfToken = $('input[name="_token"]').val();
-
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: {
-                'id_usuario': id
-            },
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
-            success: function(resp) {
-                swal.fire(
-                    'Correo Enviado con exito!',
-                    resp,
-                    'success'
-                ).then(function() {
-                    Lista_Cesado();
-                });
-            }
-        });
-    }
 
 
 
