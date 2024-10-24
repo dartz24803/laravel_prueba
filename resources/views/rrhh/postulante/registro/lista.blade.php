@@ -26,19 +26,13 @@
                 <td>{{ $list->creado_por }}</td>
                 <td>{{ $list->nom_estado }}</td>
                 <td class="text-center">
-                    @if (session('usuario')->id_nivel==1 || 
-                    session('usuario')->id_puesto==133 || 
-                    session('usuario')->id_puesto==22 || 
-                    session('usuario')->id_puesto==314 || 
-                    session('usuario')->id_puesto==21 || 
-                    session('usuario')->id_puesto==278 || 
-                    session('usuario')->id_puesto==279 || 
-                    session('usuario')->id_puesto==29 || 
-                    session('usuario')->id_puesto==98 || 
-                    session('usuario')->id_puesto==26 || 
-                    session('usuario')->id_puesto==16 || 
-                    session('usuario')->id_puesto==161 || 
-                    session('usuario')->id_puesto==197)
+                    @if (session('usuario')->id_nivel=="1" || 
+                    session('usuario')->id_puesto=="21" || 
+                    session('usuario')->id_puesto=="22" || 
+                    session('usuario')->id_puesto=="161" ||
+                    session('usuario')->id_puesto=="277" ||
+                    session('usuario')->id_puesto=="278" ||
+                    session('usuario')->id_puesto=="314")
                         <div class="btn-group dropleft" role="group"> 
                             <a id="btnDropLeft" type="button" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>

@@ -39,11 +39,13 @@ class PostulanteController extends Controller
 
     public function index_reg()
     {
-        if(session('usuario')->id_puesto!=314){
-            $list_area = Area::select('id_area','nom_area')->where('estado',1)->orderBy('nom_area','ASC')
+        if(session('usuario')->id_puesto=="30" || 
+        session('usuario')->id_puesto=="161" || 
+        session('usuario')->id_puesto=="314"){
+            $list_area = Area::select('id_area','nom_area')->whereIn('id_area',[14,44])->orderBy('nom_area','ASC')
                         ->get();
         }else{
-            $list_area = Area::select('id_area','nom_area')->whereIn('id_area',[14,44])->orderBy('nom_area','ASC')
+            $list_area = Area::select('id_area','nom_area')->where('estado',1)->orderBy('nom_area','ASC')
                         ->get();                        
         }
         return view('rrhh.postulante.registro.index', compact('list_area'));
@@ -62,31 +64,24 @@ class PostulanteController extends Controller
     {
         $list_tipo_documento = TipoDocumento::select('id_tipo_documento','cod_tipo_documento')
                                 ->where('estado',1)->orderBy('cod_tipo_documento','ASC')->get();
-        $list_gerencia = Gerencia::select('id_gerencia','nom_gerencia')->where('estado',1)
-                        ->orderBy('nom_gerencia','ASC')->get();
+        if(session('usuario')->id_nivel=="1" || 
+        session('usuario')->id_puesto=="21" || 
+        session('usuario')->id_puesto=="22" || 
+        session('usuario')->id_puesto=="277" ||
+        session('usuario')->id_puesto=="278"){
+            $list_area = Area::select('id_area', 'nom_area')->where('estado', 1)
+                        ->orderBy('nom_area','ASC')->get();
+        }else{
+            $list_area = Area::select('id_area', 'nom_area')
+                        ->whereIn('id_area', [14,44])->orderBy('nom_area','ASC')->get();
+        }
         $list_puesto_evaluador = Puesto::select('id_puesto','nom_puesto')->where('evaluador',1)
                                 ->where('estado',1)->orderBy('nom_puesto','ASC')->get();
         return view('rrhh.postulante.registro.modal_registrar', compact(
             'list_tipo_documento',
-            'list_gerencia',
+            'list_area',
             'list_puesto_evaluador'
         ));
-    }
-
-    public function traer_sub_gerencia(Request $request)
-    {
-        $list_sub_gerencia = SubGerencia::select('id_sub_gerencia', 'nom_sub_gerencia')
-                            ->where('id_gerencia', $request->id_gerencia)->where('estado', 1)
-                            ->orderBy('nom_sub_gerencia','ASC')->get();
-        return view('rrhh.postulante.registro.sub_gerencia', compact('list_sub_gerencia'));
-    }
-
-    public function traer_area(Request $request)
-    {
-        $list_area = Area::select('id_area', 'nom_area')
-                    ->where('id_departamento', $request->id_sub_gerencia)->where('estado', 1)
-                    ->orderBy('nom_area','ASC')->get();
-        return view('rrhh.postulante.registro.area', compact('list_area'));
     }
 
     public function traer_puesto(Request $request)
@@ -108,11 +103,11 @@ class PostulanteController extends Controller
     public function store_reg(Request $request)
     {
         if(session('usuario')->id_nivel=="1" ||
-        session('usuario')->id_puesto=="133" ||
-        session('usuario')->id_puesto=="22" ||
         session('usuario')->id_puesto=="21" ||
+        session('usuario')->id_puesto=="22" ||
+        session('usuario')->id_puesto=="277" ||
         session('usuario')->id_puesto=="278" ||
-        session('usuario')->id_puesto=="279"){
+        session('usuario')->id_puesto=="314"){
             $request->validate([
                 'id_tipo_documento' => 'gt:0',
                 'num_doc' => 'required',
@@ -349,8 +344,103 @@ class PostulanteController extends Controller
 
     public function list_tod(Request $request)
     {
-        $list_todos = Postulante::get_list_todos(['estado_postulante_1'=>$request->estado_postulante_1,'estado_postulante_2'=>$request->estado_postulante_2,'estado_postulante_3'=>$request->estado_postulante_3,'id_area'=>$request->id_area]);
+        $list_todos = Postulante::get_list_todos([
+            'estado'=>$request->estado,
+            'id_area'=>$request->id_area
+        ]);
         return view('rrhh.postulante.todos.lista', compact('list_todos'));
+    }
+
+    public function update_tod(Request $request, $id)
+    {
+        Postulante::findOrFail($id)->update([
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function excel_tod($estado, $id_area)
+    {
+        $list_todos = Postulante::get_list_todos([
+            'estado'=>$estado,
+            'id_area'=>$id_area
+        ]);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getStyle("A1:H1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:H1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Postulante (Todos)');
+
+        $sheet->setAutoFilter('A1:H1');
+
+        $sheet->getColumnDimension('A')->setWidth(20);
+        $sheet->getColumnDimension('B')->setWidth(40);
+        $sheet->getColumnDimension('C')->setWidth(40);
+        $sheet->getColumnDimension('D')->setWidth(50);
+        $sheet->getColumnDimension('E')->setWidth(15);
+        $sheet->getColumnDimension('F')->setWidth(15);
+        $sheet->getColumnDimension('G')->setWidth(40);
+        $sheet->getColumnDimension('H')->setWidth(25);
+
+        $sheet->getStyle('A1:H1')->getFont()->setBold(true);
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:H1")->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('C8C8C8');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle("A1:H1")->applyFromArray($styleThinBlackBorderOutline);
+
+        $sheet->setCellValue("A1", 'F. de creación');
+        $sheet->setCellValue("B1", 'Área');
+        $sheet->setCellValue("C1", 'Puesto');
+        $sheet->setCellValue("D1", 'Nombre(s)');
+        $sheet->setCellValue("E1", 'Documento');
+        $sheet->setCellValue("F1", 'Celular');
+        $sheet->setCellValue("G1", 'Creado por');
+        $sheet->setCellValue("H1", 'Estado');
+
+        $contador = 1;
+
+        foreach ($list_todos as $list) {
+            $contador++;
+
+            $sheet->getStyle("A{$contador}:H{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("B{$contador}:D{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("G{$contador}:H{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:H{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:H{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+
+            $sheet->setCellValue("A{$contador}", Date::PHPToExcel($list->orden));
+            $sheet->getStyle("A{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+            $sheet->setCellValue("B{$contador}", $list->nom_area); 
+            $sheet->setCellValue("C{$contador}", $list->nom_puesto);
+            $sheet->setCellValue("D{$contador}", $list->nom_postulante);
+            $sheet->setCellValue("E{$contador}", $list->num_doc);
+            $sheet->setCellValue("F{$contador}", $list->num_celp);
+            $sheet->setCellValue("G{$contador}", $list->creado_por);
+            $sheet->setCellValue("H{$contador}", $list->nom_estado); 
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Postulante (Todos)';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
     }
 
     public function index_prev()

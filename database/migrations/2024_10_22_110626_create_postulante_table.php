@@ -68,6 +68,8 @@ return new class extends Migration
             $table->foreign('id_tipo_documento', 'pos_fk_id_tdoc')->references('id_tipo_documento')->on('tipo_documento');
             $table->foreign('id_puesto_evaluador', 'pos_fk_id_peva')->references('id_puesto')->on('puesto');
             $table->foreign('id_evaluador', 'pos_fk_id_eva')->references('id_usuario')->on('users');
+            $table->index(['estado_postulacion'], 'pos_idx_epos');
+            $table->index(['estado'], 'pos_idx_est');
         });
     }
 
