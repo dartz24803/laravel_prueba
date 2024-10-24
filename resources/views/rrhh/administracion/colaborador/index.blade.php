@@ -119,6 +119,9 @@
                                     <li>
                                         <a class="nav-link" style="cursor: pointer;" id="Horario" onclick="TablaHorario()">Horario</a>
                                     </li>
+                                    <li>
+                                        <a class="nav-link" style="cursor: pointer" id="Modalidad_Laboral" onclick="TablaModalidad_Laboral()">Modalidad Laboral</a>
+                                    </li>
                                 <?php } ?>
                             </div>
                         </ul>
@@ -148,6 +151,7 @@
 
     //-------------------------------TABLAS MAESTRAS REGISTRO COLABORADORES---------------------
     function Active_Tabla_Colaboradores() {
+        $("#Modalidad_Laboral").removeClass('active');
         $("#Horario").removeClass('active');
         $("#Turno").removeClass('active');
         $("#ComisionAFP").removeClass('active');
@@ -827,6 +831,26 @@
         $("#Horario").addClass('active');
 
         var url = "{{ url('ColaboradorConfController/Horario') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+
+    function TablaModalidad_Laboral() {
+        Active_Tabla_Colaboradores();
+        $("#Modalidad_Laboral").addClass('active');
+
+        var url = "{{ url('ColaboradorConfController/Modalidad_Laboral') }}";
         var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({

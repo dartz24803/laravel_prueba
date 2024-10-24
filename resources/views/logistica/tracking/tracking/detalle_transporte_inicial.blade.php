@@ -275,7 +275,7 @@
                         });
                     }else{
                         swal.fire(
-                            '¡Cambio de estado exitoso!',
+                            '¡Registro exitoso!',
                             '¡Haga clic en el botón!',
                             'success'
                         ).then(function() {

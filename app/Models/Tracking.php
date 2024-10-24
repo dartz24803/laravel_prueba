@@ -66,10 +66,10 @@ class Tracking extends Model
                     WHEN tr.transporte='2' THEN 'Agencia - Aérea' 
                     WHEN tr.transporte='3' THEN 'Propio' ELSE '' END AS tipo_transporte,
                     (SELECT COUNT(1) FROM tracking_diferencia tdif
-                    WHERE tdif.id_tracking=tr.id AND tdif.observacion='' AND 
+                    WHERE tdif.id_tracking=tr.id AND tdif.observacion='Sobrante' AND 
                     tdif.enviado<tdif.recibido) AS sobrantes,
                     (SELECT COUNT(1) FROM tracking_diferencia tdif
-                    WHERE tdif.id_tracking=tr.id AND tdif.observacion='' AND 
+                    WHERE tdif.id_tracking=tr.id AND tdif.observacion='Faltante' AND 
                     tdif.enviado>tdif.recibido) AS faltantes,
                     (SELECT ta.archivo FROM tracking_archivo ta
                     WHERE ta.id_tracking=tr.id AND ta.tipo=3
@@ -83,7 +83,20 @@ class Tracking extends Model
                     ELSE '' END AS recepcion,
                     CASE WHEN tr.tipo_pago=1 THEN 'Si pago' WHEN tr.tipo_pago=2 THEN 'Por pagar' 
                     ELSE '' END AS nom_tipo_pago,YEAR(tr.fec_reg) AS anio,
-                    (IFNULL(paquetes,0)+IFNULL(sobres,0)+IFNULL(fardos,0)+IFNULL(caja,0)) AS bultos
+                    (IFNULL(paquetes,0)+IFNULL(sobres,0)+IFNULL(fardos,0)+IFNULL(caja,0)) AS bultos,
+                    IFNULL(tr.flete_prenda,0) AS flete_prenda_formateado,
+                    (SELECT CONCAT(DAY(tde.fecha),' de ',LOWER((SELECT me.nom_mes FROM mes me
+                    WHERE me.cod_mes=MONTH(tde.fecha))),' del ',YEAR(tde.fecha)) 
+                    FROM tracking_detalle_estado tde
+                    INNER JOIN tracking_detalle_proceso tdp ON tdp.id=tde.id_detalle AND 
+                    tdp.id_tracking=tr.id
+                    WHERE tde.id_estado=4) AS fecha_partida,
+                    (SELECT CONCAT(DAY(tde.fecha),' de ',LOWER((SELECT me.nom_mes FROM mes me
+                    WHERE me.cod_mes=MONTH(tde.fecha))),' del ',YEAR(tde.fecha)) 
+                    FROM tracking_detalle_estado tde
+                    INNER JOIN tracking_detalle_proceso tdp ON tdp.id=tde.id_detalle AND 
+                    tdp.id_tracking=tr.id
+                    WHERE tde.id_estado=6) AS fecha_llegada
                     FROM tracking tr
                     LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base
