@@ -36,20 +36,58 @@
                                     <input type="text" class="form-control" placeholder="Nombre de empresa" 
                                     value="{{ $get_id->nombre_transporte }}" disabled>
                                 </div>
+                            </div>
     
+                            <div class="row">
+                                <div class="form-group col-lg-1">
+                                    <label class="control-label text-bold">Nro. GR Transporte: </label>
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <input type="text" class="form-control" name="guia_transporte" 
+                                    id="guia_transporte" placeholder="Nro. GR Transporte" 
+                                    value="{{ $get_id->guia_transporte }}" 
+                                    @if ($get_id->guia_transporte!="") disabled @endif>
+                                    @if ($get_id->guia_transporte!="") 
+                                        <input type="text" name="guia_transporte" 
+                                        value="{{ $get_id->guia_transporte }}">
+                                    @endif
+                                </div>
+
+                                <div class="form-group col-lg-1">
+                                    <label class="control-label text-bold">F x prenda: </label>
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <input type="text" class="form-control" name="flete_prenda" 
+                                    id="flete_prenda" placeholder="F x prenda" 
+                                    value="{{ $get_id->flete_prenda }}" 
+                                    onkeypress="return solo_Numeros_Punto(event);"
+                                    @if ($get_id->flete_prenda!="") disabled @endif>
+                                    @if ($get_id->flete_prenda!="") 
+                                        <input type="text" name="flete_prenda" 
+                                        value="{{ $get_id->flete_prenda }}">
+                                    @endif
+                                </div>
+                                
                                 <div class="form-group col-lg-1">
                                     <label class="control-label text-bold">Importe a pagar: </label>
                                 </div>
                                 <div class="form-group col-lg-2">
-                                    <input type="text" class="form-control" placeholder="Importe a pagar" 
-                                    value="{{ $get_id->importe_transporte }}" disabled>
+                                    <input type="text" class="form-control" name="importe_transporte" 
+                                    id="importe_transporte" placeholder="Importe a pagar" 
+                                    value="{{ $get_id->importe_transporte }}"
+                                    @if ($get_id->importe_transporte!="") disabled @endif>
+                                    @if ($get_id->importe_transporte!="") 
+                                        <input type="text" name="importe_transporte" 
+                                        value="{{ $get_id->importe_transporte }}">
+                                    @endif
                                 </div>
     
                                 <div class="form-group col-lg-1">
                                     <label class="control-label text-bold">N° Factura: </label>
                                 </div>
                                 <div class="form-group col-lg-2">
-                                    <input type="text" class="form-control" name="factura_transporte" id="factura_transporte" placeholder="N° Factura">
+                                    <input type="text" class="form-control" name="factura_transporte" 
+                                    id="factura_transporte" placeholder="N° Factura">
                                 </div>
                             </div>
 
@@ -110,6 +148,18 @@
             $("#hlogisticas").attr('aria-expanded', 'true');
             $("#trackings").addClass('active');
         });
+
+        function solo_Numeros_Punto(e) {
+            var key = event.which || event.keyCode;
+            if ((key >= 48 && key <= 57) || key == 46) {
+                if (key == 46 && event.target.value.indexOf('.') !== -1) {
+                    return false;
+                }
+                return true;
+            } else {
+                return false;
+            }
+        }
 
         function Limpiar_Ifile(){
             $('#archivo_transporte').val('');
