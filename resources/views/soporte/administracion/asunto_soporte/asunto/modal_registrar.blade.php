@@ -29,6 +29,17 @@
                     @endforeach
                 </select>
             </div>
+
+            <div class="form-group col-lg-12">
+                <label>Area:</label>
+                <select class="form-control multivalue" name="id_areae[]" id="id_areae" multiple="multiple">
+                    @foreach ($list_area as $list)
+                    <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
+                    @endforeach
+                </select>
+
+            </div>
+
             <div class="form-group col-lg-12">
                 <label for="nom_asunt">Nombre Asunto:</label>
                 <input type="text" class="form-control" id="nom_asunt" name="nom_asunt">
@@ -50,6 +61,12 @@
 </form>
 
 <script>
+    $('.multivalue').select2({
+        tags: true, // Permite crear nuevas etiquetas
+        tokenSeparators: [',', ' '], // Separa las etiquetas con comas y espacios
+        dropdownParent: $('#ModalRegistro')
+    });
+
     function Insert_Asunto() {
         Cargando();
 
