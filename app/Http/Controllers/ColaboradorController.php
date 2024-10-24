@@ -223,7 +223,7 @@ class ColaboradorController extends Controller
             ->header('Content-Type', $response->getHeaderLine('Content-Type'))
             ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
-    //corregir excel y agregar crud modalidad laboral; relacionar users_historico_modalidadl
+
     public function excel_co($id_gerencia)
     {
         $list_colaborador = Organigrama::get_list_colaborador(['id_gerencia'=>$id_gerencia,'excel'=>1]);
