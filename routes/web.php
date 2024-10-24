@@ -40,6 +40,7 @@ use App\Http\Controllers\ErroresPickingConfController;
 use App\Http\Controllers\ErroresPickingController;
 use App\Http\Controllers\FinanzaInicioController;
 use App\Http\Controllers\FinanzasInicioController;
+use App\Http\Controllers\InfraestructuraInicioController;
 use App\Http\Controllers\InicioAdmController;
 use App\Http\Controllers\InicioFrasesAdmController;
 use App\Http\Controllers\InsumoConfController;
@@ -405,7 +406,8 @@ Route::controller(SoporteController::class)->group(function () {
 
 
     // SOPORTE MASTER
-    Route::get('soporte_master', 'index_master')->name('soporte_master');
+    Route::get('soporte_master/{id_subgerencia}', 'index_master')->name('soporte_master');
+
     Route::get('soporte_ticket_master/list', 'list_tick_master')->name('soporte_ticket_master.list');
     Route::get('soporte_ticket_master/ver/{id}', 'ver_tick_master')->name('soporte_ticket_master.ver');
     Route::get('soporte_ticket_master/edit/{id}', 'edit_tick_master')->name('soporte_ticket_master.edit');
@@ -1371,7 +1373,10 @@ Route::controller(ProduccionController::class)->group(function () {
     Route::get('produccion_ft/{id}/detalle', 'detalle_rv')->name('produccion_ft.detalle');
 });
 
-
+//ÁREA INFRAESTRUCTURA
+Route::controller(InfraestructuraInicioController::class)->group(function () {
+    Route::get('infraestructura', 'index')->name('infraestructura');
+});
 
 //ÁREA FINANZAS
 Route::controller(FinanzasInicioController::class)->group(function () {

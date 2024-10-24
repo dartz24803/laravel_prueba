@@ -654,6 +654,11 @@
         window.location.href = "{{ url('Comercial/InicioComercial') }}";
     };
 
+    document.getElementById('logo_infraestructura').onclick = function() {
+        window.location.href = "{{ route('infraestructura') }}";
+    };
+
+
     function cambiarClaseSegunResolucion() {
         var ventanaAncho = $(window).width();
         console.log(ventanaAncho);
