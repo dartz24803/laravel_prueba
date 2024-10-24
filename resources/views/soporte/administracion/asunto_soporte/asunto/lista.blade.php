@@ -4,7 +4,7 @@
             <th>Nombre</th>
             <th>Elemento</th>
             <th>Tipo de Soporte</th>
-            <th>Descripción</th>
+            <th>Área</th>
             <th class="no-content"></th>
         </tr>
     </thead>
@@ -14,7 +14,8 @@
             <td class="text-left">{{ $list->asunto_nombre }}</td>
             <td class="text-left">{{ $list->nom_elemento }}</td>
             <td class="text-left">{{ $list->nom_tiposoporte }}</td>
-            <td class="text-left">{{ $list->descripcion }}</td>
+            <td class="text-left">{{ $list->nom_areas  }}</td>
+
 
             <td>
                 <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate"

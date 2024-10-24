@@ -436,7 +436,7 @@ class SoporteController extends Controller
         } else {
             $ejecutoresMultiples = false;
         }
-        $list_areas_involucradas = EjecutorResponsable::obtenerListadoAreasInvolucradas($get_id->id_especialidad);
+        $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_especialidad);
 
         // dd($list_areas_involucradas);
 

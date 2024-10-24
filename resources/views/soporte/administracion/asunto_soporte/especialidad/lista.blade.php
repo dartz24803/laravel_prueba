@@ -2,7 +2,6 @@
     <thead>
         <tr class="text-center">
             <th>Nombre</th>
-            <th>Área</th>
             <th class="no-content"></th>
         </tr>
     </thead>
@@ -10,7 +9,6 @@
         @foreach ($list_especialidad as $list)
         <tr class="text-center">
             <td class="text-left">{{ $list->nombre }}</td>
-            <td class="text-left">{{ $list->nom_areas  }}</td>
             <td>
                 <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate"
                     app_elim="{{ route('soporte_especialidad_conf.edit', $list->id) }}">

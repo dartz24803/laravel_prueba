@@ -33,24 +33,25 @@
         <div class="tab-content" id="myTabContent2">
             <div class="tab-pane fade show active" id="tarea" role="tabpanel" aria-labelledby="tarea-tab">
 
+                <!-- Solo mostrar los divs si ejecutoresMultiples es false -->
+                @if(!$ejecutoresMultiples)
                 <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
                             <div class="form-group col-md-2">
-                                <label class="control-label text-bold" ">Responsable:</label>
+                                <label class="control-label text-bold">Responsable:</label>
                             </div>
-                            <div class=" form-group col-md-10">
-                                    <select class="form-control" id="id_responsablee" name="id_responsablee">
-                                        <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
-                                        <option value="0" {{ is_null($get_id->id_responsable) ? 'selected' : '' }}>SIN DESIGNAR</option>
-                                              @foreach ($list_responsable as $list)
+                            <div class="form-group col-md-10">
+                                <select class="form-control" id="id_responsablee" name="id_responsablee">
+                                    <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
+                                    <option value="0" {{ is_null($get_id->id_responsable) ? 'selected' : '' }}>SIN DESIGNAR</option>
+                                    @foreach ($list_responsable as $list)
                                     <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
-                                    <option value="{{ $list->id_usuario }}"
-                                        {{ $get_id->id_responsable == $list->id_usuario ? 'selected' : '' }}>
+                                    <option value="{{ $list->id_usuario }}" {{ $get_id->id_responsable == $list->id_usuario ? 'selected' : '' }}>
                                         {{ $list->nombre_completo }}
                                     </option>
                                     @endforeach
-                                    </select>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -65,14 +66,10 @@
                             </div>
                             <div class="form-group col-md-4" id="estado-container">
                                 <select class="form-control" id="estado_registroe" name="estado_registroe">
-                                    <option value="1" {{ $get_id->estado_registro == 1 ? 'selected' : '' }}>Por
-                                        Iniciar</option>
-                                    <option value="2" {{ $get_id->estado_registro == 2 ? 'selected' : '' }}>En
-                                        Proceso</option>
-                                    <option value="3" {{ $get_id->estado_registro == 3 ? 'selected' : '' }}>
-                                        Completado</option>
-                                    <option value="4" {{ $get_id->estado_registro == 4 ? 'selected' : '' }}>Stand
-                                        By</option>
+                                    <option value="1" {{ $get_id->estado_registro == 1 ? 'selected' : '' }}>Por Iniciar</option>
+                                    <option value="2" {{ $get_id->estado_registro == 2 ? 'selected' : '' }}>En Proceso</option>
+                                    <option value="3" {{ $get_id->estado_registro == 3 ? 'selected' : '' }}>Completado</option>
+                                    <option value="4" {{ $get_id->estado_registro == 4 ? 'selected' : '' }}>Stand By</option>
                                 </select>
                             </div>
 
@@ -84,11 +81,10 @@
                                 <input type="date" class="form-control" id="fec_cierree" name="fec_cierree"
                                     value="{{ $get_id->fec_cierre ? \Carbon\Carbon::parse($get_id->fec_cierre)->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
                             </div>
-
                         </div>
                     </div>
                 </div>
-
+                @endif
 
 
                 <div class="row" id="cancel-row" style="flex: 1;">
@@ -104,7 +100,7 @@
                                 <label class="control-label text-bold" ">Tipo:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0">
-                                <span class="form-control border-0">{{ $get_id->nombre_tipo }}</span>
+                                    <span class="form-control border-0">{{ $get_id->nombre_tipo }}</span>
                             </div>
                         </div>
                     </div>
@@ -122,6 +118,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="row" id="cancel-row" style="flex: 1;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
@@ -129,7 +126,7 @@
                                 <label class="control-label text-bold" ">Especialidad:</label>
                             </div>
                             <div class=" form-group col-md-4">
-                                <span class="form-control border-0">{{ $get_id->nombre_especialidad }}</span>
+                                    <span class="form-control border-0">{{ $get_id->nombre_especialidad }}</span>
                             </div>
                             <div class="form-group col-md-2">
                                 <label class="control-label text-bold" ">Elemento:</label>
@@ -140,6 +137,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="row" id="cancel-row" style="flex: 1;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
@@ -147,11 +145,12 @@
                                 <label class="control-label text-bold" ">Asunto:</label>
                             </div>
                             <div class=" form-group col-md-10 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                <span class="form-control border-0">{{ $get_id->nombre_asunto }}</span>
+                                    <span class="form-control border-0">{{ $get_id->nombre_asunto }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="row" id="cancel-row" style="flex: 1;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
@@ -165,7 +164,7 @@
                                 <label class="control-label text-bold" ">Vencimiento:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0">
-                                <span class="form-control border-0">{{ $get_id->fec_vencimiento }}</span>
+                                    <span class="form-control border-0">{{ $get_id->fec_vencimiento }}</span>
                             </div>
                         </div>
                     </div>
@@ -183,33 +182,68 @@
                     </div>
                 </div>
 
-
-
             </div>
             <div class="tab-pane fade" id="ejecutor" role="tabpanel" aria-labelledby="ejecutor-tab">
                 <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
 
-
-                        <div class="row align-items-center">
-                            <div class="form-group col-md-2" id="area_responsable-label">
-                                <label class="control-label text-bold">Area Responsable:</label>
-                            </div>
-                            <div class="form-group col-md-4" id="nom_proyecto-field">
-                                <input type="text" class="form-control" id="nom_proyecto" name="nom_proyecto"
-                                    value="{{ $get_id->nombre_proyecto }}">
-
-                            </div>
-
-                            <div class="form-group col-md-3" id="fec_ini_proyecto-label">
-                                <label class="control-label text-bold">Fecha de Inicio del Proyecto:</label>
-                            </div>
-                            <div class="form-group col-md-3" id="fec_ini_proyecto-field">
-                                <input type="date" class="form-control" id="fec_ini_proyecto"
-                                    name="fec_ini_proyecto"
-                                    value="{{ $get_id->fec_inicio_proyecto ? \Carbon\Carbon::parse($get_id->fec_inicio_proyecto)->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
+                        @foreach ($list_areas_involucradas as $index => $area_involucrada) <!-- Usamos $index para obtener el número de iteración -->
+                        <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
+                            <div class="col-xl-12 col-lg-12 col-sm-12">
+                                <div class="row align-items-center">
+                                    <div class="form-group col-md-2">
+                                        <!-- Aquí concatenamos el nombre del área involucrada -->
+                                        <label class="control-label text-bold">Responsable: {{ $area_involucrada->nombre }}</label>
+                                    </div>
+                                    <div class="form-group col-md-10">
+                                        <select class="form-control" id="id_responsablee" name="id_responsablee">
+                                            <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
+                                            <option value="0" {{ is_null($get_id->id_responsable) ? 'selected' : '' }}>
+                                                SIN DESIGNAR
+                                            </option>
+                                            @foreach ($list_responsable as $list)
+                                            <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
+                                            <option value="{{ $list->id_usuario }}"
+                                                {{ $get_id->id_responsable == $list->id_usuario ? 'selected' : '' }}>
+                                                {{ $list->nombre_completo }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="row" id="cancel-row" style="flex: 1;">
+                            <div class="col-xl-12 col-lg-12 col-sm-12">
+                                <div class="row align-items-center">
+                                    <!-- Campo Estado -->
+                                    <div class="form-group col-md-2">
+                                        <label class="control-label text-bold">Estado:</label>
+                                    </div>
+                                    <div class="form-group col-md-4" id="estado-container-{{ $index + 1 }}">
+                                        <select class="form-control" id="estado_registroe" name="estado_registroe">
+                                            <option value="1" {{ $get_id->estado_registro == 1 ? 'selected' : '' }}>Por Iniciar</option>
+                                            <option value="2" {{ $get_id->estado_registro == 2 ? 'selected' : '' }}>En Proceso</option>
+                                            <option value="3" {{ $get_id->estado_registro == 3 ? 'selected' : '' }}>Completado</option>
+                                            <option value="4" {{ $get_id->estado_registro == 4 ? 'selected' : '' }}>Stand By</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Campos Cierre, inicialmente ocultos -->
+                                    <div class="form-group col-md-2" id="cierre-label-{{ $index + 1 }}" style="display: none;">
+                                        <label class="control-label text-bold">Cierre:</label>
+                                    </div>
+                                    <div class="form-group col-md-4" id="cierre-field-{{ $index + 1 }}" style="display: none;">
+                                        <input type="date" class="form-control" id="fec_cierree" name="fec_cierree"
+                                            value="{{ $get_id->fec_cierre ? \Carbon\Carbon::parse($get_id->fec_cierre)->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+
+
 
 
 
@@ -219,19 +253,19 @@
                             </div>
                             <div class=" form-group col-md-10"> <!-- Ajustar la columna a col-md-10 -->
 
-                                <select class="form-control" id="ejecutor_responsable" name="ejecutor_responsable">
-                                    <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
-                                    <option value="0"
-                                        {{ is_null($get_id->idejecutor_responsable) ? 'selected' : '' }}>SELECCIONAR
-                                    </option>
-                                    @foreach ($list_ejecutores_responsables as $list)
+                                    <select class="form-control" id="ejecutor_responsable" name="ejecutor_responsable">
+                                        <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
+                                        <option value="0"
+                                            {{ is_null($get_id->idejecutor_responsable) ? 'selected' : '' }}>SELECCIONAR
+                                        </option>
+                                        @foreach ($list_ejecutores_responsables as $list)
                                         <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
                                         <option value="{{ $list->idejecutor_responsable }}"
                                             {{ $get_id->idejecutor_responsable == $list->idejecutor_responsable ? 'selected' : '' }}>
                                             {{ $list->nombre }}
                                         </option>
-                                    @endforeach
-                                </select>
+                                        @endforeach
+                                    </select>
                             </div>
                         </div>
                         <div class="row align-items-center">
@@ -299,38 +333,35 @@
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
                             <div class="form-group col-md-12 mb-0">
-                                <label class="control-label text-bold" ">Solucion Aplicada:</label>
+                                <label class="control-label text-bold">Solucion Aplicada:</label>
                             </div>
-                           
                         </div>
                     </div>
                 </div>
                 <div class=" row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
-                                    <div class="col-xl-12 col-lg-12 col-sm-12">
-                                        <div class="row align-items-center">
-                                            <div class=" form-group col-md-12 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                                <textarea class="form-control" id="descripcione_solucion" name="descripcione_solucion" rows="5"
-                                                    placeholder="Ingresar descripción">{{ $get_id->descripcion_solucion }}</textarea>
-                                            </div>
-                                        </div>
-                                    </div>
+                    <div class="col-xl-12 col-lg-12 col-sm-12">
+                        <div class="row align-items-center">
+                            <div class=" form-group col-md-12 mb-0">
+                                <textarea class="form-control" id="descripcione_solucion" name="descripcione_solucion" rows="5"
+                                    placeholder="Ingresar descripción">{{ $get_id->descripcion_solucion }}</textarea>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="modal-footer">
-                    @csrf
-                    <button class="btn btn-primary" type="button" onclick="Update_Soporte_Master();">Guardar</button>
-                    <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
-                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            @csrf
+            <button class="btn btn-primary" type="button" onclick="Update_Soporte_Master();">Guardar</button>
+            <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
+        </div>
 </form>
 
 <script>
     $(document).ready(function() {
         toggleCierre();
         toggleEjecutor();
-        toggleMultipleResponbles();
+
         $('#estado_registroe').on('change', function() {
             toggleCierre();
         });
@@ -451,25 +482,5 @@
                 );
             }
         });
-    }
-
-
-    function toggleMultipleResponbles() {
-        var ejecutor_responsable = document.getElementById('ejecutor_responsable').value;
-        var AreaRespLabel = document.getElementById('area_responsable-label');
-        var AreaRespField = document.getElementById('area_responsable-field');
-
-
-        if (ejecutor_responsable == 2) {
-            // Mostrar los campos de Proyecto
-            AreaRespLabel.style.display = 'block';
-            AreaRespField.style.display = 'block';
-
-        } else {
-            // Ocultar los campos de Proyecto
-            AreaRespLabel.style.display = 'none';
-            AreaRespField.style.display = 'none';
-
-        }
     }
 </script>

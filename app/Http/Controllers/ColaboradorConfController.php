@@ -51,6 +51,7 @@ use App\Models\Turno;
 use App\Models\Base;
 use App\Models\Horario;
 use App\Models\HorarioDia;
+use App\Models\ModalidadLaboral;
 use App\Models\ToleranciaHorario;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -4679,5 +4680,70 @@ class ColaboradorConfController extends Controller
             'user_eli' => session('usuario')->id_usuario
         ]);
     }
-    // AGREGANDO ALGO
+
+    public function Modalidad_Laboral(){
+        $dato['list_modalidad_laboral'] = ModalidadLaboral::where('estado', 1)
+                                    ->get();
+        return view('rrhh.administracion.colaborador.Modalidad_Laboral.index', $dato);
+    }
+
+    public function Modal_Insert_Modalidad_Laboral(){
+        return view('rrhh.administracion.colaborador.Modalidad_Laboral.modal_registrar');
+    }
+
+    public function Insert_Modalidad_Laboral(Request $request){
+        $request->validate([
+            'nom_modalidad_laboral' => 'required',
+        ], [
+            'nom_modalidad_laboral.required' => 'Debe ingresar nombre de modalidad laboral.',
+        ]);
+        $valida = ModalidadLaboral::where('nom_modalidad_laboral', $request->nom_modalidad_laboral)
+            ->where('estado', 1)
+            ->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            $dato['nom_modalidad_laboral'] = $request->input("nom_modalidad_laboral");
+            $dato['estado'] = 1;
+            $dato['fec_reg'] = now();
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            $dato['user_reg'] = session('usuario')->id_usuario;
+            ModalidadLaboral::create($dato);
+        }
+    }
+
+    public function Modal_Update_Modalidad_Laboral($id_modalidad_laboral){
+        $dato['get_id'] = ModalidadLaboral::where('id_modalidad_laboral', $id_modalidad_laboral)
+            ->get();
+        return view('rrhh.administracion.colaborador.Modalidad_Laboral.modal_editar', $dato);
+    }
+
+    public function Update_Modalidad_Laboral(Request $request){
+        $request->validate([
+            'nom_modalidad_laboral' => 'required',
+        ], [
+            'nom_modalidad_laboral.required' => 'Debe ingresar descripcion de tipo de via.',
+        ]);
+
+        $valida = ModalidadLaboral::where('nom_modalidad_laboral', $request->nom_modalidad_laboral)
+            ->where('estado', 1)
+            ->exists();
+
+        if ($valida) {
+            echo "error";
+        } else {
+            $dato['nom_modalidad_laboral'] = $request->input("nom_modalidad_laboral");
+            $dato['fec_act'] = now();
+            $dato['user_act'] = session('usuario')->id_usuario;
+            ModalidadLaboral::findOrFail($request->input("id_modalidad_laboral"))->update($dato);
+        }
+    }
+
+    public function Delete_Modalidad_Laboral(Request $request){
+        $dato['estado'] = 2;
+        $dato['fec_eli'] = now();
+        $dato['user_eli'] = session('usuario')->id_usuario;
+        ModalidadLaboral::findOrFail($request->input("id_modalidad_laboral"))->update($dato);
+    }
 }

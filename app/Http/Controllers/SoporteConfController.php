@@ -92,17 +92,30 @@ class SoporteConfController extends Controller
             'soporte_asunto.descripcion',
             'soporte_asunto.fec_reg',
             'soporte_tipo.nombre AS nom_tiposoporte',
-            'soporte_elemento.nombre AS nom_elemento'
-
+            'soporte_elemento.nombre AS nom_elemento',
+            DB::raw("GROUP_CONCAT(DISTINCT area.nom_area SEPARATOR ', ') AS nom_areas") // Concatenar nombres de áreas
         )
             ->leftJoin('soporte_tipo', 'soporte_asunto.idsoporte_tipo', '=', 'soporte_tipo.idsoporte_tipo')
             ->leftJoin('soporte_elemento', 'soporte_asunto.idsoporte_elemento', '=', 'soporte_elemento.idsoporte_elemento')
+            ->leftJoin('area', function ($join) {
+                $join->on(DB::raw("FIND_IN_SET(area.id_area, soporte_asunto.id_area)"), '>', DB::raw('0'));
+            })
             ->where('soporte_asunto.estado', 1)
-            ->orderBy('fec_reg', 'DESC')
+            ->groupBy(
+                'soporte_asunto.idsoporte_asunto',
+                'soporte_asunto.nombre',
+                'soporte_asunto.descripcion',
+                'soporte_asunto.fec_reg',
+                'soporte_tipo.nombre',
+                'soporte_elemento.nombre'
+            ) // Agrupamos todas las columnas seleccionadas que no son agregadas
+            ->orderBy('soporte_asunto.fec_reg', 'DESC')
             ->get();
 
         return view('soporte.administracion.asunto_soporte.asunto.lista', compact('list_asunto'));
     }
+
+
 
     public function create_asunto_conf()
     {
@@ -111,7 +124,13 @@ class SoporteConfController extends Controller
             ->get();
         $list_tipo = SoporteTipo::select('soporte_tipo.idsoporte_tipo', 'soporte_tipo.nombre')
             ->get();
-        return view('soporte.administracion.asunto_soporte.asunto.modal_registrar', compact('list_elementos', 'list_tipo'));
+        $list_area = Area::select('id_area', 'nom_area')
+            ->where('estado', 1)
+            ->whereIn('id_area', [41, 25])
+            ->orderBy('nom_area', 'ASC')
+            ->distinct('nom_area')
+            ->get();
+        return view('soporte.administracion.asunto_soporte.asunto.modal_registrar', compact('list_elementos', 'list_tipo', 'list_area'));
     }
 
 
@@ -121,15 +140,21 @@ class SoporteConfController extends Controller
             'id_elemento' => 'gt:0',
             'tipo_soporte' => 'gt:0',
             'nom_asunt' => 'required',
+            'id_areae' => 'required|array|min:1',
 
         ], [
             'id_elemento.gt' => 'Debe seleccionar Elemento.',
             'tipo_soporte.gt' => 'Debe seleccionar Tipo de Soporte.',
             'nom_asunt.required' => 'Debe ingresar nombre de especialidad.',
+            'id_areae.required' => 'Debe seleccionar al menos una área.',
 
         ]);
+
+
+        $id_area_string = implode(',', $request->id_areae);
         // dd($request->all());
         AsuntoSoporte::create([
+            'id_area' => $id_area_string,
             'idsoporte_elemento' => $request->id_elemento,
             'idsoporte_tipo' => $request->tipo_soporte,
             'nombre' => $request->nom_asunt,
@@ -151,9 +176,15 @@ class SoporteConfController extends Controller
             ->get();
         $list_tipo = SoporteTipo::select('soporte_tipo.idsoporte_tipo', 'soporte_tipo.nombre')
             ->get();
+        $list_area = Area::select('id_area', 'nom_area')
+            ->where('estado', 1)
+            ->whereIn('id_area', [41, 25])
+            ->orderBy('nom_area', 'ASC')
+            ->distinct('nom_area')
+            ->get();
         $get_id = AsuntoSoporte::findOrFail($id);
         // dd($get_id);
-        return view('soporte.administracion.asunto_soporte.asunto.modal_editar', compact('get_id', 'list_elementos', 'list_tipo'));
+        return view('soporte.administracion.asunto_soporte.asunto.modal_editar', compact('get_id', 'list_elementos', 'list_tipo', 'list_area'));
     }
 
 
@@ -162,12 +193,18 @@ class SoporteConfController extends Controller
         $request->validate([
             'nom_asunte' => 'required',
             'descripcione' => 'required',
+            'id_areaee' => 'required|array|min:1',
+
         ], [
             'nom_asunte.required' => 'Debe seleccionar nombre.',
             'descripcione.required' => 'Debe seleccionar descripción.',
+            'id_areaee.required' => 'Debe seleccionar al menos una área.',
         ]);
 
+        $id_area_string = implode(',', $request->id_areaee);
+
         AsuntoSoporte::findOrFail($id)->update([
+            'id_area' => $id_area_string,
             'idsoporte_elemento' => $request->id_elementoe,
             'idsoporte_tipo' => $request->tipo_soportee,
             'nombre' => $request->nom_asunte,
@@ -300,9 +337,7 @@ class SoporteConfController extends Controller
             'especialidad.id',
             'especialidad.nombre',
             'especialidad.fec_reg',
-            DB::raw("GROUP_CONCAT(area.nom_area SEPARATOR ', ') as nom_areas")
         )
-            ->leftJoin('area', DB::raw("FIND_IN_SET(area.id_area, especialidad.id_area)"), '>', DB::raw("'0'"))
             ->where('especialidad.estado', 1)
             ->groupBy('especialidad.id', 'especialidad.nombre', 'especialidad.fec_reg') // Agrupar por los campos de especialidad
             ->orderBy('fec_reg', 'DESC')
@@ -314,32 +349,21 @@ class SoporteConfController extends Controller
 
     public function create_especialidad_conf()
     {
-        $list_area = Area::select('id_area', 'nom_area')
-            ->where('estado', 1)
-            ->whereIn('id_area', [41, 25])
-            ->orderBy('nom_area', 'ASC')
-            ->distinct('nom_area')
-            ->get();
-
-        return view('soporte.administracion.asunto_soporte.especialidad.modal_registrar', compact('list_area'));
+        return view('soporte.administracion.asunto_soporte.especialidad.modal_registrar');
     }
 
     public function store_especialidad_conf(Request $request)
     {
         $request->validate([
-            'id_areae' => 'required|array|min:1', // Verifica que sea un array y que tenga al menos 1 elemento
             'nom_esp' => 'required',
 
         ], [
-            'id_areae.required' => 'Debe seleccionar al menos una área.',
             'nom_esp.required' => 'Debe ingresar nombre de especialidad.',
 
         ]);
-        $id_area_string = implode(',', $request->id_areae);
 
         // dd($request->all());
         Especialidad::create([
-            'id_area' => $id_area_string,
             'nombre' => $request->nom_esp,
             'estado' => 1,
             'fec_reg' => now(),
@@ -354,31 +378,20 @@ class SoporteConfController extends Controller
 
     public function edit_especialidad_conf($id)
     {
-        $list_area = Area::select('id_area', 'nom_area')
-            ->where('estado', 1)
-            ->whereIn('id_area', [41, 25])
-            ->orderBy('nom_area', 'ASC')
-            ->distinct('nom_area')
-            ->get();
-
         $get_id = Especialidad::findOrFail($id);
-        return view('soporte.administracion.asunto_soporte.especialidad.modal_editar', compact('get_id', 'list_area'));
+        return view('soporte.administracion.asunto_soporte.especialidad.modal_editar', compact('get_id'));
     }
 
 
     public function update_especialidad_conf(Request $request, $id)
     {
         $request->validate([
-            'id_areaee' => 'required|array|min:1',
             'nom_espe' => 'required',
         ], [
-            'id_areaee.required' => 'Debe seleccionar al menos una área.',
             'nom_espe.required' => 'Debe seleccionar nombre.',
         ]);
-        $id_area_string = implode(',', $request->id_areaee);
 
         Especialidad::findOrFail($id)->update([
-            'id_area' => $id_area_string,
             'nombre' => $request->nom_espe,
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario

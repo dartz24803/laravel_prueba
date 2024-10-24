@@ -13,22 +13,10 @@
 
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row">
-            <div class="form-group col-lg-6">
-                <label>Area:</label>
-
-                <select class="form-control multivalue" name="id_areae[]" id="id_areae" multiple="multiple">
-                    @foreach ($list_area as $list)
-                    <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
-                    @endforeach
-                </select>
-
-            </div>
-
-            <div class="form-group col-lg-6">
+            <div class="form-group col-lg-12">
                 <label for="nom_esp">Nombre Especialidad:</label>
                 <input type="text" class="form-control" id="nom_esp" name="nom_esp">
             </div>
-
         </div>
 
     </div>
