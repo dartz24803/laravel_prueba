@@ -440,7 +440,7 @@ class SoporteController extends Controller
 
         // dd($list_areas_involucradas);
 
-        return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples'));
+        return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas'));
     }
 
     public function update_tick_master(Request $request, $id)
