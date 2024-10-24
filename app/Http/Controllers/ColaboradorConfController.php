@@ -4681,7 +4681,6 @@ class ColaboradorConfController extends Controller
         ]);
     }
 
-    //agregar crud modalidad laboral; relacionar users_historico_modalidadl
     public function Modalidad_Laboral(){
         $dato['list_modalidad_laboral'] = ModalidadLaboral::where('estado', 1)
                                     ->get();
