@@ -1054,7 +1054,7 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::get('postulante_tod', 'index_tod')->name('postulante_tod');
     Route::post('postulante_tod/list', 'list_tod')->name('postulante_tod.list');
     Route::put('postulante_tod/{id}', 'update_tod')->name('postulante_tod.update');
-    Route::get('postulante_tod/{cod_base}/{id_colaborador}/{inicio}/{fin}/excel', 'excel_tod')->name('postulante_tod.excel');
+    Route::get('postulante_tod/{estado}/{id_area}/excel', 'excel_tod')->name('postulante_tod.excel');
     //REVISIÓN
     Route::get('postulante_revision', 'index_prev')->name('postulante_revision');
     Route::post('postulante_revision/list', 'list_prev')->name('postulante_revision.list');

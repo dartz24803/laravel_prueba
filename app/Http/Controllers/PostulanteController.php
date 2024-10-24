@@ -344,8 +344,19 @@ class PostulanteController extends Controller
 
     public function list_tod(Request $request)
     {
-        $list_todos = Postulante::get_list_todos(['estado_postulante_1'=>$request->estado_postulante_1,'estado_postulante_2'=>$request->estado_postulante_2,'estado_postulante_3'=>$request->estado_postulante_3,'id_area'=>$request->id_area]);
+        $list_todos = Postulante::get_list_todos([
+            'estado'=>$request->estado,
+            'id_area'=>$request->id_area
+        ]);
         return view('rrhh.postulante.todos.lista', compact('list_todos'));
+    }
+
+    public function update_tod(Request $request, $id)
+    {
+        Postulante::findOrFail($id)->update([
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
     }
 
     public function index_prev()
