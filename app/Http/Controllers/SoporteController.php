@@ -193,8 +193,7 @@ class SoporteController extends Controller
 
     public function store_tick(Request $request)
     {
-
-        $request->validate([
+        $rules = [
             'especialidad' => 'gt:0',
             'elemento' => 'gt:0',
             'asunto' => 'gt:0',
@@ -202,8 +201,8 @@ class SoporteController extends Controller
             'idsoporte_nivel' => 'gt:0',
             'vencimiento' => 'required',
             'descripcion' => 'required',
-
-        ], [
+        ];
+        $messages = [
             'especialidad.gt' => 'Debe seleccionar especialidad.',
             'elemento.gt' => 'Debe seleccionar elemento.',
             'asunto.gt' => 'Debe seleccionar asunto.',
@@ -211,10 +210,19 @@ class SoporteController extends Controller
             'idsoporte_nivel.gt' => 'Debe ingresar Ubicaciòn.',
             'vencimiento.required' => 'Debe ingresar vencimiento.',
             'descripcion.required' => 'Debe ingresar descripcion.',
+        ];
 
-        ]);
+        if ($request->especialidad == 4) {
+            $rules = array_merge($rules, [
+                'area' => 'gt:0',
+            ]);
 
+            $messages = array_merge($messages, [
+                'area.gt' => 'Debe seleccionar Área',
+            ]);
+        }
 
+        $request->validate($rules, $messages);
 
         $idsoporte_tipo = DB::table('soporte_asunto as sa')
             ->leftJoin('soporte_tipo as st', 'st.idsoporte_tipo', '=', 'sa.idsoporte_tipo')
@@ -445,7 +453,6 @@ class SoporteController extends Controller
         $messages = [
             'id_responsablee.gt' => 'Debe seleccionar Responsable',
             'ejecutor_responsable.gt' => 'Debe seleccionar Ejecutor Responsable',
-
             'descripcione_solucion.max' => 'Comentario de Solución debe tener como máximo 250 caracteres.',
         ];
 
