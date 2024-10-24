@@ -33,25 +33,24 @@
         <div class="tab-content" id="myTabContent2">
             <div class="tab-pane fade show active" id="tarea" role="tabpanel" aria-labelledby="tarea-tab">
 
-                <!-- Solo mostrar los divs si ejecutoresMultiples es false -->
-                @if(!$ejecutoresMultiples)
                 <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
-                            <div class="form-group col-md-2">
-                                <label class="control-label text-bold">Responsable:</label>
+                            <div class="form-group col-md-2" id="id_responsablee-label">
+                                <label class="control-label text-bold" ">Responsable:</label>
                             </div>
-                            <div class="form-group col-md-10">
-                                <select class="form-control" id="id_responsablee" name="id_responsablee">
-                                    <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
-                                    <option value="0" {{ is_null($get_id->id_responsable) ? 'selected' : '' }}>SIN DESIGNAR</option>
-                                    @foreach ($list_responsable as $list)
-                                    <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
-                                    <option value="{{ $list->id_usuario }}" {{ $get_id->id_responsable == $list->id_usuario ? 'selected' : '' }}>
-                                        {{ $list->nombre_completo }}
-                                    </option>
-                                    @endforeach
-                                </select>
+                            <div class=" form-group col-md-10" id="id_responsablee-field">
+                                    <select class="form-control" id="id_responsablee" name="id_responsablee">
+                                        <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
+                                        <option value="0" {{ is_null($get_id->id_responsable) ? 'selected' : '' }}>SIN DESIGNAR</option>
+                                        @foreach ($list_responsable as $list)
+                                        <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
+                                        <option value="{{ $list->id_usuario }}"
+                                            {{ $get_id->id_responsable == $list->id_usuario ? 'selected' : '' }}>
+                                            {{ $list->nombre_completo }}
+                                        </option>
+                                        @endforeach
+                                    </select>
                             </div>
                         </div>
                     </div>
@@ -61,15 +60,19 @@
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
                             <!-- Campo Estado -->
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-2" id="estado-registro-label">
                                 <label class="control-label text-bold">Estado:</label>
                             </div>
                             <div class="form-group col-md-4" id="estado-container">
                                 <select class="form-control" id="estado_registroe" name="estado_registroe">
-                                    <option value="1" {{ $get_id->estado_registro == 1 ? 'selected' : '' }}>Por Iniciar</option>
-                                    <option value="2" {{ $get_id->estado_registro == 2 ? 'selected' : '' }}>En Proceso</option>
-                                    <option value="3" {{ $get_id->estado_registro == 3 ? 'selected' : '' }}>Completado</option>
-                                    <option value="4" {{ $get_id->estado_registro == 4 ? 'selected' : '' }}>Stand By</option>
+                                    <option value="1" {{ $get_id->estado_registro == 1 ? 'selected' : '' }}>Por
+                                        Iniciar</option>
+                                    <option value="2" {{ $get_id->estado_registro == 2 ? 'selected' : '' }}>En
+                                        Proceso</option>
+                                    <option value="3" {{ $get_id->estado_registro == 3 ? 'selected' : '' }}>
+                                        Completado</option>
+                                    <option value="4" {{ $get_id->estado_registro == 4 ? 'selected' : '' }}>Stand
+                                        By</option>
                                 </select>
                             </div>
 
@@ -81,10 +84,11 @@
                                 <input type="date" class="form-control" id="fec_cierree" name="fec_cierree"
                                     value="{{ $get_id->fec_cierre ? \Carbon\Carbon::parse($get_id->fec_cierre)->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
                             </div>
+
                         </div>
                     </div>
                 </div>
-                @endif
+
 
 
                 <div class="row" id="cancel-row" style="flex: 1;">
@@ -187,63 +191,63 @@
                 <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
 
-                        @foreach ($list_areas_involucradas as $index => $area_involucrada) <!-- Usamos $index para obtener el número de iteración -->
-                        <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
-                            <div class="col-xl-12 col-lg-12 col-sm-12">
-                                <div class="row align-items-center">
-                                    <div class="form-group col-md-2">
-                                        <!-- Aquí concatenamos el nombre del área involucrada -->
-                                        <label class="control-label text-bold">Responsable: {{ $area_involucrada->nombre }}</label>
-                                    </div>
-                                    <div class="form-group col-md-10">
-                                        <select class="form-control" id="id_responsablee" name="id_responsablee">
-                                            <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
-                                            <option value="0" {{ is_null($get_id->id_responsable) ? 'selected' : '' }}>
-                                                SIN DESIGNAR
-                                            </option>
-                                            @foreach ($list_responsable as $list)
-                                            <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
-                                            <option value="{{ $list->id_usuario }}"
-                                                {{ $get_id->id_responsable == $list->id_usuario ? 'selected' : '' }}>
-                                                {{ $list->nombre_completo }}
-                                            </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row" id="cancel-row" style="flex: 1;">
-                            <div class="col-xl-12 col-lg-12 col-sm-12">
-                                <div class="row align-items-center">
-                                    <!-- Campo Estado -->
-                                    <div class="form-group col-md-2">
-                                        <label class="control-label text-bold">Estado:</label>
-                                    </div>
-                                    <div class="form-group col-md-4" id="estado-container-{{ $index + 1 }}">
-                                        <select class="form-control" id="estado_registroe" name="estado_registroe">
-                                            <option value="1" {{ $get_id->estado_registro == 1 ? 'selected' : '' }}>Por Iniciar</option>
-                                            <option value="2" {{ $get_id->estado_registro == 2 ? 'selected' : '' }}>En Proceso</option>
-                                            <option value="3" {{ $get_id->estado_registro == 3 ? 'selected' : '' }}>Completado</option>
-                                            <option value="4" {{ $get_id->estado_registro == 4 ? 'selected' : '' }}>Stand By</option>
-                                        </select>
-                                    </div>
-
-                                    <!-- Campos Cierre, inicialmente ocultos -->
-                                    <div class="form-group col-md-2" id="cierre-label-{{ $index + 1 }}" style="display: none;">
-                                        <label class="control-label text-bold">Cierre:</label>
-                                    </div>
-                                    <div class="form-group col-md-4" id="cierre-field-{{ $index + 1 }}" style="display: none;">
-                                        <input type="date" class="form-control" id="fec_cierree" name="fec_cierree"
-                                            value="{{ $get_id->fec_cierre ? \Carbon\Carbon::parse($get_id->fec_cierre)->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
+                        <div id="area-involucrada"> @foreach ($list_areas_involucradas as $index => $area_involucrada)
+                            <!-- Usamos $index para obtener el número de iteración -->
+                            <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
+                                <div class="col-xl-12 col-lg-12 col-sm-12">
+                                    <div class="row align-items-center">
+                                        <div class="form-group col-md-2">
+                                            <!-- Aquí concatenamos el nombre del área involucrada -->
+                                            <label class="control-label text-bold">Responsable: {{ $area_involucrada['area_responsable'] }}</label>
+                                        </div>
+                                        <div class="form-group col-md-10">
+                                            <select class="form-control" id="id_responsablee_{{ $index }}" name="id_responsablee_{{ $index }}">
+                                                <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
+                                                <option value="0" {{ is_null($area_involucrada['id_responsable']) ? 'selected' : '' }}>
+                                                    SIN DESIGNAR
+                                                </option>
+                                                @foreach ($list_responsable as $list)
+                                                <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
+                                                <option value="{{ $list->id_usuario }}"
+                                                    {{ $area_involucrada['id_responsable'] == $list->id_usuario ? 'selected' : '' }}>
+                                                    {{ $list->nombre_completo }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="row" id="cancel-row" style="flex: 1;">
+                                <div class="col-xl-12 col-lg-12 col-sm-12">
+                                    <div class="row align-items-center">
+                                        <!-- Campo Estado -->
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label text-bold">Estado:</label>
+                                        </div>
+                                        <div class="form-group col-md-4" id="estado-container-{{ $index + 1 }}">
+                                            <select class="form-control" id="estado_registroe_{{ $index }}" name="estado_registroe_{{ $index }}">
+                                                <option value="1" {{ $area_involucrada['estado_registro'] == 1 ? 'selected' : '' }}>Por Iniciar</option>
+                                                <option value="2" {{ $area_involucrada['estado_registro'] == 2 ? 'selected' : '' }}>En Proceso</option>
+                                                <option value="3" {{ $area_involucrada['estado_registro'] == 3 ? 'selected' : '' }}>Completado</option>
+                                                <option value="4" {{ $area_involucrada['estado_registro'] == 4 ? 'selected' : '' }}>Stand By</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Campos Cierre, inicialmente ocultos -->
+                                        <div class="form-group col-md-2" id="cierre-label-{{ $index + 1 }}">
+                                            <label class="control-label text-bold">Cierre:</label>
+                                        </div>
+                                        <div class="form-group col-md-4" id="cierre-field-{{ $index + 1 }}">
+                                            <input type="date" class="form-control" id="fec_cierree_{{ $index }}" name="fec_cierree_{{ $index }}"
+                                                value="{{ $area_involucrada['fec_cierre'] ? \Carbon\Carbon::parse($area_involucrada['fec_cierre'])->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
                         </div>
-                        @endforeach
-
-
 
 
 
@@ -335,29 +339,34 @@
                             <div class="form-group col-md-12 mb-0">
                                 <label class="control-label text-bold">Solucion Aplicada:</label>
                             </div>
+
                         </div>
                     </div>
                 </div>
                 <div class=" row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
-                            <div class=" form-group col-md-12 mb-0">
+                            <div class=" form-group col-md-12 mb-0"> <!-- Ajustar la columna a col-md-10 -->
                                 <textarea class="form-control" id="descripcione_solucion" name="descripcione_solucion" rows="5"
                                     placeholder="Ingresar descripción">{{ $get_id->descripcion_solucion }}</textarea>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            @csrf
-            <button class="btn btn-primary" type="button" onclick="Update_Soporte_Master();">Guardar</button>
-            <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
-        </div>
+                <div class="modal-footer">
+                    @csrf
+                    <button class="btn btn-primary" type="button" onclick="Update_Soporte_Master();">Guardar</button>
+                    <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
+                </div>
 </form>
 
 <script>
+
+</script>
+
+
+<script type="text/javascript">
+    var ejecutoresMultiples = @json($ejecutoresMultiples);
     $(document).ready(function() {
         toggleCierre();
         toggleEjecutor();
@@ -369,13 +378,39 @@
         $('#ejecutor_responsable').on('change', function() {
             toggleEjecutor();
         });
+        console.log(ejecutoresMultiples);
+        var idResponsableLabel = document.getElementById('id_responsablee-label');
+        var idResponsableField = document.getElementById('id_responsablee-field');
+        var estadoContainer = document.getElementById('estado-container');
+        var estadoLabel = document.getElementById('estado-registro-label');
+        var areaInvolucrada = document.getElementById('area-involucrada');
+
+
+        if (!ejecutoresMultiples) {
+            idResponsableLabel.style.display = 'block';
+            idResponsableField.style.display = 'block';
+            estadoContainer.style.display = 'block';
+            estadoLabel.style.display = 'block';
+            areaInvolucrada.style.display = 'none';
+
+        } else {
+            idResponsableLabel.style.display = 'none';
+            idResponsableField.style.display = 'none';
+            estadoContainer.style.display = 'none';
+            estadoLabel.style.display = 'none';
+            areaInvolucrada.style.display = 'block';
+
+
+        }
     });
 
     function toggleCierre() {
         var estado = document.getElementById('estado_registroe').value;
+        console.log(estado)
         var cierreLabel = document.getElementById('cierre-label');
         var cierreField = document.getElementById('cierre-field');
         var estadoContainer = document.getElementById('estado-container');
+
 
         if (estado == 3 || estado == 4) {
             // Mostrar los campos de Cierre

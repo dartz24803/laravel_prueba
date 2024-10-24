@@ -114,24 +114,54 @@ class Soporte extends Model
     }
 
 
-    public static function obtenerListadoAreasInvolucradas($id_especialidad)
+
+
+    public static function obtenerListadoAreasInvolucradas($id_soporte)
     {
-        // Primero, obtenemos las áreas relacionadas con el id_especialidad
-        $especialidad = DB::table('especialidad')
-            ->where('id', $id_especialidad)
+        $query = DB::table('soporte')
+            ->leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto') // Primer LEFT JOIN con soporte_ejecutor
+            ->where('soporte.id_soporte', $id_soporte)
+            ->select(
+                'soporte.*',
+                'soporte_asunto.*'
+            )
             ->first();
+        // dd($query);
+        if (!empty($query->id_area)) {
+            // Capturamos el valor de id_area
+            $id_areas = $query->id_area;
+            $areasArray = explode(',', $id_areas);
+            $resultado = [];
+            $area1 = DB::table('area')
+                ->leftJoin('soporte', 'area.id_area', '=', DB::raw($areasArray[0])) // LEFT JOIN con la tabla area
+                ->select('area.nom_area')
+                ->first();
+            $resultado[] = [
+                "area_responsable" => $area1 ? $area1->nom_area : null,
+                "id_responsable" => $query->id_responsable,
+                "fec_cierre" => $query->fec_cierre,
+                "estado_registro" => $query->estado_registro
+            ];
+            // dd($areasArray[1]);
+            if (isset($areasArray[1])) {
+                $area2 = DB::table('area')
+                    ->leftJoin('soporte', 'area.id_area', '=', DB::raw($areasArray[1])) // LEFT JOIN con la tabla area
+                    ->select('area.nom_area')
+                    ->first();
+                $resultado[] = [
+                    "area_responsable" => $area2 ? $area2->nom_area : null,
+                    "id_responsable" => $query->id_segundo_responsable,
+                    "fec_cierre" => $query->fec_cierre_sr,
+                    "estado_registro" => $query->estado_registro_sr
+                ];
+            }
+            // dd($resultado);
 
-        $idAreas = explode(',', $especialidad->id_area);
+            // Retornamos el array de objetos
+            return $resultado;
+        }
 
-        // Construimos la consulta para ejecutar contra los ids descompuestos
-        $sql = "SELECT er.*, s.*  
-                FROM ejecutor_responsable er
-                LEFT JOIN soporte s ON s.id_area = er.id_area AND s.id_especialidad = ?  -- LEFT JOIN con soporte
-                WHERE er.id_area IN (" . implode(',', array_fill(0, count($idAreas), '?')) . ")";
-
-        // Ejecutar la consulta con los ids descompuestos
-        $query = DB::select($sql, array_merge([$id_especialidad], $idAreas));
-
-        return array_values($query); // Retornar como array indexado
+        // Si no hay id_area, devolvemos un array vacío
+        return [];
     }
 }

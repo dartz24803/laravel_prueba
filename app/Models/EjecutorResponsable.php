@@ -20,15 +20,15 @@ class EjecutorResponsable extends Model
 
     ];
 
-    public static function obtenerListadoConEspecialidad($id_especialidad)
+    public static function obtenerListadoConEspecialidad($id_asunto)
     {
         // Primero, obtenemos las áreas relacionadas con el id_especialidad
-        $especialidad = DB::table('especialidad')
-            ->where('id', $id_especialidad)
+        $asunto = DB::table('soporte_asunto')
+            ->where('idsoporte_asunto', $id_asunto)
             ->first();
 
         // Descomponemos el campo id_area en un array
-        $idAreas = explode(',', $especialidad->id_area);
+        $idAreas = explode(',', $asunto->id_area);
         // dd($idAreas);
         $idAreas = array_merge($idAreas, ["19", "22"]); // PARA AGREGAR A LA LISTA (BASE Y TERCEROS)
         // Construimos la consulta para ejecutar contra los ids descompuestos

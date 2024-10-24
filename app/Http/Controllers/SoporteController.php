@@ -416,11 +416,12 @@ class SoporteController extends Controller
     {
 
         $get_id = Soporte::getTicketById($id_soporte);
-        $area = DB::table('especialidad')
-            ->leftJoin('area', 'especialidad.id_area', '=', 'area.id_area')
-            ->where('especialidad.id', $get_id->id_especialidad)
-            ->select('especialidad.*', 'area.nom_area') // Selecciona los campos que necesites
+        $area = DB::table('soporte_asunto')
+            ->leftJoin('area', 'soporte_asunto.id_area', '=', 'area.id_area')
+            ->where('soporte_asunto.idsoporte_asunto', $get_id->id_asunto)
+            ->select('soporte_asunto.*', 'area.nom_area') // Selecciona los campos que necesites
             ->first();
+
 
         if ($area->id_area == 0) {
             $areaResponsable = $get_id->id_area;
@@ -429,14 +430,15 @@ class SoporteController extends Controller
             $areaResponsable = $area->id_area;
         }
         $list_responsable = Usuario::get_list_colaborador_xarea_static($area->id_area);
-        $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_especialidad);
+        $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $cantAreasEjecut = count($list_ejecutores_responsables);
+        // dd($cantAreasEjecut);
         if ($cantAreasEjecut > 3) {
             $ejecutoresMultiples = true;
         } else {
             $ejecutoresMultiples = false;
         }
-        $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_especialidad);
+        $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
 
         // dd($list_areas_involucradas);
 
