@@ -13,7 +13,7 @@
         @foreach ($list_temporal as $list)
             <tr class="text-center">
                 <td>{{ $list->cantidad }}</td>
-                <td>{{ $list->nom_unidad }}</td>
+                <td>{{ $list->cod_unidad }}</td>
                 <td class="text-left">{{ $list->producto }}</td>
                 <td>{{ $list->precio }}</td>
                 <td>{{ $list->total }}</td>

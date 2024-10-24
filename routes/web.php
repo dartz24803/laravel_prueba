@@ -1399,6 +1399,13 @@ Route::controller(CajaChicaConfController::class)->group(function () {
     Route::get('caja_chica_conf_sc/{id}/edit', 'edit_sc')->name('caja_chica_conf_sc.edit');
     Route::put('caja_chica_conf_sc/{id}', 'update_sc')->name('caja_chica_conf_sc.update');
     Route::delete('caja_chica_conf_sc/{id}', 'destroy_sc')->name('caja_chica_conf_sc.destroy');
+    Route::get('caja_chica_conf_un', 'index_un')->name('caja_chica_conf_un');
+    Route::get('caja_chica_conf_un/list', 'list_un')->name('caja_chica_conf_un.list');
+    Route::get('caja_chica_conf_un/create', 'create_un')->name('caja_chica_conf_un.create');
+    Route::post('caja_chica_conf_un', 'store_un')->name('caja_chica_conf_un.store');
+    Route::get('caja_chica_conf_un/{id}/edit', 'edit_un')->name('caja_chica_conf_un.edit');
+    Route::put('caja_chica_conf_un/{id}', 'update_un')->name('caja_chica_conf_un.update');
+    Route::delete('caja_chica_conf_un/{id}', 'destroy_un')->name('caja_chica_conf_un.destroy');
 });
 //TESORERÍA - CAJA CHICA
 Route::controller(CajaChicaController::class)->group(function () {
