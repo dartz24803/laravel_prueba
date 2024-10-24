@@ -43,7 +43,7 @@
                                     <select class="form-control" id="id_responsablee" name="id_responsablee">
                                         <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
                                         <option value="0" {{ is_null($get_id->id_responsable) ? 'selected' : '' }}>SIN DESIGNAR</option>
-                                             @foreach ($list_responsable as $list)
+                                              @foreach ($list_responsable as $list)
                                     <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
                                     <option value="{{ $list->id_usuario }}"
                                         {{ $get_id->id_responsable == $list->id_usuario ? 'selected' : '' }}>
@@ -188,10 +188,30 @@
             </div>
             <div class="tab-pane fade" id="ejecutor" role="tabpanel" aria-labelledby="ejecutor-tab">
                 <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
-
-
-                
                     <div class="col-xl-12 col-lg-12 col-sm-12">
+
+
+                        <div class="row align-items-center">
+                            <div class="form-group col-md-2" id="area_responsable-label">
+                                <label class="control-label text-bold">Area Responsable:</label>
+                            </div>
+                            <div class="form-group col-md-4" id="nom_proyecto-field">
+                                <input type="text" class="form-control" id="nom_proyecto" name="nom_proyecto"
+                                    value="{{ $get_id->nombre_proyecto }}">
+
+                            </div>
+
+                            <div class="form-group col-md-3" id="fec_ini_proyecto-label">
+                                <label class="control-label text-bold">Fecha de Inicio del Proyecto:</label>
+                            </div>
+                            <div class="form-group col-md-3" id="fec_ini_proyecto-field">
+                                <input type="date" class="form-control" id="fec_ini_proyecto"
+                                    name="fec_ini_proyecto"
+                                    value="{{ $get_id->fec_inicio_proyecto ? \Carbon\Carbon::parse($get_id->fec_inicio_proyecto)->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
+                            </div>
+                        </div>
+
+
 
                         <div class="row align-items-center">
                             <div class="form-group col-md-2">
@@ -214,7 +234,6 @@
                                 </select>
                             </div>
                         </div>
-
                         <div class="row align-items-center">
                             <div class="form-group col-md-2" id="nom_proyecto-label">
                                 <label class="control-label text-bold">Nombre del Proyecto:</label>
@@ -311,7 +330,7 @@
     $(document).ready(function() {
         toggleCierre();
         toggleEjecutor();
-
+        toggleMultipleResponbles();
         $('#estado_registroe').on('change', function() {
             toggleCierre();
         });
@@ -432,5 +451,25 @@
                 );
             }
         });
+    }
+
+
+    function toggleMultipleResponbles() {
+        var ejecutor_responsable = document.getElementById('ejecutor_responsable').value;
+        var AreaRespLabel = document.getElementById('area_responsable-label');
+        var AreaRespField = document.getElementById('area_responsable-field');
+
+
+        if (ejecutor_responsable == 2) {
+            // Mostrar los campos de Proyecto
+            AreaRespLabel.style.display = 'block';
+            AreaRespField.style.display = 'block';
+
+        } else {
+            // Ocultar los campos de Proyecto
+            AreaRespLabel.style.display = 'none';
+            AreaRespField.style.display = 'none';
+
+        }
     }
 </script>

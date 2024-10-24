@@ -224,12 +224,11 @@ class ColaboradorController extends Controller
             ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
 
-    /*public function excel_co($id_gerencia)
+    public function excel_co($id_gerencia)
     {
         $list_colaborador = Organigrama::get_list_colaborador(['id_gerencia'=>$id_gerencia,'excel'=>1]);
-
-        //$url = $this->Model_Corporacion->ruta_archivos();
-        //$dato['url_archivo'] = $url[0]['url_config'];
+        $dato['url_archivo'] = Config::where('id_config', 8)
+                            ->get();
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -499,7 +498,7 @@ class ColaboradorController extends Controller
         header('Cache-Control: max-age=0');
 
         $writer->save('php://output');
-    }*/
+    }
 
     public function index_ce()
     {
