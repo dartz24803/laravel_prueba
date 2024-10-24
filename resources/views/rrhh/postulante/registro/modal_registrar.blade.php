@@ -39,41 +39,14 @@
 
         <div class="row">
             <div class="form-group col-lg-2">
-                <label>Gerencia:</label>
-            </div>
-            <div class="form-group col-lg-10">
-                <select class="form-control" name="id_gerencia" id="id_gerencia"
-                onchange="Traer_Sub_Gerencia('');">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_gerencia as $list)
-                        <option value="{{ $list->id_gerencia }}">
-                            {{ $list->nom_gerencia }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Sub-gerencia:</label>
-            </div>
-            <div class="form-group col-lg-10">
-                <select class="form-control" name="id_sub_gerencia" id="id_sub_gerencia" 
-                onchange="Traer_Area('');">
-                    <option value="0">Seleccione</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-lg-2">
                 <label>Área:</label>
             </div>
             <div class="form-group col-lg-10">
-                <select class="form-control" name="id_area" id="id_area" 
-                onchange="Traer_Puesto('');">
+                <select class="form-control basic" name="id_area" id="id_area" onchange="Traer_Puesto('');">
                     <option value="0">Seleccione</option>
+                    @foreach ($list_area as $list)
+                        <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
+                    @endforeach
                 </select>
             </div>
         </div>
@@ -89,37 +62,44 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-lg-12">
-                <label class="control-label text-bold">EVALUADOR:</label>
+        @if (session('usuario')->id_nivel=="1" ||
+        session('usuario')->id_puesto=="21" || 
+        session('usuario')->id_puesto=="22" || 
+        session('usuario')->id_puesto=="277" ||
+        session('usuario')->id_puesto=="278" ||
+        session('usuario')->id_puesto=="314")
+            <div class="row">
+                <div class="col-lg-12">
+                    <label class="control-label text-bold">EVALUADOR:</label>
+                </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Puesto:</label>
+            <div class="row">
+                <div class="form-group col-lg-2">
+                    <label>Puesto:</label>
+                </div>
+                <div class="form-group col-lg-10">
+                    <select class="form-control basic" name="id_puesto_evaluador" id="id_puesto_evaluador"
+                    onchange="Traer_Evaluador('');">
+                        <option value="0">Seleccione</option>
+                        @foreach ($list_puesto_evaluador as $list)
+                            <option value="{{ $list->id_puesto }}">{{ $list->nom_puesto }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-            <div class="form-group col-lg-10">
-                <select class="form-control" name="id_puesto_evaluador" id="id_puesto_evaluador"
-                onchange="Traer_Evaluador('');">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_puesto_evaluador as $list)
-                        <option value="{{ $list->id_puesto }}">{{ $list->nom_puesto }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Nombre:</label>
+            <div class="row">
+                <div class="form-group col-lg-2">
+                    <label>Nombre:</label>
+                </div>
+                <div class="form-group col-lg-10">
+                    <select class="form-control" name="id_evaluador" id="id_evaluador">
+                        <option value="0">Seleccione</option>
+                    </select>
+                </div>
             </div>
-            <div class="form-group col-lg-10">
-                <select class="form-control" name="id_evaluador" id="id_evaluador">
-                    <option value="0">Seleccione</option>
-                </select>
-            </div>
-        </div>
+        @endif
     </div>
 
     <div class="modal-footer">
@@ -130,6 +110,11 @@
 </form>
 
 <script>
+    $(".basic").select2({
+        tags: true,
+        dropdownParent: $('#ModalRegistro')
+    });
+
     function Insert_Postulante() {
         Cargando();
 

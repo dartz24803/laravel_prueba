@@ -19,7 +19,7 @@
 
     <div class="col-md-6 col-lg-4">
         <label>Área:</label>
-        <select class="form-control basic" name="id_areab" id="id_areab" onchange="Lista_Postulante();">
+        <select class="form-control basicb" name="id_areab" id="id_areab" onchange="Lista_Postulante();">
             <option value="0">TODOS</option>
             @foreach ($list_area as $list)
                 <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
@@ -52,7 +52,7 @@
 </div>
 
 <script>
-    $(".basic").select2({
+    $(".basicb").select2({
         tags: true
     });
 
@@ -89,47 +89,6 @@
             },
             success: function(data) {
                 $("#lista_postulante").html(data);
-            }
-        });
-    }
-
-    function Traer_Sub_Gerencia(v){
-        Cargando();
-
-        var url = "{{ route('postulante_reg.traer_sub_gerencia') }}";
-        var id_gerencia = $('#id_gerencia'+v).val();
-
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: {'id_gerencia':id_gerencia},
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            success:function (resp) {
-                $('#id_sub_gerencia'+v).html(resp);
-                $('#id_area'+v).html('<option value="0">Seleccione</option>');
-                $('#id_puesto'+v).html('<option value="0">Seleccione</option>'); 
-            }
-        });
-    }
-
-    function Traer_Area(v){
-        Cargando();
-
-        var url = "{{ route('postulante_reg.traer_area') }}";
-        var id_sub_gerencia = $('#id_sub_gerencia'+v).val();
-
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: {'id_sub_gerencia':id_sub_gerencia},
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            success:function (resp) {
-                $('#id_area'+v).html(resp); 
-                $('#id_puesto'+v).html('<option value="0">Seleccione</option>'); 
             }
         });
     }

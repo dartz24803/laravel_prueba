@@ -1033,7 +1033,7 @@ class TrackingController extends Controller
             'user_act' => session('usuario')->id_usuario
         ]);
 
-        /*$list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$get_id->n_requerimiento]);
+        $list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$get_id->n_requerimiento]);
         foreach($list_detalle as $list){
             TrackingGuiaRemisionDetalle::create([
                 'n_requerimiento' => $get_id->n_requerimiento,
@@ -1045,7 +1045,7 @@ class TrackingController extends Controller
                 'descripcion' => $list->descripcion,
                 'cantidad' => $list->cantidad,
             ]);
-        }*/
+        }
     }
 
     public function insert_cierre_inspeccion_fardos(Request $request,$id)

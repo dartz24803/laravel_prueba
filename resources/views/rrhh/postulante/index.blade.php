@@ -15,7 +15,11 @@
                                 <li class="nav-item">
                                     <a id="a_reg" class="nav-link" onclick="Registro();" style="cursor: pointer;">Registro y Evaluación</a>
                                 </li>
-                                @if (session('usuario')->id_puesto!=314)
+                                @if (session('usuario')->id_nivel=="1" ||
+                                session('usuario')->id_puesto=="21" ||
+                                session('usuario')->id_puesto=="22" ||
+                                session('usuario')->id_puesto=="277" ||
+                                session('usuario')->id_puesto=="278")
                                     <li class="nav-item">
                                         <a id="a_tod" class="nav-link" onclick="Todos();" style="cursor: pointer;">Todos los postulantes</a>
                                     </li>

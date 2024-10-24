@@ -193,8 +193,7 @@ class SoporteController extends Controller
 
     public function store_tick(Request $request)
     {
-
-        $request->validate([
+        $rules = [
             'especialidad' => 'gt:0',
             'elemento' => 'gt:0',
             'asunto' => 'gt:0',
@@ -202,8 +201,8 @@ class SoporteController extends Controller
             'idsoporte_nivel' => 'gt:0',
             'vencimiento' => 'required',
             'descripcion' => 'required',
-
-        ], [
+        ];
+        $messages = [
             'especialidad.gt' => 'Debe seleccionar especialidad.',
             'elemento.gt' => 'Debe seleccionar elemento.',
             'asunto.gt' => 'Debe seleccionar asunto.',
@@ -211,10 +210,19 @@ class SoporteController extends Controller
             'idsoporte_nivel.gt' => 'Debe ingresar Ubicaciòn.',
             'vencimiento.required' => 'Debe ingresar vencimiento.',
             'descripcion.required' => 'Debe ingresar descripcion.',
+        ];
 
-        ]);
+        if ($request->especialidad == 4) {
+            $rules = array_merge($rules, [
+                'area' => 'gt:0',
+            ]);
 
+            $messages = array_merge($messages, [
+                'area.gt' => 'Debe seleccionar Área',
+            ]);
+        }
 
+        $request->validate($rules, $messages);
 
         $idsoporte_tipo = DB::table('soporte_asunto as sa')
             ->leftJoin('soporte_tipo as st', 'st.idsoporte_tipo', '=', 'sa.idsoporte_tipo')
@@ -413,12 +421,26 @@ class SoporteController extends Controller
             ->where('especialidad.id', $get_id->id_especialidad)
             ->select('especialidad.*', 'area.nom_area') // Selecciona los campos que necesites
             ->first();
+
+        if ($area->id_area == 0) {
+            $areaResponsable = $get_id->id_area;
+            // dd($areaResponsable);
+        } else {
+            $areaResponsable = $area->id_area;
+        }
         $list_responsable = Usuario::get_list_colaborador_xarea_static($area->id_area);
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_especialidad);
+        $cantAreasEjecut = count($list_ejecutores_responsables);
+        if ($cantAreasEjecut > 3) {
+            $ejecutoresMultiples = true;
+        } else {
+            $ejecutoresMultiples = false;
+        }
+        $list_areas_involucradas = EjecutorResponsable::obtenerListadoAreasInvolucradas($get_id->id_especialidad);
 
-        // dd($list_ejecutores_responsables);
+        // dd($list_areas_involucradas);
 
-        return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables'));
+        return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples'));
     }
 
     public function update_tick_master(Request $request, $id)
@@ -431,7 +453,6 @@ class SoporteController extends Controller
         $messages = [
             'id_responsablee.gt' => 'Debe seleccionar Responsable',
             'ejecutor_responsable.gt' => 'Debe seleccionar Ejecutor Responsable',
-
             'descripcione_solucion.max' => 'Comentario de Solución debe tener como máximo 250 caracteres.',
         ];
 

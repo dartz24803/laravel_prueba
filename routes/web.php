@@ -1044,9 +1044,6 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::get('postulante_reg', 'index_reg')->name('postulante_reg');
     Route::post('postulante_reg/list', 'list_reg')->name('postulante_reg.list');
     Route::get('postulante_reg/create', 'create_reg')->name('postulante_reg.create');
-    Route::post('postulante_reg/traer_gerencia', 'traer_gerencia')->name('postulante_reg.traer_gerencia');
-    Route::post('postulante_reg/traer_sub_gerencia', 'traer_sub_gerencia')->name('postulante_reg.traer_sub_gerencia');
-    Route::post('postulante_reg/traer_area', 'traer_area')->name('postulante_reg.traer_area');
     Route::post('postulante_reg/traer_puesto', 'traer_puesto')->name('postulante_reg.traer_puesto');
     Route::post('postulante_reg/traer_evaluador', 'traer_evaluador')->name('postulante_reg.traer_evaluador');
     Route::post('postulante_reg', 'store_reg')->name('postulante_reg.store');
@@ -1057,7 +1054,7 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::get('postulante_tod', 'index_tod')->name('postulante_tod');
     Route::post('postulante_tod/list', 'list_tod')->name('postulante_tod.list');
     Route::put('postulante_tod/{id}', 'update_tod')->name('postulante_tod.update');
-    Route::get('postulante_tod/{cod_base}/{id_colaborador}/{inicio}/{fin}/excel', 'excel_tod')->name('postulante_tod.excel');
+    Route::get('postulante_tod/{estado}/{id_area}/excel', 'excel_tod')->name('postulante_tod.excel');
     //REVISIÓN
     Route::get('postulante_revision', 'index_prev')->name('postulante_revision');
     Route::post('postulante_revision/list', 'list_prev')->name('postulante_revision.list');
