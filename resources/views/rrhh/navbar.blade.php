@@ -128,26 +128,22 @@
                 <p class="romperpalabra"><span id="icono_active2"></span> Papeletas de Salida</p>
             </a>
         </li>
-        @if (session('usuario')->id_nivel == 1 || 
-        session('usuario')->id_puesto == 133 || 
-        session('usuario')->id_puesto == 22 || 
-        session('usuario')->id_puesto == 30 ||
-        session('usuario')->id_puesto == 21 || 
-        session('usuario')->id_puesto == 278 || 
-        session('usuario')->id_puesto == 279 || 
-        session('usuario')->id_puesto == 26 || 
-        session('usuario')->id_puesto == 128 ||
-        session('usuario')->id_puesto == 16 || 
-        session('usuario')->id_puesto == 98 || 
-        session('usuario')->id_puesto == 161 || 
-        session('usuario')->id_puesto == 314)
-                @if (session('usuario')->id_usuario == "139")
+        @if (session('usuario')->id_nivel == "1" || 
+        session('usuario')->id_puesto == "21" || 
+        session('usuario')->id_puesto == "22" || 
+        session('usuario')->id_puesto == "30" ||
+        session('usuario')->id_puesto == "128" ||
+        session('usuario')->id_puesto == "161" || 
+        session('usuario')->id_puesto == "277" || 
+        session('usuario')->id_puesto == "278" || 
+        session('usuario')->id_puesto == "314")
+                {{--@if (session('usuario')->id_usuario == "139")--}}
                     <li id="postulantes">
                         <a href="{{ route('postulante') }}">
                             <p class="romperpalabra"><span id="icono_active2"></span> Postulantes</p>
                         </a>
                     </li>
-                @endif
+                {{--@endif--}}
         @endif
     </ul>
 </li>

@@ -1044,9 +1044,6 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::get('postulante_reg', 'index_reg')->name('postulante_reg');
     Route::post('postulante_reg/list', 'list_reg')->name('postulante_reg.list');
     Route::get('postulante_reg/create', 'create_reg')->name('postulante_reg.create');
-    Route::post('postulante_reg/traer_gerencia', 'traer_gerencia')->name('postulante_reg.traer_gerencia');
-    Route::post('postulante_reg/traer_sub_gerencia', 'traer_sub_gerencia')->name('postulante_reg.traer_sub_gerencia');
-    Route::post('postulante_reg/traer_area', 'traer_area')->name('postulante_reg.traer_area');
     Route::post('postulante_reg/traer_puesto', 'traer_puesto')->name('postulante_reg.traer_puesto');
     Route::post('postulante_reg/traer_evaluador', 'traer_evaluador')->name('postulante_reg.traer_evaluador');
     Route::post('postulante_reg', 'store_reg')->name('postulante_reg.store');

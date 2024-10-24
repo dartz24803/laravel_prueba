@@ -39,11 +39,13 @@ class PostulanteController extends Controller
 
     public function index_reg()
     {
-        if(session('usuario')->id_puesto!=314){
-            $list_area = Area::select('id_area','nom_area')->where('estado',1)->orderBy('nom_area','ASC')
+        if(session('usuario')->id_puesto=="30" || 
+        session('usuario')->id_puesto=="161" || 
+        session('usuario')->id_puesto=="314"){
+            $list_area = Area::select('id_area','nom_area')->whereIn('id_area',[14,44])->orderBy('nom_area','ASC')
                         ->get();
         }else{
-            $list_area = Area::select('id_area','nom_area')->whereIn('id_area',[14,44])->orderBy('nom_area','ASC')
+            $list_area = Area::select('id_area','nom_area')->where('estado',1)->orderBy('nom_area','ASC')
                         ->get();                        
         }
         return view('rrhh.postulante.registro.index', compact('list_area'));
@@ -62,31 +64,24 @@ class PostulanteController extends Controller
     {
         $list_tipo_documento = TipoDocumento::select('id_tipo_documento','cod_tipo_documento')
                                 ->where('estado',1)->orderBy('cod_tipo_documento','ASC')->get();
-        $list_gerencia = Gerencia::select('id_gerencia','nom_gerencia')->where('estado',1)
-                        ->orderBy('nom_gerencia','ASC')->get();
+        if(session('usuario')->id_nivel=="1" || 
+        session('usuario')->id_puesto=="21" || 
+        session('usuario')->id_puesto=="22" || 
+        session('usuario')->id_puesto=="277" ||
+        session('usuario')->id_puesto=="278"){
+            $list_area = Area::select('id_area', 'nom_area')->where('estado', 1)
+                        ->orderBy('nom_area','ASC')->get();
+        }else{
+            $list_area = Area::select('id_area', 'nom_area')
+                        ->whereIn('id_area', [14,44])->orderBy('nom_area','ASC')->get();
+        }
         $list_puesto_evaluador = Puesto::select('id_puesto','nom_puesto')->where('evaluador',1)
                                 ->where('estado',1)->orderBy('nom_puesto','ASC')->get();
         return view('rrhh.postulante.registro.modal_registrar', compact(
             'list_tipo_documento',
-            'list_gerencia',
+            'list_area',
             'list_puesto_evaluador'
         ));
-    }
-
-    public function traer_sub_gerencia(Request $request)
-    {
-        $list_sub_gerencia = SubGerencia::select('id_sub_gerencia', 'nom_sub_gerencia')
-                            ->where('id_gerencia', $request->id_gerencia)->where('estado', 1)
-                            ->orderBy('nom_sub_gerencia','ASC')->get();
-        return view('rrhh.postulante.registro.sub_gerencia', compact('list_sub_gerencia'));
-    }
-
-    public function traer_area(Request $request)
-    {
-        $list_area = Area::select('id_area', 'nom_area')
-                    ->where('id_departamento', $request->id_sub_gerencia)->where('estado', 1)
-                    ->orderBy('nom_area','ASC')->get();
-        return view('rrhh.postulante.registro.area', compact('list_area'));
     }
 
     public function traer_puesto(Request $request)
@@ -108,11 +103,11 @@ class PostulanteController extends Controller
     public function store_reg(Request $request)
     {
         if(session('usuario')->id_nivel=="1" ||
-        session('usuario')->id_puesto=="133" ||
-        session('usuario')->id_puesto=="22" ||
         session('usuario')->id_puesto=="21" ||
+        session('usuario')->id_puesto=="22" ||
+        session('usuario')->id_puesto=="277" ||
         session('usuario')->id_puesto=="278" ||
-        session('usuario')->id_puesto=="279"){
+        session('usuario')->id_puesto=="314"){
             $request->validate([
                 'id_tipo_documento' => 'gt:0',
                 'num_doc' => 'required',

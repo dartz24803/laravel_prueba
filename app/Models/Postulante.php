@@ -103,18 +103,11 @@ class Postulante extends Model
         }
 
         $parte_base = "";
-        if(session('usuario')->id_puesto==26 || 
-        session('usuario')->id_puesto==29 || 
-        session('usuario')->id_puesto==128 || 
-        session('usuario')->id_puesto==16 || 
-        session('usuario')->id_puesto==98 || 
-        session('usuario')->id_puesto==197 || 
-        session('usuario')->id_puesto==161){
+        if(session('usuario')->id_puesto=="30" || 
+        session('usuario')->id_puesto=="128" || 
+        session('usuario')->id_puesto=="161" ||
+        session('usuario')->id_puesto=="314"){
             $parte_base = "po.id_centro_labor='".session('usuario')->id_centro_labor."' AND";
-            $parte_area = "po.id_area IN (".$dato['id_area'].",44) AND";
-            if($dato['id_area']!="0"){
-                $parte_area = "po.id_area=".$dato['id_area']." AND";
-            }
         }
 
         $sql = "SELECT po.id_postulante,po.fec_reg AS orden,
