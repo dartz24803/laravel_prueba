@@ -137,13 +137,13 @@
         session('usuario')->id_puesto == "277" || 
         session('usuario')->id_puesto == "278" || 
         session('usuario')->id_puesto == "314")
-                {{--@if (session('usuario')->id_usuario == "139")--}}
+                @if (session('usuario')->id_usuario == "139")
                     <li id="postulantes">
                         <a href="{{ route('postulante') }}">
                             <p class="romperpalabra"><span id="icono_active2"></span> Postulantes</p>
                         </a>
                     </li>
-                {{--@endif--}}
+                @endif
         @endif
     </ul>
 </li>
