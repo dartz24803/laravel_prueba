@@ -40,4 +40,24 @@ class EjecutorResponsable extends Model
 
         return array_values($query); // Retornar como array indexado
     }
+
+    public static function obtenerListadoAreasInvolucradas($id_especialidad)
+    {
+        // Primero, obtenemos las áreas relacionadas con el id_especialidad
+        $especialidad = DB::table('especialidad')
+            ->where('id', $id_especialidad)
+            ->first();
+
+        // Descomponemos el campo id_area en un array
+        $idAreas = explode(',', $especialidad->id_area);
+        // dd($idAreas);
+        // Construimos la consulta para ejecutar contra los ids descompuestos
+        $sql = "SELECT er.*
+            FROM ejecutor_responsable er
+            WHERE er.id_area IN (" . implode(',', array_fill(0, count($idAreas), '?')) . ")";
+        // Ejecutar la consulta con los ids descompuestos
+        $query = DB::select($sql, $idAreas);
+
+        return array_values($query); // Retornar como array indexado
+    }
 }
