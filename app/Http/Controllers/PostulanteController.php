@@ -359,6 +359,90 @@ class PostulanteController extends Controller
         ]);
     }
 
+    public function excel_tod($estado, $id_area)
+    {
+        $list_todos = Postulante::get_list_todos([
+            'estado'=>$estado,
+            'id_area'=>$id_area
+        ]);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getStyle("A1:H1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:H1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Postulante (Todos)');
+
+        $sheet->setAutoFilter('A1:H1');
+
+        $sheet->getColumnDimension('A')->setWidth(20);
+        $sheet->getColumnDimension('B')->setWidth(40);
+        $sheet->getColumnDimension('C')->setWidth(40);
+        $sheet->getColumnDimension('D')->setWidth(50);
+        $sheet->getColumnDimension('E')->setWidth(15);
+        $sheet->getColumnDimension('F')->setWidth(15);
+        $sheet->getColumnDimension('G')->setWidth(40);
+        $sheet->getColumnDimension('H')->setWidth(25);
+
+        $sheet->getStyle('A1:H1')->getFont()->setBold(true);
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:H1")->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('C8C8C8');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle("A1:H1")->applyFromArray($styleThinBlackBorderOutline);
+
+        $sheet->setCellValue("A1", 'F. de creación');
+        $sheet->setCellValue("B1", 'Área');
+        $sheet->setCellValue("C1", 'Puesto');
+        $sheet->setCellValue("D1", 'Nombre(s)');
+        $sheet->setCellValue("E1", 'Documento');
+        $sheet->setCellValue("F1", 'Celular');
+        $sheet->setCellValue("G1", 'Creado por');
+        $sheet->setCellValue("H1", 'Estado');
+
+        $contador = 1;
+
+        foreach ($list_todos as $list) {
+            $contador++;
+
+            $sheet->getStyle("A{$contador}:H{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("B{$contador}:D{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("G{$contador}:H{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:H{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:H{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+
+            $sheet->setCellValue("A{$contador}", Date::PHPToExcel($list->orden));
+            $sheet->getStyle("A{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+            $sheet->setCellValue("B{$contador}", $list->nom_area); 
+            $sheet->setCellValue("C{$contador}", $list->nom_puesto);
+            $sheet->setCellValue("D{$contador}", $list->nom_postulante);
+            $sheet->setCellValue("E{$contador}", $list->num_doc);
+            $sheet->setCellValue("F{$contador}", $list->num_celp);
+            $sheet->setCellValue("G{$contador}", $list->creado_por);
+            $sheet->setCellValue("H{$contador}", $list->nom_estado); 
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Postulante (Todos)';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+    }
+
     public function index_prev()
     {
         return view('rrhh.postulante.revision.index');
