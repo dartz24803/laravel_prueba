@@ -82,7 +82,8 @@
                         <label>Solicitante:</label>
                     </div>
                     <div class="form-group col-lg-10">
-                        <select class="form-control basic" name="id_usuario" id="id_usuario">
+                        <select class="form-control basic" name="id_usuario" id="id_usuario" 
+                        onchange="Poner_Persona('');">
                             <option value="0">Seleccione</option>
                             @foreach ($list_usuario as $list)
                                 <option value="{{ $list->id_usuario }}">{{ $list->nom_usuario }}</option>
@@ -153,14 +154,16 @@
                     <div class="form-group col-lg-2">
                         <label>Personas:</label>
                     </div>
-                    <div class="form-group col-lg-4">
+                    <div class="form-group col-lg-10">
                         <select class="form-control multivalue" name="personas[]" id="personas" multiple="multiple">
                             @foreach ($list_usuario as $list)
                                 <option value="{{ $list->id_usuario }}">{{ $list->nom_usuario }}</option>
                             @endforeach
                         </select>
                     </div>
+                </div>
         
+                <div class="row">
                     <div class="form-group col-lg-2">
                         <label>Punto salida:</label>
                     </div>
@@ -168,9 +171,7 @@
                         <input type="text" class="form-control" name="punto_salida" id="punto_salida" 
                         placeholder="Punto salida">
                     </div>
-                </div>
 
-                <div class="row">
                     <div class="form-group col-lg-2">
                         <label>Punto llegada:</label>
                     </div>
@@ -178,7 +179,9 @@
                         <input type="text" class="form-control" name="punto_llegada" id="punto_llegada" 
                         placeholder="Punto llegada">
                     </div>
+                </div>
         
+                <div class="row">
                     <div class="form-group col-lg-2">
                         <label>Transporte:</label>
                     </div>

@@ -274,6 +274,20 @@
             });
         }
 
+        function Poner_Persona(v){
+            var valores = [$('#id_usuario'+v).val()];
+            $('#personas'+v).val(valores);
+            if(v=="e"){
+                $('.multivaluee').select2({
+                    dropdownParent: $('#ModalUpdate')
+                });
+            }else{
+                $('.multivalue').select2({
+                    dropdownParent: $('#ModalRegistro')
+                });
+            }
+        }
+
         function Traer_Categoria(v){
             Cargando();
 
