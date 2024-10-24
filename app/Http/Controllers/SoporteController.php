@@ -56,6 +56,14 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 class SoporteController extends Controller
 {
+    protected $id_subgerenciam;
+
+    public function __construct(Request $request)
+    {
+        // Aquí validamos que el id_subgerencia venga en el request
+        $this->id_subgerenciam = $request->route('id_subgerencia');
+    }
+
 
     public function index()
     {
@@ -349,6 +357,7 @@ class SoporteController extends Controller
     // SOPORTE MASTER 
     public function index_master($id_subgerencia)
     {
+        session(['id_subgerenciam' => $id_subgerencia]);
 
         switch ($id_subgerencia) {
             case 1:
@@ -459,7 +468,9 @@ class SoporteController extends Controller
 
     public function edit_tick_master($id_soporte)
     {
-
+        // $id_subgerencia = $this->id_subgerenciam;
+        $id_subgerencia = session('id_subgerenciam');
+        // dd($id_subgerencia);
         $get_id = Soporte::getTicketById($id_soporte);
         $area = DB::table('soporte_asunto')
             ->leftJoin('area', 'soporte_asunto.id_area', '=', 'area.id_area')
@@ -487,7 +498,7 @@ class SoporteController extends Controller
 
         // dd($list_areas_involucradas);
 
-        return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas'));
+        return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas', 'id_subgerencia'));
     }
 
     public function update_tick_master(Request $request, $id)

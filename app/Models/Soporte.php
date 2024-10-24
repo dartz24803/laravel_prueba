@@ -134,10 +134,11 @@ class Soporte extends Model
             $resultado = [];
             $area1 = DB::table('area')
                 ->leftJoin('soporte', 'area.id_area', '=', DB::raw($areasArray[0])) // LEFT JOIN con la tabla area
-                ->select('area.nom_area')
+                ->select('area.nom_area', 'area.id_departamento')
                 ->first();
             $resultado[] = [
                 "area_responsable" => $area1 ? $area1->nom_area : null,
+                "id_departamento" => $area1 ? $area1->id_departamento : null,
                 "id_responsable" => $query->id_responsable,
                 "fec_cierre" => $query->fec_cierre,
                 "estado_registro" => $query->estado_registro
@@ -146,10 +147,11 @@ class Soporte extends Model
             if (isset($areasArray[1])) {
                 $area2 = DB::table('area')
                     ->leftJoin('soporte', 'area.id_area', '=', DB::raw($areasArray[1])) // LEFT JOIN con la tabla area
-                    ->select('area.nom_area')
+                    ->select('area.nom_area', 'area.id_departamento')
                     ->first();
                 $resultado[] = [
                     "area_responsable" => $area2 ? $area2->nom_area : null,
+                    "id_departamento" => $area2 ? $area2->id_departamento : null,
                     "id_responsable" => $query->id_segundo_responsable,
                     "fec_cierre" => $query->fec_cierre_sr,
                     "estado_registro" => $query->estado_registro_sr

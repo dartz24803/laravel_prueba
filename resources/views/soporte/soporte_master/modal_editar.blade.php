@@ -191,16 +191,26 @@
                 <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
 
-                        <div id="area-involucrada"> @foreach ($list_areas_involucradas as $index => $area_involucrada)
+                        <div id="area-involucrada">
+                            @foreach ($list_areas_involucradas as $index => $area_involucrada)
                             <!-- Usamos $index para obtener el número de iteración -->
                             <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                                 <div class="col-xl-12 col-lg-12 col-sm-12">
                                     <div class="row align-items-center">
                                         <div class="form-group col-md-2">
-                                            <!-- Aquí concatenamos el nombre del área involucrada -->
-                                            <label class="control-label text-bold">Responsable: {{ $area_involucrada['area_responsable'] }}</label>
+                                            <!-- Aquí definimos el label con el estilo deseado -->
+                                            <label class="control-label text-bold">
+                                                Responsable:
+                                                <span style="display: block; width: 130px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $area_involucrada['area_responsable'] }}">
+                                                    {{ $area_involucrada['area_responsable'] }}
+                                                </span>
+                                            </label>
                                         </div>
+
+
                                         <div class="form-group col-md-10">
+                                            @if ($id_subgerencia == $area_involucrada['id_departamento'])
+                                            <!-- Mostrar el select si coinciden -->
                                             <select class="form-control" id="id_responsablee_{{ $index }}" name="id_responsablee_{{ $index }}">
                                                 <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
                                                 <option value="0" {{ is_null($area_involucrada['id_responsable']) ? 'selected' : '' }}>
@@ -214,6 +224,10 @@
                                                 </option>
                                                 @endforeach
                                             </select>
+                                            @else
+                                            <!-- Mostrar texto sin select si no coinciden -->
+                                            <p>{{ $area_involucrada['area_responsable'] ? $area_involucrada['area_responsable'] : 'SIN DESIGNAR' }}</p>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -226,16 +240,41 @@
                                         <div class="form-group col-md-2">
                                             <label class="control-label text-bold">Estado:</label>
                                         </div>
+
                                         <div class="form-group col-md-4" id="estado-container-{{ $index + 1 }}">
+                                            @if ($id_subgerencia == $area_involucrada['id_departamento'])
+                                            <!-- Mostrar el select si coinciden -->
                                             <select class="form-control" id="estado_registroe_{{ $index }}" name="estado_registroe_{{ $index }}">
                                                 <option value="1" {{ $area_involucrada['estado_registro'] == 1 ? 'selected' : '' }}>Por Iniciar</option>
                                                 <option value="2" {{ $area_involucrada['estado_registro'] == 2 ? 'selected' : '' }}>En Proceso</option>
                                                 <option value="3" {{ $area_involucrada['estado_registro'] == 3 ? 'selected' : '' }}>Completado</option>
                                                 <option value="4" {{ $area_involucrada['estado_registro'] == 4 ? 'selected' : '' }}>Stand By</option>
                                             </select>
+                                            @else
+                                            <!-- Mostrar el estado como texto sin select si no coinciden -->
+                                            <p>
+                                                @switch($area_involucrada['estado_registro'])
+                                                @case(1)
+                                                Por Iniciar
+                                                @break
+                                                @case(2)
+                                                En Proceso
+                                                @break
+                                                @case(3)
+                                                Completado
+                                                @break
+                                                @case(4)
+                                                Stand By
+                                                @break
+                                                @default
+                                                Desconocido
+                                                @endswitch
+                                            </p>
+                                            @endif
                                         </div>
 
                                         <!-- Campos Cierre, inicialmente ocultos -->
+                                        @if ($id_subgerencia == $area_involucrada['id_departamento'])
                                         <div class="form-group col-md-2" id="cierre-label-{{ $index + 1 }}">
                                             <label class="control-label text-bold">Cierre:</label>
                                         </div>
@@ -243,11 +282,20 @@
                                             <input type="date" class="form-control" id="fec_cierree_{{ $index }}" name="fec_cierree_{{ $index }}"
                                                 value="{{ $area_involucrada['fec_cierre'] ? \Carbon\Carbon::parse($area_involucrada['fec_cierre'])->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
                                         </div>
+                                        @else
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label text-bold">Cierre:</label>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <p>{{ $area_involucrada['fec_cierre'] ? \Carbon\Carbon::parse($area_involucrada['fec_cierre'])->format('d-m-Y') : 'No especificado' }}</p>
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
                             @endforeach
                         </div>
+
 
 
 
@@ -353,16 +401,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    @csrf
-                    <button class="btn btn-primary" type="button" onclick="Update_Soporte_Master();">Guardar</button>
-                    <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
-                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        @csrf
+        <button class="btn btn-primary" type="button" onclick="Update_Soporte_Master();">Guardar</button>
+        <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
+    </div>
 </form>
-
-<script>
-
-</script>
 
 
 <script type="text/javascript">
