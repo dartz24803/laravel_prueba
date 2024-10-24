@@ -54,7 +54,7 @@
                             </div>
                             <div class=" form-group col-md-4 mb-0">
                                 <span class="form-control border-0" id="estado_registro" name="estado_registro">
-                                     @if ($get_id->estado_registro == 1)
+                                      @if ($get_id->estado_registro == 1)
                                     Por Iniciar
                                 @elseif($get_id->estado_registro == 2)
                                     En Proceso
@@ -266,13 +266,12 @@
                                     alt="User Image" class="img-fluid rounded-circle" style="max-width: 100px;">
                             </div>
 
-                            <!-- Columna para la descripción -->
                             <div class="form-group col-md-8 mb-0">
                                 <p>{{ $get_id->nombre_responsable_solucion }}</p>
-                                <p>{{ $get_id->descripcion_solucion }}</p>
+                                <p style="max-width: 100%; word-wrap: break-word; white-space: normal;">
+                                    {{ $get_id->descripcion_solucion }}</p>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

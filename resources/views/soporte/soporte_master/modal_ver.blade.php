@@ -54,27 +54,29 @@
                             </div>
                             <div class=" form-group col-md-4 mb-0">
                                 <span class="form-control border-0" id="estado_registro" name="estado_registro">
-                                    @if($get_id->estado_registro == 1)
+                                      @if ($get_id->estado_registro == 1)
                                     Por Iniciar
-                                    @elseif($get_id->estado_registro == 2)
+                                @elseif($get_id->estado_registro == 2)
                                     En Proceso
-                                    @elseif($get_id->estado_registro == 3)
+                                @elseif($get_id->estado_registro == 3)
                                     Completado
-                                    @elseif($get_id->estado_registro == 4)
+                                @elseif($get_id->estado_registro == 4)
                                     Stand By
-                                    @elseif($get_id->estado_registro == 5)
+                                @elseif($get_id->estado_registro == 5)
                                     Cancelado
-                                    @else
+                                @else
                                     Estado Desconocido
                                     @endif
-                                </span>
+                                    </span>
                             </div>
 
                             <div class="form-group col-md-2 mb-0">
-                                <label class="control-label text-bold" id="cierre-labelver" style="display: none;">Cierre:</label>
+                                <label class="control-label text-bold" id="cierre-labelver"
+                                    style="display: none;">Cierre:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0" id="cierre-fieldver" style="display: none;">
-                                <span class="form-control border-0">{{ \Carbon\Carbon::parse($get_id->fec_cierre)->locale('es')->translatedFormat('D d M y') }}</span>
+                                <span
+                                    class="form-control border-0">{{ \Carbon\Carbon::parse($get_id->fec_cierre)->locale('es')->translatedFormat('D d M y') }}</span>
                             </div>
 
                         </div>
@@ -93,7 +95,7 @@
                                 <label class="control-label text-bold" ">Tipo:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0">
-                                    <span class="form-control border-0">{{ $get_id->nombre_tipo }}</span>
+                                <span class="form-control border-0">{{ $get_id->nombre_tipo }}</span>
                             </div>
                         </div>
                     </div>
@@ -118,7 +120,7 @@
                                 <label class="control-label text-bold" ">Especialidad:</label>
                             </div>
                             <div class=" form-group col-md-4">
-                                    <span class="form-control border-0">{{ $get_id->nombre_especialidad }}</span>
+                                <span class="form-control border-0">{{ $get_id->nombre_especialidad }}</span>
                             </div>
                             <div class="form-group col-md-2">
                                 <label class="control-label text-bold" ">Elemento:</label>
@@ -136,7 +138,7 @@
                                 <label class="control-label text-bold" ">Asunto:</label>
                             </div>
                             <div class=" form-group col-md-10 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                    <span class="form-control border-0">{{ $get_id->nombre_asunto }}</span>
+                                <span class="form-control border-0">{{ $get_id->nombre_asunto }}</span>
                             </div>
                         </div>
                     </div>
@@ -154,7 +156,7 @@
                                 <label class="control-label text-bold" ">Vencimiento:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0">
-                                    <span class="form-control border-0">{{ $get_id->fec_vencimiento }}</span>
+                                <span class="form-control border-0">{{ $get_id->fec_vencimiento }}</span>
                             </div>
                         </div>
                     </div>
@@ -251,7 +253,7 @@
                                 <label class="control-label text-bold" ">Solucion Aplicada:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                    <span class="form-control border-0">{{ $get_id->fecha_comentario }}</span>
+                                <span class="form-control border-0">{{ $get_id->fecha_comentario }}</span>
                             </div>
                         </div>
                     </div>
@@ -261,20 +263,18 @@
                         <div class="row align-items-center">
                             <div class="form-group col-md-2 mb-0 text-center">
                                 <img src="{{ $get_id->foto_responsable_solucion ? $get_id->foto_responsable_solucion : asset('img/user-default.jpg') }}"
-                                    alt="User Image"
-                                    class="img-fluid rounded-circle"
-                                    style="max-width: 100px;">
+                                    alt="User Image" class="img-fluid rounded-circle" style="max-width: 100px;">
                             </div>
 
-                            <!-- Columna para la descripción -->
                             <div class="form-group col-md-8 mb-0">
                                 <p>{{ $get_id->nombre_responsable_solucion }}</p>
-                                <p>{{ $get_id->descripcion_solucion }}</p>
+                                <p style="max-width: 100%; word-wrap: break-word; white-space: normal;">
+                                    {{ $get_id->descripcion_solucion }}</p>
                             </div>
                         </div>
-
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
