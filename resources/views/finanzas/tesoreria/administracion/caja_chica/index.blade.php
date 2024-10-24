@@ -13,10 +13,16 @@
                         <div class="widget-content widget-content-area simple-tab">
                             <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                                 <li class="nav-item">
-                                    <a id="a_ca" class="nav-link" onclick="Categoria();" style="cursor: pointer;">Categoría</a>
+                                    <a id="a_ca" class="nav-link" onclick="Categoria();" 
+                                    style="cursor: pointer;">Categoría</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a id="a_sca" class="nav-link" onclick="Sub_Categoria();" style="cursor: pointer;">Sub-Categoría</a>
+                                    <a id="a_sca" class="nav-link" onclick="Sub_Categoria();" 
+                                    style="cursor: pointer;">Sub-Categoría</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a id="a_un" class="nav-link" onclick="Unidad();" 
+                                    style="cursor: pointer;">Unidad</a>
                                 </li>
                             </ul>
 
@@ -54,6 +60,7 @@
                     $('#div_caja_chica_conf').html(resp);  
                     $("#a_ca").addClass('active');
                     $("#a_sca").removeClass('active');
+                    $("#a_un").removeClass('active');
                 }
             });
         }
@@ -70,6 +77,24 @@
                     $('#div_caja_chica_conf').html(resp);  
                     $("#a_ca").removeClass('active');
                     $("#a_sca").addClass('active');
+                    $("#a_un").removeClass('active');
+                }
+            });
+        }
+
+        function Unidad(){
+            Cargando();
+
+            var url="{{ route('caja_chica_conf_un') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_caja_chica_conf').html(resp);  
+                    $("#a_ca").removeClass('active');
+                    $("#a_sca").removeClass('active');
+                    $("#a_un").addClass('active');
                 }
             });
         }
