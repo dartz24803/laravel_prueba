@@ -777,6 +777,13 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Insert_Horario', 'Insert_Horario');
     Route::post('ColaboradorConfController/Update_Horario', 'Update_Horario');
     Route::post('ColaboradorConfController/Delete_Horario', 'Delete_Horario');
+    Route::post('ColaboradorConfController/Modalidad_Laboral', 'Modalidad_Laboral');
+    Route::get('ColaboradorConfController/Modal_Insert_Modalidad_Laboral', 'Modal_Insert_Modalidad_Laboral');
+    Route::post('ColaboradorConfController/Lista_Modalidad_Laboral', 'Lista_Modalidad_Laboral');
+    Route::get('ColaboradorConfController/Modal_Update_Modalidad_Laboral/{id}', 'Modal_Update_Modalidad_Laboral');
+    Route::post('ColaboradorConfController/Insert_Modalidad_Laboral', 'Insert_Modalidad_Laboral');
+    Route::post('ColaboradorConfController/Update_Modalidad_Laboral', 'Update_Modalidad_Laboral');
+    Route::post('ColaboradorConfController/Delete_Modalidad_Laboral', 'Delete_Modalidad_Laboral');
     /*----------------------------------------Paolo----------------------------------*/
     // ----------------------------------------bryan----------------------------------*/
 
