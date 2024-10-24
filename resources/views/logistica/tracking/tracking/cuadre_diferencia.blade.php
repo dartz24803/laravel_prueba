@@ -32,7 +32,6 @@
                                             <th>Recibido</th>
                                             <th>Diferencia</th>
                                             <th>Orden de regularización</th>
-                                            <th>Observacion</th>
                                         </tr>
                                     </thead>
                                 
@@ -45,8 +44,7 @@
                                                 <td>{{ $list->Enviado }}</td>
                                                 <td>{{ $list->Recibido }}</td>
                                                 <td>{{ $list->Recibido-$list->Enviado }}</td>
-                                                <td>{{ $list->Observacion }}</td>
-                                                <td class="text-left">{{ $list->Cruce }}</td>
+                                                <td class="text-left">{{ $list->Observacion }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
