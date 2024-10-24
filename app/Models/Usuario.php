@@ -726,8 +726,9 @@ class Usuario extends Model
         return $query;
     }
 
-    static function get_list_colaboradort($id_usuario=null,$estado=null){
-        if(isset($id_usuario) && $id_usuario > 0){
+    static function get_list_colaboradort($id_usuario = null, $estado = null)
+    {
+        if (isset($id_usuario) && $id_usuario > 0) {
             $sql = "SELECT u.*, n.nom_nacionalidad, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo
                     from users u
                     LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
@@ -735,18 +736,15 @@ class Usuario extends Model
                     LEFT JOIN area a on a.id_area=u.id_area
                     LEFT JOIN puesto p on p.id_puesto=u.id_puesto
                     LEFT JOIN cargo c on c.id_cargo=u.id_cargo
-                    where id_usuario =".$id_usuario;
-        }
-        else
-        {
-            $id_estado="";
-            if(isset($estado) && $estado > 0){
-                if($estado==1){
-                    $id_estado=" and u.estado=".$estado;
-                }else{
-                    $id_estado=" and u.estado in (2,3)";
+                    where id_usuario =" . $id_usuario;
+        } else {
+            $id_estado = "";
+            if (isset($estado) && $estado > 0) {
+                if ($estado == 1) {
+                    $id_estado = " and u.estado=" . $estado;
+                } else {
+                    $id_estado = " and u.estado in (2,3)";
                 }
-
             }
             $sql = "SELECT u.*,  n.nom_nacionalidad, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo
                     from users u
