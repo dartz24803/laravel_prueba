@@ -19,6 +19,7 @@ class AsuntoSoporte extends Model
     protected $fillable = [
         'nombre',
         'descripcion',
+        'id_area',
         'idsoporte_elemento',
         'idsoporte_tipo',
         'estado',

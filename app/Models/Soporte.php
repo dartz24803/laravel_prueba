@@ -112,4 +112,26 @@ class Soporte extends Model
             ->where('soporte.estado', 1)
             ->first();
     }
+
+
+    public static function obtenerListadoAreasInvolucradas($id_especialidad)
+    {
+        // Primero, obtenemos las áreas relacionadas con el id_especialidad
+        $especialidad = DB::table('especialidad')
+            ->where('id', $id_especialidad)
+            ->first();
+
+        $idAreas = explode(',', $especialidad->id_area);
+
+        // Construimos la consulta para ejecutar contra los ids descompuestos
+        $sql = "SELECT er.*, s.*  
+                FROM ejecutor_responsable er
+                LEFT JOIN soporte s ON s.id_area = er.id_area AND s.id_especialidad = ?  -- LEFT JOIN con soporte
+                WHERE er.id_area IN (" . implode(',', array_fill(0, count($idAreas), '?')) . ")";
+
+        // Ejecutar la consulta con los ids descompuestos
+        $query = DB::select($sql, array_merge([$id_especialidad], $idAreas));
+
+        return array_values($query); // Retornar como array indexado
+    }
 }

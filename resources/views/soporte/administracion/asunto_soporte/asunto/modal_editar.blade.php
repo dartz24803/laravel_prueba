@@ -32,6 +32,19 @@
                     @endforeach
                 </select>
             </div>
+
+            <div class="form-group col-lg-12">
+                <label>Área Responsable:</label>
+                <select class="form-control multivalue" name="id_areaee[]" id="id_areaee" multiple="multiple">
+                    @foreach ($list_area as $list)
+                    <option value="{{ $list->id_area }}"
+                        @if(in_array($list->id_area, explode(',', $get_id->id_area))) selected @endif>
+                        {{ $list->nom_area }}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+
             <div class="form-group col-lg-12">
                 <label for="nom_asunte">Nombre Asunto:</label>
                 <input type="text" class="form-control" id="nom_asunte" name="nom_asunte"
@@ -55,6 +68,10 @@
 </form>
 
 <script>
+    $('.multivalue').select2({
+        dropdownParent: $('#ModalUpdate')
+    });
+
     function Update_Asunto() {
         Cargando();
 
