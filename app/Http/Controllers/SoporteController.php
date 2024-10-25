@@ -516,13 +516,15 @@ class SoporteController extends Controller
 
         // Dividir el campo `id_area` en un array de IDs
         $areaIds = explode(',', $areaResponsable);
+
+        // dd($areaIds);
         // Crear listas basadas en los IDs obtenidos
         $list_primer_responsable = Usuario::get_list_colaborador_xarea_static(trim($areaIds[0]));
         $list_segundo_responsable = isset($areaIds[1]) ? Usuario::get_list_colaborador_xarea_static(trim($areaIds[1])) : [];
         // Verificar que las listas tengan al menos un elemento antes de acceder al campo `id_sub_gerencia`
         $primer_id_subgerencia = !empty($list_primer_responsable) ? $list_primer_responsable[0]->id_sub_gerencia : null;
         $segundo_id_subgerencia = !empty($list_segundo_responsable) ? $list_segundo_responsable[0]->id_sub_gerencia : null;
-        // Condicional para seleccionar cuál lista asignar a `$list_responsable`
+
         if ($id_subgerencia == $primer_id_subgerencia) {
             $list_responsable = $list_primer_responsable;
         } else {
@@ -538,6 +540,7 @@ class SoporteController extends Controller
             $ejecutoresMultiples = false;
         }
         $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
+        // dd($list_areas_involucradas);
 
         return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas', 'id_subgerencia'));
     }
@@ -589,8 +592,17 @@ class SoporteController extends Controller
 
         $request->validate($rules, $messages);
 
-        // dd($request->responsable_indice);
-        if ($request->responsable_indice == "0") {
+
+        if ($request->responsable_indice == "0" && $cantAreasEjecut < 4) {
+            // UN SOLO RESPONSABLE 
+            Soporte::findOrFail($id)->update([
+                'id_responsable' => $request->responsablee,
+                'fec_cierre' => $request->fec_cierree,
+                'estado_registro' => $request->estado_registroe,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        } else if ($request->responsable_indice == "0") {
             // RESPONSABLE PRINCIPAL
             Soporte::findOrFail($id)->update([
                 'id_responsable' => $request->id_responsablee_0,

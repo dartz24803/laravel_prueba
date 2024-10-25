@@ -135,12 +135,14 @@ class Soporte extends Model
             $id_areas = $query->id_area;
             $areasArray = explode(',', $id_areas);
             $resultado = [];
-
+            // dd($id_areas);
             // Primer área responsable
             $area1 = DB::table('area')
                 ->leftJoin('soporte', 'area.id_area', '=', DB::raw($areasArray[0])) // LEFT JOIN con la tabla area
                 ->select('area.nom_area', 'area.id_departamento')
+                ->where('soporte.id_soporte', $id_soporte)
                 ->first();
+
             $resultado[] = [
                 "area_responsable" => $area1 ? $area1->nom_area : null,
                 "id_departamento" => $area1 ? $area1->id_departamento : null,
@@ -155,6 +157,7 @@ class Soporte extends Model
                 $area2 = DB::table('area')
                     ->leftJoin('soporte', 'area.id_area', '=', DB::raw($areasArray[1])) // LEFT JOIN con la tabla area
                     ->select('area.nom_area', 'area.id_departamento')
+                    ->where('soporte.id_soporte', $id_soporte)
                     ->first();
                 $resultado[] = [
                     "area_responsable" => $area2 ? $area2->nom_area : null,

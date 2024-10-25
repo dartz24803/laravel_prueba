@@ -80,7 +80,7 @@
                             <div class="form-group col-md-2" id="cierre-label" style="display: none;">
                                 <label class="control-label text-bold">Cierre:</label>
                             </div>
-                            <div class="form-group col-md-4" id="cierre-field" style="display: none;">
+                            <div class="form-group col-md-4" id="cierre-field">
                                 <input type="date" class="form-control" id="fec_cierree" name="fec_cierree"
                                     value="{{ $get_id->fec_cierre ? \Carbon\Carbon::parse($get_id->fec_cierre)->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
                             </div>
