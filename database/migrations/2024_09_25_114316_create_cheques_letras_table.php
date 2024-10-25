@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('num_doc_emp_vinculada',50)->nullable();
             $table->integer('id_tipo_comprobante')->nullable();
             $table->string('num_comprobante',50)->nullable();
-            $table->integer('id_moneda')->nullable();
+            $table->unsignedBigInteger('id_moneda');
             $table->decimal('monto',10,2)->nullable();
             $table->integer('negociado_endosado')->nullable();
             $table->unsignedBigInteger('id_empresa');
@@ -47,8 +47,6 @@ return new class extends Migration
             $table->integer('user_eli')->nullable();
             $table->foreign('id_empresa', 'clet_fk_id_emp')->references('id_empresa')->on('empresas');
             $table->foreign('id_moneda', 'clet_fk_id_mon')->references('id_moneda')->on('tipo_moneda');
-            $table->index(['id_empresa'], 'clet_idx_id_emp');
-            $table->index(['id_moneda'], 'clet_idx_id_mon');
             $table->index(['fec_emision'], 'clet_idx_femi');
             $table->index(['fec_vencimiento'], 'clet_idx_fven');
             $table->index(['tipo_doc_aceptante','num_doc_aceptante'], 'clet_idx_id_ace');

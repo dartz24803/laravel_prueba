@@ -16,7 +16,6 @@ return new class extends Migration
             $table->unsignedBigInteger('id_supervision_tienda');
             $table->string('archivo', 100);
             $table->foreign('id_supervision_tienda')->references('id')->on('supervision_tienda');
-            //$table->timestamps();
         });
     }
 

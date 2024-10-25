@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('id_producto')->nullable();
             $table->string('archivo', 100)->nullable();
             $table->foreign('id_tracking','tarc_fk_id_tra')->references('id')->on('tracking');
-            //$table->timestamps();
         });
     }
 
