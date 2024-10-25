@@ -226,7 +226,7 @@
                                             </select>
                                             @else
                                             <!-- Mostrar texto sin select si no coinciden -->
-                                            <p>{{ $area_involucrada['area_responsable'] ? $area_involucrada['area_responsable'] : 'SIN DESIGNAR' }}</p>
+                                            <p>{{ $area_involucrada['nom_responsable'] ? $area_involucrada['nom_responsable'] : 'SIN DESIGNAR' }}</p>
                                             @endif
                                         </div>
                                     </div>
@@ -406,6 +406,7 @@
     </div>
     <div class="modal-footer">
         @csrf
+        <input type="hidden" id="responsable_indice" name="responsable_indice" value="0">
         <button class="btn btn-primary" type="button" onclick="Update_Soporte_Master();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
@@ -415,11 +416,18 @@
 <script type="text/javascript">
     var ejecutoresMultiples = @json($ejecutoresMultiples);
     $(document).ready(function() {
-        toggleCierre();
+        toggleCierreMultiplesResponsables();
         toggleEjecutor();
+        toggleCierreUnResponsable();
 
         $('#estado_registroe').on('change', function() {
-            toggleCierre();
+            toggleCierreUnResponsable();
+        });
+        $('#estado_registroe_0').on('change', function() {
+            toggleCierreMultiplesResponsables();
+        });
+        $('#estado_registroe_1').on('change', function() {
+            toggleCierreMultiplesResponsables();
         });
 
         $('#ejecutor_responsable').on('change', function() {
@@ -451,7 +459,7 @@
         }
     });
 
-    function toggleCierre() {
+    function toggleCierreUnResponsable() {
         var estado = document.getElementById('estado_registroe').value;
         console.log(estado)
         var cierreLabel = document.getElementById('cierre-label');
@@ -473,6 +481,48 @@
             estadoContainer.classList.add('col-md-10');
         }
     }
+
+    function toggleCierreMultiplesResponsables() {
+        const estadoElements = document.querySelectorAll('[id^="estado_registroe_"]');
+
+        estadoElements.forEach((element) => {
+            // Extrae el índice del ID
+            const index = element.id.split('_')[2];
+            console.log(`Índice extraído: ${index}`);
+
+            // enviar el indice del responsable
+            $('#responsable_indice').val(`${index}`);
+
+            // Obtener el estado del elemento
+            const estado = element.value;
+            console.log(`Estado del elemento ${index}:`, estado);
+            // Obtener los elementos correspondientes usando el índice extraído
+            const cierreLabel = document.getElementById(`cierre-label-${parseInt(index) + 1}`);
+            const cierreField = document.getElementById(`cierre-field-${parseInt(index) + 1}`);
+            const estadoContainer = document.getElementById(`estado-container-${parseInt(index) + 1}`);
+
+            // Verificar si los elementos existen antes de manipularlos
+            if (cierreLabel && cierreField && estadoContainer) {
+                if (estado == 3 || estado == 4) {
+                    cierreLabel.style.display = 'block';
+                    cierreField.style.display = 'block';
+                    estadoContainer.classList.remove('col-md-10');
+                    estadoContainer.classList.add('col-md-4');
+                } else {
+                    cierreLabel.style.display = 'none';
+                    cierreField.style.display = 'none';
+                    estadoContainer.classList.remove('col-md-4');
+                    estadoContainer.classList.add('col-md-10');
+                }
+            } else {
+                console.warn(`Elementos no encontrados para el índice ${parseInt(index) + 1}`);
+            }
+        });
+    }
+
+
+
+
 
     function toggleEjecutor() {
         var ejecutor_responsable = document.getElementById('ejecutor_responsable').value;
