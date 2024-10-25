@@ -52,21 +52,6 @@
                                         value="{{ $get_id->guia_transporte }}">
                                     @endif
                                 </div>
-
-                                <div class="form-group col-lg-1">
-                                    <label class="control-label text-bold">F x prenda: </label>
-                                </div>
-                                <div class="form-group col-lg-2">
-                                    <input type="text" class="form-control" name="flete_prenda" 
-                                    id="flete_prenda" placeholder="F x prenda" 
-                                    value="{{ $get_id->flete_prenda }}" 
-                                    onkeypress="return solo_Numeros_Punto(event);"
-                                    @if ($get_id->flete_prenda!="") disabled @endif>
-                                    @if ($get_id->flete_prenda!="") 
-                                        <input type="text" name="flete_prenda" 
-                                        value="{{ $get_id->flete_prenda }}">
-                                    @endif
-                                </div>
                                 
                                 <div class="form-group col-lg-1">
                                     <label class="control-label text-bold">Importe a pagar: </label>
