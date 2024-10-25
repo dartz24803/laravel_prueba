@@ -41,4 +41,38 @@ class AsignacionJefatura extends Model
         // Convertir el resultado a un array
         return json_decode(json_encode($result), true);
     }
+    
+    static function get_list_marcacion_mi_equipo($dni){
+        $sql = "SELECT DISTINCT DATE(it.punch_time) AS orden,
+                CASE WHEN DATE(it.punch_time)=CURDATE() THEN 'Hoy'
+                WHEN TIMESTAMPDIFF(DAY, DATE(it.punch_time), CURDATE())=1 THEN 'Ayer' 
+                ELSE DATE_FORMAT(it.punch_time, '%d/%m') END AS fecha,
+                (SELECT DATE_FORMAT(ir.punch_time,'%H:%i %p') 
+                FROM iclock_transaction ir
+                WHERE ir.emp_code=it.emp_code AND DATE(ir.punch_time)=DATE(it.punch_time)
+                ORDER BY ir.punch_time ASC
+                LIMIT 1) AS ingreso,
+                (SELECT DATE_FORMAT(ir.punch_time,'%H:%i %p') 
+                FROM iclock_transaction ir
+                WHERE ir.emp_code=it.emp_code AND DATE(ir.punch_time)=DATE(it.punch_time)
+                ORDER BY ir.punch_time ASC
+                LIMIT 1,1) AS inicio_refrigerio,
+                (SELECT DATE_FORMAT(ir.punch_time,'%H:%i %p') 
+                FROM iclock_transaction ir
+                WHERE ir.emp_code=it.emp_code AND DATE(ir.punch_time)=DATE(it.punch_time)
+                ORDER BY ir.punch_time ASC
+                LIMIT 2,1) AS fin_refrigerio,
+                (SELECT DATE_FORMAT(ir.punch_time,'%H:%i %p') 
+                FROM iclock_transaction ir
+                WHERE ir.emp_code=it.emp_code AND DATE(ir.punch_time)=DATE(it.punch_time)
+                ORDER BY ir.punch_time ASC
+                LIMIT 3,1) AS salida
+                FROM iclock_transaction it
+                WHERE it.emp_code='$dni'
+                ORDER BY DATE(it.punch_time) DESC";
+
+        $result = DB::connection('DB_SECOND_DATABASE')->select($sql);
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AsignacionJefatura;
 use App\Models\Base;
+use App\Models\Model_Perfil;
 use App\Models\Notificacion;
 use App\Models\SubGerencia;
 use App\Models\Usuario;
@@ -18,14 +19,14 @@ class MiEquipoController extends Controller
     protected $input;
     protected $Model_Asignacion;
     // protected $Model_Permiso;
-    // protected $Model_Perfil;
+    protected $Model_Perfil;
 
     public function __construct(Request $request){
         $this->middleware('verificar.sesion.usuario');
         $this->input = $request;
         $this->Model_Asignacion = new AsignacionJefatura();
         // $this->Model_Permiso = new PermisoPapeletasSalida();
-        // $this->Model_Perfil = new Model_Perfil();
+        $this->Model_Perfil = new Model_Perfil();
     }
     public function ListaMiequipo() {
         //REPORTE BI CON ID
@@ -212,5 +213,13 @@ class MiEquipoController extends Controller
 		header('Cache-Control: max-age=0');
 
 		$writer->save('php://output');    
+    }
+    
+    public function Modal_Marcacion_Mi_Equipo($id_usuario){  
+            $get_id = $this->Model_Perfil->get_id_usuario($id_usuario);
+            $dato['list_marcacion'] = $this->Model_Asignacion->get_list_marcacion_mi_equipo($get_id[0]['num_doc']);
+            $dato['foto_nombre'] = $get_id[0]['foto_nombre'];
+            $dato['nom_usuario'] = ucwords(strtolower($get_id[0]['usuario_nombres']." ".$get_id[0]['usuario_apater']." ".$get_id[0]['usuario_amater']));
+            return view('rrhh.Mi_equipo.modal_marcacion', $dato);
     }
 }
