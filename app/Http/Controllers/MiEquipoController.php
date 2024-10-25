@@ -234,7 +234,6 @@ class MiEquipoController extends Controller
                         ->limit('1')
                         ->first();
 
-            print_r($get_horario);
             if($get_horario){
                 $dato['get_id'] = $this->Model_Perfil->get_list_horario($get_horario->id_horario);
                 $dato['get_detalle'] = HorarioDia::where('id_horario', $get_horario->id_horario)
