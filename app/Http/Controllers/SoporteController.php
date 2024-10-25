@@ -219,6 +219,15 @@ class SoporteController extends Controller
             'vencimiento.required' => 'Debe ingresar vencimiento.',
             'descripcion.required' => 'Debe ingresar descripcion.',
         ];
+        if ($request->especialidad == "1") {
+            $rules = array_merge($rules, [
+                'idsoporte_area_especifica' => 'gt:0',
+            ]);
+
+            $messages = array_merge($messages, [
+                'idsoporte_area_especifica.gt' => 'Debe seleccionar Área Específica',
+            ]);
+        }
 
         if ($request->especialidad == 4) {
             $rules = array_merge($rules, [
@@ -229,6 +238,8 @@ class SoporteController extends Controller
                 'area.gt' => 'Debe seleccionar Área',
             ]);
         }
+
+
 
         $request->validate($rules, $messages);
 
