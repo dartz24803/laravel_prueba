@@ -435,7 +435,17 @@ class SoporteController extends Controller
     {
         $get_id = Soporte::getTicketById($id_soporte);
         // dd($get_id->idejecutor_responsable);
-        return view('soporte.soporte_master.modal_ver', compact('get_id'));
+        $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
+        $cantAreasEjecut = count($list_ejecutores_responsables);
+        // dd($cantAreasEjecut);
+        if ($cantAreasEjecut > 3) {
+            $ejecutoresMultiples = true;
+        } else {
+            $ejecutoresMultiples = false;
+        }
+        $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
+
+        return view('soporte.soporte_master.modal_ver', compact('get_id', 'ejecutoresMultiples', 'list_areas_involucradas'));
     }
 
     public function edit_tick($id_soporte)
@@ -480,10 +490,7 @@ class SoporteController extends Controller
 
     public function edit_tick_master($id_soporte)
     {
-
-        // $id_subgerencia = $this->id_subgerenciam;
         $id_subgerencia = session('id_subgerenciam');
-
 
         $get_id = Soporte::getTicketById($id_soporte);
         $area = DB::table('soporte_asunto')
@@ -491,8 +498,6 @@ class SoporteController extends Controller
             ->where('soporte_asunto.idsoporte_asunto', $get_id->id_asunto)
             ->select('soporte_asunto.*', 'area.nom_area') // Selecciona los campos que necesites
             ->first();
-
-
         if ($area->id_area == 0) {
             $areaResponsable = $get_id->id_area;
         } else {
@@ -501,13 +506,19 @@ class SoporteController extends Controller
 
         // Dividir el campo `id_area` en un array de IDs
         $areaIds = explode(',', $areaResponsable);
-
-        // Crear las dos listas basadas en los IDs obtenidos
-        $list_responsable = Usuario::get_list_colaborador_xarea_static(trim($areaIds[0]));
-        $list_segundo_responsables = isset($areaIds[1]) ? Usuario::get_list_colaborador_xarea_static(trim($areaIds[1])) : [];
-
-        dd($list_responsable, $list_segundo_responsables);
-
+        // Crear listas basadas en los IDs obtenidos
+        $list_primer_responsable = Usuario::get_list_colaborador_xarea_static(trim($areaIds[0]));
+        $list_segundo_responsable = isset($areaIds[1]) ? Usuario::get_list_colaborador_xarea_static(trim($areaIds[1])) : [];
+        // Verificar que las listas tengan al menos un elemento antes de acceder al campo `id_sub_gerencia`
+        $primer_id_subgerencia = !empty($list_primer_responsable) ? $list_primer_responsable[0]->id_sub_gerencia : null;
+        $segundo_id_subgerencia = !empty($list_segundo_responsable) ? $list_segundo_responsable[0]->id_sub_gerencia : null;
+        // Condicional para seleccionar cuál lista asignar a `$list_responsable`
+        if ($id_subgerencia == $primer_id_subgerencia) {
+            $list_responsable = $list_primer_responsable;
+        } else {
+            $list_responsable = $list_segundo_responsable;
+        }
+        // dd($list_responsable);
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $cantAreasEjecut = count($list_ejecutores_responsables);
         // dd($cantAreasEjecut);
@@ -517,10 +528,6 @@ class SoporteController extends Controller
             $ejecutoresMultiples = false;
         }
         $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
-        if ($id_subgerencia == $area_involucrada['id_departamento']) {
-            dd($id_subgerencia);
-        }
-
 
         return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas', 'id_subgerencia'));
     }

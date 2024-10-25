@@ -187,6 +187,7 @@
                 </div>
 
             </div>
+
             <div class="tab-pane fade" id="ejecutor" role="tabpanel" aria-labelledby="ejecutor-tab">
                 <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
@@ -519,9 +520,6 @@
             }
         });
     }
-
-
-
 
 
     function toggleEjecutor() {
