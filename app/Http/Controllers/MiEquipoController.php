@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\AsignacionJefatura;
 use App\Models\Base;
+use App\Models\GradoInstruccion;
+use App\Models\Horario;
+use App\Models\HorarioDia;
 use App\Models\Model_Perfil;
 use App\Models\Notificacion;
 use App\Models\SubGerencia;
@@ -221,5 +224,34 @@ class MiEquipoController extends Controller
             $dato['foto_nombre'] = $get_id[0]['foto_nombre'];
             $dato['nom_usuario'] = ucwords(strtolower($get_id[0]['usuario_nombres']." ".$get_id[0]['usuario_apater']." ".$get_id[0]['usuario_amater']));
             return view('rrhh.Mi_equipo.modal_marcacion', $dato);
+    }
+
+    public function Modal_Horario_Mi_Equipo($id_usuario){ 
+            $get_id = $this->Model_Perfil->get_list_usuario($id_usuario);
+            $get_horario = Horario::where('id_horario', $get_id[0]['id_horario'])
+                        ->where('estado', 1)
+                        ->orderBy('id_horario', 'DESC')
+                        ->limit('1')
+                        ->first();
+
+            if($get_horario){
+                $dato['get_id'] = $this->Model_Perfil->get_list_horario($get_horario->id_horario);
+                $dato['get_detalle'] = HorarioDia::where('id_horario', $get_horario->id_horario)
+                                ->where('estado', 1)
+                                ->orderBy('dia','ASC')
+                                ->get();
+                $dato['funciona'] = 1;
+            }else{
+                $dato['funciona'] = 0;
+            }
+            return view('rrhh.Mi_equipo.modal_horario', $dato);
+    }
+    
+    public function Modal_Solicitud_Puesto($id_usuario,$tipo){
+            $dato['id_usuario'] = $id_usuario;
+            $dato['tipo'] = $tipo;
+            $dato['list_grado_instruccion'] = GradoInstruccion::where('estado', 1)
+                                        ->get();
+            return view('rrhh.Mi_equipo.modal_solicitud_puesto', $dato);
     }
 }
