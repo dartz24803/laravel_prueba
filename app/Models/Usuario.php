@@ -67,7 +67,8 @@ class Usuario extends Model
         and r.estado=1) end as url_foto,p.id_nivel as nivel_jerarquico,u.desvinculacion,u.id_cargo,
         pps.registro_masivo, visualizar_amonestacion(u.id_puesto) AS visualizar_amonestacion,
         sl.descripcion AS sede_laboral,
-        pps.estado as estadopps, pps.registro_masivo, pps.id_puesto_permitido, u.id_centro_labor
+        pps.estado as estadopps, pps.registro_masivo, pps.id_puesto_permitido, u.id_centro_labor,
+        visualizar_mi_equipo(u.id_puesto) AS visualizar_mi_equipo
         FROM users u
         LEFT JOIN permiso_papeletas_salida pps ON u.id_puesto=pps.id_puesto_jefe AND pps.estado=1
         LEFT JOIN nivel n ON u.id_nivel=n.id_nivel
@@ -759,4 +760,859 @@ class Usuario extends Model
         // Convertir el resultado a un array
         return json_decode(json_encode($result), true);
     }
+    
+    static function colaborador_porcentaje($id_usuario=null, $centro_labores=null,$dato=null,$data){ 
+        $id_gerencia= session('usuario')->id_gerencia;
+        $id_puesto= session('usuario')->id_puesto;
+        $id_nivel= session('usuario')->id_nivel;
+        $visualizar_mi_equipo =  session('usuario')->visualizar_mi_equipo;
+        
+        if(isset($id_usuario) && $id_usuario > 0){
+            $sql = "SELECT u.*, n.nom_nacionalidad,td.nom_tipo_documento,a.nom_area,pu.nom_puesto,
+                    gr.nom_grado_instruccion,
+                    EXTRACT(DAY FROM u.fec_nac) AS dia,
+                    case month(a.fec_nac) 
+                    WHEN 1 THEN 'Enero'
+                    WHEN 2 THEN  'Febrero'
+                    WHEN 3 THEN 'Marzo' 
+                    WHEN 4 THEN 'Abril' 
+                    WHEN 5 THEN 'Mayo'
+                    WHEN 6 THEN 'Junio'
+                    WHEN 7 THEN 'Julio'
+                    WHEN 8 THEN 'Agosto'
+                    WHEN 9 THEN 'Septiembre'
+                    WHEN 10 THEN 'Octubre'
+                    WHEN 11 THEN 'Noviembre'
+                    WHEN 12 THEN 'Diciembre'
+                    END mes,
+                    c.nom_contacto,c.celular1,c.celular2,c.fijo from users u
+                    LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
+                    LEFT JOIN tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
+                    LEFT JOIN area a on a.id_area=u.id_area
+                    LEFT JOIN puesto pu on pu.id_puesto=u.id_puesto
+                    LEFT JOIN grado_instruccion gr on gr.id_grado_instruccion=u.id_grado_instruccion
+                    LEFT JOIN contacto_emergencia ce on ce.id_contacto_emergencia=u.id_contacto_emergencia
+                    where u.estado in (1) and id_usuario =".$id_usuario;
+        }elseif($id_nivel=="1"){
+            $base = "";
+            if($data['base']!="0"){
+                $base= "AND u.centro_labores='".$data['base']."'";
+            }
+            $sql = "SELECT u.id_usuario, u.usuario_apater,u.fec_baja,
+                    u.centro_labores, td.cod_tipo_documento,
+                    td.nom_tipo_documento, u.num_celp,u.num_doc, u.verif_email, 
+                    u.usuario_amater, u.usuario_nombres, n.nom_nacionalidad, u.foto,
+                    estau.nom_estado_usuario, ge.nom_genero, depart.nombre_departamento,
+                    provic.nombre_provincia, distr.nombre_distrito, banc.nom_banco,
+                    spn.cod_sistema_pensionario, afp.nom_afp, banc.nom_banco, cb.num_cuenta_bancaria,
+                    u.fec_ingreso, u.fec_termino,em.ruc_empresa,EXTRACT(DAY FROM u.fec_nac) AS dia,
+                    case month(u.fec_nac) WHEN 1 THEN 'Enero' WHEN 2 THEN  'Febrero' WHEN 3 THEN 'Marzo' 
+                    WHEN 4 THEN 'Abril' WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio' WHEN 7 THEN 'Julio'
+                    WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Septiembre' WHEN 10 THEN 'Octubre' WHEN 11 THEN 'Noviembre'
+                    WHEN 12 THEN 'Diciembre' END as mes,u.usuario_email, u.fec_nac, situlab.nom_situacion_laboral,
+                    u.ini_funciones,d.nom_via,d.num_via,
+                    (case when u.usuario_nombres is not null and u.usuario_apater is not null and 
+                    u.usuario_amater is not null and u.id_nacionalidad is not null and 
+                    u.id_tipo_documento is not null and u.num_doc is not null and 
+                    u.id_genero is not null and u.fec_nac is not null and u.id_estado_civil is not null and 
+                    u.num_celp is not null and u.foto_nombre <>'' and 
+                    (u.emailp is not null || u.usuario_email is not null) then 1 else 0 end) AS datos_personales,
+                    (case when (select count(1) from gusto_preferencia_users 
+                    where gusto_preferencia_users.id_usuario=u.id_usuario and 
+                    gusto_preferencia_users.estado=1)>0 then 1 else 0 end) as gustos_preferencias,
+                    (case when d.id_departamento is not null and d.id_provincia is not null and 
+                    d.id_distrito is not null and d.id_tipo_vivienda is not null and 
+                    d.referencia is not null and d.lat is not null and d.lng is not null
+                    then 1 else 0 end) AS domicilio_user,
+                    (case when (select count(1) from referencia_familiar 
+                    where referencia_familiar.id_usuario=u.id_usuario and 
+                    referencia_familiar.nom_familiar is not null
+                    and referencia_familiar.id_parentesco is not null
+                    and referencia_familiar.fec_nac is not null and 
+                    (referencia_familiar.celular1 is not null || referencia_familiar.celular2 is not null || 
+                    referencia_familiar.fijo is not null) and referencia_familiar.estado=1)>0
+                    then 1 else 0 end) AS referencia,
+                    (case when u.hijos=2 or (u.hijos=1 and (select count(1) from hijos 
+                    where hijos.id_usuario=u.id_usuario AND hijos.nom_hijo IS NOT NULL AND 
+                    hijos.id_genero IS NOT NULL AND hijos.fec_nac IS NOT NULL AND 
+                    hijos.num_doc IS NOT NULL AND hijos.id_biologico IS NOT NULL AND 
+                    hijos.documento IS NOT NULL AND hijos.estado=1)>0) then 1 else 0 end) AS cont_hijos,
+                    (case when (select count(1) from contacto_emergencia 
+                    where contacto_emergencia.id_usuario=u.id_usuario and 
+                    contacto_emergencia.nom_contacto is not null
+                    and contacto_emergencia.id_parentesco is not null
+                    and (contacto_emergencia.celular1 is not null || 
+                    contacto_emergencia.celular2 is not null || 
+                    contacto_emergencia.fijo is not null) and contacto_emergencia.estado=1)>0
+                    then 1 else 0 end) AS contactoe,
+                    (case when (select count(1) from estudios_generales 
+                    where estudios_generales.id_usuario=u.id_usuario and 
+                    estudios_generales.id_grado_instruccion is not null
+                    and (estudios_generales.carrera is not null || estudios_generales.centro is not null) and 
+                    estudios_generales.estado=1)>0 then 1 else 0 end) AS estudiosg,
+                    (case when co.nl_excel is not null and 
+                    co.nl_word is not null and co.nl_ppoint is not null
+                    then 1 else 0 end) AS office, 
+                    (case when (select count(1) from conoci_idiomas 
+                    where conoci_idiomas.id_usuario=u.id_usuario and conoci_idiomas.estado=1)>0 
+                    then 1 else 0 end) AS idiomas,
+                    (case when (select count(1) from curso_complementario 
+                    where curso_complementario.id_usuario=u.id_usuario and 
+                    curso_complementario.estado=1)>0 then 1 else 0 end) AS con_cursos_compl,
+                    (case when (select count(1) from experiencia_laboral 
+                    where experiencia_laboral.id_usuario=u.id_usuario and 
+                    experiencia_laboral.empresa is not null
+                    and experiencia_laboral.cargo is not null and 
+                    experiencia_laboral.fec_ini is not null
+                    and experiencia_laboral.fec_fin is not null and 
+                    experiencia_laboral.motivo_salida is not null
+                    and experiencia_laboral.remuneracion is not null and experiencia_laboral.estado=1)>0
+                    then 1 else 0 end) AS experiencial, 
+                    (case when u.enfermedades=2 or (u.enfermedades=1 and 
+                    (select count(1) from enfermedad_usuario 
+                    where enfermedad_usuario.id_usuario=u.id_usuario and enfermedad_usuario.estado=1)>0) 
+                    then 1 else 0 end) AS cont_enfermedades,
+                    (case when u.id_genero=1 or (select count(1) from gestacion_usuario 
+                    where gestacion_usuario.id_usuario=u.id_usuario and gestacion_usuario.estado=1)>0 
+                    then 1 else 0 end) AS gestacion,
+                    (case when u.alergia=0 then 0 else 1 end) AS cont_alergia, 
+                    (case when (select count(1) from otros_usuario 
+                    where otros_usuario.id_usuario=u.id_usuario and otros_usuario.estado=1)>0 
+                    then 1 else 0 end) AS con_otros,
+                    (case when (select count(1) from referencia_convocatoria 
+                    where referencia_convocatoria.id_usuario=u.id_usuario and 
+                    referencia_convocatoria.estado=1)>0 then 1 else 0 end) AS ref_convoc,
+                    (case when du.cv_doc <>'' and du.dni_doc <>'' and 
+                    du.recibo_doc <>'' then 1 else 0 end) as documentacion,
+                    (case when ru.polo is not null and ru.pantalon is not null and ru.zapato is not null
+                    then 1 else 0 end) AS talla_usuario,
+                    (case when sp.id_respuestasp is not null then 1 else 0 end) AS sistema_pension,
+                    (case when cb.cuenta_bancaria=2 then 1
+                    when cb.id_banco is not null and cb.cuenta_bancaria is not null 
+                    and cb.cuenta_bancaria=1 and cb.num_cuenta_bancaria is not null 
+                    and cb.num_codigo_interbancario is not null then 1 else 0 end) AS cuenta_bancaria,
+                    (case when u.terminos=0 then 0 else 1 end) AS cont_terminos,
+                    (case when ou.id_grupo_sanguineo is not null
+                    then 1 else 0 end) as grupo_sanguineo,
+                    (case when ou.cert_vacu_covid is not null then 1 else 0 end) as covid,
+                    a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo,
+                    u.usuario_email, em.nom_empresa, du.dni_doc, tp.cod_talla as polo, tc.cod_talla as camisa,
+                    tpa.cod_talla as pantalon, tz.cod_talla as zapato,
+                    date_format(u.fec_baja,'%d-%m-%Y') as fecha_baja,date_format(u.ini_funciones,'%d-%m-%Y') as fecha_ingreso,
+                    mt.nom_motivo,u.doc_baja,u.ini_funciones,
+                    CASE WHEN YEAR(u.fec_nac) BETWEEN 1946 AND 1964 THEN 'BB'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1965 AND 1980 THEN 'X'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1981 AND 1996 THEN 'Y'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1997 AND 2012 THEN 'Z'
+                    WHEN YEAR(u.fec_nac) >= 2013 THEN '&alpha;' ELSE '-' END AS generacion,u.id_puesto
+                    FROM users u
+                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
+                    LEFT JOIN area a on a.id_area=u.id_area
+                    LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN cargo c on c.id_cargo=u.id_cargo
+                    left join domicilio_users d on d.id_usuario=u.id_usuario
+                    left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
+                    LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
+                    left join conoci_office co on co.id_usuario=u.id_usuario
+                    left join otros_usuario ou on ou.id_usuario=u.id_usuario
+                    left join documentacion_usuario du on du.id_usuario=u.id_usuario and du.estado=1
+                    left join cuenta_bancaria cb on cb.id_usuario=u.id_usuario
+                    left join sist_pens_usuario sp on sp.id_usuario=u.id_usuario
+                    left join empresas em on em.id_empresa=u.id_empresapl
+                    left join estado_usuario estau on estau.id_estado_usuario=u.estado
+                    left join genero ge on ge.id_genero=u.id_genero
+                    left join departamento depart on depart.id_departamento=d.id_departamento
+                    left join provincia provic on provic.id_provincia=d.id_provincia
+                    left join distrito distr on distr.id_distrito=d.id_distrito
+                    left join banco banc on banc.id_banco=cb.id_banco
+                    left join sistema_pensionario spn on spn.id_sistema_pensionario =sp.id_sistema_pensionario 
+                    left join afp afp on afp.id_afp  =sp.id_afp
+                    left join situacion_laboral situlab on situlab.id_situacion_laboral =u.id_situacion_laboral
+                    left join ropa_usuario ru on ru.id_usuario=u.id_usuario
+                    left join talla tp on tp.id_talla=ru.polo
+                    left join talla tc on tc.id_talla=ru.camisa
+                    left join talla tpa on tpa.id_talla=ru.pantalon
+                    left join talla tz on tz.id_talla=ru.zapato
+                    left join motivo_baja_rrhh mt on u.id_motivo_baja=mt.id_motivo
+                    where u.estado in (1) and u.id_nivel<>8 $base
+                    ORDER BY u.ini_funciones DESC";
+        }elseif($id_puesto=="1" || $id_puesto=="39" || $id_puesto=="80" || $id_puesto=="92" ){
+            $sql = "SELECT u.id_usuario, u.usuario_apater, u.verif_email,u.fec_baja,
+                    u.centro_labores, td.cod_tipo_documento,
+                    td.nom_tipo_documento, u.num_celp,u.num_doc, 
+                    u.usuario_amater, u.usuario_nombres, n.nom_nacionalidad, u.foto,
+                    estau.nom_estado_usuario, ge.nom_genero, depart.nombre_departamento,
+                    provic.nombre_provincia, distr.nombre_distrito, banc.nom_banco,
+                    spn.cod_sistema_pensionario, afp.nom_afp, banc.nom_banco, cb.num_cuenta_bancaria,
+                    u.fec_ingreso, u.fec_termino,em.ruc_empresa,EXTRACT(DAY FROM u.fec_nac) AS dia,
+                    case month(u.fec_nac) WHEN 1 THEN 'Enero' WHEN 2 THEN  'Febrero'
+                    WHEN 3 THEN 'Marzo' WHEN 4 THEN 'Abril' WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio'
+                    WHEN 7 THEN 'Julio' WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Septiembre'
+                    WHEN 10 THEN 'Octubre' WHEN 11 THEN 'Noviembre' WHEN 12 THEN 'Diciembre' END mes,
+                    u.usuario_email, u.fec_nac, situlab.nom_situacion_laboral,u.ini_funciones,d.nom_via,
+                    d.num_via,
+                    (case when u.usuario_nombres is not null and u.usuario_apater is not null and 
+                    u.usuario_amater is not null and u.id_nacionalidad is not null and 
+                    u.id_tipo_documento is not null and u.num_doc is not null and 
+                    u.id_genero is not null and u.fec_nac is not null and u.id_estado_civil is not null and 
+                    u.num_celp is not null and u.foto_nombre <>'' and 
+                    (u.emailp is not null || u.usuario_email is not null) then 1 else 0 end) AS datos_personales,
+                    (case when (select count(1) from gusto_preferencia_users 
+                    where gusto_preferencia_users.id_usuario=u.id_usuario and 
+                    gusto_preferencia_users.estado=1)>0 then 1 else 0 end) as gustos_preferencias,
+                    (case when d.id_departamento is not null and d.id_provincia is not null and 
+                    d.id_distrito is not null and d.id_tipo_vivienda is not null and 
+                    d.referencia is not null and d.lat is not null and d.lng is not null
+                    then 1 else 0 end) AS domicilio_user,
+                    (case when (select count(1) from referencia_familiar 
+                    where referencia_familiar.id_usuario=u.id_usuario and 
+                    referencia_familiar.nom_familiar is not null
+                    and referencia_familiar.id_parentesco is not null
+                    and referencia_familiar.fec_nac is not null and 
+                    (referencia_familiar.celular1 is not null || referencia_familiar.celular2 is not null || 
+                    referencia_familiar.fijo is not null) and referencia_familiar.estado=1)>0
+                    then 1 else 0 end) AS referencia,
+                    (case when u.hijos=2 or (u.hijos=1 and (select count(1) from hijos 
+                    where hijos.id_usuario=u.id_usuario AND hijos.nom_hijo IS NOT NULL AND 
+                    hijos.id_genero IS NOT NULL AND hijos.fec_nac IS NOT NULL AND 
+                    hijos.num_doc IS NOT NULL AND hijos.id_biologico IS NOT NULL AND 
+                    hijos.documento IS NOT NULL AND hijos.estado=1)>0) then 1 else 0 end) AS cont_hijos,
+                    (case when (select count(1) from contacto_emergencia 
+                    where contacto_emergencia.id_usuario=u.id_usuario and 
+                    contacto_emergencia.nom_contacto is not null
+                    and contacto_emergencia.id_parentesco is not null
+                    and (contacto_emergencia.celular1 is not null || 
+                    contacto_emergencia.celular2 is not null || 
+                    contacto_emergencia.fijo is not null) and contacto_emergencia.estado=1)>0
+                    then 1 else 0 end) AS contactoe,
+                    (case when (select count(1) from estudios_generales 
+                    where estudios_generales.id_usuario=u.id_usuario and 
+                    estudios_generales.id_grado_instruccion is not null
+                    and (estudios_generales.carrera is not null || estudios_generales.centro is not null) and 
+                    estudios_generales.estado=1)>0 then 1 else 0 end) AS estudiosg,
+                    (case when co.nl_excel is not null and 
+                    co.nl_word is not null and co.nl_ppoint is not null
+                    then 1 else 0 end) AS office, 
+                    (case when (select count(1) from conoci_idiomas 
+                    where conoci_idiomas.id_usuario=u.id_usuario and conoci_idiomas.estado=1)>0 
+                    then 1 else 0 end) AS idiomas,
+                    (case when (select count(1) from curso_complementario 
+                    where curso_complementario.id_usuario=u.id_usuario and 
+                    curso_complementario.estado=1)>0 then 1 else 0 end) AS con_cursos_compl,
+                    (case when (select count(1) from experiencia_laboral 
+                    where experiencia_laboral.id_usuario=u.id_usuario and 
+                    experiencia_laboral.empresa is not null
+                    and experiencia_laboral.cargo is not null and 
+                    experiencia_laboral.fec_ini is not null
+                    and experiencia_laboral.fec_fin is not null and 
+                    experiencia_laboral.motivo_salida is not null
+                    and experiencia_laboral.remuneracion is not null and experiencia_laboral.estado=1)>0
+                    then 1 else 0 end) AS experiencial, 
+                    (case when u.enfermedades=2 or (u.enfermedades=1 and 
+                    (select count(1) from enfermedad_usuario 
+                    where enfermedad_usuario.id_usuario=u.id_usuario and enfermedad_usuario.estado=1)>0) 
+                    then 1 else 0 end) AS cont_enfermedades,
+                    (case when u.id_genero=1 or (select count(1) from gestacion_usuario 
+                    where gestacion_usuario.id_usuario=u.id_usuario and gestacion_usuario.estado=1)>0 
+                    then 1 else 0 end) AS gestacion,
+                    (case when u.alergia=0 then 0 else 1 end) AS cont_alergia, 
+                    (case when (select count(1) from otros_usuario 
+                    where otros_usuario.id_usuario=u.id_usuario and otros_usuario.estado=1)>0 
+                    then 1 else 0 end) AS con_otros,
+                    (case when (select count(1) from referencia_convocatoria 
+                    where referencia_convocatoria.id_usuario=u.id_usuario and 
+                    referencia_convocatoria.estado=1)>0 then 1 else 0 end) AS ref_convoc,
+                    (case when du.cv_doc <>'' and du.dni_doc <>'' and 
+                    du.recibo_doc <>'' then 1 else 0 end) as documentacion,
+                    (case when ru.polo is not null and ru.pantalon is not null and ru.zapato is not null
+                    then 1 else 0 end) AS talla_usuario,
+                    (case when sp.id_respuestasp is not null then 1 else 0 end) AS sistema_pension,
+                    (case when cb.cuenta_bancaria=2 then 1
+                    when cb.id_banco is not null and cb.cuenta_bancaria is not null 
+                    and cb.cuenta_bancaria=1 and cb.num_cuenta_bancaria is not null 
+                    and cb.num_codigo_interbancario is not null then 1 else 0 end) AS cuenta_bancaria,
+                    (case when u.terminos=0 then 0 else 1 end) AS cont_terminos,
+                    (case when ou.id_grupo_sanguineo is not null
+                    then 1 else 0 end) as grupo_sanguineo,
+                    (case when ou.cert_vacu_covid is not null then 1 else 0 end) as covid,
+                    a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo,
+                    u.usuario_email, em.nom_empresa, du.dni_doc,
+                    date_format(u.fec_baja,'%d-%m-%Y') as fecha_baja,
+                    date_format(u.ini_funciones,'%d-%m-%Y') as fecha_ingreso,
+                    mt.nom_motivo,u.doc_baja,u.ini_funciones,
+                    CASE WHEN YEAR(u.fec_nac) BETWEEN 1946 AND 1964 THEN 'BB'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1965 AND 1980 THEN 'X'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1981 AND 1996 THEN 'Y'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1997 AND 2012 THEN 'Z'
+                    WHEN YEAR(u.fec_nac) >= 2013 THEN '&alpha;' ELSE 'No se pudo determinar la generación' 
+                    END AS generacion,u.id_puesto
+                    from users u
+                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
+                    LEFT JOIN area a on a.id_area=u.id_area
+                    LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN cargo c on c.id_cargo=u.id_cargo
+                    left join domicilio_users d on d.id_usuario=u.id_usuario
+                    left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
+                    LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
+                    left join conoci_office co on co.id_usuario=u.id_usuario
+                    left join otros_usuario ou on ou.id_usuario=u.id_usuario
+                    left join documentacion_usuario du on du.id_usuario=u.id_usuario and du.estado=1
+                    left join cuenta_bancaria cb on cb.id_usuario=u.id_usuario
+                    left join ropa_usuario ru on ru.id_usuario=u.id_usuario
+                    left join sist_pens_usuario sp on sp.id_usuario=u.id_usuario
+                    left join empresas em on em.id_empresa=u.id_empresapl
+                    left join estado_usuario estau on estau.id_estado_usuario=u.estado
+                    left join genero ge on ge.id_genero=u.id_genero
+                    left join departamento depart on depart.id_departamento=d.id_departamento
+                    left join provincia provic on provic.id_provincia=d.id_provincia
+                    left join distrito distr on distr.id_distrito=d.id_distrito
+                    left join banco banc on banc.id_banco=cb.id_banco
+                    left join sistema_pensionario spn on spn.id_sistema_pensionario =sp.id_sistema_pensionario 
+                    left join afp afp on afp.id_afp  =sp.id_afp  
+                    left join situacion_laboral situlab on situlab.id_situacion_laboral =u.id_situacion_laboral 
+                    left join motivo_baja_rrhh mt on u.id_motivo_baja=mt.id_motivo
+                    where u.estado in (1) and u.id_nivel<>8 and u.id_gerencia='".$id_gerencia."'
+                    ORDER BY u.ini_funciones DESC";
+        }elseif(isset($dato) && count($dato['list_ajefatura'])>0){
+            $sql = "SELECT u.id_usuario, u.usuario_apater,u.fec_baja,
+                    u.centro_labores, td.cod_tipo_documento,
+                    td.nom_tipo_documento, u.num_celp,u.num_doc, 
+                    u.usuario_amater, u.usuario_nombres, n.nom_nacionalidad, u.foto,
+                    estau.nom_estado_usuario, ge.nom_genero, depart.nombre_departamento,
+                    provic.nombre_provincia, distr.nombre_distrito, banc.nom_banco,
+                    spn.cod_sistema_pensionario, afp.nom_afp, banc.nom_banco, cb.num_cuenta_bancaria,
+                    u.fec_ingreso, u.fec_termino,em.ruc_empresa,EXTRACT(DAY FROM u.fec_nac) AS dia,
+                    case month(u.fec_nac) WHEN 1 THEN 'Enero' WHEN 2 THEN  'Febrero' WHEN 3 THEN 'Marzo' 
+                    WHEN 4 THEN 'Abril' WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio' WHEN 7 THEN 'Julio'
+                    WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Septiembre' WHEN 10 THEN 'Octubre'
+                    WHEN 11 THEN 'Noviembre' WHEN 12 THEN 'Diciembre' END mes,u.usuario_email, u.fec_nac,
+                    situlab.nom_situacion_laboral,u.ini_funciones,d.nom_via,d.num_via,
+                    (case when u.usuario_nombres is not null and u.usuario_apater is not null and 
+                    u.usuario_amater is not null and u.id_nacionalidad is not null and 
+                    u.id_tipo_documento is not null and u.num_doc is not null and 
+                    u.id_genero is not null and u.fec_nac is not null and u.id_estado_civil is not null and 
+                    u.num_celp is not null and u.foto_nombre <>'' and 
+                    (u.emailp is not null || u.usuario_email is not null) then 1 else 0 end) AS datos_personales,
+                    (case when (select count(1) from gusto_preferencia_users 
+                    where gusto_preferencia_users.id_usuario=u.id_usuario and 
+                    gusto_preferencia_users.estado=1)>0 then 1 else 0 end) as gustos_preferencias,
+                    (case when d.id_departamento is not null and d.id_provincia is not null and 
+                    d.id_distrito is not null and d.id_tipo_vivienda is not null and 
+                    d.referencia is not null and d.lat is not null and d.lng is not null
+                    then 1 else 0 end) AS domicilio_user,
+                    (case when (select count(1) from referencia_familiar 
+                    where referencia_familiar.id_usuario=u.id_usuario and 
+                    referencia_familiar.nom_familiar is not null
+                    and referencia_familiar.id_parentesco is not null
+                    and referencia_familiar.fec_nac is not null and 
+                    (referencia_familiar.celular1 is not null || referencia_familiar.celular2 is not null || 
+                    referencia_familiar.fijo is not null) and referencia_familiar.estado=1)>0
+                    then 1 else 0 end) AS referencia,
+                    (case when u.hijos=2 or (u.hijos=1 and (select count(1) from hijos 
+                    where hijos.id_usuario=u.id_usuario AND hijos.nom_hijo IS NOT NULL AND 
+                    hijos.id_genero IS NOT NULL AND hijos.fec_nac IS NOT NULL AND 
+                    hijos.num_doc IS NOT NULL AND hijos.id_biologico IS NOT NULL AND 
+                    hijos.documento IS NOT NULL AND hijos.estado=1)>0) then 1 else 0 end) AS cont_hijos,
+                    (case when (select count(1) from contacto_emergencia 
+                    where contacto_emergencia.id_usuario=u.id_usuario and 
+                    contacto_emergencia.nom_contacto is not null
+                    and contacto_emergencia.id_parentesco is not null
+                    and (contacto_emergencia.celular1 is not null || 
+                    contacto_emergencia.celular2 is not null || 
+                    contacto_emergencia.fijo is not null) and contacto_emergencia.estado=1)>0
+                    then 1 else 0 end) AS contactoe,
+                    (case when (select count(1) from estudios_generales 
+                    where estudios_generales.id_usuario=u.id_usuario and 
+                    estudios_generales.id_grado_instruccion is not null
+                    and (estudios_generales.carrera is not null || estudios_generales.centro is not null) and 
+                    estudios_generales.estado=1)>0 then 1 else 0 end) AS estudiosg,
+                    (case when co.nl_excel is not null and 
+                    co.nl_word is not null and co.nl_ppoint is not null
+                    then 1 else 0 end) AS office, 
+                    (case when (select count(1) from conoci_idiomas 
+                    where conoci_idiomas.id_usuario=u.id_usuario and conoci_idiomas.estado=1)>0 
+                    then 1 else 0 end) AS idiomas,
+                    (case when (select count(1) from curso_complementario 
+                    where curso_complementario.id_usuario=u.id_usuario and 
+                    curso_complementario.estado=1)>0 then 1 else 0 end) AS con_cursos_compl,
+                    (case when (select count(1) from experiencia_laboral 
+                    where experiencia_laboral.id_usuario=u.id_usuario and 
+                    experiencia_laboral.empresa is not null
+                    and experiencia_laboral.cargo is not null and 
+                    experiencia_laboral.fec_ini is not null
+                    and experiencia_laboral.fec_fin is not null and 
+                    experiencia_laboral.motivo_salida is not null
+                    and experiencia_laboral.remuneracion is not null and experiencia_laboral.estado=1)>0
+                    then 1 else 0 end) AS experiencial, 
+                    (case when u.enfermedades=2 or (u.enfermedades=1 and 
+                    (select count(1) from enfermedad_usuario 
+                    where enfermedad_usuario.id_usuario=u.id_usuario and enfermedad_usuario.estado=1)>0) 
+                    then 1 else 0 end) AS cont_enfermedades,
+                    (case when u.id_genero=1 or (select count(1) from gestacion_usuario 
+                    where gestacion_usuario.id_usuario=u.id_usuario and gestacion_usuario.estado=1)>0 
+                    then 1 else 0 end) AS gestacion,
+                    (case when u.alergia=0 then 0 else 1 end) AS cont_alergia, 
+                    (case when (select count(1) from otros_usuario 
+                    where otros_usuario.id_usuario=u.id_usuario and otros_usuario.estado=1)>0 
+                    then 1 else 0 end) AS con_otros,
+                    (case when (select count(1) from referencia_convocatoria 
+                    where referencia_convocatoria.id_usuario=u.id_usuario and 
+                    referencia_convocatoria.estado=1)>0 then 1 else 0 end) AS ref_convoc,
+                    (case when du.cv_doc <>'' and du.dni_doc <>'' and 
+                    du.recibo_doc <>'' then 1 else 0 end) as documentacion,
+                    (case when ru.polo is not null and ru.pantalon is not null and ru.zapato is not null
+                    then 1 else 0 end) AS talla_usuario,
+                    (case when sp.id_respuestasp is not null then 1 else 0 end) AS sistema_pension,
+                    (case when cb.cuenta_bancaria=2 then 1
+                    when cb.id_banco is not null and cb.cuenta_bancaria is not null 
+                    and cb.cuenta_bancaria=1 and cb.num_cuenta_bancaria is not null 
+                    and cb.num_codigo_interbancario is not null then 1 else 0 end) AS cuenta_bancaria,
+                    (case when u.terminos=0 then 0 else 1 end) AS cont_terminos,
+                    (case when ou.id_grupo_sanguineo is not null
+                    then 1 else 0 end) as grupo_sanguineo,
+                    (case when ou.cert_vacu_covid is not null then 1 else 0 end) as covid,
+                    a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo,
+                    u.usuario_email, em.nom_empresa, du.dni_doc,date_format(u.fec_baja,'%d-%m-%Y') as fecha_baja,date_format(u.ini_funciones,'%d-%m-%Y') as fecha_ingreso,
+                    mt.nom_motivo,u.doc_baja,u.ini_funciones,
+                    CASE WHEN YEAR(u.fec_nac) BETWEEN 1946 AND 1964 THEN 'BB' 
+                    WHEN YEAR(u.fec_nac) BETWEEN 1965 AND 1980 THEN 'X'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1981 AND 1996 THEN 'Y'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1997 AND 2012 THEN 'Z'
+                    WHEN YEAR(u.fec_nac) >= 2013 THEN '&alpha;' ELSE 'No se pudo determinar la generación' 
+                    END AS generacion,u.id_puesto
+                    from users u
+                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
+                    LEFT JOIN area a on a.id_area=u.id_area
+                    LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN cargo c on c.id_cargo=u.id_cargo
+                    left join domicilio_users d on d.id_usuario=u.id_usuario
+                    left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
+                    LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
+                    left join conoci_office co on co.id_usuario=u.id_usuario
+                    left join otros_usuario ou on ou.id_usuario=u.id_usuario
+                    left join documentacion_usuario du on du.id_usuario=u.id_usuario and du.estado=1
+                    left join cuenta_bancaria cb on cb.id_usuario=u.id_usuario
+                    left join ropa_usuario ru on ru.id_usuario=u.id_usuario
+                    left join sist_pens_usuario sp on sp.id_usuario=u.id_usuario
+                    left join empresas em on em.id_empresa=u.id_empresapl
+                    left join estado_usuario estau on estau.id_estado_usuario=u.estado
+                    left join genero ge on ge.id_genero=u.id_genero
+
+                    left join departamento depart on depart.id_departamento=d.id_departamento
+                    left join provincia provic on provic.id_provincia=d.id_provincia
+                    left join distrito distr on distr.id_distrito=d.id_distrito
+
+                    left join banco banc on banc.id_banco=cb.id_banco
+                    left join sistema_pensionario spn on spn.id_sistema_pensionario =sp.id_sistema_pensionario 
+                    left join afp afp on afp.id_afp  =sp.id_afp  
+
+                    left join situacion_laboral situlab on situlab.id_situacion_laboral =u.id_situacion_laboral 
+                    left join motivo_baja_rrhh mt on u.id_motivo_baja=mt.id_motivo
+                    where u.estado in (1) and u.id_nivel<>8 and u.id_puesto in ".$dato['cadena']."
+                    ORDER BY u.ini_funciones DESC";
+        }elseif($visualizar_mi_equipo!="sin_acceso_mi_equipo"){ 
+            $sql = "SELECT u.id_usuario,u.usuario_apater,u.verif_email,u.centro_labores, 
+                    td.cod_tipo_documento,u.fec_baja,td.nom_tipo_documento,u.num_celp,
+                    u.num_doc,u.usuario_amater,u.usuario_nombres,n.nom_nacionalidad,u.foto,
+                    estau.nom_estado_usuario,ge.nom_genero,depart.nombre_departamento,
+                    provic.nombre_provincia,distr.nombre_distrito,banc.nom_banco,
+                    spn.cod_sistema_pensionario,afp.nom_afp,banc.nom_banco,
+                    cb.num_cuenta_bancaria,u.fec_ingreso, u.fec_termino,em.ruc_empresa,
+                    EXTRACT(DAY FROM u.fec_nac) AS dia,CASE MONTH(u.fec_nac) 
+                    WHEN 1 THEN 'Enero' WHEN 2 THEN  'Febrero' WHEN 3 THEN 'Marzo' 
+                    WHEN 4 THEN 'Abril' WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio'
+                    WHEN 7 THEN 'Julio' WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Septiembre'
+                    WHEN 10 THEN 'Octubre' WHEN 11 THEN 'Noviembre' WHEN 12 THEN 'Diciembre'
+                    END mes,u.usuario_email,u.fec_nac,situlab.nom_situacion_laboral,
+                    u.ini_funciones,d.nom_via,d.num_via,
+                    (case when u.usuario_nombres is not null and u.usuario_apater is not null and 
+                    u.usuario_amater is not null and u.id_nacionalidad is not null and 
+                    u.id_tipo_documento is not null and u.num_doc is not null and 
+                    u.id_genero is not null and u.fec_nac is not null and u.id_estado_civil is not null and 
+                    u.num_celp is not null and u.foto_nombre <>'' and 
+                    (u.emailp is not null || u.usuario_email is not null) then 1 else 0 end) AS datos_personales,
+                    (case when (select count(1) from gusto_preferencia_users 
+                    where gusto_preferencia_users.id_usuario=u.id_usuario and 
+                    gusto_preferencia_users.estado=1)>0 then 1 else 0 end) as gustos_preferencias,
+                    (case when d.id_departamento is not null and d.id_provincia is not null and 
+                    d.id_distrito is not null and d.id_tipo_vivienda is not null and 
+                    d.referencia is not null and d.lat is not null and d.lng is not null
+                    then 1 else 0 end) AS domicilio_user,
+                    (case when (select count(1) from referencia_familiar 
+                    where referencia_familiar.id_usuario=u.id_usuario and 
+                    referencia_familiar.nom_familiar is not null
+                    and referencia_familiar.id_parentesco is not null
+                    and referencia_familiar.fec_nac is not null and 
+                    (referencia_familiar.celular1 is not null || referencia_familiar.celular2 is not null || 
+                    referencia_familiar.fijo is not null) and referencia_familiar.estado=1)>0
+                    then 1 else 0 end) AS referencia,
+                    (case when u.hijos=2 or (u.hijos=1 and (select count(1) from hijos 
+                    where hijos.id_usuario=u.id_usuario AND hijos.nom_hijo IS NOT NULL AND 
+                    hijos.id_genero IS NOT NULL AND hijos.fec_nac IS NOT NULL AND 
+                    hijos.num_doc IS NOT NULL AND hijos.id_biologico IS NOT NULL AND 
+                    hijos.documento IS NOT NULL AND hijos.estado=1)>0) then 1 else 0 end) AS cont_hijos,
+                    (case when (select count(1) from contacto_emergencia 
+                    where contacto_emergencia.id_usuario=u.id_usuario and 
+                    contacto_emergencia.nom_contacto is not null
+                    and contacto_emergencia.id_parentesco is not null
+                    and (contacto_emergencia.celular1 is not null || 
+                    contacto_emergencia.celular2 is not null || 
+                    contacto_emergencia.fijo is not null) and contacto_emergencia.estado=1)>0
+                    then 1 else 0 end) AS contactoe,
+                    (case when (select count(1) from estudios_generales 
+                    where estudios_generales.id_usuario=u.id_usuario and 
+                    estudios_generales.id_grado_instruccion is not null
+                    and (estudios_generales.carrera is not null || estudios_generales.centro is not null) and 
+                    estudios_generales.estado=1)>0 then 1 else 0 end) AS estudiosg,
+                    (case when co.nl_excel is not null and 
+                    co.nl_word is not null and co.nl_ppoint is not null
+                    then 1 else 0 end) AS office, 
+                    (case when (select count(1) from conoci_idiomas 
+                    where conoci_idiomas.id_usuario=u.id_usuario and conoci_idiomas.estado=1)>0 
+                    then 1 else 0 end) AS idiomas,
+                    (case when (select count(1) from curso_complementario 
+                    where curso_complementario.id_usuario=u.id_usuario and 
+                    curso_complementario.estado=1)>0 then 1 else 0 end) AS con_cursos_compl,
+                    (case when (select count(1) from experiencia_laboral 
+                    where experiencia_laboral.id_usuario=u.id_usuario and 
+                    experiencia_laboral.empresa is not null
+                    and experiencia_laboral.cargo is not null and 
+                    experiencia_laboral.fec_ini is not null
+                    and experiencia_laboral.fec_fin is not null and 
+                    experiencia_laboral.motivo_salida is not null
+                    and experiencia_laboral.remuneracion is not null and experiencia_laboral.estado=1)>0
+                    then 1 else 0 end) AS experiencial, 
+                    (case when u.enfermedades=2 or (u.enfermedades=1 and 
+                    (select count(1) from enfermedad_usuario 
+                    where enfermedad_usuario.id_usuario=u.id_usuario and enfermedad_usuario.estado=1)>0) 
+                    then 1 else 0 end) AS cont_enfermedades,
+                    (case when u.id_genero=1 or (select count(1) from gestacion_usuario 
+                    where gestacion_usuario.id_usuario=u.id_usuario and gestacion_usuario.estado=1)>0 
+                    then 1 else 0 end) AS gestacion,
+                    (case when u.alergia=0 then 0 else 1 end) AS cont_alergia, 
+                    (case when (select count(1) from otros_usuario 
+                    where otros_usuario.id_usuario=u.id_usuario and otros_usuario.estado=1)>0 
+                    then 1 else 0 end) AS con_otros,
+                    (case when (select count(1) from referencia_convocatoria 
+                    where referencia_convocatoria.id_usuario=u.id_usuario and 
+                    referencia_convocatoria.estado=1)>0 then 1 else 0 end) AS ref_convoc,
+                    (case when du.cv_doc <>'' and du.dni_doc <>'' and 
+                    du.recibo_doc <>'' then 1 else 0 end) as documentacion,
+                    (case when ru.polo is not null and ru.pantalon is not null and ru.zapato is not null
+                    then 1 else 0 end) AS talla_usuario,
+                    (case when sp.id_respuestasp is not null then 1 else 0 end) AS sistema_pension,
+                    (case when cb.cuenta_bancaria=2 then 1
+                    when cb.id_banco is not null and cb.cuenta_bancaria is not null 
+                    and cb.cuenta_bancaria=1 and cb.num_cuenta_bancaria is not null 
+                    and cb.num_codigo_interbancario is not null then 1 else 0 end) AS cuenta_bancaria,
+                    (case when u.terminos=0 then 0 else 1 end) AS cont_terminos,
+                    (case when ou.id_grupo_sanguineo is not null
+                    then 1 else 0 end) as grupo_sanguineo,
+                    (case when ou.cert_vacu_covid is not null then 1 else 0 end) as covid,
+                    a.nom_area,g.nom_gerencia, p.nom_puesto, c.nom_cargo,u.usuario_email,em.nom_empresa,
+                    du.dni_doc,date_format(u.fec_baja,'%d-%m-%Y') as fecha_baja,
+                    date_format(u.ini_funciones,'%d-%m-%Y') as fecha_ingreso,
+                    mt.nom_motivo,u.doc_baja,u.ini_funciones,
+                    CASE WHEN YEAR(u.fec_nac) BETWEEN 1946 AND 1964 THEN 'BB'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1965 AND 1980 THEN 'X'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1981 AND 1996 THEN 'Y'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1997 AND 2012 THEN 'Z'
+                    WHEN YEAR(u.fec_nac) >= 2013 THEN '&alpha;'
+                    ELSE 'No se pudo determinar la generación' END AS generacion,u.id_puesto
+                    from users u
+                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
+                    LEFT JOIN area a on a.id_area=u.id_area
+                    LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN cargo c on c.id_cargo=u.id_cargo
+                    LEFT JOIN domicilio_users d ON d.id_usuario=u.id_usuario
+                    LEFT JOIN tipo_documento td ON td.id_tipo_documento=u.id_tipo_documento
+                    LEFT JOIN nacionalidad n ON n.id_nacionalidad=u.id_nacionalidad
+                    LEFT JOIN conoci_office co ON co.id_usuario=u.id_usuario
+                    LEFT JOIN otros_usuario ou ON ou.id_usuario=u.id_usuario
+                    LEFT JOIN documentacion_usuario du ON du.id_usuario=u.id_usuario and du.estado=1
+                    LEFT JOIN cuenta_bancaria cb ON cb.id_usuario=u.id_usuario
+                    LEFT JOIN ropa_usuario ru ON ru.id_usuario=u.id_usuario
+                    LEFT JOIN sist_pens_usuario sp ON sp.id_usuario=u.id_usuario
+                    LEFT JOIN empresas em ON em.id_empresa=u.id_empresapl
+                    LEFT JOIN estado_usuario estau ON estau.id_estado_usuario=u.estado
+                    LEFT JOIN genero ge ON ge.id_genero=u.id_genero
+                    LEFT JOIN departamento depart ON depart.id_departamento=d.id_departamento
+                    LEFT JOIN provincia provic ON provic.id_provincia=d.id_provincia
+                    LEFT JOIN distrito distr ON distr.id_distrito=d.id_distrito
+                    LEFT JOIN banco banc ON banc.id_banco=cb.id_banco
+                    LEFT JOIN sistema_pensionario spn ON spn.id_sistema_pensionario=sp.id_sistema_pensionario 
+                    LEFT JOIN afp afp ON afp.id_afp  =sp.id_afp  
+                    LEFT JOIN situacion_laboral situlab ON situlab.id_situacion_laboral =u.id_situacion_laboral 
+                    LEFT JOIN motivo_baja_rrhh mt ON u.id_motivo_baja=mt.id_motivo
+                    WHERE u.estado in (1) and u.id_nivel<>8 and u.id_puesto IN ($visualizar_mi_equipo)
+                    ORDER BY u.ini_funciones DESC";
+        }elseif(isset($centro_labores) && count($dato['list_ajefatura'])<1){
+            $sql = "SELECT u.id_usuario, u.usuario_apater, u.verif_email,
+                    u.centro_labores, td.cod_tipo_documento,u.fec_baja,
+                    td.nom_tipo_documento, u.num_celp,u.num_doc, 
+                    u.usuario_amater, u.usuario_nombres, n.nom_nacionalidad, u.foto,
+                    estau.nom_estado_usuario, ge.nom_genero, depart.nombre_departamento,
+                    provic.nombre_provincia, distr.nombre_distrito, banc.nom_banco,
+                    spn.cod_sistema_pensionario, afp.nom_afp, banc.nom_banco, cb.num_cuenta_bancaria,
+                    u.fec_ingreso, u.fec_termino,em.ruc_empresa,EXTRACT(DAY FROM u.fec_nac) AS dia,
+                    case month(u.fec_nac) WHEN 1 THEN 'Enero' WHEN 2 THEN  'Febrero' WHEN 3 THEN 'Marzo' 
+                    WHEN 4 THEN 'Abril' WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio' WHEN 7 THEN 'Julio'
+                    WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Septiembre' WHEN 10 THEN 'Octubre' 
+                    WHEN 11 THEN 'Noviembre' WHEN 12 THEN 'Diciembre' END mes,u.usuario_email, u.fec_nac, 
+                    situlab.nom_situacion_laboral,u.ini_funciones,d.nom_via,d.num_via,
+                    (case when u.usuario_nombres is not null and u.usuario_apater is not null and 
+                    u.usuario_amater is not null and u.id_nacionalidad is not null and 
+                    u.id_tipo_documento is not null and u.num_doc is not null and 
+                    u.id_genero is not null and u.fec_nac is not null and u.id_estado_civil is not null and 
+                    u.num_celp is not null and u.foto_nombre <>'' and 
+                    (u.emailp is not null || u.usuario_email is not null) then 1 else 0 end) AS datos_personales,
+                    (case when (select count(1) from gusto_preferencia_users 
+                    where gusto_preferencia_users.id_usuario=u.id_usuario and 
+                    gusto_preferencia_users.estado=1)>0 then 1 else 0 end) as gustos_preferencias,
+                    (case when d.id_departamento is not null and d.id_provincia is not null and 
+                    d.id_distrito is not null and d.id_tipo_vivienda is not null and 
+                    d.referencia is not null and d.lat is not null and d.lng is not null
+                    then 1 else 0 end) AS domicilio_user,
+                    (case when (select count(1) from referencia_familiar 
+                    where referencia_familiar.id_usuario=u.id_usuario and 
+                    referencia_familiar.nom_familiar is not null
+                    and referencia_familiar.id_parentesco is not null
+                    and referencia_familiar.fec_nac is not null and 
+                    (referencia_familiar.celular1 is not null || referencia_familiar.celular2 is not null || 
+                    referencia_familiar.fijo is not null) and referencia_familiar.estado=1)>0
+                    then 1 else 0 end) AS referencia,
+                    (case when u.hijos=2 or (u.hijos=1 and (select count(1) from hijos 
+                    where hijos.id_usuario=u.id_usuario AND hijos.nom_hijo IS NOT NULL AND 
+                    hijos.id_genero IS NOT NULL AND hijos.fec_nac IS NOT NULL AND 
+                    hijos.num_doc IS NOT NULL AND hijos.id_biologico IS NOT NULL AND 
+                    hijos.documento IS NOT NULL AND hijos.estado=1)>0) then 1 else 0 end) AS cont_hijos,
+                    (case when (select count(1) from contacto_emergencia 
+                    where contacto_emergencia.id_usuario=u.id_usuario and 
+                    contacto_emergencia.nom_contacto is not null
+                    and contacto_emergencia.id_parentesco is not null
+                    and (contacto_emergencia.celular1 is not null || 
+                    contacto_emergencia.celular2 is not null || 
+                    contacto_emergencia.fijo is not null) and contacto_emergencia.estado=1)>0
+                    then 1 else 0 end) AS contactoe,
+                    (case when (select count(1) from estudios_generales 
+                    where estudios_generales.id_usuario=u.id_usuario and 
+                    estudios_generales.id_grado_instruccion is not null
+                    and (estudios_generales.carrera is not null || estudios_generales.centro is not null) and 
+                    estudios_generales.estado=1)>0 then 1 else 0 end) AS estudiosg,
+                    (case when co.nl_excel is not null and 
+                    co.nl_word is not null and co.nl_ppoint is not null
+                    then 1 else 0 end) AS office, 
+                    (case when (select count(1) from conoci_idiomas 
+                    where conoci_idiomas.id_usuario=u.id_usuario and conoci_idiomas.estado=1)>0 
+                    then 1 else 0 end) AS idiomas,
+                    (case when (select count(1) from curso_complementario 
+                    where curso_complementario.id_usuario=u.id_usuario and 
+                    curso_complementario.estado=1)>0 then 1 else 0 end) AS con_cursos_compl,
+                    (case when (select count(1) from experiencia_laboral 
+                    where experiencia_laboral.id_usuario=u.id_usuario and 
+                    experiencia_laboral.empresa is not null
+                    and experiencia_laboral.cargo is not null and 
+                    experiencia_laboral.fec_ini is not null
+                    and experiencia_laboral.fec_fin is not null and 
+                    experiencia_laboral.motivo_salida is not null
+                    and experiencia_laboral.remuneracion is not null and experiencia_laboral.estado=1)>0
+                    then 1 else 0 end) AS experiencial, 
+                    (case when u.enfermedades=2 or (u.enfermedades=1 and 
+                    (select count(1) from enfermedad_usuario 
+                    where enfermedad_usuario.id_usuario=u.id_usuario and enfermedad_usuario.estado=1)>0) 
+                    then 1 else 0 end) AS cont_enfermedades,
+                    (case when u.id_genero=1 or (select count(1) from gestacion_usuario 
+                    where gestacion_usuario.id_usuario=u.id_usuario and gestacion_usuario.estado=1)>0 
+                    then 1 else 0 end) AS gestacion,
+                    (case when u.alergia=0 then 0 else 1 end) AS cont_alergia, 
+                    (case when (select count(1) from otros_usuario 
+                    where otros_usuario.id_usuario=u.id_usuario and otros_usuario.estado=1)>0 
+                    then 1 else 0 end) AS con_otros,
+                    (case when (select count(1) from referencia_convocatoria 
+                    where referencia_convocatoria.id_usuario=u.id_usuario and 
+                    referencia_convocatoria.estado=1)>0 then 1 else 0 end) AS ref_convoc,
+                    (case when du.cv_doc <>'' and du.dni_doc <>'' and 
+                    du.recibo_doc <>'' then 1 else 0 end) as documentacion,
+                    (case when ru.polo is not null and ru.pantalon is not null and ru.zapato is not null
+                    then 1 else 0 end) AS talla_usuario,
+                    (case when sp.id_respuestasp is not null then 1 else 0 end) AS sistema_pension,
+                    (case when cb.cuenta_bancaria=2 then 1
+                    when cb.id_banco is not null and cb.cuenta_bancaria is not null 
+                    and cb.cuenta_bancaria=1 and cb.num_cuenta_bancaria is not null 
+                    and cb.num_codigo_interbancario is not null then 1 else 0 end) AS cuenta_bancaria,
+                    (case when u.terminos=0 then 0 else 1 end) AS cont_terminos,
+                    (case when ou.id_grupo_sanguineo is not null
+                    then 1 else 0 end) as grupo_sanguineo,
+                    (case when ou.cert_vacu_covid is not null then 1 else 0 end) as covid,
+                    a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo,
+                    u.usuario_email, em.nom_empresa, du.dni_doc,
+                    date_format(u.fec_baja,'%d-%m-%Y') as fecha_baja,
+                    date_format(u.ini_funciones,'%d-%m-%Y') as fecha_ingreso,
+                    mt.nom_motivo,u.doc_baja,u.ini_funciones,
+                    CASE WHEN YEAR(u.fec_nac) BETWEEN 1946 AND 1964 THEN 'BB'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1965 AND 1980 THEN 'X'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1981 AND 1996 THEN 'Y'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1997 AND 2012 THEN 'Z'
+                    WHEN YEAR(u.fec_nac) >= 2013 THEN '&alpha;'
+                    ELSE 'No se pudo determinar la generación'
+                    END AS generacion,u.id_puesto
+                    from users u
+                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
+                    LEFT JOIN area a on a.id_area=u.id_area
+                    LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN cargo c on c.id_cargo=u.id_cargo
+                    left join domicilio_users d on d.id_usuario=u.id_usuario
+                    left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
+                    LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
+                    left join conoci_office co on co.id_usuario=u.id_usuario
+                    left join otros_usuario ou on ou.id_usuario=u.id_usuario
+                    left join documentacion_usuario du on du.id_usuario=u.id_usuario and du.estado=1
+                    left join cuenta_bancaria cb on cb.id_usuario=u.id_usuario
+                    left join ropa_usuario ru on ru.id_usuario=u.id_usuario
+                    left join sist_pens_usuario sp on sp.id_usuario=u.id_usuario
+                    left join empresas em on em.id_empresa=u.id_empresapl
+                    left join estado_usuario estau on estau.id_estado_usuario=u.estado
+                    left join genero ge on ge.id_genero=u.id_genero
+                    left join departamento depart on depart.id_departamento=d.id_departamento
+                    left join provincia provic on provic.id_provincia=d.id_provincia
+                    left join distrito distr on distr.id_distrito=d.id_distrito
+                    left join banco banc on banc.id_banco=cb.id_banco
+                    left join sistema_pensionario spn on spn.id_sistema_pensionario =sp.id_sistema_pensionario 
+                    left join afp afp on afp.id_afp  =sp.id_afp  
+                    left join situacion_laboral situlab on situlab.id_situacion_laboral =u.id_situacion_laboral 
+                    left join motivo_baja_rrhh mt on u.id_motivo_baja=mt.id_motivo
+                    where u.estado in (1) and u.id_nivel<>8 and u.centro_labores='".$centro_labores."'
+                    ORDER BY u.ini_funciones DESC";
+        }else{
+            $sql = "SELECT u.id_usuario, u.usuario_apater, u.centro_labores, td.cod_tipo_documento,u.fec_baja,
+                    u.num_celp,u.num_doc, u.usuario_amater, u.usuario_nombres, n.nom_nacionalidad, 
+                    u.foto, u.verif_email,EXTRACT(DAY FROM u.fec_nac) AS dia,case month(u.fec_nac) 
+                    WHEN 1 THEN 'Enero' WHEN 2 THEN  'Febrero' WHEN 3 THEN 'Marzo' WHEN 4 THEN 'Abril' 
+                    WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio' WHEN 7 THEN 'Julio' WHEN 8 THEN 'Agosto'
+                    WHEN 9 THEN 'Septiembre' WHEN 10 THEN 'Octubre' WHEN 11 THEN 'Noviembre'
+                    WHEN 12 THEN 'Diciembre' END mes,
+                    (case when u.usuario_nombres is not null and u.usuario_apater is not null and 
+                    u.usuario_amater is not null and u.id_nacionalidad is not null and 
+                    u.id_tipo_documento is not null and u.num_doc is not null and 
+                    u.id_genero is not null and u.fec_nac is not null and u.id_estado_civil is not null and 
+                    u.num_celp is not null and u.foto_nombre <>'' and 
+                    (u.emailp is not null || u.usuario_email is not null) then 1 else 0 end) AS datos_personales,
+                    (case when (select count(1) from gusto_preferencia_users 
+                    where gusto_preferencia_users.id_usuario=u.id_usuario and 
+                    gusto_preferencia_users.estado=1)>0 then 1 else 0 end) as gustos_preferencias,
+                    (case when d.id_departamento is not null and d.id_provincia is not null and 
+                    d.id_distrito is not null and d.id_tipo_vivienda is not null and 
+                    d.referencia is not null and d.lat is not null and d.lng is not null
+                    then 1 else 0 end) AS domicilio_user,
+                    (case when (select count(1) from referencia_familiar 
+                    where referencia_familiar.id_usuario=u.id_usuario and 
+                    referencia_familiar.nom_familiar is not null
+                    and referencia_familiar.id_parentesco is not null
+                    and referencia_familiar.fec_nac is not null and 
+                    (referencia_familiar.celular1 is not null || referencia_familiar.celular2 is not null || 
+                    referencia_familiar.fijo is not null) and referencia_familiar.estado=1)>0
+                    then 1 else 0 end) AS referencia,
+                    (case when u.hijos=2 or (u.hijos=1 and (select count(1) from hijos 
+                    where hijos.id_usuario=u.id_usuario AND hijos.nom_hijo IS NOT NULL AND 
+                    hijos.id_genero IS NOT NULL AND hijos.fec_nac IS NOT NULL AND 
+                    hijos.num_doc IS NOT NULL AND hijos.id_biologico IS NOT NULL AND 
+                    hijos.documento IS NOT NULL AND hijos.estado=1)>0) then 1 else 0 end) AS cont_hijos,
+                    (case when (select count(1) from contacto_emergencia 
+                    where contacto_emergencia.id_usuario=u.id_usuario and 
+                    contacto_emergencia.nom_contacto is not null
+                    and contacto_emergencia.id_parentesco is not null
+                    and (contacto_emergencia.celular1 is not null || 
+                    contacto_emergencia.celular2 is not null || 
+                    contacto_emergencia.fijo is not null) and contacto_emergencia.estado=1)>0
+                    then 1 else 0 end) AS contactoe,
+                    (case when (select count(1) from estudios_generales 
+                    where estudios_generales.id_usuario=u.id_usuario and 
+                    estudios_generales.id_grado_instruccion is not null
+                    and (estudios_generales.carrera is not null || estudios_generales.centro is not null) and 
+                    estudios_generales.estado=1)>0 then 1 else 0 end) AS estudiosg,
+                    (case when co.nl_excel is not null and 
+                    co.nl_word is not null and co.nl_ppoint is not null
+                    then 1 else 0 end) AS office, 
+                    (case when (select count(1) from conoci_idiomas 
+                    where conoci_idiomas.id_usuario=u.id_usuario and conoci_idiomas.estado=1)>0 
+                    then 1 else 0 end) AS idiomas,
+                    (case when (select count(1) from curso_complementario 
+                    where curso_complementario.id_usuario=u.id_usuario and 
+                    curso_complementario.estado=1)>0 then 1 else 0 end) AS con_cursos_compl,
+                    (case when (select count(1) from experiencia_laboral 
+                    where experiencia_laboral.id_usuario=u.id_usuario and 
+                    experiencia_laboral.empresa is not null
+                    and experiencia_laboral.cargo is not null and 
+                    experiencia_laboral.fec_ini is not null
+                    and experiencia_laboral.fec_fin is not null and 
+                    experiencia_laboral.motivo_salida is not null
+                    and experiencia_laboral.remuneracion is not null and experiencia_laboral.estado=1)>0
+                    then 1 else 0 end) AS experiencial, 
+                    (case when u.enfermedades=2 or (u.enfermedades=1 and 
+                    (select count(1) from enfermedad_usuario 
+                    where enfermedad_usuario.id_usuario=u.id_usuario and enfermedad_usuario.estado=1)>0) 
+                    then 1 else 0 end) AS cont_enfermedades,
+                    (case when u.id_genero=1 or (select count(1) from gestacion_usuario 
+                    where gestacion_usuario.id_usuario=u.id_usuario and gestacion_usuario.estado=1)>0 
+                    then 1 else 0 end) AS gestacion,
+                    (case when u.alergia=0 then 0 else 1 end) AS cont_alergia, 
+                    (case when (select count(1) from otros_usuario 
+                    where otros_usuario.id_usuario=u.id_usuario and otros_usuario.estado=1)>0 
+                    then 1 else 0 end) AS con_otros,
+                    (case when (select count(1) from referencia_convocatoria 
+                    where referencia_convocatoria.id_usuario=u.id_usuario and 
+                    referencia_convocatoria.estado=1)>0 then 1 else 0 end) AS ref_convoc,
+                    (case when du.cv_doc <>'' and du.dni_doc <>'' and 
+                    du.recibo_doc <>'' then 1 else 0 end) as documentacion,
+                    (case when ru.polo is not null and ru.pantalon is not null and ru.zapato is not null
+                    then 1 else 0 end) AS talla_usuario,
+                    (case when sp.id_respuestasp is not null then 1 else 0 end) AS sistema_pension,
+                    (case when cb.cuenta_bancaria=2 then 1
+                    when cb.id_banco is not null and cb.cuenta_bancaria is not null 
+                    and cb.cuenta_bancaria=1 and cb.num_cuenta_bancaria is not null 
+                    and cb.num_codigo_interbancario is not null then 1 else 0 end) AS cuenta_bancaria,
+                    (case when u.terminos=0 then 0 else 1 end) AS cont_terminos,
+                    (case when ou.id_grupo_sanguineo is not null
+                    then 1 else 0 end) as grupo_sanguineo,
+                    (case when ou.cert_vacu_covid is not null then 1 else 0 end) as covid,
+                    a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo,
+                    u.usuario_email, em.nom_empresa, du.dni_doc, tp.cod_talla as polo, tc.cod_talla as camisa,
+                    tpa.cod_talla as pantalon, tz.cod_talla as zapato,date_format(u.fec_baja,'%d-%m-%Y') as fecha_baja,
+                    date_format(u.ini_funciones,'%d-%m-%Y') as fecha_ingreso,
+                    mt.nom_motivo,u.doc_baja,u.ini_funciones,
+                    CASE WHEN YEAR(u.fec_nac) BETWEEN 1946 AND 1964 THEN 'BB'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1965 AND 1980 THEN 'X'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1981 AND 1996 THEN 'Y'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1997 AND 2012 THEN 'Z'
+                    WHEN YEAR(u.fec_nac) >= 2013 THEN '&alpha;'
+                    ELSE 'No se pudo determinar la generación'
+                    END AS generacion,u.id_puesto
+                    from users u
+                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
+                    LEFT JOIN area a on a.id_area=u.id_area
+                    LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN cargo c on c.id_cargo=u.id_cargo
+                    left join domicilio_users d on d.id_usuario=u.id_usuario
+                    left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
+                    LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
+                    left join conoci_office co on co.id_usuario=u.id_usuario
+                    left join otros_usuario ou on ou.id_usuario=u.id_usuario
+                    left join documentacion_usuario du on du.id_usuario=u.id_usuario and du.estado=1
+                    left join cuenta_bancaria cb on cb.id_usuario=u.id_usuario
+                    left join ropa_usuario ru on ru.id_usuario=u.id_usuario
+                    left join sist_pens_usuario sp on sp.id_usuario=u.id_usuario
+                    left join empresas em on em.id_empresa=u.id_empresapl
+                    left join talla tp on tp.id_talla=ru.polo
+                    left join talla tc on tc.id_talla=ru.camisa
+                    left join talla tpa on tpa.id_talla=ru.pantalon
+                    left join talla tz on tz.id_talla=ru.zapato
+                    left join motivo_baja_rrhh mt on u.id_motivo_baja=mt.id_motivo
+                    where u.estado in (1) and u.id_nivel<>8
+                    ORDER BY u.ini_funciones DESC";
+        }
+        
+        $result = DB::select($sql);
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
+    }   
 }
