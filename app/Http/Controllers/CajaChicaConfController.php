@@ -8,6 +8,7 @@ use App\Models\SubCategoria;
 use App\Models\Ubicacion;
 use Illuminate\Http\Request;
 use App\Models\SubGerencia;
+use App\Models\Unidad;
 
 class CajaChicaConfController extends Controller
 {
@@ -215,6 +216,92 @@ class CajaChicaConfController extends Controller
     public function destroy_sc($id)
     {
         SubCategoria::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function index_un()
+    {
+        return view('finanzas.tesoreria.administracion.caja_chica.unidad.index');
+    }
+
+    public function list_un()
+    {
+        $list_unidad = Unidad::select('id_unidad','cod_unidad','descripcion_unidad')
+                        ->where('id_unidad_mae',3)->where('estado', 1)->get();
+        return view('finanzas.tesoreria.administracion.caja_chica.unidad.lista', compact('list_unidad'));
+    }
+
+    public function create_un()
+    {
+        return view('finanzas.tesoreria.administracion.caja_chica.unidad.modal_registrar');
+    }
+
+    public function store_un(Request $request)
+    {
+        $request->validate([
+            'cod_unidad' => 'required',
+            'descripcion_unidad' => 'required'
+        ], [
+            'cod_unidad.required' => 'Debe ingresar sigla.',
+            'descripcion_unidad.required' => 'Debe ingresar descripción.'
+        ]);
+
+        $valida = Unidad::where('id_unidad_mae',3)->where('cod_unidad', $request->cod_unidad)
+                ->where('descripcion_unidad', $request->descripcion_unidad)
+                ->where('estado', 1)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Unidad::create([
+                'id_unidad_mae' => 3,
+                'cod_unidad' => $request->cod_unidad,
+                'descripcion_unidad' => $request->descripcion_unidad,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_un($id)
+    {
+        $get_id = Unidad::findOrFail($id);
+        return view('finanzas.tesoreria.administracion.caja_chica.unidad.modal_editar', compact('get_id'));
+    }
+
+    public function update_un(Request $request, $id)
+    {
+        $request->validate([
+            'cod_unidade' => 'required',
+            'descripcion_unidade' => 'required'
+        ], [
+            'cod_unidade.required' => 'Debe ingresar sigla.',
+            'descripcion_unidade.required' => 'Debe ingresar descripción.'
+        ]);
+
+        $valida = Unidad::where('id_unidad_mae',3)->where('cod_unidad', $request->cod_unidade)
+                ->where('descripcion_unidad', $request->descripcion_unidade)
+                ->where('estado', 1)->where('id_unidad', '!=', $id)->exists();
+        if($valida){
+            echo "error";
+        }else{
+            Unidad::findOrFail($id)->update([
+                'cod_unidad' => $request->cod_unidade,
+                'descripcion_unidad' => $request->descripcion_unidade,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_un($id)
+    {
+        Unidad::findOrFail($id)->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario

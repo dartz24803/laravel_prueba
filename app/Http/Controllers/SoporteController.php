@@ -56,6 +56,14 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 class SoporteController extends Controller
 {
+    protected $id_subgerenciam;
+
+    public function __construct(Request $request)
+    {
+        // Aquí validamos que el id_subgerencia venga en el request
+        $this->id_subgerenciam = $request->route('id_subgerencia');
+    }
+
 
     public function index()
     {
@@ -211,6 +219,15 @@ class SoporteController extends Controller
             'vencimiento.required' => 'Debe ingresar vencimiento.',
             'descripcion.required' => 'Debe ingresar descripcion.',
         ];
+        if ($request->especialidad == "1") {
+            $rules = array_merge($rules, [
+                'idsoporte_area_especifica' => 'gt:0',
+            ]);
+
+            $messages = array_merge($messages, [
+                'idsoporte_area_especifica.gt' => 'Debe seleccionar Área Específica',
+            ]);
+        }
 
         if ($request->especialidad == 4) {
             $rules = array_merge($rules, [
@@ -221,6 +238,8 @@ class SoporteController extends Controller
                 'area.gt' => 'Debe seleccionar Área',
             ]);
         }
+
+
 
         $request->validate($rules, $messages);
 
@@ -347,12 +366,58 @@ class SoporteController extends Controller
 
 
     // SOPORTE MASTER 
-    public function index_master()
+    public function index_master($id_subgerencia)
     {
+        session(['id_subgerenciam' => $id_subgerencia]);
+
+        switch ($id_subgerencia) {
+            case 1:
+                $nominicio = 'seguridad';
+                break;
+            case 2:
+                $nominicio = 'tienda';
+                break;
+            case 3:
+                $nominicio = 'comercial';
+                break;
+            case 4:
+                $nominicio = 'manufactura';
+                break;
+            case 5:
+                $nominicio = 'rrhh';
+                break;
+            case 6:
+                $nominicio = 'general';
+                break;
+            case 7:
+                $nominicio = 'logistica';
+                break;
+            case 8:
+                $nominicio = 'finanzas';
+                break;
+            case 9:
+                $nominicio = 'interna'; // Repetido, asegúrate de que este valor sea correcto
+                break;
+            case 10:
+                $nominicio = 'infraestructura';
+                break;
+            case 11:
+                $nominicio = 'materiales';
+                break;
+            case 12:
+                $nominicio = 'finanzas'; // Repetido, asegúrate de que este valor sea correcto
+                break;
+            case 13:
+                $nominicio = 'caja';
+                break;
+            default:
+                $nominicio = 'default'; // Valor por defecto si no coincide con ningún caso
+                break;
+        }
         $list_subgerencia = SubGerencia::list_subgerencia(9);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('soporte.soporte_master.index', compact('list_notificacion', 'list_subgerencia'));
+        return view('soporte.soporte_master.index', compact('list_notificacion', 'list_subgerencia', 'nominicio'));
     }
 
     public function list_tick_master()
@@ -414,13 +479,16 @@ class SoporteController extends Controller
 
     public function edit_tick_master($id_soporte)
     {
-
+        // $id_subgerencia = $this->id_subgerenciam;
+        $id_subgerencia = session('id_subgerenciam');
+        // dd($id_subgerencia);
         $get_id = Soporte::getTicketById($id_soporte);
-        $area = DB::table('especialidad')
-            ->leftJoin('area', 'especialidad.id_area', '=', 'area.id_area')
-            ->where('especialidad.id', $get_id->id_especialidad)
-            ->select('especialidad.*', 'area.nom_area') // Selecciona los campos que necesites
+        $area = DB::table('soporte_asunto')
+            ->leftJoin('area', 'soporte_asunto.id_area', '=', 'area.id_area')
+            ->where('soporte_asunto.idsoporte_asunto', $get_id->id_asunto)
+            ->select('soporte_asunto.*', 'area.nom_area') // Selecciona los campos que necesites
             ->first();
+
 
         if ($area->id_area == 0) {
             $areaResponsable = $get_id->id_area;
@@ -429,18 +497,19 @@ class SoporteController extends Controller
             $areaResponsable = $area->id_area;
         }
         $list_responsable = Usuario::get_list_colaborador_xarea_static($area->id_area);
-        $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_especialidad);
+        $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $cantAreasEjecut = count($list_ejecutores_responsables);
+        // dd($cantAreasEjecut);
         if ($cantAreasEjecut > 3) {
             $ejecutoresMultiples = true;
         } else {
             $ejecutoresMultiples = false;
         }
-        $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_especialidad);
+        $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
 
         // dd($list_areas_involucradas);
 
-        return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas'));
+        return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas', 'id_subgerencia'));
     }
 
     public function update_tick_master(Request $request, $id)

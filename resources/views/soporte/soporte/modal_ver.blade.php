@@ -54,20 +54,20 @@
                             </div>
                             <div class=" form-group col-md-4 mb-0">
                                 <span class="form-control border-0" id="estado_registro" name="estado_registro">
-                                      @if ($get_id->estado_registro == 1)
+                                    @if ($get_id->estado_registro == 1)
                                     Por Iniciar
-                                @elseif($get_id->estado_registro == 2)
+                                    @elseif($get_id->estado_registro == 2)
                                     En Proceso
-                                @elseif($get_id->estado_registro == 3)
+                                    @elseif($get_id->estado_registro == 3)
                                     Completado
-                                @elseif($get_id->estado_registro == 4)
+                                    @elseif($get_id->estado_registro == 4)
                                     Stand By
-                                @elseif($get_id->estado_registro == 5)
+                                    @elseif($get_id->estado_registro == 5)
                                     Cancelado
-                                @else
+                                    @else
                                     Estado Desconocido
                                     @endif
-                                    </span>
+                                </span>
                             </div>
 
                             <div class="form-group col-md-2 mb-0">
@@ -95,7 +95,7 @@
                                 <label class="control-label text-bold" ">Tipo:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0">
-                                <span class="form-control border-0">{{ $get_id->nombre_tipo }}</span>
+                                    <span class="form-control border-0">{{ $get_id->nombre_tipo }}</span>
                             </div>
                         </div>
                     </div>
@@ -120,7 +120,7 @@
                                 <label class="control-label text-bold" ">Especialidad:</label>
                             </div>
                             <div class=" form-group col-md-4">
-                                <span class="form-control border-0">{{ $get_id->nombre_especialidad }}</span>
+                                    <span class="form-control border-0">{{ $get_id->nombre_especialidad }}</span>
                             </div>
                             <div class="form-group col-md-2">
                                 <label class="control-label text-bold" ">Elemento:</label>
@@ -138,7 +138,7 @@
                                 <label class="control-label text-bold" ">Asunto:</label>
                             </div>
                             <div class=" form-group col-md-10 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                <span class="form-control border-0">{{ $get_id->nombre_asunto }}</span>
+                                    <span class="form-control border-0">{{ $get_id->nombre_asunto }}</span>
                             </div>
                         </div>
                     </div>
@@ -150,13 +150,18 @@
                                 <label class="control-label text-bold" ">Ubicación:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0">
-                                    <span class="form-control border-0">{{ $get_id->nombre_ubicacion }}</span>
+                                    <span class="form-control border-0 text-truncate" style="width: 230px;"
+                                        title="{{ $get_id->nombre_ubicacion }} - {{ $get_id->nombre_area_especifica }}">
+                                        {{ $get_id->nombre_ubicacion }} - {{ $get_id->nombre_area_especifica }}
+                                    </span>
                             </div>
+
+
                             <div class="form-group col-md-2 mb-0">
                                 <label class="control-label text-bold" ">Vencimiento:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0">
-                                <span class="form-control border-0">{{ $get_id->fec_vencimiento }}</span>
+                                    <span class="form-control border-0">{{ $get_id->fec_vencimiento }}</span>
                             </div>
                         </div>
                     </div>
@@ -253,7 +258,7 @@
                                 <label class="control-label text-bold" ">Solucion Aplicada:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                <span class="form-control border-0">{{ $get_id->fecha_comentario }}</span>
+                                    <span class="form-control border-0">{{ $get_id->fecha_comentario }}</span>
                             </div>
                         </div>
                     </div>
@@ -269,7 +274,8 @@
                             <div class="form-group col-md-8 mb-0">
                                 <p>{{ $get_id->nombre_responsable_solucion }}</p>
                                 <p style="max-width: 100%; word-wrap: break-word; white-space: normal;">
-                                    {{ $get_id->descripcion_solucion }}</p>
+                                    {{ $get_id->descripcion_solucion }}
+                                </p>
                             </div>
                         </div>
                     </div>

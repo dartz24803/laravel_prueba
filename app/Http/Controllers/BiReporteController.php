@@ -778,6 +778,71 @@ class BiReporteController extends Controller
     }
 
 
+    public function update_duplicar(Request $request, $id)
+    {
+
+        $registroOriginal = BiReporte::findOrFail($id);
+
+        // Crear un nuevo registro duplicado con los mismos datos
+        $nuevoRegistro = $registroOriginal->replicate(); // Copia todos los atributos del registro original
+        $nuevoRegistro->fec_reg = now(); // Establecer nueva fecha de registro para el duplicado
+        $nuevoRegistro->estado_valid = 0; // Cambiar otros campos si es necesario
+        $nuevoRegistro->save();
+
+        // ID del nuevo registro duplicado
+        $nuevoId = $nuevoRegistro->id_acceso_bi_reporte;
+
+        // Duplicar registros relacionados en la tabla IndicadorBi
+        $indicadoresOriginales = IndicadorBi::where('id_acceso_bi_reporte', $id)->get();
+        foreach ($indicadoresOriginales as $indicadorOriginal) {
+            IndicadorBi::create([
+                'id_acceso_bi_reporte' => $nuevoId,
+                'nom_indicador' => $indicadorOriginal->nom_indicador,
+                'estado' => $indicadorOriginal->estado,
+                'npagina' => $indicadorOriginal->npagina,
+                'descripcion' => $indicadorOriginal->descripcion,
+                'idtipo_indicador' => $indicadorOriginal->idtipo_indicador,
+                'presentacion' => $indicadorOriginal->presentacion,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+            ]);
+        }
+
+        // Duplicar registros relacionados en la tabla BiPuestoAcceso
+        $puestosOriginales = BiPuestoAcceso::where('id_acceso_bi_reporte', $id)->get();
+        foreach ($puestosOriginales as $puestoOriginal) {
+            BiPuestoAcceso::create([
+                'id_acceso_bi_reporte' => $nuevoId,
+                'id_puesto' => $puestoOriginal->id_puesto,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+            ]);
+        }
+
+        // Duplicar registros relacionados en la tabla TablaBi
+        $tablasOriginales = TablaBi::where('id_acceso_bi_reporte', $id)->get();
+        foreach ($tablasOriginales as $tablaOriginal) {
+            TablaBi::create([
+                'id_acceso_bi_reporte' => $nuevoId,
+                'idtablas_db' => $tablaOriginal->idtablas_db,
+                'estado' => $tablaOriginal->estado,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+            ]);
+        }
+
+        return response()->json(['mensaje' => 'Registro duplicado correctamente', 'nuevo_id' => $nuevoId]);
+    }
+
+
+
+
 
     public function destroy_ra($id)
     {

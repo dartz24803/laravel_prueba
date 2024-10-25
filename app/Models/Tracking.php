@@ -33,7 +33,6 @@ class Tracking extends Model
         'tiempo_llegada',
         'recepcion',
         'mercaderia_total',
-        'flete_prenda',
         'receptor',
         'tipo_pago',
         'nombre_transporte',
@@ -84,7 +83,7 @@ class Tracking extends Model
                     CASE WHEN tr.tipo_pago=1 THEN 'Si pago' WHEN tr.tipo_pago=2 THEN 'Por pagar' 
                     ELSE '' END AS nom_tipo_pago,YEAR(tr.fec_reg) AS anio,
                     (IFNULL(paquetes,0)+IFNULL(sobres,0)+IFNULL(fardos,0)+IFNULL(caja,0)) AS bultos,
-                    IFNULL(tr.flete_prenda,0) AS flete_prenda_formateado,
+                    ROUND(IFNULL(tr.importe_transporte,0)/tr.mercaderia_total,2) AS flete_prenda_formateado,
                     (SELECT CONCAT(DAY(tde.fecha),' de ',LOWER((SELECT me.nom_mes FROM mes me
                     WHERE me.cod_mes=MONTH(tde.fecha))),' del ',YEAR(tde.fecha)) 
                     FROM tracking_detalle_estado tde
@@ -96,7 +95,10 @@ class Tracking extends Model
                     FROM tracking_detalle_estado tde
                     INNER JOIN tracking_detalle_proceso tdp ON tdp.id=tde.id_detalle AND 
                     tdp.id_tracking=tr.id
-                    WHERE tde.id_estado=6) AS fecha_llegada
+                    WHERE tde.id_estado=6) AS fecha_llegada,
+                    (SELECT tpa.guia_remision FROM tracking_pago tpa
+                    WHERE tpa.id_base=tr.id_origen_hacia AND tpa.anio=YEAR(tr.fec_reg) AND
+                    tpa.semana=tr.semana) AS guia_tpago
                     FROM tracking tr
                     LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base
@@ -159,7 +161,10 @@ class Tracking extends Model
                     WHERE tdif.id_tracking=tr.id AND tdif.enviado>tdif.recibido) AS faltantes,
                     tr.transporte,(SELECT COUNT(1) FROM tracking_transporte tt
                     WHERE tt.id_base=tr.id_origen_hacia AND tt.anio=YEAR(tr.fec_reg) AND
-                    tt.semana=tr.semana) AS transporte_inicial,tr.v_sobrante,tr.v_faltante
+                    tt.semana=tr.semana) AS transporte_inicial,tr.v_sobrante,tr.v_faltante,
+                    (SELECT tpa.guia_remision FROM tracking_pago tpa
+                    WHERE tpa.id_base=tr.id_origen_hacia AND tpa.anio=YEAR(tr.fec_reg) AND
+                    tpa.semana=tr.semana) AS v_guia_transporte
                     FROM tracking tr
                     LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base

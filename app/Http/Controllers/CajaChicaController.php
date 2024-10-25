@@ -25,8 +25,9 @@ use Illuminate\Support\Facades\DB;
 use App\Models\SubGerencia;
 use App\Models\TipoComprobante;
 use App\Models\TipoPago;
-use App\Models\UnidadCC;
+use App\Models\Unidad;
 use App\Models\Usuario;
+use Mpdf\Tag\Q;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -282,7 +283,9 @@ class CajaChicaController extends Controller
         $list_tipo_comprobante = TipoComprobante::whereIn('id',[1,2,3,6])->get();
         $list_pago = Pago::all();
         $list_tipo_moneda = TipoMoneda::select('id_moneda','cod_moneda')->get();
-        $list_unidad = UnidadCC::all();
+        $list_unidad = Unidad::select('id_unidad',
+                        DB::raw("CONCAT(cod_unidad,' - ',descripcion_unidad) AS nom_unidad"))
+                        ->where('id_unidad_mae',3)->orderBy('cod_unidad','ASC')->get();
         return view('finanzas.tesoreria.caja_chica.modal_registrar_pv', compact(
             'list_ubicacion',
             'list_empresa',
@@ -317,7 +320,7 @@ class CajaChicaController extends Controller
                             ->orderBy('nombre','ASC')->get();
         }elseif($request->id_pago=="2"){
             $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
-                            ->where('estado',1)->whereIn('id',[2])
+                            ->where('estado',1)->whereIn('id',[1,2])
                             ->orderBy('nombre','ASC')->get();
         }else{
             $list_tipo_pago = [];
@@ -350,9 +353,9 @@ class CajaChicaController extends Controller
     public function list_tmp_pv(Request $request)
     {
         $list_temporal = CajaChicaProductoTmp::from('caja_chica_producto_tmp AS cp')
-                        ->select('cp.id','cp.cantidad','un.nom_unidad','cp.producto','cp.precio',
+                        ->select('cp.id','cp.cantidad','un.cod_unidad','cp.producto','cp.precio',
                         DB::raw('cp.cantidad*cp.precio AS total'))
-                        ->join('vw_unidad_caja_chica AS un','un.id_unidad','=','cp.id_unidad')
+                        ->join('unidad AS un','un.id_unidad','=','cp.id_unidad')
                         ->where('cp.id_usuario',session('usuario')->id_usuario)->get();
         return view('finanzas.tesoreria.caja_chica.lista_temporal_pv', compact('list_temporal'));
     }
@@ -522,9 +525,9 @@ class CajaChicaController extends Controller
             ));
         }else{
             $list_producto = CajaChicaProducto::from('caja_chica_producto AS cp')
-                            ->select('cp.id','cp.cantidad','un.nom_unidad','cp.producto','cp.precio',
+                            ->select('cp.id','cp.cantidad','un.cod_unidad','cp.producto','cp.precio',
                             DB::raw('cp.cantidad*cp.precio AS total'))
-                            ->join('vw_unidad_caja_chica AS un','un.id_unidad','=','cp.id_unidad')
+                            ->join('unidad AS un','un.id_unidad','=','cp.id_unidad')
                             ->where('cp.id_caja_chica',$id)->get();                            
             return view('finanzas.tesoreria.caja_chica.modal_detalle_pv', compact(
                 'get_id',
@@ -568,12 +571,14 @@ class CajaChicaController extends Controller
                                 ->orderBy('nombre','ASC')->get();
             }elseif($get_id->id_pago=="2"){
                 $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
-                                ->where('estado',1)->whereIn('id',[2])
+                                ->where('estado',1)->whereIn('id',[1,2])
                                 ->orderBy('nombre','ASC')->get();
             }else{
                 $list_tipo_pago = [];
             }
-            $list_unidad = UnidadCC::all();
+            $list_unidad = Unidad::select('id_unidad',
+                            DB::raw("CONCAT(cod_unidad,' - ',descripcion_unidad) AS nom_unidad"))
+                            ->where('id_unidad_mae',3)->orderBy('cod_unidad','ASC')->get();
             return view('finanzas.tesoreria.caja_chica.modal_editar_pv', compact(
                 'get_id',
                 'list_ubicacion',
@@ -713,9 +718,9 @@ class CajaChicaController extends Controller
     public function list_producto_pv($id)
     {
         $list_producto = CajaChicaProducto::from('caja_chica_producto AS cp')
-                        ->select('cp.id','cp.cantidad','un.nom_unidad','cp.producto','cp.precio',
+                        ->select('cp.id','cp.cantidad','un.cod_unidad','cp.producto','cp.precio',
                         DB::raw('cp.cantidad*cp.precio AS total'))
-                        ->join('vw_unidad_caja_chica AS un','un.id_unidad','=','cp.id_unidad')
+                        ->join('unidad AS un','un.id_unidad','=','cp.id_unidad')
                         ->where('cp.id_caja_chica',$id)->get();
         return view('finanzas.tesoreria.caja_chica.lista_producto_pv', compact('list_producto'));
     }
@@ -747,7 +752,8 @@ class CajaChicaController extends Controller
 
     public function destroy_producto_pv($id)
     {
-        $valida = CajaChicaProducto::where('id_caja_chica', $id)->count();
+        $get_id = CajaChicaProducto::findOrFail($id);
+        $valida = CajaChicaProducto::where('id_caja_chica', $get_id->id_caja_chica)->count();
         if ($valida<=1) {
             echo "error";
         }else{
@@ -908,7 +914,7 @@ class CajaChicaController extends Controller
                                 ->orderBy('nombre','ASC')->get();
             }elseif($get_id->id_pago=="2"){
                 $list_tipo_pago = TipoPago::select('id','nombre')->where('id_mae',1)
-                                ->where('estado',1)->whereIn('id',[2])
+                                ->where('estado',1)->whereIn('id',[1,2])
                                 ->orderBy('nombre','ASC')->get();
             }else{
                 $list_tipo_pago = [];

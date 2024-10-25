@@ -20,7 +20,7 @@ class Soporte extends Model
 
     public static function listTicketsSoporte()
     {
-        return self::select('soporte.*', 'soporte_elemento.nombre as nombre_elemento', 'especialidad.nombre as nombre_especialidad', 'soporte_asunto.nombre as nombre_asunto', 'sede_laboral.descripcion as nombre_sede', 'soporte_nivel.nombre as nombre_ubicacion', 'soporte_area_especifica.nombre as nombre_ubicacion2', 'area.nom_area as nombre_area', 'users.centro_labores as base', 'users.usuario_nombres as usuario_nombre', 'soporte_motivo_cancelacion.idsoporte_motivo_cancelacion as idsoporte_motivo_cancelacion')
+        return self::select('soporte.*', 'soporte_elemento.nombre as nombre_elemento', 'especialidad.nombre as nombre_especialidad', 'soporte_asunto.nombre as nombre_asunto', 'sede_laboral.descripcion as nombre_sede', 'soporte_nivel.nombre as nombre_ubicacion', 'soporte_area_especifica.nombre as nombre_area_especifica', 'area.nom_area as nombre_area', 'users.centro_labores as base', 'users.usuario_nombres as usuario_nombre', 'soporte_motivo_cancelacion.idsoporte_motivo_cancelacion as idsoporte_motivo_cancelacion')
             ->leftjoin('especialidad', 'soporte.id_especialidad', '=', 'especialidad.id')
             ->leftjoin('soporte_elemento', 'soporte.id_elemento', '=', 'soporte_elemento.idsoporte_elemento')
             ->leftjoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
@@ -37,7 +37,7 @@ class Soporte extends Model
 
     public static function listTicketsSoporteMaster()
     {
-        return self::select('soporte.*', 'soporte_elemento.nombre as nombre_elemento', 'especialidad.nombre as nombre_especialidad', 'soporte_asunto.nombre as nombre_asunto', 'sede_laboral.descripcion as nombre_sede', 'soporte_nivel.nombre as nombre_ubicacion', 'soporte_area_especifica.nombre as nombre_ubicacion2', 'area.nom_area as nombre_area', 'users.usuario_nombres as usuario_nombre', 'users.centro_labores as base', 'st.nombre as nombre_tipo', DB::raw("CASE WHEN soporte.id_responsable IS NULL THEN 'SIN DESIGNAR' ELSE us.usuario_nombres END as nombre_responsable"))
+        return self::select('soporte.*', 'soporte_elemento.nombre as nombre_elemento', 'especialidad.nombre as nombre_especialidad', 'soporte_asunto.nombre as nombre_asunto', 'sede_laboral.descripcion as nombre_sede', 'soporte_nivel.nombre as nombre_ubicacion', 'soporte_area_especifica.nombre as nombre_area_especifica', 'area.nom_area as nombre_area', 'users.usuario_nombres as usuario_nombre', 'users.centro_labores as base', 'st.nombre as nombre_tipo', DB::raw("CASE WHEN soporte.id_responsable IS NULL THEN 'SIN DESIGNAR' ELSE us.usuario_nombres END as nombre_responsable"))
             ->leftJoin('especialidad', 'soporte.id_especialidad', '=', 'especialidad.id')
             ->leftJoin('soporte_elemento', 'soporte.id_elemento', '=', 'soporte_elemento.idsoporte_elemento')
             ->leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
@@ -72,7 +72,7 @@ class Soporte extends Model
             'soporte_ejecutor.ruc as ruc',
             'soporte_ejecutor.fec_inicio_proyecto as fec_inicio_proyecto',
             'soporte_ejecutor.idejecutor_responsable as idejecutor_responsable',
-            'soporte_area_especifica.nombre as nombre_ubicacion2',
+            'soporte_area_especifica.nombre as nombre_area_especifica',
             'area.nom_area as nombre_area',
             'area_cancelacion.cod_area as cod_area',
             'users.usuario_nombres as usuario_nombre',
@@ -114,24 +114,56 @@ class Soporte extends Model
     }
 
 
-    public static function obtenerListadoAreasInvolucradas($id_especialidad)
+
+
+    public static function obtenerListadoAreasInvolucradas($id_soporte)
     {
-        // Primero, obtenemos las áreas relacionadas con el id_especialidad
-        $especialidad = DB::table('especialidad')
-            ->where('id', $id_especialidad)
+        $query = DB::table('soporte')
+            ->leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto') // Primer LEFT JOIN con soporte_ejecutor
+            ->where('soporte.id_soporte', $id_soporte)
+            ->select(
+                'soporte.*',
+                'soporte_asunto.*'
+            )
             ->first();
+        // dd($query);
+        if (!empty($query->id_area)) {
+            // Capturamos el valor de id_area
+            $id_areas = $query->id_area;
+            $areasArray = explode(',', $id_areas);
+            $resultado = [];
+            $area1 = DB::table('area')
+                ->leftJoin('soporte', 'area.id_area', '=', DB::raw($areasArray[0])) // LEFT JOIN con la tabla area
+                ->select('area.nom_area', 'area.id_departamento')
+                ->first();
+            $resultado[] = [
+                "area_responsable" => $area1 ? $area1->nom_area : null,
+                "id_departamento" => $area1 ? $area1->id_departamento : null,
+                "id_responsable" => $query->id_responsable,
+                "fec_cierre" => $query->fec_cierre,
+                "estado_registro" => $query->estado_registro
+            ];
+            // dd($areasArray[1]);
+            if (isset($areasArray[1])) {
+                $area2 = DB::table('area')
+                    ->leftJoin('soporte', 'area.id_area', '=', DB::raw($areasArray[1])) // LEFT JOIN con la tabla area
+                    ->select('area.nom_area', 'area.id_departamento')
+                    ->first();
+                $resultado[] = [
+                    "area_responsable" => $area2 ? $area2->nom_area : null,
+                    "id_departamento" => $area2 ? $area2->id_departamento : null,
+                    "id_responsable" => $query->id_segundo_responsable,
+                    "fec_cierre" => $query->fec_cierre_sr,
+                    "estado_registro" => $query->estado_registro_sr
+                ];
+            }
+            // dd($resultado);
 
-        $idAreas = explode(',', $especialidad->id_area);
+            // Retornamos el array de objetos
+            return $resultado;
+        }
 
-        // Construimos la consulta para ejecutar contra los ids descompuestos
-        $sql = "SELECT er.*, s.*  
-                FROM ejecutor_responsable er
-                LEFT JOIN soporte s ON s.id_area = er.id_area AND s.id_especialidad = ?  -- LEFT JOIN con soporte
-                WHERE er.id_area IN (" . implode(',', array_fill(0, count($idAreas), '?')) . ")";
-
-        // Ejecutar la consulta con los ids descompuestos
-        $query = DB::select($sql, array_merge([$id_especialidad], $idAreas));
-
-        return array_values($query); // Retornar como array indexado
+        // Si no hay id_area, devolvemos un array vacío
+        return [];
     }
 }

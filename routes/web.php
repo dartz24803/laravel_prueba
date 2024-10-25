@@ -40,6 +40,7 @@ use App\Http\Controllers\ErroresPickingConfController;
 use App\Http\Controllers\ErroresPickingController;
 use App\Http\Controllers\FinanzaInicioController;
 use App\Http\Controllers\FinanzasInicioController;
+use App\Http\Controllers\InfraestructuraInicioController;
 use App\Http\Controllers\InicioAdmController;
 use App\Http\Controllers\InicioFrasesAdmController;
 use App\Http\Controllers\InsumoConfController;
@@ -143,6 +144,8 @@ Route::controller(TrackingController::class)->group(function () {
     Route::post('tracking', 'store')->name('tracking.store');
     Route::get('tracking/detalle_transporte_inicial', 'detalle_transporte_inicial')->name('tracking.detalle_transporte_inicial');
     Route::post('tracking/insert_detalle_transporte_inicial', 'insert_detalle_transporte_inicial')->name('tracking.insert_detalle_transporte_inicial');
+    Route::get('tracking/modal_guia_transporte', 'modal_guia_transporte')->name('tracking.modal_guia_transporte');
+    Route::post('tracking/insert_guia_transporte', 'insert_guia_transporte')->name('tracking.insert_guia_transporte');
     Route::get('tracking/{id}/detalle_transporte', 'detalle_transporte')->name('tracking.detalle_transporte');
     Route::post('tracking/{id}/insert_detalle_transporte', 'insert_detalle_transporte')->name('tracking.insert_detalle_transporte');
     Route::post('tracking/{id}/confirmacion_llegada', 'insert_confirmacion_llegada')->name('tracking.confirmacion_llegada');
@@ -405,7 +408,8 @@ Route::controller(SoporteController::class)->group(function () {
 
 
     // SOPORTE MASTER
-    Route::get('soporte_master', 'index_master')->name('soporte_master');
+    Route::get('soporte_master/{id_subgerencia}', 'index_master')->name('soporte_master');
+
     Route::get('soporte_ticket_master/list', 'list_tick_master')->name('soporte_ticket_master.list');
     Route::get('soporte_ticket_master/ver/{id}', 'ver_tick_master')->name('soporte_ticket_master.ver');
     Route::get('soporte_ticket_master/edit/{id}', 'edit_tick_master')->name('soporte_ticket_master.edit');
@@ -471,6 +475,8 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('bireporte_ra/{id}/edit', 'edit_ra')->name('bireporte_ra.edit');
     Route::post('bireporte_ra/{id}', 'update_ra')->name('bireporte_ra.update');
     Route::post('bireporte_ra/{id}/valid', 'update_valid')->name('bireporte_ra.valid');
+    Route::post('bireporte_ra/{id}/duplicar', 'update_duplicar')->name('bireporte_ra.duplicar');
+
     Route::get('puestos-por-areas-bi', 'getPuestosPorAreasBi')->name('puestos_por_areas_bi');
     Route::get('usuarios_por_area', 'getUsuariosPorArea')->name('usuarios_por_area');
     Route::get('areas_por_base', 'getAreasPorBase')->name('areas_por_base_bi');
@@ -1371,7 +1377,10 @@ Route::controller(ProduccionController::class)->group(function () {
     Route::get('produccion_ft/{id}/detalle', 'detalle_rv')->name('produccion_ft.detalle');
 });
 
-
+//ÁREA INFRAESTRUCTURA
+Route::controller(InfraestructuraInicioController::class)->group(function () {
+    Route::get('infraestructura', 'index')->name('infraestructura');
+});
 
 //ÁREA FINANZAS
 Route::controller(FinanzasInicioController::class)->group(function () {
@@ -1399,6 +1408,13 @@ Route::controller(CajaChicaConfController::class)->group(function () {
     Route::get('caja_chica_conf_sc/{id}/edit', 'edit_sc')->name('caja_chica_conf_sc.edit');
     Route::put('caja_chica_conf_sc/{id}', 'update_sc')->name('caja_chica_conf_sc.update');
     Route::delete('caja_chica_conf_sc/{id}', 'destroy_sc')->name('caja_chica_conf_sc.destroy');
+    Route::get('caja_chica_conf_un', 'index_un')->name('caja_chica_conf_un');
+    Route::get('caja_chica_conf_un/list', 'list_un')->name('caja_chica_conf_un.list');
+    Route::get('caja_chica_conf_un/create', 'create_un')->name('caja_chica_conf_un.create');
+    Route::post('caja_chica_conf_un', 'store_un')->name('caja_chica_conf_un.store');
+    Route::get('caja_chica_conf_un/{id}/edit', 'edit_un')->name('caja_chica_conf_un.edit');
+    Route::put('caja_chica_conf_un/{id}', 'update_un')->name('caja_chica_conf_un.update');
+    Route::delete('caja_chica_conf_un/{id}', 'destroy_un')->name('caja_chica_conf_un.destroy');
 });
 //TESORERÍA - CAJA CHICA
 Route::controller(CajaChicaController::class)->group(function () {
