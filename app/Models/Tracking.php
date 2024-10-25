@@ -95,7 +95,10 @@ class Tracking extends Model
                     FROM tracking_detalle_estado tde
                     INNER JOIN tracking_detalle_proceso tdp ON tdp.id=tde.id_detalle AND 
                     tdp.id_tracking=tr.id
-                    WHERE tde.id_estado=6) AS fecha_llegada
+                    WHERE tde.id_estado=6) AS fecha_llegada,
+                    (SELECT tpa.guia_remision FROM tracking_pago tpa
+                    WHERE tpa.id_base=tr.id_origen_hacia AND tpa.anio=YEAR(tr.fec_reg) AND
+                    tpa.semana=tr.semana) AS guia_tpago
                     FROM tracking tr
                     LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base
@@ -158,7 +161,10 @@ class Tracking extends Model
                     WHERE tdif.id_tracking=tr.id AND tdif.enviado>tdif.recibido) AS faltantes,
                     tr.transporte,(SELECT COUNT(1) FROM tracking_transporte tt
                     WHERE tt.id_base=tr.id_origen_hacia AND tt.anio=YEAR(tr.fec_reg) AND
-                    tt.semana=tr.semana) AS transporte_inicial,tr.v_sobrante,tr.v_faltante
+                    tt.semana=tr.semana) AS transporte_inicial,tr.v_sobrante,tr.v_faltante,
+                    (SELECT tpa.guia_remision FROM tracking_pago tpa
+                    WHERE tpa.id_base=tr.id_origen_hacia AND tpa.anio=YEAR(tr.fec_reg) AND
+                    tpa.semana=tr.semana) AS v_guia_transporte
                     FROM tracking tr
                     LEFT JOIN base bd ON tr.id_origen_desde=bd.id_base
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base

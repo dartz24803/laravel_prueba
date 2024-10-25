@@ -28,6 +28,7 @@ use App\Models\TrackingToken;
 use Google\Client as GoogleClient;
 use Illuminate\Support\Facades\DB;
 use App\Models\TrackingEstado;
+use App\Models\TrackingPago;
 use App\Models\TrackingTransporte;
 use Mpdf\Mpdf;
 
@@ -500,21 +501,9 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
                 //$mail->addAddress('ogutierrez@lanumero1.com.pe');
                 //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-                $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
-                foreach($list_td as $list){
-                    $mail->addAddress($list->emailp);
-                }
-                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
-                foreach($list_cd as $list){
-                    $mail->addAddress($list->emailp);
-                }
-                $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
-                foreach($list_cc as $list){
-                    $mail->addCC($list->emailp);
-                }
 
                 $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
                 $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -683,6 +672,61 @@ class TrackingController extends Controller
                 'fecha' => now(),
                 'usuario' => session('usuario')->id_usuario
             ]);
+        }
+    }
+
+    public function modal_guia_transporte()
+    {
+        $list_base = Base::get_list_bases_tienda();
+        return view('logistica.tracking.tracking.modal_guia_transporte', compact('list_base'));
+    }
+
+    public function insert_guia_transporte(Request $request)
+    {
+        $request->validate([
+            'id_base' => 'gt:0',
+            'guia_remision' => 'required'
+        ],[
+            'id_base.gt' => 'Debe seleccionar base.',
+            'guia_remision.required' => 'Debe adjuntar guía de remisión.'
+        ]);
+
+        $valida = TrackingPago::where('id_base',$request->id_base)->where('anio',date('Y'))
+                ->where('semana',date('W'))->exists();
+        if($valida){
+            echo "error";
+        }else{
+            if($_FILES["guia_remision"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    $path = $_FILES["guia_remision"]["name"];
+                    $source_file = $_FILES['guia_remision']['tmp_name'];
+
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $nombre_soli = "GR_Transporte_".$request->id_base."_".date('YmdHis');
+                    $nombre = $nombre_soli.".".strtolower($ext);
+
+                    ftp_pasv($con_id,true);
+                    $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
+                    if($subio){
+                        $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
+                        TrackingPago::create([
+                            'id_base' => $request->id_base,
+                            'anio' => date('Y'),
+                            'semana' => date('W'),
+                            'guia_remision' => $archivo
+                        ]);
+                    }else{
+                        echo "Archivo no subido correctamente";
+                    }
+                }else{
+                    echo "No se conecto";
+                }
+            }
         }
     }
 
