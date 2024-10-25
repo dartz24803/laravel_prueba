@@ -319,8 +319,18 @@ class SoporteController extends Controller
     public function ver_tick($id_soporte)
     {
         $get_id = Soporte::getTicketById($id_soporte);
+        $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
+        $cantAreasEjecut = count($list_ejecutores_responsables);
+        // dd($cantAreasEjecut);
+        if ($cantAreasEjecut > 3) {
+            $ejecutoresMultiples = true;
+        } else {
+            $ejecutoresMultiples = false;
+        }
+        $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
+
         // dd($get_id->idejecutor_responsable);
-        return view('soporte.soporte.modal_ver', compact('get_id'));
+        return view('soporte.soporte.modal_ver', compact('get_id', 'list_areas_involucradas', 'ejecutoresMultiples'));
     }
 
     public function update_tick(Request $request, $id)
