@@ -475,6 +475,8 @@ Route::controller(BiReporteController::class)->group(function () {
     Route::get('bireporte_ra/{id}/edit', 'edit_ra')->name('bireporte_ra.edit');
     Route::post('bireporte_ra/{id}', 'update_ra')->name('bireporte_ra.update');
     Route::post('bireporte_ra/{id}/valid', 'update_valid')->name('bireporte_ra.valid');
+    Route::post('bireporte_ra/{id}/duplicar', 'update_duplicar')->name('bireporte_ra.duplicar');
+
     Route::get('puestos-por-areas-bi', 'getPuestosPorAreasBi')->name('puestos_por_areas_bi');
     Route::get('usuarios_por_area', 'getUsuariosPorArea')->name('usuarios_por_area');
     Route::get('areas_por_base', 'getAreasPorBase')->name('areas_por_base_bi');

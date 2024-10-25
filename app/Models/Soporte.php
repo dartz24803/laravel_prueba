@@ -20,7 +20,7 @@ class Soporte extends Model
 
     public static function listTicketsSoporte()
     {
-        return self::select('soporte.*', 'soporte_elemento.nombre as nombre_elemento', 'especialidad.nombre as nombre_especialidad', 'soporte_asunto.nombre as nombre_asunto', 'sede_laboral.descripcion as nombre_sede', 'soporte_nivel.nombre as nombre_ubicacion', 'soporte_area_especifica.nombre as nombre_ubicacion2', 'area.nom_area as nombre_area', 'users.centro_labores as base', 'users.usuario_nombres as usuario_nombre', 'soporte_motivo_cancelacion.idsoporte_motivo_cancelacion as idsoporte_motivo_cancelacion')
+        return self::select('soporte.*', 'soporte_elemento.nombre as nombre_elemento', 'especialidad.nombre as nombre_especialidad', 'soporte_asunto.nombre as nombre_asunto', 'sede_laboral.descripcion as nombre_sede', 'soporte_nivel.nombre as nombre_ubicacion', 'soporte_area_especifica.nombre as nombre_area_especifica', 'area.nom_area as nombre_area', 'users.centro_labores as base', 'users.usuario_nombres as usuario_nombre', 'soporte_motivo_cancelacion.idsoporte_motivo_cancelacion as idsoporte_motivo_cancelacion')
             ->leftjoin('especialidad', 'soporte.id_especialidad', '=', 'especialidad.id')
             ->leftjoin('soporte_elemento', 'soporte.id_elemento', '=', 'soporte_elemento.idsoporte_elemento')
             ->leftjoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
@@ -37,7 +37,7 @@ class Soporte extends Model
 
     public static function listTicketsSoporteMaster()
     {
-        return self::select('soporte.*', 'soporte_elemento.nombre as nombre_elemento', 'especialidad.nombre as nombre_especialidad', 'soporte_asunto.nombre as nombre_asunto', 'sede_laboral.descripcion as nombre_sede', 'soporte_nivel.nombre as nombre_ubicacion', 'soporte_area_especifica.nombre as nombre_ubicacion2', 'area.nom_area as nombre_area', 'users.usuario_nombres as usuario_nombre', 'users.centro_labores as base', 'st.nombre as nombre_tipo', DB::raw("CASE WHEN soporte.id_responsable IS NULL THEN 'SIN DESIGNAR' ELSE us.usuario_nombres END as nombre_responsable"))
+        return self::select('soporte.*', 'soporte_elemento.nombre as nombre_elemento', 'especialidad.nombre as nombre_especialidad', 'soporte_asunto.nombre as nombre_asunto', 'sede_laboral.descripcion as nombre_sede', 'soporte_nivel.nombre as nombre_ubicacion', 'soporte_area_especifica.nombre as nombre_area_especifica', 'area.nom_area as nombre_area', 'users.usuario_nombres as usuario_nombre', 'users.centro_labores as base', 'st.nombre as nombre_tipo', DB::raw("CASE WHEN soporte.id_responsable IS NULL THEN 'SIN DESIGNAR' ELSE us.usuario_nombres END as nombre_responsable"))
             ->leftJoin('especialidad', 'soporte.id_especialidad', '=', 'especialidad.id')
             ->leftJoin('soporte_elemento', 'soporte.id_elemento', '=', 'soporte_elemento.idsoporte_elemento')
             ->leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
@@ -72,7 +72,7 @@ class Soporte extends Model
             'soporte_ejecutor.ruc as ruc',
             'soporte_ejecutor.fec_inicio_proyecto as fec_inicio_proyecto',
             'soporte_ejecutor.idejecutor_responsable as idejecutor_responsable',
-            'soporte_area_especifica.nombre as nombre_ubicacion2',
+            'soporte_area_especifica.nombre as nombre_area_especifica',
             'area.nom_area as nombre_area',
             'area_cancelacion.cod_area as cod_area',
             'users.usuario_nombres as usuario_nombre',

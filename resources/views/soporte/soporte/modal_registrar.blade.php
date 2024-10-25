@@ -78,7 +78,7 @@
                         <select class="form-control" id="sede" name="sede">
                             <option value="0">Seleccione</option>
                             @foreach ($list_sede as $sede)
-                                <option value="{{ $sede->id }}">{{ $sede->descripcion }}</option>
+                            <option value="{{ $sede->id }}">{{ $sede->descripcion }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -128,7 +128,7 @@
                 <select class="form-control" id="especialidad" name="especialidad">
                     <option value="0">Seleccione</option>
                     @foreach ($list_especialidad as $list)
-                        <option value="{{ $list->id }}">{{ $list->nombre }}</option>
+                    <option value="{{ $list->id }}">{{ $list->nombre }}</option>
                     @endforeach
                 </select>
             </div>
@@ -149,7 +149,7 @@
                 <select class="form-control" id="area" name="area">
                     <option value="0">Seleccione</option>
                     @foreach ($list_area as $list)
-                        <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
+                    <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
                     @endforeach
                 </select>
             </div>
@@ -185,6 +185,8 @@
 
     <div class="modal-footer">
         @csrf
+        <input type="hidden" id="hasOptionsField" name="hasOptionsField" value="0">
+
         <button class="btn btn-primary" type="button" onclick="Insert_Registro_Soporte();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
@@ -281,8 +283,10 @@
                         );
                     });
                     $('#sublist-container').show(); // Mostrar el contenedor de idsoporte_nivel
+
                 } else {
                     $('#sublist-container').hide(); // Ocultar si no hay ubicaciones
+
                 }
             },
             error: function(xhr) {
@@ -314,10 +318,12 @@
                     });
                     $('#thirdlist-container').css('visibility', 'visible');
                     subUbicacionCont.style.display = 'block';
-
+                    $('#hasOptionsField').val('1');
                 } else {
                     $('#thirdlist-container').css('visibility', 'hidden');
                     subUbicacionCont.style.display = 'none';
+                    $('#hasOptionsField').val('0');
+
 
                 }
 

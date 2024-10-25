@@ -177,6 +177,44 @@
     }
 
 
+    function Duplicar_Reporte(id) {
+        Cargando();
+
+        var url = "{{ route('bireporte_ra.duplicar', ':id') }}".replace(':id', id);
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            title: '¿Realmente desea duplicar el reporte?',
+            text: "El reporte será duplicado",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function() {
+                        Swal(
+                            'Aprobado!',
+                            'El registro ha sido Aprobado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            List_Reporte();
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+
+
     function Valida_Archivo(val) {
         Cargando();
 
