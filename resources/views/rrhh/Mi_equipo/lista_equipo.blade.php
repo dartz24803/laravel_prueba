@@ -66,43 +66,43 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="btnDropLeft" style="padding:0;">
-                            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Corporacion/Modal_Update_ListaMiequipo/'. $list["id_usuario"]) }}">Resetear Contraseña</a>
-                            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Corporacion/Modal_Update_Baja/'. $list["id_usuario"]) }}">Comunicar Baja</a>
-                            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Corporacion/Modal_Update_CoordinadorJr/'. $list["id_usuario"]) }}">Asignar como Responsable</a>
-                            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('Corporacion/Modal_Detalle_Ausencia_Dias_Libres/'. $list["id_usuario"]) }}">Ausencias y días libres</a>
+                            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('MiEquipo/Modal_Update_ListaMiequipo/'. $list["id_usuario"]) }}">Resetear Contraseña</a>
+                            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('MiEquipo/Modal_Update_Baja/'. $list["id_usuario"]) }}">Comunicar Baja</a>
+                            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('MiEquipo/Modal_Update_CoordinadorJr/'. $list["id_usuario"]) }}">Asignar como Responsable</a>
+                            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('MiEquipo/Modal_Detalle_Ausencia_Dias_Libres/'. $list["id_usuario"]) }}">Ausencias y días libres</a>
 
                             <?php if($list['id_puesto']==36){ ?>
                                 <a class="dropdown-item" href="javascript:void(0);" onclick="Solicitud_Puesto('<?php echo $list['id_usuario']; ?>',1);">Solicitar Vendedor</a>
-                                <a id="apertura_vendedor_<?= $list['id_usuario']; ?>" class="dropdown-item d-none" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Corporacion/Modal_Solicitud_Puesto/'. $list['id_usuario'].'/1') }}">Solicitar Vendedor Cajero Modal</a>
+                                <a id="apertura_vendedor_<?= $list['id_usuario']; ?>" class="dropdown-item d-none" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('MiEquipo/Modal_Solicitud_Puesto/'. $list['id_usuario'].'/1') }}">Solicitar Vendedor Cajero Modal</a>
                             <?php } ?>
                             <?php if($list['id_puesto']==33 || $list['id_puesto']==34 || $list['id_puesto']==168){ ?>
                                 <a class="dropdown-item" href="javascript:void(0);" onclick="Solicitud_Puesto('<?php echo $list['id_usuario']; ?>',2);">Solicitar Almacenero</a>
-                                <a id="apertura_almacenero_<?= $list['id_usuario']; ?>" class="dropdown-item d-none" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Corporacion/Modal_Solicitud_Puesto/'. $list['id_usuario'].'/2') }}">Solicitar Auxiliar de Caja Modal</a>
+                                <a id="apertura_almacenero_<?= $list['id_usuario']; ?>" class="dropdown-item d-none" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('MiEquipo/Modal_Solicitud_Puesto/'. $list['id_usuario'].'/2') }}">Solicitar Auxiliar de Caja Modal</a>
                             <?php } ?>
                             <?php if($list['id_puesto']==33 || $list['id_puesto']==34 || $list['id_puesto']==35 || $list['id_puesto']==168){ ?>
                                 <a class="dropdown-item" href="javascript:void(0);" onclick="Solicitud_Puesto('<?php echo $list['id_usuario']; ?>',3);">Solicitar Vendedor Cajero</a>
-                                <a id="apertura_vendedor_cajero_<?= $list['id_usuario']; ?>" class="dropdown-item d-none" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Corporacion/Modal_Solicitud_Puesto/'. $list['id_usuario'].'/3') }}">Solicitar Vendedor Cajero Modal</a>
+                                <a id="apertura_vendedor_cajero_<?= $list['id_usuario']; ?>" class="dropdown-item d-none" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('MiEquipo/Modal_Solicitud_Puesto/'. $list['id_usuario'].'/3') }}">Solicitar Vendedor Cajero Modal</a>
                             <?php } ?>
                             <?php if($list['id_puesto']==167){ ?>
                                 <a class="dropdown-item" href="javascript:void(0);" onclick="Solicitud_Puesto('<?php echo $list['id_usuario']; ?>',4);">Solicitar Auxiliar de Caja</a>
-                                <a id="apertura_auxiliar_caja_<?= $list['id_usuario']; ?>" class="dropdown-item d-none" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Corporacion/Modal_Solicitud_Puesto/'. $list['id_usuario'].'/4') }}">Solicitar Auxiliar de Caja Modal</a>
+                                <a id="apertura_auxiliar_caja_<?= $list['id_usuario']; ?>" class="dropdown-item d-none" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('MiEquipo/Modal_Solicitud_Puesto/'. $list['id_usuario'].'/4') }}">Solicitar Auxiliar de Caja Modal</a>
                             <?php } ?>
                             <?php if($list['id_puesto']==32){ ?>
                                 <a class="dropdown-item" href="javascript:void(0);" onclick="Solicitud_Puesto('<?php echo $list['id_usuario']; ?>',5);">Solicitar Cajero Principal</a>
-                                <a id="apertura_cajero_principal_<?= $list['id_usuario']; ?>" class="dropdown-item d-none" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Corporacion/Modal_Solicitud_Puesto/'. $list['id_usuario'].'/5') }}">Solicitar Cajero Principal Modal</a>
+                                <a id="apertura_cajero_principal_<?= $list['id_usuario']; ?>" class="dropdown-item d-none" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('MiEquipo/Modal_Solicitud_Puesto/'. $list['id_usuario'].'/5') }}">Solicitar Cajero Principal Modal</a>
                             <?php } ?>
                             <?php if($list['id_puesto']==31){ ?>
                                 <a class="dropdown-item" href="javascript:void(0);" onclick="Solicitud_Puesto('<?php echo $list['id_usuario']; ?>',6);">Solicitar Auxiliar de Coordinador</a>
-                                <a id="apertura_auxiliar_coordinador_<?= $list['id_usuario']; ?>" class="dropdown-item d-none" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Corporacion/Modal_Solicitud_Puesto/'. $list['id_usuario'].'/6') }}">Solicitar Auxiliar de Caja Modal</a>
+                                <a id="apertura_auxiliar_coordinador_<?= $list['id_usuario']; ?>" class="dropdown-item d-none" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('MiEquipo/Modal_Solicitud_Puesto/'. $list['id_usuario'].'/6') }}">Solicitar Auxiliar de Caja Modal</a>
                             <?php } ?>
                             <?php if($list['id_puesto']==30){ ?>
                                 <a class="dropdown-item" href="javascript:void(0);" onclick="Solicitud_Puesto('<?php echo $list['id_usuario']; ?>',7);">Solicitar Coordinador</a>
-                                <a id="apertura_coordinador_<?= $list['id_usuario']; ?>" class="dropdown-item d-none" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Corporacion/Modal_Solicitud_Puesto/'. $list['id_usuario'].'/7') }}">Solicitar Cajero Principal Modal</a>
+                                <a id="apertura_coordinador_<?= $list['id_usuario']; ?>" class="dropdown-item d-none" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('MiEquipo/Modal_Solicitud_Puesto/'. $list['id_usuario'].'/7') }}">Solicitar Cajero Principal Modal</a>
                             <?php } ?>
 
-                            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('Corporacion/Modal_Horario_Mi_Equipo/'. $list["id_usuario"]) }}">Ver Horario</a>
+                            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('MiEquipo/Modal_Horario_Mi_Equipo/'. $list["id_usuario"]) }}">Ver Horario</a>
                             <?php if(session('usuario')->id_puesto!=29 && session('usuario')->id_puesto!=161 && session('usuario')->id_puesto!=197 && session('usuario')->id_puesto!=314){ ?>
-                                <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('Corporacion/Modal_Marcacion_Mi_Equipo/'. $list['id_usuario']) }}">Ver marcaciones</a>
+                                <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('MiEquipo/Modal_Marcacion_Mi_Equipo/'. $list['id_usuario']) }}">Ver marcaciones</a>
                             <?php } ?>
                         </div>
                     </div>
@@ -151,7 +151,7 @@
             var puesto = "Coordinador";
         }
 
-        var url="{{ url('Corporacion/Solicitud_Puesto') }}";
+        var url="{{ url('MiEquipo/Solicitud_Puesto') }}";
 
         $.ajax({
             url: url,

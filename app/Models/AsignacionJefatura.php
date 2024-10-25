@@ -71,7 +71,7 @@ class AsignacionJefatura extends Model
                 WHERE it.emp_code='$dni'
                 ORDER BY DATE(it.punch_time) DESC";
 
-        $result = DB::connection('DB_SECOND_DATABASE')->select($sql);
+        $result = DB::connection('second_mysql')->select($sql);
         // Convertir el resultado a un array
         return json_decode(json_encode($result), true);
     }

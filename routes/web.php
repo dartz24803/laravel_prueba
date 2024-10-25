@@ -2200,6 +2200,6 @@ Route::controller(MiEquipoController::class)->group(function () {
     Route::get('MiEquipo/Cargar_Mi_Equipo', 'Cargar_Mi_Equipo');
     Route::post('MiEquipo/Cargar_Bases_Equipo/{id}', 'Cargar_Bases_Equipo');
     Route::get('MiEquipo/Excel_Mi_Equipo/{base}', 'Excel_Mi_Equipo');
+    Route::get('MiEquipo/Modal_Marcacion_Mi_Equipo/{id}', 'Modal_Marcacion_Mi_Equipo');
     // Route::post('MiEquipo/Buscar_Estado_Solicitud_Papeletas_Salida_Usuario', 'Buscar_Estado_Solicitud_Papeletas_Salida_Usuario');
-    // Route::get('MiEquipo/Modal_Papeletas_Salida/{id}', 'Modal_Papeletas_Salida');
 });
