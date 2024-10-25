@@ -25,7 +25,6 @@ return new class extends Migration
             $table->integer('user_eli')->nullable();
             $table->foreign('id_tracking','tdpro_fk_id_tra')->references('id')->on('tracking');
             $table->foreign('id_proceso','tdpro_fk_id_pro')->references('id')->on('tracking_proceso');
-            //$table->timestamps();
         });
     }
 

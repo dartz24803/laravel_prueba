@@ -1052,7 +1052,7 @@ Route::controller(AsistenciaSegController::class)->group(function () {
 });
 //RECURSOS HUMANOS - POSTULANTE
 Route::controller(PostulanteController::class)->group(function () {
-    //POSTULANTE
+    //REGISTRO
     Route::get('postulante', 'index')->name('postulante');
     Route::get('postulante_reg', 'index_reg')->name('postulante_reg');
     Route::post('postulante_reg/list', 'list_reg')->name('postulante_reg.list');
@@ -1064,6 +1064,8 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::put('postulante_reg/{id}', 'update_reg')->name('postulante_reg.update');
     Route::delete('postulante_reg/{id}', 'destroy_reg')->name('postulante_reg.destroy');
     Route::get('postulante_reg/{estado}/{id_area}/excel', 'excel_reg')->name('postulante_reg.excel');
+    Route::get('postulante_reg/{id}/perfil', 'perfil_reg')->name('postulante_reg.perfil');
+    //TODOS
     Route::get('postulante_tod', 'index_tod')->name('postulante_tod');
     Route::post('postulante_tod/list', 'list_tod')->name('postulante_tod.list');
     Route::put('postulante_tod/{id}', 'update_tod')->name('postulante_tod.update');
@@ -2201,5 +2203,17 @@ Route::controller(MiEquipoController::class)->group(function () {
     Route::post('MiEquipo/Cargar_Bases_Equipo/{id}', 'Cargar_Bases_Equipo');
     Route::get('MiEquipo/Excel_Mi_Equipo/{base}', 'Excel_Mi_Equipo');
     Route::get('MiEquipo/Modal_Marcacion_Mi_Equipo/{id}', 'Modal_Marcacion_Mi_Equipo');
+    Route::get('MiEquipo/Modal_Horario_Mi_Equipo/{id}', 'Modal_Horario_Mi_Equipo');
     // Route::post('MiEquipo/Buscar_Estado_Solicitud_Papeletas_Salida_Usuario', 'Buscar_Estado_Solicitud_Papeletas_Salida_Usuario');
+    // Route::post('MiEquipo/Traer_Tramite', 'Traer_Tramite');
+    // Route::post('MiEquipo/Insert_or_Update_Papeletas_Salida', 'Insert_or_Update_Papeletas_Salida');
+    // Route::get('Papeletas/Buscar_Papeleta_Aprobacion', 'Buscar_Papeleta_Aprobacion');
+    // Route::post('Papeletas/Buscar_Papeletas_Salida_Aprobacion', 'Buscar_Papeletas_Salida_Aprobacion');
+    // Route::post('Papeletas/Aprobado_solicitud_papeletas_1', 'Aprobado_solicitud_papeletas_1');
+    // Route::post('Papeletas/Anular_solicitud_papeletas_1', 'Anular_solicitud_papeletas_1');
+    // Route::get('Papeletas/Aprobar_Papeleta_Salida/{id}', 'Aprobar_Papeleta_Salida');
+    // Route::post('Papeletas/Buscar_Papeleta_Control', 'Buscar_Papeleta_Control');
+    // Route::post('Papeletas/Buscar_Base_Papeletas_Seguiridad', 'Buscar_Base_Papeletas_Seguiridad');
+    // Route::post('Papeletas/Busca_Colaborador_Control', 'Busca_Colaborador_Control');
+    // Route::get('Papeletas/Excel_Estado_Solicitud_Papeletas_Salida_Seguridad/{base}/{estado}/{fec_rev}/{fec_fin}/{num_doc}', 'Excel_Estado_Solicitud_Papeletas_Salida_Seguridad');
 });

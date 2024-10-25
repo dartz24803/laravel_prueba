@@ -5,10 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Area;
 use App\Models\Base;
 use App\Models\Cargo;
+use App\Models\Departamento;
+use App\Models\EstadoCivil;
+use App\Models\Genero;
 use App\Models\Gerencia;
 use App\Models\HistoricoPostulante;
+use App\Models\Nacionalidad;
 use App\Models\Notificacion;
 use App\Models\Postulante;
+use App\Models\Provincia;
 use App\Models\Puesto;
 use App\Models\SubGerencia;
 use App\Models\TipoDocumento;
@@ -334,6 +339,33 @@ class PostulanteController extends Controller
         header('Cache-Control: max-age=0');
 
         $writer->save('php://output');
+    }
+
+    public function perfil_reg($id)
+    {
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(5);
+        $get_id = Postulante::findOrFail($id);
+        $list_nacionalidad = Nacionalidad::select('id_nacionalidad','nom_nacionalidad')
+                            ->where('estado',1)->get();
+        $list_genero = Genero::select('id_genero','nom_genero')->where('estado',1)->get();
+        $list_estado_civil = EstadoCivil::select('id_estado_civil','nom_estado_civil')
+                            ->where('estado',1)->get();
+        $list_tipo_documento = TipoDocumento::select('id_tipo_documento','cod_tipo_documento')
+                                ->where('estado',1)->orderBy('cod_tipo_documento','ASC')->get();
+        $list_departamento = Departamento::select('id_departamento','nombre_departamento')
+                            ->where('estado',1)->get();                         
+        return view('rrhh.postulante.registro.perfil.index', compact(
+            'list_notificacion',
+            'list_subgerencia',
+            'get_id',
+            'list_nacionalidad',
+            'list_genero',
+            'list_estado_civil',
+            'list_tipo_documento',
+            'list_departamento'
+        ));
     }
 
     public function index_tod()

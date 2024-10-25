@@ -41,9 +41,9 @@
 
     <script>
         $(document).ready(function() {
-            $("#seguridades").addClass('active');
-            $("#hseguridades").attr('aria-expanded', 'true');
-            $("#lecturas_servicios").addClass('active');
+            $("#rhumanos").addClass('active');
+            $("#hrhumanos").attr('aria-expanded', 'true');
+            $("#postulantes").addClass('active');
 
             Registro();
         });

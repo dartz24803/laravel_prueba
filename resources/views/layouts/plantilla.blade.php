@@ -14,13 +14,8 @@
     <link href="{{ asset('template/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('template/assets/css/plugins.css') }}" rel="stylesheet" type="text/css" />
     <!-- END GLOBAL MANDATORY STYLES -->
-
     <link href="{{ asset('template/assets/css/scrollspyNav.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('template/assets/css/components/tabs-accordian/custom-tabs.css') }}" rel="stylesheet" type="text/css" />
-
-    <!-- Lightbox2 -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/zoom.js/0.3.1/zoom.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/zoom.js/0.3.1/zoom.min.js"></script>
 
     <!-- BEGIN PAGE LEVEL CUSTOM STYLES -->
     <link rel="stylesheet" type="text/css" href="{{ asset('template/plugins/table/datatable/datatables.css') }}">
@@ -44,6 +39,9 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('template/plugins/dropify/dropify.min.css') }}">
     <link href="{{ asset("template/assets/css/users/account-setting.css") }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="{{ asset('template/assets/css/forms/switches.css') }}">
+    <link href="{{ asset('template/assets/css/users/account-setting.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('template/plugins/noUiSlider/nouislider.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('template/plugins/noUiSlider/custom-nouiSlider.css') }}" rel="stylesheet" type="text/css">
 </head>
 
 <body class="alt-menu sidebar-noneoverflow">
@@ -661,6 +659,7 @@
     <script src="{{ asset('template/plugins/select2/custom-select2.js') }}"></script>
     <script src="{{ asset('template/plugins/highlight/highlight.pack.js') }}"></script>
     <script src="{{ asset('template/assets/js/custom.js') }}"></script>
+    <script src="{{ asset('template/assets/js/users/account-settings.js') }}"></script>
 
     <script src="https://momentjs.com/downloads/moment.min.js"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
@@ -669,6 +668,8 @@
     <script src="{{ asset('template/table-responsive/datatables.responsive.min.js') }}"></script>
     <!-- END PAGE LEVEL CUSTOM SCRIPTS -->
     <script src="{{ asset('template/assets/js/scrollspyNav.js') }}"></script>
+    <script src="{{ asset('template/plugins/noUiSlider/nouislider.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/noUiSlider/custom-nouiSlider.js') }}"></script>
     <script>
         $('[data-toggle="tooltip"]').tooltip();
     </script>
