@@ -36,10 +36,10 @@
                 <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
-                            <div class="form-group col-md-2 mb-0">
+                            <div class="form-group col-md-2 mb-0" id="id_responsableever-label">
                                 <label class="control-label text-bold" ">Responsable:</label>
                             </div>
-                            <div class=" form-group col-md-10 mb-0"> <!-- Ajustar la columna a col-md-10 -->
+                            <div class=" form-group col-md-10 mb-0" id="id_responsableever-field">
                                     <span class="form-control border-0">{{ $get_id->nombre_responsable_asignado }}</span>
                             </div>
                         </div>
@@ -49,10 +49,10 @@
                 <div class="row" id="cancel-row" style="flex: 1;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
-                            <div class="form-group col-md-2 mb-0">
+                            <div class="form-group col-md-2 mb-0" id="estado-containerver-label">
                                 <label class="control-label text-bold">Estado:</label>
                             </div>
-                            <div class=" form-group col-md-4 mb-0">
+                            <div class=" form-group col-md-4 mb-0" id="estado-containerver-field">
                                 <span class="form-control border-0" id="estado_registro" name="estado_registro">
                                     @if ($get_id->estado_registro == 1)
                                     Por Iniciar
@@ -82,6 +82,8 @@
                         </div>
                     </div>
                 </div>
+
+
                 <div class="row" id="cancel-row" style="flex: 1;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
@@ -180,8 +182,78 @@
 
             </div>
             <div class="tab-pane fade" id="ejecutor" role="tabpanel" aria-labelledby="ejecutor-tab">
+
+
                 <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
+
+
+                        <div id="area-involucradaver">
+                            @foreach ($list_areas_involucradas as $index => $area_involucrada)
+                            <!-- Sección para mostrar Responsable -->
+                            <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
+                                <div class="col-xl-12 col-lg-12 col-sm-12">
+                                    <div class="row align-items-center">
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label text-bold">
+                                                Responsable:
+                                                <span style="display: block; width: 130px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $area_involucrada['area_responsable'] }}">
+                                                    {{ $area_involucrada['area_responsable'] }}
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-group col-md-10">
+                                            <!-- Aumento del ancho máximo para el responsable -->
+                                            <p>{{ $area_involucrada['nom_responsable'] ? $area_involucrada['nom_responsable'] : 'SIN DESIGNAR' }}</p>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sección para mostrar Estado y Cierre en la misma fila -->
+                            <div class="row" id="cancel-row" style="flex: 1;">
+                                <div class="col-xl-12 col-lg-12 col-sm-12">
+                                    <div class="row align-items-center">
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label text-bold">Estado:</label>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <p>
+                                                @switch($area_involucrada['estado_registro'])
+                                                @case(1)
+                                                Por Iniciar
+                                                @break
+                                                @case(2)
+                                                En Proceso
+                                                @break
+                                                @case(3)
+                                                Completado
+                                                @break
+                                                @case(4)
+                                                Stand By
+                                                @break
+                                                @default
+                                                Desconocido
+                                                @endswitch
+                                            </p>
+                                        </div>
+
+                                        <div class="form-group col-md-2">
+                                            <label class="control-label text-bold">Cierre:</label>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <p>{{ $area_involucrada['fec_cierre'] ? \Carbon\Carbon::parse($area_involucrada['fec_cierre'])->format('d-m-Y') : 'No especificado' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+
+
+
+
                         <div class="row align-items-center">
                             <div class="form-group col-md-2 mb-0">
                                 <label class="control-label text-bold">Ejecutor:</label>
@@ -192,6 +264,7 @@
                             </div>
 
                         </div>
+
                         <div class="row align-items-center">
                             <div class="form-group col-md-2" id="nom_proyecto-labelver">
                                 <label class="control-label text-bold">Nombre del Proyecto:</label>
@@ -247,6 +320,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="tab-pane fade" id="solucion" role="tabpanel" aria-labelledby="solucion-tab">
                 <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
@@ -290,7 +364,11 @@
     </div>
 </form>
 
-<script>
+
+<script type="text/javascript">
+    var ejecutoresMultiples = @json($ejecutoresMultiples);
+
+
     function toggleCierre() {
         var estado = document.getElementById('estado_registro').innerText.trim(); // Usamos innerText o textContent
         var cierreLabel = document.getElementById('cierre-labelver');
@@ -305,6 +383,45 @@
             cierreField.style.display = 'none';
 
         }
+    }
+
+
+    function toggleCierreMultiplesResponsables() {
+        const estadoElements = document.querySelectorAll('[id^="estado_registroe_"]');
+
+        estadoElements.forEach((element) => {
+            // Extrae el índice del ID
+            const index = element.id.split('_')[2];
+            console.log(`Índice extraído: ${index}`);
+
+            // enviar el indice del responsable
+            $('#responsable_indice').val(`${index}`);
+
+            // Obtener el estado del elemento
+            const estado = element.value;
+            console.log(`Estado del elemento ${index}:`, estado);
+            // Obtener los elementos correspondientes usando el índice extraído
+            const cierreLabel = document.getElementById(`cierre-labelver-${parseInt(index) + 1}`);
+            const cierreField = document.getElementById(`cierre-fieldver-${parseInt(index) + 1}`);
+            const estadoContainer = document.getElementById(`estado-containerver-${parseInt(index) + 1}`);
+
+            // Verificar si los elementos existen antes de manipularlos
+            if (cierreLabel && cierreField && estadoContainer) {
+                if (estado == 3 || estado == 4) {
+                    cierreLabel.style.display = 'block';
+                    cierreField.style.display = 'block';
+                    estadoContainer.classList.remove('col-md-10');
+                    estadoContainer.classList.add('col-md-4');
+                } else {
+                    cierreLabel.style.display = 'none';
+                    cierreField.style.display = 'none';
+                    estadoContainer.classList.remove('col-md-4');
+                    estadoContainer.classList.add('col-md-10');
+                }
+            } else {
+                console.warn(`Elementos no encontrados para el índice ${parseInt(index) + 1}`);
+            }
+        });
     }
 
     function toggleEjecutor() {
@@ -359,5 +476,29 @@
     $(document).ready(function() {
         toggleCierre();
         toggleEjecutor();
+        toggleCierreMultiplesResponsables();
+        console.log(ejecutoresMultiples);
+        var idResponsableLabel = document.getElementById('id_responsableever-label');
+        var idResponsableField = document.getElementById('id_responsableever-field');
+        var estadoContainer = document.getElementById('estado-containerver-field');
+        var estadoLabel = document.getElementById('estado-containerver-label');
+
+        var areaInvolucrada = document.getElementById('area-involucradaver');
+        if (!ejecutoresMultiples) {
+            idResponsableLabel.style.display = 'block';
+            idResponsableField.style.display = 'block';
+            estadoContainer.style.display = 'block';
+            estadoLabel.style.display = 'block';
+            areaInvolucrada.style.display = 'none';
+
+        } else {
+            idResponsableLabel.style.display = 'none';
+            idResponsableField.style.display = 'none';
+            estadoContainer.style.display = 'none';
+            estadoLabel.style.display = 'none';
+            areaInvolucrada.style.display = 'block';
+
+
+        }
     });
 </script>

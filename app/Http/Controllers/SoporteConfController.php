@@ -191,14 +191,12 @@ class SoporteConfController extends Controller
     public function update_asunto_conf(Request $request, $id)
     {
         $request->validate([
-            'nom_asunte' => 'required',
-            'descripcione' => 'required',
+            'nom_asunte' => 'required|max:60',
             'id_areaee' => 'required|array|min:1',
 
         ], [
-            'nom_asunte.required' => 'Debe seleccionar nombre.',
-            'descripcione.required' => 'Debe seleccionar descripción.',
             'id_areaee.required' => 'Debe seleccionar al menos una área.',
+            'nom_asunte.max' => 'Nombre debe tener como máximo 60 caracteres.',
         ]);
 
         $id_area_string = implode(',', $request->id_areaee);
@@ -290,11 +288,10 @@ class SoporteConfController extends Controller
     public function update_elemento_conf(Request $request, $id)
     {
         $request->validate([
-            'nom_elee' => 'required',
-            'descripcione' => 'required',
+            'nom_elee' => 'required|max:60',
+
         ], [
-            'nom_elee.required' => 'Debe seleccionar nombre.',
-            'descripcione.required' => 'Debe seleccionar descripción.',
+            'nom_elee.max' => 'Nombre debe tener como máximo 60 caracteres.',
         ]);
 
         ElementoSoporte::findOrFail($id)->update([

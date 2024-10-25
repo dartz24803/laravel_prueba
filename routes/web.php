@@ -1052,7 +1052,7 @@ Route::controller(AsistenciaSegController::class)->group(function () {
 });
 //RECURSOS HUMANOS - POSTULANTE
 Route::controller(PostulanteController::class)->group(function () {
-    //POSTULANTE
+    //REGISTRO
     Route::get('postulante', 'index')->name('postulante');
     Route::get('postulante_reg', 'index_reg')->name('postulante_reg');
     Route::post('postulante_reg/list', 'list_reg')->name('postulante_reg.list');
@@ -1064,6 +1064,8 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::put('postulante_reg/{id}', 'update_reg')->name('postulante_reg.update');
     Route::delete('postulante_reg/{id}', 'destroy_reg')->name('postulante_reg.destroy');
     Route::get('postulante_reg/{estado}/{id_area}/excel', 'excel_reg')->name('postulante_reg.excel');
+    Route::get('postulante_reg/{id}/perfil', 'perfil_reg')->name('postulante_reg.perfil');
+    //TODOS
     Route::get('postulante_tod', 'index_tod')->name('postulante_tod');
     Route::post('postulante_tod/list', 'list_tod')->name('postulante_tod.list');
     Route::put('postulante_tod/{id}', 'update_tod')->name('postulante_tod.update');

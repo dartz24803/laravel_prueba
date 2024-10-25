@@ -219,7 +219,8 @@ class SoporteController extends Controller
             'vencimiento.required' => 'Debe ingresar vencimiento.',
             'descripcion.required' => 'Debe ingresar descripcion.',
         ];
-        if ($request->especialidad == "1") {
+
+        if ($request->hasOptionsField == "1") {
             $rules = array_merge($rules, [
                 'idsoporte_area_especifica' => 'gt:0',
             ]);
@@ -318,8 +319,18 @@ class SoporteController extends Controller
     public function ver_tick($id_soporte)
     {
         $get_id = Soporte::getTicketById($id_soporte);
+        $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
+        $cantAreasEjecut = count($list_ejecutores_responsables);
+        // dd($cantAreasEjecut);
+        if ($cantAreasEjecut > 3) {
+            $ejecutoresMultiples = true;
+        } else {
+            $ejecutoresMultiples = false;
+        }
+        $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
+
         // dd($get_id->idejecutor_responsable);
-        return view('soporte.soporte.modal_ver', compact('get_id'));
+        return view('soporte.soporte.modal_ver', compact('get_id', 'list_areas_involucradas', 'ejecutoresMultiples'));
     }
 
     public function update_tick(Request $request, $id)
@@ -434,7 +445,17 @@ class SoporteController extends Controller
     {
         $get_id = Soporte::getTicketById($id_soporte);
         // dd($get_id->idejecutor_responsable);
-        return view('soporte.soporte_master.modal_ver', compact('get_id'));
+        $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
+        $cantAreasEjecut = count($list_ejecutores_responsables);
+        // dd($cantAreasEjecut);
+        if ($cantAreasEjecut > 3) {
+            $ejecutoresMultiples = true;
+        } else {
+            $ejecutoresMultiples = false;
+        }
+        $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
+
+        return view('soporte.soporte_master.modal_ver', compact('get_id', 'ejecutoresMultiples', 'list_areas_involucradas'));
     }
 
     public function edit_tick($id_soporte)
@@ -479,24 +500,35 @@ class SoporteController extends Controller
 
     public function edit_tick_master($id_soporte)
     {
-        // $id_subgerencia = $this->id_subgerenciam;
         $id_subgerencia = session('id_subgerenciam');
-        // dd($id_subgerencia);
+
         $get_id = Soporte::getTicketById($id_soporte);
         $area = DB::table('soporte_asunto')
             ->leftJoin('area', 'soporte_asunto.id_area', '=', 'area.id_area')
             ->where('soporte_asunto.idsoporte_asunto', $get_id->id_asunto)
             ->select('soporte_asunto.*', 'area.nom_area') // Selecciona los campos que necesites
             ->first();
-
-
         if ($area->id_area == 0) {
             $areaResponsable = $get_id->id_area;
-            // dd($areaResponsable);
         } else {
             $areaResponsable = $area->id_area;
         }
-        $list_responsable = Usuario::get_list_colaborador_xarea_static($area->id_area);
+
+        // Dividir el campo `id_area` en un array de IDs
+        $areaIds = explode(',', $areaResponsable);
+        // Crear listas basadas en los IDs obtenidos
+        $list_primer_responsable = Usuario::get_list_colaborador_xarea_static(trim($areaIds[0]));
+        $list_segundo_responsable = isset($areaIds[1]) ? Usuario::get_list_colaborador_xarea_static(trim($areaIds[1])) : [];
+        // Verificar que las listas tengan al menos un elemento antes de acceder al campo `id_sub_gerencia`
+        $primer_id_subgerencia = !empty($list_primer_responsable) ? $list_primer_responsable[0]->id_sub_gerencia : null;
+        $segundo_id_subgerencia = !empty($list_segundo_responsable) ? $list_segundo_responsable[0]->id_sub_gerencia : null;
+        // Condicional para seleccionar cuál lista asignar a `$list_responsable`
+        if ($id_subgerencia == $primer_id_subgerencia) {
+            $list_responsable = $list_primer_responsable;
+        } else {
+            $list_responsable = $list_segundo_responsable;
+        }
+        // dd($list_responsable);
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $cantAreasEjecut = count($list_ejecutores_responsables);
         // dd($cantAreasEjecut);
@@ -507,24 +539,34 @@ class SoporteController extends Controller
         }
         $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
 
-        // dd($list_areas_involucradas);
-
         return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas', 'id_subgerencia'));
     }
 
     public function update_tick_master(Request $request, $id)
     {
         $rules = [
-            'id_responsablee' => 'gt:0',
             'ejecutor_responsable' => 'gt:0',
             'descripcione_solucion' => 'required|max:250',
         ];
         $messages = [
-            'id_responsablee.gt' => 'Debe seleccionar Responsable',
             'ejecutor_responsable.gt' => 'Debe seleccionar Ejecutor Responsable',
             'descripcione_solucion.max' => 'Comentario de Solución debe tener como máximo 250 caracteres.',
         ];
+        $get_id = Soporte::getTicketById($id);
 
+        // dd($request->id_responsablee_1);
+        $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
+        $cantAreasEjecut = count($list_ejecutores_responsables);
+
+
+        if ($cantAreasEjecut < 4) {
+            $rules = array_merge($rules, [
+                'id_responsablee' => 'gt:0',
+            ]);
+            $messages = array_merge($messages, [
+                'id_responsablee.gt' => 'Debe seleccionar Responsable',
+            ]);
+        }
         if ($request->ejecutor_responsable == 2) {
             $rules = array_merge($rules, [
                 'nom_proyecto' => 'required',
@@ -547,15 +589,26 @@ class SoporteController extends Controller
 
         $request->validate($rules, $messages);
 
-        $get_id = Soporte::getTicketById($id);
-
-        Soporte::findOrFail($id)->update([
-            'id_responsable' => $request->id_responsablee,
-            'fec_cierre' => $request->fec_cierree,
-            'estado_registro' => $request->estado_registroe,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
+        // dd($request->responsable_indice);
+        if ($request->responsable_indice == "0") {
+            // RESPONSABLE PRINCIPAL
+            Soporte::findOrFail($id)->update([
+                'id_responsable' => $request->id_responsablee_0,
+                'fec_cierre' => $request->fec_cierree_0,
+                'estado_registro' => $request->estado_registroe_0,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        } else {
+            // SEGUNDO RESPONSABLE 
+            Soporte::findOrFail($id)->update([
+                'id_segundo_responsable' => $request->id_responsablee_1,
+                'fec_cierre_sr' => $request->fec_cierree_1,
+                'estado_registro_sr' => $request->estado_registroe_1,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
         // dd($get_id->idsoporte_solucion);
 
         $soporteSolucion = SoporteSolucion::findOrFail($get_id->idsoporte_solucion);
