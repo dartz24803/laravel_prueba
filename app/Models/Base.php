@@ -33,6 +33,7 @@ class Base extends Model
         'user_eli'
     ];
 
+    //NO MODIFICAR SIN COORDINACIÓN PREVIA, YA QUE SE USA EN VARIOS MÓDULOS
     public static function get_list_bases_tienda()
     {
         $sql = "SELECT id_base,cod_base FROM base

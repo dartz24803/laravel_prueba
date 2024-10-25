@@ -145,6 +145,33 @@
                     </li>
                 @endif
         @endif
+        
+        <?php if ( //MI EQUIPO  
+            session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 16 || session('usuario')->id_puesto == 20 || session('usuario')->id_puesto == 26 ||
+            session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 98 || session('usuario')->id_puesto == 128 ||
+            session('usuario')->id_puesto == 31 || session('usuario')->id_puesto == 30 ||
+            $puestos_asignados > 0 || session('usuario')->id_puesto == 76 || session('usuario')->id_puesto == 22 ||
+            session('usuario')->id_puesto == 161 ||
+            session('usuario')->visualizar_mi_equipo != "sin_acceso_mi_equipo" ||
+            //MI EQUIPO GERENCIAL
+            session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 1 || session('usuario')->id_puesto == 39 || session('usuario')->id_puesto == 80 ||
+            session('usuario')->id_puesto == 92 || session('usuario')->id_puesto == 314 || session('usuario')->id_puesto == 148 || session('usuario')->id_puesto == 251
+        ) { ?>
+            <?php if(session('usuario')->id_nivel==1 || 
+            session('usuario')->id_puesto==1 || 
+            session('usuario')->id_puesto==39 || 
+            session('usuario')->id_puesto==80 || 
+            session('usuario')->id_puesto==92){ 
+                $equipoo2 = " <br>• Mi equipo gerencial";
+             }else{
+                $equipoo2 = "";
+             }?>
+            <li id="equipoo">
+                <a href="{{ url('MiEquipo/ListaMiequipo') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Mi equipo <?= $equipoo2 ?>">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Mi Equipo</p>
+                </a>
+            </li>
+        <?php } ?>
     </ul>
 </li>
 

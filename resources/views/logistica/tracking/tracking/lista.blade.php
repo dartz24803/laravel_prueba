@@ -474,7 +474,8 @@ use App\Models\TrackingDetalleProceso;
                 @if (((session('usuario')->id_puesto==76 ||
                 session('usuario')->id_puesto==97) &&
                 ($list->hacia=="B09" || 
-                $list->hacia=="B19")) ||
+                $list->hacia=="B19") && 
+                $list->v_guia_transporte!="") ||
                 ((session('usuario')->id_puesto==30 ||
                 session('usuario')->id_puesto==31 ||
                 session('usuario')->id_puesto==32 ||
@@ -485,8 +486,10 @@ use App\Models\TrackingDetalleProceso;
                 session('usuario')->id_puesto==168 ||
                 session('usuario')->id_puesto==311 ||
                 session('usuario')->id_puesto==314) &&
-                $list->hacia!="B09" && $list->hacia!="B19") ||
-                session('usuario')->id_nivel==1)
+                $list->hacia!="B09" && $list->hacia!="B19" && 
+                $list->v_guia_transporte!="") ||
+                (session('usuario')->id_nivel==1 && 
+                $list->v_guia_transporte!=""))
                     <a href="{{ route('tracking.pago_transporte', $list->id) }}" title="Pago de transporte">
                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card text-primary">
                             <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
