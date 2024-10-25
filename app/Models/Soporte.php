@@ -16,7 +16,7 @@ class Soporte extends Model
 
     protected $primaryKey = 'id_soporte';
 
-    protected $fillable = ['id_especialidad', 'id_area', 'id_elemento', 'id_asunto', 'id_sede', 'idsoporte_nivel', 'idsoporte_area_especifica', 'codigo', 'idsoporte_motivo_cancelacion', 'idsoporte_tipo', 'area_cancelacion', 'idsoporte_solucion', 'idsoporte_ejecutor', 'id_responsable', 'fec_vencimiento', 'fec_cierre', 'descripcion', 'estado', 'estado_registro', 'fec_reg', 'user_reg', 'fec_act', 'user_act', 'fec_eli', 'user_eli'];
+    protected $fillable = ['id_especialidad', 'id_area', 'id_elemento', 'id_asunto', 'id_sede', 'idsoporte_nivel', 'idsoporte_area_especifica', 'codigo', 'idsoporte_motivo_cancelacion', 'idsoporte_tipo', 'area_cancelacion', 'id_segundo_responsable', 'idsoporte_solucion', 'idsoporte_ejecutor', 'id_responsable', 'fec_vencimiento', 'fec_cierre', 'fec_cierre_sr', 'descripcion', 'estado', 'estado_registro', 'estado_registro_sr', 'fec_reg', 'user_reg', 'fec_act', 'user_act', 'fec_eli', 'user_eli'];
 
     public static function listTicketsSoporte()
     {
@@ -119,19 +119,24 @@ class Soporte extends Model
     public static function obtenerListadoAreasInvolucradas($id_soporte)
     {
         $query = DB::table('soporte')
-            ->leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto') // Primer LEFT JOIN con soporte_ejecutor
+            ->leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto') // Primer LEFT JOIN con soporte_asunto
+            ->leftJoin('users as user1', 'soporte.id_responsable', '=', 'user1.id_usuario') // JOIN para el primer responsable
+            ->leftJoin('users as user2', 'soporte.id_segundo_responsable', '=', 'user2.id_usuario') // JOIN para el segundo responsable
             ->where('soporte.id_soporte', $id_soporte)
             ->select(
                 'soporte.*',
-                'soporte_asunto.*'
+                'soporte_asunto.*',
+                DB::raw("CONCAT(user1.usuario_nombres, ' ', user1.usuario_apater) as nom_responsable_1"), // Nombre completo primer responsable
+                DB::raw("CONCAT(user2.usuario_nombres, ' ', user2.usuario_apater) as nom_responsable_2")  // Nombre completo segundo responsable
             )
             ->first();
-        // dd($query);
+
         if (!empty($query->id_area)) {
-            // Capturamos el valor de id_area
             $id_areas = $query->id_area;
             $areasArray = explode(',', $id_areas);
             $resultado = [];
+
+            // Primer área responsable
             $area1 = DB::table('area')
                 ->leftJoin('soporte', 'area.id_area', '=', DB::raw($areasArray[0])) // LEFT JOIN con la tabla area
                 ->select('area.nom_area', 'area.id_departamento')
@@ -140,10 +145,12 @@ class Soporte extends Model
                 "area_responsable" => $area1 ? $area1->nom_area : null,
                 "id_departamento" => $area1 ? $area1->id_departamento : null,
                 "id_responsable" => $query->id_responsable,
+                "nom_responsable" => $query->nom_responsable_1, // Nombre completo primer responsable
                 "fec_cierre" => $query->fec_cierre,
                 "estado_registro" => $query->estado_registro
             ];
-            // dd($areasArray[1]);
+
+            // Segundo área responsable
             if (isset($areasArray[1])) {
                 $area2 = DB::table('area')
                     ->leftJoin('soporte', 'area.id_area', '=', DB::raw($areasArray[1])) // LEFT JOIN con la tabla area
@@ -153,11 +160,11 @@ class Soporte extends Model
                     "area_responsable" => $area2 ? $area2->nom_area : null,
                     "id_departamento" => $area2 ? $area2->id_departamento : null,
                     "id_responsable" => $query->id_segundo_responsable,
+                    "nom_responsable" => $query->nom_responsable_2, // Nombre completo segundo responsable
                     "fec_cierre" => $query->fec_cierre_sr,
                     "estado_registro" => $query->estado_registro_sr
                 ];
             }
-            // dd($resultado);
 
             // Retornamos el array de objetos
             return $resultado;
