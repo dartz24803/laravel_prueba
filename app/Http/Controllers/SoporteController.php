@@ -524,7 +524,7 @@ class SoporteController extends Controller
         // Verificar que las listas tengan al menos un elemento antes de acceder al campo `id_sub_gerencia`
         $primer_id_subgerencia = !empty($list_primer_responsable) ? $list_primer_responsable[0]->id_sub_gerencia : null;
         $segundo_id_subgerencia = !empty($list_segundo_responsable) ? $list_segundo_responsable[0]->id_sub_gerencia : null;
-
+        // dd($primer_id_subgerencia);
         if ($id_subgerencia == $primer_id_subgerencia) {
             $list_responsable = $list_primer_responsable;
         } else {
@@ -596,7 +596,7 @@ class SoporteController extends Controller
         if ($request->responsable_indice == "0" && $cantAreasEjecut < 4) {
             // UN SOLO RESPONSABLE 
             Soporte::findOrFail($id)->update([
-                'id_responsable' => $request->responsablee,
+                'id_responsable' => $request->id_responsablee,
                 'fec_cierre' => $request->fec_cierree,
                 'estado_registro' => $request->estado_registroe,
                 'fec_act' => now(),
