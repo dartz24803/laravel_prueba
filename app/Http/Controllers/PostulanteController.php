@@ -441,7 +441,7 @@ class PostulanteController extends Controller
         $get_id = Postulante::from('postulante AS po')->select('po.foto','pu.id_area')
                 ->join('puesto AS pu','pu.id_puesto','=','po.id_puesto')
                 ->where('id_postulante',$id)->first();
-        $archivo = "";
+        $archivo = $get_id->foto;
         if($_FILES["foto"]["name"] != ""){
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
@@ -528,7 +528,8 @@ class PostulanteController extends Controller
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(5);
         //MÓDULO
-        $get_id = Postulante::findOrFail($id);
+        $get_id = Postulante::from('postulante AS po')->select('po.*',DB::raw('TIMESTAMPDIFF(YEAR, po.fec_nac, CURDATE()) AS edad'))
+                ->where('id_postulante',$id)->first();
         $get_domicilio = DomicilioUsersP::from('domicilio_usersp AS do')
                         ->select('do.id_domicilio_usersp','pr.id_departamento',
                         'di.id_provincia','do.id_distrito','do.lat','do.lng')

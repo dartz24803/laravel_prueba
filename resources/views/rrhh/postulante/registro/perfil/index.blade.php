@@ -21,13 +21,21 @@
                             <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
                                 <form id="general-info" class="section general-info">
                                     <div class="info">
-                                        <h6 class="">DATOS POSTULANTE</h6>
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6>DATOS POSTULANTE</h6>
+                                            </div>
+                                            <div class="col text-right">
+                                                <a href="{{ route('postulante') }}" class="btn btn-primary" title="Regresar">Regresar</a>
+                                            </div>
+                                        </div>
                                         <div class="row">
                                             <div class="col-lg-11 mx-auto">
                                                 <div class="row">
                                                     <div class="col-xl-2 col-lg-12 col-md-4">
                                                         <div class="upload mt-4 pr-md-4">
-                                                            <input type="file" id="input-file-max-fs" class="dropify" data-default-file="{{ asset('template/assets/img/200x200.jpg') }}" data-max-file-size="2M" />
+                                                            <input type="file" id="input-file-max-fs" class="dropify" id="foto" name="foto"
+                                                            data-default-file="@php if($get_id->foto!=""){ echo $get_id->foto; }else{ echo asset('template/assets/img/200x200.jpg'); } @endphp" onchange="Valida_Archivo('foto');">
                                                             <p class="mt-2"><i class="flaticon-cloud-upload mr-1"></i> Actualizar imagen</p>
                                                         </div>
                                                     </div>
@@ -110,7 +118,7 @@
                                                                         <label for="num_doc">Número de documento</label>
                                                                         <input type="text" class="form-control" 
                                                                         id="num_doc" name="num_doc" 
-                                                                        placeholder="Número de documento" 
+                                                                        placeholder="Número de documento" onkeypress="return solo_Numeros(event);"
                                                                         value="{{ $get_id->num_doc }}">
                                                                     </div>
                                                                 </div>
@@ -133,13 +141,13 @@
                                                                         <label for="fullName">Fecha de nacimiento</label>
                                                                         <input type="date" class="form-control" 
                                                                         id="fec_nac" name="fec_nac" 
-                                                                        value="{{ $get_id->fec_nac }}">
+                                                                        value="{{ $get_id->fec_nac }}" onblur="Traer_Edad();">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-1">
                                                                     <div class="form-group">
                                                                         <label for="fullName">Edad</label>
-                                                                        <input type="text" class="form-control" disabled>
+                                                                        <input type="text" class="form-control" id="edad" value="{{ $get_id->edad }}" readonly>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -158,7 +166,7 @@
                                                                         <label for="num_celp">Número celular</label>
                                                                         <input type="text" class="form-control" 
                                                                         id="num_celp" name="num_celp" 
-                                                                        placeholder="Número celular"
+                                                                        placeholder="Número celular" onkeypress="return solo_Numeros(event);"
                                                                         value="{{ $get_id->num_celp }}">
                                                                     </div>
                                                                 </div>
@@ -167,7 +175,7 @@
                                                                         <label for="num_fijop">Teléfono fijo</label>
                                                                         <input type="text" class="form-control" 
                                                                         id="num_fijop" name="num_fijop" 
-                                                                        placeholder="Teléfono fijo"
+                                                                        placeholder="Teléfono fijo" onkeypress="return solo_Numeros(event);"
                                                                         value="{{ $get_id->num_fijop }}">
                                                                     </div>
                                                                 </div>
@@ -201,7 +209,7 @@
                                                                 <div class="col-sm-4">
                                                                     <div class="form-group">
                                                                         <label for="id_departamento">Departamento</label>
-                                                                        <select class="form-control" name="id_departamento" id="id_departamento">
+                                                                        <select class="form-control" name="id_departamento" id="id_departamento" onchange="Traer_Provincia();">
                                                                             <option value="0">Seleccione</option>
                                                                             @foreach ($list_departamento as $list)
                                                                                 <option value="{{ $list->id_departamento }}"
@@ -215,7 +223,7 @@
                                                                 <div class="col-sm-4">
                                                                     <div class="form-group">
                                                                         <label for="id_provincia">Provincia</label>
-                                                                        <select class="form-control" name="id_provincia" id="id_provincia">
+                                                                        <select class="form-control" name="id_provincia" id="id_provincia" onchange="Traer_Distrito();">
                                                                             <option value="0">Seleccione</option>
                                                                             @foreach ($list_provincia as $list)
                                                                                 <option value="{{ $list->id_provincia }}"
@@ -457,6 +465,7 @@
             $("#postulantes").addClass('active');
         });
 
+
         google.maps.event.addDomListener(window, 'load', function(){
             var lati = -12.0746254;
             var lngi = -77.021754;
@@ -558,5 +567,86 @@
                 }
             }
         });
+
+        function Valida_Archivo(val){
+            var archivoInput = document.getElementById(val);
+            var archivoRuta = archivoInput.value;
+            var extPermitidas = /(.png|.jpg|.jpeg)$/i;
+
+            if(!extPermitidas.exec(archivoRuta)){
+                Swal({
+                    title: 'Registro Denegado',
+                    text: "Asegurese de ingresar archivo con extensión .jpg|.png|.jpeg",
+                    type: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK',
+                });
+                archivoInput.value = ''; 
+                return false;
+            }else{
+                return true;         
+            }
+        }
+
+        function solo_Numeros(e) {
+            var key = event.which || event.keyCode;
+            if (key >= 48 && key <= 57) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function Traer_Edad(){
+            var fec_nac = new Date($('#fec_nac').val());
+            var hoy = new Date();
+            var edad = hoy.getFullYear() - fec_nac.getFullYear();
+            var mes = hoy.getMonth() - fec_nac.getMonth();
+            var dia = hoy.getDate() - fec_nac.getDate();
+            if (mes < 0 || (mes === 0 && dia < 0)) {
+                edad--;
+            }
+            $('#edad').val(edad >= 0 ? edad : 'Fecha no válida');
+        }
+
+        function Traer_Provincia(){
+            Cargando();
+
+            var url = "{{ route('postulante.traer_provincia') }}";
+            var id_departamento = $('#id_departamento').val();
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {'id_departamento':id_departamento},
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success:function (resp) {
+                    $('#id_provincia').html(resp);
+                    $('#id_distrito').html('<option value="0">Seleccione</option>'); 
+                }
+            });
+        }
+
+        function Traer_Distrito(){
+            Cargando();
+
+            var url = "{{ route('postulante.traer_distrito') }}";
+            var id_provincia = $('#id_provincia').val();
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {'id_provincia':id_provincia},
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success:function (resp) {
+                    $('#id_distrito').html(resp); 
+                }
+            });
+        }
     </script>
 @endsection
