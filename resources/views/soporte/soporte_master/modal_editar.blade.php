@@ -95,7 +95,7 @@
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
                             <div class="form-group col-md-2 mb-0">
-                                <label class="control-label text-bold" ">Base:</label>
+                                <label class="control-label text-bold" ">Sede Laboral:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0">
                                     <span class="form-control border-0">{{ $get_id->base }}</span>
@@ -302,25 +302,28 @@
 
                         <div class="row align-items-center">
                             <div class="form-group col-md-2">
-                                <label class="control-label text-bold" ">Ejecutor:</label>
+                                <label class="control-label text-bold">Ejecutor:</label>
                             </div>
-                            <div class=" form-group col-md-10"> <!-- Ajustar la columna a col-md-10 -->
-
-                                    <select class="form-control" id="ejecutor_responsable" name="ejecutor_responsable">
-                                        <!-- Si id_responsable es null, seleccionamos SIN DESIGNAR -->
-                                        <option value="0"
-                                            {{ is_null($get_id->idejecutor_responsable) ? 'selected' : '' }}>SELECCIONAR
-                                        </option>
-                                        @foreach ($list_ejecutores_responsables as $list)
-                                        <!-- Si id_responsable coincide con el id_usuario del listado, lo seleccionamos -->
-                                        <option value="{{ $list->idejecutor_responsable }}"
-                                            {{ $get_id->idejecutor_responsable == $list->idejecutor_responsable ? 'selected' : '' }}>
-                                            {{ $list->nombre }}
-                                        </option>
-                                        @endforeach
-                                    </select>
+                            <div class="form-group col-md-10">
+                                <select class="form-control" id="ejecutor_responsable" name="ejecutor_responsable">
+                                    <!-- Verificar si idejecutor_responsable es "-1" o contiene una coma, indicando múltiples IDs -->
+                                    <option value="-1"
+                                        {{ ($get_id->idejecutor_responsable === "-1" || strpos($get_id->idejecutor_responsable, ',') !== false) ? 'selected' : '' }}>
+                                        SELECCIONAR
+                                    </option>
+                                    @foreach ($list_ejecutores_responsables as $list)
+                                    <!-- Seleccionar opción según idejecutor_responsable -->
+                                    <option value="{{ $list->idejecutor_responsable }}"
+                                        {{ $get_id->idejecutor_responsable == $list->idejecutor_responsable ? 'selected' : '' }}>
+                                        {{ $list->nombre }}
+                                    </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
+
+
+
                         <div class="row align-items-center">
                             <div class="form-group col-md-2" id="nom_proyecto-label">
                                 <label class="control-label text-bold">Nombre del Proyecto:</label>
@@ -361,23 +364,28 @@
                             </div>
                         </div>
 
+
                         <div class="row align-items-center">
                             <div class="form-group col-md-2" id="dni_prestador-label">
                                 <label class="control-label text-bold">DNI del prestador de Servicio:</label>
                             </div>
                             <div class="form-group col-md-4" id="dni_prestador-field">
-                                <input type="text" class="form-control" id="dni_prestador" name="dni_prestador"
-                                    value="{{ $get_id->dni_prestador_servicio }}">
+                                <input type="tel" class="form-control" id="dni_prestador" name="dni_prestador"
+                                    value="{{ $get_id->dni_prestador_servicio }}"
+                                    inputmode="numeric" pattern="[0-9]*" maxlength="8">
                             </div>
 
                             <div class="form-group col-md-2" id="ruc-label">
                                 <label class="control-label text-bold">Ruc:</label>
                             </div>
                             <div class="form-group col-md-4" id="ruc-field">
-                                <input type="text" class="form-control" id="ruc" name="ruc"
-                                    value="{{ $get_id->ruc }}">
+                                <input type="tel" class="form-control" id="ruc" name="ruc"
+                                    value="{{ $get_id->ruc }}"
+                                    inputmode="numeric" pattern="[0-9]*" maxlength="12">
                             </div>
                         </div>
+
+
                     </div>
                 </div>
             </div>
@@ -613,4 +621,12 @@
             }
         });
     }
+
+    document.getElementById('dni_prestador').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, ''); // Solo permite números
+    });
+
+    document.getElementById('ruc').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, ''); // Solo permite números
+    });
 </script>

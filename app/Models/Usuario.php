@@ -709,19 +709,32 @@ class Usuario extends Model
 
     static function get_list_colaborador_xarea_static($area)
     {
-        $sql = "SELECT u.*,  
+        if ($area == 41) {
+            $sql = "SELECT u.*,  
+                       CONCAT(u.usuario_nombres, ' ', u.usuario_apater) AS nombre_completo, 
+                       a.nom_area, 
+                       g.nom_gerencia, 
+                       p.nom_puesto
+                    FROM users u
+                    LEFT JOIN gerencia g ON g.id_gerencia = u.id_gerencia
+                    LEFT JOIN area a ON a.id_area = u.id_area
+                    LEFT JOIN puesto p ON p.id_puesto = u.id_puesto
+                    WHERE u.estado = 1 
+                    AND p.id_puesto IN (12, 155, 134)";
+        } else {
+            $sql = "SELECT u.*,  
                CONCAT(u.usuario_nombres, ' ', u.usuario_apater) AS nombre_completo, 
-               a.nom_area, 
-               g.nom_gerencia, 
-               p.nom_puesto
-        FROM users u
-        LEFT JOIN gerencia g ON g.id_gerencia = u.id_gerencia
-        LEFT JOIN area a ON a.id_area = u.id_area
-        LEFT JOIN puesto p ON p.id_puesto = u.id_puesto
-        WHERE u.estado = 1 
-        AND u.id_nivel <> 8 
-        AND u.id_area = '" . $area . "'";
-
+                    a.nom_area, 
+                    g.nom_gerencia, 
+                    p.nom_puesto
+                FROM users u
+                LEFT JOIN gerencia g ON g.id_gerencia = u.id_gerencia
+                LEFT JOIN area a ON a.id_area = u.id_area
+                LEFT JOIN puesto p ON p.id_puesto = u.id_puesto
+                WHERE u.estado = 1 
+                AND u.id_nivel <> 8 
+                AND u.id_area = '" . $area . "'";
+        }
 
         $query = DB::select($sql);
         return $query;
@@ -760,14 +773,15 @@ class Usuario extends Model
         // Convertir el resultado a un array
         return json_decode(json_encode($result), true);
     }
-    
-    static function colaborador_porcentaje($id_usuario=null, $centro_labores=null,$dato=null,$data){ 
-        $id_gerencia= session('usuario')->id_gerencia;
-        $id_puesto= session('usuario')->id_puesto;
-        $id_nivel= session('usuario')->id_nivel;
+
+    static function colaborador_porcentaje($id_usuario = null, $centro_labores = null, $dato = null, $data)
+    {
+        $id_gerencia = session('usuario')->id_gerencia;
+        $id_puesto = session('usuario')->id_puesto;
+        $id_nivel = session('usuario')->id_nivel;
         $visualizar_mi_equipo =  session('usuario')->visualizar_mi_equipo;
-        
-        if(isset($id_usuario) && $id_usuario > 0){
+
+        if (isset($id_usuario) && $id_usuario > 0) {
             $sql = "SELECT u.*, n.nom_nacionalidad,td.nom_tipo_documento,a.nom_area,pu.nom_puesto,
                     gr.nom_grado_instruccion,
                     EXTRACT(DAY FROM u.fec_nac) AS dia,
@@ -792,11 +806,11 @@ class Usuario extends Model
                     LEFT JOIN puesto pu on pu.id_puesto=u.id_puesto
                     LEFT JOIN grado_instruccion gr on gr.id_grado_instruccion=u.id_grado_instruccion
                     LEFT JOIN contacto_emergencia ce on ce.id_contacto_emergencia=u.id_contacto_emergencia
-                    where u.estado in (1) and id_usuario =".$id_usuario;
-        }elseif($id_nivel=="1"){
+                    where u.estado in (1) and id_usuario =" . $id_usuario;
+        } elseif ($id_nivel == "1") {
             $base = "";
-            if($data['base']!="0"){
-                $base= "AND u.centro_labores='".$data['base']."'";
+            if ($data['base'] != "0") {
+                $base = "AND u.centro_labores='" . $data['base'] . "'";
             }
             $sql = "SELECT u.id_usuario, u.usuario_apater,u.fec_baja,
                     u.centro_labores, td.cod_tipo_documento,
@@ -936,7 +950,7 @@ class Usuario extends Model
                     left join motivo_baja_rrhh mt on u.id_motivo_baja=mt.id_motivo
                     where u.estado in (1) and u.id_nivel<>8 $base
                     ORDER BY u.ini_funciones DESC";
-        }elseif($id_puesto=="1" || $id_puesto=="39" || $id_puesto=="80" || $id_puesto=="92" ){
+        } elseif ($id_puesto == "1" || $id_puesto == "39" || $id_puesto == "80" || $id_puesto == "92") {
             $sql = "SELECT u.id_usuario, u.usuario_apater, u.verif_email,u.fec_baja,
                     u.centro_labores, td.cod_tipo_documento,
                     td.nom_tipo_documento, u.num_celp,u.num_doc, 
@@ -1071,9 +1085,9 @@ class Usuario extends Model
                     left join afp afp on afp.id_afp  =sp.id_afp  
                     left join situacion_laboral situlab on situlab.id_situacion_laboral =u.id_situacion_laboral 
                     left join motivo_baja_rrhh mt on u.id_motivo_baja=mt.id_motivo
-                    where u.estado in (1) and u.id_nivel<>8 and u.id_gerencia='".$id_gerencia."'
+                    where u.estado in (1) and u.id_nivel<>8 and u.id_gerencia='" . $id_gerencia . "'
                     ORDER BY u.ini_funciones DESC";
-        }elseif(isset($dato) && count($dato['list_ajefatura'])>0){
+        } elseif (isset($dato) && count($dato['list_ajefatura']) > 0) {
             $sql = "SELECT u.id_usuario, u.usuario_apater,u.fec_baja,
                     u.centro_labores, td.cod_tipo_documento,
                     td.nom_tipo_documento, u.num_celp,u.num_doc, 
@@ -1208,9 +1222,9 @@ class Usuario extends Model
 
                     left join situacion_laboral situlab on situlab.id_situacion_laboral =u.id_situacion_laboral 
                     left join motivo_baja_rrhh mt on u.id_motivo_baja=mt.id_motivo
-                    where u.estado in (1) and u.id_nivel<>8 and u.id_puesto in ".$dato['cadena']."
+                    where u.estado in (1) and u.id_nivel<>8 and u.id_puesto in " . $dato['cadena'] . "
                     ORDER BY u.ini_funciones DESC";
-        }elseif($visualizar_mi_equipo!="sin_acceso_mi_equipo"){ 
+        } elseif ($visualizar_mi_equipo != "sin_acceso_mi_equipo") {
             $sql = "SELECT u.id_usuario,u.usuario_apater,u.verif_email,u.centro_labores, 
                     td.cod_tipo_documento,u.fec_baja,td.nom_tipo_documento,u.num_celp,
                     u.num_doc,u.usuario_amater,u.usuario_nombres,n.nom_nacionalidad,u.foto,
@@ -1346,7 +1360,7 @@ class Usuario extends Model
                     LEFT JOIN motivo_baja_rrhh mt ON u.id_motivo_baja=mt.id_motivo
                     WHERE u.estado in (1) and u.id_nivel<>8 and u.id_puesto IN ($visualizar_mi_equipo)
                     ORDER BY u.ini_funciones DESC";
-        }elseif(isset($centro_labores) && count($dato['list_ajefatura'])<1){
+        } elseif (isset($centro_labores) && count($dato['list_ajefatura']) < 1) {
             $sql = "SELECT u.id_usuario, u.usuario_apater, u.verif_email,
                     u.centro_labores, td.cod_tipo_documento,u.fec_baja,
                     td.nom_tipo_documento, u.num_celp,u.num_doc, 
@@ -1481,9 +1495,9 @@ class Usuario extends Model
                     left join afp afp on afp.id_afp  =sp.id_afp  
                     left join situacion_laboral situlab on situlab.id_situacion_laboral =u.id_situacion_laboral 
                     left join motivo_baja_rrhh mt on u.id_motivo_baja=mt.id_motivo
-                    where u.estado in (1) and u.id_nivel<>8 and u.centro_labores='".$centro_labores."'
+                    where u.estado in (1) and u.id_nivel<>8 and u.centro_labores='" . $centro_labores . "'
                     ORDER BY u.ini_funciones DESC";
-        }else{
+        } else {
             $sql = "SELECT u.id_usuario, u.usuario_apater, u.centro_labores, td.cod_tipo_documento,u.fec_baja,
                     u.num_celp,u.num_doc, u.usuario_amater, u.usuario_nombres, n.nom_nacionalidad, 
                     u.foto, u.verif_email,EXTRACT(DAY FROM u.fec_nac) AS dia,case month(u.fec_nac) 
@@ -1610,9 +1624,9 @@ class Usuario extends Model
                     where u.estado in (1) and u.id_nivel<>8
                     ORDER BY u.ini_funciones DESC";
         }
-        
+
         $result = DB::select($sql);
         // Convertir el resultado a un array
         return json_decode(json_encode($result), true);
-    }   
+    }
 }

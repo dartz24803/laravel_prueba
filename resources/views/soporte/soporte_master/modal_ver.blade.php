@@ -88,7 +88,7 @@
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
                             <div class="form-group col-md-2 mb-0">
-                                <label class="control-label text-bold" ">Base:</label>
+                                <label class="control-label text-bold" ">Sede Laboral:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0">
                                     <span class="form-control border-0">{{ $get_id->base }}</span>

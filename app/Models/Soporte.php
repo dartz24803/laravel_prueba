@@ -32,12 +32,29 @@ class Soporte extends Model
             ->leftjoin('users', 'soporte.user_reg', '=', 'users.id_usuario')
 
             ->where('soporte.estado', 1)
+            ->orderBy('soporte.fec_reg', 'DESC') // Ordenar por fec_reg en orden descendente
             ->get();
     }
 
-    public static function listTicketsSoporteMaster()
+    public static function listTicketsSoporteMaster($id_subgerencia)
     {
-        return self::select('soporte.*', 'soporte_elemento.nombre as nombre_elemento', 'especialidad.nombre as nombre_especialidad', 'soporte_asunto.nombre as nombre_asunto', 'sede_laboral.descripcion as nombre_sede', 'soporte_nivel.nombre as nombre_ubicacion', 'soporte_area_especifica.nombre as nombre_area_especifica', 'area.nom_area as nombre_area', 'users.usuario_nombres as usuario_nombre', 'users.centro_labores as base', 'st.nombre as nombre_tipo', DB::raw("CASE WHEN soporte.id_responsable IS NULL THEN 'SIN DESIGNAR' ELSE us.usuario_nombres END as nombre_responsable"))
+        // Obtener los IDs de área según el id_subgerencia
+        $areas = self::getAreasBySubgerencia($id_subgerencia);
+
+        return self::select(
+            'soporte.*',
+            'soporte_elemento.nombre as nombre_elemento',
+            'especialidad.nombre as nombre_especialidad',
+            'soporte_asunto.nombre as nombre_asunto',
+            'sede_laboral.descripcion as nombre_sede',
+            'soporte_nivel.nombre as nombre_ubicacion',
+            'soporte_area_especifica.nombre as nombre_area_especifica',
+            'area.nom_area as nombre_area',
+            'users.usuario_nombres as usuario_nombre',
+            'users.centro_labores as base',
+            'st.nombre as nombre_tipo',
+            DB::raw("CASE WHEN soporte.id_responsable IS NULL THEN 'SIN DESIGNAR' ELSE us.usuario_nombres END as nombre_responsable")
+        )
             ->leftJoin('especialidad', 'soporte.id_especialidad', '=', 'especialidad.id')
             ->leftJoin('soporte_elemento', 'soporte.id_elemento', '=', 'soporte_elemento.idsoporte_elemento')
             ->leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
@@ -50,8 +67,21 @@ class Soporte extends Model
             ->leftJoin('users as us', 'soporte.id_responsable', '=', 'us.id_usuario')
             ->leftJoin('soporte_tipo as st', 'sa.idsoporte_tipo', '=', 'st.idsoporte_tipo')
             ->where('soporte.estado', 1)
+            ->where(function ($query) use ($areas) {
+                // Condición para id_area en la tabla soporte
+                $query->whereIn('soporte.id_area', $areas);
+
+                // Condición para id_area en la tabla soporte_asunto
+                $query->orWhere(function ($q) use ($areas) {
+                    foreach ($areas as $area) {
+                        $q->orWhereRaw("FIND_IN_SET(?, sa.id_area)", [$area]);
+                    }
+                });
+            })
+            ->orderBy('soporte.fec_reg', 'DESC') // Ordenar por fec_reg en orden descendente
             ->get();
     }
+
 
     public static function getTicketById($id_soporte)
     {
@@ -88,7 +118,18 @@ class Soporte extends Model
                 WHEN soporte_solucion.id_responsable IS NULL
                 THEN 'SIN DESIGNAR'
                 ELSE CONCAT(usr.usuario_nombres, ' ', usr.usuario_apater, ' ', usr.usuario_amater) END as nombre_responsable_solucion"),
-            'se.nombre as nombre_ejecutor_responsable',
+
+            // Modificación aquí
+            DB::raw("CASE 
+                WHEN se.idejecutor_responsable IS NULL 
+                THEN 'POR DESIGNAR' 
+                WHEN se.idejecutor_responsable REGEXP '^[0-9]+$' 
+                THEN se.nombre 
+                WHEN se.idejecutor_responsable REGEXP '^[0-9]+(,[0-9]+)*,$' 
+                THEN 'AREA' 
+                ELSE se.nombre 
+            END as nombre_ejecutor_responsable"),
+
             'usr.foto as foto_responsable_solucion',
         )
             ->leftJoin('especialidad', 'soporte.id_especialidad', '=', 'especialidad.id')
@@ -175,5 +216,16 @@ class Soporte extends Model
 
         // Si no hay id_area, devolvemos un array vacío
         return [];
+    }
+
+
+
+    public static function getAreasBySubgerencia($id_subgerencia)
+    {
+        return DB::table('area')
+            ->select('id_area')
+            ->where('id_departamento', $id_subgerencia)
+            ->pluck('id_area')
+            ->toArray();
     }
 }
