@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('area', function (Blueprint $table) {
             $table->id('id_area');
             $table->unsignedBigInteger('id_direccion');
-            $table->unsignedBigInteger('id_gerencia');
-            $table->unsignedBigInteger('id_departamento');
             $table->string('cod_area', 10)->nullable();
             $table->string('nom_area', 50)->nullable();
+            $table->unsignedBigInteger('id_gerencia');
+            $table->unsignedBigInteger('id_departamento');
             $table->string('puestos', 255)->nullable();
             $table->string('orden', 2)->nullable();
             $table->integer('estado')->nullable();
@@ -31,7 +31,6 @@ return new class extends Migration
             $table->foreign('id_direccion','are_fk_id_dir')->references('id_direccion')->on('direccion');
             $table->foreign('id_gerencia','are_fk_id_ger')->references('id_gerencia')->on('gerencia');
             $table->foreign('id_departamento','are_fk_id_dep')->references('id_sub_gerencia')->on('sub_gerencia');
-            //$table->timestamps();
         });
     }
 
