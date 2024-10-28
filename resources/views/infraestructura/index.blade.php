@@ -17,8 +17,8 @@
 
 <script>
     $(document).ready(function() {
-        $("#inicio_finanzas").addClass('active');
-        $("#hinicio_finanzas").attr('aria-expanded', 'true');
+        $("#inicio_infraestructura").addClass('active');
+        $("#hinicio_infraestructura").attr('aria-expanded', 'true');
     });
 </script>
 @endsection
