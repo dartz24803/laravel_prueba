@@ -37,13 +37,18 @@
                                                                 <div class="col-sm-6">
                                                                     <div class="form-group">
                                                                         <label for="postulante_apater">Apellido paterno</label>
-                                                                        <input type="text" class="form-control" id="postulante_apater" name="postulante_apater" placeholder="Apellido paterno">
+                                                                        <input type="text" class="form-control" 
+                                                                        id="postulante_apater" name="postulante_apater" 
+                                                                        placeholder="Apellido paterno" 
+                                                                        value="{{ $get_id->postulante_apater }}">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-6">
                                                                     <div class="form-group">
                                                                         <label for="postulante_amater">Apellido materno</label>
-                                                                        <input type="text" class="form-control" id="postulante_amater" name="postulante_amater" placeholder="Apellido materno">
+                                                                        <input type="text" class="form-control" 
+                                                                        id="postulante_amater" name="postulante_amater" 
+                                                                        placeholder="Apellido materno" value="{{ $get_id->postulante_amater }}">
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -51,7 +56,9 @@
                                                                 <div class="col-sm-6">
                                                                     <div class="form-group">
                                                                         <label for="postulante_nombres">Nombres</label>
-                                                                        <input type="text" class="form-control" id="postulante_nombres" name="postulante_nombres" placeholder="Nombres">
+                                                                        <input type="text" class="form-control" 
+                                                                        id="postulante_nombres" name="postulante_nombres" 
+                                                                        placeholder="Nombres" value="{{ $get_id->postulante_nombres }}">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-3">
@@ -60,7 +67,8 @@
                                                                         <select class="form-control" name="id_nacionalidad" id="id_nacionalidad">
                                                                             <option value="0">Seleccione</option>
                                                                             @foreach ($list_nacionalidad as $list)
-                                                                                <option value="{{ $list->id_nacionalidad }}">
+                                                                                <option value="{{ $list->id_nacionalidad }}"
+                                                                                @if ($list->id_nacionalidad==$get_id->id_nacionalidad) selected @endif>
                                                                                     {{ $list->nom_nacionalidad }}
                                                                                 </option>
                                                                             @endforeach                                                                            
@@ -73,7 +81,8 @@
                                                                         <select class="form-control" name="id_genero" id="id_genero">
                                                                             <option value="0">Seleccione</option>
                                                                             @foreach ($list_genero as $list)
-                                                                                <option value="{{ $list->id_genero }}">
+                                                                                <option value="{{ $list->id_genero }}"
+                                                                                @if ($list->id_genero==$get_id->id_genero) selected @endif>
                                                                                     {{ $list->nom_genero }}
                                                                                 </option>
                                                                             @endforeach
@@ -88,7 +97,8 @@
                                                                         <select class="form-control" name="id_tipo_documento" id="id_tipo_documento">
                                                                             <option value="0">Seleccione</option>
                                                                             @foreach ($list_tipo_documento as $list)
-                                                                                <option value="{{ $list->id_tipo_documento }}">
+                                                                                <option value="{{ $list->id_tipo_documento }}"
+                                                                                @if ($list->id_tipo_documento==$get_id->id_tipo_documento) selected @endif>
                                                                                     {{ $list->cod_tipo_documento }}
                                                                                 </option>
                                                                             @endforeach
@@ -98,7 +108,10 @@
                                                                 <div class="col-sm-3">
                                                                     <div class="form-group">
                                                                         <label for="num_doc">Número de documento</label>
-                                                                        <input type="text" class="form-control" id="num_doc" name="num_doc" placeholder="Número de documento">
+                                                                        <input type="text" class="form-control" 
+                                                                        id="num_doc" name="num_doc" 
+                                                                        placeholder="Número de documento" 
+                                                                        value="{{ $get_id->num_doc }}">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-3">
@@ -107,7 +120,8 @@
                                                                         <select class="form-control" name="id_estado_civil" id="id_estado_civil">
                                                                             <option value="0">Seleccione</option>
                                                                             @foreach ($list_estado_civil as $list)
-                                                                                <option value="{{ $list->id_estado_civil }}">
+                                                                                <option value="{{ $list->id_estado_civil }}"
+                                                                                @if ($list->id_estado_civil==$get_id->id_estado_civil) selected @endif>
                                                                                     {{ $list->nom_estado_civil }}
                                                                                 </option>
                                                                             @endforeach                                                                            
@@ -117,7 +131,9 @@
                                                                 <div class="col-sm-2">
                                                                     <div class="form-group">
                                                                         <label for="fullName">Fecha de nacimiento</label>
-                                                                        <input type="date" class="form-control" id="fec_nac" name="fec_nac">
+                                                                        <input type="date" class="form-control" 
+                                                                        id="fec_nac" name="fec_nac" 
+                                                                        value="{{ $get_id->fec_nac }}">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-1">
@@ -131,19 +147,28 @@
                                                                 <div class="col-sm-6">
                                                                     <div class="form-group">
                                                                         <label for="emailp">Correo electrónico</label>
-                                                                        <input type="text" class="form-control" id="emailp" name="emailp" placeholder="Correo electrónico">
+                                                                        <input type="text" class="form-control" 
+                                                                        id="emailp" name="emailp" 
+                                                                        placeholder="Correo electrónico"
+                                                                        value="{{ $get_id->emailp }}">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-3">
                                                                     <div class="form-group">
                                                                         <label for="num_celp">Número celular</label>
-                                                                        <input type="text" class="form-control" id="num_celp" name="num_celp" placeholder="Número celular">
+                                                                        <input type="text" class="form-control" 
+                                                                        id="num_celp" name="num_celp" 
+                                                                        placeholder="Número celular"
+                                                                        value="{{ $get_id->num_celp }}">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-3">
                                                                     <div class="form-group">
                                                                         <label for="num_fijop">Teléfono fijo</label>
-                                                                        <input type="text" class="form-control" id="num_fijop" name="num_fijop" placeholder="Teléfono fijo">
+                                                                        <input type="text" class="form-control" 
+                                                                        id="num_fijop" name="num_fijop" 
+                                                                        placeholder="Teléfono fijo"
+                                                                        value="{{ $get_id->num_fijop }}">
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -179,7 +204,8 @@
                                                                         <select class="form-control" name="id_departamento" id="id_departamento">
                                                                             <option value="0">Seleccione</option>
                                                                             @foreach ($list_departamento as $list)
-                                                                                <option value="{{ $list->id_departamento }}">
+                                                                                <option value="{{ $list->id_departamento }}"
+                                                                                @if ($get_domicilio->id_departamento==$list->id_departamento) selected @endif>
                                                                                     {{ $list->nombre_departamento }}
                                                                                 </option>
                                                                             @endforeach                                                                            
@@ -190,7 +216,13 @@
                                                                     <div class="form-group">
                                                                         <label for="id_provincia">Provincia</label>
                                                                         <select class="form-control" name="id_provincia" id="id_provincia">
-                                                                            <option value="0">Seleccione</option>                                                                         
+                                                                            <option value="0">Seleccione</option>
+                                                                            @foreach ($list_provincia as $list)
+                                                                                <option value="{{ $list->id_provincia }}"
+                                                                                @if ($get_domicilio->id_provincia==$list->id_provincia) selected @endif>
+                                                                                    {{ $list->nombre_provincia }}
+                                                                                </option>
+                                                                            @endforeach                                                                             
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -198,7 +230,13 @@
                                                                     <div class="form-group">
                                                                         <label for="id_distrito">Distrito</label>
                                                                         <select class="form-control" name="id_distrito" id="id_distrito">
-                                                                            <option value="0">Seleccione</option>                                                                           
+                                                                            <option value="0">Seleccione</option>
+                                                                            @foreach ($list_distrito as $list)
+                                                                                <option value="{{ $list->id_distrito }}"
+                                                                                @if ($get_domicilio->id_distrito==$list->id_distrito) selected @endif>
+                                                                                    {{ $list->nombre_distrito }}
+                                                                                </option>
+                                                                            @endforeach                                                                             
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -207,9 +245,12 @@
                                                                 <div class="col-sm-12">
                                                                     <div class="form-group">
                                                                         <label for="autocomplete">Ubicación de tu vivienda</label>
-                                                                        <input type="text" class="form-control" id="autocomplete" name="autocomplete" placeholder="Ubicación de tu vivienda">
-                                                                        <input type="hidden" id="coordsltd" name="coordsltd" value="-12.0746254">
-                                                                        <input type="hidden" id="coordslng" name="coordslng" value="-77.021754">
+                                                                        <input type="text" class="form-control" id="autocomplete" 
+                                                                        name="autocomplete" placeholder="Ubicación de tu vivienda">
+                                                                        <input type="hidden" id="coordsltd" name="coordsltd" 
+                                                                        value="@php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lat; }else{ echo "-12.0746254"; } @endphp">
+                                                                        <input type="hidden" id="coordslng" name="coordslng" 
+                                                                        value="@php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lng; }else{ echo "-77.021754"; } @endphp">
                                                                         <div class="col-sm-12 mt-4" id="map"></div>
                                                                     </div>
                                                                 </div>

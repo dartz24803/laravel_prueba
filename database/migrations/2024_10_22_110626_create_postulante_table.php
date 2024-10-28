@@ -21,14 +21,14 @@ return new class extends Migration
             $table->string('postulante_password')->nullable();
             $table->string('password_desencriptado',50)->nullable();
             $table->integer('id_nivel')->nullable(); //NO SIRVE
-            $table->string('postulante_email',100)->nullable();
+            $table->string('postulante_email',100)->nullable(); //NO SIRVE
             $table->string('emailp',150)->nullable();
             $table->string('num_celp',15)->nullable();
             $table->string('num_fijop',15)->nullable();
-            $table->string('num_cele',15)->nullable();
-            $table->string('num_anexoe',10)->nullable();
-            $table->integer('id_gerencia')->nullable();
-            $table->integer('id_area')->nullable();
+            $table->string('num_cele',15)->nullable(); //NO SIRVE
+            $table->string('num_anexoe',10)->nullable(); //NO SIRVE
+            $table->integer('id_gerencia')->nullable(); //NO SIRVE, solo queda id_puesto
+            $table->integer('id_area')->nullable(); //NO SIRVE, solo queda id_puesto
             $table->unsignedBigInteger('id_puesto');
             $table->integer('id_cargo')->nullable();
             $table->unsignedBigInteger('id_tipo_documento');
@@ -37,17 +37,17 @@ return new class extends Migration
             $table->integer('id_genero')->nullable();
             $table->integer('id_estado_civil')->nullable();
             $table->string('foto')->nullable();
-            $table->string('foto_nombre',100)->nullable();
-            $table->dateTime('ini_funciones')->nullable();
-            $table->dateTime('fin_funciones')->nullable();
-            $table->text('observaciones')->nullable();
-            $table->string('dia_nac',2)->nullable();
-            $table->string('mes_nac',2)->nullable();
-            $table->string('anio_nac',4)->nullable();
+            $table->string('foto_nombre',100)->nullable(); //NO SIRVE
+            $table->dateTime('ini_funciones')->nullable(); //NO SIRVE
+            $table->dateTime('fin_funciones')->nullable(); //NO SIRVE
+            $table->text('observaciones')->nullable(); //NO SIRVE
+            $table->string('dia_nac',2)->nullable(); //NO SIRVE
+            $table->string('mes_nac',2)->nullable(); //NO SIRVE
+            $table->string('anio_nac',4)->nullable(); //NO SIRVE
             $table->date('fec_nac')->nullable();
-            $table->integer('situacion')->nullable();
-            $table->integer('enfermedades')->nullable();
-            $table->integer('alergia')->nullable();
+            $table->integer('situacion')->nullable(); //NO SIRVE
+            $table->integer('enfermedades')->nullable(); //NO SIRVE
+            $table->integer('alergia')->nullable(); //NO SIRVE
             $table->string('centro_labores',10)->nullable(); //NO SIRVE
             $table->unsignedBigInteger('id_puesto_evaluador');
             $table->unsignedBigInteger('id_evaluador');

@@ -129,7 +129,7 @@ class Postulante extends Model
                 LCASE(SUBSTRING(SUBSTRING_INDEX(us.usuario_nombres,' ',1), 2)), ' ', 
                 UPPER(SUBSTRING(us.usuario_apater, 1, 1)), 
                 LCASE(SUBSTRING(us.usuario_apater, 2))) AS creado_por,
-                ep.nom_estado_postulante AS nom_estado
+                ep.nom_estado_postulante AS nom_estado,po.estado_postulacion
                 FROM postulante po
                 INNER JOIN puesto pu ON pu.id_puesto=po.id_puesto
                 INNER JOIN area ar ON ar.id_area=pu.id_area
