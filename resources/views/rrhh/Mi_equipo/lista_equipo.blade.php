@@ -8,19 +8,19 @@
                 <th>Nombres</th>
                 <th>Tipo Documento</th>
                 <th>N° Documento</th>
-                <th>Cumpleaños</th> 
+                <th>Cumpleaños</th>
                 <th>Generación</th>
                 <th>Teléfono Celular</th>
                 <th>Puesto</th>
                 <th>Área</th>
                 <th>Fec. Ingreso</th>
-                <th>Fec. Baja por Jefatura</th> 
+                <th>Fec. Baja por Jefatura</th>
                 <th>Progreso</th>
                 <th class="no-content"></th>
             </tr>
         </thead>
         <tbody>
-        <?php foreach($colaborador_porcentaje as $list) {  ?>   
+        <?php foreach($colaborador_porcentaje as $list) {  ?>
             <tr>
                 <td>
                     <?php if(session('usuario')->id_puesto==23) { ?>
@@ -31,7 +31,7 @@
                     <?php echo $list['centro_labores']; ?>
                 </td>
                 <td><?php echo $list['usuario_apater']; ?></td>
-                <td><?php echo $list['usuario_amater']; ?></td>    
+                <td><?php echo $list['usuario_amater']; ?></td>
                 <td><?php echo $list['usuario_nombres']; ?></td>
                 <td><?php echo $list['cod_tipo_documento']; ?></td>
                 <td><?php echo $list['num_doc']; ?></td>
@@ -43,15 +43,8 @@
                 <td><?php echo $list['fecha_ingreso']; ?></td>
                 <td><?php if($list['fecha_baja']!="00-00-0000"){echo $list['fecha_baja'];} ?></td>
                 <td>
-                    <!--<div class="progress br-30"> 
-                        <div class="progress-bar br-30 bg-primary" role="progressbar" style="width: <?php 
-                        $porcentaje=round((($list['datos_personales']+$list['domicilio_user']+$list['cuenta_bancaria']+$list['sistema_pension']+$list['talla_usuario']+$list['covid']+$list['documentacion']+$list['grupo_sanguineo']+$list['office']+$list['referencia']+$list['contactoe']+$list['estudiosg']+$list['experiencial'])/13)*100,2);
-                        echo $porcentaje."%"; ?>" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <?php echo $porcentaje."%"; ?>-->
                     <div class="progress br-30">
-                        <div class="progress-bar br-30 bg-primary" role="progressbar" style="width: <?php 
-                        //$porcentaje=round((($list['lugar_servicio']+$list['servicio']+$list['proveedor_servicio']+$list['sistema_pension']+$list['talla_usuario']+$list['covid']+$list['documentacion']+$list['grupo_sanguineo']+$list['office']+$list['referencia']+$list['contactoe']+$list['estudiosg']+$list['experiencial'])/13)*100,2);
+                        <div class="progress-bar br-30 bg-primary" role="progressbar" style="width: <?php
                         $porcentaje=round((($list['datos_personales']+$list['gustos_preferencias']+$list['domicilio_user']+$list['referencia']+
                         $list['cont_hijos']+$list['contactoe']+$list['estudiosg']+$list['office']+$list['idiomas']+$list['experiencial']+
                         $list['cont_enfermedades']+$list['gestacion']+$list['cont_alergia']+$list['con_otros']+$list['ref_convoc']+$list['documentacion']+
