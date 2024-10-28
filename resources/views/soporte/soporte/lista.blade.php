@@ -18,17 +18,17 @@
     </thead>
     <tbody>
         @foreach ($list_tickets_soporte as $list)
-            <tr>
-                <td>{{ \Carbon\Carbon::parse($list->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
-                <td>{{ $list->base }}</td>
-                <td>{{ $list->usuario_nombre }}</td>
-                <td>{{ $list->nombre_especialidad }}</td>
-                <td>{{ $list->descripcion }}</td>
+        <tr>
+            <td>{{ \Carbon\Carbon::parse($list->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
+            <td>{{ $list->base }}</td>
+            <td>{{ $list->usuario_nombre }}</td>
+            <td>{{ $list->nombre_especialidad }}</td>
+            <td>{{ $list->descripcion }}</td>
 
-                <td class="text-center">
-                    <div style="display: flex; align-items: center; justify-content: center;">
-                        <div
-                            style="display: inline-block; 
+            <td class="text-center">
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <div
+                        style="display: inline-block; 
             background-color: 
             {{ $list->estado_registro == 1
                 ? '#f5996d'
@@ -40,46 +40,46 @@
                             ? '#f3b952'
                             : '#9edef8'))) }};
             border-radius: 14px; padding: 1px; width: 80px; color: white; text-align: center; margin-right: 10px;">
-                            @if ($list->estado_registro == 1)
-                                Por Iniciar
-                            @elseif ($list->estado_registro == 2)
-                                En Proceso
-                            @elseif ($list->estado_registro == 3)
-                                Completado
-                            @elseif ($list->estado_registro == 4)
-                                Stand By
-                            @elseif ($list->estado_registro == 5)
-                                Cancelado
+                        @if ($list->estado_registro == 1)
+                        Por Iniciar
+                        @elseif ($list->estado_registro == 2)
+                        En Proceso
+                        @elseif ($list->estado_registro == 3)
+                        Completado
+                        @elseif ($list->estado_registro == 4)
+                        Stand By
+                        @elseif ($list->estado_registro == 5)
+                        Cancelado
+                        @endif
+                    </div>
+                    <div class="dropdown">
+                        <a class="dropdown-toggle" style="margin-left: 20px;" href="#" role="button"
+                            id="dropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round"
+                                class="feather feather-more-vertical">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="12" cy="5" r="1"></circle>
+                                <circle cx="12" cy="19" r="1"></circle>
+                            </svg>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
+                            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
+                                data-target="#ModalUpdate"
+                                app_elim="{{ url('soporte_ticket/ver/' . $list['id_soporte']) }}">Ver</a>
+                            @if ($list->idsoporte_motivo_cancelacion != 1 && $list->estado_registro == 5)
+                            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
+                                data-target="#ModalUpdate"
+                                app_elim="{{ url('soporte_ticket/edit/' . $list['id_soporte']) }}">Corregir</a>
                             @endif
-                        </div>
-                        <div class="dropdown">
-                            <a class="dropdown-toggle" style="margin-left: 20px;" href="#" role="button"
-                                id="dropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="feather feather-more-vertical">
-                                    <circle cx="12" cy="12" r="1"></circle>
-                                    <circle cx="12" cy="5" r="1"></circle>
-                                    <circle cx="12" cy="19" r="1"></circle>
-                                </svg>
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
-                                <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
-                                    data-target="#ModalUpdate"
-                                    app_elim="{{ url('soporte_ticket/ver/' . $list['id_soporte']) }}">Ver</a>
-                                @if ($list->idsoporte_motivo_cancelacion != 1 && $list->estado_registro == 5)
-                                    <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
-                                        data-target="#ModalUpdate"
-                                        app_elim="{{ url('soporte_ticket/edit/' . $list['id_soporte']) }}">Corregir</a>
-                                @endif
 
-                            </div>
                         </div>
                     </div>
-                </td>
+                </div>
+            </td>
 
-            </tr>
+        </tr>
         @endforeach
     </tbody>
 </table>
@@ -91,9 +91,7 @@
                 "<'table-responsive'tr>" +
                 "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
             responsive: true,
-            order: [
-                [0, "desc"]
-            ],
+            order: [],
             "oLanguage": {
                 "oPaginate": {
                     "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',

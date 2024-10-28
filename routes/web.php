@@ -1054,6 +1054,8 @@ Route::controller(AsistenciaSegController::class)->group(function () {
 Route::controller(PostulanteController::class)->group(function () {
     //REGISTRO
     Route::get('postulante', 'index')->name('postulante');
+    Route::post('postulante/traer_provincia', 'traer_provincia')->name('postulante.traer_provincia');
+    Route::post('postulante/traer_distrito', 'traer_distrito')->name('postulante.traer_distrito');
     Route::get('postulante_reg', 'index_reg')->name('postulante_reg');
     Route::post('postulante_reg/list', 'list_reg')->name('postulante_reg.list');
     Route::get('postulante_reg/create', 'create_reg')->name('postulante_reg.create');
@@ -1064,6 +1066,8 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::put('postulante_reg/{id}', 'update_reg')->name('postulante_reg.update');
     Route::delete('postulante_reg/{id}', 'destroy_reg')->name('postulante_reg.destroy');
     Route::get('postulante_reg/{estado}/{id_area}/excel', 'excel_reg')->name('postulante_reg.excel');
+    Route::get('postulante_reg/{id}/datos_personales', 'datos_personales_reg')->name('postulante_reg.datos_personales');
+    Route::put('postulante_reg/{id}/update_datos_personales', 'update_datos_personales_reg')->name('postulante_reg.update_datos_personales');
     Route::get('postulante_reg/{id}/perfil', 'perfil_reg')->name('postulante_reg.perfil');
     //TODOS
     Route::get('postulante_tod', 'index_tod')->name('postulante_tod');

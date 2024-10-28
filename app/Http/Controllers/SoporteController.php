@@ -433,8 +433,10 @@ class SoporteController extends Controller
 
     public function list_tick_master()
     {
+        $id_subgerencia = session('id_subgerenciam');
+
         // Obtener la lista de procesos con los campos requeridos
-        $list_tickets_soporte = Soporte::listTicketsSoporteMaster();
+        $list_tickets_soporte = Soporte::listTicketsSoporteMaster($id_subgerencia);
 
         // dd($list_tickets_soporte);
         return view('soporte.soporte_master.lista', compact('list_tickets_soporte'));
@@ -444,7 +446,6 @@ class SoporteController extends Controller
     public function ver_tick_master($id_soporte)
     {
         $get_id = Soporte::getTicketById($id_soporte);
-        // dd($get_id->idejecutor_responsable);
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $cantAreasEjecut = count($list_ejecutores_responsables);
         // dd($cantAreasEjecut);
@@ -540,7 +541,25 @@ class SoporteController extends Controller
             $ejecutoresMultiples = false;
         }
         $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
-        // dd($list_areas_involucradas);
+        // Suponiendo que $list_ejecutores_responsables es tu array de entrada
+        $list_ejecutores_responsables = collect($list_ejecutores_responsables);
+
+        if ($list_ejecutores_responsables->count() > 3) {
+            $filtered = $list_ejecutores_responsables->filter(function ($item) {
+                return in_array($item->idejecutor_responsable, [1, 2]);
+            });
+            // Crear el nuevo objeto consolidado
+            $consolidated = (object)[
+                'idejecutor_responsable' => "3,4",
+                'nombre' => 'AREA',
+                'id_area' => 0,
+            ];
+            // Combina el array filtrado con el nuevo objeto consolidado
+            $filtered = $filtered->push($consolidated);
+            $list_ejecutores_responsables = $filtered->values();
+            // dd($list_ejecutores_responsables);
+        }
+        // dd($get_id->idejecutor_responsable);
 
         return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas', 'id_subgerencia'));
     }
@@ -548,16 +567,15 @@ class SoporteController extends Controller
     public function update_tick_master(Request $request, $id)
     {
         $rules = [
-            'ejecutor_responsable' => 'gt:0',
+            // 'ejecutor_responsable' => 'in:-1,3,4',
             'descripcione_solucion' => 'required|max:250',
         ];
         $messages = [
-            'ejecutor_responsable.gt' => 'Debe seleccionar Ejecutor Responsable',
+            // 'ejecutor_responsable.in' => 'Debe seleccionar Ejecutor Responsable',
             'descripcione_solucion.max' => 'Comentario de Solución debe tener como máximo 250 caracteres.',
         ];
         $get_id = Soporte::getTicketById($id);
 
-        // dd($request->id_responsablee_1);
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $cantAreasEjecut = count($list_ejecutores_responsables);
 
@@ -575,18 +593,14 @@ class SoporteController extends Controller
                 'nom_proyecto' => 'required',
                 'proveedor' => 'required',
                 'nom_contratista' => 'required',
-                'dni_prestador' => 'required|max:8',
-                'ruc' => 'required|max:11'
+
             ]);
 
             $messages = array_merge($messages, [
                 'nom_proyecto.required' => 'Debe ingresar Nombre del Proyecto',
                 'proveedor.required' => 'Debe ingresar Nombre Proveedor',
                 'nom_contratista.required' => 'Debe ingresar Nombre Contratista',
-                'dni_prestador.required' => 'Debe ingresar DNI (Prestador).',
-                'dni_prestador.max' => 'Nro. DNI (Prestador) debe tener como máximo 8 caracteres.',
-                'ruc.required' => 'Debe ingresar Nro. RUC',
-                'ruc.max' => 'Nro. RUC debe tener como máximo 11 caracteres.'
+
             ]);
         }
 
@@ -621,7 +635,6 @@ class SoporteController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
         }
-        // dd($get_id->idsoporte_solucion);
 
         $soporteSolucion = SoporteSolucion::findOrFail($get_id->idsoporte_solucion);
         $soporteEjecutor = SoporteEjecutor::findOrFail($get_id->idsoporte_ejecutor);
@@ -643,17 +656,37 @@ class SoporteController extends Controller
             'user_act' => session('usuario')->id_usuario
         ]);
         // dd($request->fec_ini_proyecto);
-        $soporteEjecutor->update([
-            'idejecutor_responsable' => $request->ejecutor_responsable,
-            'fec_inicio_proyecto' => $request->fec_ini_proyecto,
-            'nombre_proyecto' => $request->nom_proyecto,
-            'proveedor' => $request->proveedor,
-            'nombre_contratista' => $request->nom_contratista,
-            'dni_prestador_servicio' => $request->dni_prestador,
-            'ruc' => $request->ruc,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
+        $soporteEjecutor = SoporteEjecutor::findOrFail($get_id->idsoporte_ejecutor);
+
+        if ($request->ejecutor_responsable == "0") {
+            // Concatenar los valores de idejecutor_responsable como una cadena
+            $idejecutor_responsable = "3,4"; // Puedes ajustar esto dinámicamente si los IDs son variables
+            // Crear o actualizar el registro con idejecutor_responsable concatenado
+            $soporteEjecutor->update([
+                'idejecutor_responsable' => $idejecutor_responsable,
+                'fec_inicio_proyecto' => $request->fec_ini_proyecto,
+                'nombre_proyecto' => $request->nom_proyecto,
+                'proveedor' => $request->proveedor,
+                'nombre_contratista' => $request->nom_contratista,
+                'dni_prestador_servicio' => $request->dni_prestador,
+                'ruc' => $request->ruc,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        } else {
+            // Actualizar el registro existente con el valor real de ejecutor_responsable
+            $soporteEjecutor->update([
+                'idejecutor_responsable' => $request->ejecutor_responsable,
+                'fec_inicio_proyecto' => $request->fec_ini_proyecto,
+                'nombre_proyecto' => $request->nom_proyecto,
+                'proveedor' => $request->proveedor,
+                'nombre_contratista' => $request->nom_contratista,
+                'dni_prestador_servicio' => $request->dni_prestador,
+                'ruc' => $request->ruc,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
     }
 
     public function cancelar_tick_master(Request $request, $id)
