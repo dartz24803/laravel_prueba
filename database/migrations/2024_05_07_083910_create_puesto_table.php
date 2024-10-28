@@ -14,14 +14,15 @@ return new class extends Migration
         Schema::create('puesto', function (Blueprint $table) {
             $table->id('id_puesto');
             $table->unsignedBigInteger('id_direccion');
+            $table->string('nom_puesto',200)->nullable();
             $table->unsignedBigInteger('id_gerencia');
             $table->unsignedBigInteger('id_departamento');
             $table->unsignedBigInteger('id_area');
-            $table->string('nom_puesto',200)->nullable();
             $table->string('proposito',250)->nullable();
             $table->unsignedBigInteger('id_nivel');
             $table->unsignedBigInteger('id_sede_laboral');
             $table->string('perfil_infosap',5)->nullable();
+            $table->integer('evaluador')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
