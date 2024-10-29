@@ -18,7 +18,7 @@
                 <select class="form-control" name="sede_laboral" id="sede_laboral">
                     <option value="0">Seleccione</option>
                     @foreach ($list_sede as $list)
-                        <option value="{{ $list->id }}">{{ $list->descripcion }}</option>
+                    <option value="{{ $list->id }}">{{ $list->descripcion }}</option>
                     @endforeach
                 </select>
             </div>
@@ -104,7 +104,6 @@
             },
             success: function(response) {
                 $('#soporte_nivel').empty().append('<option value="0">Seleccione</option>');
-                console.log(response)
                 // Verificar si hay respuestas
                 if (response.length > 0) {
                     $.each(response, function(index, nivel) {

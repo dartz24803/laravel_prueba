@@ -26,29 +26,29 @@
             <td>{{ $list->descripcion }}</td>
 
             <td class="text-center">
-                <div style="display: flex; align-items: center; justify-content: center;">
+                <div style="display: flex; align-items: start; justify-content: start;">
                     <div
                         style="display: inline-block; 
             background-color: 
-            {{ $list->estado_registro == 1
+            {{ ($list->estado_registro == 1 && $list->estado_registro_sr == 1 || $list->estado_registro_sr == null)
                 ? '#f5996d'
-                : ($list->estado_registro == 2
+                : ( ($list->estado_registro == 2 || $list->estado_registro_sr == 2 )
                     ? '#b0f02b'
-                    : ($list->estado_registro == 3
+                    : ( ($list->estado_registro == 3 && $list->estado_registro_sr == 3)
                         ? '#3af1be'
-                        : ($list->estado_registro == 4
+                        : (($list->estado_registro == 4 || $list->estado_registro_sr == 4)
                             ? '#f3b952'
                             : '#9edef8'))) }};
             border-radius: 14px; padding: 1px; width: 80px; color: white; text-align: center; margin-right: 10px;">
-                        @if ($list->estado_registro == 1)
+                        @if ($list->estado_registro == 1 && $list->estado_registro_sr == 1 || $list->estado_registro_sr == null)
                         Por Iniciar
-                        @elseif ($list->estado_registro == 2)
+                        @elseif ($list->estado_registro == 2 || $list->estado_registro_sr == 2 )
                         En Proceso
-                        @elseif ($list->estado_registro == 3)
+                        @elseif ($list->estado_registro == 3 && $list->estado_registro_sr == 3)
                         Completado
-                        @elseif ($list->estado_registro == 4)
+                        @elseif ($list->estado_registro == 4 || $list->estado_registro_sr == 4)
                         Stand By
-                        @elseif ($list->estado_registro == 5)
+                        @elseif ($list->estado_registro == 5 || $list->estado_registro_sr == 5)
                         Cancelado
                         @endif
                     </div>

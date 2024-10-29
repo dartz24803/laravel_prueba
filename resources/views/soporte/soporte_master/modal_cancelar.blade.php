@@ -20,10 +20,10 @@
                 <select class="form-control" id="motivo" name="motivo">
                     <option value="0">Seleccione</option>
                     @foreach ($list_motivos_cancelacion as $list)
-                        <option value="{{ $list->idsoporte_motivo_cancelacion }}"
-                            {{ $list->idsoporte_motivo_cancelacion == $get_id->idsoporte_motivo_cancelacion ? 'selected' : '' }}>
-                            {{ $list->motivo }}
-                        </option>
+                    <option value="{{ $list->idsoporte_motivo_cancelacion }}"
+                        {{ $list->idsoporte_motivo_cancelacion == $get_id->idsoporte_motivo_cancelacion ? 'selected' : '' }}>
+                        {{ $list->motivo }}
+                    </option>
                     @endforeach
                 </select>
 
@@ -38,10 +38,10 @@
                 <select class="form-control" id="id_areac" name="id_areac">
                     <option value="0">Seleccione</option>
                     @foreach ($list_area as $list)
-                        <option value="{{ $list->id_area }}"
-                            {{ $list->id_area == $get_id->area_cancelacion ? 'selected' : '' }}>
-                            {{ $list->nom_area }}
-                        </option>
+                    <option value="{{ $list->id_area }}"
+                        {{ $list->id_area == $get_id->area_cancelacion ? 'selected' : '' }}>
+                        {{ $list->nom_area }}
+                    </option>
                     @endforeach
                 </select>
             </div>
@@ -131,7 +131,6 @@
         var cierreLabel = document.getElementById('id_areac-label');
         var cierreField = document.getElementById('id_areac');
         var estadoContainer = document.getElementById('estado-container');
-        console.log(idmotivo);
         if (idmotivo == 1) {
             // Mostrar los campos de Cierre
             cierreLabel.style.display = 'block';

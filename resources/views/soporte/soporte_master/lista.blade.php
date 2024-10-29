@@ -47,25 +47,25 @@
                     <div
                         style="display: inline-block; 
             background-color: 
-            {{ $list->estado_registro == 1
+            {{ ($list->estado_registro == 1 && $list->estado_registro_sr == 1 || $list->status_enproceso == true || $list->estado_registro_sr == null)
                 ? '#f5996d'
-                : ($list->estado_registro == 2
+                : ( ($list->status_enproceso == false  && $list->status_completado == false)
                     ? '#b0f02b'
-                    : ($list->estado_registro == 3
+                    : ($list->status_completado == true
                         ? '#3af1be'
-                        : ($list->estado_registro == 4
+                        : (($list->estado_registro == 4 ||  $list->estado_registro_sr == 4)
                             ? '#f3b952'
                             : '#9edef8'))) }};
             border-radius: 14px; padding: 1px; width: 80px; color: white; text-align: center; margin-right: 10px;">
-                        @if ($list->estado_registro == 1)
+                        @if ($list->estado_registro == 1 && $list->estado_registro_sr == 1 || $list->status_enproceso == true || $list->estado_registro_sr == null)
                         Por Iniciar
-                        @elseif ($list->estado_registro == 2)
+                        @elseif ($list->status_enproceso == false && $list->status_completado == false)
                         En Proceso
-                        @elseif ($list->estado_registro == 3)
+                        @elseif ($list->status_completado == true)
                         Completado
-                        @elseif ($list->estado_registro == 4)
+                        @elseif ($list->estado_registro == 4 || $list->estado_registro_sr == 4)
                         Stand By
-                        @elseif ($list->estado_registro == 5)
+                        @elseif ($list->estado_registro == 5 || $list->estado_registro_sr == 5)
                         Cancelado
                         @endif
                     </div>
