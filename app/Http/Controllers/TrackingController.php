@@ -685,14 +685,16 @@ class TrackingController extends Controller
     {
         $request->validate([
             'id_base' => 'gt:0',
+            'semana' => 'gt:0',
             'guia_remision' => 'required'
         ],[
             'id_base.gt' => 'Debe seleccionar base.',
+            'semana.gt' => 'Debe seleccionar semana.',
             'guia_remision.required' => 'Debe adjuntar guía de remisión.'
         ]);
 
         $valida = TrackingPago::where('id_base',$request->id_base)->where('anio',date('Y'))
-                ->where('semana',date('W'))->exists();
+                ->where('semana',$request->semana)->exists();
         if($valida){
             echo "error";
         }else{
@@ -717,7 +719,7 @@ class TrackingController extends Controller
                         TrackingPago::create([
                             'id_base' => $request->id_base,
                             'anio' => date('Y'),
-                            'semana' => date('W'),
+                            'semana' => $request->semana,
                             'guia_remision' => $archivo
                         ]);
                     }else{
