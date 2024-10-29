@@ -63,7 +63,7 @@
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label for="eval_sicologica">Adjuntar Evaluación Psicológica</label>
+                                    <label for="eval_sicologica">Adjuntar evaluación psicológica</label>
                                     @if (isset($get_eval_jd->id_eval_jefe_directo))
                                         <a title="Evaluación psicológica" href="{{ $get_eval_jd->eval_sicologica }}" target="_blank">
                                             <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -121,7 +121,7 @@
                                     <select class="form-control" name="resultado_jd" 
                                     id="resultado_jd" {{ $disabled }}>  
                                         <option value="0">Seleccione</option>
-                                        <option @php if(isset($get_eval_jd->id_eval_jefe_directo)){ if($get_eval_jd->resultado=="2"){ echo "selected"; } } @endphp value="2">APTO</option>
+                                        <option @php if(isset($get_eval_jd->id_eval_jefe_directo)){ if($get_eval_jd->resultado=="6"){ echo "selected"; } } @endphp value="6">APTO</option>
                                         <option @php if(isset($get_eval_jd->id_eval_jefe_directo)){ if($get_eval_jd->resultado=="5"){ echo "selected"; } } @endphp value="5">NO APTO</option>
                                     </select>
                                 </div>
