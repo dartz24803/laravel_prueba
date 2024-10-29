@@ -545,10 +545,15 @@ class PostulanteController extends Controller
                                 ->where('estado',1)->orderBy('cod_tipo_documento','ASC')->get();
         $list_departamento = Departamento::select('id_departamento','nombre_departamento')
                             ->where('estado',1)->get();
-        $list_provincia = Provincia::select('id_provincia','nombre_provincia')
-                        ->where('id_departamento',$get_domicilio->id_departamento)->where('estado',1)->get();
-        $list_distrito = Distrito::select('id_distrito','nombre_distrito')
-                        ->where('id_provincia',$get_domicilio->id_provincia)->where('estado',1)->get();
+        if(isset($get_domicilio->id_domicilio_usersp)){
+            $list_provincia = Provincia::select('id_provincia','nombre_provincia')
+                            ->where('id_departamento',$get_domicilio->id_departamento)->where('estado',1)->get();
+            $list_distrito = Distrito::select('id_distrito','nombre_distrito')
+                            ->where('id_provincia',$get_domicilio->id_provincia)->where('estado',1)->get();
+        }else{
+            $list_provincia = [];
+            $list_distrito = [];
+        }
         return view('rrhh.postulante.registro.perfil.index', compact(
             'list_notificacion',
             'list_subgerencia',

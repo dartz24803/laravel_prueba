@@ -18,7 +18,7 @@
                 <div class="account-content">
                     <div class="scrollspy-example" data-spy="scroll" data-target="#account-settings-scroll" data-offset="-100">
                         <div class="row">
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <div class="col-md-12 layout-spacing">
                                 <form id="general-info" class="section general-info">
                                     <div class="info">
                                         <div class="row">
@@ -26,23 +26,24 @@
                                                 <h6>DATOS POSTULANTE</h6>
                                             </div>
                                             <div class="col text-right">
+                                                <button class="btn btn-primary">Actualizar</button>
                                                 <a href="{{ route('postulante') }}" class="btn btn-primary" title="Regresar">Regresar</a>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-lg-11 mx-auto">
                                                 <div class="row">
-                                                    <div class="col-xl-2 col-lg-12 col-md-4">
+                                                    <div class="col-lg-2 col-md-4 d-lg-block d-flex justify-content-center">
                                                         <div class="upload mt-4 pr-md-4">
                                                             <input type="file" id="input-file-max-fs" class="dropify" id="foto" name="foto"
                                                             data-default-file="@php if($get_id->foto!=""){ echo $get_id->foto; }else{ echo asset('template/assets/img/200x200.jpg'); } @endphp" onchange="Valida_Archivo('foto');">
                                                             <p class="mt-2"><i class="flaticon-cloud-upload mr-1"></i> Actualizar imagen</p>
                                                         </div>
                                                     </div>
-                                                    <div class="col-xl-10 col-lg-12 col-md-8 mt-md-0 mt-4">
+                                                    <div class="col-lg-10 col-md-8 mt-md-0 mt-4">
                                                         <div class="form">
                                                             <div class="row">
-                                                                <div class="col-sm-6">
+                                                                <div class="col-lg-6">
                                                                     <div class="form-group">
                                                                         <label for="postulante_apater">Apellido paterno</label>
                                                                         <input type="text" class="form-control" 
@@ -51,7 +52,7 @@
                                                                         value="{{ $get_id->postulante_apater }}">
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-sm-6">
+                                                                <div class="col-lg-6">
                                                                     <div class="form-group">
                                                                         <label for="postulante_amater">Apellido materno</label>
                                                                         <input type="text" class="form-control" 
@@ -61,7 +62,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="row">
-                                                                <div class="col-sm-6">
+                                                                <div class="col-lg-6">
                                                                     <div class="form-group">
                                                                         <label for="postulante_nombres">Nombres</label>
                                                                         <input type="text" class="form-control" 
@@ -69,37 +70,7 @@
                                                                         placeholder="Nombres" value="{{ $get_id->postulante_nombres }}">
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-sm-3">
-                                                                    <div class="form-group">
-                                                                        <label for="id_nacionalidad">Nacionalidad</label>
-                                                                        <select class="form-control" name="id_nacionalidad" id="id_nacionalidad">
-                                                                            <option value="0">Seleccione</option>
-                                                                            @foreach ($list_nacionalidad as $list)
-                                                                                <option value="{{ $list->id_nacionalidad }}"
-                                                                                @if ($list->id_nacionalidad==$get_id->id_nacionalidad) selected @endif>
-                                                                                    {{ $list->nom_nacionalidad }}
-                                                                                </option>
-                                                                            @endforeach                                                                            
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-3">
-                                                                    <div class="form-group">
-                                                                        <label for="id_genero">Género</label>
-                                                                        <select class="form-control" name="id_genero" id="id_genero">
-                                                                            <option value="0">Seleccione</option>
-                                                                            @foreach ($list_genero as $list)
-                                                                                <option value="{{ $list->id_genero }}"
-                                                                                @if ($list->id_genero==$get_id->id_genero) selected @endif>
-                                                                                    {{ $list->nom_genero }}
-                                                                                </option>
-                                                                            @endforeach
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-sm-3">
+                                                                <div class="col-lg-3">
                                                                     <div class="form-group">
                                                                         <label for="id_tipo_documento">Tipo de documento</label>
                                                                         <select class="form-control" name="id_tipo_documento" id="id_tipo_documento">
@@ -113,7 +84,7 @@
                                                                         </select>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-sm-3">
+                                                                <div class="col-lg-3">
                                                                     <div class="form-group">
                                                                         <label for="num_doc">Número de documento</label>
                                                                         <input type="text" class="form-control" 
@@ -121,8 +92,38 @@
                                                                         placeholder="Número de documento" onkeypress="return solo_Numeros(event);"
                                                                         value="{{ $get_id->num_doc }}">
                                                                     </div>
+                                                                </div>                                                                
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-3">
+                                                                    <div class="form-group">
+                                                                        <label for="id_nacionalidad">Nacionalidad</label>
+                                                                        <select class="form-control" name="id_nacionalidad" id="id_nacionalidad">
+                                                                            <option value="0">Seleccione</option>
+                                                                            @foreach ($list_nacionalidad as $list)
+                                                                                <option value="{{ $list->id_nacionalidad }}"
+                                                                                @if ($list->id_nacionalidad==$get_id->id_nacionalidad) selected @endif>
+                                                                                    {{ $list->nom_nacionalidad }}
+                                                                                </option>
+                                                                            @endforeach                                                                            
+                                                                        </select>
+                                                                    </div>
                                                                 </div>
-                                                                <div class="col-sm-3">
+                                                                <div class="col-lg-3">
+                                                                    <div class="form-group">
+                                                                        <label for="id_genero">Género</label>
+                                                                        <select class="form-control" name="id_genero" id="id_genero">
+                                                                            <option value="0">Seleccione</option>
+                                                                            @foreach ($list_genero as $list)
+                                                                                <option value="{{ $list->id_genero }}"
+                                                                                @if ($list->id_genero==$get_id->id_genero) selected @endif>
+                                                                                    {{ $list->nom_genero }}
+                                                                                </option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-3">
                                                                     <div class="form-group">
                                                                         <label for="id_estado_civil">Estado civil</label>
                                                                         <select class="form-control" name="id_estado_civil" id="id_estado_civil">
@@ -136,7 +137,7 @@
                                                                         </select>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-sm-2">
+                                                                <div class="col-xl-2 col-lg-3">
                                                                     <div class="form-group">
                                                                         <label for="fullName">Fecha de nacimiento</label>
                                                                         <input type="date" class="form-control" 
@@ -144,7 +145,7 @@
                                                                         value="{{ $get_id->fec_nac }}" onblur="Traer_Edad();">
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-sm-1">
+                                                                <div class="col-xl-1 d-xl-block d-none">
                                                                     <div class="form-group">
                                                                         <label for="fullName">Edad</label>
                                                                         <input type="text" class="form-control" id="edad" value="{{ $get_id->edad }}" readonly>
@@ -152,7 +153,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="row">
-                                                                <div class="col-sm-6">
+                                                                <div class="col-lg-6">
                                                                     <div class="form-group">
                                                                         <label for="emailp">Correo electrónico</label>
                                                                         <input type="text" class="form-control" 
@@ -161,7 +162,7 @@
                                                                         value="{{ $get_id->emailp }}">
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-sm-3">
+                                                                <div class="col-lg-3">
                                                                     <div class="form-group">
                                                                         <label for="num_celp">Número celular</label>
                                                                         <input type="text" class="form-control" 
@@ -170,7 +171,7 @@
                                                                         value="{{ $get_id->num_celp }}">
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-sm-3">
+                                                                <div class="col-lg-3">
                                                                     <div class="form-group">
                                                                         <label for="num_fijop">Teléfono fijo</label>
                                                                         <input type="text" class="form-control" 
@@ -189,7 +190,7 @@
                                 </form>
                             </div>
 
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <div class="col-md-12 layout-spacing">
                                 <form id="general-info" class="section general-info">
                                     <div class="info">
                                         <div class="row">
@@ -197,51 +198,51 @@
                                                 <h6>DOMICILIO</h6>
                                             </div>
                                             <div class="col text-right">
-                                                <button id="add-work-platforms" class="btn btn-primary">Actualizar</button>
+                                                <button class="btn btn-primary">Actualizar</button>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-lg-11 mx-auto">
                                                 <div class="row">
-                                                    <div class="col-lg-12 col-md-8 mt-md-0 mt-4">
+                                                    <div class="col-12 mt-md-0 mt-4">
                                                         <div class="form">
                                                             <div class="row">
-                                                                <div class="col-sm-4">
+                                                                <div class="col-lg-4">
                                                                     <div class="form-group">
                                                                         <label for="id_departamento">Departamento</label>
                                                                         <select class="form-control" name="id_departamento" id="id_departamento" onchange="Traer_Provincia();">
                                                                             <option value="0">Seleccione</option>
                                                                             @foreach ($list_departamento as $list)
                                                                                 <option value="{{ $list->id_departamento }}"
-                                                                                @if ($get_domicilio->id_departamento==$list->id_departamento) selected @endif>
+                                                                                @php if(isset($get_domicilio->id_domicilio_usersp)){ if($get_domicilio->id_departamento==$list->id_departamento){ echo "selected"; } } @endphp>
                                                                                     {{ $list->nombre_departamento }}
                                                                                 </option>
                                                                             @endforeach                                                                            
                                                                         </select>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-sm-4">
+                                                                <div class="col-lg-4">
                                                                     <div class="form-group">
                                                                         <label for="id_provincia">Provincia</label>
                                                                         <select class="form-control" name="id_provincia" id="id_provincia" onchange="Traer_Distrito();">
                                                                             <option value="0">Seleccione</option>
                                                                             @foreach ($list_provincia as $list)
                                                                                 <option value="{{ $list->id_provincia }}"
-                                                                                @if ($get_domicilio->id_provincia==$list->id_provincia) selected @endif>
+                                                                                    @php if(isset($get_domicilio->id_domicilio_usersp)){ if($get_domicilio->id_provincia==$list->id_provincia){ echo "selected"; } } @endphp>
                                                                                     {{ $list->nombre_provincia }}
                                                                                 </option>
                                                                             @endforeach                                                                             
                                                                         </select>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-sm-4">
+                                                                <div class="col-lg-4">
                                                                     <div class="form-group">
                                                                         <label for="id_distrito">Distrito</label>
                                                                         <select class="form-control" name="id_distrito" id="id_distrito">
                                                                             <option value="0">Seleccione</option>
                                                                             @foreach ($list_distrito as $list)
                                                                                 <option value="{{ $list->id_distrito }}"
-                                                                                @if ($get_domicilio->id_distrito==$list->id_distrito) selected @endif>
+                                                                                    @php if(isset($get_domicilio->id_domicilio_usersp)){ if($get_domicilio->id_distrito==$list->id_distrito){ echo "selected"; } } @endphp>
                                                                                     {{ $list->nombre_distrito }}
                                                                                 </option>
                                                                             @endforeach                                                                             
@@ -250,7 +251,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="row">
-                                                                <div class="col-sm-12">
+                                                                <div class="col-12">
                                                                     <div class="form-group">
                                                                         <label for="autocomplete">Ubicación de tu vivienda</label>
                                                                         <input type="text" class="form-control" id="autocomplete" 
@@ -259,7 +260,7 @@
                                                                         value="@php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lat; }else{ echo "-12.0746254"; } @endphp">
                                                                         <input type="hidden" id="coordslng" name="coordslng" 
                                                                         value="@php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lng; }else{ echo "-77.021754"; } @endphp">
-                                                                        <div class="col-sm-12 mt-4" id="map"></div>
+                                                                        <div class="col-12 mt-4" id="map"></div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -272,7 +273,7 @@
                                 </form>
                             </div>
 
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <div class="col-md-12 layout-spacing">
                                 <form id="general-info" class="section general-info">
                                     <div class="info">
                                         <div class="row">
@@ -317,7 +318,7 @@
                                 </form>
                             </div>
 
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <div class="col-md-12 layout-spacing">
                                 <form id="general-info" class="section general-info">
                                     <div class="info">
                                         <div class="row">
@@ -362,7 +363,7 @@
                                 </form>
                             </div>
 
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <div class="col-md-12 layout-spacing">
                                 <form id="general-info" class="section general-info">
                                     <div class="info">
                                         <div class="row">
@@ -413,7 +414,7 @@
                                 </form>
                             </div>
 
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <div class="col-md-12 layout-spacing">
                                 <form id="general-info" class="section general-info">
                                     <div class="info">
                                         <div class="row">
@@ -465,10 +466,9 @@
             $("#postulantes").addClass('active');
         });
 
-
         google.maps.event.addDomListener(window, 'load', function(){
-            var lati = -12.0746254;
-            var lngi = -77.021754;
+            var lati = @php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lat; }else{ echo -12.0746254; } @endphp;
+            var lngi = @php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lng; }else{ echo -77.021754; } @endphp;
 
             var coords = {lat: lati, lng: lngi};
 

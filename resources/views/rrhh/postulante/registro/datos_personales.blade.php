@@ -18,7 +18,7 @@
                 <div class="account-content">
                     <div class="scrollspy-example" data-spy="scroll" data-target="#account-settings-scroll" data-offset="-100">
                         <div class="row">
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <div class="col-md-12 layout-spacing">
                                 <form id="formulario_dp" method="POST" enctype="multipart/form-data" class="section general-info">
                                     <div class="info">
                                         <div class="row">
@@ -180,7 +180,7 @@
                                 </form>
                             </div>
 
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <div class="col-md-12 layout-spacing">
                                 <form id="formulario_do" method="POST" enctype="multipart/form-data" class="section general-info">
                                     <div class="info">
                                         <div class="row">
@@ -232,7 +232,7 @@
                                                                         name="autocomplete" placeholder="Ubicación de tu vivienda">
                                                                         <input type="hidden" id="coordsltd" name="coordsltd" value="-12.0746254">
                                                                         <input type="hidden" id="coordslng" name="coordslng" value="-77.021754">
-                                                                        <div class="col-sm-12 mt-4" id="map"></div>
+                                                                        <div class="col-12 mt-4" id="map"></div>
                                                                     </div>
                                                                 </div>
                                                             </div>
