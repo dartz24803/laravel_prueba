@@ -65,45 +65,9 @@
 
                             <div class="col-md-12 layout-spacing">
                                 <form id="formulario_jd" method="POST" enctype="multipart/form-data" class="section general-info">
-                                    <div class="info">
-                                        <div class="row">
-                                            <div class="col">
-                                                <h6>EVALUACIÓN JEFE DIRECTO</h6>
-                                            </div>
-                                            <div class="col text-right">
-                                                <button id="add-work-platforms" class="btn btn-primary">Actualizar</button>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-11 mx-auto">
-                                                <div class="row">
-                                                    <div class="col-lg-12 col-md-8 mt-md-0 mt-4">
-                                                        <div class="form">
-                                                            <div class="row">
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
-                                                                        <label for="resultado_jd">Resultado</label>
-                                                                        <select class="form-control" name="resultado_jd" id="resultado_jd">  
-                                                                            <option value="0">Seleccione</option>
-                                                                            <option value="6">APTO</option>
-                                                                            <option value="5">NO APTO</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-sm-12">
-                                                                    <div class="form-group">
-                                                                        <label for="observaciones_jd">Observaciones</label>
-                                                                        <textarea class="form-control" name="observaciones_jd" id="observaciones_jd" rows="4" placeholder="Observaciones"></textarea>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    @method('PUT')
+                                    @csrf
+                                    <div class="info" id="div_evaluacion_jefe_directo">
                                     </div>
                                 </form>
                             </div>
@@ -213,6 +177,7 @@
             Datos_Personales();
             Domicilio();
             Evaluacion_Rrhh();
+            Evaluacion_Jefe_Directo();
         });
 
         function Datos_Personales(){
@@ -253,6 +218,20 @@
                 type: "GET",
                 success:function (resp) {
                     $('#div_evaluacion_rrhh').html(resp);
+                }
+            });
+        }
+
+        function Evaluacion_Jefe_Directo(){
+            Cargando();
+
+            var url = "{{ route('postulante_reg.eval_jefe_directo', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_evaluacion_jefe_directo').html(resp);
                 }
             });
         }
@@ -454,6 +433,33 @@
                 contentType: false,
                 success: function(data) {
                     Evaluacion_Rrhh();
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+        }
+
+        function Update_Jefe_Directo() {
+            Cargando();
+
+            var dataString = new FormData(document.getElementById('formulario_jd'));
+            var url = "{{ route('postulante_reg.update_eval_jefe_directo', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    Evaluacion_Jefe_Directo();
                 },
                 error:function(xhr) {
                     var errors = xhr.responseJSON.errors;
