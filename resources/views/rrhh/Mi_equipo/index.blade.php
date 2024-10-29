@@ -28,7 +28,7 @@
                             session('usuario')->id_puesto==22 || 
                             session('usuario')->visualizar_mi_equipo!="sin_acceso_mi_equipo" || 
                             session('usuario')->id_puesto==314 || 
-                            session('usuario')->id_puesto==161){ ?>
+                            session('usuario')->id_puesto==161 || session('usuario')->id_puesto == 24){ ?>
                                 <li class="nav-item">
                                     <a id="a_me" class="nav-link" onclick="Cargar_Mi_Equipo();" style="cursor: pointer;">Mi equipo</a>
                                 </li>
@@ -68,7 +68,7 @@
         session('usuario')->id_puesto==27 || session('usuario')->id_puesto==98 || 
         session('usuario')->id_puesto==31 || session('usuario')->id_puesto==30 || 
         session('usuario')->puestos_asignados>0 || session('usuario')->id_puesto==76 || 
-        session('usuario')->id_puesto==22 || 
+        session('usuario')->id_puesto==22 || session('usuario')->id_puesto == 24 ||
         session('usuario')->visualizar_mi_equipo!="sin_acceso_mi_equipo" ||
         session('usuario')->id_puesto==314 || session('usuario')->id_puesto==161){ ?>
             Cargar_Mi_Equipo();   

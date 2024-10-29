@@ -68,7 +68,9 @@ class Usuario extends Model
         pps.registro_masivo, visualizar_amonestacion(u.id_puesto) AS visualizar_amonestacion,
         sl.descripcion AS sede_laboral,
         pps.estado as estadopps, pps.registro_masivo, pps.id_puesto_permitido, u.id_centro_labor,
-        visualizar_mi_equipo(u.id_puesto) AS visualizar_mi_equipo
+        visualizar_mi_equipo(u.id_puesto) AS visualizar_mi_equipo,
+        (SELECT COUNT(*) FROM asignacion_jefatura aj 
+        WHERE aj.id_puesto_jefe=u.id_puesto and aj.estado=1) as puestos_asignados
         FROM users u
         LEFT JOIN permiso_papeletas_salida pps ON u.id_puesto=pps.id_puesto_jefe AND pps.estado=1
         LEFT JOIN nivel n ON u.id_nivel=n.id_nivel
@@ -1087,7 +1089,7 @@ class Usuario extends Model
                     left join motivo_baja_rrhh mt on u.id_motivo_baja=mt.id_motivo
                     where u.estado in (1) and u.id_nivel<>8 and u.id_gerencia='" . $id_gerencia . "'
                     ORDER BY u.ini_funciones DESC";
-        } elseif (isset($dato) && count($dato['list_ajefatura']) > 0) {
+        } elseif (isset($dato) && count($dato['list_ajefatura']) > 0 || $id_puesto == "24") {
             $sql = "SELECT u.id_usuario, u.usuario_apater,u.fec_baja,
                     u.centro_labores, td.cod_tipo_documento,
                     td.nom_tipo_documento, u.num_celp,u.num_doc, 
@@ -1224,7 +1226,7 @@ class Usuario extends Model
                     left join motivo_baja_rrhh mt on u.id_motivo_baja=mt.id_motivo
                     where u.estado in (1) and u.id_nivel<>8 and u.id_puesto in " . $dato['cadena'] . "
                     ORDER BY u.ini_funciones DESC";
-        } elseif ($visualizar_mi_equipo != "sin_acceso_mi_equipo") {
+        } elseif (session('usuario')->visualizar_mi_equipo != "sin_acceso_mi_equipo") {
             $sql = "SELECT u.id_usuario,u.usuario_apater,u.verif_email,u.centro_labores, 
                     td.cod_tipo_documento,u.fec_baja,td.nom_tipo_documento,u.num_celp,
                     u.num_doc,u.usuario_amater,u.usuario_nombres,n.nom_nacionalidad,u.foto,
