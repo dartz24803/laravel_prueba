@@ -1078,6 +1078,9 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::put('postulante_reg/{id}/update_evaluacion_psicologica', 'update_evaluacion_psicologica_reg')->name('postulante_reg.update_evaluacion_psicologica');
     Route::get('postulante_reg/{id}/eval_jefe_directo', 'eval_jefe_directo_reg')->name('postulante_reg.eval_jefe_directo');
     Route::put('postulante_reg/{id}/update_eval_jefe_directo', 'update_eval_jefe_directo_reg')->name('postulante_reg.update_eval_jefe_directo');
+    Route::get('postulante_reg/{id}/verificacion_social', 'verificacion_social_reg')->name('postulante_reg.verificacion_social');
+    Route::put('postulante_reg/{id}/update_verificacion_social', 'update_verificacion_social_reg')->name('postulante_reg.update_verificacion_social');
+    Route::put('postulante_reg/{id}/update_ver_social', 'update_ver_social_reg')->name('postulante_reg.update_ver_social');
     //TODOS
     Route::get('postulante_tod', 'index_tod')->name('postulante_tod');
     Route::post('postulante_tod/list', 'list_tod')->name('postulante_tod.list');

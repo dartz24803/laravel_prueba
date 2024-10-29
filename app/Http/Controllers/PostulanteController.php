@@ -22,6 +22,7 @@ use App\Models\Puesto;
 use App\Models\SubGerencia;
 use App\Models\TipoDocumento;
 use App\Models\Usuario;
+use App\Models\VerificacionSocial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -970,6 +971,150 @@ class PostulanteController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
         }
+    }
+
+    public function verificacion_social_reg($id)
+    {
+        $get_id = Postulante::findOrFail($id);
+        $get_vs = VerificacionSocial::where('id_postulante',$id)
+                        ->orderBy('id_ver_social','DESC')->first();
+        return view('rrhh.postulante.registro.perfil.verificacion_social', compact(
+            'get_id',
+            'get_vs'
+        ));
+    }
+
+    public function update_verificacion_social_reg(Request $request, $id)
+    {
+        $request->validate([
+            'resultado_vs' => 'gt:0',
+            'ver_social' => 'required'
+        ],[
+            'resultado_vs.gt' => 'Debe seleccionar resultado.',
+            'ver_social.required' => 'Debe adjuntar verificación social.'
+        ]);
+
+        $list_ver_social = VerificacionSocial::where('id_postulante',$id)->get();
+        foreach($list_ver_social as $list){
+            if($list->ver_social!=""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    $file_to_delete = "POSTULANTE/VERIFICACION_SOCIAL/".basename($list->ver_social);
+                    ftp_delete($con_id, $file_to_delete);
+                }
+            }
+        }
+        VerificacionSocial::where('id_postulante',$id)->delete();
+
+        $archivo = NULL;
+        if($_FILES["ver_social"]["name"] != ""){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                $path = $_FILES["ver_social"]["name"];
+                $source_file = $_FILES['ver_social']['tmp_name'];
+
+                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                $nombre_soli = "Vs_".$id."_".date('YmdHis');
+                $nombre = $nombre_soli.".".strtolower($ext);
+
+                ftp_pasv($con_id,true);
+                $subio = ftp_put($con_id,"POSTULANTE/VERIFICACION_SOCIAL/".$nombre,$source_file,FTP_BINARY);
+                if($subio){
+                    $archivo = "https://lanumerounocloud.com/intranet/POSTULANTE/VERIFICACION_SOCIAL/".$nombre;
+                }else{
+                    echo "Archivo no subido correctamente";
+                }
+            }else{
+                echo "No se conecto";
+            }
+        }
+
+        VerificacionSocial::create([
+            'id_postulante' => $id,
+            'resultado' => $request->resultado_vs,
+            'ver_social' => $archivo,
+            'observaciones' => $request->observaciones_vs,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        Postulante::findOrFail($id)->update([
+            'estado_postulacion' => $request->resultado_vs,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        if($request->observaciones_vs!=""){
+            HistoricoPostulante::create([
+                'id_postulante' => $id,
+                'observacion' => $request->observaciones_vs,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function update_ver_social_reg(Request $request, $id)
+    {
+        $request->validate([
+            'ver_social' => 'required'
+        ],[
+            'ver_social.required' => 'Debe adjuntar verificación social.'
+        ]);
+
+        $get_id = VerificacionSocial::where('id_postulante',$id)
+                ->orderBy('id_ver_social','DESC')->first();
+
+        $archivo = $get_id->ver_social;
+        if($_FILES["ver_social"]["name"] != ""){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                if($get_id->ver_social!=""){
+                    ftp_delete($con_id, "POSTULANTE/VERIFICACION_SOCIAL/".basename($get_id->ver_social));
+                }
+
+                $path = $_FILES["ver_social"]["name"];
+                $source_file = $_FILES['ver_social']['tmp_name'];
+
+                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                $nombre_soli = "Vs_".$id."_".date('YmdHis');
+                $nombre = $nombre_soli.".".strtolower($ext);
+
+                ftp_pasv($con_id,true);
+                $subio = ftp_put($con_id,"POSTULANTE/VERIFICACION_SOCIAL/".$nombre,$source_file,FTP_BINARY);
+                if($subio){
+                    $archivo = "https://lanumerounocloud.com/intranet/POSTULANTE/VERIFICACION_SOCIAL/".$nombre;
+                }else{
+                    echo "Archivo no subido correctamente";
+                }
+            }else{
+                echo "No se conecto";
+            }
+        }
+
+        VerificacionSocial::findOrFail($get_id->id_ver_social)->update([
+            'ver_social' => $archivo,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
     }
 
     public function index_tod()
