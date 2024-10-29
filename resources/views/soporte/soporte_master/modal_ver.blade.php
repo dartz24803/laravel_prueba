@@ -327,7 +327,7 @@
                 <!-- Nueva sección para listar comentarios -->
                 <div class="row" id="comment-section" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
-                        <h5 class="text-bold">Solucion Aplicada:</h5>
+                        <h5 class="text-bold">Solución Aplicada:</h5>
                         @foreach ($comentarios as $comentario)
                         <div class="comment-box" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
                             <div class="row align-items-center">
