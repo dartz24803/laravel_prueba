@@ -198,7 +198,7 @@
                                             <label class="control-label text-bold">
                                                 Responsable:
                                                 <span style="display: block; width: 130px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $area_involucrada['area_responsable'] }}">
-                                                    {{ $area_involucrada['area_responsable'] }}
+                                                    {{ $area_involucrada['cod_area_responsable'] }}
                                                 </span>
                                             </label>
                                         </div>
@@ -338,7 +338,7 @@
                                 <div class="form-group col-md-10">
                                     <p><strong>Fecha:</strong> {{ $comentario->fec_comentario }}</p>
                                     <p><strong>Responsable:</strong> {{ $comentario->nombre_responsable_solucion ?: 'No designado' }}</p>
-                                    <p><strong>Comentario:</strong> {{ $comentario->comentario ?: 'No hay comentario' }}</p>
+                                    <p style="max-width: 480px; word-wrap: break-word;" strong>Comentario:</strong> {{ $comentario->comentario ?: 'No hay comentario' }}</p>
 
                                 </div>
                             </div>

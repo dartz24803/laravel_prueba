@@ -78,10 +78,7 @@ class SoporteController extends Controller
 
     public function list_tick()
     {
-        // Obtener la lista de procesos con los campos requeridos
         $list_tickets_soporte = Soporte::listTicketsSoporte();
-
-        // dd($list_tickets_soporte);
         return view('soporte.soporte.lista', compact('list_tickets_soporte'));
     }
 
@@ -108,7 +105,7 @@ class SoporteController extends Controller
             ->get();
 
         $list_responsable = Puesto::select('puesto.id_puesto', 'puesto.nom_puesto', 'area.cod_area')
-            ->join('area', 'puesto.id_area', '=', 'area.id_area')  // Realiza el INNER JOIN entre Puesto y Area
+            ->join('area', 'puesto.id_area', '=', 'area.id_area')
             ->where('puesto.estado', 1)
             ->orderBy('puesto.nom_puesto', 'ASC')
             ->get()
@@ -148,7 +145,6 @@ class SoporteController extends Controller
     public function getAreaEspeficaPorNivel(Request $request)
     {
         $ubicacion = $request->input('ubicacion1');
-        // dd($ubicacion);
         // Si no se selecciona ninguna sede, devolver un arreglo vacío
         if (empty($ubicacion)) {
             return response()->json([]);
@@ -159,7 +155,6 @@ class SoporteController extends Controller
         })
             ->where('estado', 1)
             ->get();
-        // dd($ubicaciones);
         return response()->json($ubicaciones);
     }
 
@@ -171,14 +166,12 @@ class SoporteController extends Controller
         if (empty($idEspecialidad)) {
             return response()->json([]);
         }
-        // dd($idEspecialidad);
         // Buscar ubicaciones asociadas a la sede seleccionada
         $elementos = ElementoSoporte::where(function ($query) use ($idEspecialidad) {
             $query->whereRaw("FIND_IN_SET(?, id_especialidad)", [$idEspecialidad]);
         })
             ->where('estado', 1)
             ->get();
-        // dd($elementos);
         return response()->json($elementos);
     }
 
@@ -247,16 +240,7 @@ class SoporteController extends Controller
             ]);
         }
 
-
-        // $request->validate([
-        //     'propositod' => 'required',
-        //     'propositod' => 'max:250',
-        // ], [
-        //     'propositod.required' => 'Debe ingresar propósito.',
-        //     'propositod.max' => 'El propósito debe tener como máximo 250 carácteres.',
-        // ]);
         $request->validate($rules, $messages);
-
         $idsoporte_tipo = DB::table('soporte_asunto as sa')
             ->leftJoin('soporte_tipo as st', 'st.idsoporte_tipo', '=', 'sa.idsoporte_tipo')
             ->where('sa.idsoporte_asunto', $request->asunto)
@@ -299,7 +283,6 @@ class SoporteController extends Controller
             'user_act' => session('usuario')->id_usuario
         ]);
         SoporteComentarios::create([
-
             'idsoporte_solucion' => $soporte_solucion->idsoporte_solucion,
             'id_responsable' => null,
             'comentario' => '',
@@ -309,7 +292,6 @@ class SoporteController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
-        // dd($request->idsoporte_area_especifica);
         Soporte::create([
             'codigo' => $codigo_generado,
             'id_especialidad' => $request->especialidad,
@@ -345,15 +327,12 @@ class SoporteController extends Controller
         $comentarios = SoporteSolucion::getComentariosBySolucion($get_id->idsoporte_solucion);
 
         $cantAreasEjecut = count($list_ejecutores_responsables);
-        // dd($cantAreasEjecut);
         if ($cantAreasEjecut > 3) {
             $ejecutoresMultiples = true;
         } else {
             $ejecutoresMultiples = false;
         }
         $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
-
-        // dd($get_id->idejecutor_responsable);
         return view('soporte.soporte.modal_ver', compact('get_id', 'list_areas_involucradas', 'ejecutoresMultiples', 'comentarios'));
     }
 
@@ -385,8 +364,6 @@ class SoporteController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
-        // dd($get_id->idsoporte_solucion);
-
     }
 
     public function destroy_tick($id)
@@ -442,7 +419,7 @@ class SoporteController extends Controller
                 $nominicio = 'finanzas';
                 break;
             case 9:
-                $nominicio = 'interna'; // Repetido, asegúrate de que este valor sea correcto
+                $nominicio = 'interna';
                 break;
             case 10:
                 $nominicio = 'infraestructura';
@@ -451,13 +428,13 @@ class SoporteController extends Controller
                 $nominicio = 'materiales';
                 break;
             case 12:
-                $nominicio = 'finanzas'; // Repetido, asegúrate de que este valor sea correcto
+                $nominicio = 'finanzas';
                 break;
             case 13:
                 $nominicio = 'caja';
                 break;
             default:
-                $nominicio = 'default'; // Valor por defecto si no coincide con ningún caso
+                $nominicio = 'default';
                 break;
         }
         $list_subgerencia = SubGerencia::list_subgerencia(9);
@@ -495,7 +472,6 @@ class SoporteController extends Controller
             }
             return $ticket;
         });
-        // Enviar la colección modificada a la vista
         return view('soporte.soporte_master.lista', compact('list_tickets_soporte'));
     }
 
@@ -507,7 +483,6 @@ class SoporteController extends Controller
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $cantAreasEjecut = count($list_ejecutores_responsables);
         $comentarios = SoporteSolucion::getComentariosBySolucion($get_id->idsoporte_solucion);
-        // dd($comentarios);
         if ($cantAreasEjecut > 3) {
             $ejecutoresMultiples = true;
         } else {
@@ -552,8 +527,6 @@ class SoporteController extends Controller
 
         $list_asunto = AsuntoSoporte::select('idsoporte_asunto', 'nombre')->get();
 
-        // dd($list_asunto);
-        // dd($get_id->id_asunto);
         return view('soporte.soporte.modal_editar', compact('get_id', 'list_especialidad', 'list_area', 'list_sede', 'list_elementos', 'list_asunto'));
     }
 
@@ -566,7 +539,7 @@ class SoporteController extends Controller
         $area = DB::table('soporte_asunto')
             ->leftJoin('area', 'soporte_asunto.id_area', '=', 'area.id_area')
             ->where('soporte_asunto.idsoporte_asunto', $get_id->id_asunto)
-            ->select('soporte_asunto.*', 'area.nom_area') // Selecciona los campos que necesites
+            ->select('soporte_asunto.*', 'area.nom_area')
             ->first();
         if ($area->id_area == 0) {
             $areaResponsable = $get_id->id_area;
@@ -576,31 +549,25 @@ class SoporteController extends Controller
 
         // Dividir el campo `id_area` en un array de IDs
         $areaIds = explode(',', $areaResponsable);
-
-        // dd($areaIds);
         // Crear listas basadas en los IDs obtenidos
         $list_primer_responsable = Usuario::get_list_colaborador_xarea_static(trim($areaIds[0]));
         $list_segundo_responsable = isset($areaIds[1]) ? Usuario::get_list_colaborador_xarea_static(trim($areaIds[1])) : [];
         // Verificar que las listas tengan al menos un elemento antes de acceder al campo `id_sub_gerencia`
         $primer_id_subgerencia = !empty($list_primer_responsable) ? $list_primer_responsable[0]->id_sub_gerencia : null;
         $segundo_id_subgerencia = !empty($list_segundo_responsable) ? $list_segundo_responsable[0]->id_sub_gerencia : null;
-        // dd($primer_id_subgerencia);
         if ($id_subgerencia == $primer_id_subgerencia) {
             $list_responsable = $list_primer_responsable;
         } else {
             $list_responsable = $list_segundo_responsable;
         }
-        // dd($list_responsable);
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $cantAreasEjecut = count($list_ejecutores_responsables);
-        // dd($cantAreasEjecut);
         if ($cantAreasEjecut > 3) {
             $ejecutoresMultiples = true;
         } else {
             $ejecutoresMultiples = false;
         }
         $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
-        // Suponiendo que $list_ejecutores_responsables es tu array de entrada
         $list_ejecutores_responsables = collect($list_ejecutores_responsables);
 
         if ($list_ejecutores_responsables->count() > 3) {
@@ -616,9 +583,7 @@ class SoporteController extends Controller
             // Combina el array filtrado con el nuevo objeto consolidado
             $filtered = $filtered->push($consolidated);
             $list_ejecutores_responsables = $filtered->values();
-            // dd($list_ejecutores_responsables);
         }
-        // dd($list_areas_involucradas);
 
         return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas', 'id_subgerencia'));
     }
@@ -734,8 +699,7 @@ class SoporteController extends Controller
             SoporteComentarios::create($data);
         } else {
             // Hay comentarios existentes
-            $comentarioExistente = $soporteComentarios->first(); // Obtiene el primer comentario
-
+            $comentarioExistente = $soporteComentarios->first();
             // Verifica si id_responsable es null
             if ($comentarioExistente->id_responsable === null) {
                 // Reemplaza el comentario existente
@@ -753,7 +717,7 @@ class SoporteController extends Controller
                     'comentario' => $request->descripcione_solucion,
                     'id_responsable' => session('usuario')->id_usuario,
                     'fec_comentario' => now(),
-                    'estado' => 1, // Puedes ajustar esto según la lógica de tu aplicación
+                    'estado' => 1,
                     'user_act' => session('usuario')->id_usuario,
                     'fec_act' => now(),
                 ];
@@ -762,15 +726,11 @@ class SoporteController extends Controller
             }
         }
 
-
-
-
-        // dd($request->fec_ini_proyecto);
         $soporteEjecutor = SoporteEjecutor::findOrFail($get_id->idsoporte_ejecutor);
 
         if ($request->ejecutor_responsable == "0") {
             // Concatenar los valores de idejecutor_responsable como una cadena
-            $idejecutor_responsable = "3,4"; // Puedes ajustar esto dinámicamente si los IDs son variables
+            $idejecutor_responsable = "3,4";
             // Crear o actualizar el registro con idejecutor_responsable concatenado
             $soporteEjecutor->update([
                 'idejecutor_responsable' => $idejecutor_responsable,
@@ -814,7 +774,6 @@ class SoporteController extends Controller
 
 
         $get_id = Soporte::getTicketById($id);
-        // dd($get_id->idejecutor_responsable);
         return view('soporte.soporte_master.modal_cancelar', compact('get_id', 'list_area', 'list_motivos_cancelacion'));
     }
 
@@ -823,7 +782,6 @@ class SoporteController extends Controller
     {
         $get_id = Soporte::getTicketById($id);
         if ($request->motivo == 1) {
-            // dd($request->id_areac);
             $soporteActualizado  = Soporte::findOrFail($id)->update([
                 'idsoporte_motivo_cancelacion' => $request->motivo,
                 'area_cancelacion' => $request->id_areac,
@@ -840,7 +798,6 @@ class SoporteController extends Controller
                 }
                 $dato['id_tipo'] = $get_id->idsoporte_tipo;
                 $dato['id_area'] = $request->id_areac;
-                // dd($get_id);
                 $cod_area = $get_id->cod_area;
                 $query_id = Pendiente::ultimoAnioCodPendiente($dato);
                 $totalRows_t = count($query_id);
@@ -862,7 +819,6 @@ class SoporteController extends Controller
                 }
                 $dato['cod_pendiente'] = $codigofinal;
                 // LÓGICA DE ANTIGUO INTRANET PARA CREAR CÓDIGO_PENDIENTE EN TAREAS
-                // dd($codigofinal);
                 if (is_null($get_id->id_responsable)) {
                     return response()->json(['error' => 'No hay responsable asignado.'], 400);
                 }

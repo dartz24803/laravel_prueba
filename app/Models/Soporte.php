@@ -104,10 +104,6 @@ class Soporte extends Model
             'especialidad.nombre as nombre_especialidad',
             'soporte_asunto.nombre as nombre_asunto',
             'soporte_asunto.idsoporte_tipo as idsoporte_tipo',
-            // 'soporte_comentarios.comentario as descripcion_solucion',
-            // 'soporte_comentarios.fec_comentario as fecha_comentario',
-            // 'soporte_solucion.comentario as descripcion_solucion',
-            // 'soporte_solucion.fec_comentario as fecha_comentario',
             'sede_laboral.descripcion as nombre_sede',
             'soporte_nivel.nombre as nombre_ubicacion',
             'soporte_ejecutor.nombre_proyecto as nombre_proyecto',
@@ -124,12 +120,10 @@ class Soporte extends Model
             'users.usuario_email as usuario_email',
             'users.centro_labores as base',
             'st.nombre as nombre_tipo',
-
             DB::raw("CASE
                 WHEN soporte.id_responsable IS NULL
                 THEN 'SIN DESIGNAR'
                 ELSE CONCAT(us.usuario_nombres, ' ', us.usuario_apater, ' ', us.usuario_amater) END as nombre_responsable_asignado"),
-            // Modificación en nombre_ejecutor_responsable
             DB::raw("CASE 
                 WHEN se.idejecutor_responsable IS NULL 
                 THEN 'POR DESIGNAR' 
@@ -139,16 +133,6 @@ class Soporte extends Model
                 THEN 'AREA' 
                 ELSE se.nombre 
             END as nombre_ejecutor_responsable"),
-            // DB::raw("CASE
-            //     WHEN soporte_comentarios.id_responsable IS NULL
-            //     THEN 'SIN DESIGNAR'
-            //     ELSE CONCAT(usr.usuario_nombres, ' ', usr.usuario_apater, ' ', usr.usuario_amater) END as nombre_responsable_solucion"),
-            // DB::raw("CASE
-            //     WHEN soporte_solucion.id_responsable IS NULL
-            //     THEN 'SIN DESIGNAR'
-            //     ELSE CONCAT(usr.usuario_nombres, ' ', usr.usuario_apater, ' ', usr.usuario_amater) END as nombre_responsable_solucion"),
-
-            // Modificación aquí
             DB::raw("CASE 
                 WHEN se.idejecutor_responsable IS NULL 
                 THEN 'POR DESIGNAR' 
@@ -158,18 +142,12 @@ class Soporte extends Model
                 THEN 'AREA' 
                 ELSE se.nombre 
             END as nombre_ejecutor_responsable"),
-
-            // 'usr.foto as foto_responsable_solucion',
         )
             ->leftJoin('especialidad', 'soporte.id_especialidad', '=', 'especialidad.id')
             ->leftJoin('soporte_elemento', 'soporte.id_elemento', '=', 'soporte_elemento.idsoporte_elemento')
             ->leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
             ->leftJoin('soporte_ejecutor', 'soporte.idsoporte_ejecutor', '=', 'soporte_ejecutor.idsoporte_ejecutor')
             ->leftJoin('soporte_motivo_cancelacion', 'soporte.idsoporte_motivo_cancelacion', '=', 'soporte_motivo_cancelacion.idsoporte_motivo_cancelacion')
-            // ->leftJoin('c', 'soporte.idsoporte_solucion', '=', 'soporte_solucion.idsoporte_solucion')
-            // Nuevo join con soporte_comentarios
-            // ->leftJoin('soporte_comentarios', 'soporte_solucion.idsoporte_comentarios', '=', 'soporte_comentarios.idsoporte_comentarios')
-
             ->leftJoin('sede_laboral', 'soporte.id_sede', '=', 'sede_laboral.id')
             ->leftJoin('soporte_nivel', 'soporte.idsoporte_nivel', '=', 'soporte_nivel.idsoporte_nivel')
             ->leftJoin('soporte_area_especifica', 'soporte.idsoporte_area_especifica', '=', 'soporte_area_especifica.idsoporte_area_especifica')
@@ -178,7 +156,6 @@ class Soporte extends Model
             ->leftJoin('users', 'soporte.user_reg', '=', 'users.id_usuario')
             ->leftJoin('soporte_asunto as sa', 'soporte.id_asunto', '=', 'sa.idsoporte_asunto')
             ->leftJoin('users as us', 'soporte.id_responsable', '=', 'us.id_usuario')
-            // ->leftJoin('users as usr', 'soporte_solucion.id_responsable', '=', 'usr.id_usuario')
             ->leftJoin('ejecutor_responsable as se', 'soporte_ejecutor.idejecutor_responsable', '=', 'se.idejecutor_responsable')
             ->leftJoin('soporte_tipo as st', 'sa.idsoporte_tipo', '=', 'st.idsoporte_tipo')
             ->where('soporte.id_soporte', $id_soporte)
@@ -208,7 +185,6 @@ class Soporte extends Model
             $id_areas = $query->id_area;
             $areasArray = explode(',', $id_areas);
             $resultado = [];
-            // dd($id_areas);
             // Primer área responsable
             $area1 = DB::table('area')
                 ->leftJoin('soporte', 'area.id_area', '=', DB::raw($areasArray[0])) // LEFT JOIN con la tabla area
@@ -243,12 +219,8 @@ class Soporte extends Model
                     "estado_registro" => $query->estado_registro_sr
                 ];
             }
-
-            // Retornamos el array de objetos
             return $resultado;
         }
-
-        // Si no hay id_area, devolvemos un array vacío
         return [];
     }
 

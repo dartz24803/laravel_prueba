@@ -28,8 +28,7 @@ class SoporteSolucion extends Model
 
     public static function getComentariosBySolucion($idsoporte_solucion)
     {
-        // Obtener todas las filas de soporte_comentarios con el idsoporte_solucion
-        // Realizando un left join con la tabla users
+
         $comentarios = DB::table('soporte_comentarios as sc')
             ->leftJoin('users as usr', 'sc.id_responsable', '=', 'usr.id_usuario')
             ->select(
@@ -42,6 +41,7 @@ class SoporteSolucion extends Model
                 DB::raw("CONCAT(usr.usuario_nombres, ' ', usr.usuario_apater, ' ', usr.usuario_amater) AS nombre_responsable_solucion")
             )
             ->where('sc.idsoporte_solucion', $idsoporte_solucion)
+            ->orderBy('sc.fec_comentario', 'DESC')
             ->get();
 
         return $comentarios;
