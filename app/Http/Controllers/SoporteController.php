@@ -259,7 +259,6 @@ class SoporteController extends Controller
 
 
         $soporte_solucion = SoporteSolucion::create([
-            'id_responsable' => null,
             'estado_solucion' => 0,
             'archivo_solucion' => 0,
             'estado' => 1,

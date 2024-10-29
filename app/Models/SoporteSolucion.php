@@ -15,7 +15,6 @@ class SoporteSolucion extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_responsable',      // bigint(20)
         'idsoporte_comentarios',
         'estado_solucion',     // int(11)
         'archivo_solucion',    // int(11)
