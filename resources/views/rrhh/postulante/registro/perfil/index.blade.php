@@ -28,7 +28,10 @@
                                                 <h6>DATOS POSTULANTE</h6>
                                             </div>
                                             <div class="col text-sm-right text-center">
-                                                <button type="button" class="btn btn-primary mb-md-0 mb-1" onclick="Update_Datos_Personales();">Actualizar</button>
+                                                @if (session('usuario')->id_nivel=="1" || 
+                                                session('usuario')->id_puesto=="277")
+                                                    <button type="button" class="btn btn-primary mb-md-0 mb-1" onclick="Update_Datos_Personales();">Actualizar</button>
+                                                @endif
                                                 <a href="{{ route('postulante') }}" class="btn btn-primary mb-md-0 mb-1" title="Regresar">Regresar</a>
                                             </div>
                                         </div>
@@ -53,45 +56,9 @@
 
                             <div class="col-md-12 layout-spacing">
                                 <form id="formulario_er" method="POST" enctype="multipart/form-data" class="section general-info">
-                                    <div class="info">
-                                        <div class="row">
-                                            <div class="col">
-                                                <h6>EVALUACIÓN RRHH</h6>
-                                            </div>
-                                            <div class="col text-right">
-                                                <button id="add-work-platforms" class="btn btn-primary">Actualizar</button>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-11 mx-auto">
-                                                <div class="row">
-                                                    <div class="col-lg-12 col-md-8 mt-md-0 mt-4">
-                                                        <div class="form">
-                                                            <div class="row">
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
-                                                                        <label for="resultado_rrhh">Resultado</label>
-                                                                        <select class="form-control" name="resultado_rrhh" id="resultado_rrhh">  
-                                                                            <option value="0">Seleccione</option>
-                                                                            <option value="6">APTO</option>
-                                                                            <option value="3">NO APTO</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-sm-12">
-                                                                    <div class="form-group">
-                                                                        <label for="observaciones_rrhh">Observaciones</label>
-                                                                        <textarea class="form-control" name="observaciones_rrhh" id="observaciones_rrhh" rows="4" placeholder="Observaciones"></textarea>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    @method('PUT')
+                                    @csrf
+                                    <div class="info" id="div_evaluacion_rrhh">
                                     </div>
                                 </form>
                             </div>
@@ -245,6 +212,7 @@
 
             Datos_Personales();
             Domicilio();
+            Evaluacion_Rrhh();
         });
 
         function Datos_Personales(){
@@ -275,7 +243,21 @@
             });
         }
 
-        function Valida_Archivo(val){
+        function Evaluacion_Rrhh(){
+            Cargando();
+
+            var url = "{{ route('postulante_reg.eval_rrhh', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_evaluacion_rrhh').html(resp);
+                }
+            });
+        }
+
+        function Valida_Foto(val){
             var archivoInput = document.getElementById(val);
             var archivoRuta = archivoInput.value;
             var extPermitidas = /(.png|.jpg|.jpeg)$/i;
@@ -284,6 +266,27 @@
                 Swal({
                     title: 'Registro Denegado',
                     text: "Asegurese de ingresar archivo con extensión .jpg|.png|.jpeg",
+                    type: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK',
+                });
+                archivoInput.value = ''; 
+                return false;
+            }else{
+                return true;         
+            }
+        }
+
+        function Valida_Archivo(val){
+            var archivoInput = document.getElementById(val);
+            var archivoRuta = archivoInput.value;
+            var extPermitidas = /(.pdf|.png|.jpg|.jpeg)$/i;
+
+            if(!extPermitidas.exec(archivoRuta)){
+                Swal({
+                    title: 'Registro Denegado',
+                    text: "Asegurese de ingresar archivo con extensión .pdf|.jpg|.png|.jpeg",
                     type: 'error',
                     showCancelButton: false,
                     confirmButtonColor: '#3085d6',
@@ -397,6 +400,60 @@
                 contentType: false,
                 success: function(data) {
                     Domicilio();
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+        }
+
+        function Update_Evaluacion_Rrhh() {
+            Cargando();
+
+            var dataString = new FormData(document.getElementById('formulario_er'));
+            var url = "{{ route('postulante_reg.update_eval_rrhh', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    Evaluacion_Rrhh();
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+        }
+
+        function Update_Evaluacion_Psicologica() {
+            Cargando();
+
+            var dataString = new FormData(document.getElementById('formulario_er'));
+            var url = "{{ route('postulante_reg.update_evaluacion_psicologica', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    Evaluacion_Rrhh();
                 },
                 error:function(xhr) {
                     var errors = xhr.responseJSON.errors;
