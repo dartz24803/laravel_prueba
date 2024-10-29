@@ -259,7 +259,6 @@
 
     function cargarElementos(especialidadId, elementoSeleccionado = null, asuntoSeleccionado = null) {
 
-        console.log(especialidadId);
         var elementoSelect = document.getElementById('elementoe');
         var elementCont = document.getElementById('elemento-conte');
         var asuntoCont = document.getElementById('asunto-conte');
@@ -271,7 +270,6 @@
 
 
         if (especialidadId == 4) {
-            console.log("###ingreos aqui")
             elementoContainer.style.display = 'none';
             elementCont.style.display = 'none';
             asuntoCont.style.display = 'none';

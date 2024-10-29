@@ -387,14 +387,11 @@
         estadoElements.forEach((element) => {
             // Extrae el índice del ID
             const index = element.id.split('_')[2];
-            console.log(`Índice extraído: ${index}`);
 
             // enviar el indice del responsable
             $('#responsable_indice').val(`${index}`);
-
             // Obtener el estado del elemento
             const estado = element.value;
-            console.log(`Estado del elemento ${index}:`, estado);
             // Obtener los elementos correspondientes usando el índice extraído
             const cierreLabel = document.getElementById(`cierre-labelver-${parseInt(index) + 1}`);
             const cierreField = document.getElementById(`cierre-fieldver-${parseInt(index) + 1}`);
@@ -434,7 +431,6 @@
         var rucLabel = document.getElementById('ruc-labelver');
         var rucField = document.getElementById('ruc-fieldver');
 
-        console.log(ejecutor_responsable); // Imprime el valor del input
 
         if (ejecutor_responsable == 2) {
             // Mostrar los campos de Proyecto
@@ -472,7 +468,6 @@
         toggleCierre();
         toggleEjecutor();
         toggleCierreMultiplesResponsables();
-        console.log(ejecutoresMultiples);
         var idResponsableLabel = document.getElementById('id_responsableever-label');
         var idResponsableField = document.getElementById('id_responsableever-field');
         var estadoContainer = document.getElementById('estado-containerver-field');
