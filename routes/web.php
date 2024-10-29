@@ -1076,6 +1076,8 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::get('postulante_reg/{id}/eval_rrhh', 'eval_rrhh_reg')->name('postulante_reg.eval_rrhh');
     Route::put('postulante_reg/{id}/update_eval_rrhh', 'update_eval_rrhh_reg')->name('postulante_reg.update_eval_rrhh');
     Route::put('postulante_reg/{id}/update_evaluacion_psicologica', 'update_evaluacion_psicologica_reg')->name('postulante_reg.update_evaluacion_psicologica');
+    Route::get('postulante_reg/{id}/eval_jefe_directo', 'eval_jefe_directo_reg')->name('postulante_reg.eval_jefe_directo');
+    Route::put('postulante_reg/{id}/update_eval_jefe_directo', 'update_eval_jefe_directo_reg')->name('postulante_reg.update_eval_jefe_directo');
     //TODOS
     Route::get('postulante_tod', 'index_tod')->name('postulante_tod');
     Route::post('postulante_tod/list', 'list_tod')->name('postulante_tod.list');
@@ -2219,11 +2221,11 @@ Route::controller(MiEquipoController::class)->group(function () {
     Route::post('MiEquipo/Update_Miequipo', 'Update_Miequipo');
     Route::get('MiEquipo/Modal_Update_Baja/{id}', 'Modal_Update_Baja');
     Route::post('MiEquipo/Update_Fecha_Baja', 'Update_Fecha_Baja');
-    // Route::post('MiEquipo/Insert_or_Update_Papeletas_Salida', 'Insert_or_Update_Papeletas_Salida');
-    // Route::post('MiEquipo/Buscar_Papeletas_Salida_Aprobacion', 'Buscar_Papeletas_Salida_Aprobacion');
-    // Route::post('MiEquipo/Aprobado_solicitud_papeletas_1', 'Aprobado_solicitud_papeletas_1');
-    // Route::post('MiEquipo/Anular_solicitud_papeletas_1', 'Anular_solicitud_papeletas_1');
-    // Route::post('MiEquipo/Buscar_Papeleta_Control', 'Buscar_Papeleta_Control');
+    Route::get('MiEquipo/Modal_Update_CoordinadorJr/{id}', 'Modal_Update_CoordinadorJr');
+    Route::post('MiEquipo/Update_Asignacion_Coordinador_Jr', 'Update_Asignacion_Coordinador_Jr');
+    // Route::get('MiEquipo/Buscar_Papeletas_Salida_Aprobacion', 'Buscar_Papeletas_Salida_Aprobacion');
+    // Route::get('MiEquipo/Aprobado_solicitud_papeletas_1', 'Aprobado_solicitud_papeletas_1');
+    // Route::get('MiEquipo/Anular_solicitud_papeletas_1', 'Anular_solicitud_papeletas_1');
     // Route::post('MiEquipo/Buscar_Base_Papeletas_Seguiridad', 'Buscar_Base_Papeletas_Seguiridad');
     // Route::post('MiEquipo/Busca_Colaborador_Control', 'Busca_Colaborador_Control');
     // Route::get('MiEquipo/Excel_Estado_Solicitud_Papeletas_Salida_Seguridad/{base}/{estado}/{fec_rev}/{fec_fin}/{num_doc}', 'Excel_Estado_Solicitud_Papeletas_Salida_Seguridad');

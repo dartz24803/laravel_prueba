@@ -9,6 +9,7 @@ use App\Models\Departamento;
 use App\Models\Distrito;
 use App\Models\DomicilioUsersP;
 use App\Models\EstadoCivil;
+use App\Models\EvalJefeDirecto;
 use App\Models\EvalRrhhPostulante;
 use App\Models\Genero;
 use App\Models\Gerencia;
@@ -755,7 +756,7 @@ class PostulanteController extends Controller
         EvalRrhhPostulante::where('id_postulante',$id)->delete();
 
         $archivo = NULL;
-        if($_FILES["eval_sicologica"]["name"] != ""){
+        if(isset($_FILES["eval_sicologica"]["name"]) && $_FILES["eval_sicologica"]["name"] != ""){
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
             $ftp_pass = "Intranet2022@";
@@ -859,6 +860,116 @@ class PostulanteController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+    }
+
+    public function eval_jefe_directo_reg($id)
+    {
+        $get_id = Postulante::from('postulante AS po')->select('pu.id_area','po.estado_postulacion')
+                ->join('puesto AS pu','pu.id_puesto','=','po.id_puesto')
+                ->where('id_postulante',$id)->first();
+        $get_eval_jd = EvalJefeDirecto::where('id_postulante',$id)
+                        ->orderBy('id_eval_jefe_directo','DESC')->first();
+        return view('rrhh.postulante.registro.perfil.evaluacion_jefe_directo', compact(
+            'get_id',
+            'get_eval_jd'
+        ));
+    }
+
+    public function update_eval_jefe_directo_reg(Request $request, $id)
+    {
+        $get_postulante = Postulante::from('postulante AS po')->select('pu.id_area',
+                        'po.estado_postulacion')
+                        ->join('puesto AS pu','pu.id_puesto','=','po.id_puesto')
+                        ->where('id_postulante',$id)->first();
+
+        if($get_postulante->id_area=="14" || $get_postulante->id_area=="44"){
+            $request->validate([
+                'resultado_jd' => 'gt:0',
+                'eval_sicologica' => 'required'
+            ],[
+                'resultado_jd.gt' => 'Debe seleccionar resultado.',
+                'eval_sicologica.required' => 'Debe adjuntar evaluación psicológica.'
+            ]);
+        }else{
+            $request->validate([
+                'resultado_jd' => 'gt:0'
+            ],[
+                'resultado_jd.gt' => 'Debe seleccionar resultado.'
+            ]);
+        }
+
+        $list_eval_jd = EvalJefeDirecto::where('id_postulante',$id)->get();
+        foreach($list_eval_jd as $list){
+            if($list->eval_sicologica!=""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    $file_to_delete = "POSTULANTE/EVALUACION_JEFE_DIRECTO/".basename($list->eval_sicologica);
+                    ftp_delete($con_id, $file_to_delete);
+                }
+            }
+        }
+        EvalJefeDirecto::where('id_postulante',$id)->delete();
+
+        $archivo = NULL;
+        if(isset($_FILES["eval_sicologica"]["name"]) && $_FILES["eval_sicologica"]["name"] != ""){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                $path = $_FILES["eval_sicologica"]["name"];
+                $source_file = $_FILES['eval_sicologica']['tmp_name'];
+
+                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                $nombre_soli = "Ejd_".$id."_".date('YmdHis');
+                $nombre = $nombre_soli.".".strtolower($ext);
+
+                ftp_pasv($con_id,true);
+                $subio = ftp_put($con_id,"POSTULANTE/EVALUACION_JEFE_DIRECTO/".$nombre,$source_file,FTP_BINARY);
+                if($subio){
+                    $archivo = "https://lanumerounocloud.com/intranet/POSTULANTE/EVALUACION_JEFE_DIRECTO/".$nombre;
+                }else{
+                    echo "Archivo no subido correctamente";
+                }
+            }else{
+                echo "No se conecto";
+            }
+        }
+
+        EvalJefeDirecto::create([
+            'id_postulante' => $id,
+            'resultado' => $request->resultado_jd,
+            'eval_sicologica' => $archivo,
+            'observaciones' => $request->observaciones_jd,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        Postulante::findOrFail($id)->update([
+            'estado_postulacion' => $request->resultado_jd,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        if($request->observaciones_jd!=""){
+            HistoricoPostulante::create([
+                'id_postulante' => $id,
+                'observacion' => $request->observaciones_jd,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
     }
 
     public function index_tod()

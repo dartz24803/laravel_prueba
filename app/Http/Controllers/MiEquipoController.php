@@ -294,6 +294,19 @@ class MiEquipoController extends Controller
     }
 
     public function Update_Fecha_Baja(){
+        $this->input->validate([
+            'fec_baja' => [
+                'required_if:cancelar_baja,0',
+                'date',
+            ],
+            'id_motivo' => 'required_if:cancelar_baja,0|not_in:0',
+        ], [
+            'fec_baja.date' => 'Debe ingresar fecha de Baja',
+            'fec_baja.required_if' => 'Debe ingresar fecha de Baja',
+            'id_motivo.required_if' => 'Debe seleccionar motivo de baja',
+            'id_motivo.not_in' => 'Debe seleccionar un motivo de baja válido',
+        ]);
+
             $dato['id_usuario']= $this->input->post("id_usuario");
             $dato['fec_baja']= $this->input->post("fec_baja");
             $dato['id_motivo']= $this->input->post("id_motivo");
@@ -407,12 +420,28 @@ class MiEquipoController extends Controller
             $dato['get_id'] = $this->Model_Perfil->get_list_usuario($id_usuario);
             return view('rrhh.Mi_equipo.modal_coordinador', $dato);
     }
-/*
+
     public function Update_Asignacion_Coordinador_Jr(){
+        $this->input->validate([
+            'fec_asignacionjr' => [
+                'required_if:cancelar_asignacionjr,0', // Obligatorio si 'cancelar_baja' no está marcado
+                'date'
+            ],
+        ], [
+            'fec_asignacionjr.date' => 'Debe ingresar fecha de asignacion',
+        ]);
+        //asigna como coordinador 
             $dato['id_usuario']= $this->input->post("id_usuarioa");
             $dato['fec_asignacionjr']= $this->input->post("fec_asignacionjr");
             $dato['cancelar_asignacionjr']= $this->input->post("cancelar_asignacionjr");
-            $dato['id_puestojr']= 29;
-            $this->Model_Corporacion->update_asignacion_coordinador_jr($dato);      
-    }*/
+
+            Usuario::where('id_usuario', $dato['id_usuario'])->update([
+                'fec_asignacionjr' => $dato['fec_asignacionjr'],
+                'cancelar_asignacionjr' => $dato['cancelar_asignacionjr'],
+                'id_puestojr' => 29,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+            ]);
+    }
+
 }
