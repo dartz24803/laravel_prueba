@@ -322,37 +322,32 @@
             </div>
 
             <div class="tab-pane fade" id="solucion" role="tabpanel" aria-labelledby="solucion-tab">
-                <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
+
+
+                <!-- Nueva sección para listar comentarios -->
+                <div class="row" id="comment-section" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
-                        <div class="row align-items-center">
-                            <div class="form-group col-md-8 mb-0">
-                                <label class="control-label text-bold" ">Solucion Aplicada:</label>
-                            </div>
-                            <div class=" form-group col-md-4 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                    <span class="form-control border-0">{{ $get_id->fecha_comentario }}</span>
+                        <h5 class="text-bold">Solucion Aplicada:</h5>
+                        @foreach ($comentarios as $comentario)
+                        <div class="comment-box" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                            <div class="row align-items-center">
+                                <div class="form-group col-md-2 text-center">
+                                    <img src="{{ $comentario->foto ? $comentario->foto : asset('img/user-default.jpg') }}"
+                                        alt="User Image" class="img-fluid rounded-circle" style="max-width: 60px;">
+                                </div>
+                                <div class="form-group col-md-10">
+                                    <p><strong>Fecha:</strong> {{ $comentario->fec_comentario }}</p>
+                                    <p><strong>Responsable:</strong> {{ $comentario->nombre_responsable_solucion ?: 'No designado' }}</p>
+                                    <p><strong>Comentario:</strong> {{ $comentario->comentario ?: 'No hay comentario' }}</p>
+
+                                </div>
                             </div>
                         </div>
+                        @endforeach
                     </div>
                 </div>
-                <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
-                    <div class="col-xl-12 col-lg-12 col-sm-12">
-                        <div class="row align-items-center">
-                            <div class="form-group col-md-2 mb-0 text-center">
-                                <img src="{{ $get_id->foto_responsable_solucion ? $get_id->foto_responsable_solucion : asset('img/user-default.jpg') }}"
-                                    alt="User Image" class="img-fluid rounded-circle" style="max-width: 100px;">
-                            </div>
-
-                            <div class="form-group col-md-8 mb-0">
-                                <p>{{ $get_id->nombre_responsable_solucion }}</p>
-                                <p style="max-width: 100%; word-wrap: break-word; white-space: normal;">
-                                    {{ $get_id->descripcion_solucion }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
+
         </div>
     </div>
 

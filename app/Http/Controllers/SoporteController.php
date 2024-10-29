@@ -46,6 +46,8 @@ use App\Models\SoporteEjecutor;
 use App\Models\SoporteMotivoCancelacion;
 use App\Models\SoporteNivel;
 use App\Models\SoporteSolucion;
+use App\Models\SoporteComentarios;
+
 use App\Models\SubGerencia;
 use App\Models\Ubicacion;
 use App\Models\User;
@@ -201,6 +203,7 @@ class SoporteController extends Controller
 
     public function store_tick(Request $request)
     {
+
         $rules = [
             'especialidad' => 'gt:0',
             'elemento' => 'gt:0',
@@ -209,7 +212,9 @@ class SoporteController extends Controller
             'idsoporte_nivel' => 'gt:0',
             'vencimiento' => 'required',
             'descripcion' => 'required',
+            'descripcion' => 'max:150',
         ];
+
         $messages = [
             'especialidad.gt' => 'Debe seleccionar especialidad.',
             'elemento.gt' => 'Debe seleccionar elemento.',
@@ -217,7 +222,9 @@ class SoporteController extends Controller
             'sede.gt' => 'Debe seleccionar sede.',
             'idsoporte_nivel.gt' => 'Debe ingresar Ubicaciòn.',
             'vencimiento.required' => 'Debe ingresar vencimiento.',
-            'descripcion.required' => 'Debe ingresar descripcion.',
+            'descripcion.required' => 'Debe ingresar propósito.',
+            'descripcion.max' => 'El propósito debe tener como máximo 150 carácteres.',
+
         ];
 
         if ($request->hasOptionsField == "1") {
@@ -241,7 +248,13 @@ class SoporteController extends Controller
         }
 
 
-
+        // $request->validate([
+        //     'propositod' => 'required',
+        //     'propositod' => 'max:250',
+        // ], [
+        //     'propositod.required' => 'Debe ingresar propósito.',
+        //     'propositod.max' => 'El propósito debe tener como máximo 250 carácteres.',
+        // ]);
         $request->validate($rules, $messages);
 
         $idsoporte_tipo = DB::table('soporte_asunto as sa')
@@ -263,8 +276,6 @@ class SoporteController extends Controller
 
         $soporte_solucion = SoporteSolucion::create([
             'id_responsable' => null,
-            'comentario' => '',
-            'fec_comentario' => null,
             'estado_solucion' => 0,
             'archivo_solucion' => 0,
             'estado' => 1,
@@ -283,6 +294,17 @@ class SoporteController extends Controller
             'ruc' => '',
             'estado' => 1,
             'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+        SoporteComentarios::create([
+
+            'idsoporte_solucion' => $soporte_solucion->idsoporte_solucion,
+            'id_responsable' => null,
+            'comentario' => '',
+            'estado' => 1,
+            'fec_comentario' => now(),
             'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
@@ -320,6 +342,8 @@ class SoporteController extends Controller
     {
         $get_id = Soporte::getTicketById($id_soporte);
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
+        $comentarios = SoporteSolucion::getComentariosBySolucion($get_id->idsoporte_solucion);
+
         $cantAreasEjecut = count($list_ejecutores_responsables);
         // dd($cantAreasEjecut);
         if ($cantAreasEjecut > 3) {
@@ -330,11 +354,22 @@ class SoporteController extends Controller
         $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
 
         // dd($get_id->idejecutor_responsable);
-        return view('soporte.soporte.modal_ver', compact('get_id', 'list_areas_involucradas', 'ejecutoresMultiples'));
+        return view('soporte.soporte.modal_ver', compact('get_id', 'list_areas_involucradas', 'ejecutoresMultiples', 'comentarios'));
     }
 
     public function update_tick(Request $request, $id)
     {
+        $rules = [
+            // 'ejecutor_responsable' => 'in:-1,3,4',
+            'descripcione' => 'required',
+            'descripcione' => 'max:150',
+        ];
+        $messages = [
+            // 'ejecutor_responsable.in' => 'Debe seleccionar Ejecutor Responsable',
+            'descripcione.required' => 'Debe ingresar propósito.',
+            'descripcione.max' => 'El propósito debe tener como máximo 150 carácteres.',
+        ];
+        $request->validate($rules, $messages);
 
         Soporte::findOrFail($id)->update([
             'id_sede' =>  $request->sedee,
@@ -438,9 +473,32 @@ class SoporteController extends Controller
         // Obtener la lista de procesos con los campos requeridos
         $list_tickets_soporte = Soporte::listTicketsSoporteMaster($id_subgerencia);
 
-        // dd($list_tickets_soporte);
+        // VALIDACIÓN DE ESTADOS EN PROCESO Y COMPLETADO PARA CADA MODULO
+        $list_tickets_soporte = $list_tickets_soporte->map(function ($ticket) use ($id_subgerencia) {
+            $ticket->status_enproceso = false;
+            if ($id_subgerencia == "10" && $ticket->estado_registro == 1) {
+                $ticket->status_enproceso = true;
+            } elseif ($id_subgerencia == "9" && $ticket->estado_registro_sr == 1) {
+                $ticket->status_enproceso = true;
+            } else {
+                $ticket->status_enproceso = false;
+            }
+
+
+            $ticket->status_completado = false;
+            if ($id_subgerencia == "10" && $ticket->estado_registro == 3) {
+                $ticket->status_completado = true;
+            } elseif ($id_subgerencia == "9" && $ticket->estado_registro_sr == 3) {
+                $ticket->status_completado = true;
+            } else {
+                $ticket->status_completado = false;
+            }
+            return $ticket;
+        });
+        // Enviar la colección modificada a la vista
         return view('soporte.soporte_master.lista', compact('list_tickets_soporte'));
     }
+
 
 
     public function ver_tick_master($id_soporte)
@@ -448,7 +506,8 @@ class SoporteController extends Controller
         $get_id = Soporte::getTicketById($id_soporte);
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $cantAreasEjecut = count($list_ejecutores_responsables);
-        // dd($cantAreasEjecut);
+        $comentarios = SoporteSolucion::getComentariosBySolucion($get_id->idsoporte_solucion);
+        // dd($comentarios);
         if ($cantAreasEjecut > 3) {
             $ejecutoresMultiples = true;
         } else {
@@ -456,7 +515,7 @@ class SoporteController extends Controller
         }
         $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
 
-        return view('soporte.soporte_master.modal_ver', compact('get_id', 'ejecutoresMultiples', 'list_areas_involucradas'));
+        return view('soporte.soporte_master.modal_ver', compact('get_id', 'ejecutoresMultiples', 'list_areas_involucradas', 'comentarios'));
     }
 
     public function edit_tick($id_soporte)
@@ -559,27 +618,47 @@ class SoporteController extends Controller
             $list_ejecutores_responsables = $filtered->values();
             // dd($list_ejecutores_responsables);
         }
-        // dd($get_id->idejecutor_responsable);
+        // dd($list_areas_involucradas);
 
         return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas', 'id_subgerencia'));
     }
 
     public function update_tick_master(Request $request, $id)
     {
+        $id_subgerencia = session('id_subgerenciam');
+
         $rules = [
             // 'ejecutor_responsable' => 'in:-1,3,4',
-            'descripcione_solucion' => 'required|max:250',
+            'descripcione_solucion' => 'required|max:150',
         ];
         $messages = [
             // 'ejecutor_responsable.in' => 'Debe seleccionar Ejecutor Responsable',
-            'descripcione_solucion.max' => 'Comentario de Solución debe tener como máximo 250 caracteres.',
+            'descripcione_solucion.max' => 'Comentario de Solución debe tener como máximo 150 caracteres.',
         ];
         $get_id = Soporte::getTicketById($id);
 
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $cantAreasEjecut = count($list_ejecutores_responsables);
+        if ($id_subgerencia == "9") {
+            $rules = array_merge($rules, [
+                'id_responsablee_1' => 'gt:0',
 
+            ]);
+            $messages = array_merge($messages, [
+                'id_responsablee_1.gt' => 'Debe seleccionar Responsable',
 
+            ]);
+        }
+        if ($id_subgerencia == "10") {
+            $rules = array_merge($rules, [
+                'id_responsablee_0' => 'gt:0',
+
+            ]);
+            $messages = array_merge($messages, [
+                'id_responsablee_0.gt' => 'Debe seleccionar Responsable',
+
+            ]);
+        }
         if ($cantAreasEjecut < 4) {
             $rules = array_merge($rules, [
                 'id_responsablee' => 'gt:0',
@@ -636,25 +715,56 @@ class SoporteController extends Controller
             ]);
         }
 
-        $soporteSolucion = SoporteSolucion::findOrFail($get_id->idsoporte_solucion);
-        $soporteEjecutor = SoporteEjecutor::findOrFail($get_id->idsoporte_ejecutor);
+
+        $soporteComentarios = SoporteComentarios::where('idsoporte_solucion', $get_id->idsoporte_solucion)->get();
+
+        // Verifica si hay comentarios existentes
+        if ($soporteComentarios->isEmpty()) {
+            // No hay comentarios, puedes manejar esto como desees, por ejemplo, crear uno nuevo
+            $data = [
+                'idsoporte_solucion' => $get_id->idsoporte_solucion,
+                'comentario' => $request->descripcione_solucion,
+                'id_responsable' => session('usuario')->id_usuario,
+                'fec_comentario' => now(),
+                'estado' => 1,
+                'user_act' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+            ];
+
+            SoporteComentarios::create($data);
+        } else {
+            // Hay comentarios existentes
+            $comentarioExistente = $soporteComentarios->first(); // Obtiene el primer comentario
+
+            // Verifica si id_responsable es null
+            if ($comentarioExistente->id_responsable === null) {
+                // Reemplaza el comentario existente
+                $comentarioExistente->update([
+                    'comentario' => $request->descripcione_solucion,
+                    'id_responsable' => session('usuario')->id_usuario,
+                    'fec_comentario' => now(),
+                    'user_act' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                ]);
+            } else {
+                // Si id_responsable no es null, agrega un nuevo comentario
+                $data = [
+                    'idsoporte_solucion' => $get_id->idsoporte_solucion,
+                    'comentario' => $request->descripcione_solucion,
+                    'id_responsable' => session('usuario')->id_usuario,
+                    'fec_comentario' => now(),
+                    'estado' => 1, // Puedes ajustar esto según la lógica de tu aplicación
+                    'user_act' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                ];
+
+                SoporteComentarios::create($data);
+            }
+        }
 
 
-        // Verifica si 'descripcione_solucion' ha cambiado
-        $fec_comentario = $soporteSolucion->comentario !== $request->descripcione_solucion
-            ? now()
-            : $soporteSolucion->fec_comentario; // Mantiene la fecha actual si no ha cambiado
 
-        $soporteSolucion->update([
-            'id_responsable' => session('usuario')->id_usuario,
-            'comentario' => $request->descripcione_solucion,
-            'fec_comentario' => $fec_comentario,
-            'tipo_soporte' => $request->tipo_soporte,
-            'estado_solucion' => 0,
-            'archivo_solucion' => 0,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
+
         // dd($request->fec_ini_proyecto);
         $soporteEjecutor = SoporteEjecutor::findOrFail($get_id->idsoporte_ejecutor);
 

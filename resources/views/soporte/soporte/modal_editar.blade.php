@@ -21,10 +21,10 @@
                     <div class="form-group col-lg-4">
                         <select class="form-control" id="sedee" name="sedee">
                             @foreach ($list_sede as $sede)
-                                <option value="{{ $sede->id }}"
-                                    {{ $get_id->id_sede == $sede->id ? 'selected' : '' }}>
-                                    {{ $sede->descripcion }}
-                                </option>
+                            <option value="{{ $sede->id }}"
+                                {{ $get_id->id_sede == $sede->id ? 'selected' : '' }}>
+                                {{ $sede->descripcion }}
+                            </option>
                             @endforeach
                         </select>
                     </div>
@@ -74,10 +74,10 @@
             <div class="form-group col-lg-4">
                 <select class="form-control" id="especialidade" name="especialidade">
                     @foreach ($list_especialidad as $list)
-                        <option value="{{ $list->id }}"
-                            {{ $get_id->id_especialidad == $list->id ? 'selected' : '' }}>
-                            {{ $list->nombre }}
-                        </option>
+                    <option value="{{ $list->id }}"
+                        {{ $get_id->id_especialidad == $list->id ? 'selected' : '' }}>
+                        {{ $list->nombre }}
+                    </option>
                     @endforeach
                 </select>
             </div>
@@ -89,10 +89,10 @@
                 <select class="form-control" id="elementoe" name="elementoe">
 
                     @foreach ($list_elementos as $list)
-                        <option value="{{ $list->idsoporte_elemento }}"
-                            {{ $get_id->id_elemento == $list->idsoporte_elemento ? 'selected' : '' }}>
-                            {{ $list->nombre }}
-                        </option>
+                    <option value="{{ $list->idsoporte_elemento }}"
+                        {{ $get_id->id_elemento == $list->idsoporte_elemento ? 'selected' : '' }}>
+                        {{ $list->nombre }}
+                    </option>
                     @endforeach
                 </select>
             </div>
@@ -102,10 +102,10 @@
             <div class="form-group col-lg-5" id="area-rowe" style="display: none;">
                 <select class="form-control" id="areae" name="areae">
                     @foreach ($list_area as $list)
-                        <option value="{{ $list->id_area }}"
-                            {{ $get_id->id_area == $list->id_area ? 'selected' : '' }}>
-                            {{ $list->nom_area }}
-                        </option>
+                    <option value="{{ $list->id_area }}"
+                        {{ $get_id->id_area == $list->id_area ? 'selected' : '' }}>
+                        {{ $list->nom_area }}
+                    </option>
                     @endforeach
                 </select>
             </div>
@@ -118,10 +118,10 @@
             <div class="form-group col-lg-10" id="asunto-containere">
                 <select class="form-control" id="asuntoe" name="asuntoe">
                     @foreach ($list_asunto as $list)
-                        <option value="{{ $list->idsoporte_asunto }}"
-                            {{ $get_id->id_asunto == $list->idsoporte_asunto ? 'selected' : '' }}>
-                            {{ $list->nombre }}
-                        </option>
+                    <option value="{{ $list->idsoporte_asunto }}"
+                        {{ $get_id->id_asunto == $list->idsoporte_asunto ? 'selected' : '' }}>
+                        {{ $list->nombre }}
+                    </option>
                     @endforeach
                 </select>
             </div>
