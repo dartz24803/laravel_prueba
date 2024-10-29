@@ -9,6 +9,7 @@ use App\Models\Departamento;
 use App\Models\Distrito;
 use App\Models\DomicilioUsersP;
 use App\Models\EstadoCivil;
+use App\Models\EvalRrhhPostulante;
 use App\Models\Genero;
 use App\Models\Gerencia;
 use App\Models\HistoricoPostulante;
@@ -357,7 +358,7 @@ class PostulanteController extends Controller
         $writer->save('php://output');
     }
 
-    public function datos_personales_reg($id)
+    public function datos_iniciales_reg($id)
     {
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
@@ -374,7 +375,7 @@ class PostulanteController extends Controller
                             ->where('estado',1)->orderBy('cod_tipo_documento','ASC')->get();
             $list_departamento = Departamento::select('id_departamento','nombre_departamento')
                         ->where('estado',1)->get();
-            return view('rrhh.postulante.registro.datos_personales', compact(
+            return view('rrhh.postulante.registro.datos_iniciales', compact(
                 'list_notificacion',
                 'list_subgerencia',
                 'get_id',
@@ -389,7 +390,7 @@ class PostulanteController extends Controller
         }
     }
 
-    public function update_datos_personales_reg(Request $request, $id)
+    public function update_datos_iniciales_reg(Request $request, $id)
     {
         $request->validate([
             'postulante_apater' => 'required',
@@ -530,12 +531,18 @@ class PostulanteController extends Controller
         //MÓDULO
         $get_id = Postulante::from('postulante AS po')->select('po.*',DB::raw('TIMESTAMPDIFF(YEAR, po.fec_nac, CURDATE()) AS edad'))
                 ->where('id_postulante',$id)->first();
-        $get_domicilio = DomicilioUsersP::from('domicilio_usersp AS do')
-                        ->select('do.id_domicilio_usersp','pr.id_departamento',
-                        'di.id_provincia','do.id_distrito','do.lat','do.lng')
-                        ->join('distrito AS di','di.id_distrito','=','do.id_distrito')
-                        ->join('provincia AS pr','pr.id_provincia','=','di.id_provincia')
-                        ->where('id_postulante',$id)->first();
+        return view('rrhh.postulante.registro.perfil.index', compact(
+            'list_notificacion',
+            'list_subgerencia',
+            'get_id'
+        ));
+    }
+
+    public function datos_personales_reg($id)
+    {
+        $get_id = Postulante::from('postulante AS po')
+                ->select('po.*',DB::raw('TIMESTAMPDIFF(YEAR, po.fec_nac, CURDATE()) AS edad'))
+                ->where('id_postulante',$id)->first();
         $list_nacionalidad = Nacionalidad::select('id_nacionalidad','nom_nacionalidad')
                             ->where('estado',1)->get();
         $list_genero = Genero::select('id_genero','nom_genero')->where('estado',1)->get();
@@ -543,25 +550,315 @@ class PostulanteController extends Controller
                             ->where('estado',1)->get();
         $list_tipo_documento = TipoDocumento::select('id_tipo_documento','cod_tipo_documento')
                                 ->where('estado',1)->orderBy('cod_tipo_documento','ASC')->get();
-        $list_departamento = Departamento::select('id_departamento','nombre_departamento')
-                            ->where('estado',1)->get();
-        $list_provincia = Provincia::select('id_provincia','nombre_provincia')
-                        ->where('id_departamento',$get_domicilio->id_departamento)->where('estado',1)->get();
-        $list_distrito = Distrito::select('id_distrito','nombre_distrito')
-                        ->where('id_provincia',$get_domicilio->id_provincia)->where('estado',1)->get();
-        return view('rrhh.postulante.registro.perfil.index', compact(
-            'list_notificacion',
-            'list_subgerencia',
+        return view('rrhh.postulante.registro.perfil.datos_personales', compact(
             'get_id',
-            'get_domicilio',
             'list_nacionalidad',
             'list_genero',
             'list_estado_civil',
-            'list_tipo_documento',
+            'list_tipo_documento'
+        ));
+    }
+
+    public function update_datos_personales_reg(Request $request, $id)
+    {
+        $request->validate([
+            'postulante_apater' => 'required',
+            'postulante_amater' => 'required',
+            'postulante_nombres' => 'required',
+            'id_tipo_documento' => 'gt:0',
+            'num_doc' => 'required',
+            'id_nacionalidad' => 'gt:0',
+            'id_genero' => 'gt:0',
+            'id_estado_civil' => 'gt:0',
+            'fec_nac' => 'required',
+            'emailp' => 'required',
+            'num_celp' => 'required'
+        ],[
+            'postulante_apater.required' => 'Debe ingresar apellido paterno.',
+            'postulante_amater.required' => 'Debe ingresar apellido materno.',
+            'postulante_nombres.required' => 'Debe ingresar nombres.',
+            'id_tipo_documento.gt' => 'Debe seleccionar tipo de documento.',
+            'num_doc.required' => 'Debe ingresar número documento.',
+            'id_nacionalidad.gt' => 'Debe seleccionar nacionalidad.',
+            'id_genero.gt' => 'Debe seleccionar género.',
+            'id_estado_civil.gt' => 'Debe seleccionar estado civil.',
+            'fec_nac.required' => 'Debe ingresar fecha de nacimiento.',
+            'emailp.required' => 'Debe ingresar correo electrónico.',
+            'num_celp.required' => 'Debe ingresar número celular.'
+        ]);
+
+        $errors = [];
+        $fecha_nacimiento = new \DateTime($request->fec_nac);
+        $fecha_actual = new \DateTime();
+        $edad = $fecha_actual->diff($fecha_nacimiento)->y;
+        if($edad<18){
+            $errors['edad'] = ['Debe ser mayor de edad para actualizar datos.'];
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
+        $get_id = Postulante::findOrFail($id);
+        $archivo = $get_id->foto;
+        if($_FILES["foto"]["name"] != ""){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                if($get_id->foto!=""){
+                    ftp_delete($con_id, "POSTULANTE/FOTO/".basename($get_id->foto));
+                }
+
+                $path = $_FILES["foto"]["name"];
+                $source_file = $_FILES['foto']['tmp_name'];
+
+                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                $nombre_soli = "Foto_".$id."_".date('YmdHis');
+                $nombre = $nombre_soli.".".strtolower($ext);
+
+                ftp_pasv($con_id,true);
+                $subio = ftp_put($con_id,"POSTULANTE/FOTO/".$nombre,$source_file,FTP_BINARY);
+                if($subio){
+                    $archivo = "https://lanumerounocloud.com/intranet/POSTULANTE/FOTO/".$nombre;
+                }else{
+                    echo "Archivo no subido correctamente";
+                }
+            }else{
+                echo "No se conecto";
+            }
+        }
+
+        Postulante::findOrFail($id)->update([
+            'postulante_apater' => $request->postulante_apater,
+            'postulante_amater' => $request->postulante_amater,
+            'postulante_nombres' => $request->postulante_nombres,
+            'id_tipo_documento' => $request->id_tipo_documento,
+            'num_doc' => $request->num_doc,
+            'id_nacionalidad' => $request->id_nacionalidad,
+            'id_genero' => $request->id_genero,
+            'id_estado_civil' => $request->id_estado_civil,
+            'fec_nac' => $request->fec_nac,
+            'emailp' => $request->emailp,
+            'num_celp' => $request->num_celp,
+            'num_fijop' => $request->num_fijop,
+            'foto' => $archivo,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function domicilio_reg($id)
+    {
+        $get_domicilio = DomicilioUsersP::from('domicilio_usersp AS do')
+                        ->select('do.id_domicilio_usersp','pr.id_departamento',
+                        'di.id_provincia','do.id_distrito','do.lat','do.lng')
+                        ->join('distrito AS di','di.id_distrito','=','do.id_distrito')
+                        ->join('provincia AS pr','pr.id_provincia','=','di.id_provincia')
+                        ->where('id_postulante',$id)->orderBy('id_domicilio_usersp','DESC')->first();
+        $list_departamento = Departamento::select('id_departamento','nombre_departamento')
+                            ->where('estado',1)->get();
+        if(isset($get_domicilio->id_domicilio_usersp)){
+            $list_provincia = Provincia::select('id_provincia','nombre_provincia')
+                            ->where('id_departamento',$get_domicilio->id_departamento)->where('estado',1)->get();
+            $list_distrito = Distrito::select('id_distrito','nombre_distrito')
+                            ->where('id_provincia',$get_domicilio->id_provincia)->where('estado',1)->get();
+        }else{
+            $list_provincia = [];
+            $list_distrito = [];
+        }
+        return view('rrhh.postulante.registro.perfil.domicilio', compact(
+            'get_domicilio',
             'list_departamento',
             'list_provincia',
             'list_distrito'
         ));
+    }
+
+    public function update_domicilio_reg(Request $request, $id)
+    {
+        $request->validate([
+            'id_departamento' => 'not_in:0',
+            'id_provincia' => 'not_in:0',
+            'id_distrito' => 'not_in:0'
+        ],[
+            'id_departamento.not_in' => 'Debe seleccionar departamento.',
+            'id_provincia.not_in' => 'Debe seleccionar provincia.',
+            'id_distrito.not_in' => 'Debe seleccionar distrito.'
+        ]);
+
+        DomicilioUsersP::where('id_postulante',$id)->delete();
+        DomicilioUsersP::create([
+            'id_postulante' => $id,
+            'id_distrito' => $request->id_distrito,
+            'lat' => $request->coordsltd,
+            'lng' => $request->coordslng,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function eval_rrhh_reg($id)
+    {
+        $get_id = Postulante::from('postulante AS po')->select('pu.id_area','po.estado_postulacion')
+                ->join('puesto AS pu','pu.id_puesto','=','po.id_puesto')
+                ->where('id_postulante',$id)->first();
+        $get_eval_rrhh = EvalRrhhPostulante::where('id_postulante',$id)
+                        ->orderBy('id_eval_rrhh_postulante','DESC')->first();
+        return view('rrhh.postulante.registro.perfil.evaluacion_rrhh', compact(
+            'get_id',
+            'get_eval_rrhh'
+        ));
+    }
+
+    public function update_eval_rrhh_reg(Request $request, $id)
+    {
+        $get_postulante = Postulante::from('postulante AS po')->select('pu.id_area',
+                        'po.estado_postulacion')
+                        ->join('puesto AS pu','pu.id_puesto','=','po.id_puesto')
+                        ->where('id_postulante',$id)->first();
+
+        if($get_postulante->id_area=="14" || $get_postulante->id_area=="44"){
+            $request->validate([
+                'resultado_rrhh' => 'gt:0'
+            ],[
+                'resultado_rrhh.gt' => 'Debe seleccionar resultado.'
+            ]);
+        }else{
+            $request->validate([
+                'resultado_rrhh' => 'gt:0',
+                'eval_sicologica' => 'required'
+            ],[
+                'resultado_rrhh.gt' => 'Debe seleccionar resultado.',
+                'eval_sicologica.required' => 'Debe adjuntar evaluación psicológica.'
+            ]);
+        }
+
+        $list_eval_rrhh = EvalRrhhPostulante::where('id_postulante',$id)->get();
+        foreach($list_eval_rrhh as $list){
+            if($list->eval_sicologica!=""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    $file_to_delete = "POSTULANTE/EVALUACION_PSICOLOGICA/".basename($list->eval_sicologica);
+                    ftp_delete($con_id, $file_to_delete);
+                }
+            }
+        }
+        EvalRrhhPostulante::where('id_postulante',$id)->delete();
+
+        $archivo = NULL;
+        if($_FILES["eval_sicologica"]["name"] != ""){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                $path = $_FILES["eval_sicologica"]["name"];
+                $source_file = $_FILES['eval_sicologica']['tmp_name'];
+
+                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                $nombre_soli = "Errhh_".$id."_".date('YmdHis');
+                $nombre = $nombre_soli.".".strtolower($ext);
+
+                ftp_pasv($con_id,true);
+                $subio = ftp_put($con_id,"POSTULANTE/EVALUACION_PSICOLOGICA/".$nombre,$source_file,FTP_BINARY);
+                if($subio){
+                    $archivo = "https://lanumerounocloud.com/intranet/POSTULANTE/EVALUACION_PSICOLOGICA/".$nombre;
+                }else{
+                    echo "Archivo no subido correctamente";
+                }
+            }else{
+                echo "No se conecto";
+            }
+        }
+
+        EvalRrhhPostulante::create([
+            'id_postulante' => $id,
+            'resultado' => $request->resultado_rrhh,
+            'eval_sicologica' => $archivo,
+            'observaciones' => $request->observaciones_rrhh,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        Postulante::findOrFail($id)->update([
+            'estado_postulacion' => $request->resultado_rrhh,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        if($request->observaciones_rrhh!=""){
+            HistoricoPostulante::create([
+                'id_postulante' => $id,
+                'observacion' => $request->observaciones_rrhh,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+    
+    public function update_evaluacion_psicologica_reg(Request $request, $id)
+    {
+        $request->validate([
+            'eval_sicologica' => 'required'
+        ],[
+            'eval_sicologica.required' => 'Debe adjuntar evaluación psicológica.'
+        ]);
+
+        $get_id = EvalRrhhPostulante::where('id_postulante',$id)
+                ->orderBy('id_eval_rrhh_postulante','DESC')->first();
+
+        $archivo = $get_id->eval_sicologica;
+        if($_FILES["eval_sicologica"]["name"] != ""){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                if($get_id->eval_sicologica!=""){
+                    ftp_delete($con_id, "POSTULANTE/EVALUACION_PSICOLOGICA/".basename($get_id->eval_sicologica));
+                }
+
+                $path = $_FILES["eval_sicologica"]["name"];
+                $source_file = $_FILES['eval_sicologica']['tmp_name'];
+
+                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                $nombre_soli = "Errhh_".$id."_".date('YmdHis');
+                $nombre = $nombre_soli.".".strtolower($ext);
+
+                ftp_pasv($con_id,true);
+                $subio = ftp_put($con_id,"POSTULANTE/EVALUACION_PSICOLOGICA/".$nombre,$source_file,FTP_BINARY);
+                if($subio){
+                    $archivo = "https://lanumerounocloud.com/intranet/POSTULANTE/EVALUACION_PSICOLOGICA/".$nombre;
+                }else{
+                    echo "Archivo no subido correctamente";
+                }
+            }else{
+                echo "No se conecto";
+            }
+        }
+
+        EvalRrhhPostulante::findOrFail($get_id->id_eval_rrhh_postulante)->update([
+            'eval_sicologica' => $archivo,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
     }
 
     public function index_tod()

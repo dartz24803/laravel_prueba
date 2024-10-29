@@ -39,7 +39,7 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="btnDropLeft" style="padding:0;">
                                 @if ($list->estado_postulacion=="1")
-                                    <a href="{{ route('postulante_reg.datos_personales', $list->id_postulante) }}" 
+                                    <a href="{{ route('postulante_reg.datos_iniciales', $list->id_postulante) }}" 
                                     class="dropdown-item">
                                         Datos personales
                                     </a>

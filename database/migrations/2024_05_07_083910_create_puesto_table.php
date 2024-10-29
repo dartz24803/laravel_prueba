@@ -22,7 +22,6 @@ return new class extends Migration
             $table->unsignedBigInteger('id_nivel');
             $table->unsignedBigInteger('id_sede_laboral');
             $table->string('perfil_infosap',5)->nullable();
-            $table->integer('evaluador')->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
