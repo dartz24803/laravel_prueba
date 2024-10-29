@@ -12,8 +12,10 @@ use App\Models\Model_Perfil;
 use App\Models\Notificacion;
 use App\Models\SubGerencia;
 use App\Models\Usuario;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PHPMailer\PHPMailer\PHPMailer;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -299,47 +301,61 @@ class MiEquipoController extends Controller
             $dato['observaciones_baja']= $this->input->post("observaciones_baja");
             $dato['motivo_renuncia']= $this->input->post("motivo_renuncia");
 
+            $dato['fec_baja'] = $dato['fec_baja'] ?: '0000-00-00'; // Set default if empty
+
             $valida = Usuario::where('id_usuario', $dato['id_usuario'])
                     ->where('ini_funciones', '<', $dato['fec_baja'])
                     ->get();
 
-            if(count($valida)>0){
-                if($_FILES['documento']['name']!=""){
-                    $ftp_server = "lanumerounocloud.com";
-                    $ftp_usuario = "intranet@lanumerounocloud.com";
-                    $ftp_pass = "Intranet2022@";
-                    $con_id = ftp_connect($ftp_server);
-                    $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
-                    if((!$con_id) || (!$lr)){
-                        echo "No se conecto";
-                    }else{
-                        echo "Se conecto";
-                        if($_FILES['documento']['name']!=""){
-                            $path = $_FILES['documento']['name'];
-                            $temp = explode(".",$_FILES['documento']['name']);
-                            $source_file = $_FILES['documento']['tmp_name'];
+            $dato['documento'] = null;
+            if($valida){
+                    // Process the file upload
+                    if($_FILES['documento']['name']!=""){
+                        $ftp_server = "lanumerounocloud.com";
+                        $ftp_usuario = "intranet@lanumerounocloud.com";
+                        $ftp_pass = "Intranet2022@";
+                        $con_id = ftp_connect($ftp_server);
+                        $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                        if((!$con_id) || (!$lr)){
+                            echo "No se conecto";
+                        }else{
+                            echo "Se conecto";
+                            if($_FILES['documento']['name']!=""){
+                                $path = $_FILES['documento']['name'];
+                                $temp = explode(".",$_FILES['documento']['name']);
+                                $source_file = $_FILES['documento']['tmp_name'];
 
-                            $fecha=date('Y-m-d H:i');
-                            $ext = pathinfo($path, PATHINFO_EXTENSION);
-                            $nombre_soli="Documento_".$fecha."_".rand(10,199);
-                            $nombre = $nombre_soli.".".$ext;
+                                $fecha=date('Y-m-d H:i');
+                                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                                $nombre_soli="Documento_".$fecha."_".rand(10,199);
+                                $nombre = $nombre_soli.".".$ext;
 
-                            ftp_pasv($con_id,true);
-                            $subio = ftp_put($con_id,"MiEquipo_ComunicarBaja/".$nombre,$source_file,FTP_BINARY);
-                            if($subio){
-                                $dato['documento'] = $nombre;
-                                echo "Archivo subido correctamente";
-                            }else{
-                                echo "Archivo no subido correctamente";
+                                ftp_pasv($con_id,true);
+                                $subio = ftp_put($con_id,"MiEquipo_ComunicarBaja/".$nombre,$source_file,FTP_BINARY);
+                                if($subio){
+                                    $dato['documento'] = $nombre;
+                                    echo "Archivo subido correctamente";
+                                }else{
+                                    echo "Archivo no subido correctamente";
+                                }
                             }
                         }
                     }
-                }
 
-                $this->Model_Corporacion->update_fec_baja_usuario($dato);
-/*
+                Usuario::where('id_usuario', $dato['id_usuario'])
+                    ->update([
+                        'fec_baja' => ($dato['fec_baja'] === '0000-00-00') ? null : $dato['fec_baja'],
+                        'cancelar_baja' => $dato['cancelar_baja'],
+                        'id_motivo_baja' => $dato['id_motivo'],
+                        'observaciones_baja' => $dato['observaciones_baja'],
+                        'motivo_renuncia' => $dato['motivo_renuncia'],
+                        'documento' => $dato['documento'],
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                    ]);
+                //comunicado de baja si el check no esta marcado; con envio de correo
                 if($dato['cancelar_baja']!="1"){
-                    $get_id = $this->Model_Corporacion->get_id_usuario($dato['id_usuario']);
+                    $get_id = $this->Model_Perfil->get_id_usuario($dato['id_usuario']);
 
                     $mail = new PHPMailer(true);
 
@@ -351,9 +367,10 @@ class MiEquipoController extends Controller
                         $mail->Username   =  'intranet@lanumero1.com.pe';
                         $mail->Password   =  'lanumero1$1';
                         $mail->SMTPSecure =  'tls';
-                        $mail->Puerto     =  587;
+                        $mail->Port     =  587;
                         $mail->setFrom('intranet@lanumero1.com.pe','SOLICITUD DE BAJA');
 
+                        // $mail->addAddress('pcardenas@lanumero1.com.pe');
                         $mail->addAddress('rrhh@lanumero1.com.pe');
                         $mail->addAddress('fclaverias@lanumero1.com.pe');
 
@@ -380,9 +397,22 @@ class MiEquipoController extends Controller
                     }catch(Exception $e) {
                         echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
                     }
-                }*/
+                }
             }else{
                 echo "error";
             }
     }
+    
+    public function Modal_Update_CoordinadorJr($id_usuario){
+            $dato['get_id'] = $this->Model_Perfil->get_list_usuario($id_usuario);
+            return view('rrhh.Mi_equipo.modal_coordinador', $dato);
+    }
+/*
+    public function Update_Asignacion_Coordinador_Jr(){
+            $dato['id_usuario']= $this->input->post("id_usuarioa");
+            $dato['fec_asignacionjr']= $this->input->post("fec_asignacionjr");
+            $dato['cancelar_asignacionjr']= $this->input->post("cancelar_asignacionjr");
+            $dato['id_puestojr']= 29;
+            $this->Model_Corporacion->update_asignacion_coordinador_jr($dato);      
+    }*/
 }
