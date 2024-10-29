@@ -243,7 +243,7 @@
                                                     <div class="col text-right">
                                                         @csrf
                                                         @method('PUT')
-                                                        <button class="btn btn-primary" type="button" onclick="Update_Datos_Personales();">Guardar</button>
+                                                        <button class="btn btn-primary" type="button" onclick="Update_Datos_Iniciales();">Guardar</button>
                                                         <a class="btn" href="{{ route('postulante') }}">Cancelar</a>
                                                     </div>
                                                 </div>
@@ -451,13 +451,13 @@
             });
         }
 
-        function Update_Datos_Personales() {
+        function Update_Datos_Iniciales() {
             Cargando();
 
             var dataString = new FormData(); 
             new FormData(document.getElementById("formulario_dp")).forEach((value, key) => dataString.append(key, value));
             new FormData(document.getElementById("formulario_do")).forEach((value, key) => dataString.append(key, value));
-            var url = "{{ route('postulante_reg.update_datos_personales', $get_id->id_postulante) }}";
+            var url = "{{ route('postulante_reg.update_datos_iniciales', $get_id->id_postulante) }}";
 
             $.ajax({
                 url: url,
