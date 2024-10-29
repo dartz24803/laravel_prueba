@@ -357,7 +357,7 @@ class PostulanteController extends Controller
         $writer->save('php://output');
     }
 
-    public function datos_personales_reg($id)
+    public function datos_iniciales_reg($id)
     {
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
@@ -374,7 +374,7 @@ class PostulanteController extends Controller
                             ->where('estado',1)->orderBy('cod_tipo_documento','ASC')->get();
             $list_departamento = Departamento::select('id_departamento','nombre_departamento')
                         ->where('estado',1)->get();
-            return view('rrhh.postulante.registro.datos_personales', compact(
+            return view('rrhh.postulante.registro.datos_iniciales', compact(
                 'list_notificacion',
                 'list_subgerencia',
                 'get_id',
@@ -389,7 +389,7 @@ class PostulanteController extends Controller
         }
     }
 
-    public function update_datos_personales_reg(Request $request, $id)
+    public function update_datos_iniciales_reg(Request $request, $id)
     {
         $request->validate([
             'postulante_apater' => 'required',
@@ -530,12 +530,18 @@ class PostulanteController extends Controller
         //MÓDULO
         $get_id = Postulante::from('postulante AS po')->select('po.*',DB::raw('TIMESTAMPDIFF(YEAR, po.fec_nac, CURDATE()) AS edad'))
                 ->where('id_postulante',$id)->first();
-        $get_domicilio = DomicilioUsersP::from('domicilio_usersp AS do')
-                        ->select('do.id_domicilio_usersp','pr.id_departamento',
-                        'di.id_provincia','do.id_distrito','do.lat','do.lng')
-                        ->join('distrito AS di','di.id_distrito','=','do.id_distrito')
-                        ->join('provincia AS pr','pr.id_provincia','=','di.id_provincia')
-                        ->where('id_postulante',$id)->first();
+        return view('rrhh.postulante.registro.perfil.index', compact(
+            'list_notificacion',
+            'list_subgerencia',
+            'get_id'
+        ));
+    }
+
+    public function datos_personales_reg($id)
+    {
+        $get_id = Postulante::from('postulante AS po')
+                ->select('po.*',DB::raw('TIMESTAMPDIFF(YEAR, po.fec_nac, CURDATE()) AS edad'))
+                ->where('id_postulante',$id)->first();
         $list_nacionalidad = Nacionalidad::select('id_nacionalidad','nom_nacionalidad')
                             ->where('estado',1)->get();
         $list_genero = Genero::select('id_genero','nom_genero')->where('estado',1)->get();
@@ -543,25 +549,169 @@ class PostulanteController extends Controller
                             ->where('estado',1)->get();
         $list_tipo_documento = TipoDocumento::select('id_tipo_documento','cod_tipo_documento')
                                 ->where('estado',1)->orderBy('cod_tipo_documento','ASC')->get();
-        $list_departamento = Departamento::select('id_departamento','nombre_departamento')
-                            ->where('estado',1)->get();
-        $list_provincia = Provincia::select('id_provincia','nombre_provincia')
-                        ->where('id_departamento',$get_domicilio->id_departamento)->where('estado',1)->get();
-        $list_distrito = Distrito::select('id_distrito','nombre_distrito')
-                        ->where('id_provincia',$get_domicilio->id_provincia)->where('estado',1)->get();
-        return view('rrhh.postulante.registro.perfil.index', compact(
-            'list_notificacion',
-            'list_subgerencia',
+        return view('rrhh.postulante.registro.perfil.datos_personales', compact(
             'get_id',
-            'get_domicilio',
             'list_nacionalidad',
             'list_genero',
             'list_estado_civil',
-            'list_tipo_documento',
+            'list_tipo_documento'
+        ));
+    }
+
+    public function update_datos_personales_reg(Request $request, $id)
+    {
+        $request->validate([
+            'postulante_apater' => 'required',
+            'postulante_amater' => 'required',
+            'postulante_nombres' => 'required',
+            'id_tipo_documento' => 'gt:0',
+            'num_doc' => 'required',
+            'id_nacionalidad' => 'gt:0',
+            'id_genero' => 'gt:0',
+            'id_estado_civil' => 'gt:0',
+            'fec_nac' => 'required',
+            'emailp' => 'required',
+            'num_celp' => 'required'
+        ],[
+            'postulante_apater.required' => 'Debe ingresar apellido paterno.',
+            'postulante_amater.required' => 'Debe ingresar apellido materno.',
+            'postulante_nombres.required' => 'Debe ingresar nombres.',
+            'id_tipo_documento.gt' => 'Debe seleccionar tipo de documento.',
+            'num_doc.required' => 'Debe ingresar número documento.',
+            'id_nacionalidad.gt' => 'Debe seleccionar nacionalidad.',
+            'id_genero.gt' => 'Debe seleccionar género.',
+            'id_estado_civil.gt' => 'Debe seleccionar estado civil.',
+            'fec_nac.required' => 'Debe ingresar fecha de nacimiento.',
+            'emailp.required' => 'Debe ingresar correo electrónico.',
+            'num_celp.required' => 'Debe ingresar número celular.'
+        ]);
+
+        $errors = [];
+        $fecha_nacimiento = new \DateTime($request->fec_nac);
+        $fecha_actual = new \DateTime();
+        $edad = $fecha_actual->diff($fecha_nacimiento)->y;
+        if($edad<18){
+            $errors['edad'] = ['Debe ser mayor de edad para actualizar datos.'];
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
+        $get_id = Postulante::findOrFail($id);
+        $archivo = $get_id->foto;
+        if($_FILES["foto"]["name"] != ""){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                if($get_id->foto!=""){
+                    ftp_delete($con_id, "POSTULANTE/FOTO/".basename($get_id->foto));
+                }
+
+                $path = $_FILES["foto"]["name"];
+                $source_file = $_FILES['foto']['tmp_name'];
+
+                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                $nombre_soli = "Foto_".$id."_".date('YmdHis');
+                $nombre = $nombre_soli.".".strtolower($ext);
+
+                ftp_pasv($con_id,true);
+                $subio = ftp_put($con_id,"POSTULANTE/FOTO/".$nombre,$source_file,FTP_BINARY);
+                if($subio){
+                    $archivo = "https://lanumerounocloud.com/intranet/POSTULANTE/FOTO/".$nombre;
+                }else{
+                    echo "Archivo no subido correctamente";
+                }
+            }else{
+                echo "No se conecto";
+            }
+        }
+
+        Postulante::findOrFail($id)->update([
+            'postulante_apater' => $request->postulante_apater,
+            'postulante_amater' => $request->postulante_amater,
+            'postulante_nombres' => $request->postulante_nombres,
+            'id_tipo_documento' => $request->id_tipo_documento,
+            'num_doc' => $request->num_doc,
+            'id_nacionalidad' => $request->id_nacionalidad,
+            'id_genero' => $request->id_genero,
+            'id_estado_civil' => $request->id_estado_civil,
+            'fec_nac' => $request->fec_nac,
+            'emailp' => $request->emailp,
+            'num_celp' => $request->num_celp,
+            'num_fijop' => $request->num_fijop,
+            'foto' => $archivo,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function domicilio_reg($id)
+    {
+        $get_domicilio = DomicilioUsersP::from('domicilio_usersp AS do')
+                        ->select('do.id_domicilio_usersp','pr.id_departamento',
+                        'di.id_provincia','do.id_distrito','do.lat','do.lng')
+                        ->join('distrito AS di','di.id_distrito','=','do.id_distrito')
+                        ->join('provincia AS pr','pr.id_provincia','=','di.id_provincia')
+                        ->where('id_postulante',$id)->first();
+        $list_departamento = Departamento::select('id_departamento','nombre_departamento')
+                            ->where('estado',1)->get();
+        if(isset($get_domicilio->id_domicilio_usersp)){
+            $list_provincia = Provincia::select('id_provincia','nombre_provincia')
+                            ->where('id_departamento',$get_domicilio->id_departamento)->where('estado',1)->get();
+            $list_distrito = Distrito::select('id_distrito','nombre_distrito')
+                            ->where('id_provincia',$get_domicilio->id_provincia)->where('estado',1)->get();
+        }else{
+            $list_provincia = [];
+            $list_distrito = [];
+        }
+        return view('rrhh.postulante.registro.perfil.domicilio', compact(
+            'get_domicilio',
             'list_departamento',
             'list_provincia',
             'list_distrito'
         ));
+    }
+
+    public function update_domicilio_reg(Request $request, $id)
+    {
+        $request->validate([
+            'id_departamento' => 'not_in:0',
+            'id_provincia' => 'not_in:0',
+            'id_distrito' => 'not_in:0'
+        ],[
+            'id_departamento.not_in' => 'Debe seleccionar departamento.',
+            'id_provincia.not_in' => 'Debe seleccionar provincia.',
+            'id_distrito.not_in' => 'Debe seleccionar distrito.'
+        ]);
+
+        $valida = DomicilioUsersP::where('id_postulante',$id)->count();
+
+        if($valida>0){
+            $get_id = DomicilioUsersP::where('id_postulante',$id)
+                    ->orderBy('id_domicilio_usersp','DESC')->first();
+            DomicilioUsersP::findOrFail($get_id->id_domicilio_usersp)->update([
+                'id_distrito' => $request->id_distrito,
+                'lat' => $request->coordsltd,
+                'lng' => $request->coordslng,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }else{
+            DomicilioUsersP::create([
+                'id_postulante' => $id,
+                'id_distrito' => $request->id_distrito,
+                'lat' => $request->coordsltd,
+                'lng' => $request->coordslng,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
     }
 
     public function index_tod()

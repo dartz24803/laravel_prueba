@@ -7,6 +7,19 @@
     </div>
 
     <div class="modal-body" style="max-height:450px; overflow:auto;">
+        @php
+            if ((date('Y') % 4 == 0 && date('Y') % 100 != 0) || (date('Y') % 400 == 0)) {
+                $dias_anio = 366;
+            } else {
+                $dias_anio = 365;
+            }
+
+            $semanas_anio = (int)($dias_anio / 7);
+
+            if ($dias_anio % 7 > 0) {
+                $semanas_anio++;
+            }
+        @endphp
         <div class="row">
             <div class="form-group col-lg-2">
                 <label class="control-label text-bold">Base: </label>
@@ -17,6 +30,20 @@
                     @foreach ($list_base as $list)
                         <option value="{{ $list->id_base }}">{{ $list->cod_base }}</option>
                     @endforeach
+                </select>
+            </div>
+
+            <div class="form-group col-lg-2">
+                <label class="control-label text-bold">Semana: </label>
+            </div>
+            <div class="form-group col-lg-4">
+                <select class="form-control" name="semana" id="semana">
+                    <option value="0">Seleccione</option>
+                    @php $i = 1; @endphp
+                    @while ($i<=$semanas_anio)
+                        <option value="{{ $i }}" @if ($i==date('W')) selected @endif>{{ $i }}</option>
+                    @php $i++; @endphp
+                    @endwhile
                 </select>
             </div>
         </div>
