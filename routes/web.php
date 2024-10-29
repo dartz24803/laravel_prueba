@@ -416,6 +416,9 @@ Route::controller(SoporteController::class)->group(function () {
     Route::get('soporte_ticket_master/cancelar/{id}', 'cancelar_tick_master')->name('soporte_ticket_master.cancelar');
     Route::post('soporte_ticket_master/{id}', 'update_tick_master')->name('soporte_ticket_master.update');
     Route::post('soporte_ticket_master/cancel/update/{id}', 'cancel_update_tick_master')->name('soporte_ticket_master.cancelupdate');
+
+    // Activación de cámara
+    Route::post('soporte_ticket/previsualizacion_captura', 'previsualizacion_captura')->name('soporte_ticket.previsualizacion_captura');
 });
 
 // ADMINISTRABLES - TICKETS SOPORTE

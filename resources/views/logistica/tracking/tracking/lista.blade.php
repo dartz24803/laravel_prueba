@@ -344,13 +344,13 @@ use App\Models\TrackingDetalleProceso;
 </style>
 
 @php
-    $total = count($list_tracking);
-    if($total>0){
-        $terminados = count(array_filter($list_tracking, fn($item) => $item->id_estado == "21"));
-        $porcentaje = 100*$terminados/$total;
-    }else{
-        $porcentaje = 0;
-    }
+$total = count($list_tracking);
+if($total>0){
+$terminados = count(array_filter($list_tracking, fn($item) => $item->id_estado == "21"));
+$porcentaje = 100*$terminados/$total;
+}else{
+$porcentaje = 0;
+}
 @endphp
 <div class="progress mb-3">
     <div class="progress-bar bg-secondary" role="progressbar" style="width: {{ $porcentaje }}%;" aria-valuenow="{{ $porcentaje }}" aria-valuemin="0" aria-valuemax="100">{{ number_format($porcentaje,2) }}</div>
@@ -380,14 +380,14 @@ use App\Models\TrackingDetalleProceso;
                 session('usuario')->id_puesto==97 ||
                 session('usuario')->id_nivel==1) &&
                 $list->transporte_inicial)
-                    <a href="{{ route('tracking.detalle_transporte', $list->id) }}" title="Detalle de transporte">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning vibrate">
-                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                            <line x1="12" y1="9" x2="12" y2="13"></line>
-                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                        </svg>
-                    </a>
-                    Detalle de transporte
+                <a href="{{ route('tracking.detalle_transporte', $list->id) }}" title="Detalle de transporte">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning vibrate">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </a>
+                Detalle de transporte
                 @endif
                 @elseif($list->id_estado==4)
                 <!-- PUESTOS DE TIENDA -->
@@ -402,14 +402,14 @@ use App\Models\TrackingDetalleProceso;
                 session('usuario')->id_puesto==311 ||
                 session('usuario')->id_puesto==314 ||
                 session('usuario')->id_nivel==1)
-                    <a href="javascript:void(0);" title="Confirmación de llegada" onclick="Insert_Confirmacion_Llegada('{{ $list->id }}');">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle text-dark">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12 16 16 12 12 8"></polyline>
-                            <line x1="8" y1="12" x2="16" y2="12"></line>
-                        </svg>
-                    </a>
-                    Confirmación de llegada
+                <a href="javascript:void(0);" title="Confirmación de llegada" onclick="Insert_Confirmacion_Llegada('{{ $list->id }}');">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle text-dark">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 16 16 12 12 8"></polyline>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                </a>
+                Confirmación de llegada
                 @endif
                 @elseif($list->id_estado==5)
                 <!-- PUESTOS DE TIENDA -->
@@ -424,14 +424,14 @@ use App\Models\TrackingDetalleProceso;
                 session('usuario')->id_puesto==311 ||
                 session('usuario')->id_puesto==314 ||
                 session('usuario')->id_nivel==1)
-                    <a href="javascript:void(0);" title="Confirmación de llegada" onclick="Insert_Confirmacion_Llegada('{{ $list->id }}');">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle text-dark">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12 16 16 12 12 8"></polyline>
-                            <line x1="8" y1="12" x2="16" y2="12"></line>
-                        </svg>
-                    </a>
-                    Confirmación de llegada
+                <a href="javascript:void(0);" title="Confirmación de llegada" onclick="Insert_Confirmacion_Llegada('{{ $list->id }}');">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle text-dark">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 16 16 12 12 8"></polyline>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                </a>
+                Confirmación de llegada
                 @endif
                 @elseif($list->id_estado==7)
                 <!-- PUESTOS DE TIENDA -->
@@ -446,35 +446,35 @@ use App\Models\TrackingDetalleProceso;
                 session('usuario')->id_puesto==311 ||
                 session('usuario')->id_puesto==314 ||
                 session('usuario')->id_nivel==1)
-                    <a href="javascript:void(0);" title="Verificación de fardos" onclick="Verificacion_Fardos('{{ $list->id }}');">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning vibrate">
-                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                            <line x1="12" y1="9" x2="12" y2="13"></line>
-                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                        </svg>
-                    </a>
-                    Verificación de fardos
+                <a href="javascript:void(0);" title="Verificación de fardos" onclick="Verificacion_Fardos('{{ $list->id }}');">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning vibrate">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </a>
+                Verificación de fardos
                 @endif
                 @elseif($list->id_estado==8)
                 <!-- PUESTO DE MAYRA TORRES (76) y JAIME SAAVEDRA (97) -->
                 @if (session('usuario')->id_puesto==76 ||
                 session('usuario')->id_puesto==97 ||
                 session('usuario')->id_nivel==1)
-                    <a href="javascript:void(0);" title="Cierre inspección de fardos" onclick="Insert_Cierre_Inspeccion_Fardos('{{ $list->id }}');">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock text-success">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12 6 12 12 16 14"></polyline>
-                        </svg>
-                    </a>
-                    Cierre inspección de fardos
+                <a href="javascript:void(0);" title="Cierre inspección de fardos" onclick="Insert_Cierre_Inspeccion_Fardos('{{ $list->id }}');">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock text-success">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </a>
+                Cierre inspección de fardos
                 @endif
                 @elseif($list->id_estado==9)
                 <!-- PUESTO DE MAYRA TORRES (76) y JAIME SAAVEDRA (97) -->
-                <!-- PUESTOS DE TIENDA --> 
+                <!-- PUESTOS DE TIENDA -->
                 @if (((session('usuario')->id_puesto==76 ||
                 session('usuario')->id_puesto==97) &&
-                ($list->hacia=="B09" || 
-                $list->hacia=="B19") && 
+                ($list->hacia=="B09" ||
+                $list->hacia=="B19") &&
                 $list->v_guia_transporte!="") ||
                 ((session('usuario')->id_puesto==30 ||
                 session('usuario')->id_puesto==31 ||
@@ -486,17 +486,17 @@ use App\Models\TrackingDetalleProceso;
                 session('usuario')->id_puesto==168 ||
                 session('usuario')->id_puesto==311 ||
                 session('usuario')->id_puesto==314) &&
-                $list->hacia!="B09" && $list->hacia!="B19" && 
+                $list->hacia!="B09" && $list->hacia!="B19" &&
                 $list->v_guia_transporte!="") ||
-                (session('usuario')->id_nivel==1 && 
+                (session('usuario')->id_nivel==1 &&
                 $list->v_guia_transporte!=""))
-                    <a href="{{ route('tracking.pago_transporte', $list->id) }}" title="Pago de transporte">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card text-primary">
-                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                            <line x1="1" y1="10" x2="23" y2="10"></line>
-                        </svg>
-                    </a>
-                    Pago de transporte
+                <a href="{{ route('tracking.pago_transporte', $list->id) }}" title="Pago de transporte">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card text-primary">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                </a>
+                Pago de transporte
                 @endif
                 @elseif($list->id_estado==12)
                 <!-- PUESTOS DE TIENDA -->
@@ -511,13 +511,13 @@ use App\Models\TrackingDetalleProceso;
                 session('usuario')->id_puesto==311 ||
                 session('usuario')->id_puesto==314 ||
                 session('usuario')->id_nivel==1)
-                    <a href="javascript:void(0);" title="Conteo de mercadería" onclick="Insert_Conteo_Mercaderia('{{ $list->id }}');">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock text-success">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12 6 12 12 16 14"></polyline>
-                        </svg>
-                    </a>
-                    Conteo de mercadería
+                <a href="javascript:void(0);" title="Conteo de mercadería" onclick="Insert_Conteo_Mercaderia('{{ $list->id }}');">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock text-success">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </a>
+                Conteo de mercadería
                 @endif
                 @elseif($list->id_estado==13)
                 <!-- PUESTOS DE TIENDA -->
@@ -532,29 +532,29 @@ use App\Models\TrackingDetalleProceso;
                 session('usuario')->id_puesto==311 ||
                 session('usuario')->id_puesto==314 ||
                 session('usuario')->id_nivel==1)
-                    <a href="javascript:void(0);" title="Reporte de mercadería" onclick="Reporte_Mercaderia('{{ $list->id }}');">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning vibrate">
-                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                            <line x1="12" y1="9" x2="12" y2="13"></line>
-                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                        </svg>
-                    </a>
-                    Reporte de mercadería
+                <a href="javascript:void(0);" title="Reporte de mercadería" onclick="Reporte_Mercaderia('{{ $list->id }}');">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning vibrate">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </a>
+                Reporte de mercadería
                 @endif
                 @elseif($list->id_estado==14)
                 <!-- PUESTOS DE RHENZO HUAYHUA (74) -->
                 @if (session('usuario')->id_puesto==74 ||
                 session('usuario')->id_nivel==1)
-                    <a href="{{ route('tracking.cuadre_diferencia', $list->id) }}" title="Cuadre de diferencias">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text text-dark">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                            <polyline points="10 9 9 9 8 9"></polyline>
-                        </svg>
-                    </a>
-                    Cuadre de diferencias
+                <a href="{{ route('tracking.cuadre_diferencia', $list->id) }}" title="Cuadre de diferencias">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text text-dark">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </a>
+                Cuadre de diferencias
                 @endif
                 @elseif($list->id_estado==15)
                 <!-- PUESTOS DE TIENDA y MAYRA TORRES (76) -->
@@ -572,49 +572,49 @@ use App\Models\TrackingDetalleProceso;
                 session('usuario')->id_puesto==168 ||
                 session('usuario')->id_puesto==311 ||
                 session('usuario')->id_puesto==314))
-                    <a href="{{ route('tracking.detalle_operacion_diferencia', $list->id) }}" title="Detalle de operaciones de diferencias">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning vibrate">
-                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                            <line x1="12" y1="9" x2="12" y2="13"></line>
-                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                        </svg>
-                    </a>
-                    Detalle de operaciones de diferencias
+                <a href="{{ route('tracking.detalle_operacion_diferencia', $list->id) }}" title="Detalle de operaciones de diferencias">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning vibrate">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </a>
+                Detalle de operaciones de diferencias
                 @endif
                 @elseif($list->id_estado==22)
-                    <!-- PUESTOS DE TIENDA -->
-                    @if ((session('usuario')->id_puesto==30 ||
-                    session('usuario')->id_puesto==31 ||
-                    session('usuario')->id_puesto==32 ||
-                    session('usuario')->id_puesto==33 ||
-                    session('usuario')->id_puesto==35 ||
-                    session('usuario')->id_puesto==161 ||
-                    session('usuario')->id_puesto==167 ||
-                    session('usuario')->id_puesto==168 ||
-                    session('usuario')->id_puesto==311 ||
-                    session('usuario')->id_puesto==314 ||
-                    session('usuario')->id_nivel==1) &&
-                    $list->v_sobrante=="0")
-                        <a href="javascript:void(0);" title="Validación de diferencia (sobrante)" onclick="Validacion_Diferencia('{{ $list->id }}','sobrante');">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock text-success">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg>
-                        </a>
-                    @endif
-                    <!-- PUESTO DE MAYRA TORRES (76) y JAIME SAAVEDRA (97) -->
-                    @if ((session('usuario')->id_puesto==76 ||
-                    session('usuario')->id_puesto==97 ||
-                    session('usuario')->id_nivel==1) &&
-                    $list->v_faltante=="0")
-                        <a href="javascript:void(0);" title="Validación de diferencia (faltante)" onclick="Validacion_Diferencia('{{ $list->id }}','faltante');">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock text-success">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <polyline points="12 6 12 12 16 14"></polyline>
-                            </svg>
-                        </a>
-                    @endif
-                    Validación de diferencia
+                <!-- PUESTOS DE TIENDA -->
+                @if ((session('usuario')->id_puesto==30 ||
+                session('usuario')->id_puesto==31 ||
+                session('usuario')->id_puesto==32 ||
+                session('usuario')->id_puesto==33 ||
+                session('usuario')->id_puesto==35 ||
+                session('usuario')->id_puesto==161 ||
+                session('usuario')->id_puesto==167 ||
+                session('usuario')->id_puesto==168 ||
+                session('usuario')->id_puesto==311 ||
+                session('usuario')->id_puesto==314 ||
+                session('usuario')->id_nivel==1) &&
+                $list->v_sobrante=="0")
+                <a href="javascript:void(0);" title="Validación de diferencia (sobrante)" onclick="Validacion_Diferencia('{{ $list->id }}','sobrante');">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock text-success">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </a>
+                @endif
+                <!-- PUESTO DE MAYRA TORRES (76) y JAIME SAAVEDRA (97) -->
+                @if ((session('usuario')->id_puesto==76 ||
+                session('usuario')->id_puesto==97 ||
+                session('usuario')->id_nivel==1) &&
+                $list->v_faltante=="0")
+                <a href="javascript:void(0);" title="Validación de diferencia (faltante)" onclick="Validacion_Diferencia('{{ $list->id }}','faltante');">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock text-success">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </a>
+                @endif
+                Validación de diferencia
                 @elseif($list->id_estado==17)
                 <!-- PUESTOS DE TIENDA -->
                 @if (session('usuario')->id_puesto==30 ||
@@ -628,29 +628,29 @@ use App\Models\TrackingDetalleProceso;
                 session('usuario')->id_puesto==311 ||
                 session('usuario')->id_puesto==314 ||
                 session('usuario')->id_nivel==1)
-                    <a href="{{ route('tracking.solicitud_devolucion', $list->id) }}" title="Solicitud de devolución">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text text-dark">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                            <polyline points="10 9 9 9 8 9"></polyline>
-                        </svg>
-                    </a>
-                    Solicitud de devolución
+                <a href="{{ route('tracking.solicitud_devolucion', $list->id) }}" title="Solicitud de devolución">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text text-dark">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </a>
+                Solicitud de devolución
                 @endif
                 @elseif($list->id_estado==18)
                 <!-- PUESTOS DE ANDREA CAMARGO (251) -->
                 @if (session('usuario')->id_puesto==251 ||
                 session('usuario')->id_nivel==1)
-                    <a href="{{ route('tracking.evaluacion_devolucion', $list->id) }}" title="Evaluación de devolución">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning vibrate">
-                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                            <line x1="12" y1="9" x2="12" y2="13"></line>
-                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                        </svg>
-                    </a>
-                    Evaluación de devolución
+                <a href="{{ route('tracking.evaluacion_devolucion', $list->id) }}" title="Evaluación de devolución">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle text-warning vibrate">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </a>
+                Evaluación de devolución
                 @endif
                 @endif
             </td>
@@ -769,14 +769,14 @@ use App\Models\TrackingDetalleProceso;
                                 <h5 class="card-title mt-3" style="color: #00ba8e">DESPACHO</h5>
                                 @foreach ($estado as $row)
                                 @if ($row['id_proceso'] == 1 && $row['id_tracking']==$list->id)
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00ba8e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
-                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                    </svg>
-                                    {{ $row['descripcion'].' - '.$row['fecha'].' - '. $row['hora'] }}<br>
-                                    <?php if ($row['descripcion'] == $list->descripcion) {
-                                        break;
-                                    } ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00ba8e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                                {{ $row['descripcion'].' - '.$row['fecha'].' - '. $row['hora'] }}<br>
+                                <?php if ($row['descripcion'] == $list->descripcion) {
+                                    break;
+                                } ?>
                                 @endif
                                 @endforeach
                             </div>
@@ -1373,7 +1373,7 @@ use App\Models\TrackingDetalleProceso;
         })
     }
 
-    function Validacion_Diferencia(id,tipo) {
+    function Validacion_Diferencia(id, tipo) {
         Cargando();
 
         var url = "{{ route('tracking.validacion_diferencia', ':id') }}".replace(':id', id);
@@ -1381,7 +1381,9 @@ use App\Models\TrackingDetalleProceso;
         $.ajax({
             type: "POST",
             url: url,
-            data: {'tipo':tipo},
+            data: {
+                'tipo': tipo
+            },
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },

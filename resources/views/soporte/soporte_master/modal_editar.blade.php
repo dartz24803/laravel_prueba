@@ -394,7 +394,7 @@
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
                             <div class="form-group col-md-12 mb-0">
-                                <label class="control-label text-bold">Solucion Aplicada:</label>
+                                <label class="control-label text-bold">Solución Aplicada:</label>
                             </div>
 
                         </div>

@@ -68,11 +68,11 @@
                             <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
                                 data-target="#ModalUpdate"
                                 app_elim="{{ url('soporte_ticket/ver/' . $list['id_soporte']) }}">Ver</a>
-                            <!-- @if ($list->idsoporte_motivo_cancelacion != 1 && $list->estado_registro == 5) -->
+                            @if ($list->idsoporte_motivo_cancelacion != 1 && $list->estado_registro == 5)
                             <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
                                 data-target="#ModalUpdate"
                                 app_elim="{{ url('soporte_ticket/edit/' . $list['id_soporte']) }}">Corregir</a>
-                            <!-- @endif -->
+                            @endif
 
                         </div>
                     </div>
