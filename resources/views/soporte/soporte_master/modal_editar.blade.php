@@ -203,7 +203,7 @@
                                             <label class="control-label text-bold">
                                                 Responsable:
                                                 <span style="display: block; width: 130px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $area_involucrada['area_responsable'] }}">
-                                                    {{ $area_involucrada['area_responsable'] }}
+                                                    {{ $area_involucrada['cod_area_responsable'] }}
                                                 </span>
                                             </label>
                                         </div>
@@ -442,7 +442,6 @@
         $('#ejecutor_responsable').on('change', function() {
             toggleEjecutor();
         });
-        console.log(ejecutoresMultiples);
         var idResponsableLabel = document.getElementById('id_responsablee-label');
         var idResponsableField = document.getElementById('id_responsablee-field');
         var estadoContainer = document.getElementById('estado-container');
@@ -470,7 +469,6 @@
 
     function toggleCierreUnResponsable() {
         var estado = document.getElementById('estado_registroe').value;
-        console.log(estado)
         var cierreLabel = document.getElementById('cierre-label');
         var cierreField = document.getElementById('cierre-field');
         var estadoContainer = document.getElementById('estado-container');
@@ -497,14 +495,10 @@
         estadoElements.forEach((element) => {
             // Extrae el índice del ID
             const index = element.id.split('_')[2];
-            console.log(`Índice extraído: ${index}`);
-
             // enviar el indice del responsable
             $('#responsable_indice').val(`${index}`);
-
             // Obtener el estado del elemento
             const estado = element.value;
-            console.log(`Estado del elemento ${index}:`, estado);
             // Obtener los elementos correspondientes usando el índice extraído
             const cierreLabel = document.getElementById(`cierre-label-${parseInt(index) + 1}`);
             const cierreField = document.getElementById(`cierre-field-${parseInt(index) + 1}`);

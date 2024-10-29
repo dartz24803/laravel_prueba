@@ -4,7 +4,7 @@
 <div class="col-lg-2 col-md-4 d-lg-block d-flex justify-content-center">
     <div class="upload mt-4 pr-md-4">
         <input type="file" class="dropify" id="foto" name="foto"
-        data-default-file="@php if($get_id->foto!=""){ echo $get_id->foto; }else{ echo asset('template/assets/img/200x200.jpg'); } @endphp" onchange="Valida_Archivo('foto');">
+        data-default-file="@php if($get_id->foto!=""){ echo $get_id->foto; }else{ echo asset('template/assets/img/200x200.jpg'); } @endphp" onchange="Valida_Foto('foto');">
         <p class="mt-2"><i class="flaticon-cloud-upload mr-1"></i> Actualizar imagen</p>
     </div>
 </div>
