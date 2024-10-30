@@ -1084,6 +1084,8 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::get('postulante_reg/{id}/verificacion_social', 'verificacion_social_reg')->name('postulante_reg.verificacion_social');
     Route::put('postulante_reg/{id}/update_verificacion_social', 'update_verificacion_social_reg')->name('postulante_reg.update_verificacion_social');
     Route::put('postulante_reg/{id}/update_ver_social', 'update_ver_social_reg')->name('postulante_reg.update_ver_social');
+    Route::get('postulante_reg/{id}/resultado_final', 'resultado_final_reg')->name('postulante_reg.resultado_final');
+    Route::put('postulante_reg/{id}/update_resultado_final', 'update_resultado_final_reg')->name('postulante_reg.update_resultado_final');
     //TODOS
     Route::get('postulante_tod', 'index_tod')->name('postulante_tod');
     Route::post('postulante_tod/list', 'list_tod')->name('postulante_tod.list');
@@ -2229,10 +2231,10 @@ Route::controller(MiEquipoController::class)->group(function () {
     Route::post('MiEquipo/Update_Fecha_Baja', 'Update_Fecha_Baja');
     Route::get('MiEquipo/Modal_Update_CoordinadorJr/{id}', 'Modal_Update_CoordinadorJr');
     Route::post('MiEquipo/Update_Asignacion_Coordinador_Jr', 'Update_Asignacion_Coordinador_Jr');
-    // Route::get('MiEquipo/Buscar_Papeletas_Salida_Aprobacion', 'Buscar_Papeletas_Salida_Aprobacion');
+    Route::post('MiEquipo/Solicitud_Puesto', 'Solicitud_Puesto');
+    Route::get('MiEquipo/Modal_Solicitud_Puesto/{id}/{tipo}', 'Modal_Solicitud_Puesto');
+    Route::post('MiEquipo/Update_Solicitud_Puesto', 'Update_Solicitud_Puesto');
     // Route::get('MiEquipo/Aprobado_solicitud_papeletas_1', 'Aprobado_solicitud_papeletas_1');
     // Route::get('MiEquipo/Anular_solicitud_papeletas_1', 'Anular_solicitud_papeletas_1');
-    // Route::post('MiEquipo/Buscar_Base_Papeletas_Seguiridad', 'Buscar_Base_Papeletas_Seguiridad');
-    // Route::post('MiEquipo/Busca_Colaborador_Control', 'Busca_Colaborador_Control');
     // Route::get('MiEquipo/Excel_Estado_Solicitud_Papeletas_Salida_Seguridad/{base}/{estado}/{fec_rev}/{fec_fin}/{num_doc}', 'Excel_Estado_Solicitud_Papeletas_Salida_Seguridad');
 });
