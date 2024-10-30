@@ -1084,6 +1084,8 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::get('postulante_reg/{id}/verificacion_social', 'verificacion_social_reg')->name('postulante_reg.verificacion_social');
     Route::put('postulante_reg/{id}/update_verificacion_social', 'update_verificacion_social_reg')->name('postulante_reg.update_verificacion_social');
     Route::put('postulante_reg/{id}/update_ver_social', 'update_ver_social_reg')->name('postulante_reg.update_ver_social');
+    Route::get('postulante_reg/{id}/resultado_final', 'resultado_final_reg')->name('postulante_reg.resultado_final');
+    Route::put('postulante_reg/{id}/update_resultado_final', 'update_resultado_final_reg')->name('postulante_reg.update_resultado_final');
     //TODOS
     Route::get('postulante_tod', 'index_tod')->name('postulante_tod');
     Route::post('postulante_tod/list', 'list_tod')->name('postulante_tod.list');
