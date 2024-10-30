@@ -47,9 +47,9 @@
                     <div
                         style="display: inline-block; 
             background-color: 
-            {{ ($list->estado_registro == 1 && $list->estado_registro_sr == 1 || $list->status_enproceso == true || $list->estado_registro_sr == null)
+            {{ ($list->status_poriniciar == true)
                 ? '#f5996d'
-                : ( ($list->status_enproceso == false  && $list->status_completado == false)
+                : ( ($list->status_enproceso == true)
                     ? '#b0f02b'
                     : ($list->status_completado == true
                         ? '#3af1be'
@@ -57,9 +57,9 @@
                             ? '#f3b952'
                             : '#9edef8'))) }};
             border-radius: 14px; padding: 1px; width: 80px; color: white; text-align: center; margin-right: 10px;">
-                        @if ($list->estado_registro == 1 && $list->estado_registro_sr == 1 || $list->status_enproceso == true || $list->estado_registro_sr == null)
+                        @if ($list->status_poriniciar == true)
                         Por Iniciar
-                        @elseif ($list->status_enproceso == false && $list->status_completado == false)
+                        @elseif ($list->status_enproceso == true)
                         En Proceso
                         @elseif ($list->status_completado == true)
                         Completado

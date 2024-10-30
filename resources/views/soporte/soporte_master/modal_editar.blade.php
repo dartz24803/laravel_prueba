@@ -64,9 +64,10 @@
                                 <label class="control-label text-bold">Estado:</label>
                             </div>
                             <div class="form-group col-md-4" id="estado-container">
+                                @if ( $get_id->estado_registro != 3)
+                                <!-- Mostrar el select si coinciden y el estado no es "Completado" -->
                                 <select class="form-control" id="estado_registroe" name="estado_registroe">
-                                    <option value="1" {{ $get_id->estado_registro == 1 ? 'selected' : '' }}>Por
-                                        Iniciar</option>
+
                                     <option value="2" {{ $get_id->estado_registro == 2 ? 'selected' : '' }}>En
                                         Proceso</option>
                                     <option value="3" {{ $get_id->estado_registro == 3 ? 'selected' : '' }}>
@@ -74,15 +75,26 @@
                                     <option value="4" {{ $get_id->estado_registro == 4 ? 'selected' : '' }}>Stand
                                         By</option>
                                 </select>
+                                @else
+                                <p style="font-size: 18px;">
+                                    Completado
+                                </p>
+                                @endif
+
                             </div>
 
                             <!-- Campos Cierre, inicialmente ocultos -->
-                            <div class="form-group col-md-2" id="cierre-label" style="display: none;">
+                            <div class="form-group col-md-2" id="cierre-label">
                                 <label class="control-label text-bold">Cierre:</label>
                             </div>
                             <div class="form-group col-md-4" id="cierre-field">
+                                @if ( $get_id->estado_registro != 3)
                                 <input type="date" class="form-control" id="fec_cierree" name="fec_cierree"
                                     value="{{ $get_id->fec_cierre ? \Carbon\Carbon::parse($get_id->fec_cierre)->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
+                                @else
+                                <span
+                                    class="form-control border-0">{{ \Carbon\Carbon::parse($get_id->fec_cierre)->locale('es')->translatedFormat('D d M y') }}</span>
+                                @endif
                             </div>
 
                         </div>
