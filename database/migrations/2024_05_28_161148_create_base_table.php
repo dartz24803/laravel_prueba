@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('base', function (Blueprint $table) {
             $table->id('id_base');
+            $table->unsignedBigInteger('id_ubicacion');
             $table->string('cod_base', 10)->nullable();
             $table->string('nom_base', 50)->nullable();
             $table->integer('id_empresa')->nullable()->default(0);
@@ -27,7 +28,7 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            //$table->timestamps();
+            $table->foreign('id_ubicacion', 'bas_fk_id_ubi')->references('id_ubicacion')->on('ubicacion');
         });
     }
 
