@@ -39,7 +39,7 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            $table->foreign('id_usuario', 'dusr_fk_id_pos')->references('id_usuario')->on('users');
+            $table->foreign('id_usuario', 'dusr_fk_id_usu')->references('id_usuario')->on('users');
             $table->foreign('id_distrito', 'dusr_fk_id_dis')->references('id_distrito')->on('distrito');
         });
     }
