@@ -527,9 +527,9 @@ class MiEquipoController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-                $mail->addAddress('pcardenas@lanumero1.com.pe');
-                // $mail->addAddress('rrhh@lanumero1.com.pe');
-                // $mail->addAddress('ksanz@lanumero1.com.pe');
+                // $mail->addAddress('pcardenas@lanumero1.com.pe');
+                $mail->addAddress('rrhh@lanumero1.com.pe');
+                $mail->addAddress('ksanz@lanumero1.com.pe');
 
                 $mail->isHTML(true);
 
