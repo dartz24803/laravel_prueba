@@ -393,6 +393,31 @@ class BiReporteController extends Controller
             'tipo.*.required' => 'Debe seleccionar un tipo.',
             'presentacion.*.required' => 'Debe seleccionar una presentación.',
         ]);
+
+
+        // Validar todas las tablas seleccionadas
+        $tablasbi = $request->input('tbdb', []);
+        $db = $request->input('db', []);
+
+        foreach ($tablasbi as $index => $nombre) {
+            $idTablaDb = DB::table('tablas_db')
+                ->where('tablas_db.cod_db', $db[$index])
+                ->where('tablas_db.nombre', $nombre)
+                ->value('tablas_db.idtablas_db');
+
+            if (is_null($idTablaDb)) {
+                return response()->json([
+                    'errors' => [
+                        'tabla_db' => [
+                            "No se encontró una tabla con el nombre '{$nombre}' para la base de dato, en la fila " . ($index + 1)
+                        ]
+                    ]
+                ], 422);
+            }
+        }
+
+
+
         // Reemplaza los atributos width y height con la clase responsive-iframe
         $iframeModificado = str_replace(
             ['width="1140"', 'height="541.25"'],
@@ -500,27 +525,15 @@ class BiReporteController extends Controller
                 ->where('tablas_db.cod_db', $db[$index])
                 ->where('tablas_db.nombre', $nombre)
                 ->value('tablas_db.idtablas_db');
-
-            // Si no se encuentra el ID de la tabla, retorna error y no continúes
-            if (is_null($idTablaDb)) {
-                return response()->json([
-                    'errors' => [
-                        'tabla_db' => [
-                            "No se encontró una tabla con el nombre '{$nombre}' para la base de dato, en la fila " . ($index + 1)
-                        ]
-                    ]
-                ], 422);
-            } else {
-                TablaBi::create([
-                    'id_acceso_bi_reporte' => $biReporte->id_acceso_bi_reporte,
-                    'idtablas_db' => $idTablaDb, // ID de la tabla seleccionada
-                    'estado' => 1,
-                    'fec_reg' => now(),
-                    'user_reg' => session('usuario')->id_usuario,
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario
-                ]);
-            }
+            TablaBi::create([
+                'id_acceso_bi_reporte' => $biReporte->id_acceso_bi_reporte,
+                'idtablas_db' => $idTablaDb, // ID de la tabla seleccionada
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
         }
 
 
