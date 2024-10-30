@@ -259,7 +259,6 @@ class SoporteController extends Controller
 
 
         $soporte_solucion = SoporteSolucion::create([
-            'id_responsable' => null,
             'estado_solucion' => 0,
             'archivo_solucion' => 0,
             'estado' => 1,
@@ -437,7 +436,8 @@ class SoporteController extends Controller
                 $nominicio = 'default';
                 break;
         }
-        $list_subgerencia = SubGerencia::list_subgerencia(9);
+        $list_subgerencia = SubGerencia::list_subgerencia($id_subgerencia);
+
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
         return view('soporte.soporte_master.index', compact('list_notificacion', 'list_subgerencia', 'nominicio'));
@@ -889,5 +889,50 @@ class SoporteController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
         }
+    }
+
+
+    // Activación Cámara
+    public function previsualizacion_captura(Request $request)
+    {
+
+        // $ftp_server = "lanumerounocloud.com";
+        // $ftp_usuario = "intranet@lanumerounocloud.com";
+        // $ftp_pass = "Intranet2022@";
+        // $con_id = ftp_connect($ftp_server);
+        // $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+        // if ($con_id && $lr) {
+        //     $path = $_FILES["photo"]["name"];
+        //     $source_file = $_FILES['photo']['tmp_name'];
+
+        //     $ext = pathinfo($path, PATHINFO_EXTENSION);
+        //     $nombre_soli = "temporal_" . session('usuario')->id_usuario . "_" . date('YmdHis');
+        //     $nombre = $nombre_soli . "." . strtolower($ext);
+
+        //     $archivo = "https://lanumerounocloud.com/intranet/TRACKING/" . $nombre;
+
+        //     ftp_pasv($con_id, true);
+        //     $subio = ftp_put($con_id, "TRACKING/" . $nombre, $source_file, FTP_BINARY);
+        //     if ($subio) {
+        //         if ($request->tipo == "5") {
+        //             TrackingArchivoTemporal::create([
+        //                 'id_usuario' => session('usuario')->id_usuario,
+        //                 'tipo' => $request->tipo,
+        //                 'id_producto' => $request->id_producto,
+        //                 'archivo' => $archivo
+        //             ]);
+        //         } else {
+        //             TrackingArchivoTemporal::create([
+        //                 'id_usuario' => session('usuario')->id_usuario,
+        //                 'tipo' => $request->tipo,
+        //                 'archivo' => $archivo
+        //             ]);
+        //         }
+        //     } else {
+        //         echo "Archivo no subido correctamente";
+        //     }
+        // } else {
+        //     echo "No se conecto";
+        // }
     }
 }

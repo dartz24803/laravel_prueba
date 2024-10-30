@@ -416,6 +416,9 @@ Route::controller(SoporteController::class)->group(function () {
     Route::get('soporte_ticket_master/cancelar/{id}', 'cancelar_tick_master')->name('soporte_ticket_master.cancelar');
     Route::post('soporte_ticket_master/{id}', 'update_tick_master')->name('soporte_ticket_master.update');
     Route::post('soporte_ticket_master/cancel/update/{id}', 'cancel_update_tick_master')->name('soporte_ticket_master.cancelupdate');
+
+    // Activación de cámara
+    Route::post('soporte_ticket/previsualizacion_captura', 'previsualizacion_captura')->name('soporte_ticket.previsualizacion_captura');
 });
 
 // ADMINISTRABLES - TICKETS SOPORTE
@@ -1076,6 +1079,11 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::get('postulante_reg/{id}/eval_rrhh', 'eval_rrhh_reg')->name('postulante_reg.eval_rrhh');
     Route::put('postulante_reg/{id}/update_eval_rrhh', 'update_eval_rrhh_reg')->name('postulante_reg.update_eval_rrhh');
     Route::put('postulante_reg/{id}/update_evaluacion_psicologica', 'update_evaluacion_psicologica_reg')->name('postulante_reg.update_evaluacion_psicologica');
+    Route::get('postulante_reg/{id}/eval_jefe_directo', 'eval_jefe_directo_reg')->name('postulante_reg.eval_jefe_directo');
+    Route::put('postulante_reg/{id}/update_eval_jefe_directo', 'update_eval_jefe_directo_reg')->name('postulante_reg.update_eval_jefe_directo');
+    Route::get('postulante_reg/{id}/verificacion_social', 'verificacion_social_reg')->name('postulante_reg.verificacion_social');
+    Route::put('postulante_reg/{id}/update_verificacion_social', 'update_verificacion_social_reg')->name('postulante_reg.update_verificacion_social');
+    Route::put('postulante_reg/{id}/update_ver_social', 'update_ver_social_reg')->name('postulante_reg.update_ver_social');
     //TODOS
     Route::get('postulante_tod', 'index_tod')->name('postulante_tod');
     Route::post('postulante_tod/list', 'list_tod')->name('postulante_tod.list');

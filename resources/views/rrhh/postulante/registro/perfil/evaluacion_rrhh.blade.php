@@ -2,7 +2,7 @@
     <div class="col">
         <h6>EVALUACIÓN RRHH</h6>
     </div>
-    <div class="col text-right">
+    <div class="col text-md-right text-center">
         @if ($get_id->id_area=="14" || $get_id->id_area=="44")
             @if ((session('usuario')->id_nivel=="1" || 
             session('usuario')->id_puesto=="21" ||
@@ -31,7 +31,7 @@
 </div>
 <div class="row">
     <div class="col-lg-11 mx-auto">
-        <div class="row" id="div_evaluacion_rrhh">
+        <div class="row">
             @if ($get_id->id_area=="14" || $get_id->id_area=="44")
                 @php 
                     if((session('usuario')->id_nivel=="1" || 
@@ -115,7 +115,7 @@
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label for="eval_sicologica">Adjuntar Evaluación Psicológica</label>
+                                    <label for="eval_sicologica">Adjuntar evaluación psicológica</label>
                                     @if (isset($get_eval_rrhh->id_eval_rrhh_postulante))
                                         <a title="Evaluación psicológica" href="{{ $get_eval_rrhh->eval_sicologica }}" target="_blank">
                                             <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
