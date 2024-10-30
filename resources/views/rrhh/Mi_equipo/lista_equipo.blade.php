@@ -62,7 +62,6 @@
                             <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('MiEquipo/Modal_Update_ListaMiequipo/'. $list["id_usuario"]) }}">Resetear Contraseña</a>
                             <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('MiEquipo/Modal_Update_Baja/'. $list["id_usuario"]) }}">Comunicar Baja</a>
                             <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('MiEquipo/Modal_Update_CoordinadorJr/'. $list["id_usuario"]) }}">Asignar como Responsable</a>
-                            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('MiEquipo/Modal_Detalle_Ausencia_Dias_Libres/'. $list["id_usuario"]) }}">Ausencias y días libres</a>
 
                             <?php if($list['id_puesto']==36){ ?>
                                 <a class="dropdown-item" href="javascript:void(0);" onclick="Solicitud_Puesto('<?php echo $list['id_usuario']; ?>',1);">Solicitar Vendedor</a>
@@ -145,10 +144,14 @@
         }
 
         var url="{{ url('MiEquipo/Solicitud_Puesto') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({
             url: url,
             type:"POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             data: {'id_usuario':id_usuario},
             success:function (data) {
                 if(data=="permanencia"){
