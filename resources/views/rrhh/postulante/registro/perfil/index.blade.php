@@ -82,11 +82,11 @@
                                         <div class="info">
                                             <div class="row">
                                                 <div class="col">
-                                                    <h6>REVISIÓN</h6>
+                                                    <h6 style="margin-bottom: 0px !important;">REVISIÓN</h6>
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-lg-11 mx-auto">
+                                                <div class="col-lg-12">
                                                     <div class="row">
                                                         <div class="col-12">
                                                             <table id="tabla_js" class="table" style="width:100%">

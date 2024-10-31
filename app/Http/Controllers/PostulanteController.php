@@ -727,8 +727,13 @@ class PostulanteController extends Controller
         $get_id = Postulante::from('postulante AS po')->select('pu.id_area','po.estado_postulacion')
                 ->join('puesto AS pu','pu.id_puesto','=','po.id_puesto')
                 ->where('id_postulante',$id)->first();
-        $get_eval_rrhh = EvalRrhhPostulante::where('id_postulante',$id)
-                        ->orderBy('id_eval_rrhh_postulante','DESC')->first();
+        $get_eval_rrhh = EvalRrhhPostulante::from('eval_rrhh_postulante AS er')->select('er.*',
+                        DB::raw("CASE WHEN SUBSTRING(er.eval_sicologica,1,5)='https' 
+                        THEN er.eval_sicologica 
+                        ELSE CONCAT('https://grupolanumero1.com.pe/intranet/',er.eval_sicologica) END AS 
+                        eval_sicologica"))
+                        ->where('er.id_postulante',$id)
+                        ->orderBy('er.id_eval_rrhh_postulante','DESC')->first();
         return view('rrhh.postulante.registro.perfil.evaluacion_rrhh', compact(
             'get_id',
             'get_eval_rrhh'
@@ -886,8 +891,13 @@ class PostulanteController extends Controller
         $get_id = Postulante::from('postulante AS po')->select('pu.id_area','po.estado_postulacion')
                 ->join('puesto AS pu','pu.id_puesto','=','po.id_puesto')
                 ->where('id_postulante',$id)->first();
-        $get_eval_jd = EvalJefeDirecto::where('id_postulante',$id)
-                        ->orderBy('id_eval_jefe_directo','DESC')->first();
+        $get_eval_jd = EvalJefeDirecto::from('eval_jefe_directo AS ej')->select('ej.*',
+                        DB::raw("CASE WHEN SUBSTRING(ej.eval_sicologica,1,5)='https' 
+                        THEN ej.eval_sicologica 
+                        ELSE CONCAT('https://grupolanumero1.com.pe/intranet/',ej.eval_sicologica) END AS 
+                        eval_sicologica"))
+                        ->where('ej.id_postulante',$id)
+                        ->orderBy('ej.id_eval_jefe_directo','DESC')->first();
         return view('rrhh.postulante.registro.perfil.evaluacion_jefe_directo', compact(
             'get_id',
             'get_eval_jd'
@@ -1056,8 +1066,11 @@ class PostulanteController extends Controller
     public function verificacion_social_reg($id)
     {
         $get_id = Postulante::findOrFail($id);
-        $get_vs = VerificacionSocial::where('id_postulante',$id)
-                        ->orderBy('id_ver_social','DESC')->first();
+        $get_vs = VerificacionSocial::from('verificacion_social AS vs')->select('vs.*',
+                DB::raw("CASE WHEN SUBSTRING(vs.ver_social,1,5)='https' 
+                THEN vs.ver_social ELSE 
+                CONCAT('https://grupolanumero1.com.pe/intranet/',vs.ver_social) END AS ver_social"))
+                ->where('vs.id_postulante',$id)->orderBy('vs.id_ver_social','DESC')->first();
         return view('rrhh.postulante.registro.perfil.verificacion_social', compact(
             'get_id',
             'get_vs'
