@@ -363,26 +363,24 @@
 <script type="text/javascript">
     var ejecutoresMultiples = @json($ejecutoresMultiples);
 
-
     function toggleCierre() {
-        var estado = document.getElementById('estado_registro').innerText.trim(); // Usamos innerText o textContent
-        var cierreLabel = document.getElementById('cierre-labelver');
-        var cierreField = document.getElementById('cierre-fieldver');
-
-        if (estado === "Completado" || estado === "Stand By") {
-            cierreLabel.style.display = 'block';
-            cierreField.style.display = 'block';
-
-        } else {
-            cierreLabel.style.display = 'none';
-            cierreField.style.display = 'none';
-
+        var estadoElement = document.getElementById('estado_registro');
+        var cierreLabelver = document.getElementById('cierre-labelver');
+        var cierreFieldver = document.getElementById('cierre-fieldver');
+        if (!estadoElement) {
+            console.error('El elemento estado_registro no se encontró en el DOM.');
+            return;
         }
+        var estado = estadoElement.innerText.trim();
+        var mostrarCamposCierre = !(estado === "Completado" || estado === "Stand By") && !ejecutoresMultiples;
+        cierreLabelver.style.display = mostrarCamposCierre ? 'block' : 'none';
+        cierreFieldver.style.display = mostrarCamposCierre ? 'block' : 'none';
     }
 
 
     function toggleCierreMultiplesResponsables() {
         const estadoElements = document.querySelectorAll('[id^="estado_registroe_"]');
+
 
         estadoElements.forEach((element) => {
             // Extrae el índice del ID
@@ -399,12 +397,15 @@
 
             // Verificar si los elementos existen antes de manipularlos
             if (cierreLabel && cierreField && estadoContainer) {
+                console.log("######0000")
+
                 if (estado == 3 || estado == 4) {
                     cierreLabel.style.display = 'block';
                     cierreField.style.display = 'block';
                     estadoContainer.classList.remove('col-md-10');
                     estadoContainer.classList.add('col-md-4');
                 } else {
+                    console.log("#####22222")
                     cierreLabel.style.display = 'none';
                     cierreField.style.display = 'none';
                     estadoContainer.classList.remove('col-md-4');

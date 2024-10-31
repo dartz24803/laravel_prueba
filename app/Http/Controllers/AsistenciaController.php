@@ -77,8 +77,7 @@ class AsistenciaController extends Controller
         print_r($list_asistencia);*/
     }
 
-    public function Buscar_Reporte_Control_Asistencia(Request $request)
-    {
+    public function Buscar_Reporte_Control_Asistencia(Request $request){
         $id_puesto = Session('usuario')->id_puesto;
         $cod_mes = $request->input("cod_mes");
         $cod_anio = $request->input("cod_anio");
@@ -89,10 +88,29 @@ class AsistenciaController extends Controller
         $tipo = $request->input("tipo");
         $finicio = $request->input("finicio");
         $ffin = $request->input("ffin");
-        $usuarios = Usuario::select('usuario_codigo')
-                ->where('id_area', $area)
-                ->get();
+        
+        $usuarios = Usuario::select('usuario_codigo', 'id_usuario')
+                ->where('estado', $estado);
 
+        if ($num_doc != 0) {
+            $usuarios->where('usuario_codigo', $num_doc);
+        }
+        if ($cod_base != 0) {
+            $usuarios->where('centro_labores', $cod_base);
+        }
+        if ($area != 0) {
+            $usuarios->where('id_area', $area);
+        }
+        
+        $query = $usuarios->toSql(); // Obtener la consulta SQL generada
+        $bindings = $usuarios->getBindings(); // Obtener los bindings (valores)
+        
+        // echo "Consulta: $query\n";
+        // print_r($bindings); // Imprimir los valores que se utilizan en la consulta
+        
+        $usuarios = $usuarios->get();
+        // print_r($usuarios);        
+        
         $year = date('Y');
         if ($tipo == 1) {
             $year = $cod_anio;
@@ -120,5 +138,13 @@ class AsistenciaController extends Controller
         } else {
             return view('rrhh.Asistencia.reporte.listar', compact('fecha_inicio', 'fecha_fin', 'list_asistencia', 'list_colaborador', 'n_documento'));
         }
+    }
+    
+    public function Traer_Colaborador_Asistencia(Request $request){
+            $dato['cod_base'] = $request->input('cod_base');
+            $dato['id_area'] = $request->input('id_area');
+            $dato['estado'] = $request->input('estado');
+            $dato['list_colaborador'] = $this->modelousuarios->get_list_usuarios_x_baset($dato['cod_base'],$dato['id_area'],$dato['estado']);
+            return view('rrhh.Asistencia.reporte.colaborador', $dato);
     }
 }

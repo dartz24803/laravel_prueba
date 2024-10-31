@@ -234,4 +234,17 @@ class Soporte extends Model
             ->pluck('id_area')
             ->toArray();
     }
+
+    public static function getResponsableMultipleByAsunto($id_asunto)
+    {
+        // Realiza el LEFT JOIN y obtiene el campo responsable_multiple
+        $responsable = DB::table('soporte')
+            ->leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
+            ->select('soporte_asunto.responsable_multiple')
+            ->where('soporte.id_asunto', $id_asunto)
+            ->first();
+
+        // Retorna el campo responsable_multiple, o null si no se encuentra
+        return $responsable ? $responsable->responsable_multiple : null;
+    }
 }
