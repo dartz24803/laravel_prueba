@@ -73,13 +73,40 @@ class SoporteController extends Controller
         $list_subgerencia = SubGerencia::list_subgerencia(9);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
+
         return view('soporte.soporte.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
 
     public function list_tick()
     {
+
         $list_tickets_soporte = Soporte::listTicketsSoporte();
+        // VALIDACIÓN DE ESTADOS EN PROCESO Y COMPLETADO PARA CADA MODULO
+        $list_tickets_soporte = $list_tickets_soporte->map(function ($ticket) {;
+            $ticket->status_poriniciar = false;
+            if ($ticket->estado_registro_sr == null && $ticket->estado_registro == 1) {
+                $ticket->status_poriniciar = true;
+            } else {
+                $ticket->status_poriniciar = false;
+            }
+
+            $ticket->status_enproceso = false;
+            if ($ticket->estado_registro_sr == null && $ticket->estado_registro == 2) {
+                $ticket->status_enproceso = true;
+            } else {
+                $ticket->status_enproceso = false;
+            }
+
+            $ticket->status_completado = false;
+            if ($ticket->estado_registro_sr == null && $ticket->estado_registro == 3) {
+                $ticket->status_completado = true;
+            } else {
+                $ticket->status_completado = false;
+            }
+            return $ticket;
+        });
+        // dd($list_tickets_soporte);
         return view('soporte.soporte.lista', compact('list_tickets_soporte'));
     }
 
@@ -100,10 +127,7 @@ class SoporteController extends Controller
         $list_elemento = ElementoSoporte::select('idsoporte_elemento', 'nombre')->get();
         $list_asunto = AsuntoSoporte::select('idsoporte_asunto', 'nombre')->get();
 
-        $list_sede = SedeLaboral::select('id', 'descripcion')
-            ->where('estado', 1)
-            ->whereNotIn('id', [3, 5]) // Excluir los id EXT y REMOTO
-            ->get();
+        $id_sede = SedeLaboral::obtenerIdSede();
 
         $list_responsable = Puesto::select('puesto.id_puesto', 'puesto.nom_puesto', 'area.cod_area')
             ->join('area', 'puesto.id_area', '=', 'area.id_area')
@@ -121,13 +145,14 @@ class SoporteController extends Controller
             ->distinct('nom_area')
             ->get();
 
-        return view('soporte.soporte.modal_registrar', compact('list_responsable', 'list_area', 'list_base', 'list_especialidad', 'list_elemento', 'list_asunto', 'list_sede'));
+        return view('soporte.soporte.modal_registrar', compact('list_responsable', 'list_area', 'list_base', 'list_especialidad', 'list_elemento', 'list_asunto'));
     }
 
     public function getSoporteNivelPorSede(Request $request)
     {
-        $idSede = $request->input('sedes');
-        // Si no se selecciona ninguna sede, devolver un arreglo vacío
+        // Obtener id_sede desde la función estática de SedeLaboral
+        $idSede = SedeLaboral::obtenerIdSede();
+        // Si no se obtiene id_sede, devolver un arreglo vacío
         if (empty($idSede)) {
             return response()->json([]);
         }
@@ -140,6 +165,7 @@ class SoporteController extends Controller
 
         return response()->json($sedes);
     }
+
 
 
 

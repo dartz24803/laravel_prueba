@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class SedeLaboral extends Model
 {
@@ -24,4 +25,20 @@ class SedeLaboral extends Model
         'fec_eli',
         'user_eli'
     ];
+
+    public static function obtenerIdSede()
+    {
+        // Obtener el id_usuario de la sesión
+        $idUsuario = session('usuario')->id_usuario;
+        // dd($idUsuario);
+        // Realizar la consulta con el leftJoin
+        $resultado = DB::table('users')
+            ->where('id_usuario', $idUsuario)
+            ->leftJoin('ubicacion', 'users.id_centro_labor', '=', 'ubicacion.id_ubicacion')
+            ->select('ubicacion.id_sede')
+            ->first();
+
+        // Retornar el cod_ubi si existe
+        return $resultado ? $resultado->id_sede : null;
+    }
 }
