@@ -131,6 +131,7 @@ class LineaCarreraController extends Controller
 
         $get_id = SolicitudPuesto::get_list_solicitud_puesto(['id'=>$id]);
 
+        //CORREO RRHH
         $mail = new PHPMailer(true);
 
         try {
@@ -199,6 +200,72 @@ class LineaCarreraController extends Controller
             }
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+        }
+
+        //CORREO BASE
+        if($request->estado=="2"){
+            $mail = new PHPMailer(true);
+
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Port     =  587; 
+                $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
+
+                $mail->addAddress('base'.$get_id->base_correo.'@lanumero1.com.pe');
+                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+
+                $mail->isHTML(true);
+
+                $mail->Subject = "Inicio de entrenamiento al puesto";
+            
+                $mail->Body =  '<FONT SIZE=3>
+                                    Buen día, '.ucwords($get_id->nombre_completo).'.<br>
+                                    Acaba de iniciar su proceso de entrenamiento para el puesto de 
+                                    <b>'.ucfirst($get_id->nom_puesto_aspirado).'</b>.<br>
+                                </FONT SIZE>';
+            
+                $mail->CharSet = 'UTF-8';
+                $mail->send();
+
+                SolicitudPuesto::findOrFail($id)->update([
+                    'estado_s' => $request->estado,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+
+                if($request->estado=="2"){
+                    Entrenamiento::create([
+                        'id_solicitud_puesto' => $id,
+                        'fecha_inicio' => now(),
+                        'fecha_fin' => date('Y-m-d', strtotime('+'.$request->diase.' days')),
+                        'estado_e' => 1,
+                        'estado' => 1,
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+
+                    DB::connection('sqlsrv')->statement('EXEC usp_web_upt_rol_usuario_intranet ?,?,?,?,?,?,?,?', [
+                        $get_id->usuario_nombres,
+                        $get_id->usuario_apater,
+                        $get_id->usuario_amater,
+                        $get_id->num_doc,
+                        $get_id->perfil_infosap,
+                        $get_id->id_usuario,
+                        $get_id->id_puesto_aspirado,
+                        $get_id->id_base
+                    ]);
+                }
+            }catch(Exception $e) {
+                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+            }
         }
     }
 

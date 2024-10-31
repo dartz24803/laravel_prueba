@@ -13,19 +13,23 @@ class Asistencia extends Model
 
     public function buscar_reporte_control_asistencia($cod_mes, $cod_anio, $cod_base, $num_doc, $tipo, $finicio, $ffin, $usuarios){
         if($tipo==1){
-            $fecha=" WHERE DATE_FORMAT(ar.punch_time,'%m') = '".$cod_mes."' AND DATE_FORMAT(ar.punch_time,'%Y') = '".$cod_anio."'";
+            $fecha=" AND DATE_FORMAT(it.punch_time,'%m') = '".$cod_mes."' AND DATE_FORMAT(it.punch_time,'%Y') = '".$cod_anio."'";
         }else{
-            $fecha=" WHERE DATE_FORMAT(ar.punch_time,'%Y-%m-%d') BETWEEN '".$finicio."' and '".$ffin."'";
+            $fecha=" AND DATE_FORMAT(it.punch_time,'%Y-%m-%d') BETWEEN '".$finicio."' and '".$ffin."'";
         }
 
+        $doc_iclock="";
+        $doc_ar="";
+        $base_ar="";
+
         $resultados = [];
-        
+        //print_r($usuarios);
         foreach ($usuarios as $usuario) {
             $dni = $usuario->usuario_codigo;
             
             $sql = "SELECT DISTINCT DATE(it.punch_time) AS orden, u.centro_labores,
-            u.usuario_apater,u.usuario_amater,u.usuario_nombres, u.usuario_codigo as num_doc,
-                    DATE_FORMAT(it.punch_time, '%d/%m/%Y') AS fecha,  -- Formatear siempre en d/m
+                    u.usuario_apater,u.usuario_amater,u.usuario_nombres, u.usuario_codigo as num_doc,
+                    DATE_FORMAT(it.punch_time, '%d/%m/%Y') AS fecha,
                     (SELECT DATE_FORMAT(ir.punch_time, '%H:%i %p') 
                     FROM iclock_transaction ir
                     WHERE ir.emp_code = it.emp_code AND DATE(ir.punch_time) = DATE(it.punch_time)
@@ -48,12 +52,12 @@ class Asistencia extends Model
                     LIMIT 3,1) AS salida
                     FROM iclock_transaction it
                     join lanumerouno.users u ON it.emp_code=u.usuario_codigo
-                    WHERE it.emp_code = :dni
+                    WHERE it.emp_code = :dni $fecha $base_ar $doc_iclock $doc_ar
                     ORDER BY DATE(it.punch_time) DESC";
         
             // Imprimir consulta con el valor reemplazado
-            //$sql_with_dni = str_replace(':dni', "'$dni'", $sql);
-            //print_r($sql_with_dni);
+            // $sql_with_dni = str_replace(':dni', "'$dni'", $sql);
+            // print_r($sql_with_dni);
             
             // Ejecutar la consulta
             $result = DB::connection('second_mysql')->select($sql, [$dni]);

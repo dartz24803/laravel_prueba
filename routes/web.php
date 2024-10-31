@@ -1777,8 +1777,12 @@ Route::controller(AsistenciaController::class)->group(function () {
     //------------------------------CCV------------------------------------//
     Route::get('Reporte_Control_Asistencia', 'index')->name('Reporte_Control_Asistencia');
     Route::post('Buscar_Reporte_Control_Asistencia', 'Buscar_Reporte_Control_Asistencia');
-    // Route::post('/Insert_Cuadro_Control_Visual_Estado', 'Insert_Cuadro_Control_Visual_Estado');
-    // Route::post('/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
+    Route::get('Asistencia/Traer_Colaborador_Asistencia', 'Traer_Colaborador_Asistencia');
+    Route::get('Asistencia/Excel_Reporte_Asistencia/{mes}/{anio}/{cl}/{num_doc}/{area}/{estado}/{tipo}/{fi}/{ff}', 'Excel_Reporte_Asistencia');
+    // Route::get('Asistencia/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
+    // Route::get('Asistencia/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
+    // Route::get('Asistencia/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
+    // Route::get('Asistencia/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
 });
 //AMONESTACION
 Route::controller(AmonestacionController::class)->group(function () {

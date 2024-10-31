@@ -331,7 +331,7 @@ class Usuario extends Model
         }
         $carea = "";
         if (isset($area) && $area > 0) {
-            $carea = "AND u.id_area='$area' ";
+            $carea = "AND p.id_area='$area' ";
         }
 
         $id_estado = "";
@@ -343,6 +343,7 @@ class Usuario extends Model
         $sql = "SELECT u.*,(SELECT fec_inicio h FROM historico_colaborador h where u.id_usuario=h.id_usuario and h.estado in (1,3) ORDER BY h.fec_inicio DESC,h.fec_fin DESC limit 1)as fec_inicio,
                 (SELECT h.fec_fin h FROM historico_colaborador h where u.id_usuario=h.id_usuario and h.estado in (1,3) ORDER BY h.fec_inicio DESC,h.fec_fin DESC limit 1)as fec_fin
                 FROM users u
+                LEFT JOIN puesto p ON u.id_puesto = p.id_puesto
                 WHERE u.id_nivel<>8 $base $carea $id_estado";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
