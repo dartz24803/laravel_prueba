@@ -1074,7 +1074,8 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::get('postulante_reg/{id}/perfil', 'perfil_reg')->name('postulante_reg.perfil');
     Route::get('postulante_reg/{id}/datos_personales', 'datos_personales_reg')->name('postulante_reg.datos_personales');
     Route::put('postulante_reg/{id}/update_datos_personales', 'update_datos_personales_reg')->name('postulante_reg.update_datos_personales');
-    Route::get('postulante_reg/{id}/domicilio', 'domicilio_reg')->name('postulante_reg.domicilio');
+    Route::get('postulante_reg/{id}/domicilio_titulo', 'domicilio_titulo_reg')->name('postulante_reg.domicilio_titulo');
+    Route::get('postulante_reg/{id}/domicilio_contenido', 'domicilio_contenido_reg')->name('postulante_reg.domicilio_contenido');
     Route::put('postulante_reg/{id}/update_domicilio', 'update_domicilio_reg')->name('postulante_reg.update_domicilio');
     Route::get('postulante_reg/{id}/eval_rrhh', 'eval_rrhh_reg')->name('postulante_reg.eval_rrhh');
     Route::put('postulante_reg/{id}/update_eval_rrhh', 'update_eval_rrhh_reg')->name('postulante_reg.update_eval_rrhh');

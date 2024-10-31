@@ -669,7 +669,20 @@ class PostulanteController extends Controller
         ]);
     }
 
-    public function domicilio_reg($id)
+    public function domicilio_titulo_reg($id)
+    {
+        $get_domicilio = DomicilioUsersP::from('domicilio_usersp AS do')
+                        ->select('do.id_domicilio_usersp','pr.id_departamento',
+                        'di.id_provincia','do.id_distrito','do.lat','do.lng')
+                        ->join('distrito AS di','di.id_distrito','=','do.id_distrito')
+                        ->join('provincia AS pr','pr.id_provincia','=','di.id_provincia')
+                        ->where('id_postulante',$id)->orderBy('id_domicilio_usersp','DESC')->first();
+        return view('rrhh.postulante.registro.perfil.domicilio_titulo', compact(
+            'get_domicilio'
+        ));
+    }
+
+    public function domicilio_contenido_reg($id)
     {
         $get_domicilio = DomicilioUsersP::from('domicilio_usersp AS do')
                         ->select('do.id_domicilio_usersp','pr.id_departamento',
@@ -688,7 +701,7 @@ class PostulanteController extends Controller
             $list_provincia = [];
             $list_distrito = [];
         }
-        return view('rrhh.postulante.registro.perfil.domicilio', compact(
+        return view('rrhh.postulante.registro.perfil.domicilio_contenido', compact(
             'get_domicilio',
             'list_departamento',
             'list_provincia',

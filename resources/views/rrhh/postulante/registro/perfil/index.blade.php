@@ -49,7 +49,41 @@
                                 <form id="formulario_do" method="POST" enctype="multipart/form-data" class="section general-info">
                                     @method('PUT')
                                     @csrf
-                                    <div class="info" id="div_domicilio">
+                                    <div class="info">
+                                        <div class="row">
+                                            <div class="col d-flex" id="div_domicilio_titulo">
+                                            </div>
+                                            <div class="col text-md-right text-center">
+                                                <button type="button" class="btn btn-primary" onclick="Update_Domicilio();">Actualizar</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-lg-11 mx-auto">
+                                                <div class="row">
+                                                    <div class="col-12 mt-md-0 mt-4">
+                                                        <div class="form">
+                                                            <div class="row" id="div_domicilio_contenido">
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-12">
+                                                                    <div class="form-group">
+                                                                        <label for="autocomplete">Ubicación de tu vivienda</label>
+                                                                        <input type="text" class="form-control" id="autocomplete" 
+                                                                        name="autocomplete" placeholder="Ubicación de tu vivienda">
+                                                                        <input type="hidden" id="coordsltd" name="coordsltd" 
+                                                                        value="@php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lat; }else{ echo "-12.0746254"; } @endphp">
+                                                                        <input type="hidden" id="coordslng" name="coordslng" 
+                                                                        value="@php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lng; }else{ echo "-77.021754"; } @endphp">
+                                                                        <div class="col-12 mt-4" id="map"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>            
+                                                </div>
+                                            </div>
+                                        </div>                                        
                                     </div>
                                 </form>
                             </div>
@@ -177,7 +211,8 @@
             $("#postulantes").addClass('active');
 
             Datos_Personales();
-            Domicilio();
+            Domicilio_Titulo();
+            Domicilio_Contenido();
             Evaluacion_Rrhh();
             Evaluacion_Jefe_Directo();
             Verificacion_Social();
@@ -202,6 +237,108 @@
             });
         });
 
+        google.maps.event.addDomListener(window, 'load', function(){
+            var lati = @php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lat; }else{ echo -12.0746254; } @endphp;
+            var lngi = @php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lng; }else{ echo -77.021754; } @endphp;
+
+            var coords = {lat: lati, lng: lngi};
+
+            setMapa(coords);
+
+            function setMapa (coords)
+            {
+                //Se crea una nueva instancia del objeto mapa
+                var mapa =  new google.maps.Map(document.getElementById('map'),{
+                                zoom: 18,
+                                center: coords,
+                            });
+
+                texto = '<h1> Nombre del lugar</h1>'+'<p> Descripción del lugar </p>'+
+                        '<a href="https://www.lanumero1.com.pe/" target="_blank">Página WEB</a>';
+
+                //Creamos el marcador en el mapa con sus propiedades
+                //para nuestro obetivo tenemos que poner el atributo draggable en true
+                //position pondremos las mismas coordenas que obtuvimos en la geolocalización
+                marker = new google.maps.Marker({
+                    position: coords,
+                    map: mapa,
+                    draggable: true,
+                    animation: google.maps.Animation.DROP,
+                    title: 'Ubicación de Mi Casa'
+                });
+
+                var informacion = new google.maps.InfoWindow({
+                    content: texto
+                });
+
+                marker.addListener('click', function(){
+                    informacion.open(mapa, marker);
+                });
+
+                //agregamos un evento al marcador junto con la funcion callback al igual que el evento dragend que indica
+                //cuando el usuario a soltado el marcador
+                marker.addListener('click', toggleBounce);
+
+                marker.addListener( 'dragend', function (event){
+                    //escribimos las coordenadas de la posicion actual del marcador dentro del input #coords
+                    document.getElementById("coordsltd").value = this.getPosition().lat();
+                    document.getElementById("coordslng").value = this.getPosition().lng();
+                });
+
+                var autocomplete = document.getElementById('autocomplete');
+
+                const search = new google.maps.places.Autocomplete(autocomplete);
+                search.bindTo("bounds", mapa);
+
+                search.addListener('place_changed', function(){
+                    informacion.close();
+                    marker.setVisible(false);
+
+                    var place = search.getPlace();
+
+                    if(!place.geometry.viewport){
+                        window.alert("Error al mostrar el lugar");
+                        return;
+                    }
+
+                    if(place.geometry.viewport){
+                        mapa.fitBounds(place.geometry.viewport);
+                    }else{
+                        mapa.setCenter(place.geometry.location);
+                        mapa.setZoom(18);
+                    }
+
+                    marker.setPosition(place.geometry.location);
+
+                    marker.setVisible(true);
+
+                    var address = "";
+                    if(place.address_components){
+                        address = [
+                            (place.address_components[0] && place.address_components[0].short_name || ''),
+                            (place.address_components[1] && place.address_components[1].short_name || ''),
+                            (place.address_components[2] && place.address_components[2].short_name || ''),
+                        ]
+                    }
+
+                    informacion.setContent('<div><strong>'+place.name + '</strong><br>' + address);
+                    informacion.open(map, marker);
+
+                    document.getElementById("coordsltd").value = place.geometry.location.lat();
+                    document.getElementById("coordslng").value = place.geometry.location.lng();
+
+                });
+            }
+
+            function toggleBounce() {
+                if (marker.getAnimation() !== null) {
+                    marker.setAnimation(null);
+                } else {
+                    marker.setAnimation(google.maps.Animation.BOUNCE);
+                }
+            }
+        });
+
         function Datos_Personales(){
             Cargando();
 
@@ -216,16 +353,30 @@
             });
         }
 
-        function Domicilio(){
+        function Domicilio_Titulo(){
             Cargando();
 
-            var url = "{{ route('postulante_reg.domicilio', $get_id->id_postulante) }}";
+            var url = "{{ route('postulante_reg.domicilio_titulo', $get_id->id_postulante) }}";
 
             $.ajax({
                 url: url,
                 type: "GET",
                 success:function (resp) {
-                    $('#div_domicilio').html(resp);
+                    $('#div_domicilio_titulo').html(resp);
+                }
+            });
+        }
+
+        function Domicilio_Contenido(){
+            Cargando();
+
+            var url = "{{ route('postulante_reg.domicilio_contenido', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_domicilio_contenido').html(resp);
                 }
             });
         }
@@ -439,7 +590,8 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Domicilio();
+                        Domicilio_Titulo();
+                        Domicilio_Contenido();
                     });
                 },
                 error:function(xhr) {
