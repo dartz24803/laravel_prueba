@@ -80,10 +80,7 @@ class SoporteController extends Controller
 
     public function list_tick()
     {
-
         $list_tickets_soporte = Soporte::listTicketsSoporte();
-
-
         // VALIDACIÓN DE ESTADOS EN PROCESO Y COMPLETADO PARA CADA MODULO
         $list_tickets_soporte = $list_tickets_soporte->map(function ($ticket) {;
             $ticket->status_poriniciar = false;
@@ -103,11 +100,13 @@ class SoporteController extends Controller
                 $ticket->status_standby = true;
             } elseif ($ticket->estado_registro_sr == 5 || $ticket->estado_registro == 5) {
                 $ticket->status_standby = true;
+            } else {
+                $ticket->status_enproceso = true;
             }
 
             return $ticket;
         });
-        dd($list_tickets_soporte);
+        // dd($list_tickets_soporte);
         return view('soporte.soporte.lista', compact('list_tickets_soporte'));
     }
 
@@ -267,23 +266,30 @@ class SoporteController extends Controller
                 'area.gt' => 'Debe seleccionar Área',
             ]);
         }
-
+        // GENERECIÓN DE CÓDIGO
+        $cod_area = Soporte::getCodAreaByAsunto($request->asunto); // Obtiene el área
         $request->validate($rules, $messages);
+
         $idsoporte_tipo = DB::table('soporte_asunto as sa')
             ->leftJoin('soporte_tipo as st', 'st.idsoporte_tipo', '=', 'sa.idsoporte_tipo')
             ->where('sa.idsoporte_asunto', $request->asunto)
             ->select('sa.idsoporte_tipo')
             ->first();
-
         if ($idsoporte_tipo) {
-            $prefijo = $idsoporte_tipo->idsoporte_tipo == 1 ? 'RQ-TI-' : 'INC-TI-';
+            // Usa el valor de $cod_area en lugar de 'TI'
+            $area_code = $cod_area ? $cod_area['cod_area'] : 'TI'; // Usa 'TI' como fallback en caso de null
+            $prefijo = $idsoporte_tipo->idsoporte_tipo == 1 ? 'RQ-' . $area_code . '-' : 'INC-' . $area_code . '-';
+
             $contador = Soporte::where('idsoporte_tipo', $idsoporte_tipo->idsoporte_tipo)->count();
             $nuevo_numero = $contador + 1;
             $numero_formateado = str_pad($nuevo_numero, 3, '0', STR_PAD_LEFT);
+
             $codigo_generado = $prefijo . $numero_formateado;
         } else {
             $codigo_generado = 'Código no disponible';
         }
+
+        // GENERECIÓN DE CÓDIGO
 
 
         $soporte_solucion = SoporteSolucion::create([
@@ -423,6 +429,7 @@ class SoporteController extends Controller
     public function ver_tick($id_soporte)
     {
         $get_id = Soporte::getTicketById($id_soporte);
+        // dd($get_id);
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $comentarios = SoporteSolucion::getComentariosBySolucion($get_id->idsoporte_solucion);
 

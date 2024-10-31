@@ -14,9 +14,27 @@
 
     #imagenes_container {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        overflow-x: auto;
+        /* Habilita el desplazamiento horizontal */
+        white-space: nowrap;
+        /* Evita el salto de línea */
+        padding: 10px;
+        max-width: 100%;
+        gap: 10px;
+        /* Espacio entre imágenes */
+        scrollbar-width: thin;
+        /* Para navegadores que admiten este estilo */
     }
+
+    #imagenes_container img {
+        height: 150px;
+        /* Altura de las imágenes, ajústala según sea necesario */
+        flex-shrink: 0;
+        /* Evita que las imágenes se encojan */
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
 
     /* public/css/style.css */
     body {
@@ -213,10 +231,11 @@
             <div class="d-flex justify-content-center" style="max-width: 100%;" id="div_imagenes">
                 <input type="hidden" id="imagenes_input" name="imagenes" value="">
 
-                <div id="imagenes_container" class="d-flex flex-wrap justify-content-center">
+                <div id="imagenes_container" class="carousel-container">
                     <!-- Las imágenes se añadirán aquí dinámicamente -->
                 </div>
             </div>
+
         </div>
 
 
@@ -234,14 +253,8 @@
 
 <script>
     $(document).ready(function() {
-
-        obtenerSoporteNivelPorSede(); // Llamada inicial cuando se carga el HTML
-        // Inicializar el evento change para el select con ID 'idsoporte_nivel'
-
-        // Llama a esta función cuando abras el modal o cargues la página
+        obtenerSoporteNivelPorSede();
         initializeEspecialidadAndSede();
-
-
     });
 
     function obtenerSoporteNivelPorSede() {
@@ -339,8 +352,6 @@
             sedeSelect.addEventListener('change', handleSedeChange);
         }
     }
-
-
 
 
 
@@ -573,6 +584,22 @@
     }
 
     function Tomar_Foto() {
+        // Verifica cuántas imágenes ya se han subido
+        var divImagenes = document.getElementById('imagenes_container');
+        var imagenes = divImagenes.getElementsByTagName('img');
+
+        if (imagenes.length >= 3) {
+            Swal({
+                title: '¡Carga Denegada!',
+                text: "¡No se puede tomar más de 3 capturas!",
+                type: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK',
+            });
+            return; // Salir de la función si ya hay 3 imágenes
+        }
+
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario_insert'));
@@ -617,41 +644,62 @@
         }, 'image/jpeg');
     }
 
+
     function MostrarFoto(url) {
-        var divImagenes = document.getElementById('imagenes_container'); // Asegúrate de tener este contenedor en tu HTML
-        var nuevaImagen = document.createElement('img'); // Crea un nuevo elemento de imagen
-        nuevaImagen.src = url; // Establece la fuente de la imagen
-        nuevaImagen.alt = 'Captura de soporte'; // Texto alternativo
-        nuevaImagen.style.maxWidth = '95%'; // Ajustar el tamaño de la imagen
-        nuevaImagen.style.margin = '10px'; // Añade margen a la imagen
-        nuevaImagen.className = 'img-thumbnail'; // Clase opcional para un borde alrededor de la imagen
+        var divImagenes = document.getElementById('imagenes_container'); // Contenedor de imágenes
+        var contenedorImagen = document.createElement('div'); // Crea el contenedor para la imagen y los botones
+        contenedorImagen.className = 'text-center my-2'; // Centrar y agregar margen vertical
 
-        // Crea el contenedor para la imagen y el botón
-        var contenedorImagen = document.createElement('div');
-        contenedorImagen.className = 'text-center'; // Para centrar la imagen y el botón
+        // Crear la imagen
+        var nuevaImagen = document.createElement('img');
+        nuevaImagen.src = url;
+        nuevaImagen.alt = 'Captura de soporte';
+        nuevaImagen.style.maxWidth = '95%';
+        nuevaImagen.className = 'img-thumbnail';
+        nuevaImagen.style.display = 'block'; // Asegura que la imagen esté alineada verticalmente
 
-        // Crea el botón de eliminar
+        // Crear botón para eliminar
         var botonEliminar = document.createElement('button');
-        botonEliminar.className = 'btn btn-danger'; // Estilo para el botón
-        botonEliminar.style.marginTop = '5px'; // Añade un margen superior
+        botonEliminar.className = 'btn btn-danger mt-2'; // Estilo del botón
         botonEliminar.onclick = function() {
-            divImagenes.removeChild(contenedorImagen); // Elimina el contenedor de la imagen y el botón
+            divImagenes.removeChild(contenedorImagen); // Elimina el contenedor de imagen y botones
+            actualizarInput(); // Actualiza el input
         };
-
-        // Añade el SVG al botón
+        // SVG del botón de eliminar
         botonEliminar.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
             <polyline points="3 6 5 6 21 6"></polyline>
             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
             <line x1="10" y1="11" x2="10" y2="17"></line>
             <line x1="14" y1="11" x2="14" y2="17"></line>
-        </svg>
+        </svg> Eliminar
     `;
 
-        // Añade la imagen y el botón al contenedor
+        // Crear botón para abrir en nueva pestaña
+        var botonAbrir = document.createElement('button');
+        botonAbrir.className = 'btn btn-primary mt-2 ms-2'; // Estilo del botón de abrir
+        botonAbrir.onclick = function(event) {
+            event.preventDefault(); // Evita que se recargue la página
+            window.open(url, '_blank'); // Abre en una nueva pestaña
+        };
+
+        botonAbrir.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg> Ver
+    `;
+
+        // Agregar imagen y botones al contenedor
         contenedorImagen.appendChild(nuevaImagen);
         contenedorImagen.appendChild(botonEliminar);
-        divImagenes.appendChild(contenedorImagen); // Añade el contenedor al div principal
+        contenedorImagen.appendChild(botonAbrir);
+
+        // Añadir el contenedor principal al div de imágenes
+        divImagenes.appendChild(contenedorImagen);
+
+        // Actualiza el input oculto con la lista de URLs
         actualizarInput();
     }
 

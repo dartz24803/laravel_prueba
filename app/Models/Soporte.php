@@ -247,4 +247,31 @@ class Soporte extends Model
         // Retorna el campo responsable_multiple, o null si no se encuentra
         return $responsable ? $responsable->responsable_multiple : null;
     }
+    public static function getCodAreaByAsunto($id_asunto)
+    {
+        // Obtén el registro de soporte_asunto directamente sin unirte a soporte
+        $result = DB::table('soporte_asunto')
+            ->select('responsable_multiple', 'id_area')
+            ->where('idsoporte_asunto', $id_asunto)
+            ->first();
+
+        // Si no se encuentra el registro, retorna null
+        if (!$result) {
+            return null;
+        }
+
+        // Divide id_area en caso de múltiples IDs
+        $idAreas = explode(',', $result->id_area);
+
+        // Obtén los códigos de área correspondientes y formatea el resultado
+        $codAreas = DB::table('area')
+            ->whereIn('id_area', $idAreas)
+            ->pluck('cod_area')
+            ->toArray();
+
+        return [
+            'responsable_multiple' => $result->responsable_multiple,
+            'cod_area' => implode('-', $codAreas) // Formato "TI -MTO"
+        ];
+    }
 }
