@@ -89,7 +89,8 @@ class AsistenciaController extends Controller
         $finicio = $request->input("finicio");
         $ffin = $request->input("ffin");
         
-        $usuarios = Usuario::select('usuario_codigo', 'id_usuario');
+        $usuarios = Usuario::select('usuario_codigo', 'id_usuario')
+                ->where('estado', $estado);
 
         if ($num_doc != 0) {
             $usuarios->where('usuario_codigo', $num_doc);
