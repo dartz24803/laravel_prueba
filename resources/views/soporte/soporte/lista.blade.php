@@ -36,7 +36,7 @@
                     ? '#b0f02b'
                     : ( $list->status_completado == true
                         ? '#3af1be'
-                        : (($list->estado_registro == 4 || $list->estado_registro_sr == 4)
+                        : ($list->status_standby == true
                             ? '#f3b952'
                             : '#9edef8'))) }};
             border-radius: 14px; padding: 1px; width: 80px; color: white; text-align: center; margin-right: 10px;">
@@ -46,9 +46,9 @@
                         En Proceso
                         @elseif ( $list->status_completado == true )
                         Completado
-                        @elseif ($list->estado_registro == 4 || $list->estado_registro_sr == 4)
+                        @elseif ($list->status_standby == true)
                         Stand By
-                        @elseif ($list->estado_registro == 5 || $list->estado_registro_sr == 5)
+                        @elseif ($list->status_cancelado == true)
                         Cancelado
                         @endif
                     </div>

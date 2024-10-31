@@ -82,28 +82,29 @@ class SoporteController extends Controller
     {
 
         $list_tickets_soporte = Soporte::listTicketsSoporte();
+
+
         // VALIDACIÓN DE ESTADOS EN PROCESO Y COMPLETADO PARA CADA MODULO
         $list_tickets_soporte = $list_tickets_soporte->map(function ($ticket) {;
             $ticket->status_poriniciar = false;
-            if ($ticket->estado_registro_sr == null && $ticket->estado_registro == 1) {
-                $ticket->status_poriniciar = true;
-            } else {
-                $ticket->status_poriniciar = false;
-            }
-
             $ticket->status_enproceso = false;
-            if ($ticket->estado_registro_sr == null && $ticket->estado_registro == 2) {
+            $ticket->status_completado = false;
+            $ticket->status_standby = false;
+            $ticket->status_cancelado = false;
+            $multirepsonsable = Soporte::getResponsableMultipleByAsunto($ticket->id_asunto);
+
+            if (($ticket->estado_registro_sr == 3 && $ticket->estado_registro == 3) || ($ticket->estado_registro == 3 && $multirepsonsable == 0)) {
+                $ticket->status_completado = true;
+            } elseif ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2) {
                 $ticket->status_enproceso = true;
-            } else {
-                $ticket->status_enproceso = false;
+            } elseif ($ticket->estado_registro_sr == 1 || $ticket->estado_registro == 1) {
+                $ticket->status_poriniciar = true;
+            } elseif ($ticket->estado_registro_sr == 4 || $ticket->estado_registro == 4) {
+                $ticket->status_standby = true;
+            } elseif ($ticket->estado_registro_sr == 5 || $ticket->estado_registro == 5) {
+                $ticket->status_standby = true;
             }
 
-            $ticket->status_completado = false;
-            if ($ticket->estado_registro_sr == null && $ticket->estado_registro == 3) {
-                $ticket->status_completado = true;
-            } else {
-                $ticket->status_completado = false;
-            }
             return $ticket;
         });
         // dd($list_tickets_soporte);
@@ -223,7 +224,7 @@ class SoporteController extends Controller
 
     public function store_tick(Request $request)
     {
-
+        // dd($request->asunto);
         $rules = [
             'especialidad' => 'gt:0',
             'elemento' => 'gt:0',
@@ -327,46 +328,46 @@ class SoporteController extends Controller
 
         if ($con_id && $lr) {
             // Decodificar las URLs de las imágenes desde el request
-            $imagenes = json_decode($request->input('imagenes'), true);
-            if (!$imagenes || !is_array($imagenes)) {
-                return response()->json([
-                    'error' => 'Debe Cargar almenos una foto'
-                ], 400);
-            }
-            // Inicializar un array para almacenar los resultados
-            $resultados = [];
+            // $imagenes = json_decode($request->input('imagenes'), true);
+            // if (!$imagenes || !is_array($imagenes)) {
+            //     return response()->json([
+            //         'error' => 'Debe Cargar almenos una foto'
+            //     ], 400);
+            // }
+            // // Inicializar un array para almacenar los resultados
+            // $resultados = [];
 
-            foreach ($imagenes as $url) {
-                // Obtener la extensión de la imagen
-                $extension = pathinfo($url, PATHINFO_EXTENSION);
-                $nombre_soli = "soporte_" . session('usuario')->id_usuario . "_" . date('YmdHis') . "_" . uniqid(); // Usar uniqid para evitar nombres duplicados
-                $nombre = $nombre_soli . '.' . strtolower($extension);
-                $ftp_upload_path = "SOPORTE/" . $nombre;
+            // foreach ($imagenes as $url) {
+            //     // Obtener la extensión de la imagen
+            //     $extension = pathinfo($url, PATHINFO_EXTENSION);
+            //     $nombre_soli = "soporte_" . session('usuario')->id_usuario . "_" . date('YmdHis') . "_" . uniqid(); // Usar uniqid para evitar nombres duplicados
+            //     $nombre = $nombre_soli . '.' . strtolower($extension);
+            //     $ftp_upload_path = "SOPORTE/" . $nombre;
 
-                // Descargamos la imagen temporalmente
-                $source_file = tempnam(sys_get_temp_dir(), 'ftp_'); // Crear un archivo temporal
-                file_put_contents($source_file, file_get_contents($url)); // Descargar la imagen
+            //     // Descargamos la imagen temporalmente
+            //     $source_file = tempnam(sys_get_temp_dir(), 'ftp_'); // Crear un archivo temporal
+            //     file_put_contents($source_file, file_get_contents($url)); // Descargar la imagen
 
-                // Subir el archivo al FTP
-                $subio = ftp_put($con_id, $ftp_upload_path, $source_file, FTP_BINARY);
+            //     // Subir el archivo al FTP
+            //     $subio = ftp_put($con_id, $ftp_upload_path, $source_file, FTP_BINARY);
 
-                // Borrar el archivo temporal
-                unlink($source_file);
+            //     // Borrar el archivo temporal
+            //     unlink($source_file);
 
-                if ($subio) {
-                    // Obtener URL del archivo en almacenamiento local para referencia
-                    $archivo_ftp = "https://lanumerounocloud.com/intranet/SOPORTE/" . $nombre;
+            //     if ($subio) {
+            //         // Obtener URL del archivo en almacenamiento local para referencia
+            //         $archivo_ftp = "https://lanumerounocloud.com/intranet/SOPORTE/" . $nombre;
 
-                    // Almacenar el resultado
-                    $resultados[] = [
-                        'url_ftp' => $archivo_ftp,
-                        'identificador' => $nombre_soli
-                    ];
-                } else {
-                    // Manejo de errores si no se pudo subir la imagen
-                    return response()->json(['error' => 'No se pudo subir la imagen ' . $nombre . ' al servidor FTP'], 500);
-                }
-            }
+            //         // Almacenar el resultado
+            //         $resultados[] = [
+            //             'url_ftp' => $archivo_ftp,
+            //             'identificador' => $nombre_soli
+            //         ];
+            //     } else {
+            //         // Manejo de errores si no se pudo subir la imagen
+            //         return response()->json(['error' => 'No se pudo subir la imagen ' . $nombre . ' al servidor FTP'], 500);
+            //     }
+            // }
 
             // Cerrar conexión FTP
             ftp_close($con_id);
@@ -376,13 +377,15 @@ class SoporteController extends Controller
             $img2 = isset($resultados[1]) ? $resultados[1]['url_ftp'] : '';
             $img3 = isset($resultados[2]) ? $resultados[2]['url_ftp'] : '';
 
+            $idSede = SedeLaboral::obtenerIdSede();
+
             // Almacenar la información de soporte en la base de datos
             Soporte::create([
                 'codigo' => $codigo_generado,
                 'id_especialidad' => $request->especialidad,
                 'id_elemento' => $request->elemento,
                 'id_asunto' => $request->asunto,
-                'id_sede' => $request->sede,
+                'id_sede' => $idSede,
                 'idsoporte_nivel' => $request->idsoporte_nivel,
                 'idsoporte_area_especifica' => $request->idsoporte_area_especifica ?? 0,
                 'id_area' => $request->area ?? 0,
@@ -407,7 +410,7 @@ class SoporteController extends Controller
 
             return response()->json([
                 'success' => 'Imágenes subidas correctamente al servidor FTP',
-                'resultados' => $resultados
+                // 'resultados' => $resultados
             ]);
         } else {
             return response()->json(['error' => 'No se pudo conectar al servidor FTP'], 500);
@@ -554,9 +557,9 @@ class SoporteController extends Controller
         $list_tickets_soporte = $list_tickets_soporte->map(function ($ticket) use ($id_subgerencia) {
 
             $ticket->status_poriniciar = false;
-            if ($id_subgerencia == "10" && $ticket->estado_registro == 1) {
+            if ($id_subgerencia == "10" && ($ticket->estado_registro_sr == 1 || $ticket->estado_registro == 1)) {
                 $ticket->status_poriniciar = true;
-            } elseif ($id_subgerencia == "9" && $ticket->estado_registro_sr == 1) {
+            } elseif ($id_subgerencia == "9" && ($ticket->estado_registro_sr == 1 || $ticket->estado_registro == 1)) {
                 $ticket->status_poriniciar = true;
             } elseif ($ticket->estado_registro == 1) {
                 $ticket->status_poriniciar = true;
@@ -565,9 +568,9 @@ class SoporteController extends Controller
             }
 
             $ticket->status_enproceso = false;
-            if ($id_subgerencia == "10" && $ticket->estado_registro == 2) {
+            if ($id_subgerencia == "10" && ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2)) {
                 $ticket->status_enproceso = true;
-            } elseif ($id_subgerencia == "9" && $ticket->estado_registro_sr == 2) {
+            } elseif ($id_subgerencia == "9" && ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2)) {
                 $ticket->status_enproceso = true;
             } elseif ($ticket->estado_registro == 2) {
                 $ticket->status_enproceso = true;
@@ -577,9 +580,9 @@ class SoporteController extends Controller
 
 
             $ticket->status_completado = false;
-            if ($id_subgerencia == "10" && $ticket->estado_registro == 3) {
+            if ($id_subgerencia == "10" && ($ticket->estado_registro_sr == 3 || $ticket->estado_registro == 3)) {
                 $ticket->status_completado = true;
-            } elseif ($id_subgerencia == "9" && $ticket->estado_registro_sr == 3) {
+            } elseif ($id_subgerencia == "9" && ($ticket->estado_registro_sr == 3 || $ticket->estado_registro == 3)) {
                 $ticket->status_completado = true;
             } else {
                 $ticket->status_completado = false;
@@ -682,6 +685,7 @@ class SoporteController extends Controller
         } else {
             $ejecutoresMultiples = false;
         }
+        // dd($ejecutoresMultiples);
         $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
         $list_ejecutores_responsables = collect($list_ejecutores_responsables);
 
@@ -717,9 +721,12 @@ class SoporteController extends Controller
         ];
         $get_id = Soporte::getTicketById($id);
 
+
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $cantAreasEjecut = count($list_ejecutores_responsables);
-        if ($id_subgerencia == "9") {
+        $responsableMultiple = Soporte::getResponsableMultipleByAsunto($get_id->id_asunto);
+        // dd($responsableMultiple);
+        if ($id_subgerencia == "9" && $responsableMultiple == 1) {
             $rules = array_merge($rules, [
                 'id_responsablee_0' => 'gt:0',
 
