@@ -1748,4 +1748,21 @@ class Usuario extends Model
         // Convertir el resultado a un array
         return json_decode(json_encode($result), true);
     }
+
+    public static function get_list_familiar_postulante($dato=null)
+    {
+        $sql = "SELECT ub.cod_ubi AS centro_labores,us.num_doc,us.usuario_apater,us.usuario_amater,
+                us.usuario_nombres,eu.nom_estado_usuario AS nom_estado,
+                CASE WHEN us.fin_funciones IS NOT NULL AND us.fin_funciones NOT LIKE '%0000%' THEN 
+                DATE_FORMAT(us.fin_funciones,'%d/%m/%Y') ELSE '' END AS fecha_cese
+                FROM users us
+                INNER JOIN ubicacion ub ON ub.id_ubicacion=us.id_centro_labor
+                LEFT JOIN vw_estado_usuario eu ON eu.id_estado_usuario=us.estado
+                WHERE us.id_centro_labor IN (SELECT ba.id_ubicacion FROM base ba
+                WHERE ba.id_departamento='".$dato['id_departamento']."' AND ba.estado=1) AND 
+                us.estado IN (1,3) AND (us.usuario_apater='".$dato['postulante_apater']."' OR 
+                us.usuario_amater='".$dato['postulante_amater']."')";
+        $query = DB::select($sql);
+        return $query;
+    }
 }

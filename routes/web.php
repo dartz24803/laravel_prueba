@@ -1074,7 +1074,8 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::get('postulante_reg/{id}/perfil', 'perfil_reg')->name('postulante_reg.perfil');
     Route::get('postulante_reg/{id}/datos_personales', 'datos_personales_reg')->name('postulante_reg.datos_personales');
     Route::put('postulante_reg/{id}/update_datos_personales', 'update_datos_personales_reg')->name('postulante_reg.update_datos_personales');
-    Route::get('postulante_reg/{id}/domicilio', 'domicilio_reg')->name('postulante_reg.domicilio');
+    Route::get('postulante_reg/{id}/domicilio_titulo', 'domicilio_titulo_reg')->name('postulante_reg.domicilio_titulo');
+    Route::get('postulante_reg/{id}/domicilio_contenido', 'domicilio_contenido_reg')->name('postulante_reg.domicilio_contenido');
     Route::put('postulante_reg/{id}/update_domicilio', 'update_domicilio_reg')->name('postulante_reg.update_domicilio');
     Route::get('postulante_reg/{id}/eval_rrhh', 'eval_rrhh_reg')->name('postulante_reg.eval_rrhh');
     Route::put('postulante_reg/{id}/update_eval_rrhh', 'update_eval_rrhh_reg')->name('postulante_reg.update_eval_rrhh');
@@ -1091,11 +1092,6 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::post('postulante_tod/list', 'list_tod')->name('postulante_tod.list');
     Route::put('postulante_tod/{id}', 'update_tod')->name('postulante_tod.update');
     Route::get('postulante_tod/{estado}/{id_area}/excel', 'excel_tod')->name('postulante_tod.excel');
-    //REVISIÓN
-    Route::get('postulante_revision', 'index_prev')->name('postulante_revision');
-    Route::post('postulante_revision/list', 'list_prev')->name('postulante_revision.list');
-    Route::get('postulante_revision/{id}/edit', 'edit_prev')->name('postulante_revision.edit');
-    Route::put('postulante_revision/{id}', 'update_prev')->name('postulante_revision.update');
 });
 //ÁREA LOGÍSTICA
 Route::controller(LogisticaInicioController::class)->group(function () {

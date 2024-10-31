@@ -49,7 +49,41 @@
                                 <form id="formulario_do" method="POST" enctype="multipart/form-data" class="section general-info">
                                     @method('PUT')
                                     @csrf
-                                    <div class="info" id="div_domicilio">
+                                    <div class="info">
+                                        <div class="row">
+                                            <div class="col d-flex" id="div_domicilio_titulo">
+                                            </div>
+                                            <div class="col text-md-right text-center">
+                                                <button type="button" class="btn btn-primary" onclick="Update_Domicilio();">Actualizar</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-lg-11 mx-auto">
+                                                <div class="row">
+                                                    <div class="col-12 mt-md-0 mt-4">
+                                                        <div class="form">
+                                                            <div class="row" id="div_domicilio_contenido">
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-12">
+                                                                    <div class="form-group">
+                                                                        <label for="autocomplete">Ubicación de tu vivienda</label>
+                                                                        <input type="text" class="form-control" id="autocomplete" 
+                                                                        name="autocomplete" placeholder="Ubicación de tu vivienda">
+                                                                        <input type="hidden" id="coordsltd" name="coordsltd" 
+                                                                        value="@php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lat; }else{ echo "-12.0746254"; } @endphp">
+                                                                        <input type="hidden" id="coordslng" name="coordslng" 
+                                                                        value="@php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lng; }else{ echo "-77.021754"; } @endphp">
+                                                                        <div class="col-12 mt-4" id="map"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>            
+                                                </div>
+                                            </div>
+                                        </div>                                        
                                     </div>
                                 </form>
                             </div>
@@ -71,6 +105,58 @@
                                     </div>
                                 </form>
                             </div>
+
+                            @if (session('usuario')->id_nivel=="1" || 
+                            session('usuario')->id_puesto=="21" ||
+                            session('usuario')->id_puesto=="22" ||
+                            session('usuario')->id_puesto=="277" ||
+                            session('usuario')->id_puesto=="278")
+                                <div class="col-md-12 layout-spacing">
+                                    <form class="section general-info">
+                                        <div class="info">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <h6 style="margin-bottom: 0px !important;">REVISIÓN</h6>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <table id="tabla_js" class="table" style="width:100%">
+                                                                <thead class="text-center">
+                                                                    <tr>
+                                                                        <th>Base</th>
+                                                                        <th>N° documento</th>
+                                                                        <th>Apellido paterno</th>
+                                                                        <th>Apellido materno</th>
+                                                                        <th>Nombres</th>
+                                                                        <th>Estado</th>
+                                                                        <th>Fecha cese</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach ($list_revision as $list)
+                                                                        <tr class="text-center">
+                                                                            <td>{{ $list->centro_labores }}</td>
+                                                                            <td>{{ $list->num_doc }}</td>
+                                                                            <td class="text-left">{{ $list->usuario_apater }}</td>
+                                                                            <td class="text-left">{{ $list->usuario_amater }}</td>
+                                                                            <td class="text-left">{{ $list->usuario_nombres }}</td>
+                                                                            <td>{{ $list->nom_estado }}</td>
+                                                                            <td>{{ $list->fecha_cese }}</td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            @endif
 
                             <div class="col-md-12 layout-spacing">
                                 <form id="formulario_vs" method="POST" enctype="multipart/form-data" class="section general-info">
@@ -125,11 +211,132 @@
             $("#postulantes").addClass('active');
 
             Datos_Personales();
-            Domicilio();
+            Domicilio_Titulo();
+            Domicilio_Contenido();
             Evaluacion_Rrhh();
             Evaluacion_Jefe_Directo();
             Verificacion_Social();
             Resultado_Final();
+
+            $('#tabla_js').DataTable({
+                "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
+                "<'table-responsive'tr>" +
+                "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                responsive: true,
+                "oLanguage": {
+                    "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                    "sInfo": "Mostrando página _PAGE_ de _PAGES_",
+                    "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                    "sSearchPlaceholder": "Buscar...",
+                    "sLengthMenu": "Resultados :  _MENU_",
+                    "sEmptyTable": "No hay datos disponibles en la tabla",
+                },
+                "stripeClasses": [],
+                "lengthMenu": [10, 20, 50],
+                "pageLength": 10
+            });
+        });
+
+        google.maps.event.addDomListener(window, 'load', function(){
+            var lati = @php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lat; }else{ echo -12.0746254; } @endphp;
+            var lngi = @php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lng; }else{ echo -77.021754; } @endphp;
+
+            var coords = {lat: lati, lng: lngi};
+
+            setMapa(coords);
+
+            function setMapa (coords)
+            {
+                //Se crea una nueva instancia del objeto mapa
+                var mapa =  new google.maps.Map(document.getElementById('map'),{
+                                zoom: 18,
+                                center: coords,
+                            });
+
+                texto = '<h1> Nombre del lugar</h1>'+'<p> Descripción del lugar </p>'+
+                        '<a href="https://www.lanumero1.com.pe/" target="_blank">Página WEB</a>';
+
+                //Creamos el marcador en el mapa con sus propiedades
+                //para nuestro obetivo tenemos que poner el atributo draggable en true
+                //position pondremos las mismas coordenas que obtuvimos en la geolocalización
+                marker = new google.maps.Marker({
+                    position: coords,
+                    map: mapa,
+                    draggable: true,
+                    animation: google.maps.Animation.DROP,
+                    title: 'Ubicación de Mi Casa'
+                });
+
+                var informacion = new google.maps.InfoWindow({
+                    content: texto
+                });
+
+                marker.addListener('click', function(){
+                    informacion.open(mapa, marker);
+                });
+
+                //agregamos un evento al marcador junto con la funcion callback al igual que el evento dragend que indica
+                //cuando el usuario a soltado el marcador
+                marker.addListener('click', toggleBounce);
+
+                marker.addListener( 'dragend', function (event){
+                    //escribimos las coordenadas de la posicion actual del marcador dentro del input #coords
+                    document.getElementById("coordsltd").value = this.getPosition().lat();
+                    document.getElementById("coordslng").value = this.getPosition().lng();
+                });
+
+                var autocomplete = document.getElementById('autocomplete');
+
+                const search = new google.maps.places.Autocomplete(autocomplete);
+                search.bindTo("bounds", mapa);
+
+                search.addListener('place_changed', function(){
+                    informacion.close();
+                    marker.setVisible(false);
+
+                    var place = search.getPlace();
+
+                    if(!place.geometry.viewport){
+                        window.alert("Error al mostrar el lugar");
+                        return;
+                    }
+
+                    if(place.geometry.viewport){
+                        mapa.fitBounds(place.geometry.viewport);
+                    }else{
+                        mapa.setCenter(place.geometry.location);
+                        mapa.setZoom(18);
+                    }
+
+                    marker.setPosition(place.geometry.location);
+
+                    marker.setVisible(true);
+
+                    var address = "";
+                    if(place.address_components){
+                        address = [
+                            (place.address_components[0] && place.address_components[0].short_name || ''),
+                            (place.address_components[1] && place.address_components[1].short_name || ''),
+                            (place.address_components[2] && place.address_components[2].short_name || ''),
+                        ]
+                    }
+
+                    informacion.setContent('<div><strong>'+place.name + '</strong><br>' + address);
+                    informacion.open(map, marker);
+
+                    document.getElementById("coordsltd").value = place.geometry.location.lat();
+                    document.getElementById("coordslng").value = place.geometry.location.lng();
+
+                });
+            }
+
+            function toggleBounce() {
+                if (marker.getAnimation() !== null) {
+                    marker.setAnimation(null);
+                } else {
+                    marker.setAnimation(google.maps.Animation.BOUNCE);
+                }
+            }
         });
 
         function Datos_Personales(){
@@ -146,16 +353,30 @@
             });
         }
 
-        function Domicilio(){
+        function Domicilio_Titulo(){
             Cargando();
 
-            var url = "{{ route('postulante_reg.domicilio', $get_id->id_postulante) }}";
+            var url = "{{ route('postulante_reg.domicilio_titulo', $get_id->id_postulante) }}";
 
             $.ajax({
                 url: url,
                 type: "GET",
                 success:function (resp) {
-                    $('#div_domicilio').html(resp);
+                    $('#div_domicilio_titulo').html(resp);
+                }
+            });
+        }
+
+        function Domicilio_Contenido(){
+            Cargando();
+
+            var url = "{{ route('postulante_reg.domicilio_contenido', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_domicilio_contenido').html(resp);
                 }
             });
         }
@@ -369,7 +590,8 @@
                         '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        Domicilio();
+                        Domicilio_Titulo();
+                        Domicilio_Contenido();
                     });
                 },
                 error:function(xhr) {
