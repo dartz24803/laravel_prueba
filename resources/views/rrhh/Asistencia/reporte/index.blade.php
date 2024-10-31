@@ -77,7 +77,7 @@
                                         <div class="col-md-1">
                                             <div class="form-group">
                                                 <label class="control-label text-bold">C.&nbsp;Labores:</label>
-                                                <select id="cod_base" name="cod_base" class="form-control" onchange="Traer_Colaborador();">
+                                                <select id="cod_base" name="cod_base" class="form-control basic" onchange="Traer_Colaborador();">
                                                     <option value="0" >TODOS</option>
                                                     <?php foreach($list_base as $list){?>
                                                         <option <?php if(($id_nivel==1 || $id_nivel==2) && $list['cod_base']=="OFC"){echo "selected"; }?> value="<?php echo $list['cod_base']; ?>"> <?php echo $list['cod_base'];?> </option>
@@ -89,7 +89,7 @@
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label class="control-label text-bold">Área:</label>
-                                                <select id="id_area" name="id_area" class="form-control" onchange="Traer_Colaborador();">
+                                                <select id="id_area" name="id_area" class="form-control basic" onchange="Traer_Colaborador();">
                                                     <option value="0">TODOS</option>
                                                     <?php foreach($list_area as $list){?>
                                                         <option value="<?php echo $list['id_area']; ?>"> <?php echo $list['nom_area'];?> </option>
@@ -102,9 +102,9 @@
                                             <div class="form-group">
                                                 <label class="control-label text-bold">Estado:</label><br>
                                                 <input type="radio" name="estado" id="estadosi" value="1" checked="checked" onclick="Traer_Colaborador();">
-                                                Activos<br>
+                                                <label class="form-check-label" for="estadosi">Activos</label><br>
                                                 <input type="radio" name="estado" id="estadono" value="2" onclick="Traer_Colaborador();">
-                                                Inactivos
+                                                <label class="form-check-label" for="estadono">Inactivos</label>
                                             </div>
                                         </div>
 
@@ -125,9 +125,10 @@
                                             <div class="form-group">
                                                 <label class="control-label text-bold">Tipo:</label><br>
                                                 <input type="radio" name="tipo" id="tipo1" value="1" checked="checked" onclick="TipoBusqueda('1')">
-                                                Por Mes<br>
+                                                <label class="form-check-label" for="tipo1">Por Mes</label>
+                                                <br>
                                                 <input type="radio" name="tipo" id="tipo2" value="2"  onclick="TipoBusqueda('2')">
-                                                Por Rango
+                                                <label class="form-check-label" for="tipo2">Por Rango</label>
                                             </div>
                                         </div>
 
@@ -567,8 +568,6 @@
     }
 
     function Excel_Reporte_Asistencia() {
-        //var id_gerencia = $('#id_gerencia').val();
-        //var id_area = $('#id_area').val();
         Cargando();
         var cod_mes = $('#cod_mes').val();
         var cod_anio = $('#cod_anio').val();
@@ -619,13 +618,13 @@
                         }
                     });
                 }else{
-                    //window.location = "<?php //echo site_url(); ?>Asistencia/Excel_Reporte_Asistencia/"+cod_mes+"/"+cod_anio+"/"+cod_base+"/"+num_doc+"/"+area+"/"+estado+"/"+tipo+"/"+finicio+"/"+ffin;
+                    window.location = "{{ url('Asistencia/Excel_Reporte_Asistencia')}}/"+cod_mes+"/"+cod_anio+"/"+cod_base+"/"+num_doc+"/"+area+"/"+estado+"/"+tipo+"/"+finicio+"/"+ffin;
                 }
 
 
             }
         }else{
-            //window.location = "<?php //echo site_url(); ?>Asistencia/Excel_Reporte_Asistencia/"+cod_mes+"/"+cod_anio+"/"+cod_base+"/"+num_doc+"/"+area+"/"+estado+"/"+tipo+"/"+finicio+"/"+ffin;
+            window.location = "{{ url('Asistencia/Excel_Reporte_Asistencia')}}/"+cod_mes+"/"+cod_anio+"/"+cod_base+"/"+num_doc+"/"+area+"/"+estado+"/"+tipo+"/"+finicio+"/"+ffin;
         }
 
 

@@ -33,7 +33,14 @@
                             <td class="text-center"> <?php echo $list['inicio_refrigerio']; ?></td>
                             <td class="text-center"> <?php echo $list['fin_refrigerio']; ?></td>
                             <td class="text-center"> <?php echo $list['salida']; ?></td>
-                            <td class="text-center"></td>
+                            <td class="text-center">
+                                <?php
+                                if($list['salida']!=""){
+                                    echo "1"; 
+                                }else{
+                                    echo "0"; 
+                                } ?>
+                            </td>
                             <td class="text-center"></td>
                         </tr>
                     <?php }
