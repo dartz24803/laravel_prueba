@@ -72,6 +72,58 @@
                                 </form>
                             </div>
 
+                            @if (session('usuario')->id_nivel=="1" || 
+                            session('usuario')->id_puesto=="21" ||
+                            session('usuario')->id_puesto=="22" ||
+                            session('usuario')->id_puesto=="277" ||
+                            session('usuario')->id_puesto=="278")
+                                <div class="col-md-12 layout-spacing">
+                                    <form class="section general-info">
+                                        <div class="info">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <h6>REVISIÓN</h6>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-11 mx-auto">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <table id="tabla_js" class="table" style="width:100%">
+                                                                <thead class="text-center">
+                                                                    <tr>
+                                                                        <th>Base</th>
+                                                                        <th>N° documento</th>
+                                                                        <th>Apellido paterno</th>
+                                                                        <th>Apellido materno</th>
+                                                                        <th>Nombres</th>
+                                                                        <th>Estado</th>
+                                                                        <th>Fecha cese</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach ($list_revision as $list)
+                                                                        <tr class="text-center">
+                                                                            <td>{{ $list->centro_labores }}</td>
+                                                                            <td>{{ $list->num_doc }}</td>
+                                                                            <td class="text-left">{{ $list->usuario_apater }}</td>
+                                                                            <td class="text-left">{{ $list->usuario_amater }}</td>
+                                                                            <td class="text-left">{{ $list->usuario_nombres }}</td>
+                                                                            <td>{{ $list->nom_estado }}</td>
+                                                                            <td>{{ $list->fecha_cese }}</td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            @endif
+
                             <div class="col-md-12 layout-spacing">
                                 <form id="formulario_vs" method="POST" enctype="multipart/form-data" class="section general-info">
                                     @method('PUT')
@@ -130,6 +182,31 @@
             Evaluacion_Jefe_Directo();
             Verificacion_Social();
             Resultado_Final();
+
+            $('#tabla_js').DataTable({
+                "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
+                "<'table-responsive'tr>" +
+                "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                responsive: true,
+                order: [[0,"desc"]],
+                "oLanguage": {
+                    "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                    "sInfo": "Mostrando página _PAGE_ de _PAGES_",
+                    "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                    "sSearchPlaceholder": "Buscar...",
+                    "sLengthMenu": "Resultados :  _MENU_",
+                    "sEmptyTable": "No hay datos disponibles en la tabla",
+                },
+                "stripeClasses": [],
+                "lengthMenu": [10, 20, 50],
+                "pageLength": 10,
+                "aoColumnDefs" : [ 
+                    {
+                        'targets' : [ 0 ],
+                        'visible' : false
+                    } 
+                ]
+            });
         });
 
         function Datos_Personales(){

@@ -1091,11 +1091,6 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::post('postulante_tod/list', 'list_tod')->name('postulante_tod.list');
     Route::put('postulante_tod/{id}', 'update_tod')->name('postulante_tod.update');
     Route::get('postulante_tod/{estado}/{id_area}/excel', 'excel_tod')->name('postulante_tod.excel');
-    //REVISIÓN
-    Route::get('postulante_revision', 'index_prev')->name('postulante_revision');
-    Route::post('postulante_revision/list', 'list_prev')->name('postulante_revision.list');
-    Route::get('postulante_revision/{id}/edit', 'edit_prev')->name('postulante_revision.edit');
-    Route::put('postulante_revision/{id}', 'update_prev')->name('postulante_revision.update');
 });
 //ÁREA LOGÍSTICA
 Route::controller(LogisticaInicioController::class)->group(function () {
