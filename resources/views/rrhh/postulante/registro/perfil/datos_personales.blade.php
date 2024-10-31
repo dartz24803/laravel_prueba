@@ -2,7 +2,7 @@
 <script src="{{ asset('template/assets/js/users/account-settings.js') }}"></script>
 
 <div class="col-lg-2 col-md-4 d-lg-block d-flex justify-content-center">
-    <div class="upload mt-4 pr-md-4">
+    <div class="upload mt-4 pr-md-4 text-center">
         <input type="file" class="dropify" id="foto" name="foto"
         data-default-file="@php if($get_id->foto!=""){ echo $get_id->foto; }else{ echo asset('template/assets/img/200x200.jpg'); } @endphp" onchange="Valida_Foto('foto');">
         <p class="mt-2"><i class="flaticon-cloud-upload mr-1"></i> Actualizar imagen</p>
@@ -105,7 +105,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-xl-2 col-lg-3">
+            <div class="col-lg-3">
                 <div class="form-group">
                     <label for="fullName">Fecha de nacimiento</label>
                     <input type="date" class="form-control" 
@@ -113,15 +113,15 @@
                     value="{{ $get_id->fec_nac }}" onblur="Traer_Edad();">
                 </div>
             </div>
-            <div class="col-xl-1 d-xl-block d-none">
+        </div>
+        <div class="row">
+            <div class="col-lg-2">
                 <div class="form-group">
                     <label for="fullName">Edad</label>
                     <input type="text" class="form-control" id="edad" value="{{ $get_id->edad }}" readonly>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="form-group">
                     <label for="emailp">Correo electrónico</label>
                     <input type="text" class="form-control" 
