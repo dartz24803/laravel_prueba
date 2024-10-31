@@ -8,6 +8,7 @@
 <table id="tabla_js" class="table table-hover" style="width:100%">
     <thead>
         <tr>
+            <th>Código</th>
             <th>F.de Registro</th>
             <th>Sede Laboral</th>
             <th>Usuario de Registro</th>
@@ -19,6 +20,7 @@
     <tbody>
         @foreach ($list_tickets_soporte as $list)
         <tr>
+            <td>{{ $list->codigo }}</td>
             <td>{{ \Carbon\Carbon::parse($list->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
             <td>{{ $list->base }}</td>
             <td>{{ $list->usuario_nombre }}</td>

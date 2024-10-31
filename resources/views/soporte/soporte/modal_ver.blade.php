@@ -194,13 +194,21 @@
                                 <label class="control-label text-bold">Descripción:</label>
                             </div>
                             <div class="form-group col-md-10 mb-0">
-                                <span class="form-control border-0" style="max-width: 380px; word-wrap: break-word;">
-                                    {{ $get_id->descripcion }}
-                                </span>
+                                <div id="descripcionContainer" style="max-width: 580px; word-wrap: break-word; overflow: hidden; max-height: 50px; transition: max-height 0.5s ease;">
+                                    <span id="descripcionText" class="form-control border-0" style="display: inline-block;">
+                                        {{ $get_id->descripcion }}
+                                    </span>
+                                </div>
+                                @if (strlen($get_id->descripcion) > 140)
+                                <button id="verMasBtn" type="button" class="btn btn-link p-0" style="font-size: 14px; margin-top: 5px;" onclick="toggleDescripcion(event)">
+                                    Ver más
+                                </button>
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
+
 
                 <div class="row" id="cancel-row">
                     <div class="d-flex justify-content-center" style="max-width: 100%;" id="div_imagenesver">
@@ -394,7 +402,7 @@
                                 <div class="form-group col-md-10">
                                     <p><strong>Fecha:</strong> {{ $comentario->fec_comentario }}</p>
                                     <p><strong>Responsable:</strong> {{ $comentario->nombre_responsable_solucion ?: 'No designado' }}</p>
-                                    <p style="max-width: 380px; word-wrap: break-word;" strong>Comentario:</strong> {{ $comentario->comentario ?: 'No hay comentario' }}</p>
+                                    <p style="max-width: 580px; word-wrap: break-word;" strong>Comentario:</strong> {{ $comentario->comentario ?: 'No hay comentario' }}</p>
 
                                 </div>
                             </div>
@@ -511,38 +519,51 @@
             rucField.style.display = 'none';
         }
     }
+    let expanded = false; // Cambiado a false para que inicialmente no esté expandido
+
+    function toggleDescripcion(event) {
+        event.preventDefault(); // Previene el envío del formulario
+        const container = document.getElementById('descripcionContainer');
+        const descriptionText = document.getElementById('descripcionText');
+
+        // Cambiar el texto del botón según el estado
+        if (!expanded) {
+            container.style.maxHeight = '500px'; // Ajusta el valor según el contenido esperado
+            expanded = true;
+            document.getElementById('verMasBtn').innerText = 'Ver menos';
+        } else {
+            container.style.maxHeight = '50px'; // Ajusta este valor para limitar la altura inicial
+            expanded = false;
+            document.getElementById('verMasBtn').innerText = 'Ver más';
+        }
+    }
 
     // Llamada a la función cuando el DOM está listo
     $(document).ready(function() {
-
         toggleCierre();
         toggleEjecutor();
         toggleCierreMultiplesResponsables();
 
+        // Aquí no llames a toggleDescripcion() directamente
         var idResponsableLabel = document.getElementById('id_responsableever-label');
         var idResponsableField = document.getElementById('id_responsableever-field');
         var estadoContainer = document.getElementById('estado-containerver-field');
         var estadoLabel = document.getElementById('estado-containerver-label');
-
         var areaInvolucrada = document.getElementById('area-involucradaver');
+
         if (!ejecutoresMultiples) {
             idResponsableLabel.style.display = 'block';
             idResponsableField.style.display = 'block';
             estadoContainer.style.display = 'block';
             estadoLabel.style.display = 'block';
             areaInvolucrada.style.display = 'none';
-
         } else {
             idResponsableLabel.style.display = 'none';
             idResponsableField.style.display = 'none';
             estadoContainer.style.display = 'none';
             estadoLabel.style.display = 'none';
             areaInvolucrada.style.display = 'block';
-
-
         }
-
-
     });
 
     function abrirEnNuevaPestana(event, url) {

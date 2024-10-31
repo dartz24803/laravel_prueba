@@ -193,7 +193,6 @@
             <div class="form-group col-lg-10" id="asunto-container">
                 <select class="form-control" id="asunto" name="asunto">
                     <option value="0">Seleccione</option>
-                    <option value="9">Otros</option>
 
                 </select>
             </div>

@@ -99,7 +99,7 @@ class SoporteController extends Controller
             } elseif ($ticket->estado_registro_sr == 4 || $ticket->estado_registro == 4) {
                 $ticket->status_standby = true;
             } elseif ($ticket->estado_registro_sr == 5 || $ticket->estado_registro == 5) {
-                $ticket->status_standby = true;
+                $ticket->status_cancelado = true;
             } else {
                 $ticket->status_enproceso = true;
             }
@@ -458,9 +458,10 @@ class SoporteController extends Controller
         $request->validate($rules, $messages);
 
         // dd($request->all());
+        $idSede = SedeLaboral::obtenerIdSede();
 
         Soporte::findOrFail($id)->update([
-            'id_sede' =>  $request->sedee,
+            'id_sede' =>  $idSede,
             'idsoporte_nivel' =>  $request->idsoporte_nivele,
             'idsoporte_area_especifica' => $request->idsoporte_area_especificae,
             'fec_vencimiento' =>  $request->fec_vencimiento,
