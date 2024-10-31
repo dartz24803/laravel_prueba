@@ -91,18 +91,10 @@
             <div class="col-lg-12">
                 <div class="row">
                     <div class="form-group col-lg-2">
-                        <label class="control-label text-bold">Ubicación:</label>
-                    </div>
-                    <div class="form-group col-lg-4">
-                        <select class="form-control" id="sede" name="sede">
-                            <option value="0">Seleccione</option>
-                            @foreach ($list_sede as $sede)
-                            <option value="{{ $sede->id }}">{{ $sede->descripcion }}</option>
-                            @endforeach
-                        </select>
+                        <label class="control-label text-bold">Nivel:</label>
                     </div>
 
-                    <div class="form-group col-lg-6" id="sublist-container">
+                    <div class="form-group col-lg-10" id="sublist-container">
                         <select class="form-control" id="idsoporte_nivel" name="idsoporte_nivel">
                             <option value="0">Seleccione </option>
                         </select>
@@ -241,6 +233,45 @@
 </form>
 
 <script>
+    $(document).ready(function() {
+
+        obtenerSoporteNivelPorSede(); // Llamada inicial cuando se carga el HTML
+        // Inicializar el evento change para el select con ID 'idsoporte_nivel'
+
+        // Llama a esta función cuando abras el modal o cargues la página
+        initializeEspecialidadAndSede();
+
+
+    });
+
+    function obtenerSoporteNivelPorSede() {
+        var url = "{{ route('soporte_nivel_por_sede') }}";
+        $.ajax({
+            url: url,
+            method: 'GET',
+            success: function(response) {
+                $('#idsoporte_nivel').empty().append(
+                    '<option value="0">Seleccione</option>'
+                );
+
+                // Verificar si hay respuestas
+                if (response.length > 0) {
+                    $.each(response, function(index, sede) {
+                        $('#idsoporte_nivel').append(
+                            `<option value="${sede.idsoporte_nivel}">${sede.nombre}</option>`
+                        );
+                    });
+                    $('#sublist-container').show(); // Mostrar el contenedor de idsoporte_nivel
+                } else {
+                    $('#sublist-container').hide(); // Ocultar si no hay ubicaciones
+                }
+            },
+            error: function(xhr) {
+                console.error('Error al obtener ubicaciones:', xhr);
+            }
+        });
+    }
+
     var subUbicacionCont = document.getElementById('sububicacion-container');
 
     function initializeEspecialidadAndSede() {
@@ -252,31 +283,33 @@
         var asuntoSelect = document.getElementById('asunto');
         var areaRow = document.getElementById('area-row');
         var elementoContainer = document.getElementById('elemento-container');
-        var asuntoContainer = document.getElementById('asunto-container');
         var areaElementoRow = document.getElementById('elemento-area');
+        var asuntoContainer = document.getElementById('asunto-container');
 
-        // Función manejadora para "especialidad"
-        function handleEspecialidadChange() {
-            if (especialidadSelect.value === '4') {
-                elementoContainer.style.display = 'none';
-                elementCont.style.display = 'none';
-                asuntoCont.style.display = 'none';
-                asuntoContainer.style.display = 'none';
-                areaRow.style.display = 'block';
-                areaElementoRow.style.display = 'block';
-            } else {
-                elementoContainer.style.display = 'block';
-                elementCont.style.display = 'block';
-                asuntoCont.style.display = 'block';
-                asuntoContainer.style.display = 'block';
-                areaRow.style.display = 'none';
-                areaElementoRow.style.display = 'none';
+        // Verificar si especialidadSelect existe
+        if (especialidadSelect) {
+            function handleEspecialidadChange() {
+                if (especialidadSelect.value === '4') {
+                    elementoContainer.style.display = 'none';
+                    elementCont.style.display = 'none';
+                    asuntoCont.style.display = 'none';
+                    asuntoContainer.style.display = 'none';
+                    areaRow.style.display = 'block';
+                    areaElementoRow.style.display = 'block';
+                } else {
+                    elementoContainer.style.display = 'block';
+                    elementCont.style.display = 'block';
+                    asuntoCont.style.display = 'block';
+                    asuntoContainer.style.display = 'block';
+                    areaRow.style.display = 'none';
+                    areaElementoRow.style.display = 'none';
+                }
             }
-        }
 
-        // Elimina cualquier evento anterior antes de agregar uno nuevo
-        especialidadSelect.removeEventListener('change', handleEspecialidadChange);
-        especialidadSelect.addEventListener('change', handleEspecialidadChange);
+            // Elimina cualquier evento anterior antes de agregar uno nuevo
+            especialidadSelect.removeEventListener('change', handleEspecialidadChange);
+            especialidadSelect.addEventListener('change', handleEspecialidadChange);
+        }
 
         // Variables para el manejo de "sede"
         var sedeSelect = document.getElementById('sede');
@@ -285,66 +318,36 @@
         var sublistContainer = document.getElementById('sublist-container');
         var thirdContainer = document.getElementById('thirdlist-container');
 
-        // Función manejadora para "sede"
-        function handleSedeChange() {
-            if (sedeSelect.value === '0') {
-                subSedeSelect.style.display = 'none';
-                thirdSedeSelect.style.display = 'none';
-                sublistContainer.style.display = 'none';
-                thirdContainer.style.display = 'none';
-            } else {
-                subSedeSelect.style.display = 'block';
-                thirdSedeSelect.style.display = 'block';
-                sublistContainer.style.display = 'block';
-                thirdContainer.style.display = 'block';
+        // Verificar si sedeSelect existe
+        if (sedeSelect) {
+            function handleSedeChange() {
+                if (sedeSelect.value === '0') {
+                    subSedeSelect.style.display = 'none';
+                    thirdSedeSelect.style.display = 'none';
+                    sublistContainer.style.display = 'none';
+                    thirdContainer.style.display = 'none';
+                } else {
+                    subSedeSelect.style.display = 'block';
+                    thirdSedeSelect.style.display = 'block';
+                    sublistContainer.style.display = 'block';
+                    thirdContainer.style.display = 'block';
+                }
             }
-        }
 
-        // Elimina cualquier evento anterior antes de agregar uno nuevo
-        sedeSelect.removeEventListener('change', handleSedeChange);
-        sedeSelect.addEventListener('change', handleSedeChange);
+            // Elimina cualquier evento anterior antes de agregar uno nuevo
+            sedeSelect.removeEventListener('change', handleSedeChange);
+            sedeSelect.addEventListener('change', handleSedeChange);
+        }
     }
 
-    // Llama a esta función cuando abras el modal o cargues la página
-    initializeEspecialidadAndSede();
 
 
 
-    $('#sede').on('change', function() {
-        const selectedSede = $(this).val(); // Obtenemos el valor de la sede seleccionada
-        var url = "{{ route('soporte_nivel_por_sede') }}";
-        $.ajax({
-            url: url,
-            method: 'GET',
-            data: {
-                sedes: selectedSede
-            },
-            success: function(response) {
-                $('#idsoporte_nivel').empty().append(
-                    '<option value="0">Seleccione </option>');
-                // Verificar si hay respuestas
-                if (response.length > 0) {
-                    $.each(response, function(index, sede) {
-                        $('#idsoporte_nivel').append(
-                            `<option value="${sede.idsoporte_nivel}">${sede.nombre}</option>`
-                        );
-                    });
-                    $('#sublist-container').show(); // Mostrar el contenedor de idsoporte_nivel
-
-                } else {
-                    $('#sublist-container').hide(); // Ocultar si no hay ubicaciones
-
-                }
-            },
-            error: function(xhr) {
-                console.error('Error al obtener ubicaciones:', xhr);
-            }
-        });
-    });
 
     $('#idsoporte_nivel').on('change', function() {
         const selectedubicacion1 = $(this).val();
         var url = "{{ route('soporte_areaespecifica_por_nivel') }}";
+
         $.ajax({
             url: url,
             method: 'GET',
@@ -353,33 +356,31 @@
             },
             success: function(response) {
                 $('#idsoporte_area_especifica').empty().append(
-                    '<option value="0">Seleccione Área Esp.</option>');
+                    '<option value="0">Seleccione Área Esp.</option>'
+                );
+
                 // Verificar si hay respuestas
                 if (response.length > 0) {
-                    $('#idsoporte_area_especifica').empty().append(
-                        '<option value="0">Seleccione Área Esp.</option>');
                     $.each(response, function(index, ubicacion) {
                         $('#idsoporte_area_especifica').append(
                             `<option value="${ubicacion.idsoporte_area_especifica}">${ubicacion.nombre}</option>`
                         );
                     });
                     $('#thirdlist-container').css('visibility', 'visible');
-                    subUbicacionCont.style.display = 'block';
+                    $('#sububicacion-container').show();
                     $('#hasOptionsField').val('1');
                 } else {
                     $('#thirdlist-container').css('visibility', 'hidden');
-                    subUbicacionCont.style.display = 'none';
+                    $('#sububicacion-container').hide();
                     $('#hasOptionsField').val('0');
-
-
                 }
-
             },
             error: function(xhr) {
                 console.error('Error al obtener ubicaciones:', xhr);
             }
         });
     });
+
 
     $('#especialidad').on('change', function() {
         const selectedEspecialidad = $(this).val();

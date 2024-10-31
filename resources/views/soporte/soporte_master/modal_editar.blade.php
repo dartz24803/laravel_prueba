@@ -65,25 +65,15 @@
                             </div>
                             <div class="form-group col-md-4" id="estado-container">
                                 @if ( $get_id->estado_registro != 3)
-                                <!-- Mostrar el select si coinciden y el estado no es "Completado" -->
                                 <select class="form-control" id="estado_registroe" name="estado_registroe">
-
-                                    <option value="2" {{ $get_id->estado_registro == 2 ? 'selected' : '' }}>En
-                                        Proceso</option>
-                                    <option value="3" {{ $get_id->estado_registro == 3 ? 'selected' : '' }}>
-                                        Completado</option>
-                                    <option value="4" {{ $get_id->estado_registro == 4 ? 'selected' : '' }}>Stand
-                                        By</option>
+                                    <option value="2" {{ $get_id->estado_registro == 2 ? 'selected' : '' }}>En Proceso</option>
+                                    <option value="3" {{ $get_id->estado_registro == 3 ? 'selected' : '' }}>Completado</option>
+                                    <option value="4" {{ $get_id->estado_registro == 4 ? 'selected' : '' }}>Stand By</option>
                                 </select>
                                 @else
-                                <p style="font-size: 18px;">
-                                    Completado
-                                </p>
+                                <p style="font-size: 18px;">Completado</p>
                                 @endif
-
                             </div>
-
-                            <!-- Campos Cierre, inicialmente ocultos -->
                             <div class="form-group col-md-2" id="cierre-label">
                                 <label class="control-label text-bold">Cierre:</label>
                             </div>
@@ -256,7 +246,7 @@
 
                                         <div class="form-group col-md-4" id="estado-container-{{ $index + 1 }}">
                                             @if ($id_subgerencia == $area_involucrada['id_departamento'])
-                                            <!-- Mostrar el select si coinciden -->
+                                            @if ($area_involucrada['estado_registro'] != 3)
                                             <select class="form-control" id="estado_registroe_{{ $index }}" name="estado_registroe_{{ $index }}">
                                                 <option value="1" {{ $area_involucrada['estado_registro'] == 1 ? 'selected' : '' }}>Por Iniciar</option>
                                                 <option value="2" {{ $area_involucrada['estado_registro'] == 2 ? 'selected' : '' }}>En Proceso</option>
@@ -264,48 +254,51 @@
                                                 <option value="4" {{ $area_involucrada['estado_registro'] == 4 ? 'selected' : '' }}>Stand By</option>
                                             </select>
                                             @else
-                                            <!-- Mostrar el estado como texto sin select si no coinciden -->
+                                            <p>Completado</p>
+                                            @endif
+                                            @else
                                             <p>
-                                                @switch($area_involucrada['estado_registro'])
-                                                @case(1)
-                                                Por Iniciar
-                                                @break
-                                                @case(2)
-                                                En Proceso
-                                                @break
-                                                @case(3)
+                                                @if ($area_involucrada['estado_registro'] == 3)
                                                 Completado
-                                                @break
-                                                @case(4)
+                                                @elseif ($area_involucrada['estado_registro'] == 1)
+                                                Por Iniciar
+                                                @elseif ($area_involucrada['estado_registro'] == 2)
+                                                En Proceso
+                                                @elseif ($area_involucrada['estado_registro'] == 4)
                                                 Stand By
-                                                @break
-                                                @default
+                                                @else
                                                 Desconocido
-                                                @endswitch
+                                                @endif
                                             </p>
                                             @endif
                                         </div>
 
-                                        <!-- Campos Cierre, inicialmente ocultos -->
+                                        <!-- Campos Cierre, mostrando texto o campo de entrada -->
                                         @if ($id_subgerencia == $area_involucrada['id_departamento'])
                                         <div class="form-group col-md-2" id="cierre-label-{{ $index + 1 }}">
                                             <label class="control-label text-bold">Cierre:</label>
                                         </div>
                                         <div class="form-group col-md-4" id="cierre-field-{{ $index + 1 }}">
+                                            @if ($area_involucrada['estado_registro'] != 3)
                                             <input type="date" class="form-control" id="fec_cierree_{{ $index }}" name="fec_cierree_{{ $index }}"
                                                 value="{{ $area_involucrada['fec_cierre'] ? \Carbon\Carbon::parse($area_involucrada['fec_cierre'])->format('Y-m-d') : \Carbon\Carbon::now()->format('Y-m-d') }}">
+                                            @else
+                                            <span class="form-control border-0">{{ \Carbon\Carbon::parse($area_involucrada['fec_cierre'])->locale('es')->translatedFormat('D d M y') }}</span>
+                                            @endif
                                         </div>
                                         @else
                                         <div class="form-group col-md-2">
                                             <label class="control-label text-bold">Cierre:</label>
                                         </div>
                                         <div class="form-group col-md-4">
-                                            <p>{{ $area_involucrada['fec_cierre'] ? \Carbon\Carbon::parse($area_involucrada['fec_cierre'])->format('d-m-Y') : 'No especificado' }}</p>
+                                            <p>{{ $area_involucrada['fec_cierre'] ? \Carbon\Carbon::parse($area_involucrada['fec_cierre'])->locale('es')->translatedFormat('D d M y') : 'No especificado' }}</p>
                                         </div>
                                         @endif
                                     </div>
                                 </div>
                             </div>
+
+
                             @endforeach
                         </div>
 
@@ -437,69 +430,79 @@
 <script type="text/javascript">
     var ejecutoresMultiples = @json($ejecutoresMultiples);
     $(document).ready(function() {
+
         toggleCierreMultiplesResponsables();
         toggleEjecutor();
         toggleCierreUnResponsable();
 
-        $('#estado_registroe').on('change', function() {
-            toggleCierreUnResponsable();
-        });
-        $('#estado_registroe_0').on('change', function() {
-            toggleCierreMultiplesResponsables();
-        });
-        $('#estado_registroe_1').on('change', function() {
-            toggleCierreMultiplesResponsables();
-        });
-
-        $('#ejecutor_responsable').on('change', function() {
-            toggleEjecutor();
-        });
-        var idResponsableLabel = document.getElementById('id_responsablee-label');
-        var idResponsableField = document.getElementById('id_responsablee-field');
-        var estadoContainer = document.getElementById('estado-container');
-        var estadoLabel = document.getElementById('estado-registro-label');
-        var areaInvolucrada = document.getElementById('area-involucrada');
 
 
-        if (!ejecutoresMultiples) {
-            idResponsableLabel.style.display = 'block';
-            idResponsableField.style.display = 'block';
-            estadoContainer.style.display = 'block';
-            estadoLabel.style.display = 'block';
-            areaInvolucrada.style.display = 'none';
-
-        } else {
-            idResponsableLabel.style.display = 'none';
-            idResponsableField.style.display = 'none';
-            estadoContainer.style.display = 'none';
-            estadoLabel.style.display = 'none';
-            areaInvolucrada.style.display = 'block';
-
-
-        }
+    });
+    $('#estado_registroe').on('change', function() {
+        toggleCierreUnResponsable();
+    });
+    $('#estado_registroe_0').on('change', function() {
+        toggleCierreMultiplesResponsables();
+    });
+    $('#estado_registroe_1').on('change', function() {
+        toggleCierreMultiplesResponsables();
     });
 
+    $('#ejecutor_responsable').on('change', function() {
+        toggleEjecutor();
+    });
+    var idResponsableLabel = document.getElementById('id_responsablee-label');
+    var idResponsableField = document.getElementById('id_responsablee-field');
+    var estadoContainer = document.getElementById('estado-container');
+    var estadoLabel = document.getElementById('estado-registro-label');
+    var areaInvolucrada = document.getElementById('area-involucrada');
+    var cierreLabelT = document.getElementById('cierre-label');
+    var cierreFieldT = document.getElementById('cierre-field');
+
+    if (!ejecutoresMultiples) {
+        idResponsableLabel.style.display = 'block';
+        idResponsableField.style.display = 'block';
+        estadoContainer.style.display = 'block';
+        estadoLabel.style.display = 'block';
+        cierreLabelT.style.display = 'block';
+        cierreFieldT.style.display = 'block';
+        areaInvolucrada.style.display = 'none';
+
+    } else {
+        idResponsableLabel.style.display = 'none';
+        idResponsableField.style.display = 'none';
+        estadoContainer.style.display = 'none';
+        estadoLabel.style.display = 'none';
+        cierreLabelT.style.display = 'none';
+        cierreFieldT.style.display = 'none';
+        areaInvolucrada.style.display = 'block';
+
+
+    }
+
     function toggleCierreUnResponsable() {
-        var estado = document.getElementById('estado_registroe').value;
+        var estadoElement = document.getElementById('estado_registroe');
+        var estadoContainer = document.getElementById('estado-container');
         var cierreLabel = document.getElementById('cierre-label');
         var cierreField = document.getElementById('cierre-field');
-        var estadoContainer = document.getElementById('estado-container');
 
-
-        if (estado == 3 || estado == 4) {
-            // Mostrar los campos de Cierre
-            cierreLabel.style.display = 'block';
-            cierreField.style.display = 'block';
-            estadoContainer.classList.remove('col-md-10');
-            estadoContainer.classList.add('col-md-4');
-        } else {
-            // Ocultar los campos de Cierre
-            cierreLabel.style.display = 'none';
-            cierreField.style.display = 'none';
-            estadoContainer.classList.remove('col-md-4');
-            estadoContainer.classList.add('col-md-10');
+        // Verificar que el elemento de estado exista
+        if (!estadoElement) {
+            console.error('El elemento estado_registroe no se encontró en el DOM.');
+            return; // Salir de la función si el elemento no existe
         }
+
+        var estado = estadoElement.value;
+
+        // Mostrar u ocultar los campos de cierre basado en el estado
+        var mostrarCamposCierre = (estado == 3 || estado == 4) && !ejecutoresMultiples;
+
+        cierreLabel.style.display = mostrarCamposCierre ? 'block' : 'none';
+        cierreField.style.display = mostrarCamposCierre ? 'block' : 'none';
+        estadoContainer.classList.toggle('col-md-4', mostrarCamposCierre);
+        estadoContainer.classList.toggle('col-md-10', !mostrarCamposCierre);
     }
+
 
     function toggleCierreMultiplesResponsables() {
         const estadoElements = document.querySelectorAll('[id^="estado_registroe_"]');

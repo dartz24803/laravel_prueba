@@ -33,7 +33,7 @@
                                             <div class="col-lg-11 mx-auto">
                                                 <div class="row">
                                                     <div class="col-lg-2 col-md-4 d-lg-block d-flex justify-content-center">
-                                                        <div class="upload mt-4 pr-md-4">
+                                                        <div class="upload mt-4 pr-md-4 text-center">
                                                             <input type="file" id="foto" name="foto" class="dropify" data-default-file="{{ asset('template/assets/img/200x200.jpg') }}" onchange="Valida_Archivo('foto');">
                                                             <p class="mt-2">Actualizar imagen</p>
                                                         </div>
@@ -131,22 +131,22 @@
                                                                         </select>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-xl-2 col-lg-3">
+                                                                <div class="col-lg-3">
                                                                     <div class="form-group">
                                                                         <label for="fec_nac">F. de nacimiento</label>
                                                                         <input type="date" class="form-control" 
                                                                         id="fec_nac" name="fec_nac" onblur="Traer_Edad();">
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-xl-1 d-xl-block d-none">
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-2">
                                                                     <div class="form-group">
                                                                         <label for="edad">Edad</label>
                                                                         <input type="text" id="edad" class="form-control" readonly>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-lg-6">
+                                                                <div class="col-lg-4">
                                                                     <div class="form-group">
                                                                         <label for="emailp">Correo electrónico</label>
                                                                         <input type="text" class="form-control" 

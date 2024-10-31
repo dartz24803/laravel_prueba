@@ -20,6 +20,7 @@ class AsuntoSoporte extends Model
         'nombre',
         'descripcion',
         'id_area',
+        'responsable_multiple',
         'idsoporte_elemento',
         'idsoporte_tipo',
         'estado',

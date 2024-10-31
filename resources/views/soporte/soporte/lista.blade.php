@@ -30,25 +30,25 @@
                     <div
                         style="display: inline-block; 
             background-color: 
-            {{ ($list->estado_registro == 1 && $list->estado_registro_sr == 1 || $list->estado_registro_sr == null)
+            {{ ( $list->status_poriniciar == true )
                 ? '#f5996d'
-                : ( ($list->estado_registro == 2 || $list->estado_registro_sr == 2 )
+                : (( $list->status_enproceso == true)
                     ? '#b0f02b'
-                    : ( ($list->estado_registro == 3 && $list->estado_registro_sr == 3)
+                    : ( $list->status_completado == true
                         ? '#3af1be'
-                        : (($list->estado_registro == 4 || $list->estado_registro_sr == 4)
+                        : ($list->status_standby == true
                             ? '#f3b952'
                             : '#9edef8'))) }};
             border-radius: 14px; padding: 1px; width: 80px; color: white; text-align: center; margin-right: 10px;">
-                        @if ($list->estado_registro == 1 && $list->estado_registro_sr == 1 || $list->estado_registro_sr == null)
+                        @if ( $list->status_poriniciar == true )
                         Por Iniciar
-                        @elseif ($list->estado_registro == 2 || $list->estado_registro_sr == 2 )
+                        @elseif ( $list->status_enproceso == true )
                         En Proceso
-                        @elseif ($list->estado_registro == 3 && $list->estado_registro_sr == 3)
+                        @elseif ( $list->status_completado == true )
                         Completado
-                        @elseif ($list->estado_registro == 4 || $list->estado_registro_sr == 4)
+                        @elseif ($list->status_standby == true)
                         Stand By
-                        @elseif ($list->estado_registro == 5 || $list->estado_registro_sr == 5)
+                        @elseif ($list->status_cancelado == true)
                         Cancelado
                         @endif
                     </div>

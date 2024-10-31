@@ -539,10 +539,22 @@ class PostulanteController extends Controller
         //MÓDULO
         $get_id = Postulante::from('postulante AS po')->select('po.*',DB::raw('TIMESTAMPDIFF(YEAR, po.fec_nac, CURDATE()) AS edad'))
                 ->where('id_postulante',$id)->first();
+        $get_base = Base::select('id_departamento')->where('id_ubicacion',$get_id->id_centro_labor)
+                    ->first();
+        if(isset($get_base->id_departamento)){
+            $list_revision = Usuario::get_list_familiar_postulante([
+                'id_departamento' => $get_base->id_departamento,
+                'postulante_apater' => $get_id->postulante_apater,
+                'postulante_amater' => $get_id->postulante_amater
+            ]);
+        }else{
+            $list_revision = [];
+        }
         return view('rrhh.postulante.registro.perfil.index', compact(
             'list_notificacion',
             'list_subgerencia',
-            'get_id'
+            'get_id',
+            'list_revision'
         ));
     }
 
@@ -657,7 +669,20 @@ class PostulanteController extends Controller
         ]);
     }
 
-    public function domicilio_reg($id)
+    public function domicilio_titulo_reg($id)
+    {
+        $get_domicilio = DomicilioUsersP::from('domicilio_usersp AS do')
+                        ->select('do.id_domicilio_usersp','pr.id_departamento',
+                        'di.id_provincia','do.id_distrito','do.lat','do.lng')
+                        ->join('distrito AS di','di.id_distrito','=','do.id_distrito')
+                        ->join('provincia AS pr','pr.id_provincia','=','di.id_provincia')
+                        ->where('id_postulante',$id)->orderBy('id_domicilio_usersp','DESC')->first();
+        return view('rrhh.postulante.registro.perfil.domicilio_titulo', compact(
+            'get_domicilio'
+        ));
+    }
+
+    public function domicilio_contenido_reg($id)
     {
         $get_domicilio = DomicilioUsersP::from('domicilio_usersp AS do')
                         ->select('do.id_domicilio_usersp','pr.id_departamento',
@@ -676,7 +701,7 @@ class PostulanteController extends Controller
             $list_provincia = [];
             $list_distrito = [];
         }
-        return view('rrhh.postulante.registro.perfil.domicilio', compact(
+        return view('rrhh.postulante.registro.perfil.domicilio_contenido', compact(
             'get_domicilio',
             'list_departamento',
             'list_provincia',
@@ -715,8 +740,13 @@ class PostulanteController extends Controller
         $get_id = Postulante::from('postulante AS po')->select('pu.id_area','po.estado_postulacion')
                 ->join('puesto AS pu','pu.id_puesto','=','po.id_puesto')
                 ->where('id_postulante',$id)->first();
-        $get_eval_rrhh = EvalRrhhPostulante::where('id_postulante',$id)
-                        ->orderBy('id_eval_rrhh_postulante','DESC')->first();
+        $get_eval_rrhh = EvalRrhhPostulante::from('eval_rrhh_postulante AS er')->select('er.*',
+                        DB::raw("CASE WHEN SUBSTRING(er.eval_sicologica,1,5)='https' 
+                        THEN er.eval_sicologica 
+                        ELSE CONCAT('https://grupolanumero1.com.pe/intranet/',er.eval_sicologica) END AS 
+                        eval_sicologica"))
+                        ->where('er.id_postulante',$id)
+                        ->orderBy('er.id_eval_rrhh_postulante','DESC')->first();
         return view('rrhh.postulante.registro.perfil.evaluacion_rrhh', compact(
             'get_id',
             'get_eval_rrhh'
@@ -874,8 +904,13 @@ class PostulanteController extends Controller
         $get_id = Postulante::from('postulante AS po')->select('pu.id_area','po.estado_postulacion')
                 ->join('puesto AS pu','pu.id_puesto','=','po.id_puesto')
                 ->where('id_postulante',$id)->first();
-        $get_eval_jd = EvalJefeDirecto::where('id_postulante',$id)
-                        ->orderBy('id_eval_jefe_directo','DESC')->first();
+        $get_eval_jd = EvalJefeDirecto::from('eval_jefe_directo AS ej')->select('ej.*',
+                        DB::raw("CASE WHEN SUBSTRING(ej.eval_sicologica,1,5)='https' 
+                        THEN ej.eval_sicologica 
+                        ELSE CONCAT('https://grupolanumero1.com.pe/intranet/',ej.eval_sicologica) END AS 
+                        eval_sicologica"))
+                        ->where('ej.id_postulante',$id)
+                        ->orderBy('ej.id_eval_jefe_directo','DESC')->first();
         return view('rrhh.postulante.registro.perfil.evaluacion_jefe_directo', compact(
             'get_id',
             'get_eval_jd'
@@ -1044,8 +1079,11 @@ class PostulanteController extends Controller
     public function verificacion_social_reg($id)
     {
         $get_id = Postulante::findOrFail($id);
-        $get_vs = VerificacionSocial::where('id_postulante',$id)
-                        ->orderBy('id_ver_social','DESC')->first();
+        $get_vs = VerificacionSocial::from('verificacion_social AS vs')->select('vs.*',
+                DB::raw("CASE WHEN SUBSTRING(vs.ver_social,1,5)='https' 
+                THEN vs.ver_social ELSE 
+                CONCAT('https://grupolanumero1.com.pe/intranet/',vs.ver_social) END AS ver_social"))
+                ->where('vs.id_postulante',$id)->orderBy('vs.id_ver_social','DESC')->first();
         return view('rrhh.postulante.registro.perfil.verificacion_social', compact(
             'get_id',
             'get_vs'
@@ -1502,82 +1540,5 @@ class PostulanteController extends Controller
         header('Cache-Control: max-age=0');
 
         $writer->save('php://output');
-    }
-
-    public function index_prev()
-    {
-        return view('rrhh.postulante.revision.index');
-    }
-
-    public function list_prev(Request $request)
-    {
-        $list_revision = Postulante::select('id_postulante','centro_labores','num_doc','postulante_apater',
-                        'postulante_amater','postulante_nombres')->where('estado_postulacion',11)
-                        ->where('estado',1)->get();
-        return view('rrhh.postulante.revision.lista', compact('list_revision'));
-    }
-
-    public function edit_prev($id)
-    {
-        $get_id = Postulante::findOrFail($id);
-        $get_base = Base::where('cod_base',$get_id->centro_labores)->first();
-        $get_base = Base::select(DB::raw("GROUP_CONCAT(DISTINCT CONCAT('\'',cod_base,'\'')) AS cadena"))
-                    ->where('id_departamento',$get_base->id_departamento)->where('estado',1)->first();
-        $list_vinculo = Usuario::select('users.centro_labores','users.num_doc','users.usuario_apater',
-                        'users.usuario_amater','users.usuario_nombres','vw_estado_usuario.nom_estado_usuario',
-                        DB::raw('CASE WHEN LEFT(users.fin_funciones,1)="2" THEN DATE_FORMAT(users.fin_funciones, 
-                        "%d/%m/%Y") ELSE "" END AS fecha_cese'))
-                        ->join('vw_estado_usuario','vw_estado_usuario.id_estado_usuario','=','users.estado')
-                        ->whereRaw('users.centro_labores IN ('.$get_base->cadena.') AND (users.usuario_apater=? OR 
-                        users.usuario_amater=?) AND users.estado IN (1,3)',[$get_id->postulante_apater, $get_id->postulante_amater])
-                        ->get();
-        return view('rrhh.postulante.revision.modal_editar',compact('get_id','list_vinculo'));
-    }
-
-    public function update_prev(Request $request,$id)
-    {
-        $request->validate([
-            'resultado' => 'gt:0'
-        ],[
-            'resultado.gt' => 'Debe seleccionar resultado.'
-        ]);
-
-        echo "Siuuu";
-        /*if($tipo=="ingreso"){
-            $request->validate([
-                'cod_sedee' => 'not_in:0',
-                'h_ingresoe' => 'required'
-            ],[
-                'cod_sedee.not_in' => 'Debe seleccionar sede.',
-                'h_ingresoe.required' => 'Debe ingresar hora ingreso.'
-            ]);
-
-            SeguridadAsistencia::findOrFail($id)->update([
-                'cod_sede' => $request->cod_sedee,
-                'h_ingreso' => $request->h_ingresoe,
-                'observacion' => $request->observacione,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
-        }else{
-            $request->validate([
-                'fecha_salidae' => 'required',
-                'cod_sedese' => 'not_in:0',
-                'h_salidae' => 'required'
-            ],[
-                'fecha_salidae.required' => 'Debe ingresar fecha.',
-                'cod_sedese.not_in' => 'Debe seleccionar sede.',
-                'h_salidae.required' => 'Debe ingresar hora salida.'
-            ]);
-
-            SeguridadAsistencia::findOrFail($id)->update([
-                'fecha_salida' => $request->fecha_salidae,
-                'cod_sedes' => $request->cod_sedese,
-                'h_salida' => $request->h_salidae,
-                'observacion' => $request->observacione,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
-        }*/
     }
 }

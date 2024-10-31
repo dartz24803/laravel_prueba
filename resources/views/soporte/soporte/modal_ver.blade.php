@@ -366,21 +366,18 @@
 
 
     function toggleCierre() {
-        var estado = document.getElementById('estado_registro').innerText.trim(); // Usamos innerText o textContent
-        var cierreLabel = document.getElementById('cierre-labelver');
-        var cierreField = document.getElementById('cierre-fieldver');
-
-        if (estado === "Completado" || estado === "Stand By") {
-            cierreLabel.style.display = 'block';
-            cierreField.style.display = 'block';
-
-        } else {
-            cierreLabel.style.display = 'none';
-            cierreField.style.display = 'none';
-
+        var estadoElement = document.getElementById('estado_registro');
+        var cierreLabelver = document.getElementById('cierre-labelver');
+        var cierreFieldver = document.getElementById('cierre-fieldver');
+        if (!estadoElement) {
+            console.error('El elemento estado_registro no se encontró en el DOM.');
+            return;
         }
+        var estado = estadoElement.innerText.trim();
+        var mostrarCamposCierre = !(estado === "Completado" || estado === "Stand By") && !ejecutoresMultiples;
+        cierreLabelver.style.display = mostrarCamposCierre ? 'block' : 'none';
+        cierreFieldver.style.display = mostrarCamposCierre ? 'block' : 'none';
     }
-
 
     function toggleCierreMultiplesResponsables() {
         const estadoElements = document.querySelectorAll('[id^="estado_registroe_"]');

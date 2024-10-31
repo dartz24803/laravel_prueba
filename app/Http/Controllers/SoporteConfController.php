@@ -139,20 +139,19 @@ class SoporteConfController extends Controller
         $request->validate([
             'id_elemento' => 'gt:0',
             'tipo_soporte' => 'gt:0',
-            'nom_asunt' => 'required',
+            'nom_asunt' => 'required|max:95',
             'id_areae' => 'required|array|min:1',
-
         ], [
             'id_elemento.gt' => 'Debe seleccionar Elemento.',
             'tipo_soporte.gt' => 'Debe seleccionar Tipo de Soporte.',
-            'nom_asunt.required' => 'Debe ingresar nombre de especialidad.',
+            'nom_asunt.max' => 'Nombre debe tener como máximo 95 caracteres.',
             'id_areae.required' => 'Debe seleccionar al menos una área.',
-
         ]);
 
-
         $id_area_string = implode(',', $request->id_areae);
-        // dd($request->all());
+        // Determinar si el id_area_string tiene una coma
+        $responsable_multiple = (strpos($id_area_string, ',') !== false) ? 1 : 0;
+        // Crear el nuevo registro
         AsuntoSoporte::create([
             'id_area' => $id_area_string,
             'idsoporte_elemento' => $request->id_elemento,
@@ -163,11 +162,13 @@ class SoporteConfController extends Controller
             'fec_reg' => now(),
             'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
+            'user_act' => session('usuario')->id_usuario,
+            'responsable_multiple' => $responsable_multiple
         ]);
 
         return redirect()->back()->with('success', 'Reporte registrado con éxito.');
     }
+
 
     public function edit_asunto_conf($id)
     {
@@ -191,15 +192,17 @@ class SoporteConfController extends Controller
     public function update_asunto_conf(Request $request, $id)
     {
         $request->validate([
-            'nom_asunte' => 'required|max:60',
+            'nom_asunte' => 'required|max:95',
             'id_areaee' => 'required|array|min:1',
-
         ], [
             'id_areaee.required' => 'Debe seleccionar al menos una área.',
-            'nom_asunte.max' => 'Nombre debe tener como máximo 60 caracteres.',
+            'nom_asunte.max' => 'Nombre debe tener como máximo 95 caracteres.',
         ]);
 
         $id_area_string = implode(',', $request->id_areaee);
+
+        // Determinar si el id_area_string tiene una coma
+        $responsable_multiple = (strpos($id_area_string, ',') !== false) ? 1 : 0;
 
         AsuntoSoporte::findOrFail($id)->update([
             'id_area' => $id_area_string,
@@ -208,9 +211,13 @@ class SoporteConfController extends Controller
             'nombre' => $request->nom_asunte,
             'descripcion' => $request->descripcione ?? '',
             'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
+            'user_act' => session('usuario')->id_usuario,
+            'responsable_multiple' => $responsable_multiple // Añadir el nuevo atributo
         ]);
+
+        return redirect()->back()->with('success', 'Reporte actualizado con éxito.'); // Asegúrate de redirigir después de la actualización
     }
+
 
     public function destroy_asunto_conf($id)
     {

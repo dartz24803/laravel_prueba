@@ -73,13 +73,41 @@ class SoporteController extends Controller
         $list_subgerencia = SubGerencia::list_subgerencia(9);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
+
         return view('soporte.soporte.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
 
     public function list_tick()
     {
+
         $list_tickets_soporte = Soporte::listTicketsSoporte();
+
+
+        // VALIDACIÓN DE ESTADOS EN PROCESO Y COMPLETADO PARA CADA MODULO
+        $list_tickets_soporte = $list_tickets_soporte->map(function ($ticket) {;
+            $ticket->status_poriniciar = false;
+            $ticket->status_enproceso = false;
+            $ticket->status_completado = false;
+            $ticket->status_standby = false;
+            $ticket->status_cancelado = false;
+            $multirepsonsable = Soporte::getResponsableMultipleByAsunto($ticket->id_asunto);
+
+            if (($ticket->estado_registro_sr == 3 && $ticket->estado_registro == 3) || ($ticket->estado_registro == 3 && $multirepsonsable == 0)) {
+                $ticket->status_completado = true;
+            } elseif ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2) {
+                $ticket->status_enproceso = true;
+            } elseif ($ticket->estado_registro_sr == 1 || $ticket->estado_registro == 1) {
+                $ticket->status_poriniciar = true;
+            } elseif ($ticket->estado_registro_sr == 4 || $ticket->estado_registro == 4) {
+                $ticket->status_standby = true;
+            } elseif ($ticket->estado_registro_sr == 5 || $ticket->estado_registro == 5) {
+                $ticket->status_standby = true;
+            }
+
+            return $ticket;
+        });
+        dd($list_tickets_soporte);
         return view('soporte.soporte.lista', compact('list_tickets_soporte'));
     }
 
@@ -100,10 +128,7 @@ class SoporteController extends Controller
         $list_elemento = ElementoSoporte::select('idsoporte_elemento', 'nombre')->get();
         $list_asunto = AsuntoSoporte::select('idsoporte_asunto', 'nombre')->get();
 
-        $list_sede = SedeLaboral::select('id', 'descripcion')
-            ->where('estado', 1)
-            ->whereNotIn('id', [3, 5]) // Excluir los id EXT y REMOTO
-            ->get();
+        $id_sede = SedeLaboral::obtenerIdSede();
 
         $list_responsable = Puesto::select('puesto.id_puesto', 'puesto.nom_puesto', 'area.cod_area')
             ->join('area', 'puesto.id_area', '=', 'area.id_area')
@@ -121,13 +146,14 @@ class SoporteController extends Controller
             ->distinct('nom_area')
             ->get();
 
-        return view('soporte.soporte.modal_registrar', compact('list_responsable', 'list_area', 'list_base', 'list_especialidad', 'list_elemento', 'list_asunto', 'list_sede'));
+        return view('soporte.soporte.modal_registrar', compact('list_responsable', 'list_area', 'list_base', 'list_especialidad', 'list_elemento', 'list_asunto'));
     }
 
     public function getSoporteNivelPorSede(Request $request)
     {
-        $idSede = $request->input('sedes');
-        // Si no se selecciona ninguna sede, devolver un arreglo vacío
+        // Obtener id_sede desde la función estática de SedeLaboral
+        $idSede = SedeLaboral::obtenerIdSede();
+        // Si no se obtiene id_sede, devolver un arreglo vacío
         if (empty($idSede)) {
             return response()->json([]);
         }
@@ -140,6 +166,7 @@ class SoporteController extends Controller
 
         return response()->json($sedes);
     }
+
 
 
 
@@ -197,7 +224,7 @@ class SoporteController extends Controller
 
     public function store_tick(Request $request)
     {
-
+        // dd($request->asunto);
         $rules = [
             'especialidad' => 'gt:0',
             'elemento' => 'gt:0',
@@ -350,13 +377,15 @@ class SoporteController extends Controller
             $img2 = isset($resultados[1]) ? $resultados[1]['url_ftp'] : '';
             $img3 = isset($resultados[2]) ? $resultados[2]['url_ftp'] : '';
 
+            $idSede = SedeLaboral::obtenerIdSede();
+
             // Almacenar la información de soporte en la base de datos
             Soporte::create([
                 'codigo' => $codigo_generado,
                 'id_especialidad' => $request->especialidad,
                 'id_elemento' => $request->elemento,
                 'id_asunto' => $request->asunto,
-                'id_sede' => $request->sede,
+                'id_sede' => $idSede,
                 'idsoporte_nivel' => $request->idsoporte_nivel,
                 'idsoporte_area_especifica' => $request->idsoporte_area_especifica ?? 0,
                 'id_area' => $request->area ?? 0,
@@ -528,9 +557,9 @@ class SoporteController extends Controller
         $list_tickets_soporte = $list_tickets_soporte->map(function ($ticket) use ($id_subgerencia) {
 
             $ticket->status_poriniciar = false;
-            if ($id_subgerencia == "10" && $ticket->estado_registro == 1) {
+            if ($id_subgerencia == "10" && ($ticket->estado_registro_sr == 1 || $ticket->estado_registro == 1)) {
                 $ticket->status_poriniciar = true;
-            } elseif ($id_subgerencia == "9" && $ticket->estado_registro_sr == 1) {
+            } elseif ($id_subgerencia == "9" && ($ticket->estado_registro_sr == 1 || $ticket->estado_registro == 1)) {
                 $ticket->status_poriniciar = true;
             } elseif ($ticket->estado_registro == 1) {
                 $ticket->status_poriniciar = true;
@@ -539,9 +568,9 @@ class SoporteController extends Controller
             }
 
             $ticket->status_enproceso = false;
-            if ($id_subgerencia == "10" && $ticket->estado_registro == 2) {
+            if ($id_subgerencia == "10" && ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2)) {
                 $ticket->status_enproceso = true;
-            } elseif ($id_subgerencia == "9" && $ticket->estado_registro_sr == 2) {
+            } elseif ($id_subgerencia == "9" && ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2)) {
                 $ticket->status_enproceso = true;
             } elseif ($ticket->estado_registro == 2) {
                 $ticket->status_enproceso = true;
@@ -551,9 +580,9 @@ class SoporteController extends Controller
 
 
             $ticket->status_completado = false;
-            if ($id_subgerencia == "10" && $ticket->estado_registro == 3) {
+            if ($id_subgerencia == "10" && ($ticket->estado_registro_sr == 3 || $ticket->estado_registro == 3)) {
                 $ticket->status_completado = true;
-            } elseif ($id_subgerencia == "9" && $ticket->estado_registro_sr == 3) {
+            } elseif ($id_subgerencia == "9" && ($ticket->estado_registro_sr == 3 || $ticket->estado_registro == 3)) {
                 $ticket->status_completado = true;
             } else {
                 $ticket->status_completado = false;
@@ -656,6 +685,7 @@ class SoporteController extends Controller
         } else {
             $ejecutoresMultiples = false;
         }
+        // dd($ejecutoresMultiples);
         $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
         $list_ejecutores_responsables = collect($list_ejecutores_responsables);
 
@@ -691,9 +721,12 @@ class SoporteController extends Controller
         ];
         $get_id = Soporte::getTicketById($id);
 
+
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $cantAreasEjecut = count($list_ejecutores_responsables);
-        if ($id_subgerencia == "9") {
+        $responsableMultiple = Soporte::getResponsableMultipleByAsunto($get_id->id_asunto);
+        // dd($responsableMultiple);
+        if ($id_subgerencia == "9" && $responsableMultiple == 1) {
             $rules = array_merge($rules, [
                 'id_responsablee_0' => 'gt:0',
 
