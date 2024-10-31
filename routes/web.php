@@ -1781,7 +1781,7 @@ Route::controller(AsistenciaController::class)->group(function () {
     //------------------------------CCV------------------------------------//
     Route::get('Reporte_Control_Asistencia', 'index')->name('Reporte_Control_Asistencia');
     Route::post('Buscar_Reporte_Control_Asistencia', 'Buscar_Reporte_Control_Asistencia');
-    // Route::post('/Insert_Cuadro_Control_Visual_Estado', 'Insert_Cuadro_Control_Visual_Estado');
+    Route::get('Asistencia/Traer_Colaborador_Asistencia', 'Traer_Colaborador_Asistencia');
     // Route::post('/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
 });
 //AMONESTACION
