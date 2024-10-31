@@ -89,7 +89,10 @@ class Entrenamiento extends Model
                     LEFT JOIN solicitud_puesto sp ON en.id_solicitud_puesto=sp.id
                     LEFT JOIN puesto pa ON sp.id_puesto_aspirado=pa.id_puesto
                     LEFT JOIN users us ON sp.id_usuario=us.id_usuario
-                    WHERE en.estado=1
+                    WHERE en.estado=1 AND ((us.estado=1 AND (SELECT COUNT(1) FROM examen_entrenamiento ee
+                    WHERE ee.id_entrenamiento=en.id AND ee.estado=1)=0) || 
+                    (SELECT COUNT(1) FROM examen_entrenamiento ee
+                    WHERE ee.id_entrenamiento=en.id AND ee.estado=1)>0)
                     ORDER BY en.fec_reg DESC";
             $query = DB::select($sql);
             return $query;
