@@ -527,7 +527,7 @@ class BiReporteController extends Controller
                 ->value('tablas_db.idtablas_db');
             TablaBi::create([
                 'id_acceso_bi_reporte' => $biReporte->id_acceso_bi_reporte,
-                'idtablas_db' => $idTablaDb, // ID de la tabla seleccionada
+                'idtablas_db' => $idTablaDb,
                 'estado' => 1,
                 'fec_reg' => now(),
                 'user_reg' => session('usuario')->id_usuario,

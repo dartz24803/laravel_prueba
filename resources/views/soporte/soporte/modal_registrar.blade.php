@@ -1,4 +1,23 @@
 <style>
+    .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #div_imagenes {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    #imagenes_container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
     /* public/css/style.css */
     body {
         font-family: Arial, sans-serif;
@@ -72,18 +91,10 @@
             <div class="col-lg-12">
                 <div class="row">
                     <div class="form-group col-lg-2">
-                        <label class="control-label text-bold">Ubicación:</label>
-                    </div>
-                    <div class="form-group col-lg-4">
-                        <select class="form-control" id="sede" name="sede">
-                            <option value="0">Seleccione</option>
-                            @foreach ($list_sede as $sede)
-                            <option value="{{ $sede->id }}">{{ $sede->descripcion }}</option>
-                            @endforeach
-                        </select>
+                        <label class="control-label text-bold">Nivel:</label>
                     </div>
 
-                    <div class="form-group col-lg-6" id="sublist-container">
+                    <div class="form-group col-lg-10" id="sublist-container">
                         <select class="form-control" id="idsoporte_nivel" name="idsoporte_nivel">
                             <option value="0">Seleccione </option>
                         </select>
@@ -186,16 +197,30 @@
             <div class="form-group col-lg-12">
                 <button type="button" class="btn btn-secondary" id="boton_camara" onclick="Activar_Camara();">Activar cámara</button>
             </div>
-            <div class="row d-flex justify-content-center mb-2" id="div_camara" style="display:none !important;">
+
+            <div class="form-group col-lg-12 d-flex justify-content-center" id="div_camara" style="display: block;">
                 <video id="video" autoplay style="max-width: 95%;"></video>
             </div>
-            <div class="form-group col-lg-12" id="div_tomar_foto" style="display:none !important;">
+
+            <div class="form-group col-lg-12 text-center" id="div_tomar_foto" style="display:none !important;">
                 <button type="button" class="btn btn-info" onclick="Tomar_Foto();">Tomar foto</button>
             </div>
-            <div class="row d-flex justify-content-center text-center" id="div_canvas" style="display:none !important;">
+
+            <div class="d-flex justify-content-center" style="display:none !important;" id="div_canvas">
                 <canvas id="canvas" width="640" height="480" style="max-width:95%;"></canvas>
             </div>
+
+            <div class="d-flex justify-content-center" style="max-width: 100%;" id="div_imagenes">
+                <input type="hidden" id="imagenes_input" name="imagenes" value="">
+
+                <div id="imagenes_container" class="d-flex flex-wrap justify-content-center">
+                    <!-- Las imágenes se añadirán aquí dinámicamente -->
+                </div>
+            </div>
         </div>
+
+
+
     </div>
 
     <div class="modal-footer">
@@ -208,6 +233,45 @@
 </form>
 
 <script>
+    $(document).ready(function() {
+
+        obtenerSoporteNivelPorSede(); // Llamada inicial cuando se carga el HTML
+        // Inicializar el evento change para el select con ID 'idsoporte_nivel'
+
+        // Llama a esta función cuando abras el modal o cargues la página
+        initializeEspecialidadAndSede();
+
+
+    });
+
+    function obtenerSoporteNivelPorSede() {
+        var url = "{{ route('soporte_nivel_por_sede') }}";
+        $.ajax({
+            url: url,
+            method: 'GET',
+            success: function(response) {
+                $('#idsoporte_nivel').empty().append(
+                    '<option value="0">Seleccione</option>'
+                );
+
+                // Verificar si hay respuestas
+                if (response.length > 0) {
+                    $.each(response, function(index, sede) {
+                        $('#idsoporte_nivel').append(
+                            `<option value="${sede.idsoporte_nivel}">${sede.nombre}</option>`
+                        );
+                    });
+                    $('#sublist-container').show(); // Mostrar el contenedor de idsoporte_nivel
+                } else {
+                    $('#sublist-container').hide(); // Ocultar si no hay ubicaciones
+                }
+            },
+            error: function(xhr) {
+                console.error('Error al obtener ubicaciones:', xhr);
+            }
+        });
+    }
+
     var subUbicacionCont = document.getElementById('sububicacion-container');
 
     function initializeEspecialidadAndSede() {
@@ -219,31 +283,33 @@
         var asuntoSelect = document.getElementById('asunto');
         var areaRow = document.getElementById('area-row');
         var elementoContainer = document.getElementById('elemento-container');
-        var asuntoContainer = document.getElementById('asunto-container');
         var areaElementoRow = document.getElementById('elemento-area');
+        var asuntoContainer = document.getElementById('asunto-container');
 
-        // Función manejadora para "especialidad"
-        function handleEspecialidadChange() {
-            if (especialidadSelect.value === '4') {
-                elementoContainer.style.display = 'none';
-                elementCont.style.display = 'none';
-                asuntoCont.style.display = 'none';
-                asuntoContainer.style.display = 'none';
-                areaRow.style.display = 'block';
-                areaElementoRow.style.display = 'block';
-            } else {
-                elementoContainer.style.display = 'block';
-                elementCont.style.display = 'block';
-                asuntoCont.style.display = 'block';
-                asuntoContainer.style.display = 'block';
-                areaRow.style.display = 'none';
-                areaElementoRow.style.display = 'none';
+        // Verificar si especialidadSelect existe
+        if (especialidadSelect) {
+            function handleEspecialidadChange() {
+                if (especialidadSelect.value === '4') {
+                    elementoContainer.style.display = 'none';
+                    elementCont.style.display = 'none';
+                    asuntoCont.style.display = 'none';
+                    asuntoContainer.style.display = 'none';
+                    areaRow.style.display = 'block';
+                    areaElementoRow.style.display = 'block';
+                } else {
+                    elementoContainer.style.display = 'block';
+                    elementCont.style.display = 'block';
+                    asuntoCont.style.display = 'block';
+                    asuntoContainer.style.display = 'block';
+                    areaRow.style.display = 'none';
+                    areaElementoRow.style.display = 'none';
+                }
             }
-        }
 
-        // Elimina cualquier evento anterior antes de agregar uno nuevo
-        especialidadSelect.removeEventListener('change', handleEspecialidadChange);
-        especialidadSelect.addEventListener('change', handleEspecialidadChange);
+            // Elimina cualquier evento anterior antes de agregar uno nuevo
+            especialidadSelect.removeEventListener('change', handleEspecialidadChange);
+            especialidadSelect.addEventListener('change', handleEspecialidadChange);
+        }
 
         // Variables para el manejo de "sede"
         var sedeSelect = document.getElementById('sede');
@@ -252,66 +318,36 @@
         var sublistContainer = document.getElementById('sublist-container');
         var thirdContainer = document.getElementById('thirdlist-container');
 
-        // Función manejadora para "sede"
-        function handleSedeChange() {
-            if (sedeSelect.value === '0') {
-                subSedeSelect.style.display = 'none';
-                thirdSedeSelect.style.display = 'none';
-                sublistContainer.style.display = 'none';
-                thirdContainer.style.display = 'none';
-            } else {
-                subSedeSelect.style.display = 'block';
-                thirdSedeSelect.style.display = 'block';
-                sublistContainer.style.display = 'block';
-                thirdContainer.style.display = 'block';
+        // Verificar si sedeSelect existe
+        if (sedeSelect) {
+            function handleSedeChange() {
+                if (sedeSelect.value === '0') {
+                    subSedeSelect.style.display = 'none';
+                    thirdSedeSelect.style.display = 'none';
+                    sublistContainer.style.display = 'none';
+                    thirdContainer.style.display = 'none';
+                } else {
+                    subSedeSelect.style.display = 'block';
+                    thirdSedeSelect.style.display = 'block';
+                    sublistContainer.style.display = 'block';
+                    thirdContainer.style.display = 'block';
+                }
             }
-        }
 
-        // Elimina cualquier evento anterior antes de agregar uno nuevo
-        sedeSelect.removeEventListener('change', handleSedeChange);
-        sedeSelect.addEventListener('change', handleSedeChange);
+            // Elimina cualquier evento anterior antes de agregar uno nuevo
+            sedeSelect.removeEventListener('change', handleSedeChange);
+            sedeSelect.addEventListener('change', handleSedeChange);
+        }
     }
 
-    // Llama a esta función cuando abras el modal o cargues la página
-    initializeEspecialidadAndSede();
 
 
 
-    $('#sede').on('change', function() {
-        const selectedSede = $(this).val(); // Obtenemos el valor de la sede seleccionada
-        var url = "{{ route('soporte_nivel_por_sede') }}";
-        $.ajax({
-            url: url,
-            method: 'GET',
-            data: {
-                sedes: selectedSede
-            },
-            success: function(response) {
-                $('#idsoporte_nivel').empty().append(
-                    '<option value="0">Seleccione </option>');
-                // Verificar si hay respuestas
-                if (response.length > 0) {
-                    $.each(response, function(index, sede) {
-                        $('#idsoporte_nivel').append(
-                            `<option value="${sede.idsoporte_nivel}">${sede.nombre}</option>`
-                        );
-                    });
-                    $('#sublist-container').show(); // Mostrar el contenedor de idsoporte_nivel
-
-                } else {
-                    $('#sublist-container').hide(); // Ocultar si no hay ubicaciones
-
-                }
-            },
-            error: function(xhr) {
-                console.error('Error al obtener ubicaciones:', xhr);
-            }
-        });
-    });
 
     $('#idsoporte_nivel').on('change', function() {
         const selectedubicacion1 = $(this).val();
         var url = "{{ route('soporte_areaespecifica_por_nivel') }}";
+
         $.ajax({
             url: url,
             method: 'GET',
@@ -320,33 +356,31 @@
             },
             success: function(response) {
                 $('#idsoporte_area_especifica').empty().append(
-                    '<option value="0">Seleccione Área Esp.</option>');
+                    '<option value="0">Seleccione Área Esp.</option>'
+                );
+
                 // Verificar si hay respuestas
                 if (response.length > 0) {
-                    $('#idsoporte_area_especifica').empty().append(
-                        '<option value="0">Seleccione Área Esp.</option>');
                     $.each(response, function(index, ubicacion) {
                         $('#idsoporte_area_especifica').append(
                             `<option value="${ubicacion.idsoporte_area_especifica}">${ubicacion.nombre}</option>`
                         );
                     });
                     $('#thirdlist-container').css('visibility', 'visible');
-                    subUbicacionCont.style.display = 'block';
+                    $('#sububicacion-container').show();
                     $('#hasOptionsField').val('1');
                 } else {
                     $('#thirdlist-container').css('visibility', 'hidden');
-                    subUbicacionCont.style.display = 'none';
+                    $('#sububicacion-container').hide();
                     $('#hasOptionsField').val('0');
-
-
                 }
-
             },
             error: function(xhr) {
                 console.error('Error al obtener ubicaciones:', xhr);
             }
         });
     });
+
 
     $('#especialidad').on('change', function() {
         const selectedEspecialidad = $(this).val();
@@ -434,14 +468,25 @@
                 });
             },
             error: function(xhr) {
-                var errors = xhr.responseJSON.errors;
-                var firstError = Object.values(errors)[0][0];
-                Swal.fire(
-                    '¡Ups!',
-                    firstError,
-                    'warning'
-                );
+                if (xhr.status === 400) {
+                    // Si es un error 400, mostramos el mensaje del servidor
+                    Swal.fire(
+                        '¡Error!',
+                        xhr.responseJSON.error || 'Error en la solicitud.',
+                        'warning'
+                    );
+                } else {
+                    // Si es otro tipo de error, manejamos los errores en el formulario
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
             }
+
         });
 
     }
@@ -530,8 +575,8 @@
     function Tomar_Foto() {
         Cargando();
 
-        var dataString = new FormData(document.getElementById('formulario'));
-        var url = "{{ route('soporte_ticket.previsualizacion_captura') }}";
+        var dataString = new FormData(document.getElementById('formulario_insert'));
+        var url = "{{ route('previsualizacion_captura_soporte') }}";
         var video = document.getElementById('video');
         var canvas = document.getElementById('canvas');
         var context = canvas.getContext('2d');
@@ -564,10 +609,66 @@
                             confirmButtonText: 'OK',
                         });
                     } else {
-                        Lista_Archivo();
+                        var ftpUrl = response.url_ftp;
+                        MostrarFoto(ftpUrl);
                     }
                 }
             });
         }, 'image/jpeg');
+    }
+
+    function MostrarFoto(url) {
+        var divImagenes = document.getElementById('imagenes_container'); // Asegúrate de tener este contenedor en tu HTML
+        var nuevaImagen = document.createElement('img'); // Crea un nuevo elemento de imagen
+        nuevaImagen.src = url; // Establece la fuente de la imagen
+        nuevaImagen.alt = 'Captura de soporte'; // Texto alternativo
+        nuevaImagen.style.maxWidth = '95%'; // Ajustar el tamaño de la imagen
+        nuevaImagen.style.margin = '10px'; // Añade margen a la imagen
+        nuevaImagen.className = 'img-thumbnail'; // Clase opcional para un borde alrededor de la imagen
+
+        // Crea el contenedor para la imagen y el botón
+        var contenedorImagen = document.createElement('div');
+        contenedorImagen.className = 'text-center'; // Para centrar la imagen y el botón
+
+        // Crea el botón de eliminar
+        var botonEliminar = document.createElement('button');
+        botonEliminar.className = 'btn btn-danger'; // Estilo para el botón
+        botonEliminar.style.marginTop = '5px'; // Añade un margen superior
+        botonEliminar.onclick = function() {
+            divImagenes.removeChild(contenedorImagen); // Elimina el contenedor de la imagen y el botón
+        };
+
+        // Añade el SVG al botón
+        botonEliminar.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+    `;
+
+        // Añade la imagen y el botón al contenedor
+        contenedorImagen.appendChild(nuevaImagen);
+        contenedorImagen.appendChild(botonEliminar);
+        divImagenes.appendChild(contenedorImagen); // Añade el contenedor al div principal
+        actualizarInput();
+    }
+
+    function actualizarInput() {
+        var divImagenes = document.getElementById('imagenes_container');
+        var imagenesInput = document.getElementById('imagenes_input');
+
+        // Obtener todas las imágenes en el contenedor
+        var imagenes = divImagenes.getElementsByTagName('img');
+        var urls = [];
+
+        // Recorrer todas las imágenes y almacenar sus URLs
+        for (var i = 0; i < imagenes.length; i++) {
+            urls.push(imagenes[i].src);
+        }
+
+        // Almacenar las URLs como un array en formato JSON en el input
+        imagenesInput.value = JSON.stringify(urls);
     }
 </script>
