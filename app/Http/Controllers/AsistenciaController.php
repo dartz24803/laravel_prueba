@@ -89,7 +89,10 @@ class AsistenciaController extends Controller
         $tipo = $request->input("tipo");
         $finicio = $request->input("finicio");
         $ffin = $request->input("ffin");
-        //echo date('Y-m-01'); // first day of this month
+        $usuarios = Usuario::select('usuario_codigo')
+                ->where('id_area', $area)
+                ->get();
+
         $year = date('Y');
         if ($tipo == 1) {
             $year = $cod_anio;
@@ -103,8 +106,8 @@ class AsistenciaController extends Controller
             $fecha_fin = strtotime(date("d-m-Y", strtotime($request->input("ffin"))));
         }
 
-        $list_asistencia = $this->modelo->buscar_reporte_control_asistencia($cod_mes, $cod_anio, $cod_base, $num_doc, $tipo, $finicio, $ffin);
-        //print_r($list_asistencia);
+        $list_asistencia = $this->modelo->buscar_reporte_control_asistencia($cod_mes, $cod_anio, $cod_base, $num_doc, $tipo, $finicio, $ffin, $usuarios);
+        // print_r($list_asistencia);
         if ($num_doc != 0) {
             $list_colaborador = $this->modelo->get_list_usuario_xnum_doc($num_doc);
         } else {
