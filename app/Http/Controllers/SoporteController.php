@@ -107,7 +107,7 @@ class SoporteController extends Controller
 
             return $ticket;
         });
-        // dd($list_tickets_soporte);
+        dd($list_tickets_soporte);
         return view('soporte.soporte.lista', compact('list_tickets_soporte'));
     }
 
@@ -328,46 +328,46 @@ class SoporteController extends Controller
 
         if ($con_id && $lr) {
             // Decodificar las URLs de las imágenes desde el request
-            // $imagenes = json_decode($request->input('imagenes'), true);
-            // if (!$imagenes || !is_array($imagenes)) {
-            //     return response()->json([
-            //         'error' => 'Debe Cargar almenos una foto'
-            //     ], 400);
-            // }
-            // // Inicializar un array para almacenar los resultados
-            // $resultados = [];
+            $imagenes = json_decode($request->input('imagenes'), true);
+            if (!$imagenes || !is_array($imagenes)) {
+                return response()->json([
+                    'error' => 'Debe Cargar almenos una foto'
+                ], 400);
+            }
+            // Inicializar un array para almacenar los resultados
+            $resultados = [];
 
-            // foreach ($imagenes as $url) {
-            //     // Obtener la extensión de la imagen
-            //     $extension = pathinfo($url, PATHINFO_EXTENSION);
-            //     $nombre_soli = "soporte_" . session('usuario')->id_usuario . "_" . date('YmdHis') . "_" . uniqid(); // Usar uniqid para evitar nombres duplicados
-            //     $nombre = $nombre_soli . '.' . strtolower($extension);
-            //     $ftp_upload_path = "SOPORTE/" . $nombre;
+            foreach ($imagenes as $url) {
+                // Obtener la extensión de la imagen
+                $extension = pathinfo($url, PATHINFO_EXTENSION);
+                $nombre_soli = "soporte_" . session('usuario')->id_usuario . "_" . date('YmdHis') . "_" . uniqid(); // Usar uniqid para evitar nombres duplicados
+                $nombre = $nombre_soli . '.' . strtolower($extension);
+                $ftp_upload_path = "SOPORTE/" . $nombre;
 
-            //     // Descargamos la imagen temporalmente
-            //     $source_file = tempnam(sys_get_temp_dir(), 'ftp_'); // Crear un archivo temporal
-            //     file_put_contents($source_file, file_get_contents($url)); // Descargar la imagen
+                // Descargamos la imagen temporalmente
+                $source_file = tempnam(sys_get_temp_dir(), 'ftp_'); // Crear un archivo temporal
+                file_put_contents($source_file, file_get_contents($url)); // Descargar la imagen
 
-            //     // Subir el archivo al FTP
-            //     $subio = ftp_put($con_id, $ftp_upload_path, $source_file, FTP_BINARY);
+                // Subir el archivo al FTP
+                $subio = ftp_put($con_id, $ftp_upload_path, $source_file, FTP_BINARY);
 
-            //     // Borrar el archivo temporal
-            //     unlink($source_file);
+                // Borrar el archivo temporal
+                unlink($source_file);
 
-            //     if ($subio) {
-            //         // Obtener URL del archivo en almacenamiento local para referencia
-            //         $archivo_ftp = "https://lanumerounocloud.com/intranet/SOPORTE/" . $nombre;
+                if ($subio) {
+                    // Obtener URL del archivo en almacenamiento local para referencia
+                    $archivo_ftp = "https://lanumerounocloud.com/intranet/SOPORTE/" . $nombre;
 
-            //         // Almacenar el resultado
-            //         $resultados[] = [
-            //             'url_ftp' => $archivo_ftp,
-            //             'identificador' => $nombre_soli
-            //         ];
-            //     } else {
-            //         // Manejo de errores si no se pudo subir la imagen
-            //         return response()->json(['error' => 'No se pudo subir la imagen ' . $nombre . ' al servidor FTP'], 500);
-            //     }
-            // }
+                    // Almacenar el resultado
+                    $resultados[] = [
+                        'url_ftp' => $archivo_ftp,
+                        'identificador' => $nombre_soli
+                    ];
+                } else {
+                    // Manejo de errores si no se pudo subir la imagen
+                    return response()->json(['error' => 'No se pudo subir la imagen ' . $nombre . ' al servidor FTP'], 500);
+                }
+            }
 
             // Cerrar conexión FTP
             ftp_close($con_id);
@@ -410,7 +410,7 @@ class SoporteController extends Controller
 
             return response()->json([
                 'success' => 'Imágenes subidas correctamente al servidor FTP',
-                // 'resultados' => $resultados
+                'resultados' => $resultados
             ]);
         } else {
             return response()->json(['error' => 'No se pudo conectar al servidor FTP'], 500);
