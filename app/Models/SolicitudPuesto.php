@@ -70,7 +70,7 @@ class SolicitudPuesto extends Model
                     INNER JOIN puesto pa ON sp.id_puesto_aspirado=pa.id_puesto
                     INNER JOIN users us ON sp.id_usuario=us.id_usuario
                     INNER JOIN grado_instruccion gi ON sp.grado_instruccion=gi.id_grado_instruccion
-                    WHERE $parte sp.estado=1
+                    WHERE $parte sp.estado=1 AND ((us.estado=1 AND sp.estado_s=1) OR sp.estado_s!=1)
                     ORDER BY sp.fecha DESC";
             $query = DB::select($sql);
             return $query;
