@@ -37,7 +37,7 @@ class SolicitudPuesto extends Model
             $sql = "SELECT sp.id,LOWER(CONCAT(us.usuario_nombres,' ',us.usuario_apater,' ',us.usuario_amater)) 
                     AS nombre_completo,sp.base,LOWER(pu.nom_puesto) AS nom_puesto_actual,
                     LOWER(pa.nom_puesto) AS nom_puesto_aspirado,CASE WHEN sp.observacion=1 THEN 'Si' 
-                    ELSE 'No' END AS observacion,sp.id_puesto_aspirado,
+                    ELSE 'No' END AS observacion,sp.id_puesto_aspirado,RIGHT(sp.base,2) AS base_correo,
                     /*INFOSAP*/
                     us.usuario_nombres,us.usuario_apater,us.usuario_amater,us.num_doc,pa.perfil_infosap,
                     sp.id_usuario,IFNULL((SELECT ba.id_base FROM base ba 
