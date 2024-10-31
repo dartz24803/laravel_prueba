@@ -7,20 +7,24 @@ use App\Models\Base;
 use App\Models\Cargo;
 use App\Models\Departamento;
 use App\Models\Distrito;
+use App\Models\DomicilioUsers;
 use App\Models\DomicilioUsersP;
 use App\Models\EstadoCivil;
 use App\Models\EvalJefeDirecto;
 use App\Models\EvalRrhhPostulante;
 use App\Models\Genero;
-use App\Models\Gerencia;
 use App\Models\HistoricoPostulante;
 use App\Models\Nacionalidad;
 use App\Models\Notificacion;
+use App\Models\Organigrama;
 use App\Models\Postulante;
 use App\Models\Provincia;
 use App\Models\Puesto;
 use App\Models\SubGerencia;
 use App\Models\TipoDocumento;
+use App\Models\UsersHistoricoCentroLabores;
+use App\Models\UsersHistoricoModalidad;
+use App\Models\UsersHistoricoPuesto;
 use App\Models\Usuario;
 use App\Models\VerificacionSocial;
 use Illuminate\Http\Request;
@@ -31,6 +35,8 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class PostulanteController extends Controller
 {
@@ -971,6 +977,68 @@ class PostulanteController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
         }
+
+        if($request->resultado_jd=="2"){
+            $get_id = Postulante::from('postulante AS po')
+                    ->select('po.flag_email',DB::raw("CONCAT(po.postulante_nombres,' ',
+                    po.postulante_apater,' ',po.postulante_amater) AS nom_postulante"),
+                    'td.cod_tipo_documento','po.num_doc','po.postulante_nombres',
+                    'po.postulante_apater','po.postulante_amater','ub.cod_ubi','ge.nom_gerencia',
+                    'sg.nom_sub_gerencia','ar.nom_area','pu.nom_puesto')
+                    ->join('tipo_documento AS td','td.id_tipo_documento','=','po.id_tipo_documento')
+                    ->join('ubicacion AS ub','ub.id_ubicacion','=','po.id_centro_labor')
+                    ->join('puesto AS pu','pu.id_puesto','=','po.id_puesto')
+                    ->join('area AS ar','ar.id_area','=','pu.id_area')
+                    ->join('sub_gerencia AS sg','sg.id_sub_gerencia','=','ar.id_departamento')
+                    ->join('gerencia AS ge','ge.id_gerencia','=','sg.id_gerencia')
+                    ->where('id_postulante',$id)->first();
+
+            if($get_id->flag_email!="1"){
+                $mail = new PHPMailer(true);
+
+                try {
+                    $mail->SMTPDebug = 0;
+                    $mail->isSMTP();
+                    $mail->Host       =  'mail.lanumero1.com.pe';
+                    $mail->SMTPAuth   =  true;
+                    $mail->Username   =  'intranet@lanumero1.com.pe';
+                    $mail->Password   =  'lanumero1$1';
+                    $mail->SMTPSecure =  'tls';
+                    $mail->Port     =  587; 
+                    $mail->setFrom('intranet@lanumero1.com.pe','Intranet La Número 1');
+        
+                    //$mail->addAddress('rrhh@lanumero1.com.pe');
+                    $mail->addAddress('dpalomino@lanumero1.com.pe');
+        
+                    $mail->isHTML(true);
+        
+                    $mail->Subject = "Registro de postulante - ".$get_id->nom_postulante;
+                
+                    $mail->Body = "<FONT SIZE=3>¡Hola!<br><br>
+                                        Se ha registrado el siguiente postulante:<br><br>
+                                        ".$get_id->cod_tipo_documento.": ".$get_id->num_doc."<br>
+                                        Nombres: ".$get_id->postulante_nombres."<br>
+                                        Apellido paterno: ".$get_id->postulante_apater."<br> 
+                                        Apellido materno: ".$get_id->postulante_amater."<br>
+                                        Centro de Labores: ".$get_id->cod_ubi."<br>
+                                        Gerencia: ".$get_id->nom_gerencia."<br>
+                                        Sub-gerencia: ".$get_id->nom_sub_gerencia."<br>
+                                        Área: ".$get_id->nom_area."<br>
+                                        Puesto: ".$get_id->nom_puesto."<br>
+                                </FONT SIZE>";
+                    $mail->CharSet = 'UTF-8';
+                    $mail->send();
+        
+                    Postulante::findOrFail($id)->update([
+                        'flag_email' => 1,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+                }catch(Exception $e) {
+                    echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+                }
+            }
+        }
     }
 
     public function verificacion_social_reg($id)
@@ -1115,6 +1183,218 @@ class PostulanteController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
+    }
+
+    public function resultado_final_reg($id)
+    {
+        $get_id = Postulante::findOrFail($id);
+        return view('rrhh.postulante.registro.perfil.resultado_final', compact(
+            'get_id'
+        ));
+    }
+
+    public function update_resultado_final_reg(Request $request, $id)
+    {
+        $request->validate([
+            'resultado_final' => 'gt:0'
+        ],[
+            'resultado_final.gt' => 'Debe seleccionar resultado.'
+        ]);
+
+        $get_id = Postulante::findOrFail($id);
+
+        if($request->resultado_final=="10"){
+            $valida = Usuario::where('num_doc',$get_id->num_doc)->whereIn('estado',[1,3,4])->count();
+
+            if($valida>0){
+                echo "2¡El postulante ya fue seleccionado!";
+            }else{
+                $cadena = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+                $longitud_cadena = strlen($cadena);
+                $password = "";
+                $longitud_pass = 6;
+
+                for($i=1 ; $i<=$longitud_pass ; $i++){
+                    $pos = rand(0,$longitud_cadena-1);
+                    $password .= substr($cadena,$pos,1);
+                }
+        
+                $usuario_password = password_hash($password, PASSWORD_DEFAULT);            
+
+                $mail = new PHPMailer(true);
+
+                try {
+                    $mail->SMTPDebug = 0;
+                    $mail->isSMTP();
+                    $mail->Host       =  'mail.lanumero1.com.pe';
+                    $mail->SMTPAuth   =  true;
+                    $mail->Username   =  'intranet@lanumero1.com.pe';
+                    $mail->Password   =  'lanumero1$1';
+                    $mail->SMTPSecure =  'tls';
+                    $mail->Port     =  587; 
+                    $mail->setFrom('intranet@lanumero1.com.pe','Intranet La Número 1');
+
+                    //$mail->addAddress($get_id->emailp);
+                    $mail->addAddress('dpalomino@lanumero1.com.pe');
+
+                    $mail->isHTML(true);
+        
+                    $mail->Subject = "Bienvenido a Nuestra Familia";
+                
+                    $mail->Body = "<FONT SIZE=3><h1>Hola, ".$get_id->postulante_nombres." ".
+                                        $get_id->postulante_apater."</h1><br>
+                                        Te damos la bienvenida a la gran familia La Número 1.<br>
+                                        A continuación deberás colocar tu nueva contraseña 
+                                        para ingresar a nuestro portal: $password <br>
+                                        Link del portal: https://demo.grupolanumero1.com.pe/ <br>
+                                        Gracias.<br>
+                                        Atte. Grupo La Número 1<br>
+                                </FONT SIZE>";
+                    $mail->CharSet = 'UTF-8';
+                    $mail->send();
+
+                    Postulante::findOrFail($id)->update([
+                        'estado_postulacion' => $request->resultado_final,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+                    
+                    HistoricoPostulante::create([
+                        'id_postulante' => $id,
+                        'observacion' => 'POSTULANTE SELECCIONADO',
+                        'estado' => 1,
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+
+                    $usuario = Usuario::create([
+                        'nuevo' => 1,
+                        'id_centro_labor' => $get_id->id_centro_labor,
+                        'id_ubicacion' => $get_id->id_centro_labor,
+                        'usuario_nombres' => $get_id->postulante_nombres,
+                        'usuario_apater' => $get_id->postulante_apater,
+                        'usuario_amater' => $get_id->postulante_amater,
+                        'id_puesto' => $get_id->id_puesto,
+                        'id_cargo' => $get_id->id_cargo,
+                        'id_modalidad_laboral' => 1,
+                        'usuario_codigo' => $get_id->postulante_codigo,
+                        'usuario_password' => $usuario_password,
+                        'password_desencriptado' => $password,
+                        'id_nacionalidad' => $get_id->id_nacionalidad,
+                        'id_tipo_documento' => $get_id->id_tipo_documento,
+                        'num_doc' => $get_id->num_doc,
+                        'id_genero' => $get_id->id_genero,
+                        'fec_nac' => $get_id->fec_nac,
+                        'id_estado_civil' => $get_id->id_estado_civil,
+                        'usuario_email' => $get_id->emailp,
+                        'num_celp' => $get_id->num_celp,
+                        'num_fijop' => $get_id->num_fijop,
+                        'id_nivel' => 6,
+                        'induccion' => 0,
+                        'desvinculacion' => 0,
+                        'acceso' => 0,
+                        'foto' => $get_id->foto,
+                        'urladm' => 1,
+                        'estado' => 4,
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+
+                    UsersHistoricoPuesto::create([
+                        'id_usuario' => $usuario->id_usuario,
+                        'id_ubicacion' => $usuario->id_ubicacion,
+                        'fec_inicio' => now(),
+                        'estado' => 1,
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+
+                    UsersHistoricoCentroLabores::create([
+                        'id_usuario' => $usuario->id_usuario,
+                        'id_ubicacion' => $usuario->id_centro_labor,
+                        'fec_inicio' => now(),
+                        'estado' => 1,
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+
+                    UsersHistoricoModalidad::create([
+                        'id_usuario' => $usuario->id_usuario,
+                        'id_modalidad_laboral' => 1,
+                        'fec_inicio' => now(),
+                        'estado' => 1,
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+
+                    $valida = Organigrama::where('id_puesto',$usuario->id_puesto)
+                            ->where('id_usuario',0)->first();
+
+                    if(isset($valida->id)){
+                        Organigrama::findOrFail($valida->id)->update([
+                            'id_usuario' => $usuario->id_usuario,
+                            'fecha' => now(),
+                            'usuario' => session('usuario')->id_usuario
+                        ]);
+                    }else{
+                        Organigrama::create([
+                            'id_puesto' => $usuario->id_puesto,
+                            'id_usuario' => $usuario->id_usuario,
+                            'fecha' => now(),
+                            'usuario' => session('usuario')->id_usuario
+                        ]);
+                    }
+
+                    $valida = DomicilioUsersP::where('id_postulante',$id)->first();
+
+                    if(isset($valida->id_domicilio_usersp)){
+                        DomicilioUsers::create([
+                            'id_usuario' => $usuario->id_usuario,
+                            'id_distrito' => $valida->id_distrito,
+                            'lat' => $valida->lat,
+                            'lng' => $valida->lng,
+                            'estado' => 1,
+                            'fec_reg' => now(),
+                            'user_reg' => session('usuario')->id_usuario,
+                            'fec_act' => now(),
+                            'user_act' => session('usuario')->id_usuario
+                        ]);
+                    }
+
+                    echo "1¡Haga clic en el botón!";
+                }catch(Exception $e) {
+                    echo "3Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+                }
+            }
+        }else{
+            Postulante::findOrFail($id)->update([
+                'estado_postulacion' => $request->resultado_final,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+
+            HistoricoPostulante::create([
+                'id_postulante' => $id,
+                'observacion' => 'POSTULANTE NO SELECCIONADO',
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+
+            echo "1¡Haga clic en el botón!";
+        }
     }
 
     public function index_tod()

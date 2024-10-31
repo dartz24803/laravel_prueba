@@ -83,34 +83,26 @@
 
                             <div class="col-md-12 layout-spacing">
                                 <form id="formulario_rf" method="POST" enctype="multipart/form-data" class="section general-info">
+                                    @method('PUT')
+                                    @csrf
                                     <div class="info">
                                         <div class="row">
                                             <div class="col">
                                                 <h6>RESULTADO FINAL</h6>
                                             </div>
-                                            <div class="col text-right">
-                                                <button id="add-work-platforms" class="btn btn-primary">Actualizar</button>
+                                            <div class="col text-sm-right text-center">
+                                                @if (session('usuario')->id_nivel=="1" || 
+                                                session('usuario')->id_puesto=="21" ||
+                                                session('usuario')->id_puesto=="22" ||
+                                                session('usuario')->id_puesto=="277" ||
+                                                session('usuario')->id_puesto=="278")
+                                                    <button type="button" class="btn btn-primary" onclick="Update_Resultado_Final();">Actualizar</button>
+                                                @endif
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-lg-11 mx-auto">
-                                                    <div class="col-lg-12 col-md-8 mt-md-0 mt-4">
-                                                        <div class="form">
-                                                            <div class="row">
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
-                                                                        <label for="resultado_final">Resultado</label>
-                                                                        <select class="form-control" name="resultado_final" id="resultado_final">  
-                                                                            <option value="0">Seleccione</option>
-                                                                            <option value="10">SELECCIONADO</option>
-                                                                            <option value="9">NO SELECCIONADO</option>
-                                                                            <option value="11">EN REVISIÓN</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                <div class="row" id="div_resultado_final">                                                  
                                                 </div>
                                             </div>
                                         </div>
@@ -137,6 +129,7 @@
             Evaluacion_Rrhh();
             Evaluacion_Jefe_Directo();
             Verificacion_Social();
+            Resultado_Final();
         });
 
         function Datos_Personales(){
@@ -205,6 +198,20 @@
                 type: "GET",
                 success:function (resp) {
                     $('#div_verificacion_social').html(resp);
+                }
+            });
+        }
+
+        function Resultado_Final(){
+            Cargando();
+
+            var url = "{{ route('postulante_reg.resultado_final', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_resultado_final').html(resp);
                 }
             });
         }
@@ -324,7 +331,13 @@
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                    Datos_Personales();
+                    swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Datos_Personales();
+                    });
                 },
                 error:function(xhr) {
                     var errors = xhr.responseJSON.errors;
@@ -351,7 +364,13 @@
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                    Domicilio();
+                    swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Domicilio();
+                    });
                 },
                 error:function(xhr) {
                     var errors = xhr.responseJSON.errors;
@@ -378,9 +397,15 @@
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                    Evaluacion_Rrhh();
-                    Evaluacion_Jefe_Directo();
-                    Verificacion_Social();
+                    swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Evaluacion_Rrhh();
+                        Evaluacion_Jefe_Directo();
+                        Verificacion_Social();
+                    });
                 },
                 error:function(xhr) {
                     var errors = xhr.responseJSON.errors;
@@ -407,7 +432,13 @@
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                    Evaluacion_Rrhh();
+                    swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Evaluacion_Rrhh();
+                    });
                 },
                 error:function(xhr) {
                     var errors = xhr.responseJSON.errors;
@@ -434,9 +465,27 @@
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                    Evaluacion_Rrhh();
-                    Evaluacion_Jefe_Directo();
-                    Verificacion_Social();
+                    if(data!=""){
+                        var mensaje = data.trim();
+                        Swal({
+                            title: '¡Error al enviar correo!',
+                            text: mensaje,
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    }else{
+                        swal.fire(
+                            '¡Actualización Exitosa!',
+                            '¡Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            Evaluacion_Rrhh();
+                            Evaluacion_Jefe_Directo();
+                            Verificacion_Social();
+                        });
+                    }
                 },
                 error:function(xhr) {
                     var errors = xhr.responseJSON.errors;
@@ -463,9 +512,15 @@
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                    Evaluacion_Rrhh();
-                    Evaluacion_Jefe_Directo();
-                    Verificacion_Social();
+                    swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Evaluacion_Rrhh();
+                        Evaluacion_Jefe_Directo();
+                        Verificacion_Social();
+                    });
                 },
                 error:function(xhr) {
                     var errors = xhr.responseJSON.errors;
@@ -492,7 +547,70 @@
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                    Verificacion_Social();
+                    swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Verificacion_Social();
+                    });
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+        }
+
+        function Update_Resultado_Final() {
+            Cargando();
+
+            var dataString = new FormData(document.getElementById('formulario_rf'));
+            var url = "{{ route('postulante_reg.update_resultado_final', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    var cadena = data.trim();
+                    validacion = cadena.substr(0, 1);
+                    mensaje = cadena.substr(1);
+
+                    if(validacion=="2"){
+                        Swal({
+                            title: '¡Actualización Denegada!',
+                            text: mensaje,
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    }else if(validacion=="3"){
+                        Swal({
+                            title: '¡Error al enviar correo!',
+                            text: mensaje,
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    }else{
+                        swal.fire(
+                            '¡Actualización Exitosa!',
+                            mensaje,
+                            'success'
+                        ).then(function() {
+                            Resultado_Final();
+                        })
+                    }
                 },
                 error:function(xhr) {
                     var errors = xhr.responseJSON.errors;

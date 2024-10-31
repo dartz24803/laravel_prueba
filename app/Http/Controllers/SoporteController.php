@@ -47,6 +47,7 @@ use App\Models\SoporteMotivoCancelacion;
 use App\Models\SoporteNivel;
 use App\Models\SoporteSolucion;
 use App\Models\SoporteComentarios;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\SubGerencia;
 use App\Models\Ubicacion;
@@ -219,7 +220,7 @@ class SoporteController extends Controller
             'descripcion.max' => 'El propósito debe tener como máximo 150 carácteres.',
 
         ];
-
+        // dd($request->all());
         if ($request->hasOptionsField == "1") {
             $rules = array_merge($rules, [
                 'idsoporte_area_especifica' => 'gt:0',
@@ -291,30 +292,101 @@ class SoporteController extends Controller
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
-        Soporte::create([
-            'codigo' => $codigo_generado,
-            'id_especialidad' => $request->especialidad,
-            'id_elemento' => $request->elemento,
-            'id_asunto' => $request->asunto,
-            'id_sede' => $request->sede,
-            'idsoporte_nivel' => $request->idsoporte_nivel,
-            'idsoporte_area_especifica' => $request->idsoporte_area_especifica ?? 0,
-            'id_area' => $request->area ?? 0,
-            'id_responsable' => null,
-            'area_cancelacion' => 0,
-            'idsoporte_motivo_cancelacion' => null,
-            'idsoporte_solucion' => $soporte_solucion->idsoporte_solucion,
-            'idsoporte_ejecutor' => $soporte_ejecutor->idsoporte_ejecutor,
-            'fec_vencimiento' => $request->vencimiento,
-            'descripcion' => $request->descripcion,
-            'idsoporte_tipo' => $idsoporte_tipo->idsoporte_tipo ?? 1,
-            'estado' => 1,
-            'estado_registro' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
+        // Almacenar Imagenes
+        $ftp_server = "lanumerounocloud.com";
+        $ftp_usuario = "intranet@lanumerounocloud.com";
+        $ftp_pass = "Intranet2022@";
+        $con_id = ftp_connect($ftp_server);
+        $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+
+        if ($con_id && $lr) {
+            // Decodificar las URLs de las imágenes desde el request
+            $imagenes = json_decode($request->input('imagenes'), true);
+            if (!$imagenes || !is_array($imagenes)) {
+                return response()->json([
+                    'error' => 'Debe Cargar almenos una foto'
+                ], 400);
+            }
+            // Inicializar un array para almacenar los resultados
+            $resultados = [];
+
+            foreach ($imagenes as $url) {
+                // Obtener la extensión de la imagen
+                $extension = pathinfo($url, PATHINFO_EXTENSION);
+                $nombre_soli = "soporte_" . session('usuario')->id_usuario . "_" . date('YmdHis') . "_" . uniqid(); // Usar uniqid para evitar nombres duplicados
+                $nombre = $nombre_soli . '.' . strtolower($extension);
+                $ftp_upload_path = "SOPORTE/" . $nombre;
+
+                // Descargamos la imagen temporalmente
+                $source_file = tempnam(sys_get_temp_dir(), 'ftp_'); // Crear un archivo temporal
+                file_put_contents($source_file, file_get_contents($url)); // Descargar la imagen
+
+                // Subir el archivo al FTP
+                $subio = ftp_put($con_id, $ftp_upload_path, $source_file, FTP_BINARY);
+
+                // Borrar el archivo temporal
+                unlink($source_file);
+
+                if ($subio) {
+                    // Obtener URL del archivo en almacenamiento local para referencia
+                    $archivo_ftp = "https://lanumerounocloud.com/intranet/SOPORTE/" . $nombre;
+
+                    // Almacenar el resultado
+                    $resultados[] = [
+                        'url_ftp' => $archivo_ftp,
+                        'identificador' => $nombre_soli
+                    ];
+                } else {
+                    // Manejo de errores si no se pudo subir la imagen
+                    return response()->json(['error' => 'No se pudo subir la imagen ' . $nombre . ' al servidor FTP'], 500);
+                }
+            }
+
+            // Cerrar conexión FTP
+            ftp_close($con_id);
+
+            // Obtener los campos de imagen
+            $img1 = isset($resultados[0]) ? $resultados[0]['url_ftp'] : '';
+            $img2 = isset($resultados[1]) ? $resultados[1]['url_ftp'] : '';
+            $img3 = isset($resultados[2]) ? $resultados[2]['url_ftp'] : '';
+
+            // Almacenar la información de soporte en la base de datos
+            Soporte::create([
+                'codigo' => $codigo_generado,
+                'id_especialidad' => $request->especialidad,
+                'id_elemento' => $request->elemento,
+                'id_asunto' => $request->asunto,
+                'id_sede' => $request->sede,
+                'idsoporte_nivel' => $request->idsoporte_nivel,
+                'idsoporte_area_especifica' => $request->idsoporte_area_especifica ?? 0,
+                'id_area' => $request->area ?? 0,
+                'id_responsable' => null,
+                'area_cancelacion' => 0,
+                'idsoporte_motivo_cancelacion' => null,
+                'idsoporte_solucion' => $soporte_solucion->idsoporte_solucion,
+                'idsoporte_ejecutor' => $soporte_ejecutor->idsoporte_ejecutor,
+                'fec_vencimiento' => $request->vencimiento,
+                'descripcion' => $request->descripcion,
+                'idsoporte_tipo' => $idsoporte_tipo->idsoporte_tipo ?? 1,
+                'estado' => 1,
+                'estado_registro' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+                'img1' => $img1,
+                'img2' => $img2,
+                'img3' => $img3
+            ]);
+
+            return response()->json([
+                'success' => 'Imágenes subidas correctamente al servidor FTP',
+                'resultados' => $resultados
+            ]);
+        } else {
+            return response()->json(['error' => 'No se pudo conectar al servidor FTP'], 500);
+        }
+
 
         return redirect()->back()->with('success', 'Reporte registrado con éxito.');
     }
@@ -348,6 +420,8 @@ class SoporteController extends Controller
             'descripcione.max' => 'El propósito debe tener como máximo 150 carácteres.',
         ];
         $request->validate($rules, $messages);
+
+        // dd($request->all());
 
         Soporte::findOrFail($id)->update([
             'id_sede' =>  $request->sedee,
@@ -452,10 +526,24 @@ class SoporteController extends Controller
 
         // VALIDACIÓN DE ESTADOS EN PROCESO Y COMPLETADO PARA CADA MODULO
         $list_tickets_soporte = $list_tickets_soporte->map(function ($ticket) use ($id_subgerencia) {
-            $ticket->status_enproceso = false;
+
+            $ticket->status_poriniciar = false;
             if ($id_subgerencia == "10" && $ticket->estado_registro == 1) {
-                $ticket->status_enproceso = true;
+                $ticket->status_poriniciar = true;
             } elseif ($id_subgerencia == "9" && $ticket->estado_registro_sr == 1) {
+                $ticket->status_poriniciar = true;
+            } elseif ($ticket->estado_registro == 1) {
+                $ticket->status_poriniciar = true;
+            } else {
+                $ticket->status_poriniciar = false;
+            }
+
+            $ticket->status_enproceso = false;
+            if ($id_subgerencia == "10" && $ticket->estado_registro == 2) {
+                $ticket->status_enproceso = true;
+            } elseif ($id_subgerencia == "9" && $ticket->estado_registro_sr == 2) {
+                $ticket->status_enproceso = true;
+            } elseif ($ticket->estado_registro == 2) {
                 $ticket->status_enproceso = true;
             } else {
                 $ticket->status_enproceso = false;
@@ -472,6 +560,7 @@ class SoporteController extends Controller
             }
             return $ticket;
         });
+        // dd($list_tickets_soporte);
         return view('soporte.soporte_master.lista', compact('list_tickets_soporte'));
     }
 
@@ -606,21 +695,21 @@ class SoporteController extends Controller
         $cantAreasEjecut = count($list_ejecutores_responsables);
         if ($id_subgerencia == "9") {
             $rules = array_merge($rules, [
-                'id_responsablee_1' => 'gt:0',
-
-            ]);
-            $messages = array_merge($messages, [
-                'id_responsablee_1.gt' => 'Debe seleccionar Responsable',
-
-            ]);
-        }
-        if ($id_subgerencia == "10") {
-            $rules = array_merge($rules, [
                 'id_responsablee_0' => 'gt:0',
 
             ]);
             $messages = array_merge($messages, [
                 'id_responsablee_0.gt' => 'Debe seleccionar Responsable',
+
+            ]);
+        }
+        if ($id_subgerencia == "10") {
+            $rules = array_merge($rules, [
+                'id_responsablee_1' => 'gt:0',
+
+            ]);
+            $messages = array_merge($messages, [
+                'id_responsablee_1.gt' => 'Debe seleccionar Responsable',
 
             ]);
         }
@@ -893,46 +982,50 @@ class SoporteController extends Controller
 
 
     // Activación Cámara
-    public function previsualizacion_captura(Request $request)
+    public function previsualizacionCaptura(Request $request)
     {
+        if (!$request->hasFile('photo')) {
+            return response()->json(['error' => 'No se envió ninguna imagen'], 400);
+        }
 
-        // $ftp_server = "lanumerounocloud.com";
-        // $ftp_usuario = "intranet@lanumerounocloud.com";
-        // $ftp_pass = "Intranet2022@";
-        // $con_id = ftp_connect($ftp_server);
-        // $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
-        // if ($con_id && $lr) {
-        //     $path = $_FILES["photo"]["name"];
-        //     $source_file = $_FILES['photo']['tmp_name'];
+        // Generar un identificador único para el archivo
+        $nombre_soli = "temporal_" . session('usuario')->id_usuario . "_" . date('YmdHis');
+        $extension = $request->file('photo')->getClientOriginalExtension();
+        $nombre = $nombre_soli . '.' . strtolower($extension);
+        // Guardar temporalmente en el almacenamiento local
+        $path = $request->file('photo')->storeAs('soporte_temporal', $nombre);
+        // Subir el archivo al servidor FTP
+        $ftp_server = "lanumerounocloud.com";
+        $ftp_usuario = "intranet@lanumerounocloud.com";
+        $ftp_pass = "Intranet2022@";
+        $con_id = ftp_connect($ftp_server);
+        $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
 
-        //     $ext = pathinfo($path, PATHINFO_EXTENSION);
-        //     $nombre_soli = "temporal_" . session('usuario')->id_usuario . "_" . date('YmdHis');
-        //     $nombre = $nombre_soli . "." . strtolower($ext);
+        if ($con_id && $lr) {
+            ftp_pasv($con_id, true);
+            $source_file = Storage::path($path);
+            $ftp_upload_path = "SOPORTE/TEMPORAL/" . $nombre;
+            // Subir el archivo al FTP
+            $subio = ftp_put($con_id, $ftp_upload_path, $source_file, FTP_BINARY);
+            // Cerrar conexión FTP
+            ftp_close($con_id);
+            if ($subio) {
+                // Obtener URL del archivo en almacenamiento local para referencia
+                $archivo_local = Storage::url($path);
+                $archivo_ftp = "https://lanumerounocloud.com/intranet/SOPORTE/TEMPORAL/" . $nombre;
 
-        //     $archivo = "https://lanumerounocloud.com/intranet/TRACKING/" . $nombre;
-
-        //     ftp_pasv($con_id, true);
-        //     $subio = ftp_put($con_id, "TRACKING/" . $nombre, $source_file, FTP_BINARY);
-        //     if ($subio) {
-        //         if ($request->tipo == "5") {
-        //             TrackingArchivoTemporal::create([
-        //                 'id_usuario' => session('usuario')->id_usuario,
-        //                 'tipo' => $request->tipo,
-        //                 'id_producto' => $request->id_producto,
-        //                 'archivo' => $archivo
-        //             ]);
-        //         } else {
-        //             TrackingArchivoTemporal::create([
-        //                 'id_usuario' => session('usuario')->id_usuario,
-        //                 'tipo' => $request->tipo,
-        //                 'archivo' => $archivo
-        //             ]);
-        //         }
-        //     } else {
-        //         echo "Archivo no subido correctamente";
-        //     }
-        // } else {
-        //     echo "No se conecto";
-        // }
+                // dd($nombre_soli);
+                return response()->json([
+                    'success' => 'Archivo subido correctamente a local y FTP',
+                    'url_local' => $archivo_local,
+                    'url_ftp' => $archivo_ftp,
+                    'identificador' => $nombre_soli
+                ]);
+            } else {
+                return response()->json(['error' => 'No se pudo subir el archivo al servidor FTP'], 500);
+            }
+        } else {
+            return response()->json(['error' => 'No se pudo conectar al servidor FTP'], 500);
+        }
     }
 }
