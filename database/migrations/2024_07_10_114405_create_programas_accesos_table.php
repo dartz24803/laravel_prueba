@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('programas_accesos', function (Blueprint $table) {
             $table->id(); // Crea una columna 'id' que es auto incremental y clave primaria
-            $table->unsignedBigInteger('area')->nullable();
+            $table->unsignedBigInteger('area');
             $table->unsignedBigInteger('puesto')->nullable();
             $table->string('programa', 255)->nullable();
             $table->integer('estado')->nullable();
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
             $table->foreign('puesto')->references('id_puesto')->on('puesto');
-            $table->foreign('area')->references('id_area')->on('area');
+            $table->foreign('area','pacc_fk_id_are')->references('id_area')->on('area');
         });
     }
 
