@@ -48,7 +48,7 @@ return new class extends Migration
             $table->integer('situacion')->nullable(); //NO SIRVE (BORRADO)
             $table->integer('enfermedades')->nullable(); //NO SIRVE (BORRADO)
             $table->integer('alergia')->nullable(); //NO SIRVE (BORRADO)
-            $table->string('centro_labores',10)->nullable(); //NO SIRVE
+            $table->string('centro_labores',10)->nullable(); //NO SIRVE (BORRADO)
             $table->unsignedBigInteger('id_puesto_evaluador');
             $table->unsignedBigInteger('id_evaluador');
             $table->integer('flag_email')->nullable();

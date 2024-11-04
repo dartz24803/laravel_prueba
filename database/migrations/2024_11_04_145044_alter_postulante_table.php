@@ -24,6 +24,7 @@ return new class extends Migration
             $table->dropColumn('situacion');
             $table->dropColumn('enfermedades');
             $table->dropColumn('alergia');
+            $table->dropColumn('centro_labores');
             $table->dropColumn('acceso');
             $table->dropColumn('ip_acceso');
             $table->dropColumn('aprobado');
@@ -48,6 +49,7 @@ return new class extends Migration
             $table->integer('situacion')->nullable()->after('fec_nac');
             $table->integer('enfermedades')->nullable()->after('situacion');
             $table->integer('alergia')->nullable()->after('enfermedades');
+            $table->string('centro_labores',10)->nullable()->after('alergia');
             $table->integer('acceso')->nullable()->after('user_eli');
             $table->string('ip_acceso',25)->nullable()->after('acceso');
             $table->integer('aprobado')->nullable()->after('estado_postulacion');
