@@ -52,7 +52,7 @@
 
             <div class="col-lg-12" id="sububicacion-containere" style="display: none;">
                 <div class="row">
-                    <div class="form-group col-lg-4 offset-lg-2" id="thirdlist-container" style="visibility: hidden;">
+                    <div class="form-group col-lg-4 offset-lg-2" id="thirdlist-containere" style="visibility: hidden;">
                         <select class="form-control" id="idsoporte_area_especificae" name="idsoporte_area_especificae">
                             <option value="{{ $get_id->idsoporte_area_especifica }}" selected>
                                 {{ $get_id->area_nombre }}
@@ -143,7 +143,7 @@
             </div>
 
             <div class="form-group col-lg-10">
-                <textarea class="form-control" name="descripcione" id="descripcione" rows="5">{{ $get_id->descripcion }}</textarea>
+                <textarea class="form-control" name="descripcione" id="descripcione" rows="5" maxlength="150">{{ $get_id->descripcion }}</textarea>
             </div>
         </div>
 
@@ -153,7 +153,7 @@
             </div>
 
             <div class="form-group col-lg-12 d-flex justify-content-center" id="div_camara_e" style="display: none;">
-                <video id="video_e" autoplay style="max-width: 95%;"></video>
+                <video id="video_e" autoplay style="max-width: 95%; display: none;"></video>
             </div>
 
             <div class="form-group col-lg-12 text-center" id="div_tomar_foto_e" style="display:none !important;">
@@ -164,19 +164,13 @@
                 <canvas id="canvas_e" width="640" height="480" style="max-width:95%;"></canvas>
             </div>
 
-            <div class="d-flex justify-content-center" style="max-width: 100%;" id="div_imagenes">
-                <input type="hidden" id="imagenes_input" name="imagenes" value="">
 
-                <div id="imagenes_container_e" class="carousel-container">
-                    <!-- Las imágenes se añadirán aquí dinámicamente -->
-                </div>
-            </div>
 
         </div>
 
         <div class="row" id="cancel-row">
             <div class="d-flex justify-content-center" style="max-width: 100%;" id="div_imageneseditar">
-                <input type="hidden" id="imagenes_input" name="imagenes" value="">
+                <input type="hidden" id="imagenes_inpute" name="imagenes" value="">
 
                 <div id="imagenes_containereditar" class="carousel-container">
                     <!-- Las imágenes se añadirán aquí dinámicamente -->
@@ -186,7 +180,7 @@
                         $imgUrl=$get_id->{'img' . $i}; // Accede a img1, img2, img3
                         @endphp
                         @if ($imgUrl)
-                        <div class="text-center my-2" id="contenedor-imagen-{{ $i }}"> <!-- Contenedor específico para cada imagen -->
+                        <div class="text-center my-2" id="contenedor-imagen-{{ $i }}">
                             <img src="{{ $imgUrl }}" alt="Captura de soporte" class="img-thumbnail" style="max-width: 95%; display: block;">
 
                             <!-- Botón para abrir en nueva pestaña -->
@@ -286,7 +280,7 @@
                             `<option value="${area.idsoporte_area_especifica}">${area.nombre}</option>`
                         );
                     });
-                    $('#thirdlist-container').css('visibility', 'visible');
+                    $('#thirdlist-containere').css('visibility', 'visible');
                     subUbicacionCont.style.display = 'block';
 
                     // Seleccionar el área predefinida si existe
@@ -294,7 +288,7 @@
                         $('#idsoporte_area_especificae').val(areaSeleccionada);
                     }
                 } else {
-                    $('#thirdlist-container').css('visibility', 'hidden');
+                    $('#thirdlist-containere').css('visibility', 'hidden');
                     subUbicacionCont.style.display = 'none';
                 }
             },
@@ -371,7 +365,7 @@
         var subSedeSelect = document.getElementById('idsoporte_nivele');
         var thirdSedeSelect = document.getElementById('idsoporte_area_especificae');
         var sublistContainer = document.getElementById('sublist-container');
-        var thirdContainer = document.getElementById('thirdlist-container');
+        var thirdContainer = document.getElementById('thirdlist-containere');
 
         // Función manejadora para "sede"
         function handleSedeChange() {
@@ -537,18 +531,20 @@
 
 
     // ACTIVACIÓN DE CÁMARA
-    var video = document.getElementById('video_e');
-    var boton = document.getElementById('boton_camara_e');
-    var div_tomar_foto = document.getElementById('div_tomar_foto_e');
-    var div = document.getElementById('div_camara_e');
     var isCameraOn = false;
-    var stream = null;
+    var stream;
 
     function Activar_Camara() {
         var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        var video = document.getElementById("video_e");
+        var boton = document.getElementById("boton_camara_e");
+        var div_tomar_foto = document.getElementById("div_tomar_foto_e");
+        var div = document.getElementById("div_camara_e");
+
+
         if (screenWidth < 1000) {
             if (!isCameraOn) {
-                //Pedir permiso para acceder a la cámara
+                // Pedir permiso para acceder a la cámara
                 navigator.mediaDevices.getUserMedia({
                         video: {
                             facingMode: {
@@ -558,68 +554,70 @@
                     })
                     .then(function(newStream) {
                         stream = newStream;
-                        // Mostrar el stream de la cámara en el elemento de video
                         video.srcObject = stream;
+                        video.style.display = "block"; // Mostrar el video
                         video.play();
                         isCameraOn = true;
                         boton.textContent = "Desactivar cámara";
-                        div_tomar_foto.style.cssText = "display: block;";
-                        div.style.cssText = "display: block;";
+                        div_tomar_foto.style.display = "block";
+                        div.style.display = "block";
                     })
                     .catch(function(error) {
                         console.error('Error al acceder a la cámara:', error);
                     });
             } else {
-                //Detener la reproducción  del stream y liberar la cámara
+                // Detener la cámara
                 if (stream) {
                     stream.getTracks().forEach(function(track) {
                         track.stop();
                     });
                     video.srcObject = null;
+                    video.style.display = "none"; // Ocultar el video
                     isCameraOn = false;
                     boton.textContent = "Activar cámara";
-                    div_tomar_foto.style.cssText = "display: none !important;";
-                    div.style.cssText = "display: none !important;";
+                    div_tomar_foto.style.display = "none";
+                    div.style.display = "none";
                 }
             }
         } else {
             if (!isCameraOn) {
-                //Pedir permiso para acceder a la cámara
+                // Pedir permiso para acceder a la cámara
                 navigator.mediaDevices.getUserMedia({
                         video: true
                     })
                     .then(function(newStream) {
                         stream = newStream;
-                        // Mostrar el stream de la cámara en el elemento de video
                         video.srcObject = stream;
+                        video.style.display = "block"; // Mostrar el video
                         video.play();
                         isCameraOn = true;
                         boton.textContent = "Desactivar cámara";
-                        div_tomar_foto.style.cssText = "display: block;";
-                        div.style.cssText = "display: block;";
+                        div_tomar_foto.style.display = "block";
+                        div.style.display = "block";
                     })
                     .catch(function(error) {
                         console.error('Error al acceder a la cámara:', error);
                     });
             } else {
-                //Detener la reproducción  del stream y liberar la cámara
+                // Detener la cámara
                 if (stream) {
                     stream.getTracks().forEach(function(track) {
                         track.stop();
                     });
                     video.srcObject = null;
+                    video.style.display = "none"; // Ocultar el video
                     isCameraOn = false;
                     boton.textContent = "Activar cámara";
-                    div_tomar_foto.style.cssText = "display: none !important;";
-                    div.style.cssText = "display: none !important;";
+                    div_tomar_foto.style.display = "none";
+                    div.style.display = "none";
                 }
             }
         }
     }
 
+
     function Tomar_Foto() {
-        // Verifica cuántas imágenes ya se han subido
-        var divImagenes = document.getElementById('imagenes_container_e');
+        var divImagenes = document.getElementById('imagenes_containereditar');
         var imagenes = divImagenes.getElementsByTagName('img');
 
         if (imagenes.length >= 3) {
@@ -627,7 +625,6 @@
                 title: '¡Carga Denegada!',
                 text: "¡No se puede tomar más de 3 capturas!",
                 type: 'error',
-                showCancelButton: false,
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'OK',
             });
@@ -648,11 +645,9 @@
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         canvas.toBlob(function(blob) {
-            // Crea un formulario para enviar la imagen al servidor
             dataString.append('photo', blob, 'photo.jpg');
             dataString.append('tipo', 2);
 
-            // Realiza la solicitud AJAX
             $.ajax({
                 url: url,
                 data: dataString,
@@ -660,28 +655,39 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    if (response == "error") {
+                    if (response === "error") {
                         Swal({
                             title: '¡Carga Denegada!',
                             text: "¡No se puede tomar más de 3 capturas!",
                             type: 'error',
-                            showCancelButton: false,
                             confirmButtonColor: '#3085d6',
                             confirmButtonText: 'OK',
                         });
                     } else {
                         var ftpUrl = response.url_ftp;
                         MostrarFoto(ftpUrl);
+
+                        // Llamada a actualizarInput para asegurar que las URLs estén actualizadas en el input
+                        actualizarInput();
                     }
                 }
             });
         }, 'image/jpeg');
     }
 
+    function actualizarInput() {
+        var divImagenes = document.getElementById('imagenes_containereditar');
+        var imagenesInput = document.getElementById('imagenes_inpute');
 
+        var imagenes = divImagenes.getElementsByTagName('img');
+        var urls = [];
 
+        for (var i = 0; i < imagenes.length; i++) {
+            urls.push(imagenes[i].src);
+        }
 
-
+        imagenesInput.value = JSON.stringify(urls);
+    }
 
 
     function abrirEnNuevaPestana(event, url) {
@@ -692,26 +698,16 @@
     function eliminarImagen(event, index) {
         event.preventDefault(); // Previene el envío del formulario
         // Imprime el índice para verificar que se está pasando correctamente
-        console.log("Intentando eliminar la imagen con índice:", index);
         const contenedorImagen = document.getElementById('contenedor-imagen-' + index);
-        console.log("Contenedor de imagen encontrado:", contenedorImagen);
 
         if (contenedorImagen) {
             contenedorImagen.remove(); // Elimina el contenedor de imagen
             actualizarInput(); // Llama a una función para actualizar el input si es necesario
-            console.log("Imagen eliminada correctamente");
         } else {
             console.error("No se pudo encontrar el contenedor de imagen con ID:", 'contenedor-imagen-' + index);
         }
     }
 
-
-    // Función para actualizar el input (ajusta según tus necesidades)
-    function actualizarInput() {
-        const contenedoresImagen = document.querySelectorAll('[id^="contenedor-imagen-"]');
-        const imagenes = Array.from(contenedoresImagen).map(cont => cont.querySelector('img').src);
-        document.getElementById('imagenes_input').value = imagenes.join(','); // Actualiza el input con las URLs restantes
-    }
 
     function MostrarFoto(ftpUrl) {
         // Selecciona el contenedor donde se mostrarán las imágenes

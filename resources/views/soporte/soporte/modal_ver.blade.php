@@ -297,6 +297,9 @@
                                                 @case(4)
                                                 Stand By
                                                 @break
+                                                @case(5)
+                                                Cancelado
+                                                @break
                                                 @default
                                                 Desconocido
                                                 @endswitch
@@ -519,11 +522,13 @@
             rucField.style.display = 'none';
         }
     }
-    let expanded = false; // Cambiado a false para que inicialmente no esté expandido
+
+    let expanded = false;
 
     function toggleDescripcion(event) {
-        event.preventDefault(); // Previene el envío del formulario
+        event.preventDefault();
         const container = document.getElementById('descripcionContainer');
+        // expanded = !expanded;
         const descriptionText = document.getElementById('descripcionText');
 
         // Cambiar el texto del botón según el estado

@@ -53,7 +53,7 @@
                     ? '#b0f02b'
                     : ($list->status_completado == true
                         ? '#3af1be'
-                        : (($list->estado_registro == 4 ||  $list->estado_registro_sr == 4)
+                        : ($list->status_stand_by == true
                             ? '#f3b952'
                             : '#9edef8'))) }};
             border-radius: 14px; padding: 1px; width: 80px; color: white; text-align: center; margin-right: 10px;">
@@ -63,9 +63,9 @@
                         En Proceso
                         @elseif ($list->status_completado == true)
                         Completado
-                        @elseif ($list->estado_registro == 4 || $list->estado_registro_sr == 4)
+                        @elseif ($list->status_stand_by == true)
                         Stand By
-                        @elseif ($list->estado_registro == 5 || $list->estado_registro_sr == 5)
+                        @elseif ($list->status_cancelado == true)
                         Cancelado
                         @endif
                     </div>
@@ -85,10 +85,11 @@
                             <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
                                 data-target="#ModalUpdate"
                                 app_elim="{{ url('soporte_ticket_master/ver/' . $list['id_soporte']) }}">Ver</a>
-                            @if ($list->idsoporte_motivo_cancelacion != 1 && $list->estado_registro != 5)
+                            @if ($list->status_cancelado != true)
                             <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
                                 data-target="#ModalUpdate"
                                 app_elim="{{ url('soporte_ticket_master/edit/' . $list['id_soporte']) }}">Editar</a>
+
                             <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
                                 data-target="#ModalUpdate"
                                 app_elim="{{ url('soporte_ticket_master/cancelar/' . $list['id_soporte']) }}">Cancelar</a>

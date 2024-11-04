@@ -405,6 +405,7 @@ Route::controller(SoporteController::class)->group(function () {
     Route::get('soporte_areaespecifica_por_nivel', 'getAreaEspeficaPorNivel')->name('soporte_areaespecifica_por_nivel');
     Route::get('elemento_por_especialidad', 'getElementoPorEspecialidad')->name('elemento_por_especialidad');
     Route::get('asunto_por_elemento', 'getAsuntoPorElemento')->name('asunto_por_elemento');
+    Route::get('responsable_por_area', 'getResponsableByArea')->name('responsable_por_area');
 
 
     // SOPORTE MASTER

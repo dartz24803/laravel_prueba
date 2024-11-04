@@ -232,6 +232,8 @@
                                                 @break
                                                 @case(4)
                                                 Stand By
+                                                @case(5)
+                                                Cancelado
                                                 @break
                                                 @default
                                                 Desconocido

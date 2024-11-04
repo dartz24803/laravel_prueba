@@ -206,7 +206,7 @@
             </div>
             <div class="form-group col-lg-10">
                 <textarea class="form-control" id="descripcion" name="descripcion" rows="3"
-                    placeholder="Ingresar descripción"></textarea>
+                    placeholder="Ingresar descripción" maxlength="150"></textarea>
             </div>
         </div>
 
@@ -714,6 +714,7 @@
         for (var i = 0; i < imagenes.length; i++) {
             urls.push(imagenes[i].src);
         }
+
 
         // Almacenar las URLs como un array en formato JSON en el input
         imagenesInput.value = JSON.stringify(urls);

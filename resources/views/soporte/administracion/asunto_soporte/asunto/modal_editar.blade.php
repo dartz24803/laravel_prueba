@@ -22,6 +22,7 @@
                 </select>
 
             </div>
+
             <div class="form-group col-lg-6">
                 <label>Tipo de Soporte:</label>
                 <select class="form-control" name="tipo_soportee" id="tipo_soportee">
@@ -32,6 +33,27 @@
                     @endforeach
                 </select>
             </div>
+
+            <div class="form-group col-lg-12">
+                <label>¿Requiere más evidencia?</label>
+                <span title="Cantidad mínima será 3 imágenes." style="display: inline-block; cursor: pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-info">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                </span>
+                <br>
+                <label for="requires_evidence_yes">
+                    <input type="radio" id="requires_evidence_yes" name="requires_evidence" value="1" {{ $get_id->evidencia_adicional == 1 ? 'checked' : '' }}>
+                    Sí
+                </label>
+                <label for="requires_evidence_no" style="margin-left: 20px;">
+                    <input type="radio" id="requires_evidence_no" name="requires_evidence" value="0" {{ $get_id->evidencia_adicional == 0 ? 'checked' : '' }}>
+                    No
+                </label>
+            </div>
+
 
             <div class="form-group col-lg-12">
                 <label>Área Responsable:</label>

@@ -21,6 +21,7 @@ class AsuntoSoporte extends Model
         'descripcion',
         'id_area',
         'responsable_multiple',
+        'evidencia_adicional',
         'idsoporte_elemento',
         'idsoporte_tipo',
         'estado',

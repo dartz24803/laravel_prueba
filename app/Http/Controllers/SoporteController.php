@@ -55,6 +55,7 @@ use App\Models\User;
 use App\Models\Usuario;
 use Carbon\Carbon;
 use Exception;
+use Google\Service\AndroidEnterprise\Resource\Users;
 use PHPMailer\PHPMailer\PHPMailer;
 
 class SoporteController extends Controller
@@ -92,14 +93,14 @@ class SoporteController extends Controller
 
             if (($ticket->estado_registro_sr == 3 && $ticket->estado_registro == 3) || ($ticket->estado_registro == 3 && $multirepsonsable == 0)) {
                 $ticket->status_completado = true;
-            } elseif ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2) {
-                $ticket->status_enproceso = true;
+            } elseif ($ticket->estado_registro_sr == 5 || $ticket->estado_registro == 5) {
+                $ticket->status_cancelado = true;
             } elseif ($ticket->estado_registro_sr == 1 || $ticket->estado_registro == 1) {
                 $ticket->status_poriniciar = true;
             } elseif ($ticket->estado_registro_sr == 4 || $ticket->estado_registro == 4) {
                 $ticket->status_standby = true;
-            } elseif ($ticket->estado_registro_sr == 5 || $ticket->estado_registro == 5) {
-                $ticket->status_cancelado = true;
+            } elseif ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2) {
+                $ticket->status_enproceso = true;
             } else {
                 $ticket->status_enproceso = true;
             }
@@ -288,9 +289,7 @@ class SoporteController extends Controller
         } else {
             $codigo_generado = 'Código no disponible';
         }
-
         // GENERECIÓN DE CÓDIGO
-
 
         $soporte_solucion = SoporteSolucion::create([
             'estado_solucion' => 0,
@@ -342,49 +341,19 @@ class SoporteController extends Controller
             }
             // Inicializar un array para almacenar los resultados
             $resultados = [];
-
-            foreach ($imagenes as $url) {
-                // Obtener la extensión de la imagen
-                $extension = pathinfo($url, PATHINFO_EXTENSION);
-                $nombre_soli = "soporte_" . session('usuario')->id_usuario . "_" . date('YmdHis') . "_" . uniqid(); // Usar uniqid para evitar nombres duplicados
-                $nombre = $nombre_soli . '.' . strtolower($extension);
-                $ftp_upload_path = "SOPORTE/" . $nombre;
-
-                // Descargamos la imagen temporalmente
-                $source_file = tempnam(sys_get_temp_dir(), 'ftp_'); // Crear un archivo temporal
-                file_put_contents($source_file, file_get_contents($url)); // Descargar la imagen
-
-                // Subir el archivo al FTP
-                $subio = ftp_put($con_id, $ftp_upload_path, $source_file, FTP_BINARY);
-
-                // Borrar el archivo temporal
-                unlink($source_file);
-
-                if ($subio) {
-                    // Obtener URL del archivo en almacenamiento local para referencia
-                    $archivo_ftp = "https://lanumerounocloud.com/intranet/SOPORTE/" . $nombre;
-
-                    // Almacenar el resultado
-                    $resultados[] = [
-                        'url_ftp' => $archivo_ftp,
-                        'identificador' => $nombre_soli
-                    ];
-                } else {
-                    // Manejo de errores si no se pudo subir la imagen
-                    return response()->json(['error' => 'No se pudo subir la imagen ' . $nombre . ' al servidor FTP'], 500);
-                }
+            // Subida de imágenes
+            $resultados = $this->uploadImages($imagenes, $con_id);
+            if (!$resultados) {
+                return response()->json(['error' => 'No se pudo subir alguna imagen'], 500);
             }
-
-            // Cerrar conexión FTP
+            // Eliminación de archivos temporales en SOPORTE/TEMPORAL
+            $this->deleteTempFiles($con_id, "SOPORTE/TEMPORAL/");
             ftp_close($con_id);
-
             // Obtener los campos de imagen
             $img1 = isset($resultados[0]) ? $resultados[0]['url_ftp'] : '';
             $img2 = isset($resultados[1]) ? $resultados[1]['url_ftp'] : '';
             $img3 = isset($resultados[2]) ? $resultados[2]['url_ftp'] : '';
-
             $idSede = SedeLaboral::obtenerIdSede();
-
             // Almacenar la información de soporte en la base de datos
             Soporte::create([
                 'codigo' => $codigo_generado,
@@ -422,9 +391,42 @@ class SoporteController extends Controller
             return response()->json(['error' => 'No se pudo conectar al servidor FTP'], 500);
         }
 
-
         return redirect()->back()->with('success', 'Reporte registrado con éxito.');
     }
+
+
+    protected function uploadImages($imagenes, $ftp_connection)
+    {
+        $resultados = [];
+        foreach ($imagenes as $url) {
+            $extension = pathinfo($url, PATHINFO_EXTENSION);
+            $nombre_soli = "soporte_" . session('usuario')->id_usuario . "_" . date('YmdHis') . "_" . uniqid();
+            $nombre = $nombre_soli . '.' . strtolower($extension);
+            $ftp_upload_path = "SOPORTE/" . $nombre;
+
+            $source_file = tempnam(sys_get_temp_dir(), 'ftp_');
+            file_put_contents($source_file, file_get_contents($url));
+
+            if (ftp_put($ftp_connection, $ftp_upload_path, $source_file, FTP_BINARY)) {
+                $archivo_ftp = "https://lanumerounocloud.com/intranet/SOPORTE/" . $nombre;
+                $resultados[] = ['url_ftp' => $archivo_ftp, 'identificador' => $nombre_soli];
+            }
+
+            unlink($source_file);
+        }
+        return $resultados;
+    }
+
+    protected function deleteTempFiles($ftp_connection, $temp_folder)
+    {
+        $file_list = ftp_nlist($ftp_connection, $temp_folder);
+        foreach ($file_list as $file) {
+            if (!in_array(basename($file), ['.', '..'])) {
+                ftp_delete($ftp_connection, $file);
+            }
+        }
+    }
+
 
     public function ver_tick($id_soporte)
     {
@@ -441,6 +443,29 @@ class SoporteController extends Controller
         }
         $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
         return view('soporte.soporte.modal_ver', compact('get_id', 'list_areas_involucradas', 'ejecutoresMultiples', 'comentarios'));
+
+
+
+        $ticket->status_poriniciar = false;
+        $ticket->status_enproceso = false;
+        $ticket->status_completado = false;
+        $ticket->status_standby = false;
+        $ticket->status_cancelado = false;
+        $multirepsonsable = Soporte::getResponsableMultipleByAsunto($ticket->id_asunto);
+
+        if (($ticket->estado_registro_sr == 3 && $ticket->estado_registro == 3) || ($ticket->estado_registro == 3 && $multirepsonsable == 0)) {
+            $ticket->status_completado = true;
+        } elseif ($ticket->estado_registro_sr == 5 || $ticket->estado_registro == 5) {
+            $ticket->status_cancelado = true;
+        } elseif ($ticket->estado_registro_sr == 1 || $ticket->estado_registro == 1) {
+            $ticket->status_poriniciar = true;
+        } elseif ($ticket->estado_registro_sr == 4 || $ticket->estado_registro == 4) {
+            $ticket->status_standby = true;
+        } elseif ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2) {
+            $ticket->status_enproceso = true;
+        } else {
+            $ticket->status_enproceso = true;
+        }
     }
 
     public function update_tick(Request $request, $id)
@@ -457,23 +482,68 @@ class SoporteController extends Controller
         ];
         $request->validate($rules, $messages);
 
-        // dd($request->all());
         $idSede = SedeLaboral::obtenerIdSede();
 
-        Soporte::findOrFail($id)->update([
-            'id_sede' =>  $idSede,
-            'idsoporte_nivel' =>  $request->idsoporte_nivele,
-            'idsoporte_area_especifica' => $request->idsoporte_area_especificae,
-            'fec_vencimiento' =>  $request->fec_vencimiento,
-            'id_especialidad' =>  $request->especialidade,
-            'id_elemento' => $request->elementoe  ?? 6,
-            'id_asunto' => $request->asuntoe ?? 9,
-            'descripcion' => $request->descripcione,
-            'id_area' => $request->areae,
-            'estado_registro' => 1,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
+        // Almacenar Imagenes
+        $ftp_server = "lanumerounocloud.com";
+        $ftp_usuario = "intranet@lanumerounocloud.com";
+        $ftp_pass = "Intranet2022@";
+        $con_id = ftp_connect($ftp_server);
+        $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+
+        if ($con_id && $lr) {
+            // Decodificar las URLs de las imágenes desde el request
+            // $imagenes = json_decode($request->input('imagenes_inpute'), true);
+            $imagenes = json_decode($request->input('imagenes'), true);
+            // dd($imagenes);
+            // if (!$imagenes || !is_array($imagenes)) {
+            //     return response()->json([
+            //         'error' => 'Debe Cargar almenos una foto'
+            //     ], 400);
+            // }
+            // Inicializar un array para almacenar los resultados
+            $resultados = [];
+
+            $resultados = $this->uploadImages($imagenes, $con_id);
+            if (!$resultados) {
+                return response()->json(['error' => 'No se pudo subir alguna imagen'], 500);
+            }
+            // Eliminación de archivos temporales en SOPORTE/TEMPORAL
+            $this->deleteTempFiles($con_id, "SOPORTE/TEMPORAL/");
+            // Cerrar conexión FTP
+            ftp_close($con_id);
+            // Obtener los campos de imagen
+            $img1 = isset($resultados[0]) ? $resultados[0]['url_ftp'] : '';
+            $img2 = isset($resultados[1]) ? $resultados[1]['url_ftp'] : '';
+            $img3 = isset($resultados[2]) ? $resultados[2]['url_ftp'] : '';
+
+            $idSede = SedeLaboral::obtenerIdSede();
+            Soporte::findOrFail($id)->update([
+                'id_sede' =>  $idSede,
+                'idsoporte_nivel' =>  $request->idsoporte_nivele,
+                'idsoporte_area_especifica' => $request->idsoporte_area_especificae,
+                'fec_vencimiento' =>  $request->fec_vencimiento,
+                'id_especialidad' =>  $request->especialidade,
+                'id_elemento' => $request->elementoe  ?? 6,
+                'id_asunto' => $request->asuntoe ?? 9,
+                'descripcion' => $request->descripcione,
+                'id_area' => $request->areae,
+                'estado_registro' => 1,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+                'img1' => $img1,
+                'img2' => $img2,
+                'img3' => $img3
+            ]);
+
+
+            return response()->json([
+                'success' => 'Imágenes subidas correctamente al servidor FTP',
+                'resultados' => $resultados
+            ]);
+        } else {
+            return response()->json(['error' => 'No se pudo conectar al servidor FTP'], 500);
+        }
     }
 
     public function destroy_tick($id)
@@ -557,47 +627,33 @@ class SoporteController extends Controller
     public function list_tick_master()
     {
         $id_subgerencia = session('id_subgerenciam');
-
-        // Obtener la lista de procesos con los campos requeridos
         $list_tickets_soporte = Soporte::listTicketsSoporteMaster($id_subgerencia);
 
-        // VALIDACIÓN DE ESTADOS EN PROCESO Y COMPLETADO PARA CADA MODULO
         $list_tickets_soporte = $list_tickets_soporte->map(function ($ticket) use ($id_subgerencia) {
-
             $ticket->status_poriniciar = false;
-            if ($id_subgerencia == "10" && ($ticket->estado_registro_sr == 1 || $ticket->estado_registro == 1)) {
-                $ticket->status_poriniciar = true;
-            } elseif ($id_subgerencia == "9" && ($ticket->estado_registro_sr == 1 || $ticket->estado_registro == 1)) {
-                $ticket->status_poriniciar = true;
-            } elseif ($ticket->estado_registro == 1) {
-                $ticket->status_poriniciar = true;
-            } else {
-                $ticket->status_poriniciar = false;
-            }
-
             $ticket->status_enproceso = false;
-            if ($id_subgerencia == "10" && ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2)) {
-                $ticket->status_enproceso = true;
-            } elseif ($id_subgerencia == "9" && ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2)) {
-                $ticket->status_enproceso = true;
-            } elseif ($ticket->estado_registro == 2) {
-                $ticket->status_enproceso = true;
-            } else {
-                $ticket->status_enproceso = false;
-            }
-
-
             $ticket->status_completado = false;
-            if ($id_subgerencia == "10" && ($ticket->estado_registro_sr == 3 || $ticket->estado_registro == 3)) {
+            $ticket->status_stand_by = false;
+            $ticket->status_cancelado = false;
+
+            $isSubgerencia9or10 = in_array($id_subgerencia, ["9", "10"]);
+
+            // Evaluar y asignar un único estado según las condiciones
+            if (($isSubgerencia9or10 && ($ticket->estado_registro_sr == 5 || $ticket->estado_registro == 5)) || $ticket->estado_registro == 5) {
+                $ticket->status_cancelado = true;
+            } elseif (($isSubgerencia9or10 && ($ticket->estado_registro_sr == 1 || $ticket->estado_registro == 1)) || $ticket->estado_registro == 1) {
+                $ticket->status_poriniciar = true;
+            } elseif (($isSubgerencia9or10 && ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2)) || $ticket->estado_registro == 2) {
+                $ticket->status_enproceso = true;
+            } elseif (($isSubgerencia9or10 && ($ticket->estado_registro_sr == 3 || $ticket->estado_registro == 3)) || $ticket->estado_registro == 3) {
                 $ticket->status_completado = true;
-            } elseif ($id_subgerencia == "9" && ($ticket->estado_registro_sr == 3 || $ticket->estado_registro == 3)) {
-                $ticket->status_completado = true;
-            } else {
-                $ticket->status_completado = false;
+            } elseif (($isSubgerencia9or10 && ($ticket->estado_registro_sr == 4 || $ticket->estado_registro == 4)) || $ticket->estado_registro == 4) {
+                $ticket->status_stand_by = true;
             }
             return $ticket;
         });
         // dd($list_tickets_soporte);
+
         return view('soporte.soporte_master.lista', compact('list_tickets_soporte'));
     }
 
@@ -904,6 +960,7 @@ class SoporteController extends Controller
 
 
         $get_id = Soporte::getTicketById($id);
+
         return view('soporte.soporte_master.modal_cancelar', compact('get_id', 'list_area', 'list_motivos_cancelacion'));
     }
 
@@ -911,6 +968,7 @@ class SoporteController extends Controller
     public function cancel_update_tick_master(Request $request, $id)
     {
         $get_id = Soporte::getTicketById($id);
+        // dd($request->id_responsable);
         if ($request->motivo == 1) {
             $soporteActualizado  = Soporte::findOrFail($id)->update([
                 'idsoporte_motivo_cancelacion' => $request->motivo,
@@ -948,10 +1006,7 @@ class SoporteController extends Controller
                     $codigofinal = $requerimiento . "-" . $cod_area . "-0" . ($totalRows_t + 1);
                 }
                 $dato['cod_pendiente'] = $codigofinal;
-                // LÓGICA DE ANTIGUO INTRANET PARA CREAR CÓDIGO_PENDIENTE EN TAREAS
-                if (is_null($get_id->id_responsable)) {
-                    return response()->json(['error' => 'No hay responsable asignado.'], 400);
-                }
+
 
                 Pendiente::create([
                     'id_usuario' => $get_id->user_reg,
@@ -963,7 +1018,7 @@ class SoporteController extends Controller
                     'id_item' => 0,
                     'id_subitem' => 0,
                     'id_subsubitem' => 0,
-                    'id_responsable' =>  $get_id->id_responsable,
+                    'id_responsable' =>  $request->id_responsable,
                     'id_prioridad' => 0,
                     'descripcion' => $get_id->nombre_asunto . '-' . $get_id->descripcion,
                     'envio_mail' => 0,
@@ -980,38 +1035,38 @@ class SoporteController extends Controller
                 ]);
             }
         } else {
-            $mail = new PHPMailer(true);
-            try {
-                $mail->SMTPDebug = 0;
-                $mail->isSMTP();
-                $mail->Host       =  'mail.lanumero1.com.pe';
-                $mail->SMTPAuth   =  true;
-                $mail->Username   =  'intranet@lanumero1.com.pe';
-                $mail->Password   =  'lanumero1$1';
-                $mail->SMTPSecure =  'tls';
-                $mail->Port     =  587;
-                $mail->setFrom('intranet@lanumero1.com.pe', 'La Número 1');
+            // $mail = new PHPMailer(true);
+            // try {
+            //     $mail->SMTPDebug = 0;
+            //     $mail->isSMTP();
+            //     $mail->Host       =  'mail.lanumero1.com.pe';
+            //     $mail->SMTPAuth   =  true;
+            //     $mail->Username   =  'intranet@lanumero1.com.pe';
+            //     $mail->Password   =  'lanumero1$1';
+            //     $mail->SMTPSecure =  'tls';
+            //     $mail->Port     =  587;
+            //     $mail->setFrom('intranet@lanumero1.com.pe', 'La Número 1');
 
-                $mail->addAddress($get_id->usuario_email);
+            //     $mail->addAddress($get_id->usuario_email);
 
-                $mail->isHTML(true);
+            //     $mail->isHTML(true);
 
-                $mail->Subject = "Prueba de Soporte";
+            //     $mail->Subject = "Prueba de Soporte";
 
-                $mail->Body =  "<h1> Hola, " . $get_id->usuario_nombre . "</h1>
-                                <p>Su solicitud no puede proceder debido a la siguiente razón:</p>
-                                <p>Necesitamos más detalle y/o brindenos una mejor sustentación, le invitamos a que lo corriga.
-                                </p>
-                                <p>Gracias.<br>Atte. Grupo La Número 1</p>";
-                $mail->CharSet = 'UTF-8';
-                $mail->send();
+            //     $mail->Body =  "<h1> Hola, " . $get_id->usuario_nombre . "</h1>
+            //                     <p>Su solicitud no puede proceder debido a la siguiente razón:</p>
+            //                     <p>Necesitamos más detalle y/o brindenos una mejor sustentación, le invitamos a que lo corriga.
+            //                     </p>
+            //                     <p>Gracias.<br>Atte. Grupo La Número 1</p>";
+            //     $mail->CharSet = 'UTF-8';
+            //     $mail->send();
 
 
-                echo 'Nombre y Apellidos ' . $get_id->usuario_nombres .
-                    $get_id->usuario_amater . '<br>Correo: ' . $get_id->usuario_email;
-            } catch (Exception $e) {
-                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-            }
+            //     echo 'Nombre y Apellidos ' . $get_id->usuario_nombres .
+            //         $get_id->usuario_amater . '<br>Correo: ' . $get_id->usuario_email;
+            // } catch (Exception $e) {
+            //     echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+            // }
             Soporte::findOrFail($id)->update([
                 'idsoporte_motivo_cancelacion' => $request->motivo,
                 'estado_registro' => 5,
@@ -1019,6 +1074,13 @@ class SoporteController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
         }
+    }
+
+    public function getResponsableByArea(Request $request)
+    {
+        $areaId = $request->input('area');
+        $responsables = Usuario::get_list_responsable_area($areaId);
+        return response()->json($responsables);
     }
 
 

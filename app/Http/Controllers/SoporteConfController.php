@@ -163,7 +163,9 @@ class SoporteConfController extends Controller
             'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario,
-            'responsable_multiple' => $responsable_multiple
+            'responsable_multiple' => $responsable_multiple,
+            'evidencia_adicional' =>  $request->requires_evidencer
+
         ]);
 
         return redirect()->back()->with('success', 'Reporte registrado con éxito.');
@@ -200,7 +202,6 @@ class SoporteConfController extends Controller
         ]);
 
         $id_area_string = implode(',', $request->id_areaee);
-
         // Determinar si el id_area_string tiene una coma
         $responsable_multiple = (strpos($id_area_string, ',') !== false) ? 1 : 0;
 
@@ -212,7 +213,8 @@ class SoporteConfController extends Controller
             'descripcion' => $request->descripcione ?? '',
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario,
-            'responsable_multiple' => $responsable_multiple // Añadir el nuevo atributo
+            'responsable_multiple' => $responsable_multiple,
+            'evidencia_adicional' =>  $request->requires_evidence
         ]);
 
         return redirect()->back()->with('success', 'Reporte actualizado con éxito.'); // Asegúrate de redirigir después de la actualización

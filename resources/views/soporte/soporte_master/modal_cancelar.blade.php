@@ -47,6 +47,15 @@
             </div>
         </div>
 
+
+
+        <div class="row">
+            <div class="form-group col-lg-12">
+                <label class="control-label text-bold" id="id_responsable-label">Responsable: </label>
+                <select class="form-control" id="id_responsable" name="id_responsable">
+                </select>
+            </div>
+        </div>
     </div>
 
     <div class="modal-footer">
@@ -90,29 +99,46 @@
                 }
             },
             error: function(xhr) {
-                // Verificar si el error es debido a un responsable no asignado
-                if (xhr.status === 400 && xhr.responseJSON.error === 'No hay responsable asignado.') {
-                    Swal.fire(
-                        '¡Error!',
-                        'No hay responsable asignado. Por favor seleccione un responsable.',
-                        'error'
-                    );
-                } else {
-                    // Manejar otros errores
-                    var errors = xhr.responseJSON.errors;
-                    var firstError = Object.values(errors)[0][0];
-                    Swal.fire(
-                        '¡Ups!',
-                        firstError,
-                        'warning'
-                    );
-                }
+                var errors = xhr.responseJSON.errors;
+                var firstError = Object.values(errors)[0][0];
+                Swal.fire(
+                    '¡Ups!',
+                    firstError,
+                    'warning'
+                );
+
             }
 
         });
     }
 
+    $('#id_areac').on('change', function() {
+        const selectedArea = $(this).val();
+        var url = "{{ route('responsable_por_area') }}";
+        $.ajax({
+            url: url,
+            method: 'GET',
+            data: {
+                area: selectedArea
+            },
+            success: function(response) {
+                $('#id_responsable').empty().append('<option value="0">Seleccione</option>');
+                // Verificar si hay respuestas
+                if (response.length > 0) {
+                    $.each(response, function(index, responsable) {
+                        $('#id_responsable').append(
+                            `<option value="${responsable.id_usuario}">${responsable.usuario_nombres} ${responsable.usuario_apater} ${responsable.usuario_amater}</option>`
+                        );
 
+                    });
+
+                } else {}
+            },
+            error: function(xhr) {
+                console.error('Error al obtener elementos:', xhr);
+            }
+        });
+    });
 
 
 
@@ -130,16 +156,22 @@
         var idmotivo = document.getElementById('motivo').value;
         var cierreLabel = document.getElementById('id_areac-label');
         var cierreField = document.getElementById('id_areac');
+        var responsableLabel = document.getElementById('id_responsable-label');
+        var responsableField = document.getElementById('id_responsable');
         var estadoContainer = document.getElementById('estado-container');
         if (idmotivo == 1) {
             // Mostrar los campos de Cierre
             cierreLabel.style.display = 'block';
             cierreField.style.display = 'block';
+            responsableLabel.style.display = 'block';
+            responsableField.style.display = 'block';
 
         } else {
             // Ocultar los campos de Cierre
             cierreLabel.style.display = 'none';
             cierreField.style.display = 'none';
+            responsableLabel.style.display = 'none';
+            responsableField.style.display = 'none';
 
         }
     }
