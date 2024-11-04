@@ -1042,8 +1042,8 @@ class PostulanteController extends Controller
                     $mail->Port     =  587; 
                     $mail->setFrom('intranet@lanumero1.com.pe','Intranet La Número 1');
         
-                    //$mail->addAddress('rrhh@lanumero1.com.pe');
-                    $mail->addAddress('dpalomino@lanumero1.com.pe');
+                    $mail->addAddress('rrhh@lanumero1.com.pe');
+                    //$mail->addAddress('dpalomino@lanumero1.com.pe');
         
                     $mail->isHTML(true);
         
@@ -1272,8 +1272,8 @@ class PostulanteController extends Controller
                     $mail->Port     =  587; 
                     $mail->setFrom('intranet@lanumero1.com.pe','Intranet La Número 1');
 
-                    //$mail->addAddress($get_id->emailp);
-                    $mail->addAddress('dpalomino@lanumero1.com.pe');
+                    $mail->addAddress($get_id->emailp);
+                    //$mail->addAddress('dpalomino@lanumero1.com.pe');
 
                     $mail->isHTML(true);
         
