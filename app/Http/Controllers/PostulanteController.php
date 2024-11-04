@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Area;
 use App\Models\Base;
-use App\Models\Cargo;
 use App\Models\Departamento;
 use App\Models\Distrito;
 use App\Models\DomicilioUsers;
@@ -1336,7 +1335,7 @@ class PostulanteController extends Controller
 
                     UsersHistoricoPuesto::create([
                         'id_usuario' => $usuario->id_usuario,
-                        'id_ubicacion' => $usuario->id_ubicacion,
+                        'id_puesto' => $usuario->id_puesto,
                         'fec_inicio' => now(),
                         'estado' => 1,
                         'fec_reg' => now(),
