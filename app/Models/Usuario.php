@@ -16,7 +16,6 @@ class Usuario extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nuevo',
         'id_centro_labor',
         'id_ubicacion',
         'usuario_nombres',
@@ -37,11 +36,7 @@ class Usuario extends Model
         'asistencia',
         'id_horario',
         'horas_semanales',
-        'id_gerencia',
-        'id_sub_gerencia',
-        'id_area',
         'id_puesto',
-        'id_cargo',
         'id_empresa',
         'id_empresapl',
         'id_regimen',
@@ -177,11 +172,11 @@ class Usuario extends Model
     {
         $query = "SELECT u.id_usuario, u.usuario_nombres, u.usuario_apater, u.usuario_amater, u.usuario_codigo,
                 u.id_nivel, ub.cod_ubi AS centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,u.id_puesto,u.acceso,
-                u.ini_funciones,u.fec_reg,u.usuario_password,u.estado, n.nom_nivel, p.nom_puesto, a.nom_area, u.id_area,
-                (SELECT GROUP_CONCAT(puestos) FROM area WHERE estado=1 AND orden!='') AS grupo_puestos, u.id_gerencia,
+                u.ini_funciones,u.fec_reg,u.usuario_password,u.estado, n.nom_nivel, p.nom_puesto, a.nom_area, p.id_area,
+                (SELECT GROUP_CONCAT(puestos) FROM area WHERE estado=1 AND orden!='') AS grupo_puestos, sg.id_gerencia,
                 CASE WHEN u.urladm=1 THEN (select r.url_config from config r where r.descrip_config='Foto_Postulante'
                 and r.estado=1) else (select r.url_config from config r where r.descrip_config='Foto_colaborador'
-                and r.estado=1) end as url_foto,p.id_nivel as nivel_jerarquico,u.desvinculacion,u.id_cargo,
+                and r.estado=1) end as url_foto,p.id_nivel as nivel_jerarquico,u.desvinculacion,
                 pps.registro_masivo, visualizar_amonestacion(u.id_puesto) AS visualizar_amonestacion,
                 sl.descripcion AS sede_laboral,
                 pps.estado as estadopps, pps.registro_masivo, pps.id_puesto_permitido, u.id_centro_labor,
@@ -192,7 +187,8 @@ class Usuario extends Model
                 LEFT JOIN permiso_papeletas_salida pps ON u.id_puesto=pps.id_puesto_jefe AND pps.estado=1
                 LEFT JOIN nivel n ON u.id_nivel=n.id_nivel
                 LEFT JOIN puesto p ON u.id_puesto=p.id_puesto
-                LEFT JOIN area a ON u.id_area=a.id_area
+                LEFT JOIN area a ON p.id_area=a.id_area
+                LEFT JOIN sub_gerencia sg ON a.id_departamento=sg.id_sub_gerencia
                 LEFT JOIN ubicacion ub ON u.id_centro_labor=ub.id_ubicacion
                 LEFT JOIN sede_laboral sl ON ub.id_sede=sl.id
                 WHERE u.usuario_codigo='$usuario' AND u.estado IN (1,4) AND u.desvinculacion IN (0)";
