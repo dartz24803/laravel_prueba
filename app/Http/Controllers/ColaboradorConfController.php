@@ -365,7 +365,14 @@ class ColaboradorConfController extends Controller
 
     public function list_ar()
     {
-        $list_area = Area::get_list_area();
+        $list_area = Area::from('area AS ar')->select('ar.id_area','di.direccion','ge.nom_gerencia',
+                    'sg.nom_sub_gerencia','ar.nom_area','ar.cod_area',
+                    DB::raw("(SELECT GROUP_CONCAT(pu.nom_puesto) FROM puesto pu
+                    WHERE FIND_IN_SET(pu.id_puesto,ar.puestos)) AS puestos"),'ar.orden')
+                    ->join('sub_gerencia AS sg','sg.id_sub_gerencia','=','ar.id_departamento')
+                    ->join('gerencia AS ge','ge.id_gerencia','=','sg.id_gerencia')
+                    ->join('direccion AS di','di.id_direccion','=','ge.id_direccion')
+                    ->where('ar.estado',1)->get();
         return view('rrhh.administracion.colaborador.area.lista', compact('list_area'));
     }
 
