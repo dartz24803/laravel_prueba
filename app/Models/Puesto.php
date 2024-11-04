@@ -16,9 +16,6 @@ class Puesto extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_direccion',
-        'id_gerencia',
-        'id_departamento',
         'id_area',
         'nom_puesto',
         'proposito',

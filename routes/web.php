@@ -619,13 +619,6 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::delete('colaborador_conf_pu/{id}/funcion', 'delete_funcion_pu')->name('colaborador_conf_pu.delete_funcion');
     Route::post('colaborador_conf_pu/{id}/competencia', 'insert_competencia_pu')->name('colaborador_conf_pu.insert_competencia');
     Route::delete('colaborador_conf_pu/{id}/competencia', 'delete_competencia_pu')->name('colaborador_conf_pu.delete_competencia');
-    Route::get('colaborador_conf_ca', 'index_ca')->name('colaborador_conf_ca');
-    Route::get('colaborador_conf_ca/list', 'list_ca')->name('colaborador_conf_ca.list');
-    Route::get('colaborador_conf_ca/create', 'create_ca')->name('colaborador_conf_ca.create');
-    Route::post('colaborador_conf_ca', 'store_ca')->name('colaborador_conf_ca.store');
-    Route::get('colaborador_conf_ca/{id}/edit', 'edit_ca')->name('colaborador_conf_ca.edit');
-    Route::put('colaborador_conf_ca/{id}', 'update_ca')->name('colaborador_conf_ca.update');
-    Route::delete('colaborador_conf_ca/{id}', 'destroy_ca')->name('colaborador_conf_ca.destroy');
     Route::get('Index_Datacorp', 'Index_Datacorp');
     Route::post('Listar_Accesos_Datacorp', 'Listar_Accesos_Datacorp');
     Route::get('Modal_Registrar_Datacorp', 'Modal_Registrar_Datacorp');

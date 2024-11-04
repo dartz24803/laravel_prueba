@@ -68,20 +68,6 @@
             </div>
 
             <div class="form-group col-lg-2">
-                <label>Sede Laboral:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" name="id_sede_laboral" id="id_sede_laboral">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_sede_laboral as $list)
-                        <option value="{{ $list->id }}">{{ $list->descripcion }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="form-group col-lg-2">
                 <label>Cantidad:</label>
             </div>
             <div class="form-group col-lg-4">
