@@ -76,25 +76,29 @@ class ColaboradorConfController extends Controller
 
     public function traer_gerencia(Request $request)
     {
-        $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')->where('id_direccion', $request->id_direccion)->where('estado', 1)->get();
+        $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')
+                        ->where('id_direccion', $request->id_direccion)->where('estado', 1)->get();
         return view('rrhh.administracion.colaborador.gerencia', compact('list_gerencia'));
     }
 
     public function traer_sub_gerencia(Request $request)
     {
-        $list_sub_gerencia = SubGerencia::select('id_sub_gerencia', 'nom_sub_gerencia')->where('id_gerencia', $request->id_gerencia)->where('estado', 1)->get();
+        $list_sub_gerencia = SubGerencia::select('id_sub_gerencia', 'nom_sub_gerencia')
+                            ->where('id_gerencia', $request->id_gerencia)->where('estado', 1)->get();
         return view('rrhh.administracion.colaborador.sub_gerencia', compact('list_sub_gerencia'));
     }
 
     public function traer_area(Request $request)
     {
-        $list_area = Area::select('id_area', 'nom_area')->where('id_departamento', $request->id_sub_gerencia)->where('estado', 1)->get();
+        $list_area = Area::select('id_area', 'nom_area')
+                    ->where('id_departamento', $request->id_sub_gerencia)->where('estado', 1)->get();
         return view('rrhh.administracion.colaborador.area', compact('list_area'));
     }
 
     public function traer_puesto(Request $request)
     {
-        $list_puesto = Puesto::select('id_puesto', 'nom_puesto')->where('id_area', $request->id_area)->where('estado', 1)->get();
+        $list_puesto = Puesto::select('id_puesto', 'nom_puesto')
+                    ->where('id_area', $request->id_area)->where('estado', 1)->get();
         return view('rrhh.administracion.colaborador.puesto', compact('list_puesto'));
     }
 
@@ -379,17 +383,21 @@ class ColaboradorConfController extends Controller
     public function create_ar()
     {
         $list_direccion = Direccion::select('id_direccion', 'direccion')->where('estado', 1)->get();
-        $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')->where('estado', 1)->get();
-        $list_sub_gerencia = SubGerencia::select('id_sub_gerencia', 'nom_sub_gerencia')->where('estado', 1)->get();
-        $list_puesto = Puesto::select('id_puesto', 'nom_puesto')->where('estado', 1)->get();
         $list_sedes = SedeLaboral::select('id', 'descripcion')->where('estado', 1)->get();
         $list_ubicaciones = Ubicacion::select('id_ubicacion', 'cod_ubi')->where('estado', 1)->get();
-        return view('rrhh.administracion.colaborador.area.modal_registrar', compact('list_direccion', 'list_gerencia', 'list_sub_gerencia', 'list_puesto', 'list_ubicaciones', 'list_sedes'));
+        return view('rrhh.administracion.colaborador.area.modal_registrar', compact(
+            'list_direccion',
+            'list_ubicaciones', 
+            'list_sedes'
+        ));
     }
 
     public function traer_puesto_ar(Request $request)
     {
-        $list_puesto = Puesto::select('id_puesto', 'nom_puesto')->where('id_gerencia', $request->id_gerencia)->where('estado', 1)->get();
+        $list_puesto = Puesto::from('puesto AS pu')->select('pu.id_puesto', 'pu.nom_puesto')
+                        ->join('area AS ar','ar.id_area','=','pu.id_area')
+                        ->join('sub_gerencia AS sg','sg.id_sub_gerencia','=','ar.id_departamento')
+                        ->where('sg.id_gerencia', $request->id_gerencia)->where('pu.estado', 1)->get();
         return view('rrhh.administracion.colaborador.area.puestos', compact('list_puesto'));
     }
 
@@ -409,10 +417,8 @@ class ColaboradorConfController extends Controller
             'cod_area.required' => 'Debe ingresar código.',
         ]);
 
-        $valida = Area::where('id_direccion', $request->id_direccion)
-            ->where('id_gerencia', $request->id_gerencia)
-            ->where('id_departamento', $request->id_sub_gerencia)
-            ->where('nom_area', $request->nom_area)->where('estado', 1)->exists();
+        $valida = Area::where('id_departamento', $request->id_sub_gerencia)
+                ->where('nom_area', $request->nom_area)->where('estado', 1)->exists();
         if ($valida) {
             echo "error";
         } else {
@@ -421,12 +427,7 @@ class ColaboradorConfController extends Controller
                 $puestos = implode(",", $request->puestos);
             }
 
-
-
-
             $area = Area::create([
-                'id_direccion' => $request->id_direccion,
-                'id_gerencia' => $request->id_gerencia,
                 'id_departamento' => $request->id_sub_gerencia,
                 'nom_area' => $request->nom_area,
                 'cod_area' => $request->cod_area,
@@ -482,11 +483,18 @@ class ColaboradorConfController extends Controller
 
     public function edit_ar($id)
     {
-        $get_id = Area::findOrFail($id);
-        $list_direccion = Direccion::select('id_direccion', 'direccion')->where('estado', 1)->get();
-        $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')->where('id_direccion', $get_id->id_direccion)->where('estado', 1)->get();
-        $list_sub_gerencia = SubGerencia::select('id_sub_gerencia', 'nom_sub_gerencia')->where('id_gerencia', $get_id->id_gerencia)->where('estado', 1)->get();
-        $list_puesto = Puesto::select('id_puesto', 'nom_puesto')->where('id_gerencia', $get_id->id_gerencia)->where('estado', 1)->get();
+        $get_id = Area::from('area AS ar')->select('ar.*','sg.id_gerencia','ge.id_direccion')
+                ->join('sub_gerencia AS sg','sg.id_sub_gerencia','=','ar.id_departamento')
+                ->join('gerencia AS ge','ge.id_gerencia','=','sg.id_gerencia')
+                ->where('ar.id_area',$id)->first();
+        $list_direccion = Direccion::select('id_direccion', 'direccion')
+                        ->where('estado', 1)->get();
+        $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')
+                        ->where('id_direccion', $get_id->id_direccion)->where('estado', 1)->get();
+        $list_sub_gerencia = SubGerencia::select('id_sub_gerencia', 'nom_sub_gerencia')
+                            ->where('id_gerencia', $get_id->id_gerencia)->where('estado', 1)->get();
+        $list_puesto = Puesto::select('id_puesto', 'nom_puesto')
+                    ->where('id_gerencia', $get_id->id_gerencia)->where('estado', 1)->get();
 
         $list_sedes = SedeLaboral::select('id', 'descripcion')
             ->where('estado', 1)
@@ -541,9 +549,7 @@ class ColaboradorConfController extends Controller
             'cod_areae.required' => 'Debe ingresar código.',
         ]);
 
-        $valida = Area::where('id_direccion', $request->id_direccione)
-            ->where('id_gerencia', $request->id_gerenciae)
-            ->where('id_departamento', $request->id_sub_gerenciae)
+        $valida = Area::where('id_departamento', $request->id_sub_gerenciae)
             ->where('nom_area', $request->nom_areae)
             ->where('estado', 1)
             ->where('id_area', '!=', $id)->exists();
@@ -622,8 +628,6 @@ class ColaboradorConfController extends Controller
             }
 
             Area::findOrFail($id)->update([
-                'id_direccion' => $request->id_direccione,
-                'id_gerencia' => $request->id_gerenciae,
                 'id_departamento' => $request->id_sub_gerenciae,
                 'nom_area' => $request->nom_areae,
                 'cod_area' => $request->cod_areae,
