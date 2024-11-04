@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Area;
 use App\Models\Base;
-use App\Models\Cargo;
 use App\Models\Departamento;
 use App\Models\Distrito;
 use App\Models\DomicilioUsers;
@@ -195,12 +194,6 @@ class PostulanteController extends Controller
             if($valida){
                 echo "error_postulante";
             }else{
-                $get_cargo = Cargo::where('id_puesto',$request->id_puesto)->count();
-                if($get_cargo>0){
-                    $id_cargo = $get_cargo->id_cargo;
-                }else{
-                    $id_cargo = NULL;
-                }
                 $postulante_password = password_hash($request->num_doce, PASSWORD_DEFAULT);
 
                 $postulante = Postulante::create([
@@ -214,7 +207,6 @@ class PostulanteController extends Controller
                     'id_puesto_evaluador' => $id_puesto_evaluador,
                     'id_evaluador' => $id_evaluador,
                     'estado_postulacion' => 1,
-                    'id_cargo' => $id_cargo,
                     'estado' => 1,
                     'fec_reg' => now(),
                     'user_reg' => session('usuario')->id_usuario,
@@ -1315,7 +1307,6 @@ class PostulanteController extends Controller
                         'usuario_apater' => $get_id->postulante_apater,
                         'usuario_amater' => $get_id->postulante_amater,
                         'id_puesto' => $get_id->id_puesto,
-                        'id_cargo' => $get_id->id_cargo,
                         'id_modalidad_laboral' => 1,
                         'usuario_codigo' => $get_id->postulante_codigo,
                         'usuario_password' => $usuario_password,
@@ -1344,7 +1335,7 @@ class PostulanteController extends Controller
 
                     UsersHistoricoPuesto::create([
                         'id_usuario' => $usuario->id_usuario,
-                        'id_ubicacion' => $usuario->id_ubicacion,
+                        'id_puesto' => $usuario->id_puesto,
                         'fec_inicio' => now(),
                         'estado' => 1,
                         'fec_reg' => now(),
