@@ -493,49 +493,59 @@ class SoporteController extends Controller
 
         if ($con_id && $lr) {
             // Decodificar las URLs de las imágenes desde el request
-            // $imagenes = json_decode($request->input('imagenes_inpute'), true);
             $imagenes = json_decode($request->input('imagenes'), true);
-            // dd($imagenes);
-            // if (!$imagenes || !is_array($imagenes)) {
-            //     return response()->json([
-            //         'error' => 'Debe Cargar almenos una foto'
-            //     ], 400);
-            // }
-            // Inicializar un array para almacenar los resultados
+
+            // Inicializar un array para almacenar los resultados de la subida
             $resultados = [];
 
-            $resultados = $this->uploadImages($imagenes, $con_id);
-            if (!$resultados) {
-                return response()->json(['error' => 'No se pudo subir alguna imagen'], 500);
-            }
-            // Eliminación de archivos temporales en SOPORTE/TEMPORAL
-            $this->deleteTempFiles($con_id, "SOPORTE/TEMPORAL/");
-            // Cerrar conexión FTP
-            ftp_close($con_id);
-            // Obtener los campos de imagen
-            $img1 = isset($resultados[0]) ? $resultados[0]['url_ftp'] : '';
-            $img2 = isset($resultados[1]) ? $resultados[1]['url_ftp'] : '';
-            $img3 = isset($resultados[2]) ? $resultados[2]['url_ftp'] : '';
+            // Verificar si $imagenes es un array válido y tiene al menos una imagen
+            if ($imagenes && is_array($imagenes)) {
+                $resultados = $this->uploadImages($imagenes, $con_id);
 
+                if (!$resultados) {
+                    return response()->json(['error' => 'No se pudo subir alguna imagen'], 500);
+                }
+
+                // Obtener los campos de imagen si se subieron imágenes exitosamente
+                $img1 = isset($resultados[0]) ? $resultados[0]['url_ftp'] : '';
+                $img2 = isset($resultados[1]) ? $resultados[1]['url_ftp'] : '';
+                $img3 = isset($resultados[2]) ? $resultados[2]['url_ftp'] : '';
+            }
+
+            // Construir los datos de actualización
             $idSede = SedeLaboral::obtenerIdSede();
-            Soporte::findOrFail($id)->update([
+            $data = [
                 'id_sede' =>  $idSede,
                 'idsoporte_nivel' =>  $request->idsoporte_nivele,
                 'idsoporte_area_especifica' => $request->idsoporte_area_especificae,
                 'fec_vencimiento' =>  $request->fec_vencimiento,
                 'id_especialidad' =>  $request->especialidade,
-                'id_elemento' => $request->elementoe  ?? 6,
+                'id_elemento' => $request->elementoe ?? 6,
                 'id_asunto' => $request->asuntoe ?? 9,
                 'descripcion' => $request->descripcione,
                 'id_area' => $request->areae,
                 'estado_registro' => 1,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario,
-                'img1' => $img1,
-                'img2' => $img2,
-                'img3' => $img3
-            ]);
+            ];
 
+            // Agregar solo las imágenes si existen
+            if (!empty($resultados)) {
+                $data['img1'] = $img1;
+                $data['img2'] = $img2;
+                $data['img3'] = $img3;
+            }
+
+            // Actualizar la base de datos
+            Soporte::findOrFail($id)->update($data);
+
+            // Eliminar archivos temporales en SOPORTE/TEMPORAL si se subieron imágenes
+            if (!empty($resultados)) {
+                $this->deleteTempFiles($con_id, "SOPORTE/TEMPORAL/");
+            }
+
+            // Cerrar conexión FTP
+            ftp_close($con_id);
 
             return response()->json([
                 'success' => 'Imágenes subidas correctamente al servidor FTP',
