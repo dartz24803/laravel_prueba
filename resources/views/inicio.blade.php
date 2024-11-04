@@ -15,7 +15,7 @@
                                         <!-- Logo Logistica-->
                                         <div id="logo_logistica" class="col-sm-8">
                                             <div class="logo6" style="width: 6rem;">
-                                                <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701;height:6rem">
+                                                <div id="logistica" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701;height:6rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Logistica.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Gestión Logística</p>
                                                 </div>
@@ -24,7 +24,7 @@
                                         <!-- Logo Comercial-->
                                         <div id="logo_comercial" class="col-sm-4 d-flex justify-content-end">
                                             <div class="logo7 mb-4" style="width: 7rem">
-                                                <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #ff295c; height: 7rem">
+                                                <div id="comercial" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #ff295c; height: 7rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Comercial.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Gestión Comercial</p>
                                                 </div>
@@ -33,7 +33,7 @@
                                         <!-- Logo Talento Humano-->
                                         <div id="logo_talento_humano" class="col-sm-2 d-flex justify-content-center">
                                             <div class="logo7" style="width: 7rem;">
-                                                <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00b1f4; height:7rem;">
+                                                <div id="talento_humano" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00b1f4; height:7rem;">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-TalentoHumano.png')}}" alt="">
                                                     <p class="card-text text-center text-white">G. Talento Humano</p>
                                                 </div>
@@ -42,7 +42,7 @@
                                         <!-- Logo Infraestructura-->
                                         <div id="logo_infraestructura" class="col-sm-3">
                                             <div class="logo7" style="width: 7rem;">
-                                                <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e; height: 7rem;">
+                                                <div id="infraestructura" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e; height: 7rem;">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Infraestructuras.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Gestión Infraestructura</p>
                                                 </div>
@@ -51,7 +51,7 @@
                                         <!-- Logo Interna-->
                                         <div id="logo_interna" class="col-sm-3 d-flex justify-content-end">
                                             <div class="logo6" style="width: 6rem;">
-                                                <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e;height:6rem">
+                                                <div id="interna" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e;height:6rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Interna.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Gestión Interna</p>
                                                 </div>
@@ -92,7 +92,7 @@
                                         <!-- Logo Finanzas-->
                                         <div id="logo_finanzas" class="col-sm-3 d-flex justify-content-center align-items-end">
                                             <div class="logo6" style="width: 6rem;">
-                                                <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00b1f4;height:6rem">
+                                                <div id="finanzas" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00b1f4;height:6rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Finanzas.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Gestión Finanzas</p>
                                                 </div>
@@ -101,7 +101,7 @@
                                         <!-- Logo Seguridad y Salud-->
                                         <div id="logo_seguridad" class="col-sm-5 d-flex justify-content-end">
                                             <div class="logo7" style="width: 7rem;">
-                                                <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00b1f4; height:7rem">
+                                                <div id="seguridad" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00b1f4; height:7rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-SeguridadSalud.png')}}" alt="">
                                                     <p class="card-text text-center text-white">G. Seguridad y Salud</p>
                                                 </div>
@@ -110,7 +110,7 @@
                                         <!-- Logo Caja y Control-->
                                         <div id="logo_caja" class="col-sm-2 d-flex justify-content-center">
                                             <div class="logo6" style="width: 6rem;">
-                                                <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701; height: 6rem;">
+                                                <div id="caja" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701; height: 6rem;">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-CajaControlInterno.png')}}" alt="">
                                                     <p class="card-text text-center text-white">G. Caja y Control Interno</p>
                                                 </div>
@@ -119,7 +119,7 @@
                                         <!-- Logo Manufactura-->
                                         <div id="logo_manufactura" class="col-sm-2 d-flex align-items-start">
                                             <div class="logo7" style="width: 7rem;">
-                                                <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e; height: 7rem">
+                                                <div id="manufactura" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e; height: 7rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Manufactura.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Gestión Manufactura</p>
                                                 </div>
@@ -128,7 +128,7 @@
                                         <!-- Logo Tiendas-->
                                         <div id="logo_tiendas" class="col-sm-3 d-flex justify-content-start">
                                             <div class="logo7" style="width: 7rem; margin-top: 2rem;">
-                                                <div class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #ff295c;height: 7rem">
+                                                <div id="tiendas" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #ff295c;height: 7rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Tiendas.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Gestión Tiendas</p>
                                                 </div>
@@ -619,42 +619,42 @@
         cambiarClaseSegunResolucion();
     });
 
-    document.getElementById('logo_interna').onclick = function() {
+    document.getElementById('interna').onclick = function() {
         window.location.href = "{{ route('interna') }}";
     };
 
-    document.getElementById('logo_logistica').onclick = function() {
+    document.getElementById('logistica').onclick = function() {
         window.location.href = "{{ route('logistica') }}";
     };
-    document.getElementById('logo_seguridad').onclick = function() {
+    document.getElementById('seguridad').onclick = function() {
         window.location.href = "{{ route('seguridad') }}";
     };
 
-    document.getElementById('logo_manufactura').onclick = function() {
+    document.getElementById('manufactura').onclick = function() {
         window.location.href = "{{ route('manufactura') }}";
     };
 
-    document.getElementById('logo_finanzas').onclick = function() {
+    document.getElementById('finanzas').onclick = function() {
         window.location.href = "{{ route('finanzas') }}";
     };
 
-    document.getElementById('logo_tiendas').onclick = function() {
+    document.getElementById('tiendas').onclick = function() {
         window.location.href = "{{ route('tienda') }}";
     };
 
-    document.getElementById('logo_caja').onclick = function() {
+    document.getElementById('caja').onclick = function() {
         window.location.href = "{{ route('caja') }}";
     };
 
-    document.getElementById('logo_talento_humano').onclick = function() {
+    document.getElementById('talento_humano').onclick = function() {
         window.location.href = "{{ route('recursos_humanos') }}";
     };
 
-    document.getElementById('logo_comercial').onclick = function() {
+    document.getElementById('comercial').onclick = function() {
         window.location.href = "{{ url('Comercial/InicioComercial') }}";
     };
 
-    document.getElementById('logo_infraestructura').onclick = function() {
+    document.getElementById('infraestructura').onclick = function() {
         window.location.href = "{{ route('infraestructura') }}";
     };
 

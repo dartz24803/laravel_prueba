@@ -133,7 +133,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <?php if (session('usuario')->induccion != 0) { ?>
                             <div class="dropdown-item">
                                 <a href="{{ url('ColaboradorController/Mi_Perfil/'. session('usuario')->id_usuario) }}">
