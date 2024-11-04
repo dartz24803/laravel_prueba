@@ -74,4 +74,22 @@ class ExamenEntrenamiento extends Model
             return $query;
         }
     }
+    
+    static function valida_entrenamiento_pendiente($id_usuario){
+        $sql = "SELECT en.id FROM entrenamiento en
+                INNER JOIN solicitud_puesto sp ON sp.id=en.id_solicitud_puesto AND 
+                sp.id_usuario=$id_usuario
+                WHERE (en.estado_e=1 AND en.estado=1) OR (en.estado_e=2 AND 
+                (CASE WHEN (SELECT COUNT(1) FROM examen_entrenamiento ee
+                WHERE ee.id_entrenamiento=en.id AND ee.estado=1)=2 THEN 1
+                ELSE IFNULL((SELECT CASE WHEN ee.nota>=14 OR ee.fecha_revision IS NULL THEN 1 ELSE 0 END 
+                FROM examen_entrenamiento ee
+                WHERE ee.id_entrenamiento=en.id AND ee.estado=1
+                ORDER BY ee.id DESC
+                LIMIT 1),0) END)=0)";
+        
+        $result = DB::select($sql);
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
+    }
 }

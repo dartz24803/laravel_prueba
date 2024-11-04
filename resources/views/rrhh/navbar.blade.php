@@ -137,21 +137,19 @@
         session('usuario')->id_puesto == "277" || 
         session('usuario')->id_puesto == "278" || 
         session('usuario')->id_puesto == "314")
-                @if (session('usuario')->id_usuario == "139")
-                    <li id="postulantes">
-                        <a href="{{ route('postulante') }}">
-                            <p class="romperpalabra"><span id="icono_active2"></span> Postulantes</p>
-                        </a>
-                    </li>
-                @endif
+                <li id="postulantes">
+                    <a href="{{ route('postulante') }}">
+                        <p class="romperpalabra"><span id="icono_active2"></span> Postulantes</p>
+                    </a>
+                </li>
         @endif
         
         <?php if ( //MI EQUIPO  
             session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 16 || session('usuario')->id_puesto == 20 || session('usuario')->id_puesto == 26 ||
             session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 98 || session('usuario')->id_puesto == 128 ||
             session('usuario')->id_puesto == 31 || session('usuario')->id_puesto == 30 ||
-            $puestos_asignados > 0 || session('usuario')->id_puesto == 76 || session('usuario')->id_puesto == 22 ||
-            session('usuario')->id_puesto == 161 ||
+            session('usuario')->puestos_asignados > 0 || session('usuario')->id_puesto == 76 || session('usuario')->id_puesto == 22 ||
+            session('usuario')->id_puesto == 161 || session('usuario')->id_puesto == 24 ||
             session('usuario')->visualizar_mi_equipo != "sin_acceso_mi_equipo" ||
             //MI EQUIPO GERENCIAL
             session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 1 || session('usuario')->id_puesto == 39 || session('usuario')->id_puesto == 80 ||

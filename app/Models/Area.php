@@ -16,12 +16,9 @@ class Area extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_direccion',
-        'id_base',
-        'id_gerencia',
-        'id_departamento',
         'cod_area',
         'nom_area',
+        'id_departamento',
         'puestos',
         'orden',
         'estado',
@@ -30,7 +27,8 @@ class Area extends Model
         'fec_act',
         'user_act',
         'fec_eli',
-        'user_eli'
+        'user_eli',
+        'id_base'
     ];
 
     public function buscar($id)

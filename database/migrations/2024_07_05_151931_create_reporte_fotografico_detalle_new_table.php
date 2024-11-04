@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('reporte_fotografico_detalle_new', function (Blueprint $table) {
             $table->id();
             $table->integer('id_reporte_fotografico_adm')->nullable();
-            $table->unsignedBigInteger('id_area')->nullable();
-            $table->foreign('id_area')->references('id_area')->on('area');
-            //$table->timestamps();
+            $table->unsignedBigInteger('id_area');
+            $table->foreign('id_area','rfdn_fk_id_are')->references('id_area')->on('area');
         });
     }
 

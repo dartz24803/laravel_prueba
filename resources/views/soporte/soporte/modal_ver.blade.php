@@ -1,3 +1,25 @@
+<style>
+    #div_imagenesver {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    #imagenes_containerver {
+        display: flex;
+        overflow-x: auto;
+        /* Habilita el desplazamiento horizontal */
+        white-space: nowrap;
+        /* Evita el salto de línea */
+        padding: 10px;
+        max-width: 100%;
+        gap: 10px;
+        /* Espacio entre imágenes */
+        scrollbar-width: thin;
+        /* Para navegadores que admiten este estilo */
+    }
+</style>
 <form id="formulario_update" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title">Ver soporte: <span id="codigo_texto" class="ml-2">{{ $get_id->codigo }}</span></h5>
@@ -165,15 +187,57 @@
                         </div>
                     </div>
                 </div>
-                <div class="row" id="cancel-row" style="flex: 1;">
+                <div class="row" id="cancel-row">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
                             <div class="form-group col-md-2 mb-0">
-                                <label class="control-label text-bold" ">Descripción:</label>
+                                <label class="control-label text-bold">Descripción:</label>
                             </div>
-                            <div class=" form-group col-md-10 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                    <span class="form-control border-0">{{ $get_id->descripcion }}</span>
+                            <div class="form-group col-md-10 mb-0">
+                                <div id="descripcionContainer" style="max-width: 580px; word-wrap: break-word; overflow: hidden; max-height: 50px; transition: max-height 0.5s ease;">
+                                    <span id="descripcionText" class="form-control border-0" style="display: inline-block;">
+                                        {{ $get_id->descripcion }}
+                                    </span>
+                                </div>
+                                @if (strlen($get_id->descripcion) > 140)
+                                <button id="verMasBtn" type="button" class="btn btn-link p-0" style="font-size: 14px; margin-top: 5px;" onclick="toggleDescripcion(event)">
+                                    Ver más
+                                </button>
+                                @endif
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row" id="cancel-row">
+                    <div class="d-flex justify-content-center" style="max-width: 100%;" id="div_imagenesver">
+                        <input type="hidden" id="imagenes_input" name="imagenes" value="">
+
+                        <div id="imagenes_containerver" class="carousel-container">
+                            <!-- Las imágenes se añadirán aquí dinámicamente -->
+                            @if ($get_id->img1 || $get_id->img2 || $get_id->img3)
+                            @for ($i = 1; $i <= 3; $i++)
+                                @php
+                                $imgUrl=$get_id->{'img' . $i}; // Accede a img1, img2, img3
+                                @endphp
+                                @if ($imgUrl)
+                                <div class="text-center my-2" id="contenedor-imagen-{{ $i }}"> <!-- Contenedor específico para cada imagen -->
+                                    <img src="{{ $imgUrl }}" alt="Captura de soporte" class="img-thumbnail" style="max-width: 95%; display: block;">
+
+                                    <!-- Botón para abrir en nueva pestaña -->
+                                    <button class="btn btn-primary mt-2" onclick="abrirEnNuevaPestana(event, '{{ $imgUrl }}')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                            <polyline points="15 3 21 3 21 9"></polyline>
+                                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                                        </svg>
+                                        Ver
+                                    </button>
+                                </div>
+                                @endif
+                                @endfor
+                                @endif
                         </div>
                     </div>
                 </div>
@@ -198,7 +262,7 @@
                                             <label class="control-label text-bold">
                                                 Responsable:
                                                 <span style="display: block; width: 130px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $area_involucrada['area_responsable'] }}">
-                                                    {{ $area_involucrada['area_responsable'] }}
+                                                    {{ $area_involucrada['cod_area_responsable'] }}
                                                 </span>
                                             </label>
                                         </div>
@@ -322,36 +386,30 @@
             </div>
 
             <div class="tab-pane fade" id="solucion" role="tabpanel" aria-labelledby="solucion-tab">
-                <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
+
+
+                <!-- Nueva sección para listar comentarios -->
+                <div class="row" id="comment-section" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
-                        <div class="row align-items-center">
-                            <div class="form-group col-md-8 mb-0">
-                                <label class="control-label text-bold" ">Solucion Aplicada:</label>
-                            </div>
-                            <div class=" form-group col-md-4 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                    <span class="form-control border-0">{{ $get_id->fecha_comentario }}</span>
+                        <h5 class="text-bold">Solución Aplicada:</h5>
+                        @foreach ($comentarios as $comentario)
+                        <div class="comment-box" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                            <div class="row align-items-center">
+                                <div class="form-group col-md-2 text-center">
+                                    <img src="{{ $comentario->foto ? $comentario->foto : asset('img/user-default.jpg') }}"
+                                        alt="User Image" class="img-fluid rounded-circle">
+                                </div>
+                                <div class="form-group col-md-10">
+                                    <p><strong>Fecha:</strong> {{ $comentario->fec_comentario }}</p>
+                                    <p><strong>Responsable:</strong> {{ $comentario->nombre_responsable_solucion ?: 'No designado' }}</p>
+                                    <p style="max-width: 580px; word-wrap: break-word;" strong>Comentario:</strong> {{ $comentario->comentario ?: 'No hay comentario' }}</p>
+
+                                </div>
                             </div>
                         </div>
+                        @endforeach
                     </div>
                 </div>
-                <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
-                    <div class="col-xl-12 col-lg-12 col-sm-12">
-                        <div class="row align-items-center">
-                            <div class="form-group col-md-2 mb-0 text-center">
-                                <img src="{{ $get_id->foto_responsable_solucion ? $get_id->foto_responsable_solucion : asset('img/user-default.jpg') }}"
-                                    alt="User Image" class="img-fluid rounded-circle" style="max-width: 100px;">
-                            </div>
-
-                            <div class="form-group col-md-8 mb-0">
-                                <p>{{ $get_id->nombre_responsable_solucion }}</p>
-                                <p style="max-width: 100%; word-wrap: break-word; white-space: normal;">
-                                    {{ $get_id->descripcion_solucion }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
@@ -370,36 +428,27 @@
 
 
     function toggleCierre() {
-        var estado = document.getElementById('estado_registro').innerText.trim(); // Usamos innerText o textContent
-        var cierreLabel = document.getElementById('cierre-labelver');
-        var cierreField = document.getElementById('cierre-fieldver');
-
-        if (estado === "Completado" || estado === "Stand By") {
-            cierreLabel.style.display = 'block';
-            cierreField.style.display = 'block';
-
-        } else {
-            cierreLabel.style.display = 'none';
-            cierreField.style.display = 'none';
-
+        var estadoElement = document.getElementById('estado_registro');
+        var cierreLabelver = document.getElementById('cierre-labelver');
+        var cierreFieldver = document.getElementById('cierre-fieldver');
+        if (!estadoElement) {
+            console.error('El elemento estado_registro no se encontró en el DOM.');
+            return;
         }
+        var estado = estadoElement.innerText.trim();
+        var mostrarCamposCierre = !(estado === "Completado" || estado === "Stand By") && !ejecutoresMultiples;
+        cierreLabelver.style.display = mostrarCamposCierre ? 'block' : 'none';
+        cierreFieldver.style.display = mostrarCamposCierre ? 'block' : 'none';
     }
-
 
     function toggleCierreMultiplesResponsables() {
         const estadoElements = document.querySelectorAll('[id^="estado_registroe_"]');
-
         estadoElements.forEach((element) => {
             // Extrae el índice del ID
             const index = element.id.split('_')[2];
-            console.log(`Índice extraído: ${index}`);
-
-            // enviar el indice del responsable
             $('#responsable_indice').val(`${index}`);
-
             // Obtener el estado del elemento
             const estado = element.value;
-            console.log(`Estado del elemento ${index}:`, estado);
             // Obtener los elementos correspondientes usando el índice extraído
             const cierreLabel = document.getElementById(`cierre-labelver-${parseInt(index) + 1}`);
             const cierreField = document.getElementById(`cierre-fieldver-${parseInt(index) + 1}`);
@@ -439,7 +488,6 @@
         var rucLabel = document.getElementById('ruc-labelver');
         var rucField = document.getElementById('ruc-fieldver');
 
-        console.log(ejecutor_responsable); // Imprime el valor del input
 
         if (ejecutor_responsable == 2) {
             // Mostrar los campos de Proyecto
@@ -471,34 +519,55 @@
             rucField.style.display = 'none';
         }
     }
+    let expanded = false; // Cambiado a false para que inicialmente no esté expandido
+
+    function toggleDescripcion(event) {
+        event.preventDefault(); // Previene el envío del formulario
+        const container = document.getElementById('descripcionContainer');
+        const descriptionText = document.getElementById('descripcionText');
+
+        // Cambiar el texto del botón según el estado
+        if (!expanded) {
+            container.style.maxHeight = '500px'; // Ajusta el valor según el contenido esperado
+            expanded = true;
+            document.getElementById('verMasBtn').innerText = 'Ver menos';
+        } else {
+            container.style.maxHeight = '50px'; // Ajusta este valor para limitar la altura inicial
+            expanded = false;
+            document.getElementById('verMasBtn').innerText = 'Ver más';
+        }
+    }
 
     // Llamada a la función cuando el DOM está listo
     $(document).ready(function() {
         toggleCierre();
         toggleEjecutor();
         toggleCierreMultiplesResponsables();
-        console.log(ejecutoresMultiples);
+
+        // Aquí no llames a toggleDescripcion() directamente
         var idResponsableLabel = document.getElementById('id_responsableever-label');
         var idResponsableField = document.getElementById('id_responsableever-field');
         var estadoContainer = document.getElementById('estado-containerver-field');
         var estadoLabel = document.getElementById('estado-containerver-label');
-
         var areaInvolucrada = document.getElementById('area-involucradaver');
+
         if (!ejecutoresMultiples) {
             idResponsableLabel.style.display = 'block';
             idResponsableField.style.display = 'block';
             estadoContainer.style.display = 'block';
             estadoLabel.style.display = 'block';
             areaInvolucrada.style.display = 'none';
-
         } else {
             idResponsableLabel.style.display = 'none';
             idResponsableField.style.display = 'none';
             estadoContainer.style.display = 'none';
             estadoLabel.style.display = 'none';
             areaInvolucrada.style.display = 'block';
-
-
         }
     });
+
+    function abrirEnNuevaPestana(event, url) {
+        event.preventDefault(); // Evita que se recargue la página
+        window.open(url, '_blank'); // Abre la URL en una nueva pestaña
+    }
 </script>

@@ -416,6 +416,9 @@ Route::controller(SoporteController::class)->group(function () {
     Route::get('soporte_ticket_master/cancelar/{id}', 'cancelar_tick_master')->name('soporte_ticket_master.cancelar');
     Route::post('soporte_ticket_master/{id}', 'update_tick_master')->name('soporte_ticket_master.update');
     Route::post('soporte_ticket_master/cancel/update/{id}', 'cancel_update_tick_master')->name('soporte_ticket_master.cancelupdate');
+
+    // Activación de cámara
+    Route::post('previsualizacion_captura_soporte', 'previsualizacionCaptura')->name('previsualizacion_captura_soporte');
 });
 
 // ADMINISTRABLES - TICKETS SOPORTE
@@ -616,13 +619,6 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::delete('colaborador_conf_pu/{id}/funcion', 'delete_funcion_pu')->name('colaborador_conf_pu.delete_funcion');
     Route::post('colaborador_conf_pu/{id}/competencia', 'insert_competencia_pu')->name('colaborador_conf_pu.insert_competencia');
     Route::delete('colaborador_conf_pu/{id}/competencia', 'delete_competencia_pu')->name('colaborador_conf_pu.delete_competencia');
-    Route::get('colaborador_conf_ca', 'index_ca')->name('colaborador_conf_ca');
-    Route::get('colaborador_conf_ca/list', 'list_ca')->name('colaborador_conf_ca.list');
-    Route::get('colaborador_conf_ca/create', 'create_ca')->name('colaborador_conf_ca.create');
-    Route::post('colaborador_conf_ca', 'store_ca')->name('colaborador_conf_ca.store');
-    Route::get('colaborador_conf_ca/{id}/edit', 'edit_ca')->name('colaborador_conf_ca.edit');
-    Route::put('colaborador_conf_ca/{id}', 'update_ca')->name('colaborador_conf_ca.update');
-    Route::delete('colaborador_conf_ca/{id}', 'destroy_ca')->name('colaborador_conf_ca.destroy');
     Route::get('Index_Datacorp', 'Index_Datacorp');
     Route::post('Listar_Accesos_Datacorp', 'Listar_Accesos_Datacorp');
     Route::get('Modal_Registrar_Datacorp', 'Modal_Registrar_Datacorp');
@@ -1066,19 +1062,29 @@ Route::controller(PostulanteController::class)->group(function () {
     Route::put('postulante_reg/{id}', 'update_reg')->name('postulante_reg.update');
     Route::delete('postulante_reg/{id}', 'destroy_reg')->name('postulante_reg.destroy');
     Route::get('postulante_reg/{estado}/{id_area}/excel', 'excel_reg')->name('postulante_reg.excel');
+    Route::get('postulante_reg/{id}/datos_iniciales', 'datos_iniciales_reg')->name('postulante_reg.datos_iniciales');
+    Route::put('postulante_reg/{id}/update_datos_iniciales', 'update_datos_iniciales_reg')->name('postulante_reg.update_datos_iniciales');
+    Route::get('postulante_reg/{id}/perfil', 'perfil_reg')->name('postulante_reg.perfil');
     Route::get('postulante_reg/{id}/datos_personales', 'datos_personales_reg')->name('postulante_reg.datos_personales');
     Route::put('postulante_reg/{id}/update_datos_personales', 'update_datos_personales_reg')->name('postulante_reg.update_datos_personales');
-    Route::get('postulante_reg/{id}/perfil', 'perfil_reg')->name('postulante_reg.perfil');
+    Route::get('postulante_reg/{id}/domicilio_titulo', 'domicilio_titulo_reg')->name('postulante_reg.domicilio_titulo');
+    Route::get('postulante_reg/{id}/domicilio_contenido', 'domicilio_contenido_reg')->name('postulante_reg.domicilio_contenido');
+    Route::put('postulante_reg/{id}/update_domicilio', 'update_domicilio_reg')->name('postulante_reg.update_domicilio');
+    Route::get('postulante_reg/{id}/eval_rrhh', 'eval_rrhh_reg')->name('postulante_reg.eval_rrhh');
+    Route::put('postulante_reg/{id}/update_eval_rrhh', 'update_eval_rrhh_reg')->name('postulante_reg.update_eval_rrhh');
+    Route::put('postulante_reg/{id}/update_evaluacion_psicologica', 'update_evaluacion_psicologica_reg')->name('postulante_reg.update_evaluacion_psicologica');
+    Route::get('postulante_reg/{id}/eval_jefe_directo', 'eval_jefe_directo_reg')->name('postulante_reg.eval_jefe_directo');
+    Route::put('postulante_reg/{id}/update_eval_jefe_directo', 'update_eval_jefe_directo_reg')->name('postulante_reg.update_eval_jefe_directo');
+    Route::get('postulante_reg/{id}/verificacion_social', 'verificacion_social_reg')->name('postulante_reg.verificacion_social');
+    Route::put('postulante_reg/{id}/update_verificacion_social', 'update_verificacion_social_reg')->name('postulante_reg.update_verificacion_social');
+    Route::put('postulante_reg/{id}/update_ver_social', 'update_ver_social_reg')->name('postulante_reg.update_ver_social');
+    Route::get('postulante_reg/{id}/resultado_final', 'resultado_final_reg')->name('postulante_reg.resultado_final');
+    Route::put('postulante_reg/{id}/update_resultado_final', 'update_resultado_final_reg')->name('postulante_reg.update_resultado_final');
     //TODOS
     Route::get('postulante_tod', 'index_tod')->name('postulante_tod');
     Route::post('postulante_tod/list', 'list_tod')->name('postulante_tod.list');
     Route::put('postulante_tod/{id}', 'update_tod')->name('postulante_tod.update');
     Route::get('postulante_tod/{estado}/{id_area}/excel', 'excel_tod')->name('postulante_tod.excel');
-    //REVISIÓN
-    Route::get('postulante_revision', 'index_prev')->name('postulante_revision');
-    Route::post('postulante_revision/list', 'list_prev')->name('postulante_revision.list');
-    Route::get('postulante_revision/{id}/edit', 'edit_prev')->name('postulante_revision.edit');
-    Route::put('postulante_revision/{id}', 'update_prev')->name('postulante_revision.update');
 });
 //ÁREA LOGÍSTICA
 Route::controller(LogisticaInicioController::class)->group(function () {
@@ -1764,8 +1770,12 @@ Route::controller(AsistenciaController::class)->group(function () {
     //------------------------------CCV------------------------------------//
     Route::get('Reporte_Control_Asistencia', 'index')->name('Reporte_Control_Asistencia');
     Route::post('Buscar_Reporte_Control_Asistencia', 'Buscar_Reporte_Control_Asistencia');
-    // Route::post('/Insert_Cuadro_Control_Visual_Estado', 'Insert_Cuadro_Control_Visual_Estado');
-    // Route::post('/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
+    Route::get('Asistencia/Traer_Colaborador_Asistencia', 'Traer_Colaborador_Asistencia');
+    Route::get('Asistencia/Excel_Reporte_Asistencia/{mes}/{anio}/{cl}/{num_doc}/{area}/{estado}/{tipo}/{fi}/{ff}', 'Excel_Reporte_Asistencia');
+    // Route::get('Asistencia/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
+    // Route::get('Asistencia/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
+    // Route::get('Asistencia/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
+    // Route::get('Asistencia/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
 });
 //AMONESTACION
 Route::controller(AmonestacionController::class)->group(function () {
@@ -2212,12 +2222,12 @@ Route::controller(MiEquipoController::class)->group(function () {
     Route::post('MiEquipo/Update_Miequipo', 'Update_Miequipo');
     Route::get('MiEquipo/Modal_Update_Baja/{id}', 'Modal_Update_Baja');
     Route::post('MiEquipo/Update_Fecha_Baja', 'Update_Fecha_Baja');
-    // Route::post('MiEquipo/Insert_or_Update_Papeletas_Salida', 'Insert_or_Update_Papeletas_Salida');
-    // Route::post('MiEquipo/Buscar_Papeletas_Salida_Aprobacion', 'Buscar_Papeletas_Salida_Aprobacion');
-    // Route::post('MiEquipo/Aprobado_solicitud_papeletas_1', 'Aprobado_solicitud_papeletas_1');
-    // Route::post('MiEquipo/Anular_solicitud_papeletas_1', 'Anular_solicitud_papeletas_1');
-    // Route::post('MiEquipo/Buscar_Papeleta_Control', 'Buscar_Papeleta_Control');
-    // Route::post('MiEquipo/Buscar_Base_Papeletas_Seguiridad', 'Buscar_Base_Papeletas_Seguiridad');
-    // Route::post('MiEquipo/Busca_Colaborador_Control', 'Busca_Colaborador_Control');
+    Route::get('MiEquipo/Modal_Update_CoordinadorJr/{id}', 'Modal_Update_CoordinadorJr');
+    Route::post('MiEquipo/Update_Asignacion_Coordinador_Jr', 'Update_Asignacion_Coordinador_Jr');
+    Route::post('MiEquipo/Solicitud_Puesto', 'Solicitud_Puesto');
+    Route::get('MiEquipo/Modal_Solicitud_Puesto/{id}/{tipo}', 'Modal_Solicitud_Puesto');
+    Route::post('MiEquipo/Update_Solicitud_Puesto', 'Update_Solicitud_Puesto');
+    // Route::get('MiEquipo/Aprobado_solicitud_papeletas_1', 'Aprobado_solicitud_papeletas_1');
+    // Route::get('MiEquipo/Anular_solicitud_papeletas_1', 'Anular_solicitud_papeletas_1');
     // Route::get('MiEquipo/Excel_Estado_Solicitud_Papeletas_Salida_Seguridad/{base}/{estado}/{fec_rev}/{fec_fin}/{num_doc}', 'Excel_Estado_Solicitud_Papeletas_Salida_Seguridad');
 });

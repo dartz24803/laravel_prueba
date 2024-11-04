@@ -271,7 +271,6 @@
             success: function(response) {
                 $('#idsoporte_ubicacion').empty().append(
                     '<option value="0">Seleccione Ubicación</option>');
-                console.log(response)
                 // Verificar si hay respuestas
                 if (response.length > 0) {
                     $.each(response, function(index, sede) {
@@ -374,7 +373,6 @@
             },
             success: function(response) {
                 $('#asunto').empty().append('<option value="0">Seleccione</option>');
-                console.log(response)
                 // Verificar si hay respuestas
                 if (response.length > 0) {
                     $.each(response, function(index, asuntos) {

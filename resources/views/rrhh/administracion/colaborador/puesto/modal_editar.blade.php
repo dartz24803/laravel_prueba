@@ -75,18 +75,6 @@
                     @endforeach
                 </select>
             </div>
-
-            <div class="form-group col-lg-2">
-                <label>Sede Laboral:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <select class="form-control" name="id_sede_laborale" id="id_sede_laborale">
-                    <option value="0">Seleccione</option>
-                    @foreach ($list_sede_laboral as $list)
-                        <option value="{{ $list->id }}" @if ($list->id==$get_id->id_sede_laboral) selected @endif>{{ $list->descripcion }}</option>
-                    @endforeach
-                </select>
-            </div>
         </div>
 
         <div class="row">

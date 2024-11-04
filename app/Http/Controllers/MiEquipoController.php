@@ -5,15 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\AsignacionJefatura;
 use App\Models\Base;
 use App\Models\Config;
+use App\Models\ExamenEntrenamiento;
 use App\Models\GradoInstruccion;
 use App\Models\Horario;
 use App\Models\HorarioDia;
 use App\Models\Model_Perfil;
+use App\Models\Puesto;
 use App\Models\Notificacion;
+use App\Models\SolicitudPuesto;
 use App\Models\SubGerencia;
 use App\Models\Usuario;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PHPMailer\PHPMailer\PHPMailer;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -249,14 +254,6 @@ class MiEquipoController extends Controller
             return view('rrhh.Mi_equipo.modal_horario', $dato);
     }
 
-    public function Modal_Solicitud_Puesto($id_usuario,$tipo){
-            $dato['id_usuario'] = $id_usuario;
-            $dato['tipo'] = $tipo;
-            $dato['list_grado_instruccion'] = GradoInstruccion::where('estado', 1)
-                                        ->get();
-            return view('rrhh.Mi_equipo.modal_solicitud_puesto', $dato);
-    }
-
     public function Modal_Update_ListaMiequipo($id_usuario){
             $dato['get_id'] = $this->Model_Perfil->get_list_usuario($id_usuario);
             return view('rrhh.Mi_equipo.modal_update', $dato);
@@ -292,6 +289,19 @@ class MiEquipoController extends Controller
     }
 
     public function Update_Fecha_Baja(){
+        $this->input->validate([
+            'fec_baja' => [
+                'required_if:cancelar_baja,0',
+                'date',
+            ],
+            'id_motivo' => 'required_if:cancelar_baja,0|not_in:0',
+        ], [
+            'fec_baja.date' => 'Debe ingresar fecha de Baja',
+            'fec_baja.required_if' => 'Debe ingresar fecha de Baja',
+            'id_motivo.required_if' => 'Debe seleccionar motivo de baja',
+            'id_motivo.not_in' => 'Debe seleccionar un motivo de baja válido',
+        ]);
+
             $dato['id_usuario']= $this->input->post("id_usuario");
             $dato['fec_baja']= $this->input->post("fec_baja");
             $dato['id_motivo']= $this->input->post("id_motivo");
@@ -299,47 +309,61 @@ class MiEquipoController extends Controller
             $dato['observaciones_baja']= $this->input->post("observaciones_baja");
             $dato['motivo_renuncia']= $this->input->post("motivo_renuncia");
 
+            $dato['fec_baja'] = $dato['fec_baja'] ?: '0000-00-00'; // Set default if empty
+
             $valida = Usuario::where('id_usuario', $dato['id_usuario'])
                     ->where('ini_funciones', '<', $dato['fec_baja'])
                     ->get();
 
-            if(count($valida)>0){
-                if($_FILES['documento']['name']!=""){
-                    $ftp_server = "lanumerounocloud.com";
-                    $ftp_usuario = "intranet@lanumerounocloud.com";
-                    $ftp_pass = "Intranet2022@";
-                    $con_id = ftp_connect($ftp_server);
-                    $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
-                    if((!$con_id) || (!$lr)){
-                        echo "No se conecto";
-                    }else{
-                        echo "Se conecto";
-                        if($_FILES['documento']['name']!=""){
-                            $path = $_FILES['documento']['name'];
-                            $temp = explode(".",$_FILES['documento']['name']);
-                            $source_file = $_FILES['documento']['tmp_name'];
+            $dato['documento'] = null;
+            if($valida){
+                    // Process the file upload
+                    if($_FILES['documento']['name']!=""){
+                        $ftp_server = "lanumerounocloud.com";
+                        $ftp_usuario = "intranet@lanumerounocloud.com";
+                        $ftp_pass = "Intranet2022@";
+                        $con_id = ftp_connect($ftp_server);
+                        $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                        if((!$con_id) || (!$lr)){
+                            echo "No se conecto";
+                        }else{
+                            echo "Se conecto";
+                            if($_FILES['documento']['name']!=""){
+                                $path = $_FILES['documento']['name'];
+                                $temp = explode(".",$_FILES['documento']['name']);
+                                $source_file = $_FILES['documento']['tmp_name'];
 
-                            $fecha=date('Y-m-d H:i');
-                            $ext = pathinfo($path, PATHINFO_EXTENSION);
-                            $nombre_soli="Documento_".$fecha."_".rand(10,199);
-                            $nombre = $nombre_soli.".".$ext;
+                                $fecha=date('Y-m-d H:i');
+                                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                                $nombre_soli="Documento_".$fecha."_".rand(10,199);
+                                $nombre = $nombre_soli.".".$ext;
 
-                            ftp_pasv($con_id,true);
-                            $subio = ftp_put($con_id,"MiEquipo_ComunicarBaja/".$nombre,$source_file,FTP_BINARY);
-                            if($subio){
-                                $dato['documento'] = $nombre;
-                                echo "Archivo subido correctamente";
-                            }else{
-                                echo "Archivo no subido correctamente";
+                                ftp_pasv($con_id,true);
+                                $subio = ftp_put($con_id,"MiEquipo_ComunicarBaja/".$nombre,$source_file,FTP_BINARY);
+                                if($subio){
+                                    $dato['documento'] = $nombre;
+                                    echo "Archivo subido correctamente";
+                                }else{
+                                    echo "Archivo no subido correctamente";
+                                }
                             }
                         }
                     }
-                }
 
-                $this->Model_Corporacion->update_fec_baja_usuario($dato);
-/*
+                Usuario::where('id_usuario', $dato['id_usuario'])
+                    ->update([
+                        'fec_baja' => ($dato['fec_baja'] === '0000-00-00') ? null : $dato['fec_baja'],
+                        'cancelar_baja' => $dato['cancelar_baja'],
+                        'id_motivo_baja' => $dato['id_motivo'],
+                        'observaciones_baja' => $dato['observaciones_baja'],
+                        'motivo_renuncia' => $dato['motivo_renuncia'],
+                        'documento' => $dato['documento'],
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario,
+                    ]);
+                //comunicado de baja si el check no esta marcado; con envio de correo
                 if($dato['cancelar_baja']!="1"){
-                    $get_id = $this->Model_Corporacion->get_id_usuario($dato['id_usuario']);
+                    $get_id = $this->Model_Perfil->get_id_usuario($dato['id_usuario']);
 
                     $mail = new PHPMailer(true);
 
@@ -351,9 +375,10 @@ class MiEquipoController extends Controller
                         $mail->Username   =  'intranet@lanumero1.com.pe';
                         $mail->Password   =  'lanumero1$1';
                         $mail->SMTPSecure =  'tls';
-                        $mail->Puerto     =  587;
+                        $mail->Port     =  587;
                         $mail->setFrom('intranet@lanumero1.com.pe','SOLICITUD DE BAJA');
 
+                        // $mail->addAddress('pcardenas@lanumero1.com.pe');
                         $mail->addAddress('rrhh@lanumero1.com.pe');
                         $mail->addAddress('fclaverias@lanumero1.com.pe');
 
@@ -380,9 +405,166 @@ class MiEquipoController extends Controller
                     }catch(Exception $e) {
                         echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
                     }
-                }*/
+                }
             }else{
                 echo "error";
+            }
+    }
+    
+    public function Modal_Update_CoordinadorJr($id_usuario){
+            $dato['get_id'] = $this->Model_Perfil->get_list_usuario($id_usuario);
+            return view('rrhh.Mi_equipo.modal_coordinador', $dato);
+    }
+
+    public function Update_Asignacion_Coordinador_Jr(){
+        $this->input->validate([
+            'fec_asignacionjr' => [
+                'required_if:cancelar_asignacionjr,0', // Obligatorio si 'cancelar_baja' no está marcado
+                'date'
+            ],
+        ], [
+            'fec_asignacionjr.date' => 'Debe ingresar fecha de asignacion',
+        ]);
+        //asigna como coordinador 
+            $dato['id_usuario']= $this->input->post("id_usuarioa");
+            $dato['fec_asignacionjr']= $this->input->post("fec_asignacionjr");
+            $dato['cancelar_asignacionjr']= $this->input->post("cancelar_asignacionjr");
+
+            Usuario::where('id_usuario', $dato['id_usuario'])->update([
+                'fec_asignacionjr' => $dato['fec_asignacionjr'],
+                'cancelar_asignacionjr' => $dato['cancelar_asignacionjr'],
+                'id_puestojr' => 29,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+            ]);
+    }
+
+    public function Solicitud_Puesto(){
+            $dato['id_usuario']= $this->input->post("id_usuario");
+            $valida = Usuario::where('id_usuario', $dato['id_usuario'])
+                ->where('ini_funciones', '<', now()->subMonth())
+                ->get()
+                ->toArray();
+            
+            if(empty($valida)){
+                echo "permanencia";
+            }else{
+                $valida = SolicitudPuesto::where('id_usuario', $dato['id_usuario'])
+                        ->where('estado_s', 1)
+                        ->where('estado', 1)
+                        ->get();
+                
+                if(count($valida)>0){
+                    echo "evaluacion";
+                }else{
+                    $valida = ExamenEntrenamiento::valida_entrenamiento_pendiente($dato['id_usuario']);
+
+                    if(count($valida)>0){
+                        echo "evaluacion";
+                    }
+                }
+            }
+    }
+
+    public function Modal_Solicitud_Puesto($id_usuario,$tipo){
+            $dato['id_usuario'] = $id_usuario;
+            $dato['tipo'] = $tipo;
+            $dato['list_grado_instruccion'] = GradoInstruccion::where('estado', 1)
+                                            ->get();
+            return view('rrhh.Mi_equipo.modal_solicitud_puesto', $dato);
+    }
+
+    public function Update_Solicitud_Puesto(){
+            $dato['grado_instruccion']= $this->input->post("grado_instruccionsp");
+            $dato['id_usuario']= $this->input->post("id_usuario");
+            $dato['tipo']= $this->input->post("tipo");
+
+            $get_id = $this->Model_Perfil->get_id_usuario($dato['id_usuario']);
+            $dato['base'] = $get_id[0]['centro_labores'];
+            $dato['id_puesto'] = $get_id[0]['id_puesto'];
+
+            if($dato['tipo']==1){
+                $dato['id_puesto_aspirado'] = 33;
+            }else if($dato['tipo']==2){
+                $dato['id_puesto_aspirado'] = 35;
+            }else if($dato['tipo']==3){
+                $dato['id_puesto_aspirado'] = 167;
+            }else if($dato['tipo']==4){
+                $dato['id_puesto_aspirado'] = 32;
+            }else if($dato['tipo']==5){
+                $dato['id_puesto_aspirado'] = 31;
+            }else if($dato['tipo']==6){
+                $dato['id_puesto_aspirado'] = 30;
+            }else if($dato['tipo']==7){
+                $dato['id_puesto_aspirado'] = 29;
+            }
+            
+            $valida_obs = SolicitudPuesto::where('id_usuario', $dato['id_usuario'])
+                        ->where('estado_s', 1)
+                        ->where('estado', 1)
+                        ->count();
+
+            if($valida_obs>0){
+                $dato['observacion'] = 1;
+            }else{
+                $dato['observacion'] = 0;
+            }
+
+            $get_puesto = Puesto::select('*', DB::raw('LOWER(nom_puesto) AS nom_puesto_min'))
+                ->where('id_puesto', $dato['id_puesto_aspirado'])
+                ->get();
+
+            $mail = new PHPMailer(true);
+
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Port     =  587; 
+                $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
+
+                // $mail->addAddress('pcardenas@lanumero1.com.pe');
+                $mail->addAddress('rrhh@lanumero1.com.pe');
+                $mail->addAddress('ksanz@lanumero1.com.pe');
+
+                $mail->isHTML(true);
+
+                $mail->Subject = "Solicitud de entrenamiento al puesto";
+            
+                $mail->Body =  '<FONT SIZE=3>
+                                    Buen día, se solicita entrenamiento para el siguiente personal:
+                                    <ul>
+                                        <li>Colaborador: <b>'.ucwords($get_id[0]['nombre_completo']).'</b></li>
+                                        <li>Base: <b>'.$get_id[0]['centro_labores'].'</b></li>
+                                        <li>Puesto Actual: <b>'.ucfirst($get_id[0]['nom_puesto_min']).'</b></li>
+                                        <li>Puesto Aspirado: <b>'.ucfirst($get_puesto[0]['nom_puesto_min']).'</b></li>
+                                    </ul>
+                                </FONT SIZE>';
+            
+                $mail->CharSet = 'UTF-8';
+                $mail->send();
+
+                SolicitudPuesto::create([
+                    'fecha' => now(),
+                    'base' => $dato['base'],
+                    'id_puesto' => $dato['id_puesto'],
+                    'id_puesto_aspirado' => $dato['id_puesto_aspirado'],
+                    'id_usuario' => $dato['id_usuario'],
+                    'grado_instruccion' => $dato['grado_instruccion'],
+                    'observacion' => $dato['observacion'],
+                    'estado_s' => 1,
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+            }catch(Exception $e) {
+                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
             }
     }
 }

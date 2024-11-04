@@ -37,7 +37,6 @@
     <link rel="stylesheet" href="{{ asset('css/modals.css') }}">
     <!-- CSS perfil -->
     <link rel="stylesheet" type="text/css" href="{{ asset('template/plugins/dropify/dropify.min.css') }}">
-    <link href="{{ asset("template/assets/css/users/account-setting.css") }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="{{ asset('template/assets/css/forms/switches.css') }}">
     <link href="{{ asset('template/assets/css/users/account-setting.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('template/plugins/noUiSlider/nouislider.min.css') }}" rel="stylesheet" type="text/css">

@@ -18,162 +18,26 @@
                 <div class="account-content">
                     <div class="scrollspy-example" data-spy="scroll" data-target="#account-settings-scroll" data-offset="-100">
                         <div class="row">
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="general-info" class="section general-info">
+                            <div class="col-md-12 layout-spacing">
+                                <form id="formulario_dp" method="POST" enctype="multipart/form-data" class="section general-info">
+                                    @method('PUT')
+                                    @csrf
                                     <div class="info">
-                                        <h6 class="">DATOS POSTULANTE</h6>
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6>DATOS POSTULANTE</h6>
+                                            </div>
+                                            <div class="col text-sm-right text-center">
+                                                @if (session('usuario')->id_nivel=="1" || 
+                                                session('usuario')->id_puesto=="277")
+                                                    <button type="button" class="btn btn-primary mb-md-0 mb-1" onclick="Update_Datos_Personales();">Actualizar</button>
+                                                @endif
+                                                <a href="{{ route('postulante') }}" class="btn btn-primary mb-md-0 mb-1" title="Regresar">Regresar</a>
+                                            </div>
+                                        </div>
                                         <div class="row">
                                             <div class="col-lg-11 mx-auto">
-                                                <div class="row">
-                                                    <div class="col-xl-2 col-lg-12 col-md-4">
-                                                        <div class="upload mt-4 pr-md-4">
-                                                            <input type="file" id="input-file-max-fs" class="dropify" data-default-file="{{ asset('template/assets/img/200x200.jpg') }}" data-max-file-size="2M" />
-                                                            <p class="mt-2"><i class="flaticon-cloud-upload mr-1"></i> Actualizar imagen</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xl-10 col-lg-12 col-md-8 mt-md-0 mt-4">
-                                                        <div class="form">
-                                                            <div class="row">
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
-                                                                        <label for="postulante_apater">Apellido paterno</label>
-                                                                        <input type="text" class="form-control" 
-                                                                        id="postulante_apater" name="postulante_apater" 
-                                                                        placeholder="Apellido paterno" 
-                                                                        value="{{ $get_id->postulante_apater }}">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
-                                                                        <label for="postulante_amater">Apellido materno</label>
-                                                                        <input type="text" class="form-control" 
-                                                                        id="postulante_amater" name="postulante_amater" 
-                                                                        placeholder="Apellido materno" value="{{ $get_id->postulante_amater }}">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
-                                                                        <label for="postulante_nombres">Nombres</label>
-                                                                        <input type="text" class="form-control" 
-                                                                        id="postulante_nombres" name="postulante_nombres" 
-                                                                        placeholder="Nombres" value="{{ $get_id->postulante_nombres }}">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-3">
-                                                                    <div class="form-group">
-                                                                        <label for="id_nacionalidad">Nacionalidad</label>
-                                                                        <select class="form-control" name="id_nacionalidad" id="id_nacionalidad">
-                                                                            <option value="0">Seleccione</option>
-                                                                            @foreach ($list_nacionalidad as $list)
-                                                                                <option value="{{ $list->id_nacionalidad }}"
-                                                                                @if ($list->id_nacionalidad==$get_id->id_nacionalidad) selected @endif>
-                                                                                    {{ $list->nom_nacionalidad }}
-                                                                                </option>
-                                                                            @endforeach                                                                            
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-3">
-                                                                    <div class="form-group">
-                                                                        <label for="id_genero">Género</label>
-                                                                        <select class="form-control" name="id_genero" id="id_genero">
-                                                                            <option value="0">Seleccione</option>
-                                                                            @foreach ($list_genero as $list)
-                                                                                <option value="{{ $list->id_genero }}"
-                                                                                @if ($list->id_genero==$get_id->id_genero) selected @endif>
-                                                                                    {{ $list->nom_genero }}
-                                                                                </option>
-                                                                            @endforeach
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-sm-3">
-                                                                    <div class="form-group">
-                                                                        <label for="id_tipo_documento">Tipo de documento</label>
-                                                                        <select class="form-control" name="id_tipo_documento" id="id_tipo_documento">
-                                                                            <option value="0">Seleccione</option>
-                                                                            @foreach ($list_tipo_documento as $list)
-                                                                                <option value="{{ $list->id_tipo_documento }}"
-                                                                                @if ($list->id_tipo_documento==$get_id->id_tipo_documento) selected @endif>
-                                                                                    {{ $list->cod_tipo_documento }}
-                                                                                </option>
-                                                                            @endforeach
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-3">
-                                                                    <div class="form-group">
-                                                                        <label for="num_doc">Número de documento</label>
-                                                                        <input type="text" class="form-control" 
-                                                                        id="num_doc" name="num_doc" 
-                                                                        placeholder="Número de documento" 
-                                                                        value="{{ $get_id->num_doc }}">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-3">
-                                                                    <div class="form-group">
-                                                                        <label for="id_estado_civil">Estado civil</label>
-                                                                        <select class="form-control" name="id_estado_civil" id="id_estado_civil">
-                                                                            <option value="0">Seleccione</option>
-                                                                            @foreach ($list_estado_civil as $list)
-                                                                                <option value="{{ $list->id_estado_civil }}"
-                                                                                @if ($list->id_estado_civil==$get_id->id_estado_civil) selected @endif>
-                                                                                    {{ $list->nom_estado_civil }}
-                                                                                </option>
-                                                                            @endforeach                                                                            
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-2">
-                                                                    <div class="form-group">
-                                                                        <label for="fullName">Fecha de nacimiento</label>
-                                                                        <input type="date" class="form-control" 
-                                                                        id="fec_nac" name="fec_nac" 
-                                                                        value="{{ $get_id->fec_nac }}">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-1">
-                                                                    <div class="form-group">
-                                                                        <label for="fullName">Edad</label>
-                                                                        <input type="text" class="form-control" disabled>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
-                                                                        <label for="emailp">Correo electrónico</label>
-                                                                        <input type="text" class="form-control" 
-                                                                        id="emailp" name="emailp" 
-                                                                        placeholder="Correo electrónico"
-                                                                        value="{{ $get_id->emailp }}">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-3">
-                                                                    <div class="form-group">
-                                                                        <label for="num_celp">Número celular</label>
-                                                                        <input type="text" class="form-control" 
-                                                                        id="num_celp" name="num_celp" 
-                                                                        placeholder="Número celular"
-                                                                        value="{{ $get_id->num_celp }}">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-3">
-                                                                    <div class="form-group">
-                                                                        <label for="num_fijop">Teléfono fijo</label>
-                                                                        <input type="text" class="form-control" 
-                                                                        id="num_fijop" name="num_fijop" 
-                                                                        placeholder="Teléfono fijo"
-                                                                        value="{{ $get_id->num_fijop }}">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                <div class="row" id="div_datos_personales">
                                                 </div>
                                             </div>
                                         </div>
@@ -181,68 +45,28 @@
                                 </form>
                             </div>
 
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="general-info" class="section general-info">
+                            <div class="col-md-12 layout-spacing">
+                                <form id="formulario_do" method="POST" enctype="multipart/form-data" class="section general-info">
+                                    @method('PUT')
+                                    @csrf
                                     <div class="info">
                                         <div class="row">
-                                            <div class="col">
-                                                <h6>DOMICILIO</h6>
+                                            <div class="col d-flex" id="div_domicilio_titulo">
                                             </div>
-                                            <div class="col text-right">
-                                                <button id="add-work-platforms" class="btn btn-primary">Actualizar</button>
+                                            <div class="col text-md-right text-center">
+                                                <button type="button" class="btn btn-primary" onclick="Update_Domicilio();">Actualizar</button>
                                             </div>
                                         </div>
+                                        
                                         <div class="row">
                                             <div class="col-lg-11 mx-auto">
                                                 <div class="row">
-                                                    <div class="col-lg-12 col-md-8 mt-md-0 mt-4">
+                                                    <div class="col-12 mt-md-0 mt-4">
                                                         <div class="form">
-                                                            <div class="row">
-                                                                <div class="col-sm-4">
-                                                                    <div class="form-group">
-                                                                        <label for="id_departamento">Departamento</label>
-                                                                        <select class="form-control" name="id_departamento" id="id_departamento">
-                                                                            <option value="0">Seleccione</option>
-                                                                            @foreach ($list_departamento as $list)
-                                                                                <option value="{{ $list->id_departamento }}"
-                                                                                @if ($get_domicilio->id_departamento==$list->id_departamento) selected @endif>
-                                                                                    {{ $list->nombre_departamento }}
-                                                                                </option>
-                                                                            @endforeach                                                                            
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-4">
-                                                                    <div class="form-group">
-                                                                        <label for="id_provincia">Provincia</label>
-                                                                        <select class="form-control" name="id_provincia" id="id_provincia">
-                                                                            <option value="0">Seleccione</option>
-                                                                            @foreach ($list_provincia as $list)
-                                                                                <option value="{{ $list->id_provincia }}"
-                                                                                @if ($get_domicilio->id_provincia==$list->id_provincia) selected @endif>
-                                                                                    {{ $list->nombre_provincia }}
-                                                                                </option>
-                                                                            @endforeach                                                                             
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-4">
-                                                                    <div class="form-group">
-                                                                        <label for="id_distrito">Distrito</label>
-                                                                        <select class="form-control" name="id_distrito" id="id_distrito">
-                                                                            <option value="0">Seleccione</option>
-                                                                            @foreach ($list_distrito as $list)
-                                                                                <option value="{{ $list->id_distrito }}"
-                                                                                @if ($get_domicilio->id_distrito==$list->id_distrito) selected @endif>
-                                                                                    {{ $list->nombre_distrito }}
-                                                                                </option>
-                                                                            @endforeach                                                                             
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
+                                                            <div class="row" id="div_domicilio_contenido">
                                                             </div>
                                                             <div class="row">
-                                                                <div class="col-sm-12">
+                                                                <div class="col-12">
                                                                     <div class="form-group">
                                                                         <label for="autocomplete">Ubicación de tu vivienda</label>
                                                                         <input type="text" class="form-control" id="autocomplete" 
@@ -251,190 +75,120 @@
                                                                         value="@php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lat; }else{ echo "-12.0746254"; } @endphp">
                                                                         <input type="hidden" id="coordslng" name="coordslng" 
                                                                         value="@php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lng; }else{ echo "-77.021754"; } @endphp">
-                                                                        <div class="col-sm-12 mt-4" id="map"></div>
+                                                                        <div class="col-12 mt-4" id="map"></div>
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                        </div>
+                                                    </div>            
+                                                </div>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="col-md-12 layout-spacing">
+                                <form id="formulario_er" method="POST" enctype="multipart/form-data" class="section general-info">
+                                    @method('PUT')
+                                    @csrf
+                                    <div class="info" id="div_evaluacion_rrhh">
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="col-md-12 layout-spacing">
+                                <form id="formulario_jd" method="POST" enctype="multipart/form-data" class="section general-info">
+                                    @method('PUT')
+                                    @csrf
+                                    <div class="info" id="div_evaluacion_jefe_directo">
+                                    </div>
+                                </form>
+                            </div>
+
+                            @if (session('usuario')->id_nivel=="1" || 
+                            session('usuario')->id_puesto=="21" ||
+                            session('usuario')->id_puesto=="22" ||
+                            session('usuario')->id_puesto=="277" ||
+                            session('usuario')->id_puesto=="278")
+                                <div class="col-md-12 layout-spacing">
+                                    <form class="section general-info">
+                                        <div class="info">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <h6 style="margin-bottom: 0px !important;">REVISIÓN</h6>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <table id="tabla_js" class="table" style="width:100%">
+                                                                <thead class="text-center">
+                                                                    <tr>
+                                                                        <th>Base</th>
+                                                                        <th>N° documento</th>
+                                                                        <th>Apellido paterno</th>
+                                                                        <th>Apellido materno</th>
+                                                                        <th>Nombres</th>
+                                                                        <th>Estado</th>
+                                                                        <th>Fecha cese</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach ($list_revision as $list)
+                                                                        <tr class="text-center">
+                                                                            <td>{{ $list->centro_labores }}</td>
+                                                                            <td>{{ $list->num_doc }}</td>
+                                                                            <td class="text-left">{{ $list->usuario_apater }}</td>
+                                                                            <td class="text-left">{{ $list->usuario_amater }}</td>
+                                                                            <td class="text-left">{{ $list->usuario_nombres }}</td>
+                                                                            <td>{{ $list->nom_estado }}</td>
+                                                                            <td>{{ $list->fecha_cese }}</td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                    </form>
+                                </div>
+                            @endif
+
+                            <div class="col-md-12 layout-spacing">
+                                <form id="formulario_vs" method="POST" enctype="multipart/form-data" class="section general-info">
+                                    @method('PUT')
+                                    @csrf
+                                    <div class="info" id="div_verificacion_social">
                                     </div>
                                 </form>
                             </div>
 
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="general-info" class="section general-info">
-                                    <div class="info">
-                                        <div class="row">
-                                            <div class="col">
-                                                <h6>EVALUACIÓN RRHH</h6>
-                                            </div>
-                                            <div class="col text-right">
-                                                <button id="add-work-platforms" class="btn btn-primary">Actualizar</button>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-11 mx-auto">
-                                                <div class="row">
-                                                    <div class="col-lg-12 col-md-8 mt-md-0 mt-4">
-                                                        <div class="form">
-                                                            <div class="row">
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
-                                                                        <label for="resultado_rrhh">Resultado</label>
-                                                                        <select class="form-control" name="resultado_rrhh" id="resultado_rrhh">  
-                                                                            <option value="0">Seleccione</option>
-                                                                            <option value="6">APTO</option>
-                                                                            <option value="3">NO APTO</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-sm-12">
-                                                                    <div class="form-group">
-                                                                        <label for="observaciones_rrhh">Observaciones</label>
-                                                                        <textarea class="form-control" name="observaciones_rrhh" id="observaciones_rrhh" rows="4" placeholder="Observaciones"></textarea>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="general-info" class="section general-info">
-                                    <div class="info">
-                                        <div class="row">
-                                            <div class="col">
-                                                <h6>EVALUACIÓN JEFE DIRECTO</h6>
-                                            </div>
-                                            <div class="col text-right">
-                                                <button id="add-work-platforms" class="btn btn-primary">Actualizar</button>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-11 mx-auto">
-                                                <div class="row">
-                                                    <div class="col-lg-12 col-md-8 mt-md-0 mt-4">
-                                                        <div class="form">
-                                                            <div class="row">
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
-                                                                        <label for="resultado_jd">Resultado</label>
-                                                                        <select class="form-control" name="resultado_jd" id="resultado_jd">  
-                                                                            <option value="0">Seleccione</option>
-                                                                            <option value="6">APTO</option>
-                                                                            <option value="5">NO APTO</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-sm-12">
-                                                                    <div class="form-group">
-                                                                        <label for="observaciones_jd">Observaciones</label>
-                                                                        <textarea class="form-control" name="observaciones_jd" id="observaciones_jd" rows="4" placeholder="Observaciones"></textarea>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="general-info" class="section general-info">
-                                    <div class="info">
-                                        <div class="row">
-                                            <div class="col">
-                                                <h6>VERIFICACIÓN SOCIAL</h6>
-                                            </div>
-                                            <div class="col text-right">
-                                                <button id="add-work-platforms" class="btn btn-primary">Actualizar</button>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-11 mx-auto">
-                                                <div class="row">
-                                                    <div class="col-lg-12 col-md-8 mt-md-0 mt-4">
-                                                        <div class="form">
-                                                            <div class="row">
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
-                                                                        <label for="resultado_vs">Resultado</label>
-                                                                        <select class="form-control" name="resultado_vs" id="resultado_vs">  
-                                                                            <option value="0">Seleccione</option>
-                                                                            <option value="8">APTO</option>
-                                                                            <option value="7">NO APTO</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
-                                                                        <label for="verificacion_social">Adjuntar verificación social</label>
-                                                                        <input type="file" class="form-control-file" id="verificacion_social" name="verificacion_social">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-sm-12">
-                                                                    <div class="form-group">
-                                                                        <label for="observaciones_vs">Observaciones</label>
-                                                                        <textarea class="form-control" name="observaciones_vs" id="observaciones_vs" rows="4" placeholder="Observaciones"></textarea>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="general-info" class="section general-info">
+                            <div class="col-md-12 layout-spacing">
+                                <form id="formulario_rf" method="POST" enctype="multipart/form-data" class="section general-info">
+                                    @method('PUT')
+                                    @csrf
                                     <div class="info">
                                         <div class="row">
                                             <div class="col">
                                                 <h6>RESULTADO FINAL</h6>
                                             </div>
-                                            <div class="col text-right">
-                                                <button id="add-work-platforms" class="btn btn-primary">Actualizar</button>
+                                            <div class="col text-sm-right text-center">
+                                                @if (session('usuario')->id_nivel=="1" || 
+                                                session('usuario')->id_puesto=="21" ||
+                                                session('usuario')->id_puesto=="22" ||
+                                                session('usuario')->id_puesto=="277" ||
+                                                session('usuario')->id_puesto=="278")
+                                                    <button type="button" class="btn btn-primary" onclick="Update_Resultado_Final();">Actualizar</button>
+                                                @endif
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-lg-11 mx-auto">
-                                                    <div class="col-lg-12 col-md-8 mt-md-0 mt-4">
-                                                        <div class="form">
-                                                            <div class="row">
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
-                                                                        <label for="resultado_final">Resultado</label>
-                                                                        <select class="form-control" name="resultado_final" id="resultado_final">  
-                                                                            <option value="0">Seleccione</option>
-                                                                            <option value="10">SELECCIONADO</option>
-                                                                            <option value="9">NO SELECCIONADO</option>
-                                                                            <option value="11">EN REVISIÓN</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                <div class="row" id="div_resultado_final">                                                  
                                                 </div>
                                             </div>
                                         </div>
@@ -455,11 +209,37 @@
             $("#rhumanos").addClass('active');
             $("#hrhumanos").attr('aria-expanded', 'true');
             $("#postulantes").addClass('active');
+
+            Datos_Personales();
+            Domicilio_Titulo();
+            Domicilio_Contenido();
+            Evaluacion_Rrhh();
+            Evaluacion_Jefe_Directo();
+            Verificacion_Social();
+            Resultado_Final();
+
+            $('#tabla_js').DataTable({
+                "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
+                "<'table-responsive'tr>" +
+                "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                responsive: true,
+                "oLanguage": {
+                    "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                    "sInfo": "Mostrando página _PAGE_ de _PAGES_",
+                    "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                    "sSearchPlaceholder": "Buscar...",
+                    "sLengthMenu": "Resultados :  _MENU_",
+                    "sEmptyTable": "No hay datos disponibles en la tabla",
+                },
+                "stripeClasses": [],
+                "lengthMenu": [10, 20, 50],
+                "pageLength": 10
+            });
         });
 
         google.maps.event.addDomListener(window, 'load', function(){
-            var lati = -12.0746254;
-            var lngi = -77.021754;
+            var lati = @php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lat; }else{ echo -12.0746254; } @endphp;
+            var lngi = @php if(isset($get_domicilio->id_domicilio_usersp)){ echo $get_domicilio->lng; }else{ echo -77.021754; } @endphp;
 
             var coords = {lat: lati, lng: lngi};
 
@@ -558,5 +338,512 @@
                 }
             }
         });
+
+        function Datos_Personales(){
+            Cargando();
+
+            var url = "{{ route('postulante_reg.datos_personales', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_datos_personales').html(resp);
+                }
+            });
+        }
+
+        function Domicilio_Titulo(){
+            Cargando();
+
+            var url = "{{ route('postulante_reg.domicilio_titulo', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_domicilio_titulo').html(resp);
+                }
+            });
+        }
+
+        function Domicilio_Contenido(){
+            Cargando();
+
+            var url = "{{ route('postulante_reg.domicilio_contenido', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_domicilio_contenido').html(resp);
+                }
+            });
+        }
+
+        function Evaluacion_Rrhh(){
+            Cargando();
+
+            var url = "{{ route('postulante_reg.eval_rrhh', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_evaluacion_rrhh').html(resp);
+                }
+            });
+        }
+
+        function Evaluacion_Jefe_Directo(){
+            Cargando();
+
+            var url = "{{ route('postulante_reg.eval_jefe_directo', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_evaluacion_jefe_directo').html(resp);
+                }
+            });
+        }
+
+        function Verificacion_Social(){
+            Cargando();
+
+            var url = "{{ route('postulante_reg.verificacion_social', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_verificacion_social').html(resp);
+                }
+            });
+        }
+
+        function Resultado_Final(){
+            Cargando();
+
+            var url = "{{ route('postulante_reg.resultado_final', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_resultado_final').html(resp);
+                }
+            });
+        }
+
+        function Valida_Foto(val){
+            var archivoInput = document.getElementById(val);
+            var archivoRuta = archivoInput.value;
+            var extPermitidas = /(.png|.jpg|.jpeg)$/i;
+
+            if(!extPermitidas.exec(archivoRuta)){
+                Swal({
+                    title: 'Registro Denegado',
+                    text: "Asegurese de ingresar archivo con extensión .jpg|.png|.jpeg",
+                    type: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK',
+                });
+                archivoInput.value = ''; 
+                return false;
+            }else{
+                return true;         
+            }
+        }
+
+        function Valida_Archivo(val){
+            var archivoInput = document.getElementById(val);
+            var archivoRuta = archivoInput.value;
+            var extPermitidas = /(.pdf|.png|.jpg|.jpeg)$/i;
+
+            if(!extPermitidas.exec(archivoRuta)){
+                Swal({
+                    title: 'Registro Denegado',
+                    text: "Asegurese de ingresar archivo con extensión .pdf|.jpg|.png|.jpeg",
+                    type: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK',
+                });
+                archivoInput.value = ''; 
+                return false;
+            }else{
+                return true;         
+            }
+        }
+
+        function solo_Numeros(e) {
+            var key = event.which || event.keyCode;
+            if (key >= 48 && key <= 57) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function Traer_Edad(){
+            var fec_nac = new Date($('#fec_nac').val());
+            var hoy = new Date();
+            var edad = hoy.getFullYear() - fec_nac.getFullYear();
+            var mes = hoy.getMonth() - fec_nac.getMonth();
+            var dia = hoy.getDate() - fec_nac.getDate();
+            if (mes < 0 || (mes === 0 && dia < 0)) {
+                edad--;
+            }
+            $('#edad').val(edad >= 0 ? edad : 'Fecha no válida');
+        }
+
+        function Traer_Provincia(){
+            Cargando();
+
+            var url = "{{ route('postulante.traer_provincia') }}";
+            var id_departamento = $('#id_departamento').val();
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {'id_departamento':id_departamento},
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success:function (resp) {
+                    $('#id_provincia').html(resp);
+                    $('#id_distrito').html('<option value="0">Seleccione</option>'); 
+                }
+            });
+        }
+
+        function Traer_Distrito(){
+            Cargando();
+
+            var url = "{{ route('postulante.traer_distrito') }}";
+            var id_provincia = $('#id_provincia').val();
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {'id_provincia':id_provincia},
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success:function (resp) {
+                    $('#id_distrito').html(resp); 
+                }
+            });
+        }
+
+        function Update_Datos_Personales() {
+            Cargando();
+
+            var dataString = new FormData(document.getElementById('formulario_dp'));
+            var url = "{{ route('postulante_reg.update_datos_personales', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Datos_Personales();
+                    });
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+        }
+
+        function Update_Domicilio() {
+            Cargando();
+
+            var dataString = new FormData(document.getElementById('formulario_do'));
+            var url = "{{ route('postulante_reg.update_domicilio', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Domicilio_Titulo();
+                        Domicilio_Contenido();
+                    });
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+        }
+
+        function Update_Evaluacion_Rrhh() {
+            Cargando();
+
+            var dataString = new FormData(document.getElementById('formulario_er'));
+            var url = "{{ route('postulante_reg.update_eval_rrhh', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Evaluacion_Rrhh();
+                        Evaluacion_Jefe_Directo();
+                        Verificacion_Social();
+                    });
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+        }
+
+        function Update_Evaluacion_Psicologica() {
+            Cargando();
+
+            var dataString = new FormData(document.getElementById('formulario_er'));
+            var url = "{{ route('postulante_reg.update_evaluacion_psicologica', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Evaluacion_Rrhh();
+                    });
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+        }
+
+        function Update_Jefe_Directo() {
+            Cargando();
+
+            var dataString = new FormData(document.getElementById('formulario_jd'));
+            var url = "{{ route('postulante_reg.update_eval_jefe_directo', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    if(data!=""){
+                        var mensaje = data.trim();
+                        Swal({
+                            title: '¡Error al enviar correo!',
+                            text: mensaje,
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    }else{
+                        swal.fire(
+                            '¡Actualización Exitosa!',
+                            '¡Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            Evaluacion_Rrhh();
+                            Evaluacion_Jefe_Directo();
+                            Verificacion_Social();
+                        });
+                    }
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+        }
+
+        function Update_Verificacion_Social() {
+            Cargando();
+
+            var dataString = new FormData(document.getElementById('formulario_vs'));
+            var url = "{{ route('postulante_reg.update_verificacion_social', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Evaluacion_Rrhh();
+                        Evaluacion_Jefe_Directo();
+                        Verificacion_Social();
+                    });
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+        }
+
+        function Update_Ver_Social() {
+            Cargando();
+
+            var dataString = new FormData(document.getElementById('formulario_vs'));
+            var url = "{{ route('postulante_reg.update_ver_social', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Verificacion_Social();
+                    });
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+        }
+
+        function Update_Resultado_Final() {
+            Cargando();
+
+            var dataString = new FormData(document.getElementById('formulario_rf'));
+            var url = "{{ route('postulante_reg.update_resultado_final', $get_id->id_postulante) }}";
+
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    var cadena = data.trim();
+                    validacion = cadena.substr(0, 1);
+                    mensaje = cadena.substr(1);
+
+                    if(validacion=="2"){
+                        Swal({
+                            title: '¡Actualización Denegada!',
+                            text: mensaje,
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    }else if(validacion=="3"){
+                        Swal({
+                            title: '¡Error al enviar correo!',
+                            text: mensaje,
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    }else{
+                        swal.fire(
+                            '¡Actualización Exitosa!',
+                            mensaje,
+                            'success'
+                        ).then(function() {
+                            Resultado_Final();
+                        })
+                    }
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+        }
     </script>
 @endsection

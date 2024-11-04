@@ -41,9 +41,6 @@
                                     <a id="a_pu" class="nav-link" onclick="Puesto();" style="cursor: pointer;">Puesto</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a id="a_ca" class="nav-link" onclick="Cargo();" style="cursor: pointer;">Cargo</a>
-                                </li>
-                                <li class="nav-item">
                                     <a id="datacorp" class="nav-link" onclick="Index_Datacorp();" style="cursor: pointer;">Datacorp</a>
                                 </li>
                                 <li class="nav-item">
@@ -329,22 +326,6 @@
             success: function(resp) {
                 $('#div_colaborador_conf').html(resp);
                 $("#a_pu").addClass('active');
-            }
-        });
-    }
-
-    function Cargo() {
-        Cargando();
-
-        Active_Tabla_Colaboradores();
-        var url = "{{ route('colaborador_conf_ca') }}";
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            success: function(resp) {
-                $('#div_colaborador_conf').html(resp);
-                $("#a_ca").addClass('active');
             }
         });
     }

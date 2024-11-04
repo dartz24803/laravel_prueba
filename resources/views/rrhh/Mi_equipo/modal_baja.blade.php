@@ -61,10 +61,14 @@
 
         var dataString = new FormData(document.getElementById('formulario_baja'));
         var url = "{{ url('MiEquipo/Update_Fecha_Baja') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
             $.ajax({
                 url: url,
                 data: dataString,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 type: "POST",
                 processData: false,
                 contentType: false,
@@ -85,9 +89,18 @@
                             'success'
                         ).then(function() {
                             $("#ModalUpdate .close").click();
-                            Cargar_Mi_Equipo();
+                            Cargar_x_Base();
                         });
                     }
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
                 }
             });
     }

@@ -11,181 +11,62 @@ class Asistencia extends Model
     use HasFactory;
     public $timestamps = false;
 
-    public function buscar_reporte_control_asistencia($cod_mes, $cod_anio, $cod_base, $num_doc, $tipo, $finicio, $ffin)
-    {
-        //$fecha=" WHERE DATE_FORMAT(ar.punch_time,'%m') = '".$cod_mes."' ";
-        if ($tipo == 1) {
-            $fecha = " WHERE DATE_FORMAT(ar.punch_time,'%m') = '" . $cod_mes . "' AND DATE_FORMAT(ar.punch_time,'%Y') = '" . $cod_anio . "'";
-        } else {
-            $fecha = " WHERE DATE_FORMAT(ar.punch_time,'%Y-%m-%d') BETWEEN '" . $finicio . "' and '" . $ffin . "'";
+    public function buscar_reporte_control_asistencia($cod_mes, $cod_anio, $cod_base, $num_doc, $tipo, $finicio, $ffin, $usuarios){
+        if($tipo==1){
+            $fecha=" AND DATE_FORMAT(it.punch_time,'%m') = '".$cod_mes."' AND DATE_FORMAT(it.punch_time,'%Y') = '".$cod_anio."'";
+        }else{
+            $fecha=" AND DATE_FORMAT(it.punch_time,'%Y-%m-%d') BETWEEN '".$finicio."' and '".$ffin."'";
         }
 
-        $base_iclock = "";
-        $base_ar = "";
+        $doc_iclock="";
+        $doc_ar="";
+        $base_ar="";
 
-
-        $doc_iclock = "";
-        $doc_ar = "";
-        if ($num_doc != 0) {
-            if (strlen($num_doc > 8)) {
-                $num_doc = substr($num_doc, 0, -1);
-            } else {
-                $num_doc = $num_doc;
-            }
-            $doc_iclock = " and LPAD(ar.emp_code,8,'0') like '%" . $num_doc . "%'";
-            $doc_ar = " and u.num_doc = '%" . $num_doc . "%' ";
-        } else {
-            if ($cod_base != "" && $cod_base != "0") {
-                //$base_iclock=" and ar.terminal_alias = '".$cod_base."' ";
-                $base_ar = " and u.centro_labores = '" . $cod_base . "' ";
-            }
-        }
-
-        $vista = "SELECT
-                        todo.usuario_nombres AS usuario_nombres,
-                        todo.usuario_apater AS usuario_apater,
-                        todo.usuario_amater AS usuario_amater,
-                        todo.usuario_email AS usuario_email,
-                        todo.nom_area AS nom_area,
-                        todo.foto AS foto,
-                        todo.num_doc AS num_doc,
-                        todo.id_gerencia AS id_gerencia,
-                        todo.id_area AS id_area,
-                        todo.nom_gerencia AS nom_gerencia,
-                        todo.punch_time AS punch_time,
-                        todo.estado_marcacion AS estado_marcacion,
-                        todo.codigo_usuario AS codigo_usuario,
-                        todo.base AS base,
-                        todo.tipo AS tipo,
-                        todo.lugar AS lugar,
-                        todo.marcacion AS marcacion,
-                        todo.id_asistencia_remota AS id_asistencia_remota,
-                        todo.tipo_asistencia AS tipo_asistencia
-                    FROM
-                        (
-                            (
-                                SELECT
-                                    u.usuario_nombres AS usuario_nombres,
-                                    u.usuario_apater AS usuario_apater,
-                                    u.usuario_amater AS usuario_amater,
-                                    u.usuario_email AS usuario_email,
-                                    a.nom_area AS nom_area,
-                                    u.foto AS foto,
-                                    u.num_doc AS num_doc,
-                                    u.id_gerencia AS id_gerencia,
-                                    u.id_area AS id_area,
-                                    g.nom_gerencia AS nom_gerencia,
-                                    ar.punch_time AS punch_time,
-                                    ar.marcacion AS estado_marcacion,
-                                    u.num_doc AS codigo_usuario,
-                                    u.centro_labores AS base,
-                                    1 AS tipo,
-                                    ar.lugar AS lugar,
-                                    ar.marcacion AS marcacion,
-                                    ar.id_asistencia_remota AS id_asistencia_remota,
-                                    CASE WHEN DATE_FORMAT(ar.punch_time, '%H:%i:%s') BETWEEN DATE_FORMAT(
-                                        hd.hora_entrada_desde,
-                                        '%H:%i:%s'
-                                    ) AND DATE_FORMAT(
-                                        hd.hora_entrada_hasta,
-                                        '%H:%i:%s'
-                                    ) THEN 'Ingreso' WHEN DATE_FORMAT(ar.punch_time, '%H:%i:%s') BETWEEN DATE_FORMAT(hd.hora_salida_desde, '%H:%i:%s') AND DATE_FORMAT(hd.hora_salida_hasta, '%H:%i:%s') THEN 'Salida' WHEN DATE_FORMAT(ar.punch_time, '%H:%i:%s') BETWEEN DATE_FORMAT(
-                                        hd.hora_descanso_e_desde,
-                                        '%H:%i:%s'
-                                    ) AND DATE_FORMAT(
-                                        hd.hora_descanso_e_hasta,
-                                        '%H:%i:%s'
-                                    ) THEN 'Inicio Descanso' WHEN DATE_FORMAT(ar.punch_time, '%H:%i:%s') BETWEEN DATE_FORMAT(
-                                        hd.hora_descanso_s_desde,
-                                        '%H:%i:%s'
-                                    ) AND DATE_FORMAT(
-                                        hd.hora_descanso_s_hasta,
-                                        '%H:%i:%s'
-                                    ) THEN 'Fin Descanso'
-                                    END AS tipo_asistencia
-                                FROM lanumerouno.asistencia_remota ar
-                                LEFT JOIN lanumerouno.users u ON (ar.user_reg = u.id_usuario)
-                                LEFT JOIN lanumerouno.area a ON (u.id_area = a.id_area)
-                                LEFT JOIN lanumerouno.gerencia g ON (u.id_gerencia = g.id_gerencia)
-                                LEFT JOIN zkbiotime.iclock_transaction b ON (LPAD(CONVERT(b.emp_code USING utf8), 8,'0') = u.usuario_codigo  )    
-                                LEFT JOIN lanumerouno.horario_dia hd ON ( u.id_horario = hd.id_horario AND hd.dia = CASE DAYNAME(  DATE_FORMAT(ar.punch_time, '%Y-%m-%d')) WHEN 'Monday' THEN 1 WHEN 'Tuesday' THEN 2 WHEN 'Wednesday' THEN 3 WHEN 'Thursday' THEN 4 WHEN 'Friday' THEN 5 WHEN 'Saturday' THEN 6 WHEN 'Sunday' THEN 7 END )
-                                $fecha $base_ar $doc_ar LIMIT 31
-                            )
-                            UNION
-                            (
-                                SELECT
-                                    u.usuario_nombres AS usuario_nombres,
-                                    u.usuario_apater AS usuario_apater,
-                                    u.usuario_amater AS usuario_amater,
-                                    u.usuario_email AS usuario_email,
-                                    a.nom_area AS nom_area,
-                                    u.foto AS foto,
-                                    u.num_doc AS num_doc,
-                                    u.id_gerencia AS id_gerencia,
-                                    u.id_area AS id_area,
-                                    g.nom_gerencia AS nom_gerencia,
-                                    ar.punch_time AS punch_time,
-                                    ar.punch_state AS estado_marcacion,
-                                    ar.emp_code AS codigo_usuario,
-                                    ar.terminal_alias AS base,
-                                    2 AS tipo,
-                                    'Marcador' AS lugar,
-                                    'Marcador' AS marcacion,
-                                    ar.id AS id,
-                                    CASE WHEN DATE_FORMAT(ar.punch_time, '%H:%i:%s') BETWEEN DATE_FORMAT(
-                                        hd.hora_entrada_desde,
-                                        '%H:%i:%s'
-                                    ) AND DATE_FORMAT(
-                                        hd.hora_entrada_hasta,
-                                        '%H:%i:%s'
-                                    ) THEN 'Ingreso' WHEN DATE_FORMAT(ar.punch_time, '%H:%i:%s') BETWEEN DATE_FORMAT(hd.hora_salida_desde, '%H:%i:%s') AND DATE_FORMAT(hd.hora_salida_hasta, '%H:%i:%s') THEN 'Salida' WHEN DATE_FORMAT(ar.punch_time, '%H:%i:%s') BETWEEN DATE_FORMAT(
-                                        hd.hora_descanso_e_desde,
-                                        '%H:%i:%s'
-                                    ) AND DATE_FORMAT(
-                                        hd.hora_descanso_e_hasta,
-                                        '%H:%i:%s'
-                                    ) THEN 'Inicio Descanso' WHEN DATE_FORMAT(ar.punch_time, '%H:%i:%s') BETWEEN DATE_FORMAT(
-                                        hd.hora_descanso_s_desde,
-                                        '%H:%i:%s'
-                                    ) AND DATE_FORMAT(
-                                        hd.hora_descanso_s_hasta,
-                                        '%H:%i:%s'
-                                    ) THEN 'Fin Descanso'
-                                END AS tipo_asistencia
-                                FROM
-                                    (
-                                        (
-                                            (
-                                                (zkbiotime.iclock_transaction ar
-                                                LEFT JOIN lanumerouno.users u ON (u.usuario_codigo LIKE CONCAT('%', LPAD(CONVERT(emp_code USING utf8), 8,'0'),'%'))
-                                                )
-                                                LEFT JOIN lanumerouno.area a ON (u.id_area = a.id_area)
-                                            )
-                                            LEFT JOIN lanumerouno.gerencia g ON (u.id_gerencia = g.id_gerencia)
-                                        )
-                                        LEFT JOIN lanumerouno.horario_dia hd ON
-                                        ( u.id_horario = hd.id_horario AND hd.dia = CASE DAYNAME( DATE_FORMAT(ar.punch_time, '%Y-%m-%d') ) WHEN 'Monday' THEN 1 WHEN 'Tuesday' THEN 2 WHEN 'Wednesday' THEN 3 WHEN 'Thursday' THEN 4 WHEN 'Friday' THEN 5 WHEN 'Saturday' THEN 6 WHEN 'Sunday' THEN 7 END)
-                                    ) $fecha $base_iclock $doc_iclock LIMIT 31
-                            )
-                        ) todo
-        ";
-        //echo $vista;
-        $sql = " SELECT 
-            a.num_doc,CONCAT(a.usuario_nombres,' ',a.usuario_apater,' ',a.usuario_amater) as nombres, CONCAT(a.num_doc,'-',DATE_FORMAT(a.punch_time,'%d-%m-%Y')) as validador, DATE_FORMAT(a.punch_time,'%d/%m/%Y') as fecha,DATE_FORMAT(a.punch_time,'%d-%m-%Y') as fecha2, 
+        $resultados = [];
+        //print_r($usuarios);
+        foreach ($usuarios as $usuario) {
+            $dni = $usuario->usuario_codigo;
             
-            (SELECT CONCAT(DATE_FORMAT(t.punch_time,'%H:%i:%s'),'--',t.id_asistencia_remota) FROM ($vista) t WHERE a.num_doc = t.num_doc and DATE_FORMAT(t.punch_time,'%Y-%m-%d')=DATE_FORMAT(a.punch_time,'%Y-%m-%d') ORDER BY t.punch_time ASC LIMIT 1) as ingreso,
-            (SELECT CONCAT(DATE_FORMAT(t.punch_time,'%H:%i:%s'),'--',t.id_asistencia_remota) FROM ($vista) t WHERE a.num_doc = t.num_doc and DATE_FORMAT(t.punch_time,'%Y-%m-%d')=DATE_FORMAT(a.punch_time,'%Y-%m-%d') ORDER BY t.punch_time ASC LIMIT 1, 1) as idescanso,
-            (SELECT CONCAT(DATE_FORMAT(t.punch_time,'%H:%i:%s'),'--',t.id_asistencia_remota) FROM ($vista) t WHERE a.num_doc = t.num_doc and DATE_FORMAT(t.punch_time,'%Y-%m-%d')=DATE_FORMAT(a.punch_time,'%Y-%m-%d') ORDER BY t.punch_time ASC LIMIT 2, 1) as fdescanso,
-
-            CASE WHEN (SELECT COUNT(*) FROM ($vista) t WHERE a.num_doc = t.num_doc and DATE_FORMAT(t.punch_time,'%Y-%m-%d')=DATE_FORMAT(a.punch_time,'%Y-%m-%d'))>3 THEN (SELECT CONCAT(DATE_FORMAT(t.punch_time,'%H:%i:%s'),'--',t.id_asistencia_remota) FROM ($vista) t WHERE a.num_doc = t.num_doc and DATE_FORMAT(t.punch_time,'%Y-%m-%d')=DATE_FORMAT(a.punch_time,'%Y-%m-%d') ORDER BY t.punch_time DESC LIMIT 1) ELSE '' END AS salida,
-            CASE WHEN (SELECT COUNT(*) FROM ($vista) t WHERE a.num_doc = t.num_doc and DATE_FORMAT(t.punch_time,'%Y-%m-%d')=DATE_FORMAT(a.punch_time,'%Y-%m-%d'))>1 THEN (SELECT CONCAT(DATE_FORMAT(t.punch_time,'%H:%i:%s'),'--',t.id_asistencia_remota) FROM ($vista) t WHERE a.num_doc = t.num_doc and DATE_FORMAT(t.punch_time,'%Y-%m-%d')=DATE_FORMAT(a.punch_time,'%Y-%m-%d') ORDER BY t.punch_time DESC LIMIT 1) ELSE '' END AS salidasabado
-
-            FROM ($vista) AS a
-            group by a.num_doc,nombres,validador,fecha,fecha2,ingreso,idescanso,fdescanso,salida,salidasabado order by fecha2 desc
-        ";
-        // print_r($vista);
-        $result = DB::select($sql);
-        return json_decode(json_encode($result), true);
+            $sql = "SELECT DISTINCT DATE(it.punch_time) AS orden, u.centro_labores,
+                    u.usuario_apater,u.usuario_amater,u.usuario_nombres, u.usuario_codigo as num_doc,
+                    DATE_FORMAT(it.punch_time, '%d/%m/%Y') AS fecha,
+                    (SELECT DATE_FORMAT(ir.punch_time, '%H:%i %p') 
+                    FROM iclock_transaction ir
+                    WHERE ir.emp_code = it.emp_code AND DATE(ir.punch_time) = DATE(it.punch_time)
+                    ORDER BY ir.punch_time ASC
+                    LIMIT 1) AS ingreso,
+                    (SELECT DATE_FORMAT(ir.punch_time, '%H:%i %p') 
+                    FROM iclock_transaction ir
+                    WHERE ir.emp_code = it.emp_code AND DATE(ir.punch_time) = DATE(it.punch_time)
+                    ORDER BY ir.punch_time ASC
+                    LIMIT 1,1) AS inicio_refrigerio,
+                    (SELECT DATE_FORMAT(ir.punch_time, '%H:%i %p') 
+                    FROM iclock_transaction ir
+                    WHERE ir.emp_code = it.emp_code AND DATE(ir.punch_time) = DATE(it.punch_time)
+                    ORDER BY ir.punch_time ASC
+                    LIMIT 2,1) AS fin_refrigerio,
+                    (SELECT DATE_FORMAT(ir.punch_time, '%H:%i %p') 
+                    FROM iclock_transaction ir
+                    WHERE ir.emp_code = it.emp_code AND DATE(ir.punch_time) = DATE(it.punch_time)
+                    ORDER BY ir.punch_time ASC
+                    LIMIT 3,1) AS salida
+                    FROM iclock_transaction it
+                    join lanumerouno.users u ON it.emp_code=u.usuario_codigo
+                    WHERE it.emp_code = :dni $fecha $base_ar $doc_iclock $doc_ar
+                    ORDER BY DATE(it.punch_time) DESC";
+        
+            // Imprimir consulta con el valor reemplazado
+            // $sql_with_dni = str_replace(':dni', "'$dni'", $sql);
+            // print_r($sql_with_dni);
+            
+            // Ejecutar la consulta
+            $result = DB::connection('second_mysql')->select($sql, [$dni]);
+            
+            // Convertir el resultado a un array y añadirlo al array de resultados
+            $resultados[$dni] = json_decode(json_encode($result), true);
+        }
+        return $resultados;
+        
     }
 
     function get_list_usuario_xnum_doc($num_doc)

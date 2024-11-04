@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('slide', function (Blueprint $table) {
             $table->id('id_slide');
-            $table->unsignedBigInteger('id_area')->nullable();
+            $table->unsignedBigInteger('id_area');
             $table->string('base', 10)->nullable();
             $table->integer('orden')->nullable();
             $table->string('nom_slide', 50)->nullable();
@@ -31,7 +31,7 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            $table->foreign('id_area')->references('id_area')->on('area');
+            $table->foreign('id_area','sli_fk_id_are')->references('id_area')->on('area');
         });
     }
 

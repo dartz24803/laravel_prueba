@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('user_reg'); // Equivalent to int(11)
             $table->datetime('fec_act'); // Equivalent to datetime
             $table->integer('user_act'); // Equivalent to int(11)
+            $table->foreign('area','aubi_fk_id_are')->references('id_area')->on('area');
         });
     }
 

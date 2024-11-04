@@ -18,22 +18,134 @@ class Usuario extends Model
     protected $fillable = [
         'id_centro_labor',
         'id_ubicacion',
+        'usuario_nombres',
         'usuario_apater',
         'usuario_amater',
-        'usuario_nombres',
         'usuario_codigo',
         'usuario_password',
         'password_desencriptado',
         'id_nivel',
         'usuario_email',
+        'emailp',
+        'num_celp',
+        'num_fijop',
+        'num_cele',
+        'num_fijoe',
+        'num_anexoe',
+        'directorio',
+        'asistencia',
+        'id_horario',
+        'horas_semanales',
         'id_puesto',
+        'id_empresa',
+        'id_empresapl',
+        'id_regimen',
+        'id_tipo_contrato',
+        'id_tipo_documento',
+        'num_doc',
+        'fec_emision_doc',
+        'fec_vencimiento_doc',
+        'id_nacionalidad',
+        'id_genero',
+        'id_estado_civil',
+        'urladm',
+        'foto',
+        'foto_nombre',
+        'observaciones',
+        'dia_nac',
+        'mes_nac',
+        'anio_nac',
+        'fec_nac',
+        'situacion',
         'centro_labores',
         'acceso',
         'verif_email',
-        'documento',
-        'id_horario',
+        'ip_acceso',
+        'enfermedades',
+        'alergia',
+        'hijos',
+        'terminos',
+        'id_situacion_laboral',
+        'ini_funciones',
+        'fin_funciones',
+        'fec_ingreso',
+        'fec_termino',
+        'desvinculacion',
+        'fec_reg_desv',
+        'induccion',
+        'nota_induccion',
+        'datos_completos',
+        'fec_reg_ind',
+        'id_modalidad_laboral',
+        'home_office',
+        'domiciliado',
+        'asignacion_familiar',
+        'aporte_voluntario',
+        'neto_uss',
+        'id_banco_cts',
+        'cuenta_cts',
+        'id_banco_haberes',
+        'cuenta_haberes',
+        'id_tipo_trabajador',
+        'id_sector_laboral',
+        'id_nivel_educativo',
+        'id_ocupacion',
+        'id_cargo_trabajador',
+        'id_sctr_salud',
+        'id_sctr_pension',
+        'id_situacion_trabajador',
+        'fecha_cese',
+        'fec_baja',
+        'cancelar_baja',
+        'id_motivo_baja',
+        'observaciones_baja',
+        'doc_baja',
+        'fec_asignacionjr',
+        'id_puestojr',
+        'cancelar_asignacionjr',
+        'estado_asignacioncv',
+        'fec_asignacioncv',
+        'fec_iniciocv',
+        'fec_regvc',
+        'cancelar_asignacioncv',
+        'id_puestocv',
+        'id_regimen_pensionario',
+        'fecha_inscripcion',
+        'cuspp_afp',
+        'id_comision_afp',
+        'regimen_a',
+        'jornada_trabajo',
+        'trabajo_nocturno',
+        'discapacidad',
+        'sindicalizado',
+        'renta_quinta',
+        'id_tipo_pago',
+        'id_periocidad',
+        'id_situacion_especial_trabajador',
+        'afiliado_eps',
+        'id_eps',
+        'ingreso_quinta',
+        'ruc_quinta',
+        'razon_social_quinta',
+        'renta_bruta_quinta',
+        'retencion_renta_quinta',
+        'trabajador',
+        'pensionista',
+        'servicio_cuarta',
+        'servicio_mod',
+        'terceros',
+        'ruc_categoria',
+        'gusto_personales',
+        'edicion_perfil',
+        'perf_revisado',
+        'fec_edi_perfil',
+        'user_edi_perfil',
+        'fec_perf_revisado',
+        'user_perf_revisado',
         'accesos_email',
+        'motivo_renuncia',
         'correo_bienvenida',
+        'documento',
         'estado',
         'fec_reg',
         'user_reg',
@@ -59,24 +171,27 @@ class Usuario extends Model
     public function login($usuario)
     {
         $query = "SELECT u.id_usuario, u.usuario_nombres, u.usuario_apater, u.usuario_amater, u.usuario_codigo,
-        u.id_nivel, ub.cod_ubi AS centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,u.id_puesto,u.acceso,
-        u.ini_funciones,u.fec_reg,u.usuario_password,u.estado, n.nom_nivel, p.nom_puesto, a.nom_area, u.id_area,
-        (SELECT GROUP_CONCAT(puestos) FROM area WHERE estado=1 AND orden!='') AS grupo_puestos, u.id_gerencia,
-        CASE WHEN u.urladm=1 THEN (select r.url_config from config r where r.descrip_config='Foto_Postulante'
-        and r.estado=1) else (select r.url_config from config r where r.descrip_config='Foto_colaborador'
-        and r.estado=1) end as url_foto,p.id_nivel as nivel_jerarquico,u.desvinculacion,u.id_cargo,
-        pps.registro_masivo, visualizar_amonestacion(u.id_puesto) AS visualizar_amonestacion,
-        sl.descripcion AS sede_laboral,
-        pps.estado as estadopps, pps.registro_masivo, pps.id_puesto_permitido, u.id_centro_labor,
-        visualizar_mi_equipo(u.id_puesto) AS visualizar_mi_equipo
-        FROM users u
-        LEFT JOIN permiso_papeletas_salida pps ON u.id_puesto=pps.id_puesto_jefe AND pps.estado=1
-        LEFT JOIN nivel n ON u.id_nivel=n.id_nivel
-        LEFT JOIN puesto p ON u.id_puesto=p.id_puesto
-        LEFT JOIN area a ON u.id_area=a.id_area
-        LEFT JOIN sede_laboral sl ON p.id_sede_laboral=sl.id
-        LEFT JOIN ubicacion ub ON u.id_centro_labor=ub.id_ubicacion
-        WHERE u.usuario_codigo='$usuario' AND u.estado IN (1,4) AND u.desvinculacion IN (0)";
+                u.id_nivel, ub.cod_ubi AS centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,u.id_puesto,u.acceso,
+                u.ini_funciones,u.fec_reg,u.usuario_password,u.estado, n.nom_nivel, p.nom_puesto, a.nom_area, p.id_area,
+                (SELECT GROUP_CONCAT(puestos) FROM area WHERE estado=1 AND orden!='') AS grupo_puestos, sg.id_gerencia,
+                CASE WHEN u.urladm=1 THEN (select r.url_config from config r where r.descrip_config='Foto_Postulante'
+                and r.estado=1) else (select r.url_config from config r where r.descrip_config='Foto_colaborador'
+                and r.estado=1) end as url_foto,p.id_nivel as nivel_jerarquico,u.desvinculacion,
+                pps.registro_masivo, visualizar_amonestacion(u.id_puesto) AS visualizar_amonestacion,
+                sl.descripcion AS sede_laboral,
+                pps.estado as estadopps, pps.registro_masivo, pps.id_puesto_permitido, u.id_centro_labor,
+                visualizar_mi_equipo(u.id_puesto) AS visualizar_mi_equipo,
+                (SELECT COUNT(*) FROM asignacion_jefatura aj 
+                WHERE aj.id_puesto_jefe=u.id_puesto and aj.estado=1) as puestos_asignados
+                FROM users u
+                LEFT JOIN permiso_papeletas_salida pps ON u.id_puesto=pps.id_puesto_jefe AND pps.estado=1
+                LEFT JOIN nivel n ON u.id_nivel=n.id_nivel
+                LEFT JOIN puesto p ON u.id_puesto=p.id_puesto
+                LEFT JOIN area a ON p.id_area=a.id_area
+                LEFT JOIN sub_gerencia sg ON a.id_departamento=sg.id_sub_gerencia
+                LEFT JOIN ubicacion ub ON u.id_centro_labor=ub.id_ubicacion
+                LEFT JOIN sede_laboral sl ON ub.id_sede=sl.id
+                WHERE u.usuario_codigo='$usuario' AND u.estado IN (1,4) AND u.desvinculacion IN (0)";
         $result = DB::select($query);
         return $result;
     }
@@ -212,7 +327,7 @@ class Usuario extends Model
         }
         $carea = "";
         if (isset($area) && $area > 0) {
-            $carea = "AND u.id_area='$area' ";
+            $carea = "AND p.id_area='$area' ";
         }
 
         $id_estado = "";
@@ -224,6 +339,7 @@ class Usuario extends Model
         $sql = "SELECT u.*,(SELECT fec_inicio h FROM historico_colaborador h where u.id_usuario=h.id_usuario and h.estado in (1,3) ORDER BY h.fec_inicio DESC,h.fec_fin DESC limit 1)as fec_inicio,
                 (SELECT h.fec_fin h FROM historico_colaborador h where u.id_usuario=h.id_usuario and h.estado in (1,3) ORDER BY h.fec_inicio DESC,h.fec_fin DESC limit 1)as fec_fin
                 FROM users u
+                LEFT JOIN puesto p ON u.id_puesto = p.id_puesto
                 WHERE u.id_nivel<>8 $base $carea $id_estado";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
@@ -1087,7 +1203,7 @@ class Usuario extends Model
                     left join motivo_baja_rrhh mt on u.id_motivo_baja=mt.id_motivo
                     where u.estado in (1) and u.id_nivel<>8 and u.id_gerencia='" . $id_gerencia . "'
                     ORDER BY u.ini_funciones DESC";
-        } elseif (isset($dato) && count($dato['list_ajefatura']) > 0) {
+        } elseif (isset($dato) && count($dato['list_ajefatura']) > 0 || $id_puesto == "24") {
             $sql = "SELECT u.id_usuario, u.usuario_apater,u.fec_baja,
                     u.centro_labores, td.cod_tipo_documento,
                     td.nom_tipo_documento, u.num_celp,u.num_doc, 
@@ -1224,7 +1340,7 @@ class Usuario extends Model
                     left join motivo_baja_rrhh mt on u.id_motivo_baja=mt.id_motivo
                     where u.estado in (1) and u.id_nivel<>8 and u.id_puesto in " . $dato['cadena'] . "
                     ORDER BY u.ini_funciones DESC";
-        } elseif ($visualizar_mi_equipo != "sin_acceso_mi_equipo") {
+        } elseif (session('usuario')->visualizar_mi_equipo != "sin_acceso_mi_equipo") {
             $sql = "SELECT u.id_usuario,u.usuario_apater,u.verif_email,u.centro_labores, 
                     td.cod_tipo_documento,u.fec_baja,td.nom_tipo_documento,u.num_celp,
                     u.num_doc,u.usuario_amater,u.usuario_nombres,n.nom_nacionalidad,u.foto,
@@ -1628,5 +1744,22 @@ class Usuario extends Model
         $result = DB::select($sql);
         // Convertir el resultado a un array
         return json_decode(json_encode($result), true);
+    }
+
+    public static function get_list_familiar_postulante($dato=null)
+    {
+        $sql = "SELECT ub.cod_ubi AS centro_labores,us.num_doc,us.usuario_apater,us.usuario_amater,
+                us.usuario_nombres,eu.nom_estado_usuario AS nom_estado,
+                CASE WHEN us.fin_funciones IS NOT NULL AND us.fin_funciones NOT LIKE '%0000%' THEN 
+                DATE_FORMAT(us.fin_funciones,'%d/%m/%Y') ELSE '' END AS fecha_cese
+                FROM users us
+                INNER JOIN ubicacion ub ON ub.id_ubicacion=us.id_centro_labor
+                LEFT JOIN vw_estado_usuario eu ON eu.id_estado_usuario=us.estado
+                WHERE us.id_centro_labor IN (SELECT ba.id_ubicacion FROM base ba
+                WHERE ba.id_departamento='".$dato['id_departamento']."' AND ba.estado=1) AND 
+                us.estado IN (1,3) AND (us.usuario_apater='".$dato['postulante_apater']."' OR 
+                us.usuario_amater='".$dato['postulante_amater']."')";
+        $query = DB::select($sql);
+        return $query;
     }
 }
