@@ -32,4 +32,9 @@ class AsuntoSoporte extends Model
         'fec_eli',
         'user_eli'
     ];
+
+    public static function obtenerEvidenciaAdicionalPorId($idsoporteAsunto)
+    {
+        return self::where('idsoporte_asunto', $idsoporteAsunto)->value('evidencia_adicional');
+    }
 }

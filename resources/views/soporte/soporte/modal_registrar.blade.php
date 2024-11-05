@@ -13,27 +13,44 @@
     }
 
     #imagenes_container {
-        display: flex;
-        overflow-x: auto;
-        /* Habilita el desplazamiento horizontal */
+        width: 600px;
+        /* Cambia este valor según tus necesidades */
         white-space: nowrap;
-        /* Evita el salto de línea */
+        /* Asegura que los elementos en línea no se rompan */
+        overflow-x: auto;
+        /* Habilita el scroll horizontal */
+        border: 1px solid #ccc;
+        /* Opcional: Añade un borde para visualizar mejor el contenedor */
         padding: 10px;
-        max-width: 100%;
-        gap: 10px;
-        /* Espacio entre imágenes */
-        scrollbar-width: thin;
-        /* Para navegadores que admiten este estilo */
+        /* Opcional: Añade algo de padding para un mejor aspecto */
+    }
+
+    .text-center {
+        display: inline-block;
+        /* Permite que los elementos se alineen horizontalmente */
+        margin-right: 10px;
+        /* Espacio entre las imágenes */
     }
 
     #imagenes_container img {
+        width: 150px;
+        /* Ancho fijo para todas las imágenes */
         height: 150px;
-        /* Altura de las imágenes, ajústala según sea necesario */
+        /* Altura fija para todas las imágenes */
+        border-radius: 5px;
+        /* Bordes redondeados */
+        cursor: pointer;
+        /* Cambia el cursor al pasar por encima */
         flex-shrink: 0;
         /* Evita que las imágenes se encojan */
-        border-radius: 5px;
-        cursor: pointer;
     }
+
+    /* Ajuste específico para la cuarta y quinta imagen */
+    #imagenes_container img:nth-child(n+4) {
+        margin-left: 50px;
+        /* Aumenta el margen izquierdo para la cuarta imagen y superiores */
+    }
+
 
 
     /* public/css/style.css */
@@ -226,14 +243,13 @@
             <div class="d-flex justify-content-center" style="display:none !important;" id="div_canvas">
                 <canvas id="canvas" width="640" height="480" style="max-width:95%;"></canvas>
             </div>
-
-            <div class="d-flex justify-content-center" style="max-width: 100%;" id="div_imagenes">
+            <div class="d-flex justify-content-center" style="max-width: 100%; overflow-x: auto;" id="div_imagenes">
                 <input type="hidden" id="imagenes_input" name="imagenes" value="">
-
                 <div id="imagenes_container" class="carousel-container">
                     <!-- Las imágenes se añadirán aquí dinámicamente -->
                 </div>
             </div>
+
 
         </div>
 
@@ -439,21 +455,44 @@
             },
             success: function(response) {
                 $('#asunto').empty().append('<option value="0">Seleccione</option>');
-                // Verificar si hay respuestas
-                if (response.length > 0) {
-                    $.each(response, function(index, asuntos) {
-                        $('#asunto').append(
-                            `<option value="${asuntos.idsoporte_asunto}">${asuntos.nombre}</option>`
-                        );
-                    });
 
-                } else {}
+                // Iterar sobre la respuesta y añadir opciones con el atributo `data-evidencia`
+                $.each(response, function(index, asunto) {
+                    $('#asunto').append(
+                        `<option value="${asunto.idsoporte_asunto}" data-evidencia="${asunto.evidencia_adicional}">${asunto.nombre}</option>`
+                    );
+                });
             },
             error: function(xhr) {
                 console.error('Error al obtener elementos:', xhr);
             }
         });
     });
+
+    $('#asunto').on('change', function() {
+        const selectedOption = $(this).find(':selected');
+        const evidenciaAdicional = selectedOption.data('evidencia');
+
+        // Mostrar u ocultar el tooltip en base al valor de `evidencia_adicional`
+        if (evidenciaAdicional === 1) {
+            $('#asunto-cont').html(`
+            <label class="control-label text-bold">Asunto:</label>
+            <span title="Evidencia mínima de carga : 3 Imágenes" style="display: inline-block; cursor: pointer;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-info">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+            </span>
+        `);
+        } else {
+            // Restaurar el contenido original sin el ícono de información
+            $('#asunto-cont').html(`
+            <label class="control-label text-bold">Asunto:</label>
+        `);
+        }
+    });
+
 
     function Insert_Registro_Soporte() {
         Cargando();
@@ -587,10 +626,10 @@
         var divImagenes = document.getElementById('imagenes_container');
         var imagenes = divImagenes.getElementsByTagName('img');
 
-        if (imagenes.length >= 3) {
+        if (imagenes.length >= 5) {
             Swal({
                 title: '¡Carga Denegada!',
-                text: "¡No se puede tomar más de 3 capturas!",
+                text: "¡No se puede tomar más de 5 capturas!",
                 type: 'error',
                 showCancelButton: false,
                 confirmButtonColor: '#3085d6',
@@ -648,12 +687,14 @@
         var divImagenes = document.getElementById('imagenes_container'); // Contenedor de imágenes
         var contenedorImagen = document.createElement('div'); // Crea el contenedor para la imagen y los botones
         contenedorImagen.className = 'text-center my-2'; // Centrar y agregar margen vertical
+        contenedorImagen.style.position = 'relative'; // Permite posicionar los botones dentro de este contenedor
 
         // Crear la imagen
         var nuevaImagen = document.createElement('img');
         nuevaImagen.src = url;
         nuevaImagen.alt = 'Captura de soporte';
-        nuevaImagen.style.maxWidth = '95%';
+        nuevaImagen.style.width = '150px'; // Ancho fijo para la imagen
+        nuevaImagen.style.height = '150px'; // Altura fija para la imagen
         nuevaImagen.className = 'img-thumbnail';
         nuevaImagen.style.display = 'block'; // Asegura que la imagen esté alineada verticalmente
 
@@ -671,7 +712,7 @@
             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
             <line x1="10" y1="11" x2="10" y2="17"></line>
             <line x1="14" y1="11" x2="14" y2="17"></line>
-        </svg> Eliminar
+        </svg>
     `;
 
         // Crear botón para abrir en nueva pestaña
@@ -700,6 +741,25 @@
 
         // Actualiza el input oculto con la lista de URLs
         actualizarInput();
+        // Verificar si el contenedor debe tener scroll
+        verificarScroll();
+    }
+
+
+
+
+    function verificarScroll() {
+        var divImagenes = document.getElementById('imagenes_container');
+        var imagenes = divImagenes.getElementsByTagName('img');
+        console.log("#####");
+        console.log(imagenes.length);
+
+        // Agregar la clase `scrollable` si hay 3 o más imágenes
+        if (imagenes.length >= 3) {
+            divImagenes.classList.add('scrollable');
+        } else {
+            divImagenes.classList.remove('scrollable');
+        }
     }
 
     function actualizarInput() {

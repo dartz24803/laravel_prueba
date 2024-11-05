@@ -1,3 +1,56 @@
+<style>
+    .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #div_imagenes {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    #imagenes_container {
+        width: 600px;
+        /* Cambia este valor según tus necesidades */
+        white-space: nowrap;
+        /* Asegura que los elementos en línea no se rompan */
+        overflow-x: auto;
+        /* Habilita el scroll horizontal */
+        border: 1px solid #ccc;
+        /* Opcional: Añade un borde para visualizar mejor el contenedor */
+        padding: 10px;
+        /* Opcional: Añade algo de padding para un mejor aspecto */
+    }
+
+    .text-center {
+        display: inline-block;
+        /* Permite que los elementos se alineen horizontalmente */
+        margin-right: 10px;
+        /* Espacio entre las imágenes */
+    }
+
+    #imagenes_container img {
+        width: 150px;
+        /* Ancho fijo para todas las imágenes */
+        height: 150px;
+        /* Altura fija para todas las imágenes */
+        border-radius: 5px;
+        /* Bordes redondeados */
+        cursor: pointer;
+        /* Cambia el cursor al pasar por encima */
+        flex-shrink: 0;
+        /* Evita que las imágenes se encojan */
+    }
+
+    /* Ajuste específico para la cuarta y quinta imagen */
+    #imagenes_container img:nth-child(n+4) {
+        margin-left: 50px;
+        /* Aumenta el margen izquierdo para la cuarta imagen y superiores */
+    }
+</style>
 <form id="formulario_update" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title">Editar soporte: <span id="codigo_texto" class="ml-2">{{ $get_id->codigo }}</span></h5>
@@ -394,7 +447,9 @@
                     </div>
                 </div>
             </div>
+
             <div class="tab-pane fade" id="solucion" role="tabpanel" aria-labelledby="solucion-tab">
+
                 <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         <div class="row align-items-center">
@@ -415,7 +470,68 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row" style="padding-top: 1rem;">
+                    <div class=" form-group col-lg-12">
+                        <button type="button" class="btn btn-secondary" id="boton_camara" onclick="Activar_Camara();">Activar cámara</button>
+                    </div>
+
+                    <div class="form-group col-lg-12 d-flex justify-content-center" id="div_camara" style="display: none;">
+                        <video id="video" autoplay style="max-width: 95%; display: none;"></video>
+                    </div>
+
+                    <div class="form-group col-lg-12 text-center" id="div_tomar_foto" style="display:none !important;">
+                        <button type="button" class="btn btn-info" onclick="Tomar_Foto();">Tomar foto</button>
+                    </div>
+
+                    <div class="d-flex justify-content-center" style="display:none !important;" id="div_canvas">
+                        <canvas id="canvas" width="640" height="480" style="max-width:95%;"></canvas>
+                    </div>
+                    <div class="d-flex justify-content-center" style="max-width: 100%; overflow-x: auto;" id="div_imagenes">
+                        <input type="hidden" id="imagenes_input" name="imagenes" value="">
+                        <div id="imagenes_container" class="carousel-container">
+                            <!-- Las imágenes se añadirán aquí dinámicamente -->
+                            @if ($get_id->archivo || $get_id->archivo2 || $get_id->archivo3 || $get_id->archivo4 || $get_id->archivo5)
+                            @for ($i = 1; $i <= 5; $i++)
+                                @php
+                                $imgUrl=$get_id->{'archivo' . $i};
+                                @endphp
+                                @if ($imgUrl)
+                                <div class="text-center my-2" id="contenedor-imagen-{{ $i }}">
+                                    <img src="{{ $imgUrl }}" alt="Captura de soporte" class="img-thumbnail" style="max-width: 95%; display: block;">
+
+                                    <!-- Botón para abrir en nueva pestaña -->
+                                    <button class="btn btn-primary mt-2" onclick="abrirEnNuevaPestana(event, '{{ $imgUrl }}')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                            <polyline points="15 3 21 3 21 9"></polyline>
+                                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                                        </svg>
+                                        Ver
+                                    </button>
+
+                                    <!-- Botón para eliminar la imagen -->
+                                    <button class="btn btn-danger mt-2" onclick="eliminarImagen(event, {{ $i }})">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                                        </svg>
+
+                                    </button>
+                                </div>
+                                @endif
+                                @endfor
+                                @endif
+                        </div>
+                    </div>
+
+
+                </div>
             </div>
+
+
         </div>
     </div>
     <div class="modal-footer">
@@ -620,13 +736,23 @@
                 }
             },
             error: function(xhr) {
-                var errors = xhr.responseJSON.errors;
-                var firstError = Object.values(errors)[0][0];
-                Swal.fire(
-                    '¡Ups!',
-                    firstError,
-                    'warning'
-                );
+                if (xhr.status === 400) {
+                    // Si es un error 400, mostramos el mensaje del servidor
+                    Swal.fire(
+                        '¡Error!',
+                        xhr.responseJSON.error || 'Error en la solicitud.',
+                        'warning'
+                    );
+                } else {
+                    // Si es otro tipo de error, manejamos los errores en el formulario
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
             }
         });
     }
@@ -638,4 +764,274 @@
     document.getElementById('ruc').addEventListener('input', function(e) {
         this.value = this.value.replace(/[^0-9]/g, ''); // Solo permite números
     });
+
+
+
+
+
+
+
+    // ACTIVACIÓN DE CÁMARA
+
+    var isCameraOn = false;
+    var stream = null;
+
+    function Activar_Camara() {
+        var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        var video = document.getElementById('video');
+        var boton = document.getElementById('boton_camara');
+        var div_tomar_foto = document.getElementById('div_tomar_foto');
+        var div = document.getElementById('div_camara');
+
+        if (screenWidth < 1000) {
+            if (!isCameraOn) {
+                //Pedir permiso para acceder a la cámara
+                navigator.mediaDevices.getUserMedia({
+                        video: {
+                            facingMode: {
+                                exact: "environment"
+                            }
+                        }
+                    })
+                    .then(function(newStream) {
+                        stream = newStream;
+                        // Mostrar el stream de la cámara en el elemento de video
+                        video.srcObject = stream;
+                        video.style.display = "block"; // Mostrar el video
+                        video.play();
+                        isCameraOn = true;
+                        boton.textContent = "Desactivar cámara";
+                        div_tomar_foto.style.cssText = "display: block;";
+                        div.style.cssText = "display: block;";
+                    })
+                    .catch(function(error) {
+                        console.error('Error al acceder a la cámara:', error);
+                    });
+            } else {
+                //Detener la reproducción  del stream y liberar la cámara
+                if (stream) {
+                    stream.getTracks().forEach(function(track) {
+                        track.stop();
+                    });
+                    video.srcObject = null;
+                    video.style.display = "none";
+                    isCameraOn = false;
+                    boton.textContent = "Activar cámara";
+                    div_tomar_foto.style.cssText = "display: none !important;";
+                    div.style.cssText = "display: none !important;";
+                }
+            }
+        } else {
+            if (!isCameraOn) {
+                //Pedir permiso para acceder a la cámara
+                navigator.mediaDevices.getUserMedia({
+                        video: true
+                    })
+                    .then(function(newStream) {
+                        stream = newStream;
+                        video.srcObject = stream;
+                        video.style.display = "block"; // Mostrar el video
+                        video.play();
+                        isCameraOn = true;
+                        boton.textContent = "Desactivar cámara";
+                        div_tomar_foto.style.display = "block";
+                        div.style.display = "block";
+                    })
+                    .catch(function(error) {
+                        console.error('Error al acceder a la cámara:', error);
+                    });
+            } else {
+                //Detener la reproducción  del stream y liberar la cámara
+                if (stream) {
+                    stream.getTracks().forEach(function(track) {
+                        track.stop();
+                    });
+                    video.srcObject = null;
+                    video.style.display = "none"; // Ocultar el video
+                    isCameraOn = false;
+                    boton.textContent = "Activar cámara";
+                    div_tomar_foto.style.display = "none";
+                    div.style.display = "none";
+                }
+            }
+        }
+    }
+
+    function Tomar_Foto() {
+        // Verifica cuántas imágenes ya se han subido
+        var divImagenes = document.getElementById('imagenes_container');
+        var imagenes = divImagenes.getElementsByTagName('img');
+
+        if (imagenes.length >= 5) {
+            Swal({
+                title: '¡Carga Denegada!',
+                text: "¡No se puede tomar más de 5 capturas!",
+                type: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK',
+            });
+            return; // Salir de la función si ya hay 3 imágenes
+        }
+
+        Cargando();
+
+        var dataString = new FormData(document.getElementById('formulario_update'));
+        var url = "{{ route('previsualizacion_captura_soporte') }}";
+        var video = document.getElementById('video');
+        var canvas = document.getElementById('canvas');
+        var context = canvas.getContext('2d');
+
+        // Ajusta el tamaño del canvas al tamaño del video
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob(function(blob) {
+            // Crea un formulario para enviar la imagen al servidor
+            dataString.append('photo', blob, 'photo.jpg');
+            dataString.append('tipo', 2);
+
+            // Realiza la solicitud AJAX
+            $.ajax({
+                url: url,
+                data: dataString,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response == "error") {
+                        Swal({
+                            title: '¡Carga Denegada!',
+                            text: "¡No se puede tomar más de 3 capturas!",
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    } else {
+                        var ftpUrl = response.url_ftp;
+                        MostrarFoto(ftpUrl);
+                    }
+                }
+            });
+        }, 'image/jpeg');
+    }
+
+
+    function MostrarFoto(url) {
+        var divImagenes = document.getElementById('imagenes_container'); // Contenedor de imágenes
+        var contenedorImagen = document.createElement('div'); // Crea el contenedor para la imagen y los botones
+        contenedorImagen.className = 'text-center my-2'; // Centrar y agregar margen vertical
+        contenedorImagen.style.position = 'relative'; // Permite posicionar los botones dentro de este contenedor
+
+        // Crear la imagen
+        var nuevaImagen = document.createElement('img');
+        nuevaImagen.src = url;
+        nuevaImagen.alt = 'Captura de soporte';
+        nuevaImagen.style.width = '150px'; // Ancho fijo para la imagen
+        nuevaImagen.style.height = '150px'; // Altura fija para la imagen
+        nuevaImagen.className = 'img-thumbnail';
+        nuevaImagen.style.display = 'block'; // Asegura que la imagen esté alineada verticalmente
+
+        // Crear botón para eliminar
+        var botonEliminar = document.createElement('button');
+        botonEliminar.className = 'btn btn-danger mt-2'; // Estilo del botón
+        botonEliminar.onclick = function() {
+            divImagenes.removeChild(contenedorImagen); // Elimina el contenedor de imagen y botones
+            actualizarInput(); // Actualiza el input
+        };
+        // SVG del botón de eliminar
+        botonEliminar.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+    `;
+
+        // Crear botón para abrir en nueva pestaña
+        var botonAbrir = document.createElement('button');
+        botonAbrir.className = 'btn btn-primary mt-2 ms-2'; // Estilo del botón de abrir
+        botonAbrir.onclick = function(event) {
+            event.preventDefault(); // Evita que se recargue la página
+            window.open(url, '_blank'); // Abre en una nueva pestaña
+        };
+
+        botonAbrir.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg> Ver
+    `;
+
+        // Agregar imagen y botones al contenedor
+        contenedorImagen.appendChild(nuevaImagen);
+        contenedorImagen.appendChild(botonEliminar);
+        contenedorImagen.appendChild(botonAbrir);
+
+        // Añadir el contenedor principal al div de imágenes
+        divImagenes.appendChild(contenedorImagen);
+
+        // Actualiza el input oculto con la lista de URLs
+        actualizarInput();
+        // Verificar si el contenedor debe tener scroll
+        verificarScroll();
+    }
+
+
+
+
+    function verificarScroll() {
+        var divImagenes = document.getElementById('imagenes_container');
+        var imagenes = divImagenes.getElementsByTagName('img');
+        console.log("#####");
+        console.log(imagenes.length);
+
+        // Agregar la clase `scrollable` si hay 3 o más imágenes
+        if (imagenes.length >= 3) {
+            divImagenes.classList.add('scrollable');
+        } else {
+            divImagenes.classList.remove('scrollable');
+        }
+    }
+
+    function actualizarInput() {
+        var divImagenes = document.getElementById('imagenes_container');
+        var imagenesInput = document.getElementById('imagenes_input');
+
+        // Obtener todas las imágenes en el contenedor
+        var imagenes = divImagenes.getElementsByTagName('img');
+        var urls = [];
+
+        // Recorrer todas las imágenes y almacenar sus URLs
+        for (var i = 0; i < imagenes.length; i++) {
+            urls.push(imagenes[i].src);
+        }
+
+
+        // Almacenar las URLs como un array en formato JSON en el input
+        imagenesInput.value = JSON.stringify(urls);
+    }
+
+
+    function abrirEnNuevaPestana(event, url) {
+        event.preventDefault(); // Evita que se recargue la página
+        window.open(url, '_blank'); // Abre la URL en una nueva pestaña
+    }
+
+    function eliminarImagen(event, index) {
+        event.preventDefault(); // Previene el envío del formulario
+        // Imprime el índice para verificar que se está pasando correctamente
+        const contenedorImagen = document.getElementById('contenedor-imagen-' + index);
+
+        if (contenedorImagen) {
+            contenedorImagen.remove(); // Elimina el contenedor de imagen
+            actualizarInput(); // Llama a una función para actualizar el input si es necesario
+        } else {
+            console.error("No se pudo encontrar el contenedor de imagen con ID:", 'contenedor-imagen-' + index);
+        }
+    }
 </script>
