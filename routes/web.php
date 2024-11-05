@@ -1817,15 +1817,7 @@ Route::controller(SliderRRHH::class)->group(function () {
     Route::get('/SliderRRHH/{base}', 'Slider_Vista_RRHH')->name('slider_rrhh');
     Route::get('/SliderRRHH', 'Slider_Vista_Tienda')->name('slider_tienda');
     Route::get('/Slider/{method}', 'remap');
-});
-Route::controller(Cumpleanios::class)->group(function () {
-    Route::get('/RecursosHumanos/Cumpleanios/index', 'index');
-    Route::get('/RecursosHumanos/Buscar_Cumpleanios', 'Buscar_Cumpleanios');
-    Route::get('/RecursosHumanos/Modal_Lista_Saludo_Cumpleanio/{id}', 'Modal_Lista_Saludo_Cumpleanio');
-    Route::post('/RecursosHumanos/Aprobar_Saludo_Cumpleanio', 'Aprobar_Saludo_Cumpleanio');
-    Route::get('/RecursosHumanos/List_Saludo_cumpleanio', 'List_Saludo_cumpleanio');
-    Route::get('/RecursosHumanos/Excel_Saludo_Cumpleanio/{id}', 'Excel_Saludo_Cumpleanio');
-});
+}); 
 //SLIDER INICIO
 Route::controller(InicioAdmController::class)->group(function () {
     Route::get('Inicio/index', 'index');
