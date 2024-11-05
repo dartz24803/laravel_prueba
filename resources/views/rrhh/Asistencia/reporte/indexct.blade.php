@@ -43,7 +43,6 @@ $id_nivel=Session('usuario')->id_nivel;
 $desvinculacion=Session('usuario')->desvinculacion;
 $estado=Session('usuario')->estado;
 $id_puesto=Session('usuario')->id_puesto;
-$id_cargo=Session('usuario')->id_cargo;
 $usuario_codigo=Session('usuario')->usuario_codigo;
 $centro_labores=Session('usuario')->centro_labores;
 $acceso=Session('usuario')->acceso;
