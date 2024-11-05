@@ -516,52 +516,48 @@ class Model_Perfil extends Model
 
     function get_id_usuario($id_usuario=null){
         $anio=date('Y');
-        if(isset($id_usuario) && $id_usuario > 0){
-            $sql = "SELECT u.*, n.nom_nacionalidad,
-            td.nom_tipo_documento,
-            a.id_area,a.nom_area,pu.nom_puesto,est.nom_estado_civil,du.id_departamento,du.id_provincia,
-            DATE_FORMAT(u.ini_funciones,'%d/%m/%Y') as inicio_funciones,e.nom_empresa,e.ruc_empresa,e.firma,e.direccion,
-            CASE WHEN (SELECT count(1) FROM area ar WHERE CONCAT(',', ar.puestos, ',') like CONCAT('%',u.id_puesto, '%'))>0 THEN 'SI' ELSE 'NO' END AS encargado_p,
-            u.centro_labores,(SELECT sl.nom_situacion_laboral FROM historico_colaborador hc
-            LEFT JOIN situacion_laboral sl ON sl.id_situacion_laboral=hc.id_situacion_laboral
-            WHERE hc.id_usuario=$id_usuario AND hc.estado=1
-            ORDER BY hc.fec_inicio DESC
-            LIMIT 1) AS nom_situacion_laboral,
-            case when DATE_FORMAT(u.fec_nac, '%m-%d') = DATE_FORMAT(NOW(), '%m-%d') then 1 else 0 end as cumple_anio,
-            (select count(1) FROM saludo_cumpleanio_historial c where c.id_cumpleaniero='$id_usuario' and year(c.fec_reg)='$anio' and c.estado=1 and c.estado_registro=1) as cantidad_saludos,
-            b.nom_gerencia,c.nom_modalidad_laboral,d.nombre as nom_horario,
-            (select count(1) from users_historico_puesto p where p.estado=1 and p.id_usuario=$id_usuario) as cant_historico_puesto,
-            (select count(1) from users_historico_centro_labores q where q.estado=1 and q.id_usuario=$id_usuario) as cant_historico_base,
-            (select count(1) from users_historico_modalidadl r where r.estado=1 and r.id_usuario=$id_usuario) as cant_historico_modalidad,
-            (select count(1) from users_historico_horario s where s.estado=1 and s.id_usuario=$id_usuario) as cant_historico_horario,
-            (SELECT COUNT(1) FROM users_historico_horas_semanales s
-            WHERE s.id_usuario=$id_usuario AND s.estado=1) AS cant_historico_horas_semanales,
-            CASE WHEN SUBSTRING(u.fec_nac,1,1)=0 OR u.fec_nac IS NULL THEN ''
-            ELSE DATE_FORMAT(u.fec_nac,'%d/%m/%Y') END AS fec_nac_baja,
-            CASE WHEN SUBSTRING(u.ini_funciones,1,1)=0 OR u.ini_funciones IS NULL THEN ''
-            ELSE DATE_FORMAT(u.ini_funciones,'%d/%m/%Y') END AS ini_funciones_baja,
-            CASE WHEN SUBSTRING(u.fec_baja,1,1)=0 OR u.fec_baja IS NULL THEN ''
-            ELSE DATE_FORMAT(u.fec_baja,'%d/%m/%Y') END AS fec_baja_baja,
-            LOWER(CONCAT(u.usuario_nombres,' ',u.usuario_apater,' ',u.usuario_amater)) AS nombre_completo,
-            LOWER(pu.nom_puesto) AS nom_puesto_min,sg.nom_sub_gerencia,ub.cod_ubi AS ubicacion
-            from users u
-            LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
-            LEFT JOIN tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
-            LEFT JOIN area a on a.id_area=u.id_area
-            LEFT JOIN puesto pu on pu.id_puesto=u.id_puesto
-            LEFT JOIN domicilio_users du on du.id_usuario=u.id_usuario
-            LEFT JOIN estado_civil est on est.id_estado_civil =u.id_estado_civil
-            left join empresas e on e.id_empresa=u.id_empresapl
-            left join gerencia b on u.id_gerencia=b.id_gerencia
-            left join modalidad_laboral c on u.id_modalidad_laboral=c.id_modalidad_laboral
-            left join horario d on u.id_horario=d.id_horario
-            LEFT JOIN sub_gerencia sg ON u.id_sub_gerencia=sg.id_sub_gerencia
-            LEFT JOIN ubicacion ub ON ub.id_ubicacion=u.id_ubicacion
-            where u.estado in (1,2,3,4) and u.id_usuario =".$id_usuario;
-        }
-        else{
-            $sql = "SELECT * FROM users";
-        }
+        $sql = "SELECT u.*, n.nom_nacionalidad,
+                td.nom_tipo_documento,
+                a.id_area,a.nom_area,pu.nom_puesto,est.nom_estado_civil,du.id_departamento,du.id_provincia,
+                DATE_FORMAT(u.ini_funciones,'%d/%m/%Y') as inicio_funciones,e.nom_empresa,e.ruc_empresa,e.firma,e.direccion,
+                CASE WHEN (SELECT count(1) FROM area ar WHERE CONCAT(',', ar.puestos, ',') like CONCAT('%',u.id_puesto, '%'))>0 THEN 'SI' ELSE 'NO' END AS encargado_p,
+                u.centro_labores,(SELECT sl.nom_situacion_laboral FROM historico_colaborador hc
+                LEFT JOIN situacion_laboral sl ON sl.id_situacion_laboral=hc.id_situacion_laboral
+                WHERE hc.id_usuario=$id_usuario AND hc.estado=1
+                ORDER BY hc.fec_inicio DESC
+                LIMIT 1) AS nom_situacion_laboral,
+                case when DATE_FORMAT(u.fec_nac, '%m-%d') = DATE_FORMAT(NOW(), '%m-%d') then 1 else 0 end as cumple_anio,
+                (select count(1) FROM saludo_cumpleanio_historial c where c.id_cumpleaniero='$id_usuario' and year(c.fec_reg)='$anio' and c.estado=1 and c.estado_registro=1) as cantidad_saludos,
+                b.nom_gerencia,c.nom_modalidad_laboral,d.nombre as nom_horario,
+                (select count(1) from users_historico_puesto p where p.estado=1 and p.id_usuario=$id_usuario) as cant_historico_puesto,
+                (select count(1) from users_historico_centro_labores q where q.estado=1 and q.id_usuario=$id_usuario) as cant_historico_base,
+                (select count(1) from users_historico_modalidadl r where r.estado=1 and r.id_usuario=$id_usuario) as cant_historico_modalidad,
+                (select count(1) from users_historico_horario s where s.estado=1 and s.id_usuario=$id_usuario) as cant_historico_horario,
+                (SELECT COUNT(1) FROM users_historico_horas_semanales s
+                WHERE s.id_usuario=$id_usuario AND s.estado=1) AS cant_historico_horas_semanales,
+                CASE WHEN SUBSTRING(u.fec_nac,1,1)=0 OR u.fec_nac IS NULL THEN ''
+                ELSE DATE_FORMAT(u.fec_nac,'%d/%m/%Y') END AS fec_nac_baja,
+                CASE WHEN SUBSTRING(u.ini_funciones,1,1)=0 OR u.ini_funciones IS NULL THEN ''
+                ELSE DATE_FORMAT(u.ini_funciones,'%d/%m/%Y') END AS ini_funciones_baja,
+                CASE WHEN SUBSTRING(u.fec_baja,1,1)=0 OR u.fec_baja IS NULL THEN ''
+                ELSE DATE_FORMAT(u.fec_baja,'%d/%m/%Y') END AS fec_baja_baja,
+                LOWER(CONCAT(u.usuario_nombres,' ',u.usuario_apater,' ',u.usuario_amater)) AS nombre_completo,
+                LOWER(pu.nom_puesto) AS nom_puesto_min,sg.nom_sub_gerencia,ub.cod_ubi AS ubicacion,
+                b.id_gerencia
+                from users u
+                LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
+                LEFT JOIN tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
+                INNER JOIN puesto pu ON pu.id_puesto=u.id_puesto 
+                INNER JOIN area a ON a.id_area=pu.id_area
+                INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento 
+                INNER JOIN gerencia b ON b.id_gerencia=sg.id_gerencia
+                LEFT JOIN domicilio_users du on du.id_usuario=u.id_usuario
+                LEFT JOIN estado_civil est on est.id_estado_civil =u.id_estado_civil
+                left join empresas e on e.id_empresa=u.id_empresapl
+                left join modalidad_laboral c on u.id_modalidad_laboral=c.id_modalidad_laboral
+                left join horario d on u.id_horario=d.id_horario
+                LEFT JOIN ubicacion ub ON ub.id_ubicacion=u.id_ubicacion
+                where u.estado in (1,2,3,4) and u.id_usuario =".$id_usuario;
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }
@@ -728,22 +724,27 @@ class Model_Perfil extends Model
 
     function get_list_area($id_gerencia=null, $id_area=null){
         if(isset($id_gerencia) && $id_gerencia > 0 && isset($id_area) && $id_area > 0){
-            $sql = "SELECT t.*, a.nom_gerencia,d.direccion FROM area t
-                    LEFT JOIN gerencia a on a.id_gerencia=t.id_gerencia
-                    left join direccion d on t.id_direccion=d.id_direccion
-                    WHERE t.estado='1' and t.id_gerencia=$id_gerencia and t.id_area=$id_area";
+            $sql = "SELECT t.*, a.nom_gerencia,d.direccion 
+                    FROM area t
+                    INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=t.id_departamento
+                    INNER JOIN gerencia a ON a.id_gerencia=sg.id_gerencia
+                    INNER JOIN direccion d ON a.id_direccion=d.id_direccion
+                    WHERE t.id_area=$id_area";
         }elseif(isset($id_gerencia) && $id_gerencia > 0){
-            $sql = "SELECT t.*, a.nom_gerencia,d.direccion FROM area t
-                    LEFT JOIN gerencia a on a.id_gerencia=t.id_gerencia
-                    left join direccion d on t.id_direccion=d.id_direccion
-                    WHERE t.estado='1' and t.id_gerencia=$id_gerencia";
-        }
-        else
-        {
-            $sql = "SELECT t.*, a.nom_gerencia,d.direccion FROM area t
-                    LEFT JOIN gerencia a on a.id_gerencia=t.id_gerencia
-                    left join direccion d on t.id_direccion=d.id_direccion
-                    WHERE t.estado='1' ";
+            $sql = "SELECT t.*, a.nom_gerencia,d.direccion 
+                    FROM area t
+                    INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=t.id_departamento
+                    INNER JOIN gerencia a ON a.id_gerencia=sg.id_gerencia AND 
+                    a.id_gerencia=$id_gerencia
+                    INNER JOIN direccion d ON a.id_direccion=d.id_direccion
+                    WHERE t.estado=1";
+        }else{
+            $sql = "SELECT t.*, a.nom_gerencia,d.direccion 
+                    FROM area t
+                    INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=t.id_departamento
+                    INNER JOIN gerencia a ON a.id_gerencia=sg.id_gerencia
+                    INNER JOIN direccion d ON a.id_direccion=d.id_direccion
+                    WHERE t.estado=1";
         }
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);

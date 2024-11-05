@@ -422,17 +422,19 @@ class Usuario extends Model
     static function get_list_usuario($id_usuario = null)
     {
         if (isset($id_usuario) && $id_usuario > 0) {
-            $sql = "SELECT u.*, p.nom_puesto, m.nom_mes, g.cod_genero, g.nom_genero,a.cod_area,a.nom_area,t.cod_tipo_documento,ge.nom_gerencia,
+            $sql = "SELECT u.*, p.nom_puesto, m.nom_mes, g.cod_genero, g.nom_genero,a.cod_area,
+                    a.nom_area,t.cod_tipo_documento,ge.nom_gerencia,
                     u.usuario_email,(SELECT st.archivo FROM saludo_temporal st
                     WHERE st.id_usuario=u.id_usuario
                     LIMIT 1) AS archivo_saludo
                     FROM users u
-                    left join area a on a.id_area=u.id_area
-                    left join puesto p on p.id_puesto=u.id_puesto
+                    INNER JOIN puesto p ON p.id_puesto=u.id_puesto 
+                    INNER JOIN area a ON a.id_area=p.id_area
+                    INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento 
+                    INNER JOIN gerencia ge ON ge.id_gerencia=sg.id_gerencia
                     left join mes m on m.id_mes=u.mes_nac
                     left join genero g on g.id_genero=u.id_genero
                     left join tipo_documento t on t.id_tipo_documento=u.id_tipo_documento
-                    left join gerencia ge on ge.id_gerencia = u.id_gerencia
                     WHERE u.id_usuario=$id_usuario";
         } else {
             $sql = "SELECT * FROM parentesco";
@@ -530,7 +532,6 @@ class Usuario extends Model
                 (case when u.terminos=0 then 0 else 1 end) as cont_terminos,
                 (case when (select count(1) from curso_complementario where curso_complementario.id_usuario=u.id_usuario and curso_complementario.estado=1)>0 then 1 else 0 end) as con_cursos_compl,
                 (case when (select count(1) from otros_usuario where otros_usuario.id_usuario=u.id_usuario and otros_usuario.estado=1)>0 then 1 else 0 end) as con_otros,
-
                 (case when d.id_departamento is not null and d.id_provincia is not null and d.id_distrito is not null
                 and d.id_tipo_vivienda is not null and d.referencia is not null and d.lat is not null and d.lng is not null
                 then 1 else 0 end) as domicilio_user, (case when cb.cuenta_bancaria=2 then 1
@@ -540,7 +541,6 @@ class Usuario extends Model
                 (case when ru.polo is not null and ru.pantalon is not null and ru.zapato is not null
                 then 1 else 0 end) as talla_usuario, (case when ou.id_grupo_sanguineo is not null
                 then 1 else 0 end) as grupo_sanguineo,
-                /*(case when ou.cert_covid is not null then 1 else 0 end) as covid,*/
                 (case when ou.cert_vacu_covid is not null then 1 else 0 end) as covid,
                 (case when sp.id_respuestasp is not null then 1 else 0 end) as sistema_pension,
                 (case when du.cv_doc is not null and du.dni_doc is not null and du.recibo_doc is not null
@@ -568,13 +568,13 @@ class Usuario extends Model
                 and experiencia_laboral.cargo is not null and experiencia_laboral.fec_ini is not null
                 and experiencia_laboral.fec_fin is not null and experiencia_laboral.motivo_salida is not null
                 and experiencia_laboral.remuneracion is not null and experiencia_laboral.estado=1)>0
-                then 1 else 0 end) as experiencial, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo,
+                then 1 else 0 end) as experiencial, a.nom_area, g.nom_gerencia, p.nom_puesto,
                 u.usuario_email, em.nom_empresa, du.dni_doc
                 from users u
-                LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
-                LEFT JOIN area a on a.id_area=u.id_area
-                LEFT JOIN puesto p on p.id_puesto=u.id_puesto
-                LEFT JOIN cargo c on c.id_cargo=u.id_cargo
+                INNER JOIN puesto p ON p.id_puesto=u.id_puesto 
+                INNER JOIN area a ON a.id_area=p.id_area
+                INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento 
+                INNER JOIN gerencia g ON g.id_gerencia=sg.id_gerencia
                 left join domicilio_users d on d.id_usuario=u.id_usuario
                 left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
                 LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
