@@ -528,7 +528,7 @@ class ColaboradorController extends Controller
                 $id_usuario= session('usuario')->id_usuario;
             }
             $this->Model_Perfil = new Model_Perfil();
-            $dato['usuario'] = Usuario::get_id_usuario($id_usuario);
+            $dato['usuario'] = Usuario::get_list_usuario($id_usuario);
             $dato['domicilio'] = $this->Model_Perfil->get_id_domicilio_users($id_usuario);
 
             $dato['datosp_porcentaje'] = $this->Model_Perfil->datosp_porcentaje($id_usuario);
@@ -4497,7 +4497,7 @@ class ColaboradorController extends Controller
             $id_usuario = $colaborador[0]['id_usuario'];
             $this->Model_Perfil = new Model_Perfil();
 
-            $dato['list_usuario'] =  Usuario::get_id_usuario($id_usuario);
+            $dato['list_usuario'] =  Usuario::get_list_usuario($id_usuario);
             $dato['list_referenciafu'] = $this->Model_Perfil->get_list_referenciafu($id_usuario);
             $dato['list_usuario'][0]['hijos'];
             $dato['list_contactoeu'] = $this->Model_Perfil->get_list_contactoeu($id_usuario);
