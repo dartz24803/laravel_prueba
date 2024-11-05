@@ -2190,7 +2190,7 @@ Route::controller(PapeletasController::class)->group(function () {
     Route::get('Papeletas/Permisos_Papeletas_Salidas', 'Permisos_Papeletas_Salidas');
     Route::post('Papeletas/Buscar_Base_Papeletas_Seguridad', 'Buscar_Base_Papeletas_Seguridad');
     Route::post('Papeletas/Buscar_Estado_Solicitud_Papeletas_Salida_Usuario', 'Buscar_Estado_Solicitud_Papeletas_Salida_Usuario');
-    Route::get('Papeletas/Buscar_Papeleta_Registro', 'Buscar_Papeleta_Registro');
+    Route::post('Papeletas/Buscar_Papeleta_Registro', 'Buscar_Papeleta_Registro');
     Route::get('Papeletas/Modal_Papeletas_Salida/{id}', 'Modal_Papeletas_Salida');
     Route::post('Papeletas/Cambiar_Motivo', 'Cambiar_Motivo');
     Route::get('Papeletas/Modal_Tramite', 'Modal_Tramite');
@@ -2208,6 +2208,8 @@ Route::controller(PapeletasController::class)->group(function () {
     Route::post('Papeletas/Update_Papeletas_Salida_seguridad_Retorno', 'Update_Papeletas_Salida_seguridad_Retorno');
     Route::post('Papeletas/Cambiar_solicitud_papeletas_seguridad', 'Cambiar_solicitud_papeletas_seguridad');
     Route::post('Papeletas/Update_Papeletas_Salida_seguridad_Salida', 'Update_Papeletas_Salida_seguridad_Salida');
+    Route::get('Papeletas/Papeletas_Apps', 'Papeletas_Apps');
+    Route::post('Papeletas/Delete_Papeletas_Salida', 'Delete_Papeletas_Salida');
 });
 
 use App\Http\Controllers\MiEquipoController;
