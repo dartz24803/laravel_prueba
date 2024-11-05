@@ -1034,8 +1034,8 @@ class PostulanteController extends Controller
                     $mail->Port     =  587; 
                     $mail->setFrom('intranet@lanumero1.com.pe','Intranet La Número 1');
         
-                    $mail->addAddress('rrhh@lanumero1.com.pe');
-                    //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                    //$mail->addAddress('rrhh@lanumero1.com.pe');
+                    $mail->addAddress('dpalomino@lanumero1.com.pe');
         
                     $mail->isHTML(true);
         
@@ -1264,8 +1264,8 @@ class PostulanteController extends Controller
                     $mail->Port     =  587; 
                     $mail->setFrom('intranet@lanumero1.com.pe','Intranet La Número 1');
 
-                    $mail->addAddress($get_id->emailp);
-                    //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                    //$mail->addAddress($get_id->emailp);
+                    $mail->addAddress('dpalomino@lanumero1.com.pe');
 
                     $mail->isHTML(true);
         
@@ -1332,6 +1332,27 @@ class PostulanteController extends Controller
                         'fec_act' => now(),
                         'user_act' => session('usuario')->id_usuario
                     ]);
+
+                    if($get_id->foto!=""){
+                        $ftp_server = "lanumerounocloud.com";
+                        $ftp_usuario = "intranet@lanumerounocloud.com";
+                        $ftp_pass = "Intranet2022@";
+                        $con_id = ftp_connect($ftp_server);
+                        $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+                        if ($con_id && $lr) {
+                            // Rutas del archivo en el servidor FTP
+                            $source_file = "POSTULANTE/FOTO/".basename($get_id->foto);
+                            $destination_file = "PERFIL/DOCUMENTACION/FOTO_PERFIL/Foto_".$usuario->id_usuario."_".date('YmdHis').".".pathinfo($get_id->foto, PATHINFO_EXTENSION);
+                            // Crear archivo temporal
+                            $temp_file = storage_path("app/temp/archivo_temporal_".date('YmdHis').".".pathinfo($get_id->foto, PATHINFO_EXTENSION));
+                            // Guardar archivo temporal en nuevo archivo
+                            ftp_get($con_id, $temp_file, $source_file, FTP_BINARY);
+                            // Guardar archivo en la nueva ruta
+                            ftp_put($con_id, $destination_file, $temp_file, FTP_BINARY);
+                            // Borrar archivo temporal
+                            unlink($temp_file);
+                        }
+                    }
 
                     UsersHistoricoPuesto::create([
                         'id_usuario' => $usuario->id_usuario,
