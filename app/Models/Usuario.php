@@ -922,8 +922,8 @@ class Usuario extends Model
                     c.nom_contacto,c.celular1,c.celular2,c.fijo from users u
                     LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
                     LEFT JOIN tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
-                    LEFT JOIN area a on a.id_area=u.id_area
                     LEFT JOIN puesto pu on pu.id_puesto=u.id_puesto
+                    LEFT JOIN area a on p.id_area=a.id_area
                     LEFT JOIN grado_instruccion gr on gr.id_grado_instruccion=u.id_grado_instruccion
                     LEFT JOIN contacto_emergencia ce on ce.id_contacto_emergencia=u.id_contacto_emergencia
                     where u.estado in (1) and id_usuario =" . $id_usuario;
@@ -1040,9 +1040,10 @@ class Usuario extends Model
                     WHEN YEAR(u.fec_nac) BETWEEN 1997 AND 2012 THEN 'Z'
                     WHEN YEAR(u.fec_nac) >= 2013 THEN '&alpha;' ELSE '-' END AS generacion,u.id_puesto
                     FROM users u
-                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
-                    LEFT JOIN area a on a.id_area=u.id_area
                     LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN area a on a.id_area=p.id_area
+                    LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                    LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
                     LEFT JOIN cargo c on c.id_cargo=u.id_cargo
                     left join domicilio_users d on d.id_usuario=u.id_usuario
                     left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
@@ -1181,10 +1182,10 @@ class Usuario extends Model
                     WHEN YEAR(u.fec_nac) >= 2013 THEN '&alpha;' ELSE 'No se pudo determinar la generación' 
                     END AS generacion,u.id_puesto
                     from users u
-                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
-                    LEFT JOIN area a on a.id_area=u.id_area
                     LEFT JOIN puesto p on p.id_puesto=u.id_puesto
-                    LEFT JOIN cargo c on c.id_cargo=u.id_cargo
+                    LEFT JOIN area a on a.id_area=p.id_area
+                    LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                    LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
                     left join domicilio_users d on d.id_usuario=u.id_usuario
                     left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
                     LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
@@ -1315,9 +1316,10 @@ class Usuario extends Model
                     WHEN YEAR(u.fec_nac) >= 2013 THEN '&alpha;' ELSE 'No se pudo determinar la generación' 
                     END AS generacion,u.id_puesto
                     from users u
-                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
-                    LEFT JOIN area a on a.id_area=u.id_area
                     LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN area a on a.id_area=p.id_area
+                    LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                    LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
                     LEFT JOIN cargo c on c.id_cargo=u.id_cargo
                     left join domicilio_users d on d.id_usuario=u.id_usuario
                     left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
@@ -1591,9 +1593,10 @@ class Usuario extends Model
                     ELSE 'No se pudo determinar la generación'
                     END AS generacion,u.id_puesto
                     from users u
-                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
-                    LEFT JOIN area a on a.id_area=u.id_area
                     LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN area a on a.id_area=p.id_area
+                    LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                    LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
                     LEFT JOIN cargo c on c.id_cargo=u.id_cargo
                     left join domicilio_users d on d.id_usuario=u.id_usuario
                     left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento

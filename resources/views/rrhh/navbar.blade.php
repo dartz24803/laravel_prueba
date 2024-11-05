@@ -96,18 +96,6 @@
                 </a>
             </li>
         <?php } ?>
-        <?php if (
-            session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2 ||
-            session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 133 || session('usuario')->id_puesto == 22 || session('usuario')->id_puesto == 146 ||
-            session('usuario')->id_puesto == 21 || session('usuario')->id_puesto == 278 || session('usuario')->id_puesto == 279 || session('usuario')->id_puesto == 128 ||
-            session('usuario')->id_puesto == 148 || session('usuario')->id_puesto == 310
-        ) { ?>
-            <li id="recumpleanio">
-                <a id="hcumpleanio" href="{{ url('RecursosHumanos/Cumpleanios/index') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Cumpleaños</p>
-                </a>
-            </li>
-        <?php } ?>
         <?php 
         if(session('usuario')->id_nivel==1 || session('usuario')->id_puesto==19 || session('usuario')->id_puesto==21 || session('usuario')->id_puesto == 278 || 
         session('usuario')->id_puesto == 279 || session('usuario')->id_puesto==23 || session('usuario')->id_puesto==40 || session('usuario')->id_puesto==10 || 

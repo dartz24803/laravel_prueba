@@ -34,7 +34,8 @@ class AsignacionJefatura extends Model
                 LEFT JOIN puesto p on p.id_puesto=pps.id_puesto_permitido 
                 LEFT JOIN puesto pjefe on pjefe.id_puesto=pps.id_puesto_jefe
                 LEFT JOIN area a on p.id_area=a.id_area and p.id_puesto=pps.id_puesto_permitido
-                LEFT JOIN gerencia g on p.id_gerencia=g.id_gerencia and p.id_area=a.id_area and p.id_puesto=pps.id_puesto_permitido
+                LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia and p.id_area=a.id_area and p.id_puesto=pps.id_puesto_permitido
                 WHERE pps.estado='1' and pps.id_puesto_jefe=".$id_puesto."";
         
         $result = DB::select($sql);
