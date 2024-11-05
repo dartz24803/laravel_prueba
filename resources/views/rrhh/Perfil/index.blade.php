@@ -2027,7 +2027,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                                         <select class="form-control" name="nl_excel" id="nl_excel" <?php echo $disabled ?>>
                                                                             <option value="0">Seleccion</option>
                                                                             <?php foreach($list_nivel_instruccion as $list){
-                                                                                if(isset($get_id_d[0]) && $get_id_c[0]['nl_excel'] == $list['id_nivel_instruccion']){ ?>
+                                                                                if(isset($get_id_c[0]) && $get_id_c[0]['nl_excel'] == $list['id_nivel_instruccion']){ ?>
                                                                                 <option selected value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
                                                                             <?php }else{?>
                                                                             <option value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
@@ -2042,7 +2042,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                                         <select class="form-control" name="nl_word" id="nl_word" <?php echo $disabled ?>>
                                                                             <option value="0">Seleccion</option>
                                                                             <?php foreach($list_nivel_instruccion as $list){
-                                                                                if(isset($get_id_d[0]) && $get_id_c[0]['nl_word'] == $list['id_nivel_instruccion']){ ?>
+                                                                                if(isset($get_id_c[0]) && $get_id_c[0]['nl_word'] == $list['id_nivel_instruccion']){ ?>
                                                                                 <option selected value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
                                                                             <?php }else{?>
                                                                             <option value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
@@ -2057,7 +2057,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                                         <select class="form-control" name="nl_ppoint" id="nl_ppoint" <?php echo $disabled ?>>
                                                                             <option value="0">Seleccion</option>
                                                                             <?php foreach($list_nivel_instruccion as $list){
-                                                                                if(isset($get_id_d[0]) && $get_id_c[0]['nl_ppoint'] == $list['id_nivel_instruccion']){ ?>
+                                                                                if(isset($get_id_c[0]) && $get_id_c[0]['nl_ppoint'] == $list['id_nivel_instruccion']){ ?>
                                                                                 <option selected value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
                                                                             <?php }else{?>
                                                                             <option value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
@@ -2712,7 +2712,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                                                 <select <?php if(isset($get_id_gestacion['0']['id_respuesta']) && $get_id_gestacion[0]['id_respuesta'] != 1){echo "disabled";}?> class="form-control" id="dia_ges" name="dia_ges" <?php echo $disabled ?>>
                                                                                 <option value="0">Día</option>
                                                                                 <?php foreach($list_dia as $list){
-                                                                                if(isset($get_id_d[0]) && $get_id_gestacion[0]['dia_ges'] == $list['cod_dia']){ ?>
+                                                                                if(isset($get_id_gestacion[0]) && $get_id_gestacion[0]['dia_ges'] == $list['cod_dia']){ ?>
                                                                                 <option selected value="<?php echo $list['cod_dia']; ?>"><?php echo $list['cod_dia'];?></option>
                                                                                 <?php }else{?>
                                                                                 <option value="<?php echo $list['cod_dia']; ?>"><?php echo $list['cod_dia'];?></option>
@@ -2723,7 +2723,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                                                 <select <?php if(isset($get_id_gestacion['0']['id_respuesta']) && $get_id_gestacion[0]['id_respuesta'] != 1){echo "disabled";}?> class="form-control" id="mes_ges" name="mes_ges" <?php echo $disabled ?>>
                                                                                 <option value="0">Mes</option>
                                                                                 <?php foreach($list_mes as $list){
-                                                                                if(isset($get_id_d[0]) && $get_id_gestacion[0]['mes_ges'] == $list['cod_mes']){ ?>
+                                                                                if(isset($get_id_gestacion[0]) && $get_id_gestacion[0]['mes_ges'] == $list['cod_mes']){ ?>
                                                                                 <option selected value="<?php echo $list['cod_mes'] ; ?>" ><?php echo $list['abr_mes'];?></option>
                                                                                 <?php } else{?>
                                                                                 <option value="<?php echo $list['cod_mes']; ?>"><?php echo $list['abr_mes'];?></option>
@@ -2734,7 +2734,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                                                 <select <?php if(isset($get_id_gestacion['0']['id_respuesta']) && $get_id_gestacion[0]['id_respuesta'] != 1){echo "disabled";}?> class="form-control" id="anio_ges" name="anio_ges" <?php echo $disabled ?>>
                                                                                 <option value="0">Año</option>
                                                                                 <?php foreach($list_anio as $list){
-                                                                                if(isset($get_id_d[0]) && $get_id_gestacion[0]['anio_ges'] == $list['cod_anio']){ ?>
+                                                                                if(isset($get_id_gestacion[0]) && $get_id_gestacion[0]['anio_ges'] == $list['cod_anio']){ ?>
                                                                                 <option selected value="<?php echo $list['cod_anio'] ; ?>"><?php echo $list['cod_anio'];?></option>
                                                                                 <?php } else{?>
                                                                                 <option value="<?php echo $list['cod_anio'] ; ?>"><?php echo $list['cod_anio'];?></option>
@@ -2885,7 +2885,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                                         <select class="form-control" name="id_grupo_sanguineo" id="id_grupo_sanguineo" <?php echo $disabled ?>>
                                                                         <option value="0">Seleccion</option>
                                                                         <?php foreach($list_grupo_sanguineo as $list){
-                                                                            if(isset($get_id_d[0]) &&  $get_id_otros[0]['id_grupo_sanguineo'] == $list['id_grupo_sanguineo']){ ?>
+                                                                            if(isset($get_id_otros[0]) &&  $get_id_otros[0]['id_grupo_sanguineo'] == $list['id_grupo_sanguineo']){ ?>
                                                                             <option selected value="<?php echo $list['id_grupo_sanguineo']; ?>"><?php echo $list['nom_grupo_sanguineo'];?></option>
                                                                         <?php }else{?>
                                                                         <option value="<?php echo $list['id_grupo_sanguineo']; ?>"><?php echo $list['nom_grupo_sanguineo'];?></option>
@@ -2962,7 +2962,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                                         <select class="form-control" name="id_referencia_laboral" id="id_referencia_laboral" onchange="ValidaRC();" <?php echo $disabled ?>>
                                                                         <option value="0">Seleccion</option>
                                                                         <?php foreach($list_referencia_laboral as $list){
-                                                                            if(isset($get_id_d[0]) && $get_id_referenciac[0]['id_referencia_laboral'] == $list['id_referencia_laboral']){ ?>
+                                                                            if(isset($get_id_referenciac[0]) && $get_id_referenciac[0]['id_referencia_laboral'] == $list['id_referencia_laboral']){ ?>
                                                                             <option selected value="<?php echo $list['id_referencia_laboral']; ?>"><?php echo $list['nom_referencia_laboral'];?></option>
                                                                         <?php }else{?>
                                                                         <option value="<?php echo $list['id_referencia_laboral']; ?>"><?php echo $list['nom_referencia_laboral'];?></option>
@@ -3098,7 +3098,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                                         <select class="form-control" name="polo" id="polo" <?php echo $disabled ?>>
                                                                             <option value="0">Seleccion</option>
                                                                             <?php foreach($list_accesorio_polo as $list){
-                                                                                if(isset($get_id_d[0]) && $get_id_t[0]['polo'] == $list['id_talla']){ ?>
+                                                                                if(isset($get_id_t[0]) && $get_id_t[0]['polo'] == $list['id_talla']){ ?>
                                                                                 <option selected value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
                                                                             <?php }else{?>
                                                                             <option value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
@@ -3113,7 +3113,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                                         <select class="form-control" name="camisa" id="camisa" <?php echo $disabled ?>>
                                                                             <option value="0">Seleccion</option>
                                                                             <?php foreach($list_accesorio_camisa as $list){
-                                                                                if(isset($get_id_d[0]) && $get_id_t[0]['camisa'] == $list['id_talla']){ ?>
+                                                                                if(isset($get_id_t[0]) && $get_id_t[0]['camisa'] == $list['id_talla']){ ?>
                                                                                 <option selected value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
                                                                             <?php }else{?>
                                                                             <option value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
@@ -3128,7 +3128,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                                         <select class="form-control" name="pantalon" id="pantalon" <?php echo $disabled ?>>
                                                                             <option value="0">Seleccion</option>
                                                                             <?php foreach($list_accesorio_pantalon as $list){
-                                                                                if(isset($get_id_d[0]) && $get_id_t[0]['pantalon'] == $list['id_talla']){ ?>
+                                                                                if(isset($get_id_t[0]) && $get_id_t[0]['pantalon'] == $list['id_talla']){ ?>
                                                                                 <option selected value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
                                                                             <?php }else{?>
                                                                             <option value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
@@ -3143,7 +3143,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                                         <select class="form-control" name="zapato" id="zapato" <?php echo $disabled ?>>
                                                                             <option value="0">Seleccion</option>
                                                                             <?php foreach($list_accesorio_zapato as $list){
-                                                                                if(isset($get_id_d[0]) && $get_id_t[0]['zapato'] == $list['id_talla']){ ?>
+                                                                                if(isset($get_id_t[0]) && $get_id_t[0]['zapato'] == $list['id_talla']){ ?>
                                                                                 <option selected value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
                                                                             <?php }else{?>
                                                                             <option value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
@@ -3204,7 +3204,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                                         <select <?php if(isset($get_id_sist_pensu['0']['id_respuestasp']) && $get_id_sist_pensu[0]['id_respuestasp'] == 2){ echo "disabled";} ?> class="form-control" name="id_sistema_pensionario" id="id_sistema_pensionario" onchange="ValidaAFP();" <?php echo $disabled ?>>
                                                                         <option value="0">Seleccion</option>
                                                                         <?php foreach($list_sistema_pensionario as $list){
-                                                                            if(isset($get_id_d[0]) && $get_id_sist_pensu[0]['id_sistema_pensionario'] == $list->id_sistema_pensionario){ ?>
+                                                                            if(isset($get_id_sist_pensu[0]) && $get_id_sist_pensu[0]['id_sistema_pensionario'] == $list->id_sistema_pensionario){ ?>
                                                                             <option selected value="<?php echo $list->id_sistema_pensionario; ?>"><?php echo $list->cod_sistema_pensionario;?></option>
                                                                         <?php }else{?>
                                                                         <option value="<?php echo $list->id_sistema_pensionario; ?>"><?php echo $list->cod_sistema_pensionario;?></option>
@@ -3219,7 +3219,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                                         <select <?php if(isset($get_id_sist_pensu['0']['id_respuestasp']) && $get_id_sist_pensu[0]['id_respuestasp'] == 2){ echo "disabled";} ?> class="form-control" name="id_afp" id="id_afp" <?php echo $disabled ?>>
                                                                         <option value="0">Seleccion</option>
                                                                         <?php foreach($list_afp as $list){
-                                                                            if(isset($get_id_d[0]) && $get_id_sist_pensu[0]['id_afp'] == $list->id_afp){ ?>
+                                                                            if(isset($get_id_sist_pensu[0]) && $get_id_sist_pensu[0]['id_afp'] == $list->id_afp){ ?>
                                                                             <option selected value="<?php echo $list->id_afp; ?>"><?php echo $list->nom_afp;?></option>
                                                                         <?php }else{?>
                                                                         <option value="<?php echo $list->id_afp; ?>"><?php echo $list->nom_afp;?></option>

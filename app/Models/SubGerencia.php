@@ -38,7 +38,7 @@ class SubGerencia extends Model
             ->where('sub_gerencia.id_sub_gerencia', $subgerenciaId)
             ->select('sub_gerencia.nom_sub_gerencia', 'area.id_area', 'area.nom_area') // Seleccionar también nom_area
             ->get();
-
+        // dd($results);
         // Agrupar los resultados
         $subgerencia = null;
         $areas = [];

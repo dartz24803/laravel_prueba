@@ -50,4 +50,26 @@ class SoporteSolucion extends Model
 
         return $comentarios;
     }
+
+    public static function getComentariosUserBySolucion($idsoporte_solucion)
+    {
+        $id_usuario = session('usuario')->id_usuario;
+        $comentarios = DB::table('soporte_comentarios as sc')
+            ->leftJoin('users as usr', 'sc.id_responsable', '=', 'usr.id_usuario')
+            ->select(
+                'sc.idsoporte_comentarios',
+                'sc.idsoporte_solucion',
+                'sc.comentario',
+                'sc.fec_comentario',
+                'sc.estado',
+                'usr.foto',
+                DB::raw("CONCAT(usr.usuario_nombres, ' ', usr.usuario_apater, ' ', usr.usuario_amater) AS nombre_responsable_solucion")
+            )
+            ->where('sc.idsoporte_solucion', $idsoporte_solucion)
+            ->where('sc.id_responsable', $id_usuario)
+            ->orderBy('sc.fec_comentario', 'DESC')
+            ->get();
+
+        return $comentarios;
+    }
 }

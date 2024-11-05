@@ -634,10 +634,6 @@ class ColaboradorController extends Controller
                             ->get();
             $dato['list_grupo_sanguineo'] = GrupoSanguineo::where('estado', 1)
                                 ->get();
-            $dato['list_gerencia'] = $this->Model_Perfil->get_list_gerencia();
-            $dato['list_area'] = $this->Model_Perfil->get_list_area($id_gerencia);
-            $dato['list_puesto'] = $this->Model_Perfil->get_list_puesto($id_gerencia,$id_area);
-            $dato['list_cargo'] = $this->Model_Perfil->get_list_cargo($id_gerencia, $id_area, $id_puesto);
             $dato['list_ubicacion_l'] = $this->Model_Perfil->get_list_ubicacion_l();
             $dato['list_empresa'] = Empresas::where('estado', 1)
                                 ->get();
@@ -665,7 +661,7 @@ class ColaboradorController extends Controller
             $dato['get_id_t'] = $this->Model_Perfil->get_id_ropa_usuario($id_usuario);
             $dato['list_parentesco'] = Parentesco::where('estado', 1)
                                         ->get();
-            $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario($id_usuario);
+            $dato['list_usuario'] = $this->Model_Perfil->get_id_usuario($id_usuario);
             $dato['list_referenciafu'] = $this->Model_Perfil->get_list_referenciafu($id_usuario);
             $dato['list_hijosu'] = $this->Model_Perfil->get_list_hijosu($id_usuario);
             $dato['list_contactoeu'] = $this->Model_Perfil->get_list_contactoeu($id_usuario);
@@ -2101,7 +2097,7 @@ class ColaboradorController extends Controller
             $id_usuario = $request->input("id_usuariodp");
             $this->Model_Perfil = new Model_Perfil();
             $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
-            $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario($id_usuario);
+            $dato['list_usuario'] = $this->Model_Perfil->get_id_usuario($id_usuario);
 
             return view('rrhh.Perfil.directorio_telefonico', $dato);
     }
@@ -2124,7 +2120,7 @@ class ColaboradorController extends Controller
                 //$dato['get_id'] = $this->Model_Postulante->get_id_postulante($id_usuario);
                 session('usuario')->foto = $dato['get_id'][0]['foto'];
 
-                $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario(session('usuario')->id_usuario);
+                $dato['list_usuario'] = $this->Model_Perfil->get_id_usuario(session('usuario')->id_usuario);
 
                 return view('Admin/Colaborador/Perfil/datospersonales_postulante', $dato);
             }else{
@@ -2138,10 +2134,10 @@ class ColaboradorController extends Controller
                 $dato['list_anio'] = $this->Model_Perfil->get_list_anio();
                 $dato['list_estado_civil'] = EstadoCivil::where('estado', 1)
                                         ->get();
-                $dato['get_id'] = $this->Model_Perfil->get_list_usuario($id_usuario);
+                $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
                 //session('usuario')->foto = $dato['get_id'][0]['foto'];
 
-                $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario(session('usuario')->id_usuario);
+                $dato['list_usuario'] = $this->Model_Perfil->get_id_usuario(session('usuario')->id_usuario);
 
                 return view('rrhh.Perfil.datospersonales', $dato);
             }
@@ -2298,7 +2294,7 @@ class ColaboradorController extends Controller
                                         ->get();
                 $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
                 //$_SESSION['foto']=$dato['get_id'][0]['foto'];
-                $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario($id_usuario);
+                $dato['list_usuario'] = $this->Model_Perfil->get_id_usuario($id_usuario);
 
                 return view('rrhh.Perfil.datospersonales', $dato);
             }
@@ -2335,7 +2331,7 @@ class ColaboradorController extends Controller
                 //$dato['get_id'] = $this->Model_Postulante->get_id_postulante($id_usuario);
                 $_SESSION['foto']=$dato['get_id'][0]['foto'];
 
-                $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario($_SESSION['usuario'][0]['id_usuario']);
+                $dato['list_usuario'] = $this->Model_Perfil->get_id_usuario($_SESSION['usuario'][0]['id_usuario']);
 
                 return view('rrhh.Perfil.datospersonales_postulante', $dato);
             }else{
@@ -2903,7 +2899,7 @@ class ColaboradorController extends Controller
             $dato['list_mes'] = $this->Model_Perfil->get_list_mes();
             $dato['list_anio'] = $this->Model_Perfil->get_list_anio();
 
-            $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario($id_usuario);
+            $dato['list_usuario'] = $this->Model_Perfil->get_id_usuario($id_usuario);
             return view('rrhh.Perfil.Hijos.index', $dato);
     }
 
@@ -3824,7 +3820,7 @@ class ColaboradorController extends Controller
             $dato['list_mes'] = $this->Model_Perfil->get_list_mes();
             $dato['list_anio'] = $this->Model_Perfil->get_list_anio();
 
-            $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario($id_usuario);
+            $dato['list_usuario'] = $this->Model_Perfil->get_id_usuario($id_usuario);
 
             $dato['get_id'] = EnfermedadUsuario::get_list_enfermedade($id_enfermedad_usuario);
             return view('rrhh.Perfil.Enfermedades.editar', $dato);
@@ -3839,7 +3835,7 @@ class ColaboradorController extends Controller
             $dato['list_mes'] = $this->Model_Perfil->get_list_mes();
             $dato['list_anio'] = $this->Model_Perfil->get_list_anio();
 
-            $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario($id_usuario);
+            $dato['list_usuario'] = $this->Model_Perfil->get_id_usuario($id_usuario);
             return view('rrhh.Perfil.Enfermedades.index', $dato);
     }
 
@@ -3982,7 +3978,7 @@ class ColaboradorController extends Controller
             $id_usuario= $request->input("id_usuariodp");
             $this->Model_Perfil = new Model_Perfil();
 
-            $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario($id_usuario);
+            $dato['list_usuario'] = $this->Model_Perfil->get_id_usuario($id_usuario);
             $dato['list_alergia'] = AlergiaUsuario::get_list_alergia($id_usuario);
             return view('rrhh.Perfil.Alergias.ldatos', $dato);
     }
@@ -4023,7 +4019,7 @@ class ColaboradorController extends Controller
             $id_usuario= $request->input("id_usuariodp");
             $this->Model_Perfil = new Model_Perfil();
 
-            $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario($id_usuario);
+            $dato['list_usuario'] = $this->Model_Perfil->get_id_usuario($id_usuario);
             $dato['list_alergia'] = AlergiaUsuario::get_list_alergia($id_usuario);
             return view('rrhh.Perfil.Alergias.ldatos', $dato);
     }
@@ -4032,7 +4028,7 @@ class ColaboradorController extends Controller
             $id_usuario = session('usuario')->id_usuario;
             $id_alergia_usuario = $request->input("id_alergia_usuario");
             $this->Model_Perfil = new Model_Perfil();
-            $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario($id_usuario);
+            $dato['list_usuario'] = $this->Model_Perfil->get_id_usuario($id_usuario);
             $dato['get_id'] = EnfermedadUsuario::get_list_enfermedade($id_alergia_usuario);
             return view('rrhh.Perfil.Alergias.editar', $dato);
     }
@@ -4040,7 +4036,7 @@ class ColaboradorController extends Controller
     public function MDatos_Alergias(Request $request){
             $id_usuario = $request->input("id_usuariodp");
             $this->Model_Perfil = new Model_Perfil();
-            $dato['list_usuario'] = $this->Model_Perfil->get_list_usuario($id_usuario);
+            $dato['list_usuario'] = $this->Model_Perfil->get_id_usuario($id_usuario);
             return view('rrhh.Perfil.Alergias.index', $dato);
     }
 

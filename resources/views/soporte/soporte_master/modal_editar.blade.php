@@ -1,4 +1,19 @@
 <style>
+    .img-user {
+        width: 90px;
+        /* Establece un ancho fijo */
+        height: 90px;
+        /* Establece una altura fija para mantener la forma circular */
+        object-fit: cover;
+        /* Asegura que la imagen cubra el contenedor */
+        border-radius: 50%;
+        /* Hace la imagen redonda */
+        margin-left: auto;
+        /* Margen horizontal automático */
+        margin-right: auto;
+        /* Margen horizontal automático */
+    }
+
     .center {
         display: flex;
         justify-content: center;
@@ -12,6 +27,14 @@
         width: 100%;
     }
 
+
+    .text-center {
+        display: inline-block;
+        /* Permite que los elementos se alineen horizontalmente */
+        margin-right: 10px;
+        /* Espacio entre las imágenes */
+    }
+
     #imagenes_container {
         width: 600px;
         /* Cambia este valor según tus necesidades */
@@ -23,13 +46,6 @@
         /* Opcional: Añade un borde para visualizar mejor el contenedor */
         padding: 10px;
         /* Opcional: Añade algo de padding para un mejor aspecto */
-    }
-
-    .text-center {
-        display: inline-block;
-        /* Permite que los elementos se alineen horizontalmente */
-        margin-right: 10px;
-        /* Espacio entre las imágenes */
     }
 
     #imagenes_container img {
@@ -460,16 +476,62 @@
                         </div>
                     </div>
                 </div>
-                <div class=" row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
+
+                <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
+                        @foreach ($comentarios_user as $comentario)
+                        <div class="comment-box" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                            <div class="d-flex align-items-center">
+                                <div class="form-group text-center mx-3">
+                                    <img src="{{ $comentario->foto ? $comentario->foto : asset('img/user-default.jpg') }}"
+                                        alt="User Image" class="img-fluid rounded-circle img-user" style="max-width: 90px; height: 90px;">
+                                </div>
+                                <div class="form-group mx-3">
+                                    <p><strong>Fecha:</strong> {{ $comentario->fec_comentario }}</p>
+                                    <p><strong>Responsable:</strong> {{ $comentario->nombre_responsable_solucion ?: 'No designado' }}</p>
+                                    <!-- Comentario actual, que se convertirá en input cuando se edite -->
+                                    <p id="comentario-{{ $comentario->idsoporte_comentarios }}"
+                                        style="max-width: 480px; word-wrap: break-word;">
+                                        <strong>Comentario:</strong>
+                                        <span id="comentario-texto-{{ $comentario->idsoporte_comentarios }}">
+                                            {{ $comentario->comentario ?: 'No hay comentario' }}
+                                        </span>
+                                    </p>
+                                    <!-- Textarea oculto, para editar comentario -->
+                                    <textarea class="form-control" id="comentario-input-{{ $comentario->idsoporte_comentarios }}"
+                                        style="display: none;"
+                                        rows="3" maxlength="250"></textarea>
+
+
+                                </div>
+                                <div class="form-group ml-3">
+                                    <!-- Botón de editar -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit" style="cursor: pointer;" onclick="editarComentario('{{ $comentario->idsoporte_comentarios }}')" id="editar-icon-{{ $comentario->idsoporte_comentarios }}">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                    </svg>
+
+                                    <!-- Botón de eliminar -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2" style="cursor: pointer;" onclick="eliminarComentario('{{ $comentario->idsoporte_comentarios }}')">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+
                         <div class="row align-items-center">
-                            <div class=" form-group col-md-12 mb-0"> <!-- Ajustar la columna a col-md-10 -->
-                                <textarea class="form-control" id="descripcione_solucion" name="descripcione_solucion" rows="5"
-                                    placeholder="Ingresar descripción">{{ $get_id->descripcion_solucion }}</textarea>
+                            <div class="form-group col-md-12 mb-0">
+                                <textarea class="form-control" id="descripcione_solucion" name="descripcione_solucion" rows="3" placeholder="Ingresar solución">{{ $get_id->descripcion_solucion }}</textarea>
                             </div>
                         </div>
                     </div>
                 </div>
+
+
 
                 <div class="row" style="padding-top: 1rem;">
                     <div class=" form-group col-lg-12">
@@ -929,10 +991,10 @@
         var nuevaImagen = document.createElement('img');
         nuevaImagen.src = url;
         nuevaImagen.alt = 'Captura de soporte';
-        nuevaImagen.style.width = '150px'; // Ancho fijo para la imagen
-        nuevaImagen.style.height = '150px'; // Altura fija para la imagen
+        nuevaImagen.style.width = '150px';
+        nuevaImagen.style.height = '150px';
+        nuevaImagen.style.display = 'block';
         nuevaImagen.className = 'img-thumbnail';
-        nuevaImagen.style.display = 'block'; // Asegura que la imagen esté alineada verticalmente
 
         // Crear botón para eliminar
         var botonEliminar = document.createElement('button');
@@ -978,25 +1040,9 @@
         // Actualiza el input oculto con la lista de URLs
         actualizarInput();
         // Verificar si el contenedor debe tener scroll
-        verificarScroll();
     }
 
 
-
-
-    function verificarScroll() {
-        var divImagenes = document.getElementById('imagenes_container');
-        var imagenes = divImagenes.getElementsByTagName('img');
-        console.log("#####");
-        console.log(imagenes.length);
-
-        // Agregar la clase `scrollable` si hay 3 o más imágenes
-        if (imagenes.length >= 3) {
-            divImagenes.classList.add('scrollable');
-        } else {
-            divImagenes.classList.remove('scrollable');
-        }
-    }
 
     function actualizarInput() {
         var divImagenes = document.getElementById('imagenes_container');
@@ -1033,5 +1079,80 @@
         } else {
             console.error("No se pudo encontrar el contenedor de imagen con ID:", 'contenedor-imagen-' + index);
         }
+    }
+
+    function editarComentario(comentarioId) {
+        console.log(comentarioId);
+        // Obtén el texto del comentario y el textarea
+        var comentarioTexto = document.getElementById('comentario-texto-' + comentarioId);
+        var comentarioInput = document.getElementById('comentario-input-' + comentarioId);
+        var svgEditar = document.getElementById('editar-icon-' + comentarioId);
+
+        // Si el comentario está siendo editado, muestra el textarea y oculta el texto
+        if (comentarioInput.style.display === "none" || comentarioInput.style.display === "") {
+            comentarioInput.style.display = "block"; // Muestra el textarea
+            comentarioTexto.style.display = "none"; // Oculta el texto
+
+            // Rellena el textarea con el comentario actual
+            comentarioInput.value = comentarioTexto.innerHTML.trim();
+
+            // Cambiar el ícono a "guardar"
+            svgEditar.setAttribute("onclick", "guardarComentario('" + comentarioId + "')");
+            svgEditar.innerHTML = `
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+        `;
+        }
+    }
+
+    function guardarComentario(comentarioId) {
+        var comentarioInput = document.getElementById('comentario-input-' + comentarioId);
+        var comentarioTexto = document.getElementById('comentario-texto-' + comentarioId);
+        // Por ejemplo, podrías hacer una solicitud AJAX a tu backend para actualizar el comentario
+        var nuevoComentario = comentarioInput.value;
+        // Simulando un guardado exitoso (esto deberías reemplazar con tu lógica)
+        console.log("Guardando comentario: " + nuevoComentario);
+
+        // Cambiar el texto a lo guardado y ocultar el textarea
+        comentarioTexto.innerHTML = nuevoComentario;
+        comentarioInput.style.display = "none"; // Oculta el textarea
+        comentarioTexto.style.display = "block"; // Muestra el texto del comentario
+
+        // Cambiar el ícono de vuelta al ícono de editar
+        var svgEditar = document.getElementById('editar-icon-' + comentarioId);
+        svgEditar.setAttribute("onclick", "editarComentario('" + comentarioId + "')");
+        svgEditar.innerHTML = `
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+    `;
+    }
+
+
+    function eliminarComentario(id) {
+        // Utiliza SweetAlert para la confirmación
+        Swal.fire({
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                console.log("##############")
+                document.getElementById('comentario-' + id).parentElement.parentElement.remove(); // Eliminar el comentario visualmente
+                // Notificación de éxito
+                Swal.fire(
+                    'Eliminado!',
+                    'Tu comentario ha sido eliminado.',
+                    'success'
+                );
+            }
+        });
+
+
+
     }
 </script>
