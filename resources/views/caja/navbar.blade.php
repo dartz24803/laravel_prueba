@@ -62,7 +62,8 @@ session('usuario')->id_puesto == 83 ||
 session('usuario')->id_puesto == 114 ||
 session('usuario')->id_puesto == 130 ||
 session('usuario')->id_puesto == 135 ||
-session('usuario')->id_puesto == 314)
+session('usuario')->id_puesto == 314 ||
+session('usuario')->id_sede_laboral == 6 )
 <li class="menu menu-heading">
     <div class="heading">
         <span>MÓDULOS</span>
@@ -102,7 +103,8 @@ session('usuario')->id_puesto == 314)
         session('usuario')->id_puesto == 167 ||
         session('usuario')->id_puesto == 23 ||
         session('usuario')->id_puesto == 314 ||
-        session('usuario')->id_puesto == 148)
+        session('usuario')->id_puesto == 148 ||
+        session('usuario')->id_sede_laboral == 6 )
         <li id="cambios_prendas">
             <a href="{{ route('cambio_prenda') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                 <p class="romperpalabra"><span id="icono_active2"></span> Cambio de prenda</p>
@@ -131,7 +133,8 @@ session('usuario')->id_puesto == 314)
         session('usuario')->id_puesto == 128 ||
         session('usuario')->id_puesto == 148 ||
         session('usuario')->id_puesto == 31 ||
-        session('usuario')->id_puesto == 32)
+        session('usuario')->id_puesto == 32 ||
+        session('usuario')->id_sede_laboral == 6 )
         <li id="insumos">
             <a href="{{ route('insumo') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                 <p class="romperpalabra"><span id="icono_active2"></span> Insumos</p>
@@ -160,7 +163,8 @@ session('usuario')->id_puesto == 314)
         session('usuario')->id_puesto == 128 ||
         session('usuario')->id_puesto == 167 ||
         session('usuario')->id_puesto == 161 ||
-        session('usuario')->id_puesto == 314)
+        session('usuario')->id_puesto == 314 ||
+        session('usuario')->id_sede_laboral == 6 )
         <li id="observaciones">
             <a href="{{ route('observacion') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                 <p class="romperpalabra"><span id="icono_active2"></span> Observaciones</p>
@@ -186,7 +190,8 @@ session('usuario')->id_puesto == 314)
         session('usuario')->id_puesto == 130 ||
         session('usuario')->id_puesto == 135 ||
         session('usuario')->id_puesto == 161 ||
-        session('usuario')->id_puesto == 314)
+        session('usuario')->id_puesto == 314 ||
+        session('usuario')->id_sede_laboral == 6 )
         <li id="requisiciones_tiendas">
             <a href="{{ route('requisicion_tienda') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                 <p class="romperpalabra"><span id="icono_active2"></span> Requisición tienda</p>
@@ -284,7 +289,8 @@ session('usuario')->id_puesto == 138 ||
 session('usuario')->id_puesto == 83 ||
 session('usuario')->id_puesto == 145 ||
 session('usuario')->id_puesto == 40 ||
-session('usuario')->id_puesto == 164)
+session('usuario')->id_puesto == 164 ||
+session('usuario')->id_sede_laboral == 6 )
 <li class="menu menu-heading">
     <div class="heading">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal">
@@ -317,7 +323,7 @@ session('usuario')->id_puesto == 138 ||
 session('usuario')->id_puesto == 83 ||
 session('usuario')->id_puesto == 145 ||
 session('usuario')->id_puesto == 40 ||
-session('usuario')->id_puesto == 164)
+session('usuario')->id_puesto == 164 )
 <li class="menu" id="conf_cajas">
     <a href="#rconf_cajas" id="hconf_cajas" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
         <div class="">
@@ -336,7 +342,7 @@ session('usuario')->id_puesto == 164)
     </a>
     <ul class="collapse submenu list-unstyled" id="rconf_cajas" data-parent="#accordionExample">
         @if (session('usuario')->id_nivel == 1 ||
-        session('usuario')->id_puesto == 128)
+        session('usuario')->id_puesto == 128 )
         <li id="conf_cambios_prendas">
             <a href="{{ route('cambio_prenda_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                 <p class="romperpalabra"><span id="icono_active2"></span> Cambio de prenda</p>

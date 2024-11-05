@@ -31,8 +31,6 @@ class InicioController extends Controller
         $list_cumple = Usuario::get_list_proximos_cumpleanios();
 
 
-        dd(session('usuario'));
-
         // Accesos a módulos en base a idsedeLaboral
         $idSedeLaboral = Usuario::getIdSedeUser();
         $acceso_tienda = ($idSedeLaboral == 6);
