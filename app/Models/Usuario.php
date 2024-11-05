@@ -918,8 +918,8 @@ class Usuario extends Model
                     c.nom_contacto,c.celular1,c.celular2,c.fijo from users u
                     LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
                     LEFT JOIN tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
-                    LEFT JOIN area a on a.id_area=u.id_area
                     LEFT JOIN puesto pu on pu.id_puesto=u.id_puesto
+                    LEFT JOIN area a on p.id_area=a.id_area
                     LEFT JOIN grado_instruccion gr on gr.id_grado_instruccion=u.id_grado_instruccion
                     LEFT JOIN contacto_emergencia ce on ce.id_contacto_emergencia=u.id_contacto_emergencia
                     where u.estado in (1) and id_usuario =" . $id_usuario;
