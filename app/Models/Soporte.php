@@ -16,7 +16,7 @@ class Soporte extends Model
 
     protected $primaryKey = 'id_soporte';
 
-    protected $fillable = ['id_especialidad', 'id_area', 'id_elemento', 'id_asunto', 'id_sede', 'idsoporte_nivel', 'idsoporte_area_especifica', 'codigo', 'idsoporte_motivo_cancelacion', 'idsoporte_tipo', 'area_cancelacion', 'id_segundo_responsable', 'idsoporte_solucion', 'img1', 'img2', 'img3', 'idsoporte_ejecutor', 'id_responsable', 'fec_vencimiento', 'fec_cierre', 'fec_cierre_sr', 'descripcion', 'estado', 'estado_registro', 'estado_registro_sr', 'fec_reg', 'user_reg', 'fec_act', 'user_act', 'fec_eli', 'user_eli'];
+    protected $fillable = ['id_especialidad', 'id_area', 'id_elemento', 'id_asunto', 'id_sede', 'idsoporte_nivel', 'idsoporte_area_especifica', 'codigo', 'idsoporte_motivo_cancelacion', 'idsoporte_tipo', 'area_cancelacion', 'id_segundo_responsable', 'idsoporte_solucion', 'img1', 'img2', 'img3', 'img4', 'img5', 'idsoporte_ejecutor', 'id_responsable', 'fec_vencimiento', 'fec_cierre', 'fec_cierre_sr', 'descripcion', 'estado', 'estado_registro', 'estado_registro_sr', 'fec_reg', 'user_reg', 'fec_act', 'user_act', 'fec_eli', 'user_eli'];
 
     public static function listTicketsSoporte()
     {
@@ -114,6 +114,11 @@ class Soporte extends Model
             'soporte_ejecutor.fec_inicio_proyecto as fec_inicio_proyecto',
             'soporte_ejecutor.idejecutor_responsable as idejecutor_responsable',
             'soporte_area_especifica.nombre as nombre_area_especifica',
+            'soporte_solucion.archivo1 as archivo1',
+            'soporte_solucion.archivo2 as archivo2',
+            'soporte_solucion.archivo3 as archivo3',
+            'soporte_solucion.archivo4 as archivo4',
+            'soporte_solucion.archivo5 as archivo5',
             'area.nom_area as nombre_area',
             'area_cancelacion.cod_area as cod_area',
             'users.usuario_nombres as usuario_nombre',
@@ -146,6 +151,8 @@ class Soporte extends Model
             ->leftJoin('especialidad', 'soporte.id_especialidad', '=', 'especialidad.id')
             ->leftJoin('soporte_elemento', 'soporte.id_elemento', '=', 'soporte_elemento.idsoporte_elemento')
             ->leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
+            ->leftJoin('soporte_solucion', 'soporte.idsoporte_solucion', '=', 'soporte_solucion.idsoporte_solucion')
+
             ->leftJoin('soporte_ejecutor', 'soporte.idsoporte_ejecutor', '=', 'soporte_ejecutor.idsoporte_ejecutor')
             ->leftJoin('soporte_motivo_cancelacion', 'soporte.idsoporte_motivo_cancelacion', '=', 'soporte_motivo_cancelacion.idsoporte_motivo_cancelacion')
             ->leftJoin('sede_laboral', 'soporte.id_sede', '=', 'sede_laboral.id')

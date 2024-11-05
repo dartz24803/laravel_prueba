@@ -126,7 +126,6 @@ class SoporteController extends Controller
             $list_especialidad->push($especialidadConId4);
         }
         $list_elemento = ElementoSoporte::select('idsoporte_elemento', 'nombre')->get();
-        $list_asunto = AsuntoSoporte::select('idsoporte_asunto', 'nombre')->get();
 
         $id_sede = SedeLaboral::obtenerIdSede();
 
@@ -146,7 +145,7 @@ class SoporteController extends Controller
             ->distinct('nom_area')
             ->get();
 
-        return view('soporte.soporte.modal_registrar', compact('list_responsable', 'list_area', 'list_base', 'list_especialidad', 'list_elemento', 'list_asunto'));
+        return view('soporte.soporte.modal_registrar', compact('list_responsable', 'list_area', 'list_base', 'list_especialidad', 'list_elemento'));
     }
 
     public function getSoporteNivelPorSede(Request $request)
@@ -206,16 +205,16 @@ class SoporteController extends Controller
     public function getAsuntoPorElemento(Request $request)
     {
         $idElemento = $request->input('elemento');
-        // Si no se selecciona ninguna sede, devolver un arreglo vacío
         if (empty($idElemento)) {
             return response()->json([]);
         }
-        // Buscar ubicaciones asociadas a la sede seleccionada
+
+        // Buscar ubicaciones asociadas a la sede seleccionada, incluyendo `evidencia_adicional`
         $asuntos = AsuntoSoporte::where(function ($query) use ($idElemento) {
             $query->whereRaw("FIND_IN_SET(?, idsoporte_elemento)", [$idElemento]);
         })
             ->where('estado', 1)
-            ->get();
+            ->get(['idsoporte_asunto', 'nombre', 'evidencia_adicional']); // Incluir evidencia_adicional en la consulta
 
         return response()->json($asuntos);
     }
@@ -224,7 +223,7 @@ class SoporteController extends Controller
 
     public function store_tick(Request $request)
     {
-        // dd($request->asunto);
+
         $rules = [
             'especialidad' => 'gt:0',
             'elemento' => 'gt:0',
@@ -280,11 +279,9 @@ class SoporteController extends Controller
             // Usa el valor de $cod_area en lugar de 'TI'
             $area_code = $cod_area ? $cod_area['cod_area'] : 'TI'; // Usa 'TI' como fallback en caso de null
             $prefijo = $idsoporte_tipo->idsoporte_tipo == 1 ? 'RQ-' . $area_code . '-' : 'INC-' . $area_code . '-';
-
             $contador = Soporte::where('idsoporte_tipo', $idsoporte_tipo->idsoporte_tipo)->count();
             $nuevo_numero = $contador + 1;
             $numero_formateado = str_pad($nuevo_numero, 3, '0', STR_PAD_LEFT);
-
             $codigo_generado = $prefijo . $numero_formateado;
         } else {
             $codigo_generado = 'Código no disponible';
@@ -334,12 +331,25 @@ class SoporteController extends Controller
         if ($con_id && $lr) {
             // Decodificar las URLs de las imágenes desde el request
             $imagenes = json_decode($request->input('imagenes'), true);
-            if (!$imagenes || !is_array($imagenes)) {
-                return response()->json([
-                    'error' => 'Debe Cargar almenos una foto'
-                ], 400);
+            $evidenciaAdicional = AsuntoSoporte::obtenerEvidenciaAdicionalPorId($request->asunto);
+            // $imagenes = $request->file('imagenes'); // Asumiendo que estás recibiendo imágenes en una variable llamada 'imagenes'
+            if ($evidenciaAdicional == 1) {
+                // Validar que haya entre 3 y 5 imágenes
+                if (!is_array($imagenes) || count($imagenes) < 3 || count($imagenes) > 5) {
+                    return response()->json([
+                        'error' => 'Debe cargar al menos 3 fotos y máximo 5 fotos.'
+                    ], 400);
+                }
+            } else {
+                // Validar que al menos haya una imagen
+                if (!$imagenes || !is_array($imagenes)) {
+                    return response()->json([
+                        'error' => 'Debe cargar al menos una foto.'
+                    ], 400);
+                }
             }
-            // Inicializar un array para almacenar los resultados
+
+            // // Inicializar un array para almacenar los resultados
             $resultados = [];
             // Subida de imágenes
             $resultados = $this->uploadImages($imagenes, $con_id);
@@ -353,6 +363,8 @@ class SoporteController extends Controller
             $img1 = isset($resultados[0]) ? $resultados[0]['url_ftp'] : '';
             $img2 = isset($resultados[1]) ? $resultados[1]['url_ftp'] : '';
             $img3 = isset($resultados[2]) ? $resultados[2]['url_ftp'] : '';
+            $img4 = isset($resultados[3]) ? $resultados[3]['url_ftp'] : '';
+            $img5 = isset($resultados[4]) ? $resultados[4]['url_ftp'] : '';
             $idSede = SedeLaboral::obtenerIdSede();
             // Almacenar la información de soporte en la base de datos
             Soporte::create([
@@ -380,7 +392,9 @@ class SoporteController extends Controller
                 'user_act' => session('usuario')->id_usuario,
                 'img1' => $img1,
                 'img2' => $img2,
-                'img3' => $img3
+                'img3' => $img3,
+                'img4' => $img4,
+                'img5' => $img5
             ]);
 
             return response()->json([
@@ -952,6 +966,64 @@ class SoporteController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
+        }
+
+        // Almacenar Imagenes
+        $ftp_server = "lanumerounocloud.com";
+        $ftp_usuario = "intranet@lanumerounocloud.com";
+        $ftp_pass = "Intranet2022@";
+        $con_id = ftp_connect($ftp_server);
+        $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+        if ($con_id && $lr) {
+            // Decodificar las URLs de las imágenes desde el request
+            $imagenes = json_decode($request->input('imagenes'), true);
+            // dd($imagenes);
+            // $imagenes = $request->file('imagenes'); // Asumiendo que estás recibiendo imágenes en una variable llamada 'imagenes'
+            // Validar que haya entre 3 y 5 imágenes
+            if (!is_array($imagenes) || count($imagenes) < 3 || count($imagenes) > 5) {
+                return response()->json([
+                    'error' => 'Debe cargar al menos 3 fotos y máximo 5 fotos.'
+                ], 400);
+            }
+
+
+
+            // // Inicializar un array para almacenar los resultados
+            $resultados = [];
+            // Subida de imágenes
+            $resultados = $this->uploadImages($imagenes, $con_id);
+            if (!$resultados) {
+                return response()->json(['error' => 'No se pudo subir alguna imagen'], 500);
+            }
+            // Eliminación de archivos temporales en SOPORTE/TEMPORAL
+            $this->deleteTempFiles($con_id, "SOPORTE/TEMPORAL/");
+            ftp_close($con_id);
+            // Obtener los campos de imagen
+            $archivo1 = isset($resultados[0]) ? $resultados[0]['url_ftp'] : '';
+            $archivo2 = isset($resultados[1]) ? $resultados[1]['url_ftp'] : '';
+            $archivo3 = isset($resultados[2]) ? $resultados[2]['url_ftp'] : '';
+            $archivo4 = isset($resultados[3]) ? $resultados[3]['url_ftp'] : '';
+            $archivo5 = isset($resultados[4]) ? $resultados[4]['url_ftp'] : '';
+            // Almacenar la información de soporte en la base de datos
+            SoporteSolucion::where('idsoporte_solucion',  $get_id->idsoporte_solucion)->update([
+                'estado_solucion' => 1,
+                'archivo_solucion' => 1,
+                'estado' => 1,
+                'archivo1' => $archivo1,
+                'archivo2' => $archivo2,
+                'archivo3' => $archivo3,
+                'archivo4' => $archivo4,
+                'archivo5' => $archivo5,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+
+            return response()->json([
+                'success' => 'Imágenes subidas correctamente al servidor FTP',
+                'resultados' => $resultados
+            ]);
+        } else {
+            return response()->json(['error' => 'No se pudo conectar al servidor FTP'], 500);
         }
     }
 

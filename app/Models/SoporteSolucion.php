@@ -16,13 +16,18 @@ class SoporteSolucion extends Model
 
     protected $fillable = [
         'idsoporte_comentarios',
-        'estado_solucion',     // int(11)
-        'archivo_solucion',    // int(11)
-        'estado',              // int(11)
-        'fec_reg',             // int(11)
-        'user_reg',            // int(11)
-        'user_act',            // int(11)
-        'fec_act',             // int(11)
+        'estado_solucion',
+        'archivo_solucion',
+        'estado',
+        'archivo1',
+        'archivo2',
+        'archivo3',
+        'archivo4',
+        'archivo5',
+        'fec_reg',
+        'user_reg',
+        'user_act',
+        'fec_act',
     ];
 
     public static function getComentariosBySolucion($idsoporte_solucion)
