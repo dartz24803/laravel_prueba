@@ -171,7 +171,7 @@ class Usuario extends Model
     public function login($usuario)
     {
         $query = "SELECT u.id_usuario, u.usuario_nombres, u.usuario_apater, u.usuario_amater, u.usuario_codigo,
-                u.id_nivel, ub.cod_ubi AS centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,u.id_puesto,u.acceso,
+                u.id_nivel, ub.cod_ubi AS centro_labores, ub.id_sede AS id_sede_laboral, u.emailp, u.num_celp, u.induccion, u.datos_completos,u.id_puesto,u.acceso,
                 u.ini_funciones,u.fec_reg,u.usuario_password,u.estado, n.nom_nivel, p.nom_puesto, a.nom_area, p.id_area,
                 (SELECT GROUP_CONCAT(puestos) FROM area WHERE estado=1 AND orden!='') AS grupo_puestos, sg.id_gerencia,
                 CASE WHEN u.urladm=1 THEN (select r.url_config from config r where r.descrip_config='Foto_Postulante'
@@ -475,6 +475,10 @@ class Usuario extends Model
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }
+
+
+
+
 
     public static function get_list_cesado($dato)
     {
@@ -918,8 +922,8 @@ class Usuario extends Model
                     c.nom_contacto,c.celular1,c.celular2,c.fijo from users u
                     LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
                     LEFT JOIN tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
-                    LEFT JOIN area a on a.id_area=u.id_area
                     LEFT JOIN puesto pu on pu.id_puesto=u.id_puesto
+                    LEFT JOIN area a on p.id_area=a.id_area
                     LEFT JOIN grado_instruccion gr on gr.id_grado_instruccion=u.id_grado_instruccion
                     LEFT JOIN contacto_emergencia ce on ce.id_contacto_emergencia=u.id_contacto_emergencia
                     where u.estado in (1) and id_usuario =" . $id_usuario;
@@ -1036,9 +1040,10 @@ class Usuario extends Model
                     WHEN YEAR(u.fec_nac) BETWEEN 1997 AND 2012 THEN 'Z'
                     WHEN YEAR(u.fec_nac) >= 2013 THEN '&alpha;' ELSE '-' END AS generacion,u.id_puesto
                     FROM users u
-                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
-                    LEFT JOIN area a on a.id_area=u.id_area
                     LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN area a on a.id_area=p.id_area
+                    LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                    LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
                     LEFT JOIN cargo c on c.id_cargo=u.id_cargo
                     left join domicilio_users d on d.id_usuario=u.id_usuario
                     left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
@@ -1177,10 +1182,10 @@ class Usuario extends Model
                     WHEN YEAR(u.fec_nac) >= 2013 THEN '&alpha;' ELSE 'No se pudo determinar la generación' 
                     END AS generacion,u.id_puesto
                     from users u
-                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
-                    LEFT JOIN area a on a.id_area=u.id_area
                     LEFT JOIN puesto p on p.id_puesto=u.id_puesto
-                    LEFT JOIN cargo c on c.id_cargo=u.id_cargo
+                    LEFT JOIN area a on a.id_area=p.id_area
+                    LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                    LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
                     left join domicilio_users d on d.id_usuario=u.id_usuario
                     left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
                     LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
@@ -1311,9 +1316,10 @@ class Usuario extends Model
                     WHEN YEAR(u.fec_nac) >= 2013 THEN '&alpha;' ELSE 'No se pudo determinar la generación' 
                     END AS generacion,u.id_puesto
                     from users u
-                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
-                    LEFT JOIN area a on a.id_area=u.id_area
                     LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN area a on a.id_area=p.id_area
+                    LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                    LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
                     LEFT JOIN cargo c on c.id_cargo=u.id_cargo
                     left join domicilio_users d on d.id_usuario=u.id_usuario
                     left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
@@ -1587,9 +1593,10 @@ class Usuario extends Model
                     ELSE 'No se pudo determinar la generación'
                     END AS generacion,u.id_puesto
                     from users u
-                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
-                    LEFT JOIN area a on a.id_area=u.id_area
                     LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN area a on a.id_area=p.id_area
+                    LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                    LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
                     LEFT JOIN cargo c on c.id_cargo=u.id_cargo
                     left join domicilio_users d on d.id_usuario=u.id_usuario
                     left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
@@ -1771,5 +1778,19 @@ class Usuario extends Model
             WHERE estado = 1 AND id_area = $id_area";
         $query = DB::select($sql);
         return $query;
+    }
+
+    public static function getIdSedeUser()
+    {
+        $id_usuario = session('usuario')->id_usuario;
+        $query = "SELECT ub.id_sede
+                  FROM users u
+                  LEFT JOIN ubicacion ub ON u.id_centro_labor = ub.id_ubicacion
+                  WHERE u.id_usuario = ? AND u.estado IN (1, 4) AND u.desvinculacion IN (0)";
+
+        // Usar DB::select y obtener el primer resultado
+        $result = DB::select($query, [$id_usuario]);
+        // Comprobar si hay resultados y retornar solo el valor id_sede
+        return $result ? $result[0]->id_sede : null; // Devuelve el id_sede o null si no hay resultados
     }
 }
