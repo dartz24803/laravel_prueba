@@ -171,7 +171,7 @@ class Usuario extends Model
     public function login($usuario)
     {
         $query = "SELECT u.id_usuario, u.usuario_nombres, u.usuario_apater, u.usuario_amater, u.usuario_codigo,
-                u.id_nivel, ub.cod_ubi AS centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,u.id_puesto,u.acceso,
+                u.id_nivel, ub.cod_ubi AS centro_labores, ub.id_sede AS id_sede_laboral, u.emailp, u.num_celp, u.induccion, u.datos_completos,u.id_puesto,u.acceso,
                 u.ini_funciones,u.fec_reg,u.usuario_password,u.estado, n.nom_nivel, p.nom_puesto, a.nom_area, p.id_area,
                 (SELECT GROUP_CONCAT(puestos) FROM area WHERE estado=1 AND orden!='') AS grupo_puestos, sg.id_gerencia,
                 CASE WHEN u.urladm=1 THEN (select r.url_config from config r where r.descrip_config='Foto_Postulante'
@@ -475,6 +475,10 @@ class Usuario extends Model
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }
+
+
+
+
 
     public static function get_list_cesado($dato)
     {
@@ -1771,5 +1775,19 @@ class Usuario extends Model
             WHERE estado = 1 AND id_area = $id_area";
         $query = DB::select($sql);
         return $query;
+    }
+
+    public static function getIdSedeUser()
+    {
+        $id_usuario = session('usuario')->id_usuario;
+        $query = "SELECT ub.id_sede
+                  FROM users u
+                  LEFT JOIN ubicacion ub ON u.id_centro_labor = ub.id_ubicacion
+                  WHERE u.id_usuario = ? AND u.estado IN (1, 4) AND u.desvinculacion IN (0)";
+
+        // Usar DB::select y obtener el primer resultado
+        $result = DB::select($query, [$id_usuario]);
+        // Comprobar si hay resultados y retornar solo el valor id_sede
+        return $result ? $result[0]->id_sede : null; // Devuelve el id_sede o null si no hay resultados
     }
 }

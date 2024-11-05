@@ -29,10 +29,19 @@ class InicioController extends Controller
         $list_slider_inicio = SliderInicio::get();
         $list_frases = FrasesInicio::where('estado', 1)->get();
         $list_cumple = Usuario::get_list_proximos_cumpleanios();
+
+
+        dd(session('usuario'));
+
+        // Accesos a módulos en base a idsedeLaboral
+        $idSedeLaboral = Usuario::getIdSedeUser();
+        $acceso_tienda = ($idSedeLaboral == 6);
+
+
         $get_foto = Config::where('descrip_config', 'Foto_Colaborador')
             ->where('estado', 1)
             ->get();
-        return view('inicio', compact('list_notificacion', 'list_cumple', 'get_foto', 'list_frases', 'list_slider_inicio'));
+        return view('inicio', compact('list_notificacion', 'list_cumple', 'get_foto', 'list_frases', 'list_slider_inicio', 'acceso_tienda'));
     }
     /*
     public function listar()

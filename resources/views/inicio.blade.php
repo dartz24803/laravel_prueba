@@ -15,7 +15,7 @@
                                         <!-- Logo Logistica-->
                                         <div id="logo_logistica" class="col-sm-8">
                                             <div class="logo6" style="width: 6rem;">
-                                                <div id="logistica" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701;height:6rem">
+                                                <div id="logistica" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center {{ $acceso_tienda == true ? 'logo_disabled' : '' }}" style="background-color: #fea701;height:6rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Logistica.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Gestión Logística</p>
                                                 </div>
@@ -24,7 +24,7 @@
                                         <!-- Logo Comercial-->
                                         <div id="logo_comercial" class="col-sm-4 d-flex justify-content-end">
                                             <div class="logo7 mb-4" style="width: 7rem">
-                                                <div id="comercial" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #ff295c; height: 7rem">
+                                                <div id="comercial" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center {{ $acceso_tienda == true ? 'logo_disabled' : '' }}" style="background-color: #ff295c; height: 7rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Comercial.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Gestión Comercial</p>
                                                 </div>
@@ -42,7 +42,7 @@
                                         <!-- Logo Infraestructura-->
                                         <div id="logo_infraestructura" class="col-sm-3">
                                             <div class="logo7" style="width: 7rem;">
-                                                <div id="infraestructura" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e; height: 7rem;">
+                                                <div id="infraestructura" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center {{ $acceso_tienda == true ? 'logo_disabled' : '' }}" style="background-color: #00ba8e; height: 7rem;">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Infraestructuras.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Gestión Infraestructura</p>
                                                 </div>
@@ -51,7 +51,7 @@
                                         <!-- Logo Interna-->
                                         <div id="logo_interna" class="col-sm-3 d-flex justify-content-end">
                                             <div class="logo6" style="width: 6rem;">
-                                                <div id="interna" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e;height:6rem">
+                                                <div id="interna" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center {{ $acceso_tienda == true ? 'logo_disabled' : '' }}" style="background-color: #00ba8e;height:6rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Interna.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Gestión Interna</p>
                                                 </div>
@@ -90,7 +90,7 @@
                                             </div>-->
                                         </div>
                                         <!-- Logo Finanzas-->
-                                        <div id="logo_finanzas" class="col-sm-3 d-flex justify-content-center align-items-end">
+                                        <div id="logo_finanzas" class="col-sm-3 d-flex justify-content-center align-items-end {{ $acceso_tienda == true ? 'logo_disabled' : '' }}">
                                             <div class="logo6" style="width: 6rem;">
                                                 <div id="finanzas" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00b1f4;height:6rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Finanzas.png')}}" alt="">
@@ -108,7 +108,7 @@
                                             </div>
                                         </div>
                                         <!-- Logo Caja y Control-->
-                                        <div id="logo_caja" class="col-sm-2 d-flex justify-content-center">
+                                        <div id="logo_caja" class="col-sm-2 d-flex justify-content-center ">
                                             <div class="logo6" style="width: 6rem;">
                                                 <div id="caja" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701; height: 6rem;">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-CajaControlInterno.png')}}" alt="">
@@ -117,7 +117,7 @@
                                             </div>
                                         </div>
                                         <!-- Logo Manufactura-->
-                                        <div id="logo_manufactura" class="col-sm-2 d-flex align-items-start">
+                                        <div id="logo_manufactura" class="col-sm-2 d-flex align-items-start {{ $acceso_tienda == true ? 'logo_disabled' : '' }}">
                                             <div class="logo7" style="width: 7rem;">
                                                 <div id="manufactura" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #00ba8e; height: 7rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Manufactura.png')}}" alt="">
@@ -128,12 +128,13 @@
                                         <!-- Logo Tiendas-->
                                         <div id="logo_tiendas" class="col-sm-3 d-flex justify-content-start">
                                             <div class="logo7" style="width: 7rem; margin-top: 2rem;">
-                                                <div id="tiendas" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #ff295c;height: 7rem">
+                                                <div id="tiendas" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #ff295c; height: 7rem;">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Tiendas.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Gestión Tiendas</p>
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -369,6 +370,16 @@
         #logo_tiendas {
             margin-top: 1rem
         }
+
+        .logo_disabled {
+            pointer-events: none;
+            /* Desactiva los eventos de puntero (clics) */
+            opacity: 0.5;
+            /* Cambia la opacidad para dar un efecto de deshabilitado */
+            cursor: default;
+            /* Cambia el cursor a uno que indique que no es interactivo */
+        }
+
     }
 
     .imagen_1 {
