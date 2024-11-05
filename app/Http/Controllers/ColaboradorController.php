@@ -634,10 +634,6 @@ class ColaboradorController extends Controller
                             ->get();
             $dato['list_grupo_sanguineo'] = GrupoSanguineo::where('estado', 1)
                                 ->get();
-            $dato['list_gerencia'] = $this->Model_Perfil->get_list_gerencia();
-            $dato['list_area'] = $this->Model_Perfil->get_list_area($id_gerencia);
-            $dato['list_puesto'] = $this->Model_Perfil->get_list_puesto($id_gerencia,$id_area);
-            $dato['list_cargo'] = $this->Model_Perfil->get_list_cargo($id_gerencia, $id_area, $id_puesto);
             $dato['list_ubicacion_l'] = $this->Model_Perfil->get_list_ubicacion_l();
             $dato['list_empresa'] = Empresas::where('estado', 1)
                                 ->get();
