@@ -504,9 +504,6 @@ class LineaCarreraController extends Controller
                     'user_act' => session('usuario')->id_usuario
                 ]);
                 Usuario::findOrFail($get_id->id_usuario)->update([
-                    'id_gerencia' => $get_puesto->id_gerencia,
-                    'id_sub_gerencia' => $get_puesto->id_departamento,
-                    'id_area' => $get_puesto->id_area,
                     'id_puesto' => $get_puesto->id_puesto,
                     'fec_act' => now(),
                     'user_act' => session('usuario')->id_usuario

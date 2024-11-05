@@ -1155,9 +1155,6 @@ class ColaboradorController extends Controller
                         'user_reg' => session('usuario')->id_usuario,
                     ]);
                     Usuario::findOrFail($request->id_usuario_hp)->update([
-                        'id_gerencia' => $request->id_gerencia_hp,
-                        'id_sub_gerencia' => $request->id_sub_gerencia_hp,
-                        'id_area' => $request->id_area_hp,
                         'id_puesto' => $request->id_puesto_hp,
                         'fec_act' => now(),
                         'user_act' => session('usuario')->id_usuario,
@@ -1203,9 +1200,6 @@ class ColaboradorController extends Controller
                         'user_act' => session('usuario')->id_usuario,
                     ]);
                     Usuario::findOrFail($request->id_usuario_hp)->update([
-                        'id_gerencia' => $request->id_gerencia_hp,
-                        'id_sub_gerencia' => $request->id_sub_gerencia_hp,
-                        'id_area' => $request->id_area_hp,
                         'id_puesto' => $request->id_puesto_hp,
                         'fec_act' => now(),
                         'user_act' => session('usuario')->id_usuario,
@@ -1229,9 +1223,6 @@ class ColaboradorController extends Controller
                     'user_reg' => session('usuario')->id_usuario,
                 ]);
                 Usuario::findOrFail($request->id_usuario_hp)->update([
-                    'id_gerencia' => $request->id_gerencia_hp,
-                    'id_sub_gerencia' => $request->id_sub_gerencia_hp,
-                    'id_area' => $request->id_area_hp,
                     'id_puesto' => $request->id_puesto_hp,
                     'fec_act' => now(),
                     'user_act' => session('usuario')->id_usuario,
