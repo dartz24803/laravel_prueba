@@ -24,14 +24,12 @@ class ProduccionController extends Controller
 {
     public function indexav()
     {
-        $subgerenciaId = 4;
-
         $list_subgerencia = SubGerencia::list_subgerencia(4);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_gerencia = Gerencia::where('estado', 1)->orderBy('nom_gerencia', 'ASC')->get();
 
-        return view('manufactura.produccion.asignacion_visitas.index', compact('list_notificacion', 'list_gerencia', 'list_subgerencia', 'subgerenciaId'));
+        return view('manufactura.produccion.asignacion_visitas.index', compact('list_notificacion', 'list_gerencia', 'list_subgerencia'));
     }
 
     public function indexrev()

@@ -20,12 +20,10 @@ class InicioAdmController extends Controller
 
     public function index()
     {
-        $subgerenciaId = 9;
-
         $list_subgerencia = SubGerencia::list_subgerencia(9);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('interna/administracion/Inicio/slider/index', compact('list_notificacion', 'list_subgerencia', 'subgerenciaId'));
+        return view('interna/administracion/Inicio/slider/index', compact('list_notificacion', 'list_subgerencia'));
     }
 
     public function Slider_Inicio_Listar()

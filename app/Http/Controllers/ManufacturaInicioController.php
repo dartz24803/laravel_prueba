@@ -15,11 +15,10 @@ class ManufacturaInicioController extends Controller
 
     public function index()
     {
-        $subgerenciaId = 4;
 
         $list_subgerencia = SubGerencia::list_subgerencia(4);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('manufactura.index', compact('list_notificacion', 'list_subgerencia', 'subgerenciaId'));
+        return view('manufactura.index', compact('list_notificacion', 'list_subgerencia'));
     }
 }

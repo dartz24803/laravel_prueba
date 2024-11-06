@@ -15,10 +15,9 @@ class RecursosHumanosInicioController extends Controller
 
     public function index()
     {
-        $subgerenciaId = 5;
         $list_subgerencia = SubGerencia::list_subgerencia(5);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('rrhh.index', compact('list_notificacion', 'list_subgerencia', 'subgerenciaId'));
+        return view('rrhh.index', compact('list_notificacion', 'list_subgerencia'));
     }
 }

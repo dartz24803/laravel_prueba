@@ -574,7 +574,7 @@
                         </li>
                     <?php } ?>
                     <!-- MODULO SOPORTE -->
-                    @if ( $subgerenciaId != 9 && $subgerenciaId != 10 )
+
                     <li class="menu" id="soporte">
                         <a href="{{ url('soporte') }}" id="hsoporte" aria-expanded="false" class="dropdown-toggle">
                             <div class="">
@@ -586,7 +586,7 @@
                             </div>
                         </a>
                     </li>
-                    @endif
+
 
                     <li class="menu" id="papeletas_apps">
                         <a href="{{ url('Papeletas/Papeletas_Apps') }}" id="hpapeletas_apps" aria-expanded="false" class="dropdown-toggle">

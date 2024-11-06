@@ -23,7 +23,6 @@ class InicioController extends Controller
     }
     public function index()
     {
-        $subgerenciaId = 0;
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
         // dd($subgerenciaId);
@@ -40,7 +39,7 @@ class InicioController extends Controller
         $get_foto = Config::where('descrip_config', 'Foto_Colaborador')
             ->where('estado', 1)
             ->get();
-        return view('inicio', compact('list_notificacion', 'list_cumple', 'get_foto', 'list_frases', 'list_slider_inicio', 'acceso_tienda', 'subgerenciaId'));
+        return view('inicio', compact('list_notificacion', 'list_cumple', 'get_foto', 'list_frases', 'list_slider_inicio', 'acceso_tienda'));
     }
     /*
     public function listar()
