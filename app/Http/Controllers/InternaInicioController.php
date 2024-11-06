@@ -19,9 +19,11 @@ class InternaInicioController extends Controller
     public function index()
     {
         $list_subgerencia = SubGerencia::list_subgerencia(9);
+        $subgerenciaId = 9;
         //NOTIFICACIONES
+        // dd($subgerenciaId);
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('interna.index', compact('list_notificacion', 'list_subgerencia'));
+        return view('interna.index', compact('list_notificacion', 'list_subgerencia', 'subgerenciaId'));
 
         /*$list_usuario = Amonestacion::select('users.emailp')->where('amonestacion.fecha','2024-08-28')
                         ->join('users','users.id_usuario','=','amonestacion.id_colaborador')->get();

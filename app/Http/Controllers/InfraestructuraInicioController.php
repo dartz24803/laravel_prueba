@@ -15,9 +15,10 @@ class InfraestructuraInicioController extends Controller
 
     public function index()
     {
+        $subgerenciaId = 10;
         $list_subgerencia = SubGerencia::list_subgerencia(10);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('infraestructura.index', compact('list_notificacion', 'list_subgerencia'));
+        return view('infraestructura.index', compact('list_notificacion', 'list_subgerencia', 'subgerenciaId'));
     }
 }

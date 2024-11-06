@@ -23,16 +23,16 @@ class InicioController extends Controller
     }
     public function index()
     {
+        $subgerenciaId = 0;
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-
+        // dd($subgerenciaId);
         $list_slider_inicio = SliderInicio::get();
         $list_frases = FrasesInicio::where('estado', 1)->get();
         $list_cumple = Usuario::get_list_proximos_cumpleanios();
 
 
         // Accesos a módulos en base a idsedeLaboral
-        // $idSedeLaboral = Usuario::getIdSedeUser();
         $idSedeLaboral = session('usuario')->id_sede_laboral;
         $acceso_tienda = ($idSedeLaboral == 6);
 
@@ -40,7 +40,7 @@ class InicioController extends Controller
         $get_foto = Config::where('descrip_config', 'Foto_Colaborador')
             ->where('estado', 1)
             ->get();
-        return view('inicio', compact('list_notificacion', 'list_cumple', 'get_foto', 'list_frases', 'list_slider_inicio', 'acceso_tienda'));
+        return view('inicio', compact('list_notificacion', 'list_cumple', 'get_foto', 'list_frases', 'list_slider_inicio', 'acceso_tienda', 'subgerenciaId'));
     }
     /*
     public function listar()

@@ -20,9 +20,10 @@ class InicioSeguridadController extends Controller
     }
     public function index()
     {
+        $subgerenciaId = 1;
         $list_subgerencia = SubGerencia::list_subgerencia(1);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        return view('seguridad.inicio_seguridad', compact('list_notificacion', 'list_subgerencia'));
+        return view('seguridad.inicio_seguridad', compact('list_notificacion', 'list_subgerencia', 'subgerenciaId'));
     }
 }
