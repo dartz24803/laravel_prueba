@@ -23,6 +23,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Font;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class ReporteFotograficoController extends Controller
 {
@@ -159,8 +160,7 @@ class ReporteFotograficoController extends Controller
         $this->modeloarchivotmp->where('id', $id)->delete();
     }
 
-    public function Registrar_Reporte_Fotografico(Request $request)
-    {
+    public function Registrar_Reporte_Fotografico(Request $request){
         $data = $this->modeloarchivotmp->where('id_usuario', Session('usuario')->id_usuario)->get();
         //print_r($data);
 
@@ -667,6 +667,55 @@ class ReporteFotograficoController extends Controller
             }
         } else {
             return response()->json(['message' => 'No hay bases con 0 fotos hoy.']);
+        }
+    }
+
+    public function Rotar_Imagen_RF(Request $request){
+        set_time_limit(0);
+        $ftp_server = "lanumerounocloud.com";
+        $ftp_usuario = "intranet@lanumerounocloud.com";
+        $ftp_pass = "Intranet2022@";
+        
+        // Conectar al servidor FTP
+        $con_id = ftp_connect($ftp_server);
+        $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+        ftp_pasv($con_id, true);
+
+        if ((!$con_id) || (!$lr)) {
+            return response()->json(['error' => "No se pudo conectar al servidor FTP"]);
+        } 
+        
+        // Buscar la imagen en la base de datos
+        $list = ReporteFotografico::where('id', $request->id)->first();
+        
+        if (!$list || !$list->foto) {
+            return response()->json(['error' => "Imagen no encontrada"]);
+        }
+
+        // Ruta de la imagen original en el servidor FTP
+        $ftp_ruta = "REPORTE_FOTOGRAFICO/".$list->foto;
+        $local_ruta = storage_path('app/temp_image.jpg');
+
+        // Descargar la imagen al servidor local temporalmente
+        ftp_get($con_id, $local_ruta, $ftp_ruta, FTP_BINARY);
+        // Rotar la imagen con Intervention Image
+        $imagen = Image::make($local_ruta);
+        $imagen->rotate(90); // Rota 90 grados, puedes ajustar este valor
+        $imagen->save($local_ruta);
+
+        // Subir la imagen rotada al FTP
+        $upload = ftp_put($con_id, $ftp_ruta, $local_ruta, FTP_BINARY);
+
+        // Eliminar el archivo local temporal
+        unlink($local_ruta);
+
+        // Cerrar la conexión FTP
+        ftp_close($con_id);
+
+        if ($upload) {
+            return response()->json(['success' => "Imagen rotada y guardada correctamente"]);
+        } else {
+            return response()->json(['error' => "Error al guardar la imagen en el servidor FTP"]);
         }
     }
 }

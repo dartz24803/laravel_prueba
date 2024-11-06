@@ -56,7 +56,9 @@ class ExamenEntrenamiento extends Model
                     ELSE DATE_FORMAT(ee.fecha,'%d/%m/%Y') END AS fecha,CASE WHEN ee.hora_inicio IS NULL THEN '' 
                     ELSE DATE_FORMAT(ee.hora_inicio,'%H:%i:%s') END AS hora_inicio,
                     CASE WHEN ee.hora_fin IS NULL THEN '' 
-                    ELSE DATE_FORMAT(ee.hora_fin,'%H:%i:%s') END AS hora_fin,   
+                    ELSE DATE_FORMAT(ee.hora_fin,'%H:%i:%s') END AS hora_fin,
+                    CASE WHEN ee.hora_fin_real IS NULL THEN '' 
+                    ELSE DATE_FORMAT(ee.hora_fin_real,'%H:%i:%s') END AS hora_fin_real,
                     CASE WHEN ee.fecha_revision IS NULL THEN '' 
                     ELSE ee.nota END AS nota,CASE WHEN ee.fecha_revision IS NULL THEN 'Pendiente' 
                     ELSE (CASE WHEN ee.nota>=14 THEN 'Aprobado' ELSE 'Desaprobado' END) END AS nom_estado,

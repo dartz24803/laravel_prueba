@@ -821,10 +821,10 @@ if($get_id[0]['edicion_perfil']==1){
                                                         <div class="upload mt-4 pr-md-4">
                                                             <input type="file" id="foto" name="foto" class="dropify" data-allowed-file-extensions="png jpg jpeg"
                                                                 data-default-file="
-                                                                <?php if($get_id[0]['foto_nombre']!= ""){
-                                                                    $image_info = get_headers($get_foto[0]['url_config'].$get_id[0]['foto_nombre']);
+                                                                <?php if($get_id[0]['foto']!= ""){
+                                                                    $image_info = get_headers($get_id[0]['foto']);
                                                                         if (strpos($image_info[0], '200') !== false) {
-                                                                            echo $get_foto[0]['url_config'].$get_id[0]['foto_nombre'];
+                                                                            echo $get_id[0]['foto'];
                                                                         }else{
                                                                             echo asset("template/assets/img/200x200.jpg");
                                                                         }

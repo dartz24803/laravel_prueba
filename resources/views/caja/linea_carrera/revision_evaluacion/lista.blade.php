@@ -3,11 +3,12 @@
         <tr class="text-center">
             <th>Orden</th>
             <th width="18%">Puesto Aspirado</th>
-            <th width="14%">Centro de Labores</th>
+            <th width="4%" title="Centro de Labores">CL</th>
             <th width="18%">Colaborador</th>
             <th width="10%">Fecha</th>
             <th width="10%">Hora Inicio</th>
             <th width="10%">Hora Fin</th>
+            <th width="10%">Hora Fin Real</th>
             <th width="8%">Nota</th>
             <th width="8%">Estado</th>
             <th width="4%" class="no-content"></th>
@@ -23,6 +24,7 @@
                 <td>{{ $list->fecha }}</td>
                 <td>{{ $list->hora_inicio }}</td>
                 <td>{{ $list->hora_fin }}</td>
+                <td>{{ $list->hora_fin_real }}</td>
                 <td @if ($list->nota<14) style="color: red;" @endif>{{ $list->nota }}</td>
                 <td>
                     <span class="badge badge-{{ $list->color_estado }}">{{ $list->nom_estado }}</span>

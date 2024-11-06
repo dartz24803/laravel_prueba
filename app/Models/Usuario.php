@@ -1059,7 +1059,7 @@ class Usuario extends Model
                     left join cuenta_bancaria cb on cb.id_usuario=u.id_usuario
                     left join sist_pens_usuario sp on sp.id_usuario=u.id_usuario
                     left join empresas em on em.id_empresa=u.id_empresapl
-                    left join estado_usuario estau on estau.id_estado_usuario=u.estado
+                    left join vw_estado_usuario estau on estau.id_estado_usuario=u.estado
                     left join genero ge on ge.id_genero=u.id_genero
                     left join departamento depart on depart.id_departamento=d.id_departamento
                     left join provincia provic on provic.id_provincia=d.id_provincia
@@ -1201,7 +1201,7 @@ class Usuario extends Model
                     left join ropa_usuario ru on ru.id_usuario=u.id_usuario
                     left join sist_pens_usuario sp on sp.id_usuario=u.id_usuario
                     left join empresas em on em.id_empresa=u.id_empresapl
-                    left join estado_usuario estau on estau.id_estado_usuario=u.estado
+                    left join vw_estado_usuario estau on estau.id_estado_usuario=u.estado
                     left join genero ge on ge.id_genero=u.id_genero
                     left join departamento depart on depart.id_departamento=d.id_departamento
                     left join provincia provic on provic.id_provincia=d.id_provincia
@@ -1336,7 +1336,7 @@ class Usuario extends Model
                     left join ropa_usuario ru on ru.id_usuario=u.id_usuario
                     left join sist_pens_usuario sp on sp.id_usuario=u.id_usuario
                     left join empresas em on em.id_empresa=u.id_empresapl
-                    left join estado_usuario estau on estau.id_estado_usuario=u.estado
+                    left join vw_estado_usuario estau on estau.id_estado_usuario=u.estado
                     left join genero ge on ge.id_genero=u.id_genero
 
                     left join departamento depart on depart.id_departamento=d.id_departamento
@@ -1475,7 +1475,7 @@ class Usuario extends Model
                     LEFT JOIN ropa_usuario ru ON ru.id_usuario=u.id_usuario
                     LEFT JOIN sist_pens_usuario sp ON sp.id_usuario=u.id_usuario
                     LEFT JOIN empresas em ON em.id_empresa=u.id_empresapl
-                    LEFT JOIN estado_usuario estau ON estau.id_estado_usuario=u.estado
+                    LEFT JOIN vw_estado_usuario estau ON estau.id_estado_usuario=u.estado
                     LEFT JOIN genero ge ON ge.id_genero=u.id_genero
                     LEFT JOIN departamento depart ON depart.id_departamento=d.id_departamento
                     LEFT JOIN provincia provic ON provic.id_provincia=d.id_provincia
@@ -1613,7 +1613,7 @@ class Usuario extends Model
                     left join ropa_usuario ru on ru.id_usuario=u.id_usuario
                     left join sist_pens_usuario sp on sp.id_usuario=u.id_usuario
                     left join empresas em on em.id_empresa=u.id_empresapl
-                    left join estado_usuario estau on estau.id_estado_usuario=u.estado
+                    left join vw_estado_usuario estau on estau.id_estado_usuario=u.estado
                     left join genero ge on ge.id_genero=u.id_genero
                     left join departamento depart on depart.id_departamento=d.id_departamento
                     left join provincia provic on provic.id_provincia=d.id_provincia
