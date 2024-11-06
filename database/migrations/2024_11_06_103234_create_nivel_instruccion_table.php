@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('afp', function (Blueprint $table) {
-            $table->id('id_afp');
-            $table->unsignedBigInteger('id_sistema_pensionario');
-            $table->string('cod_afp', 30);
-            $table->string('nom_afp', 150);
+        Schema::create('nivel_instruccion', function (Blueprint $table) {
+            $table->id('id_nivel_instruccion');
+            $table->string('cod_nivel_instruccion',10)->nullable();
+            $table->string('nom_nivel_instruccion',50)->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
@@ -23,7 +22,6 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            $table->foreign('id_sistema_pensionario', 'afp_fk_id_spen')->references('id_sistema_pensionario')->on('sistema_pensionario');
         });
     }
 
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('afp');
+        Schema::dropIfExists('nivel_instruccion');
     }
 };
