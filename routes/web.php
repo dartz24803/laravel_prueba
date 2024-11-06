@@ -389,7 +389,7 @@ Route::controller(ProcesosController::class)->group(function () {
 
 //SOPORTE - ADMINISTRADOR
 Route::controller(SoporteController::class)->group(function () {
-    Route::get('soporte', 'index')->name('soporte');;
+    Route::get('soporte', 'index')->name('soporte');
     Route::get('soporte_ticket/list', 'list_tick')->name('soporte_ticket.list');
     Route::get('soporte_ticket/create', 'create_tick')->name('soporte_ticket.create');
     Route::get('soporte_ticket/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_tick')->name('soporte_ticket.excel');
@@ -420,11 +420,13 @@ Route::controller(SoporteController::class)->group(function () {
     // COMENTARIOS
     Route::post('soporte_comentarios_master/edit/{id}', 'edit_comentarios_master')->name('soporte_comentarios_master.edit');
     Route::delete('soporte_delete_comentarios/{id}', 'destroy_comentarios')->name('soporte_delete_comentarios.destroy');
-    // Route::delete('soporte_ticket/{id}', 'destroy_tick')->name('soporte_ticket.destroy');
-    // Route::get('soporte_ticket_master/edit/{id}', 'edit_tick_master')->name('soporte_ticket_master.edit');
-
     // Activación de cámara
     Route::post('previsualizacion_captura_soporte', 'previsualizacionCaptura')->name('previsualizacion_captura_soporte');
+
+    // Tabla Generales
+    Route::get('tablagenerales', 'index_tg')->name('tablagenerales');
+    Route::get('soporte_tablagenerales/list', 'list_soporte_tablagenerales')->name('soporte_tablagenerales.list');
+    Route::get('soporte_tg/{fec_ini}/{fec_fin}/excel', 'excel_tg')->name('soporte_tg.excel');
 });
 
 // ADMINISTRABLES - TICKETS SOPORTE

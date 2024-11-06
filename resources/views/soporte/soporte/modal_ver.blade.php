@@ -426,7 +426,6 @@
 <script type="text/javascript">
     var ejecutoresMultiples = @json($ejecutoresMultiples);
 
-
     function toggleCierre() {
         var estadoElement = document.getElementById('estado_registro');
         var cierreLabelver = document.getElementById('cierre-labelver');
