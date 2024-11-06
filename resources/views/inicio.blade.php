@@ -376,7 +376,7 @@
             /* Desactiva los eventos de puntero (clics) */
             opacity: 0.5;
             /* Cambia la opacidad para dar un efecto de deshabilitado */
-            cursor: not-allowed;
+            cursor: default;
             /* Cambia el cursor a uno que indique que no es interactivo */
         }
 
