@@ -140,7 +140,7 @@ class SolicitudesUser extends Model
                 and fec_solicitud BETWEEN '".$fecha_revision."' AND '".$fecha_revision_fin."'
                 order by su.fec_reg DESC";
 
-
+        
         $result = DB::select($sql);
 
         // Convertir el resultado a un array

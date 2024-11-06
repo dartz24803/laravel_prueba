@@ -90,13 +90,13 @@ $id_nivel=session('usuario')->id_nivel;
                 <div class="statbox widget box box-shadow">
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs  mb-3 mt-3" id="simpletab" role="tablist">
-                                <li class="nav-item">
+                                <!--<li class="nav-item">
                                     <a class="nav-link active" id="registro-tab" data-toggle="tab" href="#registro" role="tab" aria-controls="home" aria-selected="true" onclick="Buscar_Papeleta_Registro()">Registro</a>
-                                </li>
+                                </li>-->
                             <?php if($permiso_pps==1 || $id_nivel==1 || $id_puesto==19 || $id_puesto==21 || $id_puesto==23 || $id_puesto==40 ||
                                     $id_puesto==10 || $id_puesto==93 || $id_puesto==314 || $id_puesto==315){?>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="aprobacion-tab" data-toggle="tab" href="#aprobacion" role="tab" aria-controls="home" aria-selected="true" onclick="Buscar_Papeleta_Aprobacion()">Aprobación</a>
+                                    <a class="nav-link active" id="aprobacion-tab" data-toggle="tab" href="#aprobacion" role="tab" aria-controls="home" aria-selected="true" onclick="Buscar_Papeleta_Aprobacion()">Aprobación</a>
                                 </li>
                             <?php }?>
                             <?php if($id_nivel==1 || $id_puesto==23 || $id_puesto==36 || $id_puesto==24 || $id_puesto==26 || $id_puesto==128 ||
@@ -127,7 +127,7 @@ $id_nivel=session('usuario')->id_nivel;
         $("#rhumanos").addClass('active');
         $("#hrhumanos").attr('aria-expanded','true');
         $("#papeletas").addClass('active');
-        Buscar_Papeleta_Registro();
+        Buscar_Papeleta_Aprobacion();
     });
 
     function Buscar_Papeleta_Registro(){
@@ -150,7 +150,7 @@ $id_nivel=session('usuario')->id_nivel;
     }
 
     function Buscar_Papeleta_Aprobacion(){
-
+        Cargando();
         var url = "{{ url('Papeletas/Buscar_Papeleta_Aprobacion') }}";
 
         $.ajax({

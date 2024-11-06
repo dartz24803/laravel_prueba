@@ -647,4 +647,34 @@ class PapeletasController extends Controller
                 }
             }
     }
+
+    public function Papeletas_Apps(){
+        //REPORTE BI CON ID
+        $dato['list_subgerencia'] = SubGerencia::list_subgerencia(5);
+        //NOTIFICACIONES
+        $dato['list_notificacion'] = Notificacion::get_list_notificacion();
+        $dato['list_base'] = Base::get_list_base_only();
+        $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida(1);
+        $dato['ultima_papeleta_salida_todo'] = count($this->Model_Solicitudes->get_list_papeletas_salida_uno());
+
+        if(session('usuario')->id_puesto!=23 || session('usuario')->id_puesto!=26 || session('usuario')->id_puesto!=128 ||
+        session('usuario')->id_nivel!=1 || session('usuario')->id_nivel!=21 || session('usuario')->id_nivel!=19 ||
+        session('usuario')->centro_labores!=="CD" || session('usuario')->centro_labores!=="OFC" || session('usuario')->centro_labores!=="AMT"){
+            $dato['list_colaborador_control'] = Usuario::where('centro_labores', session('usuario')->centro_labores)
+                                            ->where('estado', 1)
+                                            ->get();
+        }
+        return view('papeletas.Registro.index', $dato);
+    }
+
+    public function Delete_Papeletas_Salida(){
+            $dato['id_solicitudes_user']= $this->input->post("id_solicitudes_user");
+            
+        $this->Model_Solicitudes::where('id_solicitudes_user', $dato['id_solicitudes_user'])
+        ->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario,
+        ]);
+    }
 }

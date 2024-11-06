@@ -831,34 +831,39 @@ class Usuario extends Model
     {
         if ($area == 41) {
             $sql = "SELECT u.*,  
-                       CONCAT(u.usuario_nombres, ' ', u.usuario_apater) AS nombre_completo, 
-                       a.nom_area, 
-                       g.nom_gerencia, 
-                       p.nom_puesto
-                    FROM users u
-                    LEFT JOIN gerencia g ON g.id_gerencia = u.id_gerencia
-                    LEFT JOIN area a ON a.id_area = u.id_area
-                    LEFT JOIN puesto p ON p.id_puesto = u.id_puesto
-                    WHERE u.estado = 1 
-                    AND p.id_puesto IN (12, 155, 134)";
+                   CONCAT(u.usuario_nombres, ' ', u.usuario_apater) AS nombre_completo, 
+                   a.nom_area, 
+                   g.nom_gerencia, 
+                   p.nom_puesto,
+                   sg.id_sub_gerencia
+                FROM users u
+                LEFT JOIN puesto p ON p.id_puesto = u.id_puesto
+                LEFT JOIN area a ON a.id_area = p.id_area
+                LEFT JOIN sub_gerencia sg ON sg.id_sub_gerencia = a.id_departamento
+                LEFT JOIN gerencia g ON g.id_gerencia = sg.id_gerencia
+                WHERE u.estado = 1 
+                AND p.id_puesto IN (12, 155, 134)";
         } else {
             $sql = "SELECT u.*,  
-               CONCAT(u.usuario_nombres, ' ', u.usuario_apater) AS nombre_completo, 
-                    a.nom_area, 
-                    g.nom_gerencia, 
-                    p.nom_puesto
+                   CONCAT(u.usuario_nombres, ' ', u.usuario_apater) AS nombre_completo, 
+                   a.nom_area, 
+                   g.nom_gerencia, 
+                   p.nom_puesto,
+                   sg.id_sub_gerencia
                 FROM users u
-                LEFT JOIN gerencia g ON g.id_gerencia = u.id_gerencia
-                LEFT JOIN area a ON a.id_area = u.id_area
                 LEFT JOIN puesto p ON p.id_puesto = u.id_puesto
+                LEFT JOIN area a ON a.id_area = p.id_area
+                LEFT JOIN sub_gerencia sg ON sg.id_sub_gerencia = a.id_departamento
+                LEFT JOIN gerencia g ON g.id_gerencia = sg.id_gerencia
                 WHERE u.estado = 1 
                 AND u.id_nivel <> 8 
-                AND u.id_area = '" . $area . "'";
+                AND p.id_area = '" . $area . "'";
         }
 
         $query = DB::select($sql);
         return $query;
     }
+
 
     static function get_list_colaboradort($id_usuario = null, $estado = null)
     {

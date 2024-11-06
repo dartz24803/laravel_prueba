@@ -1,3 +1,56 @@
+<style>
+    .img-user {
+        width: 90px;
+        /* Establece un ancho fijo */
+        height: 90px;
+        /* Establece una altura fija para mantener la forma circular */
+        object-fit: cover;
+        /* Asegura que la imagen cubra el contenedor */
+        border-radius: 50%;
+        /* Hace la imagen redonda */
+        margin-left: auto;
+        /* Margen horizontal automático */
+        margin-right: auto;
+        /* Margen horizontal automático */
+    }
+
+    #div_imagenes_ver {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    #imagenes_container_ver {
+        display: flex;
+        flex-wrap: nowrap;
+        max-width: 600px;
+        /* Ancho máximo fijo para el contenedor */
+        overflow-x: auto;
+        /* Scroll horizontal */
+        gap: 10px;
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+
+    .contenedor-imagen {
+        width: 150px;
+        height: 150px;
+        flex-shrink: 0;
+        /* Evita que el contenedor se encoja */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .imagen-captura {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        /* Mantiene proporciones sin distorsión */
+        border-radius: 5px;
+    }
+</style>
 <form id="formulario_update" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title">Ver soporte: <span id="codigo_texto" class="ml-2">{{ $get_id->codigo }}</span></h5>
@@ -333,10 +386,11 @@
                         @foreach ($comentarios as $comentario)
                         <div class="comment-box" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
                             <div class="row align-items-center">
-                                <div class="form-group col-md-2 text-center">
+                                <div class="form-group text-center mx-3">
                                     <img src="{{ $comentario->foto ? $comentario->foto : asset('img/user-default.jpg') }}"
-                                        alt="User Image" class="img-fluid rounded-circle" style="max-width: 60px;">
+                                        alt="User Image" class="img-fluid rounded-circle img-user" style="max-width: 90px; height: 90px;">
                                 </div>
+
                                 <div class="form-group col-md-10">
                                     <p><strong>Fecha:</strong> {{ $comentario->fec_comentario }}</p>
                                     <p><strong>Responsable:</strong> {{ $comentario->nombre_responsable_solucion ?: 'No designado' }}</p>
@@ -348,17 +402,43 @@
                         @endforeach
                     </div>
                 </div>
+
+
+
+                <div class="row" style="padding-top: 1rem;">
+                    <div class="d-flex justify-content-center" style="max-width: 100%;" id="div_imagenes_ver">
+                        <input type="hidden" id="imagenes_input" name="imagenes" value="">
+                        <div id="imagenes_container_ver" class="carousel-container">
+                            <!-- Las imágenes se añadirán aquí dinámicamente -->
+                            @if ($get_id->archivo || $get_id->archivo2 || $get_id->archivo3 || $get_id->archivo4 || $get_id->archivo5)
+                            @for ($i = 1; $i <= 5; $i++)
+                                @php
+                                $imgUrl=$get_id->{'archivo' . $i};
+                                @endphp
+                                @if ($imgUrl)
+                                <div class="text-center my-2 mx-2 contenedor-imagen" id="contenedor-imagen-{{ $i }}">
+                                    <img src="{{ $imgUrl }}" alt="Captura de soporte" class="img-thumbnail imagen-captura">
+
+                                    <!-- Botón para abrir en nueva pestaña -->
+                                    <button class="btn btn-primary mt-2" onclick="abrirEnNuevaPestana(event, '{{ $imgUrl }}')">Ver</button>
+                                </div>
+                                @endif
+                                @endfor
+                                @endif
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
-
         </div>
-    </div>
 
-    <div class="modal-footer">
-        @csrf
-        @method('PUT')
-        <input type="hidden" id="capturae" name="capturae">
-        <button class="btn btn-primary" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cerrar</button>
-    </div>
+        <div class="modal-footer">
+            @csrf
+            @method('PUT')
+            <input type="hidden" id="capturae" name="capturae">
+            <button class="btn btn-primary" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cerrar</button>
+        </div>
 </form>
 
 
@@ -491,7 +571,11 @@
             estadoLabel.style.display = 'none';
             areaInvolucrada.style.display = 'block';
 
-
         }
     });
+
+    function abrirEnNuevaPestana(event, url) {
+        event.preventDefault(); // Evita que se recargue la página
+        window.open(url, '_blank'); // Abre la URL en una nueva pestaña
+    }
 </script>

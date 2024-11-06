@@ -508,7 +508,6 @@ class SoporteController extends Controller
         if ($con_id && $lr) {
             // Decodificar las URLs de las imágenes desde el request
             $imagenes = json_decode($request->input('imagenes'), true);
-
             // Inicializar un array para almacenar los resultados de la subida
             $resultados = [];
 
@@ -524,6 +523,8 @@ class SoporteController extends Controller
                 $img1 = isset($resultados[0]) ? $resultados[0]['url_ftp'] : '';
                 $img2 = isset($resultados[1]) ? $resultados[1]['url_ftp'] : '';
                 $img3 = isset($resultados[2]) ? $resultados[2]['url_ftp'] : '';
+                $img4 = isset($resultados[3]) ? $resultados[3]['url_ftp'] : '';
+                $img5 = isset($resultados[4]) ? $resultados[4]['url_ftp'] : '';
             }
 
             // Construir los datos de actualización
@@ -548,6 +549,8 @@ class SoporteController extends Controller
                 $data['img1'] = $img1;
                 $data['img2'] = $img2;
                 $data['img3'] = $img3;
+                $data['img4'] = $img4;
+                $data['img5'] = $img5;
             }
 
             // Actualizar la base de datos
@@ -557,7 +560,6 @@ class SoporteController extends Controller
             if (!empty($resultados)) {
                 $this->deleteTempFiles($con_id, "SOPORTE/TEMPORAL/");
             }
-
             // Cerrar conexión FTP
             ftp_close($con_id);
 
@@ -740,8 +742,9 @@ class SoporteController extends Controller
     public function edit_tick_master($id_soporte)
     {
         $id_subgerencia = session('id_subgerenciam');
-
         $get_id = Soporte::getTicketById($id_soporte);
+        $comentarios_user = SoporteSolucion::getComentariosUserBySolucion($get_id->idsoporte_solucion);
+        // dd($comentarios_user);
         $area = DB::table('soporte_asunto')
             ->leftJoin('area', 'soporte_asunto.id_area', '=', 'area.id_area')
             ->where('soporte_asunto.idsoporte_asunto', $get_id->id_asunto)
@@ -759,6 +762,7 @@ class SoporteController extends Controller
         $list_primer_responsable = Usuario::get_list_colaborador_xarea_static(trim($areaIds[0]));
         $list_segundo_responsable = isset($areaIds[1]) ? Usuario::get_list_colaborador_xarea_static(trim($areaIds[1])) : [];
         // Verificar que las listas tengan al menos un elemento antes de acceder al campo `id_sub_gerencia`
+        // dd($list_primer_responsable);
         $primer_id_subgerencia = !empty($list_primer_responsable) ? $list_primer_responsable[0]->id_sub_gerencia : null;
         $segundo_id_subgerencia = !empty($list_segundo_responsable) ? $list_segundo_responsable[0]->id_sub_gerencia : null;
         if ($id_subgerencia == $primer_id_subgerencia) {
@@ -792,7 +796,7 @@ class SoporteController extends Controller
             $list_ejecutores_responsables = $filtered->values();
         }
 
-        return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas', 'id_subgerencia'));
+        return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas', 'id_subgerencia', 'comentarios_user'));
     }
 
     public function update_tick_master(Request $request, $id)
@@ -977,46 +981,48 @@ class SoporteController extends Controller
         if ($con_id && $lr) {
             // Decodificar las URLs de las imágenes desde el request
             $imagenes = json_decode($request->input('imagenes'), true);
-            // dd($imagenes);
-            // $imagenes = $request->file('imagenes'); // Asumiendo que estás recibiendo imágenes en una variable llamada 'imagenes'
-            // Validar que haya entre 3 y 5 imágenes
-            if (!is_array($imagenes) || count($imagenes) < 3 || count($imagenes) > 5) {
-                return response()->json([
-                    'error' => 'Debe cargar al menos 3 fotos y máximo 5 fotos.'
-                ], 400);
-            }
-
-
-
-            // // Inicializar un array para almacenar los resultados
             $resultados = [];
-            // Subida de imágenes
-            $resultados = $this->uploadImages($imagenes, $con_id);
-            if (!$resultados) {
-                return response()->json(['error' => 'No se pudo subir alguna imagen'], 500);
+            // dd($imagenes);
+            // Validar que haya entre 3 y 5 imágenes
+            if ($imagenes && is_array($imagenes)) {
+                $resultados = $this->uploadImages($imagenes, $con_id);
+                if (!$resultados) {
+                    return response()->json(['error' => 'No se pudo subir alguna imagen'], 500);
+                }
+                // Eliminación de archivos temporales en SOPORTE/TEMPORAL
+                $this->deleteTempFiles($con_id, "SOPORTE/TEMPORAL/");
+                // Obtener los campos de imagen
+                $archivo1 = isset($resultados[0]) ? $resultados[0]['url_ftp'] : '';
+                $archivo2 = isset($resultados[1]) ? $resultados[1]['url_ftp'] : '';
+                $archivo3 = isset($resultados[2]) ? $resultados[2]['url_ftp'] : '';
+                $archivo4 = isset($resultados[3]) ? $resultados[3]['url_ftp'] : '';
+                $archivo5 = isset($resultados[4]) ? $resultados[4]['url_ftp'] : '';
             }
-            // Eliminación de archivos temporales en SOPORTE/TEMPORAL
-            $this->deleteTempFiles($con_id, "SOPORTE/TEMPORAL/");
-            ftp_close($con_id);
-            // Obtener los campos de imagen
-            $archivo1 = isset($resultados[0]) ? $resultados[0]['url_ftp'] : '';
-            $archivo2 = isset($resultados[1]) ? $resultados[1]['url_ftp'] : '';
-            $archivo3 = isset($resultados[2]) ? $resultados[2]['url_ftp'] : '';
-            $archivo4 = isset($resultados[3]) ? $resultados[3]['url_ftp'] : '';
-            $archivo5 = isset($resultados[4]) ? $resultados[4]['url_ftp'] : '';
-            // Almacenar la información de soporte en la base de datos
-            SoporteSolucion::where('idsoporte_solucion',  $get_id->idsoporte_solucion)->update([
+            // Subida de imágenes
+
+            $data = [
                 'estado_solucion' => 1,
                 'archivo_solucion' => 1,
                 'estado' => 1,
-                'archivo1' => $archivo1,
-                'archivo2' => $archivo2,
-                'archivo3' => $archivo3,
-                'archivo4' => $archivo4,
-                'archivo5' => $archivo5,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
-            ]);
+            ];
+            if (!empty($resultados)) {
+                $data['archivo1'] = $archivo1;
+                $data['archivo2'] = $archivo2;
+                $data['archivo3'] = $archivo3;
+                $data['archivo4'] = $archivo4;
+                $data['archivo5'] = $archivo5;
+            }
+
+            // Actualizar la base de datos
+            SoporteSolucion::findOrFail($get_id->idsoporte_solucion)->update($data);
+            // Eliminar archivos temporales en SOPORTE/TEMPORAL si se subieron imágenes
+            if (!empty($resultados)) {
+                $this->deleteTempFiles($con_id, "SOPORTE/TEMPORAL/");
+            }
+            // Cerrar conexión FTP
+            ftp_close($con_id);
 
             return response()->json([
                 'success' => 'Imágenes subidas correctamente al servidor FTP',
