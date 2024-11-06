@@ -424,9 +424,9 @@ class Usuario extends Model
         if (isset($id_usuario) && $id_usuario > 0) {
             $sql = "SELECT u.*, p.nom_puesto, m.nom_mes, g.cod_genero, g.nom_genero,a.cod_area,
                     a.nom_area,t.cod_tipo_documento,ge.nom_gerencia,
-                    u.usuario_email,(SELECT st.archivo FROM saludo_temporal st
+                    u.usuario_email/*,(SELECT st.archivo FROM saludo_temporal st
                     WHERE st.id_usuario=u.id_usuario
-                    LIMIT 1) AS archivo_saludo
+                    LIMIT 1) AS archivo_saludo*/
                     FROM users u
                     INNER JOIN puesto p ON p.id_puesto=u.id_puesto 
                     INNER JOIN area a ON a.id_area=p.id_area
