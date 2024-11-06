@@ -215,10 +215,10 @@
 
                         <div id="imagenes_containerver" class="carousel-container">
                             <!-- Las imágenes se añadirán aquí dinámicamente -->
-                            @if ($get_id->img1 || $get_id->img2 || $get_id->img3)
-                            @for ($i = 1; $i <= 3; $i++)
+                            @if ($get_id->img1 || $get_id->img2 || $get_id->img3|| $get_id->img4 || $get_id->img5)
+                            @for ($i = 1; $i <= 5; $i++)
                                 @php
-                                $imgUrl=$get_id->{'img' . $i}; // Accede a img1, img2, img3
+                                $imgUrl=$get_id->{'img' . $i};
                                 @endphp
                                 @if ($imgUrl)
                                 <div class="text-center my-2" id="contenedor-imagen-{{ $i }}"> <!-- Contenedor específico para cada imagen -->
