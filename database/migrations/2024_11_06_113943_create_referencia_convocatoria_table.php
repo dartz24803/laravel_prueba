@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('afp', function (Blueprint $table) {
-            $table->id('id_afp');
-            $table->unsignedBigInteger('id_sistema_pensionario');
-            $table->string('cod_afp', 30);
-            $table->string('nom_afp', 150);
+        Schema::create('referencia_convocatoria', function (Blueprint $table) {
+            $table->id('id_referencia_convocatoria');
+            $table->unsignedBigInteger('id_usuario');
+            $table->unsignedBigInteger('id_referencia_laboral');
+            $table->string('otros',150)->nullable();
             $table->integer('estado')->nullable();
             $table->dateTime('fec_reg')->nullable();
             $table->integer('user_reg')->nullable();
@@ -23,7 +23,8 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            $table->foreign('id_sistema_pensionario', 'afp_fk_id_spen')->references('id_sistema_pensionario')->on('sistema_pensionario');
+            $table->foreign('id_usuario', 'rcon_fk_id_usu')->references('id_usuario')->on('users');
+            $table->foreign('id_referencia_laboral', 'rcon_fk_id_rlab')->references('id_referencia_laboral')->on('referencia_laboral');
         });
     }
 
@@ -32,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('afp');
+        Schema::dropIfExists('referencia_convocatoria');
     }
 };

@@ -18,7 +18,6 @@ class EstudiosGenerales extends Model
         'carrera',
         'centro',
         'documentoe',
-        'documentoe_nombre',
         'estado',
         'fec_reg',
         'user_reg',
