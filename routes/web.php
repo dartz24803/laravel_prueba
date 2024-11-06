@@ -2232,4 +2232,7 @@ Route::controller(MiEquipoController::class)->group(function () {
     // Route::get('MiEquipo/Aprobado_solicitud_papeletas_1', 'Aprobado_solicitud_papeletas_1');
     // Route::get('MiEquipo/Anular_solicitud_papeletas_1', 'Anular_solicitud_papeletas_1');
     // Route::get('MiEquipo/Excel_Estado_Solicitud_Papeletas_Salida_Seguridad/{base}/{estado}/{fec_rev}/{fec_fin}/{num_doc}', 'Excel_Estado_Solicitud_Papeletas_Salida_Seguridad');
+
+    // BRYAN
+    Route::get('MiEquipo/ListaMiequipo', 'ListaAsistenciaColaboradores');
 });
