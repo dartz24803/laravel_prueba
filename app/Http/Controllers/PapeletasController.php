@@ -137,10 +137,10 @@ class PapeletasController extends Controller
 
             if($id_solicitudes_user == null && $dato['parametro']!=1){
                 //USUARIOS PARA NOTIFICACION
-                $get_gerente = Usuario::select('users.id_usuario', 'users.usuario_nombres', 'users.usuario_apater', 'users.usuario_amater', 'users.emailp', 'users.id_gerencia', 'puesto.nom_puesto')
+                $get_gerente = Usuario::select('users.id_usuario', 'users.usuario_nombres', 'users.usuario_apater', 'users.usuario_amater', 'users.emailp'/*, 'users.id_gerencia'*/, 'puesto.nom_puesto')
                         ->leftJoin('puesto', 'puesto.id_puesto', '=', 'users.id_puesto')
                         ->where('users.estado', 1)
-                        ->where('users.id_gerencia', session('usuario')->id_gerencia)
+                        //->where('users.id_gerencia', session('usuario')->id_gerencia)
                         ->where('puesto.nom_puesto', 'LIKE', 'GERENTE %')
                         ->get()
                         ->toArray();

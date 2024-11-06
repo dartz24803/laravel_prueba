@@ -389,7 +389,7 @@ Route::controller(ProcesosController::class)->group(function () {
 
 //SOPORTE - ADMINISTRADOR
 Route::controller(SoporteController::class)->group(function () {
-    Route::get('soporte', 'index')->name('soporte');;
+    Route::get('soporte', 'index')->name('soporte');
     Route::get('soporte_ticket/list', 'list_tick')->name('soporte_ticket.list');
     Route::get('soporte_ticket/create', 'create_tick')->name('soporte_ticket.create');
     Route::get('soporte_ticket/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_tick')->name('soporte_ticket.excel');
@@ -417,9 +417,16 @@ Route::controller(SoporteController::class)->group(function () {
     Route::get('soporte_ticket_master/cancelar/{id}', 'cancelar_tick_master')->name('soporte_ticket_master.cancelar');
     Route::post('soporte_ticket_master/{id}', 'update_tick_master')->name('soporte_ticket_master.update');
     Route::post('soporte_ticket_master/cancel/update/{id}', 'cancel_update_tick_master')->name('soporte_ticket_master.cancelupdate');
-
+    // COMENTARIOS
+    Route::post('soporte_comentarios_master/edit/{id}', 'edit_comentarios_master')->name('soporte_comentarios_master.edit');
+    Route::delete('soporte_delete_comentarios/{id}', 'destroy_comentarios')->name('soporte_delete_comentarios.destroy');
     // Activación de cámara
     Route::post('previsualizacion_captura_soporte', 'previsualizacionCaptura')->name('previsualizacion_captura_soporte');
+
+    // Tabla Generales
+    Route::get('tablagenerales', 'index_tg')->name('tablagenerales');
+    Route::get('soporte_tablagenerales/list', 'list_soporte_tablagenerales')->name('soporte_tablagenerales.list');
+    Route::get('soporte_tg/{fec_ini}/{fec_fin}/excel', 'excel_tg')->name('soporte_tg.excel');
 });
 
 // ADMINISTRABLES - TICKETS SOPORTE
@@ -1817,7 +1824,7 @@ Route::controller(SliderRRHH::class)->group(function () {
     Route::get('/SliderRRHH/{base}', 'Slider_Vista_RRHH')->name('slider_rrhh');
     Route::get('/SliderRRHH', 'Slider_Vista_Tienda')->name('slider_tienda');
     Route::get('/Slider/{method}', 'remap');
-}); 
+});
 //SLIDER INICIO
 Route::controller(InicioAdmController::class)->group(function () {
     Route::get('Inicio/index', 'index');

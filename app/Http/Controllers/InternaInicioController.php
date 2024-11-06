@@ -20,6 +20,7 @@ class InternaInicioController extends Controller
     {
         $list_subgerencia = SubGerencia::list_subgerencia(9);
         //NOTIFICACIONES
+        // dd($subgerenciaId);
         $list_notificacion = Notificacion::get_list_notificacion();
         return view('interna.index', compact('list_notificacion', 'list_subgerencia'));
 

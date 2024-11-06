@@ -35,7 +35,6 @@
     </div>
 
     <div class="modal-body" style="max-height:450px; overflow:auto;">
-        <!-- Nav tabs -->
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" id="tarea-tab" data-toggle="tab" href="#tarea" role="tab"
@@ -389,8 +388,6 @@
             </div>
 
             <div class="tab-pane fade" id="solucion" role="tabpanel" aria-labelledby="solucion-tab">
-
-
                 <!-- Nueva sección para listar comentarios -->
                 <div class="row" id="comment-section" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
@@ -428,7 +425,6 @@
 
 <script type="text/javascript">
     var ejecutoresMultiples = @json($ejecutoresMultiples);
-
 
     function toggleCierre() {
         var estadoElement = document.getElementById('estado_registro');

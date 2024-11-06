@@ -281,4 +281,60 @@ class Soporte extends Model
             'cod_area' => implode('-', $codAreas) // Formato "TI -MTO"
         ];
     }
+
+
+    public static function listTablaGeneralSoporte()
+    {
+        return self::select(
+            'soporte.*',
+            'soporte_elemento.nombre as nombre_elemento',
+            'especialidad.nombre as nombre_especialidad',
+            'soporte_asunto.nombre as nombre_asunto',
+            'sede_laboral.descripcion as nombre_sede',
+            'soporte_nivel.nombre as nombre_ubicacion',
+            'soporte_area_especifica.nombre as nombre_area_especifica',
+            'users.centro_labores as base',
+            'users.usuario_nombres as usuario_nombre',
+            'soporte_motivo_cancelacion.idsoporte_motivo_cancelacion as idsoporte_motivo_cancelacion',
+            DB::raw("
+                CASE 
+                    WHEN soporte.id_area = 0 THEN (
+                        SELECT GROUP_CONCAT(area.nom_area SEPARATOR ', ')
+                        FROM area
+                        WHERE FIND_IN_SET(area.id_area, soporte_asunto.id_area) > 0
+                    )
+                    ELSE area.nom_area
+                END as nombre_area
+            "),
+            DB::raw("
+                CASE 
+                    WHEN responsable.id_usuario IS NULL AND segundo_responsable.id_usuario IS NULL THEN 'SIN ASIGNAR'
+                    WHEN responsable.id_usuario IS NULL THEN CONCAT(segundo_responsable.usuario_nombres, ' ', segundo_responsable.usuario_apater)
+                    WHEN segundo_responsable.id_usuario IS NULL THEN CONCAT(responsable.usuario_nombres, ' ', responsable.usuario_apater)
+                    ELSE CONCAT(responsable.usuario_nombres, ' ', responsable.usuario_apater, ' / ', segundo_responsable.usuario_nombres, ' ', segundo_responsable.usuario_apater)
+                END as nombres_responsables
+            "),
+            DB::raw("
+            CASE 
+                    WHEN soporte_asunto.idsoporte_tipo = 1 THEN 'Requerimiento'
+                    WHEN soporte_asunto.idsoporte_tipo = 2 THEN 'Incidente'
+                    ELSE 'Desconocido'
+                END as tipo_soporte
+            ")
+        )
+            ->leftJoin('especialidad', 'soporte.id_especialidad', '=', 'especialidad.id')
+            ->leftJoin('soporte_elemento', 'soporte.id_elemento', '=', 'soporte_elemento.idsoporte_elemento')
+            ->leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
+            ->leftJoin('sede_laboral', 'soporte.id_sede', '=', 'sede_laboral.id')
+            ->leftJoin('soporte_motivo_cancelacion', 'soporte.idsoporte_motivo_cancelacion', '=', 'soporte_motivo_cancelacion.idsoporte_motivo_cancelacion')
+            ->leftJoin('soporte_nivel', 'soporte.idsoporte_nivel', '=', 'soporte_nivel.idsoporte_nivel')
+            ->leftJoin('soporte_area_especifica', 'soporte.idsoporte_area_especifica', '=', 'soporte_area_especifica.idsoporte_area_especifica')
+            ->leftJoin('area', 'soporte.id_area', '=', 'area.id_area')
+            ->leftJoin('users as responsable', 'soporte.id_responsable', '=', 'responsable.id_usuario')
+            ->leftJoin('users as segundo_responsable', 'soporte.id_segundo_responsable', '=', 'segundo_responsable.id_usuario')
+            ->leftJoin('users', 'soporte.user_reg', '=', 'users.id_usuario')
+            ->where('soporte.estado', 1)
+            ->orderBy('soporte.fec_reg', 'DESC')
+            ->get();
+    }
 }

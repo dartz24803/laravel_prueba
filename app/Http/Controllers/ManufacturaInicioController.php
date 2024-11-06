@@ -15,6 +15,7 @@ class ManufacturaInicioController extends Controller
 
     public function index()
     {
+
         $list_subgerencia = SubGerencia::list_subgerencia(4);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();

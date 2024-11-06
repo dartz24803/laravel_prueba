@@ -1784,18 +1784,4 @@ class Usuario extends Model
         $query = DB::select($sql);
         return $query;
     }
-
-    public static function getIdSedeUser()
-    {
-        $id_usuario = session('usuario')->id_usuario;
-        $query = "SELECT ub.id_sede
-                  FROM users u
-                  LEFT JOIN ubicacion ub ON u.id_centro_labor = ub.id_ubicacion
-                  WHERE u.id_usuario = ? AND u.estado IN (1, 4) AND u.desvinculacion IN (0)";
-
-        // Usar DB::select y obtener el primer resultado
-        $result = DB::select($query, [$id_usuario]);
-        // Comprobar si hay resultados y retornar solo el valor id_sede
-        return $result ? $result[0]->id_sede : null; // Devuelve el id_sede o null si no hay resultados
-    }
 }
