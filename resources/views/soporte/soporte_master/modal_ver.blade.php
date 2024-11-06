@@ -14,7 +14,35 @@
         /* Margen horizontal automático */
     }
 
+    #div_imagenesver {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    #imagenes_containerver {
+        display: flex;
+        overflow-x: auto;
+        /* Habilita el desplazamiento horizontal */
+        white-space: nowrap;
+        /* Evita el salto de línea */
+        padding: 10px;
+        max-width: 100%;
+        gap: 10px;
+        /* Espacio entre imágenes */
+        scrollbar-width: thin;
+        /* Para navegadores que admiten este estilo */
+    }
+
     #div_imagenes_ver {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    #div_imagenesver {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -231,7 +259,37 @@
                     </div>
                 </div>
 
+                <div class="row" id="cancel-row">
+                    <div class="d-flex justify-content-center" style="max-width: 100%;" id="div_imagenesver">
+                        <input type="hidden" id="imagenes_input_ver" name="imagenes_ver" value="">
 
+                        <div id="imagenes_containerver" class="carousel-container">
+                            <!-- Las imágenes se añadirán aquí dinámicamente -->
+                            @if ($get_id->img1 || $get_id->img2 || $get_id->img3|| $get_id->img4 || $get_id->img5)
+                            @for ($i = 1; $i <= 5; $i++)
+                                @php
+                                $imgUrl=$get_id->{'img' . $i}; // Accede a img1, img2, img3
+                                @endphp
+                                @if ($imgUrl)
+                                <div class="text-center my-2" id="contenedor-imagen-{{ $i }}"> <!-- Contenedor específico para cada imagen -->
+                                    <img src="{{ $imgUrl }}" alt="Captura de soporte" class="img-thumbnail" style="max-width: 95%; display: block;">
+
+                                    <!-- Botón para abrir en nueva pestaña -->
+                                    <button class="btn btn-primary mt-2" onclick="abrirEnNuevaPestana(event, '{{ $imgUrl }}')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                            <polyline points="15 3 21 3 21 9"></polyline>
+                                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                                        </svg>
+                                        Ver
+                                    </button>
+                                </div>
+                                @endif
+                                @endfor
+                                @endif
+                        </div>
+                    </div>
+                </div>
 
             </div>
             <div class="tab-pane fade" id="ejecutor" role="tabpanel" aria-labelledby="ejecutor-tab">

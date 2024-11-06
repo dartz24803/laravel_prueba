@@ -1779,9 +1779,16 @@ class Usuario extends Model
 
     public static function get_list_responsable_area($id_area)
     {
-        $sql = "SELECT * FROM users 
-            WHERE estado = 1 AND id_area = $id_area";
-        $query = DB::select($sql);
+        // Consulta modificada con LEFT JOIN para vincular las tablas puesto y area
+        $sql = "SELECT u.* 
+                FROM users u
+                LEFT JOIN puesto p ON p.id_puesto = u.id_puesto
+                LEFT JOIN area a ON a.id_area = p.id_area
+                WHERE u.estado = 1 AND a.id_area = :id_area";
+
+        // Ejecutar la consulta utilizando parámetros para prevenir SQL Injection
+        $query = DB::select($sql, ['id_area' => $id_area]);
+
         return $query;
     }
 }
