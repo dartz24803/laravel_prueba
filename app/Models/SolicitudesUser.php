@@ -68,8 +68,10 @@ class SolicitudesUser extends Model
                 CASE WHEN su.id_motivo IN (1,2) AND su.id_solicitudes_user>7 THEN tr.nom_tramite ELSE su.tramite END AS tramite
                 FROM solicitudes_user su
                 left join users u on su.user_reg=u.id_usuario
-                left join area a on u.id_area=a.id_area
-                left join gerencia g on u.id_gerencia=g.id_gerencia
+                LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                LEFT JOIN area a on a.id_area=p.id_area
+                LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
                 LEFT JOIN destino de ON de.id_destino=su.destino
                 LEFT JOIN tramite tr ON tr.id_tramite=su.tramite
                 where su.estado in (1) and id_solicitudes=2 AND su.id_usuario ='$id_usuario' $buscar
@@ -140,7 +142,7 @@ class SolicitudesUser extends Model
                 and fec_solicitud BETWEEN '".$fecha_revision."' AND '".$fecha_revision_fin."'
                 order by su.fec_reg DESC";
 
-
+        
         $result = DB::select($sql);
 
         // Convertir el resultado a un array
