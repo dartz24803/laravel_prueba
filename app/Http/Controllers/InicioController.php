@@ -32,7 +32,8 @@ class InicioController extends Controller
 
 
         // Accesos a módulos en base a idsedeLaboral
-        $idSedeLaboral = Usuario::getIdSedeUser();
+        // $idSedeLaboral = Usuario::getIdSedeUser();
+        $idSedeLaboral = session('usuario')->id_sede_laboral;
         $acceso_tienda = ($idSedeLaboral == 6);
 
 
