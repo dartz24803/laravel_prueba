@@ -522,14 +522,12 @@ class ColaboradorController extends Controller
 
     public function Mi_Perfil($id_usuario=null){
         if(isset($id_usuario) && $id_usuario > 0){
-            $id_usuario = $id_usuario;
+            $id_usuario= $id_usuario;
         }else{
-            $id_usuario = session('usuario')->id_usuario;
+            $id_usuario= session('usuario')->id_usuario;
         }
         $this->Model_Perfil = new Model_Perfil();
-
-        //$dato['usuario'] = Usuario::get_list_usuario($id_usuario);
-        $dato['get_id'] = Usuario::findOrFail($id_usuario);
+        $dato['usuario'] = Usuario::get_list_usuario($id_usuario);
         $dato['domicilio'] = $this->Model_Perfil->get_id_domicilio_users($id_usuario);
         $dato['datosp_porcentaje'] = $this->Model_Perfil->datosp_porcentaje($id_usuario);
         $dato['gustos_pref'] = $this->Model_Perfil->get_id_gustosp($id_usuario);
