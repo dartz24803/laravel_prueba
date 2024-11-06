@@ -550,15 +550,6 @@ class ColaboradorController extends Controller
         $dato['sist_pensu_porcentaje'] = $this->Model_Perfil->sist_pensu_porcentaje($id_usuario);
         $dato['cuentab_porcentaje'] = $this->Model_Perfil->cuentab_porcentaje($id_usuario);
         $dato['porcentaje'] = Usuario::perfil_porcentaje($id_usuario);
-        if($dato['usuario'][0]['urladm']=="1"){
-            $dato['get_foto'] = Config::where('descrip_config','Foto_Postulante')
-                            ->where('estado', 1)
-                            ->get();
-        }else{
-            $dato['get_foto'] = Config::where('descrip_config','Foto_Colaborador')
-                            ->where('estado', 1)
-                            ->get();
-        }
 
         //REPORTE BI CON ID
         $dato['list_subgerencia'] = SubGerencia::list_subgerencia(5);
