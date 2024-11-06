@@ -1219,4 +1219,40 @@ class SoporteController extends Controller
             return response()->json(['error' => 'No se pudo conectar al servidor FTP'], 500);
         }
     }
+
+
+    public function edit_comentarios_master(Request $request, $id)
+    {
+        // Validación de datos
+        $request->validate([
+            'comentario' => 'required|string|max:250',
+        ]);
+        $comentario = SoporteComentarios::find($id);
+        // dd($comentario);
+        if (!$comentario) {
+            return response()->json(['success' => false, 'message' => 'Comentario no encontrado']);
+        }
+        $comentario->comentario = $request->comentario;
+
+        if ($comentario->save()) {
+            return response()->json(['success' => true, 'message' => 'Comentario actualizado correctamente']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Error al actualizar el comentario']);
+        }
+    }
+
+
+    public function destroy_comentarios($id)
+    {
+        // Buscar el comentario por su ID
+        $comentario = SoporteComentarios::find($id);
+        if (!$comentario) {
+            return response()->json(['success' => false, 'message' => 'Comentario no encontrado']);
+        }
+        if ($comentario->delete()) {
+            return response()->json(['success' => true, 'message' => 'Comentario eliminado correctamente']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Error al eliminar el comentario']);
+        }
+    }
 }

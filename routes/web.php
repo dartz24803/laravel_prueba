@@ -417,6 +417,11 @@ Route::controller(SoporteController::class)->group(function () {
     Route::get('soporte_ticket_master/cancelar/{id}', 'cancelar_tick_master')->name('soporte_ticket_master.cancelar');
     Route::post('soporte_ticket_master/{id}', 'update_tick_master')->name('soporte_ticket_master.update');
     Route::post('soporte_ticket_master/cancel/update/{id}', 'cancel_update_tick_master')->name('soporte_ticket_master.cancelupdate');
+    // COMENTARIOS
+    Route::post('soporte_comentarios_master/edit/{id}', 'edit_comentarios_master')->name('soporte_comentarios_master.edit');
+    Route::delete('soporte_delete_comentarios/{id}', 'destroy_comentarios')->name('soporte_delete_comentarios.destroy');
+    // Route::delete('soporte_ticket/{id}', 'destroy_tick')->name('soporte_ticket.destroy');
+    // Route::get('soporte_ticket_master/edit/{id}', 'edit_tick_master')->name('soporte_ticket_master.edit');
 
     // Activación de cámara
     Route::post('previsualizacion_captura_soporte', 'previsualizacionCaptura')->name('previsualizacion_captura_soporte');
@@ -1817,7 +1822,7 @@ Route::controller(SliderRRHH::class)->group(function () {
     Route::get('/SliderRRHH/{base}', 'Slider_Vista_RRHH')->name('slider_rrhh');
     Route::get('/SliderRRHH', 'Slider_Vista_Tienda')->name('slider_tienda');
     Route::get('/Slider/{method}', 'remap');
-}); 
+});
 //SLIDER INICIO
 Route::controller(InicioAdmController::class)->group(function () {
     Route::get('Inicio/index', 'index');

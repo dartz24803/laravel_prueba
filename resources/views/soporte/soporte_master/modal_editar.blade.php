@@ -1092,10 +1092,8 @@
         if (comentarioInput.style.display === "none" || comentarioInput.style.display === "") {
             comentarioInput.style.display = "block"; // Muestra el textarea
             comentarioTexto.style.display = "none"; // Oculta el texto
-
             // Rellena el textarea con el comentario actual
             comentarioInput.value = comentarioTexto.innerHTML.trim();
-
             // Cambiar el ícono a "guardar"
             svgEditar.setAttribute("onclick", "guardarComentario('" + comentarioId + "')");
             svgEditar.innerHTML = `
@@ -1109,24 +1107,61 @@
     function guardarComentario(comentarioId) {
         var comentarioInput = document.getElementById('comentario-input-' + comentarioId);
         var comentarioTexto = document.getElementById('comentario-texto-' + comentarioId);
-        // Por ejemplo, podrías hacer una solicitud AJAX a tu backend para actualizar el comentario
         var nuevoComentario = comentarioInput.value;
-        // Simulando un guardado exitoso (esto deberías reemplazar con tu lógica)
-        console.log("Guardando comentario: " + nuevoComentario);
-
-        // Cambiar el texto a lo guardado y ocultar el textarea
-        comentarioTexto.innerHTML = nuevoComentario;
-        comentarioInput.style.display = "none"; // Oculta el textarea
-        comentarioTexto.style.display = "block"; // Muestra el texto del comentario
-
-        // Cambiar el ícono de vuelta al ícono de editar
-        var svgEditar = document.getElementById('editar-icon-' + comentarioId);
-        svgEditar.setAttribute("onclick", "editarComentario('" + comentarioId + "')");
-        svgEditar.innerHTML = `
-        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-    `;
+        Swal.fire({
+            title: '¿Realmente desea editar el registro?',
+            text: "El registro será editado",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: `/soporte_comentarios_master/edit/${comentarioId}`,
+                    method: 'POST',
+                    data: {
+                        comentario: nuevoComentario,
+                        _token: '{{ csrf_token() }}' // Incluir token CSRF
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            comentarioTexto.innerHTML = nuevoComentario;
+                            comentarioInput.style.display = "none";
+                            comentarioTexto.style.display = "block";
+                            var svgEditar = document.getElementById('editar-icon-' + comentarioId);
+                            svgEditar.setAttribute("onclick", "editarComentario('" + comentarioId + "')");
+                            svgEditar.innerHTML = `
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        `;
+                            Swal.fire(
+                                'Guardado!',
+                                'El comentario ha sido actualizado.',
+                                'success'
+                            );
+                        } else {
+                            Swal.fire(
+                                'Error',
+                                'No se pudo guardar el comentario. Intenta de nuevo.',
+                                'error'
+                            );
+                        }
+                    },
+                    error: function() {
+                        Swal.fire(
+                            'Error',
+                            'Hubo un problema al guardar el comentario.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
     }
+
+
 
 
     function eliminarComentario(id) {
@@ -1141,18 +1176,37 @@
             padding: '2em'
         }).then((result) => {
             if (result.value) {
-                console.log("##############")
-                document.getElementById('comentario-' + id).parentElement.parentElement.remove(); // Eliminar el comentario visualmente
-                // Notificación de éxito
-                Swal.fire(
-                    'Eliminado!',
-                    'Tu comentario ha sido eliminado.',
-                    'success'
-                );
+                $.ajax({
+                    url: `/soporte_delete_comentarios/${id}`,
+                    method: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}' // Incluye el token CSRF
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            document.getElementById('comentario-' + id).parentElement.parentElement.remove();
+                            Swal.fire(
+                                'Eliminado!',
+                                'Tu comentario ha sido eliminado.',
+                                'success'
+                            );
+                        } else {
+                            Swal.fire(
+                                'Error',
+                                'No se pudo eliminar el comentario. Intenta de nuevo.',
+                                'error'
+                            );
+                        }
+                    },
+                    error: function() {
+                        Swal.fire(
+                            'Error',
+                            'Hubo un problema al eliminar el comentario.',
+                            'error'
+                        );
+                    }
+                });
             }
         });
-
-
-
     }
 </script>
