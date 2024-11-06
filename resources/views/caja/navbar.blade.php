@@ -268,6 +268,9 @@ session('usuario')->id_sede_laboral == 6 )
 
 
 
+
+
+
 @if (session('usuario')->id_nivel == 1 ||
 session('usuario')->id_nivel == 2 ||
 session('usuario')->id_nivel == 7 ||

@@ -521,48 +521,35 @@ class ColaboradorController extends Controller
     protected $Model_Perfil;
 
     public function Mi_Perfil($id_usuario=null){
-
-            if(isset($id_usuario) && $id_usuario > 0){
-                $id_usuario= $id_usuario;
-            }else{
-                $id_usuario= session('usuario')->id_usuario;
-            }
-            $this->Model_Perfil = new Model_Perfil();
-            $dato['usuario'] = Usuario::get_list_usuario($id_usuario);
-            $dato['domicilio'] = $this->Model_Perfil->get_id_domicilio_users($id_usuario);
-
-            $dato['datosp_porcentaje'] = $this->Model_Perfil->datosp_porcentaje($id_usuario);
-            $dato['gustos_pref'] = $this->Model_Perfil->get_id_gustosp($id_usuario);
-            $dato['domiciliou_porcentaje'] = $this->Model_Perfil->domiciliou_porcentaje($id_usuario);
-            $dato['referenciaf_porcentaje'] = $this->Model_Perfil->referenciaf_porcentaje($id_usuario);
-            $dato['datoshu_porcentaje'] = $this->Model_Perfil->datoshu_porcentaje($id_usuario);
-            $dato['contactoeu_porcentaje'] = $this->Model_Perfil->contactoeu_porcentaje($id_usuario);
-            $dato['estudiosgu_porcentaje'] = $this->Model_Perfil->estudiosgu_porcentaje($id_usuario);
-            $dato['oficceu_porcentaje'] = $this->Model_Perfil->oficceu_porcentaje($id_usuario);
-            $dato['idiomau_porcentaje'] = $this->Model_Perfil->idiomau_porcentaje($id_usuario);
-            $dato['cursocu_porcentaje'] = $this->Model_Perfil->cursocu_porcentaje($id_usuario);
-
-            $dato['experiencialaboralu_porcentaje'] = $this->Model_Perfil->experiencialaboralu_porcentaje($id_usuario);
-            $dato['enfermedadesu_porcentaje'] = $this->Model_Perfil->enfermedadesu_porcentaje($id_usuario);
-            $dato['gestacionu_porcentaje'] = $this->Model_Perfil->gestacionu_porcentaje($id_usuario);
-            $dato['alergiasu_porcentaje'] = $this->Model_Perfil->alergiasu_porcentaje($id_usuario);
-            $dato['otrosu_porcentaje'] = $this->Model_Perfil->otrosu_porcentaje($id_usuario);
-            $dato['referenciaconvocatoriau_porcentaje'] = $this->Model_Perfil->referenciaconvocatoriau_porcentaje($id_usuario);
-            $dato['documentacionu_porcentaje'] = $this->Model_Perfil->documentarionu_porcentaje($id_usuario);
-            $dato['ropau_porcentaje'] = $this->Model_Perfil->ropau_porcentaje($id_usuario);
-            $dato['sist_pensu_porcentaje'] = $this->Model_Perfil->sist_pensu_porcentaje($id_usuario);
-            $dato['cuentab_porcentaje'] = $this->Model_Perfil->cuentab_porcentaje($id_usuario);
-
-            $dato['porcentaje'] = Usuario::perfil_porcentaje($id_usuario);
-            if($dato['usuario'][0]['urladm']=="1"){
-                $dato['get_foto'] = Config::where('descrip_config','Foto_Postulante')
-                                ->where('estado', 1)
-                                ->get();
-            }else{
-                $dato['get_foto'] = Config::where('descrip_config','Foto_Colaborador')
-                                ->where('estado', 1)
-                                ->get();
-            }
+        if(isset($id_usuario) && $id_usuario > 0){
+            $id_usuario= $id_usuario;
+        }else{
+            $id_usuario= session('usuario')->id_usuario;
+        }
+        $this->Model_Perfil = new Model_Perfil();
+        $dato['usuario'] = Usuario::get_list_usuario($id_usuario);
+        $dato['domicilio'] = $this->Model_Perfil->get_id_domicilio_users($id_usuario);
+        $dato['datosp_porcentaje'] = $this->Model_Perfil->datosp_porcentaje($id_usuario);
+        $dato['gustos_pref'] = $this->Model_Perfil->get_id_gustosp($id_usuario);
+        $dato['domiciliou_porcentaje'] = $this->Model_Perfil->domiciliou_porcentaje($id_usuario);
+        $dato['referenciaf_porcentaje'] = $this->Model_Perfil->referenciaf_porcentaje($id_usuario);
+        $dato['datoshu_porcentaje'] = $this->Model_Perfil->datoshu_porcentaje($id_usuario);
+        $dato['contactoeu_porcentaje'] = $this->Model_Perfil->contactoeu_porcentaje($id_usuario);
+        $dato['estudiosgu_porcentaje'] = $this->Model_Perfil->estudiosgu_porcentaje($id_usuario);
+        $dato['oficceu_porcentaje'] = $this->Model_Perfil->oficceu_porcentaje($id_usuario);
+        $dato['idiomau_porcentaje'] = $this->Model_Perfil->idiomau_porcentaje($id_usuario);
+        $dato['cursocu_porcentaje'] = $this->Model_Perfil->cursocu_porcentaje($id_usuario);
+        $dato['experiencialaboralu_porcentaje'] = $this->Model_Perfil->experiencialaboralu_porcentaje($id_usuario);
+        $dato['enfermedadesu_porcentaje'] = $this->Model_Perfil->enfermedadesu_porcentaje($id_usuario);
+        $dato['gestacionu_porcentaje'] = $this->Model_Perfil->gestacionu_porcentaje($id_usuario);
+        $dato['alergiasu_porcentaje'] = $this->Model_Perfil->alergiasu_porcentaje($id_usuario);
+        $dato['otrosu_porcentaje'] = $this->Model_Perfil->otrosu_porcentaje($id_usuario);
+        $dato['referenciaconvocatoriau_porcentaje'] = $this->Model_Perfil->referenciaconvocatoriau_porcentaje($id_usuario);
+        $dato['documentacionu_porcentaje'] = $this->Model_Perfil->documentarionu_porcentaje($id_usuario);
+        $dato['ropau_porcentaje'] = $this->Model_Perfil->ropau_porcentaje($id_usuario);
+        $dato['sist_pensu_porcentaje'] = $this->Model_Perfil->sist_pensu_porcentaje($id_usuario);
+        $dato['cuentab_porcentaje'] = $this->Model_Perfil->cuentab_porcentaje($id_usuario);
+        $dato['porcentaje'] = Usuario::perfil_porcentaje($id_usuario);
 
         //REPORTE BI CON ID
         $dato['list_subgerencia'] = SubGerencia::list_subgerencia(5);
@@ -686,16 +673,6 @@ class ColaboradorController extends Controller
             $dato['list_subgerencia'] = SubGerencia::list_subgerencia(5);
             //NOTIFICACIONES
             $dato['list_notificacion'] = Notificacion::get_list_notificacion();
-
-            if($dato['get_id'][0]['urladm']=="1"){
-                $dato['get_foto'] = Config::where('descrip_config','Foto_Postulante')
-                                ->where('estado', 1)
-                                ->get();
-            }else{
-                $dato['get_foto'] = Config::where('descrip_config','Foto_Colaborador')
-                                ->where('estado', 1)
-                                ->get();
-            }
 
             $dato['url_documentacion'] = Config::where('descrip_config','Documentacion_Perfil')
                                 ->where('estado', 1)

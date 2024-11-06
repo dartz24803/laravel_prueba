@@ -1255,4 +1255,175 @@ class SoporteController extends Controller
             return response()->json(['success' => false, 'message' => 'Error al eliminar el comentario']);
         }
     }
+
+
+
+    // TABLAS GENERALES
+    public function index_tg()
+    {
+        $list_subgerencia = SubGerencia::list_subgerencia(9);
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+
+        return view('soporte.tabla_general.index', compact('list_notificacion', 'list_subgerencia'));
+    }
+
+
+    public function adicionarParametro($list_tablageneral_soporte)
+    {
+        $list_tablageneral_soporte = $list_tablageneral_soporte->map(function ($ticket) {;
+            $multirepsonsable = Soporte::getResponsableMultipleByAsunto($ticket->id_asunto);
+            if (($ticket->estado_registro_sr == 3 && $ticket->estado_registro == 3) || ($ticket->estado_registro == 3 && $multirepsonsable == 0)) {
+                $ticket->fecha_completado = (strtotime($ticket->fec_cierre) > strtotime($ticket->fec_cierre_sr))
+                    ? $ticket->fec_cierre
+                    : $ticket->fec_cierre_sr;
+                $ticket->status_ticket = "Completado";
+            } elseif ($ticket->estado_registro_sr == 5 || $ticket->estado_registro == 5) {
+                $ticket->fecha_completado = now();
+                $ticket->status_ticket = "Cancelado";
+            } elseif ($ticket->estado_registro_sr == 1 || $ticket->estado_registro == 1) {
+                $ticket->fecha_completado = now();
+                $ticket->status_ticket = "Por Iniciar";
+            } elseif ($ticket->estado_registro_sr == 4 || $ticket->estado_registro == 4) {
+                $ticket->fecha_completado = now();
+                $ticket->status_ticket = "Stand By";
+            } elseif ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2) {
+                $ticket->fecha_completado = (strtotime($ticket->fec_cierre) > strtotime($ticket->fec_cierre_sr))
+                    ? $ticket->fec_cierre
+                    : $ticket->fec_cierre_sr;
+                $ticket->status_ticket = "En Proceso";
+            } else {
+                // $ticket->status_enproceso = true;
+                $ticket->status_ticket = "En Proceso";
+            }
+
+            return $ticket;
+        });
+        return $list_tablageneral_soporte;
+    }
+
+    public function list_soporte_tablagenerales()
+    {
+        $list_tablageneral_soporte = Soporte::listTablaGeneralSoporte();
+        $list_tablageneral_soporte = $this->adicionarParametro($list_tablageneral_soporte);
+        return view('soporte.tabla_general.lista', compact('list_tablageneral_soporte'));
+    }
+
+    public function excel_tg($fecha_inicio, $fecha_fin)
+    {
+        $list_tablageneral_soporte = Soporte::listTablaGeneralSoporte();
+        $list_tablageneral_soporte = $this->adicionarParametro($list_tablageneral_soporte);
+        // dd($list_tablageneral_soporte);
+        // Creación del archivo Excel
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getStyle("A1:G1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->getStyle("A1:G1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Tabla General Soporte');
+
+        $sheet->setAutoFilter('A1:G1');
+
+        $sheet->getColumnDimension('A')->setWidth(20);
+        $sheet->getColumnDimension('B')->setWidth(20);
+        $sheet->getColumnDimension('C')->setWidth(20);
+        $sheet->getColumnDimension('D')->setWidth(20);
+        $sheet->getColumnDimension('E')->setWidth(20);
+        $sheet->getColumnDimension('F')->setWidth(20);
+        $sheet->getColumnDimension('G')->setWidth(20);
+        $sheet->getColumnDimension('H')->setWidth(20);
+        $sheet->getColumnDimension('I')->setWidth(20);
+        $sheet->getColumnDimension('J')->setWidth(20);
+        $sheet->getColumnDimension('K')->setWidth(20);
+        $sheet->getColumnDimension('L')->setWidth(20);
+        $sheet->getColumnDimension('M')->setWidth(20);
+        $sheet->getColumnDimension('N')->setWidth(20);
+        $sheet->getStyle('A1:N1')->getFont()->setBold(true);
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:N1")->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('C8C8C8');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+        $sheet->getStyle("A1:N1")->applyFromArray($styleThinBlackBorderOutline);
+        // Encabezados de columnas
+        $sheet->setCellValue('A1', 'Código');
+        $sheet->setCellValue('B1', 'Sede Laboral');
+        $sheet->setCellValue('C1', 'Fecha Registro');
+        $sheet->setCellValue('D1', 'Usuario');
+        $sheet->setCellValue('E1', 'Área');
+        $sheet->setCellValue('F1', 'Responsable');
+        $sheet->setCellValue('G1', 'Tipo');
+        $sheet->setCellValue('H1', 'Especialidad');
+        $sheet->setCellValue('I1', 'Elemento');
+        $sheet->setCellValue('J1', 'Asunto');
+        $sheet->setCellValue('K1', 'F.Vencimiento');
+        $sheet->setCellValue('L1', 'F.Completado');
+        $sheet->setCellValue('M1', 'F.R.U');
+        $sheet->setCellValue('N1', 'Estado');
+
+        $contador = 1;
+        foreach ($list_tablageneral_soporte as $soporte) {
+            $contador = 1;
+            foreach ($list_tablageneral_soporte as $soporte) {
+                $contador++;
+
+                $sheet->setCellValue("A{$contador}", $soporte->codigo);
+                $sheet->setCellValue("B{$contador}", $soporte->base);
+
+                // Fecha Registro
+                if ($soporte->fec_reg) {
+                    $sheet->setCellValue("C{$contador}", Date::PHPToExcel($soporte->fec_reg));
+                    $sheet->getStyle("C{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                } else {
+                    $sheet->setCellValue("C{$contador}", '-'); // Valor por defecto si es nulo
+                }
+
+                $sheet->setCellValue("D{$contador}", $soporte->usuario_nombre);
+                $sheet->setCellValue("E{$contador}", $soporte->nombre_area);
+                $sheet->setCellValue("F{$contador}", $soporte->nombres_responsables);
+                $sheet->setCellValue("G{$contador}", $soporte->tipo_soporte);
+                $sheet->setCellValue("H{$contador}", $soporte->nombre_especialidad);
+                $sheet->setCellValue("I{$contador}", $soporte->nombre_elemento);
+                $sheet->setCellValue("J{$contador}", $soporte->nombre_asunto);
+                if ($soporte->fec_vencimiento) {
+                    $sheet->setCellValue("K{$contador}", Date::PHPToExcel($soporte->fec_vencimiento));
+                    $sheet->getStyle("K{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                } else {
+                    $sheet->setCellValue("K{$contador}", '-');
+                }
+                if ($soporte->fecha_completado) {
+                    $sheet->setCellValue("L{$contador}", Date::PHPToExcel($soporte->fecha_completado));
+                    $sheet->getStyle("L{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                } else {
+                    $sheet->setCellValue("L{$contador}", '-');
+                }
+                if ($soporte->fec_reg) {
+                    $sheet->setCellValue("M{$contador}", Date::PHPToExcel($soporte->fec_reg));
+                    $sheet->getStyle("M{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                } else {
+                    $sheet->setCellValue("M{$contador}", '-');
+                }
+                $sheet->setCellValue("N{$contador}", $soporte->status_ticket);
+            }
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Lista Soporte ' . date('d-m-Y');
+
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+    }
 }

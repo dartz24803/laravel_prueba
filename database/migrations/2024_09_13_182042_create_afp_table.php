@@ -23,8 +23,7 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-
-            $table->foreign('id_sistema_pensionario', 'afp_fk_id_sistema_pensionario')->references('id_sistema_pensionario')->on('sistema_pensionario');
+            $table->foreign('id_sistema_pensionario', 'afp_fk_id_spen')->references('id_sistema_pensionario')->on('sistema_pensionario');
         });
     }
 

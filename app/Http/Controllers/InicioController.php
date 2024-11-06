@@ -25,14 +25,14 @@ class InicioController extends Controller
     {
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-
+        // dd($subgerenciaId);
         $list_slider_inicio = SliderInicio::get();
         $list_frases = FrasesInicio::where('estado', 1)->get();
         $list_cumple = Usuario::get_list_proximos_cumpleanios();
 
 
         // Accesos a módulos en base a idsedeLaboral
-        $idSedeLaboral = Usuario::getIdSedeUser();
+        $idSedeLaboral = session('usuario')->id_sede_laboral;
         $acceso_tienda = ($idSedeLaboral == 6);
 
 

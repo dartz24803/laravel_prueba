@@ -156,14 +156,16 @@
                 session('usuario')->id_puesto == 39 ||
                 session('usuario')->id_puesto == 80 ||
                 session('usuario')->id_puesto == 92
-            ) {
-                $equipoo2 = " <br>• Mi equipo gerencial";
-            } else {
-                $equipoo2 = "";
-            } ?>
+            )  ?>
             <li id="equipoo">
-                <a href="{{ url('MiEquipo/ListaMiequipo') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Mi equipo <?= $equipoo2 ?>">
+                <a href="{{ url('MiEquipo/ListaMiequipo') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                     <p class="romperpalabra"><span id="icono_active2"></span> Mi Equipo</p>
+                </a>
+            </li>
+
+            <li id="asist_colaborador">
+                <a href="{{url('MiEquipo/ListaMiequipo') }}>" data-toggle="tooltip" data-placement="right" data-html="true" title="• Asistencia <br>• Inconsistencias <br>• Ausencias <br>• Dotación <br>• Tardanza">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Asistencia Colaboradores</p>
                 </a>
             </li>
         <?php } ?>

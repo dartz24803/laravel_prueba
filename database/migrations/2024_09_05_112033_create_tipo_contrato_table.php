@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            $table->foreign('id_situacion_laboral', 'tipo_contrato_fk_id_situacion_laboral')->references('id_situacion_laboral')->on('situacion_laboral');
+            $table->foreign('id_situacion_laboral', 'tcon_fk_id_slab')->references('id_situacion_laboral')->on('situacion_laboral');
         });
     }
 

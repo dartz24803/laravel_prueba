@@ -14,7 +14,6 @@ class ConociOffice extends Model
 
     protected $fillable = [
         'id_usuario',
-        'id_nivel_conocimiento',
         'nl_excel',
         'nl_word',
         'nl_ppoint',

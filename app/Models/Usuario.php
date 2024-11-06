@@ -424,9 +424,9 @@ class Usuario extends Model
         if (isset($id_usuario) && $id_usuario > 0) {
             $sql = "SELECT u.*, p.nom_puesto, m.nom_mes, g.cod_genero, g.nom_genero,a.cod_area,
                     a.nom_area,t.cod_tipo_documento,ge.nom_gerencia,
-                    u.usuario_email,(SELECT st.archivo FROM saludo_temporal st
+                    u.usuario_email/*,(SELECT st.archivo FROM saludo_temporal st
                     WHERE st.id_usuario=u.id_usuario
-                    LIMIT 1) AS archivo_saludo
+                    LIMIT 1) AS archivo_saludo*/
                     FROM users u
                     INNER JOIN puesto p ON p.id_puesto=u.id_puesto 
                     INNER JOIN area a ON a.id_area=p.id_area
@@ -1059,7 +1059,7 @@ class Usuario extends Model
                     left join cuenta_bancaria cb on cb.id_usuario=u.id_usuario
                     left join sist_pens_usuario sp on sp.id_usuario=u.id_usuario
                     left join empresas em on em.id_empresa=u.id_empresapl
-                    left join estado_usuario estau on estau.id_estado_usuario=u.estado
+                    left join vw_estado_usuario estau on estau.id_estado_usuario=u.estado
                     left join genero ge on ge.id_genero=u.id_genero
                     left join departamento depart on depart.id_departamento=d.id_departamento
                     left join provincia provic on provic.id_provincia=d.id_provincia
@@ -1201,7 +1201,7 @@ class Usuario extends Model
                     left join ropa_usuario ru on ru.id_usuario=u.id_usuario
                     left join sist_pens_usuario sp on sp.id_usuario=u.id_usuario
                     left join empresas em on em.id_empresa=u.id_empresapl
-                    left join estado_usuario estau on estau.id_estado_usuario=u.estado
+                    left join vw_estado_usuario estau on estau.id_estado_usuario=u.estado
                     left join genero ge on ge.id_genero=u.id_genero
                     left join departamento depart on depart.id_departamento=d.id_departamento
                     left join provincia provic on provic.id_provincia=d.id_provincia
@@ -1336,7 +1336,7 @@ class Usuario extends Model
                     left join ropa_usuario ru on ru.id_usuario=u.id_usuario
                     left join sist_pens_usuario sp on sp.id_usuario=u.id_usuario
                     left join empresas em on em.id_empresa=u.id_empresapl
-                    left join estado_usuario estau on estau.id_estado_usuario=u.estado
+                    left join vw_estado_usuario estau on estau.id_estado_usuario=u.estado
                     left join genero ge on ge.id_genero=u.id_genero
 
                     left join departamento depart on depart.id_departamento=d.id_departamento
@@ -1475,7 +1475,7 @@ class Usuario extends Model
                     LEFT JOIN ropa_usuario ru ON ru.id_usuario=u.id_usuario
                     LEFT JOIN sist_pens_usuario sp ON sp.id_usuario=u.id_usuario
                     LEFT JOIN empresas em ON em.id_empresa=u.id_empresapl
-                    LEFT JOIN estado_usuario estau ON estau.id_estado_usuario=u.estado
+                    LEFT JOIN vw_estado_usuario estau ON estau.id_estado_usuario=u.estado
                     LEFT JOIN genero ge ON ge.id_genero=u.id_genero
                     LEFT JOIN departamento depart ON depart.id_departamento=d.id_departamento
                     LEFT JOIN provincia provic ON provic.id_provincia=d.id_provincia
@@ -1613,7 +1613,7 @@ class Usuario extends Model
                     left join ropa_usuario ru on ru.id_usuario=u.id_usuario
                     left join sist_pens_usuario sp on sp.id_usuario=u.id_usuario
                     left join empresas em on em.id_empresa=u.id_empresapl
-                    left join estado_usuario estau on estau.id_estado_usuario=u.estado
+                    left join vw_estado_usuario estau on estau.id_estado_usuario=u.estado
                     left join genero ge on ge.id_genero=u.id_genero
                     left join departamento depart on depart.id_departamento=d.id_departamento
                     left join provincia provic on provic.id_provincia=d.id_provincia
@@ -1779,23 +1779,16 @@ class Usuario extends Model
 
     public static function get_list_responsable_area($id_area)
     {
-        $sql = "SELECT * FROM users 
-            WHERE estado = 1 AND id_area = $id_area";
-        $query = DB::select($sql);
+        // Consulta modificada con LEFT JOIN para vincular las tablas puesto y area
+        $sql = "SELECT u.* 
+                FROM users u
+                LEFT JOIN puesto p ON p.id_puesto = u.id_puesto
+                LEFT JOIN area a ON a.id_area = p.id_area
+                WHERE u.estado = 1 AND a.id_area = :id_area";
+
+        // Ejecutar la consulta utilizando parámetros para prevenir SQL Injection
+        $query = DB::select($sql, ['id_area' => $id_area]);
+
         return $query;
-    }
-
-    public static function getIdSedeUser()
-    {
-        $id_usuario = session('usuario')->id_usuario;
-        $query = "SELECT ub.id_sede
-                  FROM users u
-                  LEFT JOIN ubicacion ub ON u.id_centro_labor = ub.id_ubicacion
-                  WHERE u.id_usuario = ? AND u.estado IN (1, 4) AND u.desvinculacion IN (0)";
-
-        // Usar DB::select y obtener el primer resultado
-        $result = DB::select($query, [$id_usuario]);
-        // Comprobar si hay resultados y retornar solo el valor id_sede
-        return $result ? $result[0]->id_sede : null; // Devuelve el id_sede o null si no hay resultados
     }
 }

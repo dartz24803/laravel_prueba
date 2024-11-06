@@ -575,7 +575,7 @@ class Model_Perfil extends Model
         (h.sueldo+h.bono) as total,m.nom_motivo
 
         from historico_colaborador h
-        left join estado_usuario e on e.id_estado_usuario=h.estado
+        left join vw_estado_usuario e on e.id_estado_usuario=h.estado
         left join situacion_laboral s on s.id_situacion_laboral=h.id_situacion_laboral
         left join empresas em on em.id_empresa=h.id_empresa
         left join historico_estado_colaborador he on h.id_usuario=he.id_usuario and h.fec_inicio=he.fec_inicio and he.estado=1
@@ -588,11 +588,11 @@ class Model_Perfil extends Model
 
     function get_list_estado_usuario($id_estado_usuario=null){
         if(isset($id_estado_usuario) && $id_estado_usuario > 0){
-            $sql = "select * from estado_usuario where id_estado_usuario =".$id_estado_usuario;
+            $sql = "select * from vw_estado_usuario where id_estado_usuario =".$id_estado_usuario;
         }
         else
         {
-            $sql = "select * from estado_usuario where id_estado_usuario<>2";
+            $sql = "select * from vw_estado_usuario where id_estado_usuario<>2";
         }
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);

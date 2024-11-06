@@ -87,47 +87,47 @@
                             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                         </svg>
                         @if (count($list_notificacion) > 0)
-                            <span class="badge badge-success"></span>
+                        <span class="badge badge-success"></span>
                         @endif
                     </a>
                     <div class="dropdown-menu position-absolute" aria-labelledby="notificationDropdown">
                         <div class="notification-scroll">
                             @if (count($list_notificacion) > 0)
-                                @foreach ($list_notificacion as $list)
-                                    <div class="dropdown-item">
-                                        <a
-                                            onclick="Update_Notificacion_Leido('{{ $list->id_notificacion }}','{{ $list->id_tipo }}');">
-                                            <div class="media">
-                                                {!! $list->icono !!}
-                                                <div class="media-body">
-                                                    <div class="data-info">
-                                                        <h6 class="">{{ $list->mensaje . ' ' . $list->solicitante }}
-                                                        </h6>
-                                                        <p class="">{{ $list->fecha }}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                @endforeach
-                            @else
-                                <div class="dropdown-item">
+                            @foreach ($list_notificacion as $list)
+                            <div class="dropdown-item">
+                                <a
+                                    onclick="Update_Notificacion_Leido('{{ $list->id_notificacion }}','{{ $list->id_tipo }}');">
                                     <div class="media">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            class="feather feather-slash">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07">
-                                            </line>
-                                        </svg>
+                                        {!! $list->icono !!}
                                         <div class="media-body">
                                             <div class="data-info">
-                                                <h6 class="">Usted no tiene notificaciones nuevas.</h6>
+                                                <h6 class="">{{ $list->mensaje . ' ' . $list->solicitante }}
+                                                </h6>
+                                                <p class="">{{ $list->fecha }}</p>
                                             </div>
                                         </div>
                                     </div>
+                                </a>
+                            </div>
+                            @endforeach
+                            @else
+                            <div class="dropdown-item">
+                                <div class="media">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        class="feather feather-slash">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07">
+                                        </line>
+                                    </svg>
+                                    <div class="media-body">
+                                        <div class="data-info">
+                                            <h6 class="">Usted no tiene notificaciones nuevas.</h6>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
                             @endif
                         </div>
                     </div>
@@ -155,22 +155,23 @@
                                     alt="avatar">
                                 <div class="media-body">
                                     <h5>{{ session('usuario')->usuario_nombres }}
-                                        {{ session('usuario')->usuario_apater }}</h5>
+                                        {{ session('usuario')->usuario_apater }}
+                                    </h5>
                                 </div>
                             </div>
                         </div>
 
                         <?php if (session('usuario')->induccion != 0) { ?>
-                        <div class="dropdown-item">
-                            <a href="{{ url('ColaboradorController/Mi_Perfil/' . session('usuario')->id_usuario) }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg><span>Mi Perfil</span>
-                            </a>
-                        </div>
+                            <div class="dropdown-item">
+                                <a href="{{ url('ColaboradorController/Mi_Perfil/' . session('usuario')->id_usuario) }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg><span>Mi Perfil</span>
+                                </a>
+                            </div>
                         <?php } ?>
                         <div class="dropdown-item">
                             <a href="{{ route('DestruirSesion') }}">
@@ -536,7 +537,6 @@
 
         <!--  BEGIN SIDEBAR  -->
         <div class="sidebar-wrapper sidebar-theme">
-
             <nav id="sidebar">
                 <ul class="navbar-nav theme-brand flex-row  text-center">
                     <li id="sidebar_logo1" class="nav-item theme-logo text-center">
@@ -595,39 +595,39 @@
                         || session('usuario')->id_puesto == 83 || session('usuario')->id_puesto == 86 ||
                         /* session('usuario')->calendario_l == "SI" || $id_usuario == 857 ||*/ session('usuario')->id_puesto == 195
                     ) { ?>
-                    <li class="menu" id="calendario_logistico">
-                        <a href="javascript:void(0);" id="hcalendario_logistico" class="dropdown-toggle">
-                            <div class="">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2">
-                                    </rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                <span id="icono_active"></span>
-                                <span> Calendario Logístico</span>
-                            </div>
-                        </a>
-                    </li>
+                        <li class="menu" id="calendario_logistico">
+                            <a href="javascript:void(0);" id="hcalendario_logistico" class="dropdown-toggle">
+                                <div class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2">
+                                        </rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    <span id="icono_active"></span>
+                                    <span> Calendario Logístico</span>
+                                </div>
+                            </a>
+                        </li>
                     <?php } ?>
                     <?php if (/*$directorio == 1 ||*/session('usuario')->id_nivel == 1) { ?>
-                    <li class="menu" id="contactos">
-                        <a href="javascript:void(0);" id="hcontacto" class="dropdown-toggle">
-                            <div class="">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin">
-                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                    <circle cx="12" cy="10" r="3"></circle>
-                                </svg>
-                                <span id="icono_active"></span>
-                                <span> Contactos</span>
-                            </div>
-                        </a>
-                    </li>
+                        <li class="menu" id="contactos">
+                            <a href="javascript:void(0);" id="hcontacto" class="dropdown-toggle">
+                                <div class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                    <span id="icono_active"></span>
+                                    <span> Contactos</span>
+                                </div>
+                            </a>
+                        </li>
                     <?php } ?>
 
                     @yield('navbar')

@@ -20,7 +20,9 @@ class BiReporteDepartamentoController extends Controller
         }
 
         $id_puesto = session('usuario')->id_puesto;
-        $list_reportes = BiReporte::getByAreaDestino($id_area, $id_puesto);
+        $id_centro_labor = session('usuario')->id_centro_labor;
+        // dd($id_centro_labor);
+        $list_reportes = BiReporte::getByAreaDestino($id_area, $id_puesto, $id_centro_labor);
 
         // Asignar el valor de $nominicio basado en $id_subgerencia
         switch ($id_subgerencia) {

@@ -29,7 +29,6 @@ class ExperienciaLaboral extends Model
         'nom_referencia_labores',
         'num_contacto',
         'certificado',
-        'certificado_nombre',
         'estado',
         'fec_reg',
         'user_reg',
