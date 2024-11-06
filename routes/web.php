@@ -2233,6 +2233,16 @@ Route::controller(MiEquipoController::class)->group(function () {
     // Route::get('MiEquipo/Anular_solicitud_papeletas_1', 'Anular_solicitud_papeletas_1');
     // Route::get('MiEquipo/Excel_Estado_Solicitud_Papeletas_Salida_Seguridad/{base}/{estado}/{fec_rev}/{fec_fin}/{num_doc}', 'Excel_Estado_Solicitud_Papeletas_Salida_Seguridad');
 
-    // BRYAN
-    Route::get('MiEquipo/ListaMiequipo', 'ListaAsistenciaColaboradores');
+});
+
+
+use App\Http\Controllers\AsistenciaColaboradoresController;
+
+Route::controller(AsistenciaColaboradoresController::class)->group(function () {
+    Route::get('AsistenciaColaboradores/ListaAsistenciaColaboradores', 'ListaAsistenciaColaboradores');
+    Route::get('asistencia_colaborador', 'index_asistencia')->name('asistencia_colaborador');
+    Route::get('incosistencia_colaborador', 'index_inconsistencia')->name('incosistencia_colaborador');
+    Route::get('ausencias_colaborador', 'index_ausencias')->name('ausencias_colaborador');
+    Route::get('dotacion_colaborador', 'index_dotacion')->name('dotacion_colaborador');
+    Route::get('tardanza_colaborador', 'index_tardanza')->name('tardanza_colaborador');
 });

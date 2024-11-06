@@ -581,16 +581,4 @@ class MiEquipoController extends Controller
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
     }
-
-
-
-    // BRYAN - ASISTENCIA COLABORADORES
-    public function ListaAsistenciaColaboradores()
-    {
-        //REPORTE BI CON ID
-        $list_subgerencia = SubGerencia::list_subgerencia(5);
-        //NOTIFICACIONES
-        $list_notificacion = Notificacion::get_list_notificacion();
-        return view('rrhh.Mi_equipo.index', compact('list_subgerencia', 'list_notificacion'));
-    }
 }

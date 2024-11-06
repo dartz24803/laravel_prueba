@@ -53,11 +53,11 @@ class AccesoReportes extends Model
         WHERE a.estado=1
         and (
             (Session::get('usuario')->id_nivel <> 8) AND
-            (a.acceso<>'' and CONCAT(',', a.acceso, ',') LIKE CONCAT('%,', '".Session::get('usuario')->id_puesto."', ',%')) OR
-            (a.acceso_base<>'' and CONCAT(',', a.acceso_base, ',') LIKE CONCAT('%,', '".Session::get('usuario')->centro_labores."', ',%')) OR
-            (a.acceso_area<>'' and CONCAT(',', a.acceso_area, ',') LIKE CONCAT('%,', '".Session::get('usuario')->centro_laboresid_area."', ',%')) OR
-            (a.acceso_gerencia<>'' and CONCAT(',', a.acceso_gerencia, ',') LIKE CONCAT('%,', '".Session::get('usuario')->id_gerencia."', ',%')) OR
-            (a.acceso_nivel<>'' and CONCAT(',', a.acceso_nivel, ',') LIKE CONCAT('%,', '".$nivel_jerarquico."', ',%'))
+            (a.acceso<>'' and CONCAT(',', a.acceso, ',') LIKE CONCAT('%,', '" . Session::get('usuario')->id_puesto . "', ',%')) OR
+            (a.acceso_base<>'' and CONCAT(',', a.acceso_base, ',') LIKE CONCAT('%,', '" . Session::get('usuario')->centro_labores . "', ',%')) OR
+            (a.acceso_area<>'' and CONCAT(',', a.acceso_area, ',') LIKE CONCAT('%,', '" . Session::get('usuario')->centro_laboresid_area . "', ',%')) OR
+            (a.acceso_gerencia<>'' and CONCAT(',', a.acceso_gerencia, ',') LIKE CONCAT('%,', '" . Session::get('usuario')->id_gerencia . "', ',%')) OR
+            (a.acceso_nivel<>'' and CONCAT(',', a.acceso_nivel, ',') LIKE CONCAT('%,', '" . $nivel_jerarquico . "', ',%'))
         )";
 
         $result = DB::select($query);

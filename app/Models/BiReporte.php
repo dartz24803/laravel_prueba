@@ -51,15 +51,22 @@ class BiReporte extends Model
 
     public static function getByAreaDestino($id_area_destino, $id_puesto, $id_centro_labor)
     {
-        return self::select('acceso_bi_reporte.*')
+        // Construir la consulta base
+        $query = self::select('acceso_bi_reporte.*')
             ->join('bi_puesto_acceso', 'acceso_bi_reporte.id_acceso_bi_reporte', '=', 'bi_puesto_acceso.id_acceso_bi_reporte')
             ->where('acceso_bi_reporte.id_area_destino', $id_area_destino)
             ->where('acceso_bi_reporte.estado', 1)
             ->where('acceso_bi_reporte.actividad', 1)
             ->where('acceso_bi_reporte.estado_valid', 1)
-            ->where('bi_puesto_acceso.id_puesto', $id_puesto)
-            ->whereRaw("FIND_IN_SET(?, acceso_bi_reporte.filtro_ubicaciones) > 0", [$id_centro_labor]) // Filtrado por id_centro_labor en filtro_ubicaciones
-            ->get();
+            ->where('bi_puesto_acceso.id_puesto', $id_puesto);
+
+        // Añadir condición `FIND_IN_SET` solo si `filtro_ubicaciones` no está vacío
+        $query->where(function ($subQuery) use ($id_centro_labor) {
+            $subQuery->where('acceso_bi_reporte.filtro_ubicaciones', '=', '')
+                ->orWhereRaw("FIND_IN_SET(?, acceso_bi_reporte.filtro_ubicaciones) > 0", [$id_centro_labor]);
+        });
+
+        return $query->get();
     }
 
 
