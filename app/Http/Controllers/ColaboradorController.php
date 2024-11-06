@@ -674,16 +674,6 @@ class ColaboradorController extends Controller
             //NOTIFICACIONES
             $dato['list_notificacion'] = Notificacion::get_list_notificacion();
 
-            if($dato['get_id'][0]['urladm']=="1"){
-                $dato['get_foto'] = Config::where('descrip_config','Foto_Postulante')
-                                ->where('estado', 1)
-                                ->get();
-            }else{
-                $dato['get_foto'] = Config::where('descrip_config','Foto_Colaborador')
-                                ->where('estado', 1)
-                                ->get();
-            }
-
             $dato['url_documentacion'] = Config::where('descrip_config','Documentacion_Perfil')
                                 ->where('estado', 1)
                                 ->get();
