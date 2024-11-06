@@ -251,6 +251,7 @@
         </div>
     </div>
     <script src="{{ asset('template/docs/js/jquery-3.2.1.min.js') }}"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/igorlino/elevatezoom-plus/1.1.6/src/jquery.ez-plus.js"></script>
 
     <link href="{{ asset('template/fileinput/css/fileinput.min.css') }}" rel="stylesheet">
     <script src="{{ asset('template/fileinput/js/fileinput.min.js') }}"></script>
