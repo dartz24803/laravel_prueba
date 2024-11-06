@@ -235,12 +235,8 @@
 
             </div>
             <div class="tab-pane fade" id="ejecutor" role="tabpanel" aria-labelledby="ejecutor-tab">
-
-
                 <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
-
-
                         <div id="area-involucradaver">
                             @foreach ($list_areas_involucradas as $index => $area_involucrada)
                             <!-- Sección para mostrar Responsable -->
@@ -432,13 +428,13 @@
 
             </div>
         </div>
-
-        <div class="modal-footer">
-            @csrf
-            @method('PUT')
-            <input type="hidden" id="capturae" name="capturae">
-            <button class="btn btn-primary" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cerrar</button>
-        </div>
+    </div>
+    <div class="modal-footer">
+        @csrf
+        @method('PUT')
+        <input type="hidden" id="capturae" name="capturae">
+        <button class="btn btn-primary" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cerrar</button>
+    </div>
 </form>
 
 
