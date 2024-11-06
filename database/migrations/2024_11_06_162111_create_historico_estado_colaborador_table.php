@@ -16,6 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_historico_colaborador');
             $table->unsignedBigInteger('id_usuario');
             $table->date('fec_inicio')->nullable();
+            $table->integer('estado_inicio_colaborador')->nullable();
+            $table->date('fec_fin')->nullable();
             $table->integer('estado_fin_colaborador')->nullable();
             $table->integer('id_motivo_cese')->nullable();
             $table->text('observacion')->nullable();
