@@ -49,7 +49,7 @@ class BiReporte extends Model
         'fec_eli',
     ];
 
-    public static function getByAreaDestino($id_area_destino, $id_puesto)
+    public static function getByAreaDestino($id_area_destino, $id_puesto, $id_centro_labor)
     {
         return self::select('acceso_bi_reporte.*')
             ->join('bi_puesto_acceso', 'acceso_bi_reporte.id_acceso_bi_reporte', '=', 'bi_puesto_acceso.id_acceso_bi_reporte')
@@ -58,8 +58,24 @@ class BiReporte extends Model
             ->where('acceso_bi_reporte.actividad', 1)
             ->where('acceso_bi_reporte.estado_valid', 1)
             ->where('bi_puesto_acceso.id_puesto', $id_puesto)
+            ->whereRaw("FIND_IN_SET(?, acceso_bi_reporte.filtro_ubicaciones) > 0", [$id_centro_labor]) // Filtrado por id_centro_labor en filtro_ubicaciones
             ->get();
     }
+
+
+
+
+    // public static function getByAreaDestino($id_area_destino, $id_puesto)
+    // {
+    //     return self::select('acceso_bi_reporte.*')
+    //         ->join('bi_puesto_acceso', 'acceso_bi_reporte.id_acceso_bi_reporte', '=', 'bi_puesto_acceso.id_acceso_bi_reporte')
+    //         ->where('acceso_bi_reporte.id_area_destino', $id_area_destino)
+    //         ->where('acceso_bi_reporte.estado', 1)
+    //         ->where('acceso_bi_reporte.actividad', 1)
+    //         ->where('acceso_bi_reporte.estado_valid', 1)
+    //         ->where('bi_puesto_acceso.id_puesto', $id_puesto)
+    //         ->get();
+    // }
 
     // public static function getByAreaDestino($id_area_destino)
     // {
