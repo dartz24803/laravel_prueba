@@ -2070,6 +2070,22 @@ Route::controller(ContadorVisitasController::class)->group(function () {
     Route::post('ContadorVisitas/Visualizar_Insert_Contador_Visitas', 'Visualizar_Insert_Contador_Visitas');
 });
 
+use App\Http\Controllers\ReclutamientoController;
+Route::controller(ReclutamientoController::class)->group(function () {
+    Route::get('Reclutamiento/index', 'Reclutamiento');
+    Route::post('Reclutamiento/Buscador_Reclutamiento', 'Buscador_Reclutamiento');
+    Route::get('Reclutamiento/Modal_Reclutamiento', 'Modal_Reclutamiento');
+    Route::post('Reclutamiento/Buscar_Puesto_Area/{id_area}/{t}', 'Buscar_Puesto_Area');
+    Route::post('Reclutamiento/Insert_Reclutamiento', 'Insert_Reclutamiento');
+    Route::get('Reclutamiento/Modal_Update_Reclutamiento/{id}', 'Modal_Update_Reclutamiento');
+    Route::post('Reclutamiento/Insert_Reclutamiento_Reclutado', 'Insert_Reclutamiento_Reclutado');
+    Route::post('Reclutamiento/List_Reclutamiento_Reclutado', 'List_Reclutamiento_Reclutado');
+    Route::post('Reclutamiento/Delete_Reclutado', 'Delete_Reclutado');
+    Route::post('Reclutamiento/Update_Reclutamiento', 'Update_Reclutamiento');
+    Route::post('Reclutamiento/Delete_Reclutamiento', 'Delete_Reclutamiento');
+    Route::get('Reclutamiento/Modal_Reclutamiento_Reclutado', 'Modal_Reclutamiento_Reclutado');
+    Route::post('Reclutamiento/Delete_Reclutamiento_Detalle', 'Delete_Reclutamiento_Detalle');
+});
 
 
 
