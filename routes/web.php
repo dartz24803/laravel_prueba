@@ -2246,4 +2246,11 @@ Route::controller(AsistenciaColaboradoresController::class)->group(function () {
     Route::get('ausencias_colaborador', 'index_ausencias')->name('ausencias_colaborador');
     Route::get('dotacion_colaborador', 'index_dotacion')->name('dotacion_colaborador');
     Route::get('tardanza_colaborador', 'index_tardanza')->name('tardanza_colaborador');
+
+
+    Route::post('asistencia_colaborador/list', 'list_asistencia_colaborador')->name('asistencia_colaborador.list');
+    Route::post('ausencia_colaborador/list', 'list_ausencia_colaborador')->name('ausencia_colaborador.list');
+    Route::post('tardanza_colaborador/list', 'list_tardanza_colaborador')->name('tardanza_colaborador.list');
+    Route::post('dotacion_colaborador/list', 'list_dotacion_colaborador')->name('dotacion_colaborador.list');
+    Route::post('inconsistencias_colaborador/list', 'list_inconsistencias_colaborador')->name('inconsistencias_colaborador.list');
 });
