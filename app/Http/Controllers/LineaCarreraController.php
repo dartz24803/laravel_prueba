@@ -232,37 +232,6 @@ class LineaCarreraController extends Controller
             
                 $mail->CharSet = 'UTF-8';
                 $mail->send();
-
-                SolicitudPuesto::findOrFail($id)->update([
-                    'estado_s' => $request->estado,
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario
-                ]);
-
-                if($request->estado=="2"){
-                    Entrenamiento::create([
-                        'id_solicitud_puesto' => $id,
-                        'fecha_inicio' => now(),
-                        'fecha_fin' => date('Y-m-d', strtotime('+'.$request->diase.' days')),
-                        'estado_e' => 1,
-                        'estado' => 1,
-                        'fec_reg' => now(),
-                        'user_reg' => session('usuario')->id_usuario,
-                        'fec_act' => now(),
-                        'user_act' => session('usuario')->id_usuario
-                    ]);
-
-                    DB::connection('sqlsrv')->statement('EXEC usp_web_upt_rol_usuario_intranet ?,?,?,?,?,?,?,?', [
-                        $get_id->usuario_nombres,
-                        $get_id->usuario_apater,
-                        $get_id->usuario_amater,
-                        $get_id->num_doc,
-                        $get_id->perfil_infosap,
-                        $get_id->id_usuario,
-                        $get_id->id_puesto_aspirado,
-                        $get_id->id_base
-                    ]);
-                }
             }catch(Exception $e) {
                 echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
             }

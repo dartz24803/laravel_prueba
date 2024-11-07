@@ -20,6 +20,7 @@ if($get_id[0]['edicion_perfil']==1){
     .GFG {
         display: none;
     }
+
     #familia_tabla{
             overflow-x: hidden;
     }
@@ -136,8 +137,6 @@ if($get_id[0]['edicion_perfil']==1){
         height: 500;
     }
 
-</style>
-<style>
     .switch.s-outline[class*="s-outline-"] .slider:before {
         bottom: 1px;
         left: 1px;
@@ -146,13 +145,13 @@ if($get_id[0]['edicion_perfil']==1){
         color: #7f7f7f;
         box-shadow: 0 1px 15px 1px rgba(52, 40, 104, 0.25);
     }
+
     .switch.s-icons .slider {
         width: 48px;
         height: 25px;
         border-color: #7f7f7f;
     }
 </style>
-
 
 <div id="loading-screen" style="display:none">
     <img src="{{ asset('img/spinning-circles.svg') }}">
@@ -165,13 +164,13 @@ if($get_id[0]['edicion_perfil']==1){
                     <div class="row">
 
                         <?php if(session('usuario')->id_nivel=="1" ||
-                                session('usuario')->id_puesto=="21" ||
-                                session('usuario')->id_puesto=="278" ||
-                                session('usuario')->id_puesto=="279" ||
-                                session('usuario')->id_puesto=="22" ||
-                                session('usuario')->id_nivel=="2" ||
-                                session('usuario')->id_puesto=="133" ||
-                                session('usuario')->id_puesto=="39" || session('usuario')->id_puesto=="209" || session('usuario')->id_puesto=="310"){ ?>
+                        session('usuario')->id_puesto=="21" ||
+                        session('usuario')->id_puesto=="278" ||
+                        session('usuario')->id_puesto=="279" ||
+                        session('usuario')->id_puesto=="22" ||
+                        session('usuario')->id_nivel=="2" ||
+                        session('usuario')->id_puesto=="133" ||
+                        session('usuario')->id_puesto=="39" || session('usuario')->id_puesto=="209" || session('usuario')->id_puesto=="310"){ ?>
                             <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
                                 <form id="formulario_datos_laborales" class="section general-info">
                                     <input name="id_usuariodl" type="hidden" class="form-control" id="id_usuariodl" value="<?php echo $get_id[0]['id_usuario']; ?>">
@@ -331,193 +330,36 @@ if($get_id[0]['edicion_perfil']==1){
                                     </div>
                                 </form>
                             </div>
+
                             <?php if (session('usuario')->id_nivel=="1" ||
                             session('usuario')->id_puesto=="21" || session('usuario')->id_puesto=="278" || session('usuario')->id_puesto=="279" || session('usuario')->id_puesto=="22" ||
                             session('usuario')->id_puesto=="19" || session('usuario')->id_puesto=="209" || session('usuario')->id_puesto=="310" || session('usuario')->id_puesto==277 ||
                             session('usuario')->id_puesto=="133" || (session('usuario')->id_usuario=="86" && preg_match('/^B[01]/', $get_id[0]['centro_labores']))) { ?>
                                 <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
                                     <form id="formulario_datos_planilla" class="section general-info">
-                                        <input name="id_usuariodl" type="hidden" class="form-control" id="id_usuariodl" value="<?php echo $get_id[0]['id_usuario']; ?>">
                                         <div class="info">
-                                            <div class="chico">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <h6 class="">Datos Planilla</h6>
-                                                    </div>
-                                                    <div class="col">
-                                                        <div class="col-md-12 text-right mb-5" id="btn_planilla">
-                                                            @csrf
-                                                            <a title="Agregar Dato Planilla" class="btn btn-danger" title="Registrar" onclick="Valida_Planilla_Activa('<?php echo $get_id[0]['id_usuario']; ?>')" >
-                                                                Agregar
-                                                            </a>
-                                                            <!-- Boton modal nuevo dato planilla-->
-                                                            <a style="display:none" id="btn_registrar_planilla" class="btn btn-danger" title="Registrar" data-toggle="modal" data-target="#ModalRegistro"
-                                                                app_reg="{{ url('ColaboradorController/Modal_Dato_Planilla/' . $get_id[0]['id_usuario'] . '/' . count($list_datos_planilla)) }}">
-                                                            </a>
-                                                        </div>
-                                                    </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <h6 style="margin-bottom: 0px !important;">Datos Planilla</h6>
+                                                </div>
+                                                <div class="col text-sm-right text-center">
+                                                    @csrf
+                                                    <a title="Agregar Dato Planilla" 
+                                                    class="btn btn-danger" title="Registrar" 
+                                                    onclick="Valida_Planilla_Activa('{{ $get_id[0]['id_usuario'] }}')">
+                                                        Agregar
+                                                    </a>
+                                                    <!-- Boton modal nuevo dato planilla-->
+                                                    <a style="display:none" id="btn_registrar_planilla" class="btn btn-danger" title="Registrar" data-toggle="modal" data-target="#ModalRegistro"
+                                                        app_reg="{{ url('ColaboradorController/Modal_Dato_Planilla/' . $get_id[0]['id_usuario']) }}">
+                                                    </a>
                                                 </div>
                                             </div>
-
-                                            <div class="row">
-                                                <div class="col-lg-11 mx-auto">
-                                                    <div class="edu-section">
-                                                        <div class="row" id="datosplanilla">
-                                                            <div class="col-md-12">
-                                                                <div class="col-md-12 row">
-                                                                    <div class="col-md-1">
-                                                                        <div class="form-group">
-                                                                            <label for="estado">Estado</label></br>
-                                                                            <?php if(count($list_datos_planilla)>0){?>
-                                                                                <label style="color:black"><b><?php echo $list_datos_planilla[0]['estado_colaborador'];?></b></label>
-                                                                            <?php }  ?>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <div class="form-group">
-                                                                            <label for="id_situacion_laboral">Situación&nbsp;Laboral</label></br>
-                                                                            <?php if(count($list_datos_planilla)>0){
-                                                                                foreach($list_situacion_laboral as $list){
-                                                                                    if($get_id[0]['id_situacion_laboral'] == $list['id_situacion_laboral']){ ?>
-                                                                                    <label nowrap style="color:black"><b><?php echo $list['nom_situacion_laboral'];?></b></label>
-                                                                            <?php } } } ?>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <div class="form-group">
-                                                                            <label>Fecha Inicio:</label></br>
-                                                                            <label style="color:black"><b><?php if($get_id[0]['ini_funciones']!="0000-00-00" && count($list_datos_planilla)>0){ echo $get_id[0]['inicio_funciones'];}; ?></b></label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-5">
-                                                                        <div class="form-group" id="memprepl">
-                                                                            <?php if($get_id[0]['id_situacion_laboral']==2 && count($list_datos_planilla)>0){ ?>
-                                                                            <label>Empresa</label></br>
-                                                                            <?php foreach($list_empresa as $list){
-                                                                            if($get_id[0]['id_empresapl'] == $list['id_empresa']){ ?>
-
-                                                                            <label style="color:black"><b><?php echo $list['nom_empresa'];?></b></label>
-                                                                            <?php } } ?>
-                                                                            <?php } ?>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <div class="form-group" id="memprepl">
-                                                                            <?php if(isset($get_id[0]['id_situacion_laboral']) && $get_id[0]['id_situacion_laboral']==2 && count($list_datos_planilla)>0){ ?>
-                                                                            <label>Régimen</label></br>
-                                                                            <?php foreach($list_regimen as $list){
-                                                                            if($get_id[0]['id_regimen'] == $list['id_regimen']){ ?>
-
-                                                                            <label style="color:black"><b><?php echo $list['nom_regimen'];?></b></label>
-                                                                            <?php } } ?>
-                                                                            <?php } ?>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            
+                                            <div class="row" id="parte_superior_pl">
                                             </div>
 
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="table-responsive" id="mddatoplanilla" style="max-width:100%; overflow:auto;">
-                                                        <?php if(count($list_datos_planilla)>0) { ?>
-                                                        <table class="table" id="tableMain3">
-                                                            <thead>
-                                                                <tr class="tableheader">
-                                                                    <th>Estado</th>
-                                                                    <th>Situacion Laboral</th>
-                                                                    <th>Fecha Inicio</th>
-                                                                    <th>Fecha Fin</th>
-                                                                    <th>Empresa</th>
-                                                                    <th>Días Laborados</th>
-                                                                    <th>Sueldo</th>
-                                                                    <th>Bono</th>
-                                                                    <th>Total</th>
-                                                                    <th>Observaciones</th>
-                                                                    <th>Motivo Cese</th>
-                                                                    <th>Acciones</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <?php $i=0; foreach($list_datos_planilla as $list){$i=$i+1; ?>
-                                                                <tr>
-                                                                    <!--<td><?php echo $list['nom_estado_usuario'] ; ?></td>-->
-                                                                    <td><?php echo $list['estado_colaborador'] ; ?></td>
-                                                                    <td><?php echo $list['nom_situacion_laboral'] ; ?></td>
-                                                                    <td><?php echo $list['fecha_inicio']; ?></td>
-                                                                    <td><?php echo $list['fecha_fin'] ; ?></td>
-                                                                    <td><?php if($list['id_empresa']!=0){ echo $list['nom_empresa']; } ?></td>
-                                                                    <td><?php
-
-                                                                        if($list['fec_fin']=="0000-00-00"){
-                                                                            $datetime1 = date_create(date("Y-m-d"));
-                                                                        }else{
-                                                                            $datetime1 = date_create($list['fec_fin']);
-                                                                        }
-                                                                        $datetime2 = date_create($list['fec_inicio']);
-                                                                        $interval = date_diff($datetime2, $datetime1);
-                                                                        if(($interval->format('%R%a')+1)>0){ ?>
-
-                                                                            <span class="badge badge-success"><?php echo (($interval->format('%R%a'))+1)." Día(s)"; ?></span>
-                                                                        <?php } ?>
-                                                                    </td>
-                                                                    <td nowrap><?php echo "S/. ".$list['sueldo']; ?></td>
-                                                                    <td nowrap><?php echo "S/. ".$list['bono']; ?></td>
-                                                                    <td nowrap><?php echo "S/. ".$list['total']; ?></td>
-                                                                    <td><?php echo nl2br($list['observacion']) ; ?></td>
-                                                                    <td><?php echo $list['nom_motivo'];
-                                                                    if($list['archivo_cese']!=""){?>
-                                                                        <a style="cursor:pointer;display: -webkit-inline-box;" title="Carta" data-toggle="modal" data-target="#Modal_IMG" data-imagen="<?php echo $url_cese[0]['url_config'].$list['archivo_cese']; ?>" data-title="Archivo de Motivo de Cese" >
-                                                                            <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/><path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/><path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
-                                                                        </a>
-                                                                    <?php }
-                                                                    ?></td>
-                                                                    <td nowrap>
-                                                                        <?php if($list['estado']!=3){ ?>
-                                                                            <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="<?= url('ColaboradorController/Modal_Update_Dato_Planilla') ?>/<?php echo $list['id_historico_colaborador']; ?>/<?php echo $list['id_historico_estado_colaborador'] ?>" >
-                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
-                                                                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                                                                                </svg>
-                                                                            </a>
-                                                                        <?php }else{ ?>
-                                                                            <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="<?= url('ColaboradorController/Modal_Update_Dato_Planilla_Finalizado') ?>/<?php echo $list['id_historico_colaborador']; ?>/<?php echo $list['id_historico_estado_colaborador'] ?>" >
-                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
-                                                                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                                                                                </svg>
-                                                                            </a>
-                                                                        <?php } ?>
-                                                                        <!--<a href="javascript:void(0);"  title="Observación" data-toggle="modal" data-target="#ModalUpdate" app_elim="<?= url('ColaboradorController/Agregar_Observacion') ?>/<?php echo $list['id_historico_colaborador']; ?>/<?php echo $get_id[0]['id_usuario']; ?>" >
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-circle"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                                                                        </a>-->
-
-                                                                        <a href="javascript:void(0);"  title="Documentos" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg_metalikas="<?= url('ColaboradorController/Modal_Documentos_Dato_Planilla') ?>/<?php echo $list['id_historico_colaborador'] ?>/<?php echo $get_id[0]['id_usuario']; ?>" >
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder-plus"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg>
-                                                                        </a>
-                                                                        <?php if($list['id_situacion_laboral']==2){?>
-                                                                            <a href="<?= url('ColaboradorController/Contrato') ?>/<?php echo $list['id_historico_colaborador']; ?>/<?php echo $get_id[0]['id_usuario']; ?>" title="Contrato" target="_blank" >
-                                                                                <svg id="Capa_1" enable-background="new 0 0 512 512" height="24" viewBox="0 0 512 512" width="24" xmlns="http://www.w3.org/2000/svg"><g><g><path d="m459.265 466.286c0 25.248-20.508 45.714-45.806 45.714h-314.918c-25.298 0-45.806-20.467-45.806-45.714v-420.572c0-25.247 20.508-45.714 45.806-45.714h196.047c9.124 0 17.874 3.622 24.318 10.068l130.323 130.34c6.427 6.427 10.036 15.137 10.036 24.217z" fill="#f9f8f9"></path><path d="m129.442 512h-30.905c-25.291 0-45.802-20.47-45.802-45.719v-420.562c0-25.249 20.511-45.719 45.802-45.719h30.905c-25.291 0-45.802 20.47-45.802 45.719v420.561c0 25.25 20.511 45.72 45.802 45.72z" fill="#e3e0e4"></path><path d="m459.265 164.623v16.73h-119.46c-34.12 0-61.873-27.763-61.873-61.883v-119.47h16.658c9.117 0 17.874 3.626 24.312 10.065l130.328 130.339c6.429 6.428 10.035 15.143 10.035 24.219z" fill="#e3e0e4"></path><path d="m456.185 qu150.448h-116.38c-17.101 0-30.967-13.866-30.967-30.978v-116.369c3.719 1.679 7.129 4.028 10.065 6.964l130.328 130.339c2.936 2.935 5.275 6.335 6.954 10.044z" fill="#dc4955"></path><path d="m440.402 444.008h-368.804c-22.758 0-41.207-18.45-41.207-41.207v-150.407c0-22.758 18.45-41.207 41.207-41.207h368.805c22.758 0 41.207 18.45 41.207 41.207v150.406c0 22.759-18.45 41.208-41.208 41.208z" fill="#dc4955"></path><path d="m97.352 444.008h-25.754c-22.757 0-41.207-18.451-41.207-41.207v-150.407c0-22.757 18.451-41.207 41.207-41.207h25.755c-22.757 0-41.207 18.451-41.207 41.207v150.406c-.001 22.757 18.449 41.208 41.206 41.208z" fill="#c42430"></path><g fill="#f9f8f9"><path d="m388.072 277.037c4.267 0 7.726-3.458 7.726-7.726s-3.459-7.726-7.726-7.726h-47.247c-4.267 0-7.726 3.458-7.726 7.726v116.573c0 4.268 3.459 7.726 7.726 7.726s7.726-3.458 7.726-7.726v-51.664h35.768c4.267 0 7.726-3.458 7.726-7.726s-3.459-7.726-7.726-7.726h-35.768v-41.731z"></path><path d="m258.747 262.891h-32.276c-2.052 0-4.019.816-5.468 2.268s-2.262 3.42-2.258 5.472v.101.004 111.99c0 .637.085 1.252.231 1.844v.035c.007 2.049.829 4.012 2.283 5.456 1.447 1.437 3.405 2.243 5.443 2.243h.029c.974-.004 23.943-.093 33.096-.251 15.515-.272 29.33-7.303 38.904-19.798 8.875-11.583 13.763-27.443 13.763-44.657 0-38.703-21.599-64.707-53.747-64.707zm.811 113.71c-5.75.1-17.382.173-25.155.213-.043-12.743-.122-37.877-.122-49.343 0-9.584-.044-35.933-.068-49.127h24.535c28.234 0 38.294 25.442 38.294 49.254-.001 28.467-15.415 48.617-37.484 49.003z"></path></g></g><path d="m146.336 261.444h-32.967c-6.746 0-7.102 2.938-7.102 7.099v118.397c0 3.921 3.178 7.099 7.099 7.099 3.92 0 7.099-3.177 7.099-7.099v-44.368c7.698-.044 19.916-.107 25.868-.107 22.698 0 41.165-18.173 41.165-40.511-.001-22.337-18.464-40.51-41.162-40.51zm0 66.824c-5.913 0-17.952.061-25.679.106-.044-7.914-.107-20.39-.107-26.419 0-5.066-.036-18.095-.061-26.313h25.846c14.618 0 26.967 12.049 26.967 26.313.001 14.264-12.349 26.313-26.966 26.313z" fill="#f9f8f9"></path></g></svg>
-                                                                            </a>
-                                                                        <?php }
-                                                                         if($i==1){?>
-                                                                            <a title="Eliminar" onclick="Delete_Dato_Planilla('<?php echo $list['id_historico_colaborador']; ?>','<?php echo $get_id[0]['id_usuario']; ?>','<?php echo $list['id_historico_estado_colaborador'] ?>','<?php echo $list['eliminar'] ?>')" id="delete" role="button">
-                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
-                                                                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                                                    <line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>
-                                                                                </svg>
-                                                                            </a>
-                                                                        <?php }?>
-                                                                    </td>
-                                                                </tr>
-                                                                <?php } ?>
-                                                            </tbody>
-                                                        </table>
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
+                                            <div class="row" id="parte_inferior_pl">
                                             </div>
                                         </div>
                                     </form>
@@ -552,6 +394,7 @@ if($get_id[0]['edicion_perfil']==1){
                                     </div>
                                 </form>
                             </div>
+
                             <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
                                 <form id="form_accesos" class="section general-info">
                                     <div class="info">
@@ -618,13 +461,14 @@ if($get_id[0]['edicion_perfil']==1){
                                     </div>
                                 </form>
                             </div>
+
                             <?php if(session('usuario')->id_nivel=="1" ||
-                                    session('usuario')->id_puesto=="21" ||
-                                    session('usuario')->id_puesto=="278" ||
-                                    session('usuario')->id_puesto=="279" ||
-                                    session('usuario')->id_nivel=="2" ||
-                                    session('usuario')->id_puesto=="133" ||
-                                    session('usuario')->id_puesto=="39"){ ?>
+                            session('usuario')->id_puesto=="21" ||
+                            session('usuario')->id_puesto=="278" ||
+                            session('usuario')->id_puesto=="279" ||
+                            session('usuario')->id_nivel=="2" ||
+                            session('usuario')->id_puesto=="133" ||
+                            session('usuario')->id_puesto=="39"){ ?>
                                 <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
                                     <form id="formulario_adjuntar_documentacionrrhh" class="section general-info">
                                     <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
@@ -778,772 +622,363 @@ if($get_id[0]['edicion_perfil']==1){
                             </div>
                         <?php } ?>
 
-                            <?php if(session('usuario')->id_nivel==1 || session('usuario')->id_nivel==2 || session('usuario')->id_puesto==133 || session('usuario')->id_puesto==209){ ?>
-                                <div class="col-xl-12 col-lg-12 col-md-12">
-                                    <div style="display: inline-flex;float: right;">
-                                        <label class="switch s-icons s-outline s-outline-success">
-                                            <input type="checkbox" <?php if($get_id[0]['edicion_perfil']==0){echo "checked";} ?>  value="1" id="habilitar_edicion" name="habilitar_edicion" onchange="Habilitar_Edicion_Perfil('<?php echo $get_id[0]['id_usuario']; ?>');" href="javascript:void(0);">
-                                            <span class="slider round"></span>
-                                        </label>Habilitar edición&nbsp;
-                                        <a onclick="Confirmar_Revision_Perfil('<?php echo $get_id[0]['id_usuario']; ?>');" style="margin-top: -10px;margin-bottom: 11px;display:<?php if($get_id[0]['edicion_perfil']==1 && $get_id[0]['perf_revisado']==0){echo "block;";}else{echo "none;";}?>" class="btn btn-success" title="Confirmar revisión">
-                                            Confirmar revisión
-                                        </a>
-                                        <span class="badge badge-success" style="height: fit-content;display:<?php if($get_id[0]['perf_revisado']==1 && $get_id[0]['edicion_perfil']==1){echo "block;";}else{echo "none;";}?>">Revisado</span>
+                        <?php if(session('usuario')->id_nivel==1 || session('usuario')->id_nivel==2 || session('usuario')->id_puesto==133 || session('usuario')->id_puesto==209){ ?>
+                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                <div style="display: inline-flex;float: right;">
+                                    <label class="switch s-icons s-outline s-outline-success">
+                                        <input type="checkbox" <?php if($get_id[0]['edicion_perfil']==0){echo "checked";} ?>  value="1" id="habilitar_edicion" name="habilitar_edicion" onchange="Habilitar_Edicion_Perfil('<?php echo $get_id[0]['id_usuario']; ?>');" href="javascript:void(0);">
+                                        <span class="slider round"></span>
+                                    </label>Habilitar edición&nbsp;
+                                    <a onclick="Confirmar_Revision_Perfil('<?php echo $get_id[0]['id_usuario']; ?>');" style="margin-top: -10px;margin-bottom: 11px;display:<?php if($get_id[0]['edicion_perfil']==1 && $get_id[0]['perf_revisado']==0){echo "block;";}else{echo "none;";}?>" class="btn btn-success" title="Confirmar revisión">
+                                        Confirmar revisión
+                                    </a>
+                                    <span class="badge badge-success" style="height: fit-content;display:<?php if($get_id[0]['perf_revisado']==1 && $get_id[0]['edicion_perfil']==1){echo "block;";}else{echo "none;";}?>">Revisado</span>
+                                </div>
+                            </div>
+                        <?php } ?>
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="edatos" enctype="multipart/form-data" class="section general-info">
+                                <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
+                                <input type="hidden" id="foto_nombre" name="foto_nombre" value="<?php echo $get_id[0]['foto_nombre'] ?>">
+
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6 class="">Datos Personales</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5">
+                                                    <?php if($editable==0){?>
+                                                    <a onclick="GDatosP();" class="btn btn-primary" title="Actualizar Datos Personales">
+                                                        Actualizar
+                                                    </a>
+                                                    <?php }?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-11 mx-auto">
+                                            <div class="row">
+                                                <div class="col-xl-2 col-lg-12 col-md-4">
+                                                    <div class="upload mt-4 pr-md-4">
+                                                        <input type="file" id="foto" name="foto" class="dropify" data-allowed-file-extensions="png jpg jpeg"
+                                                            data-default-file="
+                                                            <?php if($get_id[0]['foto']!= ""){
+                                                                $image_info = get_headers($get_id[0]['foto']);
+                                                                    if (strpos($image_info[0], '200') !== false) {
+                                                                        echo $get_id[0]['foto'];
+                                                                    }else{
+                                                                        echo asset("template/assets/img/200x200.jpg");
+                                                                    }
+                                                                }else {
+                                                                    echo asset("template/assets/img/200x200.jpg");
+                                                                } ?>"
+                                                            data-max-file-size="5M" onchange="return Validar_Archivo_Img_Perfil('foto')" <?php echo $disabled ?>
+                                                        />
+                                                        <p class="mt-2"><i class="flaticon-cloud-upload mr-1"></i>Cargar Foto</p>
+                                                    </div>
+                                                </div>
+                                                <div id="mdatos" class="col-xl-10 col-lg-12 col-md-8 mt-md-0 mt-4">
+                                                    <div class="form">
+                                                        <div class="row">
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label for="usuario_apater">Apellido Paterno</label>
+                                                                    <input type="text" class="form-control mb-4" maxlength = "30" id="usuario_apater" name="usuario_apater" value="<?php echo $get_id['0']['usuario_apater'];?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label for="usuario_amater">Apellido Materno</label>
+                                                                    <input type="text" class="form-control mb-4"maxlength = "30" id="usuario_amater" name="usuario_amater" value="<?php echo $get_id['0']['usuario_amater'];?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label for="usuario_nombres">Nombres</label>
+                                                                    <input type="text" class="form-control mb-4" maxlength = "30" id="usuario_nombres" name="usuario_nombres" value="<?php echo $get_id['0']['usuario_nombres'];?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-3">
+                                                                <div class="form-group">
+                                                                    <label for="id_nacionalidad">Nacionalidad</label>
+                                                                    <select class="form-control" name="id_nacionalidad" id="id_nacionalidad" <?php echo $disabled ?>>
+                                                                    <option value="0"  <?php if (!(strcmp(0, $get_id[0]['id_nacionalidad']))) {echo "selected=\"selected\"";} ?>>Seleccione</option>
+                                                                    <?php foreach($list_nacionalidad_perfil as $list){ ?>
+                                                                    <option value="<?php echo $list['id_nacionalidad']; ?>" <?php if (!(strcmp($list['id_nacionalidad'], $get_id[0]['id_nacionalidad']))) {echo "selected=\"selected\"";} ?> >
+                                                                    <?php echo $list['nom_nacionalidad'];?></option>
+                                                                    <?php } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-3">
+                                                                <div class="form-group">
+                                                                    <label for="genero">Genero</label>
+                                                                    <select class="form-control" name="id_genero" id="id_genero" <?php echo $disabled ?>>
+                                                                    <option value="0" <?php if (!(strcmp(0, $get_id[0]['id_genero']))) {echo "selected=\"selected\"";} ?> >Seleccione</option>
+                                                                    <?php foreach($list_genero as $list){ ?>
+                                                                    <option value="<?php echo $list['id_genero'] ; ?>" <?php if (!(strcmp($list['id_genero'], $get_id[0]['id_genero']))) {echo "selected=\"selected\"";} ?> >
+                                                                    <?php echo $list['nom_genero'];?></option>
+                                                                    <?php } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-3">
+                                                                <div class="form-group">
+                                                                    <label for="fullName">Tipo de documento</label>
+                                                                    <select class="form-control" name="id_tipo_documento" id="id_tipo_documento" <?php echo $disabled ?>>
+                                                                    <option value="0"  <?php if (!(strcmp(0, $get_id[0]['id_tipo_documento']))) {echo "selected=\"selected\"";} ?> >Seleccione</option>
+                                                                    <?php foreach($list_tipo_documento as $list){ ?>
+                                                                    <option value="<?php echo $list['id_tipo_documento'] ; ?>" <?php if (!(strcmp($list['id_tipo_documento'], $get_id[0]['id_tipo_documento']))) {echo "selected=\"selected\"";} ?> >
+                                                                    <?php echo $list['cod_tipo_documento'];?></option>
+                                                                    <?php } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-3">
+                                                                <div class="form-group">
+                                                                    <label for="num_doc">Número de documento</label>
+                                                                    <input type="number" class="form-control mb-4" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                                                            maxlength = "8" id="num_doc" name="num_doc" value="<?php echo $get_id[0]['num_doc']; ?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-3">
+                                                                <div class="form-group">
+                                                                    <label>Fecha Emisión:</label>
+                                                                    <input type="date" class="form-control" id="fec_emision" name="fec_emision" value="<?php echo $get_id[0]['fec_emision_doc']; ?>" placeholder="Ingresar Fecha de Ingreso" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-3">
+                                                                <div class="form-group">
+                                                                    <label>Fecha Vencimiento:</label>
+                                                                    <input type="date" class="form-control" id="fec_venci" name="fec_venci" value="<?php echo $get_id[0]['fec_vencimiento_doc']; ?>" placeholder="Ingresar Fecha de Ingreso" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+
+                                                            <div class="col-sm-4">
+                                                                <label class="dob-input">Fecha de Nacimiento</label>
+                                                                <div class="d-sm-flex d-block">
+                                                                    <div class="form-group mr-1">
+                                                                        <select class="form-control" id="dia_nac" name="dia_nac" <?php echo $disabled ?>>
+                                                                        <option value="0" <?php if (!(strcmp(0, $get_id[0]['dia_nac']))) {echo "selected=\"selected\"";} ?> >Día</option>
+                                                                        <?php foreach($list_dia as $list){ ?>
+                                                                        <option value="<?php echo $list['cod_dia'] ; ?>" <?php if (!(strcmp($list['cod_dia'], $get_id[0]['dia_nac']))) {echo "selected=\"selected\"";} ?> >
+                                                                        <?php echo $list['cod_dia'];?></option>
+                                                                        <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group mr-1">
+                                                                        <select class="form-control" id="mes_nac" name="mes_nac" <?php echo $disabled ?>>
+                                                                        <option value="0" <?php if (!(strcmp(0, $get_id[0]['mes_nac']))) {echo "selected=\"selected\"";} ?> >Mes</option>
+                                                                        <?php foreach($list_mes as $list){ ?>
+                                                                        <option value="<?php echo $list['cod_mes'] ; ?>" <?php if (!(strcmp($list['cod_mes'], $get_id[0]['mes_nac']))) {echo "selected=\"selected\"";} ?> >
+                                                                        <?php echo $list['abr_mes'];?></option>
+                                                                        <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group mr-1">
+                                                                        <select class="form-control" id="anio_nac" name="anio_nac" <?php echo $disabled ?>>
+                                                                        <option value="0" <?php if (!(strcmp(0, $get_id[0]['anio_nac']))) {echo "selected=\"selected\"";} ?> >Año</option>
+                                                                        <?php foreach($list_anio as $list){ ?>
+                                                                        <option value="<?php echo $list['cod_anio'] ; ?>" <?php if (!(strcmp($list['cod_anio'], $get_id[0]['anio_nac']))) {echo "selected=\"selected\"";} ?> >
+                                                                        <?php echo $list['cod_anio'];?></option>
+                                                                        <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-2">
+                                                                <div class="form-group">
+                                                                    <label for="usuario_email">Edad</label>
+                                                                    <input type="text" class="form-control" readonly id="cedad" name="cedad" >
+
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-3">
+                                                                <div class="form-group">
+                                                                    <label for="estado_civil">Estado Civil</label>
+                                                                    <select class="form-control" id="id_estado_civil" name="id_estado_civil" <?php echo $disabled ?>>
+                                                                    <option value="0" <?php if (!(strcmp(0, $get_id[0]['id_estado_civil']))) {echo "selected=\"selected\"";} ?> >Seleccione</option>
+                                                                    <?php foreach($list_estado_civil as $list){ ?>
+                                                                    <option value="<?php echo $list['id_estado_civil'] ; ?>" <?php if (!(strcmp($list['id_estado_civil'], $get_id[0]['id_estado_civil']))) {echo "selected=\"selected\"";} ?> >
+                                                                    <?php echo $list['nom_estado_civil'];?></option>
+                                                                    <?php } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-3">
+                                                                <div class="form-group">
+                                                                    <label for="usuario_email">Correo Electrónico</label>
+                                                                    <input type="text" class="form-control mb-4" maxlength = "100" id="usuario_email" name="usuario_email" value="<?php echo $get_id[0]['usuario_email']; ?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label for="num_celp">Número celular</label>
+                                                                    <input type="number" class="form-control mb-4" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                                                            maxlength = "9"  id="num_celp" name="num_celp" value="<?php echo $get_id[0]['num_celp']; ?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label for="num_fijop">Teléfono fijo</label>
+                                                                    <input type="number" class="form-control mb-4" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                                                            maxlength = "15" id="num_fijop" name="num_fijop" value="<?php echo $get_id[0]['num_fijop']; ?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <!--<div class="col-sm-12">
+                                                                <div class="form-group">
+                                                                    <label for="gusto_personales">Gustos o Preferencias personales</label>
+                                                                    <input type="text" class="form-control mb-4" id="gusto_personales" placeholder="Platos favoritos, pasatiempos, y gustos variados" name="gusto_personales" value="<?php echo $get_id[0]['gusto_personales']; ?>">
+                                                                </div>
+                                                            </div>-->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            <?php } ?>
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="edatos" enctype="multipart/form-data" class="section general-info">
-                                    <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-                                    <input type="hidden" id="foto_nombre" name="foto_nombre" value="<?php echo $get_id[0]['foto_nombre'] ?>">
+                            </form>
+                        </div>
 
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Datos Personales</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5">
-                                                        <?php if($editable==0){?>
-                                                        <a onclick="GDatosP();" class="btn btn-primary" title="Actualizar Datos Personales">
-                                                            Actualizar
-                                                        </a>
-                                                        <?php }?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-11 mx-auto">
-                                                <div class="row">
-                                                    <div class="col-xl-2 col-lg-12 col-md-4">
-                                                        <div class="upload mt-4 pr-md-4">
-                                                            <input type="file" id="foto" name="foto" class="dropify" data-allowed-file-extensions="png jpg jpeg"
-                                                                data-default-file="
-                                                                <?php if($get_id[0]['foto']!= ""){
-                                                                    $image_info = get_headers($get_id[0]['foto']);
-                                                                        if (strpos($image_info[0], '200') !== false) {
-                                                                            echo $get_id[0]['foto'];
-                                                                        }else{
-                                                                            echo asset("template/assets/img/200x200.jpg");
-                                                                        }
-                                                                    }else {
-                                                                        echo asset("template/assets/img/200x200.jpg");
-                                                                    } ?>"
-                                                                data-max-file-size="5M" onchange="return Validar_Archivo_Img_Perfil('foto')" <?php echo $disabled ?>
-                                                            />
-                                                            <p class="mt-2"><i class="flaticon-cloud-upload mr-1"></i>Cargar Foto</p>
-                                                        </div>
-                                                    </div>
-                                                    <div id="mdatos" class="col-xl-10 col-lg-12 col-md-8 mt-md-0 mt-4">
-                                                        <div class="form">
-                                                            <div class="row">
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
-                                                                        <label for="usuario_apater">Apellido Paterno</label>
-                                                                        <input type="text" class="form-control mb-4" maxlength = "30" id="usuario_apater" name="usuario_apater" value="<?php echo $get_id['0']['usuario_apater'];?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
-                                                                        <label for="usuario_amater">Apellido Materno</label>
-                                                                        <input type="text" class="form-control mb-4"maxlength = "30" id="usuario_amater" name="usuario_amater" value="<?php echo $get_id['0']['usuario_amater'];?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
-                                                                        <label for="usuario_nombres">Nombres</label>
-                                                                        <input type="text" class="form-control mb-4" maxlength = "30" id="usuario_nombres" name="usuario_nombres" value="<?php echo $get_id['0']['usuario_nombres'];?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-sm-3">
-                                                                    <div class="form-group">
-                                                                        <label for="id_nacionalidad">Nacionalidad</label>
-                                                                        <select class="form-control" name="id_nacionalidad" id="id_nacionalidad" <?php echo $disabled ?>>
-                                                                        <option value="0"  <?php if (!(strcmp(0, $get_id[0]['id_nacionalidad']))) {echo "selected=\"selected\"";} ?>>Seleccione</option>
-                                                                        <?php foreach($list_nacionalidad_perfil as $list){ ?>
-                                                                        <option value="<?php echo $list['id_nacionalidad']; ?>" <?php if (!(strcmp($list['id_nacionalidad'], $get_id[0]['id_nacionalidad']))) {echo "selected=\"selected\"";} ?> >
-                                                                        <?php echo $list['nom_nacionalidad'];?></option>
-                                                                        <?php } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-sm-3">
-                                                                    <div class="form-group">
-                                                                        <label for="genero">Genero</label>
-                                                                        <select class="form-control" name="id_genero" id="id_genero" <?php echo $disabled ?>>
-                                                                        <option value="0" <?php if (!(strcmp(0, $get_id[0]['id_genero']))) {echo "selected=\"selected\"";} ?> >Seleccione</option>
-                                                                        <?php foreach($list_genero as $list){ ?>
-                                                                        <option value="<?php echo $list['id_genero'] ; ?>" <?php if (!(strcmp($list['id_genero'], $get_id[0]['id_genero']))) {echo "selected=\"selected\"";} ?> >
-                                                                        <?php echo $list['nom_genero'];?></option>
-                                                                        <?php } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-sm-3">
-                                                                    <div class="form-group">
-                                                                        <label for="fullName">Tipo de documento</label>
-                                                                        <select class="form-control" name="id_tipo_documento" id="id_tipo_documento" <?php echo $disabled ?>>
-                                                                        <option value="0"  <?php if (!(strcmp(0, $get_id[0]['id_tipo_documento']))) {echo "selected=\"selected\"";} ?> >Seleccione</option>
-                                                                        <?php foreach($list_tipo_documento as $list){ ?>
-                                                                        <option value="<?php echo $list['id_tipo_documento'] ; ?>" <?php if (!(strcmp($list['id_tipo_documento'], $get_id[0]['id_tipo_documento']))) {echo "selected=\"selected\"";} ?> >
-                                                                        <?php echo $list['cod_tipo_documento'];?></option>
-                                                                        <?php } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-sm-3">
-                                                                    <div class="form-group">
-                                                                        <label for="num_doc">Número de documento</label>
-                                                                        <input type="number" class="form-control mb-4" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                                                                maxlength = "8" id="num_doc" name="num_doc" value="<?php echo $get_id[0]['num_doc']; ?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-sm-3">
-                                                                    <div class="form-group">
-                                                                        <label>Fecha Emisión:</label>
-                                                                        <input type="date" class="form-control" id="fec_emision" name="fec_emision" value="<?php echo $get_id[0]['fec_emision_doc']; ?>" placeholder="Ingresar Fecha de Ingreso" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-sm-3">
-                                                                    <div class="form-group">
-                                                                        <label>Fecha Vencimiento:</label>
-                                                                        <input type="date" class="form-control" id="fec_venci" name="fec_venci" value="<?php echo $get_id[0]['fec_vencimiento_doc']; ?>" placeholder="Ingresar Fecha de Ingreso" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-
-                                                                <div class="col-sm-4">
-                                                                    <label class="dob-input">Fecha de Nacimiento</label>
-                                                                    <div class="d-sm-flex d-block">
-                                                                        <div class="form-group mr-1">
-                                                                            <select class="form-control" id="dia_nac" name="dia_nac" <?php echo $disabled ?>>
-                                                                            <option value="0" <?php if (!(strcmp(0, $get_id[0]['dia_nac']))) {echo "selected=\"selected\"";} ?> >Día</option>
-                                                                            <?php foreach($list_dia as $list){ ?>
-                                                                            <option value="<?php echo $list['cod_dia'] ; ?>" <?php if (!(strcmp($list['cod_dia'], $get_id[0]['dia_nac']))) {echo "selected=\"selected\"";} ?> >
-                                                                            <?php echo $list['cod_dia'];?></option>
-                                                                            <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="form-group mr-1">
-                                                                            <select class="form-control" id="mes_nac" name="mes_nac" <?php echo $disabled ?>>
-                                                                            <option value="0" <?php if (!(strcmp(0, $get_id[0]['mes_nac']))) {echo "selected=\"selected\"";} ?> >Mes</option>
-                                                                            <?php foreach($list_mes as $list){ ?>
-                                                                            <option value="<?php echo $list['cod_mes'] ; ?>" <?php if (!(strcmp($list['cod_mes'], $get_id[0]['mes_nac']))) {echo "selected=\"selected\"";} ?> >
-                                                                            <?php echo $list['abr_mes'];?></option>
-                                                                            <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="form-group mr-1">
-                                                                            <select class="form-control" id="anio_nac" name="anio_nac" <?php echo $disabled ?>>
-                                                                            <option value="0" <?php if (!(strcmp(0, $get_id[0]['anio_nac']))) {echo "selected=\"selected\"";} ?> >Año</option>
-                                                                            <?php foreach($list_anio as $list){ ?>
-                                                                            <option value="<?php echo $list['cod_anio'] ; ?>" <?php if (!(strcmp($list['cod_anio'], $get_id[0]['anio_nac']))) {echo "selected=\"selected\"";} ?> >
-                                                                            <?php echo $list['cod_anio'];?></option>
-                                                                            <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-sm-2">
-                                                                    <div class="form-group">
-                                                                        <label for="usuario_email">Edad</label>
-                                                                        <input type="text" class="form-control" readonly id="cedad" name="cedad" >
-
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-sm-3">
-                                                                    <div class="form-group">
-                                                                        <label for="estado_civil">Estado Civil</label>
-                                                                        <select class="form-control" id="id_estado_civil" name="id_estado_civil" <?php echo $disabled ?>>
-                                                                        <option value="0" <?php if (!(strcmp(0, $get_id[0]['id_estado_civil']))) {echo "selected=\"selected\"";} ?> >Seleccione</option>
-                                                                        <?php foreach($list_estado_civil as $list){ ?>
-                                                                        <option value="<?php echo $list['id_estado_civil'] ; ?>" <?php if (!(strcmp($list['id_estado_civil'], $get_id[0]['id_estado_civil']))) {echo "selected=\"selected\"";} ?> >
-                                                                        <?php echo $list['nom_estado_civil'];?></option>
-                                                                        <?php } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-sm-3">
-                                                                    <div class="form-group">
-                                                                        <label for="usuario_email">Correo Electrónico</label>
-                                                                        <input type="text" class="form-control mb-4" maxlength = "100" id="usuario_email" name="usuario_email" value="<?php echo $get_id[0]['usuario_email']; ?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
-                                                                        <label for="num_celp">Número celular</label>
-                                                                        <input type="number" class="form-control mb-4" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                                                                maxlength = "9"  id="num_celp" name="num_celp" value="<?php echo $get_id[0]['num_celp']; ?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-sm-6">
-                                                                    <div class="form-group">
-                                                                        <label for="num_fijop">Teléfono fijo</label>
-                                                                        <input type="number" class="form-control mb-4" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                                                                maxlength = "15" id="num_fijop" name="num_fijop" value="<?php echo $get_id[0]['num_fijop']; ?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <!--<div class="col-sm-12">
-                                                                    <div class="form-group">
-                                                                        <label for="gusto_personales">Gustos o Preferencias personales</label>
-                                                                        <input type="text" class="form-control mb-4" id="gusto_personales" placeholder="Platos favoritos, pasatiempos, y gustos variados" name="gusto_personales" value="<?php echo $get_id[0]['gusto_personales']; ?>">
-                                                                    </div>
-                                                                </div>-->
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_gustop" class="section general-info">
-                                    <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div id="gustop_titulo" class="col">
-                                                    <h6 class="">Gustos y Preferencias</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5">
-                                                    <?php if($editable==0){?>
-                                                        <a onclick="GustosP();"  class="btn btn-primary" title="Gustos y Preferencias" >
-                                                        Actualizar
-                                                        </a>
-                                                    <?php }?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                                    </br>
-                                        <div class="row">
-                                            <div class="col-lg-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row" id="gustopdatos">
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="plato_postre">Plato y postre favorito</label>
-                                                                        <input type="text" class="form-control mb-4" id="plato_postre" name="plato_postre" value="<?php if(isset($get_id_gp['0']['plato_postre'])) {echo $get_id_gp['0']['plato_postre'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="galletas_golosinas">Galletas y golosinas favoritas</label>
-                                                                        <input type="text" class="form-control mb-4" id="galletas_golosinas" name="galletas_golosinas" value="<?php if(isset($get_id_gp['0']['galletas_golosinas'])) {echo $get_id_gp['0']['galletas_golosinas'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="ocio_pasatiempos">Actividades de ocio o pasatiempos</label>
-                                                                        <input type="text" class="form-control mb-4" id="ocio_pasatiempos" name="ocio_pasatiempos" value="<?php if(isset($get_id_gp['0']['ocio_pasatiempos'])) {echo $get_id_gp['0']['ocio_pasatiempos'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="artistas_banda">Artistas o banda favorito</label>
-                                                                        <input type="text" class="form-control mb-4" id="artistas_banda" name="artistas_banda" value="<?php if(isset($get_id_gp['0']['artistas_banda'])) {echo $get_id_gp['0']['artistas_banda'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="genero_musical">Género musical favorito</label>
-                                                                        <input type="text" class="form-control mb-4" id="genero_musical" name="genero_musical" value="<?php if(isset($get_id_gp['0']['genero_musical'])) {echo $get_id_gp['0']['genero_musical'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="pelicula_serie">Película o serie favorita</label>
-                                                                        <input type="text" class="form-control mb-4" id="pelicula_serie" name="pelicula_serie" value="<?php if(isset($get_id_gp['0']['pelicula_serie'])) {echo $get_id_gp['0']['pelicula_serie'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="colores_favorito">Colores favoritos</label>
-                                                                        <input type="text" class="form-control mb-4" id="colores_favorito" name="colores_favorito" value="<?php if(isset($get_id_gp['0']['colores_favorito'])) {echo $get_id_gp['0']['colores_favorito'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="redes_sociales">Redes sociales favoritas</label>
-                                                                        <input type="text" class="form-control mb-4" id="redes_sociales" name="redes_sociales" value="<?php if(isset($get_id_gp['0']['redes_sociales'])) {echo $get_id_gp['0']['redes_sociales'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="deporte_favorito">Deporte favorito</label>
-                                                                        <input type="text" class="form-control mb-4" id="deporte_favorito" name="deporte_favorito" value="<?php if(isset($get_id_gp['0']['deporte_favorito'])) {echo $get_id_gp['0']['deporte_favorito'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-2">
-                                                                    <div class="form-group">
-                                                                        <label for="tiene_mascota">¿Tiene mascota?</label>
-                                                                        <select class="form-control" name="tiene_mascota" id="tiene_mascota" <?php echo $disabled ?>>
-                                                                        <option value="0" <?php if(isset($get_id_gp[0]['tiene_mascota']) && $get_id_gp[0]['tiene_mascota'] == 0){ echo "selected";} ?>>Seleccione</option>
-                                                                        <option value="1" <?php if(isset($get_id_gp[0]['tiene_mascota']) && $get_id_gp[0]['tiene_mascota'] == 1){ echo "selected";} ?>>SÍ</option>
-                                                                        <option value="2" <?php if(isset($get_id_gp[0]['tiene_mascota']) && $get_id_gp[0]['tiene_mascota'] == 2){ echo "selected";} ?>>NO</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="mascota">Qué mascota tienes?</label>
-                                                                        <input type="text" class="form-control mb-4" id="mascota" name="mascota" value="<?php if(isset($get_id_gp['0']['mascota'])) {echo $get_id_gp['0']['mascota'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_domicilio" class="section general-info">
-                                    <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div id="domicilio_titulo" class="col">
-                                                    <h6 class="">Domicilio
-
-                                                        <?php if(isset($get_id_d['0']['lat']) && isset($get_id_d['0']['lng'])){?>
-                                                            <a style="display: -webkit-inline-box;" href="https://www.google.com/maps/search/?api=1&query=<?php if(isset($get_id_d['0']['lat'])) {echo $get_id_d['0']['lat'];}?>,<?php if(isset($get_id_d['0']['lng'])) {echo $get_id_d['0']['lng'];}?>&zoom=20" target="_blank">
-                                                                <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 100 100" width="40px" height="40px" style="margin-bottom: 6px;" ><path fill="#60be92" d="M81,76.667V23.333C81,20.388,78.612,18,75.667,18H22.333C19.388,18,17,20.388,17,23.333v53.333	C17,79.612,19.388,82,22.333,82h53.333C78.612,82,81,79.612,81,76.667z"/><path fill="#78a2d2" d="M22.769,81.999l52.461,0L48.999,55.768L22.769,81.999z"/><path fill="#ceccbe" d="M80.999,76.23l0-52.461L54.768,49.999L80.999,76.23z"/><path fill="#f9e65c" d="M75.666,17.5h-0.643L16.5,76.023v0.643c0,3.217,2.617,5.833,5.833,5.833h0.643l58.523-58.523v-0.643	C81.499,20.116,78.882,17.5,75.666,17.5z"/><path fill="#1f212b" d="M22.976,82.499h-0.643c-3.216,0-5.833-2.616-5.833-5.833v-0.643L75.023,17.5h0.643	c3.217,0,5.833,2.616,5.833,5.833v0.643L22.976,82.499z M17.5,76.438v0.229c0,2.665,2.168,4.833,4.833,4.833h0.229l57.938-57.938	v-0.229c0-2.665-2.168-4.833-4.833-4.833h-0.229L17.5,76.438z"/><path fill="#fff" d="M55.426,49.949l-6.476,6.477l26.073,26.073h0.643c3.217,0,5.833-2.616,5.833-5.833v-0.643	L55.426,49.949z"/><path fill="#1f212b" d="M75.667,83H22.333C18.841,83,16,80.159,16,76.667V23.333C16,19.841,18.841,17,22.333,17h53.333	C79.159,17,82,19.841,82,23.333v53.334C82,80.159,79.159,83,75.667,83z M22.333,19C19.944,19,18,20.943,18,23.333v53.334	C18,79.057,19.944,81,22.333,81h53.333C78.056,81,80,79.057,80,76.667V23.333C80,20.943,78.056,19,75.667,19H22.333z"/><path fill="#f15b6c" d="M70.5,67.5c0.552,0,1-0.448,1-1c0-2.5,1.5-9,5.875-16C81.09,44.556,88.5,38,88.5,29.5	c0-9.941-8.059-18-18-18s-18,8.059-18,18c0,8.5,7.41,15.056,11.125,21C68,57.5,69.5,64,69.5,66.5C69.5,67.052,69.948,67.5,70.5,67.5	z"/><circle cx="70.5" cy="29.5" r="7" fill="#b07454"/><path fill="#1f212b" d="M70.5,68c-0.827,0-1.5-0.673-1.5-1.5c0-2.496-1.574-8.976-5.799-15.735	c-0.975-1.56-2.206-3.16-3.51-4.854C56.086,41.223,52,35.911,52,29.5C52,19.299,60.299,11,70.5,11S89,19.299,89,29.5	c0,6.411-4.086,11.723-7.691,16.41c-1.304,1.694-2.535,3.295-3.51,4.854C73.574,57.524,72,64.004,72,66.5	C72,67.327,71.327,68,70.5,68z M70.5,12C60.851,12,53,19.851,53,29.5c0,6.07,3.976,11.239,7.484,15.801	c1.319,1.714,2.564,3.334,3.565,4.935C68.415,57.221,70,63.789,70,66.5c0,0.275,0.224,0.5,0.5,0.5s0.5-0.225,0.5-0.5	c0-2.711,1.585-9.279,5.951-16.265c1-1.601,2.246-3.221,3.565-4.935C84.024,40.739,88,35.57,88,29.5C88,19.851,80.149,12,70.5,12z"/><path fill="#1f212b" d="M70.5,37c-4.136,0-7.5-3.364-7.5-7.5s3.364-7.5,7.5-7.5s7.5,3.364,7.5,7.5S74.636,37,70.5,37z M70.5,23c-3.584,0-6.5,2.916-6.5,6.5s2.916,6.5,6.5,6.5s6.5-2.916,6.5-6.5S74.084,23,70.5,23z"/><path fill="#1f212b" d="M73.5,49.688c-0.087,0-0.176-0.022-0.256-0.071c-0.237-0.142-0.314-0.448-0.173-0.686l0.157-0.266	c0.108-0.184,0.216-0.367,0.331-0.551c1.102-1.762,2.402-3.453,3.779-5.244C80.617,38.608,84,34.211,84,29.5	c0-3.163-1.13-6.244-3.184-8.678c-0.178-0.211-0.151-0.526,0.06-0.704c0.211-0.179,0.526-0.151,0.705,0.06	C83.786,22.791,85,26.102,85,29.5c0,5.051-3.488,9.586-6.862,13.971c-1.369,1.78-2.655,3.452-3.731,5.174	c-0.11,0.176-0.213,0.353-0.317,0.528l-0.161,0.271C73.835,49.601,73.669,49.688,73.5,49.688z"/><path fill="#1f212b" d="M72.5,16.16c-0.024,0-0.048-0.002-0.072-0.005C71.697,16.049,71.084,16,70.5,16	c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5c0.633,0,1.292,0.053,2.072,0.165c0.273,0.04,0.462,0.293,0.423,0.566	C72.959,15.98,72.745,16.16,72.5,16.16z"/><path fill="#1f212b" d="M78.5,18.523c-0.099,0-0.199-0.029-0.286-0.09c-1.183-0.826-2.48-1.453-3.857-1.864	c-0.265-0.079-0.415-0.358-0.336-0.623s0.356-0.412,0.622-0.336c1.479,0.442,2.873,1.116,4.143,2.003	c0.227,0.158,0.282,0.47,0.124,0.696C78.813,18.449,78.657,18.523,78.5,18.523z"/><path fill="#1f212b" d="M75.666,82.499h-0.643l-26.73-26.73l6.476-6.477l12.085,12.086c0.195,0.195,0.195,0.512,0,0.707	s-0.512,0.195-0.707,0L54.768,50.706l-5.062,5.063l25.73,25.73h0.229c2.665,0,4.833-2.168,4.833-4.833v-0.229l-7.353-7.353	c-0.195-0.195-0.195-0.512,0-0.707s0.512-0.195,0.707,0l7.646,7.646v0.643C81.499,79.883,78.882,82.499,75.666,82.499z"/><path fill="#fff" d="M41.368,31.5h-1.113H32.5v4h4.395c-0.911,1.78-2.758,3-4.895,3c-3.038,0-5.5-2.462-5.5-5.5	c0-3.038,2.462-5.5,5.5-5.5c1.413,0,2.698,0.538,3.672,1.413l2.828-2.828l0,0C36.8,24.486,34.518,23.5,32,23.5	c-5.247,0-9.5,4.253-9.5,9.5s4.253,9.5,9.5,9.5c4.38,0,8.058-2.968,9.156-7c0.217-0.798,0.344-1.633,0.344-2.5	C41.5,32.488,41.447,31.99,41.368,31.5z"/><path fill="#1f212b" d="M32,43c-5.514,0-10-4.486-10-10s4.486-10,10-10c2.547,0,4.977,0.966,6.843,2.721	c0.099,0.093,0.156,0.222,0.158,0.356c0.002,0.136-0.051,0.266-0.146,0.361l-2.829,2.828c-0.188,0.188-0.491,0.194-0.688,0.019	C34.416,28.456,33.231,28,32,28c-2.757,0-5,2.243-5,5s2.243,5,5,5c1.595,0,3.061-0.749,3.996-2H32.5c-0.276,0-0.5-0.224-0.5-0.5v-4	c0-0.276,0.224-0.5,0.5-0.5h8.868c0.245,0,0.455,0.178,0.494,0.42C41.955,31.995,42,32.513,42,33c0,0.867-0.122,1.753-0.361,2.632	C40.456,39.97,36.493,43,32,43z M32,24c-4.962,0-9,4.037-9,9s4.038,9,9,9c4.043,0,7.61-2.727,8.674-6.632	C40.89,34.575,41,33.778,41,33c0-0.313-0.021-0.644-0.065-1H33v3h3.895c0.174,0,0.336,0.091,0.427,0.239s0.098,0.334,0.019,0.488	C36.307,37.746,34.261,39,32,39c-3.309,0-6-2.691-6-6s2.691-6,6-6c1.32,0,2.596,0.437,3.641,1.237l2.131-2.131	C36.15,24.744,34.12,24,32,24z"/></svg>
-                                                            </a>
-                                                        <?php }else{?>
-                                                        <?php }?>
-
-                                                    </h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5">
-                                                    <?php if($editable==0){?>
-                                                        <a onclick="DomilcilioP();"  class="btn btn-primary" title="Domicilio" >
-                                                        Actualizar
-                                                        </a>
-                                                    <?php }else{?> &nbsp;<?php }?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        </br>
-                                        <div class="row">
-                                            <div class="col-lg-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row" id="domiciliodatos">
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="id_departamento">Departamento</label>
-                                                                        <select class="form-control" name="id_departamento" id="id_departamento" onchange="provincia()" <?php echo $disabled ?>>
-                                                                        <option value="0">Seleccion</option>
-                                                                            <?php foreach($list_departamento as $list){
-                                                                                if(isset($get_id_d[0]) && $get_id_d[0]['id_departamento'] == $list->id_departamento){ ?>
-                                                                                <option selected value="<?php echo $list->id_departamento; ?>"><?php echo $list->nombre_departamento;?></option>
-                                                                            <?php }else{?>
-                                                                            <option value="<?php echo $list->id_departamento; ?>"><?php echo $list->nombre_departamento;?></option>
-                                                                            <?php } } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group" >
-                                                                        <label for="id_provincia">Provincia</label>
-                                                                        <div id="mprovincia">
-                                                                            <select class="form-control" name="id_provincia" id="id_provincia"  onchange="distrito()" <?php echo $disabled ?>>
-                                                                            <option  value="0"  selected>Seleccionar</option>
-                                                                            <?php
-                                                                                foreach($list_provincia as $list){ ?>
-                                                                                    <option value="<?php echo $list->id_provincia; ?>"
-                                                                                    <?php if(empty($get_id_d[0]) && $get_id_d[0]['id_provincia'] == $list->id_provincia){ echo "selected"; } ?>>
-                                                                                        <?php echo $list->nombre_provincia;?>
-                                                                                    </option>
-                                                                                <?php }
-                                                                            ?>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="id_distrito">Distrito</label>
-                                                                        <div id="mdistrito">
-                                                                            <select class="form-control" name="id_distrito" id="id_distrito" <?php echo $disabled ?>>
-                                                                            <option  value="0"  selected>Seleccionar</option>
-                                                                            <?php
-                                                                                foreach($list_distrito as $list){ ?>
-                                                                                    <option value="<?php echo $list->id_distrito; ?>"
-                                                                                    <?php if(empty($get_id_d[0]) && $get_id_d[0]['id_distrito'] == $list->id_distrito){ echo "selected"; } ?>>
-                                                                                        <?php echo $list->nombre_distrito;?>
-                                                                                    </option>
-                                                                                <?php }
-                                                                            ?>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <label for="id_tipo_via">Tipo de vía</label>
-                                                                        <select class="form-control" name="id_tipo_via" id="id_tipo_via" <?php echo $disabled ?>>
-                                                                        <option  value="0"  selected>Seleccionar</option>
-                                                                        <?php foreach($list_dtipo_via as $list){
-                                                                        if(isset($get_id_d[0]) && $get_id_d[0]['id_tipo_via'] == $list['id_tipo_via']){ ?>
-                                                                        <option selected value="<?php echo $list['id_tipo_via']; ?>"><?php echo $list['nom_tipo_via'];?></option>
-                                                                        <?php }else{?>
-                                                                        <option value="<?php echo $list['id_tipo_via']; ?>"><?php echo $list['nom_tipo_via'];?></option>
-                                                                        <?php } } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <label for="nom_via">Nombre de vía</label>
-                                                                        <input type="text" class="form-control mb-4" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                                                                maxlength = "100" id="nom_via" name="nom_via" value="<?php if(isset($get_id_d['0']['nom_via'])) {echo $get_id_d['0']['nom_via'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-2">
-                                                                    <div class="form-group">
-                                                                        <label for="num_via">Número de vía</label>
-                                                                        <input type="text" class="form-control mb-4" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                                                                maxlength = "5" id="num_via" name="num_via" value="<?php if(isset($get_id_d['0']['num_via'])) {echo $get_id_d['0']['num_via'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-2">
-                                                                    <div class="form-group">
-                                                                        <label for="num_via">KM</label>
-                                                                        <input type="text" class="form-control mb-4"  maxlength = "5" id="kilometro" name="kilometro" value="<?php if(isset($get_id_d['0']['kilometro'])) {echo $get_id_d['0']['kilometro'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-2">
-                                                                    <div class="form-group">
-                                                                        <label for="num_via">MZ</label>
-                                                                        <input type="text" class="form-control mb-4"  maxlength = "5" id="manzana" name="manzana" value="<?php if(isset($get_id_d['0']['manzana'])) {echo $get_id_d['0']['manzana'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-2">
-                                                                    <div class="form-group">
-                                                                        <label for="num_vivo_en">Interior</label>
-                                                                        <input type="text" class="form-control mb-4"  maxlength = "5" id="interior" name="interior" value="<?php if(isset($get_id_d['0']['interior'])) {echo $get_id_d['0']['interior'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-2">
-                                                                    <div class="form-group">
-                                                                        <label for="num_vivo_en">N° Departamento</label>
-                                                                        <input type="text" class="form-control mb-4"  maxlength = "5" id="departamento" name="departamento" value="<?php if(isset($get_id_d['0']['departamento'])) {echo $get_id_d['0']['departamento'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-1">
-                                                                    <div class="form-group">
-                                                                        <label for="num_vivo_en">Lote</label>
-                                                                        <input type="text" class="form-control mb-4"  maxlength = "5" id="lote" name="lote" value="<?php if(isset($get_id_d['0']['lote'])) {echo $get_id_d['0']['lote'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-1">
-                                                                    <div class="form-group">
-                                                                        <label for="num_vivo_en">Piso</label>
-                                                                        <input type="text" class="form-control mb-4"  maxlength = "2" id="piso" name="piso" value="<?php if(isset($get_id_d['0']['piso'])) {echo $get_id_d['0']['piso'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <label for="id_vivo_en">Tipo de Zona</label>
-                                                                        <select class="form-control" name="id_zona" id="id_zona" <?php echo $disabled ?>>
-                                                                        <option  value="0"  selected>Seleccionar</option>
-                                                                        <?php foreach($list_zona as $list){
-                                                                        if(isset($get_id_d[0]) && $get_id_d[0]['id_zona'] == $list['id_zona']){ ?>
-                                                                        <option selected value="<?php echo $list['id_zona']; ?>"><?php echo $list['nom_zona'];?></option>
-                                                                        <?php }else{?>
-                                                                        <option value="<?php echo $list['id_zona']; ?>"><?php echo $list['nom_zona'];?></option>
-                                                                        <?php } } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <label for="num_vivo_en">Nombre Zona</label>
-                                                                        <input type="text" class="form-control mb-4" id="nom_zona"  maxlength = "150" name="nom_zona" value="<?php if(isset($get_id_d['0']['nom_zona'])) {echo $get_id_d['0']['nom_zona'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="tipovivienda">Tipo de vivienda</label>
-                                                                        <select class="form-control" name="id_tipo_vivienda" id="id_tipo_vivienda" <?php echo $disabled ?>>
-                                                                                <option  value="0"  selected>Seleccionar</option>
-                                                                                <?php foreach($list_dtipo_vivienda as $list){
-                                                                                if(isset($get_id_d[0]) && $get_id_d[0]['id_tipo_vivienda'] == $list['id_tipo_vivienda']){ ?>
-                                                                                <option selected value="<?php echo $list['id_tipo_vivienda']; ?>"><?php echo $list['nom_tipo_vivienda'];?></option>
-                                                                                <?php }else{?>
-                                                                                <option value="<?php echo $list['id_tipo_vivienda']; ?>"><?php echo $list['nom_tipo_vivienda'];?></option>
-                                                                                <?php } } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-8">
-                                                                    <div class="form-group">
-                                                                        <label for="referencia">Referencia Domicilio</label>
-                                                                        <input type="text" class="form-control mb-4" id="referenciaa"  maxlength = "150" name="referenciaa" value="<?php if(isset($get_id_d['0']['referencia'])) {echo $get_id_d['0']['referencia'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="col-md-12">
-                                                            <label for="referencia">Dirección completa</label>
-                                                            <input type="text" class="form-control mb-4" value="<?php if(isset($get_id_d['0']['direccion_completa'])) {echo $get_id_d['0']['direccion_completa'];}?>" disabled>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <div class="form-group">
-                                                                        <label for="ubicacion">Ubicación de tu vivienda</label>
-                                                                        <input type="text" class="form-control mb-4" id="autocomplete" name="autocomplete" <?php echo $disabled ?>>
-                                                                        <input type="hidden" id="coordsltd" name="coordsltd" value="<?php if(isset($get_id_d['0']['lat'])) {echo $get_id_d['0']['lat'];} else {echo "-12.0746254";}?>"/>
-                                                                        <input type="hidden" id="coordslgt" name="coordslgt" value="<?php if(isset($get_id_d['0']['lng'])) {echo $get_id_d['0']['lng'];} else {echo "-77.021754";}?>"/>
-                                                                        <div class="col-md-12" id="map"></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_referenciaf" class="section general-info">
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_gustop" class="section general-info">
                                 <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Referencias Familiares</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5" id="btnReferenciaF">
-                                                    <?php if($editable==0){?>
-                                                        <a onclick="ReferenciaF();"  title="Agregar Familiar" class="btn btn-danger">
-                                                        Agregar
-                                                        </a>
-                                                    <?php }else{?> &nbsp;<?php }?>
-                                                    </div>
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div id="gustop_titulo" class="col">
+                                                <h6 class="">Gustos y Preferencias</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5">
+                                                <?php if($editable==0){?>
+                                                    <a onclick="GustosP();"  class="btn btn-primary" title="Gustos y Preferencias" >
+                                                    Actualizar
+                                                    </a>
+                                                <?php }?>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row" id="mureferenciaf">
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="nom_familiar">Nombre de Familiar</label>
-                                                                        <input type="text" class="form-control mb-4 limpiaref" maxlength = "150"  id="nom_familiar" name="nom_familiar" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="fami_paren">Parentesco</label>
-                                                                        <select class="form-control limpiarefselect" id="id_parentesco" name="id_parentesco" <?php echo $disabled ?>>
-                                                                            <option value="0">Seleccione</option>
-                                                                            <?php
-                                                                            foreach($list_parentesco as $list){ ?>
-                                                                            <option value="<?php echo $list['id_parentesco'] ; ?>">
-                                                                            <?php echo $list['nom_parentesco'];?></option>
-                                                                            <?php } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <label class="naci_familiar">Fecha de Nacimiento</label>
-                                                                    <div class="d-sm-flex d-block">
-                                                                        <div class="form-group mr-2">
-                                                                            <select class="form-control limpiarefselect" id="dia_nacf" name="dia_nacf" <?php echo $disabled ?>>
-                                                                            <option value="0">Día</option>
-                                                                            <?php foreach($list_dia as $list){ ?>
-                                                                                <option value="<?php echo $list['cod_dia'] ; ?>">
-                                                                                <?php echo $list['cod_dia'];?></option>
-                                                                            <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="form-group mr-2">
-                                                                            <select class="form-control limpiarefselect" id="mes_nacf" name="mes_nacf" <?php echo $disabled ?>>
-                                                                                <option value="0">Mes</option>
-                                                                                <?php foreach($list_mes as $list){ ?>
-                                                                                <option value="<?php echo $list['cod_mes'] ; ?>">
-                                                                                <?php echo $list['abr_mes'];?></option>
-                                                                                <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="form-group mr-2">
-                                                                            <select class="form-control limpiarefselect" id="anio_nacf" name="anio_nacf" <?php echo $disabled ?>>
-                                                                            <option value="0">Año</option>
-                                                                            <?php foreach($list_anio as $list){ ?>
-                                                                            <option value="<?php echo $list['cod_anio'] ; ?>">
-                                                                            <?php echo $list['cod_anio'];?></option>
-                                                                            <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
+                                    </div>
+                                                </br>
+                                    <div class="row">
+                                        <div class="col-lg-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row" id="gustopdatos">
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="plato_postre">Plato y postre favorito</label>
+                                                                    <input type="text" class="form-control mb-4" id="plato_postre" name="plato_postre" value="<?php if(isset($get_id_gp['0']['plato_postre'])) {echo $get_id_gp['0']['plato_postre'];}?>" <?php echo $disabled ?>>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="familiar_celular">Celular</label>
-                                                                        <input type="number" class="form-control mb-4 limpiaref" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                                                                maxlength = "9"  id="celular1" name="celular1" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
 
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="familiar_celular2">Celular 2</label>
-                                                                        <input type="number" class="form-control mb-4 limpiaref" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                                                                maxlength = "9"  id="celular2" name="celular2" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="familiar_telefono2">Teléfono Fijo</label>
-                                                                        <input type="number" class="form-control mb-4 limpiaref" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                                                                maxlength = "15"  id="fijo" name="fijo" <?php echo $disabled ?>>
-                                                                    </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="galletas_golosinas">Galletas y golosinas favoritas</label>
+                                                                    <input type="text" class="form-control mb-4" id="galletas_golosinas" name="galletas_golosinas" value="<?php if(isset($get_id_gp['0']['galletas_golosinas'])) {echo $get_id_gp['0']['galletas_golosinas'];}?>" <?php echo $disabled ?>>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="table-responsive" id="mdreferenciaf">
-                                                                <?php if(count($list_referenciafu)>0) { ?>
-                                                                <table class="table" id="tableMain3">
-                                                                    <thead>
-                                                                        <tr class="tableheader">
-                                                                            <th>Nombre de Familiar</th>
-                                                                            <th>Parentesco</th>
-                                                                            <th>Fecha de Nacimiento</th>
-                                                                            <th>Celular</th>
-                                                                            <th>Celular 2</th>
-                                                                            <th>Teléfono fijo</th>
-                                                                            <th></th>
-                                                                            <th></th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <?php foreach($list_referenciafu as $list){ ?>
-                                                                        <tr>
-                                                                            <td><?php echo $list['nom_familiar'] ; ?></td>
-                                                                            <td><?php echo $list['nom_parentesco'] ; ?></td>
-                                                                            <td><?php echo $list['dia_nac']."/".$list['mes_nac']."/".$list['anio_nac'] ; ?></td>
-                                                                            <td><?php echo $list['celular1'] ; ?></td>
-                                                                            <td><?php echo $list['celular2'] ; ?></td>
-                                                                            <td><?php echo $list['fijo'] ; ?></td>
-                                                                            <td>
-                                                                                <?php if($editable==0){?>
-                                                                                <a href="javascript:void(0);" title="Editar" onclick="Detalle_Referencia_Familiar('<?php echo $list['id_referencia_familiar']; ?>')">
-                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
-                                                                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                                                                                </svg>
-                                                                                </a>
-                                                                                <?php }?>
-                                                                            </td>
-                                                                            <td>
-                                                                                <?php if($editable==0){?>
-                                                                                <a title="Eliminar" onclick="Delete_Referencia_Familiar('<?php echo $list['id_referencia_familiar']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                                                                </a>
-                                                                                <?php }?>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <?php } ?>
-                                                                    </tbody>
-                                                                </table>
-                                                                <?php } ?>
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="ocio_pasatiempos">Actividades de ocio o pasatiempos</label>
+                                                                    <input type="text" class="form-control mb-4" id="ocio_pasatiempos" name="ocio_pasatiempos" value="<?php if(isset($get_id_gp['0']['ocio_pasatiempos'])) {echo $get_id_gp['0']['ocio_pasatiempos'];}?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="artistas_banda">Artistas o banda favorito</label>
+                                                                    <input type="text" class="form-control mb-4" id="artistas_banda" name="artistas_banda" value="<?php if(isset($get_id_gp['0']['artistas_banda'])) {echo $get_id_gp['0']['artistas_banda'];}?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="genero_musical">Género musical favorito</label>
+                                                                    <input type="text" class="form-control mb-4" id="genero_musical" name="genero_musical" value="<?php if(isset($get_id_gp['0']['genero_musical'])) {echo $get_id_gp['0']['genero_musical'];}?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="pelicula_serie">Película o serie favorita</label>
+                                                                    <input type="text" class="form-control mb-4" id="pelicula_serie" name="pelicula_serie" value="<?php if(isset($get_id_gp['0']['pelicula_serie'])) {echo $get_id_gp['0']['pelicula_serie'];}?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="colores_favorito">Colores favoritos</label>
+                                                                    <input type="text" class="form-control mb-4" id="colores_favorito" name="colores_favorito" value="<?php if(isset($get_id_gp['0']['colores_favorito'])) {echo $get_id_gp['0']['colores_favorito'];}?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="redes_sociales">Redes sociales favoritas</label>
+                                                                    <input type="text" class="form-control mb-4" id="redes_sociales" name="redes_sociales" value="<?php if(isset($get_id_gp['0']['redes_sociales'])) {echo $get_id_gp['0']['redes_sociales'];}?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="deporte_favorito">Deporte favorito</label>
+                                                                    <input type="text" class="form-control mb-4" id="deporte_favorito" name="deporte_favorito" value="<?php if(isset($get_id_gp['0']['deporte_favorito'])) {echo $get_id_gp['0']['deporte_favorito'];}?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-2">
+                                                                <div class="form-group">
+                                                                    <label for="tiene_mascota">¿Tiene mascota?</label>
+                                                                    <select class="form-control" name="tiene_mascota" id="tiene_mascota" <?php echo $disabled ?>>
+                                                                    <option value="0" <?php if(isset($get_id_gp[0]['tiene_mascota']) && $get_id_gp[0]['tiene_mascota'] == 0){ echo "selected";} ?>>Seleccione</option>
+                                                                    <option value="1" <?php if(isset($get_id_gp[0]['tiene_mascota']) && $get_id_gp[0]['tiene_mascota'] == 1){ echo "selected";} ?>>SÍ</option>
+                                                                    <option value="2" <?php if(isset($get_id_gp[0]['tiene_mascota']) && $get_id_gp[0]['tiene_mascota'] == 2){ echo "selected";} ?>>NO</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="mascota">Qué mascota tienes?</label>
+                                                                    <input type="text" class="form-control mb-4" id="mascota" name="mascota" value="<?php if(isset($get_id_gp['0']['mascota'])) {echo $get_id_gp['0']['mascota'];}?>" <?php echo $disabled ?>>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1551,694 +986,324 @@ if($get_id[0]['edicion_perfil']==1){
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
+                        </div>
 
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_hijos" class="section general-info">
-                                <input type="hidden" id="id_usuarioh" name="id_usuarioh" class="form-control"  value="<?php echo $get_id[0]['id_usuario']; ?>">
-
-
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Datos de hijos/as</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5" id="btnHijos">
-                                                    <?php if($editable==0){
-                                                        if(isset($list_usuario['0']['hijos']) && $list_usuario[0]['hijos'] == 1){?>
-                                                            <a onclick='Hijos();' title='Agregar Hijos' class='btn btn-danger'>Agregar</a>
-                                                        <?php }else{?>
-                                                            <a onclick='Update_Hijos();' title='Actualizar Hijo' class='btn btn-primary'>Actualizar</a>
-                                                        <?php }}else{?> &nbsp;<?php }?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row" id="muhijos">
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-2">
-                                                                    <div class="form-group">
-                                                                        <label for="nacionalidad">Respuesta</label>
-                                                                        <select class="form-control" id="id_respuestah" name="id_respuestah" onchange="ValidaH();" <?php echo $disabled ?>>
-                                                                        <option value="0">Seleccione</option>
-                                                                        <option value="1" <?php if(isset($list_usuario['0']['hijos']) && $list_usuario[0]['hijos'] == 1){ echo "selected";} ?>>SÍ</option>
-                                                                        <option value="2" <?php if(isset($list_usuario['0']['hijos']) && $list_usuario[0]['hijos'] == 2){ echo "selected";} ?>>NO</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="nom_familiar">Nombre de Hijo</label>
-                                                                        <input type="text" class="form-control mb-4 limpiarhijos" maxlength = "150"  id="nom_hijo" name="nom_hijo" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <div class="form-group">
-                                                                        <label for="fami_paren">Genero</label>
-                                                                        <select class="form-control limpiarefselecthijos" id="id_generoh" name="id_generoh" <?php echo $disabled ?>>
-                                                                            <option value="0">Seleccione</option>
-                                                                            <?php
-                                                                            foreach($list_genero as $list){ ?>
-                                                                            <option value="<?php echo $list['id_genero'] ; ?>">
-                                                                            <?php echo $list['nom_genero'];?></option>
-                                                                            <?php } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <label class="naci_familiar">Fecha de Nacimiento</label>
-                                                                    <div class="d-sm-flex d-block">
-                                                                        <div class="form-group mr-2">
-                                                                            <select class="form-control limpiarefselecthijos" id="dia_nachj" name="dia_nachj" <?php echo $disabled ?>>
-                                                                            <option value="0">Día</option>
-                                                                            <?php foreach($list_dia as $list){ ?>
-                                                                                <option value="<?php echo $list['cod_dia'] ; ?>">
-                                                                                <?php echo $list['cod_dia'];?></option>
-                                                                            <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="form-group mr-2">
-                                                                            <select class="form-control limpiarefselecthijos" id="mes_nachj" name="mes_nachj" <?php echo $disabled ?>>
-                                                                                <option value="0">Mes</option>
-                                                                                <?php foreach($list_mes as $list){ ?>
-                                                                                <option value="<?php echo $list['cod_mes'] ; ?>">
-                                                                                <?php echo $list['abr_mes'];?></option>
-                                                                                <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="form-group mr-2">
-                                                                            <select class="form-control limpiarefselecthijos" id="anio_nachj" name="anio_nachj" <?php echo $disabled ?>>
-                                                                            <option value="0">Año</option>
-                                                                            <?php foreach($list_anio as $list){ ?>
-                                                                            <option value="<?php echo $list['cod_anio'] ; ?>">
-                                                                            <?php echo $list['cod_anio'];?></option>
-                                                                            <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="familiar_celular">DNI</label>
-                                                                                <input type="number" class="form-control mb-4 limpiarhijos" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                                                                maxlength="8" id="num_dochj" name="num_dochj" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="familiar_celular2">Biológico/No Biológico</label>
-                                                                        <select class="form-control limpiarefselecthijos" id="id_biologico" name="id_biologico" <?php echo $disabled ?>>
-                                                                        <option value="0">Seleccione</option>
-                                                                        <option value="1">SÍ</option>
-                                                                        <option value="2">NO</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="documento">Adjuntar DNI</label>
-                                                                        <input type="file" class="form-control-file adjuntardnihijo" id="documento" name="documento" onchange="return validarFotoHijo()" <?php echo $disabled ?>/>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="table-responsive" id="mdhijos">
-                                                            <?php if(count($list_hijosu)>0) { ?>
-                                                                <table class="table" id="tableMain3">
-                                                                    <thead>
-                                                                        <tr class="tableheader">
-                                                                        <th>Nombre de Hijo/a</th>
-                                                                        <th>Género</th>
-                                                                        <th>Fecha de Nacimiento</th>
-                                                                        <th>DNI</th>
-                                                                        <th>Biológico</th>
-                                                                        <th></th>
-                                                                        <th></th>
-                                                                        <th></th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <?php foreach($list_hijosu as $list){ ?>
-                                                                        <tr>
-                                                                            <td><?php echo $list['nom_hijo'] ; ?></td>
-                                                                            <td><?php echo $list['nom_genero'] ; ?></td>
-                                                                            <td><?php echo $list['dia_nac']."/".$list['mes_nac']."/".$list['anio_nac'] ; ?></td>
-                                                                            <td><?php echo $list['num_doc'] ; ?></td>
-                                                                            <td><?php if ($list['id_biologico']==1){echo "SÍ";} elseif ($list['id_biologico']==2){echo "NO";} ?></td>
-                                                                            <td>
-                                                                                <?php if($editable==0){?>
-                                                                                <a href="javascript:void(0);" title="Editar" onclick="Detalle_Hijos_Usuario('<?php echo $list['id_hijos']; ?>')">
-                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
-                                                                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                                                                                </svg>
-                                                                                </a>
-                                                                                <?php }?>
-                                                                            </td>
-                                                                            <td>
-                                                                                <?php if($list['documento']!=""){
-                                                                                    $image_info = get_headers($url_dochijo[0]['url_config'].$list['documento']);
-                                                                                    if (strpos($image_info[0], '200') !== false) {?>
-                                                                                    <a style="cursor:pointer;display: -webkit-inline-box;" title="DNI vista" data-toggle="modal" data-target="#Modal_IMG_Link" data-imagen="<?php echo $url_dochijo[0]['url_config'].$list['documento']?>">
-                                                                                        <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533 s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/><path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/><path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
-                                                                                    </a>
-                                                                                    <?php } }?>
-                                                                            </td>
-                                                                            <td>
-                                                                                <?php if($editable==0){?>
-                                                                                <a style="cursor:pointer;" title="Eliminar" onclick="Delete_Hijos_Usuario('<?php echo $list['id_hijos']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                                                                </a>
-                                                                                <?php }?>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <?php } ?>
-                                                                    </tbody>
-                                                                </table>
-                                                            <?php } ?>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_contactoe" class="section general-info">
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_domicilio" class="section general-info">
                                 <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Contacto de Emergencia</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5" id="btnContactoE">
-                                                    <?php if($editable==0){ ?>
-                                                       <a onclick="ContactoE();" title="Agregar Contacto de Emergencia" class="btn btn-danger">
-                                                        Agregar
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div id="domicilio_titulo" class="col">
+                                                <h6 class="">Domicilio
+
+                                                    <?php if(isset($get_id_d['0']['lat']) && isset($get_id_d['0']['lng'])){?>
+                                                        <a style="display: -webkit-inline-box;" href="https://www.google.com/maps/search/?api=1&query=<?php if(isset($get_id_d['0']['lat'])) {echo $get_id_d['0']['lat'];}?>,<?php if(isset($get_id_d['0']['lng'])) {echo $get_id_d['0']['lng'];}?>&zoom=20" target="_blank">
+                                                            <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 100 100" width="40px" height="40px" style="margin-bottom: 6px;" ><path fill="#60be92" d="M81,76.667V23.333C81,20.388,78.612,18,75.667,18H22.333C19.388,18,17,20.388,17,23.333v53.333	C17,79.612,19.388,82,22.333,82h53.333C78.612,82,81,79.612,81,76.667z"/><path fill="#78a2d2" d="M22.769,81.999l52.461,0L48.999,55.768L22.769,81.999z"/><path fill="#ceccbe" d="M80.999,76.23l0-52.461L54.768,49.999L80.999,76.23z"/><path fill="#f9e65c" d="M75.666,17.5h-0.643L16.5,76.023v0.643c0,3.217,2.617,5.833,5.833,5.833h0.643l58.523-58.523v-0.643	C81.499,20.116,78.882,17.5,75.666,17.5z"/><path fill="#1f212b" d="M22.976,82.499h-0.643c-3.216,0-5.833-2.616-5.833-5.833v-0.643L75.023,17.5h0.643	c3.217,0,5.833,2.616,5.833,5.833v0.643L22.976,82.499z M17.5,76.438v0.229c0,2.665,2.168,4.833,4.833,4.833h0.229l57.938-57.938	v-0.229c0-2.665-2.168-4.833-4.833-4.833h-0.229L17.5,76.438z"/><path fill="#fff" d="M55.426,49.949l-6.476,6.477l26.073,26.073h0.643c3.217,0,5.833-2.616,5.833-5.833v-0.643	L55.426,49.949z"/><path fill="#1f212b" d="M75.667,83H22.333C18.841,83,16,80.159,16,76.667V23.333C16,19.841,18.841,17,22.333,17h53.333	C79.159,17,82,19.841,82,23.333v53.334C82,80.159,79.159,83,75.667,83z M22.333,19C19.944,19,18,20.943,18,23.333v53.334	C18,79.057,19.944,81,22.333,81h53.333C78.056,81,80,79.057,80,76.667V23.333C80,20.943,78.056,19,75.667,19H22.333z"/><path fill="#f15b6c" d="M70.5,67.5c0.552,0,1-0.448,1-1c0-2.5,1.5-9,5.875-16C81.09,44.556,88.5,38,88.5,29.5	c0-9.941-8.059-18-18-18s-18,8.059-18,18c0,8.5,7.41,15.056,11.125,21C68,57.5,69.5,64,69.5,66.5C69.5,67.052,69.948,67.5,70.5,67.5	z"/><circle cx="70.5" cy="29.5" r="7" fill="#b07454"/><path fill="#1f212b" d="M70.5,68c-0.827,0-1.5-0.673-1.5-1.5c0-2.496-1.574-8.976-5.799-15.735	c-0.975-1.56-2.206-3.16-3.51-4.854C56.086,41.223,52,35.911,52,29.5C52,19.299,60.299,11,70.5,11S89,19.299,89,29.5	c0,6.411-4.086,11.723-7.691,16.41c-1.304,1.694-2.535,3.295-3.51,4.854C73.574,57.524,72,64.004,72,66.5	C72,67.327,71.327,68,70.5,68z M70.5,12C60.851,12,53,19.851,53,29.5c0,6.07,3.976,11.239,7.484,15.801	c1.319,1.714,2.564,3.334,3.565,4.935C68.415,57.221,70,63.789,70,66.5c0,0.275,0.224,0.5,0.5,0.5s0.5-0.225,0.5-0.5	c0-2.711,1.585-9.279,5.951-16.265c1-1.601,2.246-3.221,3.565-4.935C84.024,40.739,88,35.57,88,29.5C88,19.851,80.149,12,70.5,12z"/><path fill="#1f212b" d="M70.5,37c-4.136,0-7.5-3.364-7.5-7.5s3.364-7.5,7.5-7.5s7.5,3.364,7.5,7.5S74.636,37,70.5,37z M70.5,23c-3.584,0-6.5,2.916-6.5,6.5s2.916,6.5,6.5,6.5s6.5-2.916,6.5-6.5S74.084,23,70.5,23z"/><path fill="#1f212b" d="M73.5,49.688c-0.087,0-0.176-0.022-0.256-0.071c-0.237-0.142-0.314-0.448-0.173-0.686l0.157-0.266	c0.108-0.184,0.216-0.367,0.331-0.551c1.102-1.762,2.402-3.453,3.779-5.244C80.617,38.608,84,34.211,84,29.5	c0-3.163-1.13-6.244-3.184-8.678c-0.178-0.211-0.151-0.526,0.06-0.704c0.211-0.179,0.526-0.151,0.705,0.06	C83.786,22.791,85,26.102,85,29.5c0,5.051-3.488,9.586-6.862,13.971c-1.369,1.78-2.655,3.452-3.731,5.174	c-0.11,0.176-0.213,0.353-0.317,0.528l-0.161,0.271C73.835,49.601,73.669,49.688,73.5,49.688z"/><path fill="#1f212b" d="M72.5,16.16c-0.024,0-0.048-0.002-0.072-0.005C71.697,16.049,71.084,16,70.5,16	c-0.276,0-0.5-0.224-0.5-0.5s0.224-0.5,0.5-0.5c0.633,0,1.292,0.053,2.072,0.165c0.273,0.04,0.462,0.293,0.423,0.566	C72.959,15.98,72.745,16.16,72.5,16.16z"/><path fill="#1f212b" d="M78.5,18.523c-0.099,0-0.199-0.029-0.286-0.09c-1.183-0.826-2.48-1.453-3.857-1.864	c-0.265-0.079-0.415-0.358-0.336-0.623s0.356-0.412,0.622-0.336c1.479,0.442,2.873,1.116,4.143,2.003	c0.227,0.158,0.282,0.47,0.124,0.696C78.813,18.449,78.657,18.523,78.5,18.523z"/><path fill="#1f212b" d="M75.666,82.499h-0.643l-26.73-26.73l6.476-6.477l12.085,12.086c0.195,0.195,0.195,0.512,0,0.707	s-0.512,0.195-0.707,0L54.768,50.706l-5.062,5.063l25.73,25.73h0.229c2.665,0,4.833-2.168,4.833-4.833v-0.229l-7.353-7.353	c-0.195-0.195-0.195-0.512,0-0.707s0.512-0.195,0.707,0l7.646,7.646v0.643C81.499,79.883,78.882,82.499,75.666,82.499z"/><path fill="#fff" d="M41.368,31.5h-1.113H32.5v4h4.395c-0.911,1.78-2.758,3-4.895,3c-3.038,0-5.5-2.462-5.5-5.5	c0-3.038,2.462-5.5,5.5-5.5c1.413,0,2.698,0.538,3.672,1.413l2.828-2.828l0,0C36.8,24.486,34.518,23.5,32,23.5	c-5.247,0-9.5,4.253-9.5,9.5s4.253,9.5,9.5,9.5c4.38,0,8.058-2.968,9.156-7c0.217-0.798,0.344-1.633,0.344-2.5	C41.5,32.488,41.447,31.99,41.368,31.5z"/><path fill="#1f212b" d="M32,43c-5.514,0-10-4.486-10-10s4.486-10,10-10c2.547,0,4.977,0.966,6.843,2.721	c0.099,0.093,0.156,0.222,0.158,0.356c0.002,0.136-0.051,0.266-0.146,0.361l-2.829,2.828c-0.188,0.188-0.491,0.194-0.688,0.019	C34.416,28.456,33.231,28,32,28c-2.757,0-5,2.243-5,5s2.243,5,5,5c1.595,0,3.061-0.749,3.996-2H32.5c-0.276,0-0.5-0.224-0.5-0.5v-4	c0-0.276,0.224-0.5,0.5-0.5h8.868c0.245,0,0.455,0.178,0.494,0.42C41.955,31.995,42,32.513,42,33c0,0.867-0.122,1.753-0.361,2.632	C40.456,39.97,36.493,43,32,43z M32,24c-4.962,0-9,4.037-9,9s4.038,9,9,9c4.043,0,7.61-2.727,8.674-6.632	C40.89,34.575,41,33.778,41,33c0-0.313-0.021-0.644-0.065-1H33v3h3.895c0.174,0,0.336,0.091,0.427,0.239s0.098,0.334,0.019,0.488	C36.307,37.746,34.261,39,32,39c-3.309,0-6-2.691-6-6s2.691-6,6-6c1.32,0,2.596,0.437,3.641,1.237l2.131-2.131	C36.15,24.744,34.12,24,32,24z"/></svg>
                                                         </a>
                                                     <?php }else{?>
-                                                    &nbsp;
                                                     <?php }?>
+
+                                                </h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5">
+                                                <?php if($editable==0){?>
+                                                    <a onclick="DomilcilioP();"  class="btn btn-primary" title="Domicilio" >
+                                                    Actualizar
+                                                    </a>
+                                                <?php }else{?> &nbsp;<?php }?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </br>
+                                    <div class="row">
+                                        <div class="col-lg-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row" id="domiciliodatos">
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="id_departamento">Departamento</label>
+                                                                    <select class="form-control" name="id_departamento" id="id_departamento" onchange="provincia()" <?php echo $disabled ?>>
+                                                                    <option value="0">Seleccion</option>
+                                                                        <?php foreach($list_departamento as $list){
+                                                                            if(isset($get_id_d[0]) && $get_id_d[0]['id_departamento'] == $list->id_departamento){ ?>
+                                                                            <option selected value="<?php echo $list->id_departamento; ?>"><?php echo $list->nombre_departamento;?></option>
+                                                                        <?php }else{?>
+                                                                        <option value="<?php echo $list->id_departamento; ?>"><?php echo $list->nombre_departamento;?></option>
+                                                                        <?php } } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group" >
+                                                                    <label for="id_provincia">Provincia</label>
+                                                                    <div id="mprovincia">
+                                                                        <select class="form-control" name="id_provincia" id="id_provincia"  onchange="distrito()" <?php echo $disabled ?>>
+                                                                        <option  value="0"  selected>Seleccionar</option>
+                                                                        <?php
+                                                                            foreach($list_provincia as $list){ ?>
+                                                                                <option value="<?php echo $list->id_provincia; ?>"
+                                                                                <?php if(empty($get_id_d[0]) && $get_id_d[0]['id_provincia'] == $list->id_provincia){ echo "selected"; } ?>>
+                                                                                    <?php echo $list->nombre_provincia;?>
+                                                                                </option>
+                                                                            <?php }
+                                                                        ?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="id_distrito">Distrito</label>
+                                                                    <div id="mdistrito">
+                                                                        <select class="form-control" name="id_distrito" id="id_distrito" <?php echo $disabled ?>>
+                                                                        <option  value="0"  selected>Seleccionar</option>
+                                                                        <?php
+                                                                            foreach($list_distrito as $list){ ?>
+                                                                                <option value="<?php echo $list->id_distrito; ?>"
+                                                                                <?php if(empty($get_id_d[0]) && $get_id_d[0]['id_distrito'] == $list->id_distrito){ echo "selected"; } ?>>
+                                                                                    <?php echo $list->nombre_distrito;?>
+                                                                                </option>
+                                                                            <?php }
+                                                                        ?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="id_tipo_via">Tipo de vía</label>
+                                                                    <select class="form-control" name="id_tipo_via" id="id_tipo_via" <?php echo $disabled ?>>
+                                                                    <option  value="0"  selected>Seleccionar</option>
+                                                                    <?php foreach($list_dtipo_via as $list){
+                                                                    if(isset($get_id_d[0]) && $get_id_d[0]['id_tipo_via'] == $list['id_tipo_via']){ ?>
+                                                                    <option selected value="<?php echo $list['id_tipo_via']; ?>"><?php echo $list['nom_tipo_via'];?></option>
+                                                                    <?php }else{?>
+                                                                    <option value="<?php echo $list['id_tipo_via']; ?>"><?php echo $list['nom_tipo_via'];?></option>
+                                                                    <?php } } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="nom_via">Nombre de vía</label>
+                                                                    <input type="text" class="form-control mb-4" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                                                            maxlength = "100" id="nom_via" name="nom_via" value="<?php if(isset($get_id_d['0']['nom_via'])) {echo $get_id_d['0']['nom_via'];}?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-2">
+                                                                <div class="form-group">
+                                                                    <label for="num_via">Número de vía</label>
+                                                                    <input type="text" class="form-control mb-4" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                                                            maxlength = "5" id="num_via" name="num_via" value="<?php if(isset($get_id_d['0']['num_via'])) {echo $get_id_d['0']['num_via'];}?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-2">
+                                                                <div class="form-group">
+                                                                    <label for="num_via">KM</label>
+                                                                    <input type="text" class="form-control mb-4"  maxlength = "5" id="kilometro" name="kilometro" value="<?php if(isset($get_id_d['0']['kilometro'])) {echo $get_id_d['0']['kilometro'];}?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-2">
+                                                                <div class="form-group">
+                                                                    <label for="num_via">MZ</label>
+                                                                    <input type="text" class="form-control mb-4"  maxlength = "5" id="manzana" name="manzana" value="<?php if(isset($get_id_d['0']['manzana'])) {echo $get_id_d['0']['manzana'];}?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                                <div class="form-group">
+                                                                    <label for="num_vivo_en">Interior</label>
+                                                                    <input type="text" class="form-control mb-4"  maxlength = "5" id="interior" name="interior" value="<?php if(isset($get_id_d['0']['interior'])) {echo $get_id_d['0']['interior'];}?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-2">
+                                                                <div class="form-group">
+                                                                    <label for="num_vivo_en">N° Departamento</label>
+                                                                    <input type="text" class="form-control mb-4"  maxlength = "5" id="departamento" name="departamento" value="<?php if(isset($get_id_d['0']['departamento'])) {echo $get_id_d['0']['departamento'];}?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-1">
+                                                                <div class="form-group">
+                                                                    <label for="num_vivo_en">Lote</label>
+                                                                    <input type="text" class="form-control mb-4"  maxlength = "5" id="lote" name="lote" value="<?php if(isset($get_id_d['0']['lote'])) {echo $get_id_d['0']['lote'];}?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-1">
+                                                                <div class="form-group">
+                                                                    <label for="num_vivo_en">Piso</label>
+                                                                    <input type="text" class="form-control mb-4"  maxlength = "2" id="piso" name="piso" value="<?php if(isset($get_id_d['0']['piso'])) {echo $get_id_d['0']['piso'];}?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="id_vivo_en">Tipo de Zona</label>
+                                                                    <select class="form-control" name="id_zona" id="id_zona" <?php echo $disabled ?>>
+                                                                    <option  value="0"  selected>Seleccionar</option>
+                                                                    <?php foreach($list_zona as $list){
+                                                                    if(isset($get_id_d[0]) && $get_id_d[0]['id_zona'] == $list['id_zona']){ ?>
+                                                                    <option selected value="<?php echo $list['id_zona']; ?>"><?php echo $list['nom_zona'];?></option>
+                                                                    <?php }else{?>
+                                                                    <option value="<?php echo $list['id_zona']; ?>"><?php echo $list['nom_zona'];?></option>
+                                                                    <?php } } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="num_vivo_en">Nombre Zona</label>
+                                                                    <input type="text" class="form-control mb-4" id="nom_zona"  maxlength = "150" name="nom_zona" value="<?php if(isset($get_id_d['0']['nom_zona'])) {echo $get_id_d['0']['nom_zona'];}?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="tipovivienda">Tipo de vivienda</label>
+                                                                    <select class="form-control" name="id_tipo_vivienda" id="id_tipo_vivienda" <?php echo $disabled ?>>
+                                                                            <option  value="0"  selected>Seleccionar</option>
+                                                                            <?php foreach($list_dtipo_vivienda as $list){
+                                                                            if(isset($get_id_d[0]) && $get_id_d[0]['id_tipo_vivienda'] == $list['id_tipo_vivienda']){ ?>
+                                                                            <option selected value="<?php echo $list['id_tipo_vivienda']; ?>"><?php echo $list['nom_tipo_vivienda'];?></option>
+                                                                            <?php }else{?>
+                                                                            <option value="<?php echo $list['id_tipo_vivienda']; ?>"><?php echo $list['nom_tipo_vivienda'];?></option>
+                                                                            <?php } } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-8">
+                                                                <div class="form-group">
+                                                                    <label for="referencia">Referencia Domicilio</label>
+                                                                    <input type="text" class="form-control mb-4" id="referenciaa"  maxlength = "150" name="referenciaa" value="<?php if(isset($get_id_d['0']['referencia'])) {echo $get_id_d['0']['referencia'];}?>" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-12">
+                                                        <label for="referencia">Dirección completa</label>
+                                                        <input type="text" class="form-control mb-4" value="<?php if(isset($get_id_d['0']['direccion_completa'])) {echo $get_id_d['0']['direccion_completa'];}?>" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="form-group">
+                                                                    <label for="ubicacion">Ubicación de tu vivienda</label>
+                                                                    <input type="text" class="form-control mb-4" id="autocomplete" name="autocomplete" <?php echo $disabled ?>>
+                                                                    <input type="hidden" id="coordsltd" name="coordsltd" value="<?php if(isset($get_id_d['0']['lat'])) {echo $get_id_d['0']['lat'];} else {echo "-12.0746254";}?>"/>
+                                                                    <input type="hidden" id="coordslgt" name="coordslgt" value="<?php if(isset($get_id_d['0']['lng'])) {echo $get_id_d['0']['lng'];} else {echo "-77.021754";}?>"/>
+                                                                    <div class="col-md-12" id="map"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row" id="mucontactoe">
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="nom_contacto_emer">Nombre de Contacto</label>
-                                                                        <input type="text" class="form-control mb-4 limpiarContactoE" maxlength = "50"  id="nom_contacto" name="nom_contacto" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
 
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="fami_paren">Parentesco</label>
-                                                                        <select class="form-control limpiarefselectContactoE" id="id_parentescoce" name="id_parentescoce" <?php echo $disabled ?>>
-                                                                            <option value="0">Seleccione</option>
-                                                                            <?php
-                                                                            foreach($list_parentesco as $list){ ?>
-                                                                            <option value="<?php echo $list['id_parentesco'] ; ?>">
-                                                                            <?php echo $list['nom_parentesco'];?></option>
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_referenciaf" class="section general-info">
+                            <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6 class="">Referencias Familiares</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5" id="btnReferenciaF">
+                                                <?php if($editable==0){?>
+                                                    <a onclick="ReferenciaF();"  title="Agregar Familiar" class="btn btn-danger">
+                                                    Agregar
+                                                    </a>
+                                                <?php }else{?> &nbsp;<?php }?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row" id="mureferenciaf">
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="nom_familiar">Nombre de Familiar</label>
+                                                                    <input type="text" class="form-control mb-4 limpiaref" maxlength = "150"  id="nom_familiar" name="nom_familiar" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="fami_paren">Parentesco</label>
+                                                                    <select class="form-control limpiarefselect" id="id_parentesco" name="id_parentesco" <?php echo $disabled ?>>
+                                                                        <option value="0">Seleccione</option>
+                                                                        <?php
+                                                                        foreach($list_parentesco as $list){ ?>
+                                                                        <option value="<?php echo $list['id_parentesco'] ; ?>">
+                                                                        <?php echo $list['nom_parentesco'];?></option>
+                                                                        <?php } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label class="naci_familiar">Fecha de Nacimiento</label>
+                                                                <div class="d-sm-flex d-block">
+                                                                    <div class="form-group mr-2">
+                                                                        <select class="form-control limpiarefselect" id="dia_nacf" name="dia_nacf" <?php echo $disabled ?>>
+                                                                        <option value="0">Día</option>
+                                                                        <?php foreach($list_dia as $list){ ?>
+                                                                            <option value="<?php echo $list['cod_dia'] ; ?>">
+                                                                            <?php echo $list['cod_dia'];?></option>
+                                                                        <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group mr-2">
+                                                                        <select class="form-control limpiarefselect" id="mes_nacf" name="mes_nacf" <?php echo $disabled ?>>
+                                                                            <option value="0">Mes</option>
+                                                                            <?php foreach($list_mes as $list){ ?>
+                                                                            <option value="<?php echo $list['cod_mes'] ; ?>">
+                                                                            <?php echo $list['abr_mes'];?></option>
                                                                             <?php } ?>
                                                                         </select>
                                                                     </div>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="familiar_celular">Celular</label>
-                                                                        <input type="number" class="form-control mb-4 limpiarContactoE" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                                                                maxlength = "9"  id="celular1ce" name="celular1ce" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="familiar_celular2">Celular 2</label>
-                                                                        <input type="number" class="form-control mb-4 limpiarContactoE" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                                                                maxlength = "9"  id="celular2ce" name="celular2ce" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="familiar_telefono2">Teléfono Fijo</label>
-                                                                        <input type="number" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                                                            maxlength="15" class="form-control mb-4 limpiarContactoE" id="fijoce" name="fijoce" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="table-responsive" id="mdcontactoe">
-                                                            <?php if(count($list_contactoeu)>0) { ?>
-                                                                <table class="table" id="tableMain3">
-                                                                    <thead>
-                                                                        <tr class="tableheader">
-                                                                        <th>Nombre de Contacto</th>
-                                                                        <th>Parentesco</th>
-                                                                        <th>Celular</th>
-                                                                        <th>Celular 2</th>
-                                                                        <th>Teléfono fijo</th>
-                                                                        <th></th>
-                                                                        <th></th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <?php foreach($list_contactoeu as $list){ ?>
-                                                                        <tr>
-                                                                            <td><?php echo $list['nom_contacto'] ; ?></td>
-                                                                            <td><?php echo $list['nom_parentesco'] ; ?></td>
-                                                                            <td><?php echo $list['celular1'] ; ?></td>
-                                                                            <td><?php echo $list['celular2'] ; ?></td>
-                                                                            <td><?php echo $list['fijo'] ; ?></td>
-                                                                            <td>
-                                                                                <?php if($editable==0){?>
-                                                                                <a href="javascript:void(0);" title="Editar" onclick="Detalle_ContactoE('<?php echo $list['id_contacto_emergencia']; ?>')">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-                                                                                </a>
-                                                                                <?php }?>
-                                                                            </td>
-                                                                            <td>
-                                                                                <?php if($editable==0){?>
-                                                                                <a class="" title="Eliminar" onclick="Delete_Contacto_Emergencia('<?php echo $list['id_contacto_emergencia']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                                                                </a>
-                                                                                <?php }?>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <?php } ?>
-                                                                    </tbody>
-                                                                </table>
-                                                            <?php } ?>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_estudiosg" class="section general-info">
-                                <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Estudios Generales</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5" id="btnEstudiosG">
-                                                    <?php if($editable==0){ ?>
-                                                        <a onclick="EstudiosG();" title="Agregar Estudios Generales" class="btn btn-danger">
-                                                        Agregar
-                                                        </a>
-                                                        <?php }else{?>
-                                                        &nbsp;
-                                                        <?php }?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="row" id="muestudiosg">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="fami_paren">Grado de Instrucción</label>
-                                                                        <select class="form-control" id="id_grado_instruccion" name="id_grado_instruccion" <?php echo $disabled ?>>
-                                                                            <option value="0">Seleccione</option>
-                                                                            <?php
-                                                                            foreach($list_grado_instruccion as $list){ ?>
-                                                                            <option value="<?php echo $list['id_grado_instruccion'] ; ?>">
-                                                                            <?php echo $list['nom_grado_instruccion'];?></option>
-                                                                            <?php } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-8">
-                                                                    <div class="form-group">
-                                                                        <label for="nom_contacto_emer">Carrera de Estudios</label>
-                                                                        <input type="text" class="form-control mb-4" id="carrera" name="carrera" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-8">
-                                                                    <div class="form-group">
-                                                                        <label for="familiar_celular">Centro de Estudios</label>
-                                                                        <input type="text" class="form-control mb-4" id="centro" name="centro" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="documentoe">Adjuntar Documento</label>
-                                                                        <input type="file" class="form-control-file" id="documentoe" name="documentoe" onchange="return validarEstudiosGenerales()" <?php echo $disabled ?>/>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="table-responsive" id="mdestudiosg">
-                                                            <?php if(count($list_estudiosgu)>0) { ?>
-                                                                <table class="table" id="tableMain3">
-                                                                    <thead>
-                                                                        <tr class="tableheader">
-                                                                            <th>Grado de Instrucción</th>
-                                                                            <th>Carrera de Estudios</th>
-                                                                            <th>Centro de Estudios</th>
-                                                                            <th></th>
-                                                                            <th></th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <?php foreach($list_estudiosgu as $list){ ?>
-                                                                        <tr>
-                                                                            <td><?php echo $list['nom_grado_instruccion'] ; ?></td>
-                                                                            <td><?php echo $list['carrera'] ; ?></td>
-                                                                            <td><?php echo $list['centro'] ; ?></td>
-                                                                            <td>
-                                                                                <?php if($editable==0){?>
-                                                                                <a href="javascript:void(0);" title="Editar" onclick="Detalle_EstudiosG('<?php echo $list['id_estudios_generales']; ?>')">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-                                                                                </a>
-                                                                                <?php }?>
-                                                                            </td>
-
-                                                                            <td>
-                                                                                <?php if($list["documentoe"]!=""){
-                                                                                    $img_info=get_headers($url_estudiog[0]['url_config'].$list["documentoe"]);
-                                                                                    if(strpos($img_info[0],'200')!==false){?>
-                                                                                    <a href="javascript:void(0)" style="cursor:pointer;display: -webkit-inline-box;" data-title="Documento de Estudio" data-toggle="modal" data-target="#Modal_IMG_Link" data-imagen="<?php echo $url_estudiog[0]['url_config'].$list["documentoe"]?>" >
-                                                                                        <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/><path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/><path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
-                                                                                    </a>
-                                                                                    <?php }?>
-
-                                                                                <?php }?>
-                                                                            </td>
-
-                                                                            <td>
-                                                                                <?php if($editable==0){?>
-                                                                                <a class="" title="Eliminar" onclick="Delete_EstudiosG('<?php echo $list['id_estudios_generales']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                                                                </a>
-                                                                                <?php }?>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <?php } ?>
-                                                                    </tbody>
-                                                                </table>
-                                                            <?php } ?>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_conoci_office" class="section general-info">
-                                <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Conocimientos de Office</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5">
-                                                        <?php if($editable==0){?>
-                                                        <a onclick="Conoci_Office();"  class="btn btn-primary" title="Conocimientos de Office">
-                                                        Actualizar
-                                                        </a>
-                                                        <?php }else{?> &nbsp;<?php }?>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="row" id="conoci_office">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="nl_excel">Nivel de Excel</label>
-                                                                        <select class="form-control" name="nl_excel" id="nl_excel" <?php echo $disabled ?>>
-                                                                            <option value="0">Seleccion</option>
-                                                                            <?php foreach($list_nivel_instruccion as $list){
-                                                                                if(isset($get_id_c[0]) && $get_id_c[0]['nl_excel'] == $list['id_nivel_instruccion']){ ?>
-                                                                                <option selected value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
-                                                                            <?php }else{?>
-                                                                            <option value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
-                                                                            <?php } } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="nivel_word">Nivel de Word</label>
-                                                                        <select class="form-control" name="nl_word" id="nl_word" <?php echo $disabled ?>>
-                                                                            <option value="0">Seleccion</option>
-                                                                            <?php foreach($list_nivel_instruccion as $list){
-                                                                                if(isset($get_id_c[0]) && $get_id_c[0]['nl_word'] == $list['id_nivel_instruccion']){ ?>
-                                                                                <option selected value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
-                                                                            <?php }else{?>
-                                                                            <option value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
-                                                                            <?php } } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="nivel_ppoint">Nivel de Power Point</label>
-                                                                        <select class="form-control" name="nl_ppoint" id="nl_ppoint" <?php echo $disabled ?>>
-                                                                            <option value="0">Seleccion</option>
-                                                                            <?php foreach($list_nivel_instruccion as $list){
-                                                                                if(isset($get_id_c[0]) && $get_id_c[0]['nl_ppoint'] == $list['id_nivel_instruccion']){ ?>
-                                                                                <option selected value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
-                                                                            <?php }else{?>
-                                                                            <option value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
-                                                                            <?php } } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_conoci_idiomas" class="section general-info">
-                                <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Conocimientos de Idiomas</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5" id="btnIdiomas">
-                                                        <?php if($editable==0){?>
-                                                        <a onclick="Conoci_Idiomas();" title="Agregar Idioma" class="btn btn-danger">
-                                                        Agregar
-                                                        </a>
-                                                        <?php }else{?>&nbsp;<?php }?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="row" id="conoci_idiomas">
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <label for="nom_conoci_idiomas">Idioma</label>
-                                                                        <select class="form-control" name="nom_conoci_idiomas" id="nom_conoci_idiomas" <?php echo $disabled ?>>
-                                                                        <option value="0">Seleccion</option>
-                                                                        <?php foreach($list_idiomas as $list){ ?>
-                                                                        <option value="<?php echo $list['id_idioma']; ?>"><?php echo $list['nom_idioma'];?></option>
-                                                                        <?php } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <label for="lect_conoci_idiomas">Lectura</label>
-                                                                        <select class="form-control" name="lect_conoci_idiomas" id="lect_conoci_idiomas" <?php echo $disabled ?>>
-                                                                        <option value="0">Seleccion</option>
-                                                                        <?php foreach($list_nivel_instruccion as $list){ ?>
-                                                                        <option value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
-                                                                        <?php } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <label for="escrit_conoci_idiomas">Escritura</label>
-                                                                        <select class="form-control" name="escrit_conoci_idiomas" id="escrit_conoci_idiomas" <?php echo $disabled ?>>
-                                                                        <option value="0">Seleccion</option>
-                                                                        <?php foreach($list_nivel_instruccion as $list){ ?>
-                                                                        <option value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
-                                                                        <?php } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <label for="conver_conoci_idiomas">Conversación</label>
-                                                                        <select class="form-control" name="conver_conoci_idiomas" id="conver_conoci_idiomas" <?php echo $disabled ?>>
-                                                                        <option value="0">Seleccion</option>
-                                                                        <?php foreach($list_nivel_instruccion as $list){ ?>
-                                                                        <option value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
-                                                                        <?php } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="table-responsive" id="mdconocimientoi">
-                                                            <?php if(count($listar_idiomas)>0) { ?>
-                                                                <table class="table" id="tableMain3">
-                                                                    <thead>
-                                                                        <tr class="tableheader">
-                                                                            <th>Idioma </th>
-                                                                            <th>Lectura </th>
-                                                                            <th>Escritura</th>
-                                                                            <th>Conversación</th>
-                                                                            <th></th>
-                                                                            <th></th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <?php foreach($listar_idiomas as $list){ ?>
-                                                                        <tr>
-                                                                            <td><?php echo $list['nom_idioma']; ?></td>
-                                                                            <td><?php echo $list['nom_nivel_instruccionl']; ?></td>
-                                                                            <td><?php echo $list['nom_nivel_instruccione']; ?></td>
-                                                                            <td><?php echo $list['nom_nivel_instruccionc']; ?></td>
-                                                                            <td>
-                                                                                <?php if($editable==0){?>
-                                                                                <a href="javascript:void(0);" title="Editar" onclick="Detalle_Conoci_Idiomas('<?php echo $list['id_conoci_idiomas']; ?>')">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-                                                                                </a>
-                                                                                <?php }?>
-                                                                            </td>
-                                                                            <td>
-                                                                                <?php if($editable==0){?>
-                                                                                <a class="" title="Eliminar" onclick="Delete_Conoci_Idiomas('<?php echo $list['id_conoci_idiomas']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                                                                </a>
-                                                                                <?php }?>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <?php } ?>
-                                                                    </tbody>
-                                                                </table>
-                                                            <?php } ?>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_cursosc" class="section general-info">
-                                    <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Cursos Complementarios</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5" id="btnCursosC">
-                                                    <?php if($editable==0){?>
-                                                        <a onclick="CursosC();" title="Agregar Curso Complementario" class="btn btn-danger">
-                                                        Agregar
-                                                        </a>
-                                                        <?php }else{?>&nbsp;<?php }?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="row" id="mucursos">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="cursos_complemetarios">Cursos/Conocimientos Complementarios</label>
-                                                                        <input type="text" class="form-control mb-4" id="nom_curso_complementario" name="nom_curso_complementario" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="fami_paren">Año</label>
-                                                                        <select class="form-control" id="aniocc" name="aniocc" <?php echo $disabled ?>>
-                                                                        <option value="0">Seleccionar</option>
-                                                                        <option value="1">Actualidad</option>
+                                                                    <div class="form-group mr-2">
+                                                                        <select class="form-control limpiarefselect" id="anio_nacf" name="anio_nacf" <?php echo $disabled ?>>
+                                                                        <option value="0">Año</option>
                                                                         <?php foreach($list_anio as $list){ ?>
                                                                         <option value="<?php echo $list['cod_anio'] ; ?>">
                                                                         <?php echo $list['cod_anio'];?></option>
@@ -2246,37 +1311,1360 @@ if($get_id[0]['edicion_perfil']==1){
                                                                         </select>
                                                                     </div>
                                                                 </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="familiar_celular">Celular</label>
+                                                                    <input type="number" class="form-control mb-4 limpiaref" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                                                            maxlength = "9"  id="celular1" name="celular1" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
 
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="adj_certifi">Adjuntar Certificado</label>
-                                                                        <input type="file" class="form-control-file" id="certificado" name="certificado" onchange="return validarCursosComplementarios()" <?php echo $disabled ?>/>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="familiar_celular2">Celular 2</label>
+                                                                    <input type="number" class="form-control mb-4 limpiaref" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                                                            maxlength = "9"  id="celular2" name="celular2" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
 
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="familiar_telefono2">Teléfono Fijo</label>
+                                                                    <input type="number" class="form-control mb-4 limpiaref" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                                                            maxlength = "15"  id="fijo" name="fijo" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive" id="mdreferenciaf">
+                                                            <?php if(count($list_referenciafu)>0) { ?>
+                                                            <table class="table" id="tableMain3">
+                                                                <thead>
+                                                                    <tr class="tableheader">
+                                                                        <th>Nombre de Familiar</th>
+                                                                        <th>Parentesco</th>
+                                                                        <th>Fecha de Nacimiento</th>
+                                                                        <th>Celular</th>
+                                                                        <th>Celular 2</th>
+                                                                        <th>Teléfono fijo</th>
+                                                                        <th></th>
+                                                                        <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <?php foreach($list_referenciafu as $list){ ?>
+                                                                    <tr>
+                                                                        <td><?php echo $list['nom_familiar'] ; ?></td>
+                                                                        <td><?php echo $list['nom_parentesco'] ; ?></td>
+                                                                        <td><?php echo $list['dia_nac']."/".$list['mes_nac']."/".$list['anio_nac'] ; ?></td>
+                                                                        <td><?php echo $list['celular1'] ; ?></td>
+                                                                        <td><?php echo $list['celular2'] ; ?></td>
+                                                                        <td><?php echo $list['fijo'] ; ?></td>
+                                                                        <td>
+                                                                            <?php if($editable==0){?>
+                                                                            <a href="javascript:void(0);" title="Editar" onclick="Detalle_Referencia_Familiar('<?php echo $list['id_referencia_familiar']; ?>')">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
+                                                                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                                                            </svg>
+                                                                            </a>
+                                                                            <?php }?>
+                                                                        </td>
+                                                                        <td>
+                                                                            <?php if($editable==0){?>
+                                                                            <a title="Eliminar" onclick="Delete_Referencia_Familiar('<?php echo $list['id_referencia_familiar']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                                            </a>
+                                                                            <?php }?>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <?php } ?>
+                                                                </tbody>
+                                                            </table>
+                                                            <?php } ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_hijos" class="section general-info">
+                            <input type="hidden" id="id_usuarioh" name="id_usuarioh" class="form-control"  value="<?php echo $get_id[0]['id_usuario']; ?>">
+
+
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6 class="">Datos de hijos/as</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5" id="btnHijos">
+                                                <?php if($editable==0){
+                                                    if(isset($list_usuario['0']['hijos']) && $list_usuario[0]['hijos'] == 1){?>
+                                                        <a onclick='Hijos();' title='Agregar Hijos' class='btn btn-danger'>Agregar</a>
+                                                    <?php }else{?>
+                                                        <a onclick='Update_Hijos();' title='Actualizar Hijo' class='btn btn-primary'>Actualizar</a>
+                                                    <?php }}else{?> &nbsp;<?php }?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row" id="muhijos">
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                                <div class="form-group">
+                                                                    <label for="nacionalidad">Respuesta</label>
+                                                                    <select class="form-control" id="id_respuestah" name="id_respuestah" onchange="ValidaH();" <?php echo $disabled ?>>
+                                                                    <option value="0">Seleccione</option>
+                                                                    <option value="1" <?php if(isset($list_usuario['0']['hijos']) && $list_usuario[0]['hijos'] == 1){ echo "selected";} ?>>SÍ</option>
+                                                                    <option value="2" <?php if(isset($list_usuario['0']['hijos']) && $list_usuario[0]['hijos'] == 2){ echo "selected";} ?>>NO</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="nom_familiar">Nombre de Hijo</label>
+                                                                    <input type="text" class="form-control mb-4 limpiarhijos" maxlength = "150"  id="nom_hijo" name="nom_hijo" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <div class="form-group">
+                                                                    <label for="fami_paren">Genero</label>
+                                                                    <select class="form-control limpiarefselecthijos" id="id_generoh" name="id_generoh" <?php echo $disabled ?>>
+                                                                        <option value="0">Seleccione</option>
+                                                                        <?php
+                                                                        foreach($list_genero as $list){ ?>
+                                                                        <option value="<?php echo $list['id_genero'] ; ?>">
+                                                                        <?php echo $list['nom_genero'];?></option>
+                                                                        <?php } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label class="naci_familiar">Fecha de Nacimiento</label>
+                                                                <div class="d-sm-flex d-block">
+                                                                    <div class="form-group mr-2">
+                                                                        <select class="form-control limpiarefselecthijos" id="dia_nachj" name="dia_nachj" <?php echo $disabled ?>>
+                                                                        <option value="0">Día</option>
+                                                                        <?php foreach($list_dia as $list){ ?>
+                                                                            <option value="<?php echo $list['cod_dia'] ; ?>">
+                                                                            <?php echo $list['cod_dia'];?></option>
+                                                                        <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group mr-2">
+                                                                        <select class="form-control limpiarefselecthijos" id="mes_nachj" name="mes_nachj" <?php echo $disabled ?>>
+                                                                            <option value="0">Mes</option>
+                                                                            <?php foreach($list_mes as $list){ ?>
+                                                                            <option value="<?php echo $list['cod_mes'] ; ?>">
+                                                                            <?php echo $list['abr_mes'];?></option>
+                                                                            <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group mr-2">
+                                                                        <select class="form-control limpiarefselecthijos" id="anio_nachj" name="anio_nachj" <?php echo $disabled ?>>
+                                                                        <option value="0">Año</option>
+                                                                        <?php foreach($list_anio as $list){ ?>
+                                                                        <option value="<?php echo $list['cod_anio'] ; ?>">
+                                                                        <?php echo $list['cod_anio'];?></option>
+                                                                        <?php } ?>
+                                                                        </select>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-12">
-                                                            <div class="table-responsive" id="mdcursos">
-                                                            <?php if(count($listar_cursosc)>0) { ?>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="familiar_celular">DNI</label>
+                                                                            <input type="number" class="form-control mb-4 limpiarhijos" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                                                            maxlength="8" id="num_dochj" name="num_dochj" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="familiar_celular2">Biológico/No Biológico</label>
+                                                                    <select class="form-control limpiarefselecthijos" id="id_biologico" name="id_biologico" <?php echo $disabled ?>>
+                                                                    <option value="0">Seleccione</option>
+                                                                    <option value="1">SÍ</option>
+                                                                    <option value="2">NO</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="documento">Adjuntar DNI</label>
+                                                                    <input type="file" class="form-control-file adjuntardnihijo" id="documento" name="documento" onchange="return validarFotoHijo()" <?php echo $disabled ?>/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive" id="mdhijos">
+                                                        <?php if(count($list_hijosu)>0) { ?>
+                                                            <table class="table" id="tableMain3">
+                                                                <thead>
+                                                                    <tr class="tableheader">
+                                                                    <th>Nombre de Hijo/a</th>
+                                                                    <th>Género</th>
+                                                                    <th>Fecha de Nacimiento</th>
+                                                                    <th>DNI</th>
+                                                                    <th>Biológico</th>
+                                                                    <th></th>
+                                                                    <th></th>
+                                                                    <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <?php foreach($list_hijosu as $list){ ?>
+                                                                    <tr>
+                                                                        <td><?php echo $list['nom_hijo'] ; ?></td>
+                                                                        <td><?php echo $list['nom_genero'] ; ?></td>
+                                                                        <td><?php echo $list['dia_nac']."/".$list['mes_nac']."/".$list['anio_nac'] ; ?></td>
+                                                                        <td><?php echo $list['num_doc'] ; ?></td>
+                                                                        <td><?php if ($list['id_biologico']==1){echo "SÍ";} elseif ($list['id_biologico']==2){echo "NO";} ?></td>
+                                                                        <td>
+                                                                            <?php if($editable==0){?>
+                                                                            <a href="javascript:void(0);" title="Editar" onclick="Detalle_Hijos_Usuario('<?php echo $list['id_hijos']; ?>')">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
+                                                                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                                                            </svg>
+                                                                            </a>
+                                                                            <?php }?>
+                                                                        </td>
+                                                                        <td>
+                                                                            <?php if($list['documento']!=""){
+                                                                                $image_info = get_headers($url_dochijo[0]['url_config'].$list['documento']);
+                                                                                if (strpos($image_info[0], '200') !== false) {?>
+                                                                                <a style="cursor:pointer;display: -webkit-inline-box;" title="DNI vista" data-toggle="modal" data-target="#Modal_IMG_Link" data-imagen="<?php echo $url_dochijo[0]['url_config'].$list['documento']?>">
+                                                                                    <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533 s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/><path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/><path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
+                                                                                </a>
+                                                                                <?php } }?>
+                                                                        </td>
+                                                                        <td>
+                                                                            <?php if($editable==0){?>
+                                                                            <a style="cursor:pointer;" title="Eliminar" onclick="Delete_Hijos_Usuario('<?php echo $list['id_hijos']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                                            </a>
+                                                                            <?php }?>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <?php } ?>
+                                                                </tbody>
+                                                            </table>
+                                                        <?php } ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_contactoe" class="section general-info">
+                            <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6 class="">Contacto de Emergencia</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5" id="btnContactoE">
+                                                <?php if($editable==0){ ?>
+                                                    <a onclick="ContactoE();" title="Agregar Contacto de Emergencia" class="btn btn-danger">
+                                                    Agregar
+                                                    </a>
+                                                <?php }else{?>
+                                                &nbsp;
+                                                <?php }?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row" id="mucontactoe">
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="nom_contacto_emer">Nombre de Contacto</label>
+                                                                    <input type="text" class="form-control mb-4 limpiarContactoE" maxlength = "50"  id="nom_contacto" name="nom_contacto" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="fami_paren">Parentesco</label>
+                                                                    <select class="form-control limpiarefselectContactoE" id="id_parentescoce" name="id_parentescoce" <?php echo $disabled ?>>
+                                                                        <option value="0">Seleccione</option>
+                                                                        <?php
+                                                                        foreach($list_parentesco as $list){ ?>
+                                                                        <option value="<?php echo $list['id_parentesco'] ; ?>">
+                                                                        <?php echo $list['nom_parentesco'];?></option>
+                                                                        <?php } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="familiar_celular">Celular</label>
+                                                                    <input type="number" class="form-control mb-4 limpiarContactoE" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                                                            maxlength = "9"  id="celular1ce" name="celular1ce" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="familiar_celular2">Celular 2</label>
+                                                                    <input type="number" class="form-control mb-4 limpiarContactoE" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                                                            maxlength = "9"  id="celular2ce" name="celular2ce" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="familiar_telefono2">Teléfono Fijo</label>
+                                                                    <input type="number" min="1" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                                                        maxlength="15" class="form-control mb-4 limpiarContactoE" id="fijoce" name="fijoce" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive" id="mdcontactoe">
+                                                        <?php if(count($list_contactoeu)>0) { ?>
+                                                            <table class="table" id="tableMain3">
+                                                                <thead>
+                                                                    <tr class="tableheader">
+                                                                    <th>Nombre de Contacto</th>
+                                                                    <th>Parentesco</th>
+                                                                    <th>Celular</th>
+                                                                    <th>Celular 2</th>
+                                                                    <th>Teléfono fijo</th>
+                                                                    <th></th>
+                                                                    <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <?php foreach($list_contactoeu as $list){ ?>
+                                                                    <tr>
+                                                                        <td><?php echo $list['nom_contacto'] ; ?></td>
+                                                                        <td><?php echo $list['nom_parentesco'] ; ?></td>
+                                                                        <td><?php echo $list['celular1'] ; ?></td>
+                                                                        <td><?php echo $list['celular2'] ; ?></td>
+                                                                        <td><?php echo $list['fijo'] ; ?></td>
+                                                                        <td>
+                                                                            <?php if($editable==0){?>
+                                                                            <a href="javascript:void(0);" title="Editar" onclick="Detalle_ContactoE('<?php echo $list['id_contacto_emergencia']; ?>')">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                                                                            </a>
+                                                                            <?php }?>
+                                                                        </td>
+                                                                        <td>
+                                                                            <?php if($editable==0){?>
+                                                                            <a class="" title="Eliminar" onclick="Delete_Contacto_Emergencia('<?php echo $list['id_contacto_emergencia']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                                            </a>
+                                                                            <?php }?>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <?php } ?>
+                                                                </tbody>
+                                                            </table>
+                                                        <?php } ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_estudiosg" class="section general-info">
+                            <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6 class="">Estudios Generales</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5" id="btnEstudiosG">
+                                                <?php if($editable==0){ ?>
+                                                    <a onclick="EstudiosG();" title="Agregar Estudios Generales" class="btn btn-danger">
+                                                    Agregar
+                                                    </a>
+                                                    <?php }else{?>
+                                                    &nbsp;
+                                                    <?php }?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row" id="muestudiosg">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="fami_paren">Grado de Instrucción</label>
+                                                                    <select class="form-control" id="id_grado_instruccion" name="id_grado_instruccion" <?php echo $disabled ?>>
+                                                                        <option value="0">Seleccione</option>
+                                                                        <?php
+                                                                        foreach($list_grado_instruccion as $list){ ?>
+                                                                        <option value="<?php echo $list['id_grado_instruccion'] ; ?>">
+                                                                        <?php echo $list['nom_grado_instruccion'];?></option>
+                                                                        <?php } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-8">
+                                                                <div class="form-group">
+                                                                    <label for="nom_contacto_emer">Carrera de Estudios</label>
+                                                                    <input type="text" class="form-control mb-4" id="carrera" name="carrera" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-8">
+                                                                <div class="form-group">
+                                                                    <label for="familiar_celular">Centro de Estudios</label>
+                                                                    <input type="text" class="form-control mb-4" id="centro" name="centro" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="documentoe">Adjuntar Documento</label>
+                                                                    <input type="file" class="form-control-file" id="documentoe" name="documentoe" onchange="return validarEstudiosGenerales()" <?php echo $disabled ?>/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive" id="mdestudiosg">
+                                                        <?php if(count($list_estudiosgu)>0) { ?>
+                                                            <table class="table" id="tableMain3">
+                                                                <thead>
+                                                                    <tr class="tableheader">
+                                                                        <th>Grado de Instrucción</th>
+                                                                        <th>Carrera de Estudios</th>
+                                                                        <th>Centro de Estudios</th>
+                                                                        <th></th>
+                                                                        <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <?php foreach($list_estudiosgu as $list){ ?>
+                                                                    <tr>
+                                                                        <td><?php echo $list['nom_grado_instruccion'] ; ?></td>
+                                                                        <td><?php echo $list['carrera'] ; ?></td>
+                                                                        <td><?php echo $list['centro'] ; ?></td>
+                                                                        <td>
+                                                                            <?php if($editable==0){?>
+                                                                            <a href="javascript:void(0);" title="Editar" onclick="Detalle_EstudiosG('<?php echo $list['id_estudios_generales']; ?>')">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                                                                            </a>
+                                                                            <?php }?>
+                                                                        </td>
+
+                                                                        <td>
+                                                                            <?php if($list["documentoe"]!=""){
+                                                                                $img_info=get_headers($url_estudiog[0]['url_config'].$list["documentoe"]);
+                                                                                if(strpos($img_info[0],'200')!==false){?>
+                                                                                <a href="javascript:void(0)" style="cursor:pointer;display: -webkit-inline-box;" data-title="Documento de Estudio" data-toggle="modal" data-target="#Modal_IMG_Link" data-imagen="<?php echo $url_estudiog[0]['url_config'].$list["documentoe"]?>" >
+                                                                                    <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/><path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/><path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
+                                                                                </a>
+                                                                                <?php }?>
+
+                                                                            <?php }?>
+                                                                        </td>
+
+                                                                        <td>
+                                                                            <?php if($editable==0){?>
+                                                                            <a class="" title="Eliminar" onclick="Delete_EstudiosG('<?php echo $list['id_estudios_generales']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                                            </a>
+                                                                            <?php }?>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <?php } ?>
+                                                                </tbody>
+                                                            </table>
+                                                        <?php } ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_conoci_office" class="section general-info">
+                            <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6 class="">Conocimientos de Office</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5">
+                                                    <?php if($editable==0){?>
+                                                    <a onclick="Conoci_Office();"  class="btn btn-primary" title="Conocimientos de Office">
+                                                    Actualizar
+                                                    </a>
+                                                    <?php }else{?> &nbsp;<?php }?>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row" id="conoci_office">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="nl_excel">Nivel de Excel</label>
+                                                                    <select class="form-control" name="nl_excel" id="nl_excel" <?php echo $disabled ?>>
+                                                                        <option value="0">Seleccion</option>
+                                                                        <?php foreach($list_nivel_instruccion as $list){
+                                                                            if(isset($get_id_c[0]) && $get_id_c[0]['nl_excel'] == $list['id_nivel_instruccion']){ ?>
+                                                                            <option selected value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
+                                                                        <?php }else{?>
+                                                                        <option value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
+                                                                        <?php } } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="nivel_word">Nivel de Word</label>
+                                                                    <select class="form-control" name="nl_word" id="nl_word" <?php echo $disabled ?>>
+                                                                        <option value="0">Seleccion</option>
+                                                                        <?php foreach($list_nivel_instruccion as $list){
+                                                                            if(isset($get_id_c[0]) && $get_id_c[0]['nl_word'] == $list['id_nivel_instruccion']){ ?>
+                                                                            <option selected value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
+                                                                        <?php }else{?>
+                                                                        <option value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
+                                                                        <?php } } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="nivel_ppoint">Nivel de Power Point</label>
+                                                                    <select class="form-control" name="nl_ppoint" id="nl_ppoint" <?php echo $disabled ?>>
+                                                                        <option value="0">Seleccion</option>
+                                                                        <?php foreach($list_nivel_instruccion as $list){
+                                                                            if(isset($get_id_c[0]) && $get_id_c[0]['nl_ppoint'] == $list['id_nivel_instruccion']){ ?>
+                                                                            <option selected value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
+                                                                        <?php }else{?>
+                                                                        <option value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
+                                                                        <?php } } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_conoci_idiomas" class="section general-info">
+                            <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6 class="">Conocimientos de Idiomas</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5" id="btnIdiomas">
+                                                    <?php if($editable==0){?>
+                                                    <a onclick="Conoci_Idiomas();" title="Agregar Idioma" class="btn btn-danger">
+                                                    Agregar
+                                                    </a>
+                                                    <?php }else{?>&nbsp;<?php }?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row" id="conoci_idiomas">
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="nom_conoci_idiomas">Idioma</label>
+                                                                    <select class="form-control" name="nom_conoci_idiomas" id="nom_conoci_idiomas" <?php echo $disabled ?>>
+                                                                    <option value="0">Seleccion</option>
+                                                                    <?php foreach($list_idiomas as $list){ ?>
+                                                                    <option value="<?php echo $list['id_idioma']; ?>"><?php echo $list['nom_idioma'];?></option>
+                                                                    <?php } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="lect_conoci_idiomas">Lectura</label>
+                                                                    <select class="form-control" name="lect_conoci_idiomas" id="lect_conoci_idiomas" <?php echo $disabled ?>>
+                                                                    <option value="0">Seleccion</option>
+                                                                    <?php foreach($list_nivel_instruccion as $list){ ?>
+                                                                    <option value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
+                                                                    <?php } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="escrit_conoci_idiomas">Escritura</label>
+                                                                    <select class="form-control" name="escrit_conoci_idiomas" id="escrit_conoci_idiomas" <?php echo $disabled ?>>
+                                                                    <option value="0">Seleccion</option>
+                                                                    <?php foreach($list_nivel_instruccion as $list){ ?>
+                                                                    <option value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
+                                                                    <?php } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="conver_conoci_idiomas">Conversación</label>
+                                                                    <select class="form-control" name="conver_conoci_idiomas" id="conver_conoci_idiomas" <?php echo $disabled ?>>
+                                                                    <option value="0">Seleccion</option>
+                                                                    <?php foreach($list_nivel_instruccion as $list){ ?>
+                                                                    <option value="<?php echo $list['id_nivel_instruccion']; ?>"><?php echo $list['nom_nivel_instruccion'];?></option>
+                                                                    <?php } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive" id="mdconocimientoi">
+                                                        <?php if(count($listar_idiomas)>0) { ?>
+                                                            <table class="table" id="tableMain3">
+                                                                <thead>
+                                                                    <tr class="tableheader">
+                                                                        <th>Idioma </th>
+                                                                        <th>Lectura </th>
+                                                                        <th>Escritura</th>
+                                                                        <th>Conversación</th>
+                                                                        <th></th>
+                                                                        <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <?php foreach($listar_idiomas as $list){ ?>
+                                                                    <tr>
+                                                                        <td><?php echo $list['nom_idioma']; ?></td>
+                                                                        <td><?php echo $list['nom_nivel_instruccionl']; ?></td>
+                                                                        <td><?php echo $list['nom_nivel_instruccione']; ?></td>
+                                                                        <td><?php echo $list['nom_nivel_instruccionc']; ?></td>
+                                                                        <td>
+                                                                            <?php if($editable==0){?>
+                                                                            <a href="javascript:void(0);" title="Editar" onclick="Detalle_Conoci_Idiomas('<?php echo $list['id_conoci_idiomas']; ?>')">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                                                                            </a>
+                                                                            <?php }?>
+                                                                        </td>
+                                                                        <td>
+                                                                            <?php if($editable==0){?>
+                                                                            <a class="" title="Eliminar" onclick="Delete_Conoci_Idiomas('<?php echo $list['id_conoci_idiomas']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                                            </a>
+                                                                            <?php }?>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <?php } ?>
+                                                                </tbody>
+                                                            </table>
+                                                        <?php } ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_cursosc" class="section general-info">
+                                <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6 class="">Cursos Complementarios</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5" id="btnCursosC">
+                                                <?php if($editable==0){?>
+                                                    <a onclick="CursosC();" title="Agregar Curso Complementario" class="btn btn-danger">
+                                                    Agregar
+                                                    </a>
+                                                    <?php }else{?>&nbsp;<?php }?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row" id="mucursos">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="cursos_complemetarios">Cursos/Conocimientos Complementarios</label>
+                                                                    <input type="text" class="form-control mb-4" id="nom_curso_complementario" name="nom_curso_complementario" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="fami_paren">Año</label>
+                                                                    <select class="form-control" id="aniocc" name="aniocc" <?php echo $disabled ?>>
+                                                                    <option value="0">Seleccionar</option>
+                                                                    <option value="1">Actualidad</option>
+                                                                    <?php foreach($list_anio as $list){ ?>
+                                                                    <option value="<?php echo $list['cod_anio'] ; ?>">
+                                                                    <?php echo $list['cod_anio'];?></option>
+                                                                    <?php } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="adj_certifi">Adjuntar Certificado</label>
+                                                                    <input type="file" class="form-control-file" id="certificado" name="certificado" onchange="return validarCursosComplementarios()" <?php echo $disabled ?>/>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive" id="mdcursos">
+                                                        <?php if(count($listar_cursosc)>0) { ?>
+                                                            <table class="table" id="tableMain3">
+                                                                <thead>
+                                                                    <tr class="tableheader">
+                                                                        <th>Curso / Conocimiento</th>
+                                                                        <th>Año</th>
+                                                                        <th></th>
+                                                                        <th></th>
+                                                                        <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <?php foreach($listar_cursosc as $list){ ?>
+                                                                    <tr>
+                                                                        <td><?php echo $list['nom_curso_complementario'] ; ?></td>
+                                                                        <td><?php if($list['anio']=="1"){echo "Actualidad";} else{echo $list['anio'] ;} ?></td>
+                                                                        <td>
+                                                                            <?php if($editable==0){?>
+                                                                            <a href="javascript:void(0);" title="Editar" onclick="Detalle_CursosC('<?php echo $list['id_curso_complementario']; ?>')">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
+                                                                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                                                            </svg>
+                                                                            </a>
+                                                                            <?php }?>
+                                                                        </td>
+                                                                        <td>
+                                                                            <?php $img_info=get_headers($url_cursosc[0]['url_config'].$list['certificado']);
+                                                                            if($list['certificado']!=""){
+                                                                            if(strpos($img_info[0],'200')!==false){?>
+                                                                                <a style="cursor:pointer;display: -webkit-inline-box;" data-title="Certificado" data-toggle="modal" data-target="#Modal_IMG_Link" data-imagen="<?php echo $url_cursosc[0]['url_config'].$list['certificado']?>" >
+                                                                                    <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533 s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/><path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/><path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
+                                                                                </a>
+                                                                            <?php } }?>
+                                                                        </td>
+                                                                        <td>
+                                                                            <?php if($editable==0){?>
+                                                                            <a class="" title="Eliminar" onclick="Delete_CursosC('<?php echo $list['id_curso_complementario']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
+                                                                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                                                    <line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>
+                                                                                </svg>
+                                                                            </a>
+                                                                            <?php }?>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <?php } ?>
+                                                                </tbody>
+                                                            </table>
+                                                        <?php } ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_experiencial" class="section general-info">
+                            <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6 class="">Experiencia Laboral</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5" id="btnExperenciaL">
+                                                <?php if($editable==0){?>
+                                                    <a onclick="ExperenciaL();" title="Agregar Experiencia Laboral" class="btn btn-danger">
+                                                    Agregar
+                                                    </a>
+                                                <?php }else{?> &nbsp;<?php }?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row" id="muexperiencial">
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="nom_familiar">Empresa</label>
+                                                                    <input type="text" class="form-control mb-4" id="empresaex" name="empresaex" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="nom_familiar">Cargo</label>
+                                                                    <input type="text" class="form-control mb-4" id="cargoex" name="cargoex" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <label class="naci_familiar">Fecha de Inicio</label>
+                                                                <div class="d-sm-flex d-block">
+                                                                    <div class="form-group mr-2">
+                                                                        <select class="form-control" id="dia_iniel" name="dia_iniel" <?php echo $disabled ?>>
+                                                                        <option value="0">Día</option>
+                                                                        <?php foreach($list_dia as $list){ ?>
+                                                                            <option value="<?php echo $list['cod_dia'] ; ?>">
+                                                                            <?php echo $list['cod_dia'];?></option>
+                                                                        <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group mr-2">
+                                                                        <select class="form-control" id="mes_iniel" name="mes_iniel" <?php echo $disabled ?>>
+                                                                            <option value="0">Mes</option>
+                                                                            <?php foreach($list_mes as $list){ ?>
+                                                                            <option value="<?php echo $list['cod_mes'] ; ?>">
+                                                                            <?php echo $list['abr_mes'];?></option>
+                                                                            <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group mr-2">
+                                                                        <select class="form-control" id="anio_iniel" name="anio_iniel" <?php echo $disabled ?>>
+                                                                        <option value="0">Año</option>
+                                                                        <?php foreach($list_anio as $list){ ?>
+                                                                        <option value="<?php echo $list['cod_anio'] ; ?>">
+                                                                        <?php echo $list['cod_anio'];?></option>
+                                                                        <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <label class="naci_familiar">Fecha de Fin <input type="checkbox" id="checkactualidad" name="checkactualidad" value="1" <?php echo $disabled ?> /> <b>Actualidad</b></label>
+
+                                                                <div class="d-sm-flex d-block">
+                                                                    <div class="form-group mr-2">
+                                                                        <select class="form-control" id="dia_finel" name="dia_finel" <?php echo $disabled ?> >
+                                                                        <option value="0">Día</option>
+                                                                        <?php foreach($list_dia as $list){ ?>
+                                                                            <option value="<?php echo $list['cod_dia'] ; ?>">
+                                                                            <?php echo $list['cod_dia'];?></option>
+                                                                        <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group mr-2">
+                                                                        <select class="form-control" id="mes_finel" name="mes_finel" <?php echo $disabled ?>>
+                                                                            <option value="0">Mes</option>
+                                                                            <?php foreach($list_mes as $list){ ?>
+                                                                            <option value="<?php echo $list['cod_mes'] ; ?>">
+                                                                            <?php echo $list['abr_mes'];?></option>
+                                                                            <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group mr-2">
+                                                                        <select class="form-control" id="anio_finel" name="anio_finel" <?php echo $disabled ?>>
+                                                                        <option value="0">Año</option>
+                                                                        <?php foreach($list_anio as $list){ ?>
+                                                                        <option value="<?php echo $list['cod_anio'] ; ?>">
+                                                                        <?php echo $list['cod_anio'];?></option>
+                                                                        <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="fami_paren">Motivo de Salida</label>
+                                                                    <input type="text" class="form-control mb-4" id="motivo_salida" name="motivo_salida" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="familiar_celular">Importe de remuneración</label>
+                                                                    <input type="text" class="form-control mb-4" id="remuneracion" name="remuneracion" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="familiar_celular2">Nombre de referencia laboral</label>
+                                                                    <input type="text" class="form-control mb-4" id="nom_referencia_labores" name="nom_referencia_labores" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="familiar_celular">Número de Contacto de la empresa</label>
+                                                                    <input type="number" class="form-control mb-4" id="num_contacto" name="num_contacto" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="dni_img">Adjuntar Certificado</label>
+                                                                    <input type="file" class="form-control-file" id="certificadolb" name="certificadolb" onchange="return validarExperiecnciaLaboral()" <?php echo $disabled ?>/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive" id="mdexperiencial">
+                                                        <?php if(count($list_experiencial)>0) { ?>
+                                                            <table class="table" id="tableMain3">
+                                                                <thead>
+                                                                    <tr class="tableheader">
+                                                                    <th>Empresa</th>
+                                                                    <th>Cargo</th>
+                                                                    <th>Fecha de Inicio</th>
+                                                                    <th>Fecha de Fin</th>
+                                                                    <th>Motivo de Salida</th>
+                                                                    <th>Remuneración</th>
+                                                                    <th>Referencia Laboral</th>
+                                                                    <th>Número de Contacto</th>
+                                                                    <th></th>
+                                                                    <th></th>
+                                                                    <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <?php foreach($list_experiencial as $list){ ?>
+                                                                    <tr>
+                                                                        <td><?php echo $list['empresa'] ; ?></td>
+                                                                        <td><?php echo $list['cargo'] ; ?></td>
+                                                                        <td><?php echo $list['dia_ini']."/".$list['mes_ini']."/".$list['anio_ini'] ; ?></td>
+                                                                        <td><?php if($list['actualidad']=="1"){echo "Actualidad";} else{echo $list['dia_fin']."/".$list['mes_fin']."/".$list['anio_fin'] ;} ?></td>
+                                                                        <td><?php echo $list['motivo_salida'] ; ?></td>
+                                                                        <td><?php echo $list['remuneracion'] ; ?></td>
+                                                                        <td><?php echo $list['nom_referencia_labores'] ; ?></td>
+                                                                        <td><?php echo $list['num_contacto'] ; ?></td>
+                                                                        <td>
+                                                                            <?php if($editable==0){?>
+                                                                            <a href="javascript:void(0);" title="Editar" onclick="Detalle_ExperenciaL('<?php echo $list['id_experiencia_laboral']; ?>')">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                                                                            </a>
+                                                                            <?php } ?>
+                                                                        </td>
+                                                                        <td>
+                                                                            <?php if($list["certificado"]!=""){
+                                                                                $img_info=get_headers($url_exp[0]['url_config'].$list["certificado"]);
+                                                                                if(strpos($img_info[0],'200')!==false){?>
+                                                                                <a style="cursor:pointer;display: -webkit-inline-box;" data-title="Certificado Laboral" data-toggle="modal" data-target="#Modal_IMG_Link" data-imagen="<?php echo $url_exp[0]['url_config'].$list["certificado"]?>" >
+                                                                                    <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/><path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/><path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
+                                                                                </a>
+                                                                            <?php } } ?>
+                                                                        </td>
+                                                                        <td>
+                                                                            <?php if($editable==0){?>
+                                                                            <a class="" title="Eliminar" onclick="Delete_ExperenciaL('<?php echo $list['id_experiencia_laboral']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                                            </a>
+                                                                            <?php } ?>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <?php } ?>
+                                                                </tbody>
+                                                            </table>
+                                                        <?php } ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_enfermedades" class="section general-info">
+                            <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6 class="">Enfermedades</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5" id="btnEnfermedades">
+                                                <?php if($editable==0){
+                                                    if(isset($list_usuario[0]['enfermedades']) && $list_usuario[0]['enfermedades'] == 1){?>
+                                                        <a onclick="Enfermedades();" title="Agregar Enfermedad" class="btn btn-danger">
+                                                        Agregar
+                                                        </a>
+                                                    <?php }else{?>
+                                                        <a onclick='Update_Enfermedades();' title='Actualizar Enfermedad' class='btn btn-primary'>Actualizar</a>
+                                                    <?php }?>
+
+                                                <?php }else{?> &nbsp;<?php }?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row">
+                                                    <div class="col-md-12" id="muenfermedades">
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="nacionalidad">Indique si padece alguna enfermedad</label>
+                                                                    <select class="form-control" id="id_respuestae" name="id_respuestae" onchange="ValidaE();" <?php echo $disabled ?>>
+                                                                    <option value="0">Seleccione</option>
+                                                                    <option value="1" <?php if(isset($list_usuario['0']['enfermedades']) && $list_usuario[0]['enfermedades'] == 1){ echo "selected";} ?>>SÍ</option>
+                                                                    <option value="2" <?php if(isset($list_usuario['0']['enfermedades']) && $list_usuario[0]['enfermedades'] == 2){ echo "selected";} ?>>NO</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="dni_hijo">Especifique la enfermedad</label>
+                                                                    <input <?php if(isset($list_usuario['0']['enfermedades']) && $list_usuario[0]['enfermedades'] == 2){ echo "disabled";} ?> type="text" class="form-control mb-4" id="nom_enfermedad" name="nom_enfermedad" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label class="naci_familiar">Fecha de Diagnóstico</label>
+                                                                <div class="d-sm-flex d-block">
+                                                                    <div class="form-group mr-2">
+                                                                        <select <?php if(isset($list_usuario['0']['enfermedades']) && $list_usuario[0]['enfermedades'] == 2){ echo "disabled";} ?> class="form-control" id="dia_diagnostico" name="dia_diagnostico" <?php echo $disabled ?>>
+                                                                        <option value="0">Día</option>
+                                                                        <?php foreach($list_dia as $list){ ?>
+                                                                            <option value="<?php echo $list['cod_dia'] ; ?>">
+                                                                            <?php echo $list['cod_dia'];?></option>
+                                                                        <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group mr-2">
+                                                                        <select <?php if(isset($list_usuario['0']['enfermedades']) && $list_usuario[0]['enfermedades'] == 2){ echo "disabled";} ?> class="form-control" id="mes_diagnostico" name="mes_diagnostico" <?php echo $disabled ?>>
+                                                                            <option value="0">Mes</option>
+                                                                            <?php foreach($list_mes as $list){ ?>
+                                                                            <option value="<?php echo $list['cod_mes'] ; ?>">
+                                                                            <?php echo $list['abr_mes'];?></option>
+                                                                            <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group mr-2">
+                                                                        <select <?php if(isset($list_usuario['0']['enfermedades']) && $list_usuario[0]['enfermedades'] == 2){ echo "disabled";} ?> class="form-control" id="anio_diagnostico" name="anio_diagnostico" <?php echo $disabled ?>>
+                                                                        <option value="0">Año</option>
+                                                                        <?php foreach($list_anio as $list){ ?>
+                                                                        <option value="<?php echo $list['cod_anio'] ; ?>">
+                                                                        <?php echo $list['cod_anio'];?></option>
+                                                                        <?php } ?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive" id="mdenfermedades">
+                                                        <?php if(count($list_enfermedadu)>0) { ?>
+                                                            <table class="table" id="tableMain3">
+                                                                <thead>
+                                                                    <tr class="tableheader">
+                                                                    <th>Enfermedad</th>
+                                                                    <th>Fecha de Diagnóstico</th>
+                                                                    <th></th>
+                                                                    <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <?php foreach($list_enfermedadu as $list){ ?>
+                                                                    <tr>
+                                                                        <td><?php echo $list['nom_enfermedad'] ; ?></td>
+                                                                        <td><?php echo $list['dia_diagnostico']."/".$list['mes_diagnostico']."/".$list['anio_diagnostico'] ; ?></td>
+                                                                        <td>
+                                                                            <?php if($editable==0){?>
+                                                                            <a href="javascript:void(0);" title="Editar" onclick="Detalle_Enfermedades('<?php echo $list['id_enfermedad_usuario']; ?>')">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                                                                            </a>
+                                                                            <?php }?>
+                                                                        </td>
+                                                                        <td>
+                                                                            <?php if($editable==0){?>
+                                                                            <a class="" title="Eliminar" onclick="Delete_Enfermedades('<?php echo $list['id_enfermedad_usuario']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                                            </a>
+                                                                            <?php }?>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <?php } ?>
+                                                                </tbody>
+                                                            </table>
+                                                        <?php } ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_gestacion" class="section general-info">
+                            <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
+
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6 class="">Gestación</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5">
+                                                <?php if($editable==0){?>
+                                                    <a onclick="Gestacion();" title="Gestación" class="btn btn-primary">
+                                                    Actualizar
+                                                    </a>
+                                                    <?php }else{?> &nbsp;<?php }?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row" id="gestacion">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="nacionalidad">Indique si se encuentra en gestación</label>
+                                                                    <select class="form-control" id="id_respuesta" name="id_respuesta" onchange="Validag();" <?php echo $disabled ?>>
+                                                                    <option value="0" <?php if(isset($get_id_gestacion['0']['id_respuesta']) && $get_id_gestacion[0]['id_respuesta'] == 0){ echo "selected";} ?>>Seleccione</option>
+                                                                    <option value="1" <?php if(isset($get_id_gestacion['0']['id_respuesta']) && $get_id_gestacion[0]['id_respuesta'] == 1){ echo "selected";} ?>>SÍ</option>
+                                                                    <option value="2" <?php if(isset($get_id_gestacion['0']['id_respuesta']) && $get_id_gestacion[0]['id_respuesta'] == 2){ echo "selected";} ?>>NO</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="usuario_email">Fecha de inicio de gestación</label>
+                                                                    <div class="d-sm-flex d-block">
+                                                                        <div class="form-group mr-1">
+                                                                            <select <?php if(isset($get_id_gestacion['0']['id_respuesta']) && $get_id_gestacion[0]['id_respuesta'] != 1){echo "disabled";}?> class="form-control" id="dia_ges" name="dia_ges" <?php echo $disabled ?>>
+                                                                            <option value="0">Día</option>
+                                                                            <?php foreach($list_dia as $list){
+                                                                            if(isset($get_id_gestacion[0]) && $get_id_gestacion[0]['dia_ges'] == $list['cod_dia']){ ?>
+                                                                            <option selected value="<?php echo $list['cod_dia']; ?>"><?php echo $list['cod_dia'];?></option>
+                                                                            <?php }else{?>
+                                                                            <option value="<?php echo $list['cod_dia']; ?>"><?php echo $list['cod_dia'];?></option>
+                                                                            <?php } } ?>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group mr-1">
+                                                                            <select <?php if(isset($get_id_gestacion['0']['id_respuesta']) && $get_id_gestacion[0]['id_respuesta'] != 1){echo "disabled";}?> class="form-control" id="mes_ges" name="mes_ges" <?php echo $disabled ?>>
+                                                                            <option value="0">Mes</option>
+                                                                            <?php foreach($list_mes as $list){
+                                                                            if(isset($get_id_gestacion[0]) && $get_id_gestacion[0]['mes_ges'] == $list['cod_mes']){ ?>
+                                                                            <option selected value="<?php echo $list['cod_mes'] ; ?>" ><?php echo $list['abr_mes'];?></option>
+                                                                            <?php } else{?>
+                                                                            <option value="<?php echo $list['cod_mes']; ?>"><?php echo $list['abr_mes'];?></option>
+                                                                            <?php } } ?>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="form-group mr-1">
+                                                                            <select <?php if(isset($get_id_gestacion['0']['id_respuesta']) && $get_id_gestacion[0]['id_respuesta'] != 1){echo "disabled";}?> class="form-control" id="anio_ges" name="anio_ges" <?php echo $disabled ?>>
+                                                                            <option value="0">Año</option>
+                                                                            <?php foreach($list_anio as $list){
+                                                                            if(isset($get_id_gestacion[0]) && $get_id_gestacion[0]['anio_ges'] == $list['cod_anio']){ ?>
+                                                                            <option selected value="<?php echo $list['cod_anio'] ; ?>"><?php echo $list['cod_anio'];?></option>
+                                                                            <?php } else{?>
+                                                                            <option value="<?php echo $list['cod_anio'] ; ?>"><?php echo $list['cod_anio'];?></option>
+                                                                            <?php } } ?>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_alergia" class="section general-info">
+                                <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6 class="">Alergias</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5" id="btnAlergia">
+                                                <?php if($editable==0){
+                                                    if(isset($list_usuario[0]['alergia']) && $list_usuario[0]['alergia'] == 1){?>
+                                                    <a onclick="Alergia();" title="Agregar Alergia" class="btn btn-danger">
+                                                        Agregar
+                                                    </a>
+                                                    <?php }else{?>
+                                                        <a onclick='Update_Alergia();' title='Actualizar Alergia' class='btn btn-primary'>Actualizar</a>
+                                                    <?php }?>
+                                                    <?php }else{?> &nbsp;<?php }?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row">
+                                                    <div class="col-md-12" id="mualergias">
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="nacionalidad">Es alérgico a algun medicamento</label>
+                                                                    <select class="form-control" id="id_respuestaau" name="id_respuestaau" onchange="ValidaA();" <?php echo $disabled ?>>
+                                                                    <option value="0">Seleccione</option>
+                                                                    <option value="1" <?php if(isset($list_usuario['0']['alergia']) && $list_usuario[0]['alergia'] == 1){ echo "selected";} ?>>SÍ</option>
+                                                                    <option value="2" <?php if(isset($list_usuario['0']['alergia']) && $list_usuario[0]['alergia'] == 2){ echo "selected";} ?>>NO</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group" id="medicamentou">
+                                                                    <label for="dni_hijo">Indique el nombre del medicamento</label>
+                                                                    <input type="text" class="form-control mb-4" id="nom_alergia" name="nom_alergia" <?php echo $disabled ?>>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive" id="mdalergias">
+                                                            <?php if(count($list_alergia)>0) { ?>
                                                                 <table class="table" id="tableMain3">
                                                                     <thead>
                                                                         <tr class="tableheader">
-                                                                            <th>Curso / Conocimiento</th>
-                                                                            <th>Año</th>
-                                                                            <th></th>
-                                                                            <th></th>
-                                                                            <th></th>
+                                                                        <th>Medicamento</th>
+                                                                        <th></th>
+                                                                        <th></th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                        <?php foreach($listar_cursosc as $list){ ?>
+                                                                        <?php foreach($list_alergia as $list){ ?>
                                                                         <tr>
-                                                                            <td><?php echo $list['nom_curso_complementario'] ; ?></td>
-                                                                            <td><?php if($list['anio']=="1"){echo "Actualidad";} else{echo $list['anio'] ;} ?></td>
+                                                                            <td><?php echo $list['nom_alergia'] ; ?></td>
                                                                             <td>
                                                                                 <?php if($editable==0){?>
-                                                                                <a href="javascript:void(0);" title="Editar" onclick="Detalle_CursosC('<?php echo $list['id_curso_complementario']; ?>')">
+                                                                                <a href="javascript:void(0);" title="Editar" onclick="Detalle_Alergia('<?php echo $list['id_alergia_usuario']; ?>')">
                                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                                                                     <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                                                                 </svg>
@@ -2284,17 +2672,8 @@ if($get_id[0]['edicion_perfil']==1){
                                                                                 <?php }?>
                                                                             </td>
                                                                             <td>
-                                                                                <?php $img_info=get_headers($url_cursosc[0]['url_config'].$list['certificado']);
-                                                                                if($list['certificado']!=""){
-                                                                                if(strpos($img_info[0],'200')!==false){?>
-                                                                                    <a style="cursor:pointer;display: -webkit-inline-box;" data-title="Certificado" data-toggle="modal" data-target="#Modal_IMG_Link" data-imagen="<?php echo $url_cursosc[0]['url_config'].$list['certificado']?>" >
-                                                                                        <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533 s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/><path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/><path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
-                                                                                    </a>
-                                                                                <?php } }?>
-                                                                            </td>
-                                                                            <td>
                                                                                 <?php if($editable==0){?>
-                                                                                <a class="" title="Eliminar" onclick="Delete_CursosC('<?php echo $list['id_curso_complementario']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button">
+                                                                                <a class="" title="Eliminar" onclick="Delete_Alergia('<?php echo $list['id_alergia_usuario']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button">
                                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
                                                                                         <polyline points="3 6 5 6 21 6"></polyline>
                                                                                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -2308,227 +2687,82 @@ if($get_id[0]['edicion_perfil']==1){
                                                                     </tbody>
                                                                 </table>
                                                             <?php } ?>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
+                        </div>
 
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_experiencial" class="section general-info">
-                                <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Experiencia Laboral</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5" id="btnExperenciaL">
-                                                    <?php if($editable==0){?>
-                                                        <a onclick="ExperenciaL();" title="Agregar Experiencia Laboral" class="btn btn-danger">
-                                                        Agregar
-                                                        </a>
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_otros" class="section general-info">
+                            <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
+                            <input type="hidden" id="id_usuarioo" name="id_usuarioo" value="<?php echo $id_usuario;?>">
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6 class="">Otros</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5">
+                                                <?php if($editable==0){?>
+                                                    <a onclick="Otros();" title="Otros" class="btn btn-primary">
+                                                    Actualizar
+                                                    </a>
                                                     <?php }else{?> &nbsp;<?php }?>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row" id="muexperiencial">
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="nom_familiar">Empresa</label>
-                                                                        <input type="text" class="form-control mb-4" id="empresaex" name="empresaex" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="nom_familiar">Cargo</label>
-                                                                        <input type="text" class="form-control mb-4" id="cargoex" name="cargoex" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-3">
-                                                                    <label class="naci_familiar">Fecha de Inicio</label>
-                                                                    <div class="d-sm-flex d-block">
-                                                                        <div class="form-group mr-2">
-                                                                            <select class="form-control" id="dia_iniel" name="dia_iniel" <?php echo $disabled ?>>
-                                                                            <option value="0">Día</option>
-                                                                            <?php foreach($list_dia as $list){ ?>
-                                                                                <option value="<?php echo $list['cod_dia'] ; ?>">
-                                                                                <?php echo $list['cod_dia'];?></option>
-                                                                            <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="form-group mr-2">
-                                                                            <select class="form-control" id="mes_iniel" name="mes_iniel" <?php echo $disabled ?>>
-                                                                                <option value="0">Mes</option>
-                                                                                <?php foreach($list_mes as $list){ ?>
-                                                                                <option value="<?php echo $list['cod_mes'] ; ?>">
-                                                                                <?php echo $list['abr_mes'];?></option>
-                                                                                <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="form-group mr-2">
-                                                                            <select class="form-control" id="anio_iniel" name="anio_iniel" <?php echo $disabled ?>>
-                                                                            <option value="0">Año</option>
-                                                                            <?php foreach($list_anio as $list){ ?>
-                                                                            <option value="<?php echo $list['cod_anio'] ; ?>">
-                                                                            <?php echo $list['cod_anio'];?></option>
-                                                                            <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <label class="naci_familiar">Fecha de Fin <input type="checkbox" id="checkactualidad" name="checkactualidad" value="1" <?php echo $disabled ?> /> <b>Actualidad</b></label>
-
-                                                                    <div class="d-sm-flex d-block">
-                                                                        <div class="form-group mr-2">
-                                                                            <select class="form-control" id="dia_finel" name="dia_finel" <?php echo $disabled ?> >
-                                                                            <option value="0">Día</option>
-                                                                            <?php foreach($list_dia as $list){ ?>
-                                                                                <option value="<?php echo $list['cod_dia'] ; ?>">
-                                                                                <?php echo $list['cod_dia'];?></option>
-                                                                            <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="form-group mr-2">
-                                                                            <select class="form-control" id="mes_finel" name="mes_finel" <?php echo $disabled ?>>
-                                                                                <option value="0">Mes</option>
-                                                                                <?php foreach($list_mes as $list){ ?>
-                                                                                <option value="<?php echo $list['cod_mes'] ; ?>">
-                                                                                <?php echo $list['abr_mes'];?></option>
-                                                                                <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="form-group mr-2">
-                                                                            <select class="form-control" id="anio_finel" name="anio_finel" <?php echo $disabled ?>>
-                                                                            <option value="0">Año</option>
-                                                                            <?php foreach($list_anio as $list){ ?>
-                                                                            <option value="<?php echo $list['cod_anio'] ; ?>">
-                                                                            <?php echo $list['cod_anio'];?></option>
-                                                                            <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="fami_paren">Motivo de Salida</label>
-                                                                        <input type="text" class="form-control mb-4" id="motivo_salida" name="motivo_salida" <?php echo $disabled ?>>
-                                                                    </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row" id="otros">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="nacionalidad">Tipo de sangre</label>
+                                                                    <select class="form-control" name="id_grupo_sanguineo" id="id_grupo_sanguineo" <?php echo $disabled ?>>
+                                                                    <option value="0">Seleccion</option>
+                                                                    <?php foreach($list_grupo_sanguineo as $list){
+                                                                        if(isset($get_id_otros[0]) &&  $get_id_otros[0]['id_grupo_sanguineo'] == $list['id_grupo_sanguineo']){ ?>
+                                                                        <option selected value="<?php echo $list['id_grupo_sanguineo']; ?>"><?php echo $list['nom_grupo_sanguineo'];?></option>
+                                                                    <?php }else{?>
+                                                                    <option value="<?php echo $list['id_grupo_sanguineo']; ?>"><?php echo $list['nom_grupo_sanguineo'];?></option>
+                                                                    <?php } } ?>
+                                                                    </select>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="familiar_celular">Importe de remuneración</label>
-                                                                        <input type="text" class="form-control mb-4" id="remuneracion" name="remuneracion" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
 
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="familiar_celular2">Nombre de referencia laboral</label>
-                                                                        <input type="text" class="form-control mb-4" id="nom_referencia_labores" name="nom_referencia_labores" <?php echo $disabled ?>>
-                                                                    </div>
+                                                            <!--<div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="dni_img">Adjuntar Prueba COVID</label>
+                                                                    <?php if(isset($get_id_otros[0]['cert_covid']) && $get_id_otros[0]['cert_covid']!=""){ //&& is_file($get_id_otros[0]['cert_covid'])) { ?>
+                                                                    <a style="cursor:pointer;display: -webkit-inline-box;" title="Prueba COVID" data-toggle="modal" data-target="#zoomupModalCovid" data-imagen="<?php echo $get_id_otros[0]['cert_covid']; ?>" >
+                                                                        <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533 s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2 s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/> <path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667 s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/> <path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733 c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g> <g></g> <g> </g> <g>  </g>  <g></g> <g> </g><g>  </g><g></g><g></g><g></g><g></g> <g></g></svg>
+                                                                    </a>
+                                                                    <?php } ?>
+                                                                    <input type="file" class="form-control-file" id="certificadootr" name="certificadootr" onchange="return validarCOVID()"  />
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="familiar_celular">Número de Contacto de la empresa</label>
-                                                                        <input type="number" class="form-control mb-4" id="num_contacto" name="num_contacto" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
+                                                            </div>-->
 
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="dni_img">Adjuntar Certificado</label>
-                                                                        <input type="file" class="form-control-file" id="certificadolb" name="certificadolb" onchange="return validarExperiecnciaLaboral()" <?php echo $disabled ?>/>
-                                                                    </div>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="dni_img">Adjuntar Vacuna COVID</label>
+                                                                    <?php if(isset($get_id_otros[0]['cert_vacu_covid']) && $get_id_otros[0]['cert_vacu_covid']!=""){
+                                                                        $img_info=get_headers($url_otro[0]['url_config'].$get_id_otros[0]['cert_vacu_covid']);
+                                                                        if(strpos($img_info[0],'200')!==false){?>
+                                                                            <a style="cursor:pointer;display: -webkit-inline-box;" data-title="Vacuna COVID" data-toggle="modal" data-target="#Modal_IMG_Link" data-imagen="<?php echo $url_otro[0]['url_config'].$get_id_otros[0]['cert_vacu_covid']; ?>" >
+                                                                                <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533 s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2 s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/> <path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667 s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/> <path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733 c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g> <g></g> <g> </g> <g>  </g>  <g></g> <g> </g><g>  </g><g></g><g></g><g></g><g></g> <g></g></svg>
+                                                                            </a>
+                                                                        <?php } } ?>
+                                                                    <input type="file" class="form-control-file" id="certificadootr_vacu" name="certificadootr_vacu" onchange="return validar_vacuCOVID()"  <?php echo $disabled ?> />
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="table-responsive" id="mdexperiencial">
-                                                            <?php if(count($list_experiencial)>0) { ?>
-                                                                <table class="table" id="tableMain3">
-                                                                    <thead>
-                                                                        <tr class="tableheader">
-                                                                        <th>Empresa</th>
-                                                                        <th>Cargo</th>
-                                                                        <th>Fecha de Inicio</th>
-                                                                        <th>Fecha de Fin</th>
-                                                                        <th>Motivo de Salida</th>
-                                                                        <th>Remuneración</th>
-                                                                        <th>Referencia Laboral</th>
-                                                                        <th>Número de Contacto</th>
-                                                                        <th></th>
-                                                                        <th></th>
-                                                                        <th></th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <?php foreach($list_experiencial as $list){ ?>
-                                                                        <tr>
-                                                                            <td><?php echo $list['empresa'] ; ?></td>
-                                                                            <td><?php echo $list['cargo'] ; ?></td>
-                                                                            <td><?php echo $list['dia_ini']."/".$list['mes_ini']."/".$list['anio_ini'] ; ?></td>
-                                                                            <td><?php if($list['actualidad']=="1"){echo "Actualidad";} else{echo $list['dia_fin']."/".$list['mes_fin']."/".$list['anio_fin'] ;} ?></td>
-                                                                            <td><?php echo $list['motivo_salida'] ; ?></td>
-                                                                            <td><?php echo $list['remuneracion'] ; ?></td>
-                                                                            <td><?php echo $list['nom_referencia_labores'] ; ?></td>
-                                                                            <td><?php echo $list['num_contacto'] ; ?></td>
-                                                                            <td>
-                                                                                <?php if($editable==0){?>
-                                                                                <a href="javascript:void(0);" title="Editar" onclick="Detalle_ExperenciaL('<?php echo $list['id_experiencia_laboral']; ?>')">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-                                                                                </a>
-                                                                                <?php } ?>
-                                                                            </td>
-                                                                            <td>
-                                                                                <?php if($list["certificado"]!=""){
-                                                                                    $img_info=get_headers($url_exp[0]['url_config'].$list["certificado"]);
-                                                                                    if(strpos($img_info[0],'200')!==false){?>
-                                                                                    <a style="cursor:pointer;display: -webkit-inline-box;" data-title="Certificado Laboral" data-toggle="modal" data-target="#Modal_IMG_Link" data-imagen="<?php echo $url_exp[0]['url_config'].$list["certificado"]?>" >
-                                                                                        <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/><path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/><path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
-                                                                                    </a>
-                                                                                <?php } } ?>
-                                                                            </td>
-                                                                            <td>
-                                                                                <?php if($editable==0){?>
-                                                                                <a class="" title="Eliminar" onclick="Delete_ExperenciaL('<?php echo $list['id_experiencia_laboral']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                                                                </a>
-                                                                                <?php } ?>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <?php } ?>
-                                                                    </tbody>
-                                                                </table>
-                                                            <?php } ?>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -2536,126 +2770,57 @@ if($get_id[0]['edicion_perfil']==1){
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
+                        </div>
 
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_enfermedades" class="section general-info">
-                                <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Enfermedades</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5" id="btnEnfermedades">
-                                                    <?php if($editable==0){
-                                                        if(isset($list_usuario[0]['enfermedades']) && $list_usuario[0]['enfermedades'] == 1){?>
-                                                            <a onclick="Enfermedades();" title="Agregar Enfermedad" class="btn btn-danger">
-                                                            Agregar
-                                                            </a>
-                                                        <?php }else{?>
-                                                            <a onclick='Update_Enfermedades();' title='Actualizar Enfermedad' class='btn btn-primary'>Actualizar</a>
-                                                        <?php }?>
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_referencia_convocatoria" class="section general-info">
+                            <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
 
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6 class="">Referencia de Convocatoria</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5">
+                                                <?php if($editable==0){?>
+                                                    <a onclick="Referencia_Convocatoria();" title="Referencia de Convocatoria" class="btn btn-primary">
+                                                    Actualizar
+                                                    </a>
                                                     <?php }else{?> &nbsp;<?php }?>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row">
-                                                        <div class="col-md-12" id="muenfermedades">
-                                                            <div class="row">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="nacionalidad">Indique si padece alguna enfermedad</label>
-                                                                        <select class="form-control" id="id_respuestae" name="id_respuestae" onchange="ValidaE();" <?php echo $disabled ?>>
-                                                                        <option value="0">Seleccione</option>
-                                                                        <option value="1" <?php if(isset($list_usuario['0']['enfermedades']) && $list_usuario[0]['enfermedades'] == 1){ echo "selected";} ?>>SÍ</option>
-                                                                        <option value="2" <?php if(isset($list_usuario['0']['enfermedades']) && $list_usuario[0]['enfermedades'] == 2){ echo "selected";} ?>>NO</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="dni_hijo">Especifique la enfermedad</label>
-                                                                        <input <?php if(isset($list_usuario['0']['enfermedades']) && $list_usuario[0]['enfermedades'] == 2){ echo "disabled";} ?> type="text" class="form-control mb-4" id="nom_enfermedad" name="nom_enfermedad" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <label class="naci_familiar">Fecha de Diagnóstico</label>
-                                                                    <div class="d-sm-flex d-block">
-                                                                        <div class="form-group mr-2">
-                                                                            <select <?php if(isset($list_usuario['0']['enfermedades']) && $list_usuario[0]['enfermedades'] == 2){ echo "disabled";} ?> class="form-control" id="dia_diagnostico" name="dia_diagnostico" <?php echo $disabled ?>>
-                                                                            <option value="0">Día</option>
-                                                                            <?php foreach($list_dia as $list){ ?>
-                                                                                <option value="<?php echo $list['cod_dia'] ; ?>">
-                                                                                <?php echo $list['cod_dia'];?></option>
-                                                                            <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="form-group mr-2">
-                                                                            <select <?php if(isset($list_usuario['0']['enfermedades']) && $list_usuario[0]['enfermedades'] == 2){ echo "disabled";} ?> class="form-control" id="mes_diagnostico" name="mes_diagnostico" <?php echo $disabled ?>>
-                                                                                <option value="0">Mes</option>
-                                                                                <?php foreach($list_mes as $list){ ?>
-                                                                                <option value="<?php echo $list['cod_mes'] ; ?>">
-                                                                                <?php echo $list['abr_mes'];?></option>
-                                                                                <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="form-group mr-2">
-                                                                            <select <?php if(isset($list_usuario['0']['enfermedades']) && $list_usuario[0]['enfermedades'] == 2){ echo "disabled";} ?> class="form-control" id="anio_diagnostico" name="anio_diagnostico" <?php echo $disabled ?>>
-                                                                            <option value="0">Año</option>
-                                                                            <?php foreach($list_anio as $list){ ?>
-                                                                            <option value="<?php echo $list['cod_anio'] ; ?>">
-                                                                            <?php echo $list['cod_anio'];?></option>
-                                                                            <?php } ?>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row" id="referencia_convocatoria">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="nacionalidad">Indica ¿Cómo te enteraste del puesto?</label>
+                                                                    <select class="form-control" name="id_referencia_laboral" id="id_referencia_laboral" onchange="ValidaRC();" <?php echo $disabled ?>>
+                                                                    <option value="0">Seleccion</option>
+                                                                    <?php foreach($list_referencia_laboral as $list){
+                                                                        if(isset($get_id_referenciac[0]) && $get_id_referenciac[0]['id_referencia_laboral'] == $list['id_referencia_laboral']){ ?>
+                                                                        <option selected value="<?php echo $list['id_referencia_laboral']; ?>"><?php echo $list['nom_referencia_laboral'];?></option>
+                                                                    <?php }else{?>
+                                                                    <option value="<?php echo $list['id_referencia_laboral']; ?>"><?php echo $list['nom_referencia_laboral'];?></option>
+                                                                    <?php } } ?>
+                                                                    </select>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="table-responsive" id="mdenfermedades">
-                                                            <?php if(count($list_enfermedadu)>0) { ?>
-                                                                <table class="table" id="tableMain3">
-                                                                    <thead>
-                                                                        <tr class="tableheader">
-                                                                        <th>Enfermedad</th>
-                                                                        <th>Fecha de Diagnóstico</th>
-                                                                        <th></th>
-                                                                        <th></th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <?php foreach($list_enfermedadu as $list){ ?>
-                                                                        <tr>
-                                                                            <td><?php echo $list['nom_enfermedad'] ; ?></td>
-                                                                            <td><?php echo $list['dia_diagnostico']."/".$list['mes_diagnostico']."/".$list['anio_diagnostico'] ; ?></td>
-                                                                            <td>
-                                                                                <?php if($editable==0){?>
-                                                                                <a href="javascript:void(0);" title="Editar" onclick="Detalle_Enfermedades('<?php echo $list['id_enfermedad_usuario']; ?>')">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-                                                                                </a>
-                                                                                <?php }?>
-                                                                            </td>
-                                                                            <td>
-                                                                                <?php if($editable==0){?>
-                                                                                <a class="" title="Eliminar" onclick="Delete_Enfermedades('<?php echo $list['id_enfermedad_usuario']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                                                                                </a>
-                                                                                <?php }?>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <?php } ?>
-                                                                    </tbody>
-                                                                </table>
-                                                            <?php } ?>
+
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="usuario_email">Especifique otros</label>
+                                                                    <input type="text" <?php if(isset($get_id_referenciac['0']['id_referencia_laboral']) && $get_id_referenciac[0]['id_referencia_laboral'] != 6){echo "disabled";}?> class="form-control mb-4" id="otrosel" name="otrosel" value="<?php if(isset($get_id_referenciac['0']['otros'])) {echo $get_id_referenciac['0']['otros'];}?>" <?php echo $disabled ?>>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -2663,705 +2828,385 @@ if($get_id[0]['edicion_perfil']==1){
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
+                        </div>
 
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_gestacion" class="section general-info">
-                                <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Gestación</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5">
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_adjuntar_documentacion" class="section general-info">
+                            <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6 class="">Adjuntar Documentación</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5">
                                                     <?php if($editable==0){?>
-                                                        <a onclick="Gestacion();" title="Gestación" class="btn btn-primary">
+                                                    <a onclick="Adjuntar_Documentacion();" title="Adjuntar Documentación" class="btn btn-primary">
                                                         Actualizar
-                                                        </a>
-                                                        <?php }else{?> &nbsp;<?php }?>
-                                                    </div>
+                                                    </a>
+                                                    <?php }else{?> &nbsp;<?php }?>
+
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="row" id="gestacion">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="nacionalidad">Indique si se encuentra en gestación</label>
-                                                                        <select class="form-control" id="id_respuesta" name="id_respuesta" onchange="Validag();" <?php echo $disabled ?>>
-                                                                        <option value="0" <?php if(isset($get_id_gestacion['0']['id_respuesta']) && $get_id_gestacion[0]['id_respuesta'] == 0){ echo "selected";} ?>>Seleccione</option>
-                                                                        <option value="1" <?php if(isset($get_id_gestacion['0']['id_respuesta']) && $get_id_gestacion[0]['id_respuesta'] == 1){ echo "selected";} ?>>SÍ</option>
-                                                                        <option value="2" <?php if(isset($get_id_gestacion['0']['id_respuesta']) && $get_id_gestacion[0]['id_respuesta'] == 2){ echo "selected";} ?>>NO</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row" id="adjuntar_documentacion">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="dni_img">Adjuntar curriculum vitae</label>
+                                                                    <?php if(isset($get_id_documentacion[0]['cv_doc']) && $get_id_documentacion[0]['cv_doc']!="" ){//&& is_file($get_id_documentacion[0]['cv_doc'])) { ?>
 
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="usuario_email">Fecha de inicio de gestación</label>
-                                                                        <div class="d-sm-flex d-block">
-                                                                            <div class="form-group mr-1">
-                                                                                <select <?php if(isset($get_id_gestacion['0']['id_respuesta']) && $get_id_gestacion[0]['id_respuesta'] != 1){echo "disabled";}?> class="form-control" id="dia_ges" name="dia_ges" <?php echo $disabled ?>>
-                                                                                <option value="0">Día</option>
-                                                                                <?php foreach($list_dia as $list){
-                                                                                if(isset($get_id_gestacion[0]) && $get_id_gestacion[0]['dia_ges'] == $list['cod_dia']){ ?>
-                                                                                <option selected value="<?php echo $list['cod_dia']; ?>"><?php echo $list['cod_dia'];?></option>
-                                                                                <?php }else{?>
-                                                                                <option value="<?php echo $list['cod_dia']; ?>"><?php echo $list['cod_dia'];?></option>
-                                                                                <?php } } ?>
-                                                                                </select>
-                                                                            </div>
-                                                                            <div class="form-group mr-1">
-                                                                                <select <?php if(isset($get_id_gestacion['0']['id_respuesta']) && $get_id_gestacion[0]['id_respuesta'] != 1){echo "disabled";}?> class="form-control" id="mes_ges" name="mes_ges" <?php echo $disabled ?>>
-                                                                                <option value="0">Mes</option>
-                                                                                <?php foreach($list_mes as $list){
-                                                                                if(isset($get_id_gestacion[0]) && $get_id_gestacion[0]['mes_ges'] == $list['cod_mes']){ ?>
-                                                                                <option selected value="<?php echo $list['cod_mes'] ; ?>" ><?php echo $list['abr_mes'];?></option>
-                                                                                <?php } else{?>
-                                                                                <option value="<?php echo $list['cod_mes']; ?>"><?php echo $list['abr_mes'];?></option>
-                                                                                <?php } } ?>
-                                                                                </select>
-                                                                            </div>
-                                                                            <div class="form-group mr-1">
-                                                                                <select <?php if(isset($get_id_gestacion['0']['id_respuesta']) && $get_id_gestacion[0]['id_respuesta'] != 1){echo "disabled";}?> class="form-control" id="anio_ges" name="anio_ges" <?php echo $disabled ?>>
-                                                                                <option value="0">Año</option>
-                                                                                <?php foreach($list_anio as $list){
-                                                                                if(isset($get_id_gestacion[0]) && $get_id_gestacion[0]['anio_ges'] == $list['cod_anio']){ ?>
-                                                                                <option selected value="<?php echo $list['cod_anio'] ; ?>"><?php echo $list['cod_anio'];?></option>
-                                                                                <?php } else{?>
-                                                                                <option value="<?php echo $list['cod_anio'] ; ?>"><?php echo $list['cod_anio'];?></option>
-                                                                                <?php } } ?>
-                                                                                </select>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
+                                                                    <a style="cursor:pointer;display: -webkit-inline-box;" title="Curriculum Vitae" data-toggle="modal" data-target="#Modal_IMG" data-imagen="<?php echo $url_documentacion[0]['url_config'].$get_id_documentacion[0]['cv_doc']; ?>" data-title="Curriculum Vitae" >
+                                                                        <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/><path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/><path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
+                                                                    </a>
+                                                                    <?php } ?>
+                                                                    <input type="file" class="form-control-file" id="filecv_doc" name="filecv_doc" onchange="return validarfilecv_doc()" <?php echo $disabled ?>/>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="dni_img">Foto DNI (ambas caras)</label>
+                                                                    <?php if(isset($get_id_documentacion[0]['dni_doc']) && $get_id_documentacion[0]['dni_doc']!=""){ //&& is_file($get_id_documentacion[0]['dni_doc'])) { ?>
+
+                                                                    <a style="cursor:pointer;display: -webkit-inline-box;" title="DNI ambas cara" data-toggle="modal" data-target="#Modal_IMG" data-imagen="<?php echo $url_documentacion[0]['url_config'].$get_id_documentacion[0]['dni_doc']; ?>" data-title="DNI ambas cara" >
+                                                                        <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/><path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/><path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
+                                                                    </a>
+                                                                    <?php } ?>
+                                                                    <input type="file" class="form-control-file" id="filedni_doc" name="filedni_doc"  onchange="return validarfiledni_doc()" <?php echo $disabled ?>>
+
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="dni_img">Copia de recibo de agua y luz</label>
+                                                                    <?php if(isset($get_id_documentacion[0]['recibo_doc']) && $get_id_documentacion[0]['recibo_doc']!=""){ //&& is_file($get_id_documentacion[0]['recibo_doc'])) { ?>
+
+                                                                    <a style="cursor:pointer;display: -webkit-inline-box;" title="Recibo ambas caras" data-toggle="modal" data-target="#Modal_IMG" data-imagen="<?php echo $url_documentacion[0]['url_config'].$get_id_documentacion[0]['recibo_doc']; ?>" data-title="Recibo ambas caras" >
+                                                                        <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/><path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/><path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
+                                                                    </a>
+                                                                    <?php } ?>
+                                                                    <input type="file" class="form-control-file" id="filerecibo_doc" name="filerecibo_doc"  onchange="return validarfilerecibo_doc()" <?php echo $disabled ?>/>
+
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        <br>
+                                                        <br>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
+                        </div>
 
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_alergia" class="section general-info">
-                                    <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Alergias</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5" id="btnAlergia">
-                                                    <?php if($editable==0){
-                                                        if(isset($list_usuario[0]['alergia']) && $list_usuario[0]['alergia'] == 1){?>
-                                                        <a onclick="Alergia();" title="Agregar Alergia" class="btn btn-danger">
-                                                            Agregar
-                                                        </a>
-                                                        <?php }else{?>
-                                                            <a onclick='Update_Alergia();' title='Actualizar Alergia' class='btn btn-primary'>Actualizar</a>
-                                                        <?php }?>
-                                                        <?php }else{?> &nbsp;<?php }?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_talla_indicar" class="section general-info">
+                            <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
+                                <div class="info">
+                                    <div class="chico">
                                         <div class="row">
-                                            <div class="col-md-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row">
-                                                        <div class="col-md-12" id="mualergias">
-                                                            <div class="row">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="nacionalidad">Es alérgico a algun medicamento</label>
-                                                                        <select class="form-control" id="id_respuestaau" name="id_respuestaau" onchange="ValidaA();" <?php echo $disabled ?>>
-                                                                        <option value="0">Seleccione</option>
-                                                                        <option value="1" <?php if(isset($list_usuario['0']['alergia']) && $list_usuario[0]['alergia'] == 1){ echo "selected";} ?>>SÍ</option>
-                                                                        <option value="2" <?php if(isset($list_usuario['0']['alergia']) && $list_usuario[0]['alergia'] == 2){ echo "selected";} ?>>NO</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group" id="medicamentou">
-                                                                        <label for="dni_hijo">Indique el nombre del medicamento</label>
-                                                                        <input type="text" class="form-control mb-4" id="nom_alergia" name="nom_alergia" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <div class="table-responsive" id="mdalergias">
-                                                                <?php if(count($list_alergia)>0) { ?>
-                                                                    <table class="table" id="tableMain3">
-                                                                        <thead>
-                                                                            <tr class="tableheader">
-                                                                            <th>Medicamento</th>
-                                                                            <th></th>
-                                                                            <th></th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            <?php foreach($list_alergia as $list){ ?>
-                                                                            <tr>
-                                                                                <td><?php echo $list['nom_alergia'] ; ?></td>
-                                                                                <td>
-                                                                                    <?php if($editable==0){?>
-                                                                                    <a href="javascript:void(0);" title="Editar" onclick="Detalle_Alergia('<?php echo $list['id_alergia_usuario']; ?>')">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
-                                                                                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
-                                                                                    </svg>
-                                                                                    </a>
-                                                                                    <?php }?>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <?php if($editable==0){?>
-                                                                                    <a class="" title="Eliminar" onclick="Delete_Alergia('<?php echo $list['id_alergia_usuario']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button">
-                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
-                                                                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                                                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                                                            <line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>
-                                                                                        </svg>
-                                                                                    </a>
-                                                                                    <?php }?>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <?php } ?>
-                                                                        </tbody>
-                                                                    </table>
-                                                                <?php } ?>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                            <div class="col">
+                                                <h6 class="">Uniforme</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5">
+                                                <?php if($editable==0){?>
+                                                    <a onclick="Talla_Indica();" title="Actualizar Talla" class="btn btn-primary">
+                                                    Actualizar
+                                                    </a>
+                                                    <?php }else{?> &nbsp;<?php }?>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_otros" class="section general-info">
-                                <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-                                <input type="hidden" id="id_usuarioo" name="id_usuarioo" value="<?php echo $id_usuario;?>">
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Otros</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5">
-                                                    <?php if($editable==0){?>
-                                                        <a onclick="Otros();" title="Otros" class="btn btn-primary">
-                                                        Actualizar
-                                                        </a>
-                                                        <?php }else{?> &nbsp;<?php }?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="row" id="otros">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="nacionalidad">Tipo de sangre</label>
-                                                                        <select class="form-control" name="id_grupo_sanguineo" id="id_grupo_sanguineo" <?php echo $disabled ?>>
-                                                                        <option value="0">Seleccion</option>
-                                                                        <?php foreach($list_grupo_sanguineo as $list){
-                                                                            if(isset($get_id_otros[0]) &&  $get_id_otros[0]['id_grupo_sanguineo'] == $list['id_grupo_sanguineo']){ ?>
-                                                                            <option selected value="<?php echo $list['id_grupo_sanguineo']; ?>"><?php echo $list['nom_grupo_sanguineo'];?></option>
-                                                                        <?php }else{?>
-                                                                        <option value="<?php echo $list['id_grupo_sanguineo']; ?>"><?php echo $list['nom_grupo_sanguineo'];?></option>
-                                                                        <?php } } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <!--<div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="dni_img">Adjuntar Prueba COVID</label>
-                                                                        <?php if(isset($get_id_otros[0]['cert_covid']) && $get_id_otros[0]['cert_covid']!=""){ //&& is_file($get_id_otros[0]['cert_covid'])) { ?>
-                                                                        <a style="cursor:pointer;display: -webkit-inline-box;" title="Prueba COVID" data-toggle="modal" data-target="#zoomupModalCovid" data-imagen="<?php echo $get_id_otros[0]['cert_covid']; ?>" >
-                                                                            <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533 s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2 s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/> <path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667 s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/> <path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733 c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g> <g></g> <g> </g> <g>  </g>  <g></g> <g> </g><g>  </g><g></g><g></g><g></g><g></g> <g></g></svg>
-                                                                        </a>
-                                                                        <?php } ?>
-                                                                        <input type="file" class="form-control-file" id="certificadootr" name="certificadootr" onchange="return validarCOVID()"  />
-                                                                    </div>
-                                                                </div>-->
-
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="dni_img">Adjuntar Vacuna COVID</label>
-                                                                        <?php if(isset($get_id_otros[0]['cert_vacu_covid']) && $get_id_otros[0]['cert_vacu_covid']!=""){
-                                                                            $img_info=get_headers($url_otro[0]['url_config'].$get_id_otros[0]['cert_vacu_covid']);
-                                                                            if(strpos($img_info[0],'200')!==false){?>
-                                                                                <a style="cursor:pointer;display: -webkit-inline-box;" data-title="Vacuna COVID" data-toggle="modal" data-target="#Modal_IMG_Link" data-imagen="<?php echo $url_otro[0]['url_config'].$get_id_otros[0]['cert_vacu_covid']; ?>" >
-                                                                                    <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533 s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2 s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/> <path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667 s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/> <path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733 c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g> <g></g> <g> </g> <g>  </g>  <g></g> <g> </g><g>  </g><g></g><g></g><g></g><g></g> <g></g></svg>
-                                                                                </a>
-                                                                            <?php } } ?>
-                                                                        <input type="file" class="form-control-file" id="certificadootr_vacu" name="certificadootr_vacu" onchange="return validar_vacuCOVID()"  <?php echo $disabled ?> />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_referencia_convocatoria" class="section general-info">
-                                <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Referencia de Convocatoria</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5">
-                                                    <?php if($editable==0){?>
-                                                        <a onclick="Referencia_Convocatoria();" title="Referencia de Convocatoria" class="btn btn-primary">
-                                                        Actualizar
-                                                        </a>
-                                                        <?php }else{?> &nbsp;<?php }?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="row" id="referencia_convocatoria">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="nacionalidad">Indica ¿Cómo te enteraste del puesto?</label>
-                                                                        <select class="form-control" name="id_referencia_laboral" id="id_referencia_laboral" onchange="ValidaRC();" <?php echo $disabled ?>>
-                                                                        <option value="0">Seleccion</option>
-                                                                        <?php foreach($list_referencia_laboral as $list){
-                                                                            if(isset($get_id_referenciac[0]) && $get_id_referenciac[0]['id_referencia_laboral'] == $list['id_referencia_laboral']){ ?>
-                                                                            <option selected value="<?php echo $list['id_referencia_laboral']; ?>"><?php echo $list['nom_referencia_laboral'];?></option>
-                                                                        <?php }else{?>
-                                                                        <option value="<?php echo $list['id_referencia_laboral']; ?>"><?php echo $list['nom_referencia_laboral'];?></option>
-                                                                        <?php } } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label for="usuario_email">Especifique otros</label>
-                                                                        <input type="text" <?php if(isset($get_id_referenciac['0']['id_referencia_laboral']) && $get_id_referenciac[0]['id_referencia_laboral'] != 6){echo "disabled";}?> class="form-control mb-4" id="otrosel" name="otrosel" value="<?php if(isset($get_id_referenciac['0']['otros'])) {echo $get_id_referenciac['0']['otros'];}?>" <?php echo $disabled ?>>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_adjuntar_documentacion" class="section general-info">
-                                <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Adjuntar Documentación</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5">
-                                                        <?php if($editable==0){?>
-                                                        <a onclick="Adjuntar_Documentacion();" title="Adjuntar Documentación" class="btn btn-primary">
-                                                            Actualizar
-                                                        </a>
-                                                        <?php }else{?> &nbsp;<?php }?>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="row" id="adjuntar_documentacion">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="dni_img">Adjuntar curriculum vitae</label>
-                                                                        <?php if(isset($get_id_documentacion[0]['cv_doc']) && $get_id_documentacion[0]['cv_doc']!="" ){//&& is_file($get_id_documentacion[0]['cv_doc'])) { ?>
-
-                                                                        <a style="cursor:pointer;display: -webkit-inline-box;" title="Curriculum Vitae" data-toggle="modal" data-target="#Modal_IMG" data-imagen="<?php echo $url_documentacion[0]['url_config'].$get_id_documentacion[0]['cv_doc']; ?>" data-title="Curriculum Vitae" >
-                                                                            <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/><path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/><path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
-                                                                        </a>
-                                                                        <?php } ?>
-                                                                        <input type="file" class="form-control-file" id="filecv_doc" name="filecv_doc" onchange="return validarfilecv_doc()" <?php echo $disabled ?>/>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="dni_img">Foto DNI (ambas caras)</label>
-                                                                        <?php if(isset($get_id_documentacion[0]['dni_doc']) && $get_id_documentacion[0]['dni_doc']!=""){ //&& is_file($get_id_documentacion[0]['dni_doc'])) { ?>
-
-                                                                        <a style="cursor:pointer;display: -webkit-inline-box;" title="DNI ambas cara" data-toggle="modal" data-target="#Modal_IMG" data-imagen="<?php echo $url_documentacion[0]['url_config'].$get_id_documentacion[0]['dni_doc']; ?>" data-title="DNI ambas cara" >
-                                                                            <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/><path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/><path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
-                                                                        </a>
-                                                                        <?php } ?>
-                                                                        <input type="file" class="form-control-file" id="filedni_doc" name="filedni_doc"  onchange="return validarfiledni_doc()" <?php echo $disabled ?>>
-
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="dni_img">Copia de recibo de agua y luz</label>
-                                                                        <?php if(isset($get_id_documentacion[0]['recibo_doc']) && $get_id_documentacion[0]['recibo_doc']!=""){ //&& is_file($get_id_documentacion[0]['recibo_doc'])) { ?>
-
-                                                                        <a style="cursor:pointer;display: -webkit-inline-box;" title="Recibo ambas caras" data-toggle="modal" data-target="#Modal_IMG" data-imagen="<?php echo $url_documentacion[0]['url_config'].$get_id_documentacion[0]['recibo_doc']; ?>" data-title="Recibo ambas caras" >
-                                                                            <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve"><rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399"/><circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8"/><path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z"/><path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/><path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
-                                                                        </a>
-                                                                        <?php } ?>
-                                                                        <input type="file" class="form-control-file" id="filerecibo_doc" name="filerecibo_doc"  onchange="return validarfilerecibo_doc()" <?php echo $disabled ?>/>
-
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <br>
-                                                            <br>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_talla_indicar" class="section general-info">
-                                <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Uniforme</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5">
-                                                    <?php if($editable==0){?>
-                                                        <a onclick="Talla_Indica();" title="Actualizar Talla" class="btn btn-primary">
-                                                        Actualizar
-                                                        </a>
-                                                        <?php }else{?> &nbsp;<?php }?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="row" id="talla_indicar">
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <label for="polo">Polo</label>
-                                                                        <select class="form-control" name="polo" id="polo" <?php echo $disabled ?>>
-                                                                            <option value="0">Seleccion</option>
-                                                                            <?php foreach($list_accesorio_polo as $list){
-                                                                                if(isset($get_id_t[0]) && $get_id_t[0]['polo'] == $list['id_talla']){ ?>
-                                                                                <option selected value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
-                                                                            <?php }else{?>
-                                                                            <option value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
-                                                                            <?php } } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <label for="camisa">Camisa</label>
-                                                                        <select class="form-control" name="camisa" id="camisa" <?php echo $disabled ?>>
-                                                                            <option value="0">Seleccion</option>
-                                                                            <?php foreach($list_accesorio_camisa as $list){
-                                                                                if(isset($get_id_t[0]) && $get_id_t[0]['camisa'] == $list['id_talla']){ ?>
-                                                                                <option selected value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
-                                                                            <?php }else{?>
-                                                                            <option value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
-                                                                            <?php } } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <label for="pantalon">Pantalón</label>
-                                                                        <select class="form-control" name="pantalon" id="pantalon" <?php echo $disabled ?>>
-                                                                            <option value="0">Seleccion</option>
-                                                                            <?php foreach($list_accesorio_pantalon as $list){
-                                                                                if(isset($get_id_t[0]) && $get_id_t[0]['pantalon'] == $list['id_talla']){ ?>
-                                                                                <option selected value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
-                                                                            <?php }else{?>
-                                                                            <option value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
-                                                                            <?php } } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <label for="zapato">Zapato</label>
-                                                                        <select class="form-control" name="zapato" id="zapato" <?php echo $disabled ?>>
-                                                                            <option value="0">Seleccion</option>
-                                                                            <?php foreach($list_accesorio_zapato as $list){
-                                                                                if(isset($get_id_t[0]) && $get_id_t[0]['zapato'] == $list['id_talla']){ ?>
-                                                                                <option selected value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
-                                                                            <?php }else{?>
-                                                                            <option value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
-                                                                            <?php } } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_sistema_pensionario" class="section general-info">
-                                <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Sistema Pensionario</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5">
-                                                        <?php if($editable==0){?>
-                                                        <a onclick="Sistema_Pensionario();" title="Sistema Pensionario" class="btn btn-primary">
-                                                        Actualizar
-                                                        </a>
-                                                        <?php }else{?> &nbsp;<?php }?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="row" id="sistema_pensionario">
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="nacionalidad">Pertenece a algún sistema pensionario</label>
-                                                                        <select class="form-control" id="id_respuestasp" name="id_respuestasp" onchange="Validasp();" <?php echo $disabled ?>>
-                                                                        <option value="0" <?php if(isset($get_id_sist_pensu['0']['id_respuestasp']) && $get_id_sist_pensu[0]['id_respuestasp'] == 0){ echo "selected";} ?>>Seleccione</option>
-                                                                        <option value="1" <?php if(isset($get_id_sist_pensu['0']['id_respuestasp']) && $get_id_sist_pensu[0]['id_respuestasp'] == 1){ echo "selected";} ?>>SÍ</option>
-                                                                        <option value="2" <?php if(isset($get_id_sist_pensu['0']['id_respuestasp']) && $get_id_sist_pensu[0]['id_respuestasp'] == 2){ echo "selected";} ?>>NO</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="camisa">Indique el sistema pensionaro al que pertenece</label>
-                                                                        <select <?php if(isset($get_id_sist_pensu['0']['id_respuestasp']) && $get_id_sist_pensu[0]['id_respuestasp'] == 2){ echo "disabled";} ?> class="form-control" name="id_sistema_pensionario" id="id_sistema_pensionario" onchange="ValidaAFP();" <?php echo $disabled ?>>
-                                                                        <option value="0">Seleccion</option>
-                                                                        <?php foreach($list_sistema_pensionario as $list){
-                                                                            if(isset($get_id_sist_pensu[0]) && $get_id_sist_pensu[0]['id_sistema_pensionario'] == $list->id_sistema_pensionario){ ?>
-                                                                            <option selected value="<?php echo $list->id_sistema_pensionario; ?>"><?php echo $list->cod_sistema_pensionario;?></option>
-                                                                        <?php }else{?>
-                                                                        <option value="<?php echo $list->id_sistema_pensionario; ?>"><?php echo $list->cod_sistema_pensionario;?></option>
-                                                                        <?php } } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-4">
-                                                                    <div class="form-group">
-                                                                        <label for="pantalon">Si indico AFP elija</label>
-                                                                        <select <?php if(isset($get_id_sist_pensu['0']['id_respuestasp']) && $get_id_sist_pensu[0]['id_respuestasp'] == 2){ echo "disabled";} ?> class="form-control" name="id_afp" id="id_afp" <?php echo $disabled ?>>
-                                                                        <option value="0">Seleccion</option>
-                                                                        <?php foreach($list_afp as $list){
-                                                                            if(isset($get_id_sist_pensu[0]) && $get_id_sist_pensu[0]['id_afp'] == $list->id_afp){ ?>
-                                                                            <option selected value="<?php echo $list->id_afp; ?>"><?php echo $list->nom_afp;?></option>
-                                                                        <?php }else{?>
-                                                                        <option value="<?php echo $list->id_afp; ?>"><?php echo $list->nom_afp;?></option>
-                                                                        <?php } } ?>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_cuenta_bancaria" class="section general-info">
-                                <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-
-                                    <div class="info">
-                                        <div class="chico">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h6 class="">Número de Cuenta</h6>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right mb-5">
-                                                    <?php if($editable==0){?>
-                                                        <a onclick="Numero_Cuenta();" title="Actualizar Número de Cuenta" class="btn btn-primary">
-                                                        Actualizar
-                                                        </a>
-                                                        <?php }else{?> &nbsp;<?php }?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-11 mx-auto">
-                                                <div class="edu-section">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="row" id="numero_cuenta">
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <label for="nacionalidad">¿Cuéntas con cuenta bancaria?</label>
-                                                                        <select class="form-control" id="cuenta_bancaria" name="cuenta_bancaria" onchange="Validaeb();" <?php echo $disabled ?>>
-                                                                        <option value="0" <?php if(isset($get_id_cuentab['0']['cuenta_bancaria']) && $get_id_cuentab[0]['cuenta_bancaria'] == 0){ echo "selected";} ?>>Seleccione</option>
-                                                                        <option value="1" <?php if(isset($get_id_cuentab['0']['cuenta_bancaria']) && $get_id_cuentab[0]['cuenta_bancaria'] == 1){ echo "selected";} ?>>SÍ</option>
-                                                                        <option value="2" <?php if(isset($get_id_cuentab['0']['cuenta_bancaria']) && $get_id_cuentab[0]['cuenta_bancaria'] == 2){ echo "selected";} ?>>NO</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-
+                                    <div class="row">
+                                        <div class="col-md-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row" id="talla_indicar">
                                                             <div class="col-md-3">
                                                                 <div class="form-group">
-                                                                    <label for="">Indique la entidad bancaria</label>
-                                                                    <select class="form-control" name="id_banco" id="id_banco" <?php echo $disabled ?>>
+                                                                    <label for="polo">Polo</label>
+                                                                    <select class="form-control" name="polo" id="polo" <?php echo $disabled ?>>
                                                                         <option value="0">Seleccion</option>
-                                                                        <?php foreach($list_banco as $list){
-                                                                            if(count($get_id_cuentab)>0 && $get_id_cuentab[0]['id_banco'] == $list['id_banco']){ ?>
-                                                                            <option selected value="<?php echo $list['id_banco']; ?>"><?php echo $list['nom_banco'];?></option>
+                                                                        <?php foreach($list_accesorio_polo as $list){
+                                                                            if(isset($get_id_t[0]) && $get_id_t[0]['polo'] == $list['id_talla']){ ?>
+                                                                            <option selected value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
                                                                         <?php }else{?>
-                                                                        <option value="<?php echo $list['id_banco']; ?>"><?php echo $list['nom_banco'];?></option>
+                                                                        <option value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
                                                                         <?php } } ?>
                                                                     </select>
                                                                 </div>
                                                             </div>
 
-
-                                                                <?php for ($x = 1; $x <= count($list_banco); $x++) {?>
-                                                                    <div class="<?php echo $x; ?> GFG col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label for="usuario_email">Indique el número de cuenta</label>
-                                                                            <input <?php if(isset($get_id_cuentab['0']['cuenta_bancaria']) && $get_id_cuentab[0]['cuenta_bancaria'] != 1){echo "disabled";}?> type="text" class="form-control mb-4 grupo1" id="num_cuenta_bancaria_<?php echo $x; ?>" name="num_cuenta_bancaria_<?php echo $x; ?>" value="<?php
-                                                                                if(count($get_id_cuentab)>0 && $get_id_cuentab[0]['id_banco'] == $x){
-                                                                                    if(isset($get_id_cuentab['0']['num_cuenta_bancaria'])) {echo $get_id_cuentab['0']['num_cuenta_bancaria'];}
-                                                                                }else{
-
-                                                                                }
-                                                                            ?>" <?php echo $disabled ?>>
-                                                                        </div>
-                                                                    </div>
-                                                                <?php }  ?>
-
-                                                                <?php for ($x = 1; $x <= count($list_banco); $x++) {?>
-                                                                    <div class="<?php echo $x; ?> GFG col-md-3">
-                                                                        <div class="form-group">
-                                                                            <label for="usuario_email">Indique el código interbancario</label>
-                                                                            <input <?php if(isset($get_id_cuentab['0']['cuenta_bancaria']) && $get_id_cuentab[0]['cuenta_bancaria'] != 1){echo "disabled";}?> type="text" class="form-control mb-4" id="num_codigo_interbancario_<?php echo $x; ?>" name="num_codigo_interbancario_<?php echo $x; ?>" value="
-                                                                            <?php
-                                                                                if(count($get_id_cuentab)>0 && $get_id_cuentab[0]['id_banco']== $x){
-                                                                                    if(isset($get_id_cuentab['0']['num_codigo_interbancario'])) {echo $get_id_cuentab['0']['num_codigo_interbancario'];}
-                                                                                }else{
-
-                                                                                }
-                                                                            ?>" <?php echo $disabled ?>>
-                                                                        </div>
-                                                                    </div>
-                                                                <?php }  ?>
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="camisa">Camisa</label>
+                                                                    <select class="form-control" name="camisa" id="camisa" <?php echo $disabled ?>>
+                                                                        <option value="0">Seleccion</option>
+                                                                        <?php foreach($list_accesorio_camisa as $list){
+                                                                            if(isset($get_id_t[0]) && $get_id_t[0]['camisa'] == $list['id_talla']){ ?>
+                                                                            <option selected value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
+                                                                        <?php }else{?>
+                                                                        <option value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
+                                                                        <?php } } ?>
+                                                                    </select>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-12">
+
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="pantalon">Pantalón</label>
+                                                                    <select class="form-control" name="pantalon" id="pantalon" <?php echo $disabled ?>>
+                                                                        <option value="0">Seleccion</option>
+                                                                        <?php foreach($list_accesorio_pantalon as $list){
+                                                                            if(isset($get_id_t[0]) && $get_id_t[0]['pantalon'] == $list['id_talla']){ ?>
+                                                                            <option selected value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
+                                                                        <?php }else{?>
+                                                                        <option value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
+                                                                        <?php } } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="zapato">Zapato</label>
+                                                                    <select class="form-control" name="zapato" id="zapato" <?php echo $disabled ?>>
+                                                                        <option value="0">Seleccion</option>
+                                                                        <?php foreach($list_accesorio_zapato as $list){
+                                                                            if(isset($get_id_t[0]) && $get_id_t[0]['zapato'] == $list['id_talla']){ ?>
+                                                                            <option selected value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
+                                                                        <?php }else{?>
+                                                                        <option value="<?php echo $list['id_talla']; ?>"><?php echo $list['nom_talla'];?></option>
+                                                                        <?php } } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
+                        </div>
 
-                            <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                                <form id="formulario_termino" class="section general-info">
-                                    <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
-                                    <input name="id_usuariot" type="hidden" class="form-control" id="id_usuariot" value="<?php echo $get_id[0]['id_usuario']; ?>">
-
-                                    <div class="widget-content widget-content-area">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <div class="col-md-12 text-left custom-control custom-checkbox checkbox-success">
-                                                        <input type="checkbox" class="custom-control-input" <?php if($get_id[0]['terminos']==1){ echo "disabled checked";} ?> onclick="Terminos();" value="1" id="termino" name="termino">
-                                                        <label class="custom-control-label" for="termino">He leído y Acepto la
-                                                            <a href="#" style="cursor:pointer;" title="Política de Privacidad" data-toggle="modal" data-target="#zoomupTerminos">
-                                                            Política de Privacidad</a>
-                                                            de la Numero 1
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="col-md-12 text-right">
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_sistema_pensionario" class="section general-info">
+                            <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6 class="">Sistema Pensionario</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5">
                                                     <?php if($editable==0){?>
-                                                        <button class="btn btn-primary mt-3" type="button" onclick="GuardarCambios('<?php echo session('usuario')->id_nivel ?>');">Guardar</button>
-                                                        <?php }else{?> &nbsp;<?php }?>
+                                                    <a onclick="Sistema_Pensionario();" title="Sistema Pensionario" class="btn btn-primary">
+                                                    Actualizar
+                                                    </a>
+                                                    <?php }else{?> &nbsp;<?php }?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row" id="sistema_pensionario">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="nacionalidad">Pertenece a algún sistema pensionario</label>
+                                                                    <select class="form-control" id="id_respuestasp" name="id_respuestasp" onchange="Validasp();" <?php echo $disabled ?>>
+                                                                    <option value="0" <?php if(isset($get_id_sist_pensu['0']['id_respuestasp']) && $get_id_sist_pensu[0]['id_respuestasp'] == 0){ echo "selected";} ?>>Seleccione</option>
+                                                                    <option value="1" <?php if(isset($get_id_sist_pensu['0']['id_respuestasp']) && $get_id_sist_pensu[0]['id_respuestasp'] == 1){ echo "selected";} ?>>SÍ</option>
+                                                                    <option value="2" <?php if(isset($get_id_sist_pensu['0']['id_respuestasp']) && $get_id_sist_pensu[0]['id_respuestasp'] == 2){ echo "selected";} ?>>NO</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="camisa">Indique el sistema pensionaro al que pertenece</label>
+                                                                    <select <?php if(isset($get_id_sist_pensu['0']['id_respuestasp']) && $get_id_sist_pensu[0]['id_respuestasp'] == 2){ echo "disabled";} ?> class="form-control" name="id_sistema_pensionario" id="id_sistema_pensionario" onchange="ValidaAFP();" <?php echo $disabled ?>>
+                                                                    <option value="0">Seleccion</option>
+                                                                    <?php foreach($list_sistema_pensionario as $list){
+                                                                        if(isset($get_id_sist_pensu[0]) && $get_id_sist_pensu[0]['id_sistema_pensionario'] == $list->id_sistema_pensionario){ ?>
+                                                                        <option selected value="<?php echo $list->id_sistema_pensionario; ?>"><?php echo $list->cod_sistema_pensionario;?></option>
+                                                                    <?php }else{?>
+                                                                    <option value="<?php echo $list->id_sistema_pensionario; ?>"><?php echo $list->cod_sistema_pensionario;?></option>
+                                                                    <?php } } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label for="pantalon">Si indico AFP elija</label>
+                                                                    <select <?php if(isset($get_id_sist_pensu['0']['id_respuestasp']) && $get_id_sist_pensu[0]['id_respuestasp'] == 2){ echo "disabled";} ?> class="form-control" name="id_afp" id="id_afp" <?php echo $disabled ?>>
+                                                                    <option value="0">Seleccion</option>
+                                                                    <?php foreach($list_afp as $list){
+                                                                        if(isset($get_id_sist_pensu[0]) && $get_id_sist_pensu[0]['id_afp'] == $list->id_afp){ ?>
+                                                                        <option selected value="<?php echo $list->id_afp; ?>"><?php echo $list->nom_afp;?></option>
+                                                                    <?php }else{?>
+                                                                    <option value="<?php echo $list->id_afp; ?>"><?php echo $list->nom_afp;?></option>
+                                                                    <?php } } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
                                     </div>
+                                </div>
+                            </form>
+                        </div>
 
-                                </form>
-                            </div>
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_cuenta_bancaria" class="section general-info">
+                            <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
+
+                                <div class="info">
+                                    <div class="chico">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h6 class="">Número de Cuenta</h6>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right mb-5">
+                                                <?php if($editable==0){?>
+                                                    <a onclick="Numero_Cuenta();" title="Actualizar Número de Cuenta" class="btn btn-primary">
+                                                    Actualizar
+                                                    </a>
+                                                    <?php }else{?> &nbsp;<?php }?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11 mx-auto">
+                                            <div class="edu-section">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row" id="numero_cuenta">
+                                                            <div class="col-md-3">
+                                                                <div class="form-group">
+                                                                    <label for="nacionalidad">¿Cuéntas con cuenta bancaria?</label>
+                                                                    <select class="form-control" id="cuenta_bancaria" name="cuenta_bancaria" onchange="Validaeb();" <?php echo $disabled ?>>
+                                                                    <option value="0" <?php if(isset($get_id_cuentab['0']['cuenta_bancaria']) && $get_id_cuentab[0]['cuenta_bancaria'] == 0){ echo "selected";} ?>>Seleccione</option>
+                                                                    <option value="1" <?php if(isset($get_id_cuentab['0']['cuenta_bancaria']) && $get_id_cuentab[0]['cuenta_bancaria'] == 1){ echo "selected";} ?>>SÍ</option>
+                                                                    <option value="2" <?php if(isset($get_id_cuentab['0']['cuenta_bancaria']) && $get_id_cuentab[0]['cuenta_bancaria'] == 2){ echo "selected";} ?>>NO</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label for="">Indique la entidad bancaria</label>
+                                                                <select class="form-control" name="id_banco" id="id_banco" <?php echo $disabled ?>>
+                                                                    <option value="0">Seleccion</option>
+                                                                    <?php foreach($list_banco as $list){
+                                                                        if(count($get_id_cuentab)>0 && $get_id_cuentab[0]['id_banco'] == $list['id_banco']){ ?>
+                                                                        <option selected value="<?php echo $list['id_banco']; ?>"><?php echo $list['nom_banco'];?></option>
+                                                                    <?php }else{?>
+                                                                    <option value="<?php echo $list['id_banco']; ?>"><?php echo $list['nom_banco'];?></option>
+                                                                    <?php } } ?>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+
+                                                            <?php for ($x = 1; $x <= count($list_banco); $x++) {?>
+                                                                <div class="<?php echo $x; ?> GFG col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label for="usuario_email">Indique el número de cuenta</label>
+                                                                        <input <?php if(isset($get_id_cuentab['0']['cuenta_bancaria']) && $get_id_cuentab[0]['cuenta_bancaria'] != 1){echo "disabled";}?> type="text" class="form-control mb-4 grupo1" id="num_cuenta_bancaria_<?php echo $x; ?>" name="num_cuenta_bancaria_<?php echo $x; ?>" value="<?php
+                                                                            if(count($get_id_cuentab)>0 && $get_id_cuentab[0]['id_banco'] == $x){
+                                                                                if(isset($get_id_cuentab['0']['num_cuenta_bancaria'])) {echo $get_id_cuentab['0']['num_cuenta_bancaria'];}
+                                                                            }else{
+
+                                                                            }
+                                                                        ?>" <?php echo $disabled ?>>
+                                                                    </div>
+                                                                </div>
+                                                            <?php }  ?>
+
+                                                            <?php for ($x = 1; $x <= count($list_banco); $x++) {?>
+                                                                <div class="<?php echo $x; ?> GFG col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label for="usuario_email">Indique el código interbancario</label>
+                                                                        <input <?php if(isset($get_id_cuentab['0']['cuenta_bancaria']) && $get_id_cuentab[0]['cuenta_bancaria'] != 1){echo "disabled";}?> type="text" class="form-control mb-4" id="num_codigo_interbancario_<?php echo $x; ?>" name="num_codigo_interbancario_<?php echo $x; ?>" value="
+                                                                        <?php
+                                                                            if(count($get_id_cuentab)>0 && $get_id_cuentab[0]['id_banco']== $x){
+                                                                                if(isset($get_id_cuentab['0']['num_codigo_interbancario'])) {echo $get_id_cuentab['0']['num_codigo_interbancario'];}
+                                                                            }else{
+
+                                                                            }
+                                                                        ?>" <?php echo $disabled ?>>
+                                                                    </div>
+                                                                </div>
+                                                            <?php }  ?>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                            <form id="formulario_termino" class="section general-info">
+                                <input name="id_usuariodp" type="hidden" class="form-control" id="id_usuariodp" value="<?php echo $get_id[0]['id_usuario']; ?>">
+                                <input name="id_usuariot" type="hidden" class="form-control" id="id_usuariot" value="<?php echo $get_id[0]['id_usuario']; ?>">
+
+                                <div class="widget-content widget-content-area">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="col-md-12 text-left custom-control custom-checkbox checkbox-success">
+                                                    <input type="checkbox" class="custom-control-input" <?php if($get_id[0]['terminos']==1){ echo "disabled checked";} ?> onclick="Terminos();" value="1" id="termino" name="termino">
+                                                    <label class="custom-control-label" for="termino">He leído y Acepto la
+                                                        <a href="#" style="cursor:pointer;" title="Política de Privacidad" data-toggle="modal" data-target="#zoomupTerminos">
+                                                        Política de Privacidad</a>
+                                                        de la Numero 1
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col-md-12 text-right">
+                                                <?php if($editable==0){?>
+                                                    <button class="btn btn-primary mt-3" type="button" onclick="GuardarCambios('<?php echo session('usuario')->id_nivel ?>');">Guardar</button>
+                                                    <?php }else{?> &nbsp;<?php }?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -3376,7 +3221,90 @@ if($get_id[0]['edicion_perfil']==1){
         $("#husuario").attr('aria-expanded','true');
         $("#upersonales").addClass('active');
         $('.dropify').dropify();
+
+        Planilla_Parte_Superior();
+        Planilla_Parte_Inferior();
     });
+
+    function solo_Numeros(e) {
+        var key = event.which || event.keyCode;
+        if (key >= 48 && key <= 57) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function solo_Numeros_Punto(e) {
+        var key = event.which || event.keyCode;
+        if ((key >= 48 && key <= 57) || key == 46) {
+            if (key == 46 && event.target.value.indexOf('.') !== -1) {
+                return false;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function Planilla_Parte_Superior(){
+        Cargando();
+
+        var url = "{{ route('colaborador_pl.parte_superior', $get_id[0]['id_usuario']) }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success:function (resp) {
+                $('#parte_superior_pl').html(resp);
+            }
+        });
+    }
+
+    function Planilla_Parte_Inferior(){
+        Cargando();
+
+        var url = "{{ route('colaborador_pl.parte_inferior', $get_id[0]['id_usuario']) }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success:function (resp) {
+                $('#parte_inferior_pl').html(resp);
+            }
+        });
+    }
+
+    function Valida_Planilla_Activa(id){
+        Cargando();
+
+        var url = "{{ url('ColaboradorController/Valida_Planilla_Activa') }}";
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                'id_usuario': id
+            },
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(data) {
+                if(data=="0"){
+                    $('#btn_registrar_planilla').click();
+                }else{
+                    Swal({
+                        title: '¡Advertencia!',
+                        text: "¡Existe un registro en estado activo! Por favor actualice Fecha Fin del último registro para continuar",
+                        type: 'warning',
+                        showCancelButton: false,
+                        confirmButtonText: 'OK',
+                    });
+                }
+            }
+        });
+    }
+
     var checkaractualidad = document.getElementById('checkactualidad');
     var dia_finel = document.getElementById('dia_finel');
     var mes_finel = document.getElementById('mes_finel');
@@ -4195,36 +4123,6 @@ if($get_id[0]['edicion_perfil']==1){
             {
                 $('#datoslaborales').html(data);
 
-            }
-        });
-    }
-
-    function Valida_Planilla_Activa(id){
-        Cargando();
-        var url = "{{ url('ColaboradorController/Valida_Planilla_Activa') }}";
-        var csrfToken = $('input[name="_token"]').val();
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: {
-                'id_usuario': id
-            },
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
-            success: function(data) {
-
-                if(data=="0"){
-                    $('#btn_registrar_planilla').click();
-                }else{
-                    Swal({
-                        title: 'Advertencia',
-                        text: "¡Existe un registro en estado activo! Por favor actualice Fecha Fin del último registro para continuar",
-                        type: 'warning',
-                        showCancelButton: false,
-                        confirmButtonText: 'OK',
-                    });
-                }
             }
         });
     }

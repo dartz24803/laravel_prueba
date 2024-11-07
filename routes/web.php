@@ -1179,7 +1179,10 @@ Route::controller(ColaboradorController::class)->group(function () {
     Route::get('ColaboradorController/Busca_Puesto_Hp', 'Busca_Puesto_Hp');
     Route::get('ColaboradorController/Modal_Detalle_Historico_Colaborador/{id}/{tipo}', 'Modal_Detalle_Historico_Colaborador');
     Route::post('ColaboradorController/Valida_Planilla_Activa', 'Valida_Planilla_Activa');
-    Route::get('ColaboradorController/Modal_Dato_Planilla/{id}/{count}', 'Modal_Dato_Planilla');
+    Route::get('ColaboradorController/Modal_Dato_Planilla/{id}', 'Modal_Dato_Planilla');
+    Route::post('colaborador_pl/{id}', 'store_pl')->name('colaborador_pl.store');
+    Route::get('colaborador_pl/{id}/parte_superior', 'parte_superior_pl')->name('colaborador_pl.parte_superior');
+    Route::get('colaborador_pl/{id}/parte_inferior', 'parte_inferior_pl')->name('colaborador_pl.parte_inferior');
     Route::post('ColaboradorController/List_datosgenerales_planilla', 'List_datosgenerales_planilla');
     Route::post('ColaboradorController/List_datos_planilla', 'List_datos_planilla');
     Route::post('ColaboradorController/Btn_Planilla_Perfil', 'Btn_Planilla_Perfil');
@@ -2067,6 +2070,22 @@ Route::controller(ContadorVisitasController::class)->group(function () {
     Route::post('ContadorVisitas/Visualizar_Insert_Contador_Visitas', 'Visualizar_Insert_Contador_Visitas');
 });
 
+use App\Http\Controllers\ReclutamientoController;
+Route::controller(ReclutamientoController::class)->group(function () {
+    Route::get('Reclutamiento/index', 'Reclutamiento');
+    Route::post('Reclutamiento/Buscador_Reclutamiento', 'Buscador_Reclutamiento');
+    Route::get('Reclutamiento/Modal_Reclutamiento', 'Modal_Reclutamiento');
+    Route::post('Reclutamiento/Buscar_Puesto_Area/{id_area}/{t}', 'Buscar_Puesto_Area');
+    Route::post('Reclutamiento/Insert_Reclutamiento', 'Insert_Reclutamiento');
+    Route::get('Reclutamiento/Modal_Update_Reclutamiento/{id}', 'Modal_Update_Reclutamiento');
+    Route::post('Reclutamiento/Insert_Reclutamiento_Reclutado', 'Insert_Reclutamiento_Reclutado');
+    Route::post('Reclutamiento/List_Reclutamiento_Reclutado', 'List_Reclutamiento_Reclutado');
+    Route::post('Reclutamiento/Delete_Reclutado', 'Delete_Reclutado');
+    Route::post('Reclutamiento/Update_Reclutamiento', 'Update_Reclutamiento');
+    Route::post('Reclutamiento/Delete_Reclutamiento', 'Delete_Reclutamiento');
+    Route::get('Reclutamiento/Modal_Reclutamiento_Reclutado', 'Modal_Reclutamiento_Reclutado');
+    Route::post('Reclutamiento/Delete_Reclutamiento_Detalle', 'Delete_Reclutamiento_Detalle');
+});
 
 
 

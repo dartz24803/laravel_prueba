@@ -68,6 +68,7 @@ use App\Models\ToleranciaHorario;
 use App\Models\Turno;
 use App\Models\UsersHistoricoCentroLabores;
 use App\Models\HistoricoColaborador;
+use App\Models\TipoCambioPuesto;
 use App\Models\Ubicacion;
 use App\Models\UsersHistoricoHorario;
 use App\Models\UsersHistoricoModalidad;
@@ -1050,9 +1051,7 @@ class ColaboradorController extends Controller
             $dato['list_gerencia'] = Gerencia::where('estado', 1)
                                     ->orderby('nom_gerencia', 'ASC')
                                     ->get();
-            $dato['list_tipo_cambio'] = DB::table('tipo_cambio_puesto')
-                                    ->where('estado',1)
-                                    ->get();
+            $dato['list_tipo_cambio'] = TipoCambioPuesto::all();
             if(count($dato['get_historico'])>0){
                 $dato['list_sub_gerencia'] = SubGerencia::where('id_gerencia', $dato['get_historico'][0]['id_gerencia'])
                                         ->orderBy('nom_sub_gerencia', 'ASC')
@@ -1250,30 +1249,166 @@ class ColaboradorController extends Controller
     }
 
     public function Valida_Planilla_Activa(Request $request){
-        $dato['id_usuario']= $request->input("id_usuario");
+        /*$dato['id_usuario']= $request->input("id_usuario");
         $dato['cant_planilla']=HistoricoColaborador::valida_dato_planilla_activo($dato);
-        echo count($dato['cant_planilla']);
+        echo count($dato['cant_planilla']);*/
+        $cantidad = HistoricoColaborador::where('id_usuario',$request->id_usuario)
+                    ->where(function ($query) {
+                        $query->whereNull('fec_fin')->orWhere('fec_fin', '0000-00-00');
+                    })->where('estado',1)->count();
+        echo $cantidad;
     }
 
-    public function Modal_Dato_Planilla($id_usuario,$cantidad){
+    public function Modal_Dato_Planilla($id_usuario){
         $this->Model_Perfil = new Model_Perfil();
         $dato['id_usuario']=$id_usuario;
-        $dato['list_situacion_laboral'] = SituacionLaboral::where('estado',1)
-                                        ->get();
-        $dato['list_empresa'] = Empresas::where('estado', 1)
-                                ->where('activo',1)
-                                ->get();
-        $dato['list_regimen'] = Regimen::where('estado', 1)
-                                ->get();
-        $dato['list_tipo_contrato'] = TipoContrato::where('estado',1)
-                                ->get();
-        $dato['get_ultimo'] = $this->Model_Perfil->get_list_datoplanilla($id_usuario);
-        $dato['get_historico_estado'] = HistoricoEstadoColaborador::where('id_usuario', $id_usuario)
+        $dato['list_situacion_laboral'] = SituacionLaboral::where('ficha',1)->where('estado',1)->get();
+        $dato['list_tipo_contrato'] = TipoContrato::where('estado',1)->get();
+        $dato['list_empresa'] = Empresas::where('estado', 1)->where('activo',1)->get();
+        $dato['list_regimen'] = Regimen::where('estado', 1)->get();
+        $dato['ultimo'] = HistoricoColaborador::where('id_usuario',$id_usuario)
+                        ->whereIn('estado',[1,3,4])
+                        ->orderBy('id_historico_colaborador','DESC')->first();
+        /*$dato['get_historico_estado'] = HistoricoEstadoColaborador::where('id_usuario', $id_usuario)
                                     ->where('estado', 1)
                                     ->orderBy('id_historico_estado_colaborador', 'DESC')
-                                    ->get();
-        $dato['cantidad']=$cantidad;
+                                    ->get();*/
+        $dato['cantidad'] = HistoricoColaborador::where('id_usuario',$id_usuario)
+                            ->whereIn('estado',[1,3,4])->count();
         return view('rrhh.Perfil.Datos_Planilla.modal_registrar',$dato);
+    }
+
+    public function store_pl(Request $request, $id_usuario)
+    {
+        $request->validate([
+            'id_situacion_laboral' => 'gt:0',
+            'sueldo' => 'required|gt:0',
+            'fec_inicio' => 'required'
+        ], [
+            'id_situacion_laboral.gt' => 'Debe seleccionar situación laboral.',
+            'sueldo.required' => 'Debe ingresar sueldo.',
+            'sueldo.gt' => 'Debe ingresar sueldo mayor a 0.',
+            'fec_inicio.required' => 'Debe ingresar fecha inicio.'
+        ]);
+
+        $errors = [];
+        $ultimo = HistoricoColaborador::where('id_usuario',$id_usuario)
+                ->whereIn('estado',[1,3,4])
+                ->orderBy('id_historico_colaborador','DESC')->first();
+        if(isset($ultimo->fec_fin) && $ultimo->fec_fin!=""){
+            if($request->fec_inicio<=$ultimo->fec_fin){
+                $errors['ultimo'] = ['Fecha inicio no debe ser menor o igual a la fecha fin del registro anterior.'];
+            }
+        }
+        if ($request->id_situacion_laboral=="2") {
+            if($request->id_tipo_contrato=="0"){
+                $errors['id_tipo_contrato'] = ['Debe seleccionar tipo contrato.'];
+            }
+            if($request->id_empresa=="0"){
+                $errors['id_empresa'] = ['Debe seleccionar empresa.'];
+            }
+            if($request->id_regimen=="0"){
+                $errors['id_regimen'] = ['Debe seleccionar régimen.'];
+            }
+            if($request->id_tipo_contrato!="1"){
+                if($request->fec_vencimiento==""){
+                    $errors['fec_vencimiento'] = ['Debe ingresar fecha vencimiento.'];
+                }
+            }
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
+        Usuario::findOrFail($id_usuario)->update([
+            'correo_bienvenida' => null,
+            'accesos_email' => null,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        $valida_1 = HistoricoColaborador::where('id_usuario',$id_usuario)
+                    ->where('id_situacion_laboral',$request->id_situacion_laboral)
+                    ->where('fec_inicio',$request->fec_inicio)->whereIn('estado',[1,3])->count();
+        $valida_2 = HistoricoColaborador::where('id_usuario',$request->id_usuario)
+                    ->where(function ($query) {
+                        $query->whereNull('fec_fin')->orWhere('fec_fin', '0000-00-00');
+                    })->where('estado',1)->count();                    
+
+        if($valida_1>0){
+            echo "error";
+        }elseif($valida_2>0){
+            echo "incompleto";
+        }else{
+            $historico = HistoricoColaborador::create([
+                'id_usuario' => $id_usuario,
+                'id_situacion_laboral' => $request->id_situacion_laboral,
+                'fec_inicio' => $request->fec_inicio,
+                'fec_vencimiento' => $request->fec_vencimiento,
+                'id_tipo_contrato' => $request->id_tipo_contrato,
+                'id_empresa' => $request->id_empresa,
+                'id_regimen' => $request->id_regimen,
+                'estado_intermedio' => $request->id_tipo,
+                'sueldo' => $request->sueldo,
+                'bono' => $request->bono,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+
+            Usuario::findOrFail($id_usuario)->update([
+                'id_situacion_laboral' => $request->id_situacion_laboral,
+                'ini_funciones' => $request->fec_inicio,
+                'id_tipo_contrato' => $request->id_tipo_contrato,
+                'id_empresapl' => $request->id_empresa,
+                'id_regimen' => $request->id_regimen,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+
+            if($request->id_tipo=="5" || $request->id_tipo=="6"){
+                HistoricoEstadoColaborador::create([
+                    'id_usuario' => $id_usuario,
+                    'fec_inicio' => $request->fec_inicio,
+                    'estado_inicio_colaborador' => $request->id_tipo,
+                    'id_historico_colaborador' => $historico->id_historico_colaborador,
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+            }
+        }
+    }
+
+    public function parte_superior_pl($id_usuario){
+        $dato['get_id'] = HistoricoColaborador::from('historico_colaborador AS hc')
+                        ->select('hc.id_historico_colaborador',
+                        DB::raw("CASE WHEN hc.estado=1 THEN 'Activo'
+                        WHEN hc.estado=3 AND hc.flag_cesado=1 THEN 'Cesado'
+                        WHEN hc.estado=3 AND hc.flag_cesado=0 THEN 'Terminado'
+                        WHEN hc.estado=4 THEN 'Renovación' 
+                        WHEN hc.estado=5 THEN 'Reingreso' END AS nom_estado"),
+                        'sl.nom_situacion_laboral',
+                        DB::raw("DATE_FORMAT(fec_inicio,'%d/%m/%Y') AS fec_inicio"),
+                        'em.nom_empresa','re.nom_regimen')
+                        ->join('situacion_laboral AS sl','sl.id_situacion_laboral','=','hc.id_situacion_laboral')
+                        ->leftjoin('empresas AS em','em.id_empresa','=','hc.id_empresa')
+                        ->leftjoin('regimen AS re','re.id_regimen','=','hc.id_regimen')
+                        ->where('hc.id_usuario',$id_usuario)
+                        ->whereIn('hc.estado',[1,3,4])
+                        ->orderBy('hc.id_historico_colaborador','DESC')->first();
+        return view('rrhh.Perfil.Datos_Planilla.parte_superior',$dato);
+    }
+
+    public function parte_inferior_pl($id_usuario){
+        $dato['list_planilla'] = HistoricoColaborador::get_list_dato_planilla([
+            'id_usuario'=>$id_usuario
+        ]);
+        return view('rrhh.Perfil.Datos_Planilla.parte_inferior',$dato);
     }
 
     public function List_datosgenerales_planilla(Request $request){

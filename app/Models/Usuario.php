@@ -179,6 +179,7 @@ class Usuario extends Model
                 and r.estado=1) end as url_foto,p.id_nivel as nivel_jerarquico,u.desvinculacion,
                 pps.registro_masivo, visualizar_amonestacion(u.id_puesto) AS visualizar_amonestacion,
                 sl.descripcion AS sede_laboral,
+                visualizar_responsable_area(u.id_puesto) AS visualizar_responsable_area,
                 pps.estado as estadopps, pps.registro_masivo, pps.id_puesto_permitido, u.id_centro_labor,
                 visualizar_mi_equipo(u.id_puesto) AS visualizar_mi_equipo,
                 (SELECT COUNT(*) FROM asignacion_jefatura aj 
@@ -351,12 +352,15 @@ class Usuario extends Model
                 u.id_nivel, u.usuario_email, u.centro_labores, u.emailp, u.num_celp, u.induccion, u.datos_completos,
                 u.desvinculacion, u.ini_funciones,u.fec_reg,
                 u.usuario_password,u.estado, n.nom_nivel, p.nom_puesto, u.id_area,
-                DATE_FORMAT(u.fec_nac, '%M %d,%Y') as fec_nac, u.usuario_codigo,u.id_gerencia,
+                DATE_FORMAT(u.fec_nac, '%M %d,%Y') as fec_nac, u.usuario_codigo,g.id_gerencia,
                 u.foto, u.acceso, u.id_puesto, u.id_cargo, u.directorio
 
                 FROM users u
                 left join nivel n on n.id_nivel=u.id_nivel
                 left join puesto p on p.id_puesto=u.id_puesto
+                LEFT JOIN area a on a.id_area=p.id_area
+                LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
 
                 WHERE  u.estado IN (1,4) and u.desvinculacion IN (0) and u.id_nivel<>8 and u.id_puesto in (" . $dato['puestos_jefes'][0]['puestos'] . ")";
 
@@ -370,18 +374,20 @@ class Usuario extends Model
             $sql = "SELECT u.*, n.nom_nacionalidad, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo
                     from users u
                     LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
-                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
-                    LEFT JOIN area a on a.id_area=u.id_area
                     LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN area a on a.id_area=p.id_area
+                    LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                    LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
                     LEFT JOIN cargo c on c.id_cargo=u.id_cargo
                     where u.estado=1 and id_usuario =" . $id_usuario;
         } else {
             $sql = "SELECT u.*,  n.nom_nacionalidad, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo
                     from users u
                     LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
-                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
-                    LEFT JOIN area a on a.id_area=u.id_area
                     LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN area a on a.id_area=p.id_area
+                    LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                    LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
                     LEFT JOIN cargo c on c.id_cargo=u.id_cargo
                     where u.estado=1 and u.id_nivel<>8";
         }
@@ -486,7 +492,7 @@ class Usuario extends Model
     {
         $parte_gerencia = "";
         if ($dato['id_gerencia'] != "0") {
-            $parte_gerencia = "us.id_gerencia=" . $dato['id_gerencia'] . " AND";
+            $parte_gerencia = "ge.id_gerencia=" . $dato['id_gerencia'] . " AND";
         }
         $sql = "SELECT us.id_usuario,us.ini_funciones AS orden,
                 CASE WHEN YEAR(us.fec_nac) BETWEEN 1946 AND 1964 THEN 'BB'
@@ -502,8 +508,10 @@ class Usuario extends Model
                 us.foto,us.documento,us.fec_baja
                 FROM users us
                 LEFT JOIN tipo_documento td ON us.id_tipo_documento=td.id_tipo_documento
-                LEFT JOIN puesto pu ON us.id_puesto=pu.id_puesto
-                LEFT JOIN area ar ON us.id_area=ar.id_area
+                INNER JOIN puesto pu ON pu.id_puesto=us.id_puesto 
+                INNER JOIN area ar ON ar.id_area=pu.id_area 
+                INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=ar.id_departamento 
+                INNER JOIN gerencia ge ON ge.id_gerencia=sg.id_gerencia
                 WHERE $parte_gerencia us.id_nivel<>8 AND us.estado=3
                 ORDER BY us.ini_funciones DESC";
         $query = DB::select($sql);
