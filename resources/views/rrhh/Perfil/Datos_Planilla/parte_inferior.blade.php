@@ -15,7 +15,7 @@
                     <th>Total</th>
                     <th>Observaciones</th>
                     <th>Motivo Cese</th>
-                    <th></th>
+                    <th class="no-content"></th>
                 </tr>
             </thead>
             <tbody>
