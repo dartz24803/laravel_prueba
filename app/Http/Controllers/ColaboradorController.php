@@ -68,6 +68,7 @@ use App\Models\ToleranciaHorario;
 use App\Models\Turno;
 use App\Models\UsersHistoricoCentroLabores;
 use App\Models\HistoricoColaborador;
+use App\Models\TipoCambioPuesto;
 use App\Models\Ubicacion;
 use App\Models\UsersHistoricoHorario;
 use App\Models\UsersHistoricoModalidad;
@@ -1050,9 +1051,7 @@ class ColaboradorController extends Controller
             $dato['list_gerencia'] = Gerencia::where('estado', 1)
                                     ->orderby('nom_gerencia', 'ASC')
                                     ->get();
-            $dato['list_tipo_cambio'] = DB::table('tipo_cambio_puesto')
-                                    ->where('estado',1)
-                                    ->get();
+            $dato['list_tipo_cambio'] = TipoCambioPuesto::all();
             if(count($dato['get_historico'])>0){
                 $dato['list_sub_gerencia'] = SubGerencia::where('id_gerencia', $dato['get_historico'][0]['id_gerencia'])
                                         ->orderBy('nom_sub_gerencia', 'ASC')
