@@ -164,7 +164,7 @@
             </li>
 
             <li id="asist_colaborador">
-                <a href="{{url('MiEquipo/ListaMiequipo') }}>" data-toggle="tooltip" data-placement="right" data-html="true" title="• Asistencia <br>• Inconsistencias <br>• Ausencias <br>• Dotación <br>• Tardanza">
+                <a href="{{url('AsistenciaColaboradores/ListaAsistenciaColaboradores') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Asistencia <br>• Inconsistencias <br>• Ausencias <br>• Dotación <br>• Tardanza">
                     <p class="romperpalabra"><span id="icono_active2"></span> Asistencia Colaboradores</p>
                 </a>
             </li>

@@ -100,8 +100,6 @@
                         </ul>
                         @endif
 
-
-
                         <div class="row" id="cancel-row">
                             <div id="div_administrador" class="widget-content widget-content-area p-3">
                                 <!-- Aquí se mostrará el iframe -->
