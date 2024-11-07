@@ -150,5 +150,17 @@ $id_puesto=session('usuario')->id_puesto;
             }
         });
     }
+    
+    function Excel_Reclutamiento(p) {
+        
+        if(p==1){
+            var id_usuario = $('#id_usuario_asignado').val();
+        }else{
+            var id_usuario = $('#id_usuario_asignado2').val();
+        }
+        //var url = "<?php echo site_url(); ?>Corporacion/Buscador_Reclutamiento";
+        window.location = "{{ url('Reclutamiento/Excel_Reclutamiento') }} /"+id_usuario+"/"+p;
+        
+    }
 </script>
 @endsection

@@ -249,7 +249,6 @@ class ReclutamientoController extends Controller
             'ae' => 'required_if:tipo_sueldo,2',
             'id_asignadoe' => 'not_in:0',
             'prioridade' => 'not_in:0',
-            'fec_cierree' => 'required',
         ], [
             'id_area' => 'Debe seleccionar Área.',
             'id_puesto' => 'Debe seleccionar Puesto.',
@@ -264,7 +263,6 @@ class ReclutamientoController extends Controller
             'a' => 'Debe ingresar A.',
             'id_asignado' => 'Debe seleccionar Asignado a',
             'prioridad' => 'Debe seleccionar Prioridad.',
-            'fec_cierre' => 'Debe ingresar Fecha de Cierre.',
         ]);
             $dato['id_reclutamiento']= $this->input->post("id_reclutamiento");
             $dato['id_evaluador']= $this->input->post("id_evaluadore");
@@ -280,7 +278,7 @@ class ReclutamientoController extends Controller
             $dato['vacantes']= $this->input->post("vacantese");
             $dato['cod_base']= $this->input->post("cod_basee");
             
-            $id_usuario = session('usuario')[0]['id_usuario']; // Asume que estás usando sesiones en Laravel
+            $id_usuario = session('usuario')->id_usuario;
             $dia = date('Y-m-d');
             $fecha = [];
 

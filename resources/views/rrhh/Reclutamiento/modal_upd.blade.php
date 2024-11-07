@@ -29,7 +29,6 @@ $id_usuario = session('usuario')->id_usuario;
             <div class="form-group col-md-2">
                 <label>Puesto:</label>
             </div>
-            {{ print_r($get_id[0]['id_puesto']); }}
             <div class="form-group col-md-4" id="cmb_puestoe">
                 <select name="id_puestoe" id="id_puestoe" class="form-control basiccc" disabled>
                     <option value="0">Seleccione</option>
