@@ -1179,7 +1179,10 @@ Route::controller(ColaboradorController::class)->group(function () {
     Route::get('ColaboradorController/Busca_Puesto_Hp', 'Busca_Puesto_Hp');
     Route::get('ColaboradorController/Modal_Detalle_Historico_Colaborador/{id}/{tipo}', 'Modal_Detalle_Historico_Colaborador');
     Route::post('ColaboradorController/Valida_Planilla_Activa', 'Valida_Planilla_Activa');
-    Route::get('ColaboradorController/Modal_Dato_Planilla/{id}/{count}', 'Modal_Dato_Planilla');
+    Route::get('ColaboradorController/Modal_Dato_Planilla/{id}', 'Modal_Dato_Planilla');
+    Route::post('colaborador_pl/{id}', 'store_pl')->name('colaborador_pl.store');
+    Route::get('colaborador_pl/{id}/parte_superior', 'parte_superior_pl')->name('colaborador_pl.parte_superior');
+    Route::get('colaborador_pl/{id}/parte_inferior', 'parte_inferior_pl')->name('colaborador_pl.parte_inferior');
     Route::post('ColaboradorController/List_datosgenerales_planilla', 'List_datosgenerales_planilla');
     Route::post('ColaboradorController/List_datos_planilla', 'List_datos_planilla');
     Route::post('ColaboradorController/Btn_Planilla_Perfil', 'Btn_Planilla_Perfil');

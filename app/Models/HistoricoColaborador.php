@@ -63,4 +63,29 @@ class HistoricoColaborador extends Model
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }
+
+    public static function get_list_dato_planilla($dato=null){
+        $sql = "SELECT hc.id_historico_colaborador,hc.fec_reg AS orden,
+                CASE WHEN hc.estado=1 THEN 'Activo'
+                WHEN hc.estado=3 AND hc.flag_cesado=1 THEN 'Cesado'
+                WHEN hc.estado=3 AND hc.flag_cesado=0 THEN 'Terminado'
+                WHEN hc.estado=4 THEN 'Renovación'
+                WHEN hc.estado=5 THEN 'Reingreso' END AS nom_estado,sl.nom_situacion_laboral,
+                CASE WHEN hc.fec_inicio IS NOT NULL AND hc.fec_inicio NOT LIKE '%0000%' THEN 
+                DATE_FORMAT(hc.fec_inicio,'%d/%m/%Y') ELSE '' END AS fec_inicio,
+                CASE WHEN hc.fec_fin IS NOT NULL AND hc.fec_fin NOT LIKE '%0000%' THEN 
+                DATE_FORMAT(hc.fec_fin,'%d/%m/%Y') ELSE '' END AS fec_fin,em.nom_empresa,
+                CASE WHEN hc.fec_fin IS NOT NULL AND hc.fec_fin NOT LIKE '%0000%' THEN 
+                TIMESTAMPDIFF(DAY, hc.fec_inicio, hc.fec_fin)
+                ELSE TIMESTAMPDIFF(DAY, hc.fec_inicio, CURDATE()) END AS dias_laborados,
+                CONCAT('S/. ',hc.sueldo) AS sueldo,CONCAT('S/. ',hc.bono) AS bono,
+                CONCAT('S/. ',(hc.sueldo+hc.bono)) AS total,hc.observacion,mb.nom_motivo
+                FROM historico_colaborador hc
+                INNER JOIN situacion_laboral sl ON sl.id_situacion_laboral=hc.id_situacion_laboral
+                LEFT JOIN empresas em ON hc.id_empresa=em.id_empresa
+                LEFT JOIN motivo_baja_rrhh mb ON hc.id_motivo_cese=mb.id_motivo
+                WHERE hc.id_usuario=".$dato['id_usuario']." AND hc.estado IN (1,3,4)";
+        $query = DB::select($sql);
+        return $query;
+    }
 }
