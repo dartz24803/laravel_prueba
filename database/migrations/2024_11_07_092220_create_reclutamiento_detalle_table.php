@@ -14,7 +14,7 @@ class CreateReclutamientoDetalleTable extends Migration
     public function up()
     {
         Schema::create('reclutamiento_detalle', function (Blueprint $table) {
-            $table->increments('id_reclutamiento_detalle');
+            $table->id('id_reclutamiento_detalle');
             $table->unsignedBigInteger('id_reclutamiento');
             $table->unsignedBigInteger('id_evaluador');
             $table->unsignedBigInteger('id_modalidad_laboral');
