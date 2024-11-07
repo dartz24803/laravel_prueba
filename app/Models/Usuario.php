@@ -486,7 +486,7 @@ class Usuario extends Model
     {
         $parte_gerencia = "";
         if ($dato['id_gerencia'] != "0") {
-            $parte_gerencia = "us.id_gerencia=" . $dato['id_gerencia'] . " AND";
+            $parte_gerencia = "ge.id_gerencia=" . $dato['id_gerencia'] . " AND";
         }
         $sql = "SELECT us.id_usuario,us.ini_funciones AS orden,
                 CASE WHEN YEAR(us.fec_nac) BETWEEN 1946 AND 1964 THEN 'BB'
@@ -502,8 +502,10 @@ class Usuario extends Model
                 us.foto,us.documento,us.fec_baja
                 FROM users us
                 LEFT JOIN tipo_documento td ON us.id_tipo_documento=td.id_tipo_documento
-                LEFT JOIN puesto pu ON us.id_puesto=pu.id_puesto
-                LEFT JOIN area ar ON us.id_area=ar.id_area
+                INNER JOIN puesto pu ON pu.id_puesto=us.id_puesto 
+                INNER JOIN area ar ON ar.id_area=pu.id_area 
+                INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=ar.id_departamento 
+                INNER JOIN gerencia ge ON ge.id_gerencia=sg.id_gerencia
                 WHERE $parte_gerencia us.id_nivel<>8 AND us.estado=3
                 ORDER BY us.ini_funciones DESC";
         $query = DB::select($sql);
