@@ -15,7 +15,7 @@
                                         <!-- Logo Logistica-->
                                         <div id="logo_logistica" class="col-sm-8">
                                             <div class="logo6" style="width: 6rem;">
-                                                <div id="logistica" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center {{ $acceso_tienda == true ? 'logo_disabled' : '' }}" style="background-color: #fea701;height:6rem">
+                                                <div id="logistica" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701;height:6rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Logistica.png')}}" alt="">
                                                     <p class="card-text text-center text-white">Gestión Logística</p>
                                                 </div>
