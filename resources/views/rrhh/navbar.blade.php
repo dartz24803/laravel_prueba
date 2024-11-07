@@ -169,6 +169,18 @@
                 </a>
             </li>
         <?php } ?>
+        <?php if (session('usuario')->visualizar_responsable_area == 1 || session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2 || session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 133 || session('usuario')->id_puesto == 22 || session('usuario')->id_puesto == 146 || session('usuario')->id_puesto == 21 || session('usuario')->id_puesto == 278 || session('usuario')->id_puesto == 279) { ?>
+            <?php if(session('usuario')->id_nivel==1 || session('usuario')->id_nivel==2){
+                $hreclutamiento2 = "<br>• Completados";
+            }else{
+                $hreclutamiento2 = "";
+            }?>
+            <li id="rereclutamiento">
+                <a id="hreclutamiento" href="{{ url('Reclutamiento/index') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Pendientes <?= $hreclutamiento2 ?>">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Reclutamiento</p>
+                </a>
+            </li>
+        <?php } ?>
     </ul>
 </li>
 
