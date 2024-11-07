@@ -75,9 +75,9 @@ class HistoricoColaborador extends Model
                 DATE_FORMAT(hc.fec_inicio,'%d/%m/%Y') ELSE '' END AS fec_inicio,
                 CASE WHEN hc.fec_fin IS NOT NULL AND hc.fec_fin NOT LIKE '%0000%' THEN 
                 DATE_FORMAT(hc.fec_fin,'%d/%m/%Y') ELSE '' END AS fec_fin,em.nom_empresa,
-                CASE WHEN hc.fec_fin IS NOT NULL AND hc.fec_fin NOT LIKE '%0000%' THEN 
+                CONCAT((CASE WHEN hc.fec_fin IS NOT NULL AND hc.fec_fin NOT LIKE '%0000%' THEN 
                 TIMESTAMPDIFF(DAY, hc.fec_inicio, hc.fec_fin)
-                ELSE TIMESTAMPDIFF(DAY, hc.fec_inicio, CURDATE()) END AS dias_laborados,
+                ELSE TIMESTAMPDIFF(DAY, hc.fec_inicio, CURDATE()) END),' Día(s)') AS dias_laborados,
                 CONCAT('S/. ',hc.sueldo) AS sueldo,CONCAT('S/. ',hc.bono) AS bono,
                 CONCAT('S/. ',(hc.sueldo+hc.bono)) AS total,hc.observacion,mb.nom_motivo
                 FROM historico_colaborador hc

@@ -340,7 +340,7 @@ if($get_id[0]['edicion_perfil']==1){
                                         <div class="info">
                                             <div class="row">
                                                 <div class="col">
-                                                    <h6>Datos Planilla</h6>
+                                                    <h6 style="margin-bottom: 0px !important;">Datos Planilla</h6>
                                                 </div>
                                                 <div class="col text-sm-right text-center">
                                                     @csrf
