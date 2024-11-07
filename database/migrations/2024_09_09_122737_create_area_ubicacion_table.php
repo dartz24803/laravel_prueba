@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('area_ubicacion', function (Blueprint $table) {
             $table->id('id_area_ubicacion'); // Equivalent to int(11) AI PK
             $table->integer('id_ubicacion'); // Equivalent to int(11)
-            $table->integer('id_area'); // Equivalent to int(11)
+            $table->unsignedBigInteger('id_area'); // Equivalent to int(11)
             $table->datetime('fec_reg'); // Equivalent to datetime
             $table->integer('user_reg'); // Equivalent to int(11)
             $table->datetime('fec_act'); // Equivalent to datetime
             $table->integer('user_act'); // Equivalent to int(11)
-            $table->foreign('area','aubi_fk_id_are')->references('id_area')->on('area');
+            $table->foreign('id_area','aubi_fk_id_are')->references('id_area')->on('area');
         });
     }
 
