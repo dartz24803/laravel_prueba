@@ -1,4 +1,4 @@
-<?php 
+<?php
 $id_nivel = session('usuario')->id_nivel;
 $id_puesto = session('usuario')->id_puesto;
 $id_usuario = session('usuario')->id_usuario;
@@ -9,10 +9,10 @@ $id_usuario = session('usuario')->id_usuario;
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
-    </div> 
-                
+    </div>
+
     <div class="modal-body" style="max-height:600px; overflow:auto;">
-        <div class="col-md-12 row">    
+        <div class="col-md-12 row">
             <input  type="hidden" required class="form-control" id="nivele" name="nivele" value="<?php echo $id_nivel ?>">
             <input  type="hidden" required class="form-control" id="puestoe" name="puestoe" value="<?php echo $id_puesto ?>">
             <div class="form-group col-md-2">
@@ -37,7 +37,7 @@ $id_usuario = session('usuario')->id_usuario;
                     <?php }?>
                 </select>
             </div>
-            <?php if($id_nivel==1 || $id_nivel==2){?> 
+            <?php if($id_nivel==1 || $id_nivel==2){?>
             <div class="form-group col-md-2">
                 <label>Solicitante:</label>
             </div>
@@ -48,7 +48,7 @@ $id_usuario = session('usuario')->id_usuario;
                         <option value="<?php echo $list['id_usuario'] ?>" <?php if($get_id[0]['id_solicitante']==$list['id_usuario']){echo "selected";}?>><?php echo $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater'] ?></option>
                     <?php }?>
                 </select>
-            </div> 
+            </div>
             <div class="form-group col-md-2">
                 <label>Evaluador:</label>
             </div>
@@ -59,8 +59,8 @@ $id_usuario = session('usuario')->id_usuario;
                         <option value="<?php echo $list['id_usuario'] ?>" <?php if($get_id[0]['id_evaluador']==$list['id_usuario']){echo "selected";}?>><?php echo $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater'] ?></option>
                     <?php }?>
                 </select>
-            </div>    
-            <?php }else{?> 
+            </div>
+            <?php }else{?>
                 <input type="hidden" name="id_solicitantee" id="id_solicitantee" value="<?php echo $get_id[0]['id_solicitante'] ?>">
                 <input type="hidden" name="id_evaluadore" id="id_evaluadore" value="<?php echo $get_id[0]['id_evaluador'] ?>">
             <?php }?>
@@ -75,12 +75,14 @@ $id_usuario = session('usuario')->id_usuario;
                 <label>Centro Labores:</label>
             </div>
             <div class="form-group col-md-4">
-                <select name="cod_basee" id="cod_basee" class="form-control">
-                    <option value="0">Seleccione</option>
-                    <?php foreach($list_base as $list){?>
-                        <option value="<?php echo $list->cod_base ?>" <?php if($get_id[0]['cod_base']==$list->cod_base){echo "selected";}?>><?php echo $list->cod_base ?></option>
-                    <?php }?>
-                </select>
+                    <select class="form-control" name="id_ubicacione" id="id_ubicacione">
+	                		<option value="0"  >Seleccione</option>
+                            <?php foreach($list_ubicacion as $list) { ?>
+                                <option value="<?php echo $list['id_ubicacion']; ?>" <?php if($list['id_ubicacion']==$get_id[0]['id_ubicacion']){ echo "selected"; }?>>
+                                    <?php echo $list['cod_ubi']; ?>
+                                </option>
+                            <?php } ?>
+	                </select>
             </div>
             <div class="form-group col-md-2" >
                 <label>Modalidad:</label>
@@ -121,7 +123,7 @@ $id_usuario = session('usuario')->id_usuario;
             <div class="form-group col-md-4" id="inp_ae" style="display:<?php if($get_id[0]['tipo_sueldo']==2 ){echo "block";}else{echo "none";}?>">
                 <input type="text" class="form-control" name="ae" id="ae" value="<?php echo $get_id[0]['a'] ?>" onkeypress="return soloNumeros(event)">
             </div>
-            <?php if($id_nivel==1 || $id_nivel==2){?> 
+            <?php if($id_nivel==1 || $id_nivel==2){?>
             <div class="form-group col-md-2" >
                 <label>Asignado a: </label>
             </div>
@@ -150,8 +152,8 @@ $id_usuario = session('usuario')->id_usuario;
             <div class="form-group col-md-4">
                 <input type="date" name="fec_cierree" id="fec_cierree" value="<?php echo $get_id[0]['fec_cierre'] ?>" class="form-control" disabled>
             </div>
-            <?php }else{?> 
-            <input type="hidden" name="id_asignadoe" id="id_asignadoe" value="<?php echo $get_id[0]['id_asignado'] ?>">    
+            <?php }else{?>
+            <input type="hidden" name="id_asignadoe" id="id_asignadoe" value="<?php echo $get_id[0]['id_asignado'] ?>">
             <?php }?>
             <div class="form-group col-md-2" >
                 <label>Observaciones:</label>
@@ -171,8 +173,8 @@ $id_usuario = session('usuario')->id_usuario;
                     <option value="3" <?php if($get_id[0]['estado_reclutamiento']==3){echo "selected";}?>>Completado</option>
                 </select>
             </div>
-            <?php }else{?> 
-            <input type="hidden" name="estado_reclutamientoe" id="estado_reclutamientoe" value="<?php echo $get_id[0]['estado_reclutamiento'] ?>">    
+            <?php }else{?>
+            <input type="hidden" name="estado_reclutamientoe" id="estado_reclutamientoe" value="<?php echo $get_id[0]['estado_reclutamiento'] ?>">
             <?php }?>
             <div class="form-group col-md-2" id="div_fectermino1" style="display:<?php if($get_id[0]['estado_reclutamiento']==3){echo "block";}else{echo "none";} ?>">
                 <label>Fecha de Termino:</label>
@@ -186,13 +188,13 @@ $id_usuario = session('usuario')->id_usuario;
                 <label><b>Reclutados</b></label>
             </div>
             <div class="form-group col-md-10">
-                <?php if($id_nivel==1 || $id_nivel==2){?> 
+                <?php if($id_nivel==1 || $id_nivel==2){?>
                 <button type="button" class="btn btn-primary mb-2 mr-2" title="Registrar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Reclutamiento/Modal_Reclutamiento_Reclutado/'. $get_id[0]['id_reclutamiento']) }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
                     Agregar
                 </button> <?php }?>
             </div>
-            
+
             <div id="list_reclutado" class="form-group col-md-12">
                 <table id="zero-config-reclutado" class="table table-hover" style="width:100%">
                     <thead class="text-center">
@@ -205,20 +207,20 @@ $id_usuario = session('usuario')->id_usuario;
                     </thead>
 
                     <tbody class="text-center">
-                        <?php foreach($list_detalle_reclutamiento as $list) {  ?>                                           
+                        <?php foreach($list_detalle_reclutamiento as $list) {  ?>
                             <tr>
                                 <td align="center" ><?php echo $list['usuario_nombres']; ?></td>
                                 <td align="center" ><?php echo $list['num_doc']; ?></td>
                                 <td align="center" ><?php echo $list['fec_ingreso'] ?></td>
                                 <td class="text-center">
-                                    <?php if($id_nivel==1 || $id_nivel==2){?> 
+                                    <?php if($id_nivel==1 || $id_nivel==2){?>
                                     <a href="javascript:void()" class="" title="Eliminar" onclick="Delete_Reclutado('<?php echo $list['id_reclutamiento'] ?>','<?php echo $list['id_detalle'] ?>')" id="delete" role="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
                                             <polyline points="3 6 5 6 21 6"></polyline>
                                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                             <line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>
                                         </svg>
-                                    </a> 
+                                    </a>
                                     <?php }?>
                                 </td>
                             </tr>
@@ -234,7 +236,7 @@ $id_usuario = session('usuario')->id_usuario;
         <button class="btn btn-primary mt-3" type="button" onclick="Update_Reclutamiento();">Guardar</button>
         <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
-</form> 
+</form>
 
 <script>
     var ss = $(".basiccc").select2({
@@ -309,5 +311,61 @@ function Update_Reclutamiento() {
                 );
             }
         });
+}
+
+function List_Reclutamiento_Reclutado(id_reclutamiento) {
+    Cargando();
+    var url = "{{ url('Reclutamiento/List_Reclutamiento_Reclutado') }}";
+    var csrfToken = $('input[name="_token"]').val();
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
+        data: {'id_reclutamiento':id_reclutamiento},
+        success: function(data) {
+            $('#list_reclutado').html(data);
+        }
+    });
+}
+
+function Delete_Reclutado(id_reclutamiento,id_detalle) {
+    var url = "{{ url('Reclutamiento/Delete_Reclutado') }}";
+    var csrfToken = $('input[name="_token"]').val();
+
+    Swal({
+        title: '¿Realmente desea eliminar el registro?',
+        text: "El registro será eliminado permanentemente",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+    }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                data: {
+                    'id_detalle': id_detalle
+                },
+                success: function() {
+                    Swal(
+                        'Eliminado!',
+                        'El registro ha sido eliminado satisfactoriamente.',
+                        'success'
+                    ).then(function() {
+                        List_Reclutamiento_Reclutado(id_reclutamiento);
+                    });
+                }
+            });
+        }
+    })
 }
 </script>

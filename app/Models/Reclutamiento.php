@@ -13,7 +13,7 @@ class Reclutamiento extends Model
     protected $table = 'reclutamiento';
     protected $primaryKey = 'id_reclutamiento';
     public $timestamps = false;
-    
+
     protected $fillable = [
         'cod_reclutamiento',
         'id_area',
@@ -22,6 +22,7 @@ class Reclutamiento extends Model
         'id_evaluador',
         'vacantes',
         'cod_base',
+        'id_ubicacion',
         'id_modalidad_laboral',
         'tipo_sueldo',
         'sueldo',
@@ -55,7 +56,7 @@ class Reclutamiento extends Model
         return json_decode(json_encode($query), true);
     }
 
-    static 
+    static
     function get_list_reclutamiento($id_reclutamiento=null,$id_usuario=null,$pestania=null){
         $id_nivel= session('usuario')->id_nivel;
         if(isset($id_reclutamiento) && $id_reclutamiento>0){
@@ -72,7 +73,7 @@ class Reclutamiento extends Model
                 }if($pestania==2){
                     $v_pestania=" and (select count(1) from reclutamiento_reclutado d where d.id_reclutamiento=r.id_reclutamiento and d.estado=1) = r.vacantes and r.estado_reclutamiento in (3)";
                 }
-                $sql="SELECT r.*,date_format(r.fec_reg,'%d-%m-%Y') as fecha_registro,
+                $sql="SELECT r.*,date_format(r.fec_reg,'%d-%m-%Y') as fecha_registro, u.cod_ubi,
                 p.nom_puesto,concat(asi.usuario_nombres,' ',asi.usuario_apater,' ',asi.usuario_amater) as asignado_a,
                 concat(sol.usuario_nombres,' ',sol.usuario_apater,' ',sol.usuario_amater) as solicitado,
                 concat(eva.usuario_nombres,' ',eva.usuario_apater,' ',eva.usuario_amater) as evaluador,
@@ -87,7 +88,8 @@ class Reclutamiento extends Model
                 case when r.tipo_sueldo=1 then 'Fijo' when r.tipo_sueldo=2 then 'Banda' end as tipo_remuneracion,
                 a.nom_area,m.nom_modalidad_laboral
                 FROM reclutamiento r
-                left join puesto p on r.id_puesto=p.id_puesto 
+                LEFT JOIN ubicacion u on r.id_ubicacion=u.id_ubicacion
+                left join puesto p on r.id_puesto=p.id_puesto
                 left join users asi on r.id_asignado=asi.id_usuario
                 left join users sol on r.id_solicitante=sol.id_usuario
                 left join users eva on r.id_evaluador=eva.id_usuario
@@ -96,7 +98,7 @@ class Reclutamiento extends Model
                 where r.estado=1 $asignado $v_pestania";
             }else{
                 $id_usuario= session('usuario')->id_usuario;
-                $sql = "SELECT r.*,date_format(r.fec_reg,'%d-%m-%Y') as fecha_registro,
+                $sql = "SELECT r.*,date_format(r.fec_reg,'%d-%m-%Y') as fecha_registro, u.cod_ubi,
                 p.nom_puesto,concat(asi.usuario_nombres,' ',asi.usuario_apater,' ',asi.usuario_amater) as asignado_a,
                 concat(sol.usuario_nombres,' ',sol.usuario_apater,' ',sol.usuario_amater) as solicitado,
                 concat(eva.usuario_nombres,' ',eva.usuario_apater,' ',eva.usuario_amater) as evaluador,
@@ -110,16 +112,17 @@ class Reclutamiento extends Model
                 (select count(*) from reclutamiento_reclutado d where d.id_reclutamiento=r.id_reclutamiento and d.estado=1) as reclutados,
                 a.nom_area
                 FROM reclutamiento r
-                left join puesto p on r.id_puesto=p.id_puesto 
+                LEFT JOIN ubicacion u on r.id_ubicacion=u.id_ubicacion
+                left join puesto p on r.id_puesto=p.id_puesto
                 left join users asi on r.id_asignado=asi.id_usuario
                 left join users sol on r.id_solicitante=sol.id_usuario
                 left join users eva on r.id_evaluador=eva.id_usuario
                 left join area a on r.id_area=a.id_area
                 where r.estado=1 and r.id_solicitante='$id_usuario'";
             }
-            
+
         }
-        
+
         $query = DB::select($sql);
         return json_decode(json_encode($query), true);
     }
