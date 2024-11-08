@@ -1183,6 +1183,12 @@ Route::controller(ColaboradorController::class)->group(function () {
     Route::post('colaborador_pl/{id}', 'store_pl')->name('colaborador_pl.store');
     Route::get('colaborador_pl/{id}/parte_superior', 'parte_superior_pl')->name('colaborador_pl.parte_superior');
     Route::get('colaborador_pl/{id}/parte_inferior', 'parte_inferior_pl')->name('colaborador_pl.parte_inferior');
+    Route::get('colaborador_pl/{id}/edit', 'edit_pl')->name('colaborador_pl.edit');
+    Route::put('colaborador_pl/{id}', 'update_pl')->name('colaborador_pl.update');
+    Route::get('colaborador_pl/{id}/edit_finalizado', 'edit_finalizado_pl')->name('colaborador_pl.edit_finalizado');
+    Route::put('colaborador_pl/{id}/update_finalizado', 'update_finalizado_pl')->name('colaborador_pl.update_finalizado');
+    Route::get('colaborador_pl/{id}/modal_documento', 'modal_documento_pl')->name('colaborador_pl.modal_documento');
+    Route::delete('colaborador_pl/{id}', 'destroy_pl')->name('colaborador_pl.destroy');
     Route::post('ColaboradorController/Enviar_Correo_Bienvenida/{id}', 'Enviar_Correo_Bienvenida');
     Route::get('ColaboradorController/Modal_Enviar_Correo_Bienvenida/{id_user}', 'Modal_Enviar_Correo_Bienvenida');
     Route::post('ColaboradorController/Enviar_Correo_Colaborador', 'Enviar_Correo_Colaborador');

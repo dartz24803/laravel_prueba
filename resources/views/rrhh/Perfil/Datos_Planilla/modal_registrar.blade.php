@@ -13,7 +13,7 @@
             </div>            
             <div class="form-group col-lg-4">
                 <select class="form-control" name="id_situacion_laboral" id="id_situacion_laboral" 
-                onchange="Cambio_Situacion();">
+                onchange="Cambio_Situacion('');">
                     <option value="0">Seleccione</option>
                     @foreach ($list_situacion_laboral as $list)
                         <option value="{{ $list->id_situacion_laboral }}">
@@ -28,7 +28,7 @@
             </div>            
             <div class="form-group col-lg-4 ver_sl" style="display:none">
                 <select class="form-control" name="id_tipo_contrato" id="id_tipo_contrato" 
-                onchange="Fecha_Vencimiento();">
+                onchange="Fecha_Vencimiento('');">
                     <option value="0">Seleccione</option>
                     @foreach ($list_tipo_contrato as $list)
                         <option value="{{ $list->id_tipo_contrato }}">
@@ -101,26 +101,28 @@
         </div>
 
         @if ($cantidad>0)
-            <div class="form-group col-lg-2">
-                <label class="control-label text-bold">Tipo: </label>
-            </div>            
-            <div class="form-group col-lg-4">
-                <label class="control-label text-bold">
-                    @if ($ultimo->motivo_fin=="1")
-                        Renovación
-                    @elseif ($ultimo->motivo_fin=="2")
-                        Reingreso
-                    @endif
-                </label>
-                <input type="hidden" id="id_tipo" name="id_tipo" 
-                value="
-                @php 
-                    if($ultimo->motivo_fin=="1"){ 
-                        echo "4";
-                    }elseif($ultimo->motivo_fin=="2"){ 
-                        echo "5";
-                    } 
-                @endphp">
+            <div class="row">
+                <div class="form-group col-lg-2">
+                    <label class="control-label text-bold">Tipo: </label>
+                </div>            
+                <div class="form-group col-lg-4">
+                    <label class="control-label text-bold">
+                        @if ($ultimo->motivo_fin=="1")
+                            Renovación
+                        @elseif ($ultimo->motivo_fin=="2")
+                            Reingreso
+                        @endif
+                    </label>
+                    <input type="hidden" id="id_tipo" name="id_tipo" 
+                    value="
+                    @php 
+                        if($ultimo->motivo_fin=="1"){ 
+                            echo "4";
+                        }elseif($ultimo->motivo_fin=="2"){ 
+                            echo "5";
+                        } 
+                    @endphp">
+                </div>
             </div>
         @else
             <input type="hidden" id="id_tipo" name="id_tipo" value="6">
@@ -128,32 +130,13 @@
     </div>
 
     <div class="modal-footer">
+        @csrf
         <button class="btn btn-primary" type="button" onclick="Insert_Datos_Planilla();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
 
 <script>
-    function Cambio_Situacion(){
-        if($('#id_situacion_laboral').val()=="2" || $('#id_situacion_laboral').val()=="3"){
-            $('.ver_sl').show();
-        }else{
-            $('.ver_sl').hide();
-            $('#id_tipo_contrato').val('0');
-            $('#id_empresa').val('0');
-            $('#id_regimen').val('0');
-        }
-    }
-
-    function Fecha_Vencimiento(){
-        if($('#id_tipo_contrato').val()=="1"){
-            $('.ver_fv').hide();
-            $('#fec_vencimiento').val('');
-        }else{
-            $('.ver_fv').show();
-        }
-    }
-
     function Insert_Datos_Planilla() {
         Cargando();
 
@@ -164,9 +147,6 @@
             url: url,
             data: dataString,
             type: "POST",
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
             processData: false,
             contentType: false,
             success: function(data) {
@@ -190,12 +170,13 @@
                     });
                 } else {
                     swal.fire(
-                        'Registro Exitoso!',
-                        'Haga clic en el botón!',
+                        '¡Registro Exitoso!',
+                        '¡Haga clic en el botón!',
                         'success'
                     ).then(function() {
                         Planilla_Parte_Superior();
                         Planilla_Parte_Inferior();
+                        $("#ModalRegistro .close").click();
                         $('#btn_enviar_correo1').prop('disabled', false).removeClass('btn-gray').addClass('btn-primary');
                         $('#btn_enviar_correo2').prop('disabled', false).removeClass('btn-gray').addClass('btn-danger');
                     });
