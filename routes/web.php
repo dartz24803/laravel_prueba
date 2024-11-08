@@ -1183,9 +1183,6 @@ Route::controller(ColaboradorController::class)->group(function () {
     Route::post('colaborador_pl/{id}', 'store_pl')->name('colaborador_pl.store');
     Route::get('colaborador_pl/{id}/parte_superior', 'parte_superior_pl')->name('colaborador_pl.parte_superior');
     Route::get('colaborador_pl/{id}/parte_inferior', 'parte_inferior_pl')->name('colaborador_pl.parte_inferior');
-    Route::post('ColaboradorController/List_datosgenerales_planilla', 'List_datosgenerales_planilla');
-    Route::post('ColaboradorController/List_datos_planilla', 'List_datos_planilla');
-    Route::post('ColaboradorController/Btn_Planilla_Perfil', 'Btn_Planilla_Perfil');
     Route::post('ColaboradorController/Enviar_Correo_Bienvenida/{id}', 'Enviar_Correo_Bienvenida');
     Route::get('ColaboradorController/Modal_Enviar_Correo_Bienvenida/{id_user}', 'Modal_Enviar_Correo_Bienvenida');
     Route::post('ColaboradorController/Enviar_Correo_Colaborador', 'Enviar_Correo_Colaborador');

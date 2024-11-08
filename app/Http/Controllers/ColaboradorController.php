@@ -1411,43 +1411,6 @@ class ColaboradorController extends Controller
         return view('rrhh.Perfil.Datos_Planilla.parte_inferior',$dato);
     }
 
-    public function List_datosgenerales_planilla(Request $request){
-        $this->Model_Perfil = new Model_Perfil();
-        $id_usuario = $request->input("id_usuario");
-        $dato['list_situacion_laboral'] = SituacionLaboral::where('estado', 1)
-                                    ->get();
-        $dato['list_estado_usuario'] = $this->Model_Perfil->get_list_estado_usuario();
-        $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
-        $dato['list_datos_planilla'] = $this->Model_Perfil->get_list_datoplanilla($id_usuario);
-        $dato['list_empresa'] = Empresas::where('estado', 1)
-                                ->where('activo',1)
-                                ->get();
-        $dato['list_regimen'] = Regimen::where('estado', 1)
-                                ->get();
-        $dato['list_tipo_contrato'] = TipoContrato::where('estado',1)
-                                ->get();
-        return view('rrhh.Perfil.Datos_Planilla.index_cabecera',$dato);
-    }
-
-    public function List_datos_planilla(Request $request){
-        $this->Model_Perfil = new Model_Perfil();
-        $id_usuario = $request->input("id_usuario");
-        $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
-        $dato['list_datos_planilla'] = $this->Model_Perfil->get_list_datoplanilla($id_usuario);
-        $dato['url_cese'] = Config::where('descrip_config','Documento_Cese')
-                                ->where('estado', 1)
-                                ->get();
-        return view('rrhh.Perfil.Datos_Planilla.index',$dato);
-    }
-
-    public function Btn_Planilla_Perfil(Request $request){
-        $this->Model_Perfil = new Model_Perfil();
-        $id_usuario = $request->input("id_usuario");
-        $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
-        $dato['list_datos_planilla'] = $this->Model_Perfil->get_list_datoplanilla($id_usuario);
-        return view('rrhh.Perfil.Datos_Planilla.btn_planilla',$dato);
-    }
-
     public function Insert_Dato_Planilla(Request $request){
         $this->Model_Perfil = new Model_Perfil();
         $dato['id_usuario'] =$request->input("id_usuario");
