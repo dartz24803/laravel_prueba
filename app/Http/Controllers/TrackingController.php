@@ -3377,6 +3377,13 @@ class TrackingController extends Controller
     {
         try { 
             if($request->estilo){
+                $query_co = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_estilo ?,?,?,?', [
+                    $request->cod_base,
+                    $request->estilo,
+                    'CO',
+                    ''
+                ]);
+
                 $query = DB::connection('sqlsrv')->select('EXEC usp_mercaderia_nueva_x_estilo ?,?,?,?', [
                     $request->cod_base,
                     $request->estilo,
@@ -3411,7 +3418,29 @@ class TrackingController extends Controller
         }
 
         if($request->estilo){
-            return response()->json($query, 200);
+            //return response()->json($query, 200);
+
+            // Convierte los resultados de la primera consulta en un array de colores únicos
+            $colores = collect($query_co)->pluck('color')->unique();
+
+            // Crea un array para almacenar los datos finales
+            $data = [];
+
+            // Itera sobre cada color y agrupa los elementos de la segunda consulta
+            foreach ($colores as $color) {
+                $data[$color] = collect($query)->filter(function ($item) use ($color) {
+                    return $item->color === $color;
+                })->map(function ($item) {
+                    return [
+                        'codigo_barra' => $item->codigo_barra,
+                        'talla' => $item->talla,
+                        'color' => $item->color,
+                        'cantidad' => $item->cantidad,
+                    ];
+                })->values()->toArray();
+            }
+
+            return response()->json($data, 200);
         }else{
             $response = [
                 'data' => $query,

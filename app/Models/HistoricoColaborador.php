@@ -48,21 +48,6 @@ class HistoricoColaborador extends Model
         'fec_eli',
         'user_eli'
     ];
-    
-    static function valida_dato_planilla($dato){
-        $sql = "SELECT * FROM historico_colaborador where id_situacion_laboral='".$dato['id_situacion_laboral']."' and 
-                fec_inicio='".$dato['fec_inicio']."' and id_usuario='".$dato['id_usuario']."' and estado in (1,3)";
-
-        $result = DB::select($sql);
-        return json_decode(json_encode($result), true); 
-    }
-
-    static function valida_dato_planilla_activo($dato){
-        $sql = "SELECT * FROM historico_colaborador where id_usuario='".$dato['id_usuario']."' and DATE_FORMAT(fec_fin, '%Y-%m-%d')='0000-00-00' and estado=1";
-        
-        $result = DB::select($sql);
-        return json_decode(json_encode($result), true);
-    }
 
     public static function get_list_dato_planilla($dato=null){
         $sql = "SELECT hc.id_historico_colaborador,hc.fec_reg AS orden,
@@ -79,12 +64,14 @@ class HistoricoColaborador extends Model
                 TIMESTAMPDIFF(DAY, hc.fec_inicio, hc.fec_fin)
                 ELSE TIMESTAMPDIFF(DAY, hc.fec_inicio, CURDATE()) END),' Día(s)') AS dias_laborados,
                 CONCAT('S/. ',hc.sueldo) AS sueldo,CONCAT('S/. ',hc.bono) AS bono,
-                CONCAT('S/. ',(hc.sueldo+hc.bono)) AS total,hc.observacion,mb.nom_motivo
+                CONCAT('S/. ',(hc.sueldo+hc.bono)) AS total,hc.observacion,mb.nom_motivo,hc.archivo_cese,
+                hc.estado,hc.id_situacion_laboral
                 FROM historico_colaborador hc
                 INNER JOIN situacion_laboral sl ON sl.id_situacion_laboral=hc.id_situacion_laboral
                 LEFT JOIN empresas em ON hc.id_empresa=em.id_empresa
                 LEFT JOIN motivo_baja_rrhh mb ON hc.id_motivo_cese=mb.id_motivo
-                WHERE hc.id_usuario=".$dato['id_usuario']." AND hc.estado IN (1,3,4)";
+                WHERE hc.id_usuario=".$dato['id_usuario']." AND hc.estado IN (1,3,4)
+                ORDER BY hc.id_historico_colaborador DESC";
         $query = DB::select($sql);
         return $query;
     }

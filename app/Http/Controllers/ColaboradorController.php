@@ -42,7 +42,6 @@ use App\Models\GradoInstruccion;
 use App\Models\GrupoSanguineo;
 use App\Models\GustoPreferenciaUsers;
 use App\Models\Hijos;
-use App\Models\HistoricoEstadoColaborador;
 use App\Models\Horario;
 use App\Models\HorarioDia;
 use App\Models\Idioma;
@@ -68,6 +67,7 @@ use App\Models\ToleranciaHorario;
 use App\Models\Turno;
 use App\Models\UsersHistoricoCentroLabores;
 use App\Models\HistoricoColaborador;
+use App\Models\MotivoBajaRrhh;
 use App\Models\TipoCambioPuesto;
 use App\Models\Ubicacion;
 use App\Models\UsersHistoricoHorario;
@@ -1249,9 +1249,6 @@ class ColaboradorController extends Controller
     }
 
     public function Valida_Planilla_Activa(Request $request){
-        /*$dato['id_usuario']= $request->input("id_usuario");
-        $dato['cant_planilla']=HistoricoColaborador::valida_dato_planilla_activo($dato);
-        echo count($dato['cant_planilla']);*/
         $cantidad = HistoricoColaborador::where('id_usuario',$request->id_usuario)
                     ->where(function ($query) {
                         $query->whereNull('fec_fin')->orWhere('fec_fin', '0000-00-00');
@@ -1260,7 +1257,6 @@ class ColaboradorController extends Controller
     }
 
     public function Modal_Dato_Planilla($id_usuario){
-        $this->Model_Perfil = new Model_Perfil();
         $dato['id_usuario']=$id_usuario;
         $dato['list_situacion_laboral'] = SituacionLaboral::where('ficha',1)->where('estado',1)->get();
         $dato['list_tipo_contrato'] = TipoContrato::where('estado',1)->get();
@@ -1269,10 +1265,6 @@ class ColaboradorController extends Controller
         $dato['ultimo'] = HistoricoColaborador::where('id_usuario',$id_usuario)
                         ->whereIn('estado',[1,3,4])
                         ->orderBy('id_historico_colaborador','DESC')->first();
-        /*$dato['get_historico_estado'] = HistoricoEstadoColaborador::where('id_usuario', $id_usuario)
-                                    ->where('estado', 1)
-                                    ->orderBy('id_historico_estado_colaborador', 'DESC')
-                                    ->get();*/
         $dato['cantidad'] = HistoricoColaborador::where('id_usuario',$id_usuario)
                             ->whereIn('estado',[1,3,4])->count();
         return view('rrhh.Perfil.Datos_Planilla.modal_registrar',$dato);
@@ -1330,7 +1322,7 @@ class ColaboradorController extends Controller
         $valida_1 = HistoricoColaborador::where('id_usuario',$id_usuario)
                     ->where('id_situacion_laboral',$request->id_situacion_laboral)
                     ->where('fec_inicio',$request->fec_inicio)->whereIn('estado',[1,3])->count();
-        $valida_2 = HistoricoColaborador::where('id_usuario',$request->id_usuario)
+        $valida_2 = HistoricoColaborador::where('id_usuario',$id_usuario)
                     ->where(function ($query) {
                         $query->whereNull('fec_fin')->orWhere('fec_fin', '0000-00-00');
                     })->where('estado',1)->count();                    
@@ -1340,7 +1332,7 @@ class ColaboradorController extends Controller
         }elseif($valida_2>0){
             echo "incompleto";
         }else{
-            $historico = HistoricoColaborador::create([
+            HistoricoColaborador::create([
                 'id_usuario' => $id_usuario,
                 'id_situacion_laboral' => $request->id_situacion_laboral,
                 'fec_inicio' => $request->fec_inicio,
@@ -1358,9 +1350,11 @@ class ColaboradorController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
 
+            //BORRAR ESTO SERÍA LO IDEAL (Para eliminar esas columnas de usuario, que solo jale del histórico)
             Usuario::findOrFail($id_usuario)->update([
                 'id_situacion_laboral' => $request->id_situacion_laboral,
                 'ini_funciones' => $request->fec_inicio,
+                'fin_funciones' => null,
                 'id_tipo_contrato' => $request->id_tipo_contrato,
                 'id_empresapl' => $request->id_empresa,
                 'id_regimen' => $request->id_regimen,
@@ -1368,18 +1362,24 @@ class ColaboradorController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
 
-            if($request->id_tipo=="5" || $request->id_tipo=="6"){
-                HistoricoEstadoColaborador::create([
-                    'id_usuario' => $id_usuario,
-                    'fec_inicio' => $request->fec_inicio,
-                    'estado_inicio_colaborador' => $request->id_tipo,
-                    'id_historico_colaborador' => $historico->id_historico_colaborador,
-                    'estado' => 1,
-                    'fec_reg' => now(),
-                    'user_reg' => session('usuario')->id_usuario,
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario
-                ]);
+            $valida = Organigrama::where('id_usuario',$id_usuario)->count();
+            if($valida==0){
+                $get_id = Usuario::findOrFail($id_usuario);
+                $org = Organigrama::where('id_puesto',$get_id->id_puesto)->first();
+                if(isset($org->id)){
+                    Organigrama::findOrFail($org->id)->update([
+                        'id_usuario' => $id_usuario,
+                        'fecha' => now(),
+                        'usuario' => session('usuario')->id_usuario
+                    ]);
+                }else{
+                    Organigrama::create([
+                        'id_puesto' => $get_id->id_puesto,
+                        'id_usuario' => $id_usuario,
+                        'fecha' => now(),
+                        'usuario' => session('usuario')->id_usuario
+                    ]);
+                }
             }
         }
     }
@@ -1411,110 +1411,345 @@ class ColaboradorController extends Controller
         return view('rrhh.Perfil.Datos_Planilla.parte_inferior',$dato);
     }
 
-    public function Insert_Dato_Planilla(Request $request){
-        $this->Model_Perfil = new Model_Perfil();
-        $dato['id_usuario'] =$request->input("id_usuario");
-        $dato['id_situacion_laboral'] =$request->input("id_situacion_laboral");
-        $dato['fec_inicio']= $request->input("fec_inicio");
-        $dato['fec_vencimiento']= $request->input("fec_vencimiento");
-        $dato['id_empresa'] =$request->input("id_empresa");
-        $dato['id_regimen'] =$request->input("id_regimen");
-        $dato['id_tipo_contrato'] =$request->input("id_tipo_contrato");
-        $dato['sueldo'] =$request->input("sueldo");
-        $dato['id_tipo'] =$request->input("id_tipo");
-        $dato['fecha_fin_historico_estado'] =$request->input("fecha_fin_historico_estado");
-        $dato['bono'] =$request->input("bono");
-
-        Usuario::findOrFail($request->id_usuario)->update([
-            'correo_bienvenida' => null,
-            'accesos_email' => null,
+    public function edit_pl($id){
+        $dato['get_id'] = HistoricoColaborador::findOrFail($id);
+        $dato['list_situacion_laboral'] = SituacionLaboral::where('ficha',1)->where('estado',1)->get();
+        $dato['list_tipo_contrato'] = TipoContrato::where('estado',1)->get();
+        $dato['list_empresa'] = Empresas::where('estado', 1)->where('activo',1)->get();
+        $dato['list_regimen'] = Regimen::where('estado', 1)->get();
+        $dato['list_motivo_cese'] = MotivoBajaRrhh::where('estado',1)->get();
+        return view('rrhh.Perfil.Datos_Planilla.modal_editar',$dato);
+    }
+    
+    public function update_pl(Request $request, $id)
+    {
+        $request->validate([
+            'sueldoe' => 'required|gt:0'
+        ], [
+            'sueldoe.required' => 'Debe ingresar sueldo.',
+            'sueldoe.gt' => 'Debe ingresar sueldo mayor a 0.'
         ]);
 
-        $total=count(HistoricoColaborador::valida_dato_planilla($dato));
-        $total2=count(HistoricoColaborador::valida_dato_planilla_activo($dato));
-        if($total>0){
-            echo "error";
-        }elseif($total2>0){
-            echo "incompleto";
-        }else{
-            $dato['historico'] = HistoricoEstadoColaborador::where('id_usuario', $request->id_usuario)
-                                ->where('fec_inicio', $request->fec_inicio);
-            HistoricoColaborador::create([
-                'id_usuario' => $request->id_usuario,
-                'id_situacion_laboral' => $request->id_situacion_laboral,
-                'fec_inicio' => $request->fec_inicio,
-                'motivo_fin' => 0.00,
-                'observacion' => '',
-                'movilidad' => 0.00,
-                'refrigerio' => 0.00,
-                'asignacion_educac' => 0.00,
-                'vale_alimento' => 0.00,
-                'otra_remun' => 0.00,
-                'remun_exoner' => 0.00,
-                'hora_mes' => 0.00,
-                'estado_intermedio' => 0,
-                'id_motivo_cese' => 0,
-                'archivo_cese' => '',
-                'flag_cesado' => 0,
-                'fec_vencimiento' => $request->fec_vencimiento,
-                'id_empresa' => $request->id_empresa,
-                'id_regimen' => $request->id_regimen,
-                'id_tipo_contrato' => $request->id_tipo_contrato,
-                'id_tipo' => $request->id_tipo,
-                'sueldo' => $request->sueldo,
-                'bono' => $request->bono,
-                'estado' => 1,
-                'fec_reg' => now(),
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario,
-                'user_reg' => session('usuario')->id_usuario,
-            ]);
-            $user['fec_inicio']= $request->input("fec_inicio");
-            $user['fin_funciones']= '';
-            $user['id_empresapl'] =$request->input("id_empresa");
-            $user['id_regimen'] =$request->input("id_regimen");
-            $user['id_tipo_contrato'] =$request->input("id_tipo_contrato");
-            $user['fec_act'] = now();
-            $user['fec_reg'] = now();
-            $user['user_act'] = session('usuario')->id_usuario;
-            $user['user_reg'] = session('usuario')->id_usuario;
-            Usuario::findOrFail($request->id_usuario)->update($user);
-
-            $get_id = Organigrama::where('id_usuario', $request->id_usuario)
-                ->exists();
-
-            if($get_id){
-                $get_id = Organigrama::where('id_usuario', $request->id_usuario)
-                    ->get();
-                Organigrama::where('id', $get_id[0]['id'])->update([
-                    'id_usuario' => 0,
-                    'fecha' => now(),
-                    'usuario' => session('usuario')->id_usuario,
-                ]);
+        $get_id = HistoricoColaborador::findOrFail($id);
+        $errors = [];
+        if ($get_id->id_situacion_laboral=="2") {
+            if($request->id_tipo_contratoe=="0"){
+                $errors['id_tipo_contratoe'] = ['Debe seleccionar tipo contrato.'];
             }
-            $get_id = $this->Model_Perfil->get_id_usuario($dato['id_usuario']);
-            $id_puesto = $get_id[0]['id_puesto'];
-            $valida = Organigrama::where('id_puesto', $id_puesto)
-                ->exists();
-            if($valida){
-                $get_id = Organigrama::where('id_usuario', $request->id_usuario)
-                    ->get();
-                $az = Organigrama::where('id_puesto', $id_puesto)
-                        ->get();
-                $dato['id'] = $az[0]['id'];
-                Organigrama::where('id', $dato['id'])->update([
-                    'id_usuario' => $request->id_usuario,
-                    'fecha' => now(),
-                    'usuario' => session('usuario')->id_usuario,
-                ]);
+            if($request->id_empresae=="0"){
+                $errors['id_empresae'] = ['Debe seleccionar empresa.'];
+            }
+            if($request->id_regimene=="0"){
+                $errors['id_regimene'] = ['Debe seleccionar régimen.'];
+            }
+            if($request->id_tipo_contratoe!="1"){
+                if($request->fec_vencimientoe==""){
+                    $errors['fec_vencimientoe'] = ['Debe ingresar fecha vencimiento.'];
+                }
+            }
+        }
+        if($request->motivo_fin!="0"){
+            if($request->fec_fin==""){
+                $errors['fec_fin'] = ['Debe ingresar fecha fin.'];
+            }
+            if($request->fec_fin<=$get_id->fec_inicio){
+                $errors['fec_fin_menor'] = ['Fecha fin no debe ser menor que la fecha de inicio.'];
+            }
+        }
+        if($request->motivo_fin=="1"){
+            if($request->id_situacion_laboralr=="0"){
+                $errors['id_situacion_laboralr'] = ['Debe seleccionar situación laboral (renovación).'];
+            }
+            if($request->fec_inicior==""){
+                $errors['fec_inicior'] = ['Debe ingresar fecha inicio (renovación).'];
+            }
+            if($request->sueldor==""){
+                $errors['sueldor'] = ['Debe ingresar sueldo (renovación).'];
+            }
+            if($request->sueldor=="0"){
+                $errors['sueldor'] = ['Debe ingresar sueldo mayor a 0 (renovación).'];
+            }
+            if($request->fec_inicior<$request->fec_fin){
+                $errors['fec_inicio_r_menor'] = ['Fecha inicio no debe ser menor a la fecha fin (renovación).'];
+            }
+            if($request->id_situacion_laboralr=="2"){
+                if($request->id_tipo_contrator=="0"){
+                    $errors['id_tipo_contrator'] = ['Debe seleccionar tipo contrato.'];
+                }
+                if($request->id_empresar=="0"){
+                    $errors['id_empresar'] = ['Debe seleccionar empresa.'];
+                }
+                if($request->id_regimenr=="0"){
+                    $errors['id_regimenr'] = ['Debe seleccionar régimen.'];
+                }
+                if($request->id_tipo_contrator!="1"){
+                    if($request->fec_vencimientor==""){
+                        $errors['fec_vencimientor'] = ['Debe ingresar fecha vencimiento.'];
+                    }
+                }
+            }
+        }
+        if($request->motivo_fin=="2"){
+            if($request->id_motivo_cesec=="0"){
+                $errors['id_motivo_cesec'] = ['Debe seleccionar motivo de cese.'];
+            }
+            if($request->observacionc==""){
+                $errors['observacionc'] = ['Debe ingresar observación.'];
+            }
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
+        HistoricoColaborador::findOrFail($id)->update([
+            'id_tipo_contrato' => $request->id_tipo_contratoe,
+            'id_empresa' => $request->id_empresae,
+            'id_regimen' => $request->id_regimene,
+            'sueldo' => $request->sueldoe,
+            'bono' => $request->bonoe,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        //BORRAR ESTO SERÍA LO IDEAL (Para eliminar esas columnas de usuario, que solo jale del histórico)
+        Usuario::findOrFail($get_id->id_usuario)->update([
+            'id_tipo_contrato' => $request->id_tipo_contratoe,
+            'id_empresapl' => $request->id_empresae,
+            'id_regimen' => $request->id_regimene,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        if($request->motivo_fin=="1"){
+            $valida_1 = HistoricoColaborador::where('id_usuario',$get_id->id_usuario)
+                        ->where('id_situacion_laboral',$request->id_situacion_laboralr)
+                        ->where('fec_inicio',$request->fec_inicior)->whereIn('estado',[1,3])->count();
+            $valida_2 = HistoricoColaborador::where('id_usuario',$get_id->id_usuario)
+                        ->where(function ($query) {
+                            $query->whereNull('fec_fin')->orWhere('fec_fin', '0000-00-00');
+                        })->where('estado',1)->count();                    
+
+            if($valida_1>0){
+                echo "error";
+            }elseif($valida_2>0){
+                echo "incompleto";
             }else{
-                Organigrama::create([
-                    'id_puesto' => $id_puesto,
-                    'id_usuario' => $request->id_usuario,
-                    'fecha' => now(),
-                    'usuario' => session('usuario')->id_usuario,
+                HistoricoColaborador::create([
+                    'id_usuario' => $get_id->id_usuario,
+                    'id_situacion_laboral' => $request->id_situacion_laboralr,
+                    'fec_inicio' => $request->fec_inicior,
+                    'fec_vencimiento' => $request->fec_vencimientor,
+                    'id_tipo_contrato' => $request->id_tipo_contrator,
+                    'id_empresa' => $request->id_empresar,
+                    'id_regimen' => $request->id_regimenr,
+                    'estado_intermedio' => 4,
+                    'sueldo' => $request->sueldor,
+                    'bono' => $request->bonor,
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+
+                //BORRAR ESTO SERÍA LO IDEAL (Para eliminar esas columnas de usuario, que solo jale del histórico)
+                Usuario::findOrFail($get_id->id_usuario)->update([
+                    'id_situacion_laboral' => $request->id_situacion_laboralr,
+                    'ini_funciones' => $request->fec_inicior,
+                    'id_tipo_contrato' => $request->id_tipo_contrator,
+                    'id_empresapl' => $request->id_empresar,
+                    'id_regimen' => $request->id_regimenr,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+
+                $valida = Organigrama::where('id_usuario',$get_id->id_usuario)->count();
+                if($valida==0){
+                    $get_id = Usuario::findOrFail($get_id->id_usuario);
+                    $org = Organigrama::where('id_puesto',$get_id->id_puesto)->first();
+                    if(isset($org->id)){
+                        Organigrama::findOrFail($org->id)->update([
+                            'id_usuario' => $get_id->id_usuario,
+                            'fecha' => now(),
+                            'usuario' => session('usuario')->id_usuario
+                        ]);
+                    }else{
+                        Organigrama::create([
+                            'id_puesto' => $get_id->id_puesto,
+                            'id_usuario' => $get_id->id_usuario,
+                            'fecha' => now(),
+                            'usuario' => session('usuario')->id_usuario
+                        ]);
+                    }
+                }
+            }
+        }elseif($request->motivo_fin=="2"){
+            $archivo = "";
+            if($_FILES["archivo_cesec"]["name"] != ""){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    $path = $_FILES["archivo_cesec"]["name"];
+                    $source_file = $_FILES['archivo_cesec']['tmp_name'];
+
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $nombre_soli = "Archivo_Cese_".$id."_".date('YmdHis');
+                    $nombre = $nombre_soli.".".strtolower($ext);
+
+                    ftp_pasv($con_id,true);
+                    $subio = ftp_put($con_id,"PERFIL/PLANILLA/".$nombre,$source_file,FTP_BINARY);
+                    if($subio){
+                        $archivo = "https://lanumerounocloud.com/intranet/PERFIL/PLANILLA/".$nombre;
+                    }else{
+                        echo "Archivo no subido correctamente";
+                    }
+                }else{
+                    echo "No se conecto";
+                }
+            }
+
+            HistoricoColaborador::findOrFail($id)->update([
+                'motivo_fin' => $request->motivo_fin,
+                'fec_fin' => $request->fec_fin,
+                'id_motivo_cese' => $request->id_motivo_cesec,
+                'archivo_cese' => $archivo,
+                'observacion' => $request->observacionc,
+                'flag_cesado' => 1,
+                'estado' => 3,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+
+            //BORRAR ESTO SERÍA LO IDEAL (Para eliminar esas columnas de usuario, que solo jale del histórico)
+            Usuario::findOrFail($get_id->id_usuario)->update([
+                'fin_funciones' => $request->fec_fin,
+                'estado' => 3,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+
+            //BORRAR USUARIO DE ORGANIGRAMA (No saldrá en lista colaborador)
+            Organigrama::where('id_usuario', $get_id->id_usuario)->update([
+                'id_usuario' => 0,
+                'fecha' => now(),
+                'usuario' => session('usuario')->id_usuario
+            ]);
+
+            $get_id = Usuario::from('users AS us')->select(DB::raw("LOWER(CONCAT(SUBSTRING_INDEX(us.usuario_nombres,' ',1),' ',
+                    us.usuario_apater,' ',us.usuario_amater)) AS nom_usuario"),DB::raw("CASE WHEN us.id_genero=1 THEN 'el Sr.' 
+                    WHEN us.id_genero=2 THEN 'la Sra.' ELSE '' END AS genero"),DB::raw('LOWER(pu.nom_puesto) AS nom_puesto'))
+                    ->join('puesto AS pu','pu.id_puesto','=','us.id_puesto')
+                    ->where('us.id_usuario',$get_id->id_usuario)->first();
+
+            $mail = new PHPMailer(true);
+
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Port     =  587;
+                $mail->setFrom('somosuno@lanumero1.com.pe','Somos Uno');
+
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
+                /*$mail->addAdress('oficina@lanumero1.com.pe');
+                $mail->addAdress('tiendas@lanumero1.com.pe');
+                $mail->addAdress('cd@lanumero1.com.pe');
+                $mail->addAdress('amauta@lanumero1.com.pe');
+                $mail->addAdress('seguridadgeneral@lanumero1.com.pe');
+                $mail->addAdress('oficina@lanumero1.com.pe');
+                $mail->addAdress('seguridad.central@lanumero1.com.pe');*/
+
+                $mail->isHTML(true);
+
+                $mail->Subject =  "Término de Relaciones Laborales - ".ucwords($get_id->nom_usuario);
+            
+                $mail->Body = 'Estimados colaboradores.<br><br>
+                                Esperamos que este mensaje les encuentre bien.<br><br>
+                                Nos dirigimos a ustedes para informarles que '.$get_id->genero.' '.ucwords($get_id->nom_usuario).', 
+                                quien ocupaba el cargo de '. ucwords($get_id->nom_puesto).', 
+                                ha concluido su relación laboral con nuestra empresa. Con el fin de proteger nuestra información corporativa, 
+                                les pedimos que a partir de este momento eviten cualquier comunicación de carácter laboral con el mencionado ex colaborador.<br><br>
+                                Queremos expresar nuestro sincero agradecimiento por el tiempo y el talento que dedicó al 
+                                cumplimiento de sus funciones durante su permanencia en nuestro equipo.<br><br>
+                                Reciban un cordial saludo.<br>';
+            
+                $mail->CharSet = 'UTF-8';
+                $mail->send();
+            }catch(Exception $e) {
+                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+            }
+        }
+    }
+
+    public function edit_finalizado_pl($id){
+        $dato['get_id'] = HistoricoColaborador::findOrFail($id);
+        return view('rrhh.Perfil.Datos_Planilla.modal_editar_finalizado',$dato);
+    }
+
+    public function update_finalizado_pl(Request $request, $id)
+    {
+        $request->validate([
+            'fec_finf' => 'required'
+        ], [
+            'fec_finf.required' => 'Debe ingresar fecha fin.'
+        ]);
+
+        HistoricoColaborador::findOrFail($id)->update([
+            'fec_fin' => $request->fec_finf,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+
+        $get_id = HistoricoColaborador::findOrFail($id);
+        $ultimo = HistoricoColaborador::where('id_usuario',$get_id->id_usuario)
+                ->whereIn('estado',[1,3,4])
+                ->orderBy('id_historico_colaborador','DESC')->first();
+
+        if(isset($ultimo->id_historico_colaborador)){
+            if($id==$ultimo->id_historico_colaborador){
+                Usuario::findOrFail($get_id->id_usuario)->update([
+                    'fin_funciones' => $request->fec_finf,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
                 ]);
             }
+        }
+    }
+
+    public function destroy_pl($id)
+    {
+        $get_id = HistoricoColaborador::findOrFail($id);
+        HistoricoColaborador::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+        if($get_id->estado=="1"){
+            Organigrama::where('id_usuario', $get_id->id_usuario)->update([
+                'id_usuario' => 0,
+                'fecha' => now(),
+                'usuario' => session('usuario')->id_usuario
+            ]);
+        }
+        $ultimo = HistoricoColaborador::where('id_usuario',$get_id->id_usuario)
+                ->whereIn('estado',[1,3,4])->orderBy('id_historico_colaborador','DESC')->first();
+        if(isset($ultimo->id_historico_colaborador)){
+            Usuario::findOrFail($get_id->id_usuario)->update([
+                'id_situacion_laboral' => $ultimo->id_situacion_laboral,
+                'ini_funciones' => $ultimo->fec_inicio,
+                'id_tipo_contrato' => $ultimo->id_tipo_contrato,
+                'id_empresapl' => $ultimo->id_empresa,
+                'id_regimen' => $ultimo->id_regimen,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
         }
     }
 
