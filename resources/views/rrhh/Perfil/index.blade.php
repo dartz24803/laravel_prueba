@@ -3247,6 +3247,27 @@ if($get_id[0]['edicion_perfil']==1){
         }
     }
 
+    function Valida_Archivo(val) {
+        var archivoInput = document.getElementById(val);
+        var archivoRuta = archivoInput.value;
+        var extPermitidas = /(.pdf|.png|.jpg|.jpeg)$/i;
+
+        if (!extPermitidas.exec(archivoRuta)) {
+            Swal({
+                title: 'Registro Denegado',
+                text: "Asegurese de ingresar archivo con extensión .pdf|.jpg|.png|.jpeg",
+                type: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK',
+            });
+            archivoInput.value = '';
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     function Planilla_Parte_Superior(){
         Cargando();
 
@@ -3303,6 +3324,65 @@ if($get_id[0]['edicion_perfil']==1){
                 }
             }
         });
+    }
+
+    function Cambio_Situacion(v){
+        if($('#id_situacion_laboral'+v).val()=="2" || $('#id_situacion_laboral'+v).val()=="3"){
+            $('.ver_sl'+v).show();
+        }else{
+            $('.ver_sl'+v).hide();
+            $('#id_tipo_contrato'+v).val('0');
+            $('#id_empresa'+v).val('0');
+            $('#id_regimen'+v).val('0');
+            if(v=="r"){
+                $('#bono'+v).val('');
+            }
+        }
+    }
+
+    function Fecha_Vencimiento(v){
+        if($('#id_tipo_contrato'+v).val()=="1"){
+            $('.ver_fv'+v).hide();
+            $('#fec_vencimiento'+v).val('');
+        }else{
+            $('.ver_fv'+v).show();
+        }
+    }
+
+    function Delete_Planilla(id) {
+        Cargando();
+
+        var url = "{{ route('colaborador_pl.destroy', ':id') }}".replace(':id', id);
+
+        Swal({
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "DELETE",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    success: function() {
+                        Swal(
+                            '¡Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            Planilla_Parte_Superior();
+                            Planilla_Parte_Inferior();
+                        });    
+                    }
+                });
+            }
+        })
     }
 
     var checkaractualidad = document.getElementById('checkactualidad');
