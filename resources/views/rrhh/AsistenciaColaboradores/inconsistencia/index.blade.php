@@ -3,7 +3,7 @@
     <div class="form-group col-md-1">
         <label for="" class="control-label text-bold">Base&nbsp;</label>
         <div>
-            <select id="basei" name="basei" class="form-control" onchange="Cmb_Colaboradori()">
+            <select id="baseih" name="baseih" class="form-control" onchange="Cmb_Colaboradori()">
                 <option value="0" selected>Todos</option>
                 <?php foreach ($data['list_base'] as $list) { ?>
                     <option value="<?php echo $list->cod_base; ?>"><?php echo $list->cod_base; ?></option>
@@ -56,7 +56,7 @@
         <label for="">&nbsp;</label>
         <div id="div1h">
             <!-- Input for selecting the date -->
-            <input type="date" name="diai" id="diai" class="form-control" value="<?php echo date('Y-m-d', strtotime(date('Y-m-d') . ' -1 day')) ?>" max="<?php echo date('Y-m-d', strtotime(date('Y-m-d') . ' -1 day')) ?>">
+            <input type="date" name="diaih" id="diaih" class="form-control" value="<?php echo date('Y-m-d', strtotime(date('Y-m-d') . ' -1 day')) ?>" max="<?php echo date('Y-m-d', strtotime(date('Y-m-d') . ' -1 day')) ?>">
         </div>
         <div id="div2h" style="display:none">
             <!-- Dropdown for selecting week -->

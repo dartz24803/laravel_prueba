@@ -2068,6 +2068,7 @@ Route::controller(ContadorVisitasController::class)->group(function () {
 });
 
 use App\Http\Controllers\ReclutamientoController;
+
 Route::controller(ReclutamientoController::class)->group(function () {
     Route::get('Reclutamiento/index', 'Reclutamiento');
     Route::post('Reclutamiento/Buscador_Reclutamiento', 'Buscador_Reclutamiento');
@@ -2268,5 +2269,13 @@ Route::controller(AsistenciaColaboradoresController::class)->group(function () {
     Route::post('ausencia_colaborador/list', 'list_ausencia_colaborador')->name('ausencia_colaborador.list');
     Route::post('tardanza_colaborador/list', 'list_tardanza_colaborador')->name('tardanza_colaborador.list');
     Route::post('dotacion_colaborador/list', 'list_dotacion_colaborador')->name('dotacion_colaborador.list');
+
+    // INCONSISTENCIAS
     Route::post('inconsistencias_colaborador/list', 'list_inconsistencias_colaborador')->name('inconsistencias_colaborador.list');
+    Route::get('inconsistencias_colaborador/{id}/marcaciones', 'marcaciones_inconsistencias_colaborador')->name('inconsistencias_colaborador.marcaciones');
+    Route::get('inconsistencias_colaborador/{id}/{tipo_marcacion}/reg_marcaciones', 'marcaciones_reg_inconsistencias_colaborador')->name('inconsistencias_colaborador.reg_marcaciones');
+    Route::post('inconsistencias_colaborador/insert', 'insert_asistencia_inconsistencia')->name('inconsistencias_colaborador.insert');
+    Route::post('inconsistencias_colaborador/update', 'update_asistencia_inconsistencia')->name('inconsistencias_colaborador.update');
+    Route::post('inconsistencias_colaborador/validar', 'validar_asistencia_inconsistencia')->name('inconsistencias_colaborador.validar');
+    Route::post('inconsistencias_colaborador/updateturno', 'updateturno_asistencia_inconsistencia')->name('inconsistencias_colaborador.updateturno');
 });
