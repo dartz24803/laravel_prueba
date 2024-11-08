@@ -3418,8 +3418,6 @@ class TrackingController extends Controller
         }
 
         if($request->estilo){
-            //return response()->json($query, 200);
-
             // Convierte los resultados de la primera consulta en un array de colores únicos
             $colores = collect($query_co)->pluck('color')->unique();
 
@@ -3729,7 +3727,14 @@ class TrackingController extends Controller
             return response()->json($query, 200);
         }else if($request->tipo=="estilo"){
             try {
-                $query = MercaderiaSurtidaPadre::get_list_mercaderia_surtida_padre(['cod_base'=>$request->cod_base]);
+                $query = MercaderiaSurtida::get_list_req_repo_vend_x_est([
+                    'cod_base'=>$request->cod_base,
+                    'tipo_usuario'=>$request->tipo_usuario
+                ]);
+
+                $query_tu = MercaderiaSurtida::get_list_tusu_req_repo([
+                    'cod_base'=>$request->cod_base
+                ]);
             } catch (\Throwable $th) {
                 return response()->json([
                     'message' => "Error procesando base de datos.",
@@ -3742,7 +3747,12 @@ class TrackingController extends Controller
                 ], 404);
             }
     
-            return response()->json($query, 200);
+            $response = [
+                'data' => $query,
+                'tipo_usuario' => $query_tu
+            ];
+
+            return response()->json($response, 200);
         }elseif($request->id_padre){
             try {
                 $query = MercaderiaSurtida::where('id_padre', $request->id_padre)
