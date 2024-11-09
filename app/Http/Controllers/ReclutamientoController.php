@@ -64,7 +64,7 @@ class ReclutamientoController extends Controller
         $dato['id_nivel'] = session('usuario')->id_nivel;
         $dato['id_puesto'] = session('usuario')->id_puesto;
         if($dato['id_nivel']==1 || $dato['id_nivel']==2 || $dato['id_puesto']==21 || $dato['id_puesto']==279){
-            $dato['list_area'] = Area::get_list_area();
+            $dato['list_area'] = $this->Model_Perfil->get_list_area();
             $dato['puestos_jefes'] = $this->modelo_puestos->list_puestos_jefes();
             $dato['list_responsables'] = $this->modelo_users->list_usuarios_responsables($dato);
             $dato['list_rrhh'] = Usuario::select('id_usuario', 'usuario_nombres', 'usuario_apater', 'usuario_amater')
