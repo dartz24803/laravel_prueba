@@ -55,7 +55,7 @@ class Area extends Model
 
                 LEFT JOIN sub_gerencia dc on dc.id_sub_gerencia=ar.id_departamento
                 LEFT JOIN gerencia ge on ge.id_gerencia=dc.id_gerencia
-                LEFT JOIN direccion di ON g.id_direccion=di.id_direccion
+                LEFT JOIN direccion di ON ge.id_direccion=di.id_direccion
                 WHERE ar.estado=1";
         $query = DB::select($sql);
         return $query;
