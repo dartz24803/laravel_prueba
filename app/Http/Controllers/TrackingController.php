@@ -3663,14 +3663,13 @@ class TrackingController extends Controller
             'cod_base.required' => 'Debe ingresar base.',
             'estilo.required' => 'Debe ingresar estilo.',
         ]);
-
         
         $valida = MercaderiaSurtida::where('tipo', 3)->where('base', $request->cod_base)
                 ->where('estilo', $request->estilo)->where('estado', 0)->exists();
         if($valida){
             return response()->json([
-                'message' => "Error procesando base de datos.",
-            ], 500);
+                'existe_rq_previo' => true
+            ], 404);
         }else{
             try {
                 $padre = MercaderiaSurtidaPadre::create([
