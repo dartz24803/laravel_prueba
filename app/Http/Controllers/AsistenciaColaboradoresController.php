@@ -575,6 +575,51 @@ class AsistenciaColaboradoresController extends Controller
         return view('rrhh.AsistenciaColaboradores.ausencias.lista', compact('list_ausenciai'));
     }
 
+    public function edit_estado_ausencia($id_asistencia_inconsistencia)
+    {
+        $dato['id_asistencia_inconsistencia'] = $id_asistencia_inconsistencia;
+        $get_id = AsistenciaColaborador::get_list_marcacion_colaborador_ausencia_2($dato['id_asistencia_inconsistencia'], 0);
+        $list_estado = AsistenciaColaborador::get_list_estado_asistencia_ausencia();
+        return view('rrhh.AsistenciaColaboradores.ausencias.modal_editar', compact('list_estado', 'get_id'));
+    }
+
+    public function update_estado_ausencia()
+    {
+        $dato['id_asistencia_inconsistencia'] = $this->input->post("id_asistencia_inconsistencia");
+        $dato['estado_registro'] = $this->input->post("estado");
+        $dato['observacion'] = $this->input->post("observacion");
+
+        $dato['get_asist'] = AsistenciaColaborador::get_list_marcacion_colaborador_ausencia_2($dato['id_asistencia_inconsistencia'], 0);
+        $dato['nom_horario'] = $dato['get_asist'][0]['nom_horario'];
+        $dato['id_usuario'] = $dato['get_asist'][0]['id_usuario'];
+        $dato['fecha'] = $dato['get_asist'][0]['fecha'];
+        $dato['id_horario'] = $dato['get_asist'][0]['id_horario'];
+        $dato['con_descanso'] = $dato['get_asist'][0]['con_descanso'];
+        $dato['dia'] = $dato['get_asist'][0]['dia'];
+        $dato['centro_labores'] = $dato['get_asist'][0]['centro_labores'];
+        $dato['id_area'] = $dato['get_asist'][0]['id_area'];
+        $dato['hora_entrada'] = $dato['get_asist'][0]['hora_entrada'];
+        $dato['hora_entrada_desde'] = $dato['get_asist'][0]['hora_entrada_desde'];
+        $dato['hora_entrada_hasta'] = $dato['get_asist'][0]['hora_entrada_hasta'];
+        $dato['hora_salida'] = $dato['get_asist'][0]['hora_salida'];
+        $dato['hora_salida_desde'] = $dato['get_asist'][0]['hora_salida_desde'];
+        $dato['hora_salida_hasta'] = $dato['get_asist'][0]['hora_salida_hasta'];
+        $dato['hora_descanso_e'] = $dato['get_asist'][0]['hora_descanso_e'];
+        $dato['hora_descanso_e_desde'] = $dato['get_asist'][0]['hora_descanso_e_desde'];
+        $dato['hora_descanso_e_hasta'] = $dato['get_asist'][0]['hora_descanso_e_hasta'];
+        $dato['hora_descanso_s'] = $dato['get_asist'][0]['hora_descanso_s'];
+        $dato['hora_descanso_s_desde'] = $dato['get_asist'][0]['hora_descanso_s_desde'];
+        $dato['hora_descanso_s_hasta'] = $dato['get_asist'][0]['hora_descanso_s_hasta'];
+        $data = AsistenciaColaborador::get_list_estado_asistencia($dato['estado_registro']);
+        $dato['flag_diatrabajado'] = $data[0]['contabilizar_dia'];
+        $dato['registro'] = "";
+
+        $dato['id_asistencia_colaborador'] = AsistenciaColaborador::update_estado_ausencia($dato);
+        AsistenciaColaborador::delete_inconsistencia_ausencia($dato);
+    }
+
+
+
 
 
 
