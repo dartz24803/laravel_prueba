@@ -1,4 +1,4 @@
-<?php 
+<?php
 $id_nivel = session('usuario')->id_nivel;
 $id_puesto = session('usuario')->id_puesto;
 $id_usuario = session('usuario')->id_usuario;
@@ -9,10 +9,10 @@ $id_usuario = session('usuario')->id_usuario;
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
-    </div> 
-                
+    </div>
+
     <div class="modal-body" style="max-height:700px; overflow:auto;">
-        <div class="col-md-12 row">    
+        <div class="col-md-12 row">
             <input  type="hidden" required class="form-control" id="nivel" name="nivel" value="<?php echo $id_nivel ?>">
             <input  type="hidden" required class="form-control" id="puesto" name="puesto" value="<?php echo $id_puesto ?>">
             <div class="form-group col-md-2">
@@ -44,7 +44,7 @@ $id_usuario = session('usuario')->id_usuario;
                     <option value="0">Seleccione</option>
                 </select>
             </div>
-            <?php if($id_nivel==1 || $id_nivel==2 || $id_puesto==21){?> 
+            <?php if($id_nivel==1 || $id_nivel==2 || $id_puesto==21){?>
             <div class="form-group col-md-2">
                 <label>Solicitante:</label>
             </div>
@@ -55,7 +55,7 @@ $id_usuario = session('usuario')->id_usuario;
                         <option value="<?php echo $list['id_usuario'] ?>"><?php echo $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater'] ?></option>
                     <?php }?>
                 </select>
-            </div> 
+            </div>
             <div class="form-group col-md-2">
                 <label>Evaluador:</label>
             </div>
@@ -67,8 +67,8 @@ $id_usuario = session('usuario')->id_usuario;
                         <option value="<?php echo $list['id_usuario'] ?>"><?php echo $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater'] ?></option>
                     <?php }?>
                 </select>
-            </div>    
-            <?php }else{?> 
+            </div>
+            <?php }else{?>
                 <input type="hidden" name="id_solicitante" id="id_solicitante" value="<?php echo $id_usuario ?>">
                 <input type="hidden" name="id_evaluador" id="id_evaluador" value="<?php echo $_SESSION['usuario'][0]['id_usuario'] ?>">
             <?php }?>
@@ -84,15 +84,17 @@ $id_usuario = session('usuario')->id_usuario;
             </div>
             <div class="form-group col-md-4">
                 <?php if($id_puesto!=314){ ?>
-                <select name="cod_base" id="cod_base" class="form-control">
-                    <option value="0">Seleccione</option>
-                    <?php foreach($list_base as $list){?>
-                        <option value="<?php echo $list->cod_base ?>" ><?php echo $list->cod_base ?></option>
-                    <?php }?>
-                </select>
+                    <select class="form-control" name="id_ubicacion" id="id_ubicacion">
+	                		<option value="0"  >Seleccione</option>
+                            <?php foreach($list_ubicacion as $list) { ?>
+                                <option value="<?php echo $list['id_ubicacion']; ?>">
+                                    <?php echo $list['cod_ubi']; ?>
+                                </option>
+                            <?php } ?>
+	                </select>
                 <?php }else{ ?>
-                    <input type="hidden" id="cod_base" name="cod_base" value="<?= $_SESSION['usuario'][0]['centro_labores'] ?>">
-                    <input type="text" class="form-control" id="centro_labores" name="centro_labores" value="<?= $_SESSION['usuario'][0]['centro_labores'] ?>" disabled>
+                    <input type="hidden" id="id_ubicacion" name="id_ubicacion" value="<?= session('usuario')->centro_labores ?>">
+                    <input type="text" class="form-control" id="id_ubicacion" name="id_ubicacion" value="<?= session('usuario')->centro_labores ?>" disabled>
                 <?php } ?>
             </div>
             <div class="form-group col-md-2" >
@@ -134,7 +136,7 @@ $id_usuario = session('usuario')->id_usuario;
             <div class="form-group col-md-4" id="inp_a" style="display:none">
                 <input type="text" class="form-control" name="a" id="a" placeholder="" onkeypress="return soloNumeros(event)">
             </div>
-            <?php if($id_nivel==1 || $id_nivel==2 || $id_puesto==21){?> 
+            <?php if($id_nivel==1 || $id_nivel==2 || $id_puesto==21){?>
             <div class="form-group col-md-2" >
                 <label>Asignado a:</label>
             </div>
@@ -164,7 +166,7 @@ $id_usuario = session('usuario')->id_usuario;
             <div class="form-group col-md-4">
                 <input type="date" name="fec_cierre" id="fec_cierre" class="form-control">
             </div>
-            
+
             <div class="form-group col-md-2" >
                 <label>Observaciones:</label>
             </div>
@@ -178,7 +180,7 @@ $id_usuario = session('usuario')->id_usuario;
             <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
         </div>
     </div>
-</form> 
+</form>
 
 <script>
     var ss = $(".basic").select2({
@@ -191,7 +193,7 @@ $id_usuario = session('usuario')->id_usuario;
     <?php if(session('usuario')->id_puesto==314){ ?>
         Buscar_Puesto_Area('1');
     <?php } ?>
-    
+
     function Buscar_Puesto_Area(t){
         Cargando();
         v="";
@@ -213,7 +215,7 @@ $id_usuario = session('usuario')->id_usuario;
             }
         });
     }
-    
+
     function Insert_Reclutamiento() {
         Cargando();
 
@@ -293,7 +295,7 @@ $id_usuario = session('usuario')->id_usuario;
         var inp_desde = document.getElementById("inp_desde"+v);
         var lbl_a = document.getElementById("lbl_a"+v);
         var inp_a = document.getElementById("inp_a"+v);
-        
+
         $('#sueldo'+v).val('');
         $('#desde'+v).val('');
         $('#a'+v).val('');

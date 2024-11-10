@@ -2087,8 +2087,9 @@ Route::controller(ReclutamientoController::class)->group(function () {
     Route::post('Reclutamiento/Delete_Reclutado', 'Delete_Reclutado');
     Route::post('Reclutamiento/Update_Reclutamiento', 'Update_Reclutamiento');
     Route::post('Reclutamiento/Delete_Reclutamiento', 'Delete_Reclutamiento');
-    Route::get('Reclutamiento/Modal_Reclutamiento_Reclutado', 'Modal_Reclutamiento_Reclutado');
+    Route::get('Reclutamiento/Modal_Reclutamiento_Reclutado/{id}', 'Modal_Reclutamiento_Reclutado');
     Route::post('Reclutamiento/Delete_Reclutamiento_Detalle', 'Delete_Reclutamiento_Detalle');
+    Route::get('Reclutamiento/Excel_Reclutamiento/{id_user}/{p}', 'Excel_Reclutamiento');
 });
 
 

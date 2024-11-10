@@ -12,12 +12,20 @@ use App\Models\Reclutamiento;
 use App\Models\ReclutamientoDetalle;
 use App\Models\ReclutamientoReclutado;
 use App\Models\SubGerencia;
+use App\Models\Ubicacion;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class ReclutamientoController extends Controller
 {
-    protected $input; 
+    protected $input;
     protected $modelo;
     protected $modelo_puestos;
     protected $modelo_users;
@@ -56,7 +64,7 @@ class ReclutamientoController extends Controller
         $dato['id_nivel'] = session('usuario')->id_nivel;
         $dato['id_puesto'] = session('usuario')->id_puesto;
         if($dato['id_nivel']==1 || $dato['id_nivel']==2 || $dato['id_puesto']==21 || $dato['id_puesto']==279){
-            $dato['list_area'] = Area::get_list_area();
+            $dato['list_area'] = $this->Model_Perfil->get_list_area();
             $dato['puestos_jefes'] = $this->modelo_puestos->list_puestos_jefes();
             $dato['list_responsables'] = $this->modelo_users->list_usuarios_responsables($dato);
             $dato['list_rrhh'] = Usuario::select('id_usuario', 'usuario_nombres', 'usuario_apater', 'usuario_amater')
@@ -70,6 +78,9 @@ class ReclutamientoController extends Controller
         }
         $dato['list_colaborador'] = $this->modelo_users->get_list_colaborador();
         $dato['list_base'] = Base::get_list_todas_bases_agrupadas();
+        $dato['list_ubicacion'] = Ubicacion::where('estado', 1)
+                        ->orderBy('cod_ubi', 'ASC')
+                        ->get();
         $dato['list_modalidad_laboral'] = ModalidadLaboral::where('estado', 1)
                                     ->get();
         return view('rrhh.Reclutamiento.modal_reg',$dato);
@@ -90,7 +101,7 @@ class ReclutamientoController extends Controller
             'id_solicitante' => 'required_if:nivel,1,2|required_if:puesto,21|not_in:0',
             'id_evaluador' => 'required_if:nivel,1,2|required_if:puesto,21|not_in:0',
             'vacantes' => 'required',
-            'cod_base' => 'not_in:0',
+            'id_ubicacion' => 'not_in:0',
             'id_modalidad_laboral' => 'not_in:0',
             'tipo_sueldo' => 'not_in:0',
             'sueldo' => 'required_if:tipo_sueldo,1',
@@ -105,7 +116,7 @@ class ReclutamientoController extends Controller
             'id_solicitante' => 'Debe seleccionar Solicitante.',
             'id_evaluador' => 'Debe seleccionar Evaluador.',
             'vacantes' => 'Debe ingresar vacantes.',
-            'cod_base' => 'Debe seleccionar Centro de Labores.',
+            'id_ubicacion' => 'Debe seleccionar Centro de Labores.',
             'id_modalidad_laboral' => 'Debe seleccionar modalidad',
             'tipo_sueldo' => 'Debe seleccionar tipo de remuneración.',
             'sueldo' => 'Debe ingresar sueldo.',
@@ -120,7 +131,7 @@ class ReclutamientoController extends Controller
             $dato['id_solicitante']= $this->input->post("id_solicitante");
             $dato['id_evaluador']= $this->input->post("id_evaluador");
             $dato['vacantes']= $this->input->post("vacantes");
-            $dato['cod_base']= $this->input->post("cod_base");
+            $dato['id_ubicacion']= $this->input->post("id_ubicacion");
             $dato['id_modalidad_laboral']= $this->input->post("id_modalidad_laboral");
             $dato['tipo_sueldo']= $this->input->post("tipo_sueldo");
             $dato['sueldo']= $this->input->post("sueldo")?: '0.00';
@@ -158,7 +169,7 @@ class ReclutamientoController extends Controller
                     'id_solicitante' => $dato['id_solicitante'],
                     'id_evaluador' => $dato['id_evaluador'],
                     'vacantes' => $dato['vacantes'],
-                    'cod_base' => $dato['cod_base'],
+                    'id_ubicacion' => $dato['id_ubicacion'],
                     'id_modalidad_laboral' => $dato['id_modalidad_laboral'],
                     'tipo_sueldo' => $dato['tipo_sueldo'],
                     'sueldo' => $dato['sueldo'],
@@ -199,6 +210,10 @@ class ReclutamientoController extends Controller
         $dato['list_puesto'] = Puesto::where('id_area', $dato['get_id'][0]['id_area'])
                             ->where('estado', 1)
                             ->get();
+
+        $dato['list_ubicacion'] = Ubicacion::where('estado', 1)
+                            ->orderBy('cod_ubi', 'ASC')
+                            ->get();
         $dato['list_base'] = Base::get_list_todas_bases_agrupadas();
         $dato['list_modalidad_laboral'] = ModalidadLaboral::where('estado', 1)
                             ->get();
@@ -215,7 +230,7 @@ class ReclutamientoController extends Controller
                                 'fec_eli' => now(),
                                 'user_eli' => session('usuario')->id_usuario,
                             ]);
-            
+
             ReclutamientoReclutado::where('id_reclutamiento', $dato['id_reclutamiento'])
                             ->update([
                                 'estado' => 2,
@@ -241,7 +256,7 @@ class ReclutamientoController extends Controller
             'id_solicitantee' => 'required_if:nivel,1,2|required_if:puesto,21|not_in:0',
             'id_evaluadore' => 'required_if:nivel,1,2|required_if:puesto,21|not_in:0',
             'vacantese' => 'required',
-            'cod_basee' => 'not_in:0',
+            'id_ubicacione' => 'not_in:0',
             'id_modalidad_laborale' => 'not_in:0',
             'tipo_sueldoe' => 'not_in:0',
             'sueldoe' => 'required_if:tipo_sueldo,1',
@@ -255,7 +270,7 @@ class ReclutamientoController extends Controller
             'id_solicitante' => 'Debe seleccionar Solicitante.',
             'id_evaluador' => 'Debe seleccionar Evaluador.',
             'vacantes' => 'Debe ingresar vacantes.',
-            'cod_base' => 'Debe seleccionar Centro de Labores.',
+            'id_ubicacione' => 'Debe seleccionar Centro de Labores.',
             'id_modalidad_laboral' => 'Debe seleccionar modalidad',
             'tipo_sueldo' => 'Debe seleccionar tipo de remuneración.',
             'sueldo' => 'Debe ingresar sueldo.',
@@ -276,8 +291,8 @@ class ReclutamientoController extends Controller
             $dato['estado_reclutamiento']= $this->input->post("estado_reclutamientoe");
             $dato['fec_termino']= $this->input->post("fec_terminoe");
             $dato['vacantes']= $this->input->post("vacantese");
-            $dato['cod_base']= $this->input->post("cod_basee");
-            
+            $dato['id_ubicacion']= $this->input->post("id_ubicacione");
+
             $id_usuario = session('usuario')->id_usuario;
             $dia = date('Y-m-d');
             $fecha = [];
@@ -301,68 +316,167 @@ class ReclutamientoController extends Controller
                     'a' => $dato['a'],
                     'observacion' => $dato['observacion'],
                     'vacantes' => $dato['vacantes'],
-                    'cod_base' => $dato['cod_base'],
+                    'id_ubicacion' => $dato['id_ubicacion'],
                     'estado_reclutamiento' => $dato['estado_reclutamiento'],
                     'fec_termino' => $dato['fec_termino'],
                     'fec_act' => now(),
                     'user_act' => $id_usuario,
                 ], $fecha));
     }
-/*
+
+    public function Excel_Reclutamiento($id_usuario,$pestania){
+            $dato['pestania']=$pestania;
+            $data = $this->modelo->get_list_reclutamiento($id_reclutamiento=null,$id_usuario,$dato['pestania']);
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $spreadsheet->getActiveSheet()->setTitle('Lista Reclutamiento');
+            $sheet->setCellValue('A1', 'F REGISTRO');
+            $sheet->setCellValue('B1', 'ÁREA');
+            $sheet->setCellValue('C1', 'PUESTO');
+            $sheet->setCellValue('D1', 'SOLICITANTE');
+            $sheet->setCellValue('E1', 'EVALUADOR');
+            $sheet->setCellValue('F1', 'VACANTES');
+            $sheet->setCellValue('G1', 'PENDIENTES');
+            $sheet->setCellValue('H1', 'CENTRO LABORES');
+            $sheet->setCellValue('I1', 'MODALIDAD');
+            $sheet->setCellValue('J1', 'T REMUNERACION');
+            $sheet->setCellValue('K1', 'SUELDO');
+            $sheet->setCellValue('L1', 'DESDE');
+            $sheet->setCellValue('M1', 'A');
+            $sheet->setCellValue('N1', 'ASIGNADO A');
+            $sheet->setCellValue('O1', 'PRIORIDAD');
+            $sheet->setCellValue('P1', 'VENCIMIENTO');
+            $sheet->setCellValue('Q1', 'OBSERVACIONES');
+            $sheet->setCellValue('R1', 'ESTADO');
+
+            $spreadsheet->getActiveSheet()->setAutoFilter('A1:R1');
+            //Le aplicamos color a la cabecera
+            $spreadsheet->getActiveSheet()->getStyle("A1:R1")->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('657099');
+
+            //border
+            $styleThinBlackBorderOutline = [
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => 'FF000000'],
+                    ],
+                ],
+            ];
+            //Font BOLD
+            $sheet->getStyle('A1:R1')->getFont()->setBold(true);
+            $dato['list_area'] = $this->Model_Perfil->get_list_area();
+            //$slno = 1;
+            $start = 1;
+            $t_vacantes=0;
+            $t_pendientes=0;
+            foreach($data as $d){
+                $start = $start+1;
+                $t_vacantes=$t_vacantes+$d['vacantes'];
+                $t_pendientes=$t_pendientes+($d['vacantes']-$d['reclutados']);
+
+                $spreadsheet->getActiveSheet()->setCellValue("A{$start}", $d['fecha_registro']);
+                $spreadsheet->getActiveSheet()->setCellValue("B{$start}", $d['nom_area']);
+                $spreadsheet->getActiveSheet()->setCellValue("C{$start}", $d['nom_puesto']);
+                $spreadsheet->getActiveSheet()->setCellValue("D{$start}", $d['solicitado']);
+                $spreadsheet->getActiveSheet()->setCellValue("E{$start}", $d['evaluador']);
+                $spreadsheet->getActiveSheet()->setCellValue("F{$start}", $d['vacantes']);
+                $spreadsheet->getActiveSheet()->setCellValue("G{$start}", ($d['vacantes']-$d['reclutados']));
+                $spreadsheet->getActiveSheet()->setCellValue("H{$start}", $d['cod_base']);
+                $spreadsheet->getActiveSheet()->setCellValue("I{$start}", $d['nom_modalidad_laboral']);
+                $spreadsheet->getActiveSheet()->setCellValue("J{$start}", $d['tipo_remuneracion']);
+                if($d['tipo_sueldo']==1){
+                    $spreadsheet->getActiveSheet()->setCellValue("K{$start}", $d['sueldo']);
+                }
+                if($d['tipo_sueldo']==2){
+                    $spreadsheet->getActiveSheet()->setCellValue("L{$start}", $d['desde']);
+                    $spreadsheet->getActiveSheet()->setCellValue("M{$start}", $d['a']);
+                }
+
+                $spreadsheet->getActiveSheet()->setCellValue("N{$start}", $d['asignado_a']);
+                $spreadsheet->getActiveSheet()->setCellValue("O{$start}", $d['nom_prioridad']);
+                if($d['fecha_cierre']!="00-00-0000"){
+                    $spreadsheet->getActiveSheet()->setCellValue("P{$start}", $d['fecha_cierre']);
+                }
+
+                $spreadsheet->getActiveSheet()->setCellValue("Q{$start}", $d['observacion']);
+                $spreadsheet->getActiveSheet()->setCellValue("R{$start}", $d['nom_estado_reclutamiento']);
+
+                $sheet->getStyle("A{$start}:R{$start}")->applyFromArray($styleThinBlackBorderOutline);
+            }
+            //Alignment
+            //fONT SIZE
+            $sheet->getStyle('A1:R1')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            //Custom width for Individual Columns
+            $sheet->getColumnDimension('A')->setWidth(13);
+            $sheet->getColumnDimension('B')->setWidth(17);
+            $sheet->getColumnDimension('C')->setWidth(20);
+            $sheet->getColumnDimension('D')->setWidth(35);
+            $sheet->getColumnDimension('E')->setWidth(30);
+            $sheet->getColumnDimension('F')->setWidth(12);
+            $sheet->getColumnDimension('G')->setWidth(13);
+            $sheet->getColumnDimension('I')->setWidth(15);
+            $sheet->getColumnDimension('J')->setWidth(15);
+            $sheet->getColumnDimension('N')->setWidth(30);
+            $sheet->getColumnDimension('O')->setWidth(13);
+            $sheet->getColumnDimension('P')->setWidth(15);
+            $sheet->getColumnDimension('Q')->setWidth(30);
+            $sheet->getColumnDimension('R')->setWidth(12);
+
+            //final part
+            $curdate = date('d-m-Y');
+           // $writer = new Xlsx($spreadsheet);
+            $filename = 'Lista Reclutamiento '.$curdate;
+            if (ob_get_contents()) ob_end_clean();
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"');
+            header('Cache-Control: max-age=0');
+
+            $writer = IOFactory::createWriter($spreadsheet,'Xlsx');
+            $writer->save('php://output');
+    }
+
+    public function Modal_Reclutamiento_Reclutado($id_reclutamiento) {
+        $dato['id_reclutamiento']=$id_reclutamiento;
+        $dato['list_colaborador'] = $this->modelo_users->get_list_colaborador();
+        return view('rrhh.Reclutamiento.modal_reg_reclutado',$dato);
+    }
+
     public function Insert_Reclutamiento_Reclutado(){
-        if ($this->session->userdata('usuario')) {
             $dato['id_reclutamiento']= $this->input->post("id_reclutamiento2");
             $dato['id_usuario']= $this->input->post("id_colaborador");
-            
-            $cant=count($this->Model_Corporacion->valida_reclutamiento_reclutado($dato));
+
+
+            // Realiza la consulta usando Eloquent
+            $cant = ReclutamientoReclutado::where('estado', 1)
+                        ->where('id_reclutamiento', $dato['id_reclutamiento'])
+                        ->where('id_usuario', $dato['id_usuario'])
+                        ->count();
+
             if($cant>0){
                 echo "error1";
             }else{
-                $dato['get_id'] = $this->Model_Corporacion->get_list_reclutamiento($dato['id_reclutamiento'],0,0);
-                $dato['list_detalle_reclutamiento'] = $this->Model_Corporacion->get_list_detalle_reclutamiento($dato['id_reclutamiento']);
+                $dato['get_id'] = $this->modelo->get_list_reclutamiento($dato['id_reclutamiento'],0,0);
+                $dato['list_detalle_reclutamiento'] = $this->modelo_detalles->get_list_detalle_reclutamiento($dato['id_reclutamiento']);
                 if(count($dato['list_detalle_reclutamiento'])<$dato['get_id'][0]['vacantes']){
-                    $this->Model_Corporacion->insert_reclutamiento_reclutado($dato);
+                    ReclutamientoReclutado::create([
+                        'id_reclutamiento' => $dato['id_reclutamiento'],
+                        'id_usuario' => $dato['id_usuario'],
+                        'estado' => 1,
+                        'user_reg' => session('usuario')->id_usuario,
+                        'fec_reg' => now(),
+                    ]);
                 }else{
                     echo "error2";
                 }
             }
-        }
-        else{
-            redirect('');
-        }        
     }
 
     public function List_Reclutamiento_Reclutado(){
-        if ($this->session->userdata('usuario')) {
             $id_reclutamiento= $this->input->post("id_reclutamiento");
-            $dato['list_detalle_reclutamiento'] = $this->Model_Corporacion->get_list_detalle_reclutamiento($id_reclutamiento);
-            $this->load->view('Recursos_Humanos/Reclutamiento/list_reclutado',$dato);
-        }
-        else{
-            redirect('');
-        }        
+            $dato['list_detalle_reclutamiento'] = $this->modelo_detalles->get_list_detalle_reclutamiento($id_reclutamiento);
+            return view('rrhh.Reclutamiento.list_reclutado',$dato);
     }
 
-
-
-    public function Delete_Reclutamiento(){
-        if ($this->session->userdata('usuario')) {
-            $dato['id_reclutamiento']= $this->input->post("id_reclutamiento");
-            $this->Model_Corporacion->delete_reclutamiento($dato);
-        }
-        else{
-            redirect('');
-        }        
-    }
-
-    public function Modal_Reclutamiento_Reclutado($id_reclutamiento) {
-        if (!$this->session->userdata('usuario')) {
-            redirect(base_url());
-        }
-        $dato['id_reclutamiento']=$id_reclutamiento;
-        $dato['list_colaborador'] = $this->Model_Corporacion->get_list_colaborador();
-        $this->load->view('Recursos_Humanos/Reclutamiento/modal_reg_reclutado',$dato);
-    }
-
-*/
 }

@@ -1,5 +1,4 @@
-<?php $id_nivel=$_SESSION['usuario'][0]['id_nivel'];
-$id_usuario=$_SESSION['usuario'][0]['id_usuario'];?>
+
 <table id="zero-config-reclutado2" class="table table-hover" style="width:100%">
     <thead class="text-center">
         <tr>
@@ -11,7 +10,7 @@ $id_usuario=$_SESSION['usuario'][0]['id_usuario'];?>
     </thead>
 
     <tbody class="text-center">
-        <?php foreach($list_detalle_reclutamiento as $list) {  ?>                                           
+        <?php foreach($list_detalle_reclutamiento as $list) {  ?>
             <tr>
                 <td align="center" ><?php echo $list['usuario_nombres']; ?></td>
                 <td align="center" ><?php echo $list['num_doc']; ?></td>
