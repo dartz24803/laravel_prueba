@@ -135,8 +135,10 @@ class SolicitudesUser extends Model
                 ua.usuario_amater as amater_apro,de.nom_destino,tr.nom_tramite
                 FROM solicitudes_user su
                 left join users u on su.id_usuario=u.id_usuario
-                left join area a on u.id_area=a.id_area
-                left join gerencia g on u.id_gerencia=g.id_gerencia
+                LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                LEFT JOIN area a on a.id_area=p.id_area
+                LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
                 left join users ua on ua.id_usuario=su.user_aprob
                 LEFT JOIN destino de ON de.id_destino=su.destino
                 LEFT JOIN tramite tr ON tr.id_tramite=su.tramite
