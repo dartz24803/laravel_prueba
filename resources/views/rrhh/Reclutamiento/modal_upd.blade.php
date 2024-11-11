@@ -22,7 +22,7 @@ $id_usuario = session('usuario')->id_usuario;
                 <select name="id_areae" id="id_areae" class="form-control basiccc" onchange="Buscar_Puesto_Area('2')" disabled>
                     <option value="0">Seleccione</option>
                     <?php foreach($list_area as $list){?>
-                        <option value="<?php echo $list->id_area ?>" <?php if($get_id[0]['id_area']==$list->id_area){echo "selected";}?>><?php echo $list->nom_area ?></option>
+                        <option value="<?php echo $list['id_area'] ?>" <?php if($get_id[0]['id_area']==$list['id_area']){echo "selected";}?>><?php echo $list['nom_area'] ?></option>
                     <?php }?>
                 </select>
             </div>
@@ -65,7 +65,7 @@ $id_usuario = session('usuario')->id_usuario;
                 <input type="hidden" name="id_evaluadore" id="id_evaluadore" value="<?php echo $get_id[0]['id_evaluador'] ?>">
             <?php }?>
             <div class="form-group col-md-2">
-                <label>Vancantes: </label>
+                <label>Vacantes: </label>
             </div>
             <div class="form-group col-md-4">
                 <input  type="text" required class="form-control" id="vacantese" name="vacantese" value="<?php echo $get_id[0]['vacantes'] ?>" onkeypress="return soloNumeros(event)">
@@ -96,7 +96,7 @@ $id_usuario = session('usuario')->id_usuario;
                 </select>
             </div>
             <div class="form-group col-md-2" >
-                <label>Tipo Remuneación:</label>
+                <label>Tipo Remuneración:</label>
             </div>
             <div class="form-group col-md-4">
                 <select name="tipo_sueldoe" id="tipo_sueldoe" class="form-control" onchange="Tipo_Sueldo('2')">
@@ -368,4 +368,18 @@ function Delete_Reclutado(id_reclutamiento,id_detalle) {
         }
     })
 }
+
+function Estado_Reclutamiento(){
+    var div_fectermino1 = document.getElementById("div_fectermino1");
+    var div_fectermino2 = document.getElementById("div_fectermino2");
+    $('#fec_terminoe').val('');
+    if($('#estado_reclutamientoe').val()=="3"){
+        div_fectermino1.style.display = "block";
+        div_fectermino2.style.display = "block";
+    }else{
+        div_fectermino1.style.display = "none";
+        div_fectermino2.style.display = "none";
+    }
+}
+
 </script>

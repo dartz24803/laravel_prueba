@@ -82,7 +82,7 @@
 
 
 <script>
-    function Buscar_Asistencia_Colaborador() {
+    function Buscar_Ausencia_Colaborador() {
         Cargando();
 
         var base = $('#baseau').val();
@@ -127,5 +127,121 @@
             div1.style.display = "none";
             div2.style.display = "block";
         }
+    }
+
+
+
+    function Update_Ausencia_Inconsistencia(id_asistencia_inconsistencia) {
+        Cargando();
+
+        var url = "{{ route('ausencia_colaborador.update') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        const swalWithBootstrapButtons = swal.mixin({
+            confirmButtonClass: 'btn btn-success btn-rounded',
+            cancelButtonClass: 'btn btn-danger btn-rounded mr-3',
+            buttonsStyling: false,
+        })
+
+        swalWithBootstrapButtons({
+            title: '¿Estas seguro de pasar a Inconsistencia?',
+            text: '¡No podrás revertir esta acción!',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '¡Sí, registrar!',
+            cancelButtonText: '¡No, cancelar!',
+            reverseButtons: true,
+            padding: '2em'
+        }).then(function(result) {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        'id_asistencia_inconsistencia': id_asistencia_inconsistencia
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    success: function(data) {
+                        swal.fire(
+                            'Actualización Exitosa!',
+                            'Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            $("#ModalUpdate .close").click();
+                            Buscar_Ausencia_Colaborador();
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+
+    function Update_Estado_Ausencia(id_asistencia_inconsistencia) {
+        Cargando();
+        var estado = $('#estadoau').val();
+        var observacion = $('#observacionau').val();
+        var url = "{{ route('ausencia_colaborador.updateestadoausencia') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_Update_Estado_Ausencia('')) {
+            const swalWithBootstrapButtons = swal.mixin({
+                confirmButtonClass: 'btn btn-success btn-rounded',
+                cancelButtonClass: 'btn btn-danger btn-rounded mr-3',
+                buttonsStyling: false,
+            })
+
+            swalWithBootstrapButtons({
+                title: '¿Estas seguro de validar y registrar marcación',
+                text: '¡No podrás revertir esta acción!',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '¡Sí, registrar!',
+                cancelButtonText: '¡No, cancelar!',
+                reverseButtons: true,
+                padding: '2em'
+            }).then(function(result) {
+                if (result.value) {
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: {
+                            'estado': estado,
+                            'id_asistencia_inconsistencia': id_asistencia_inconsistencia
+                        },
+                        success: function(data) {
+                            swal.fire(
+                                'Registro Exitoso!',
+                                '',
+                                'success'
+                            ).then(function() {
+                                $("#ModalUpdate .close").click();
+                                Buscar_Ausencia_Colaborador();
+                            });
+                        }
+                    });
+                }
+            })
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Valida_Update_Estado_Ausencia() {
+        if ($('#estadoau').val() === '0') {
+            msgDate = 'Debe seleccionar Estado';
+            inputFocus = '#hora_marcacion_nr';
+            return false;
+        }
+        return true;
     }
 </script>

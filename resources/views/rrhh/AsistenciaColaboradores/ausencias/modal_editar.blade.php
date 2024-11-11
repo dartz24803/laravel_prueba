@@ -1,80 +1,156 @@
-<form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
-    <div class="modal-header">
-        <h5 class="modal-title">Actualizar Datos:</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
-    </div>
+<div class="modal-header">
+    <h5 class="modal-title"><b>Actualizar Estado de Asistencia</b></h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+    </button>
+</div>
 
-    <div class="modal-body" style="max-height:700px; overflow:auto;">
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Usuario:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="usuario_codigoe" id="usuario_codigoe" placeholder="Usuario" value="{{ $get_id->usuario_codigo }}">
-            </div>
-
-            <div class="form-group col-lg-2">
-                <label>Contraseña:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="password" class="form-control" name="usuario_passworde" id="usuario_passworde" placeholder="Contraseña">
-            </div>
+<div class="modal-body" style="max-height:500px; overflow:auto;">
+    <div class="col-md-12 row">
+        <div class="form-group col-md-2">
+            <label class="control-label text-bold">Estado:</label>
+        </div>
+        <div class="form-group col-md-4">
+            <select name="estadoau" id="estadoau" class="form-control">
+                <option value="0">Seleccione</option>
+                <?php foreach ($list_estado as $list) { ?>
+                    <option value="<?php echo $list['id_estado_asistencia']; ?>"><?php echo $list['nom_estado']; ?></option>
+                <?php } ?>
+            </select>
         </div>
     </div>
 
-    <div class="modal-footer">
-        @csrf
-        @method('PUT')
-        <button class="btn btn-primary" type="button" onclick="Update_Datos();">Guardar</button>
-        <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
+    <div class="col-md-12 row">
+        <div class="form-group col-md-12">
+            <label class="control-label text-bold">Observación: </label>
+            <div class="">
+                <textarea name="observacionau" id="observacionau" rows="3" class="form-control"><?php echo $get_id[0]['observacion']; ?></textarea>
+            </div>
+        </div>
     </div>
-</form>
+</div>
+<div class="modal-footer">
+    <!-- Laravel genera el token automáticamente con @csrf -->
+    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+    <button class="btn btn-info" type="button" onclick="Update_Ausencia_Inconsistencia('{{ $get_id[0]['id_asistencia_inconsistencia'] }}');">Inconsistencia</button>
+    <button class="btn btn-primary" type="button" onclick="Update_Estado_Ausencia('{{ $get_id[0]['id_asistencia_inconsistencia'] }}');">Guardar</button>
+    <button class="btn" data-dismiss="modal" onclick="Buscar_Ausencia_Colaborador()"><i class="flaticon-cancel-12"></i> Cancelar</button>
+</div>
 
 <script>
-    function Update_Datos() {
+    function Update_Ausencia_Inconsistencia(id_asistencia_inconsistencia) {
         Cargando();
 
-        var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('colaborador_co.update', $get_id->id_usuario) }}";
+        var url = "{{ route('ausencia_colaborador.update') }}";
+        var csrfToken = $('input[name="_token"]').val(); // Obtener token CSRF
 
-        $.ajax({
-            url: url,
-            data: dataString,
-            type: "POST",
-            processData: false,
-            contentType: false,
-            success: function(data) {
-                if(data=="error"){
-                    Swal({
-                        title: '¡Actualización Denegada!',
-                        text: "¡El usuario ya existe!",
-                        type: 'error',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK',
-                    });
-                }else{
-                    swal.fire(
-                        '¡Actualización Exitosa!',
-                        '¡Haga clic en el botón!',
-                        'success'
-                    ).then(function() {
-                        Lista_Colaborador();
-                        $("#ModalUpdate .close").click();
-                    });
-                }
-            },
-            error:function(xhr) {
-                var errors = xhr.responseJSON.errors;
-                var firstError = Object.values(errors)[0][0];
-                Swal.fire(
-                    '¡Ups!',
-                    firstError,
-                    'warning'
-                );
+        const swalWithBootstrapButtons = swal.mixin({
+            confirmButtonClass: 'btn btn-success btn-rounded',
+            cancelButtonClass: 'btn btn-danger btn-rounded mr-3',
+            buttonsStyling: false,
+        });
+
+        swalWithBootstrapButtons({
+            title: '¿Estas seguro de pasar a Inconsistencia?',
+            text: '¡No podrás revertir esta acción!',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '¡Sí, registrar!',
+            cancelButtonText: '¡No, cancelar!',
+            reverseButtons: true,
+            padding: '2em'
+        }).then(function(result) {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        'id_asistencia_inconsistencia': id_asistencia_inconsistencia,
+                        '_token': csrfToken // Incluye el token CSRF en los datos de la solicitud
+                    },
+                    success: function(data) {
+                        swal.fire(
+                            'Actualización Exitosa!',
+                            'Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            $("#ModalUpdate .close").click();
+                            Buscar_Ausencia_Colaborador();
+                        });
+                    }
+                });
             }
         });
+    }
+
+    function Update_Estado_Ausencia(id_asistencia_inconsistencia) {
+        Cargando();
+        var estado = $('#estadoau').val();
+        var observacion = $('#observacionau').val();
+        var url = "{{ route('ausencia_colaborador.updateestadoausencia') }}";
+        var csrfToken = $('input[name="_token"]').val(); // Obtener token CSRF
+
+        if (Valida_Update_Estado_Ausencia()) {
+            const swalWithBootstrapButtons = swal.mixin({
+                confirmButtonClass: 'btn btn-success btn-rounded',
+                cancelButtonClass: 'btn btn-danger btn-rounded mr-3',
+                buttonsStyling: false,
+            });
+
+            swalWithBootstrapButtons({
+                title: '¿Estas seguro de validar y registrar marcación?',
+                text: '¡No podrás revertir esta acción!',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '¡Sí, registrar!',
+                cancelButtonText: '¡No, cancelar!',
+                reverseButtons: true,
+                padding: '2em'
+            }).then(function(result) {
+                if (result.value) {
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: {
+                            'estado': estado,
+                            'observacion': observacion,
+                            'id_asistencia_inconsistencia': id_asistencia_inconsistencia,
+                            '_token': csrfToken // Incluye el token CSRF en los datos de la solicitud
+                        },
+                        success: function(data) {
+                            swal.fire(
+                                'Registro Exitoso!',
+                                '',
+                                'success'
+                            ).then(function() {
+                                $("#ModalUpdate .close").click();
+                                Buscar_Ausencia_Colaborador();
+                            });
+                        }
+                    });
+                }
+            });
+        } else {
+            bootbox.alert(msgDate);
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Valida_Update_Estado_Ausencia() {
+        if ($('#estadoau').val() === '0') {
+            msgDate = 'Debe seleccionar Estado';
+            inputFocus = '#hora_marcacion_nr';
+            return false;
+        }
+        return true;
     }
 </script>

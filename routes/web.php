@@ -2287,6 +2287,12 @@ Route::controller(AsistenciaColaboradoresController::class)->group(function () {
     Route::post('tardanza_colaborador/list', 'list_tardanza_colaborador')->name('tardanza_colaborador.list');
     Route::post('dotacion_colaborador/list', 'list_dotacion_colaborador')->name('dotacion_colaborador.list');
 
+    // AUSENCIAS
+    Route::get('ausencia_colaborador/{id}/edit', 'edit_estado_ausencia')->name('ausencia_colaborador.edit');
+    Route::post('ausencia_colaborador/update', 'update_ausencia')->name('ausencia_colaborador.update');
+    Route::post('ausencia_colaborador/updateestadoausencia', 'update_estado_ausencia')->name('ausencia_colaborador.updateestadoausencia');
+
+
     // INCONSISTENCIAS
     Route::post('inconsistencias_colaborador/list', 'list_inconsistencias_colaborador')->name('inconsistencias_colaborador.list');
     Route::get('inconsistencias_colaborador/{id}/marcaciones', 'marcaciones_inconsistencias_colaborador')->name('inconsistencias_colaborador.marcaciones');

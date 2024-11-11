@@ -23,7 +23,7 @@ $id_usuario = session('usuario')->id_usuario;
                 <select name="id_area" id="id_area" class="form-control basic" onchange="Buscar_Puesto_Area('1')">
                     <option value="0">Seleccione</option>
                     <?php foreach($list_area as $list){?>
-                        <option value="<?php echo $list->id_area ?>"><?php echo $list->nom_area ?></option>
+                        <option value="<?php echo $list['id_area'] ?>"><?php echo $list['nom_area'] ?></option>
                     <?php }?>
                 </select>
                 <?php }else{ ?>
@@ -31,7 +31,7 @@ $id_usuario = session('usuario')->id_usuario;
                 <select name="id_area_s" id="id_area_s" class="form-control basic" onchange="Buscar_Puesto_Area('1')" disabled>
                     <option value="0">Seleccione</option>
                     <?php foreach($list_area as $list){ ?>
-                        <option value="<?php echo $list->id_area ?>" <?php if(session('usuario')->id_area==$list->id_area){ echo "selected"; }?>><?php echo $list->nom_area ?></option>
+                        <option value="<?php echo $list['id_area'] ?>" <?php if(session('usuario')->id_area==$list['id_area']){ echo "selected"; }?>><?php echo $list['nom_area'] ?></option>
                     <?php }?>
                 </select>
                 <?php } ?>
