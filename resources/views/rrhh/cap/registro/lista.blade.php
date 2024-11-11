@@ -35,8 +35,7 @@
         @php $i++; @endphp
         @endforeach
     </tbody>
-</table>   
-
+</table>
 
 <script>
     $('#tabla_js').DataTable({
