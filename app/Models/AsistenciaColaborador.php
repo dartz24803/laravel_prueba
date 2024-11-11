@@ -454,6 +454,99 @@ class AsistenciaColaborador extends Model
         return $query;
     }
 
+    public static function get_list_marcacion_colaborador_ausencia_2($id_asistencia_inconsistencia = null, $dato)
+    {
+        if (isset($id_asistencia_inconsistencia) && $id_asistencia_inconsistencia > 0) {
+            // Si se pasa el id_asistencia_inconsistencia, se arma la consulta para un solo registro
+            $sql = "SELECT a.id_asistencia_inconsistencia, a.id_usuario, a.centro_labores,
+                            a.id_area, a.fecha, a.id_horario, a.con_descanso, a.dia, a.nom_horario, a.observacion,
+                            DATE_FORMAT(a.hora_entrada,'%H:%i') as hora_entrada,
+                            (DATE_FORMAT(DATE_ADD(a.hora_entrada,INTERVAL 1 MINUTE), '%H:%i:%s')) as max_hora_entrada,
+                            DATE_FORMAT(a.hora_entrada_desde,'%H:%i') as hora_entrada_desde,
+                            DATE_FORMAT(a.hora_entrada_hasta,'%H:%i') as hora_entrada_hasta,
+                            DATE_FORMAT(a.hora_salida,'%h:%i') as hora_salida,
+                            DATE_FORMAT(a.hora_salida_desde,'%h:%i') as hora_salida_desde,
+                            DATE_FORMAT(a.hora_salida_hasta,'%h:%i') as hora_salida_hasta,
+                            DATE_FORMAT(a.hora_descanso_e,'%H:%i') as hora_descanso_e,
+                            DATE_FORMAT(a.hora_descanso_e_desde,'%H:%i') as hora_descanso_e_desde,
+                            DATE_FORMAT(a.hora_descanso_e_hasta,'%H:%i') as hora_descanso_e_hasta,
+                            DATE_FORMAT(a.hora_descanso_s,'%H:%i') as hora_descanso_s,
+                            DATE_FORMAT(a.hora_descanso_s_desde,'%H:%i') as hora_descanso_s_desde,
+                            DATE_FORMAT(a.hora_descanso_s_hasta,'%H:%i') as hora_descanso_s_hasta,
+                            a.observacion,
+                            a.estado,
+                            b.usuario_nombres, b.usuario_apater, b.usuario_amater, b.num_doc,
+                            CONCAT(CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(b.usuario_nombres,' ',1),1,1)),
+                            LOWER(SUBSTRING(SUBSTRING_INDEX(b.usuario_nombres,' ',1),2))),' ',
+                            CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(b.usuario_apater,' ',1),1,1)),
+                            LOWER(SUBSTRING(SUBSTRING_INDEX(b.usuario_apater,' ',1),2)))) AS colaborador,
+        
+                            CASE WHEN a.con_descanso = 1 THEN 
+                            CONCAT(DATE_FORMAT(a.hora_entrada,'%H:%i'),' - ', DATE_FORMAT(a.hora_salida,'%H:%i'),' (',
+                            DATE_FORMAT(a.hora_descanso_e,'%H:%i'),' - ', DATE_FORMAT(a.hora_descanso_s,'%H:%i'),')')
+                            ELSE CONCAT(DATE_FORMAT(a.hora_entrada,'%H:%i'),' - ', DATE_FORMAT(a.hora_salida,'%H:%i')) 
+                            END AS turno
+        
+                            FROM asistencia_colaborador_inconsistencia a 
+                            LEFT JOIN users b ON a.id_usuario=b.id_usuario
+                            WHERE a.id_asistencia_inconsistencia='$id_asistencia_inconsistencia' AND a.flag_ausencia=1";
+        } else {
+            // Verifica si $dato es un array o un objeto
+            $fecha = "";
+            if (isset($dato['dia'])) {
+                $fecha = "ai.fecha='" . $dato['dia'] . "' AND";
+            } elseif (isset($dato->dia)) {
+                $fecha = "ai.fecha='" . $dato->dia . "' AND";
+            }
+
+            // Verifica tipo_fecha
+            if (isset($dato['tipo_fecha']) && $dato['tipo_fecha'] == "2") {
+                // Verifica que get_semana sea un array de objetos y accede a sus propiedades con '->'
+                if (isset($dato['get_semana']) && is_array($dato['get_semana']) && isset($dato['get_semana'][0])) {
+                    $fecha = "(ai.fecha BETWEEN '" . $dato['get_semana'][0]->fec_inicio . "' AND '" . $dato['get_semana'][0]->fec_fin . "') AND";
+                } elseif (isset($dato->get_semana) && is_array($dato->get_semana) && isset($dato->get_semana[0])) {
+                    $fecha = "(ai.fecha BETWEEN '" . $dato->get_semana[0]->fec_inicio . "' AND '" . $dato->get_semana[0]->fec_fin . "') AND";
+                }
+            }
+
+            $base = "";
+            if (isset($dato['base']) && $dato['base'] != "0") {
+                $base = "ai.centro_labores='" . $dato['base'] . "' AND";
+            }
+
+            $area = "";
+            if (isset($dato['area']) && $dato['area'] != "0") {
+                $area = "ai.id_area='" . $dato['area'] . "' AND";
+            }
+
+            $usuario = "";
+            if (isset($dato['usuario']) && $dato['usuario'] != "0") {
+                $usuario = "ai.id_usuario='" . $dato['usuario'] . "' AND";
+            }
+
+            // Construcción de la consulta
+            $sql = "SELECT ai.id_asistencia_inconsistencia,
+                    CONCAT(CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(us.usuario_nombres,' ',1),1,1)),
+                    LOWER(SUBSTRING(SUBSTRING_INDEX(us.usuario_nombres,' ',1),2))),' ',
+                    CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(us.usuario_apater,' ',1),1,1)),
+                    LOWER(SUBSTRING(SUBSTRING_INDEX(us.usuario_apater,' ',1),2)))) AS colaborador,
+                    us.num_doc, ai.centro_labores, DATE_FORMAT(ai.fecha, '%d/%m/%Y') AS fecha,
+                    CASE WHEN ai.con_descanso=1 THEN CONCAT(DATE_FORMAT(ai.hora_entrada, '%H:%i'), ' - ',
+                    DATE_FORMAT(ai.hora_salida, '%H:%i'), ' (', DATE_FORMAT(ai.hora_descanso_e, '%H:%i'), ' - ',
+                    DATE_FORMAT(ai.hora_descanso_s, '%H:%i'), ')') ELSE CONCAT(DATE_FORMAT(ai.hora_entrada, '%H:%i'), ' - ',
+                    DATE_FORMAT(ai.hora_salida, '%H:%i')) END AS turno
+                    FROM asistencia_colaborador_inconsistencia ai
+                    LEFT JOIN users us ON ai.id_usuario=us.id_usuario
+                    WHERE $fecha $base $area $usuario ai.flag_ausencia=1 AND ai.estado=1";
+        }
+
+        // Ejecutar la consulta
+        $query = DB::select($sql);
+        // return $query;
+        return json_decode(json_encode($query), true);
+    }
+
+
     public static function get_list_tardanza($dato)
     {
         /*hd.id_turno>0 AND (WEEKDAY('$fecha')+1)=hd.dia AND*/
@@ -1065,6 +1158,107 @@ class AsistenciaColaborador extends Model
                 hora_descanso_s_hasta=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_ADD(hora_descanso_s,INTERVAL $minutos MINUTE), '%H:%i:%s')) end,
                 fec_act=NOW() 
                 WHERE id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "'";
+        DB::statement($sql);
+    }
+
+
+
+    public static function get_list_estado_asistencia_ausencia()
+    {
+        $sql = "SELECT * FROM estado_asistencia 
+                WHERE id_estado_asistencia in (3,5,7,8,9,10,11)";
+        $query = DB::select($sql);
+        // return $query;
+        return json_decode(json_encode($query), true);
+    }
+
+    public static function update_ausencia_inconsistencia($dato)
+    {
+        $sql = "UPDATE asistencia_colaborador_inconsistencia SET flag_ausencia=0
+                WHERE id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "'";
+        DB::statement($sql);
+    }
+
+
+    public static function get_list_estado_asistencia($id_estado_asistencia = null)
+    {
+        if (isset($id_estado_asistencia) && $id_estado_asistencia > 0) {
+            $sql = "SELECT * FROM estado_asistencia WHERE id_estado_asistencia=$id_estado_asistencia";
+        } else {
+            $sql = "SELECT * FROM estado_asistencia WHERE estado=1";
+        }
+        $query = DB::select($sql);
+        // return $query;
+        return json_decode(json_encode($query), true);
+    }
+
+
+
+    public static function update_estado_ausencia($dato)
+    {
+        // SQL con placeholders
+        $sql = "INSERT INTO asistencia_colaborador (
+        id_usuario, fecha, id_horario, con_descanso, dia, centro_labores, id_area,
+        hora_entrada, hora_entrada_desde, hora_entrada_hasta,
+        hora_salida, hora_salida_desde, hora_salida_hasta,
+        hora_descanso_e, hora_descanso_e_desde, hora_descanso_e_hasta,
+        hora_descanso_s, hora_descanso_s_desde, hora_descanso_s_hasta,
+        flag_editado, flag_diatrabajado,
+        registro, estado_registro, nom_horario, observacion,
+        estado, fec_reg, user_reg
+    ) VALUES (
+        :id_usuario, :fecha, :id_horario, :con_descanso, :dia, :centro_labores, :id_area,
+        :hora_entrada, :hora_entrada_desde, :hora_entrada_hasta,
+        :hora_salida, :hora_salida_desde, :hora_salida_hasta,
+        :hora_descanso_e, :hora_descanso_e_desde, :hora_descanso_e_hasta,
+        :hora_descanso_s, :hora_descanso_s_desde, :hora_descanso_s_hasta,
+        1, :flag_diatrabajado,
+        :registro, :estado_registro, :nom_horario, :observacion,
+        1, NOW(), 0
+    )";
+
+        // Parámetros para la consulta
+        $queryParams = [
+            'id_usuario' => $dato['id_usuario'],
+            'fecha' => $dato['fecha'],
+            'id_horario' => $dato['id_horario'],
+            'con_descanso' => $dato['con_descanso'],
+            'dia' => $dato['dia'],
+            'centro_labores' => $dato['centro_labores'],
+            'id_area' => $dato['id_area'],
+            'hora_entrada' => $dato['hora_entrada'],
+            'hora_entrada_desde' => $dato['hora_entrada_desde'],
+            'hora_entrada_hasta' => $dato['hora_entrada_hasta'],
+            'hora_salida' => $dato['hora_salida'],
+            'hora_salida_desde' => $dato['hora_salida_desde'],
+            'hora_salida_hasta' => $dato['hora_salida_hasta'],
+            'hora_descanso_e' => $dato['hora_descanso_e'],
+            'hora_descanso_e_desde' => $dato['hora_descanso_e_desde'],
+            'hora_descanso_e_hasta' => $dato['hora_descanso_e_hasta'],
+            'hora_descanso_s' => $dato['hora_descanso_s'],
+            'hora_descanso_s_desde' => $dato['hora_descanso_s_desde'],
+            'hora_descanso_s_hasta' => $dato['hora_descanso_s_hasta'],
+            'flag_diatrabajado' => $dato['flag_diatrabajado'],
+            'registro' => $dato['registro'],
+            'estado_registro' => $dato['estado_registro'],
+            'nom_horario' => $dato['nom_horario'],
+            'observacion' => $dato['observacion'],
+        ];
+        // Ejecutar la consulta
+        DB::insert($sql, $queryParams);
+        // Obtener el ID de la última inserción
+        $id = DB::getPdo()->lastInsertId();
+        return $id;
+    }
+
+    public static function delete_inconsistencia_ausencia($dato)
+    {
+        $id_usuario = session('usuario')->id_usuario;
+        $sql = "UPDATE asistencia_colaborador_inconsistencia SET estado='2',id_asistencia_colaborador='" . $dato['id_asistencia_colaborador'] . "',user_eli='$id_usuario',fec_eli=NOW() 
+        WHERE id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "';";
+        DB::statement($sql);
+        $sql = "UPDATE asistencia_colaborador_marcaciones SET estado='2',id_asistencia_colaborador='" . $dato['id_asistencia_colaborador'] . "',user_eli='$id_usuario',fec_eli=NOW() 
+        WHERE id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "';";
         DB::statement($sql);
     }
 }
