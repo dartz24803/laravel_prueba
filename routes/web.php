@@ -24,6 +24,7 @@ use App\Http\Controllers\CajaInicioController;
 use App\Http\Controllers\CambioPrendaConfController;
 use App\Http\Controllers\CambioPrendaController;
 use App\Http\Controllers\CapacitacionCajeroController;
+use App\Http\Controllers\CapController;
 use App\Http\Controllers\CargaInventarioController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
@@ -1716,6 +1717,15 @@ Route::controller(RegistroChequeController::class)->group(function () {
     Route::get('registro_cheque/{id}/modal_anular', 'modal_anular')->name('registro_cheque.modal_anular');
     Route::delete('registro_cheque/{id}', 'destroy')->name('registro_cheque.destroy');
     Route::get('registro_cheque/{todos}/{id_empresa}/{estado}/{fec_inicio}/{fec_fin}/{tipo_fecha}/excel', 'excel')->name('registro_cheque.excel');
+});
+//RECURSOS HUMANOS - CAP
+Route::controller(CapController::class)->group(function () {
+    Route::get('cap', 'index')->name('cap');
+    Route::get('cap_reg', 'index_reg')->name('cap_reg');
+    Route::post('cap_reg/list', 'list_reg')->name('cap_reg.list');
+    Route::post('cap_reg', 'store_reg')->name('cap_reg.store');
+    Route::get('cap_ges', 'index_ges')->name('cap_ges');
+    Route::post('cap_ges/list', 'list_ges')->name('cap_ges.list');
 });
 
 

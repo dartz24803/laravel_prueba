@@ -1358,6 +1358,7 @@ class ColaboradorController extends Controller
                 'id_tipo_contrato' => $request->id_tipo_contrato,
                 'id_empresapl' => $request->id_empresa,
                 'id_regimen' => $request->id_regimen,
+                'estado' => 1,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
