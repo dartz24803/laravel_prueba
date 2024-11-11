@@ -5,7 +5,7 @@
             <option value="0">Seleccione</option>
             @foreach ($list_mes as $list)
                 <option value="{{ $list->cod_mes }}"
-                @if ($list->cod_mes==date('m')) selected @endif>
+                @if ($list->cod_mes==$mes) selected @endif>
                     {{ $list->nom_mes }}
                 </option>
             @endforeach
@@ -18,7 +18,7 @@
             <option value="0">Seleccione</option>
             @foreach ($list_anio as $list)
                 <option value="{{ $list->cod_anio }}"
-                @if ($list->cod_anio==date('Y')) selected @endif>
+                @if ($list->cod_anio==$anio) selected @endif>
                     {{ $list->cod_anio }}
                 </option>
             @endforeach
@@ -31,7 +31,7 @@
 
 <script>
     Lista_Gestion();
-    
+
     function Lista_Gestion(){
         Cargando();
 

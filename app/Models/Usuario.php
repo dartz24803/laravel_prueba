@@ -183,7 +183,7 @@ class Usuario extends Model
                 pps.estado as estadopps, pps.registro_masivo, pps.id_puesto_permitido, u.id_centro_labor,
                 visualizar_mi_equipo(u.id_puesto) AS visualizar_mi_equipo,
                 (SELECT COUNT(*) FROM asignacion_jefatura aj
-                WHERE aj.id_puesto_jefe=u.id_puesto and aj.estado=1) as puestos_asignados
+                WHERE aj.id_puesto_jefe=u.id_puesto and aj.estado=1) as puestos_asignados,u.id_cargo
                 FROM users u
                 LEFT JOIN permiso_papeletas_salida pps ON u.id_puesto=pps.id_puesto_jefe AND pps.estado=1
                 LEFT JOIN nivel n ON u.id_nivel=n.id_nivel

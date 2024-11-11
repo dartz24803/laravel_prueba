@@ -1724,8 +1724,10 @@ Route::controller(CapController::class)->group(function () {
     Route::get('cap_reg', 'index_reg')->name('cap_reg');
     Route::post('cap_reg/list', 'list_reg')->name('cap_reg.list');
     Route::post('cap_reg', 'store_reg')->name('cap_reg.store');
-    Route::get('cap_ges', 'index_ges')->name('cap_ges');
+    Route::post('cap_ges', 'index_ges')->name('cap_ges');
     Route::post('cap_ges/list', 'list_ges')->name('cap_ges.list');
+    Route::post('cap_ges/{id}/detalle', 'detalle_ges')->name('cap_ges.detalle');
+    Route::post('cap_ges/{id}/list_detalle', 'list_detalle_ges')->name('cap_ges.list_detalle');
 });
 
 

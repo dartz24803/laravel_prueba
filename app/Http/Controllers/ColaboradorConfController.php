@@ -11,7 +11,6 @@ use App\Models\Direccion;
 use App\Models\FuncionesPuesto;
 use App\Models\Gerencia;
 use App\Models\NivelJerarquico;
-use App\Models\Organigrama;
 use App\Models\Puesto;
 use App\Models\SedeLaboral;
 use App\Models\SubGerencia;
@@ -986,7 +985,6 @@ class ColaboradorConfController extends Controller
             'id_sub_gerencia' => 'gt:0',
             'id_area' => 'gt:0',
             'id_nivel' => 'gt:0',
-            'cantidad' => 'gt:0',
             'nom_puesto' => 'required',
         ], [
             'id_direccion.gt' => 'Debe seleccionar dirección.',
@@ -994,7 +992,6 @@ class ColaboradorConfController extends Controller
             'id_sub_gerencia.gt' => 'Debe seleccionar departamento.',
             'id_area.gt' => 'Debe seleccionar área.',
             'id_nivel.gt' => 'Debe seleccionar nivel jerárquico.',
-            'cantidad.gt' => 'Debe ingresar cantidad mayor a 0.',
             'nom_puesto.required' => 'Debe ingresar descripción.'
         ]);
 
@@ -1013,19 +1010,6 @@ class ColaboradorConfController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
-
-            if ($request->cantidad > 0) {
-                $i = 1;
-                while ($i <= $request->cantidad) {
-                    Organigrama::create([
-                        'id_puesto' => $puesto->id_puesto,
-                        'id_usuario' => 0,
-                        'fecha' => now(),
-                        'usuario' => session('usuario')->id_usuario,
-                    ]);
-                    $i++;
-                }
-            }
         }
     }
 
