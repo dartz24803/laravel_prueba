@@ -69,12 +69,6 @@
                 </select>
             </div>
         </div>
-        <!--<div class="form-group col-md-4">
-            <label class="control-label text-bold">Observación: </label>
-            <div class="">
-                <input type="text" name="obs_marcacion" id="obs_marcacion" class="form-control">
-            </div>
-        </div>-->
         <div class="form-group col-md-1">
             <label for=""></label>
             <div id="btn_reg_i">
@@ -86,15 +80,6 @@
                     </svg>
                 </a>
             </div>
-            <!-- <div id="btn_upd_i" style="display:none">
-                <a style="cursor:pointer;" class="btn btn-primary mt-3" title="Actualizar" onclick="Update_Marcacion_Inconsistencia()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-                </a>
-                <a style="cursor:pointer;" class="btn btn-default mt-3" title="Cancelar" onclick="Cancelar_Upd_Marcacion_Inconsistencia()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </a>
-            </div>
-            <input type="hidden" name="id_asistencia_detalle" id="id_asistencia_detalle" >-->
         </div>
     </div>
 
@@ -445,7 +430,7 @@
                     'X-CSRF-TOKEN': csrfToken
                 },
                 success: function(data) {
-                    Divturno_Inconsistencia(id_asistencia_inconsistencia);
+                    // Divturno_Inconsistencia(id_asistencia_inconsistencia);
                     $("#modal_form_vertical .close").click();
                 }
             });

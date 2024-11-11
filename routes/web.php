@@ -2104,38 +2104,24 @@ Route::controller(ReclutamientoController::class)->group(function () {
     Route::get('Reclutamiento/Excel_Reclutamiento/{id_user}/{p}', 'Excel_Reclutamiento');
 });
 
+use App\Http\Controllers\TareasController;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Route::controller(TareasController::class)->group(function () {
+    Route::get('Tareas/index', 'Gestion_Pendiente');
+    // Route::post('Tareas/Buscador_Tareas', 'Buscador_Tareas');
+    // Route::get('Tareas/Modal_Tareas', 'Modal_Tareas');
+    // Route::post('Tareas/Buscar_Puesto_Area/{id_area}/{t}', 'Buscar_Puesto_Area');
+    // Route::post('Tareas/Insert_Tareas', 'Insert_Tareas');
+    // Route::get('Tareas/Modal_Update_Tareas/{id}', 'Modal_Update_Tareas');
+    // Route::post('Tareas/Insert_Tareas_Reclutado', 'Insert_Tareas_Reclutado');
+    // Route::post('Tareas/List_Tareas_Reclutado', 'List_Tareas_Reclutado');
+    // Route::post('Tareas/Delete_Reclutado', 'Delete_Reclutado');
+    // Route::post('Tareas/Update_Tareas', 'Update_Tareas');
+    // Route::post('Tareas/Delete_Tareas', 'Delete_Tareas');
+    // Route::get('Tareas/Modal_Tareas_Reclutado/{id}', 'Modal_Tareas_Reclutado');
+    // Route::post('Tareas/Delete_Tareas_Detalle', 'Delete_Tareas_Detalle');
+    // Route::get('Tareas/Excel_Tareas/{id_user}/{p}', 'Excel_Tareas');
+});
 
 
 
@@ -2289,10 +2275,19 @@ Route::controller(AsistenciaColaboradoresController::class)->group(function () {
     Route::post('tardanza_colaborador/list', 'list_tardanza_colaborador')->name('tardanza_colaborador.list');
     Route::post('dotacion_colaborador/list', 'list_dotacion_colaborador')->name('dotacion_colaborador.list');
 
+
+    // DOTACIÓN
+    Route::get('dotacion_colaborador/{centro_labores}/{fecha}/marcaciones_edit', 'edit_dotacion_colaborador')->name('dotacion_colaborador.marcaciones_edit');
+
+
     // AUSENCIAS
     Route::get('ausencia_colaborador/{id}/edit', 'edit_estado_ausencia')->name('ausencia_colaborador.edit');
     Route::post('ausencia_colaborador/update', 'update_ausencia')->name('ausencia_colaborador.update');
     Route::post('ausencia_colaborador/updateestadoausencia', 'update_estado_ausencia')->name('ausencia_colaborador.updateestadoausencia');
+
+    // ASISTENCIA
+    Route::get('asistencia_colaborador/{id}/edit', 'edit_estado_asistencia')->name('asistencia_colaborador.edit');
+    Route::post('asistencia_colaborador/update', 'update_estado_asistencia')->name('asistencia_colaborador.update');
 
 
     // INCONSISTENCIAS
