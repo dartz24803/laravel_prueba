@@ -22,7 +22,7 @@ $id_usuario = session('usuario')->id_usuario;
                 <select name="id_areae" id="id_areae" class="form-control basiccc" onchange="Buscar_Puesto_Area('2')" disabled>
                     <option value="0">Seleccione</option>
                     <?php foreach($list_area as $list){?>
-                        <option value="<?php echo $list->id_area ?>" <?php if($get_id[0]['id_area']==$list->id_area){echo "selected";}?>><?php echo $list->nom_area ?></option>
+                        <option value="<?php echo $list['id_area'] ?>" <?php if($get_id[0]['id_area']==$list['id_area']){echo "selected";}?>><?php echo $list['nom_area'] ?></option>
                     <?php }?>
                 </select>
             </div>
