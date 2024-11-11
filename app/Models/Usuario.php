@@ -880,8 +880,8 @@ class Usuario extends Model
                     from users u
                     LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
                     LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
-                    LEFT JOIN area a on a.id_area=u.id_area
                     LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN area a on a.id_area=p.id_area
                     LEFT JOIN cargo c on c.id_cargo=u.id_cargo
                     where id_usuario =" . $id_usuario;
         } else {
