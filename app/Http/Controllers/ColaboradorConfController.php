@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Area;
 use App\Models\AreaUbicacion;
-use App\Models\Cargo;
 use App\Models\Competencia;
 use App\Models\CompetenciaPuesto;
 use App\Models\Direccion;
@@ -38,12 +37,8 @@ use App\Models\Accesorio;
 use App\Models\GradoInstruccion;
 use App\Models\Zona;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\ComisionAFP;
 use App\Models\Turno;
@@ -1563,6 +1558,81 @@ class ColaboradorConfController extends Controller
     {
         //print_r($request->input('id'));
         ProgramaAccesos::findOrFail($request->id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+    //ORGANIGRAMA
+    public function index_or()
+    {
+        return view('rrhh.administracion.colaborador.organigrama.index');
+    }
+
+    public function list_or()
+    {
+        $list_sede_laboral = SedeLaboral::select('id', 'descripcion')->where('estado', 1)->get();
+        return view('rrhh.administracion.colaborador.organigrama.lista', compact('list_sede_laboral'));
+    }
+
+    public function create_or()
+    {
+        return view('rrhh.administracion.colaborador.organigrama.modal_registrar');
+    }
+
+    public function store_or(Request $request)
+    {
+        $request->validate([
+            'descripcion' => 'required',
+        ], [
+            'descripcion.required' => 'Debe ingresar nombre.',
+        ]);
+
+        $valida = SedeLaboral::where('descripcion', $request->descripcion)->where('estado', 1)->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            SedeLaboral::create([
+                'descripcion' => $request->descripcion,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_or($id)
+    {
+        $get_id = SedeLaboral::findOrFail($id);
+        return view('rrhh.administracion.colaborador.organigrama.modal_editar', compact('get_id'));
+    }
+
+    public function update_or(Request $request, $id)
+    {
+        $request->validate([
+            'descripcione' => 'required',
+        ], [
+            'descripcione.required' => 'Debe ingresar nombre.',
+        ]);
+
+        $valida = SedeLaboral::where('descripcion', $request->descripcione)->where('estado', 1)
+            ->where('id', '!=', $id)->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            SedeLaboral::findOrFail($id)->update([
+                'descripcion' => $request->descripcione,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_or($id)
+    {
+        SedeLaboral::findOrFail($id)->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario

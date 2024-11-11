@@ -807,7 +807,15 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::put('colaborador_conf_ubi/{id}', 'update_ubi')->name('colaborador_conf_ubi.update');
     Route::delete('colaborador_conf_ubi/{id}', 'destroy_ubi')->name('colaborador_conf_ubi.destroy');
     // ----------------------------------------bryan----------------------------------*/
-
+    /*-----------------------------------------Daniel---------------------------------*/
+    Route::get('colaborador_conf_or', 'index_or')->name('colaborador_conf_or');
+    Route::get('colaborador_conf_or/list', 'list_or')->name('colaborador_conf_or.list');
+    Route::get('colaborador_conf_or/create', 'create_or')->name('colaborador_conf_or.create');
+    Route::post('colaborador_conf_or', 'store_or')->name('colaborador_conf_or.store');
+    Route::get('colaborador_conf_or/{id}/edit', 'edit_or')->name('colaborador_conf_or.edit');
+    Route::put('colaborador_conf_or/{id}', 'update_or')->name('colaborador_conf_or.update');
+    Route::delete('colaborador_conf_or/{id}', 'destroy_or')->name('colaborador_conf_or.destroy');
+    /*-----------------------------------------Daniel---------------------------------*/
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function () {
