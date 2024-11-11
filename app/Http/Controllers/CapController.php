@@ -84,13 +84,23 @@ class CapController extends Controller
         }
     }
 
-    public function index_ges()
+    public function index_ges(Request $request)
     {
+        $mes = date('m');
+        $anio = date('Y');
+        if(isset($request->mes)){
+            $mes = $request->mes;
+        }
+        if(isset($request->anio)){
+            $anio = $request->anio;
+        }
         $list_mes = Mes::all();
         $list_anio = Anio::orderBy('cod_anio','DESC')->get();
         return view('rrhh.cap.gestion.index', compact(
             'list_mes',
-            'list_anio'
+            'list_anio',
+            'mes',
+            'anio'
         ));
     }
 
@@ -105,5 +115,35 @@ class CapController extends Controller
             $anio
         ]);
         return view('rrhh.cap.gestion.lista', compact('list_gestion','mes','anio'));
+    }
+    
+    public function detalle_ges(Request $request, $id_centro_labor)
+    {
+        $mes = $request->mes;
+        $anio = $request->anio;
+        return view('rrhh.cap.gestion.detalle', compact(
+            'id_centro_labor',
+            'mes',
+            'anio'
+        ));
+    }
+
+    public function list_detalle_ges(Request $request, $id_centro_labor)
+    {
+        $dias = cal_days_in_month(CAL_GREGORIAN, $request->mes, $request->anio);
+        $mes = $request->mes;
+        $anio = $request->anio;
+        $list_detalle_gestion = DB::select('CALL lista_detalle_gestion_cap  (?, ?, ?, ?, ?)', [
+            $dias,
+            $mes, 
+            $anio,
+            $request->tipo,
+            $id_centro_labor
+        ]);
+        return view('rrhh.cap.gestion.lista_detalle', compact(
+            'list_detalle_gestion',
+            'mes',
+            'anio'
+        ));
     }
 }
