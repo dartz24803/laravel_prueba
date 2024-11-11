@@ -11,7 +11,7 @@
     </thead>
     <tbody>
         @php $i = 1; @endphp
-        @foreach ($list_puesto as $list)
+        @foreach ($list_cap as $list)
             <tr class="text-center">
                 <td>{{ $i }}</td>
                 <td class="text-left">{{ $list->nom_puesto }}</td>

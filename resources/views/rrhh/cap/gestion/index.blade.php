@@ -26,84 +26,28 @@
     </div>
 </div>
 
-<form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
-    @csrf
-    <div class="table-responsive" id="lista_registro">
-    </div>
-</form> 
+<div class="table-responsive" id="lista_gestion">
+</div>
 
 <script>
+    Lista_Gestion();
+    
     function Lista_Gestion(){
         Cargando();
 
-        var id_ubicacion = $('#id_ubicacionb').val();
-
-        if(id_ubicacion=="0"){
-            $('#lista_registro').html('');  
-        }else{
-            var fecha = $('#fechab').val();
-            var url = "{{ route('cap_reg.list') }}";
-
-            $.ajax({
-                url: url,
-                type: "POST",
-                data: {'id_ubicacion':id_ubicacion,'fecha':fecha},
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                success:function (resp) {
-                    $('#lista_registro').html(resp);
-                }
-            });
-        }
-    }
-    
-    function solo_Numeros_Punto(e) {
-        var key = event.which || event.keyCode;
-        if ((key >= 48 && key <= 57) || key == 46) {
-            if (key == 46 && event.target.value.indexOf('.') !== -1) {
-                return false;
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function Insert_Registro(){
-        Cargando();
-
-        var dataString = new FormData(document.getElementById('formulario'));
-        var url = "{{ route('cap_reg.store') }}";
-
-        var id_ubicacion = $('#id_ubicacionb').val();
-        dataString.append('id_ubicacion', id_ubicacion);
-        var fecha = $('#fechab').val();
-        dataString.append('fecha', fecha);
+        var mes = $('#mesb').val();
+        var anio = $('#aniob').val();
+        var url = "{{ route('cap_ges.list') }}";
 
         $.ajax({
-            type: "POST",
             url: url,
-            data: dataString,
-            processData: false,
-            contentType: false,
-            success:function (data) {
-                swal.fire(
-                    '¡Actualización Exitosa!',
-                    '¡Haga clic en el botón!',
-                    'success'
-                ).then(function() {
-                    Lista_Registro();
-                });
+            type: "POST",
+            data: {'mes':mes,'anio':anio},
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            error:function(xhr) {
-                var errors = xhr.responseJSON.errors;
-                var firstError = Object.values(errors)[0][0];
-                Swal.fire(
-                    '¡Ups!',
-                    firstError,
-                    'warning'
-                );
+            success:function (resp) {
+                $('#lista_gestion').html(resp);
             }
         });
     }
