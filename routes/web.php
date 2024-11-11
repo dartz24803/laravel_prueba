@@ -2116,7 +2116,9 @@ use App\Http\Controllers\TareasController;
 
 Route::controller(TareasController::class)->group(function () {
     Route::get('Tareas/index', 'Gestion_Pendiente');
-    // Route::post('Tareas/Buscador_Tareas', 'Buscador_Tareas');
+    Route::get('Tareas/Cargar_Mis_Tareas', 'Cargar_Mis_Tareas');
+    Route::post('Tareas/Lista_Mis_Tareas', 'Lista_Mis_Tareas');
+    Route::get('Tareas/Excel_Gestion_Pendiente/{id_area}/{base}/{cpiniciar}/{cproceso}/{cfinalizado}/{cstandby}/{mis_tareas}/{mi_equipo}/{responsablei}', 'Excel_Gestion_Pendiente');
     // Route::get('Tareas/Modal_Tareas', 'Modal_Tareas');
     // Route::post('Tareas/Buscar_Puesto_Area/{id_area}/{t}', 'Buscar_Puesto_Area');
     // Route::post('Tareas/Insert_Tareas', 'Insert_Tareas');
@@ -2125,7 +2127,6 @@ Route::controller(TareasController::class)->group(function () {
     // Route::post('Tareas/List_Tareas_Reclutado', 'List_Tareas_Reclutado');
     // Route::post('Tareas/Delete_Reclutado', 'Delete_Reclutado');
     // Route::post('Tareas/Update_Tareas', 'Update_Tareas');
-    // Route::post('Tareas/Delete_Tareas', 'Delete_Tareas');
     // Route::get('Tareas/Modal_Tareas_Reclutado/{id}', 'Modal_Tareas_Reclutado');
     // Route::post('Tareas/Delete_Tareas_Detalle', 'Delete_Tareas_Detalle');
     // Route::get('Tareas/Excel_Tareas/{id_user}/{p}', 'Excel_Tareas');
