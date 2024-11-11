@@ -88,6 +88,30 @@ class AsistenciaColaboradoresController extends Controller
         return view('rrhh.AsistenciaColaboradores.asistencia.lista', compact('list_asistencia'));
     }
 
+    public function edit_estado_asistencia($id_asistencia_colaborador)
+    {
+        $dato['id_asistencia_colaborador'] = $id_asistencia_colaborador;
+        $get_id = AsistenciaColaborador::get_list_asistencia_colaborador($dato['id_asistencia_colaborador'], 0);
+        // dd($get_id);
+        // $list_estado = AsistenciaColaborador::get_list_estado_asistencia_ausencia();
+        return view('rrhh.AsistenciaColaboradores.asistencia.modal_editar', compact('get_id'));
+    }
+
+    public function update_estado_asistencia()
+    {
+        $dato['id_asistencia_colaborador'] = $this->input->post("id_asistencia_colaborador_a");
+        $dato['flag_diatrabajado'] = $this->input->post("flag_diatrabajado_a");
+        AsistenciaColaborador::update_asistencia_colaborador_dia_trabajado($dato);
+    }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -527,6 +551,16 @@ class AsistenciaColaboradoresController extends Controller
     }
 
 
+    public function divturno_inconsistencias($id_asistencia_inconsistencia)
+    {
+        $dato['id_asistencia_inconsistencia'] = $id_asistencia_inconsistencia;
+        $dato['get_asist'] = AsistenciaColaborador::get_list_marcacion_colaborador_inconsistencias($id_asistencia_inconsistencia, 0);
+        return view('rrhh.AsistenciaColaboradores.asistencia.div_turno_inconsistencia', compact('get_asist'));
+    }
+
+
+
+
 
 
 
@@ -649,12 +683,29 @@ class AsistenciaColaboradoresController extends Controller
     public function list_dotacion_colaborador(Request $request)
     {
         $fecha = $this->input->post("fecha");
-
-        // $list_dotacion =  AsistenciaColaborador::get_list_dotacion($fecha);
-        $list_dotacion = [];
-        // Retornar la vista con los datos
+        $list_dotacion =  AsistenciaColaborador::get_list_dotacion($fecha);
+        // dd($list_dotacion);
         return view('rrhh.AsistenciaColaboradores.dotacion.lista', compact('list_dotacion', 'fecha'));
     }
+
+    public function edit_dotacion_colaborador($centro_labores, $fecha)
+    {
+        $dato['centro_labores'] = $centro_labores;
+        $dato['fecha'] = $fecha;
+
+        $list_marcaciones = AsistenciaColaborador::get_list_dotacion_marcaciones($dato);
+        $list_ausentes = AsistenciaColaborador::get_list_dotacion_ausentes($dato);
+        $centro_labores = $centro_labores;
+
+        // dd($dato);
+
+        return view('rrhh.AsistenciaColaboradores.dotacion.modal_marcaciones', compact('list_marcaciones', 'list_ausentes', 'fecha', 'centro_labores'));
+    }
+
+
+
+
+
 
 
 

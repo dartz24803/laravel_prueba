@@ -1,79 +1,58 @@
-<form id="formularioe" method="POST" enctype="multipart/form-data" class="needs-validation">
+<form id="formulario_asistencia_colaborador_a" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
-        <h5 class="modal-title">Actualizar Datos:</h5>
+        <h5 class="modal-title"><b>Actualizar Asistencia</b></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
         </button>
     </div>
 
-    <div class="modal-body" style="max-height:700px; overflow:auto;">
-        <div class="row">
-            <div class="form-group col-lg-2">
-                <label>Usuario:</label>
+    <div class="modal-body" style="max-height:500px; overflow:auto;">
+        <div class="col-md-12 row">
+            <div class="form-group col-md-3">
+                <label class="control-label text-bold" for="flag_diatrabajado_a">Días Trabajados:</label>
             </div>
-            <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="usuario_codigoe" id="usuario_codigoe" placeholder="Usuario" value="{{ $get_id->usuario_codigo }}">
-            </div>
-
-            <div class="form-group col-lg-2">
-                <label>Contraseña:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="password" class="form-control" name="usuario_passworde" id="usuario_passworde" placeholder="Contraseña">
+            <div class="form-group col-md-1">
+                <input type="checkbox" id="flag_diatrabajado_a" name="flag_diatrabajado_a" value="1" <?php if ($get_id[0]['flag_diatrabajado'] == 1) {
+                                                                                                            echo "checked";
+                                                                                                        } ?>>
             </div>
         </div>
     </div>
 
     <div class="modal-footer">
-        @csrf
-        @method('PUT')
-        <button class="btn btn-primary" type="button" onclick="Update_Datos();">Guardar</button>
-        <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
+        <input type="hidden" name="id_asistencia_colaborador_a" value="<?php echo $get_id[0]['id_asistencia_colaborador']; ?>">
+        <button class="btn btn-primary" type="button" onclick="Update_Asistencia_Colaborador_Dia_Trabajado();">
+            Guardar
+        </button>
+        <button class="btn" data-dismiss="modal" onclick="Buscar_Asistencia_Colaborador();">
+            Cancelar
+        </button>
     </div>
 </form>
 
 <script>
-    function Update_Datos() {
+    function Update_Asistencia_Colaborador_Dia_Trabajado() {
         Cargando();
 
-        var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('colaborador_co.update', $get_id->id_usuario) }}";
+        var dataString = new FormData(document.getElementById('formulario_asistencia_colaborador_a'));
+        var url = "{{ route('asistencia_colaborador.update') }}";
+        var csrfToken = $('input[name="_token"]').val(); // Obtener token CSRF
 
         $.ajax({
+            type: "POST",
             url: url,
             data: dataString,
-            type: "POST",
             processData: false,
             contentType: false,
-            success: function(data) {
-                if(data=="error"){
-                    Swal({
-                        title: '¡Actualización Denegada!',
-                        text: "¡El usuario ya existe!",
-                        type: 'error',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK',
-                    });
-                }else{
-                    swal.fire(
-                        '¡Actualización Exitosa!',
-                        '¡Haga clic en el botón!',
-                        'success'
-                    ).then(function() {
-                        Lista_Colaborador();
-                        $("#ModalUpdate .close").click();
-                    });
-                }
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
             },
-            error:function(xhr) {
-                var errors = xhr.responseJSON.errors;
-                var firstError = Object.values(errors)[0][0];
-                Swal.fire(
-                    '¡Ups!',
-                    firstError,
-                    'warning'
-                );
+            success: function(data) {
+                Buscar_Asistencia_Colaborador();
+                $("#ModalUpdate .close").click();
             }
         });
     }
