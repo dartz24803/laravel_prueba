@@ -3577,6 +3577,11 @@ class TrackingController extends Controller
                         ->where('tipo',1)->where('anio',date('Y'))->where('semana',date('W'))
                         ->where('base',$request->cod_base)->where('estado',0)
                         ->groupBy('estilo','tipo_usuario','descripcion')->get();
+
+                $query_tu = MercaderiaSurtida::select('tipo_usuario')
+                            ->where('tipo',1)->where('anio',date('Y'))->where('semana',date('W'))
+                            ->where('base',$request->cod_base)->where('estado',0)
+                            ->groupBy('tipo_usuario')->get();
             }
         } catch (\Throwable $th) {
             return response()->json([
@@ -3590,7 +3595,16 @@ class TrackingController extends Controller
             ], 404);
         }
 
-        return response()->json($query, 200);
+        if($request->estilo){
+            return response()->json($query, 200);
+        }else{
+            $response = [
+                'data' => $query,
+                'tipo_usuario' => $query_tu
+            ];
+    
+            return response()->json($response, 200);
+        }
     }
 
     public function list_mercaderia_nueva_vendedor_app(Request $request)
