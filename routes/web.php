@@ -24,6 +24,7 @@ use App\Http\Controllers\CajaInicioController;
 use App\Http\Controllers\CambioPrendaConfController;
 use App\Http\Controllers\CambioPrendaController;
 use App\Http\Controllers\CapacitacionCajeroController;
+use App\Http\Controllers\CapController;
 use App\Http\Controllers\CargaInventarioController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorConfController;
@@ -1717,6 +1718,15 @@ Route::controller(RegistroChequeController::class)->group(function () {
     Route::delete('registro_cheque/{id}', 'destroy')->name('registro_cheque.destroy');
     Route::get('registro_cheque/{todos}/{id_empresa}/{estado}/{fec_inicio}/{fec_fin}/{tipo_fecha}/excel', 'excel')->name('registro_cheque.excel');
 });
+//RECURSOS HUMANOS - CAP
+Route::controller(CapController::class)->group(function () {
+    Route::get('cap', 'index')->name('cap');
+    Route::get('cap_reg', 'index_reg')->name('cap_reg');
+    Route::post('cap_reg/list', 'list_reg')->name('cap_reg.list');
+    Route::post('cap_reg', 'store_reg')->name('cap_reg.store');
+    Route::get('cap_ges', 'index_ges')->name('cap_ges');
+    Route::post('cap_ges/list', 'list_ges')->name('cap_ges.list');
+});
 
 
 
@@ -2092,38 +2102,24 @@ Route::controller(ReclutamientoController::class)->group(function () {
     Route::get('Reclutamiento/Excel_Reclutamiento/{id_user}/{p}', 'Excel_Reclutamiento');
 });
 
+use App\Http\Controllers\TareasController;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Route::controller(TareasController::class)->group(function () {
+    Route::get('Tareas/index', 'Gestion_Pendiente');
+    // Route::post('Tareas/Buscador_Tareas', 'Buscador_Tareas');
+    // Route::get('Tareas/Modal_Tareas', 'Modal_Tareas');
+    // Route::post('Tareas/Buscar_Puesto_Area/{id_area}/{t}', 'Buscar_Puesto_Area');
+    // Route::post('Tareas/Insert_Tareas', 'Insert_Tareas');
+    // Route::get('Tareas/Modal_Update_Tareas/{id}', 'Modal_Update_Tareas');
+    // Route::post('Tareas/Insert_Tareas_Reclutado', 'Insert_Tareas_Reclutado');
+    // Route::post('Tareas/List_Tareas_Reclutado', 'List_Tareas_Reclutado');
+    // Route::post('Tareas/Delete_Reclutado', 'Delete_Reclutado');
+    // Route::post('Tareas/Update_Tareas', 'Update_Tareas');
+    // Route::post('Tareas/Delete_Tareas', 'Delete_Tareas');
+    // Route::get('Tareas/Modal_Tareas_Reclutado/{id}', 'Modal_Tareas_Reclutado');
+    // Route::post('Tareas/Delete_Tareas_Detalle', 'Delete_Tareas_Detalle');
+    // Route::get('Tareas/Excel_Tareas/{id_user}/{p}', 'Excel_Tareas');
+});
 
 
 

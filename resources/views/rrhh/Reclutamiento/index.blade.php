@@ -46,7 +46,7 @@ $id_puesto=session('usuario')->id_puesto;
                                                     <?php } ?>
                                                     </select>
                                                 </div>
-                                                <div class="col-md-1" style="display:<?php if($id_nivel==1 || $id_nivel==2){echo "block";}else{echo "none";}?>">
+                                                <div class="col-md-2" style="display:<?php if($id_nivel==1 || $id_nivel==2){echo "block";}else{echo "none";}?>">
                                                     <label for="">&nbsp;&nbsp;</label>
                                                     <button type="button" class="form-control btn btn-primary mb-2 mr-2" title="Registrar" onclick="Buscador_Reclutamiento('1');" >
                                                         Buscar

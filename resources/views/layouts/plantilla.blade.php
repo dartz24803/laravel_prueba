@@ -196,7 +196,7 @@
             </div>
         </div>
     </div>
-    
+
     <div id="ModalDetail" data-backdrop="static" data-keyboard="false" class="modal animated fadeInRight custo-fadeInRight bd-example-modal-lg scrollpagina" tabindex="-1" role="dialog" aria-labelledby="ModalDetail" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -603,6 +603,24 @@
                             </div>
                         </a>
                     </li>
+
+                    <?php if (
+                        session('usuario')->nivel_jerarquico != 9 || session('usuario')->id_puesto == 31 || session('usuario')->id_puesto == 32
+                        || session('usuario')->id_puesto == 35
+                    ) { ?>
+                        <li class="menu" id="tareas_adm">
+                            <a href="{{ url('Tareas/index') }}" id="hgpendientes" class="dropdown-toggle" data-toggle="tooltip" data-placement="right" data-html="true" title="• Mis tareas<br>• Tareas solicitadas">
+                                <div class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                    </svg>
+                                    <span id="icono_active"></span>
+                                    <span> Tareas</span>
+                                </div>
+                            </a>
+                        </li>
+                    <?php } ?>
 
                     @yield('navbar')
                 </ul>
