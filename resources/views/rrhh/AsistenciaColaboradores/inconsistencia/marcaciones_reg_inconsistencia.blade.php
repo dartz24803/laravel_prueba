@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h5 class="modal-title"><b>Crear Marca</b></h5>
+    <h5 class="modal-title"><b>Crear Marca11</b></h5>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -71,6 +71,62 @@
 </div>
 
 <script>
+    function Insert_Reg_Marcacion_Inconsistencia() {
+        Cargando();
+        var marcacion = $('#hora_marcacion_nr').val();
+        var obs_marcacion = ''; //$('#obs_marcacion').val();
+        var id_asistencia_inconsistencia = $('#id_asistencia_inconsistencia_nr').val();
+        var tipo_marcacion = $('#tipo_marcacion_nr').val();
+
+        var url = "{{ route('inconsistencias_colaborador.insert') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+
+        if (Valida_Insert_Reg_Marcacion_Inconsistencia('')) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    'marcacion': marcacion,
+                    'id_asistencia_inconsistencia': id_asistencia_inconsistencia,
+                    'obs_marcacion': obs_marcacion,
+                    'tipo_marcacion': tipo_marcacion
+                },
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function() {
+                    $("#ModalUpdate .close").click();
+                    Buscar_Asistencia_Colaborador_Inconsistencia();
+                }
+            });
+        } else {
+            alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+    function Valida_Insert_Reg_Marcacion_Inconsistencia() {
+
+        if ($('#hora_marcacion_nr').val().trim() === '') {
+            msgDate = 'Debe ingresar Marcación';
+            inputFocus = '#hora_marcacion_nr';
+            return false;
+        }
+        if ($('#hora_marcacion_nr').val() < $('#hora_min').val() ||
+            $('#hora_marcacion_nr').val() > $('#hora_max').val()) {
+            msgDate = 'La marca debe establecerse entre ' + $('#hora_min').val() + ' y ' + $('#hora_max').val();
+            inputFocus = '#hora_marcacion_nr';
+            return false;
+        }
+        return true;
+    }
     $('.basice').select2({
         dropdownParent: $('#ModalUpdate')
     });

@@ -586,51 +586,53 @@ class AsistenciaColaborador extends Model
 
     public static function get_list_dotacion($fecha)
     {
-        $sql = "SELECT CASE WHEN us.centro_labores LIKE 'B%' THEN CONCAT('ZZZ',us.centro_labores) 
-                ELSE us.centro_labores END AS orden,us.centro_labores,COUNT(1) AS dotacion,
-                (SELECT COUNT(DISTINCT bi.emp_code) 
-                FROM zkbiotime.iclock_transaction bi
-                WHERE DATE(bi.punch_time)='$fecha' AND bi.emp_code IN 
-                (SELECT ub.num_doc FROM users ub
-                LEFT JOIN horario_dia hi ON ub.id_horario=hi.id_horario AND hi.estado=1
-                WHERE (WEEKDAY('$fecha')+1)=hi.dia AND ub.centro_labores=us.centro_labores AND 
-                hi.id_turno>0 AND ub.estado=1)) AS presentes,
-                COUNT(0)-(SELECT COUNT(DISTINCT bi.emp_code) 
-                FROM zkbiotime.iclock_transaction bi
-                WHERE DATE(bi.punch_time)='$fecha' AND bi.emp_code IN 
-                (SELECT ub.num_doc FROM users ub
-                LEFT JOIN horario_dia hi ON ub.id_horario=hi.id_horario AND hi.estado=1
-                WHERE (WEEKDAY('$fecha')+1)=hi.dia AND ub.centro_labores=us.centro_labores AND 
-                hi.id_turno>0 AND ub.estado=1)) AS ausentes,
-                CONCAT(ROUND((SELECT COUNT(DISTINCT bi.emp_code) 
-                FROM zkbiotime.iclock_transaction bi
-                WHERE DATE(bi.punch_time)='$fecha' AND bi.emp_code IN 
-                (SELECT ub.num_doc FROM users ub
-                LEFT JOIN horario_dia hi ON ub.id_horario=hi.id_horario AND hi.estado=1
-                WHERE (WEEKDAY('$fecha')+1)=hi.dia AND ub.centro_labores=us.centro_labores AND 
-                hi.id_turno>0 AND ub.estado=1))*100/COUNT(0),1),'%') AS porcentaje_asistencia,
-                (SELECT DATE_FORMAT(MIN(bi.punch_time),'%H:%i')
-                FROM zkbiotime.iclock_transaction bi
-                WHERE DATE(bi.punch_time)='$fecha' AND bi.emp_code IN 
-                (SELECT ub.num_doc FROM users ub
-                LEFT JOIN horario_dia hi ON ub.id_horario=hi.id_horario AND hi.estado=1
-                WHERE (WEEKDAY('$fecha')+1)=hi.dia AND ub.centro_labores=us.centro_labores AND 
-                hi.id_turno>0 AND ub.estado=1)) AS hora_apertura,
-                CASE WHEN COUNT(0)=(SELECT COUNT(DISTINCT bi.emp_code) 
-                FROM zkbiotime.iclock_transaction bi
-                WHERE DATE(bi.punch_time)='$fecha' AND bi.emp_code IN 
-                (SELECT ub.num_doc FROM users ub
-                LEFT JOIN horario_dia hi ON ub.id_horario=hi.id_horario AND hi.estado=1
-                WHERE (WEEKDAY('$fecha')+1)=hi.dia AND ub.centro_labores=us.centro_labores AND 
-                hi.id_turno>0 AND ub.estado=1)) THEN 'Todos marcaron' ELSE 'Faltan marcas' END AS nom_estado
-                FROM users us 
-                LEFT JOIN horario_dia hd ON us.id_horario=hd.id_horario AND hd.estado=1
-                WHERE (WEEKDAY('$fecha')+1)=hd.dia AND hd.id_turno>0 AND us.estado=1
-                GROUP BY us.centro_labores
-                ORDER BY orden ASC";
-        $query = DB::select($sql);
+        $sql = "SELECT 
+                    CASE 
+                        WHEN COALESCE(us.centro_labores, '1') LIKE 'B%' THEN CONCAT('ZZZ', COALESCE(us.centro_labores, '1')) 
+                        ELSE COALESCE(us.centro_labores, '1') 
+                    END AS orden,
+                    COALESCE(us.centro_labores, '1') AS centro_labores,
+                    COUNT(*) AS dotacion,
+                    COUNT(DISTINCT presentes.emp_code) AS presentes,
+                    COUNT(*) - COUNT(DISTINCT presentes.emp_code) AS ausentes,
+                    CONCAT(ROUND((COUNT(DISTINCT presentes.emp_code) * 100 / COUNT(*)), 1), '%') AS porcentaje_asistencia,
+                    MIN(presentes.punch_time_formatted) AS hora_apertura,
+                    CASE 
+                        WHEN COUNT(*) = COUNT(DISTINCT presentes.emp_code) THEN 'Todos marcaron' 
+                        ELSE 'Faltan marcas' 
+                    END AS nom_estado
+                FROM 
+                    users us
+                LEFT JOIN horario_dia hd 
+                    ON us.id_horario = hd.id_horario 
+                    AND hd.estado = 1
+                    AND (WEEKDAY(?) + 1) = hd.dia
+                    AND hd.id_turno > 0
+                LEFT JOIN (
+                    SELECT 
+                        bi.emp_code,
+                        DATE_FORMAT(MIN(bi.punch_time), '%H:%i') AS punch_time_formatted
+                    FROM 
+                        zkbiotime.iclock_transaction bi
+                    WHERE 
+                        DATE(bi.punch_time) = ?
+                    GROUP BY 
+                        bi.emp_code
+                ) AS presentes 
+                    ON presentes.emp_code = us.num_doc
+                WHERE 
+                    us.estado = 1
+                GROUP BY 
+                    orden, centro_labores
+                ORDER BY 
+                    orden ASC;
+                ";
+
+        $query = DB::select($sql, [$fecha, $fecha]);
         return $query;
     }
+
+
 
 
 
@@ -1260,5 +1262,138 @@ class AsistenciaColaborador extends Model
         $sql = "UPDATE asistencia_colaborador_marcaciones SET estado='2',id_asistencia_colaborador='" . $dato['id_asistencia_colaborador'] . "',user_eli='$id_usuario',fec_eli=NOW() 
         WHERE id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "';";
         DB::statement($sql);
+    }
+
+    public static function get_list_asistencia_colaborador($id_asistencia_colaborador = null, $dato)
+    {
+        $anio = date('Y');
+        if (isset($id_asistencia_colaborador) && $id_asistencia_colaborador > 0) {
+            $sql = "SELECT * FROM asistencia_colaborador
+                    WHERE id_asistencia_colaborador=$id_asistencia_colaborador";
+        } else {
+            $fecha = "ac.fecha='" . $dato['dia'] . "' AND";
+            if ($dato['tipo_fecha'] == "2") {
+                $fecha = "MONTH(ac.fecha)='" . $dato['mes'] . "' AND YEAR(ac.fecha)='$anio' AND";
+            }
+            $base = "";
+            if ($dato['base'] != "0") {
+                $base = "ac.centro_labores='" . $dato['base'] . "' AND";
+            }
+            $area = "";
+            if ($dato['area'] != "0") {
+                $area = "ac.id_area='" . $dato['area'] . "' AND";
+            }
+            $usuario = "";
+            if ($dato['usuario'] != "0") {
+                $usuario = "ac.id_usuario='" . $dato['usuario'] . "' AND";
+            }
+
+            $sql = "SELECT ac.id_asistencia_colaborador,
+                    CONCAT(CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(us.usuario_nombres,' ',1),1,1)),
+                    LOWER(SUBSTRING(SUBSTRING_INDEX(us.usuario_nombres,' ',1),2))),' ',
+                    CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(us.usuario_apater,' ',1),1,1)),
+                    LOWER(SUBSTRING(SUBSTRING_INDEX(us.usuario_apater,' ',1),2)))) AS colaborador,
+                    us.num_doc,ac.centro_labores,DATE_FORMAT(ac.fecha,'%d/%m/%Y') AS fecha,
+                    CASE WHEN ac.con_descanso=1 THEN CONCAT(DATE_FORMAT(ac.hora_entrada,'%H:%i'),' - ',
+                    DATE_FORMAT(ac.hora_salida,'%H:%i'),' (',DATE_FORMAT(ac.hora_descanso_e,'%H:%i'),' - ',
+                    DATE_FORMAT(ac.hora_descanso_s,'%H:%i'),')') ELSE CONCAT(DATE_FORMAT(ac.hora_entrada,'%H:%i'),' - ',
+                    DATE_FORMAT(ac.hora_salida,'%H:%i')) END AS turno,
+                    CASE WHEN ac.estado_registro IN (1,2) THEN DATE_FORMAT(ac.marcacion_entrada,'%H:%i') 
+                    ELSE '-' END AS marcacion_entrada,
+                    CASE WHEN ac.estado_registro in (1,2) THEN (CASE WHEN ac.con_descanso=1 THEN 
+                    DATE_FORMAT(ac.marcacion_idescanso,'%H:%i') ELSE '-' END) ELSE '-' END AS marcacion_idescanso,
+                    CASE WHEN ac.estado_registro in (1,2) THEN (CASE WHEN ac.con_descanso=1 THEN 
+                    DATE_FORMAT(ac.marcacion_fdescanso,'%H:%i') ELSE '-' END) ELSE '-' END AS marcacion_fdescanso,
+                    CASE WHEN ac.estado_registro in (1,2) THEN DATE_FORMAT(ac.marcacion_salida,'%H:%i') 
+                    ELSE '-' END AS marcacion_salida,
+                    CASE WHEN ac.estado_registro='1' THEN '#5cb85c' WHEN ac.estado_registro='2' THEN '#f0ad4e'
+                    WHEN ac.estado_registro='3' THEN '#d9534f' WHEN ac.estado_registro='4' THEN '#5bc0de'
+                    WHEN ac.estado_registro='8' THEN '#292b2c' WHEN ac.estado_registro='7' THEN '#59287a'
+                    WHEN ac.estado_registro='9' THEN '#0275d8' WHEN ac.estado_registro='10' THEN '#6c757d'
+                    WHEN ac.estado_registro='11' THEN '#a76d46' END AS bandage,ea.nom_estado,
+                    us.usuario_nombres,us.usuario_apater,us.usuario_amater,ac.flag_diatrabajado
+                    FROM asistencia_colaborador ac
+                    LEFT JOIN users us ON ac.id_usuario=us.id_usuario
+                    LEFT JOIN estado_asistencia ea ON ac.estado_registro=ea.id_estado_asistencia
+                    WHERE $fecha $base $area $usuario ac.estado=1";
+        }
+        $query = DB::select($sql);
+        // return $query;
+        return json_decode(json_encode($query), true);
+    }
+
+    public static function update_asistencia_colaborador_dia_trabajado($dato)
+    {
+        $sql = "UPDATE asistencia_colaborador SET flag_diatrabajado = :flag_diatrabajado
+                WHERE id_asistencia_colaborador = :id_asistencia_colaborador";
+
+        DB::statement($sql, [
+            'flag_diatrabajado' => $dato['flag_diatrabajado'],
+            'id_asistencia_colaborador' => $dato['id_asistencia_colaborador']
+        ]);
+    }
+
+
+    public static function get_list_dotacion_marcaciones($dato)
+    {
+        $sql = "SELECT us.num_doc AS dni,
+                    LOWER(CONCAT(SUBSTRING_INDEX(us.usuario_nombres, ' ', 1), ' ', us.usuario_apater)) AS colaborador,
+                    LOWER(pu.nom_puesto) AS puesto,
+                    us.num_celp AS celular,
+                    DATE_FORMAT(MIN(bi.punch_time), '%H:%i') AS marcacion
+                FROM zkbiotime.iclock_transaction bi
+                LEFT JOIN users us ON bi.emp_code = us.num_doc
+                LEFT JOIN horario_dia hd ON us.id_horario = hd.id_horario AND hd.estado = 1
+                LEFT JOIN puesto pu ON us.id_puesto = pu.id_puesto
+                WHERE DATE(bi.punch_time) = '" . $dato['fecha'] . "'
+                  AND (WEEKDAY('" . $dato['fecha'] . "') + 1) = hd.dia
+                  AND hd.id_turno > 0
+                  AND us.centro_labores = '" . $dato['centro_labores'] . "'
+                  AND us.estado = 1
+                GROUP BY us.num_doc, us.usuario_nombres, us.usuario_apater, pu.nom_puesto, us.num_celp";
+
+        $query = DB::select($sql);
+        return json_decode(json_encode($query), true);
+    }
+
+
+
+
+    public static function get_list_dotacion_ausentes($dato)
+    {
+        $sql = "SELECT us.num_doc AS dni,
+                    LOWER(CONCAT(SUBSTRING_INDEX(us.usuario_nombres, ' ', 1), ' ', us.usuario_apater)) AS colaborador,
+                    LOWER(pu.nom_puesto) AS puesto,
+                    us.num_celp AS celular
+            FROM users us
+            LEFT JOIN horario_dia hd ON us.id_horario = hd.id_horario AND hd.estado = 1
+            LEFT JOIN puesto pu ON us.id_puesto = pu.id_puesto
+            WHERE (WEEKDAY('" . $dato['fecha'] . "') + 1) = hd.dia
+              AND hd.id_turno > 0
+              AND us.centro_labores = '" . $dato['centro_labores'] . "'
+              AND us.estado = 1
+              AND us.num_doc NOT IN (
+                  SELECT us.num_doc
+                  FROM zkbiotime.iclock_transaction bi
+                  LEFT JOIN users us ON bi.emp_code = us.num_doc
+                  LEFT JOIN horario_dia hd ON us.id_horario = hd.id_horario AND hd.estado = 1
+                  WHERE DATE(bi.punch_time) = '" . $dato['fecha'] . "'
+                    AND (WEEKDAY('" . $dato['fecha'] . "') + 1) = hd.dia
+                    AND hd.id_turno > 0
+                    AND us.centro_labores = '" . $dato['centro_labores'] . "'
+                    AND us.estado = 1
+                  GROUP BY us.id_usuario,us.num_doc
+              )
+            GROUP BY us.num_doc, 
+                     us.usuario_nombres, 
+                     us.usuario_apater, 
+                     pu.nom_puesto, 
+                     us.num_celp";
+
+        // Ejecutar la consulta
+        $query = DB::select($sql);
+
+        // Convertir el resultado a un array
+        return json_decode(json_encode($query), true);
     }
 }
