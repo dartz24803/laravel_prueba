@@ -146,7 +146,7 @@
         }
         ?>
         <li id="papeletas">
-            <a id="hpapeletas" href="{{ url('Papeletas/Lista_Papeletas_Salida_seguridad') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Registro <?= $hpapeletas2 ?> <?= $hpapeletas3 ?>">
+            <a id="hpapeletas" href="{{ url('Papeletas/Lista_Papeletas_Salida_seguridad') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="<?= $hpapeletas2 ?> <?= $hpapeletas3 ?>">
                 <p class="romperpalabra"><span id="icono_active2"></span> Papeletas de Salida</p>
             </a>
         </li>
@@ -167,7 +167,7 @@
         </li>
         @endif
 
-        <?php if ( //MI EQUIPO  
+        <?php if ( //MI EQUIPO
             session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 16 || session('usuario')->id_puesto == 20 || session('usuario')->id_puesto == 26 ||
             session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 98 || session('usuario')->id_puesto == 128 ||
             session('usuario')->id_puesto == 31 || session('usuario')->id_puesto == 30 ||

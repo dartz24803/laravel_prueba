@@ -144,7 +144,7 @@ class SolicitudesUser extends Model
                 and fec_solicitud BETWEEN '".$fecha_revision."' AND '".$fecha_revision_fin."'
                 order by su.fec_reg DESC";
 
-        
+
         $result = DB::select($sql);
 
         // Convertir el resultado a un array
@@ -221,7 +221,10 @@ class SolicitudesUser extends Model
                     CASE WHEN su.id_motivo IN (1,2) AND su.id_solicitudes_user > 7 THEN tr.nom_tramite ELSE su.tramite END AS tramite
                 FROM solicitudes_user su
                 LEFT JOIN users u ON su.id_usuario = u.id_usuario
-                LEFT JOIN area a ON u.id_area = a.id_area
+                LEFT JOIN puesto p ON u.id_puesto = p.id_puesto
+                LEFT JOIN area a on a.id_area=p.id_area
+                LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
                 LEFT JOIN destino de ON de.id_destino = su.destino
                 LEFT JOIN tramite tr ON tr.id_tramite = su.tramite
                 WHERE su.estado IN (1, 3) $gerencia $area $puesto $motivo $solicitud $buscar $fecha_filter
