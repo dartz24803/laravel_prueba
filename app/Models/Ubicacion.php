@@ -48,7 +48,7 @@ class Ubicacion extends Model
     public static function get_list_ubicacion_tienda()
     {
         $sql = "SELECT id_ubicacion,cod_ubi FROM ubicacion
-                WHERE id_ubicacion IN (3,4,5,6,7,8,9,10,11,12,15,16,18,19)
+                WHERE id_ubicacion IN (SELECT id_centro_labor FROM vw_tienda_activa)
                 ORDER BY cod_ubi ASC";
         $query = DB::select($sql);
         return $query;

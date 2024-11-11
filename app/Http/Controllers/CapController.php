@@ -35,11 +35,11 @@ class CapController extends Controller
 
     public function list_reg(Request $request)
     {
-        $list_puesto = DB::select('CALL lista_cap (?, ?)', [
+        $list_cap = DB::select('CALL lista_cap (?, ?)', [
             $request->id_ubicacion, 
             $request->fecha
         ]);
-        return view('rrhh.cap.registro.lista', compact('list_puesto'));
+        return view('rrhh.cap.registro.lista', compact('list_cap'));
     }
 
     public function store_reg(Request $request)
@@ -96,10 +96,14 @@ class CapController extends Controller
 
     public function list_ges(Request $request)
     {
-        $list_puesto = DB::select('CALL lista_cap (?, ?)', [
-            $request->id_ubicacion, 
-            $request->fecha
+        $dias = cal_days_in_month(CAL_GREGORIAN, $request->mes, $request->anio);
+        $mes = $request->mes;
+        $anio = $request->anio;
+        $list_gestion = DB::select('CALL lista_gestion_cap  (?, ?, ?)', [
+            $dias,
+            $mes, 
+            $anio
         ]);
-        return view('rrhh.cap.gestion.lista', compact('list_puesto'));
+        return view('rrhh.cap.gestion.lista', compact('list_gestion','mes','anio'));
     }
 }
