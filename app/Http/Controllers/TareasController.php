@@ -2,22 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Base;
 use App\Models\Notificacion;
 use App\Models\Pendiente;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class TareasController extends Controller
 {
-    protected $request;
+    protected $input;
     protected $modelo;
+    protected $modelobase;
+    // protected $modeloarea;
 
     public function __construct(Request $request){
         //constructor con variables
         $this->middleware('verificar.sesion.usuario');
-        $this->request = $request;
+        $this->input = $request;
         $this->modelo = new Pendiente();
-        // $this->modelodiasemana = new DiaSemana();
-        // $this->modelopuestos = new Puesto();
+        $this->modelobase = new Base();
+        // $this->modeloarea = new Area();
         // $this->modeloccvh = new CuadroControlVisualHorario();
         // $this->modelousuarios = new Usuario();
     }
@@ -25,24 +34,18 @@ class TareasController extends Controller
     public function Gestion_Pendiente(){
             //NOTIFICACIÓN-NO BORRAR
             $dato['list_notificacion'] = Notificacion::get_list_notificacion();
-            return view('Gestion_Pendiente/index',$dato);
+            return view('Gestion_Pendiente.index',$dato);
     }
-/*
+
     public function Cargar_Mis_Tareas(){
-        if ($this->session->userdata('usuario')) {
-            $dato['list_area'] = $this->Model_Corporacion->get_list_area_pendiente();
-            $dato['list_base'] = $this->Model_Corporacion->get_list_base_gestion_pendiente();
-            $dato['get_id_resp'] = $this->Model_Corporacion->get_id_responsable_gestion_pendiente();
-            $dato['list_responsable'] = $this->Model_Corporacion->get_list_responsable_gestion_pendiente($dato);
-            $this->load->view('Gestion_Pendiente/mis_tareas',$dato);
-        }
-        else{
-            redirect('');
-        }
+            $dato['list_area'] = $this->modelo->get_list_area_pendiente();
+            $dato['list_base'] = json_decode(json_encode($this->modelobase->get_list_todas_bases_agrupadas()), true);
+            $dato['get_id_resp'] = $this->modelo->get_id_responsable_gestion_pendiente();
+            $dato['list_responsable'] = $this->modelo->get_list_responsable_gestion_pendiente($dato);
+            return view('Gestion_Pendiente.mis_tareas',$dato);
     }
 
     public function Lista_Mis_Tareas(){
-        if ($this->session->userdata('usuario')) {
             $dato['id_area']= $this->input->post("id_area");
             $dato['base']= $this->input->post("base");
             $dato['cpiniciar']= $this->input->post("cpiniciar");
@@ -52,13 +55,10 @@ class TareasController extends Controller
             $dato['mis_tareas']= $this->input->post("mis_tareas");
             $dato['mi_equipo']= $this->input->post("mi_equipo");
             $dato['responsablei']= $this->input->post("responsablei");
-            $dato['list_gestion_pendiente'] = $this->Model_Corporacion->get_list_gestion_pendiente($dato);
-            $this->load->view('Gestion_Pendiente/lista_pendientes',$dato);
-        }else{
-            redirect('');
-        }
+            $dato['list_gestion_pendiente'] = $this->modelo->get_list_gestion_pendiente($dato);
+            return view('Gestion_Pendiente.lista_pendientes',$dato);
     }
-
+/*
     public function Modal_Update_Gestion_Pendiente($id_pendiente){
         if ($this->session->userdata('usuario')) {
             $dato['get_id'] = $this->Model_Corporacion->get_list_pendiente($id_pendiente);
@@ -312,7 +312,7 @@ class TareasController extends Controller
             redirect('');
         }
     }
-
+*/
     public function Excel_Gestion_Pendiente($id_area=null,$base=null,$cpiniciar,$cproceso,$cfinalizado,$cstandby,$mis_tareas,$mi_equipo,$responsablei){
         $dato['id_area']= $id_area;
         $dato['base']= $base;
@@ -323,7 +323,7 @@ class TareasController extends Controller
         $dato['mis_tareas']= $mis_tareas;
         $dato['mi_equipo']= $mi_equipo;
         $dato['responsablei']= $responsablei;
-        $list_gestion_pendiente = $this->Model_Corporacion->get_list_gestion_pendiente($dato);
+        $list_gestion_pendiente = $this->modelo->get_list_gestion_pendiente($dato);
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -414,7 +414,7 @@ class TareasController extends Controller
         header('Cache-Control: max-age=0');
         $writer->save('php://output');
     }
-
+/*
     public function Cargar_Tareas_Solicitadas(){
         if ($this->session->userdata('usuario')) {
             $dato['list_area'] = $this->Model_Corporacion->get_list_area_pendiente();

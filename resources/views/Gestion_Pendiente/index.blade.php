@@ -1,12 +1,8 @@
 @extends('layouts.plantilla')
 
-@section('navbar')
-@include('finanzas.navbar')
-@endsection
-
 @section('content')
 <?php
-    $id_nivel=$_SESSION['usuario'][0]['id_nivel'];
+    $id_nivel=session('usuario')->id_nivel;
 ?>
 
 <div id="content" class="main-content">
@@ -22,16 +18,11 @@
                             <li class="nav-item">
                                 <a id="a_ts" class="nav-link" onclick="Tareas_Solicitadas();" style="cursor: pointer;">Tareas solicitadas</a>
                             </li>
-                            <?php if($id_nivel==1){ ?>
-                                <li class="nav-item">
-                                    <a id="a_pt" class="nav-link" onclick="Programador_Tareas();" style="cursor: pointer;">Programador de Tareas</a>
-                                </li>
-                            <?php } ?>
                         </ul>
 
                         <div class="row" id="cancel-row">
-                            <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
-                                <div id="div_tarea" class="widget-content widget-content-area">
+                            <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing p-3">
+                                <div id="div_tarea" class="widget-content">
                                 </div>
                             </div>
                         </div>
@@ -44,7 +35,7 @@
 
 <script>
     $(document).ready(function() {
-        $("#gpendientes").addClass('active');
+        $("#tareas_adm").addClass('active');
         $("#hgpendientes").attr('aria-expanded','true');
 
         Mis_Tareas();
@@ -53,11 +44,11 @@
     function Mis_Tareas(){
         Cargando();
 
-        var url="<?php echo site_url(); ?>Corporacion/Cargar_Mis_Tareas";
+        var url="{{ url('Tareas/Cargar_Mis_Tareas') }}";
 
         $.ajax({
             url: url,
-            type:"POST",
+            type:"GET",
             success:function (resp) {
                 $('#div_tarea').html(resp);
                 $("#a_mt").addClass('active');
@@ -70,33 +61,16 @@
     function Tareas_Solicitadas(){
         Cargando();
 
-        var url="<?php echo site_url(); ?>Corporacion/Cargar_Tareas_Solicitadas";
+        var url="{{ url('Tareas/Cargar_Tareas_Solicitadas') }}";
 
         $.ajax({
             url: url,
-            type:"POST",
+            type:"GET",
             success:function (resp) {
                 $('#div_tarea').html(resp);
                 $("#a_mt").removeClass('active');
                 $("#a_ts").addClass('active');
                 $("#a_pt").removeClass('active');
-            }
-        });
-    }
-
-    function Programador_Tareas(){
-        Cargando();
-
-        var url="<?php echo site_url(); ?>Corporacion/Cargar_Programador_Tareas";
-
-        $.ajax({
-            url: url,
-            type:"POST",
-            success:function (resp) {
-                $('#div_tarea').html(resp);
-                $("#a_mt").removeClass('active');
-                $("#a_ts").removeClass('active');
-                $("#a_pt").addClass('active');
             }
         });
     }

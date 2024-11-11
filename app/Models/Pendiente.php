@@ -62,8 +62,8 @@ class Pendiente extends Model
 
 
     static function get_list_gestion_pendiente($dato){
-        $id_usuario= $_SESSION['usuario'][0]['id_usuario'];
-        $id_areap= $_SESSION['usuario'][0]['id_area'];
+        $id_usuario= session('usuario')->id_usuario;
+        $id_areap= session('usuario')->id_area;
 
         $cadena="";
 
@@ -170,6 +170,50 @@ class Pendiente extends Model
                     WHERE pe.estado!=5 $filtro $partebase $estado
                     ORDER BY pe.fec_reg DESC";
         }
+        $query = DB::select($sql);
+        return json_decode(json_encode($query), true);
+    }
+
+    static function get_id_responsable_gestion_pendiente(){
+        $sql="SELECT COALESCE(group_concat(distinct id_responsable), '0') as responsable
+        FROM pendiente WHERE estado !=4";
+        $query = DB::select($sql);
+        return json_decode(json_encode($query), true);
+    }
+
+    static function get_list_responsable_gestion_pendiente($dato){
+        $sql="SELECT id_usuario,usuario_apater,usuario_amater,usuario_nombres
+        FROM users WHERE id_usuario in (".$dato['get_id_resp'][0]['responsable'].")";
+
+        $query = DB::select($sql);
+        return json_decode(json_encode($query), true);
+    }
+
+    static function get_list_area_pendiente(){
+        if (strpos(session('usuario')->centro_labores, 'B') === 0) {
+            $sql = "SELECT * FROM area
+                    WHERE estado=1
+                    AND (nom_area LIKE 'SEGURIDAD%'
+                    OR nom_area LIKE 'RECLUTAMIENTO%'
+                    OR nom_area LIKE 'TECNOLOGÍA%'
+                    OR nom_area LIKE 'SOPORTE%'
+                    OR nom_area LIKE 'COMERCIAL%'
+                    OR nom_area LIKE 'MARKETING%'
+                    OR nom_area LIKE 'VISUAL%'
+                    OR nom_area LIKE 'LOGÍSTICA%'
+                    OR nom_area LIKE 'CAJA%'
+                    OR nom_area LIKE 'LEGAL%'
+                    OR nom_area LIKE 'MANTENIMIENTO%'
+                    OR nom_area LIKE 'CONTABILIDAD%')
+                    ORDER BY nom_area ASC";
+        }else{
+            $sql = "SELECT * FROM area
+                    WHERE estado=1
+                    AND nom_area NOT LIKE 'DTO%'
+                    AND nom_area NOT LIKE 'GERENCIA%'
+                    ORDER BY nom_area ASC";
+        }
+
         $query = DB::select($sql);
         return json_decode(json_encode($query), true);
     }
