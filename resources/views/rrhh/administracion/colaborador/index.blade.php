@@ -125,6 +125,9 @@
                                     <a class="nav-link" style="cursor: pointer;" id="ToleranciaHorario" onclick="ToleranciaHorario()">Tolerancia Horario</a>
                                 </li>
                                 <li>
+                                    <a class="nav-link" style="cursor: pointer;" id="AsistenciaManual" onclick="AsistenciaManual()">Asistencia Manual</a>
+                                </li>
+                                <li>
                                     <a class="nav-link" style="cursor: pointer" id="Modalidad_Laboral" onclick="TablaModalidad_Laboral()">Modalidad Laboral</a>
                                 </li>
                                 @endif
@@ -192,6 +195,7 @@
         $("#a_ca").removeClass('active');
         $("#a_or").removeClass('active');
         $("#ToleranciaHorario").removeClass('active');
+        $("#AsistenciaManual").removeClass('active');
 
 
     }
@@ -856,7 +860,7 @@
     function ToleranciaHorario() {
         Active_Tabla_Colaboradores();
         $("#ToleranciaHorario").addClass('active');
-
+        // k
         var url = "{{ url('ToleranciaHorario/list') }}";
         var csrfToken = $('input[name="_token"]').val();
 
@@ -872,6 +876,27 @@
             }
         });
     }
+
+
+    function AsistenciaManual() {
+        Active_Tabla_Colaboradores();
+        $("#AsistenciaManual").addClass('active');
+        // k
+        var url = "{{ url('AsistenciaManual/list') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(resp) {
+                $('#div_colaborador_conf').html(resp);
+            }
+        });
+    }
+
 
     function TablaModalidad_Laboral() {
         Active_Tabla_Colaboradores();

@@ -12,7 +12,7 @@
         </div>
     </div>
 
-    <div class="form-group col-md-2">
+    <div class="form-group col-md-3">
         <label for="" class="control-label text-bold">Área&nbsp;</label>
         <div>
             <select class="form-control" id="area_t" name="area_t" onchange="Traer_Colaborador_Tardanza(); Lista_Tardanza();">
@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <div class="form-group col-md-4">
+    <div class="form-group col-md-3">
         <label for="" class="control-label text-bold">Colaborador&nbsp;</label>
         <div>
             <select class="form-control basic" id="colaborador_t" name="colaborador_t" onchange="Lista_Tardanza();">
@@ -72,7 +72,7 @@
     </div>
 
 
-    <div class="form-group col-md-2">
+    <div class="form-group col-md-1">
         <label for="">&nbsp;</label>
         <div>
             <button type="button" class="btn btn-primary" onclick="Lista_Tardanza();">
@@ -102,6 +102,16 @@
 
 
 <script>
+    $('#colaborador_t').select2({
+        placeholder: 'Seleccione un Colaborador',
+        allowClear: true
+    });
+    $('#area_t').select2({
+        placeholder: 'Seleccione un Área',
+        allowClear: true
+    });
+
+
     function Lista_Tardanza() {
         Cargando();
 

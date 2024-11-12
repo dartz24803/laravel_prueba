@@ -12,7 +12,7 @@
         </div>
     </div>
 
-    <div class="form-group col-md-2">
+    <div class="form-group col-md-3">
         <label for="" class="control-label text-bold">Área</label>
         <div>
             <select class="form-control" id="areaih" name="areaih" onchange="Cmb_Colaboradorih()">
@@ -52,7 +52,7 @@
         </div>
     </div>
 
-    <div class="form-group col-md-3">
+    <div class="form-group col-md-2">
         <label for="">&nbsp;</label>
         <div id="div1h">
             <!-- Input for selecting the date -->
@@ -100,6 +100,16 @@
 </div>
 
 <script>
+    $('#usuarioih').select2({
+        placeholder: 'Seleccione un Colaborador',
+        allowClear: true
+    });
+    $('#areaih').select2({
+        placeholder: 'Seleccione un Área',
+        allowClear: true
+    });
+
+
     function Buscar_Asistencia_Colaborador_Inconsistencia() {
         Cargando();
 

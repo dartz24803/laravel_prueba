@@ -74,7 +74,7 @@
                             'Haga clic en el botón!',
                             'success'
                         ).then(function() {
-                            TablaToleranciaHorario();
+                            ToleranciaHorario();
                             $("#ModalUpdate .close").click();
                         });
                     }

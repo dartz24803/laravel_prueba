@@ -470,6 +470,7 @@ class AsistenciaColaborador extends Model
 
     public static function get_list_marcacion_colaborador_ausencia_2($id_asistencia_inconsistencia = null, $dato)
     {
+
         if (isset($id_asistencia_inconsistencia) && $id_asistencia_inconsistencia > 0) {
             // Si se pasa el id_asistencia_inconsistencia, se arma la consulta para un solo registro
             $sql = "SELECT a.id_asistencia_inconsistencia, a.id_usuario, a.centro_labores,
@@ -1069,7 +1070,20 @@ class AsistenciaColaborador extends Model
         where a.id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "' and a.estado=1 order by a.marcacion asc";
         $query = DB::select($sql);
         return $query;
+        // return json_decode(json_encode($query), true);
     }
+
+    public static function get_list_detalle_marcacion_inconsistencia_2($dato)
+    {
+        $sql = "SELECT a.id_asistencia_detalle,a.id_asistencia_inconsistencia,
+        a.marcacion,a.obs_marcacion,a.tipo_marcacion,a.visible
+        from asistencia_colaborador_marcaciones a 
+        where a.id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "' and a.estado=1 order by a.marcacion asc";
+        $query = DB::select($sql);
+        // return $query;
+        return json_decode(json_encode($query), true);
+    }
+
 
 
     public static function insert_asistencia_inconsistencia($dato)
@@ -1289,28 +1303,39 @@ class AsistenciaColaborador extends Model
     public static function update_turno_inconsistencia($dato, $minutos)
     {
         $id_usuario = session('usuario')->id_usuario;
-        $sql = "UPDATE asistencia_colaborador_inconsistencia SET con_descanso='" . $dato['con_descanso'] . "',
-        hora_entrada='" . $dato['entrada'] . "',hora_salida='" . $dato['salida'] . "',
-        hora_descanso_e='" . $dato['ini_refri'] . "',hora_descanso_s='" . $dato['fin_refri'] . "',
-        id_turno='" . $dato['id_turno'] . "',tipo_inconsistencia='0',
-        user_act='$id_usuario',fec_act=NOW() 
-        WHERE id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "';";
 
-        DB::statement($sql);
-
+        // Use ternary to set the value to NULL if it's null in the data
+        $hora_descanso_e = isset($dato['ini_refri']) ? "'" . $dato['ini_refri'] . "'" : 'NULL';
+        $hora_descanso_s = isset($dato['fin_refri']) ? "'" . $dato['fin_refri'] . "'" : 'NULL';
+        // First SQL statement to update main fields
         $sql = "UPDATE asistencia_colaborador_inconsistencia SET 
-                hora_entrada_desde=(DATE_FORMAT(DATE_SUB(hora_entrada,INTERVAL $minutos MINUTE), '%H:%i:%s')),
-                hora_entrada_hasta=(DATE_FORMAT(DATE_ADD(hora_entrada,INTERVAL $minutos MINUTE), '%H:%i:%s')),
-                hora_salida_desde=(DATE_FORMAT(DATE_SUB(hora_salida,INTERVAL $minutos MINUTE), '%H:%i:%s')),
-                hora_salida_hasta=(DATE_FORMAT(DATE_ADD(hora_salida,INTERVAL $minutos MINUTE), '%H:%i:%s')),
-                hora_descanso_e_desde=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_SUB(hora_descanso_e,INTERVAL $minutos MINUTE), '%H:%i:%s')) end,
-                hora_descanso_e_hasta=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_ADD(hora_descanso_e,INTERVAL $minutos MINUTE), '%H:%i:%s')) end,
-                hora_descanso_s_desde=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_SUB(hora_descanso_s,INTERVAL $minutos MINUTE), '%H:%i:%s')) end,
-                hora_descanso_s_hasta=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_ADD(hora_descanso_s,INTERVAL $minutos MINUTE), '%H:%i:%s')) end,
-                fec_act=NOW() 
-                WHERE id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "'";
+        con_descanso='" . $dato['con_descanso'] . "',
+        hora_entrada='" . $dato['entrada'] . "',
+        hora_salida='" . $dato['salida'] . "',
+        hora_descanso_e=$hora_descanso_e,
+        hora_descanso_s=$hora_descanso_s,
+        id_turno='" . $dato['id_turno'] . "',
+        tipo_inconsistencia='0',
+        user_act='$id_usuario',
+        fec_act=NOW() 
+        WHERE id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "';";
+        DB::statement($sql);
+        // Second SQL statement to update calculated fields
+        $sql = "UPDATE asistencia_colaborador_inconsistencia SET 
+        hora_entrada_desde=(DATE_FORMAT(DATE_SUB(hora_entrada,INTERVAL $minutos MINUTE), '%H:%i:%s')),
+        hora_entrada_hasta=(DATE_FORMAT(DATE_ADD(hora_entrada,INTERVAL $minutos MINUTE), '%H:%i:%s')),
+        hora_salida_desde=(DATE_FORMAT(DATE_SUB(hora_salida,INTERVAL $minutos MINUTE), '%H:%i:%s')),
+        hora_salida_hasta=(DATE_FORMAT(DATE_ADD(hora_salida,INTERVAL $minutos MINUTE), '%H:%i:%s')),
+        hora_descanso_e_desde=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_SUB(hora_descanso_e,INTERVAL $minutos MINUTE), '%H:%i:%s')) END,
+        hora_descanso_e_hasta=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_ADD(hora_descanso_e,INTERVAL $minutos MINUTE), '%H:%i:%s')) END,
+        hora_descanso_s_desde=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_SUB(hora_descanso_s,INTERVAL $minutos MINUTE), '%H:%i:%s')) END,
+        hora_descanso_s_hasta=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_ADD(hora_descanso_s,INTERVAL $minutos MINUTE), '%H:%i:%s')) END,
+        fec_act=NOW() 
+        WHERE id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "'";
+
         DB::statement($sql);
     }
+
 
 
 
@@ -1620,18 +1645,35 @@ class AsistenciaColaborador extends Model
     public static function update_tolerancia_horario_cron($minutos)
     {
         $sql = "UPDATE horario_dia SET 
-                hora_entrada_desde=(DATE_FORMAT(DATE_SUB(hora_entrada,INTERVAL $minutos MINUTE), '%H:%i:%s')),
-                hora_entrada_hasta=(DATE_FORMAT(DATE_ADD(hora_entrada,INTERVAL $minutos MINUTE), '%H:%i:%s')),
-                hora_salida_desde=(DATE_FORMAT(DATE_SUB(hora_salida,INTERVAL $minutos MINUTE), '%H:%i:%s')),
-                hora_salida_hasta=(DATE_FORMAT(DATE_ADD(hora_salida,INTERVAL $minutos MINUTE), '%H:%i:%s')),
-                hora_descanso_e_desde=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_SUB(hora_descanso_e,INTERVAL $minutos MINUTE), '%H:%i:%s')) end,
-                hora_descanso_e_hasta=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_ADD(hora_descanso_e,INTERVAL $minutos MINUTE), '%H:%i:%s')) end,
-                hora_descanso_s_desde=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_SUB(hora_descanso_s,INTERVAL $minutos MINUTE), '%H:%i:%s')) end,
-                hora_descanso_s_hasta=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_ADD(hora_descanso_s,INTERVAL $minutos MINUTE), '%H:%i:%s')) end,
-                fec_act=NOW() 
-                WHERE estado=1";
+                hora_entrada_desde = DATE_FORMAT(DATE_SUB(hora_entrada, INTERVAL $minutos MINUTE), '%H:%i:%s'),
+                hora_entrada_hasta = DATE_FORMAT(DATE_ADD(hora_entrada, INTERVAL $minutos MINUTE), '%H:%i:%s'),
+                hora_salida_desde = DATE_FORMAT(DATE_SUB(hora_salida, INTERVAL $minutos MINUTE), '%H:%i:%s'),
+                hora_salida_hasta = DATE_FORMAT(DATE_ADD(hora_salida, INTERVAL $minutos MINUTE), '%H:%i:%s'),
+                hora_descanso_e_desde = CASE 
+                                            WHEN con_descanso = 1 
+                                            THEN DATE_FORMAT(DATE_SUB(hora_descanso_e, INTERVAL $minutos MINUTE), '%H:%i:%s') 
+                                            ELSE hora_descanso_e_desde 
+                                        END,
+                hora_descanso_e_hasta = CASE 
+                                            WHEN con_descanso = 1 
+                                            THEN DATE_FORMAT(DATE_ADD(hora_descanso_e, INTERVAL $minutos MINUTE), '%H:%i:%s') 
+                                            ELSE hora_descanso_e_hasta 
+                                        END,
+                hora_descanso_s_desde = CASE 
+                                            WHEN con_descanso = 1 
+                                            THEN DATE_FORMAT(DATE_SUB(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s') 
+                                            ELSE hora_descanso_s_desde 
+                                        END,
+                hora_descanso_s_hasta = CASE 
+                                            WHEN con_descanso = 1 
+                                            THEN DATE_FORMAT(DATE_ADD(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s') 
+                                            ELSE hora_descanso_s_hasta 
+                                        END,
+                fec_act = NOW() 
+                WHERE estado = 1";
         DB::statement($sql);
     }
+
 
     public static function delete_tolerancia_horario($dato)
     {
@@ -1670,6 +1712,62 @@ class AsistenciaColaborador extends Model
         $id_usuario = session('usuario')->id_usuario;
         $sql = "UPDATE tolerancia_horario set tolerancia='" . $dato['tolerancia'] . "',tipo='" . $dato['tipo'] . "',fec_act=NOW(), 
                 user_act=" . $id_usuario . " where id_tolerancia=" . $dato['id_tolerancia'] . "";
+        DB::statement($sql);
+    }
+
+    public static function valida_asistencia_manual($dato, $id = null)
+    {
+        if (isset($id)) {
+            $sql = "SELECT id FROM acceso_asistencia_manual
+                    WHERE id_usuario=" . $dato['id_usuario'] . " AND estado=1 AND id!=$id";
+        } else {
+            $sql = "SELECT id FROM acceso_asistencia_manual
+                    WHERE id_usuario=" . $dato['id_usuario'] . " AND estado=1";
+        }
+        $query = DB::select($sql);
+        return json_decode(json_encode($query), true);
+    }
+
+
+    public static function get_list_asistencia_manual($id = null)
+    {
+        if (isset($id)) {
+            $sql = "SELECT * FROM acceso_asistencia_manual
+                    WHERE id=$id";
+        } else {
+            $sql = "SELECT aa.id,
+                    LOWER(CONCAT(SUBSTRING_INDEX(us.usuario_nombres,' ',1),' ',us.usuario_apater)) AS nom_usuario,
+                    CASE WHEN aa.entrada=1 THEN 'Si' ELSE 'No' END AS entrada,
+                    CASE WHEN aa.salida=1 THEN 'Si' ELSE 'No' END AS salida,
+                    CASE WHEN aa.inicio_refrigerio=1 THEN 'Si' ELSE 'No' END AS inicio_refrigerio,
+                    CASE WHEN aa.fin_refrigerio=1 THEN 'Si' ELSE 'No' END AS fin_refrigerio
+                    FROM acceso_asistencia_manual aa
+                    LEFT JOIN users us ON aa.id_usuario=us.id_usuario
+                    WHERE aa.estado=1";
+        }
+        $query = DB::select($sql);
+        return json_decode(json_encode($query), true);
+    }
+
+
+    public static function get_list_colaborador_asistencia_manual()
+    {
+        $sql = "SELECT id_usuario,CONCAT(usuario_nombres,' ',usuario_apater,' ',usuario_amater) AS nom_usuario 
+                FROM users
+                WHERE id_horario>0 AND estado=1";
+        $query = DB::select($sql);
+        return json_decode(json_encode($query), true);
+    }
+
+
+
+
+    public static function insert_asistencia_manual($dato)
+    {
+        $id_usuario = session('usuario')->id_usuario;
+        $sql = "INSERT INTO asistencia_manual (id_usuario,base,fecha,marcacion,estado,fec_reg,user_reg) 
+                VALUES ('" . $dato['id_usuario'] . "','" . $dato['base'] . "','" . $dato['fecha'] . "',
+                '" . $dato['marcacion'] . "',1,NOW(),$id_usuario)";
         DB::statement($sql);
     }
 }

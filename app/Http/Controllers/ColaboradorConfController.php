@@ -4761,7 +4761,7 @@ class ColaboradorConfController extends Controller
 
 
 
-    //ADMINISTRABLES
+    // TOLERANCIA HORARIO
     public function ToleranciaHorario()
     {
         $list_tolerancia = AsistenciaColaborador::get_list_tolerancia_horario();
@@ -4846,5 +4846,36 @@ class ColaboradorConfController extends Controller
             }
             AsistenciaColaborador::update_tolerancia_horario_cron($minutos);
         }
+    }
+
+
+
+
+
+
+
+    // ASISTENCIA MANUAL
+    public function Asistencia_Manual()
+    {
+        $list_asistencia_manual = AsistenciaColaborador::get_list_asistencia_manual();
+        return view('rrhh.administracion.colaborador.asistencia_manual.index', compact('list_asistencia_manual'));
+    }
+    public function Modal_AsistenciaManual()
+    {
+        $list_usuario = AsistenciaColaborador::get_list_colaborador_asistencia_manual();
+        return view('rrhh.administracion.colaborador.asistencia_manual.modal_registrar', compact('list_usuario'));
+    }
+
+
+
+
+    public function Insert_Asistencia_Manual()
+    {
+
+        $dato['id_usuario'] =  session('usuario')->id_usuario;
+        $dato['base'] =  session('usuario')->centro_labores;
+        $dato['fecha'] =  date('Y-m-d');
+        $dato['marcacion'] =  date('H:i:s');
+        AsistenciaColaborador::insert_asistencia_manual($dato);
     }
 }
