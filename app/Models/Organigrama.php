@@ -16,6 +16,7 @@ class Organigrama extends Model
 
     protected $fillable = [
         'id_puesto',
+        'id_centro_labor',
         'id_usuario',
         'fecha',
         'usuario'

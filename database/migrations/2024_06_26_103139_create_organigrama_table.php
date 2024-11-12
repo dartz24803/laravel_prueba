@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('organigrama', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_puesto');
-            $table->integer('id_usuario')->default(0)->default();
+            $table->integer('id_usuario')->nullable();
             $table->dateTime('fecha')->nullable();
             $table->unsignedBigInteger('usuario');
             $table->foreign('id_puesto','org_fk_id_pue')->references('id_puesto')->on('puesto');
