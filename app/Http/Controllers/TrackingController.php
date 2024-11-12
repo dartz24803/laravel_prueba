@@ -1719,7 +1719,7 @@ class TrackingController extends Controller
                                 <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
                                 <b>Fecha - Mercadería pagada:</b> '.$fecha_formateada.'<br><br>
                                 Hola '.$get_id->desde.', se ha pagado a la agencia.<br>
-                                Envío el reporte de la salida de mercadería (completo).<br><br>
+                                Envío el reporte de la salida de mercadería <b>(completo)</b>.<br><br>
                                 <table cellpadding="3" cellspacing="0" border="1" style="width:100%;">     
                                     <tr>
                                         <td colspan="2" style="font-weight:bold;">Despacho</td>
