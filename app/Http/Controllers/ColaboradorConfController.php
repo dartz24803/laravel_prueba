@@ -1609,8 +1609,9 @@ class ColaboradorConfController extends Controller
     public function create_or()
     {
         $list_puesto = Puesto::select('id_puesto', 'nom_puesto')->where('estado', 1)
-            ->orderBy('nom_puesto', 'ASC')->get();
-        $list_ubicacion =  Ubicacion::select('id_ubicacion', 'cod_ubi')->where('estado', 1)->get();
+                    ->orderBy('nom_puesto', 'ASC')->get();
+        $list_ubicacion = Ubicacion::select('id_ubicacion', 'cod_ubi')->where('estado', 1)
+                        ->orderBy('cod_ubi','ASC')->get();
         return view('rrhh.administracion.colaborador.organigrama.modal_registrar', compact(
             'list_puesto',
             'list_ubicacion'
@@ -1639,8 +1640,9 @@ class ColaboradorConfController extends Controller
     {
         $get_id = Organigrama::findOrFail($id);
         $list_puesto = Puesto::select('id_puesto', 'nom_puesto')->where('estado', 1)
-            ->orderBy('nom_puesto', 'ASC')->get();
-        $list_ubicacion =  Ubicacion::select('id_ubicacion', 'cod_ubi')->where('estado', 1)->get();
+                    ->orderBy('nom_puesto', 'ASC')->get();
+        $list_ubicacion = Ubicacion::select('id_ubicacion', 'cod_ubi')->where('estado', 1)
+                        ->orderBy('cod_ubi','ASC')->get();
         return view('rrhh.administracion.colaborador.organigrama.modal_editar', compact(
             'get_id',
             'list_puesto',
