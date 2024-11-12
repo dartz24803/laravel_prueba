@@ -53,6 +53,7 @@ use Illuminate\Http\Request;
 use App\Models\Notificacion;
 use App\Models\Organigrama;
 use App\Models\Ubicacion;
+use App\Models\Usuario;
 
 class ColaboradorConfController extends Controller
 {
@@ -1594,15 +1595,13 @@ class ColaboradorConfController extends Controller
     public function list_or()
     {
         $list_organigrama = Organigrama::from('organigrama AS og')->select(
-            'og.id',
-            'pu.nom_puesto',
-            'ub.cod_ubi',
-            DB::raw("CASE WHEN og.id_usuario>0 THEN 'Si' 
-                            ELSE 'No' END AS asignado")
-        )
-            ->join('puesto AS pu', 'pu.id_puesto', '=', 'og.id_puesto')
-            ->leftjoin('ubicacion AS ub', 'ub.id_ubicacion', '=', 'og.id_centro_labor')
-            ->get();
+                            'og.id','pu.nom_puesto','ub.cod_ubi',
+                            DB::raw("CONCAT(us.usuario_nombres,' ',us.usuario_apater,' ',
+                            us.usuario_amater) AS nom_usuario"),'og.id_usuario')
+                            ->join('puesto AS pu', 'pu.id_puesto', '=', 'og.id_puesto')
+                            ->join('ubicacion AS ub', 'ub.id_ubicacion', '=', 'og.id_centro_labor')
+                            ->leftjoin('users AS us','us.id_usuario','=','og.id_usuario')
+                            ->get();
         return view('rrhh.administracion.colaborador.organigrama.lista', compact('list_organigrama'));
     }
 
@@ -1665,6 +1664,40 @@ class ColaboradorConfController extends Controller
             'id_centro_labor' => $request->id_centro_labore,
             'fecha' => now(),
             'usuario' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function edit_clab_or($id)
+    {
+        $get_id = Organigrama::findOrFail($id);
+        $list_ubicacion = Ubicacion::select('id_ubicacion', 'cod_ubi')->where('estado', 1)
+                        ->orderBy('cod_ubi','ASC')->get();
+        return view('rrhh.administracion.colaborador.organigrama.modal_editar_clab', compact(
+            'get_id',
+            'list_ubicacion'
+        ));
+    }
+
+    public function update_clab_or(Request $request, $id)
+    {
+        $request->validate([
+            'id_centro_laborc' => 'gt:0'
+        ], [
+            'id_centro_laborc.gt' => 'Debe seleccionar centro de labor.'
+        ]);
+
+        Organigrama::findOrFail($id)->update([
+            'id_centro_labor' => $request->id_centro_laborc,
+            'fecha' => now(),
+            'usuario' => session('usuario')->id_usuario
+        ]);
+
+        //ACTUALIZAR EL CENTRO DE LABOR DEL COLABORADOR
+        $get_id = Organigrama::findOrFail($id);
+        Usuario::findOrFail($get_id->id_usuario)->update([
+            'id_centro_labor' => $request->id_centro_laborc,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
         ]);
     }
 

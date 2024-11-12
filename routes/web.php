@@ -826,6 +826,8 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('colaborador_conf_or', 'store_or')->name('colaborador_conf_or.store');
     Route::get('colaborador_conf_or/{id}/edit', 'edit_or')->name('colaborador_conf_or.edit');
     Route::put('colaborador_conf_or/{id}', 'update_or')->name('colaborador_conf_or.update');
+    Route::get('colaborador_conf_or/{id}/edit_clab', 'edit_clab_or')->name('colaborador_conf_or.edit_clab');
+    Route::put('colaborador_conf_or/{id}/update_clab', 'update_clab_or')->name('colaborador_conf_or.update_clab');
     Route::delete('colaborador_conf_or/{id}', 'destroy_or')->name('colaborador_conf_or.destroy');
     /*-----------------------------------------Daniel---------------------------------*/
 });
