@@ -60,7 +60,7 @@ class MiEquipoController extends Controller
 
     public function Cargar_Bases_Equipo($busq_base)
     {
-        $centro_labores = session('usuario')->centro_labores;
+        $id_centro_labor = session('usuario')->id_centro_labor;
         $id_puesto = session('usuario')->id_puesto;
 
         $dato['list_ajefatura'] = $this->Model_Asignacion->get_list_ajefatura_puesto($id_puesto);
@@ -76,7 +76,7 @@ class MiEquipoController extends Controller
         $dato['cadena'] = "(" . $cadena . ")";
 
         $data['base'] = $busq_base;
-        $dato['colaborador_porcentaje'] = Usuario::colaborador_porcentaje(0, $centro_labores, $dato, $data);
+        $dato['colaborador_porcentaje'] = Usuario::colaborador_porcentaje(0, $id_centro_labor, $dato, $data);
 
 
         return view('rrhh.Mi_equipo.lista_equipo', $dato);
@@ -129,7 +129,7 @@ class MiEquipoController extends Controller
         //Font BOLD
         $sheet->getStyle('A1:T1')->getFont()->setBold(true);
 
-        $centro_labores = session('usuario')->centro_labores;
+        $id_centro_labor = session('usuario')->id_centro_labor;
         $id_puesto = session('usuario')->id_puesto;
 
         $dato['list_ajefatura'] = $this->Model_Asignacion->get_list_ajefatura_puesto($id_puesto);
@@ -144,7 +144,7 @@ class MiEquipoController extends Controller
 
         $dato['cadena'] = "(" . $cadena . ")";
         $parametro['base'] = $base;
-        $data = Usuario::colaborador_porcentaje(0, $centro_labores, $dato, $parametro);
+        $data = Usuario::colaborador_porcentaje(0, $id_centro_labor, $dato, $parametro);
         //$slno = 1;
         $start = 1;
         foreach ($data as $d) {
