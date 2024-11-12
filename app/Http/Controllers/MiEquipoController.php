@@ -14,6 +14,7 @@ use App\Models\Puesto;
 use App\Models\Notificacion;
 use App\Models\SolicitudPuesto;
 use App\Models\SubGerencia;
+use App\Models\Ubicacion;
 use App\Models\Usuario;
 use Exception;
 use Illuminate\Http\Request;
@@ -50,12 +51,9 @@ class MiEquipoController extends Controller
 
     public function Cargar_Mi_Equipo()
     {
-        $dato['lista_bases'] = Base::select('cod_base')
-            ->where('estado', '1')
-            ->distinct()
-            ->orderBy('cod_base', 'asc')
-            ->get();
-        return view('rrhh.Mi_equipo.mi_equipo', $dato);
+        $list_ubicacion = Ubicacion::select('id_ubicacion','cod_ubi')->where('estado',1)
+                        ->orderBy('cod_ubi','ASC')->get();
+        return view('rrhh.Mi_equipo.mi_equipo', compact('list_ubicacion'));
     }
 
     public function Cargar_Bases_Equipo($busq_base)
