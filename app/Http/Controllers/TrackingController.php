@@ -4024,8 +4024,8 @@ class TrackingController extends Controller
     {
         if($request->tipo=="sku"){
             try {
-                $query = MercaderiaSurtida::get_list_requerimiento_reposicion_vendedor([
-                    'cod_base'=>$request->cod_base
+                $query = MercaderiaSurtida::get_list_req_repo_vend([
+                    'cod_base' => $request->cod_base
                 ]);
             } catch (\Throwable $th) {
                 return response()->json([
@@ -4042,8 +4042,9 @@ class TrackingController extends Controller
             return response()->json($query, 200);
         }else if($request->tipo=="estilo"){
             try {
-                $query = MercaderiaSurtidaPadre::get_list_mercaderia_surtida_padre_vendedor([
-                    'cod_base'=>$request->cod_base
+                $query = MercaderiaSurtida::get_list_req_repo_vend([
+                    'cod_base' => $request->cod_base,
+                    'estilo' => 'estilo'
                 ]);
             } catch (\Throwable $th) {
                 return response()->json([
@@ -4060,8 +4061,8 @@ class TrackingController extends Controller
             return response()->json($query, 200);
         }elseif($request->id_padre){
             try {
-                $query = MercaderiaSurtida::get_list_requerimiento_reposicion_vendedor([
-                    'id_padre'=>$request->id_padre
+                $query = MercaderiaSurtida::get_list_req_repo_vend([
+                    'id_padre' => $request->id_padre
                 ]);
             } catch (\Throwable $th) {
                 return response()->json([

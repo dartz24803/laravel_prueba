@@ -75,21 +75,30 @@ class MercaderiaSurtida extends Model
         return $query;
     }
 
-    public static function get_list_requerimiento_reposicion_vendedor($dato=null)
+    public static function get_list_req_repo_vend($dato=null)
     {
         if(isset($dato['id_padre'])){
             $sql = "SELECT id,sku,estilo,tipo_usuario,tipo_prenda,color,talla,descripcion,
                     cantidad,stk_almacen,stk_tienda,CASE WHEN estado=0 THEN 'Pendiente'
                     WHEN estado=1 THEN 'Surtido' ELSE '' END AS nom_estado
                     FROM mercaderia_surtida
-                    WHERE id_padre=?";
+                    WHERE id_padre=?
+                    ORDER BY fecha DESC";
             $query = DB::connection('sqlsrv')->select($sql, [$dato['id_padre']]);
+        }elseif(isset($dato['estilo'])){
+            $sql = "SELECT id_padre AS id,estilo 
+                    FROM mercaderia_surtida
+                    WHERE tipo=3 AND base=?
+                    GROUP BY id_padre,estilo
+                    ORDER BY estilo ASC";
+            $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);        
         }else{
             $sql = "SELECT id,sku,estilo,tipo_usuario,tipo_prenda,color,talla,descripcion,
                     cantidad,stk_almacen,stk_tienda,CASE WHEN estado=0 THEN 'Pendiente'
                     WHEN estado=1 THEN 'Surtido' ELSE '' END AS nom_estado
                     FROM mercaderia_surtida
-                    WHERE tipo=2 AND base=?";
+                    WHERE tipo=2 AND base=?
+                    ORDER BY fecha DESC";
             $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);
         }
         return $query;
