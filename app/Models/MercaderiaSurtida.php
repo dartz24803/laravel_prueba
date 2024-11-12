@@ -45,12 +45,13 @@ class MercaderiaSurtida extends Model
                 ms.stk_almacen,ms.stk_tienda
                 FROM mercaderia_surtida ms
                 WHERE ms.tipo=1 AND ms.base=? AND ms.anio='".date('Y')."' AND
-                ms.semana='".date('W')."' AND ms.estilo=? AND ms.estado=0";
+                ms.semana='".date('W')."' AND ms.estilo=? AND ms.estado=0
+                ORDER BY ms.fecha DESC";
         $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base'],$dato['cod_base'],$dato['estilo']]);
         return $query;
     }
 
-    public static function get_list_mercaderia_surtida_vendedor($dato)
+    public static function get_list_merc_surt_vendedor($dato)
     {
         $sql = "SELECT ms.id,ms.sku,ms.color,ms.talla,
                 (SELECT SUM(mn.Total) FROM vw_mercaderia_nueva mn
@@ -60,8 +61,20 @@ class MercaderiaSurtida extends Model
                 WHEN ms.estado=1 THEN 'Surtido' ELSE '' END AS nom_estado
                 FROM mercaderia_surtida ms
                 WHERE ms.tipo=1 AND ms.base=? AND ms.anio='".date('Y')."' AND
-                ms.semana='".date('W')."' AND ms.estilo=?";
+                ms.semana='".date('W')."' AND ms.estilo=?
+                ORDER BY ms.fecha DESC";
         $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base'],$dato['cod_base'],$dato['estilo']]);
+        return $query;
+    }
+
+    public static function get_list_tusu_merc_surt_vendedor($dato)
+    {
+        $sql = "SELECT tipo_usuario
+                FROM mercaderia_surtida
+                WHERE tipo=1 AND base=? AND anio='".date('Y')."' AND
+                semana='".date('W')."' AND estilo=?
+                GROUP BY tipo_usuario";
+        $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base'],$dato['estilo']]);
         return $query;
     }
 
@@ -75,21 +88,48 @@ class MercaderiaSurtida extends Model
         return $query;
     }
 
-    public static function get_list_requerimiento_reposicion_vendedor($dato=null)
+    public static function get_list_req_repo_vend($dato=null)
     {
         if(isset($dato['id_padre'])){
             $sql = "SELECT id,sku,estilo,tipo_usuario,tipo_prenda,color,talla,descripcion,
                     cantidad,stk_almacen,stk_tienda,CASE WHEN estado=0 THEN 'Pendiente'
                     WHEN estado=1 THEN 'Surtido' ELSE '' END AS nom_estado
                     FROM mercaderia_surtida
-                    WHERE id_padre=?";
+                    WHERE id_padre=?
+                    ORDER BY fecha DESC";
             $query = DB::connection('sqlsrv')->select($sql, [$dato['id_padre']]);
+        }elseif(isset($dato['estilo'])){
+            $sql = "SELECT id_padre AS id,estilo 
+                    FROM mercaderia_surtida
+                    WHERE tipo=3 AND base=?
+                    GROUP BY id_padre,estilo
+                    ORDER BY estilo ASC";
+            $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);        
         }else{
             $sql = "SELECT id,sku,estilo,tipo_usuario,tipo_prenda,color,talla,descripcion,
                     cantidad,stk_almacen,stk_tienda,CASE WHEN estado=0 THEN 'Pendiente'
                     WHEN estado=1 THEN 'Surtido' ELSE '' END AS nom_estado
                     FROM mercaderia_surtida
-                    WHERE tipo=2 AND base=?";
+                    WHERE tipo=2 AND base=?
+                    ORDER BY fecha DESC";
+            $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);
+        }
+        return $query;
+    }
+
+    public static function get_list_tusu_req_repo_vend($dato=null)
+    {
+        if(isset($dato['estilo'])){
+            $sql = "SELECT tipo_usuario
+                    FROM mercaderia_surtida
+                    WHERE tipo=3 AND base=?
+                    GROUP BY tipo_usuario";
+            $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);        
+        }else{
+            $sql = "SELECT tipo_usuario
+                    FROM mercaderia_surtida
+                    WHERE tipo=2 AND base=?
+                    GROUP BY tipo_usuario";
             $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);
         }
         return $query;

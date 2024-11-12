@@ -87,18 +87,25 @@ class TrackingController extends Controller
         }elseif($request->cod_base){
             try {
                 if($request->cod_base=="OFI"){
-                    $query = TrackingNotificacion::select('tracking_notificacion.id_tracking',
-                            DB::raw("CONCAT(tracking.n_requerimiento,' - ',base.cod_base) AS n_requerimiento"))
-                            ->join('tracking','tracking.id','=','tracking_notificacion.id_tracking')
-                            ->join('base','base.id_base','=','tracking.id_origen_hacia')
-                            ->groupBy('tracking_notificacion.id_tracking')->get();
+                    $query = TrackingNotificacion::from('tracking_notificacion AS tn')
+                            ->select('tn.id_tracking',
+                            DB::raw("CONCAT(tr.n_requerimiento,' - ',ba.cod_base) AS n_requerimiento"))
+                            ->join('tracking AS tr', function($join) {
+                                $join->on('tr.id', '=', 'tn.id_tracking')
+                                ->where('tr.estado', 1);
+                            })
+                            ->join('base AS ba','ba.id_base','=','tr.id_origen_hacia')
+                            ->groupBy('tn.id_tracking')->get();
                 }else{
-                    $query = TrackingNotificacion::select('tracking_notificacion.id_tracking',
-                            'tracking.n_requerimiento')
-                            ->join('tracking','tracking.id','=','tracking_notificacion.id_tracking')
-                            ->join('base','base.id_base','=','tracking.id_origen_hacia')
-                            ->where('base.cod_base',$request->cod_base)
-                            ->groupBy('tracking_notificacion.id_tracking')->get();
+                    $query = TrackingNotificacion::from('tracking_notificacion AS tn')
+                            ->select('tn.id_tracking','tr.n_requerimiento')
+                            ->join('tracking AS tr', function($join) {
+                                $join->on('tr.id', '=', 'tn.id_tracking')
+                                ->where('tr.estado', 1);
+                            })
+                            ->join('base AS ba','ba.id_base','=','tr.id_origen_hacia')
+                            ->where('ba.cod_base',$request->cod_base)
+                            ->groupBy('tn.id_tracking')->get();
                 }
             } catch (\Throwable $th) {
                 return response()->json([
@@ -3750,12 +3757,25 @@ class TrackingController extends Controller
     {
         try {
             if($request->estilo){
-                $query = MercaderiaSurtida::get_list_mercaderia_surtida_vendedor(['cod_base'=>$request->cod_base,'estilo'=>$request->estilo]);
+                $query = MercaderiaSurtida::get_list_merc_surt_vendedor([
+                    'cod_base' => $request->cod_base,
+                    'estilo' => $request->estilo
+                ]);
+
+                $query_tu = MercaderiaSurtida::get_list_tusu_merc_surt_vendedor([
+                    'cod_base' => $request->cod_base,
+                    'estilo' => $request->estilo
+                ]);
             }else{
                 $query = MercaderiaSurtida::select('estilo','tipo_usuario','descripcion')
                         ->where('tipo',1)->where('anio',date('Y'))->where('semana',date('W'))
                         ->where('base',$request->cod_base)
                         ->groupBy('estilo','tipo_usuario','descripcion')->get();
+
+                $query_tu = MercaderiaSurtida::select('tipo_usuario')
+                            ->where('tipo',1)->where('anio',date('Y'))->where('semana',date('W'))
+                            ->where('base',$request->cod_base)
+                            ->groupBy('tipo_usuario')->get();
             }
         } catch (\Throwable $th) {
             return response()->json([
@@ -3769,7 +3789,12 @@ class TrackingController extends Controller
             ], 404);
         }
 
-        return response()->json($query, 200);
+        $response = [
+            'data' => $query,
+            'tipo_usuario' => $query_tu
+        ];
+
+        return response()->json($response, 200);
     }
     //REQUERIMIENTO DE REPOSICIÓN
     public function insert_requerimiento_reposicion_app(Request $request,$sku)
@@ -4017,8 +4042,12 @@ class TrackingController extends Controller
     {
         if($request->tipo=="sku"){
             try {
-                $query = MercaderiaSurtida::get_list_requerimiento_reposicion_vendedor([
-                    'cod_base'=>$request->cod_base
+                $query = MercaderiaSurtida::get_list_req_repo_vend([
+                    'cod_base' => $request->cod_base
+                ]);
+
+                $query_tu = MercaderiaSurtida::get_list_tusu_req_repo_vend([
+                    'cod_base' => $request->cod_base
                 ]);
             } catch (\Throwable $th) {
                 return response()->json([
@@ -4032,11 +4061,22 @@ class TrackingController extends Controller
                 ], 404);
             }
     
-            return response()->json($query, 200);
+            $response = [
+                'data' => $query,
+                'tipo_usuario' => $query_tu
+            ];
+
+            return response()->json($response, 200);
         }else if($request->tipo=="estilo"){
             try {
-                $query = MercaderiaSurtidaPadre::get_list_mercaderia_surtida_padre_vendedor([
-                    'cod_base'=>$request->cod_base
+                $query = MercaderiaSurtida::get_list_req_repo_vend([
+                    'cod_base' => $request->cod_base,
+                    'estilo' => 'estilo'
+                ]);
+
+                $query_tu = MercaderiaSurtida::get_list_tusu_req_repo_vend([
+                    'cod_base' => $request->cod_base,
+                    'estilo' => 'estilo'
                 ]);
             } catch (\Throwable $th) {
                 return response()->json([
@@ -4050,11 +4090,16 @@ class TrackingController extends Controller
                 ], 404);
             }
     
-            return response()->json($query, 200);
+            $response = [
+                'data' => $query,
+                'tipo_usuario' => $query_tu
+            ];
+
+            return response()->json($response, 200);
         }elseif($request->id_padre){
             try {
-                $query = MercaderiaSurtida::get_list_requerimiento_reposicion_vendedor([
-                    'id_padre'=>$request->id_padre
+                $query = MercaderiaSurtida::get_list_req_repo_vend([
+                    'id_padre' => $request->id_padre
                 ]);
             } catch (\Throwable $th) {
                 return response()->json([

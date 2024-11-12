@@ -498,7 +498,9 @@ class LineaCarreraController extends Controller
                     ]);
                 }
 
-                $get_org = Organigrama::where('id_puesto',$get_id->id_puesto_aspirado)->where('id_usuario',0)
+                $get_org = Organigrama::where('id_puesto',$get_id->id_puesto_aspirado)
+                        ->where('id_centro_labor',$get_id->id_centro_labor)
+                        ->where('id_usuario',0)
                         ->first();
                 if($get_org){
                     Organigrama::findOrFail($get_org->id)->update([

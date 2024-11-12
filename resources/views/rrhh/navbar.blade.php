@@ -88,13 +88,11 @@
         session('usuario')->id_puesto == 279 ||
         session('usuario')->id_puesto == 310 ||
         session('usuario')->id_puesto == 314)
-        @if (session('usuario')->id_usuario == 139)
-        <li>
-            <a id="caps" href="{{ route('cap') }}">
-                <p class="romperpalabra"><span id="icono_active2"></span> CAP</p>
-            </a>
-        </li>
-        @endif
+            <li>
+                <a id="caps" href="{{ route('cap') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> CAP</p>
+                </a>
+            </li>
         @endif
         @if (session('usuario')->id_nivel == 1 ||
         session('usuario')->id_puesto == 27 ||
