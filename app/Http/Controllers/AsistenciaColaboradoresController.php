@@ -343,9 +343,7 @@ class AsistenciaColaboradoresController extends Controller
         $dato['dia'] = $request->input("dia");
         $dato['semana'] = $request->input("semana");
         $dato['get_semana'] = AsistenciaColaborador::get_list_semanas($dato['semana']);
-
-        $list_asistenciai = AsistenciaColaborador::get_list_marcacion_colaborador_inconsistencias(0, (object) $dato); // convertimos $dato a objeto
-
+        $list_asistenciai = AsistenciaColaborador::get_list_marcacion_colaborador_inconsistencias(0, (object) $dato);
         return view('rrhh.AsistenciaColaboradores.inconsistencia.lista', compact('list_asistenciai', 'dato'));
     }
 
@@ -738,10 +736,12 @@ class AsistenciaColaboradoresController extends Controller
         $dato['fin_refri'] = $dato['get_id'][0]['fin_refri'];
 
         $data = AsistenciaColaborador::consulta_tolerancia_horario_activo();
+
         $minutos = 0;
         if (count($data) > 0) {
             $minutos = $data[0]['minutos'];
         }
+        // dd($dato);
         AsistenciaColaborador::update_turno_inconsistencia($dato, $minutos);
     }
 
@@ -904,7 +904,14 @@ class AsistenciaColaboradoresController extends Controller
         $writer->save('php://output');
     }
 
+    public function Listar_Asistencia_Inconsistencia()
+    {
 
+        $dato['id_asistencia_inconsistencia'] = $this->input->post("id_asistencia_inconsistencia");
+        $list_marcacionesh = AsistenciaColaborador::get_list_detalle_marcacion_inconsistencia_2($dato);
+        // dd($list_marcacionesh);
+        return view('rrhh.AsistenciaColaboradores.inconsistencia.lista_marcaciones', compact('list_marcacionesh'));
+    }
 
 
 

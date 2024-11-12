@@ -69,7 +69,7 @@
                             'Haga clic en el botón!',
                             'success'
                         ).then(function() {
-                            TablaToleranciaHorario();
+                            ToleranciaHorario();
                             $("#ModalRegistro .close").click();
                         });
                     }

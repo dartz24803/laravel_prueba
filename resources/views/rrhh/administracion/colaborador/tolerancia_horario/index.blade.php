@@ -125,7 +125,7 @@
                             'El registro ha sido actualizado satisfactoriamente.',
                             'success'
                         ).then(function() {
-                            TablaToleranciaHorario();
+                            ToleranciaHorario();
                         });
                     }
                 });
@@ -165,7 +165,7 @@
                             'El registro ha sido eliminado satisfactoriamente.',
                             'success'
                         ).then(function() {
-                            TablaToleranciaHorario();
+                            ToleranciaHorario();
                         });
                     }
                 });
