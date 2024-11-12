@@ -4027,6 +4027,10 @@ class TrackingController extends Controller
                 $query = MercaderiaSurtida::get_list_req_repo_vend([
                     'cod_base' => $request->cod_base
                 ]);
+
+                $query_tu = MercaderiaSurtida::get_list_tusu_req_repo_vend([
+                    'cod_base' => $request->cod_base
+                ]);
             } catch (\Throwable $th) {
                 return response()->json([
                     'message' => "Error procesando base de datos.",
@@ -4039,10 +4043,20 @@ class TrackingController extends Controller
                 ], 404);
             }
     
-            return response()->json($query, 200);
+            $response = [
+                'data' => $query,
+                'tipo_usuario' => $query_tu
+            ];
+
+            return response()->json($response, 200);
         }else if($request->tipo=="estilo"){
             try {
                 $query = MercaderiaSurtida::get_list_req_repo_vend([
+                    'cod_base' => $request->cod_base,
+                    'estilo' => 'estilo'
+                ]);
+
+                $query_tu = MercaderiaSurtida::get_list_tusu_req_repo_vend([
                     'cod_base' => $request->cod_base,
                     'estilo' => 'estilo'
                 ]);
@@ -4058,7 +4072,12 @@ class TrackingController extends Controller
                 ], 404);
             }
     
-            return response()->json($query, 200);
+            $response = [
+                'data' => $query,
+                'tipo_usuario' => $query_tu
+            ];
+
+            return response()->json($response, 200);
         }elseif($request->id_padre){
             try {
                 $query = MercaderiaSurtida::get_list_req_repo_vend([

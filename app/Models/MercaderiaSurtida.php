@@ -106,6 +106,24 @@ class MercaderiaSurtida extends Model
         return $query;
     }
 
+    public static function get_list_tusu_req_repo_vend($dato=null)
+    {
+        if(isset($dato['estilo'])){
+            $sql = "SELECT tipo_usuario
+                    FROM mercaderia_surtida
+                    WHERE tipo=3 AND base=?
+                    GROUP BY tipo_usuario";
+            $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);        
+        }else{
+            $sql = "SELECT tipo_usuario
+                    FROM mercaderia_surtida
+                    WHERE tipo=2 AND base=?
+                    GROUP BY tipo_usuario";
+            $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);
+        }
+        return $query;
+    }
+
     public static function get_list_req_repo_vend_x_est($dato)
     {
         $parte = "";
