@@ -31,6 +31,13 @@ use App\Models\TrackingEstado;
 use App\Models\TrackingPago;
 use App\Models\TrackingTransporte;
 use Mpdf\Mpdf;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class TrackingController extends Controller
 {
@@ -229,13 +236,78 @@ class TrackingController extends Controller
             //MENSAJE 1
             $list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$get_id->n_requerimiento]);
 
-            $mpdf = new Mpdf([
+            //GENERACIÓN DE EXCEL
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            $sheet->getStyle("A1:F1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A1:F1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+    
+            $spreadsheet->getActiveSheet()->setTitle('Lectura Servicio');
+    
+            $sheet->setAutoFilter('A1:F1');
+    
+            $sheet->getColumnDimension('A')->setWidth(20);
+            $sheet->getColumnDimension('B')->setWidth(25);
+            $sheet->getColumnDimension('C')->setWidth(25);
+            $sheet->getColumnDimension('D')->setWidth(15);
+            $sheet->getColumnDimension('E')->setWidth(100);
+            $sheet->getColumnDimension('F')->setWidth(15);
+    
+            $sheet->getStyle('A1:F1')->getFont()->setBold(true);
+    
+            $spreadsheet->getActiveSheet()->getStyle("A1:F1")->getFill()
+                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('C8C8C8');
+    
+            $styleThinBlackBorderOutline = [
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => 'FF000000'],
+                    ],
+                ],
+            ];
+    
+            $sheet->getStyle("A1:F1")->applyFromArray($styleThinBlackBorderOutline);
+    
+            $sheet->setCellValue("A1", 'SKU');
+            $sheet->setCellValue("B1", 'Color');
+            $sheet->setCellValue("C1", 'Estilo');
+            $sheet->setCellValue("D1", 'Talla');
+            $sheet->setCellValue("E1", 'Descripción');
+            $sheet->setCellValue("F1", 'Cantidad');
+
+            $contador = 1;
+
+            foreach ($list_detalle as $list) {
+                $contador++;
+    
+                $sheet->getStyle("A{$contador}:F{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle("B{$contador}:E{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+                $sheet->getStyle("A{$contador}:F{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+                $sheet->getStyle("A{$contador}:F{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+    
+                $sheet->setCellValue("A{$contador}", $list->sku);
+                $sheet->setCellValue("B{$contador}", $list->color);
+                $sheet->setCellValue("C{$contador}", $list->estilo);
+                $sheet->setCellValue("D{$contador}", $list->talla);
+                $sheet->setCellValue("E{$contador}", $list->descripcion);
+                $sheet->setCellValue("F{$contador}", $list->cantidad);
+            }
+
+            $writer = new Xlsx($spreadsheet);
+            ob_start();
+            $writer->save('php://output');
+            $excelContent = ob_get_clean();
+
+            /*$mpdf = new Mpdf([
                 'format' => 'A4',
                 'default_font' => 'Arial'
             ]);
             $html = view('logistica.tracking.tracking.pdf', compact('get_id','list_detalle'))->render();
             $mpdf->WriteHTML($html);
-            $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
+            $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);*/
 
             $mail = new PHPMailer(true);
 
@@ -313,7 +385,8 @@ class TrackingController extends Controller
                                 </FONT SIZE>';
             
                 $mail->CharSet = 'UTF-8';
-                $mail->addStringAttachment($pdfContent, 'Guia_Remision.pdf');
+                //$mail->addStringAttachment($pdfContent, 'Guia_Remision.pdf');
+                $mail->addStringAttachment($excelContent, 'Guia_Remision.xlsx', 'base64', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
                 $mail->send();
 
                 TrackingDetalleEstado::create([
@@ -480,13 +553,78 @@ class TrackingController extends Controller
             //MENSAJE 1
             $list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$get_id->n_requerimiento]);
 
-            $mpdf = new Mpdf([
+            //GENERACIÓN DE EXCEL
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            $sheet->getStyle("A1:F1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A1:F1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+    
+            $spreadsheet->getActiveSheet()->setTitle('Lectura Servicio');
+    
+            $sheet->setAutoFilter('A1:F1');
+    
+            $sheet->getColumnDimension('A')->setWidth(20);
+            $sheet->getColumnDimension('B')->setWidth(25);
+            $sheet->getColumnDimension('C')->setWidth(25);
+            $sheet->getColumnDimension('D')->setWidth(15);
+            $sheet->getColumnDimension('E')->setWidth(100);
+            $sheet->getColumnDimension('F')->setWidth(15);
+    
+            $sheet->getStyle('A1:F1')->getFont()->setBold(true);
+    
+            $spreadsheet->getActiveSheet()->getStyle("A1:F1")->getFill()
+                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('C8C8C8');
+    
+            $styleThinBlackBorderOutline = [
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => 'FF000000'],
+                    ],
+                ],
+            ];
+    
+            $sheet->getStyle("A1:F1")->applyFromArray($styleThinBlackBorderOutline);
+    
+            $sheet->setCellValue("A1", 'SKU');
+            $sheet->setCellValue("B1", 'Color');
+            $sheet->setCellValue("C1", 'Estilo');
+            $sheet->setCellValue("D1", 'Talla');
+            $sheet->setCellValue("E1", 'Descripción');
+            $sheet->setCellValue("F1", 'Cantidad');
+
+            $contador = 1;
+
+            foreach ($list_detalle as $list) {
+                $contador++;
+    
+                $sheet->getStyle("A{$contador}:F{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle("B{$contador}:E{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+                $sheet->getStyle("A{$contador}:F{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+                $sheet->getStyle("A{$contador}:F{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+    
+                $sheet->setCellValue("A{$contador}", $list->sku);
+                $sheet->setCellValue("B{$contador}", $list->color);
+                $sheet->setCellValue("C{$contador}", $list->estilo);
+                $sheet->setCellValue("D{$contador}", $list->talla);
+                $sheet->setCellValue("E{$contador}", $list->descripcion);
+                $sheet->setCellValue("F{$contador}", $list->cantidad);
+            }
+
+            $writer = new Xlsx($spreadsheet);
+            ob_start();
+            $writer->save('php://output');
+            $excelContent = ob_get_clean();
+
+            /*$mpdf = new Mpdf([
                 'format' => 'A4',
                 'default_font' => 'Arial'
             ]);
             $html = view('logistica.tracking.tracking.pdf', compact('get_id','list_detalle'))->render();
             $mpdf->WriteHTML($html);
-            $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
+            $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);*/
 
             $mail = new PHPMailer(true);
 
@@ -552,7 +690,8 @@ class TrackingController extends Controller
                                 </FONT SIZE>';
             
                 $mail->CharSet = 'UTF-8';
-                $mail->addStringAttachment($pdfContent, 'Guia_Remision.pdf');
+                //$mail->addStringAttachment($pdfContent, 'Guia_Remision.pdf');
+                $mail->addStringAttachment($excelContent, 'Guia_Remision.xlsx', 'base64', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
                 $mail->send();
 
                 TrackingDetalleEstado::create([

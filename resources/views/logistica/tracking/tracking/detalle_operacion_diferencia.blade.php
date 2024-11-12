@@ -150,12 +150,12 @@
         function Valida_Archivo(val){
             var archivoInput = document.getElementById(val);
             var archivoRuta = archivoInput.value;
-            var extPermitidas = /(.pdf|.png|.jpg|.jpeg)$/i;
+            var extPermitidas = /(.pdf|.png|.jpg|.jpeg|.xls|.xlsx)$/i;
 
             if(!extPermitidas.exec(archivoRuta)){
                 Swal({
                     title: 'Registro Denegado',
-                    text: "Asegurese de ingresar archivo con extensión .pdf|.jpg|.png|.jpeg",
+                    text: "Asegurese de ingresar archivo con extensión .pdf|.jpg|.png|.jpeg|.xls|.xlsx",
                     type: 'error',
                     showCancelButton: false,
                     confirmButtonColor: '#3085d6',
