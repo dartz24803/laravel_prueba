@@ -39,4 +39,56 @@
         <button class="btn btn-primary mt-3" id="createProductBtn" onclick="Edit_ToleranciaHorario();" type="button">Guardar</button>
         <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
+
 </form>
+
+<script>
+    function Edit_ToleranciaHorario() {
+        var dataString = new FormData(document.getElementById('formulario_toleranciae'));
+        var url = "{{ url('ToleranciaHorario/Update_ToleranciaHorario') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        if (Valida_ToleranciaHorario('2')) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: dataString,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    if (data == "error") {
+                        Swal({
+                            title: 'Actualización Denegada',
+                            text: "¡El registro ya existe!",
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    } else {
+                        swal.fire(
+                            'Actualización Exitosa!',
+                            'Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            TablaToleranciaHorario();
+                            $("#ModalUpdate .close").click();
+                        });
+                    }
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+</script>

@@ -32,7 +32,81 @@
     </div>
 
     <div class="modal-footer">
-        <button class="btn btn-primary mt-3" type="button" onclick="Insert_ToleranciaHorario();">Guardar</button>
+        <button class="btn btn-primary mt-3" type="button" onclick="Insert_ToleranciaHorario();">Guardar1</button>
+
         <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
+
+<script>
+    function Insert_ToleranciaHorario() {
+        var dataString = new FormData(document.getElementById('formulario_tolerancia'));
+        var url = "{{ url('ToleranciaHorario/Insert_ToleranciaHorario') }}";
+        var csrfToken = $('input[name="_token"]').val();
+        if (Valida_ToleranciaHorario('1')) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                data: dataString,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    if (data == "error") {
+                        Swal({
+                            title: 'Registro Denegado',
+                            text: "¡El registro ya existe!",
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    } else {
+                        swal.fire(
+                            'Registro Exitoso!',
+                            'Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            TablaToleranciaHorario();
+                            $("#ModalRegistro .close").click();
+                        });
+                    }
+                }
+            });
+        } else {
+            bootbox.alert(msgDate)
+            var input = $(inputFocus).parent();
+            $(input).addClass("has-error");
+            $(input).on("change", function() {
+                if ($(input).hasClass("has-error")) {
+                    $(input).removeClass("has-error");
+                }
+            });
+        }
+    }
+
+
+
+
+    function soloNumeros(e) {
+        var key = e.keyCode || e.which,
+            tecla = String.fromCharCode(key).toLowerCase(),
+            //letras = " áéíóúabcdefghijklmnñopqrstuvwxyz",
+            letras = "0123456789",
+            especiales = [8, 37, 39, 46],
+            tecla_especial = false;
+
+        for (var i in especiales) {
+            if (key == especiales[i]) {
+                tecla_especial = true;
+                break;
+            }
+        }
+
+        if (letras.indexOf(tecla) == -1 && !tecla_especial) {
+            return false;
+        }
+    }
+</script>

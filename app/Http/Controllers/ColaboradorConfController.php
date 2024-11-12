@@ -1593,20 +1593,24 @@ class ColaboradorConfController extends Controller
 
     public function list_or()
     {
-        $list_organigrama = Organigrama::from('organigrama AS og')->select('og.id','pu.nom_puesto',
-                            'ub.cod_ubi',DB::raw("CASE WHEN og.id_usuario>0 THEN 'Si' 
-                            ELSE 'No' END AS asignado"))
-                            ->join('puesto AS pu','pu.id_puesto','=','og.id_puesto')
-                            ->leftjoin('ubicacion AS ub','ub.id_ubicacion','=','og.id_centro_labor')
-                            ->get();
+        $list_organigrama = Organigrama::from('organigrama AS og')->select(
+            'og.id',
+            'pu.nom_puesto',
+            'ub.cod_ubi',
+            DB::raw("CASE WHEN og.id_usuario>0 THEN 'Si' 
+                            ELSE 'No' END AS asignado")
+        )
+            ->join('puesto AS pu', 'pu.id_puesto', '=', 'og.id_puesto')
+            ->leftjoin('ubicacion AS ub', 'ub.id_ubicacion', '=', 'og.id_centro_labor')
+            ->get();
         return view('rrhh.administracion.colaborador.organigrama.lista', compact('list_organigrama'));
     }
 
     public function create_or()
     {
-        $list_puesto = Puesto::select('id_puesto','nom_puesto')->where('estado',1)
-                        ->orderBy('nom_puesto','ASC')->get();
-        $list_ubicacion =  Ubicacion::select('id_ubicacion','cod_ubi')->where('estado',1)->get();
+        $list_puesto = Puesto::select('id_puesto', 'nom_puesto')->where('estado', 1)
+            ->orderBy('nom_puesto', 'ASC')->get();
+        $list_ubicacion =  Ubicacion::select('id_ubicacion', 'cod_ubi')->where('estado', 1)->get();
         return view('rrhh.administracion.colaborador.organigrama.modal_registrar', compact(
             'list_puesto',
             'list_ubicacion'
@@ -1634,9 +1638,9 @@ class ColaboradorConfController extends Controller
     public function edit_or($id)
     {
         $get_id = Organigrama::findOrFail($id);
-        $list_puesto = Puesto::select('id_puesto','nom_puesto')->where('estado',1)
-                        ->orderBy('nom_puesto','ASC')->get();
-        $list_ubicacion =  Ubicacion::select('id_ubicacion','cod_ubi')->where('estado',1)->get();
+        $list_puesto = Puesto::select('id_puesto', 'nom_puesto')->where('estado', 1)
+            ->orderBy('nom_puesto', 'ASC')->get();
+        $list_ubicacion =  Ubicacion::select('id_ubicacion', 'cod_ubi')->where('estado', 1)->get();
         return view('rrhh.administracion.colaborador.organigrama.modal_editar', compact(
             'get_id',
             'list_puesto',
@@ -4766,5 +4770,46 @@ class ColaboradorConfController extends Controller
             $minutos = 0;
         }
         AsistenciaColaborador::update_tolerancia_horario_cron($minutos);
+    }
+
+    public function Insert_ToleranciaHorario()
+    {
+        $dato['tolerancia'] = $this->input->post("tolerancia");
+        $dato['tipo'] = $this->input->post("tipo");
+        $dato['mod'] = 1;
+        $total = count(AsistenciaColaborador::valida_tolerancia_horario($dato));
+        if ($total > 0) {
+            echo "error";
+        } else {
+            AsistenciaColaborador::insert_tolerancia_horario($dato);
+            $data = AsistenciaColaborador::consulta_tolerancia_horario_activo();
+            if (count($data) > 0) {
+                $minutos = $data[0]['minutos'];
+            } else {
+                $minutos = 0;
+            }
+            AsistenciaColaborador::update_tolerancia_horario_cron($minutos);
+        }
+    }
+
+    public function Update_ToleranciaHorario()
+    {
+        $dato['id_tolerancia'] = $this->input->post("id_tolerancia");
+        $dato['tolerancia'] = $this->input->post("toleranciae");
+        $dato['tipo'] = $this->input->post("tipoe");
+        $dato['mod'] = 2;
+        $total = count(AsistenciaColaborador::valida_tolerancia_horario($dato));
+        if ($total > 0) {
+            echo "error";
+        } else {
+            AsistenciaColaborador::update_tolerancia_horario($dato);
+            $data = AsistenciaColaborador::consulta_tolerancia_horario_activo();
+            if (count($data) > 0) {
+                $minutos = $data[0]['minutos'];
+            } else {
+                $minutos = 0;
+            }
+            AsistenciaColaborador::update_tolerancia_horario_cron($minutos);
+        }
     }
 }
