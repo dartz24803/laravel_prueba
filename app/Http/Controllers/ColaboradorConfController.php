@@ -51,6 +51,7 @@ use App\Models\ToleranciaHorario;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
+use App\Models\Organigrama;
 use App\Models\Ubicacion;
 
 class ColaboradorConfController extends Controller
@@ -1592,72 +1593,78 @@ class ColaboradorConfController extends Controller
 
     public function list_or()
     {
-        $list_sede_laboral = SedeLaboral::select('id', 'descripcion')->where('estado', 1)->get();
-        return view('rrhh.administracion.colaborador.organigrama.lista', compact('list_sede_laboral'));
+        $list_organigrama = Organigrama::from('organigrama AS og')->select('og.id','pu.nom_puesto',
+                            'ub.cod_ubi',DB::raw("CASE WHEN og.id_usuario>0 THEN 'Si' 
+                            ELSE 'No' END AS asignado"))
+                            ->join('puesto AS pu','pu.id_puesto','=','og.id_puesto')
+                            ->leftjoin('ubicacion AS ub','ub.id_ubicacion','=','og.id_centro_labor')
+                            ->get();
+        return view('rrhh.administracion.colaborador.organigrama.lista', compact('list_organigrama'));
     }
 
     public function create_or()
     {
-        return view('rrhh.administracion.colaborador.organigrama.modal_registrar');
+        $list_puesto = Puesto::select('id_puesto','nom_puesto')->where('estado',1)
+                        ->orderBy('nom_puesto','ASC')->get();
+        $list_ubicacion =  Ubicacion::select('id_ubicacion','cod_ubi')->where('estado',1)->get();
+        return view('rrhh.administracion.colaborador.organigrama.modal_registrar', compact(
+            'list_puesto',
+            'list_ubicacion'
+        ));
     }
 
     public function store_or(Request $request)
     {
         $request->validate([
-            'descripcion' => 'required',
+            'id_puesto' => 'gt:0',
+            'id_centro_labor' => 'gt:0'
         ], [
-            'descripcion.required' => 'Debe ingresar nombre.',
+            'id_puesto.gt' => 'Debe seleccionar puesto.',
+            'id_centro_labor.gt' => 'Debe seleccionar centro de labor.'
         ]);
 
-        $valida = SedeLaboral::where('descripcion', $request->descripcion)->where('estado', 1)->exists();
-        if ($valida) {
-            echo "error";
-        } else {
-            SedeLaboral::create([
-                'descripcion' => $request->descripcion,
-                'estado' => 1,
-                'fec_reg' => now(),
-                'user_reg' => session('usuario')->id_usuario,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
-        }
+        Organigrama::create([
+            'id_puesto' => $request->id_puesto,
+            'id_centro_labor' => $request->id_centro_labor,
+            'fecha' => now(),
+            'usuario' => session('usuario')->id_usuario
+        ]);
     }
 
     public function edit_or($id)
     {
-        $get_id = SedeLaboral::findOrFail($id);
-        return view('rrhh.administracion.colaborador.organigrama.modal_editar', compact('get_id'));
+        $get_id = Organigrama::findOrFail($id);
+        $list_puesto = Puesto::select('id_puesto','nom_puesto')->where('estado',1)
+                        ->orderBy('nom_puesto','ASC')->get();
+        $list_ubicacion =  Ubicacion::select('id_ubicacion','cod_ubi')->where('estado',1)->get();
+        return view('rrhh.administracion.colaborador.organigrama.modal_editar', compact(
+            'get_id',
+            'list_puesto',
+            'list_ubicacion'
+        ));
     }
 
     public function update_or(Request $request, $id)
     {
         $request->validate([
-            'descripcione' => 'required',
+            'id_puestoe' => 'gt:0',
+            'id_centro_labore' => 'gt:0'
         ], [
-            'descripcione.required' => 'Debe ingresar nombre.',
+            'id_puestoe.gt' => 'Debe seleccionar puesto.',
+            'id_centro_labore.gt' => 'Debe seleccionar centro de labor.'
         ]);
 
-        $valida = SedeLaboral::where('descripcion', $request->descripcione)->where('estado', 1)
-            ->where('id', '!=', $id)->exists();
-        if ($valida) {
-            echo "error";
-        } else {
-            SedeLaboral::findOrFail($id)->update([
-                'descripcion' => $request->descripcione,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
-        }
+        Organigrama::findOrFail($id)->update([
+            'id_puesto' => $request->id_puestoe,
+            'id_centro_labor' => $request->id_centro_labore,
+            'fecha' => now(),
+            'usuario' => session('usuario')->id_usuario
+        ]);
     }
 
     public function destroy_or($id)
     {
-        SedeLaboral::findOrFail($id)->update([
-            'estado' => 2,
-            'fec_eli' => now(),
-            'user_eli' => session('usuario')->id_usuario
-        ]);
+        Organigrama::destroy($id);
     }
 
     public function Estado_Civil()

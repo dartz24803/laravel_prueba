@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('organigrama', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_puesto');
-            $table->integer('id_usuario')->default(0)->default();
+            $table->unsignedBigInteger('id_centro_labor');
+            $table->integer('id_usuario')->nullable();
             $table->dateTime('fecha')->nullable();
             $table->unsignedBigInteger('usuario');
             $table->foreign('id_puesto','org_fk_id_pue')->references('id_puesto')->on('puesto');
+            $table->foreign('id_centro_labor','org_fk_id_clab')->references('id_ubicacion')->on('ubicacion');
             //$table->timestamps();
         });
     }

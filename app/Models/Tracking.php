@@ -141,7 +141,7 @@ class Tracking extends Model
             if(substr(session('usuario')->centro_labores,0,1)=="B"){
                 $parte = "bh.cod_base='".session('usuario')->centro_labores."' AND";
             }
-            $sql = "SELECT tr.id,tr.n_requerimiento,bd.cod_base AS desde,bh.cod_base AS hacia,
+            $sql = "SELECT tr.id,tr.n_requerimiento,tr.semana,bd.cod_base AS desde,bh.cod_base AS hacia,
                     tp.descripcion AS proceso,
                     CONCAT(CASE WHEN DAYNAME(de.fecha)='Monday' THEN 'Lun'
                     WHEN DAYNAME(de.fecha)='Tuesday' THEN 'Mar'
@@ -192,8 +192,8 @@ class Tracking extends Model
         if(substr(session('usuario')->centro_labores,0,1)=="B"){
             $parte = "bh.cod_base='".session('usuario')->centro_labores."' AND";
         }
-        $sql = "SELECT tde.fecha AS orden,tr.n_requerimiento,bd.cod_base AS desde,bh.cod_base AS hacia,
-                tp.descripcion AS proceso,
+        $sql = "SELECT tde.fecha AS orden,tr.n_requerimiento,tr.semana,bd.cod_base AS desde,
+                bh.cod_base AS hacia,tp.descripcion AS proceso,
                 CONCAT(CASE WHEN DAYNAME(tde.fecha)='Monday' THEN 'Lun'
                 WHEN DAYNAME(tde.fecha)='Tuesday' THEN 'Mar'
                 WHEN DAYNAME(tde.fecha)='Wednesday' THEN 'Mie'

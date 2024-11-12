@@ -344,13 +344,13 @@ use App\Models\TrackingDetalleProceso;
 </style>
 
 @php
-$total = count($list_tracking);
-if($total>0){
-$terminados = count(array_filter($list_tracking, fn($item) => $item->id_estado == "21"));
-$porcentaje = 100*$terminados/$total;
-}else{
-$porcentaje = 0;
-}
+    $total = count($list_tracking);
+    if($total>0){
+        $terminados = count(array_filter($list_tracking, fn($item) => $item->id_estado == "21"));
+        $porcentaje = 100*$terminados/$total;
+    }else{
+        $porcentaje = 0;
+    }
 @endphp
 <div class="progress mb-3">
     <div class="progress-bar bg-secondary" role="progressbar" style="width: {{ $porcentaje }}%;" aria-valuenow="{{ $porcentaje }}" aria-valuemin="0" aria-valuemax="100">{{ number_format($porcentaje,2) }}</div>
@@ -361,6 +361,7 @@ $porcentaje = 0;
         <tr class="text-center">
             <th class="no-content"></th>
             <th>N° requerimiento</th>
+            <th>Semana</th>
             <th>Desde</th>
             <th>Hacia</th>
             <th>Proceso</th>
@@ -655,6 +656,7 @@ $porcentaje = 0;
                 @endif
             </td>
             <td>{{ $list->n_requerimiento }}</td>
+            <td>{{ $list->semana }}</td>
             <td>{{ $list->desde }}</td>
             <td>{{ $list->hacia }}</td>
             <td>{{ $list->proceso }}</td>
@@ -663,7 +665,7 @@ $porcentaje = 0;
             <td>{{ $list->hora }}</td>
         </tr>
         <tr>
-            <td colspan="8" style="width: 100%;">
+            <td colspan="9" style="width: 100%;">
                 <div id="smartwizard{{$list->id}}" dir class="mt-4 mb-5">
                     <ul class="nav">
                         <li class="nav-item">
