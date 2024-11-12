@@ -45,7 +45,8 @@ class MercaderiaSurtida extends Model
                 ms.stk_almacen,ms.stk_tienda
                 FROM mercaderia_surtida ms
                 WHERE ms.tipo=1 AND ms.base=? AND ms.anio='".date('Y')."' AND
-                ms.semana='".date('W')."' AND ms.estilo=? AND ms.estado=0";
+                ms.semana='".date('W')."' AND ms.estilo=? AND ms.estado=0
+                ORDER BY ms.fecha DESC";
         $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base'],$dato['cod_base'],$dato['estilo']]);
         return $query;
     }
@@ -60,7 +61,8 @@ class MercaderiaSurtida extends Model
                 WHEN ms.estado=1 THEN 'Surtido' ELSE '' END AS nom_estado
                 FROM mercaderia_surtida ms
                 WHERE ms.tipo=1 AND ms.base=? AND ms.anio='".date('Y')."' AND
-                ms.semana='".date('W')."' AND ms.estilo=?";
+                ms.semana='".date('W')."' AND ms.estilo=?
+                ORDER BY ms.fecha DESC";
         $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base'],$dato['cod_base'],$dato['estilo']]);
         return $query;
     }
