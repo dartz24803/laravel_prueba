@@ -135,7 +135,7 @@
 
     function Delete_ToleranciaHorario(id) {
         var id = id;
-        var url = "{{ url(' ToleranciaHorario/Delete_ToleranciaHorario') }}";
+        var url = "{{ url('ToleranciaHorario/Delete_ToleranciaHorario') }}";
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({
@@ -171,5 +171,23 @@
                 });
             }
         })
+    }
+
+    function Valida_ToleranciaHorario(t) {
+        v = "";
+        if (t == 2) {
+            v = "e";
+        }
+        if ($('#tipo' + v).val() == '0') {
+            msgDate = 'Debe seleccionar tipo.';
+            inputFocus = '#tipo' + v;
+            return false;
+        }
+        if ($('#tolerancia' + v).val().trim() == '') {
+            msgDate = 'Debe seleccionar tolerancia.';
+            inputFocus = '#tolerancia' + v;
+            return false;
+        }
+        return true;
     }
 </script>

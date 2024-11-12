@@ -1639,4 +1639,37 @@ class AsistenciaColaborador extends Model
         $sql = "UPDATE tolerancia_horario SET estado=2, fec_eli=NOW(), user_eli=" . $id_usuario . " WHERE id_tolerancia = " . $dato['id_tolerancia'] . "";
         DB::statement($sql);
     }
+
+
+    public static function valida_tolerancia_horario($dato)
+    {
+        $v = "";
+        if ($dato['mod'] == 2) {
+            $v = " and id_tolerancia!='" . $dato['id_tolerancia'] . "'";
+        }
+        $sql = "SELECT * FROM tolerancia_horario where tolerancia='" . $dato['tolerancia'] . "' and tipo='" . $dato['tipo'] . "' and estado=1 $v";
+        $query = DB::select($sql);
+        // Convertir el resultado a un array
+        return json_decode(json_encode($query), true);
+    }
+
+    public static function insert_tolerancia_horario($dato)
+    {
+        $id_usuario = session('usuario')->id_usuario;
+        $sql = "UPDATE tolerancia_horario set estado_registro=2,fec_act=NOW(), user_reg='$id_usuario' where estado=1 and estado_registro=1";
+        DB::statement($sql);
+
+        $sql = "INSERT INTO tolerancia_horario (tipo,tolerancia,estado_registro, fec_reg, user_reg, estado) 
+                values ('" . $dato['tipo'] . "','" . $dato['tolerancia'] . "',1, NOW()," . $id_usuario . ", '1')";
+        DB::statement($sql);
+    }
+
+
+    public static function update_tolerancia_horario($dato)
+    {
+        $id_usuario = session('usuario')->id_usuario;
+        $sql = "UPDATE tolerancia_horario set tolerancia='" . $dato['tolerancia'] . "',tipo='" . $dato['tipo'] . "',fec_act=NOW(), 
+                user_act=" . $id_usuario . " where id_tolerancia=" . $dato['id_tolerancia'] . "";
+        DB::statement($sql);
+    }
 }

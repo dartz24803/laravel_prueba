@@ -790,6 +790,8 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::get('ToleranciaHorario/Modal_ToleranciaHorario', 'Modal_ToleranciaHorario');
     Route::post('ToleranciaHorario/Actualizar_ToleranciaHorario', 'Actualizar_ToleranciaHorario');
     Route::post('ToleranciaHorario/Delete_ToleranciaHorario', 'Delete_ToleranciaHorario');
+    Route::post('ToleranciaHorario/Insert_ToleranciaHorario', 'Insert_ToleranciaHorario');
+    Route::post('ToleranciaHorario/Update_ToleranciaHorario', 'Update_ToleranciaHorario');
 
 
     Route::post('ColaboradorConfController/Lista_Horario', 'Lista_Horario');
