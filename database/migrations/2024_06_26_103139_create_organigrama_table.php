@@ -20,7 +20,6 @@ return new class extends Migration
             $table->unsignedBigInteger('usuario');
             $table->foreign('id_puesto','org_fk_id_pue')->references('id_puesto')->on('puesto');
             $table->foreign('id_centro_labor','org_fk_id_clab')->references('id_ubicacion')->on('ubicacion');
-            //$table->timestamps();
         });
     }
 
