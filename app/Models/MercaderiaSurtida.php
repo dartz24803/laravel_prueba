@@ -51,7 +51,7 @@ class MercaderiaSurtida extends Model
         return $query;
     }
 
-    public static function get_list_mercaderia_surtida_vendedor($dato)
+    public static function get_list_merc_surt_vendedor($dato)
     {
         $sql = "SELECT ms.id,ms.sku,ms.color,ms.talla,
                 (SELECT SUM(mn.Total) FROM vw_mercaderia_nueva mn
@@ -64,6 +64,17 @@ class MercaderiaSurtida extends Model
                 ms.semana='".date('W')."' AND ms.estilo=?
                 ORDER BY ms.fecha DESC";
         $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base'],$dato['cod_base'],$dato['estilo']]);
+        return $query;
+    }
+
+    public static function get_list_tusu_merc_surt_vendedor($dato)
+    {
+        $sql = "SELECT tipo_usuario
+                FROM mercaderia_surtida
+                WHERE tipo=1 AND base=? AND anio='".date('Y')."' AND
+                semana='".date('W')."' AND estilo=?
+                GROUP BY tipo_usuario";
+        $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base'],$dato['estilo']]);
         return $query;
     }
 

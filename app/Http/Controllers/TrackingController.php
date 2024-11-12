@@ -3757,12 +3757,25 @@ class TrackingController extends Controller
     {
         try {
             if($request->estilo){
-                $query = MercaderiaSurtida::get_list_mercaderia_surtida_vendedor(['cod_base'=>$request->cod_base,'estilo'=>$request->estilo]);
+                $query = MercaderiaSurtida::get_list_merc_surt_vendedor([
+                    'cod_base' => $request->cod_base,
+                    'estilo' => $request->estilo
+                ]);
+
+                $query_tu = MercaderiaSurtida::get_list_tusu_merc_surt_vendedor([
+                    'cod_base' => $request->cod_base,
+                    'estilo' => $request->estilo
+                ]);
             }else{
                 $query = MercaderiaSurtida::select('estilo','tipo_usuario','descripcion')
                         ->where('tipo',1)->where('anio',date('Y'))->where('semana',date('W'))
                         ->where('base',$request->cod_base)
                         ->groupBy('estilo','tipo_usuario','descripcion')->get();
+
+                $query_tu = MercaderiaSurtida::select('tipo_usuario')
+                            ->where('tipo',1)->where('anio',date('Y'))->where('semana',date('W'))
+                            ->where('base',$request->cod_base)
+                            ->groupBy('tipo_usuario')->get();
             }
         } catch (\Throwable $th) {
             return response()->json([
@@ -3776,7 +3789,12 @@ class TrackingController extends Controller
             ], 404);
         }
 
-        return response()->json($query, 200);
+        $response = [
+            'data' => $query,
+            'tipo_usuario' => $query_tu
+        ];
+
+        return response()->json($response, 200);
     }
     //REQUERIMIENTO DE REPOSICIÓN
     public function insert_requerimiento_reposicion_app(Request $request,$sku)
