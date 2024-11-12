@@ -351,6 +351,20 @@ class AsistenciaColaborador extends Model
         return $query;
     }
 
+    public static  function get_list_semanas_excel($id_semanas = null)
+    {
+        $anio = date('Y-m-d');
+        if (isset($id_semanas) && $id_semanas > 0) {
+            $sql = "SELECT a.* FROM semanas a where a.id_semanas='$id_semanas'";
+        } else {
+            $sql = "SELECT a.* FROM semanas a where a.estado=1 and a.anio='" . $anio . "'";
+        }
+
+        $query = DB::select($sql);
+        // dd($query);
+        // return $query;
+        return json_decode(json_encode($query), true);
+    }
     public static  function get_list_notificacion()
     {
         $id_usuario = session('usuario')->id_usuario;
@@ -819,6 +833,103 @@ class AsistenciaColaborador extends Model
         return $query;
         // return json_decode(json_encode($query), true);
     }
+
+
+    public static function get_list_marcacion_colaborador_inconsistencias_excel($id_asistencia_inconsistencia = null, $dato)
+    {
+        if (isset($id_asistencia_inconsistencia) && $id_asistencia_inconsistencia > 0) {
+            $sql = "SELECT a.id_asistencia_inconsistencia, a.id_usuario, a.centro_labores,
+                    a.id_area, a.fecha, a.id_horario, a.con_descanso, a.dia, a.nom_horario, a.observacion, a.id_turno,
+                    DATE_FORMAT(a.hora_entrada, '%H:%i') as hora_entrada,
+                    (DATE_FORMAT(DATE_ADD(a.hora_entrada, INTERVAL 1 MINUTE), '%H:%i:%s')) as max_hora_entrada,
+                    DATE_FORMAT(a.hora_entrada_desde, '%H:%i') as hora_entrada_desde,
+                    DATE_FORMAT(a.hora_entrada_hasta, '%H:%i') as hora_entrada_hasta,
+                    DATE_FORMAT(a.hora_salida, '%H:%i') as hora_salida,
+                    DATE_FORMAT(a.hora_salida_desde, '%H:%i') as hora_salida_desde,
+                    DATE_FORMAT(a.hora_salida_hasta, '%H:%i') as hora_salida_hasta,
+                    DATE_FORMAT(a.hora_descanso_e, '%H:%i') as hora_descanso_e,
+                    DATE_FORMAT(a.hora_descanso_e_desde, '%H:%i') as hora_descanso_e_desde,
+                    DATE_FORMAT(a.hora_descanso_e_hasta, '%H:%i') as hora_descanso_e_hasta,
+                    DATE_FORMAT(a.hora_descanso_s, '%H:%i') as hora_descanso_s,
+                    DATE_FORMAT(a.hora_descanso_s_desde, '%H:%i') as hora_descanso_s_desde,
+                    DATE_FORMAT(a.hora_descanso_s_hasta, '%H:%i') as hora_descanso_s_hasta,
+                    a.observacion, a.estado, b.usuario_nombres, b.usuario_apater, b.usuario_amater, b.num_doc, b.centro_labores,
+                    CONCAT(CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(b.usuario_nombres, ' ', 1), 1, 1)),
+                    LOWER(SUBSTRING(SUBSTRING_INDEX(b.usuario_nombres, ' ', 1), 2))), ' ',
+                    CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(b.usuario_apater, ' ', 1), 1, 1)),
+                    LOWER(SUBSTRING(SUBSTRING_INDEX(b.usuario_apater, ' ', 1), 2)))) AS colaborador,
+                    CASE WHEN a.tipo_inconsistencia = 3 THEN 'Sin Turno' 
+                    ELSE (
+                        CASE WHEN 
+                        a.con_descanso = 1 THEN 
+                        CONCAT(DATE_FORMAT(a.hora_entrada, '%H:%i'), ' - ', DATE_FORMAT(a.hora_salida, '%H:%i'), ' (', DATE_FORMAT(a.hora_descanso_e, '%H:%i'), ' - ', DATE_FORMAT(a.hora_descanso_s, '%H:%i'), ')')
+                        ELSE CONCAT(DATE_FORMAT(a.hora_entrada, '%H:%i'), ' - ', DATE_FORMAT(a.hora_salida, '%H:%i')) END
+                    ) END AS turno
+                    FROM asistencia_colaborador_inconsistencia a 
+                    LEFT JOIN users b ON a.id_usuario = b.id_usuario
+                    WHERE a.id_asistencia_inconsistencia = '$id_asistencia_inconsistencia' AND a.flag_ausencia = 0";
+        } else {
+
+            $fecha = "ai.fecha='" . $dato['dia'] . "' AND";
+
+
+            if ($dato['tipo_fecha'] == "2") {
+                $fecha = "(ai.fecha BETWEEN '" . $dato['get_semana'][0]['fec_inicio'] . "' AND '" . $dato['get_semana'][0]['fec_fin'] . "') AND";
+            }
+            // dd($dato['dia']);
+            $base = "";
+            if ($dato['base'] != "0") {
+                $base = "ai.centro_labores='" . $dato['base'] . "' AND";
+            }
+
+            $area = "";
+            if ($dato['area'] != "0") {
+                $area = "ai.id_area='" . $dato['area'] . "' AND";
+            }
+
+            $usuario = "";
+            if ($dato['usuario'] != "0") {
+                $usuario = "ai.id_usuario='" . $dato['usuario'] . "' AND";
+            }
+
+            $sql = "SELECT ai.id_asistencia_inconsistencia,
+                    CONCAT(CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(us.usuario_nombres, ' ', 1), 1, 1)),
+                    LOWER(SUBSTRING(SUBSTRING_INDEX(us.usuario_nombres, ' ', 1), 2))), ' ',
+                    CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(us.usuario_apater, ' ', 1), 1, 1)),
+                    LOWER(SUBSTRING(SUBSTRING_INDEX(us.usuario_apater, ' ', 1), 2)))) AS colaborador,
+                    us.num_doc, ai.centro_labores, DATE_FORMAT(ai.fecha, '%d/%m/%Y') AS fecha,
+                    CASE WHEN ai.tipo_inconsistencia = 3 THEN 'Sin Turno'
+                    ELSE (CASE WHEN ai.con_descanso = 1 THEN CONCAT(DATE_FORMAT(ai.hora_entrada, '%H:%i'), ' - ',
+                    DATE_FORMAT(ai.hora_salida, '%H:%i'), ' (', DATE_FORMAT(ai.hora_descanso_e, '%H:%i'), ' - ',
+                    DATE_FORMAT(ai.hora_descanso_s, '%H:%i'), ')') ELSE CONCAT(DATE_FORMAT(ai.hora_entrada, '%H:%i'), ' - ',
+                    DATE_FORMAT(ai.hora_salida, '%H:%i')) END) END AS turno,
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion, '%H:%i') SEPARATOR ', ') 
+                    FROM asistencia_colaborador_marcaciones am
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion = 1 AND 
+                    am.visible = 1 AND am.estado = 1) AS entrada, ai.tipo_inconsistencia,
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion, '%H:%i') SEPARATOR ', ') 
+                    FROM asistencia_colaborador_marcaciones am
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion = 2 AND 
+                    am.visible = 1 AND am.estado = 1) AS salidaarefrigerio, ai.con_descanso,
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion, '%H:%i') SEPARATOR ', ') 
+                    FROM asistencia_colaborador_marcaciones am
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion = 3 AND 
+                    am.visible = 1 AND am.estado = 1) AS entradaderefrigerio,
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion, '%H:%i') SEPARATOR ', ') 
+                    FROM asistencia_colaborador_marcaciones am
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion = 4 AND 
+                    am.visible = 1 AND am.estado = 1) AS salida, us.usuario_nombres, us.usuario_apater, us.usuario_amater
+                    FROM asistencia_colaborador_inconsistencia ai
+                    LEFT JOIN users us ON ai.id_usuario = us.id_usuario
+                    WHERE $fecha $base $area $usuario ai.flag_ausencia = 0 AND ai.estado = 1";
+        }
+
+        $query = DB::select($sql);
+        // return $query;
+        return json_decode(json_encode($query), true);
+    }
+
+
 
     public static function get_list_marcacion_colaborador_inconsistencias_json($id_asistencia_inconsistencia = null, $dato)
     {
@@ -1393,6 +1504,50 @@ class AsistenciaColaborador extends Model
         // Ejecutar la consulta
         $query = DB::select($sql);
 
+        // Convertir el resultado a un array
+        return json_decode(json_encode($query), true);
+    }
+
+    public static function get_list_asistencia_colaborador_excel($id_asistencia_colaborador = null, $dato)
+    {
+        $anio = date('Y');
+        if (isset($id_asistencia_colaborador) && $id_asistencia_colaborador > 0) {
+            $sql = "SELECT a.* 
+            FROM asistencia_colaborador a 
+            where a.id_asistencia_colaborador='$id_asistencia_colaborador'";
+        } else {
+            $base = "";
+            if ($dato['base'] != "0") {
+                $base = " and a.centro_labores='" . $dato['base'] . "'";
+            }
+
+            $area = "";
+            if ($dato['area'] != "0") {
+                $area = " and a.id_area='" . $dato['id_area'] . "'";
+            }
+            $usuario = "";
+            if ($dato['usuario'] != "0") {
+                $usuario = " and a.id_usuario='" . $dato['usuario'] . "'";
+            }
+            $fecha = " and a.fecha='" . $dato['dia'] . "'";
+            if ($dato['tipo_fecha'] == "2") {
+                $fecha = " and month(a.fecha)='" . $dato['mes'] . "' and year(a.fecha)='$anio'";
+            }
+            $sql = "SELECT a.id_usuario,
+            b.usuario_nombres,b.usuario_apater,b.usuario_amater,a.fecha,a.flag_diatrabajado
+            FROM asistencia_colaborador a 
+            left join users b on a.id_usuario=b.id_usuario
+            where a.estado=1 $base $area $usuario $fecha";
+        }
+        $query = DB::select($sql);
+        // Convertir el resultado a un array
+        return json_decode(json_encode($query), true);
+    }
+
+    public static function get_id_mes($cod_mes)
+    {
+        $sql = "SELECT * from mes where cod_mes=$cod_mes";
+        $query = DB::select($sql);
         // Convertir el resultado a un array
         return json_decode(json_encode($query), true);
     }

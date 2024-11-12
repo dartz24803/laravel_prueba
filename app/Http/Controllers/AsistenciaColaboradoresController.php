@@ -24,6 +24,8 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class AsistenciaColaboradoresController extends Controller
 {
@@ -103,6 +105,199 @@ class AsistenciaColaboradoresController extends Controller
         $dato['flag_diatrabajado'] = $this->input->post("flag_diatrabajado_a");
         AsistenciaColaborador::update_asistencia_colaborador_dia_trabajado($dato);
     }
+
+    public function Excel_Asistencia_Colaborador($base, $area, $usuario, $tipo_fecha, $dia, $mes)
+    {
+        $dato['base'] = $base;
+        $dato['area'] = $area;
+        $dato['usuario'] = $usuario;
+        $dato['tipo_fecha'] = $tipo_fecha;
+        $dato['dia'] = $dia;
+        $dato['mes'] = $mes;
+        $list_asistencia = AsistenciaColaborador::get_list_asistencia_colaborador(0, $dato);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getStyle("A1:K1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:K1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Asistencias');
+
+        $sheet->setAutoFilter('A1:K1');
+
+        $sheet->getColumnDimension('A')->setWidth(50);
+        $sheet->getColumnDimension('B')->setWidth(15);
+        $sheet->getColumnDimension('C')->setWidth(15);
+        $sheet->getColumnDimension('D')->setWidth(15);
+        $sheet->getColumnDimension('E')->setWidth(30);
+        $sheet->getColumnDimension('F')->setWidth(15);
+        $sheet->getColumnDimension('G')->setWidth(25);
+        $sheet->getColumnDimension('H')->setWidth(25);
+        $sheet->getColumnDimension('I')->setWidth(15);
+        $sheet->getColumnDimension('J')->setWidth(15);
+        $sheet->getColumnDimension('K')->setWidth(18);
+
+        $sheet->getStyle('A1:K1')->getFont()->setBold(true);
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:K1")->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('C8C8C8');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle("A1:K1")->applyFromArray($styleThinBlackBorderOutline);
+
+        $sheet->setCellValue('A1', 'Colaborador');
+        $sheet->setCellValue('B1', 'DNI');
+        $sheet->setCellValue('C1', 'Base');
+        $sheet->setCellValue('D1', 'Fecha');
+        $sheet->setCellValue('E1', 'Turno');
+        $sheet->setCellValue('F1', 'Entrada');
+        $sheet->setCellValue('G1', 'Salida a refrigerio');
+        $sheet->setCellValue('H1', 'Entrada de refrigerio');
+        $sheet->setCellValue('I1', 'Salida');
+        $sheet->setCellValue('J1', 'Registro');
+        $sheet->setCellValue('K1', 'Dia Laborado');
+
+        $contador = 1;
+        foreach ($list_asistencia as $list) {
+            $contador++;
+
+            $sheet->getStyle("A{$contador}:K{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("E{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:K{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:K{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+
+            $spreadsheet->getActiveSheet()->setCellValue("A{$contador}", $list['usuario_nombres'] . " " . $list['usuario_apater'] . " " . $list['usuario_amater']);
+            $spreadsheet->getActiveSheet()->setCellValue("B{$contador}", $list['num_doc']);
+            $spreadsheet->getActiveSheet()->setCellValue("C{$contador}", $list['centro_labores']);
+            $sheet->setCellValue("D{$contador}", Date::PHPToExcel($list['fecha']));
+            $sheet->getStyle("D{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+            $spreadsheet->getActiveSheet()->setCellValue("E{$contador}", $list['turno']);
+            $spreadsheet->getActiveSheet()->setCellValue("F{$contador}", $list['marcacion_entrada']);
+            $spreadsheet->getActiveSheet()->setCellValue("G{$contador}", $list['marcacion_idescanso']);
+            $spreadsheet->getActiveSheet()->setCellValue("H{$contador}", $list['marcacion_fdescanso']);
+            $spreadsheet->getActiveSheet()->setCellValue("I{$contador}", $list['marcacion_salida']);
+            $spreadsheet->getActiveSheet()->setCellValue("J{$contador}", $list['nom_estado']);
+            $spreadsheet->getActiveSheet()->setCellValue("K{$contador}", $list['flag_diatrabajado']);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Asistencias';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+    }
+
+
+
+    public function Excel_Control_Mensual_Asistencia_Colaborador($base, $area, $usuario, $tipo_fecha, $dia, $mes)
+    {
+        $dato['base'] = $base;
+        $dato['area'] = $area;
+        $dato['usuario'] = $usuario;
+        $dato['tipo_fecha'] = $tipo_fecha;
+        $dato['dia'] = $dia;
+        $dato['mes'] = $mes;
+        $list_asistencia = AsistenciaColaborador::get_list_asistencia_colaborador(0, $dato);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getStyle("A1:K1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:K1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Asistencia Mensual');
+
+        $sheet->setAutoFilter('A1:K1');
+
+        $sheet->getColumnDimension('A')->setWidth(50);
+        $sheet->getColumnDimension('B')->setWidth(15);
+        $sheet->getColumnDimension('C')->setWidth(15);
+        $sheet->getColumnDimension('D')->setWidth(15);
+        $sheet->getColumnDimension('E')->setWidth(30);
+        $sheet->getColumnDimension('F')->setWidth(15);
+        $sheet->getColumnDimension('G')->setWidth(25);
+        $sheet->getColumnDimension('H')->setWidth(25);
+        $sheet->getColumnDimension('I')->setWidth(15);
+        $sheet->getColumnDimension('J')->setWidth(15);
+        $sheet->getColumnDimension('K')->setWidth(18);
+
+        $sheet->getStyle('A1:K1')->getFont()->setBold(true);
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:K1")->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('C8C8C8');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle("A1:K1")->applyFromArray($styleThinBlackBorderOutline);
+
+        $sheet->setCellValue('A1', 'Colaborador');
+        $sheet->setCellValue('B1', 'DNI');
+        $sheet->setCellValue('C1', 'Base');
+        $sheet->setCellValue('D1', 'Fecha');
+        $sheet->setCellValue('E1', 'Turno');
+        $sheet->setCellValue('F1', 'Entrada');
+        $sheet->setCellValue('G1', 'Salida a refrigerio');
+        $sheet->setCellValue('H1', 'Entrada de refrigerio');
+        $sheet->setCellValue('I1', 'Salida');
+        $sheet->setCellValue('J1', 'Registro');
+        $sheet->setCellValue('K1', 'Dia Laborado');
+
+        $contador = 1;
+        foreach ($list_asistencia as $list) {
+            $contador++;
+
+            $sheet->getStyle("A{$contador}:K{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("E{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:K{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:K{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+
+            $spreadsheet->getActiveSheet()->setCellValue("A{$contador}", $list['usuario_nombres'] . " " . $list['usuario_apater'] . " " . $list['usuario_amater']);
+            $spreadsheet->getActiveSheet()->setCellValue("B{$contador}", $list['num_doc']);
+            $spreadsheet->getActiveSheet()->setCellValue("C{$contador}", $list['centro_labores']);
+            $sheet->setCellValue("D{$contador}", Date::PHPToExcel($list['fecha']));
+            $sheet->getStyle("D{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+            $spreadsheet->getActiveSheet()->setCellValue("E{$contador}", $list['turno']);
+            $spreadsheet->getActiveSheet()->setCellValue("F{$contador}", $list['marcacion_entrada']);
+            $spreadsheet->getActiveSheet()->setCellValue("G{$contador}", $list['marcacion_idescanso']);
+            $spreadsheet->getActiveSheet()->setCellValue("H{$contador}", $list['marcacion_fdescanso']);
+            $spreadsheet->getActiveSheet()->setCellValue("I{$contador}", $list['marcacion_salida']);
+            $spreadsheet->getActiveSheet()->setCellValue("J{$contador}", $list['nom_estado']);
+            $spreadsheet->getActiveSheet()->setCellValue("K{$contador}", $list['flag_diatrabajado']);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Asistencia Mensual';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+    }
+
 
 
 
@@ -557,6 +752,164 @@ class AsistenciaColaboradoresController extends Controller
         $dato['get_asist'] = AsistenciaColaborador::get_list_marcacion_colaborador_inconsistencias($id_asistencia_inconsistencia, 0);
         return view('rrhh.AsistenciaColaboradores.asistencia.div_turno_inconsistencia', compact('get_asist'));
     }
+
+    public function Excel_Inconsistencias_Colaborador($base, $area, $usuario, $tipo_fecha, $dia, $semana)
+    {
+        $dato['base'] = $base;
+        $dato['area'] = $area;
+        $dato['usuario'] = $usuario;
+        $dato['tipo_fecha'] = $tipo_fecha;
+        $dato['dia'] = $dia;
+        $dato['semana'] = $semana;
+        $dato['get_semana'] = AsistenciaColaborador::get_list_semanas_excel($dato['semana']);
+        // dd($dato);
+        $list_asistenciai = AsistenciaColaborador::get_list_marcacion_colaborador_inconsistencias_excel(0, $dato);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getStyle("A1:I1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:I1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Asistencias - Inconsistencias');
+
+        $sheet->setAutoFilter('A1:I1');
+
+        $sheet->getColumnDimension('A')->setWidth(50);
+        $sheet->getColumnDimension('B')->setWidth(15);
+        $sheet->getColumnDimension('C')->setWidth(15);
+        $sheet->getColumnDimension('D')->setWidth(15);
+        $sheet->getColumnDimension('E')->setWidth(30);
+        $sheet->getColumnDimension('F')->setWidth(15);
+        $sheet->getColumnDimension('G')->setWidth(25);
+        $sheet->getColumnDimension('H')->setWidth(25);
+        $sheet->getColumnDimension('I')->setWidth(15);
+
+        $sheet->getStyle('A1:I1')->getFont()->setBold(true);
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:I1")->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('C8C8C8');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle("A1:I1")->applyFromArray($styleThinBlackBorderOutline);
+
+        $sheet->setCellValue('A1', 'Colaborador');
+        $sheet->setCellValue('B1', 'DNI');
+        $sheet->setCellValue('C1', 'Base');
+        $sheet->setCellValue('D1', 'Fecha');
+        $sheet->setCellValue('E1', 'Turno');
+        $sheet->setCellValue('F1', 'Entrada');
+        $sheet->setCellValue('G1', 'Salida a refrigerio');
+        $sheet->setCellValue('H1', 'Entrada de refrigerio');
+        $sheet->setCellValue('I1', 'Salida');
+
+        $contador = 1;
+        foreach ($list_asistenciai as $list) {
+            $contador++;
+
+            $sheet->getStyle("A{$contador}:I{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("E{$contador}:I{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:I{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:I{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+
+            $spreadsheet->getActiveSheet()->setCellValue("A{$contador}", $list['usuario_nombres'] . " " . $list['usuario_apater'] . " " . $list['usuario_amater']);
+            $spreadsheet->getActiveSheet()->setCellValue("B{$contador}", $list['num_doc']);
+            $spreadsheet->getActiveSheet()->setCellValue("C{$contador}", $list['centro_labores']);
+            $sheet->setCellValue("D{$contador}", Date::PHPToExcel($list['fecha']));
+            $sheet->getStyle("D{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+            $spreadsheet->getActiveSheet()->setCellValue("E{$contador}", $list['turno']);
+            $marcaciones = explode(', ', $list['entrada']);
+            $marca = "";
+            if (count($marcaciones) == 1 && $marcaciones[0] != "") {
+                $marca = $marcaciones[0];
+            } elseif (count($marcaciones) > 0 && $marcaciones[0] != "") {
+                foreach ($marcaciones as $marcacion) {
+                    $marca = $marca . $marcacion . ", ";
+                }
+                $marca = substr($marca, 0, -2);
+            } else {
+                $marca = "--:--";
+            }
+            $spreadsheet->getActiveSheet()->setCellValue("F{$contador}", $marca);
+
+            $marcaciones = explode(', ', $list['salidaarefrigerio']);
+            $marca = "";
+            if ($list['con_descanso'] == 1) {
+                if (count($marcaciones) == 1 && $marcaciones[0] != "") {
+                    $marca = $marcaciones[0];
+                } elseif (count($marcaciones) > 0 && $marcaciones[0] != "") {
+                    foreach ($marcaciones as $marcacion) {
+                        $marca = $marca . $marcacion . ", ";
+                    }
+                    $marca = substr($marca, 0, -2);
+                } else {
+                    $marca = "--:--";
+                }
+            } else {
+                $marca = "-";
+            }
+
+            $spreadsheet->getActiveSheet()->setCellValue("G{$contador}", $marca);
+
+            $marcaciones = explode(', ', $list['entradaderefrigerio']);
+            $marca = "";
+            if ($list['con_descanso'] == 1) {
+                if (count($marcaciones) == 1 && $marcaciones[0] != "") {
+                    $marca = $marcaciones[0];
+                } elseif (count($marcaciones) > 0 && $marcaciones[0] != "") {
+                    foreach ($marcaciones as $marcacion) {
+                        $marca = $marca . $marcacion . ", ";
+                    }
+                    $marca = substr($marca, 0, -2);
+                } else {
+                    $marca = "--:--";
+                }
+            } else {
+                $marca = "-";
+            }
+            $spreadsheet->getActiveSheet()->setCellValue("H{$contador}", $marca);
+
+            $marcaciones = explode(', ', $list['salida']);
+            $marca = "";
+            if (count($marcaciones) == 1 && $marcaciones[0] != "") {
+                $marca = $marcaciones[0];
+            } elseif (count($marcaciones) > 0 && $marcaciones[0] != "") {
+                foreach ($marcaciones as $marcacion) {
+                    $marca = $marca . $marcacion . ", ";
+                }
+                $marca = substr($marca, 0, -2);
+            } else {
+                $marca = "--:--";
+            }
+            $spreadsheet->getActiveSheet()->setCellValue("I{$contador}", $marca);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Asistencias - Inconsistencias';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+    }
+
+
+
+
+
+
+
 
 
 

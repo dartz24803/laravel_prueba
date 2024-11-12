@@ -147,4 +147,34 @@
             div2.style.display = "block";
         }
     }
+
+
+    function Excel_Asistencia_Colaborador() {
+        Cargando();
+        var base = $('#basei').val();
+        var area = $('#areai').val();
+        var usuario = $('#usuarioi').val();
+        var tipo_fecha = $('input:radio[name=tipo_fechai]:checked').val();
+        var dia = $('#diai').val();
+        var mes = $('#mesi').val();
+        if (tipo_fecha == 1) {
+            window.location = "{{ route('asistencia_colaborador.excel', ['base' => ':base', 'area' => ':area', 'usuario' => ':usuario', 'tipo_fecha' => ':tipo_fecha', 'dia' => ':dia', 'mes' => ':mes']) }}"
+                .replace(':base', base)
+                .replace(':area', area)
+                .replace(':usuario', usuario)
+                .replace(':tipo_fecha', tipo_fecha)
+                .replace(':dia', dia)
+                .replace(':mes', mes);
+
+        } else {
+            window.location = "{{ route('asistencia_colaborador.excel_control', ['base' => ':base', 'area' => ':area', 'usuario' => ':usuario', 'tipo_fecha' => ':tipo_fecha', 'dia' => ':dia', 'mes' => ':mes']) }}"
+                .replace(':base', base)
+                .replace(':area', area)
+                .replace(':usuario', usuario)
+                .replace(':tipo_fecha', tipo_fecha)
+                .replace(':dia', dia)
+                .replace(':mes', mes)
+        }
+
+    }
 </script>

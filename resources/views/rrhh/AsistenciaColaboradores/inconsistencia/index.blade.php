@@ -147,4 +147,24 @@
             div2.style.display = "block";
         }
     }
+
+
+
+
+    function Excel_Asistencia_Colaborador_Inconsistencia() {
+        Cargando();
+        var base = $('#baseih').val();
+        var area = $('#areaih').val();
+        var usuario = $('#usuarioih').val();
+        var tipo_fecha = $('input:radio[name=tipo_fechah]:checked').val();
+        var dia = $('#diaih').val();
+        var semana = $('#semanaih').val();
+        window.location = "{{ route('inconsistencias_colaborador.excel', ['base' => ':base', 'area' => ':area', 'usuario' => ':usuario', 'tipo_fecha' => ':tipo_fecha', 'dia' => ':dia', 'semana' => ':semana']) }}"
+            .replace(':base', base)
+            .replace(':area', area)
+            .replace(':usuario', usuario)
+            .replace(':tipo_fecha', tipo_fecha)
+            .replace(':dia', dia)
+            .replace(':semana', semana)
+    }
 </script>
