@@ -87,18 +87,25 @@ class TrackingController extends Controller
         }elseif($request->cod_base){
             try {
                 if($request->cod_base=="OFI"){
-                    $query = TrackingNotificacion::select('tracking_notificacion.id_tracking',
-                            DB::raw("CONCAT(tracking.n_requerimiento,' - ',base.cod_base) AS n_requerimiento"))
-                            ->join('tracking','tracking.id','=','tracking_notificacion.id_tracking')
-                            ->join('base','base.id_base','=','tracking.id_origen_hacia')
-                            ->groupBy('tracking_notificacion.id_tracking')->get();
+                    $query = TrackingNotificacion::from('tracking_notificacion AS tn')
+                            ->select('tn.id_tracking',
+                            DB::raw("CONCAT(tr.n_requerimiento,' - ',ba.cod_base) AS n_requerimiento"))
+                            ->join('tracking AS tr', function($join) {
+                                $join->on('tr.id', '=', 'tn.id_tracking')
+                                ->where('tr.estado', 1);
+                            })
+                            ->join('base AS ba','ba.id_base','=','tr.id_origen_hacia')
+                            ->groupBy('tn.id_tracking')->get();
                 }else{
-                    $query = TrackingNotificacion::select('tracking_notificacion.id_tracking',
-                            'tracking.n_requerimiento')
-                            ->join('tracking','tracking.id','=','tracking_notificacion.id_tracking')
-                            ->join('base','base.id_base','=','tracking.id_origen_hacia')
-                            ->where('base.cod_base',$request->cod_base)
-                            ->groupBy('tracking_notificacion.id_tracking')->get();
+                    $query = TrackingNotificacion::from('tracking_notificacion AS tn')
+                            ->select('tn.id_tracking','tr.n_requerimiento')
+                            ->join('tracking AS tr', function($join) {
+                                $join->on('tr.id', '=', 'tn.id_tracking')
+                                ->where('tr.estado', 1);
+                            })
+                            ->join('base AS ba','ba.id_base','=','tr.id_origen_hacia')
+                            ->where('ba.cod_base',$request->cod_base)
+                            ->groupBy('tn.id_tracking')->get();
                 }
             } catch (\Throwable $th) {
                 return response()->json([
