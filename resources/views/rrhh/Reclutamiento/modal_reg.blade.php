@@ -70,7 +70,7 @@ $id_usuario = session('usuario')->id_usuario;
             </div>
             <?php }else{?>
                 <input type="hidden" name="id_solicitante" id="id_solicitante" value="<?php echo $id_usuario ?>">
-                <input type="hidden" name="id_evaluador" id="id_evaluador" value="<?php echo $_SESSION['usuario'][0]['id_usuario'] ?>">
+                <input type="hidden" name="id_evaluador" id="id_evaluador" value="<?php echo session('usuario')->id_usuario ?>">
             <?php }?>
             <div class="form-group col-md-2">
                 <label>Vacantes: </label>

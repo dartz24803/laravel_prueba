@@ -87,7 +87,7 @@ $id_puesto=session('usuario')->id_puesto;
                                                     <?php } ?>
                                                     </select>
                                                 </div>
-                                                <div class="col-md-1">
+                                                <div class="col-md-2">
                                                     <button type="button" class="form-control btn btn-primary mb-2 mr-2" title="Registrar" onclick="Buscador_Reclutamiento('2');" >
                                                         Buscar
                                                     </button>

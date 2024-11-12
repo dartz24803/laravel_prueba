@@ -66,13 +66,6 @@
                     @endforeach
                 </select>
             </div>
-
-            <div class="form-group col-lg-2">
-                <label>Cantidad:</label>
-            </div>
-            <div class="form-group col-lg-4">
-                <input type="text" class="form-control" id="cantidad" name="cantidad" placeholder="Ingresar Cantidad" onkeypress="return solo_Numeros(event);">
-            </div>
         </div>
 
         <div class="row">

@@ -65,11 +65,52 @@
 
             $.ajax({
                 url: url,
-                type: "GET",
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
                 success:function (resp) {
                     $('#div_cap').html(resp);  
                     $("#a_reg").removeClass('active');
                     $("#a_ges").addClass('active');
+                }
+            });
+        }
+
+        function Detalle_Gestion(id){
+            Cargando();
+
+            var mes = $('#mesb').val();
+            var anio = $('#aniob').val();
+            var url = "{{ route('cap_ges.detalle', ':id') }}".replace(':id', id);
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {'mes':mes,'anio':anio},
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success:function (resp) {
+                    $('#div_cap').html(resp);
+                }
+            });
+        }
+
+        function Regresar_Gestion(mes,anio){
+            Cargando();
+            
+            var url = "{{ route('cap_ges') }}";
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {'mes':mes,'anio':anio},
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success:function (resp) {
+                    $('#div_cap').html(resp);
                 }
             });
         }

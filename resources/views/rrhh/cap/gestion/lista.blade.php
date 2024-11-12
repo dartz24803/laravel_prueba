@@ -50,8 +50,12 @@
     <tbody>
         @foreach ($list_gestion as $list)
             <tr class="text-center">
-                <td>{{ $list->nom_centro_labor }}</td>
-                <td>{{ $list->cap_aprobado }}</td>
+                <td>
+                    <a style="cursor:pointer;" onclick="Detalle_Gestion('{{ $list->id_centro_labor }}');">
+                        {{ $list->nom_centro_labor }}
+                    </a>
+                </td>
+                <td>{{ number_format($list->cap_aprobado,1) }}</td>
                 <td>{{ number_format($list->dia_1,1) }}</td>
                 <td>{{ number_format($list->dia_2,1) }}</td>
                 <td>{{ number_format($list->dia_3,1) }}</td>

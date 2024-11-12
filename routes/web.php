@@ -807,7 +807,15 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::put('colaborador_conf_ubi/{id}', 'update_ubi')->name('colaborador_conf_ubi.update');
     Route::delete('colaborador_conf_ubi/{id}', 'destroy_ubi')->name('colaborador_conf_ubi.destroy');
     // ----------------------------------------bryan----------------------------------*/
-
+    /*-----------------------------------------Daniel---------------------------------*/
+    Route::get('colaborador_conf_or', 'index_or')->name('colaborador_conf_or');
+    Route::get('colaborador_conf_or/list', 'list_or')->name('colaborador_conf_or.list');
+    Route::get('colaborador_conf_or/create', 'create_or')->name('colaborador_conf_or.create');
+    Route::post('colaborador_conf_or', 'store_or')->name('colaborador_conf_or.store');
+    Route::get('colaborador_conf_or/{id}/edit', 'edit_or')->name('colaborador_conf_or.edit');
+    Route::put('colaborador_conf_or/{id}', 'update_or')->name('colaborador_conf_or.update');
+    Route::delete('colaborador_conf_or/{id}', 'destroy_or')->name('colaborador_conf_or.destroy');
+    /*-----------------------------------------Daniel---------------------------------*/
 });
 //SEGURIDAD - APERTURA Y CIERRE DE TIENDAS CONFIGURABLE
 Route::controller(AperturaCierreTiendaConfController::class)->group(function () {
@@ -1724,8 +1732,10 @@ Route::controller(CapController::class)->group(function () {
     Route::get('cap_reg', 'index_reg')->name('cap_reg');
     Route::post('cap_reg/list', 'list_reg')->name('cap_reg.list');
     Route::post('cap_reg', 'store_reg')->name('cap_reg.store');
-    Route::get('cap_ges', 'index_ges')->name('cap_ges');
+    Route::post('cap_ges', 'index_ges')->name('cap_ges');
     Route::post('cap_ges/list', 'list_ges')->name('cap_ges.list');
+    Route::post('cap_ges/{id}/detalle', 'detalle_ges')->name('cap_ges.detalle');
+    Route::post('cap_ges/{id}/list_detalle', 'list_detalle_ges')->name('cap_ges.list_detalle');
 });
 
 
@@ -2106,7 +2116,9 @@ use App\Http\Controllers\TareasController;
 
 Route::controller(TareasController::class)->group(function () {
     Route::get('Tareas/index', 'Gestion_Pendiente');
-    // Route::post('Tareas/Buscador_Tareas', 'Buscador_Tareas');
+    Route::get('Tareas/Cargar_Mis_Tareas', 'Cargar_Mis_Tareas');
+    Route::post('Tareas/Lista_Mis_Tareas', 'Lista_Mis_Tareas');
+    Route::get('Tareas/Excel_Gestion_Pendiente/{id_area}/{base}/{cpiniciar}/{cproceso}/{cfinalizado}/{cstandby}/{mis_tareas}/{mi_equipo}/{responsablei}', 'Excel_Gestion_Pendiente');
     // Route::get('Tareas/Modal_Tareas', 'Modal_Tareas');
     // Route::post('Tareas/Buscar_Puesto_Area/{id_area}/{t}', 'Buscar_Puesto_Area');
     // Route::post('Tareas/Insert_Tareas', 'Insert_Tareas');
@@ -2115,7 +2127,6 @@ Route::controller(TareasController::class)->group(function () {
     // Route::post('Tareas/List_Tareas_Reclutado', 'List_Tareas_Reclutado');
     // Route::post('Tareas/Delete_Reclutado', 'Delete_Reclutado');
     // Route::post('Tareas/Update_Tareas', 'Update_Tareas');
-    // Route::post('Tareas/Delete_Tareas', 'Delete_Tareas');
     // Route::get('Tareas/Modal_Tareas_Reclutado/{id}', 'Modal_Tareas_Reclutado');
     // Route::post('Tareas/Delete_Tareas_Detalle', 'Delete_Tareas_Detalle');
     // Route::get('Tareas/Excel_Tareas/{id_user}/{p}', 'Excel_Tareas');
