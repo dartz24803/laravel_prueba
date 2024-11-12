@@ -148,4 +148,24 @@
             div2.style.display = "block";
         }
     }
+
+
+
+    function Excel_Tardanza() {
+        Cargando();
+        var base = $('#base_t').val();
+        var area = $('#area_t').val();
+        var usuario = $('#colaborador_t').val();
+        var tipo_fecha = $('input:radio[name=tipo_fecha_t]:checked').val();
+        var dia = $('#dia_t').val();
+        var mes = $('#mes_t').val();
+        window.location = "{{ route('tardanza_colaborador.excel', ['base' => ':base', 'area' => ':area', 'usuario' => ':usuario', 'tipo_fecha' => ':tipo_fecha', 'dia' => ':dia', 'mes' => ':mes']) }}"
+            .replace(':base', base)
+            .replace(':area', area)
+            .replace(':usuario', usuario)
+            .replace(':tipo_fecha', tipo_fecha)
+            .replace(':dia', dia)
+            .replace(':mes', mes);
+
+    }
 </script>
