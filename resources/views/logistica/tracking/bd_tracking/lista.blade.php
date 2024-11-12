@@ -3,6 +3,7 @@
         <tr class="text-center">
             <th>Orden</th>
             <th>N° requerimiento</th>
+            <th>Semana</th>
             <th>Desde</th>
             <th>Hacia</th>
             <th>Proceso</th>
@@ -17,6 +18,7 @@
             <tr class="text-center">
                 <td>{{ $list->orden }}</td>
                 <td>{{ $list->n_requerimiento }}</td>
+                <td>{{ $list->semana }}</td>
                 <td>{{ $list->desde }}</td>
                 <td>{{ $list->hacia }}</td>
                 <td class="text-left">{{ $list->proceso }}</td>
