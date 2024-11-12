@@ -1151,8 +1151,10 @@ class ColaboradorController extends Controller
                             'usuario' => session('usuario')->id_usuario,
                         ]);
                     }else{
+                        $get_usuario = Usuario::findOrFail($request->id_usuario_hp);
                         Organigrama::create([
                             'id_puesto' => $request->id_puesto_hp,
+                            'id_centro_labor' => $get_usuario->id_centro_labor,
                             'id_usuario' => $request->id_usuario_hp,
                             'fecha' => now(),
                             'usuario' => session('usuario')->id_usuario,
@@ -1221,8 +1223,10 @@ class ColaboradorController extends Controller
                         'user_act' => session('usuario')->id_usuario,
                     ]);
                 }else{
+                    $get_usuario = Usuario::findOrFail($request->id_usuario_hp);
                     Organigrama::create([
                         'id_puesto' => $request->id_puesto_hp,
+                        'id_centro_labor' => $get_usuario->id_centro_labor,
                         'id_usuario' => $request->id_usuario_hp,
                         'fecha' => now(),
                         'usuario' => session('usuario')->id_usuario,
@@ -1376,6 +1380,7 @@ class ColaboradorController extends Controller
                 }else{
                     Organigrama::create([
                         'id_puesto' => $get_id->id_puesto,
+                        'id_centro_labor' => $get_id->id_centro_labor,
                         'id_usuario' => $id_usuario,
                         'fecha' => now(),
                         'usuario' => session('usuario')->id_usuario
@@ -1577,6 +1582,7 @@ class ColaboradorController extends Controller
                     }else{
                         Organigrama::create([
                             'id_puesto' => $get_id->id_puesto,
+                            'id_centro_labor' => $get_id->id_centro_labor,
                             'id_usuario' => $get_id->id_usuario,
                             'fecha' => now(),
                             'usuario' => session('usuario')->id_usuario

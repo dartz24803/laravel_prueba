@@ -39,7 +39,7 @@ class Entrenamiento extends Model
                     sp.id_usuario,IFNULL((SELECT ba.id_base FROM base ba 
                     WHERE ba.cod_base=sp.base AND ba.estado=1
                     ORDER BY ba.id_base DESC
-                    LIMIT 1),0) AS id_base
+                    LIMIT 1),0) AS id_base,us.id_centro_labor
                     FROM entrenamiento en
                     LEFT JOIN solicitud_puesto sp ON en.id_solicitud_puesto=sp.id
                     LEFT JOIN users us ON sp.id_usuario=us.id_usuario

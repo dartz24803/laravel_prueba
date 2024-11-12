@@ -509,6 +509,7 @@ class LineaCarreraController extends Controller
                 }else{
                     Organigrama::create([
                         'id_puesto' => $get_id->id_puesto_aspirado,
+                        'id_centro_labor' => $get_id->id_centro_labor,
                         'id_usuario' => $get_id->id_usuario,
                         'fecha' => now(),
                         'usuario' => session('usuario')->id_usuario
