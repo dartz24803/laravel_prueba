@@ -665,7 +665,7 @@ use App\Models\TrackingDetalleProceso;
             <td>{{ $list->hora }}</td>
         </tr>
         <tr>
-            <td colspan="8" style="width: 100%;">
+            <td colspan="9" style="width: 100%;">
                 <div id="smartwizard{{$list->id}}" dir class="mt-4 mb-5">
                     <ul class="nav">
                         <li class="nav-item">
