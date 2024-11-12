@@ -629,6 +629,8 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::delete('colaborador_conf_pu/{id}/funcion', 'delete_funcion_pu')->name('colaborador_conf_pu.delete_funcion');
     Route::post('colaborador_conf_pu/{id}/competencia', 'insert_competencia_pu')->name('colaborador_conf_pu.insert_competencia');
     Route::delete('colaborador_conf_pu/{id}/competencia', 'delete_competencia_pu')->name('colaborador_conf_pu.delete_competencia');
+
+
     Route::get('Index_Datacorp', 'Index_Datacorp');
     Route::post('Listar_Accesos_Datacorp', 'Listar_Accesos_Datacorp');
     Route::get('Modal_Registrar_Datacorp', 'Modal_Registrar_Datacorp');
@@ -782,6 +784,14 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Update_Turno', 'Update_Turno');
     Route::post('ColaboradorConfController/Delete_Turno', 'Delete_Turno');
     Route::post('ColaboradorConfController/Horario', 'Horario');
+
+    Route::post('ToleranciaHorario/list', 'ToleranciaHorario');
+    Route::get('ToleranciaHorario/Modal_Update_ToleranciaHorario/{id}', 'Modal_Update_ToleranciaHorario');
+    Route::get('ToleranciaHorario/Modal_ToleranciaHorario', 'Modal_ToleranciaHorario');
+    Route::post('ToleranciaHorario/Actualizar_ToleranciaHorario', 'Actualizar_ToleranciaHorario');
+    Route::post('ToleranciaHorario/Delete_ToleranciaHorario', 'Delete_ToleranciaHorario');
+
+
     Route::post('ColaboradorConfController/Lista_Horario', 'Lista_Horario');
     Route::post('ColaboradorConfController/Busca_Turno_XBase', 'Busca_Turno_XBase');
     Route::get('ColaboradorConfController/Modal_Horario', 'Modal_Horario');
@@ -2283,6 +2293,9 @@ Route::controller(AsistenciaColaboradoresController::class)->group(function () {
     Route::post('ausencia_colaborador/list', 'list_ausencia_colaborador')->name('ausencia_colaborador.list');
     Route::post('tardanza_colaborador/list', 'list_tardanza_colaborador')->name('tardanza_colaborador.list');
     Route::post('dotacion_colaborador/list', 'list_dotacion_colaborador')->name('dotacion_colaborador.list');
+
+    // TARDANZA
+    Route::get('tardanza_colaborador/excel/{base}/{area}/{usuario}/{tipo_fecha}/{dia}/{mes}', 'Excel_Tardanza')->name('tardanza_colaborador.excel');
 
 
     // DOTACIÓN

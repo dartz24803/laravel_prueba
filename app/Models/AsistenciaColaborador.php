@@ -560,7 +560,6 @@ class AsistenciaColaborador extends Model
         return json_decode(json_encode($query), true);
     }
 
-
     public static function get_list_tardanza($dato)
     {
         /*hd.id_turno>0 AND (WEEKDAY('$fecha')+1)=hd.dia AND*/
@@ -595,6 +594,45 @@ class AsistenciaColaborador extends Model
                 hd.estado=1 AND FLOOR(TIME_TO_SEC(TIMEDIFF(vm.hora_llegada, hd.hora_entrada))/60)>0";
         $query = DB::select($sql);
         return $query;
+        // return json_decode(json_encode($query), true);
+    }
+
+
+    public static function get_list_tardanza_excel($dato)
+    {
+        /*hd.id_turno>0 AND (WEEKDAY('$fecha')+1)=hd.dia AND*/
+        $parte_fecha = "vm.fecha='" . $dato['dia'] . "' AND";
+        if ($dato['tipo_fecha'] == "2") {
+            $parte_fecha = "YEAR(vm.fecha)='" . date('Y') . "' AND MONTH(vm.fecha)='" . $dato['mes'] . "' AND";
+        }
+        $parte_base = "";
+        if ($dato['base'] != "0") {
+            $parte_base = "ub.cod_ubi='" . $dato['base'] . "' AND";
+        }
+        $parte_area = "";
+        if ($dato['area'] != "0") {
+            $parte_area = "pu.id_area='" . $dato['area'] . "' AND";
+        }
+        $parte_usuario = "";
+        if ($dato['usuario'] != "0") {
+            $parte_usuario = "vm.emp_code=" . $dato['usuario'] . " AND";
+        }
+        $sql = "SELECT LOWER(CONCAT(SUBSTRING_INDEX(us.usuario_nombres,' ',1),' ',us.usuario_apater)) AS colaborador,
+                us.centro_labores AS base,LOWER(pu.nom_puesto) AS puesto,vm.emp_code AS dni,
+                DATE_FORMAT(vm.fecha,'%d/%m/%Y') AS fecha,
+                DATE_FORMAT(hd.hora_entrada,'%H:%i') AS hora_inicio_turno,vm.hora_llegada,
+                FLOOR(TIME_TO_SEC(TIMEDIFF(vm.hora_llegada, hd.hora_entrada))/60) AS minutos_atraso
+                FROM zkbiotime.vista_marcacion_minima vm
+                INNER JOIN users us ON vm.emp_code=us.num_doc
+                INNER JOIN ubicacion ub ON ub.id_ubicacion=us.id_centro_labor
+                INNER JOIN puesto pu ON us.id_puesto=pu.id_puesto
+                LEFT JOIN horario_dia hd ON us.id_horario=hd.id_horario AND 
+                hd.id_turno>0 AND (WEEKDAY(vm.fecha)+1)=hd.dia
+                WHERE $parte_fecha $parte_base $parte_area $parte_usuario us.estado=1 AND 
+                hd.estado=1 AND FLOOR(TIME_TO_SEC(TIMEDIFF(vm.hora_llegada, hd.hora_entrada))/60)>0";
+        $query = DB::select($sql);
+        // return $query;
+        return json_decode(json_encode($query), true);
     }
 
 
@@ -1550,5 +1588,55 @@ class AsistenciaColaborador extends Model
         $query = DB::select($sql);
         // Convertir el resultado a un array
         return json_decode(json_encode($query), true);
+    }
+
+
+    public static function get_list_tolerancia_horario($id_tolerancia = null)
+    {
+        if (isset($id_tolerancia) && $id_tolerancia > 0) {
+            $sql = "SELECT * FROM tolerancia_horario WHERE id_tolerancia=$id_tolerancia";
+        } else {
+            $sql = "SELECT a.*, case when a.estado_registro=1 then 'Activo' when a.estado_registro=2 then 'Inactivo' end as desc_estado_registro,
+            case when a.tipo=1 then 'Minuto(s)' when a.tipo=2 then 'Hora(s)' end as desc_tipo
+            FROM tolerancia_horario a 
+            WHERE a.estado='1' ";
+        }
+        $query = DB::select($sql);
+        // Convertir el resultado a un array
+        return json_decode(json_encode($query), true);
+    }
+
+    public static function actualizar_estado_tolerancia_horario($dato)
+    {
+        $id_usuario = session('usuario')->id_usuario;
+        if ($dato['estado_registro'] == 1) {
+            $sql = "UPDATE tolerancia_horario set estado_registro=2,fec_act=NOW(), user_reg='$id_usuario' where estado=1 and estado_registro=1";
+            DB::statement($sql);
+        }
+        $sql = "UPDATE tolerancia_horario SET estado_registro='" . $dato['estado_registro'] . "', fec_act=NOW(), user_act=" . $id_usuario . " WHERE id_tolerancia = " . $dato['id_tolerancia'] . "";
+        DB::statement($sql);
+    }
+
+    public static function update_tolerancia_horario_cron($minutos)
+    {
+        $sql = "UPDATE horario_dia SET 
+                hora_entrada_desde=(DATE_FORMAT(DATE_SUB(hora_entrada,INTERVAL $minutos MINUTE), '%H:%i:%s')),
+                hora_entrada_hasta=(DATE_FORMAT(DATE_ADD(hora_entrada,INTERVAL $minutos MINUTE), '%H:%i:%s')),
+                hora_salida_desde=(DATE_FORMAT(DATE_SUB(hora_salida,INTERVAL $minutos MINUTE), '%H:%i:%s')),
+                hora_salida_hasta=(DATE_FORMAT(DATE_ADD(hora_salida,INTERVAL $minutos MINUTE), '%H:%i:%s')),
+                hora_descanso_e_desde=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_SUB(hora_descanso_e,INTERVAL $minutos MINUTE), '%H:%i:%s')) end,
+                hora_descanso_e_hasta=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_ADD(hora_descanso_e,INTERVAL $minutos MINUTE), '%H:%i:%s')) end,
+                hora_descanso_s_desde=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_SUB(hora_descanso_s,INTERVAL $minutos MINUTE), '%H:%i:%s')) end,
+                hora_descanso_s_hasta=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_ADD(hora_descanso_s,INTERVAL $minutos MINUTE), '%H:%i:%s')) end,
+                fec_act=NOW() 
+                WHERE estado=1";
+        DB::statement($sql);
+    }
+
+    public static function delete_tolerancia_horario($dato)
+    {
+        $id_usuario = session('usuario')->id_usuario;
+        $sql = "UPDATE tolerancia_horario SET estado=2, fec_eli=NOW(), user_eli=" . $id_usuario . " WHERE id_tolerancia = " . $dato['id_tolerancia'] . "";
+        DB::statement($sql);
     }
 }

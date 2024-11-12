@@ -1063,8 +1063,6 @@ class AsistenciaColaboradoresController extends Controller
 
 
 
-
-
     // TARDANZAS
     public function index_tardanza()
     {
@@ -1096,5 +1094,92 @@ class AsistenciaColaboradoresController extends Controller
         $list_tardanza =  AsistenciaColaborador::get_list_tardanza($dato);
         // Retornar la vista con los datos
         return view('rrhh.AsistenciaColaboradores.tardanza.lista', compact('list_tardanza'));
+    }
+
+    public function Excel_Tardanza($base, $area, $usuario, $tipo_fecha, $dia, $mes)
+    {
+        $dato['base'] = $base;
+        $dato['area'] = $area;
+        $dato['usuario'] = $usuario;
+        $dato['tipo_fecha'] = $tipo_fecha;
+        $dato['dia'] = $dia;
+        $dato['mes'] = $mes;
+        $list_tardanza = AsistenciaColaborador::get_list_tardanza_excel($dato);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getStyle("A1:H1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:H1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Tardanza');
+
+        $sheet->setAutoFilter('A1:H1');
+
+        $sheet->getColumnDimension('A')->setWidth(30);
+        $sheet->getColumnDimension('B')->setWidth(15);
+        $sheet->getColumnDimension('C')->setWidth(40);
+        $sheet->getColumnDimension('D')->setWidth(15);
+        $sheet->getColumnDimension('E')->setWidth(15);
+        $sheet->getColumnDimension('F')->setWidth(30);
+        $sheet->getColumnDimension('G')->setWidth(20);
+        $sheet->getColumnDimension('H')->setWidth(25);
+
+        $sheet->getStyle('A1:H1')->getFont()->setBold(true);
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:H1")->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('C8C8C8');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle("A1:H1")->applyFromArray($styleThinBlackBorderOutline);
+
+        $sheet->setCellValue("A1", 'Colaborador');
+        $sheet->setCellValue("B1", 'Base');
+        $sheet->setCellValue("C1", 'Puesto');
+        $sheet->setCellValue("D1", 'DNI');
+        $sheet->setCellValue("E1", 'Fecha');
+        $sheet->setCellValue("F1", 'Hora de inicio de turno');
+        $sheet->setCellValue("G1", 'Hora de llegada');
+        $sheet->setCellValue("H1", 'Minutos de atraso');
+
+        $contador = 1;
+
+        foreach ($list_tardanza as $list) {
+            $contador++;
+
+            $sheet->getStyle("A{$contador}:H{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("C{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:H{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:H{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+
+            $sheet->setCellValue("A{$contador}", ucwords($list['colaborador']));
+            $sheet->setCellValue("B{$contador}", $list['base']);
+            $sheet->setCellValue("C{$contador}", ucwords($list['puesto']));
+            $sheet->setCellValue("D{$contador}", $list['dni']);
+            $sheet->setCellValue("E{$contador}", Date::PHPToExcel($list['fecha']));
+            $sheet->getStyle("E{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+            $sheet->setCellValue("F{$contador}", $list['hora_inicio_turno']);
+            $sheet->setCellValue("G{$contador}", $list['hora_llegada']);
+            $sheet->setCellValue("H{$contador}", $list['minutos_atraso']);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Tardanza';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
     }
 }
