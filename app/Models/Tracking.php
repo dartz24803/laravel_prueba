@@ -83,7 +83,9 @@ class Tracking extends Model
                     CASE WHEN tr.tipo_pago=1 THEN 'Si pago' WHEN tr.tipo_pago=2 THEN 'Por pagar' 
                     ELSE '' END AS nom_tipo_pago,YEAR(tr.fec_reg) AS anio,
                     (IFNULL(paquetes,0)+IFNULL(sobres,0)+IFNULL(fardos,0)+IFNULL(caja,0)) AS bultos,
-                    ROUND(IFNULL(tr.importe_transporte,0)/tr.mercaderia_total,2) AS flete_prenda_formateado,
+                    ROUND(IFNULL((SELECT IFNULL(tt.importe_transporte,0) FROM tracking_transporte tt
+                    WHERE tt.id_base=tr.id_origen_hacia AND tt.anio=YEAR(tr.fec_reg) AND
+                    tt.semana=tr.semana),0)/tr.mercaderia_total,2) AS flete_prenda_formateado,
                     (SELECT CONCAT(DAY(tde.fecha),' de ',LOWER((SELECT me.nom_mes FROM mes me
                     WHERE me.cod_mes=MONTH(tde.fecha))),' del ',YEAR(tde.fecha)) 
                     FROM tracking_detalle_estado tde

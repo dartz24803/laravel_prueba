@@ -148,6 +148,7 @@ Route::controller(TrackingController::class)->group(function () {
     Route::post('tracking/insert_detalle_transporte_inicial', 'insert_detalle_transporte_inicial')->name('tracking.insert_detalle_transporte_inicial');
     Route::get('tracking/modal_guia_transporte', 'modal_guia_transporte')->name('tracking.modal_guia_transporte');
     Route::post('tracking/insert_guia_transporte', 'insert_guia_transporte')->name('tracking.insert_guia_transporte');
+    Route::get('tracking/pago_transporte_general', 'pago_transporte_general')->name('tracking.pago_transporte_general');
     Route::get('tracking/{id}/detalle_transporte', 'detalle_transporte')->name('tracking.detalle_transporte');
     Route::post('tracking/{id}/insert_detalle_transporte', 'insert_detalle_transporte')->name('tracking.insert_detalle_transporte');
     Route::post('tracking/{id}/confirmacion_llegada', 'insert_confirmacion_llegada')->name('tracking.confirmacion_llegada');
