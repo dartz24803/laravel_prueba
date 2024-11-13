@@ -99,10 +99,10 @@ class MercaderiaSurtida extends Model
                     ORDER BY fecha DESC";
             $query = DB::connection('sqlsrv')->select($sql, [$dato['id_padre']]);
         }elseif(isset($dato['estilo'])){
-            $sql = "SELECT id_padre AS id,estilo 
+            $sql = "SELECT id_padre AS id,estilo,tipo_usuario
                     FROM mercaderia_surtida
                     WHERE tipo=3 AND base=?
-                    GROUP BY id_padre,estilo
+                    GROUP BY id_padre,estilo,tipo_usuario
                     ORDER BY estilo ASC";
             $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);        
         }else{
