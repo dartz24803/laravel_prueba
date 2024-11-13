@@ -1,13 +1,12 @@
-<link href="<?php echo base_url(); ?>template/inputfiles/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('template/inputfiles/css/fileinput.css') }}" media="all" rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
-<link href="<?php echo base_url(); ?>template/inputfiles/themes/explorer-fas/theme.css" media="all" rel="stylesheet" type="text/css"/>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/plugins/piexif.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/plugins/sortable.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/fileinput.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/locales/fr.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/locales/es.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/themes/fas/theme.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/themes/explorer-fas/theme.js" type="text/javascript"></script>
+<link href="{{ asset('template/inputfiles/themes/explorer-fas/theme.css') }}" media="all" rel="stylesheet" type="text/css"/>
+<script src="{{ asset('template/inputfiles/js/plugins/piexif.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/plugins/sortable.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/fileinput.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/locales/es.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/themes/fas/theme.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/themes/explorer-fas/theme.js') }}" type="text/javascript"></script>
 
 <style>
     .input-group > .input-group-append > .btn, .input-group > .input-group-append > .input-group-text, .input-group > .input-group-prepend:first-child > .btn:not(:first-child), .input-group > .input-group-prepend:first-child > .input-group-text:not(:first-child), .input-group > .input-group-prepend:not(:first-child) > .btn, .input-group > .input-group-prepend:not(:first-child) > .input-group-text {
@@ -109,24 +108,18 @@
                         <?php if($mostrar==1){ ?>
                             <div class="form-group col-md-2">
                                 <label class="control-label text-bold">Etiqueta: </label>
-                            </div>   
+                            </div>
                             <div class="form-group col-md-10">         
                                 <select class="form-control basic_1u" name="id_subitem" id="id_subitem">
                                     <option value="0">Seleccionar</option>
                                     <?php foreach($list_subitem as $list){ ?>
-                                        <option value="<?php echo $list['id_subitem']; ?>" <?php if($list['id_subitem']==$get_id[0]['id_subitem']){ echo "selected"; } ?>>
-                                            <?php echo $list['nom_subitem']; ?>
+                                        <option value="<?php echo $list->id_subitem; ?>" <?php if($list->id_subitem==$get_id[0]['id_subitem']){ echo "selected"; } ?>>
+                                            <?php echo $list->nom_subitem; ?>
                                         </option>
                                     <?php } ?>
                                 </select>
                             </div>
                         <?php } ?>
-
-                        <?php /*if($get_id[0]['id_area']==18){ ?>
-                            <div class="form-group col-md-12">
-                                <label class="control-label text-bold">Dificultad: <?php echo $get_id[0]['nom_dificultad']; ?></label> 
-                            </div>   
-                        <?php }*/ ?>
 
                         <div class="form-group col-md-2">
                             <label class="control-label text-bold">Asignado a: </label>
@@ -135,8 +128,8 @@
                             <select class="form-control basic_2u" id="id_responsable" name="id_responsable">
                                 <option value="0">Seleccionar</option>
                                 <?php foreach($list_responsable as $list){ ?>
-                                    <option value="<?php echo $list['id_usuario']; ?>" <?php if($list['id_usuario']==$get_id[0]['id_responsable']){ echo "selected"; } ?>>
-                                        <?php echo $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']; ?>
+                                    <option value="<?php echo $list->id_usuario; ?>" <?php if($list->id_usuario==$get_id[0]['id_responsable']){ echo "selected"; } ?>>
+                                        <?php echo $list->usuario_nombres." ".$list->usuario_apater." ".$list->usuario_amater; ?>
                                     </option>
                                 <?php } ?>
                             </select>
@@ -156,8 +149,8 @@
                             <select class="form-control" name="estado" id="estado" onchange="Estado_Pendiente();">
                                 <option value="0">Seleccionar</option>
                                 <?php foreach($list_estado as $list){ ?>
-                                    <option value="<?php echo $list['id_estado_tickets']; ?>" <?php if($list['id_estado_tickets']==$get_id[0]['estado']){ echo "selected"; } ?>>
-                                        <?php echo $list['nom_estado_tickets']; ?>
+                                    <option value="<?php echo $list->id_estado_tickets; ?>" <?php if($list->id_estado_tickets==$get_id[0]['estado']){ echo "selected"; } ?>>
+                                        <?php echo $list->nom_estado_tickets; ?>
                                     </option>
                                 <?php } ?>
                             </select>
@@ -434,7 +427,7 @@
 
     <div class="modal-footer">
         <input name="id_pendiente" type="hidden" class="form-control" id="id_pendiente" value="<?php echo $get_id[0]['id_pendiente']; ?>">
-        <input type="hidden" id="nivel_busqueda" name="nivel_busqueda" value="<?php echo $_SESSION['usuario'][0]['id_nivel']; ?>">
+        <input type="hidden" id="nivel_busqueda" name="nivel_busqueda" value="<?php echo session('usuario')->id_nivel; ?>">
         <button class="btn btn-primary mt-3" onclick="Update_Gestion_Pendiente();" type="button">Guardar</button>
         <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
@@ -490,7 +483,7 @@
 
     $(document).on('click', '#download_file', function () {
         image_id = $(this).data('image_id');
-        window.location.replace("<?php echo site_url(); ?>Corporacion/Descargar_Archivo_Pendiente/" + image_id);
+        window.location.replace("{{ url('Tareas/Descargar_Archivo_Pendiente')}}/" + image_id);
     });
 
     $(document).on('click', '#delete_file', function () {
@@ -498,7 +491,7 @@
         var file_col = $('#i_' + image_id);
         $.ajax({
             type: 'POST',
-            url: '<?php echo site_url(); ?>Corporacion/Delete_Archivo_Pendiente',
+            url: "{{ url('Tareas/Delete_Archivo_Pendiente')}}",
             data: {'image_id':image_id},
             success: function (data) {
                 file_col.remove();            
@@ -508,7 +501,7 @@
 
     $(document).on('click', '#download_file_gestion', function () {
         image_id = $(this).data('image_id');
-        window.location.replace("<?php echo site_url(); ?>Corporacion/Descargar_Archivo_Gestion_Pendiente/" + image_id);
+        window.location.replace("{{ url('Tareas/Descargar_Archivo_Gestion_Pendiente')}}/" + image_id);
     });
 
     $(document).on('click', '#delete_file_gestion', function () {
@@ -516,7 +509,7 @@
         var file_col = $('#i_' + image_id);
         $.ajax({
             type: 'POST',
-            url: '<?php echo site_url(); ?>Corporacion/Delete_Archivo_Gestion_Pendiente',
+            url: "{{ url('Tareas/Delete_Archivo_Gestion_Pendiente') }}",
             data: {'image_id':image_id},
             success: function (data) {
                 file_col.remove();            
@@ -528,13 +521,17 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario_gpendiente_editar'));
-        var url = "<?php echo site_url(); ?>Corporacion/Update_Gestion_Pendiente";
+        var url = "{{ url('Tareas/Update_Gestion_Pendiente') }}";
         var id_nivel = $("#nivel_busqueda").val();
+        var csrfToken = $('input[name="_token"]').val();
 
         if (Valida_Update_Gestion_Pendiente()) {
             $.ajax({
                 type: "POST",
                 url: url,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 data: dataString,
                 processData: false,
                 contentType: false,
@@ -549,40 +546,47 @@
                     });
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
         }
     }
 
     function Valida_Update_Gestion_Pendiente() {
         if ($('#id_responsable').val() == '0') {
             msgDate = 'Debe seleccionar Asignado a.';
-            inputFocus = '#id_responsable';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
         if ($('#estado').val() == '0') {
             msgDate = 'Debe seleccionar Estado.';
-            inputFocus = '#estado';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
         if($('#estado').val() == '3'){
             if ($('#f_entrega').val() == '') {
                 msgDate = 'Debe ingresar Fecha de termino.';
-                inputFocus = '#f_entrega';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
                 return false;
             }
         }
         if ($('#comentario').val() != '') {
             if ($('#id_responsable').val() == '0') {
                 msgDate = 'Debe seleccionar Asignado a para poder ingresar comentarios.';
-                inputFocus = '#id_responsable';
+                Swal(
+                    'Ups!',
+                    msgDate,
+                    'warning'
+                ).then(function() { });
                 return false;
             }
         }
