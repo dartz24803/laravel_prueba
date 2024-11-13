@@ -208,7 +208,7 @@ class TareasController extends Controller
                 //Responsable
                 $id_usuario2= $dato['get_bd'][0]['id_responsable'];
                 $resp = $this->Model_Perfil->get_id_usuario($id_usuario2);
-/*
+
                 $mail = new PHPMailer(true);
 
                 try {
@@ -255,7 +255,7 @@ class TareasController extends Controller
 
                 }catch(Exception $e) {
                     echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-                }*/
+                }
             }
 
             if($dato['comentario']!=""){
