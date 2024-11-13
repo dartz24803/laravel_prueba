@@ -2058,46 +2058,143 @@ class TrackingController extends Controller
 
     public function insert_mercaderia_entregada($id)
     {
-        //ALERTA 13
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
-        $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
-        foreach($list_token as $token){
+        //VALIDAR SI HAY DIFERENCIA INCLUSO, SI INDICO QUE MERCADERÍA LLEGO EN BUENAS CONDICIONES
+        if($get_id->id_estado=="13"){
+            //INSERTAR DATOS DE DIFERENCIAS
+            TrackingDiferencia::where('id_tracking',$id)->delete();
+            try {
+                $list_diferencia = DB::connection('sqlsrv')->select('EXEC usp_web_ver_dif_bultos_x_req ?', [$get_id->n_requerimiento]);
+            } catch (\Throwable $th) {
+                $list_diferencia = [];
+            }
+
+            foreach($list_diferencia as $list){
+                TrackingDiferencia::create([
+                    'id_tracking' => $id,
+                    'sku' => $list->SKU,
+                    'estilo' => $list->Estilo,
+                    'bulto' => $list->Bulto,
+                    'color_talla' => $list->Col_Tal,
+                    'enviado' => $list->Enviado,
+                    'recibido' => $list->Recibido,
+                    'observacion' => $list->Observacion
+                ]);
+            }
+            $v_diferencia = TrackingDiferencia::where('id_tracking',$id)
+                            ->whereIn('observacion',['Sobrante','Faltante'])->count();
+            //VALIDAR SI HAY DIFERENCIA, si hay se pasa a diferencia, sino se termina el proceso
+            if($v_diferencia>0){
+                Tracking::findOrFail($id)->update([
+                    'diferencia' => 1,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+    
+                $tracking_dp = TrackingDetalleProceso::create([
+                    'id_tracking' => $id,
+                    'id_proceso' => 7,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+        
+                TrackingDetalleEstado::create([
+                    'id_detalle' => $tracking_dp->id,
+                    'id_estado' => 14,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+
+                echo "diferencia";
+            }else{
+                //ALERTA 13
+                $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
+                foreach($list_token as $token){
+                    $dato = [
+                        'token' => $token->token,
+                        'titulo' => 'MERCADERÍA ENTREGADA',
+                        'contenido' => 'La mercadería fue distribuida con éxito',
+                    ];
+                    $this->sendNotification($dato);
+                }
+                $dato = [
+                    'id_tracking' => $id,
+                    'titulo' => 'MERCADERÍA ENTREGADA',
+                    'contenido' => 'La mercadería fue distribuida con éxito',
+                ];
+                $this->insert_notificacion($dato);
+
+                $tracking_dp = TrackingDetalleProceso::create([
+                    'id_tracking' => $id,
+                    'id_proceso' => 9,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+
+                TrackingDetalleEstado::create([
+                    'id_detalle' => $tracking_dp->id,
+                    'id_estado' => 21,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+            }
+        }else{
+            //ALERTA 13
+            $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
+            foreach($list_token as $token){
+                $dato = [
+                    'token' => $token->token,
+                    'titulo' => 'MERCADERÍA ENTREGADA',
+                    'contenido' => 'La mercadería fue distribuida con éxito',
+                ];
+                $this->sendNotification($dato);
+            }
             $dato = [
-                'token' => $token->token,
+                'id_tracking' => $id,
                 'titulo' => 'MERCADERÍA ENTREGADA',
                 'contenido' => 'La mercadería fue distribuida con éxito',
             ];
-            $this->sendNotification($dato);
+            $this->insert_notificacion($dato);
+
+            $tracking_dp = TrackingDetalleProceso::create([
+                'id_tracking' => $id,
+                'id_proceso' => 9,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+
+            TrackingDetalleEstado::create([
+                'id_detalle' => $tracking_dp->id,
+                'id_estado' => 21,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
         }
-        $dato = [
-            'id_tracking' => $id,
-            'titulo' => 'MERCADERÍA ENTREGADA',
-            'contenido' => 'La mercadería fue distribuida con éxito',
-        ];
-        $this->insert_notificacion($dato);
-
-        $tracking_dp = TrackingDetalleProceso::create([
-            'id_tracking' => $id,
-            'id_proceso' => 9,
-            'fecha' => now(),
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
-
-        TrackingDetalleEstado::create([
-            'id_detalle' => $tracking_dp->id,
-            'id_estado' => 21,
-            'fecha' => now(),
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
     }
 
     public function reporte_mercaderia($id)
