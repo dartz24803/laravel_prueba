@@ -208,7 +208,7 @@ class TareasController extends Controller
                 //Responsable
                 $id_usuario2= $dato['get_bd'][0]['id_responsable'];
                 $resp = $this->Model_Perfil->get_id_usuario($id_usuario2);
-/*
+
                 $mail = new PHPMailer(true);
 
                 try {
@@ -219,7 +219,7 @@ class TareasController extends Controller
                     $mail->Username   =  'intranet@lanumero1.com.pe';
                     $mail->Password   =  'lanumero1$1';
                     $mail->SMTPSecure =  'tls';
-                    $mail->Puerto     =  587;
+                    $mail->Port     =  587;
                     $mail->setFrom('intranet@lanumero1.com.pe','PENDIENTE');
 
                     if($soli[0]['encargado_p']=="SI"){
@@ -255,7 +255,7 @@ class TareasController extends Controller
 
                 }catch(Exception $e) {
                     echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-                }*/
+                }
             }
 
             if($dato['comentario']!=""){
