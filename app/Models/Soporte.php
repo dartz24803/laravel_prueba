@@ -16,11 +16,23 @@ class Soporte extends Model
 
     protected $primaryKey = 'id_soporte';
 
-    protected $fillable = ['id_especialidad', 'id_area', 'id_elemento', 'id_asunto', 'id_sede', 'idsoporte_nivel', 'idsoporte_area_especifica', 'codigo', 'idsoporte_motivo_cancelacion', 'idsoporte_tipo', 'area_cancelacion', 'id_segundo_responsable', 'idsoporte_solucion', 'img1', 'img2', 'img3', 'img4', 'img5', 'idsoporte_ejecutor', 'id_responsable', 'fec_vencimiento', 'fec_cierre', 'fec_cierre_sr', 'descripcion', 'estado', 'estado_registro', 'estado_registro_sr', 'fec_reg', 'user_reg', 'fec_act', 'user_act', 'fec_eli', 'user_eli'];
+    protected $fillable = ['id_especialidad', 'id_area', 'id_elemento', 'id_asunto', 'id_sede', 'idsoporte_nivel', 'idsoporte_area_especifica', 'codigo', 'idsoporte_motivo_cancelacion', 'area_cancelacion', 'id_segundo_responsable', 'idsoporte_solucion', 'img1', 'img2', 'img3', 'img4', 'img5', 'idsoporte_ejecutor', 'id_responsable', 'fec_vencimiento', 'fec_cierre', 'fec_cierre_sr', 'descripcion', 'estado', 'estado_registro', 'estado_registro_sr', 'fec_reg', 'user_reg', 'fec_act', 'user_act', 'fec_eli', 'user_eli', 'tipo_otros', 'activo_tipo'];
 
     public static function listTicketsSoporte()
     {
-        return self::select('soporte.*', 'soporte_elemento.nombre as nombre_elemento', 'especialidad.nombre as nombre_especialidad', 'soporte_asunto.nombre as nombre_asunto', 'sede_laboral.descripcion as nombre_sede', 'soporte_nivel.nombre as nombre_ubicacion', 'soporte_area_especifica.nombre as nombre_area_especifica', 'area.nom_area as nombre_area', 'users.centro_labores as base', 'users.usuario_nombres as usuario_nombre', 'soporte_motivo_cancelacion.idsoporte_motivo_cancelacion as idsoporte_motivo_cancelacion')
+        return self::select(
+            'soporte.*',
+            'soporte_elemento.nombre as nombre_elemento',
+            'especialidad.nombre as nombre_especialidad',
+            'soporte_asunto.nombre as nombre_asunto',
+            'sede_laboral.descripcion as nombre_sede',
+            'soporte_nivel.nombre as nombre_ubicacion',
+            'soporte_area_especifica.nombre as nombre_area_especifica',
+            'area.nom_area as nombre_area',
+            'users.centro_labores as base',
+            DB::raw("IF(users.usuario_apater IS NOT NULL AND users.usuario_apater != '', CONCAT(users.usuario_nombres, ' ', users.usuario_apater), users.usuario_nombres) as usuario_nombre_completo"),
+            'soporte_motivo_cancelacion.idsoporte_motivo_cancelacion as idsoporte_motivo_cancelacion'
+        )
             ->leftjoin('especialidad', 'soporte.id_especialidad', '=', 'especialidad.id')
             ->leftjoin('soporte_elemento', 'soporte.id_elemento', '=', 'soporte_elemento.idsoporte_elemento')
             ->leftjoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
@@ -50,9 +62,20 @@ class Soporte extends Model
             'soporte_nivel.nombre as nombre_ubicacion',
             'soporte_area_especifica.nombre as nombre_area_especifica',
             'area.nom_area as nombre_area',
-            'users.usuario_nombres as usuario_nombre',
+            DB::raw("IF(users.usuario_apater IS NOT NULL AND users.usuario_apater != '', CONCAT(users.usuario_nombres, ' ', users.usuario_apater), users.usuario_nombres) as usuario_nombre_completo"),
             'users.centro_labores as base',
-            'st.nombre as nombre_tipo',
+            DB::raw("
+                CASE 
+                    WHEN soporte.activo_tipo = 1 THEN 
+                        CASE 
+                            WHEN soporte.tipo_otros = 0 THEN 'Otro' 
+                            WHEN soporte.tipo_otros = 1 THEN 'Requerimiento' 
+                            WHEN soporte.tipo_otros = 2 THEN 'Incidente' 
+                            ELSE st.nombre 
+                        END
+                    ELSE st.nombre 
+                END as nombre_tipo
+            "),
             DB::raw(
                 "
                 CASE 
@@ -124,7 +147,18 @@ class Soporte extends Model
             'users.usuario_nombres as usuario_nombre',
             'users.usuario_email as usuario_email',
             'users.centro_labores as base',
-            'st.nombre as nombre_tipo',
+            DB::raw("
+            CASE 
+                    WHEN soporte.activo_tipo = 1 THEN 
+                        CASE 
+                            WHEN soporte.tipo_otros = 0 THEN 'Otro' 
+                            WHEN soporte.tipo_otros = 1 THEN 'Requerimiento' 
+                            WHEN soporte.tipo_otros = 2 THEN 'Incidente' 
+                            ELSE st.nombre 
+                        END
+                    ELSE st.nombre 
+                END as nombre_tipo
+            "),
             DB::raw("CASE
                 WHEN soporte.id_responsable IS NULL
                 THEN 'SIN DESIGNAR'
@@ -261,16 +295,32 @@ class Soporte extends Model
             ->select('responsable_multiple', 'id_area')
             ->where('idsoporte_asunto', $id_asunto)
             ->first();
-
-        // Si no se encuentra el registro, retorna null
         if (!$result) {
             return null;
         }
-
-        // Divide id_area en caso de múltiples IDs
         $idAreas = explode(',', $result->id_area);
+        $codAreas = DB::table('area')
+            ->whereIn('id_area', $idAreas)
+            ->pluck('cod_area')
+            ->toArray();
 
-        // Obtén los códigos de área correspondientes y formatea el resultado
+        return [
+            'responsable_multiple' => $result->responsable_multiple,
+            'cod_area' => implode('-', $codAreas) // Formato "TI -MTO"
+        ];
+    }
+
+    public static function getCodAreaByIdArea($id_area)
+    {
+        // Obtén el registro de soporte_asunto directamente sin unirte a soporte
+        $result = DB::table('soporte_asunto')
+            ->select('responsable_multiple', 'id_area')
+            ->where('idsoporte_asunto', $id_area)
+            ->first();
+        if (!$result) {
+            return null;
+        }
+        $idAreas = explode(',', $result->id_area);
         $codAreas = DB::table('area')
             ->whereIn('id_area', $idAreas)
             ->pluck('cod_area')
@@ -336,5 +386,95 @@ class Soporte extends Model
             ->where('soporte.estado', 1)
             ->orderBy('soporte.fec_reg', 'DESC')
             ->get();
+    }
+
+
+    public static function listTablaGeneralSoporteFiltro($dato)
+    {
+        $query = self::select(
+            'soporte.*',
+            'soporte_elemento.nombre as nombre_elemento',
+            'especialidad.nombre as nombre_especialidad',
+            'soporte_asunto.nombre as nombre_asunto',
+            'sede_laboral.descripcion as nombre_sede',
+            'soporte_nivel.nombre as nombre_ubicacion',
+            'soporte_area_especifica.nombre as nombre_area_especifica',
+            'users.centro_labores as base',
+            'users.usuario_nombres as usuario_nombre',
+            'soporte_motivo_cancelacion.idsoporte_motivo_cancelacion as idsoporte_motivo_cancelacion',
+            DB::raw("CASE 
+                        WHEN soporte.id_area = 0 THEN (
+                            SELECT GROUP_CONCAT(area.nom_area SEPARATOR ', ')
+                            FROM area
+                            WHERE FIND_IN_SET(area.id_area, soporte_asunto.id_area) > 0
+                        )
+                        ELSE area.nom_area
+                    END as nombre_area"),
+            DB::raw("CASE 
+                        WHEN responsable.id_usuario IS NULL AND segundo_responsable.id_usuario IS NULL THEN 'SIN ASIGNAR'
+                        WHEN responsable.id_usuario IS NULL THEN CONCAT(segundo_responsable.usuario_nombres, ' ', segundo_responsable.usuario_apater)
+                        WHEN segundo_responsable.id_usuario IS NULL THEN CONCAT(responsable.usuario_nombres, ' ', responsable.usuario_apater)
+                        ELSE CONCAT(responsable.usuario_nombres, ' ', responsable.usuario_apater, ' / ', segundo_responsable.usuario_nombres, ' ', segundo_responsable.usuario_apater)
+                    END as nombres_responsables"),
+            DB::raw("CASE 
+                        WHEN soporte_asunto.idsoporte_tipo = 1 THEN 'Requerimiento'
+                        WHEN soporte_asunto.idsoporte_tipo = 2 THEN 'Incidente'
+                        ELSE 'Desconocido'
+                    END as tipo_soporte")
+        )
+            ->leftJoin('especialidad', 'soporte.id_especialidad', '=', 'especialidad.id')
+            ->leftJoin('soporte_elemento', 'soporte.id_elemento', '=', 'soporte_elemento.idsoporte_elemento')
+            ->leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
+            ->leftJoin('sede_laboral', 'soporte.id_sede', '=', 'sede_laboral.id')
+            ->leftJoin('soporte_motivo_cancelacion', 'soporte.idsoporte_motivo_cancelacion', '=', 'soporte_motivo_cancelacion.idsoporte_motivo_cancelacion')
+            ->leftJoin('soporte_nivel', 'soporte.idsoporte_nivel', '=', 'soporte_nivel.idsoporte_nivel')
+            ->leftJoin('soporte_area_especifica', 'soporte.idsoporte_area_especifica', '=', 'soporte_area_especifica.idsoporte_area_especifica')
+            ->leftJoin('area', 'soporte.id_area', '=', 'area.id_area')
+            ->leftJoin('users as responsable', 'soporte.id_responsable', '=', 'responsable.id_usuario')
+            ->leftJoin('users as segundo_responsable', 'soporte.id_segundo_responsable', '=', 'segundo_responsable.id_usuario')
+            ->leftJoin('users', 'soporte.user_reg', '=', 'users.id_usuario')
+            ->where('soporte.estado', 1);
+
+        // Filtrar por fechas si están presentes en los datos
+        if (!empty($dato['fecha_iniciob'])) {
+            $query->whereDate('soporte.fec_reg', '>=', $dato['fecha_iniciob']);
+        }
+
+        if (!empty($dato['fecha_finb'])) {
+            $query->whereDate('soporte.fec_reg', '<=', $dato['fecha_finb']);
+        }
+        $query->where(function ($q) use ($dato) {
+            if ($dato['cpiniciar'] == 1) {
+                $q->orWhere('soporte.estado_registro', 1); // "Por Iniciar"
+            }
+            if ($dato['cproceso'] == 1) {
+                $q->orWhere('soporte.estado_registro', 2); // "En Proceso"
+            }
+            if ($dato['ccompletado'] == 1) {
+                $q->orWhere('soporte.estado_registro', 3); // "Completado"
+            }
+            if ($dato['cstandby'] == 1) {
+                $q->orWhere('soporte.estado_registro', 4); // "Stand By"
+            }
+            if ($dato['ccancelado'] == 1) {
+                $q->orWhere('soporte.estado_registro', 5); // "Cancelado"
+            }
+        });
+        return $query->orderBy('soporte.fec_reg', 'DESC')->get();
+    }
+
+
+
+    public static function userExistsInAreaWithPuesto($id_area, $id_usuario)
+    {
+        $user = DB::table('users')
+            ->select('users.*', 'puesto.*')
+            ->leftJoin('puesto', 'puesto.id_puesto', '=', 'users.id_puesto')
+            ->where('users.estado', 1)
+            ->where('puesto.id_area', $id_area)
+            ->where('users.id_usuario', $id_usuario)
+            ->first();
+
+        return $user ? true : false;
     }
 }

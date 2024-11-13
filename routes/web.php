@@ -427,8 +427,8 @@ Route::controller(SoporteController::class)->group(function () {
 
     // Tabla Generales
     Route::get('tablagenerales', 'index_tg')->name('tablagenerales');
-    Route::get('soporte_tablagenerales/list', 'list_soporte_tablagenerales')->name('soporte_tablagenerales.list');
-    Route::get('soporte_tg/{fec_ini}/{fec_fin}/excel', 'excel_tg')->name('soporte_tg.excel');
+    Route::post('soporte_tablagenerales/list_filtro', 'list_soporte_tablagenerales_filtro')->name('soporte_tablagenerales.list_filtro');
+    Route::get('soporte_tg/{fec_ini}/{fec_fin}/{cpiniciar}/{cproceso}/{cstandby}/{ccompletado}/{ccancelado}/excel', 'excel_tg')->name('soporte_tg.excel');
 });
 
 // ADMINISTRABLES - TICKETS SOPORTE

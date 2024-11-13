@@ -35,7 +35,7 @@
             <td>{{ $list->codigo }}</td>
             <td>{{ $list->base }}</td>
             <td>{{ \Carbon\Carbon::parse($list->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
-            <td>{{ $list->usuario_nombre }}</td>
+            <td>{{ $list->usuario_nombre_completo }}</td>
             <td>{{ $list->nombre_tipo }}</td>
             <td>{{ $list->nombre_especialidad }}</td>
             <td>{{ $list->nombre_elemento }}</td>
@@ -85,7 +85,7 @@
                             <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
                                 data-target="#ModalUpdate"
                                 app_elim="{{ url('soporte_ticket_master/ver/' . $list['id_soporte']) }}">Ver</a>
-                            @if ($list->status_cancelado != true)
+                            @if ($list->status_cancelado === false && $list->status_completado === false)
                             <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
                                 data-target="#ModalUpdate"
                                 app_elim="{{ url('soporte_ticket_master/edit/' . $list['id_soporte']) }}">Editar</a>
@@ -94,6 +94,7 @@
                                 data-target="#ModalUpdate"
                                 app_elim="{{ url('soporte_ticket_master/cancelar/' . $list['id_soporte']) }}">Cancelar</a>
                             @endif
+
 
                         </div>
                     </div>

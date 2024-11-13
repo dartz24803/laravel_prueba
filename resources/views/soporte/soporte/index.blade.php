@@ -63,10 +63,11 @@
     }
 
 
-    function Delete_ErroresPicking(id) {
+
+    function Delete_Soporte_Ticket(id) {
         Cargando();
 
-        var url = "{{ route('errorespicking.destroy', ':id') }}".replace(':id', id);
+        var url = "{{ route('soporte_ticket.destroy', ':id') }}".replace(':id', id);
         var csrfToken = $('input[name="_token"]').val();
 
         Swal({

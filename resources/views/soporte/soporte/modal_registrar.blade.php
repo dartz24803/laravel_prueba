@@ -140,8 +140,11 @@
             <!-- Segunda fila: Thirdlist-container (Sub-ubicación) -->
             <div class="col-lg-12" id="sububicacion-container" style="display: none;">
                 <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label class="control-label text-bold">Área Específica:</label>
+                    </div>
                     <!-- Tercer select (Thirdlist-container), siempre presente pero con visibilidad controlada -->
-                    <div class="form-group col-lg-4 offset-lg-2" id="thirdlist-container" style="visibility: hidden;">
+                    <div class="form-group col-lg-10" id="thirdlist-container" style="visibility: hidden;">
                         <select class="form-control" id="idsoporte_area_especifica" name="idsoporte_area_especifica">
                             <option value="0">Seleccione Área Esp.</option>
                         </select>
@@ -159,10 +162,12 @@
                     <!-- Input de fecha (Vencimiento) -->
                     <div class="form-group col-lg-4">
                         <input type="date" class="form-control" id="vencimiento" name="vencimiento"
-                            value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
+                            value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}"
+                            min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
                     </div>
                 </div>
             </div>
+
         </div>
 
 
@@ -260,6 +265,7 @@
     <div class="modal-footer">
         @csrf
         <input type="hidden" id="hasOptionsField" name="hasOptionsField" value="0">
+        <input type="hidden" id="hasOptionsFieldEspecialidad" name="hasOptionsFieldEspecialidad" value="0">
 
         <button class="btn btn-primary" type="button" onclick="Insert_Registro_Soporte();">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
@@ -434,6 +440,9 @@
                                     $('#asunto').val(9);
                                 }
                             }, 100);
+                            $('#hasOptionsFieldEspecialidad').val('1');
+                        } else {
+                            $('#hasOptionsFieldEspecialidad').val('0');
                         }
                     });
                 }
