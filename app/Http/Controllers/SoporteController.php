@@ -669,7 +669,7 @@ class SoporteController extends Controller
     {
         $id_subgerencia = session('id_subgerenciam');
         $list_tickets_soporte = Soporte::listTicketsSoporteMaster($id_subgerencia);
-
+        // dd($list_tickets_soporte);
         $list_tickets_soporte = $list_tickets_soporte->map(function ($ticket) use ($id_subgerencia) {
             $ticket->status_poriniciar = false;
             $ticket->status_enproceso = false;
@@ -888,19 +888,15 @@ class SoporteController extends Controller
 
         // GENERECIÓN DE CÓDIGO
         // dd($get_id->id_area);
-        $cod_area = Soporte::getCodAreaByIdArea($get_id->asunto); // Obtiene el área
+        $cod_area = Soporte::getCodAreaByIdArea($get_id->id_area); // Obtiene el área
         $request->validate($rules, $messages);
-        $idsoporte_tipo = DB::table('soporte_asunto as sa')
-            ->leftJoin('soporte_tipo as st', 'st.idsoporte_tipo', '=', 'sa.idsoporte_tipo')
-            ->where('sa.idsoporte_asunto', $request->asunto)
-            ->select('sa.idsoporte_tipo')
-            ->first();
+        $idsoporte_tipo = $request->nombre_tipo;
+        // dd($get_id->activo_tipo);
 
-        if ($idsoporte_tipo) {
-            // Usa el valor de $cod_area en lugar de 'TI'
+        if ($get_id->activo_tipo == 1) {
             $area_code = $cod_area ? $cod_area['cod_area'] : 'TI';
-            $prefijo = $idsoporte_tipo->idsoporte_tipo == 1 ? 'RQ-' . $area_code . '-' : 'INC-' . $area_code . '-';
-            $contador = Soporte::where('idsoporte_tipo', $idsoporte_tipo->idsoporte_tipo)->count();
+            $prefijo = $idsoporte_tipo == 1 ? 'RQ-' . $area_code . '-' : 'INC-' . $area_code . '-';
+            $contador = Soporte::where('tipo_otros', $idsoporte_tipo)->count();
             $nuevo_numero = $contador + 1;
             $numero_formateado = str_pad($nuevo_numero, 3, '0', STR_PAD_LEFT);
             $codigo_generado = $prefijo . $numero_formateado;
@@ -917,8 +913,7 @@ class SoporteController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario,
                 'tipo_otros' => $tipo_otros,
-
-
+                'codigo' => $codigo_generado
             ]);
         } else if ($request->responsable_indice == "0") {
             // RESPONSABLE PRINCIPAL
@@ -929,7 +924,7 @@ class SoporteController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario,
                 'tipo_otros' => $tipo_otros,
-
+                'codigo' => $codigo_generado
 
             ]);
         } else {
@@ -941,6 +936,7 @@ class SoporteController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario,
                 'tipo_otros' => $tipo_otros,
+                'codigo' => $codigo_generado
 
             ]);
         }

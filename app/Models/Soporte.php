@@ -52,6 +52,8 @@ class Soporte extends Model
     {
         // Obtener los IDs de área según el id_subgerencia
         $areas = self::getAreasBySubgerencia($id_subgerencia);
+        // Convertir el array de áreas a una cadena separada por comas
+        $areasString = implode(',', $areas);
 
         return self::select(
             'soporte.*',
@@ -64,30 +66,8 @@ class Soporte extends Model
             'area.nom_area as nombre_area',
             DB::raw("IF(users.usuario_apater IS NOT NULL AND users.usuario_apater != '', CONCAT(users.usuario_nombres, ' ', users.usuario_apater), users.usuario_nombres) as usuario_nombre_completo"),
             'users.centro_labores as base',
-            DB::raw("
-                CASE 
-                    WHEN soporte.activo_tipo = 1 THEN 
-                        CASE 
-                            WHEN soporte.tipo_otros = 0 THEN 'Otro' 
-                            WHEN soporte.tipo_otros = 1 THEN 'Requerimiento' 
-                            WHEN soporte.tipo_otros = 2 THEN 'Incidente' 
-                            ELSE st.nombre 
-                        END
-                    ELSE st.nombre 
-                END as nombre_tipo
-            "),
-            DB::raw(
-                "
-                CASE 
-                    WHEN soporte.id_responsable IS NULL AND soporte.id_segundo_responsable IS NOT NULL 
-                        THEN us2.usuario_nombres 
-                    WHEN soporte.id_responsable IS NOT NULL AND soporte.id_segundo_responsable IS NULL 
-                        THEN us.usuario_nombres 
-                    WHEN soporte.id_responsable IS NOT NULL AND soporte.id_segundo_responsable IS NOT NULL 
-                        THEN CONCAT(us.usuario_nombres, ' / ', us2.usuario_nombres) 
-                    ELSE 'SIN DESIGNAR' 
-                END as nombre_responsable"
-            )
+            DB::raw("CASE WHEN soporte.activo_tipo = 1 THEN CASE WHEN soporte.tipo_otros = 0 THEN 'Otro' WHEN soporte.tipo_otros = 1 THEN 'Requerimiento' WHEN soporte.tipo_otros = 2 THEN 'Incidente' ELSE st.nombre END ELSE st.nombre END as nombre_tipo"),
+            DB::raw("CASE WHEN soporte.id_responsable IS NULL AND soporte.id_segundo_responsable IS NOT NULL THEN us2.usuario_nombres WHEN soporte.id_responsable IS NOT NULL AND soporte.id_segundo_responsable IS NULL THEN us.usuario_nombres WHEN soporte.id_responsable IS NOT NULL AND soporte.id_segundo_responsable IS NOT NULL THEN CONCAT(us.usuario_nombres, ' / ', us2.usuario_nombres) ELSE 'SIN DESIGNAR' END as nombre_responsable")
         )
             ->leftJoin('especialidad', 'soporte.id_especialidad', '=', 'especialidad.id')
             ->leftJoin('soporte_elemento', 'soporte.id_elemento', '=', 'soporte_elemento.idsoporte_elemento')
@@ -99,23 +79,26 @@ class Soporte extends Model
             ->leftJoin('users', 'soporte.user_reg', '=', 'users.id_usuario')
             ->leftJoin('soporte_asunto as sa', 'soporte.id_asunto', '=', 'sa.idsoporte_asunto')
             ->leftJoin('users as us', 'soporte.id_responsable', '=', 'us.id_usuario')
-            ->leftJoin('users as us2', 'soporte.id_segundo_responsable', '=', 'us2.id_usuario') // Nuevo LEFT JOIN para el segundo responsable
+            ->leftJoin('users as us2', 'soporte.id_segundo_responsable', '=', 'us2.id_usuario')
             ->leftJoin('soporte_tipo as st', 'sa.idsoporte_tipo', '=', 'st.idsoporte_tipo')
             ->where('soporte.estado', 1)
-            // VALIDACIÓN PARA SOLO MOSTRAR LOS TICKETS DE SOPORTE EN BASE AL AREA RESPONSABLE 
-            ->where(function ($query) use ($areas) {
-                // Condición para id_area en la tabla soporte
-                $query->whereIn('soporte.id_area', $areas);
-                // Condición para id_area en la tabla soporte_asunto
-                $query->orWhere(function ($q) use ($areas) {
-                    foreach ($areas as $area) {
-                        $q->orWhereRaw("FIND_IN_SET(?, sa.id_area)", [$area]);
-                    }
-                });
+            ->where(function ($query) use ($areasString) {
+                $query->whereIn('soporte.id_area', explode(',', $areasString)) // Filtrar por id_area
+                    ->orWhere(function ($subQuery) use ($areasString) {
+                        $subQuery->where('soporte.activo_tipo', 0) // Solo aplicar FIND_IN_SET cuando activo_tipo = 0
+                            ->whereExists(function ($existsQuery) {
+                                $existsQuery->select(DB::raw(1))
+                                    ->from('soporte_asunto as sa')
+                                    ->whereRaw('FIND_IN_SET(sa.id_area, sa.id_area)') // Usar FIND_IN_SET en el subquery
+                                    ->whereRaw('sa.idsoporte_asunto = soporte.id_asunto');
+                            });
+                    });
             })
-            ->orderBy('soporte.fec_reg', 'DESC') // Ordenar por fec_reg en orden descendente
+            ->orderBy('soporte.fec_reg', 'DESC')
             ->get();
     }
+
+
 
 
 
@@ -312,25 +295,21 @@ class Soporte extends Model
 
     public static function getCodAreaByIdArea($id_area)
     {
-        // Obtén el registro de soporte_asunto directamente sin unirte a soporte
-        $result = DB::table('soporte_asunto')
-            ->select('responsable_multiple', 'id_area')
-            ->where('idsoporte_asunto', $id_area)
+        $result = DB::table('soporte')
+            ->leftJoin('area', 'soporte.id_area', '=', 'area.id_area')
+            ->select('area.cod_area')
+            ->where('soporte.id_area', $id_area)
             ->first();
+
+        // Si no se encuentra el resultado, retornar null
         if (!$result) {
             return null;
         }
-        $idAreas = explode(',', $result->id_area);
-        $codAreas = DB::table('area')
-            ->whereIn('id_area', $idAreas)
-            ->pluck('cod_area')
-            ->toArray();
-
         return [
-            'responsable_multiple' => $result->responsable_multiple,
-            'cod_area' => implode('-', $codAreas) // Formato "TI -MTO"
+            'cod_area' => $result->cod_area, // Se devuelve el valor de cod_area de la tabla area
         ];
     }
+
 
 
     public static function listTablaGeneralSoporte()
