@@ -430,8 +430,8 @@ Route::controller(SoporteController::class)->group(function () {
 
     // Tabla Generales
     Route::get('tablagenerales', 'index_tg')->name('tablagenerales');
-    Route::get('soporte_tablagenerales/list', 'list_soporte_tablagenerales')->name('soporte_tablagenerales.list');
-    Route::get('soporte_tg/{fec_ini}/{fec_fin}/excel', 'excel_tg')->name('soporte_tg.excel');
+    Route::post('soporte_tablagenerales/list_filtro', 'list_soporte_tablagenerales_filtro')->name('soporte_tablagenerales.list_filtro');
+    Route::get('soporte_tg/{fec_ini}/{fec_fin}/{cpiniciar}/{cproceso}/{cstandby}/{ccompletado}/{ccancelado}/excel', 'excel_tg')->name('soporte_tg.excel');
 });
 
 // ADMINISTRABLES - TICKETS SOPORTE
@@ -2164,14 +2164,17 @@ Route::controller(TareasController::class)->group(function () {
     Route::post('Tareas/Previsualizacion_Captura', 'Previsualizacion_Captura');
     Route::post('Tareas/Delete_Imagen_Temporal', 'Delete_Imagen_Temporal');
     Route::get('Tareas/Excel_Pendiente/{cpi}/{cp}/{cf}/{cs}/{area}', 'Excel_Pendiente');
+    Route::get('Tareas/Descargar_Archivo_Gestion_Pendiente/{id}', 'Descargar_Archivo_Gestion_Pendiente');
+    Route::post('Tareas/Delete_Archivo_Gestion_Pendiente', 'Delete_Archivo_Gestion_Pendiente');
 });
 
+use App\Http\Controllers\ContactosController;
 
-
-
-
-
-
+Route::controller(ContactosController::class)->group(function () {
+    Route::get('Contactos/index', 'Lista_Directorio_Telefonico');
+    Route::get('Contactos/Cargar_Mis_Tareas', 'Cargar_Mis_Tareas');
+    Route::post('Contactos/Lista_Mis_Tareas', 'Lista_Mis_Tareas');
+});
 
 
 

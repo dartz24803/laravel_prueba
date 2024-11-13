@@ -82,6 +82,10 @@ class SoporteController extends Controller
     public function list_tick()
     {
         $list_tickets_soporte = Soporte::listTicketsSoporte();
+        $id_usuario = session('usuario')->id_usuario;
+
+        $acceso_pp = Soporte::userExistsInAreaWithPuesto(18, $id_usuario);
+        // dd($acceso_pp);
         // VALIDACIÓN DE ESTADOS EN PROCESO Y COMPLETADO PARA CADA MODULO
         $list_tickets_soporte = $list_tickets_soporte->map(function ($ticket) {;
             $ticket->status_poriniciar = false;
@@ -108,7 +112,7 @@ class SoporteController extends Controller
             return $ticket;
         });
         // dd($list_tickets_soporte);
-        return view('soporte.soporte.lista', compact('list_tickets_soporte'));
+        return view('soporte.soporte.lista', compact('list_tickets_soporte', 'acceso_pp'));
     }
 
 
@@ -223,12 +227,8 @@ class SoporteController extends Controller
 
     public function store_tick(Request $request)
     {
-
         $rules = [
             'especialidad' => 'gt:0',
-            'elemento' => 'gt:0',
-            'asunto' => 'gt:0',
-            'sede' => 'gt:0',
             'idsoporte_nivel' => 'gt:0',
             'vencimiento' => 'required',
             'descripcion' => 'required',
@@ -237,9 +237,6 @@ class SoporteController extends Controller
 
         $messages = [
             'especialidad.gt' => 'Debe seleccionar especialidad.',
-            'elemento.gt' => 'Debe seleccionar elemento.',
-            'asunto.gt' => 'Debe seleccionar asunto.',
-            'sede.gt' => 'Debe seleccionar sede.',
             'idsoporte_nivel.gt' => 'Debe ingresar Ubicaciòn.',
             'vencimiento.required' => 'Debe ingresar vencimiento.',
             'descripcion.required' => 'Debe ingresar propósito.',
@@ -247,6 +244,17 @@ class SoporteController extends Controller
 
         ];
         // dd($request->all());
+        if ($request->hasOptionsFieldEspecialidad == "0") {
+            $rules = array_merge($rules, [
+                'asunto' => 'gt:0',
+                'elemento' => 'gt:0',
+            ]);
+            $messages = array_merge($messages, [
+                'asunto.gt' => 'Debe seleccionar asunto.',
+                'elemento.gt' => 'Debe seleccionar elemento.',
+            ]);
+        }
+
         if ($request->hasOptionsField == "1") {
             $rules = array_merge($rules, [
                 'idsoporte_area_especifica' => 'gt:0',
@@ -267,17 +275,18 @@ class SoporteController extends Controller
             ]);
         }
         // GENERECIÓN DE CÓDIGO
+
         $cod_area = Soporte::getCodAreaByAsunto($request->asunto); // Obtiene el área
         $request->validate($rules, $messages);
-
         $idsoporte_tipo = DB::table('soporte_asunto as sa')
             ->leftJoin('soporte_tipo as st', 'st.idsoporte_tipo', '=', 'sa.idsoporte_tipo')
             ->where('sa.idsoporte_asunto', $request->asunto)
             ->select('sa.idsoporte_tipo')
             ->first();
+
         if ($idsoporte_tipo) {
             // Usa el valor de $cod_area en lugar de 'TI'
-            $area_code = $cod_area ? $cod_area['cod_area'] : 'TI'; // Usa 'TI' como fallback en caso de null
+            $area_code = $cod_area ? $cod_area['cod_area'] : 'TI';
             $prefijo = $idsoporte_tipo->idsoporte_tipo == 1 ? 'RQ-' . $area_code . '-' : 'INC-' . $area_code . '-';
             $contador = Soporte::where('idsoporte_tipo', $idsoporte_tipo->idsoporte_tipo)->count();
             $nuevo_numero = $contador + 1;
@@ -328,6 +337,7 @@ class SoporteController extends Controller
         $con_id = ftp_connect($ftp_server);
         $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
 
+
         if ($con_id && $lr) {
             // Decodificar las URLs de las imágenes desde el request
             $imagenes = json_decode($request->input('imagenes'), true);
@@ -366,12 +376,13 @@ class SoporteController extends Controller
             $img4 = isset($resultados[3]) ? $resultados[3]['url_ftp'] : '';
             $img5 = isset($resultados[4]) ? $resultados[4]['url_ftp'] : '';
             $idSede = SedeLaboral::obtenerIdSede();
+
             // Almacenar la información de soporte en la base de datos
             Soporte::create([
                 'codigo' => $codigo_generado,
                 'id_especialidad' => $request->especialidad,
-                'id_elemento' => $request->elemento,
-                'id_asunto' => $request->asunto,
+                'id_elemento' => $request->elemento ?? 6,
+                'id_asunto' => $request->asunto === "0" ? 245 : $request->asunto,
                 'id_sede' => $idSede,
                 'idsoporte_nivel' => $request->idsoporte_nivel,
                 'idsoporte_area_especifica' => $request->idsoporte_area_especifica ?? 0,
@@ -383,7 +394,6 @@ class SoporteController extends Controller
                 'idsoporte_ejecutor' => $soporte_ejecutor->idsoporte_ejecutor,
                 'fec_vencimiento' => $request->vencimiento,
                 'descripcion' => $request->descripcion,
-                'idsoporte_tipo' => $idsoporte_tipo->idsoporte_tipo ?? 1,
                 'estado' => 1,
                 'estado_registro' => 1,
                 'fec_reg' => now(),
@@ -394,7 +404,9 @@ class SoporteController extends Controller
                 'img2' => $img2,
                 'img3' => $img3,
                 'img4' => $img4,
-                'img5' => $img5
+                'img5' => $img5,
+                'tipo_otros' => $request->nombre_tipo,
+                'activo_tipo' => $request->asunto === "0" ? 1 : 0
             ]);
 
             return response()->json([
@@ -484,6 +496,7 @@ class SoporteController extends Controller
 
     public function update_tick(Request $request, $id)
     {
+
         $rules = [
             // 'ejecutor_responsable' => 'in:-1,3,4',
             'descripcione' => 'required',
@@ -576,7 +589,7 @@ class SoporteController extends Controller
 
     public function destroy_tick($id)
     {
-        ProcesosHistorial::where('id_portal_historial', $id)->firstOrFail()->update([
+        Soporte::where('id_soporte', $id)->firstOrFail()->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario
@@ -797,7 +810,7 @@ class SoporteController extends Controller
             $filtered = $filtered->push($consolidated);
             $list_ejecutores_responsables = $filtered->values();
         }
-
+        // dd($get_id);
         return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas', 'id_subgerencia', 'comentarios_user'));
     }
 
@@ -805,17 +818,24 @@ class SoporteController extends Controller
     {
         $id_subgerencia = session('id_subgerenciam');
 
-        $rules = [
-            // 'ejecutor_responsable' => 'in:-1,3,4',
-            'descripcione_solucion' => 'required|max:150',
-        ];
-        $messages = [
-            // 'ejecutor_responsable.in' => 'Debe seleccionar Ejecutor Responsable',
-            'descripcione_solucion.max' => 'Comentario de Solución debe tener como máximo 150 caracteres.',
-        ];
+
+        if ($request->nombre_tipo == 0) {
+            $tipo_otros = 0;
+        } else {
+            $tipo_otros = $request->nombre_tipo;
+        }
+        // dd($tipo_otros);
         $get_id = Soporte::getTicketById($id);
 
+        $rules = [
+            'descripcione_solucion' => 'required|max:150',
+            'nombre_tipo' => $get_id->activo_tipo == 1 ? 'required|gt:0' : 'nullable',
+        ];
+        $messages = [
+            'descripcione_solucion.max' => 'Comentario de Solución debe tener como máximo 150 caracteres.',
+            'nombre_tipo.gt' => 'Debe seleccionar tipo.',
 
+        ];
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $cantAreasEjecut = count($list_ejecutores_responsables);
         $responsableMultiple = Soporte::getResponsableMultipleByAsunto($get_id->id_asunto);
@@ -866,7 +886,28 @@ class SoporteController extends Controller
 
         $request->validate($rules, $messages);
 
+        // GENERECIÓN DE CÓDIGO
+        // dd($get_id->id_area);
+        $cod_area = Soporte::getCodAreaByIdArea($get_id->asunto); // Obtiene el área
+        $request->validate($rules, $messages);
+        $idsoporte_tipo = DB::table('soporte_asunto as sa')
+            ->leftJoin('soporte_tipo as st', 'st.idsoporte_tipo', '=', 'sa.idsoporte_tipo')
+            ->where('sa.idsoporte_asunto', $request->asunto)
+            ->select('sa.idsoporte_tipo')
+            ->first();
 
+        if ($idsoporte_tipo) {
+            // Usa el valor de $cod_area en lugar de 'TI'
+            $area_code = $cod_area ? $cod_area['cod_area'] : 'TI';
+            $prefijo = $idsoporte_tipo->idsoporte_tipo == 1 ? 'RQ-' . $area_code . '-' : 'INC-' . $area_code . '-';
+            $contador = Soporte::where('idsoporte_tipo', $idsoporte_tipo->idsoporte_tipo)->count();
+            $nuevo_numero = $contador + 1;
+            $numero_formateado = str_pad($nuevo_numero, 3, '0', STR_PAD_LEFT);
+            $codigo_generado = $prefijo . $numero_formateado;
+        } else {
+            $codigo_generado = 'Código no disponible';
+        }
+        // GENERECIÓN DE CÓDIGO
         if ($request->responsable_indice == "0" && $cantAreasEjecut < 4) {
             // UN SOLO RESPONSABLE 
             Soporte::findOrFail($id)->update([
@@ -874,7 +915,10 @@ class SoporteController extends Controller
                 'fec_cierre' => $request->fec_cierree,
                 'estado_registro' => $request->estado_registroe,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
+                'user_act' => session('usuario')->id_usuario,
+                'tipo_otros' => $tipo_otros,
+
+
             ]);
         } else if ($request->responsable_indice == "0") {
             // RESPONSABLE PRINCIPAL
@@ -883,7 +927,10 @@ class SoporteController extends Controller
                 'fec_cierre' => $request->fec_cierree_0,
                 'estado_registro' => $request->estado_registroe_0,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
+                'user_act' => session('usuario')->id_usuario,
+                'tipo_otros' => $tipo_otros,
+
+
             ]);
         } else {
             // SEGUNDO RESPONSABLE 
@@ -892,7 +939,9 @@ class SoporteController extends Controller
                 'fec_cierre_sr' => $request->fec_cierree_1,
                 'estado_registro_sr' => $request->estado_registroe_1,
                 'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
+                'user_act' => session('usuario')->id_usuario,
+                'tipo_otros' => $tipo_otros,
+
             ]);
         }
 
@@ -1009,6 +1058,7 @@ class SoporteController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ];
+            // dd($resultados);
             if (!empty($resultados)) {
                 $data['archivo1'] = $archivo1;
                 $data['archivo2'] = $archivo2;
@@ -1304,16 +1354,35 @@ class SoporteController extends Controller
         return $list_tablageneral_soporte;
     }
 
-    public function list_soporte_tablagenerales()
+    public function list_soporte_tablagenerales_filtro(Request $request)
     {
-        $list_tablageneral_soporte = Soporte::listTablaGeneralSoporte();
+        $dato['fecha_iniciob'] = $request->input("fecha_iniciob");
+        $dato['fecha_finb'] =  $request->input("fecha_finb");
+        $dato['cpiniciar'] =  $request->input("cpiniciar");
+        $dato['cproceso'] =  $request->input("cproceso");
+        $dato['ccompletado'] =  $request->input("ccompletado");
+        $dato['cstandby'] =  $request->input("cstandby");
+        $dato['ccancelado'] =  $request->input("ccancelado");
+
+        // dd($dato);
+        $list_tablageneral_soporte = Soporte::listTablaGeneralSoporteFiltro($dato);
+        // dd($list_tablageneral_soporte);
         $list_tablageneral_soporte = $this->adicionarParametro($list_tablageneral_soporte);
         return view('soporte.tabla_general.lista', compact('list_tablageneral_soporte'));
     }
 
-    public function excel_tg($fecha_inicio, $fecha_fin)
+
+    public function excel_tg($fecha_inicio, $fecha_fin, $cpiniciar, $cproceso,  $cstandby, $ccompletado, $ccancelado)
     {
-        $list_tablageneral_soporte = Soporte::listTablaGeneralSoporte();
+        $dato['fecha_iniciob'] = $fecha_inicio;
+        $dato['fecha_finb'] =  $fecha_fin;
+        $dato['cpiniciar'] =  $cpiniciar;
+        $dato['cproceso'] =  $cproceso;
+        $dato['ccompletado'] =  $ccompletado;
+        $dato['cstandby'] =  $cstandby;
+        $dato['ccancelado'] =  $ccancelado;
+        // dd($dato);
+        $list_tablageneral_soporte = Soporte::listTablaGeneralSoporteFiltro($dato);
         $list_tablageneral_soporte = $this->adicionarParametro($list_tablageneral_soporte);
         // dd($list_tablageneral_soporte);
         // Creación del archivo Excel

@@ -482,15 +482,22 @@
     });
 
     $(document).on('click', '#download_file', function () {
+        Cargando();
         image_id = $(this).data('image_id');
         window.location.replace("{{ url('Tareas/Descargar_Archivo_Pendiente')}}/" + image_id);
     });
 
     $(document).on('click', '#delete_file', function () {
+        Cargando();
         var image_id = $(this).data('image_id');
         var file_col = $('#i_' + image_id);
+        var csrfToken = $('input[name="_token"]').val();
+
         $.ajax({
             type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             url: "{{ url('Tareas/Delete_Archivo_Pendiente')}}",
             data: {'image_id':image_id},
             success: function (data) {
@@ -500,15 +507,22 @@
     });
 
     $(document).on('click', '#download_file_gestion', function () {
+        Cargando();
         image_id = $(this).data('image_id');
         window.location.replace("{{ url('Tareas/Descargar_Archivo_Gestion_Pendiente')}}/" + image_id);
     });
 
     $(document).on('click', '#delete_file_gestion', function () {
+        Cargando();
         var image_id = $(this).data('image_id');
         var file_col = $('#i_' + image_id);
+        var csrfToken = $('input[name="_token"]').val();
+
         $.ajax({
             type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             url: "{{ url('Tareas/Delete_Archivo_Gestion_Pendiente') }}",
             data: {'image_id':image_id},
             success: function (data) {

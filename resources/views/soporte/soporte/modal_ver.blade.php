@@ -6,18 +6,35 @@
         width: 100%;
     }
 
+    #div_imagenes_ver {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
     #imagenes_containerver {
         display: flex;
+        flex-wrap: nowrap;
+        max-width: 600px;
+        /* Ancho máximo fijo para el contenedor */
         overflow-x: auto;
-        /* Habilita el desplazamiento horizontal */
-        white-space: nowrap;
-        /* Evita el salto de línea */
-        padding: 10px;
-        max-width: 100%;
+        /* Scroll horizontal */
         gap: 10px;
-        /* Espacio entre imágenes */
-        scrollbar-width: thin;
-        /* Para navegadores que admiten este estilo */
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+
+    #imagenes_container_ver {
+        display: flex;
+        flex-wrap: nowrap;
+        max-width: 600px;
+        /* Ancho máximo fijo para el contenedor */
+        overflow-x: auto;
+        /* Scroll horizontal */
+        gap: 10px;
+        border: 1px solid #ccc;
+        padding: 10px;
     }
 </style>
 <form id="formulario_update" method="POST" enctype="multipart/form-data" class="needs-validation">
@@ -181,8 +198,12 @@
                                 <label class="control-label text-bold" ">Vencimiento:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0">
-                                    <span class="form-control border-0">{{ $get_id->fec_vencimiento }}</span>
+                                    <span class="form-control border-0">
+                                        {{ $get_id->fec_vencimiento ? \Carbon\Carbon::parse($get_id->fec_vencimiento)->locale('es')->translatedFormat('D d M y') : 'No especificado' }}
+                                    </span>
                             </div>
+
+
                         </div>
                     </div>
                 </div>
@@ -400,14 +421,45 @@
                                         alt="User Image" class="img-fluid rounded-circle">
                                 </div>
                                 <div class="form-group col-md-10">
-                                    <p><strong>Fecha:</strong> {{ $comentario->fec_comentario }}</p>
-                                    <p><strong>Responsable:</strong> {{ $comentario->nombre_responsable_solucion ?: 'No designado' }}</p>
-                                    <p style="max-width: 580px; word-wrap: break-word;" strong>Comentario:</strong> {{ $comentario->comentario ?: 'No hay comentario' }}</p>
-
+                                    <!-- Contenedor de fecha y responsable -->
+                                    <div class="d-flex justify-content-between">
+                                        <p><strong>Responsable:</strong> {{ $comentario->nombre_responsable_solucion ?: 'No designado' }}</p>
+                                        <p>
+                                            {{ $comentario->fec_comentario 
+                                        ? \Carbon\Carbon::parse($comentario->fec_comentario)->locale('es')->translatedFormat('D d M Y H:i') 
+                                        : 'No especificado' }}
+                                        </p>
+                                    </div>
+                                    <p style="max-width: 480px; word-wrap: break-word;"> <strong>Comentario:</strong> {{ $comentario->comentario ?: 'No hay comentario' }}</p>
                                 </div>
                             </div>
                         </div>
+
                         @endforeach
+                    </div>
+                </div>
+
+                <div class="row" style="padding-top: 1rem;">
+                    <div class="d-flex justify-content-center" style="max-width: 100%;" id="div_imagenes_ver">
+                        <input type="hidden" id="imagenes_input_ver" name="imagenes_ver" value="">
+                        <div id="imagenes_container_ver" class="carousel-container_ver">
+                            <!-- Las imágenes se añadirán aquí dinámicamente -->
+                            @if ($get_id->archivo1 || $get_id->archivo2 || $get_id->archivo3 || $get_id->archivo4 || $get_id->archivo5)
+                            @for ($i = 1; $i <= 5; $i++)
+                                @php
+                                $imgUrl=$get_id->{'archivo' . $i};
+                                @endphp
+                                @if ($imgUrl)
+                                <div class="text-center my-2 mx-2 contenedor-imagen" id="contenedor-imagen-{{ $i }}">
+                                    <img src="{{ $imgUrl }}" alt="Captura de soporte" class="img-thumbnail imagen-captura">
+
+                                    <!-- Botón para abrir en nueva pestaña -->
+                                    <button class="btn btn-primary mt-2" onclick="abrirEnNuevaPestana(event, '{{ $imgUrl }}')">Ver</button>
+                                </div>
+                                @endif
+                                @endfor
+                                @endif
+                        </div>
                     </div>
                 </div>
             </div>

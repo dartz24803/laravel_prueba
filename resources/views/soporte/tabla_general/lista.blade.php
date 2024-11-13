@@ -18,9 +18,9 @@
             <th>Especialidad</th>
             <th>Elemento</th>
             <th>Asunto</th>
+            <th>Fecha Registro</th>
             <th>F.Vencimiento</th>
             <th>F.Completado</th>
-            <th>F.R.U</th>
             <th>Estado</th>
         </tr>
     </thead>
@@ -37,9 +37,9 @@
             <td>{{ $list->nombre_especialidad }}</td>
             <td>{{ $list->nombre_elemento }}</td>
             <td>{{ $list->nombre_asunto }}</td>
+            <td>{{ \Carbon\Carbon::parse($list->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
             <td>{{ \Carbon\Carbon::parse($list->fec_vencimiento)->locale('es')->translatedFormat('D d M y') }}</td>
             <td>{{ \Carbon\Carbon::parse($list->fecha_completado)->locale('es')->translatedFormat('D d M y') }}</td>
-            <td>{{ \Carbon\Carbon::parse($list->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
             <td>{{ $list->status_ticket }}</td>
 
         </tr>

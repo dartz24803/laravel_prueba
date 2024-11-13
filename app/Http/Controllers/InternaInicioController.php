@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use App\Models\Notificacion;
+use App\Models\Soporte;
 use App\Models\SubGerencia;
 
 class InternaInicioController extends Controller
@@ -18,9 +19,11 @@ class InternaInicioController extends Controller
 
     public function index()
     {
+        $id_usuario = session('usuario')->id_usuario;
         $list_subgerencia = SubGerencia::list_subgerencia(9);
-        //NOTIFICACIONES
-        // dd($subgerenciaId);
+        $acceso_pp = Soporte::userExistsInAreaWithPuesto(18, $id_usuario);
+        // Guardar el valor en la sesión
+        session(['acceso_pp' => $acceso_pp]);
         $list_notificacion = Notificacion::get_list_notificacion();
         return view('interna.index', compact('list_notificacion', 'list_subgerencia'));
 

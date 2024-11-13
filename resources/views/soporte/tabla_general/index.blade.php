@@ -17,19 +17,47 @@
         <div class="row" id="cancel-row">
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-2">
-                    <div class="toolbar d-flex p-4">
-                        <div class="form-group col-lg-2">
+                    <div class="row align-items-center p-4">
+                        <div class="col-md-6 col-lg-2">
+                            <label>Estado</label>
+                            <div>
+                                <input type="checkbox" id="cpiniciar" checked name="cpiniciar" value="1" onchange="Lista_Tabla_General_Estado();">
+                                <span style="font-weight:normal"><?php echo "Por&nbsp;Iniciar"; ?></span><br>
+
+                                <input type="checkbox" id="cproceso" checked name="cproceso" value="1" onchange="Lista_Tabla_General_Estado();">
+                                <span style="font-weight:normal"><?php echo "En&nbsp;Proceso"; ?></span><br>
+
+                                <input type="checkbox" id="ccompletado" name="ccompletado" value="1" onchange="Lista_Tabla_General_Estado();">
+                                <span style="font-weight:normal"><?php echo "Completado"; ?></span><br>
+
+                                <input type="checkbox" id="cstandby" name="cstandby" value="1" onchange="Lista_Tabla_General_Estado();">
+                                <span style="font-weight:normal"><?php echo "Stand&nbsp;by"; ?></span><br>
+
+                                <input type="checkbox" id="ccancelado" name="ccancelado" value="1" onchange="Lista_Tabla_General_Estado();">
+                                <span style="font-weight:normal"><?php echo "Cancelado"; ?></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-2">
                             <label>Fecha Inicio:</label>
                             <input type="date" class="form-control" name="fecha_iniciob"
-                                id="fecha_iniciob" value="{{ date('Y-m-d') }}">
+                                id="fecha_iniciob" value="{{ date('Y-m-01') }}">
                         </div>
 
-                        <div class="form-group col-lg-2">
+                        <div class="col-md-6 col-lg-2">
                             <label>Fecha Fin:</label>
                             <input type="date" class="form-control" name="fecha_finb"
                                 id="fecha_finb" value="{{ date('Y-m-d') }}">
                         </div>
-                        <div class="col-lg-8">
+
+                        <div class="col-md-6 col-lg-1">
+                            <button type="button" class="btn btn-primary mb-2 mr-2 " title="Buscar" onclick="Lista_Tabla_General_Estado()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search toggle-search">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="col-md-6 col-lg-1">
                             <a class="btn mb-2 mb-sm-0 mb-md-2 mb-lg-0" style="background-color: #28a745 !important;" onclick="Excel_Tabla_General();">
                                 <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="64" height="64" viewBox="0 0 172 172" style=" fill:#000000;">
                                     <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
@@ -56,30 +84,96 @@
         $("#tablasoporte").addClass('active');
         $("#htablasoporte").attr('aria-expanded', 'true');
 
-        Lista_Tabla_General();
+        Lista_Tabla_General_Estado()
     });
 
-
-
-    function Lista_Tabla_General() {
-        Cargando();
-
-        var url = "{{ route('soporte_tablagenerales.list') }}";
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            success: function(resp) {
-                $('#tabla_general').html(resp);
-            }
-        });
-    }
 
 
     function Excel_Tabla_General() {
         var fec_ini = $('#fecha_iniciob').val();
         var fec_fin = $('#fecha_finb').val();
-        window.location = "{{ route('soporte_tg.excel', [ ':fec_ini', ':fec_fin']) }}".replace(':fec_ini', fec_ini).replace(':fec_fin', fec_fin);
+        var cpiniciar = 0;
+        var cproceso = 0;
+        var ccompletado = 0;
+        var cstandby = 0;
+        var ccancelado = 0;
+
+        if ($('#cpiniciar').is(":checked")) {
+            var cpiniciar = 1;
+        }
+        if ($('#cproceso').is(":checked")) {
+            var cproceso = 1;
+        }
+        if ($('#ccompletado').is(":checked")) {
+            var ccompletado = 1;
+        }
+        if ($('#cstandby').is(":checked")) {
+            var cstandby = 1;
+        }
+        if ($('#ccancelado').is(":checked")) {
+            var ccancelado = 1;
+        }
+        console.log(ccompletado);
+        window.location = "{{ route('soporte_tg.excel', [ ':fec_ini', ':fec_fin',':cpiniciar', ':cproceso', ':cstandby',':ccompletado',':ccancelado']) }}"
+            .replace(':fec_ini', fec_ini)
+            .replace(':fec_fin', fec_fin)
+            .replace(':cpiniciar', cpiniciar)
+            .replace(':cproceso', cproceso)
+            .replace(':cstandby', cstandby)
+            .replace(':ccompletado', ccompletado)
+            .replace(':ccancelado', ccancelado);
+    }
+
+
+
+
+    function Lista_Tabla_General_Estado(tipo) {
+        Cargando();
+        var fecha_iniciob = $('#fecha_iniciob').val();
+        var fecha_finb = $('#fecha_finb').val();
+        var cpiniciar = 0;
+        var cproceso = 0;
+        var ccompletado = 0;
+        var cstandby = 0;
+        var ccancelado = 0;
+
+        if ($('#cpiniciar').is(":checked")) {
+            var cpiniciar = 1;
+        }
+        if ($('#cproceso').is(":checked")) {
+            var cproceso = 1;
+        }
+        if ($('#ccompletado').is(":checked")) {
+            var ccompletado = 1;
+        }
+        if ($('#cstandby').is(":checked")) {
+            var cstandby = 1;
+        }
+        if ($('#ccancelado').is(":checked")) {
+            var ccancelado = 1;
+        }
+        var url = "{{ route('soporte_tablagenerales.list_filtro') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            data: {
+                'fecha_iniciob': fecha_iniciob,
+                'fecha_finb': fecha_finb,
+                'cpiniciar': cpiniciar,
+                'cproceso': cproceso,
+                'ccompletado': ccompletado,
+                'cstandby': cstandby,
+                'ccancelado': ccancelado
+            },
+            success: function(data) {
+                $('#tabla_general').html(data);
+            }
+        });
     }
 </script>
 @endsection

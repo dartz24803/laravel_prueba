@@ -241,7 +241,8 @@
                                 <label class="control-label text-bold" ">Vencimiento:</label>
                             </div>
                             <div class=" form-group col-md-4 mb-0">
-                                    <span class="form-control border-0">{{ $get_id->fec_vencimiento }}</span>
+                                    <span class="form-control border-0"> {{ $get_id->fec_vencimiento ? \Carbon\Carbon::parse($get_id->fec_vencimiento)->locale('es')->translatedFormat('D d M y') : 'No especificado' }}
+                                    </span>
                             </div>
                         </div>
                     </div>
@@ -440,16 +441,21 @@
                         @foreach ($comentarios as $comentario)
                         <div class="comment-box" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
                             <div class="row align-items-center">
-                                <div class="form-group text-center mx-3">
+                                <div class="form-group col-md-2 text-center">
                                     <img src="{{ $comentario->foto ? $comentario->foto : asset('img/user-default.jpg') }}"
-                                        alt="User Image" class="img-fluid rounded-circle img-user" style="max-width: 90px; height: 90px;">
+                                        alt="User Image" class="img-fluid rounded-circle">
                                 </div>
-
                                 <div class="form-group col-md-10">
-                                    <p><strong>Fecha:</strong> {{ $comentario->fec_comentario }}</p>
-                                    <p><strong>Responsable:</strong> {{ $comentario->nombre_responsable_solucion ?: 'No designado' }}</p>
-                                    <p style="max-width: 480px; word-wrap: break-word;" strong>Comentario:</strong> {{ $comentario->comentario ?: 'No hay comentario' }}</p>
-
+                                    <!-- Contenedor de fecha y responsable -->
+                                    <div class="d-flex justify-content-between">
+                                        <p><strong>Responsable:</strong> {{ $comentario->nombre_responsable_solucion ?: 'No designado' }}</p>
+                                        <p>
+                                            {{ $comentario->fec_comentario 
+                                        ? \Carbon\Carbon::parse($comentario->fec_comentario)->locale('es')->translatedFormat('D d M Y H:i') 
+                                        : 'No especificado' }}
+                                        </p>
+                                    </div>
+                                    <p style="max-width: 480px; word-wrap: break-word;"> <strong>Comentario:</strong> {{ $comentario->comentario ?: 'No hay comentario' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -464,7 +470,7 @@
                         <input type="hidden" id="imagenes_input" name="imagenes" value="">
                         <div id="imagenes_container_ver" class="carousel-container">
                             <!-- Las imágenes se añadirán aquí dinámicamente -->
-                            @if ($get_id->archivo || $get_id->archivo2 || $get_id->archivo3 || $get_id->archivo4 || $get_id->archivo5)
+                            @if ($get_id->archivo1 || $get_id->archivo2 || $get_id->archivo3 || $get_id->archivo4 || $get_id->archivo5)
                             @for ($i = 1; $i <= 5; $i++)
                                 @php
                                 $imgUrl=$get_id->{'archivo' . $i};
