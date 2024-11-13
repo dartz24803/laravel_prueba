@@ -25,7 +25,7 @@
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <label class="new-control new-checkbox checkbox-ln1">
-                                            <input type="checkbox" class="new-control-input" name="diferencia" id="diferencia" value="1">
+                                            <input type="checkbox" class="new-control-input" name="diferencia" id="diferencia" value="1" checked>
                                             <span class="new-control-indicator"></span>Existen diferencias
                                         </label>
                                     </div>
