@@ -768,7 +768,7 @@ class TareasController extends Controller
                 $resp = $this->Model_Perfil->get_id_usuario($id_usuario2);
 
                 $cod_base = $this->input->post("cod_base");
-                /*
+                
                 $mail = new PHPMailer(true);
 
                 try {
@@ -795,7 +795,7 @@ class TareasController extends Controller
                             $correo3="base".substr($cod_base, 1, 3)."@lanumero1.com.pe";
                             $mail->addAddress($correo3);
                         }else{
-                            $correo4=$_SESSION['usuario'][0]['emailp'];
+                            $correo4 = session('usuario')->emailp;
                             $mail->addAddress($correo4);
                         }
                     }
@@ -821,7 +821,7 @@ class TareasController extends Controller
 
                 }catch(Exception $e) {
                     echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-                }*/
+                }
             }
     }
     
@@ -1077,5 +1077,169 @@ class TareasController extends Controller
     public function Delete_Imagen_Temporal(){
         $id = $this->input->post("id");
         ArchivoTemporalPendiente::where('id', $id)->delete();
+    }
+    
+    public function Excel_Pendiente($cpiniciar,$cproceso,$cfinalizado,$cstandby,$area){
+        $dato['piniciar']= $cpiniciar;
+        $dato['proceso']= $cproceso; 
+        $dato['finalizado']= $cfinalizado;
+        $dato['standby']= $cstandby;
+        $dato['area']= $area;
+
+        $list_pendiente = $this->modelo->busqueda_list_pendiente($dato);
+        
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        if(session('usuario')->id_nivel){
+            $sheet->getStyle("A1:K1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A1:K1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+    
+            $spreadsheet->getActiveSheet()->setTitle('Tareas solicitadas');
+    
+            $sheet->setAutoFilter('A1:K1');
+    
+            $sheet->getColumnDimension('A')->setWidth(22);
+            $sheet->getColumnDimension('B')->setWidth(15);
+            $sheet->getColumnDimension('C')->setWidth(24);
+            $sheet->getColumnDimension('D')->setWidth(60);
+            $sheet->getColumnDimension('E')->setWidth(30);
+            $sheet->getColumnDimension('F')->setWidth(30);
+            $sheet->getColumnDimension('G')->setWidth(15);
+            $sheet->getColumnDimension('H')->setWidth(15);
+            $sheet->getColumnDimension('I')->setWidth(30);
+            $sheet->getColumnDimension('J')->setWidth(30);
+            $sheet->getColumnDimension('K')->setWidth(45);
+    
+            $sheet->getStyle('A1:K1')->getFont()->setBold(true);  
+    
+            $spreadsheet->getActiveSheet()->getStyle("A1:K1")->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('C8C8C8');
+    
+            $styleThinBlackBorderOutline = [
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => 'FF000000'],
+                    ],
+                ],
+            ];
+    
+            $sheet->getStyle("A1:K1")->applyFromArray($styleThinBlackBorderOutline);
+    
+            $sheet->setCellValue('A1', 'Fecha de registro');
+            $sheet->setCellValue('B1', 'Base');
+            $sheet->setCellValue('C1', 'Usuario de registro');
+            $sheet->setCellValue('D1', 'Título');
+            $sheet->setCellValue('E1', 'Asignado a');
+            $sheet->setCellValue('F1', 'Área');
+            $sheet->setCellValue('G1', 'Vence en');
+            $sheet->setCellValue('H1', 'Estado');
+            $sheet->setCellValue('I1', 'Tipo');        
+            $sheet->setCellValue('J1', 'Etiquetas');
+            $sheet->setCellValue('K1', 'Descripcion');   
+    
+            $contador=1;
+            
+            foreach($list_pendiente as $list){ 
+                $contador++;
+    
+                $sheet->getStyle("A{$contador}:H{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle("C{$contador}:F{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+                $sheet->getStyle("H{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+                $sheet->getStyle("A{$contador}:K{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+                $sheet->getStyle("A{$contador}:K{$contador}")->applyFromArray($styleThinBlackBorderOutline); 
+    
+                $sheet->setCellValue("A{$contador}", Date::PHPToExcel($list['fec_reg']));
+                $sheet->getStyle("A{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                $sheet->setCellValue("B{$contador}", $list['cod_base']);
+                $sheet->setCellValue("C{$contador}", ucwords($list['usuario_solicitante']));
+                $sheet->setCellValue("D{$contador}", ucfirst($list['titulo_min']));
+                $sheet->setCellValue("E{$contador}", ucwords($list['responsable']));
+                $sheet->setCellValue("F{$contador}", ucfirst($list['nom_area_min']));
+                if($list['vence_excel']=="Por definir"){
+                    $sheet->setCellValue("G{$contador}", $list['vence_excel']);
+                }else{
+                    $sheet->setCellValue("G{$contador}", Date::PHPToExcel($list['vence_excel']));
+                    $sheet->getStyle("G{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                }
+                $sheet->setCellValue("H{$contador}", $list['nom_estado_tickets']);
+                $sheet->setCellValue("I{$contador}", $list['nom_tipo_tickets']);
+                $sheet->setCellValue("J{$contador}", $list['nom_subitem']);
+                $sheet->setCellValue("K{$contador}", $list['descripcion']);
+            }
+        }else{
+            $sheet->getStyle("A1:F1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A1:F1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+    
+            $spreadsheet->getActiveSheet()->setTitle('Tareas solicitadas');
+    
+            $sheet->setAutoFilter('A1:F1');
+    
+            $sheet->getColumnDimension('A')->setWidth(22);
+            $sheet->getColumnDimension('B')->setWidth(60);
+            $sheet->getColumnDimension('C')->setWidth(30);
+            $sheet->getColumnDimension('D')->setWidth(30);
+            $sheet->getColumnDimension('E')->setWidth(15);
+            $sheet->getColumnDimension('F')->setWidth(15);
+    
+            $sheet->getStyle('A1:F1')->getFont()->setBold(true);  
+    
+            $spreadsheet->getActiveSheet()->getStyle("A1:F1")->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('C8C8C8');
+    
+            $styleThinBlackBorderOutline = [
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => 'FF000000'],
+                    ],
+                ],
+            ];
+    
+            $sheet->getStyle("A1:F1")->applyFromArray($styleThinBlackBorderOutline);
+    
+            $sheet->setCellValue('A1', 'Fecha de registro');
+            $sheet->setCellValue('B1', 'Título');
+            $sheet->setCellValue('C1', 'Asignado a');
+            $sheet->setCellValue('D1', 'Área');
+            $sheet->setCellValue('E1', 'Vence en');
+            $sheet->setCellValue('F1', 'Estado');        
+    
+            $contador=1;
+            
+            foreach($list_pendiente as $list){ 
+                $contador++;
+    
+                $sheet->getStyle("A{$contador}:F{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle("B{$contador}:D{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+                $sheet->getStyle("F{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+                $sheet->getStyle("A{$contador}:F{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+                $sheet->getStyle("A{$contador}:F{$contador}")->applyFromArray($styleThinBlackBorderOutline); 
+    
+                $sheet->setCellValue("A{$contador}", Date::PHPToExcel($list['fec_reg']));
+                $sheet->getStyle("A{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                $sheet->setCellValue("B{$contador}", ucfirst($list['titulo_min']));
+                $sheet->setCellValue("C{$contador}", ucwords($list['responsable']));
+                $sheet->setCellValue("D{$contador}", ucfirst($list['nom_area_min']));
+                if($list['vence_excel']=="Por definir"){
+                    $sheet->setCellValue("E{$contador}", $list['vence_excel']);
+                }else{
+                    $sheet->setCellValue("E{$contador}", Date::PHPToExcel($list['vence_excel']));
+                    $sheet->getStyle("E{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                }
+                $sheet->setCellValue("F{$contador}", $list['nom_estado_tickets']);
+            }
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Lista_Tareas_Solicitadas';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
     }
 }
