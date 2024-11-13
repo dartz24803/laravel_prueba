@@ -24,9 +24,9 @@ class TrackingTransporte extends Model
         'tipo_pago',
         'nombre_transporte',
         'guia_transporte',
+        'guia_remision',
         'importe_transporte',
         'factura_transporte',
-        'archivo_transporte',
         'fecha',
         'usuario'
     ];

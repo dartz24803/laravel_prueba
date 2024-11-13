@@ -28,16 +28,13 @@ use App\Models\TrackingToken;
 use Google\Client as GoogleClient;
 use Illuminate\Support\Facades\DB;
 use App\Models\TrackingEstado;
-use App\Models\TrackingPago;
 use App\Models\TrackingTransporte;
+use App\Models\TrackingTransporteArchivo;
 use Mpdf\Mpdf;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class TrackingController extends Controller
 {
@@ -774,6 +771,23 @@ class TrackingController extends Controller
                 $tipo_pago = $request->tipo_pago;
             }
 
+            $tracking_transporte = TrackingTransporte::create([
+                'id_base' => $request->id_base,
+                'anio' => date('Y'),
+                'semana' => date('W'),
+                'transporte' => $request->transporte,
+                'tiempo_llegada' => $request->tiempo_llegada,
+                'recepcion' => $request->recepcion,
+                'receptor' => $request->receptor,
+                'tipo_pago' => $tipo_pago,
+                'nombre_transporte' => $request->nombre_transporte,
+                'guia_transporte' => $request->guia_transporte,
+                'importe_transporte' => $request->importe_transporte,
+                'factura_transporte' => $request->factura_transporte,
+                'fecha' => now(),
+                'usuario' => session('usuario')->id_usuario
+            ]);
+
             $archivo = "";
             if($_FILES["archivo_transporte"]["name"] != ""){
                 $ftp_server = "lanumerounocloud.com";
@@ -793,6 +807,10 @@ class TrackingController extends Controller
                     $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
                     if($subio){
                         $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
+                        TrackingTransporteArchivo::create([
+                            'id_tracking_transporte' => $tracking_transporte->id,
+                            'archivo' => $archivo
+                        ]);
                     }else{
                         echo "Archivo no subido correctamente";
                     }
@@ -800,24 +818,6 @@ class TrackingController extends Controller
                     echo "No se conecto";
                 }
             }
-
-            TrackingTransporte::create([
-                'id_base' => $request->id_base,
-                'anio' => date('Y'),
-                'semana' => date('W'),
-                'transporte' => $request->transporte,
-                'tiempo_llegada' => $request->tiempo_llegada,
-                'recepcion' => $request->recepcion,
-                'receptor' => $request->receptor,
-                'tipo_pago' => $tipo_pago,
-                'nombre_transporte' => $request->nombre_transporte,
-                'guia_transporte' => $request->guia_transporte,
-                'importe_transporte' => $request->importe_transporte,
-                'factura_transporte' => $request->factura_transporte,
-                'archivo_transporte' => $archivo,
-                'fecha' => now(),
-                'usuario' => session('usuario')->id_usuario
-            ]);
         }
     }
 
@@ -839,11 +839,9 @@ class TrackingController extends Controller
             'guia_remision.required' => 'Debe adjuntar guía de remisión.'
         ]);
 
-        $valida = TrackingPago::where('id_base',$request->id_base)->where('anio',date('Y'))
-                ->where('semana',$request->semana)->exists();
-        if($valida){
-            echo "error";
-        }else{
+        $get_id = TrackingTransporte::where('id_base',$request->id_base)->where('anio',date('Y'))
+                ->where('semana',$request->semana)->first();
+        if(isset($get_id->id)){
             if($_FILES["guia_remision"]["name"] != ""){
                 $ftp_server = "lanumerounocloud.com";
                 $ftp_usuario = "intranet@lanumerounocloud.com";
@@ -851,6 +849,10 @@ class TrackingController extends Controller
                 $con_id = ftp_connect($ftp_server);
                 $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
                 if($con_id && $lr){
+                    if($get_id->guia_remision!=""){
+                        ftp_delete($con_id, "TRACKING/".basename($get_id->guia_remision));
+                    }
+
                     $path = $_FILES["guia_remision"]["name"];
                     $source_file = $_FILES['guia_remision']['tmp_name'];
 
@@ -862,11 +864,10 @@ class TrackingController extends Controller
                     $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
                     if($subio){
                         $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
-                        TrackingPago::create([
-                            'id_base' => $request->id_base,
-                            'anio' => date('Y'),
-                            'semana' => $request->semana,
-                            'guia_remision' => $archivo
+                        TrackingTransporte::findOrFail($get_id->id)->update([
+                            'guia_remision' => $archivo,
+                            'fecha' => now(),
+                            'usuario' => session('usuario')->id_usuario
                         ]);
                     }else{
                         echo "Archivo no subido correctamente";
@@ -875,6 +876,8 @@ class TrackingController extends Controller
                     echo "No se conecto";
                 }
             }
+        }else{
+            echo "error";
         }
     }
 
@@ -889,6 +892,307 @@ class TrackingController extends Controller
             'list_subgerencia',
             'list_base'
         ));
+    }
+
+    public function traer_pago_general(Request $request)
+    {
+        $get_id = TrackingTransporte::where('id_base',$request->id_base)
+                ->where('anio',date('Y'))->where('semana',$request->semana)->first();
+        if(isset($get_id->id)){
+            if($get_id->factura_transporte!=""){
+                echo "repetido";
+            }else{
+                return view('logistica.tracking.tracking.detalle_pago_transporte_general', compact(
+                    'get_id'
+                ));
+            }
+        }else{
+            echo "no_data";
+        }
+    }
+
+    public function insert_confirmacion_pago_transporte_general(Request $request, $id)
+    {
+        $request->validate([
+            'nombre_transporte' => 'required',
+            'guia_transporte' => 'required',
+            'importe_transporte' => 'required|gt:0',
+            'factura_transporte' => 'required'
+        ],[
+            'nombre_transporte.required' => 'Debe ingresar nombre de empresa.',
+            'guia_transporte.required' => 'Debe ingresar nro. GR transporte.',
+            'importe_transporte.required' => 'Debe ingresar importe a pagar.',
+            'importe_transporte.gt' => 'Debe ingresar importe a pagar mayor a 0.',
+            'factura_transporte.required' => 'Debe ingresar n° de factura.'
+        ]);
+
+        $errors = [];
+        if ($_FILES["archivo_transporte"]["name"]=="" && $request->captura=="0") {
+            $errors['archivo'] = ['Debe adjuntar o capturar con la cámara la factura.'];
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
+        if($_FILES["archivo_transporte"]["name"] != ""){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                $path = $_FILES["archivo_transporte"]["name"];
+                $source_file = $_FILES['archivo_transporte']['tmp_name'];
+
+                $ext = pathinfo($path, PATHINFO_EXTENSION);
+                $nombre_soli = "Factura_".$id."_".date('YmdHis');
+                $nombre = $nombre_soli.".".strtolower($ext);
+
+                ftp_pasv($con_id,true); 
+                $subio = ftp_put($con_id,"TRACKING/".$nombre,$source_file,FTP_BINARY);
+                if($subio){
+                    $archivo = "https://lanumerounocloud.com/intranet/TRACKING/".$nombre;
+                    TrackingTransporteArchivo::create([
+                        'id_tracking_transporte' => $id,
+                        'archivo' => $archivo
+                    ]);
+                }else{
+                    echo "Archivo no subido correctamente";
+                }
+            }else{
+                echo "No se conecto";
+            }
+        }
+
+        if($request->captura=="1"){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                $nombre_actual = "TRACKING/temporal_pm_".session('usuario')->id_usuario.".jpg";
+                $nuevo_nombre = "TRACKING/Factura_".$id."_".date('YmdHis')."_captura.jpg";
+                ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
+                $archivo = "https://lanumerounocloud.com/intranet/".$nuevo_nombre;
+                
+                TrackingTransporteArchivo::create([
+                    'id_tracking_transporte' => $id,
+                    'archivo' => $archivo
+                ]);
+            }else{
+                echo "No se conecto";
+            }
+        }
+
+        TrackingTransporte::findOrFail($id)->update([
+            'nombre_transporte' => $request->nombre_transporte,
+            'guia_transporte' => $request->guia_transporte,
+            'importe_transporte' => $request->importe_transporte,
+            'factura_transporte' => $request->factura_transporte,
+            'fecha' => now(),
+            'usuario' => session('usuario')->id_usuario
+        ]);
+
+        $get_id = TrackingTransporte::select('*',DB::raw("CASE WHEN transporte='1'
+                THEN 'Agencia - Terrestre'
+                WHEN transporte='2' THEN 'Agencia - Aérea' 
+                WHEN transporte='3' THEN 'Propio' ELSE '' END AS tipo_transporte"),
+                DB::raw("CASE WHEN recepcion=1 THEN 'Agencia' 
+                WHEN recepcion=2 THEN 'Domicilio' ELSE '' END AS recepcion"),
+                DB::raw("CASE WHEN tipo_pago=1 THEN 'Si pago' WHEN tipo_pago=2 THEN 'Por pagar' 
+                ELSE '' END AS nom_tipo_pago"),
+                DB::raw('IFNULL(importe_transporte,0) AS importe_formateado'))
+                ->where('id',$id)->first();                
+        $list_tracking = Tracking::select('id')->where('id_origen_hacia',$get_id->id_base)
+                        ->where(DB::raw('YEAR(fec_reg)'),$get_id->anio)
+                        ->where('semana',$get_id->semana)->get();
+        $list_archivo = TrackingTransporteArchivo::where('id_tracking_transporte', $id)->get();                        
+
+        foreach($list_tracking as $tracking){
+            $tracking = Tracking::get_list_tracking(['id'=>$tracking->id]);
+            $tracking_dp = TrackingDetalleProceso::create([
+                'id_tracking' => $tracking->id,
+                'id_proceso' => 5,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+    
+            //PASAR PARA CONFIRMACIÓN DE PAGO DE TRANSPORTE
+            TrackingDetalleEstado::create([
+                'id_detalle' => $tracking_dp->id,
+                'id_estado' => 10,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+    
+            //MENSAJE 4
+            $mail = new PHPMailer(true);
+    
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Port     =  587; 
+                $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
+    
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
+                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                foreach($list_cd as $list){
+                    $mail->addAddress($list->emailp);
+                }
+                $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+                foreach($list_cc as $list){
+                    $mail->addCC($list->emailp);
+                }*/
+    
+                $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
+                $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+                $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
+                $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+                $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+                $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
+                $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
+    
+                $mail->isHTML(true);
+    
+                $mail->Subject = "MERCADERÍA PAGADA: RQ. ".$tracking->n_requerimiento." (".$tracking->hacia.") - PRUEBA";
+            
+                $mail->Body =  '<FONT SIZE=3>
+                                    <b>Semana:</b> '.$tracking->semana.'<br>
+                                    <b>Nro. Req.:</b> '.$tracking->n_requerimiento.'<br>
+                                    <b>Base:</b> '.$tracking->hacia.'<br>
+                                    <b>Distrito:</b> '.$tracking->nombre_distrito.'<br>
+                                    <b>Fecha - Mercadería pagada:</b> '.$fecha_formateada.'<br><br>
+                                    Hola '.$tracking->desde.', se ha pagado a la agencia.<br>
+                                    Envío el reporte de la salida de mercadería <b>(completo)</b>.<br><br>
+                                    <table cellpadding="3" cellspacing="0" border="1" style="width:100%;">     
+                                        <tr>
+                                            <td colspan="2" style="font-weight:bold;">Despacho</td>
+                                            <td style="text-align:right;">SEM-'.$tracking->semana.'-'.substr(date('Y'),-2).'</td>
+                                        </tr>
+                                        <tr>
+                                            <td rowspan="2" style="font-weight:bold;">Guía Remisión</td>
+                                            <td style="font-weight:bold;">Nuestra</td>
+                                            <td style="text-align:right;">'.$tracking->n_guia_remision.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight:bold;">Transporte.</td>
+                                            <td style="text-align:right;">'.$get_id->guia_transporte.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="font-weight:bold;">Tipo de transporte</td>
+                                            <td style="text-align:right;">'.$get_id->tipo_transporte.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="font-weight:bold;">Nombre de transporte</td>
+                                            <td style="text-align:right;">'.$get_id->nombre_transporte.'</td>
+                                        </tr>                                    
+                                        <tr>
+                                            <td colspan="2" style="font-weight:bold;">N° Factura</td>
+                                            <td style="text-align:right;">'.$get_id->factura_transporte.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="font-weight:bold;">Peso</td>
+                                            <td style="text-align:right;">'.$tracking->peso.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="font-weight:bold;">Paquetes</td>
+                                            <td style="text-align:right;">'.$tracking->paquetes.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="font-weight:bold;">Sobres</td>
+                                            <td style="text-align:right;">'.$tracking->sobres.'</td>
+                                        </tr>          
+                                        <tr>
+                                            <td colspan="2" style="font-weight:bold;">Fardos</td>
+                                            <td style="text-align:right;">'.$tracking->fardos.'</td>
+                                        </tr>           
+                                        <tr>
+                                            <td colspan="2" style="font-weight:bold;">Caja</td>
+                                            <td style="text-align:right;">'.$tracking->caja.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="font-weight:bold;">Bultos</td>
+                                            <td style="text-align:right;">'.$tracking->bultos.'</td>
+                                        </tr>                                 
+                                        <tr>
+                                            <td colspan="2" style="font-weight:bold;">Recepción</td>
+                                            <td style="text-align:right;">'.$get_id->recepcion.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="font-weight:bold;">Mercadería total</td>
+                                            <td style="text-align:right;">'.$tracking->mercaderia_total.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="font-weight:bold;">Flete por prenda</td>
+                                            <td style="text-align:right;">S/'.$tracking->flete_prenda_formateado.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="font-weight:bold;">Receptor</td>
+                                            <td style="text-align:right;">'.$get_id->receptor.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="font-weight:bold;">Tipo pago</td>
+                                            <td style="text-align:right;">'.$get_id->nom_tipo_pago.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="font-weight:bold;">Importe Pagado</td>
+                                            <td style="text-align:right;">S/'.$get_id->importe_formateado.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td rowspan="3" style="font-weight:bold;">Fecha</td>
+                                            <td style="font-weight:bold;">Partida</td>
+                                            <td style="text-align:right;">'.$tracking->fecha_partida.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight:bold;">Tiempo estimado de llegada</td>
+                                            <td style="text-align:right;">'.$get_id->tiempo_llegada.'</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight:bold;">Llegada</td>
+                                            <td style="text-align:right;">'.$tracking->fecha_llegada.'</td>
+                                        </tr>
+                                    </table>
+                                </FONT SIZE>';
+            
+                $mail->CharSet = 'UTF-8';
+                foreach($list_archivo as $list){
+                    $archivo_contenido = file_get_contents($list->archivo);
+                    $nombre_archivo = basename($list->archivo);
+                    $mail->addStringAttachment($archivo_contenido, $nombre_archivo);
+                }
+                $mail->send();
+    
+                //PASAR PARA MERCADERÍA PAGADA
+                TrackingDetalleEstado::create([
+                    'id_detalle' => $tracking_dp->id,
+                    'id_estado' => 11,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+            }catch(Exception $e) {
+                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+            }
+        }
     }
 
     public function detalle_transporte($id)
