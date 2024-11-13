@@ -2166,12 +2166,13 @@ Route::controller(TareasController::class)->group(function () {
     Route::post('Tareas/Delete_Archivo_Gestion_Pendiente', 'Delete_Archivo_Gestion_Pendiente');
 });
 
+use App\Http\Controllers\ContactosController;
 
-
-
-
-
-
+Route::controller(ContactosController::class)->group(function () {
+    Route::get('Contactos/index', 'Lista_Directorio_Telefonico');
+    Route::get('Contactos/Cargar_Mis_Tareas', 'Cargar_Mis_Tareas');
+    Route::post('Contactos/Lista_Mis_Tareas', 'Lista_Mis_Tareas');
+});
 
 
 

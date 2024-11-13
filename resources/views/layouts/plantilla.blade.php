@@ -563,7 +563,7 @@
                     <?php } ?>
                     <?php if (/*$directorio == 1 ||*/session('usuario')->id_nivel == 1) { ?>
                         <li class="menu" id="contactos">
-                            <a href="javascript:void(0);" id="hcontacto" class="dropdown-toggle">
+                            <a href="{{ url('Contactos/index') }}" id="hcontacto" class="dropdown-toggle">
                                 <div class="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-map-pin">
                                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
