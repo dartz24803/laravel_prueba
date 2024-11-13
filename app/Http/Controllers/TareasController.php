@@ -219,7 +219,7 @@ class TareasController extends Controller
                     $mail->Username   =  'intranet@lanumero1.com.pe';
                     $mail->Password   =  'lanumero1$1';
                     $mail->SMTPSecure =  'tls';
-                    $mail->Puerto     =  587;
+                    $mail->Port     =  587;
                     $mail->setFrom('intranet@lanumero1.com.pe','PENDIENTE');
 
                     if($soli[0]['encargado_p']=="SI"){
