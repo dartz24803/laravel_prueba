@@ -1139,20 +1139,21 @@ class ColaboradorController extends Controller
                         'fecha' => now(),
                         'usuario' => session('usuario')->id_usuario,
                     ]);
+                    $get_usuario = Usuario::findOrFail($request->id_usuario_hp);
                     $valida = Organigrama::where('id_puesto', $request->id_puesto_hp)
-                            ->exists();
-                    if($valida){
-                        $az = Organigrama::where('id_puesto', $request->id_puesto_hp)
-                                ->get();
-                        $dato['id'] = $az[0]['id'];
-                        Organigrama::where('id', $get_id[0]['id'])->update([
+                            ->where('id_centro_labor',$get_usuario->id_centro_labor)
+                            ->where('id_usuario',0)
+                            ->first();
+                    if(isset($valida->id)){
+                        Organigrama::findOrFail($valida->id)->update([
                             'id_usuario' => $request->id_usuario_hp,
                             'fecha' => now(),
-                            'usuario' => session('usuario')->id_usuario,
+                            'usuario' => session('usuario')->id_usuario
                         ]);
                     }else{
                         Organigrama::create([
                             'id_puesto' => $request->id_puesto_hp,
+                            'id_centro_labor' => $get_usuario->id_centro_labor,
                             'id_usuario' => $request->id_usuario_hp,
                             'fecha' => now(),
                             'usuario' => session('usuario')->id_usuario,
@@ -1207,22 +1208,21 @@ class ColaboradorController extends Controller
                     'fecha' => now(),
                     'usuario' => session('usuario')->id_usuario,
                 ]);
+                $get_usuario = Usuario::findOrFail($request->id_usuario_hp);
                 $valida = Organigrama::where('id_puesto', $request->id_puesto_hp)
-                        ->exists();
-                if($valida){
-                    $az = Organigrama::where('id_puesto', $request->id_puesto_hp)
-                            ->get();
-                    $dato['id'] = $az[0]['id'];
-                    Organigrama::where('id', $get_id[0]['id'])->update([
+                        ->where('id_centro_labor',$get_usuario->id_centro_labor)
+                        ->where('id_usuario',0)
+                        ->first();
+                if(isset($valida->id)){
+                    Organigrama::findOrFail($valida->id)->update([
                         'id_usuario' => $request->id_usuario_hp,
                         'fecha' => now(),
-                        'usuario' => session('usuario')->id_usuario,
-                        'fec_act' => now(),
-                        'user_act' => session('usuario')->id_usuario,
+                        'usuario' => session('usuario')->id_usuario
                     ]);
                 }else{
                     Organigrama::create([
                         'id_puesto' => $request->id_puesto_hp,
+                        'id_centro_labor' => $get_usuario->id_centro_labor,
                         'id_usuario' => $request->id_usuario_hp,
                         'fecha' => now(),
                         'usuario' => session('usuario')->id_usuario,
@@ -1363,10 +1363,12 @@ class ColaboradorController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
 
-            $valida = Organigrama::where('id_usuario',$id_usuario)->count();
+            $get_id = Usuario::findOrFail($id_usuario);
+            $valida = Organigrama::where('id_usuario',$id_usuario)
+                    ->where('id_centro_labor',$get_id->id_centro_labor)->count();
             if($valida==0){
-                $get_id = Usuario::findOrFail($id_usuario);
-                $org = Organigrama::where('id_puesto',$get_id->id_puesto)->first();
+                $org = Organigrama::where('id_puesto',$get_id->id_puesto)
+                    ->where('id_centro_labor',$get_id->id_centro_labor)->first();
                 if(isset($org->id)){
                     Organigrama::findOrFail($org->id)->update([
                         'id_usuario' => $id_usuario,
@@ -1376,6 +1378,7 @@ class ColaboradorController extends Controller
                 }else{
                     Organigrama::create([
                         'id_puesto' => $get_id->id_puesto,
+                        'id_centro_labor' => $get_id->id_centro_labor,
                         'id_usuario' => $id_usuario,
                         'fecha' => now(),
                         'usuario' => session('usuario')->id_usuario
@@ -1567,7 +1570,8 @@ class ColaboradorController extends Controller
                 $valida = Organigrama::where('id_usuario',$get_id->id_usuario)->count();
                 if($valida==0){
                     $get_id = Usuario::findOrFail($get_id->id_usuario);
-                    $org = Organigrama::where('id_puesto',$get_id->id_puesto)->first();
+                    $org = Organigrama::where('id_puesto',$get_id->id_puesto)
+                        ->where('id_centro_labor',$get_id->id_centro_labor)->first();
                     if(isset($org->id)){
                         Organigrama::findOrFail($org->id)->update([
                             'id_usuario' => $get_id->id_usuario,
@@ -1577,6 +1581,7 @@ class ColaboradorController extends Controller
                     }else{
                         Organigrama::create([
                             'id_puesto' => $get_id->id_puesto,
+                            'id_centro_labor' => $get_id->id_centro_labor,
                             'id_usuario' => $get_id->id_usuario,
                             'fecha' => now(),
                             'usuario' => session('usuario')->id_usuario

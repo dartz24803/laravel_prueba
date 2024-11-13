@@ -18,7 +18,6 @@ class PuestoController extends Controller
                         ->where('estado', 1)
                         ->where('id_area', $id_area)
                         ->get();
-
-        return view('rrhh.administracion.colaborador.cargo.puesto', compact('list_puesto'));
+        return view('rrhh.administracion.colaborador.puesto', compact('list_puesto'));
     }
 }

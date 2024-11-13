@@ -4,11 +4,9 @@
             <label class="control-label text-bold">Seleccione base: </label>
             <select class="form-control select2" name="busq_base" id="busq_base" onchange="Cargar_x_Base();">            
                 <option value="0" selected>Todos</option>
-                <?php foreach ($lista_bases as $list) { ?>
-                    <option value="<?php echo $list['cod_base']; ?>">
-                        <?php echo $list['cod_base']; ?>
-                    </option>
-                <?php } ?>
+                @foreach ($list_ubicacion as $list)
+                    <option value="{{ $list->id_ubicacion }}">{{ $list->cod_ubi }}</option>
+                @endforeach
             </select>
         </div>
     <?php } ?>

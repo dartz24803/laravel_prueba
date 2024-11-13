@@ -133,7 +133,7 @@
         var url = "{{ url('Traer_Puesto_Cargo_Colaborador') }}";
 
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: url,
             data: {'id_area':id_area},
             success: function(data) {

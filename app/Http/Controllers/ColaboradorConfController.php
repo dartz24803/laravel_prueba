@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Area;
 use App\Models\AreaUbicacion;
 use App\Models\Competencia;
+use App\Models\AsistenciaColaborador;
 use App\Models\CompetenciaPuesto;
 use App\Models\Direccion;
 use App\Models\FuncionesPuesto;
@@ -50,13 +51,18 @@ use App\Models\ToleranciaHorario;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Notificacion;
+use App\Models\Organigrama;
 use App\Models\Ubicacion;
+use App\Models\Usuario;
 
 class ColaboradorConfController extends Controller
 {
-    public function __construct()
+    protected $input;
+
+    public function __construct(Request $request)
     {
         $this->middleware('verificar.sesion.usuario');
+        $this->input = $request;
     }
 
     public function index()
@@ -71,28 +77,28 @@ class ColaboradorConfController extends Controller
     public function traer_gerencia(Request $request)
     {
         $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')
-                        ->where('id_direccion', $request->id_direccion)->where('estado', 1)->get();
+            ->where('id_direccion', $request->id_direccion)->where('estado', 1)->get();
         return view('rrhh.administracion.colaborador.gerencia', compact('list_gerencia'));
     }
 
     public function traer_sub_gerencia(Request $request)
     {
         $list_sub_gerencia = SubGerencia::select('id_sub_gerencia', 'nom_sub_gerencia')
-                            ->where('id_gerencia', $request->id_gerencia)->where('estado', 1)->get();
+            ->where('id_gerencia', $request->id_gerencia)->where('estado', 1)->get();
         return view('rrhh.administracion.colaborador.sub_gerencia', compact('list_sub_gerencia'));
     }
 
     public function traer_area(Request $request)
     {
         $list_area = Area::select('id_area', 'nom_area')
-                    ->where('id_departamento', $request->id_sub_gerencia)->where('estado', 1)->get();
+            ->where('id_departamento', $request->id_sub_gerencia)->where('estado', 1)->get();
         return view('rrhh.administracion.colaborador.area', compact('list_area'));
     }
 
     public function traer_puesto(Request $request)
     {
         $list_puesto = Puesto::select('id_puesto', 'nom_puesto')
-                    ->where('id_area', $request->id_area)->where('estado', 1)->get();
+            ->where('id_area', $request->id_area)->where('estado', 1)->get();
         return view('rrhh.administracion.colaborador.puesto', compact('list_puesto'));
     }
 
@@ -262,11 +268,15 @@ class ColaboradorConfController extends Controller
     public function list_sg()
     {
         $list_sub_gerencia = SubGerencia::from('sub_gerencia AS sg')
-                            ->select('sg.id_sub_gerencia','di.direccion','ge.nom_gerencia',
-                            'sg.nom_sub_gerencia')
-                            ->join('gerencia AS ge', 'ge.id_gerencia', '=', 'sg.id_gerencia')
-                            ->join('direccion AS di', 'di.id_direccion', '=', 'ge.id_direccion')
-                            ->where('sg.estado', 1)->get();
+            ->select(
+                'sg.id_sub_gerencia',
+                'di.direccion',
+                'ge.nom_gerencia',
+                'sg.nom_sub_gerencia'
+            )
+            ->join('gerencia AS ge', 'ge.id_gerencia', '=', 'sg.id_gerencia')
+            ->join('direccion AS di', 'di.id_direccion', '=', 'ge.id_direccion')
+            ->where('sg.estado', 1)->get();
         return view('rrhh.administracion.colaborador.sub_gerencia.lista', compact('list_sub_gerencia'));
     }
 
@@ -289,7 +299,7 @@ class ColaboradorConfController extends Controller
         ]);
 
         $valida = SubGerencia::where('id_gerencia', $request->id_gerencia)
-                ->where('nom_sub_gerencia', $request->nom_sub_gerencia)->where('estado', 1)->exists();
+            ->where('nom_sub_gerencia', $request->nom_sub_gerencia)->where('estado', 1)->exists();
         if ($valida) {
             echo "error";
         } else {
@@ -308,12 +318,12 @@ class ColaboradorConfController extends Controller
     public function edit_sg($id)
     {
         $get_id = SubGerencia::from('sub_gerencia AS sg')
-                ->select('sg.*','ge.id_direccion')
-                ->join('gerencia AS ge','ge.id_gerencia','=','sg.id_gerencia')
-                ->where('id_sub_gerencia',$id)->first();
+            ->select('sg.*', 'ge.id_direccion')
+            ->join('gerencia AS ge', 'ge.id_gerencia', '=', 'sg.id_gerencia')
+            ->where('id_sub_gerencia', $id)->first();
         $list_direccion = Direccion::select('id_direccion', 'direccion')->where('estado', 1)->get();
         $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')
-                        ->where('id_direccion', $get_id->id_direccion)->where('estado', 1)->get();
+            ->where('id_direccion', $get_id->id_direccion)->where('estado', 1)->get();
         return view('rrhh.administracion.colaborador.sub_gerencia.modal_editar', compact(
             'get_id',
             'list_direccion',
@@ -334,7 +344,7 @@ class ColaboradorConfController extends Controller
         ]);
 
         $valida = SubGerencia::where('id_gerencia', $request->id_gerenciae)
-                ->where('nom_sub_gerencia', $request->nom_sub_gerenciae)->where('estado', 1)->where('id_sub_gerencia', '!=', $id)->exists();
+            ->where('nom_sub_gerencia', $request->nom_sub_gerenciae)->where('estado', 1)->where('id_sub_gerencia', '!=', $id)->exists();
         if ($valida) {
             echo "error";
         } else {
@@ -363,14 +373,21 @@ class ColaboradorConfController extends Controller
 
     public function list_ar()
     {
-        $list_area = Area::from('area AS ar')->select('ar.id_area','di.direccion','ge.nom_gerencia',
-                    'sg.nom_sub_gerencia','ar.nom_area','ar.cod_area',
-                    DB::raw("(SELECT GROUP_CONCAT(pu.nom_puesto) FROM puesto pu
-                    WHERE FIND_IN_SET(pu.id_puesto,ar.puestos)) AS puestos"),'ar.orden')
-                    ->join('sub_gerencia AS sg','sg.id_sub_gerencia','=','ar.id_departamento')
-                    ->join('gerencia AS ge','ge.id_gerencia','=','sg.id_gerencia')
-                    ->join('direccion AS di','di.id_direccion','=','ge.id_direccion')
-                    ->where('ar.estado',1)->get();
+        $list_area = Area::from('area AS ar')->select(
+            'ar.id_area',
+            'di.direccion',
+            'ge.nom_gerencia',
+            'sg.nom_sub_gerencia',
+            'ar.nom_area',
+            'ar.cod_area',
+            DB::raw("(SELECT GROUP_CONCAT(pu.nom_puesto) FROM puesto pu
+                    WHERE FIND_IN_SET(pu.id_puesto,ar.puestos)) AS puestos"),
+            'ar.orden'
+        )
+            ->join('sub_gerencia AS sg', 'sg.id_sub_gerencia', '=', 'ar.id_departamento')
+            ->join('gerencia AS ge', 'ge.id_gerencia', '=', 'sg.id_gerencia')
+            ->join('direccion AS di', 'di.id_direccion', '=', 'ge.id_direccion')
+            ->where('ar.estado', 1)->get();
         return view('rrhh.administracion.colaborador.area.lista', compact('list_area'));
     }
 
@@ -381,7 +398,7 @@ class ColaboradorConfController extends Controller
         $list_ubicaciones = Ubicacion::select('id_ubicacion', 'cod_ubi')->where('estado', 1)->get();
         return view('rrhh.administracion.colaborador.area.modal_registrar', compact(
             'list_direccion',
-            'list_ubicaciones', 
+            'list_ubicaciones',
             'list_sedes'
         ));
     }
@@ -389,9 +406,9 @@ class ColaboradorConfController extends Controller
     public function traer_puesto_ar(Request $request)
     {
         $list_puesto = Puesto::from('puesto AS pu')->select('pu.id_puesto', 'pu.nom_puesto')
-                        ->join('area AS ar','ar.id_area','=','pu.id_area')
-                        ->join('sub_gerencia AS sg','sg.id_sub_gerencia','=','ar.id_departamento')
-                        ->where('sg.id_gerencia', $request->id_gerencia)->where('pu.estado', 1)->get();
+            ->join('area AS ar', 'ar.id_area', '=', 'pu.id_area')
+            ->join('sub_gerencia AS sg', 'sg.id_sub_gerencia', '=', 'ar.id_departamento')
+            ->where('sg.id_gerencia', $request->id_gerencia)->where('pu.estado', 1)->get();
         return view('rrhh.administracion.colaborador.area.puestos', compact('list_puesto'));
     }
 
@@ -412,7 +429,7 @@ class ColaboradorConfController extends Controller
         ]);
 
         $valida = Area::where('id_departamento', $request->id_sub_gerencia)
-                ->where('nom_area', $request->nom_area)->where('estado', 1)->exists();
+            ->where('nom_area', $request->nom_area)->where('estado', 1)->exists();
         if ($valida) {
             echo "error";
         } else {
@@ -477,18 +494,18 @@ class ColaboradorConfController extends Controller
 
     public function edit_ar($id)
     {
-        $get_id = Area::from('area AS ar')->select('ar.*','sg.id_gerencia','ge.id_direccion')
-                ->join('sub_gerencia AS sg','sg.id_sub_gerencia','=','ar.id_departamento')
-                ->join('gerencia AS ge','ge.id_gerencia','=','sg.id_gerencia')
-                ->where('ar.id_area',$id)->first();
+        $get_id = Area::from('area AS ar')->select('ar.*', 'sg.id_gerencia', 'ge.id_direccion')
+            ->join('sub_gerencia AS sg', 'sg.id_sub_gerencia', '=', 'ar.id_departamento')
+            ->join('gerencia AS ge', 'ge.id_gerencia', '=', 'sg.id_gerencia')
+            ->where('ar.id_area', $id)->first();
         $list_direccion = Direccion::select('id_direccion', 'direccion')
-                        ->where('estado', 1)->get();
+            ->where('estado', 1)->get();
         $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')
-                        ->where('id_direccion', $get_id->id_direccion)->where('estado', 1)->get();
+            ->where('id_direccion', $get_id->id_direccion)->where('estado', 1)->get();
         $list_sub_gerencia = SubGerencia::select('id_sub_gerencia', 'nom_sub_gerencia')
-                            ->where('id_gerencia', $get_id->id_gerencia)->where('estado', 1)->get();
+            ->where('id_gerencia', $get_id->id_gerencia)->where('estado', 1)->get();
         $list_puesto = Puesto::select('id_puesto', 'nom_puesto')
-                    ->where('id_gerencia', $get_id->id_gerencia)->where('estado', 1)->get();
+            ->where('id_gerencia', $get_id->id_gerencia)->where('estado', 1)->get();
 
         $list_sedes = SedeLaboral::select('id', 'descripcion')
             ->where('estado', 1)
@@ -950,15 +967,21 @@ class ColaboradorConfController extends Controller
 
     public function list_pu()
     {
-        $list_puesto = Puesto::from('puesto AS pu')->select('pu.id_puesto','di.direccion','ge.nom_gerencia',
-                    'sg.nom_sub_gerencia','ar.nom_area','pu.nom_puesto',
-                    'nj.nom_nivel')
-                    ->join('area AS ar', 'ar.id_area', '=', 'pu.id_area')
-                    ->join('sub_gerencia AS sg', 'sg.id_sub_gerencia', '=', 'ar.id_departamento')
-                    ->join('gerencia AS ge', 'ge.id_gerencia', '=', 'sg.id_gerencia')
-                    ->join('direccion AS di', 'di.id_direccion', '=', 'ge.id_direccion')
-                    ->join('nivel_jerarquico AS nj', 'nj.id_nivel', '=', 'pu.id_nivel')
-                    ->where('pu.estado', 1)->get();
+        $list_puesto = Puesto::from('puesto AS pu')->select(
+            'pu.id_puesto',
+            'di.direccion',
+            'ge.nom_gerencia',
+            'sg.nom_sub_gerencia',
+            'ar.nom_area',
+            'pu.nom_puesto',
+            'nj.nom_nivel'
+        )
+            ->join('area AS ar', 'ar.id_area', '=', 'pu.id_area')
+            ->join('sub_gerencia AS sg', 'sg.id_sub_gerencia', '=', 'ar.id_departamento')
+            ->join('gerencia AS ge', 'ge.id_gerencia', '=', 'sg.id_gerencia')
+            ->join('direccion AS di', 'di.id_direccion', '=', 'ge.id_direccion')
+            ->join('nivel_jerarquico AS nj', 'nj.id_nivel', '=', 'pu.id_nivel')
+            ->where('pu.estado', 1)->get();
         return view('rrhh.administracion.colaborador.puesto.lista', compact('list_puesto'));
     }
 
@@ -967,7 +990,7 @@ class ColaboradorConfController extends Controller
         $list_direccion = Direccion::select('id_direccion', 'direccion')->where('estado', 1)->get();
         $list_nivel = NivelJerarquico::select('id_nivel', 'nom_nivel')->where('estado', 1)->get();
         return view('rrhh.administracion.colaborador.puesto.modal_registrar', compact(
-            'list_direccion', 
+            'list_direccion',
             'list_nivel'
         ));
     }
@@ -991,7 +1014,7 @@ class ColaboradorConfController extends Controller
         ]);
 
         $valida = Puesto::where('id_area', $request->id_area)
-                ->where('nom_puesto', $request->nom_puesto)->where('estado', 1)->exists();
+            ->where('nom_puesto', $request->nom_puesto)->where('estado', 1)->exists();
         if ($valida) {
             echo "error";
         } else {
@@ -1010,29 +1033,29 @@ class ColaboradorConfController extends Controller
 
     public function edit_pu($id)
     {
-        $get_id = Puesto::from('puesto AS pu')->select('pu.*','ge.id_direccion','sg.id_gerencia','ar.id_departamento')
-                ->join('area AS ar','ar.id_area','=','pu.id_area')
-                ->join('sub_gerencia AS sg','sg.id_sub_gerencia','=','ar.id_departamento')
-                ->join('gerencia AS ge','ge.id_gerencia','=','sg.id_gerencia')
-                ->where('id_puesto',$id)->first();
+        $get_id = Puesto::from('puesto AS pu')->select('pu.*', 'ge.id_direccion', 'sg.id_gerencia', 'ar.id_departamento')
+            ->join('area AS ar', 'ar.id_area', '=', 'pu.id_area')
+            ->join('sub_gerencia AS sg', 'sg.id_sub_gerencia', '=', 'ar.id_departamento')
+            ->join('gerencia AS ge', 'ge.id_gerencia', '=', 'sg.id_gerencia')
+            ->where('id_puesto', $id)->first();
         $list_direccion = Direccion::select('id_direccion', 'direccion')
-                        ->where('estado', 1)->get();
+            ->where('estado', 1)->get();
         $list_gerencia = Gerencia::select('id_gerencia', 'nom_gerencia')
-                        ->where('id_direccion', $get_id->id_direccion)
-                        ->where('estado', 1)->get();
+            ->where('id_direccion', $get_id->id_direccion)
+            ->where('estado', 1)->get();
         $list_sub_gerencia = SubGerencia::select('id_sub_gerencia', 'nom_sub_gerencia')
-                            ->where('id_gerencia', $get_id->id_gerencia)
-                            ->where('estado', 1)->get();
+            ->where('id_gerencia', $get_id->id_gerencia)
+            ->where('estado', 1)->get();
         $list_area = Area::select('id_area', 'nom_area')
-                    ->where('id_departamento', $get_id->id_departamento)
-                    ->where('estado', 1)->get();
+            ->where('id_departamento', $get_id->id_departamento)
+            ->where('estado', 1)->get();
         $list_nivel = NivelJerarquico::select('id_nivel', 'nom_nivel')->where('estado', 1)->get();
         return view('rrhh.administracion.colaborador.puesto.modal_editar', compact(
-            'get_id', 
-            'list_direccion', 
-            'list_gerencia', 
-            'list_sub_gerencia', 
-            'list_area', 
+            'get_id',
+            'list_direccion',
+            'list_gerencia',
+            'list_sub_gerencia',
+            'list_area',
             'list_nivel'
         ));
     }
@@ -1056,8 +1079,8 @@ class ColaboradorConfController extends Controller
         ]);
 
         $valida = Puesto::where('id_area', $request->id_areae)
-                ->where('nom_puesto', $request->nom_puestoe)->where('estado', 1)
-                ->where('id_puesto', '!=', $id)->exists();
+            ->where('nom_puesto', $request->nom_puestoe)->where('estado', 1)
+            ->where('id_puesto', '!=', $id)->exists();
         if ($valida) {
             echo "error";
         } else {
@@ -1571,72 +1594,116 @@ class ColaboradorConfController extends Controller
 
     public function list_or()
     {
-        $list_sede_laboral = SedeLaboral::select('id', 'descripcion')->where('estado', 1)->get();
-        return view('rrhh.administracion.colaborador.organigrama.lista', compact('list_sede_laboral'));
+        $list_organigrama = Organigrama::from('organigrama AS og')->select(
+                            'og.id','pu.nom_puesto','ub.cod_ubi',
+                            DB::raw("CONCAT(us.usuario_nombres,' ',us.usuario_apater,' ',
+                            us.usuario_amater) AS nom_usuario"),'og.id_usuario')
+                            ->join('puesto AS pu', 'pu.id_puesto', '=', 'og.id_puesto')
+                            ->join('ubicacion AS ub', 'ub.id_ubicacion', '=', 'og.id_centro_labor')
+                            ->leftjoin('users AS us','us.id_usuario','=','og.id_usuario')
+                            ->get();
+        return view('rrhh.administracion.colaborador.organigrama.lista', compact('list_organigrama'));
     }
 
     public function create_or()
     {
-        return view('rrhh.administracion.colaborador.organigrama.modal_registrar');
+        $list_puesto = Puesto::select('id_puesto', 'nom_puesto')->where('estado', 1)
+                    ->orderBy('nom_puesto', 'ASC')->get();
+        $list_ubicacion = Ubicacion::select('id_ubicacion', 'cod_ubi')->where('estado', 1)
+                        ->orderBy('cod_ubi','ASC')->get();
+        return view('rrhh.administracion.colaborador.organigrama.modal_registrar', compact(
+            'list_puesto',
+            'list_ubicacion'
+        ));
     }
 
     public function store_or(Request $request)
     {
         $request->validate([
-            'descripcion' => 'required',
+            'id_puesto' => 'gt:0',
+            'id_centro_labor' => 'gt:0'
         ], [
-            'descripcion.required' => 'Debe ingresar nombre.',
+            'id_puesto.gt' => 'Debe seleccionar puesto.',
+            'id_centro_labor.gt' => 'Debe seleccionar centro de labor.'
         ]);
 
-        $valida = SedeLaboral::where('descripcion', $request->descripcion)->where('estado', 1)->exists();
-        if ($valida) {
-            echo "error";
-        } else {
-            SedeLaboral::create([
-                'descripcion' => $request->descripcion,
-                'estado' => 1,
-                'fec_reg' => now(),
-                'user_reg' => session('usuario')->id_usuario,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
-        }
+        Organigrama::create([
+            'id_puesto' => $request->id_puesto,
+            'id_centro_labor' => $request->id_centro_labor,
+            'fecha' => now(),
+            'usuario' => session('usuario')->id_usuario
+        ]);
     }
 
     public function edit_or($id)
     {
-        $get_id = SedeLaboral::findOrFail($id);
-        return view('rrhh.administracion.colaborador.organigrama.modal_editar', compact('get_id'));
+        $get_id = Organigrama::findOrFail($id);
+        $list_puesto = Puesto::select('id_puesto', 'nom_puesto')->where('estado', 1)
+                    ->orderBy('nom_puesto', 'ASC')->get();
+        $list_ubicacion = Ubicacion::select('id_ubicacion', 'cod_ubi')->where('estado', 1)
+                        ->orderBy('cod_ubi','ASC')->get();
+        return view('rrhh.administracion.colaborador.organigrama.modal_editar', compact(
+            'get_id',
+            'list_puesto',
+            'list_ubicacion'
+        ));
     }
 
     public function update_or(Request $request, $id)
     {
         $request->validate([
-            'descripcione' => 'required',
+            'id_puestoe' => 'gt:0',
+            'id_centro_labore' => 'gt:0'
         ], [
-            'descripcione.required' => 'Debe ingresar nombre.',
+            'id_puestoe.gt' => 'Debe seleccionar puesto.',
+            'id_centro_labore.gt' => 'Debe seleccionar centro de labor.'
         ]);
 
-        $valida = SedeLaboral::where('descripcion', $request->descripcione)->where('estado', 1)
-            ->where('id', '!=', $id)->exists();
-        if ($valida) {
-            echo "error";
-        } else {
-            SedeLaboral::findOrFail($id)->update([
-                'descripcion' => $request->descripcione,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
-        }
+        Organigrama::findOrFail($id)->update([
+            'id_puesto' => $request->id_puestoe,
+            'id_centro_labor' => $request->id_centro_labore,
+            'fecha' => now(),
+            'usuario' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function edit_clab_or($id)
+    {
+        $get_id = Organigrama::findOrFail($id);
+        $list_ubicacion = Ubicacion::select('id_ubicacion', 'cod_ubi')->where('estado', 1)
+                        ->orderBy('cod_ubi','ASC')->get();
+        return view('rrhh.administracion.colaborador.organigrama.modal_editar_clab', compact(
+            'get_id',
+            'list_ubicacion'
+        ));
+    }
+
+    public function update_clab_or(Request $request, $id)
+    {
+        $request->validate([
+            'id_centro_laborc' => 'gt:0'
+        ], [
+            'id_centro_laborc.gt' => 'Debe seleccionar centro de labor.'
+        ]);
+
+        Organigrama::findOrFail($id)->update([
+            'id_centro_labor' => $request->id_centro_laborc,
+            'fecha' => now(),
+            'usuario' => session('usuario')->id_usuario
+        ]);
+
+        //ACTUALIZAR EL CENTRO DE LABOR DEL COLABORADOR
+        $get_id = Organigrama::findOrFail($id);
+        Usuario::findOrFail($get_id->id_usuario)->update([
+            'id_centro_labor' => $request->id_centro_laborc,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
     }
 
     public function destroy_or($id)
     {
-        SedeLaboral::findOrFail($id)->update([
-            'estado' => 2,
-            'fec_eli' => now(),
-            'user_eli' => session('usuario')->id_usuario
-        ]);
+        Organigrama::destroy($id);
     }
 
     public function Estado_Civil()
@@ -3688,33 +3755,38 @@ class ColaboradorConfController extends Controller
         Turno::findOrFail($request->input("id_turno"))->update($dato);
     }
 
-    public function Horario(){
+    public function Horario()
+    {
         $dato['list_base'] = Base::get_list_base_pendiente();
-        return view('rrhh.administracion.colaborador.Horario.index',$dato);
+        return view('rrhh.administracion.colaborador.Horario.index', $dato);
     }
 
-    public function Lista_Horario(Request $request){
+    public function Lista_Horario(Request $request)
+    {
         $cod_base = $request->cod_base;
         $dato['list_horario'] = Horario::get_list_horario_modulo($cod_base);
-        return view('rrhh.administracion.colaborador.Horario.lista',$dato);
+        return view('rrhh.administracion.colaborador.Horario.lista', $dato);
     }
 
-    public function Modal_Horario(){
+    public function Modal_Horario()
+    {
         $dato['list_base'] = Base::get_list_base_pendiente();
         return view('rrhh.administracion.colaborador.Horario.vista_reg', $dato);
     }
 
-    public function Busca_Turno_XBase(Request $request){
+    public function Busca_Turno_XBase(Request $request)
+    {
         $cod_base = $request->input("cod_base");
         $list_turno = Turno::get_list_turno_xbase($cod_base);
-        $select="<option value='0'>Seleccione</option>";
-        foreach($list_turno as $list){
-            $select=$select."<option value='".$list['id_turno']."'>".$list['option_select']."</option>";
+        $select = "<option value='0'>Seleccione</option>";
+        foreach ($list_turno as $list) {
+            $select = $select . "<option value='" . $list['id_turno'] . "'>" . $list['option_select'] . "</option>";
         }
         echo $select;
     }
 
-    public function Insert_Horario(Request $request){
+    public function Insert_Horario(Request $request)
+    {
         $request->validate([
             'id_turno_lu_i' => [
                 'required_if:ch_dia_laborado_lu_i,1',
@@ -3781,7 +3853,7 @@ class ColaboradorConfController extends Controller
             'ch_dia_laborado_vi_i' => 'required_without_all:ch_dia_laborado_lu_i,ch_dia_laborado_ma_i,ch_dia_laborado_mi_i,ch_dia_laborado_ju_i,ch_dia_laborado_sa_i,ch_dia_laborado_do_i|boolean',
             'ch_dia_laborado_sa_i' => 'required_without_all:ch_dia_laborado_lu_i,ch_dia_laborado_ma_i,ch_dia_laborado_mi_i,ch_dia_laborado_ju_i,ch_dia_laborado_vi_i,ch_dia_laborado_do_i|boolean',
             'ch_dia_laborado_do_i' => 'required_without_all:ch_dia_laborado_lu_i,ch_dia_laborado_ma_i,ch_dia_laborado_mi_i,ch_dia_laborado_ju_i,ch_dia_laborado_vi_i,ch_dia_laborado_sa_i|boolean',
-        ],[
+        ], [
             'cod_base_i' => 'Debe seleccionar base',
             'nombre_i' => 'Debe ingresar nombre',
             'ch_dia_laborado_lu_i.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
@@ -3793,37 +3865,37 @@ class ColaboradorConfController extends Controller
             'ch_dia_laborado_do_i.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
         ]);
         $valida = Horario::where('nombre', $request->nombre_i)
-                ->where('cod_base', $request->cod_base_i)
-                ->where('estado', 1)
-                ->exists();
-        if ($valida){
+            ->where('cod_base', $request->cod_base_i)
+            ->where('estado', 1)
+            ->exists();
+        if ($valida) {
             echo "error";
-        }else{
-            $dato['nombre']= $request->input("nombre_i");
-            $dato['cod_base']= $request->input("cod_base_i");
-            if($request->input("ch_feriado_i")){
+        } else {
+            $dato['nombre'] = $request->input("nombre_i");
+            $dato['cod_base'] = $request->input("cod_base_i");
+            if ($request->input("ch_feriado_i")) {
                 $dato['feriado'] = 1;
-            }else{
+            } else {
                 $dato['feriado'] = "";
             }
-            $anio=date('Y');
+            $anio = date('Y');
             $query_id = Horario::get();
             $totalRows_t = count($query_id);
-            $aniof=substr($anio, 2,2);
-            if($totalRows_t<9){
-                $codigofinal="H".$aniof."0000".($totalRows_t+1);
+            $aniof = substr($anio, 2, 2);
+            if ($totalRows_t < 9) {
+                $codigofinal = "H" . $aniof . "0000" . ($totalRows_t + 1);
             }
-            if($totalRows_t>8 && $totalRows_t<99){
-                    $codigofinal="H".$aniof."000".($totalRows_t+1);
+            if ($totalRows_t > 8 && $totalRows_t < 99) {
+                $codigofinal = "H" . $aniof . "000" . ($totalRows_t + 1);
             }
-            if($totalRows_t>98 && $totalRows_t<999){
-                $codigofinal="H".$aniof."00".($totalRows_t+1);
+            if ($totalRows_t > 98 && $totalRows_t < 999) {
+                $codigofinal = "H" . $aniof . "00" . ($totalRows_t + 1);
             }
-            if($totalRows_t>998 && $totalRows_t<9999){
-                $codigofinal="H".$aniof."0".($totalRows_t+1);
+            if ($totalRows_t > 998 && $totalRows_t < 9999) {
+                $codigofinal = "H" . $aniof . "0" . ($totalRows_t + 1);
             }
-            if($totalRows_t>9998){
-                $codigofinal="H".$aniof.($totalRows_t+1);
+            if ($totalRows_t > 9998) {
+                $codigofinal = "H" . $aniof . ($totalRows_t + 1);
             }
             $dato['cod_horario'] = $codigofinal;
             $dato['estado'] = 1;
@@ -3836,20 +3908,20 @@ class ColaboradorConfController extends Controller
 
             $dato['id_horario'] = $horario->id_horario;
 
-            
-            $dato['ch_lunes']= $request->input("ch_dia_laborado_lu_i");
-            if($dato['ch_lunes']==1){
+
+            $dato['ch_lunes'] = $request->input("ch_dia_laborado_lu_i");
+            if ($dato['ch_lunes'] == 1) {
                 $dato['id_turno'] = $request->input("id_turno_lu_i");
                 $data = Turno::get_turno_para_horario($dato['id_turno']);
                 $dato['dia'] = 1;
                 $dato['nom_dia'] = "Lunes";
-                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_lu_i");
-                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_lu_i");
-                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_lu_i");  
-                if($dato['con_descanso']==1){
-                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_lu_i");
-                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_lu_i");
-                }else{
+                $dato['hora_entrada'] = $data[0]['entrada']; //$this->input->post("hora_entrada_lu_i");
+                $dato['hora_salida'] = $data[0]['salida']; //$this->input->post("hora_salida_lu_i");
+                $dato['con_descanso'] = $data[0]['t_refrigerio']; //$this->input->post("con_descanso_lu_i");  
+                if ($dato['con_descanso'] == 1) {
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri']; //$this->input->post("hora_edescanso_lu_i");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri']; //$this->input->post("hora_sdescanso_lu_i");
+                } else {
                     $dato['hora_descanso_e'] = "00:00:00";
                     $dato['hora_descanso_s'] = "00:00:00";
                 }
@@ -3861,159 +3933,163 @@ class ColaboradorConfController extends Controller
                 HorarioDia::create($dato);
             }
 
-            $dato['ch_martes']= $request->input("ch_dia_laborado_ma_i");
-            if($dato['ch_martes']==1){
-                $dato['id_turno']= $request->input("id_turno_ma_i");
+            $dato['ch_martes'] = $request->input("ch_dia_laborado_ma_i");
+            if ($dato['ch_martes'] == 1) {
+                $dato['id_turno'] = $request->input("id_turno_ma_i");
                 $data = Turno::get_turno_para_horario($dato['id_turno']);
                 $dato['dia'] = 2;
                 $dato['nom_dia'] = "Martes";
-                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_ma_i");
-                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_ma_i");
-                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_ma_i");  
-                if($dato['con_descanso']==1){
-                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_ma_i");
-                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_ma_i");
-                }else{
+                $dato['hora_entrada'] = $data[0]['entrada']; //$this->input->post("hora_entrada_ma_i");
+                $dato['hora_salida'] = $data[0]['salida']; //$this->input->post("hora_salida_ma_i");
+                $dato['con_descanso'] = $data[0]['t_refrigerio']; //$this->input->post("con_descanso_ma_i");  
+                if ($dato['con_descanso'] == 1) {
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri']; //$this->input->post("hora_edescanso_ma_i");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri']; //$this->input->post("hora_sdescanso_ma_i");
+                } else {
                     $dato['hora_descanso_e'] = "00:00:00";
                     $dato['hora_descanso_s'] = "00:00:00";
                 }
                 HorarioDia::create($dato);
             }
 
-            $dato['ch_miercoles']= $request->input("ch_dia_laborado_mi_i");
-            if($dato['ch_miercoles']==1){
-                $dato['id_turno']= $request->input("id_turno_mi_i");
+            $dato['ch_miercoles'] = $request->input("ch_dia_laborado_mi_i");
+            if ($dato['ch_miercoles'] == 1) {
+                $dato['id_turno'] = $request->input("id_turno_mi_i");
                 $data = Turno::get_turno_para_horario($dato['id_turno']);
                 $dato['dia'] = 3;
                 $dato['nom_dia'] = "Miércoles";
-                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_mi_i");
-                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_mi_i");
-                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_mi_i");  
-                if($dato['con_descanso']==1){
-                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_mi_i");
-                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_mi_i");
-                }else{
+                $dato['hora_entrada'] = $data[0]['entrada']; //$this->input->post("hora_entrada_mi_i");
+                $dato['hora_salida'] = $data[0]['salida']; //$this->input->post("hora_salida_mi_i");
+                $dato['con_descanso'] = $data[0]['t_refrigerio']; //$this->input->post("con_descanso_mi_i");  
+                if ($dato['con_descanso'] == 1) {
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri']; //$this->input->post("hora_edescanso_mi_i");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri']; //$this->input->post("hora_sdescanso_mi_i");
+                } else {
                     $dato['hora_descanso_e'] = "00:00:00";
                     $dato['hora_descanso_s'] = "00:00:00";
                 }
                 HorarioDia::create($dato);
             }
 
-            $dato['ch_jueves']= $request->input("ch_dia_laborado_ju_i");
-            if($dato['ch_jueves']==1){
-                $dato['id_turno']= $request->input("id_turno_ju_i");
+            $dato['ch_jueves'] = $request->input("ch_dia_laborado_ju_i");
+            if ($dato['ch_jueves'] == 1) {
+                $dato['id_turno'] = $request->input("id_turno_ju_i");
                 $data = Turno::get_turno_para_horario($dato['id_turno']);
                 $dato['dia'] = 4;
                 $dato['nom_dia'] = "Jueves";
-                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_ju_i");
-                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_ju_i");
-                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_ju_i");  
-                if($dato['con_descanso']==1){
-                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_ju_i");
-                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_ju_i");
-                }else{
+                $dato['hora_entrada'] = $data[0]['entrada']; //$this->input->post("hora_entrada_ju_i");
+                $dato['hora_salida'] = $data[0]['salida']; //$this->input->post("hora_salida_ju_i");
+                $dato['con_descanso'] = $data[0]['t_refrigerio']; //$this->input->post("con_descanso_ju_i");  
+                if ($dato['con_descanso'] == 1) {
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri']; //$this->input->post("hora_edescanso_ju_i");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri']; //$this->input->post("hora_sdescanso_ju_i");
+                } else {
                     $dato['hora_descanso_e'] = "00:00:00";
                     $dato['hora_descanso_s'] = "00:00:00";
                 }
                 HorarioDia::create($dato);
             }
 
-            $dato['ch_viernes']= $request->input("ch_dia_laborado_vi_i");
-            if($dato['ch_viernes']==1){
-                $dato['id_turno']= $request->input("id_turno_vi_i");
+            $dato['ch_viernes'] = $request->input("ch_dia_laborado_vi_i");
+            if ($dato['ch_viernes'] == 1) {
+                $dato['id_turno'] = $request->input("id_turno_vi_i");
                 $data = Turno::get_turno_para_horario($dato['id_turno']);
                 $dato['dia'] = 5;
                 $dato['nom_dia'] = "Viernes";
-                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_vi_i");
-                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_vi_i");
-                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_vi_i");  
-                if($dato['con_descanso']==1){
-                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_vi_i");
-                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_vi_i");
-                }else{
+                $dato['hora_entrada'] = $data[0]['entrada']; //$this->input->post("hora_entrada_vi_i");
+                $dato['hora_salida'] = $data[0]['salida']; //$this->input->post("hora_salida_vi_i");
+                $dato['con_descanso'] = $data[0]['t_refrigerio']; //$this->input->post("con_descanso_vi_i");  
+                if ($dato['con_descanso'] == 1) {
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri']; //$this->input->post("hora_edescanso_vi_i");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri']; //$this->input->post("hora_sdescanso_vi_i");
+                } else {
                     $dato['hora_descanso_e'] = "00:00:00";
                     $dato['hora_descanso_s'] = "00:00:00";
                 }
                 HorarioDia::create($dato);
             }
 
-            $dato['ch_sabado']= $request->input("ch_dia_laborado_sa_i");
-            if($dato['ch_sabado']==1){
-                $dato['id_turno']= $request->input("id_turno_sa_i");
+            $dato['ch_sabado'] = $request->input("ch_dia_laborado_sa_i");
+            if ($dato['ch_sabado'] == 1) {
+                $dato['id_turno'] = $request->input("id_turno_sa_i");
                 $data = Turno::get_turno_para_horario($dato['id_turno']);
                 $dato['dia'] = 6;
                 $dato['nom_dia'] = "Sábado";
-                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_sa_i");
-                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_sa_i");
-                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_sa_i");  
-                if($dato['con_descanso']==1){
-                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_sa_i");
-                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_sa_i");
-                }else{
+                $dato['hora_entrada'] = $data[0]['entrada']; //$this->input->post("hora_entrada_sa_i");
+                $dato['hora_salida'] = $data[0]['salida']; //$this->input->post("hora_salida_sa_i");
+                $dato['con_descanso'] = $data[0]['t_refrigerio']; //$this->input->post("con_descanso_sa_i");  
+                if ($dato['con_descanso'] == 1) {
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri']; //$this->input->post("hora_edescanso_sa_i");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri']; //$this->input->post("hora_sdescanso_sa_i");
+                } else {
                     $dato['hora_descanso_s'] = "00:00:00";
                     $dato['hora_descanso_e'] = "00:00:00";
                 }
                 HorarioDia::create($dato);
             }
 
-            $dato['ch_domingo']= $request->input("ch_dia_laborado_do_i");
-            if($dato['ch_domingo']==1){
-                $dato['id_turno']= $request->input("id_turno_do_i");
+            $dato['ch_domingo'] = $request->input("ch_dia_laborado_do_i");
+            if ($dato['ch_domingo'] == 1) {
+                $dato['id_turno'] = $request->input("id_turno_do_i");
                 $data = Turno::get_turno_para_horario($dato['id_turno']);
                 $dato['dia'] = 7;
                 $dato['nom_dia'] = "Domingo";
-                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_do_i");
-                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_do_i");
-                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_do_i");  
-                if($dato['con_descanso']==1){
-                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_do_i");
-                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_do_i");
-                }else{
+                $dato['hora_entrada'] = $data[0]['entrada']; //$this->input->post("hora_entrada_do_i");
+                $dato['hora_salida'] = $data[0]['salida']; //$this->input->post("hora_salida_do_i");
+                $dato['con_descanso'] = $data[0]['t_refrigerio']; //$this->input->post("con_descanso_do_i");  
+                if ($dato['con_descanso'] == 1) {
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri']; //$this->input->post("hora_edescanso_do_i");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri']; //$this->input->post("hora_sdescanso_do_i");
+                } else {
                     $dato['hora_descanso_e'] = "00:00:00";
                     $dato['hora_descanso_s'] = "00:00:00";
                 }
                 HorarioDia::create($dato);
             }
-            
+
             $data = ToleranciaHorario::consulta_tolerancia_horario_activo();
-            if(count($data)>0){
+            if (count($data) > 0) {
                 $minutos = $data[0]['minutos'];
-            }else{
+            } else {
                 $minutos = 0;
             }
-            
+
             HorarioDia::where('estado', 1)
-            ->update([
-                'hora_entrada_desde' => DB::raw("DATE_FORMAT(DATE_SUB(hora_entrada, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
-                'hora_entrada_hasta' => DB::raw("DATE_FORMAT(DATE_ADD(hora_entrada, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
-                'hora_salida_desde' => DB::raw("DATE_FORMAT(DATE_SUB(hora_salida, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
-                'hora_salida_hasta' => DB::raw("DATE_FORMAT(DATE_ADD(hora_salida, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
-                'hora_descanso_e_desde' => DB::raw("CASE WHEN con_descanso=1 THEN DATE_FORMAT(DATE_SUB(hora_descanso_e, INTERVAL $minutos MINUTE), '%H:%i:%s') END"),
-                'hora_descanso_e_hasta' => DB::raw("CASE WHEN con_descanso=1 THEN DATE_FORMAT(DATE_ADD(hora_descanso_e, INTERVAL $minutos MINUTE), '%H:%i:%s') END"),
-                'hora_descanso_s_desde' => DB::raw("CASE WHEN con_descanso=1 THEN DATE_FORMAT(DATE_SUB(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s') END"),
-                'hora_descanso_s_hasta' => DB::raw("CASE WHEN con_descanso=1 THEN DATE_FORMAT(DATE_ADD(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s') END"),
-                'fec_act' => now(),
-            ]);
+                ->update([
+                    'hora_entrada_desde' => DB::raw("DATE_FORMAT(DATE_SUB(hora_entrada, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
+                    'hora_entrada_hasta' => DB::raw("DATE_FORMAT(DATE_ADD(hora_entrada, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
+                    'hora_salida_desde' => DB::raw("DATE_FORMAT(DATE_SUB(hora_salida, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
+                    'hora_salida_hasta' => DB::raw("DATE_FORMAT(DATE_ADD(hora_salida, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
+
+                    'hora_descanso_e_desde' => DB::raw("CASE WHEN con_descanso = 1 THEN DATE_FORMAT(DATE_SUB(hora_descanso_e, INTERVAL $minutos MINUTE), '%H:%i:%s') ELSE hora_descanso_e_desde END"),
+                    'hora_descanso_e_hasta' => DB::raw("CASE WHEN con_descanso = 1 THEN DATE_FORMAT(DATE_ADD(hora_descanso_e, INTERVAL $minutos MINUTE), '%H:%i:%s') ELSE hora_descanso_e_hasta END"),
+                    'hora_descanso_s_desde' => DB::raw("CASE WHEN con_descanso = 1 THEN DATE_FORMAT(DATE_SUB(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s') ELSE hora_descanso_s_desde END"),
+                    'hora_descanso_s_hasta' => DB::raw("CASE WHEN con_descanso = 1 THEN DATE_FORMAT(DATE_ADD(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s') ELSE hora_descanso_s_hasta END"),
+
+                    'fec_act' => now(),
+                ]);
         }
     }
 
-    public function Modal_Update_Horario($id_horario){
+    public function Modal_Update_Horario($id_horario)
+    {
         $dato['get_id'] = Horario::where('id_horario', $id_horario)
-                        ->get();/*
+            ->get();/*
         print_r($dato['get_id']);
         print_r('base', $dato['cod_base']);*/
         $dato['get_detalle'] = HorarioDia::where('id_horario', $id_horario)
-                        ->where('estado', 1)
-                        ->orderBy('dia', 'ASC')
-                        ->get()
-                        ->toArray();
+            ->where('estado', 1)
+            ->orderBy('dia', 'ASC')
+            ->get()
+            ->toArray();
         //print_r($dato['get_detalle']);
         $dato['list_base'] = Base::get_list_base_pendiente();
         $dato['list_turno'] = Turno::get_list_turno_xbase($dato['get_id']);
-        return view('rrhh.administracion.colaborador.Horario.vista_edit',$dato);
+        return view('rrhh.administracion.colaborador.Horario.vista_edit', $dato);
     }
 
-    public function Update_Horario(Request $request){
+    public function Update_Horario(Request $request)
+    {
         $request->validate([
             'id_turno_lu_u' => [
                 'required_if:ch_dia_laborado_lu_u,1',
@@ -4080,7 +4156,7 @@ class ColaboradorConfController extends Controller
             'ch_dia_laborado_vi_u' => 'required_without_all:ch_dia_laborado_lu_u,ch_dia_laborado_ma_u,ch_dia_laborado_mi_u,u,ch_dia_laborado_sa_u,ch_dia_laborado_do_u|boolean',
             'ch_dia_laborado_sa_u' => 'required_without_all:ch_dia_laborado_lu_u,ch_dia_laborado_ma_u,ch_dia_laborado_mi_u,u,ch_dia_laborado_vi_u,ch_dia_laborado_do_u|boolean',
             'ch_dia_laborado_do_u' => 'required_without_all:ch_dia_laborado_lu_u,ch_dia_laborado_ma_u,ch_dia_laborado_mi_u,u,ch_dia_laborado_vi_u,ch_dia_laborado_sa_u|boolean',
-        ],[
+        ], [
             'cod_base_u' => 'Debe seleccionar base',
             'nombre_u' => 'Debe ingresar nombre',
             'ch_dia_laborado_lu_u.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
@@ -4089,53 +4165,53 @@ class ColaboradorConfController extends Controller
             'ch_dia_laborado_ju_u.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
             'ch_dia_laborado_vi_u.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
             'ch_dia_laborado_sa_u.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
-            'ch_dia_laborado_do_u.required_without_all' => 'Debe seleccionar al menos un día de la semana.',            
+            'ch_dia_laborado_do_u.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
         ]);
         $valida = Horario::where('nombre', $request->nombre_u)
-                ->where('cod_base', $request->cod_base_u)
-                ->where('id_horario', '!=', $request->id_horario)
-                ->where('estado', 1)
-                ->exists();
-        if ($valida){
+            ->where('cod_base', $request->cod_base_u)
+            ->where('id_horario', '!=', $request->id_horario)
+            ->where('estado', 1)
+            ->exists();
+        if ($valida) {
             echo "error";
-        }else{
-            $dato['nombre']= $request->input("nombre_u");
-            $dato['cod_base']= $request->input("cod_base_u");
-            if($request->input("ch_feriado_u")){
+        } else {
+            $dato['nombre'] = $request->input("nombre_u");
+            $dato['cod_base'] = $request->input("cod_base_u");
+            if ($request->input("ch_feriado_u")) {
                 $dato['feriado'] = 1;
-            }else{
+            } else {
                 $dato['feriado'] = "";
             }
             Horario::findOrFail($request->id_horario)->update($dato);
 
-            $dato['ch_lunes']= $request->input("ch_dia_laborado_lu_u");
+            $dato['ch_lunes'] = $request->input("ch_dia_laborado_lu_u");
             $dato['dia'] = 1;
-            if($dato['ch_lunes']==1){
-                $dato['id_lunes']= $request->input("id_lunes");
-                $dato['id_turno']= $request->input("id_turno_lu_u");
+            if ($dato['ch_lunes'] == 1) {
+                $dato['id_lunes'] = $request->input("id_lunes");
+                $dato['id_turno'] = $request->input("id_turno_lu_u");
                 $data = Turno::get_turno_para_horario($dato['id_turno']);
-                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_lu_u");
-                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_lu_u");
-                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_lu_u");  
+                $dato['hora_entrada'] = $data[0]['entrada']; //$this->input->post("hora_entrada_lu_u");
+                $dato['hora_salida'] = $data[0]['salida']; //$this->input->post("hora_salida_lu_u");
+                $dato['con_descanso'] = $data[0]['t_refrigerio']; //$this->input->post("con_descanso_lu_u");  
                 $dato['hora_descanso_e'] = "";
                 $dato['hora_descanso_s'] = "";
-                if($dato['con_descanso']==1){
-                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_lu_u");
-                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_lu_u");
+                if ($dato['con_descanso'] == 1) {
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri']; //$this->input->post("hora_edescanso_lu_u");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri']; //$this->input->post("hora_sdescanso_lu_u");
                 }
 
-                if($dato['id_lunes']!=""){
+                if ($dato['id_lunes'] != "") {
                     HorarioDia::findOrFail($request->id_lunes)->update([
                         'id_turno' => $request->id_turno_lu_u,
                         'hora_entrada' => $data[0]['entrada'],
                         'hora_salida' => $data[0]['salida'],
-                        'con_descanso' => $data[0]['t_refrigerio'],  
+                        'con_descanso' => $data[0]['t_refrigerio'],
                         'hora_descanso_e' => "00:00:00",
                         'hora_descanso_s' => "00:00:00",
                         'fec_act' => now(),
                         'user_act' => session('usuario')->id_usuario,
                     ]);
-                }else{
+                } else {
                     HorarioDia::create([
                         'id_horario' => $request->id_horario,
                         'id_turno' => $dato['id_turno'],
@@ -4143,7 +4219,7 @@ class ColaboradorConfController extends Controller
                         'nom_dia' => "Lunes",
                         'hora_entrada' => $data[0]['entrada'],
                         'hora_salida' => $data[0]['salida'],
-                        'con_descanso' => $data[0]['t_refrigerio'],  
+                        'con_descanso' => $data[0]['t_refrigerio'],
                         'hora_descanso_e' => "00:00:00",
                         'hora_descanso_s' => "00:00:00",
                         'estado' => 1,
@@ -4151,43 +4227,43 @@ class ColaboradorConfController extends Controller
                         'user_reg' => session('usuario')->id_usuario,
                     ]);
                 }
-            }else{
+            } else {
                 HorarioDia::where('id_horario', $request->id_horario)
-                        ->where('dia', 1)
-                        ->update([
-                            'estado' => 2,
-                            'fec_eli' => now(),
-                            'user_eli' => session('usuario')->id_usuario,
-                        ]);
+                    ->where('dia', 1)
+                    ->update([
+                        'estado' => 2,
+                        'fec_eli' => now(),
+                        'user_eli' => session('usuario')->id_usuario,
+                    ]);
             }
 
-            $dato['ch_martes']= $request->input("ch_dia_laborado_ma_u");
+            $dato['ch_martes'] = $request->input("ch_dia_laborado_ma_u");
             $dato['dia'] = 2;
-            if($dato['ch_martes']==1){
-                $dato['id_martes']= $request->input("id_martes");
-                $dato['id_turno']= $request->input("id_turno_ma_u");
+            if ($dato['ch_martes'] == 1) {
+                $dato['id_martes'] = $request->input("id_martes");
+                $dato['id_turno'] = $request->input("id_turno_ma_u");
                 $data = Turno::get_turno_para_horario($dato['id_turno']);
-                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_ma_u");
-                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_ma_u");
-                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_ma_u");  
+                $dato['hora_entrada'] = $data[0]['entrada']; //$this->input->post("hora_entrada_ma_u");
+                $dato['hora_salida'] = $data[0]['salida']; //$this->input->post("hora_salida_ma_u");
+                $dato['con_descanso'] = $data[0]['t_refrigerio']; //$this->input->post("con_descanso_ma_u");  
                 $dato['hora_descanso_e'] = "";
                 $dato['hora_descanso_s'] = "";
-                if($dato['con_descanso']==1){
-                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_ma_u");
-                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_ma_u");
+                if ($dato['con_descanso'] == 1) {
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri']; //$this->input->post("hora_edescanso_ma_u");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri']; //$this->input->post("hora_sdescanso_ma_u");
                 }
-                if($dato['id_martes']!=""){
+                if ($dato['id_martes'] != "") {
                     HorarioDia::findOrFail($request->id_martes)->update([
                         'id_turno' => $request->id_turno_ma_u,
                         'hora_entrada' => $data[0]['entrada'],
                         'hora_salida' => $data[0]['salida'],
-                        'con_descanso' => $data[0]['t_refrigerio'],  
+                        'con_descanso' => $data[0]['t_refrigerio'],
                         'hora_descanso_e' => "00:00:00",
                         'hora_descanso_s' => "00:00:00",
                         'fec_act' => now(),
                         'user_act' => session('usuario')->id_usuario,
                     ]);
-                }else{
+                } else {
                     HorarioDia::create([
                         'id_horario' => $request->id_horario,
                         'id_turno' => $dato['id_turno'],
@@ -4195,7 +4271,7 @@ class ColaboradorConfController extends Controller
                         'nom_dia' => "Martes",
                         'hora_entrada' => $data[0]['entrada'],
                         'hora_salida' => $data[0]['salida'],
-                        'con_descanso' => $data[0]['t_refrigerio'],  
+                        'con_descanso' => $data[0]['t_refrigerio'],
                         'hora_descanso_e' => "00:00:00",
                         'hora_descanso_s' => "00:00:00",
                         'estado' => 1,
@@ -4203,45 +4279,45 @@ class ColaboradorConfController extends Controller
                         'user_reg' => session('usuario')->id_usuario,
                     ]);
                 }
-            }else{
+            } else {
                 HorarioDia::where('id_horario', $request->id_horario)
-                        ->where('dia', 2)
-                        ->update([
-                            'estado' => 2,
-                            'fec_eli' => now(),
-                            'user_eli' => session('usuario')->id_usuario,
-                        ]);
+                    ->where('dia', 2)
+                    ->update([
+                        'estado' => 2,
+                        'fec_eli' => now(),
+                        'user_eli' => session('usuario')->id_usuario,
+                    ]);
             }
-            
 
-            $dato['ch_miercoles']= $request->input("ch_dia_laborado_mi_u");
+
+            $dato['ch_miercoles'] = $request->input("ch_dia_laborado_mi_u");
             $dato['dia'] = 3;
 
-            if($dato['ch_miercoles']==1){
-                $dato['id_miercoles']= $request->input("id_miercoles");
-                $dato['id_turno']= $request->input("id_turno_mi_u");
+            if ($dato['ch_miercoles'] == 1) {
+                $dato['id_miercoles'] = $request->input("id_miercoles");
+                $dato['id_turno'] = $request->input("id_turno_mi_u");
                 $data = Turno::get_turno_para_horario($dato['id_turno']);
-                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_mi_u");
-                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_mi_u");
-                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_mi_u");  
+                $dato['hora_entrada'] = $data[0]['entrada']; //$this->input->post("hora_entrada_mi_u");
+                $dato['hora_salida'] = $data[0]['salida']; //$this->input->post("hora_salida_mi_u");
+                $dato['con_descanso'] = $data[0]['t_refrigerio']; //$this->input->post("con_descanso_mi_u");  
                 $dato['hora_descanso_e'] = "";
                 $dato['hora_descanso_s'] = "";
-                if($dato['con_descanso']==1){
-                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_mi_u");
-                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_mi_u");
+                if ($dato['con_descanso'] == 1) {
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri']; //$this->input->post("hora_edescanso_mi_u");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri']; //$this->input->post("hora_sdescanso_mi_u");
                 }
-                if($dato['id_miercoles']!=""){
+                if ($dato['id_miercoles'] != "") {
                     HorarioDia::findOrFail($request->id_miercoles)->update([
                         'id_turno' => $request->id_turno_mi_u,
                         'hora_entrada' => $data[0]['entrada'],
                         'hora_salida' => $data[0]['salida'],
-                        'con_descanso' => $data[0]['t_refrigerio'],  
+                        'con_descanso' => $data[0]['t_refrigerio'],
                         'hora_descanso_e' => "00:00:00",
                         'hora_descanso_s' => "00:00:00",
                         'fec_act' => now(),
                         'user_act' => session('usuario')->id_usuario,
                     ]);
-                }else{
+                } else {
                     HorarioDia::create([
                         'id_horario' => $request->id_horario,
                         'id_turno' => $dato['id_turno'],
@@ -4249,7 +4325,7 @@ class ColaboradorConfController extends Controller
                         'nom_dia' => "Miércoles",
                         'hora_entrada' => $data[0]['entrada'],
                         'hora_salida' => $data[0]['salida'],
-                        'con_descanso' => $data[0]['t_refrigerio'],  
+                        'con_descanso' => $data[0]['t_refrigerio'],
                         'hora_descanso_e' => "00:00:0000:00:00",
                         'hora_descanso_s' => "00:00:0000:00:00",
                         'estado' => 1,
@@ -4257,43 +4333,43 @@ class ColaboradorConfController extends Controller
                         'user_reg' => session('usuario')->id_usuario,
                     ]);
                 }
-            }else{
+            } else {
                 HorarioDia::where('id_horario', $request->id_horario)
-                        ->where('dia', 3)
-                        ->update([
-                            'estado' => 2,
-                            'fec_eli' => now(),
-                            'user_eli' => session('usuario')->id_usuario,
-                        ]);
+                    ->where('dia', 3)
+                    ->update([
+                        'estado' => 2,
+                        'fec_eli' => now(),
+                        'user_eli' => session('usuario')->id_usuario,
+                    ]);
             }
 
-            $dato['ch_jueves']= $request->input("ch_dia_laborado_ju_u");
+            $dato['ch_jueves'] = $request->input("ch_dia_laborado_ju_u");
             $dato['dia'] = 4;
-            if($dato['ch_jueves']==1){
-                $dato['id_turno']= $request->input("id_turno_ju_u");
+            if ($dato['ch_jueves'] == 1) {
+                $dato['id_turno'] = $request->input("id_turno_ju_u");
                 $data = Turno::get_turno_para_horario($dato['id_turno']);
-                $dato['id_jueves']= $request->input("id_jueves");
-                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_ju_u");
-                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_ju_u");
-                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_ju_u");  
+                $dato['id_jueves'] = $request->input("id_jueves");
+                $dato['hora_entrada'] = $data[0]['entrada']; //$this->input->post("hora_entrada_ju_u");
+                $dato['hora_salida'] = $data[0]['salida']; //$this->input->post("hora_salida_ju_u");
+                $dato['con_descanso'] = $data[0]['t_refrigerio']; //$this->input->post("con_descanso_ju_u");  
                 $dato['hora_descanso_e'] = "";
                 $dato['hora_descanso_s'] = "";
-                if($dato['con_descanso']==1){
-                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_ju_u");
-                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_ju_u");
+                if ($dato['con_descanso'] == 1) {
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri']; //$this->input->post("hora_edescanso_ju_u");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri']; //$this->input->post("hora_sdescanso_ju_u");
                 }
-                if($dato['id_jueves']!=""){
+                if ($dato['id_jueves'] != "") {
                     HorarioDia::findOrFail($request->id_jueves)->update([
                         'id_turno' => $request->id_turno_ju_u,
                         'hora_entrada' => $data[0]['entrada'],
                         'hora_salida' => $data[0]['salida'],
-                        'con_descanso' => $data[0]['t_refrigerio'],  
+                        'con_descanso' => $data[0]['t_refrigerio'],
                         'hora_descanso_e' => "00:00:00",
                         'hora_descanso_s' => "00:00:00",
                         'fec_act' => now(),
                         'user_act' => session('usuario')->id_usuario,
                     ]);
-                }else{
+                } else {
                     HorarioDia::create([
                         'id_horario' => $request->id_horario,
                         'id_turno' => $dato['id_turno'],
@@ -4301,7 +4377,7 @@ class ColaboradorConfController extends Controller
                         'nom_dia' => "Jueves",
                         'hora_entrada' => $data[0]['entrada'],
                         'hora_salida' => $data[0]['salida'],
-                        'con_descanso' => $data[0]['t_refrigerio'],  
+                        'con_descanso' => $data[0]['t_refrigerio'],
                         'hora_descanso_e' => "00:00:00",
                         'hora_descanso_s' => "00:00:00",
                         'estado' => 1,
@@ -4309,43 +4385,43 @@ class ColaboradorConfController extends Controller
                         'user_reg' => session('usuario')->id_usuario,
                     ]);
                 }
-            }else{
+            } else {
                 HorarioDia::where('id_horario', $request->id_horario)
-                        ->where('dia', 4)
-                        ->update([
-                            'estado' => 2,
-                            'fec_eli' => now(),
-                            'user_eli' => session('usuario')->id_usuario,
-                        ]);
+                    ->where('dia', 4)
+                    ->update([
+                        'estado' => 2,
+                        'fec_eli' => now(),
+                        'user_eli' => session('usuario')->id_usuario,
+                    ]);
             }
-            
-            $dato['ch_viernes']= $request->input("ch_dia_laborado_vi_u");
+
+            $dato['ch_viernes'] = $request->input("ch_dia_laborado_vi_u");
             $dato['dia'] = 5;
-            if($dato['ch_viernes']==1){
-                $dato['id_viernes']= $request->input("id_viernes");
-                $dato['id_turno']= $request->input("id_turno_vi_u");
+            if ($dato['ch_viernes'] == 1) {
+                $dato['id_viernes'] = $request->input("id_viernes");
+                $dato['id_turno'] = $request->input("id_turno_vi_u");
                 $data = Turno::get_turno_para_horario($dato['id_turno']);
-                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_vi_u");
-                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_vi_u");
-                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_vi_u");  
+                $dato['hora_entrada'] = $data[0]['entrada']; //$this->input->post("hora_entrada_vi_u");
+                $dato['hora_salida'] = $data[0]['salida']; //$this->input->post("hora_salida_vi_u");
+                $dato['con_descanso'] = $data[0]['t_refrigerio']; //$this->input->post("con_descanso_vi_u");  
                 $dato['hora_descanso_e'] = "";
                 $dato['hora_descanso_s'] = "";
-                if($dato['con_descanso']==1){
-                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_vi_u");
-                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_vi_u");
+                if ($dato['con_descanso'] == 1) {
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri']; //$this->input->post("hora_edescanso_vi_u");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri']; //$this->input->post("hora_sdescanso_vi_u");
                 }
-                if($dato['id_viernes']!=""){
+                if ($dato['id_viernes'] != "") {
                     HorarioDia::findOrFail($request->id_viernes)->update([
                         'id_turno' => $request->id_turno_vi_u,
                         'hora_entrada' => $data[0]['entrada'],
                         'hora_salida' => $data[0]['salida'],
-                        'con_descanso' => $data[0]['t_refrigerio'],  
+                        'con_descanso' => $data[0]['t_refrigerio'],
                         'hora_descanso_e' => "00:00:00",
                         'hora_descanso_s' => "00:00:00",
                         'fec_act' => now(),
                         'user_act' => session('usuario')->id_usuario,
                     ]);
-                }else{
+                } else {
                     HorarioDia::create([
                         'id_horario' => $request->id_horario,
                         'id_turno' => $dato['id_turno'],
@@ -4353,7 +4429,7 @@ class ColaboradorConfController extends Controller
                         'nom_dia' => "Viernes",
                         'hora_entrada' => $data[0]['entrada'],
                         'hora_salida' => $data[0]['salida'],
-                        'con_descanso' => $data[0]['t_refrigerio'],  
+                        'con_descanso' => $data[0]['t_refrigerio'],
                         'hora_descanso_e' => "00:00:00",
                         'hora_descanso_s' => "00:00:00",
                         'estado' => 1,
@@ -4361,43 +4437,43 @@ class ColaboradorConfController extends Controller
                         'user_reg' => session('usuario')->id_usuario,
                     ]);
                 }
-            }else{
+            } else {
                 HorarioDia::where('id_horario', $request->id_horario)
-                        ->where('dia', 5)
-                        ->update([
-                            'estado' => 2,
-                            'fec_eli' => now(),
-                            'user_eli' => session('usuario')->id_usuario,
-                        ]);
+                    ->where('dia', 5)
+                    ->update([
+                        'estado' => 2,
+                        'fec_eli' => now(),
+                        'user_eli' => session('usuario')->id_usuario,
+                    ]);
             }
 
-            $dato['ch_sabado']= $request->input("ch_dia_laborado_sa_u");
+            $dato['ch_sabado'] = $request->input("ch_dia_laborado_sa_u");
             $dato['dia'] = 6;
-            if($dato['ch_sabado']==1){
-                $dato['id_sabado']= $request->input("id_sabado");
-                $dato['id_turno']= $request->input("id_turno_sa_u");
+            if ($dato['ch_sabado'] == 1) {
+                $dato['id_sabado'] = $request->input("id_sabado");
+                $dato['id_turno'] = $request->input("id_turno_sa_u");
                 $data = Turno::get_turno_para_horario($dato['id_turno']);
-                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_sa_u");
-                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_sa_u");
-                $dato['con_descanso'] = $data[0]['t_refrigerio'];//$this->input->post("con_descanso_sa_u");  
+                $dato['hora_entrada'] = $data[0]['entrada']; //$this->input->post("hora_entrada_sa_u");
+                $dato['hora_salida'] = $data[0]['salida']; //$this->input->post("hora_salida_sa_u");
+                $dato['con_descanso'] = $data[0]['t_refrigerio']; //$this->input->post("con_descanso_sa_u");  
                 $dato['hora_descanso_e'] = "";
                 $dato['hora_descanso_s'] = "";
-                if($dato['con_descanso']==1){
-                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_sa_u");
-                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_sa_u");
+                if ($dato['con_descanso'] == 1) {
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri']; //$this->input->post("hora_edescanso_sa_u");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri']; //$this->input->post("hora_sdescanso_sa_u");
                 }
-                if($dato['id_sabado']!=""){
+                if ($dato['id_sabado'] != "") {
                     HorarioDia::findOrFail($request->id_sabado)->update([
                         'id_turno' => $request->id_turno_sa_u,
                         'hora_entrada' => $data[0]['entrada'],
                         'hora_salida' => $data[0]['salida'],
-                        'con_descanso' => $data[0]['t_refrigerio'],  
+                        'con_descanso' => $data[0]['t_refrigerio'],
                         'hora_descanso_e' => "00:00:00",
                         'hora_descanso_s' => "00:00:00",
                         'fec_act' => now(),
                         'user_act' => session('usuario')->id_usuario,
                     ]);
-                }else{
+                } else {
                     HorarioDia::create([
                         'id_horario' => $request->id_horario,
                         'id_turno' => $dato['id_turno'],
@@ -4405,7 +4481,7 @@ class ColaboradorConfController extends Controller
                         'nom_dia' => "Sábado",
                         'hora_entrada' => $data[0]['entrada'],
                         'hora_salida' => $data[0]['salida'],
-                        'con_descanso' => $data[0]['t_refrigerio'],  
+                        'con_descanso' => $data[0]['t_refrigerio'],
                         'hora_descanso_e' => "00:00:00",
                         'hora_descanso_s' => "00:00:00",
                         'estado' => 1,
@@ -4413,43 +4489,43 @@ class ColaboradorConfController extends Controller
                         'user_reg' => session('usuario')->id_usuario,
                     ]);
                 }
-            }else{
+            } else {
                 HorarioDia::where('id_horario', $request->id_horario)
-                        ->where('dia', 6)
-                        ->update([
-                            'estado' => 2,
-                            'fec_eli' => now(),
-                            'user_eli' => session('usuario')->id_usuario,
-                        ]);
+                    ->where('dia', 6)
+                    ->update([
+                        'estado' => 2,
+                        'fec_eli' => now(),
+                        'user_eli' => session('usuario')->id_usuario,
+                    ]);
             }
-            
-            $dato['ch_domingo']= $request->input("ch_dia_laborado_do_u");
+
+            $dato['ch_domingo'] = $request->input("ch_dia_laborado_do_u");
             $dato['dia'] = 7;
-            if($dato['ch_domingo']==1){
-                $dato['id_domingo']= $request->input("id_domingo");
-                $dato['id_turno']= $request->input("id_turno_do_u");
+            if ($dato['ch_domingo'] == 1) {
+                $dato['id_domingo'] = $request->input("id_domingo");
+                $dato['id_turno'] = $request->input("id_turno_do_u");
                 $data = Turno::get_turno_para_horario($dato['id_turno']);
-                $dato['hora_entrada'] = $data[0]['entrada'];//$this->input->post("hora_entrada_do_u");
-                $dato['hora_salida'] = $data[0]['salida'];//$this->input->post("hora_salida_do_u");
-                $dato['con_descanso'] = $request->input("con_descanso_do_u");  
+                $dato['hora_entrada'] = $data[0]['entrada']; //$this->input->post("hora_entrada_do_u");
+                $dato['hora_salida'] = $data[0]['salida']; //$this->input->post("hora_salida_do_u");
+                $dato['con_descanso'] = $request->input("con_descanso_do_u");
                 $dato['hora_descanso_e'] = "";
                 $dato['hora_descanso_s'] = "";
-                if($dato['con_descanso']==1){
-                    $dato['hora_descanso_e'] = $data[0]['ini_refri'];//$this->input->post("hora_edescanso_do_u");
-                    $dato['hora_descanso_s'] = $data[0]['fin_refri'];//$this->input->post("hora_sdescanso_do_u");
+                if ($dato['con_descanso'] == 1) {
+                    $dato['hora_descanso_e'] = $data[0]['ini_refri']; //$this->input->post("hora_edescanso_do_u");
+                    $dato['hora_descanso_s'] = $data[0]['fin_refri']; //$this->input->post("hora_sdescanso_do_u");
                 }
-                if($dato['id_domingo']!=""){
+                if ($dato['id_domingo'] != "") {
                     HorarioDia::findOrFail($request->id_domingo)->update([
                         'id_turno' => $request->id_turno_do_u,
                         'hora_entrada' => $data[0]['entrada'],
                         'hora_salida' => $data[0]['salida'],
-                        'con_descanso' => $data[0]['t_refrigerio'],  
+                        'con_descanso' => $data[0]['t_refrigerio'],
                         'hora_descanso_e' => "00:00:00",
                         'hora_descanso_s' => "00:00:00",
                         'fec_act' => now(),
                         'user_act' => session('usuario')->id_usuario,
                     ]);
-                }else{
+                } else {
                     HorarioDia::create([
                         'id_horario' => $request->id_horario,
                         'id_turno' => $dato['id_turno'],
@@ -4457,7 +4533,7 @@ class ColaboradorConfController extends Controller
                         'nom_dia' => "Domingo",
                         'hora_entrada' => $data[0]['entrada'],
                         'hora_salida' => $data[0]['salida'],
-                        'con_descanso' => $data[0]['t_refrigerio'],  
+                        'con_descanso' => $data[0]['t_refrigerio'],
                         'hora_descanso_e' => "00:00:00",
                         'hora_descanso_s' => "00:00:00",
                         'estado' => 1,
@@ -4465,45 +4541,48 @@ class ColaboradorConfController extends Controller
                         'user_reg' => session('usuario')->id_usuario,
                     ]);
                 }
-            }else{
+            } else {
                 HorarioDia::where('id_horario', $request->id_horario)
-                        ->where('dia', 7)
-                        ->update([
-                            'estado' => 2,
-                            'fec_eli' => now(),
-                            'user_eli' => session('usuario')->id_usuario,
-                        ]);
+                    ->where('dia', 7)
+                    ->update([
+                        'estado' => 2,
+                        'fec_eli' => now(),
+                        'user_eli' => session('usuario')->id_usuario,
+                    ]);
             }
             $data = ToleranciaHorario::consulta_tolerancia_horario_activo();
-            if(count($data)>0){
+            if (count($data) > 0) {
                 $minutos = $data[0]['minutos'];
-            }else{
+            } else {
                 $minutos = 0;
             }
-            
+
             HorarioDia::where('estado', 1)
-            ->update([
-                'hora_entrada_desde' => DB::raw("DATE_FORMAT(DATE_SUB(hora_entrada, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
-                'hora_entrada_hasta' => DB::raw("DATE_FORMAT(DATE_ADD(hora_entrada, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
-                'hora_salida_desde' => DB::raw("DATE_FORMAT(DATE_SUB(hora_salida, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
-                'hora_salida_hasta' => DB::raw("DATE_FORMAT(DATE_ADD(hora_salida, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
-                'hora_descanso_e_desde' => DB::raw("CASE WHEN con_descanso=1 THEN DATE_FORMAT(DATE_SUB(hora_descanso_e, INTERVAL $minutos MINUTE), '%H:%i:%s') END"),
-                'hora_descanso_e_hasta' => DB::raw("CASE WHEN con_descanso=1 THEN DATE_FORMAT(DATE_ADD(hora_descanso_e, INTERVAL $minutos MINUTE), '%H:%i:%s') END"),
-                'hora_descanso_s_desde' => DB::raw("CASE WHEN con_descanso=1 THEN DATE_FORMAT(DATE_SUB(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s') END"),
-                'hora_descanso_s_hasta' => DB::raw("CASE WHEN con_descanso=1 THEN DATE_FORMAT(DATE_ADD(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s') END"),
-                'fec_act' => now(),
-            ]);
+                ->update([
+                    'hora_entrada_desde' => DB::raw("DATE_FORMAT(DATE_SUB(hora_entrada, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
+                    'hora_entrada_hasta' => DB::raw("DATE_FORMAT(DATE_ADD(hora_entrada, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
+                    'hora_salida_desde' => DB::raw("DATE_FORMAT(DATE_SUB(hora_salida, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
+                    'hora_salida_hasta' => DB::raw("DATE_FORMAT(DATE_ADD(hora_salida, INTERVAL $minutos MINUTE), '%H:%i:%s')"),
+
+                    'hora_descanso_e_desde' => DB::raw("CASE WHEN con_descanso = 1 THEN DATE_FORMAT(DATE_SUB(hora_descanso_e, INTERVAL $minutos MINUTE), '%H:%i:%s') ELSE hora_descanso_e_desde END"),
+                    'hora_descanso_e_hasta' => DB::raw("CASE WHEN con_descanso = 1 THEN DATE_FORMAT(DATE_ADD(hora_descanso_e, INTERVAL $minutos MINUTE), '%H:%i:%s') ELSE hora_descanso_e_hasta END"),
+                    'hora_descanso_s_desde' => DB::raw("CASE WHEN con_descanso = 1 THEN DATE_FORMAT(DATE_SUB(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s') ELSE hora_descanso_s_desde END"),
+                    'hora_descanso_s_hasta' => DB::raw("CASE WHEN con_descanso = 1 THEN DATE_FORMAT(DATE_ADD(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s') ELSE hora_descanso_s_hasta END"),
+
+                    'fec_act' => now(),
+                ]);
         }
     }
 
-    public function Delete_Horario(Request $request){
+    public function Delete_Horario(Request $request)
+    {
         $dato['estado'] = 2;
         $dato['fec_eli'] = now();
         $dato['user_eli'] = session('usuario')->id_usuario;
         Horario::findOrFail($request->input("id_horario"))->update($dato);
-        HorarioDia::where('id_horario',$request->input("id_horario"))
-                ->where('estado', 1)
-                ->update($dato);
+        HorarioDia::where('id_horario', $request->input("id_horario"))
+            ->where('estado', 1)
+            ->update($dato);
     }
     /*---------------------------------------------------------Paolo*/
 
@@ -4605,17 +4684,20 @@ class ColaboradorConfController extends Controller
         ]);
     }
 
-    public function Modalidad_Laboral(){
+    public function Modalidad_Laboral()
+    {
         $dato['list_modalidad_laboral'] = ModalidadLaboral::where('estado', 1)
-                                    ->get();
+            ->get();
         return view('rrhh.administracion.colaborador.Modalidad_Laboral.index', $dato);
     }
 
-    public function Modal_Insert_Modalidad_Laboral(){
+    public function Modal_Insert_Modalidad_Laboral()
+    {
         return view('rrhh.administracion.colaborador.Modalidad_Laboral.modal_registrar');
     }
 
-    public function Insert_Modalidad_Laboral(Request $request){
+    public function Insert_Modalidad_Laboral(Request $request)
+    {
         $request->validate([
             'nom_modalidad_laboral' => 'required',
         ], [
@@ -4637,13 +4719,15 @@ class ColaboradorConfController extends Controller
         }
     }
 
-    public function Modal_Update_Modalidad_Laboral($id_modalidad_laboral){
+    public function Modal_Update_Modalidad_Laboral($id_modalidad_laboral)
+    {
         $dato['get_id'] = ModalidadLaboral::where('id_modalidad_laboral', $id_modalidad_laboral)
             ->get();
         return view('rrhh.administracion.colaborador.Modalidad_Laboral.modal_editar', $dato);
     }
 
-    public function Update_Modalidad_Laboral(Request $request){
+    public function Update_Modalidad_Laboral(Request $request)
+    {
         $request->validate([
             'nom_modalidad_laboral' => 'required',
         ], [
@@ -4664,10 +4748,134 @@ class ColaboradorConfController extends Controller
         }
     }
 
-    public function Delete_Modalidad_Laboral(Request $request){
+    public function Delete_Modalidad_Laboral(Request $request)
+    {
         $dato['estado'] = 2;
         $dato['fec_eli'] = now();
         $dato['user_eli'] = session('usuario')->id_usuario;
         ModalidadLaboral::findOrFail($request->input("id_modalidad_laboral"))->update($dato);
+    }
+
+
+
+
+
+
+    // TOLERANCIA HORARIO
+    public function ToleranciaHorario()
+    {
+        $list_tolerancia = AsistenciaColaborador::get_list_tolerancia_horario();
+        return view('rrhh.administracion.colaborador.tolerancia_horario.index', compact('list_tolerancia'));
+    }
+
+    public function Modal_Update_ToleranciaHorario($id_tolerancia)
+    {
+
+        $get_id = AsistenciaColaborador::get_list_tolerancia_horario($id_tolerancia);
+        return view('rrhh.administracion.colaborador.tolerancia_horario.modal_editar', compact('get_id'));
+    }
+
+    public function Modal_ToleranciaHorario()
+    {
+        return view('rrhh.administracion.colaborador.tolerancia_horario.modal_registrar');
+    }
+
+    public function Actualizar_ToleranciaHorario()
+    {
+        $dato['id_tolerancia'] = $this->input->post("id_tolerancia");
+        $dato['estado_registro'] = $this->input->post("estado_registro");
+        AsistenciaColaborador::actualizar_estado_tolerancia_horario($dato);
+        $data = AsistenciaColaborador::consulta_tolerancia_horario_activo();
+        if (count($data) > 0) {
+            $minutos = $data[0]['minutos'];
+        } else {
+            $minutos = 0;
+        }
+        AsistenciaColaborador::update_tolerancia_horario_cron($minutos);
+    }
+
+    public function Delete_ToleranciaHorario()
+    {
+        $dato['id_tolerancia'] = $this->input->post("id_tolerancia");
+        AsistenciaColaborador::delete_tolerancia_horario($dato);
+        $data = AsistenciaColaborador::consulta_tolerancia_horario_activo();
+        if (count($data) > 0) {
+            $minutos = $data[0]['minutos'];
+        } else {
+            $minutos = 0;
+        }
+        AsistenciaColaborador::update_tolerancia_horario_cron($minutos);
+    }
+
+    public function Insert_ToleranciaHorario()
+    {
+        $dato['tolerancia'] = $this->input->post("tolerancia");
+        $dato['tipo'] = $this->input->post("tipo");
+        $dato['mod'] = 1;
+        $total = count(AsistenciaColaborador::valida_tolerancia_horario($dato));
+        if ($total > 0) {
+            echo "error";
+        } else {
+            AsistenciaColaborador::insert_tolerancia_horario($dato);
+            $data = AsistenciaColaborador::consulta_tolerancia_horario_activo();
+            if (count($data) > 0) {
+                $minutos = $data[0]['minutos'];
+            } else {
+                $minutos = 0;
+            }
+            AsistenciaColaborador::update_tolerancia_horario_cron($minutos);
+        }
+    }
+
+    public function Update_ToleranciaHorario()
+    {
+        $dato['id_tolerancia'] = $this->input->post("id_tolerancia");
+        $dato['tolerancia'] = $this->input->post("toleranciae");
+        $dato['tipo'] = $this->input->post("tipoe");
+        $dato['mod'] = 2;
+        $total = count(AsistenciaColaborador::valida_tolerancia_horario($dato));
+        if ($total > 0) {
+            echo "error";
+        } else {
+            AsistenciaColaborador::update_tolerancia_horario($dato);
+            $data = AsistenciaColaborador::consulta_tolerancia_horario_activo();
+            if (count($data) > 0) {
+                $minutos = $data[0]['minutos'];
+            } else {
+                $minutos = 0;
+            }
+            AsistenciaColaborador::update_tolerancia_horario_cron($minutos);
+        }
+    }
+
+
+
+
+
+
+
+    // ASISTENCIA MANUAL
+    public function Asistencia_Manual()
+    {
+        $list_asistencia_manual = AsistenciaColaborador::get_list_asistencia_manual();
+        return view('rrhh.administracion.colaborador.asistencia_manual.index', compact('list_asistencia_manual'));
+    }
+    public function Modal_AsistenciaManual()
+    {
+        $list_usuario = AsistenciaColaborador::get_list_colaborador_asistencia_manual();
+        return view('rrhh.administracion.colaborador.asistencia_manual.modal_registrar', compact('list_usuario'));
+    }
+
+
+
+
+    public function Insert_Asistencia_Manual()
+    {
+
+        $dato['id_usuario'] =  session('usuario')->id_usuario;
+        $dato['base'] =  session('usuario')->centro_labores;
+        $dato['fecha'] =  date('Y-m-d');
+        $dato['marcacion'] =  date('H:i:s');
+        AsistenciaColaborador::insert_asistencia_manual($dato);
     }
 }

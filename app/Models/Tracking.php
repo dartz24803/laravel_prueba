@@ -141,7 +141,7 @@ class Tracking extends Model
             if(substr(session('usuario')->centro_labores,0,1)=="B"){
                 $parte = "bh.cod_base='".session('usuario')->centro_labores."' AND";
             }
-            $sql = "SELECT tr.id,tr.n_requerimiento,bd.cod_base AS desde,bh.cod_base AS hacia,
+            $sql = "SELECT tr.id,tr.n_requerimiento,tr.semana,bd.cod_base AS desde,bh.cod_base AS hacia,
                     tp.descripcion AS proceso,
                     CONCAT(CASE WHEN DAYNAME(de.fecha)='Monday' THEN 'Lun'
                     WHEN DAYNAME(de.fecha)='Tuesday' THEN 'Mar'
@@ -178,9 +178,10 @@ class Tracking extends Model
                     GROUP BY id_detalle) me ON mp.ultimo_id=me.id_detalle
                     LEFT JOIN tracking_detalle_estado de ON me.ultimo_id=de.id
                     LEFT JOIN tracking_estado te ON de.id_estado=te.id
-                    WHERE tr.iniciar=1 AND (($parte tr.estado=1 AND de.id_estado!=21) OR 
+                    WHERE tr.iniciar=1 AND ($parte tr.estado=1 AND de.id_estado!=21)
+                    /*(($parte tr.estado=1 AND de.id_estado!=21) OR 
                     ($parte tr.estado=1 AND de.id_estado=21 AND 
-                    DATE(de.fecha)>DATE_SUB(CURDATE(), INTERVAL 1 WEEK)))
+                    DATE(de.fecha)>DATE_SUB(CURDATE(), INTERVAL 1 WEEK)))*/
                     ORDER BY de.fecha DESC";
             $query = DB::select($sql);
             return $query;
@@ -192,8 +193,8 @@ class Tracking extends Model
         if(substr(session('usuario')->centro_labores,0,1)=="B"){
             $parte = "bh.cod_base='".session('usuario')->centro_labores."' AND";
         }
-        $sql = "SELECT tde.fecha AS orden,tr.n_requerimiento,bd.cod_base AS desde,bh.cod_base AS hacia,
-                tp.descripcion AS proceso,
+        $sql = "SELECT tde.fecha AS orden,tr.n_requerimiento,tr.semana,bd.cod_base AS desde,
+                bh.cod_base AS hacia,tp.descripcion AS proceso,
                 CONCAT(CASE WHEN DAYNAME(tde.fecha)='Monday' THEN 'Lun'
                 WHEN DAYNAME(tde.fecha)='Tuesday' THEN 'Mar'
                 WHEN DAYNAME(tde.fecha)='Wednesday' THEN 'Mie'

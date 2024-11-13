@@ -14,6 +14,7 @@ use App\Models\Puesto;
 use App\Models\Notificacion;
 use App\Models\SolicitudPuesto;
 use App\Models\SubGerencia;
+use App\Models\Ubicacion;
 use App\Models\Usuario;
 use Exception;
 use Illuminate\Http\Request;
@@ -50,17 +51,14 @@ class MiEquipoController extends Controller
 
     public function Cargar_Mi_Equipo()
     {
-        $dato['lista_bases'] = Base::select('cod_base')
-            ->where('estado', '1')
-            ->distinct()
-            ->orderBy('cod_base', 'asc')
-            ->get();
-        return view('rrhh.Mi_equipo.mi_equipo', $dato);
+        $list_ubicacion = Ubicacion::select('id_ubicacion','cod_ubi')->where('estado',1)
+                        ->orderBy('cod_ubi','ASC')->get();
+        return view('rrhh.Mi_equipo.mi_equipo', compact('list_ubicacion'));
     }
 
     public function Cargar_Bases_Equipo($busq_base)
     {
-        $centro_labores = session('usuario')->centro_labores;
+        $id_centro_labor = session('usuario')->id_centro_labor;
         $id_puesto = session('usuario')->id_puesto;
 
         $dato['list_ajefatura'] = $this->Model_Asignacion->get_list_ajefatura_puesto($id_puesto);
@@ -76,7 +74,7 @@ class MiEquipoController extends Controller
         $dato['cadena'] = "(" . $cadena . ")";
 
         $data['base'] = $busq_base;
-        $dato['colaborador_porcentaje'] = Usuario::colaborador_porcentaje(0, $centro_labores, $dato, $data);
+        $dato['colaborador_porcentaje'] = Usuario::colaborador_porcentaje(0, $id_centro_labor, $dato, $data);
 
 
         return view('rrhh.Mi_equipo.lista_equipo', $dato);
@@ -129,7 +127,7 @@ class MiEquipoController extends Controller
         //Font BOLD
         $sheet->getStyle('A1:T1')->getFont()->setBold(true);
 
-        $centro_labores = session('usuario')->centro_labores;
+        $id_centro_labor = session('usuario')->id_centro_labor;
         $id_puesto = session('usuario')->id_puesto;
 
         $dato['list_ajefatura'] = $this->Model_Asignacion->get_list_ajefatura_puesto($id_puesto);
@@ -144,7 +142,7 @@ class MiEquipoController extends Controller
 
         $dato['cadena'] = "(" . $cadena . ")";
         $parametro['base'] = $base;
-        $data = Usuario::colaborador_porcentaje(0, $centro_labores, $dato, $parametro);
+        $data = Usuario::colaborador_porcentaje(0, $id_centro_labor, $dato, $parametro);
         //$slno = 1;
         $start = 1;
         foreach ($data as $d) {

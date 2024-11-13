@@ -53,10 +53,14 @@ class CapController extends Controller
         ]);
 
         Cap::where('id_ubicacion',$request->id_ubicacion)->where('fecha',$request->fecha)->delete();
-        $list_puesto = Organigrama::from('organigrama AS og')->select('og.id_puesto','pu.nom_puesto',
-                        DB::raw('COUNT(og.id_puesto) AS cantidad'))
-                        ->join('puesto AS pu','pu.id_puesto','=','og.id_puesto')
-                        ->whereIn('pu.id_area',[14,44])->groupBy('og.id_puesto','pu.nom_puesto')->get();
+        $list_puesto = Organigrama::from('organigrama AS og')->select('og.id_puesto',
+                        DB::raw('COUNT(1) AS cantidad'))
+                        ->join('puesto as pu', function($join) {
+                            $join->on('pu.id_puesto', '=', 'og.id_puesto')
+                            ->whereIn('pu.id_area', [14,44]);
+                        })
+                        ->where('og.id_centro_labor',$request->id_ubicacion)
+                        ->groupBy('og.id_puesto')->get();
         foreach($list_puesto as $list){
             $asistencia = $request->input('asistencia_'.$list->id_puesto);
             if($asistencia==""){

@@ -88,13 +88,11 @@
         session('usuario')->id_puesto == 279 ||
         session('usuario')->id_puesto == 310 ||
         session('usuario')->id_puesto == 314)
-            @if (session('usuario')->id_usuario == 139)
-                <li>
-                    <a id="caps" href="{{ route('cap') }}">
-                        <p class="romperpalabra"><span id="icono_active2"></span> CAP</p>
-                    </a>
-                </li>
-            @endif
+            <li>
+                <a id="caps" href="{{ route('cap') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> CAP</p>
+                </a>
+            </li>
         @endif
         @if (session('usuario')->id_nivel == 1 ||
         session('usuario')->id_puesto == 27 ||
@@ -109,11 +107,11 @@
         session('usuario')->id_puesto == 197 ||
         session('usuario')->id_puesto == 310 ||
         session('usuario')->id_puesto == 209)
-            <li>
-                <a id="colaboradores" href="{{ route('colaborador') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Colaborador <br>• Colaborador (Cesados)">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Colaboradores</p>
-                </a>
-            </li>
+        <li>
+            <a id="colaboradores" href="{{ route('colaborador') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Colaborador <br>• Colaborador (Cesados)">
+                <p class="romperpalabra"><span id="icono_active2"></span> Colaboradores</p>
+            </a>
+        </li>
         @endif
         <?php if (
             session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2 ||
@@ -173,6 +171,7 @@
             session('usuario')->id_puesto == 31 || session('usuario')->id_puesto == 30 ||
             session('usuario')->puestos_asignados > 0 || session('usuario')->id_puesto == 76 || session('usuario')->id_puesto == 22 ||
             session('usuario')->id_puesto == 161 || session('usuario')->id_puesto == 24 ||
+            session('usuario')->id_puesto == 209  ||
             session('usuario')->visualizar_mi_equipo != "sin_acceso_mi_equipo" ||
             //MI EQUIPO GERENCIAL
             session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 1 || session('usuario')->id_puesto == 39 || session('usuario')->id_puesto == 80 ||
@@ -200,11 +199,11 @@
             </li>
         <?php } ?>
         <?php if (session('usuario')->visualizar_responsable_area == 1 || session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2 || session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 133 || session('usuario')->id_puesto == 22 || session('usuario')->id_puesto == 146 || session('usuario')->id_puesto == 21 || session('usuario')->id_puesto == 278 || session('usuario')->id_puesto == 279) { ?>
-            <?php if(session('usuario')->id_nivel==1 || session('usuario')->id_nivel==2){
+            <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2) {
                 $hreclutamiento2 = "<br>• Completados";
-            }else{
+            } else {
                 $hreclutamiento2 = "";
-            }?>
+            } ?>
             <li id="rereclutamiento">
                 <a id="hreclutamiento" href="{{ url('Reclutamiento/index') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Pendientes <?= $hreclutamiento2 ?>">
                     <p class="romperpalabra"><span id="icono_active2"></span> Reclutamiento</p>

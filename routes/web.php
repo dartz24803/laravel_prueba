@@ -629,6 +629,8 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::delete('colaborador_conf_pu/{id}/funcion', 'delete_funcion_pu')->name('colaborador_conf_pu.delete_funcion');
     Route::post('colaborador_conf_pu/{id}/competencia', 'insert_competencia_pu')->name('colaborador_conf_pu.insert_competencia');
     Route::delete('colaborador_conf_pu/{id}/competencia', 'delete_competencia_pu')->name('colaborador_conf_pu.delete_competencia');
+
+
     Route::get('Index_Datacorp', 'Index_Datacorp');
     Route::post('Listar_Accesos_Datacorp', 'Listar_Accesos_Datacorp');
     Route::get('Modal_Registrar_Datacorp', 'Modal_Registrar_Datacorp');
@@ -782,6 +784,23 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('ColaboradorConfController/Update_Turno', 'Update_Turno');
     Route::post('ColaboradorConfController/Delete_Turno', 'Delete_Turno');
     Route::post('ColaboradorConfController/Horario', 'Horario');
+
+    Route::post('ToleranciaHorario/list', 'ToleranciaHorario');
+    Route::get('ToleranciaHorario/Modal_Update_ToleranciaHorario/{id}', 'Modal_Update_ToleranciaHorario');
+    Route::get('ToleranciaHorario/Modal_ToleranciaHorario', 'Modal_ToleranciaHorario');
+    Route::post('ToleranciaHorario/Actualizar_ToleranciaHorario', 'Actualizar_ToleranciaHorario');
+    Route::post('ToleranciaHorario/Delete_ToleranciaHorario', 'Delete_ToleranciaHorario');
+    Route::post('ToleranciaHorario/Insert_ToleranciaHorario', 'Insert_ToleranciaHorario');
+    Route::post('ToleranciaHorario/Update_ToleranciaHorario', 'Update_ToleranciaHorario');
+
+
+    Route::post('AsistenciaManual/list', 'Asistencia_Manual');
+    Route::get('AsistenciaManual/Modal_AsistenciaManual', 'Modal_AsistenciaManual');
+    Route::post('AsistenciaManual/Delete_Asistencia_Manual', 'Delete_Asistencia_Manual');
+    Route::post('AsistenciaManual/Insert_Asistencia_Manual', 'Insert_Asistencia_Manual');
+    // Route::post('ToleranciaHorario/Update_ToleranciaHorario', 'Update_ToleranciaHorario');
+
+
     Route::post('ColaboradorConfController/Lista_Horario', 'Lista_Horario');
     Route::post('ColaboradorConfController/Busca_Turno_XBase', 'Busca_Turno_XBase');
     Route::get('ColaboradorConfController/Modal_Horario', 'Modal_Horario');
@@ -814,6 +833,8 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     Route::post('colaborador_conf_or', 'store_or')->name('colaborador_conf_or.store');
     Route::get('colaborador_conf_or/{id}/edit', 'edit_or')->name('colaborador_conf_or.edit');
     Route::put('colaborador_conf_or/{id}', 'update_or')->name('colaborador_conf_or.update');
+    Route::get('colaborador_conf_or/{id}/edit_clab', 'edit_clab_or')->name('colaborador_conf_or.edit_clab');
+    Route::put('colaborador_conf_or/{id}/update_clab', 'update_clab_or')->name('colaborador_conf_or.update_clab');
     Route::delete('colaborador_conf_or/{id}', 'destroy_or')->name('colaborador_conf_or.destroy');
     /*-----------------------------------------Daniel---------------------------------*/
 });
@@ -2293,6 +2314,9 @@ Route::controller(AsistenciaColaboradoresController::class)->group(function () {
     Route::post('tardanza_colaborador/list', 'list_tardanza_colaborador')->name('tardanza_colaborador.list');
     Route::post('dotacion_colaborador/list', 'list_dotacion_colaborador')->name('dotacion_colaborador.list');
 
+    // TARDANZA
+    Route::get('tardanza_colaborador/excel/{base}/{area}/{usuario}/{tipo_fecha}/{dia}/{mes}', 'Excel_Tardanza')->name('tardanza_colaborador.excel');
+
 
     // DOTACIÓN
     Route::get('dotacion_colaborador/{centro_labores}/{fecha}/marcaciones_edit', 'edit_dotacion_colaborador')->name('dotacion_colaborador.marcaciones_edit');
@@ -2319,5 +2343,7 @@ Route::controller(AsistenciaColaboradoresController::class)->group(function () {
     Route::post('inconsistencias_colaborador/update', 'update_asistencia_inconsistencia')->name('inconsistencias_colaborador.update');
     Route::post('inconsistencias_colaborador/validar', 'validar_asistencia_inconsistencia')->name('inconsistencias_colaborador.validar');
     Route::post('inconsistencias_colaborador/updateturno', 'updateturno_asistencia_inconsistencia')->name('inconsistencias_colaborador.updateturno');
+    Route::post('inconsistencias_colaborador/listMarcacion', 'Listar_Asistencia_Inconsistencia')->name('inconsistencias_colaborador.listMarcacion');
+
     Route::get('asistencia_colaborador/inconsistencias_colaborador/{base}/{area}/{usuario}/{tipo_fecha}/{dia}/{semana}', 'Excel_Inconsistencias_Colaborador')->name('inconsistencias_colaborador.excel');
 });

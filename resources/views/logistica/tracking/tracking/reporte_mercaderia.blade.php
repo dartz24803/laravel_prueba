@@ -21,14 +21,16 @@
                                 @include('logistica.tracking.tracking.cabecera')
                             </div>
 
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <label class="new-control new-checkbox checkbox-ln1">
-                                        <input type="checkbox" class="new-control-input" name="diferencia" id="diferencia" value="1">
-                                        <span class="new-control-indicator"></span>Existen diferencias
-                                    </label>
+                            @if ($v_diferencia>0)
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="new-control new-checkbox checkbox-ln1">
+                                            <input type="checkbox" class="new-control-input" name="diferencia" id="diferencia" value="1" checked>
+                                            <span class="new-control-indicator"></span>Existen diferencias
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
 
                             <div class="row">
                                 <div class="col-lg-12">

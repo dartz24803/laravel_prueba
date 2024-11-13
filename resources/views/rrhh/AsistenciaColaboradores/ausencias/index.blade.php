@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <div class="form-group col-md-2">
+    <div class="form-group col-md-3">
         <label for="" class="control-label text-bold">Área</label>
         <div>
             <select class="form-control" id="areaau" name="areaau" onchange="Cmb_Colaboradoriau()">
@@ -46,7 +46,7 @@
             </label>
         </div>
     </div>
-    <div class="form-group col-md-3">
+    <div class="form-group col-md-2">
         <label for="">&nbsp;</label>
         <div id="div1au">
             <input type="date" name="diaau" id="diaau" class="form-control" value="<?php echo date("Y-m-d", strtotime(date("Y-m-d") . " -1 day")) ?>" max="<?php echo date("Y-m-d", strtotime(date("Y-m-d") . " -1 day")) ?>">
@@ -82,6 +82,15 @@
 
 
 <script>
+    $('#usuarioau').select2({
+        placeholder: 'Seleccione un Colaborador',
+        allowClear: true
+    });
+    $('#areaau').select2({
+        placeholder: 'Seleccione un Área',
+        allowClear: true
+    });
+
     function Buscar_Ausencia_Colaborador() {
         Cargando();
 

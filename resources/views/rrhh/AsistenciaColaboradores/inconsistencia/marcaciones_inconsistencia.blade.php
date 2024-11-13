@@ -218,7 +218,7 @@
                     $('#hora_marcacion').val('');
                     $('#tipo_marcacion_i').val('0');
                     $('#obs_marcacion').val('');
-                    // Listar_Asistencia_Inconsistencia(id_asistencia_inconsistencia);
+                    Listar_Asistencia_Inconsistencia(id_asistencia_inconsistencia);
                 }
             });
         } else {
@@ -248,19 +248,26 @@
         return true;
     }
 
-    // function Listar_Asistencia_Inconsistencia(id_asistencia_inconsistencia) {
-    //     Cargando();
-    //     $.ajax({
-    //         type: "POST",
-    //         url: url,
-    //         data: {
-    //             'id_asistencia_inconsistencia': id_asistencia_inconsistencia
-    //         },
-    //         success: function(data) {
-    //             $('#div_marcaciones_inconsistencia').html(data);
-    //         }
-    //     });
-    // }
+    function Listar_Asistencia_Inconsistencia(id_asistencia_inconsistencia) {
+        Cargando();
+
+        var url = "{{ route('inconsistencias_colaborador.listMarcacion') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                'id_asistencia_inconsistencia': id_asistencia_inconsistencia
+            },
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(data) {
+                $('#div_marcaciones_inconsistencia').html(data);
+            }
+        });
+    }
 
     function Validar_Asistencia_Inconsistencia(id_asistencia_inconsistencia) {
         Cargando();
@@ -424,7 +431,6 @@
                 data: {
                     'id_turnot': id_turnot,
                     'id_asistencia_inconsistencia_t': id_asistencia_inconsistencia_t
-
                 },
                 headers: {
                     'X-CSRF-TOKEN': csrfToken

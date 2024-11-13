@@ -12,7 +12,7 @@
     </div>
 
 
-    <div class="form-group col-md-2">
+    <div class="form-group col-md-3">
         <label for="" class="control-label text-bold">Área</label>
         <div>
             <select class="form-control" id="areai" name="areai" onchange="Cmb_Colaboradori()">
@@ -24,7 +24,8 @@
         </div>
     </div>
 
-    <div class="form-group col-md-4">
+
+    <div class="form-group col-md-3">
         <label for="" class="control-label text-bold">Colaborador</label>
         <div>
             <select class="form-control basic" id="usuarioi" name="usuarioi">
@@ -35,6 +36,7 @@
             </select>
         </div>
     </div>
+
 
     <div class="form-group col-md-1">
         <label for=""></label>
@@ -101,6 +103,15 @@
 
 
 <script>
+    $('#usuarioi').select2({
+        placeholder: 'Seleccione un Colaborador',
+        allowClear: true
+    });
+    $('#areai').select2({
+        placeholder: 'Seleccione un Área',
+        allowClear: true
+    });
+
     function Buscar_Asistencia_Colaborador() {
         Cargando();
 

@@ -1388,6 +1388,7 @@ class PostulanteController extends Controller
                     ]);
 
                     $valida = Organigrama::where('id_puesto',$usuario->id_puesto)
+                            ->where('id_centro_labor',$usuario->id_centro_labor)
                             ->where('id_usuario',0)->first();
 
                     if(isset($valida->id)){
@@ -1399,6 +1400,7 @@ class PostulanteController extends Controller
                     }else{
                         Organigrama::create([
                             'id_puesto' => $usuario->id_puesto,
+                            'id_centro_labor' => $usuario->id_centro_labor,
                             'id_usuario' => $usuario->id_usuario,
                             'fecha' => now(),
                             'usuario' => session('usuario')->id_usuario

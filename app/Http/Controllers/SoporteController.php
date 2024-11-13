@@ -536,13 +536,15 @@ class SoporteController extends Controller
                 'fec_vencimiento' =>  $request->fec_vencimiento,
                 'id_especialidad' =>  $request->especialidade,
                 'id_elemento' => $request->elementoe ?? 6,
-                'id_asunto' => $request->asuntoe ?? 9,
+                'id_asunto' => $request->asuntoe === "0" ? 245 : $request->asuntoe,
                 'descripcion' => $request->descripcione,
                 'id_area' => $request->areae,
                 'estado_registro' => 1,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario,
             ];
+
+            // dd($data);
 
             // Agregar solo las imágenes si existen
             if (!empty($resultados)) {

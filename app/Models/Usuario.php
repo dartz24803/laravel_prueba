@@ -183,7 +183,8 @@ class Usuario extends Model
                 pps.estado as estadopps, pps.registro_masivo, pps.id_puesto_permitido, u.id_centro_labor,
                 visualizar_mi_equipo(u.id_puesto) AS visualizar_mi_equipo,
                 (SELECT COUNT(*) FROM asignacion_jefatura aj
-                WHERE aj.id_puesto_jefe=u.id_puesto and aj.estado=1) as puestos_asignados,u.id_cargo
+                WHERE aj.id_puesto_jefe=u.id_puesto and aj.estado=1) as puestos_asignados,u.id_cargo,
+                u.id_centro_labor
                 FROM users u
                 LEFT JOIN permiso_papeletas_salida pps ON u.id_puesto=pps.id_puesto_jefe AND pps.estado=1
                 LEFT JOIN nivel n ON u.id_nivel=n.id_nivel
@@ -934,21 +935,23 @@ class Usuario extends Model
                     WHEN 11 THEN 'Noviembre'
                     WHEN 12 THEN 'Diciembre'
                     END mes,
-                    c.nom_contacto,c.celular1,c.celular2,c.fijo from users u
+                    c.nom_contacto,c.celular1,c.celular2,c.fijo,ub.cod_ubi AS centro_labores
+                    from users u
+                    INNER JOIN ubicacion ub ON ub.id_ubicacion=u.id_centro_labor
+                    INNER JOIN puesto pu ON pu.id_puesto=u.id_puesto 
+                    INNER JOIN area a ON a.id_area=p.id_area
                     LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
                     LEFT JOIN tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
-                    LEFT JOIN puesto pu on pu.id_puesto=u.id_puesto
-                    LEFT JOIN area a on p.id_area=a.id_area
                     LEFT JOIN grado_instruccion gr on gr.id_grado_instruccion=u.id_grado_instruccion
                     LEFT JOIN contacto_emergencia ce on ce.id_contacto_emergencia=u.id_contacto_emergencia
                     where u.estado in (1) and id_usuario =" . $id_usuario;
         } elseif ($id_nivel == "1") {
             $base = "";
             if ($data['base'] != "0") {
-                $base = "AND u.centro_labores='" . $data['base'] . "'";
+                $base = "AND u.id_centro_labor='" . $data['base'] . "'";
             }
             $sql = "SELECT u.id_usuario, u.usuario_apater,u.fec_baja,
-                    u.centro_labores, td.cod_tipo_documento,
+                    ub.cod_ubi AS centro_labores, td.cod_tipo_documento,
                     td.nom_tipo_documento, u.num_celp,u.num_doc, u.verif_email,
                     u.usuario_amater, u.usuario_nombres, n.nom_nacionalidad, u.foto,
                     estau.nom_estado_usuario, ge.nom_genero, depart.nombre_departamento,
@@ -1055,10 +1058,11 @@ class Usuario extends Model
                     WHEN YEAR(u.fec_nac) BETWEEN 1997 AND 2012 THEN 'Z'
                     WHEN YEAR(u.fec_nac) >= 2013 THEN '&alpha;' ELSE '-' END AS generacion,u.id_puesto
                     FROM users u
-                    LEFT JOIN puesto p on p.id_puesto=u.id_puesto
-                    LEFT JOIN area a on a.id_area=p.id_area
-                    LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
-                    LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
+                    INNER JOIN ubicacion ub ON ub.id_ubicacion=u.id_centro_labor
+                    INNER JOIN puesto p ON p.id_puesto=u.id_puesto 
+                    INNER JOIN area a ON a.id_area=p.id_area
+                    INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento
+                    INNER JOIN gerencia g ON g.id_gerencia=sg.id_gerencia
                     LEFT JOIN cargo c on c.id_cargo=u.id_cargo
                     left join domicilio_users d on d.id_usuario=u.id_usuario
                     left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
@@ -1088,7 +1092,7 @@ class Usuario extends Model
                     ORDER BY u.ini_funciones DESC";
         } elseif ($id_puesto == "1" || $id_puesto == "39" || $id_puesto == "80" || $id_puesto == "92") {
             $sql = "SELECT u.id_usuario, u.usuario_apater, u.verif_email,u.fec_baja,
-                    u.centro_labores, td.cod_tipo_documento,
+                    ub.cod_ubi AS centro_labores, td.cod_tipo_documento,
                     td.nom_tipo_documento, u.num_celp,u.num_doc,
                     u.usuario_amater, u.usuario_nombres, n.nom_nacionalidad, u.foto,
                     estau.nom_estado_usuario, ge.nom_genero, depart.nombre_departamento,
@@ -1197,10 +1201,11 @@ class Usuario extends Model
                     WHEN YEAR(u.fec_nac) >= 2013 THEN '&alpha;' ELSE 'No se pudo determinar la generación'
                     END AS generacion,u.id_puesto
                     from users u
-                    LEFT JOIN puesto p on p.id_puesto=u.id_puesto
-                    LEFT JOIN area a on a.id_area=p.id_area
-                    LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
-                    LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
+                    INNER JOIN ubicacion ub ON ub.id_ubicacion=u.id_centro_labor
+                    INNER JOIN puesto p ON p.id_puesto=u.id_puesto 
+                    INNER JOIN area a ON a.id_area=p.id_area
+                    INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento
+                    INNER JOIN gerencia g ON g.id_gerencia=sg.id_gerencia
                     left join domicilio_users d on d.id_usuario=u.id_usuario
                     left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
                     LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
@@ -1225,7 +1230,7 @@ class Usuario extends Model
                     ORDER BY u.ini_funciones DESC";
         } elseif (isset($dato) && count($dato['list_ajefatura']) > 0 || $id_puesto == "24") {
             $sql = "SELECT u.id_usuario, u.usuario_apater,u.fec_baja,
-                    u.centro_labores, td.cod_tipo_documento,
+                    ub.cod_ubi AS centro_labores, td.cod_tipo_documento,
                     td.nom_tipo_documento, u.num_celp,u.num_doc,
                     u.usuario_amater, u.usuario_nombres, n.nom_nacionalidad, u.foto,
                     estau.nom_estado_usuario, ge.nom_genero, depart.nombre_departamento,
@@ -1331,10 +1336,11 @@ class Usuario extends Model
                     WHEN YEAR(u.fec_nac) >= 2013 THEN '&alpha;' ELSE 'No se pudo determinar la generación'
                     END AS generacion,u.id_puesto
                     from users u
-                    LEFT JOIN puesto p on p.id_puesto=u.id_puesto
-                    LEFT JOIN area a on a.id_area=p.id_area
-                    LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
-                    LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
+                    INNER JOIN ubicacion ub ON ub.id_ubicacion=u.id_centro_labor
+                    INNER JOIN puesto p ON p.id_puesto=u.id_puesto 
+                    INNER JOIN area a ON a.id_area=p.id_area
+                    INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento
+                    INNER JOIN gerencia g ON g.id_gerencia=sg.id_gerencia
                     LEFT JOIN cargo c on c.id_cargo=u.id_cargo
                     left join domicilio_users d on d.id_usuario=u.id_usuario
                     left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
@@ -1362,7 +1368,7 @@ class Usuario extends Model
                     where u.estado in (1) and u.id_nivel<>8 and u.id_puesto in " . $dato['cadena'] . "
                     ORDER BY u.ini_funciones DESC";
         } elseif (session('usuario')->visualizar_mi_equipo != "sin_acceso_mi_equipo") {
-            $sql = "SELECT u.id_usuario,u.usuario_apater,u.verif_email,u.centro_labores,
+            $sql = "SELECT u.id_usuario,u.usuario_apater,u.verif_email,ub.cod_ubi AS centro_labores,
                     td.cod_tipo_documento,u.fec_baja,td.nom_tipo_documento,u.num_celp,
                     u.num_doc,u.usuario_amater,u.usuario_nombres,n.nom_nacionalidad,u.foto,
                     estau.nom_estado_usuario,ge.nom_genero,depart.nombre_departamento,
@@ -1471,9 +1477,11 @@ class Usuario extends Model
                     WHEN YEAR(u.fec_nac) >= 2013 THEN '&alpha;'
                     ELSE 'No se pudo determinar la generación' END AS generacion,u.id_puesto
                     from users u
-                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
-                    LEFT JOIN area a on a.id_area=u.id_area
-                    LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    INNER JOIN ubicacion ub ON ub.id_ubicacion=u.id_centro_labor
+                    INNER JOIN puesto p on p.id_puesto=u.id_puesto
+                    INNER JOIN area a on a.id_area=p.id_area
+                    INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento
+                    INNER JOIN gerencia g on g.id_gerencia=sg.id_gerencia
                     LEFT JOIN cargo c on c.id_cargo=u.id_cargo
                     LEFT JOIN domicilio_users d ON d.id_usuario=u.id_usuario
                     LEFT JOIN tipo_documento td ON td.id_tipo_documento=u.id_tipo_documento
@@ -1499,7 +1507,7 @@ class Usuario extends Model
                     ORDER BY u.ini_funciones DESC";
         } elseif (isset($centro_labores) && count($dato['list_ajefatura']) < 1) {
             $sql = "SELECT u.id_usuario, u.usuario_apater, u.verif_email,
-                    u.centro_labores, td.cod_tipo_documento,u.fec_baja,
+                    ub.cod_ubi AS centro_labores, td.cod_tipo_documento,u.fec_baja,
                     td.nom_tipo_documento, u.num_celp,u.num_doc,
                     u.usuario_amater, u.usuario_nombres, n.nom_nacionalidad, u.foto,
                     estau.nom_estado_usuario, ge.nom_genero, depart.nombre_departamento,
@@ -1608,10 +1616,11 @@ class Usuario extends Model
                     ELSE 'No se pudo determinar la generación'
                     END AS generacion,u.id_puesto
                     from users u
-                    LEFT JOIN puesto p on p.id_puesto=u.id_puesto
-                    LEFT JOIN area a on a.id_area=p.id_area
-                    LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
-                    LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
+                    INNER JOIN ubicacion ub ON ub.id_ubicacion=u.id_centro_labor                    
+                    INNER JOIN puesto p on p.id_puesto=u.id_puesto
+                    INNER JOIN area a on a.id_area=p.id_area
+                    INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento
+                    INNER JOIN gerencia g on g.id_gerencia=sg.id_gerencia
                     LEFT JOIN cargo c on c.id_cargo=u.id_cargo
                     left join domicilio_users d on d.id_usuario=u.id_usuario
                     left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
@@ -1633,12 +1642,13 @@ class Usuario extends Model
                     left join afp afp on afp.id_afp  =sp.id_afp
                     left join situacion_laboral situlab on situlab.id_situacion_laboral =u.id_situacion_laboral
                     left join motivo_baja_rrhh mt on u.id_motivo_baja=mt.id_motivo
-                    where u.estado in (1) and u.id_nivel<>8 and u.centro_labores='" . $centro_labores . "'
+                    where u.estado in (1) and u.id_nivel<>8 and u.id_centro_labor='" . $centro_labores . "'
                     ORDER BY u.ini_funciones DESC";
         } else {
-            $sql = "SELECT u.id_usuario, u.usuario_apater, u.centro_labores, td.cod_tipo_documento,u.fec_baja,
-                    u.num_celp,u.num_doc, u.usuario_amater, u.usuario_nombres, n.nom_nacionalidad,
-                    u.foto, u.verif_email,EXTRACT(DAY FROM u.fec_nac) AS dia,case month(u.fec_nac)
+            $sql = "SELECT u.id_usuario, u.usuario_apater, ub.cod_ubi AS centro_labores, 
+                    td.cod_tipo_documento,u.fec_baja,u.num_celp,u.num_doc, u.usuario_amater, 
+                    u.usuario_nombres, n.nom_nacionalidad,u.foto, u.verif_email,
+                    EXTRACT(DAY FROM u.fec_nac) AS dia,case month(u.fec_nac)
                     WHEN 1 THEN 'Enero' WHEN 2 THEN  'Febrero' WHEN 3 THEN 'Marzo' WHEN 4 THEN 'Abril'
                     WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio' WHEN 7 THEN 'Julio' WHEN 8 THEN 'Agosto'
                     WHEN 9 THEN 'Septiembre' WHEN 10 THEN 'Octubre' WHEN 11 THEN 'Noviembre'
@@ -1740,9 +1750,11 @@ class Usuario extends Model
                     ELSE 'No se pudo determinar la generación'
                     END AS generacion,u.id_puesto
                     from users u
-                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
-                    LEFT JOIN area a on a.id_area=u.id_area
-                    LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    INNER JOIN ubicacion ub ON ub.id_ubicacion=u.id_centro_labor                    
+                    INNER JOIN puesto p on p.id_puesto=u.id_puesto
+                    INNER JOIN area a on a.id_area=p.id_area
+                    INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento
+                    INNER JOIN gerencia g on g.id_gerencia=sg.id_gerencia
                     LEFT JOIN cargo c on c.id_cargo=u.id_cargo
                     left join domicilio_users d on d.id_usuario=u.id_usuario
                     left join tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
