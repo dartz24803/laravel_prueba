@@ -11,7 +11,7 @@
             <th>Código</th>
             <th>F.de Registro</th>
             <th>Sede Laboral</th>
-            <th>Usuario de Registro</th>
+            <th>U. de Registro</th>
             <th>Especialidad</th>
             <th>Descripción</th>
             <th>Estado</th>
@@ -23,7 +23,7 @@
             <td>{{ $list->codigo }}</td>
             <td>{{ \Carbon\Carbon::parse($list->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
             <td>{{ $list->base }}</td>
-            <td>{{ $list->usuario_nombre }}</td>
+            <td>{{ $list->usuario_nombre_completo }}</td>
             <td>{{ $list->nombre_especialidad }}</td>
             <td>{{ $list->descripcion }}</td>
 
@@ -33,14 +33,14 @@
                         style="display: inline-block; 
             background-color: 
             {{ ( $list->status_poriniciar == true )
-                ? '#f5996d'
+                ? '#ff786b'
                 : (( $list->status_enproceso == true)
-                    ? '#b0f02b'
+                    ? '#ffe881'
                     : ( $list->status_completado == true
-                        ? '#3af1be'
+                        ? '#5fb17b'
                         : ($list->status_standby == true
-                            ? '#f3b952'
-                            : '#9edef8'))) }};
+                            ? '#ff914d'
+                            : '#bdc0cf'))) }};
             border-radius: 14px; padding: 1px; width: 80px; color: white; text-align: center; margin-right: 10px;">
                         @if ( $list->status_poriniciar == true )
                         Por Iniciar
@@ -74,6 +74,11 @@
                             <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
                                 data-target="#ModalUpdate"
                                 app_elim="{{ url('soporte_ticket/edit/' . $list['id_soporte']) }}">Corregir</a>
+                            @endif
+                            @if ($acceso_pp)
+                            <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
+                                data-target="#ModalUpdate"
+                                onclick="Delete_Soporte_Ticket('{{ $list->id_soporte }}')">Eliminar</a>
                             @endif
 
                         </div>

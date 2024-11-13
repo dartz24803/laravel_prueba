@@ -172,11 +172,23 @@
                                     <span class="form-control border-0">{{ $get_id->base }}</span>
                             </div>
                             <div class="form-group col-md-2 mb-0">
-                                <label class="control-label text-bold" ">Tipo:</label>
+                                <label class="control-label text-bold">Tipo:</label>
                             </div>
-                            <div class=" form-group col-md-4 mb-0">
-                                    <span class="form-control border-0">{{ $get_id->nombre_tipo }}</span>
+                            <div class="form-group col-md-4 mb-0">
+                                @if($get_id->tipo_otros == 0)
+                                <select class="form-control border-0" name="nombre_tipo" required>
+                                    <option value="" disabled selected>Seleccione un tipo</option>
+                                    <option value="1">Requerimiento</option>
+                                    <option value="2">Incidente</option>
+                                </select>
+
+                                @else
+                                <input type="hidden" name="nombre_tipo" value="{{ $get_id->nombre_tipo }}">
+                                <span class="form-control border-0">{{ $get_id->nombre_tipo }}</span>
+                                @endif
                             </div>
+
+
                         </div>
                     </div>
                 </div>
@@ -553,7 +565,7 @@
                         <input type="hidden" id="imagenes_input" name="imagenes" value="">
                         <div id="imagenes_container" class="carousel-container">
                             <!-- Las imágenes se añadirán aquí dinámicamente -->
-                            @if ($get_id->archivo || $get_id->archivo2 || $get_id->archivo3 || $get_id->archivo4 || $get_id->archivo5)
+                            @if ($get_id->archivo1 || $get_id->archivo2 || $get_id->archivo3 || $get_id->archivo4 || $get_id->archivo5)
                             @for ($i = 1; $i <= 5; $i++)
                                 @php
                                 $imgUrl=$get_id->{'archivo' . $i};

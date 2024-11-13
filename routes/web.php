@@ -148,6 +148,7 @@ Route::controller(TrackingController::class)->group(function () {
     Route::post('tracking/insert_detalle_transporte_inicial', 'insert_detalle_transporte_inicial')->name('tracking.insert_detalle_transporte_inicial');
     Route::get('tracking/modal_guia_transporte', 'modal_guia_transporte')->name('tracking.modal_guia_transporte');
     Route::post('tracking/insert_guia_transporte', 'insert_guia_transporte')->name('tracking.insert_guia_transporte');
+    Route::get('tracking/pago_transporte_general', 'pago_transporte_general')->name('tracking.pago_transporte_general');
     Route::get('tracking/{id}/detalle_transporte', 'detalle_transporte')->name('tracking.detalle_transporte');
     Route::post('tracking/{id}/insert_detalle_transporte', 'insert_detalle_transporte')->name('tracking.insert_detalle_transporte');
     Route::post('tracking/{id}/confirmacion_llegada', 'insert_confirmacion_llegada')->name('tracking.confirmacion_llegada');
@@ -427,8 +428,8 @@ Route::controller(SoporteController::class)->group(function () {
 
     // Tabla Generales
     Route::get('tablagenerales', 'index_tg')->name('tablagenerales');
-    Route::get('soporte_tablagenerales/list', 'list_soporte_tablagenerales')->name('soporte_tablagenerales.list');
-    Route::get('soporte_tg/{fec_ini}/{fec_fin}/excel', 'excel_tg')->name('soporte_tg.excel');
+    Route::post('soporte_tablagenerales/list_filtro', 'list_soporte_tablagenerales_filtro')->name('soporte_tablagenerales.list_filtro');
+    Route::get('soporte_tg/{fec_ini}/{fec_fin}/{cpiniciar}/{cproceso}/{cstandby}/{ccompletado}/{ccancelado}/excel', 'excel_tg')->name('soporte_tg.excel');
 });
 
 // ADMINISTRABLES - TICKETS SOPORTE
