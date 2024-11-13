@@ -486,10 +486,8 @@
 
     function Update_Soporte() {
         Cargando();
-
         var dataString = new FormData(document.getElementById('formulario_update'));
         var url = "{{ route('soporte_ticket.update', $get_id->id_soporte) }}";
-
         $.ajax({
             url: url,
             data: dataString,

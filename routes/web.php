@@ -427,7 +427,6 @@ Route::controller(SoporteController::class)->group(function () {
     Route::delete('soporte_delete_comentarios/{id}', 'destroy_comentarios')->name('soporte_delete_comentarios.destroy');
     // Activación de cámara
     Route::post('previsualizacion_captura_soporte', 'previsualizacionCaptura')->name('previsualizacion_captura_soporte');
-
     // Tabla Generales
     Route::get('tablagenerales', 'index_tg')->name('tablagenerales');
     Route::post('soporte_tablagenerales/list_filtro', 'list_soporte_tablagenerales_filtro')->name('soporte_tablagenerales.list_filtro');
