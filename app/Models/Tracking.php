@@ -83,7 +83,9 @@ class Tracking extends Model
                     CASE WHEN tr.tipo_pago=1 THEN 'Si pago' WHEN tr.tipo_pago=2 THEN 'Por pagar' 
                     ELSE '' END AS nom_tipo_pago,YEAR(tr.fec_reg) AS anio,
                     (IFNULL(paquetes,0)+IFNULL(sobres,0)+IFNULL(fardos,0)+IFNULL(caja,0)) AS bultos,
-                    ROUND(IFNULL(tr.importe_transporte,0)/tr.mercaderia_total,2) AS flete_prenda_formateado,
+                    ROUND(IFNULL((SELECT IFNULL(tt.importe_transporte,0) FROM tracking_transporte tt
+                    WHERE tt.id_base=tr.id_origen_hacia AND tt.anio=YEAR(tr.fec_reg) AND
+                    tt.semana=tr.semana),0)/tr.mercaderia_total,2) AS flete_prenda_formateado,
                     (SELECT CONCAT(DAY(tde.fecha),' de ',LOWER((SELECT me.nom_mes FROM mes me
                     WHERE me.cod_mes=MONTH(tde.fecha))),' del ',YEAR(tde.fecha)) 
                     FROM tracking_detalle_estado tde
@@ -178,9 +180,10 @@ class Tracking extends Model
                     GROUP BY id_detalle) me ON mp.ultimo_id=me.id_detalle
                     LEFT JOIN tracking_detalle_estado de ON me.ultimo_id=de.id
                     LEFT JOIN tracking_estado te ON de.id_estado=te.id
-                    WHERE tr.iniciar=1 AND (($parte tr.estado=1 AND de.id_estado!=21) OR 
+                    WHERE tr.iniciar=1 AND ($parte tr.estado=1 AND de.id_estado!=21)
+                    /*(($parte tr.estado=1 AND de.id_estado!=21) OR 
                     ($parte tr.estado=1 AND de.id_estado=21 AND 
-                    DATE(de.fecha)>DATE_SUB(CURDATE(), INTERVAL 1 WEEK)))
+                    DATE(de.fecha)>DATE_SUB(CURDATE(), INTERVAL 1 WEEK)))*/
                     ORDER BY de.fecha DESC";
             $query = DB::select($sql);
             return $query;

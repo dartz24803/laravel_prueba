@@ -23,14 +23,6 @@
     
                             <div class="row">
                                 <div class="form-group col-lg-1">
-                                    <label class="control-label text-bold">Nro. GR Transporte: </label>
-                                </div>
-                                <div class="form-group col-lg-2">
-                                    <input type="text" class="form-control" name="guia_transporte" 
-                                    id="guia_transporte" placeholder="Nro. GR Transporte">
-                                </div>
-    
-                                <div class="form-group col-lg-1">
                                     <label class="control-label text-bold">Peso: </label>
                                 </div>
                                 <div class="form-group col-lg-2">
@@ -53,9 +45,7 @@
                                     <input type="text" class="form-control" name="sobres" id="sobres" 
                                     placeholder="Sobres" onkeypress="return solo_Numeros(event);">
                                 </div>
-                            </div>
-    
-                            <div class="row">
+
                                 <div class="form-group col-lg-1">
                                     <label class="control-label text-bold">Fardos: </label>
                                 </div>
@@ -63,7 +53,9 @@
                                     <input type="text" class="form-control" name="fardos" id="fardos" 
                                     placeholder="Fardos" onkeypress="return solo_Numeros(event);">
                                 </div>
+                            </div>
     
+                            <div class="row">
                                 <div class="form-group col-lg-1">
                                     <label class="control-label text-bold">Caja: </label>
                                 </div>

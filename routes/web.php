@@ -148,6 +148,7 @@ Route::controller(TrackingController::class)->group(function () {
     Route::post('tracking/insert_detalle_transporte_inicial', 'insert_detalle_transporte_inicial')->name('tracking.insert_detalle_transporte_inicial');
     Route::get('tracking/modal_guia_transporte', 'modal_guia_transporte')->name('tracking.modal_guia_transporte');
     Route::post('tracking/insert_guia_transporte', 'insert_guia_transporte')->name('tracking.insert_guia_transporte');
+    Route::get('tracking/pago_transporte_general', 'pago_transporte_general')->name('tracking.pago_transporte_general');
     Route::get('tracking/{id}/detalle_transporte', 'detalle_transporte')->name('tracking.detalle_transporte');
     Route::post('tracking/{id}/insert_detalle_transporte', 'insert_detalle_transporte')->name('tracking.insert_detalle_transporte');
     Route::post('tracking/{id}/confirmacion_llegada', 'insert_confirmacion_llegada')->name('tracking.confirmacion_llegada');
@@ -2140,21 +2141,28 @@ Route::controller(TareasController::class)->group(function () {
     Route::get('Tareas/Cargar_Mis_Tareas', 'Cargar_Mis_Tareas');
     Route::post('Tareas/Lista_Mis_Tareas', 'Lista_Mis_Tareas');
     Route::get('Tareas/Excel_Gestion_Pendiente/{id_area}/{base}/{cpiniciar}/{cproceso}/{cfinalizado}/{cstandby}/{mis_tareas}/{mi_equipo}/{responsablei}', 'Excel_Gestion_Pendiente');
-    // Route::get('Tareas/Modal_Tareas', 'Modal_Tareas');
-    // Route::post('Tareas/Buscar_Puesto_Area/{id_area}/{t}', 'Buscar_Puesto_Area');
-    // Route::post('Tareas/Insert_Tareas', 'Insert_Tareas');
-    // Route::get('Tareas/Modal_Update_Tareas/{id}', 'Modal_Update_Tareas');
-    // Route::post('Tareas/Insert_Tareas_Reclutado', 'Insert_Tareas_Reclutado');
-    // Route::post('Tareas/List_Tareas_Reclutado', 'List_Tareas_Reclutado');
-    // Route::post('Tareas/Delete_Reclutado', 'Delete_Reclutado');
-    // Route::post('Tareas/Update_Tareas', 'Update_Tareas');
-    // Route::get('Tareas/Modal_Tareas_Reclutado/{id}', 'Modal_Tareas_Reclutado');
-    // Route::post('Tareas/Delete_Tareas_Detalle', 'Delete_Tareas_Detalle');
-    // Route::get('Tareas/Excel_Tareas/{id_user}/{p}', 'Excel_Tareas');
+    Route::get('Tareas/Modal_Ver_Gestion_Pendiente/{id}', 'Modal_Ver_Gestion_Pendiente');
+    Route::get('Tareas/Modal_Update_Gestion_Pendiente/{id}', 'Modal_Update_Gestion_Pendiente');
+    Route::post('Tareas/Update_Gestion_Pendiente', 'Update_Gestion_Pendiente');
+    Route::get('Tareas/Cargar_Tareas_Solicitadas', 'Cargar_Tareas_Solicitadas');
+    Route::post('Tareas/Lista_Tareas_Solicitadas', 'Lista_Tareas_Solicitadas');
+    Route::get('Tareas/Modal_Pendiente', 'Modal_Pendiente');
+    Route::get('Tareas/obtenerImagenes', 'obtenerImagenes');
+    Route::post('Tareas/Traer_Usuarios_Pendiente', 'Traer_Usuarios_Pendiente');
+    Route::post('Tareas/Responsable_Pendiente', 'Responsable_Pendiente');
+    Route::post('Tareas/Area_Infraestructura', 'Area_Infraestructura');
+    Route::post('Tareas/Delete_Toda_Cotizacion_Pendiente', 'Delete_Toda_Cotizacion_Pendiente');
+    Route::post('Tareas/Insert_Pendiente', 'Insert_Pendiente');
+    Route::post('Tareas/Delete_Pendiente', 'Delete_Pendiente');
+    Route::get('Tareas/Modal_Update_Pendiente/{id}', 'Modal_Update_Pendiente');
+    Route::post('Tareas/Update_Pendiente', 'Update_Pendiente');
+    Route::get('Tareas/Modal_Ver_Pendiente/{id}/', 'Modal_Ver_Pendiente');
+    Route::get('Tareas/Descargar_Archivo_Pendiente/{id}', 'Descargar_Archivo_Pendiente');
+    Route::post('Tareas/Delete_Archivo_Pendiente', 'Delete_Archivo_Pendiente');
+    Route::post('Tareas/Previsualizacion_Captura', 'Previsualizacion_Captura');
+    Route::post('Tareas/Delete_Imagen_Temporal', 'Delete_Imagen_Temporal');
+    Route::get('Tareas/Excel_Pendiente/{cpi}/{cp}/{cf}/{cs}/{area}', 'Excel_Pendiente');
 });
-
-
-
 
 
 

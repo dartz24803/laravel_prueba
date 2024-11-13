@@ -23,6 +23,7 @@ class TrackingTransporte extends Model
         'receptor',
         'tipo_pago',
         'nombre_transporte',
+        'guia_transporte',
         'importe_transporte',
         'factura_transporte',
         'archivo_transporte',

@@ -1359,14 +1359,18 @@ use App\Models\TrackingDetalleProceso;
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
-                    success: function() {
-                        Swal(
-                            '¡Cambio de estado exitoso!',
-                            '¡Haga clic en el botón!',
-                            'success'
-                        ).then(function() {
-                            Lista_Tracking();
-                        });
+                    success: function(data) {
+                        if(data=="diferencia"){
+                            window.location = "{{ route('tracking.cuadre_diferencia', ':id') }}".replace(':id', id);
+                        }else{
+                            Swal(
+                                '¡Cambio de estado exitoso!',
+                                '¡Haga clic en el botón!',
+                                'success'
+                            ).then(function() {
+                                Lista_Tracking();
+                            });
+                        }
                     }
                 });
             } else {

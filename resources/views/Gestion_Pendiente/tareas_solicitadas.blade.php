@@ -29,7 +29,7 @@
     </div>
 
     <div class="form-group col-lg-8" style="margin-top: 30px;"> 
-        <button type="button" class="btn btn-primary" title="Nueva tarea" data-toggle="modal" data-target="#ModalRegistro" app_reg_metalikas="<?= site_url('Corporacion/Modal_Pendiente') ?>" >
+        <button type="button" class="btn btn-primary" title="Nueva tarea" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ url('Tareas/Modal_Pendiente') }}" >
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
             Nueva tarea
         </button>
@@ -39,7 +39,7 @@
         </a>
     </div> 
 </div>
-
+@csrf
 <div class="table-responsive mb-4 mt-4" id="lista_pendiente">
 </div>
 
@@ -67,11 +67,15 @@
         }
         var area = $('#area_busq').val();
 
-        var url="<?php echo site_url(); ?>Corporacion/Lista_Tareas_Solicitadas";
+        var url="{{ url('Tareas/Lista_Tareas_Solicitadas') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({
             url: url, 
             type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             data: {'cpiniciar':cpiniciar,'cproceso':cproceso,'cfinalizado':cfinalizado,'cstandby':cstandby,'area':area},
             success: function(data){
                 $('#lista_pendiente').html(data);               
@@ -82,7 +86,8 @@
     function Delete_Pendiente(id) {
         Cargando();
 
-        var url = "<?php echo site_url(); ?>Corporacion/Delete_Pendiente";
+        var url = "{{ url('Tareas/Delete_Pendiente') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
         Swal({
             title: '¿Realmente desea eliminar el registro?',
@@ -98,6 +103,9 @@
                 $.ajax({
                     type: "POST",
                     url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
                     data: {'id_pendiente':id},
                     success: function() {
                         Swal(
@@ -131,6 +139,6 @@
             var cstandby=1;
         }
         var area = $('#area_busq').val();
-        window.location ="<?php echo site_url(); ?>Corporacion/Excel_Pendiente/"+cpiniciar+"/"+cproceso+"/"+cfinalizado+"/"+cstandby+"/"+area;
+        window.location ="{{ url('Tareas/Excel_Pendiente')}}/"+cpiniciar+"/"+cproceso+"/"+cfinalizado+"/"+cstandby+"/"+area;
     }
 </script>

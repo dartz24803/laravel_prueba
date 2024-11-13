@@ -1,13 +1,12 @@
-<link href="<?php echo base_url(); ?>template/inputfiles/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('template/inputfiles/css/fileinput.css') }}" media="all" rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
-<link href="<?php echo base_url(); ?>template/inputfiles/themes/explorer-fas/theme.css" media="all" rel="stylesheet" type="text/css"/>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/plugins/piexif.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/plugins/sortable.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/fileinput.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/locales/fr.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/locales/es.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/themes/fas/theme.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/themes/explorer-fas/theme.js" type="text/javascript"></script>
+<link href="{{ asset('template/inputfiles/themes/explorer-fas/theme.css') }}" media="all" rel="stylesheet" type="text/css"/>
+<script src="{{ asset('template/inputfiles/js/plugins/piexif.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/plugins/sortable.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/fileinput.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/locales/es.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/themes/fas/theme.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/themes/explorer-fas/theme.js') }}" type="text/javascript"></script>
 
 <style>
     .input-group > .input-group-append > .btn, .input-group > .input-group-append > .input-group-text, .input-group > .input-group-prepend:first-child > .btn:not(:first-child), .input-group > .input-group-prepend:first-child > .input-group-text:not(:first-child), .input-group > .input-group-prepend:not(:first-child) > .btn, .input-group > .input-group-prepend:not(:first-child) > .input-group-text {
@@ -124,8 +123,8 @@
                 <select class="form-control" disabled>
                     <option value="0">Seleccionar</option>
                     <?php foreach($list_responsable as $list){ ?>
-                        <option value="<?php echo $list['id_usuario']; ?>" <?php if($list['id_usuario']==$get_id[0]['id_responsable']){ echo "selected"; } ?>>
-                            <?php echo $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']; ?>
+                        <option value="<?php echo $list->id_usuario; ?>" <?php if($list->id_usuario==$get_id[0]['id_responsable']){ echo "selected"; } ?>>
+                            <?php echo $list->usuario_nombres." ".$list->usuario_apater." ".$list->usuario_amater; ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -145,8 +144,8 @@
                 <select class="form-control" disabled>
                     <option value="0">Seleccionar</option>
                     <?php foreach($list_estado as $list){ ?>
-                        <option value="<?php echo $list['id_estado_tickets']; ?>" <?php if($list['id_estado_tickets']==$get_id[0]['estado']){ echo "selected"; } ?>>
-                            <?php echo $list['nom_estado_tickets']; ?>
+                        <option value="<?php echo $list->id_estado_tickets; ?>" <?php if($list->id_estado_tickets==$get_id[0]['estado']){ echo "selected"; } ?>>
+                            <?php echo $list->nom_estado_tickets; ?>
                         </option>
                     <?php } ?>
                 </select>
@@ -393,11 +392,11 @@
 
     $(document).on('click', '#download_file', function () {
         image_id = $(this).data('image_id');
-        window.location.replace("<?php echo site_url(); ?>Corporacion/Descargar_Archivo_Pendiente/" + image_id);
+        window.location.replace("{{ url('Tareas/Descargar_Archivo_Pendiente')}}/" + image_id);
     });
 
     $(document).on('click', '#download_file_gestion', function () {
         image_id = $(this).data('image_id');
-        window.location.replace("<?php echo site_url(); ?>Corporacion/Descargar_Archivo_Gestion_Pendiente/" + image_id);
+        window.location.replace("{{ url('Tareas/Descargar_Archivo_Gestion_Pendiente')}}/" + image_id);
     });
 </script>

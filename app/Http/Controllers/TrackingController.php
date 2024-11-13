@@ -739,18 +739,17 @@ class TrackingController extends Controller
             'recepcion' => 'gt:0',
             'receptor' => 'required',
             'nombre_transporte' => 'required_if:transporte,1,2',
+            'guia_transporte' => 'required_if:tipo_pago,1',
             'importe_transporte' => 'required_if:tipo_pago,1',
             'factura_transporte' => 'required_if:tipo_pago,1',
             'archivo_transporte' => 'required_if:tipo_pago,1'
         ],[
             'id_base.gt' => 'Debe seleccionar base.',
-            'guia_transporte.required' => 'Debe ingresar nro. gr transporte.',
-            'peso.required' => 'Debe ingresar peso.',
-            'required_without_all' => 'Debe ingresar paquetes o sobres o fardos o caja.',
             'tiempo_llegada.required' => 'Debe ingresar tiempo de llegada',
             'recepcion.gt' => 'Debe seleccionar recepción.',
             'receptor.required' => 'Debe ingresar receptor.',
             'nombre_transporte.required_if' => 'Debe ingresar nombre de empresa.',
+            'guia_transporte.required_if' => 'Debe ingresar nro. gr transporte..',
             'importe_transporte.required_if' => 'Debe ingresar importe a pagar.',
             'factura_transporte.required_if' => 'Debe ingresar n° factura.',
             'archivo_transporte.required_if' => 'Debe ingresar PDF de factura.'
@@ -812,6 +811,7 @@ class TrackingController extends Controller
                 'receptor' => $request->receptor,
                 'tipo_pago' => $tipo_pago,
                 'nombre_transporte' => $request->nombre_transporte,
+                'guia_transporte' => $request->guia_transporte,
                 'importe_transporte' => $request->importe_transporte,
                 'factura_transporte' => $request->factura_transporte,
                 'archivo_transporte' => $archivo,
@@ -878,6 +878,19 @@ class TrackingController extends Controller
         }
     }
 
+    public function pago_transporte_general()
+    {
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        $list_subgerencia = SubGerencia::list_subgerencia(7);
+        $list_base = Base::get_list_bases_tienda();
+        return view('logistica.tracking.tracking.pago_transporte_general', compact(
+            'list_notificacion',
+            'list_subgerencia',
+            'list_base'
+        ));
+    }
+
     public function detalle_transporte($id)
     {
         //NOTIFICACIONES
@@ -904,33 +917,42 @@ class TrackingController extends Controller
         ]);
 
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        $get_transporte = TrackingTransporte::where('id_base',$get_id->id_origen_hacia)
+        $get_transporte = TrackingTransporte::select('*',DB::raw("CASE WHEN transporte='1'
+                        THEN 'Agencia - Terrestre'
+                        WHEN transporte='2' THEN 'Agencia - Aérea' 
+                        WHEN transporte='3' THEN 'Propio' ELSE '' END AS tipo_transporte"),
+                        DB::raw("CASE WHEN recepcion=1 THEN 'Agencia' 
+                        WHEN recepcion=2 THEN 'Domicilio' ELSE '' END AS recepcion"),
+                        DB::raw("CASE WHEN tipo_pago=1 THEN 'Si pago' WHEN tipo_pago=2 THEN 'Por pagar' 
+                        ELSE '' END AS nom_tipo_pago"),
+                        DB::raw('IFNULL(importe_transporte,0) AS importe_formateado'))
+                        ->where('id_base',$get_id->id_origen_hacia)
                         ->where('anio',$get_id->anio)->where('semana',$get_id->semana)->first();
 
-        $errors = [];
+        /*$errors = [];
         if ($get_transporte->tipo_pago=="1" && $request->guia_transporte=="") {
             $errors['guia_transporte'] = ['Debe ingresar nro. gr transporte.'];
         }
         if (!empty($errors)) {
             return response()->json(['errors' => $errors], 422);
-        }
+        }*/
 
         Tracking::findOrFail($id)->update([
-            'guia_transporte' => $request->guia_transporte,
+            //'guia_transporte' => $request->guia_transporte,
             'peso' => $request->peso,
             'paquetes' => $request->paquetes,
             'sobres' => $request->sobres,
             'fardos' => $request->fardos,
             'caja' => $request->caja,
-            'transporte' => $get_transporte->transporte,
+            /*'transporte' => $get_transporte->transporte,
             'tiempo_llegada' => $get_transporte->tiempo_llegada,
-            'recepcion' => $get_transporte->recepcion,
+            'recepcion' => $get_transporte->recepcion,*/
             'mercaderia_total' => $request->mercaderia_total,
-            'receptor' => $get_transporte->receptor,
+            /*'receptor' => $get_transporte->receptor,
             'tipo_pago' => $get_transporte->tipo_pago,
             'nombre_transporte' => $get_transporte->nombre_transporte,
             'importe_transporte' => $get_transporte->importe_transporte,
-            'factura_transporte' => $get_transporte->factura_transporte,
+            'factura_transporte' => $get_transporte->factura_transporte,*/
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
@@ -944,18 +966,18 @@ class TrackingController extends Controller
             ]);
         }
 
-        if($get_transporte->archivo_transporte != ""){
+        /*if($get_transporte->archivo_transporte != ""){
             TrackingArchivo::create([
                 'id_tracking' => $id,
                 'tipo' => 1,
                 'archivo' => $get_transporte->archivo_transporte
             ]);
-        }
+        }*/
 
         //MENSAJE 2
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
         $t_comentario = TrackingComentario::where('id_tracking',$id)->where('pantalla','DETALLE_TRANSPORTE')->first();
-        $list_archivo = TrackingArchivo::where('id_tracking', $id)->where('tipo', 1)->get();
+        //$list_archivo = TrackingArchivo::where('id_tracking', $id)->where('tipo', 1)->get();
 
         $mail = new PHPMailer(true);
 
@@ -970,10 +992,10 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
             //$mail->addAddress('ogutierrez@lanumero1.com.pe');
             //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-            $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            /*$list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
             foreach($list_td as $list){
                 $mail->addAddress($list->emailp);
             }
@@ -984,7 +1006,7 @@ class TrackingController extends Controller
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }
+            }*/
 
             $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
             $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -1020,19 +1042,19 @@ class TrackingController extends Controller
                                     </tr>
                                     <tr>
                                         <td style="font-weight:bold;">Transporte.</td>
-                                        <td style="text-align:right;">'.$get_id->guia_transporte.'</td>
+                                        <td style="text-align:right;">'.$get_transporte->guia_transporte.'</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="font-weight:bold;">Tipo de transporte</td>
-                                        <td style="text-align:right;">'.$get_id->tipo_transporte.'</td>
+                                        <td style="text-align:right;">'.$get_transporte->tipo_transporte.'</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="font-weight:bold;">Nombre de transporte</td>
-                                        <td style="text-align:right;">'.$get_id->nombre_transporte.'</td>
-                                    </tr>                                    
+                                        <td style="text-align:right;">'.$get_transporte->nombre_transporte.'</td>
+                                    </tr>
                                     <tr>
                                         <td colspan="2" style="font-weight:bold;">N° Factura</td>
-                                        <td style="text-align:right;">'.$get_id->factura_transporte.'</td>
+                                        <td style="text-align:right;">'.$get_transporte->factura_transporte.'</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="font-weight:bold;">Peso</td>
@@ -1060,7 +1082,7 @@ class TrackingController extends Controller
                                     </tr>                                 
                                     <tr>
                                         <td colspan="2" style="font-weight:bold;">Recepción</td>
-                                        <td style="text-align:right;">'.$get_id->recepcion.'</td>
+                                        <td style="text-align:right;">'.$get_transporte->recepcion.'</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="font-weight:bold;">Mercadería total</td>
@@ -1072,15 +1094,15 @@ class TrackingController extends Controller
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="font-weight:bold;">Receptor</td>
-                                        <td style="text-align:right;">'.$get_id->receptor.'</td>
+                                        <td style="text-align:right;">'.$get_transporte->receptor.'</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="font-weight:bold;">Tipo pago</td>
-                                        <td style="text-align:right;">'.$get_id->nom_tipo_pago.'</td>
+                                        <td style="text-align:right;">'.$get_transporte->nom_tipo_pago.'</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="font-weight:bold;">Importe Pagado</td>
-                                        <td style="text-align:right;">S/'.$get_id->importe_formateado.'</td>
+                                        <td style="text-align:right;">S/'.$get_transporte->importe_formateado.'</td>
                                     </tr>
                                     <tr>
                                         <td rowspan="2" style="font-weight:bold;">Fecha</td>
@@ -1089,7 +1111,7 @@ class TrackingController extends Controller
                                     </tr>
                                     <tr>
                                         <td style="font-weight:bold;">Tiempo estimado de llegada</td>
-                                        <td style="text-align:right;">'.$get_id->tiempo_llegada.'</td>
+                                        <td style="text-align:right;">'.$get_transporte->tiempo_llegada.'</td>
                                     </tr>                                  
                                 </table><br>';
                             if($t_comentario){
@@ -1098,9 +1120,14 @@ class TrackingController extends Controller
                             }
         
             $mail->CharSet = 'UTF-8';
-            foreach($list_archivo as $list){
+            /*foreach($list_archivo as $list){
                 $archivo_contenido = file_get_contents($list->archivo);
                 $nombre_archivo = basename($list->archivo);
+                $mail->addStringAttachment($archivo_contenido, $nombre_archivo);
+            }*/
+            if($get_transporte->archivo_transporte!=""){
+                $archivo_contenido = file_get_contents($get_transporte->archivo_transporte);
+                $nombre_archivo = basename($get_transporte->archivo_transporte);
                 $mail->addStringAttachment($archivo_contenido, $nombre_archivo);
             }
             $mail->send();
@@ -1352,6 +1379,46 @@ class TrackingController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
+
+            //EVITAR EL PROCESO DE PAGO
+            //ALERTA 7
+            $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
+            foreach($list_token as $token){
+                $dato = [
+                    'token' => $token->token,
+                    'titulo' => 'INSPECCION DE MERCADERÍA',
+                    'contenido' => 'Hola '.$get_id->desde.', se realizará la inspección de mercadería',
+                ];
+                $this->sendNotification($dato);
+            }
+            $dato = [
+                'id_tracking' => $id,
+                'titulo' => 'INSPECCION DE MERCADERÍA',
+                'contenido' => 'Hola '.$get_id->desde.', se realizará la inspección de mercadería',
+            ];
+            $this->insert_notificacion($dato);
+
+            $tracking_dp = TrackingDetalleProceso::create([
+                'id_tracking' => $id,
+                'id_proceso' => 6,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+
+            TrackingDetalleEstado::create([
+                'id_detalle' => $tracking_dp->id,
+                'id_estado' => 12,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
         }
     }
 
@@ -1584,17 +1651,17 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
             //$mail->addAddress('ogutierrez@lanumero1.com.pe');
             //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
             }
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }
+            }*/
 
             $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
             $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -1834,17 +1901,17 @@ class TrackingController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
             //$mail->addAddress('ogutierrez@lanumero1.com.pe');
             //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
             foreach($list_cd as $list){
                 $mail->addAddress($list->emailp);
             }
             $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
             foreach($list_cc as $list){
                 $mail->addCC($list->emailp);
-            }
+            }*/
 
             $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
             $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -2058,46 +2125,143 @@ class TrackingController extends Controller
 
     public function insert_mercaderia_entregada($id)
     {
-        //ALERTA 13
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
 
-        $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
-        foreach($list_token as $token){
+        //VALIDAR SI HAY DIFERENCIA INCLUSO, SI INDICO QUE MERCADERÍA LLEGO EN BUENAS CONDICIONES
+        if($get_id->id_estado=="13"){
+            //INSERTAR DATOS DE DIFERENCIAS
+            TrackingDiferencia::where('id_tracking',$id)->delete();
+            try {
+                $list_diferencia = DB::connection('sqlsrv')->select('EXEC usp_web_ver_dif_bultos_x_req ?', [$get_id->n_requerimiento]);
+            } catch (\Throwable $th) {
+                $list_diferencia = [];
+            }
+
+            foreach($list_diferencia as $list){
+                TrackingDiferencia::create([
+                    'id_tracking' => $id,
+                    'sku' => $list->SKU,
+                    'estilo' => $list->Estilo,
+                    'bulto' => $list->Bulto,
+                    'color_talla' => $list->Col_Tal,
+                    'enviado' => $list->Enviado,
+                    'recibido' => $list->Recibido,
+                    'observacion' => $list->Observacion
+                ]);
+            }
+            $v_diferencia = TrackingDiferencia::where('id_tracking',$id)
+                            ->whereIn('observacion',['Sobrante','Faltante'])->count();
+            //VALIDAR SI HAY DIFERENCIA, si hay se pasa a diferencia, sino se termina el proceso
+            if($v_diferencia>0){
+                Tracking::findOrFail($id)->update([
+                    'diferencia' => 1,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+    
+                $tracking_dp = TrackingDetalleProceso::create([
+                    'id_tracking' => $id,
+                    'id_proceso' => 7,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+        
+                TrackingDetalleEstado::create([
+                    'id_detalle' => $tracking_dp->id,
+                    'id_estado' => 14,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+
+                echo "diferencia";
+            }else{
+                //ALERTA 13
+                $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
+                foreach($list_token as $token){
+                    $dato = [
+                        'token' => $token->token,
+                        'titulo' => 'MERCADERÍA ENTREGADA',
+                        'contenido' => 'La mercadería fue distribuida con éxito',
+                    ];
+                    $this->sendNotification($dato);
+                }
+                $dato = [
+                    'id_tracking' => $id,
+                    'titulo' => 'MERCADERÍA ENTREGADA',
+                    'contenido' => 'La mercadería fue distribuida con éxito',
+                ];
+                $this->insert_notificacion($dato);
+
+                $tracking_dp = TrackingDetalleProceso::create([
+                    'id_tracking' => $id,
+                    'id_proceso' => 9,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+
+                TrackingDetalleEstado::create([
+                    'id_detalle' => $tracking_dp->id,
+                    'id_estado' => 21,
+                    'fecha' => now(),
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+            }
+        }else{
+            //ALERTA 13
+            $list_token = TrackingToken::whereIn('base', ['CD', $get_id->hacia])->get();
+            foreach($list_token as $token){
+                $dato = [
+                    'token' => $token->token,
+                    'titulo' => 'MERCADERÍA ENTREGADA',
+                    'contenido' => 'La mercadería fue distribuida con éxito',
+                ];
+                $this->sendNotification($dato);
+            }
             $dato = [
-                'token' => $token->token,
+                'id_tracking' => $id,
                 'titulo' => 'MERCADERÍA ENTREGADA',
                 'contenido' => 'La mercadería fue distribuida con éxito',
             ];
-            $this->sendNotification($dato);
+            $this->insert_notificacion($dato);
+
+            $tracking_dp = TrackingDetalleProceso::create([
+                'id_tracking' => $id,
+                'id_proceso' => 9,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+
+            TrackingDetalleEstado::create([
+                'id_detalle' => $tracking_dp->id,
+                'id_estado' => 21,
+                'fecha' => now(),
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
         }
-        $dato = [
-            'id_tracking' => $id,
-            'titulo' => 'MERCADERÍA ENTREGADA',
-            'contenido' => 'La mercadería fue distribuida con éxito',
-        ];
-        $this->insert_notificacion($dato);
-
-        $tracking_dp = TrackingDetalleProceso::create([
-            'id_tracking' => $id,
-            'id_proceso' => 9,
-            'fecha' => now(),
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
-
-        TrackingDetalleEstado::create([
-            'id_detalle' => $tracking_dp->id,
-            'id_estado' => 21,
-            'fecha' => now(),
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
     }
 
     public function reporte_mercaderia($id)
@@ -2106,20 +2270,45 @@ class TrackingController extends Controller
         $list_notificacion = Notificacion::get_list_notificacion();   
         $list_subgerencia = SubGerencia::list_subgerencia(7);     
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        return view('logistica.tracking.tracking.reporte_mercaderia', compact('list_notificacion','list_subgerencia','get_id'));
+        //INSERTAR DATOS DE DIFERENCIAS
+        TrackingDiferencia::where('id_tracking',$id)->delete();
+        try {
+            $list_diferencia = DB::connection('sqlsrv')->select('EXEC usp_web_ver_dif_bultos_x_req ?', [$get_id->n_requerimiento]);
+        } catch (\Throwable $th) {
+            $list_diferencia = [];
+        }
+
+        foreach($list_diferencia as $list){
+            TrackingDiferencia::create([
+                'id_tracking' => $id,
+                'sku' => $list->SKU,
+                'estilo' => $list->Estilo,
+                'bulto' => $list->Bulto,
+                'color_talla' => $list->Col_Tal,
+                'enviado' => $list->Enviado,
+                'recibido' => $list->Recibido,
+                'observacion' => $list->Observacion
+            ]);
+        }
+        $v_diferencia = TrackingDiferencia::where('id_tracking',$id)
+                        ->whereIn('observacion',['Sobrante','Faltante'])->count();
+        return view('logistica.tracking.tracking.reporte_mercaderia', compact(
+            'list_notificacion',
+            'list_subgerencia',
+            'get_id',
+            'v_diferencia'
+        ));
     }
 
     public function insert_reporte_mercaderia(Request $request,$id)
     {
-        $rules = [
+        $request->validate([
             'diferencia' => 'required_without:devolucion|boolean',
-            'devolucion' => 'required_without:diferencia|boolean',
-        ];
-        $messages = [
+            'devolucion' => 'required_without:diferencia|boolean'
+        ], [
             'diferencia.required_without' => 'Al menos una opción debe estar seleccionada.',
-            'devolucion.required_without' => 'Al menos una opción debe estar seleccionada.',
-        ];
-        $request->validate($rules, $messages);
+            'devolucion.required_without' => 'Al menos una opción debe estar seleccionada.'
+        ]);
 
         Tracking::findOrFail($id)->update([
             'diferencia' => $request->diferencia,
@@ -2196,27 +2385,6 @@ class TrackingController extends Controller
             'v_faltante' => 1
         ]);
 
-        $get_id = Tracking::get_list_tracking(['id'=>$id]);
-
-        try {
-            $list_diferencia = DB::connection('sqlsrv')->select('EXEC usp_web_ver_dif_bultos_x_req ?', [$get_id->n_requerimiento]);
-        } catch (\Throwable $th) {
-            $list_diferencia = [];
-        }
-
-        foreach($list_diferencia as $list){
-            TrackingDiferencia::create([
-                'id_tracking' => $id,
-                'sku' => $list->SKU,
-                'estilo' => $list->Estilo,
-                'bulto' => $list->Bulto,
-                'color_talla' => $list->Col_Tal,
-                'enviado' => $list->Enviado,
-                'recibido' => $list->Recibido,
-                'observacion' => $list->Observacion
-            ]);
-        }
-                
         if($request->comentario){
             TrackingComentario::create([
                 'id_tracking' => $id,
@@ -2236,6 +2404,8 @@ class TrackingController extends Controller
                         ->whereColumn('enviado','>','recibido')->get();
 
         //ALERTA 9
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
+                
         if(count($list_sobrante)>0){
             $list_token = TrackingToken::whereIn('base', ['CD'])->get();
             foreach($list_token as $token){
@@ -2288,10 +2458,10 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
                 //$mail->addAddress('ogutierrez@lanumero1.com.pe');
                 //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
                 }
@@ -2302,7 +2472,7 @@ class TrackingController extends Controller
                 $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
                 foreach($list_cc as $list){
                     $mail->addCC($list->emailp);
-                }
+                }*/
     
                 $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
                 $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -2392,10 +2562,10 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
                 //$mail->addAddress('ogutierrez@lanumero1.com.pe');
                 //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
                 }
@@ -2406,7 +2576,7 @@ class TrackingController extends Controller
                 $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
                 foreach($list_cc as $list){
                     $mail->addCC($list->emailp);
-                }
+                }*/
     
                 $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
                 $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -2831,10 +3001,10 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
                 //$mail->addAddress('ogutierrez@lanumero1.com.pe');
                 //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
                 }
@@ -2845,7 +3015,7 @@ class TrackingController extends Controller
                 $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
                 foreach($list_cc as $list){
                     $mail->addCC($list->emailp);
-                }
+                }*/
 
                 $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
                 $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -3158,17 +3328,17 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
                 //$mail->addAddress('ogutierrez@lanumero1.com.pe');
                 //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
                 }
                 $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
                 foreach($list_cc as $list){
                     $mail->addCC($list->emailp);
-                }
+                }*/
 
                 $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
                 $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
@@ -3348,10 +3518,10 @@ class TrackingController extends Controller
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
     
-                //$mail->addAddress('dpalomino@lanumero1.com.pe');
+                $mail->addAddress('dpalomino@lanumero1.com.pe');
                 //$mail->addAddress('ogutierrez@lanumero1.com.pe');
                 //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+                /*$list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
                 foreach($list_cd as $list){
                     $mail->addAddress($list->emailp);
                 }
@@ -3362,7 +3532,7 @@ class TrackingController extends Controller
                 $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
                 foreach($list_cc as $list){
                     $mail->addCC($list->emailp);
-                }
+                }*/
 
                 $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
                 $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');

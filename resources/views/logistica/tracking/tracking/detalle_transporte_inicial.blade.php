@@ -115,7 +115,17 @@
                                     <input type="text" class="form-control" name="nombre_transporte" 
                                     id="nombre_transporte" placeholder="Nombre de empresa">
                                 </div>
+
+                                <div class="form-group col-lg-1">
+                                    <label class="control-label text-bold">Nro. GR Transporte: </label>
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <input type="text" class="form-control" name="guia_transporte"
+                                    id="guia_transporte" placeholder="Nro. GR Transporte">
+                                </div>
+                            </div>
     
+                            <div class="row agencia">
                                 <div class="form-group col-lg-1">
                                     <label class="control-label text-bold">Importe a pagar: </label>
                                 </div>
@@ -124,24 +134,17 @@
                                     id="importe_transporte" placeholder="Importe a pagar" 
                                     onkeypress="return solo_Numeros_Punto(event);">
                                 </div>
-                            </div>
-    
-                            <div class="row agencia pagado" style="display: none;">
-                                <div class="form-group col-lg-1">
+
+                                <div class="form-group col-lg-1 pagado" style="display: none;">
                                     <label class="control-label text-bold">N° Factura: </label>
                                 </div>
-                                <div class="form-group col-lg-2">
+                                <div class="form-group col-lg-2 pagado" style="display: none;">
                                     <input type="text" class="form-control" name="factura_transporte" 
                                     id="factura_transporte" placeholder="N° Factura">
                                 </div>
 
-                                <div class="form-group col-lg-2">
+                                <div class="form-group col-lg-2 pagado" style="display: none;">
                                     <label class="control-label text-bold">PDF de factura (pago adelantado): </label>
-                                </div>
-                                <div class="form-group ml-3 ml-lg-0 d-flex align-items-center">
-                                    <input type="file" class="form-control-file" 
-                                    name="archivo_transporte" id="archivo_transporte" 
-                                    onchange="Valida_Factura_Transporte();">
                                     <a onclick="Limpiar_Ifile();" style="cursor: pointer" 
                                     title="Borrar archivo seleccionado">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x text-danger">
@@ -149,6 +152,11 @@
                                             <line x1="6" y1="6" x2="18" y2="18"></line>
                                         </svg>
                                     </a>
+                                </div>
+                                <div class="form-group ml-3 ml-lg-0 pagado" style="display: none;">
+                                    <input type="file" class="form-control-file" 
+                                    name="archivo_transporte" id="archivo_transporte" 
+                                    onchange="Valida_Factura_Transporte();">
                                 </div>
                             </div>
     
