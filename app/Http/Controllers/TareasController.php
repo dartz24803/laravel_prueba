@@ -151,52 +151,49 @@ class TareasController extends Controller
             $get_area = Area::where('id_area', $get_id[0]['id_area']);
             $cod_base= $get_id[0]['cod_base'];
 
-            if (isset($_FILES['files_u']) && $_FILES['files_u']['error'] == 0) {
-                if($_FILES['files_u']['name']!=""){
-                    $ftp_server = "lanumerounocloud.com";
-                    $ftp_usuario = "intranet@lanumerounocloud.com";
-                    $ftp_pass = "Intranet2022@";
-                    $con_id = ftp_connect($ftp_server);
-                    $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
-                    if((!$con_id) || (!$lr)){
-                        echo "No se conecto";
-                    }else{
-                        echo "Se conecto";
-                        for($count = 0; $count<count($_FILES["files_u"]["name"]); $count++){
-                            $path = $_FILES["files_u"]["name"][$count];
-                            $fecha=date('Y-m-d');
-                            $ext = pathinfo($path, PATHINFO_EXTENSION);
-                            $nombre_soli="Gestion_Pendiente_".$fecha."_".rand(10,999);
-                            $nombre = $nombre_soli.".".$ext;
-                            $_FILES["file"]["name"] =  $nombre;
-                            $_FILES["file"]["type"] = $_FILES["files_u"]["type"][$count];
-                            $source_file = $_FILES["files_u"]["tmp_name"][$count];
-                            $_FILES["file"]["error"] = $_FILES["files_u"]["error"][$count];
-                            $_FILES["file"]["size"] = $_FILES["files_u"]["size"][$count];
-                            ftp_pasv($con_id,true);
-                            $subio = ftp_put($con_id,"PENDIENTES/".$nombre,$source_file,FTP_BINARY);
-                            if($subio){
-                                $dato['ruta'] = $nombre;
-                                ArchivoGestionPendiente::create([
-                                    'id_pendiente' => $dato['id_pendiente'],
-                                    'archivo' => $dato['ruta'],
-                                    'estado' => 1,
-                                    'fec_reg' => now(),
-                                    'user_reg' => session('usuario')->id_usuario,
-                                ]);
-                                echo "Archivo subido correctamente";
-                            }else{
-                                echo "Archivo no subido correctamente";
-                            }
+            if($this->input->hasFile('files_u')){
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if((!$con_id) || (!$lr)){
+                    echo "No se conecto";
+                }else{
+                    echo "Se conecto";
+                    for($count = 0; $count<count($_FILES["files_u"]["name"]); $count++){
+                        $path = $_FILES["files_u"]["name"][$count];
+                        $fecha=date('Y-m-d');
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $nombre_soli="Gestion_Pendiente_".$fecha."_".rand(10,999);
+                        $nombre = $nombre_soli.".".$ext;
+                        $_FILES["file"]["name"] =  $nombre;
+                        $_FILES["file"]["type"] = $_FILES["files_u"]["type"][$count];
+                        $source_file = $_FILES["files_u"]["tmp_name"][$count];
+                        $_FILES["file"]["error"] = $_FILES["files_u"]["error"][$count];
+                        $_FILES["file"]["size"] = $_FILES["files_u"]["size"][$count];
+                        ftp_pasv($con_id,true);
+                        $subio = ftp_put($con_id,"PENDIENTES/".$nombre,$source_file,FTP_BINARY);
+                        if($subio){
+                            $dato['ruta'] = $nombre;
+                            ArchivoGestionPendiente::create([
+                                'id_pendiente' => $dato['id_pendiente'],
+                                'archivo' => $dato['ruta'],
+                                'estado' => 1,
+                                'fec_reg' => now(),
+                                'user_reg' => session('usuario')->id_usuario,
+                            ]);
+                            echo "Archivo subido correctamente";
+                        }else{
+                            echo "Archivo no subido correctamente";
                         }
                     }
                 }
-            } else {
-                echo "Error en la carga del archivo.";
             }
 
             $dato['get_pendiente'] = $this->modelo->get_list_pendiente($dato['id_pendiente']);
 
+            //enviar correo si es proceso o completado; y si hubo cambio de estado
             if(($dato['estado']==2 || $dato['estado']==3) && $dato['get_bd'][0]['estado']!=$dato['estado']){
                 $dato['get_ticket'] = $this->modelo->get_list_pendiente($dato['id_pendiente']);
                 $dato['list_comentario'] = PendienteHistorialC::get_list_historial_comentario_pendiente($dato['id_pendiente']);
@@ -204,11 +201,12 @@ class TareasController extends Controller
                 //Solicitante
                 $id_usuario= $dato['get_pendiente'][0]['id_usuario'];
                 $soli = $this->Model_Perfil->get_id_usuario($id_usuario);
-
+                //print_r($soli);
                 //Responsable
                 $id_usuario2= $dato['get_bd'][0]['id_responsable'];
                 $resp = $this->Model_Perfil->get_id_usuario($id_usuario2);
-
+                
+                /*
                 $mail = new PHPMailer(true);
 
                 try {
@@ -222,30 +220,35 @@ class TareasController extends Controller
                     $mail->Port     =  587;
                     $mail->setFrom('intranet@lanumero1.com.pe','PENDIENTE');
 
+                    // $mail->addAddress('pcardenas@lanumero1.com.pe');
                     if($soli[0]['encargado_p']=="SI"){
                         $cod_base=$soli[0]['centro_labores'];
+                        //print_r($cod_base);
                         if($cod_base[0]=="B"){
                             $correo1="base".substr($cod_base, 1, 2)."@lanumero1.com.pe";
                             $mail->addAddress($correo1);
                         }
-
                     }
+
                     $correo=$soli[0]['emailp'];
+                    //print_r($correo);
                     $mail->addAddress($correo);
                     $mail->addAddress($resp[0]['emailp']);
-                    $data = $this->Model_Corporacion->get_data_usuario_activo_xid('174');
+                    $data = Usuario::where('id_usuario', '174')->get();
+                    //print_r($data[0]->emailp);
                     if(count($data)>0){
-                        $mail->addCC($data[0]['emailp']);
+                        $mail->addCC($data->emailp);
                     }
 
                     $mail->isHTML(true);
 
+                    //print_r($dato['get_ticket']);
                     if($dato['estado']==2){
                         $mail->Subject = "En proceso";
-                        $mailContent = $this->load->view('Pendiente/mail_en_proceso', $dato, TRUE);
+                        $mailContent = view('Pendiente.mail_en_proceso', $dato)->render();
                     }elseif($dato['estado']==3){
                         $mail->Subject = "Completado";
-                        $mailContent = $this->load->view('Pendiente/mail_completado', $dato, TRUE);
+                        $mailContent = view('Pendiente.mail_completado', $dato)->render();
                     }
 
                     $mail->Body= $mailContent;
@@ -255,7 +258,7 @@ class TareasController extends Controller
 
                 }catch(Exception $e) {
                     echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-                }
+                }*/
             }
 
             if($dato['comentario']!=""){
@@ -271,7 +274,7 @@ class TareasController extends Controller
                 $dato['list_comentario'] = PendienteHistorialC::get_list_historial_comentario_pendiente($dato['id_pendiente']);
                 $id_usuario= $get_id[0]['id_responsable'];
                 $resp = $this->Model_Perfil->get_id_usuario($get_id[0]['id_responsable']);
-/*
+                /*
                 $mail = new PHPMailer(true);
 
                 try {
@@ -286,12 +289,13 @@ class TareasController extends Controller
                     $mail->setFrom('intranet@lanumero1.com.pe','PENDIENTE');
 
                     $mail->addAddress($resp[0]['emailp']);
+                    // $mail->addAddress('pcardenas@lanumero1.com.pe');
 
                     $mail->isHTML(true);
 
                     $mail->Subject = "Nuevo Comentario";
 
-                    $mailContent = view('Pendiente.mail_comentario', $dato, TRUE);
+                    $mailContent = view('Pendiente.mail_comentario', $dato)->render();
                     $mail->Body= $mailContent;
 
                     $mail->CharSet = 'UTF-8';
@@ -327,30 +331,50 @@ class TareasController extends Controller
                 ]);
             }
     }
-/*
+
     public function Descargar_Archivo_Gestion_Pendiente($id_archivo) {
-        if ($this->session->userdata('usuario')) {
-            $dato['get_file'] = $this->Model_Corporacion->get_id_archivo_gestion_pendiente($id_archivo);
-            $image = $dato['get_file'][0]['archivo'];
-            $name     = basename($image);
-            $ext      = pathinfo($image, PATHINFO_EXTENSION);
-            force_download($name , file_get_contents($dato['get_file'][0]['archivo']));
+        // Obtiene el archivo y la URL de la configuración
+        $getFile = ArchivoGestionPendiente::where('id_archivo', $id_archivo)->first();
+        $configUrl = Config::where('descrip_config', 'Pendientes_Doc')
+                ->where('estado', 1)
+                ->first();
+    
+        // Verifica que los datos existan
+        if (!$getFile || !$configUrl) {
+            return response()->json(['error' => 'Archivo o configuración no encontrados'], 404);
         }
-        else{
-            redirect('');
+    
+        // Construye la URL completa del archivo
+        $fileUrl = $configUrl->url_config . $getFile->archivo;
+        $fileName = $getFile->archivo;
+    
+        // Usa una función para descargar el archivo desde el FTP
+        try {
+            $fileContent = file_get_contents($fileUrl); // Descarga el archivo desde el FTP
+            if ($fileContent === false) {
+                throw new \Exception("No se pudo acceder al archivo en la URL: $fileUrl");
+            }
+            
+            // Devuelve el archivo como una descarga
+            return response($fileContent)
+                ->header('Content-Type', 'application/octet-stream')
+                ->header('Content-Disposition', "attachment; filename=\"$fileName\"");
+        } catch (Exception $e) {
+            // Error al descargar el archivo
+            return response()->json(['error' => 'No se pudo descargar el archivo: ' . $e->getMessage()], 500);
         }
     }
 
     public function Delete_Archivo_Gestion_Pendiente() {
         $id_archivo = $this->input->post('image_id');
-        $dato['get_file'] = $this->Model_Corporacion->get_id_archivo_gestion_pendiente($id_archivo);
-
-        if (file_exists($dato['get_file'][0]['archivo'])) {
-            unlink($dato['get_file'][0]['archivo']);
-        }
-        $this->Model_Corporacion->delete_archivo_gestion_pendiente($id_archivo);
+        $dato['get_file'] = ArchivoPendiente::where('id_archivo', $id_archivo)->get();
+        ArchivoPendiente::where('id_archivo', $id_archivo)->delete();
+        /*
+        if (file_exists($dato['get_file'][0]->archivo)) {
+            unlink($dato['get_file'][0]->archivo);
+        }*/
     }
-*/
+
     public function Modal_Ver_Gestion_Pendiente($id_pendiente){
             $dato['get_id'] = $this->modelo->get_list_pendiente($id_pendiente);
             $dato['list_responsable'] = Usuario::get_list_responsable_area($dato['get_id'][0]['id_area']);
@@ -768,7 +792,7 @@ class TareasController extends Controller
                 $resp = $this->Model_Perfil->get_id_usuario($id_usuario2);
 
                 $cod_base = $this->input->post("cod_base");
-                
+                /*
                 $mail = new PHPMailer(true);
 
                 try {
@@ -821,7 +845,7 @@ class TareasController extends Controller
 
                 }catch(Exception $e) {
                     echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-                }
+                }*/
             }
     }
     
@@ -1018,8 +1042,12 @@ class TareasController extends Controller
     
     public function Delete_Archivo_Pendiente() {
         $id_archivo = $this->input->post('image_id');
-        $dato['get_file'] = ArchivoPendiente::where('id_archivo', $id_archivo);
+        $dato['get_file'] = ArchivoPendiente::where('id_archivo', $id_archivo)->get();
         ArchivoPendiente::where('id_archivo', $id_archivo)->delete();
+        /*
+        if (file_exists($dato['get_file'][0]->archivo)) {
+            unlink($dato['get_file'][0]->archivo);
+        }*/
     }
     
     public function Previsualizacion_Captura() {

@@ -5,18 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TrackingPago extends Model
+class TrackingTransporteArchivo extends Model
 {
     use HasFactory;
 
-    protected $table = 'tracking_pago';
+    protected $table = 'tracking_transporte_archivo';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'id_base',
-        'anio',
-        'semana',
-        'guia_remision'
+        'id_tracking_transporte',
+        'archivo'
     ];
 }

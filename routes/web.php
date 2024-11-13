@@ -149,6 +149,8 @@ Route::controller(TrackingController::class)->group(function () {
     Route::get('tracking/modal_guia_transporte', 'modal_guia_transporte')->name('tracking.modal_guia_transporte');
     Route::post('tracking/insert_guia_transporte', 'insert_guia_transporte')->name('tracking.insert_guia_transporte');
     Route::get('tracking/pago_transporte_general', 'pago_transporte_general')->name('tracking.pago_transporte_general');
+    Route::post('tracking/traer_pago_general', 'traer_pago_general')->name('tracking.traer_pago_general');
+    Route::post('tracking/{id}/confirmacion_pago_transporte_general', 'insert_confirmacion_pago_transporte_general')->name('tracking.confirmacion_pago_transporte_general');
     Route::get('tracking/{id}/detalle_transporte', 'detalle_transporte')->name('tracking.detalle_transporte');
     Route::post('tracking/{id}/insert_detalle_transporte', 'insert_detalle_transporte')->name('tracking.insert_detalle_transporte');
     Route::post('tracking/{id}/confirmacion_llegada', 'insert_confirmacion_llegada')->name('tracking.confirmacion_llegada');
@@ -2161,14 +2163,17 @@ Route::controller(TareasController::class)->group(function () {
     Route::post('Tareas/Previsualizacion_Captura', 'Previsualizacion_Captura');
     Route::post('Tareas/Delete_Imagen_Temporal', 'Delete_Imagen_Temporal');
     Route::get('Tareas/Excel_Pendiente/{cpi}/{cp}/{cf}/{cs}/{area}', 'Excel_Pendiente');
+    Route::get('Tareas/Descargar_Archivo_Gestion_Pendiente/{id}', 'Descargar_Archivo_Gestion_Pendiente');
+    Route::post('Tareas/Delete_Archivo_Gestion_Pendiente', 'Delete_Archivo_Gestion_Pendiente');
 });
 
+use App\Http\Controllers\ContactosController;
 
-
-
-
-
-
+Route::controller(ContactosController::class)->group(function () {
+    Route::get('Contactos/index', 'Lista_Directorio_Telefonico');
+    Route::get('Contactos/Cargar_Mis_Tareas', 'Cargar_Mis_Tareas');
+    Route::post('Contactos/Lista_Mis_Tareas', 'Lista_Mis_Tareas');
+});
 
 
 

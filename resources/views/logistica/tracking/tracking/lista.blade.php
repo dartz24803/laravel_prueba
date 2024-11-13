@@ -1344,12 +1344,12 @@ use App\Models\TrackingDetalleProceso;
         var url = "{{ route('tracking.mercaderia_entregada', ':id') }}".replace(':id', id);
 
         Swal({
-            title: '¿La mercadería llegó en buenas condiciones?',
+            title: '¿Hay devolución para este requerimiento?',
             text: "Debe escoger una de las opciones (SI o NO)",
             type: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Si',
-            cancelButtonText: 'No',
+            confirmButtonText: 'No',
+            cancelButtonText: 'Si',
             padding: '2em'
         }).then((result) => {
             if (result.value) {
