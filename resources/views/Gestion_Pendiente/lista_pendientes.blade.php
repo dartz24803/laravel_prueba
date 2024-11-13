@@ -46,8 +46,8 @@ $id_nivel= session('usuario')->id_nivel;
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="btnDropLeft" style="padding:0;">
-                            <a class="dropdown-item"  data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Tienda/Modal_Ver_Gestion_Pendiente/'. $list['id_pendiente']) }}" style="cursor:pointer;">Ver</a>
-                            <a class="dropdown-item" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Tienda/Modal_Update_Gestion_Pendiente/'. $list['id_pendiente']) }}" style="cursor:pointer;">Editar</a>
+                            <a class="dropdown-item"  data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Tareas/Modal_Ver_Gestion_Pendiente/'. $list['id_pendiente']) }}" style="cursor:pointer;">Ver</a>
+                            <a class="dropdown-item" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Tareas/Modal_Update_Gestion_Pendiente/'. $list['id_pendiente']) }}" style="cursor:pointer;">Editar</a>
 
 
                             <?php if($id_nivel==1){ ?>
