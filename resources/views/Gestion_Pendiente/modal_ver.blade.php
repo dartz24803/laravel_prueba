@@ -394,9 +394,9 @@
         image_id = $(this).data('image_id');
         window.location.replace("{{ url('Tareas/Descargar_Archivo_Pendiente')}}/" + image_id);
     });
-
+/*
     $(document).on('click', '#download_file_gestion', function () {
         image_id = $(this).data('image_id');
         window.location.replace("{{ url('Tareas/Descargar_Archivo_Gestion_Pendiente')}}/" + image_id);
-    });
+    });*/
 </script>

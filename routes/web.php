@@ -2161,6 +2161,8 @@ Route::controller(TareasController::class)->group(function () {
     Route::post('Tareas/Previsualizacion_Captura', 'Previsualizacion_Captura');
     Route::post('Tareas/Delete_Imagen_Temporal', 'Delete_Imagen_Temporal');
     Route::get('Tareas/Excel_Pendiente/{cpi}/{cp}/{cf}/{cs}/{area}', 'Excel_Pendiente');
+    Route::get('Tareas/Descargar_Archivo_Gestion_Pendiente/{id}', 'Descargar_Archivo_Gestion_Pendiente');
+    Route::post('Tareas/Delete_Archivo_Gestion_Pendiente', 'Delete_Archivo_Gestion_Pendiente');
 });
 
 
