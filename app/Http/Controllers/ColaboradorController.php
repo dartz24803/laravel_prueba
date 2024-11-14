@@ -1127,7 +1127,7 @@ class ColaboradorController extends Controller
                 ->first();
 
         if($get_id){
-            if($request->id_puesto_hp!=$get_id->id_puesto){
+            if($request->id_puesto_hp!=$get_id->id_puesto && $request->id_centro_labor_hp!=$get_id->id_centro_labor){
                 UsersHistoricoPuesto::create([
                     'id_usuario' => $id_usuario,
                     'id_puesto' => $request->id_puesto_hp,
