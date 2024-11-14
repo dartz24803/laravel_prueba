@@ -473,13 +473,16 @@ class Usuario extends Model
         $sql = "SELECT u.id_usuario,u.foto,u.usuario_nombres,u.usuario_apater,u.usuario_amater,u.fec_nac,
                 u.foto_nombre,CONCAT(YEAR(NOW()), '-', DATE_FORMAT(fec_nac, '%m-%d')) as cumpleanio,
                 h.id_historial,h.estado_registro,m.nom_mes,
-                LOWER(u.usuario_nombres) AS nombres_min,LOWER(u.usuario_apater) AS apater_min
-                FROM users u
-                left join saludo_cumpleanio_historial h on h.id_usuario='$id_usuario' and
+                LOWER(u.usuario_nombres) AS nombres_min,LOWER(u.usuario_apater) AS apater_min,
+                ar.nom_area,u.centro_labores
+                FROM users u 
+                LEFT JOIN saludo_cumpleanio_historial h on h.id_usuario='$id_usuario' and 
                 h.id_cumpleaniero=u.id_usuario and year(h.fec_reg)='$anio' and h.estado=1
-                left join mes m on month(u.fec_nac)=m.cod_mes
-                WHERE (DATE_FORMAT(u.fec_nac, '%m-%d') BETWEEN DATE_FORMAT(NOW(), '%m-%d') AND
-                DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 5 DAY), '%m-%d')) AND u.usuario_nombres NOT LIKE 'Base%' AND u.estado=1
+                LEFT JOIN mes m on month(u.fec_nac)=m.cod_mes
+                INNER JOIN puesto pu ON pu.id_puesto=u.id_puesto
+                INNER JOIN area ar ON pu.id_area=ar.id_area
+                WHERE (DATE_FORMAT(u.fec_nac, '%m-%d') BETWEEN DATE_FORMAT(NOW(), '%m-%d') AND 
+                DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 5 DAY), '%m-%d')) AND u.usuario_nombres NOT LIKE 'Base%' AND u.estado=1 
                 ORDER BY cumpleanio ASC";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
