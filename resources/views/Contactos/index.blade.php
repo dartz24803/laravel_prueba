@@ -4,6 +4,7 @@
 @endsection
 
 @section('content')
+{{-- <link href="{{ asset('template/assets/css/elements/search.css') }}" rel="stylesheet" type="text/css" /> --}}
 <link href="{{ asset('template/assets/css/apps/contacts.css') }}" rel="stylesheet" type="text/css" />
 <style>
     svg.warning  {
@@ -39,7 +40,7 @@
     <div class="layout-px-spacing">                
         <div class="row layout-spacing layout-top-spacing" id="cancel-row">
             <div class="col-lg-12">
-                <div class="widget-content searchable-container list">
+                <div class="widget-content searchable-container grid">
                     <div class="row">
                         <div class="col-xl-4 col-lg-5 col-md-5 col-sm-7 filtered-list-search layout-spacing align-self-center">
                             <form class="form-inline my-2 my-lg-0">
@@ -54,21 +55,21 @@
                             <div class="d-flex justify-content-sm-end justify-content-center">
 
                                 <div class="switch align-self-center" style="width: 100%;height: 100%;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list view-list active-view"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid view-grid"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list view-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid view-grid active-view"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="searchable-items list">
+                    <div class="searchable-items grid">
                         <div class="items items-header-section">
                             <div class="item-content">
-                                <div class="">
+                                <div class="user-profile">
                                     <h4>Colaborador</h4>
                                 </div>
-                                <div class="user-phone">
-                                    <h4>Área</h4>
+                                <div class="user-email">
+                                    <h4 style="font-weight: 600">Área</h4>
                                 </div>
                                 <div class="user-phone">
                                     <h4>Celular</h4>
@@ -79,7 +80,7 @@
                                 <div class="user-phone">
                                     <h4 style="margin-left: 3px;">Anexo</h4>
                                 </div>
-                                <div class="user-phone">
+                                <div class="user-email">
                                     <h4 style="margin-left: 3px;">Correo Corp</h4>
                                 </div>
                             </div>
@@ -103,7 +104,7 @@
                                             <p class="user-work" data-occupation="Web Developer"><?php echo $list['nom_puesto']; ?></p>                                            
                                         </div>
                                     </div>
-                                    <div class="user-phone">
+                                    <div class="user-email">
                                         <p class="info-title">Área: </p>
                                         <p class="usr-ph-no" ><?php echo $list['nom_area']; ?> </p>
                                     </div>
@@ -137,7 +138,7 @@
 <!-- Modal -->
 <div class="modal fade profile-modal" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
-    <div class="modal-content" style="background-color: #1b55e2;">
+    <div class="modal-content">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -179,7 +180,6 @@
         $a.attr('href', 'data:application/octet-stream,' + encodeURIComponent(fileUrl));
     });
 
-
     $(document).ready(function() {
         $("#contactos").addClass('active');
         $("#hcontacto").attr('aria-expanded','true');
@@ -208,33 +208,42 @@
         });
     });
     
-  $('.view-grid').on('click', function(event) {
-    event.preventDefault();
-    /* Act on the event */
+    $('.view-grid').on('click', function(event) {
+        event.preventDefault();
+        /* Act on the event */
 
-    $(this).parents('.switch').find('.view-list').removeClass('active-view');
-    $(this).addClass('active-view');
+        $(this).parents('.switch').find('.view-list').removeClass('active-view');
+        $(this).addClass('active-view');
 
-    $(this).parents('.searchable-container').removeClass('list');
-    $(this).parents('.searchable-container').addClass('grid');
+        $(this).parents('.searchable-container').removeClass('list');
+        $(this).parents('.searchable-container').addClass('grid');
 
-    $(this).parents('.searchable-container').find('.searchable-items').removeClass('list');
-    $(this).parents('.searchable-container').find('.searchable-items').addClass('grid');
+        $(this).parents('.searchable-container').find('.searchable-items').removeClass('list');
+        $(this).parents('.searchable-container').find('.searchable-items').addClass('grid');
 
-  });
+        $('.user-email').removeClass('col-2');
+        $('.user-profile').removeClass('col-3');
+        $('.user-phone').removeClass('col-1');
+        $('.item-content').removeClass('col-12');
+    });
+    
+    $('.view-list').on('click', function(event) {
+        event.preventDefault();
+        /* Act on the event */
+        $(this).parents('.switch').find('.view-grid').removeClass('active-view');
+        $(this).addClass('active-view');
 
-  $('.view-list').on('click', function(event) {
-    event.preventDefault();
-    /* Act on the event */
-    $(this).parents('.switch').find('.view-grid').removeClass('active-view');
-    $(this).addClass('active-view');
+        $(this).parents('.searchable-container').removeClass('grid');
+        $(this).parents('.searchable-container').addClass('list');
 
-    $(this).parents('.searchable-container').removeClass('grid');
-    $(this).parents('.searchable-container').addClass('list');
-
-    $(this).parents('.searchable-container').find('.searchable-items').removeClass('grid');
-    $(this).parents('.searchable-container').find('.searchable-items').addClass('list');
-  });
+        $(this).parents('.searchable-container').find('.searchable-items').removeClass('grid');
+        $(this).parents('.searchable-container').find('.searchable-items').addClass('list');
+        
+        $('.user-phone').addClass('col-1');
+        $('.user-email').addClass('col-2');
+        $('.user-profile').addClass('col-3');
+        $('.item-content').addClass('col-12');
+    });
 </script>
 
 @endsection
