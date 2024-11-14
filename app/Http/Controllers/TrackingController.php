@@ -4359,6 +4359,7 @@ class TrackingController extends Controller
 
     public function list_requerimiento_reposicion_app(Request $request)
     {
+        //YA NO SE USA EL TIPO="SKU"
         if($request->tipo=="sku"){
             try {
                 $query = MercaderiaSurtida::where('tipo',2)->where('base',$request->cod_base)
