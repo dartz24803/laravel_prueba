@@ -100,6 +100,7 @@
         session('usuario')->id_puesto == 22 ||
         session('usuario')->id_puesto == 146 ||
         session('usuario')->id_puesto == 21 ||
+        session('usuario')->id_puesto == 277 ||
         session('usuario')->id_puesto == 278 ||
         session('usuario')->id_puesto == 279 ||
         session('usuario')->id_puesto == 128 ||

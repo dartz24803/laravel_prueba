@@ -60,4 +60,7 @@
             ]
         });
     });
+    function OrdenarFecha(){
+        $(".sorting")
+    }
 </script>
