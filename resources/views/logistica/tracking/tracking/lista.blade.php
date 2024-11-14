@@ -543,8 +543,18 @@ use App\Models\TrackingDetalleProceso;
                 Reporte de mercadería
                 @endif
                 @elseif($list->id_estado==14)
-                <!-- PUESTOS DE RHENZO HUAYHUA (74) -->
+                <!-- PUESTOS DE RHENZO HUAYHUA (74) y TIENDA -->
                 @if (session('usuario')->id_puesto==74 ||
+                session('usuario')->id_puesto==30 ||
+                session('usuario')->id_puesto==31 ||
+                session('usuario')->id_puesto==32 ||
+                session('usuario')->id_puesto==33 ||
+                session('usuario')->id_puesto==35 ||
+                session('usuario')->id_puesto==161 ||
+                session('usuario')->id_puesto==167 ||
+                session('usuario')->id_puesto==168 ||
+                session('usuario')->id_puesto==311 ||
+                session('usuario')->id_puesto==314 ||
                 session('usuario')->id_nivel==1)
                 <a href="{{ route('tracking.cuadre_diferencia', $list->id) }}" title="Cuadre de diferencias">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text text-dark">
