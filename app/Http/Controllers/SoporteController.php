@@ -758,6 +758,7 @@ class SoporteController extends Controller
     {
         $id_subgerencia = session('id_subgerenciam');
         $get_id = Soporte::getTicketById($id_soporte);
+        // dd($get_id);
         $comentarios_user = SoporteSolucion::getComentariosUserBySolucion($get_id->idsoporte_solucion);
         // dd($comentarios_user);
         if ($get_id->id_asunto == 245) {
@@ -909,7 +910,7 @@ class SoporteController extends Controller
             $numero_formateado = str_pad($nuevo_numero, 3, '0', STR_PAD_LEFT);
             $codigo_generado = $prefijo . $numero_formateado;
         } else {
-            $codigo_generado = 'Código no disponible';
+            $codigo_generado = $get_id->codigo;
         }
         // GENERECIÓN DE CÓDIGO
         if ($request->responsable_indice == "0" && $cantAreasEjecut < 4) {
@@ -1037,7 +1038,6 @@ class SoporteController extends Controller
             // Decodificar las URLs de las imágenes desde el request
             $imagenes = json_decode($request->input('imagenes'), true);
             $resultados = [];
-            // dd($imagenes);
             // Validar que haya entre 3 y 5 imágenes
             if ($imagenes && is_array($imagenes)) {
                 $resultados = $this->uploadImages($imagenes, $con_id);
@@ -1062,6 +1062,37 @@ class SoporteController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ];
+            // CARGAR DOCUMENTOS
+            if (!empty($_FILES["documentoa1"]["name"])) {
+                $source_file_doc = $_FILES['documentoa1']['tmp_name'];
+                $nombre_doc = $_FILES["documentoa1"]["name"];
+                // Concatenar la fecha actual en Unix al nombre del archivo
+                $timestamp = time();
+                $nombre_doc_con_timestamp = $timestamp . "_" . $nombre_doc;
+                // Subir el archivo al servidor FTP con el nuevo nombre
+                $subio_doc = ftp_put($con_id, "SOPORTE/" . $nombre_doc_con_timestamp, $source_file_doc, FTP_BINARY);
+                if ($subio_doc) {
+                    $documento1 = $nombre_doc_con_timestamp;
+                    $data['documento1'] = $documento1;
+                } else {
+                    echo "Documento no subido correctamente";
+                }
+            }
+
+            if (!empty($_FILES["documentoa2"]["name"])) {
+                $source_file_doc = $_FILES['documentoa2']['tmp_name'];
+                $nombre_doc = $_FILES["documentoa2"]["name"];
+                $timestamp = time();
+                $nombre_doc_con_timestamp = $timestamp . "_" . $nombre_doc;
+                $subio_doc = ftp_put($con_id, "SOPORTE/" . $nombre_doc_con_timestamp, $source_file_doc, FTP_BINARY);
+                if ($subio_doc) {
+                    $documento2 = $nombre_doc;
+                    $data['documento2'] = $documento2;
+                } else {
+                    echo "Documento no subido correctamente";
+                }
+            }
+            // dd($documento1);
             // dd($resultados);
             if (!empty($resultados)) {
                 $data['archivo1'] = $archivo1;
@@ -1070,13 +1101,16 @@ class SoporteController extends Controller
                 $data['archivo4'] = $archivo4;
                 $data['archivo5'] = $archivo5;
             }
-
+            // dd($data);
             // Actualizar la base de datos
             SoporteSolucion::findOrFail($get_id->idsoporte_solucion)->update($data);
             // Eliminar archivos temporales en SOPORTE/TEMPORAL si se subieron imágenes
             if (!empty($resultados)) {
                 $this->deleteTempFiles($con_id, "SOPORTE/TEMPORAL/");
             }
+
+
+
             // Cerrar conexión FTP
             ftp_close($con_id);
 
