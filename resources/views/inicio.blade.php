@@ -171,7 +171,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-2" style="z-index: 1">
                         <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
                                 <div class="carousel-item active">
@@ -203,57 +203,58 @@
                                                                                                                                                                                                 echo asset("template/assets/especiales/user-mini.png");
                                                                                                                                                                                             }  ?>" alt="avatar" title="<?php echo $list['foto_nombre'] ?>">
                                                                                             </div>
-                                                                    <div class="d-flex justify-content-center">
-                                                                        <span style="color:#3b3f71"><b><?php $nombre = explode(" ", $list['nombres_min']);
-                                                                                                        echo mb_convert_case($nombre[0] . " " . $list['apater_min'], MB_CASE_TITLE, "UTF-8"); ?></b></span>
-                                                                    </div>
-                                                                    <div class="d-flex justify-content-center">
-                                                                        <span><?php echo $list['nom_area'] ?> - <?php echo $list['centro_labores'] ?></span>
-                                                                    </div>
-                                                                    <div class="d-flex justify-content-center">
-                                                                        <span><?php echo date('d', strtotime($list['cumpleanio'])) . " de " . strtolower($list['nom_mes']) ?></span>
-                                                                    </div>
-                                                                    </td>
-                                                                    </tr>
-                                                            <?php }
+                                                                                    <div class="d-flex justify-content-center">
+                                                                                        <span style="color:#3b3f71"><b><?php $nombre = explode(" ", $list['nombres_min']);
+                                                                                                                        echo mb_convert_case($nombre[0] . " " . $list['apater_min'], MB_CASE_TITLE, "UTF-8"); ?></b></span>
+                                                                                    </div>
+                                                                                    <div class="d-flex justify-content-center">
+                                                                                        <span><?php echo $list['nom_area'] ?> - <?php echo $list['centro_labores'] ?></span>
+                                                                                    </div>
+                                                                                    <div class="d-flex justify-content-center">
+                                                                                        <span><?php echo date('d', strtotime($list['cumpleanio'])) . " de " . strtolower($list['nom_mes']) ?></span>
+                                                                                    </div>
+                                                                                    </td>
+                                                                                    </tr>
+                                                                                <?php }
                                                                                 } ?>
-                                                            </tbody>
-                                                            </table>
+                                                                            </tbody>
+                                                                        </table>
 
-                                                            <?php if (count($list_cumple) > 5) { ?>
-                                                                <div class="text-center mb-4">
-                                                                    <a class="boton" href="javascript:void(0)" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ url('Inicio/Modal_Ver_Todo_Cumpleanios') }}"><span>Ver Todos</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right">
-                                                                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                                                                            <polyline points="12 5 19 12 12 19"></polyline>
-                                                                        </svg></a>
+                                                                        <?php if (count($list_cumple) > 5) { ?>
+                                                                            <div class="text-center mb-4">
+                                                                                <a class="boton" href="javascript:void(0)" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ url('Inicio/Modal_Ver_Todo_Cumpleanios') }}"><span>Ver Todos</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right">
+                                                                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                                                        <polyline points="12 5 19 12 12 19"></polyline>
+                                                                                    </svg>
+                                                                                </a>
+                                                                            </div>
+                                                                        <?php } ?>
+                                                                    </div>
                                                                 </div>
                                                             <?php } ?>
-                                                                </div>
                                                         </div>
-                                                    <?php } ?>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <?php foreach ($list_slider_inicio as $row):
-                                $color = '#fff';
-                                if ($row['categoria'] == 'INSTRUCTIVOS') {
-                                    $active = "text-center";
-                                    $image = asset('inicio/NEW.Intranet-Slide-04Instructivos.png');
-                                } else if ($row['categoria'] == 'POLÍTICA') {
-                                    $active = "text-center";
-                                    $image = asset('inicio/NEW.Intranet-Slide-03Politica.png');
-                                } else if ($row['categoria'] == 'MANUAL') {
-                                    $active = "text-center";
-                                    $image = asset('inicio/NEW.Intranet-Slide-02Manual.png');
-                                } else if ($row['categoria'] == 'PROCESOS') {
-                                    $active = "text-center";
-                                    $image = asset('inicio/NEW.Intranet-Slide-01Procesos.png');
-                                }
-                            ?>
+                                <?php foreach ($list_slider_inicio as $row):
+                                    $color = '#fff';
+                                    if ($row['categoria'] == 'INSTRUCTIVOS') {
+                                        $active = "text-center";
+                                        $image = asset('inicio/NEW.Intranet-Slide-04Instructivos.png');
+                                    } else if ($row['categoria'] == 'POLÍTICA') {
+                                        $active = "text-center";
+                                        $image = asset('inicio/NEW.Intranet-Slide-03Politica.png');
+                                    } else if ($row['categoria'] == 'MANUAL') {
+                                        $active = "text-center";
+                                        $image = asset('inicio/NEW.Intranet-Slide-02Manual.png');
+                                    } else if ($row['categoria'] == 'PROCESOS') {
+                                        $active = "text-center";
+                                        $image = asset('inicio/NEW.Intranet-Slide-01Procesos.png');
+                                    }
+                                ?>
                                 <div class="carousel-item <?= $active ?>">
                                     <img id="imagen_fondo_slider" style="max-width: 101%" src="<?= $image ?>">
                                     <div id="carousel-caption" class="carousel-caption d-none d-block text-left">
@@ -267,20 +268,20 @@
                                         </a>
                                     </div>
                                 </div>
-                            <?php endforeach ?>
+                                <?php endforeach ?>
+                            </div>
+                            <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            </a>
+                            <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            </a>
                         </div>
-                        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        </a>
-                        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 <style>
     .rounded_z {
@@ -431,7 +432,7 @@
 
         100% {
             opacity: 0;
-            transform: translateX(-30%);
+            transform: translateX(-70%);
         }
     }
 
@@ -439,7 +440,7 @@
     @keyframes sliderIn {
         0% {
             opacity: 0;
-            transform: translateX(30%);
+            transform: translateX(70%);
         }
 
         100% {
@@ -454,9 +455,6 @@
         position: absolute;
         top: 0px;
         left: 0px;
-        /*
-        width: 300px;
-        height: 100px;*/
     }
 
     .carousel-item-next,
