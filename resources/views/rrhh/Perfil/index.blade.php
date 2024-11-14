@@ -4190,19 +4190,18 @@ if($get_id[0]['edicion_perfil']==1){
 
     function List_Datos_Laborales(id_usuario){
         Cargando();
+
         var url = "{{ url('ColaboradorController/List_Datos_Laborales') }}";
-        var csrfToken = $('input[name="_token"]').val();
+
         $.ajax({
             url: url,
             type: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
             data: {'id_usuario':id_usuario},
-            success: function(data)
-            {
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(data){
                 $('#datoslaborales').html(data);
-
             }
         });
     }
