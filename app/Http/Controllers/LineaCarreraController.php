@@ -459,11 +459,8 @@ class LineaCarreraController extends Controller
 
                 UsersHistoricoPuesto::create([
                     'id_usuario' => $get_id->id_usuario,
-                    'id_direccion' => $get_puesto->id_direccion,
-                    'id_gerencia' => $get_puesto->id_gerencia,
-                    'id_sub_gerencia' => $get_puesto->id_departamento,
-                    'id_area' => $get_puesto->id_area,
                     'id_puesto' => $get_puesto->id_puesto,
+                    'id_centro_labor' => $get_id->id_centro_labor,
                     'fec_inicio' => now(),
                     'id_tipo_cambio' => 1,
                     'estado' => 1,

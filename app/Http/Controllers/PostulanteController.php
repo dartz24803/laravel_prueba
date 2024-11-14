@@ -1357,6 +1357,7 @@ class PostulanteController extends Controller
                     UsersHistoricoPuesto::create([
                         'id_usuario' => $usuario->id_usuario,
                         'id_puesto' => $usuario->id_puesto,
+                        'id_centro_labor' => $usuario->id_centro_labor,
                         'fec_inicio' => now(),
                         'estado' => 1,
                         'fec_reg' => now(),
