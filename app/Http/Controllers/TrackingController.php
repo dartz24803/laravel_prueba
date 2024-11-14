@@ -3285,6 +3285,7 @@ class TrackingController extends Controller
             $this->insert_notificacion($dato);
 
             //MENSAJE 6
+            $list_archivo = TrackingArchivo::where('id_tracking', $id)->whereIn('tipo', [3,4])->get();
             $t_comentario = TrackingComentario::from('tracking_comentario AS tc')
                             ->select(DB::raw("CONCAT(SUBSTRING_INDEX(us.usuario_nombres,' ',1),' ',
                             us.usuario_apater) AS nombre"),'tc.comentario')
@@ -3351,6 +3352,11 @@ class TrackingController extends Controller
                                 }
             
                 $mail->CharSet = 'UTF-8';
+                foreach($list_archivo as $list){
+                    $archivo_contenido = file_get_contents($list->archivo);
+                    $nombre_archivo = basename($list->archivo);
+                    $mail->addStringAttachment($archivo_contenido, $nombre_archivo);
+                }
                 $mail->send();
 
                 TrackingDetalleEstado::create([
@@ -4359,6 +4365,7 @@ class TrackingController extends Controller
 
     public function list_requerimiento_reposicion_app(Request $request)
     {
+        //YA NO SE USA EL TIPO="SKU"
         if($request->tipo=="sku"){
             try {
                 $query = MercaderiaSurtida::where('tipo',2)->where('base',$request->cod_base)
@@ -4514,6 +4521,7 @@ class TrackingController extends Controller
 
     public function list_requerimiento_reposicion_vendedor_app(Request $request)
     {
+        //YA NO SE USA EL TIPO="SKU"
         if($request->tipo=="sku"){
             try {
                 $query = MercaderiaSurtida::get_list_req_repo_vend([
@@ -4545,6 +4553,7 @@ class TrackingController extends Controller
             try {
                 $query = MercaderiaSurtida::get_list_req_repo_vend([
                     'cod_base' => $request->cod_base,
+                    'tipo_usuario' => $request->tipo_usuario,
                     'estilo' => 'estilo'
                 ]);
 
