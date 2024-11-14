@@ -100,7 +100,7 @@ class MercaderiaSurtida extends Model
             $query = DB::connection('sqlsrv')->select($sql, [$dato['id_padre']]);
         }elseif(isset($dato['estilo'])){
             $parte = "";
-            if($dato['tipo_usuario']!="0"){
+            if(isset($dato['tipo_usuario']) && $dato['tipo_usuario']!="0"){
                 $parte = "AND tipo_usuario=?";
             }
             $sql = "SELECT id_padre AS id,estilo,tipo_usuario
