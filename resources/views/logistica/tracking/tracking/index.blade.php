@@ -12,21 +12,16 @@
                 <circle cx="18.5" cy="18.5" r="2.5"></circle>
             </svg>
         </a>
-        <!-- PUESTO DE MAYRA TORRES (76) y JAIME SAAVEDRA (97) -->
-        @if (session('usuario')->id_puesto==76 ||
-        session('usuario')->id_puesto==97 ||
-        session('usuario')->id_nivel==1)
-            <a class="btn btn-warning" title="Guía remisión de transporte" data-toggle="modal" 
-            data-target="#ModalRegistro" app_reg="{{ route('tracking.modal_guia_transporte') }}">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                    <polyline points="10 9 9 9 8 9"></polyline>
-                </svg>
-            </a>
-        @endif
+        <a class="btn btn-warning" title="Guía remisión de transporte" data-toggle="modal" 
+        data-target="#ModalRegistro" app_reg="{{ route('tracking.modal_guia_transporte') }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+        </a>
         <a href="{{ route('tracking.pago_transporte_general') }}" class="btn btn-primary" 
         title="Pago de transporte">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card">
@@ -42,8 +37,8 @@
             </svg>
         </a>
         <!-- USUARIO DE FIDEL Y JHON PARA QUE PUEDAN HACERSE PRUEBAS -->
-        @if (session('usuario')->id_puesto==139 ||
-        session('usuario')->id_puesto==2841)
+        @if (session('usuario')->id_usuario==139 ||
+        session('usuario')->id_usuario==2841)
             <button type="button" class="btn btn-primary" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ route('tracking.create') }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square">
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
