@@ -551,41 +551,16 @@
                         <button type="button" class="btn btn-secondary" id="boton_camara" onclick="Activar_Camara();">Activar cámara</button>
                     </div>
                     <div class="form-group col-md-4">
-                        <label>Documento 1:</label>
+                        <label>Documentos:</label>
                         @if ($get_id->documento1)
-                        <a href="{{ 'https://lanumerounocloud.com/intranet/SOPORTE/' . $get_id->documento1 }}"
-                            title="Ver Documento" target="_blank"
-                            class="redirect-link d-inline-flex align-items-center ">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                <polyline points="7 10 12 15 17 10"></polyline>
-                                <line x1="12" y1="15" x2="12" y2="3"></line>
-                            </svg>
-                        </a>
+                        <div id="documento-list">
+                            <!-- Los enlaces de descarga se agregarán aquí dinámicamente -->
+                        </div>
                         @endif
                         <div class="d-flex align-items-center">
-                            <input type="file" class="form-control-file" name="documentoa1" id="documentoa1" onchange="Validar_Archivo_Backup('documentoa1');">
+                            <input type="file" class="form-control-file" name="documentoa1[]" id="documentoa1" multiple onchange="handleFileSelection(event)">
                         </div>
                     </div>
-                    <div class="form-group col-md-4">
-                        <label>Documento 2:</label>
-                        @if ($get_id->documento2)
-                        <a href="{{ 'https://lanumerounocloud.com/intranet/SOPORTE/' . $get_id->documento2 }}"
-                            title="Ver Documento" target="_blank"
-                            class="redirect-link d-inline-flex align-items-center ">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                <polyline points="7 10 12 15 17 10"></polyline>
-                                <line x1="12" y1="15" x2="12" y2="3"></line>
-                            </svg>
-                        </a>
-                        @endif
-                        <div class="d-flex align-items-center">
-                            <input type="file" class="form-control-file" name="documentoa2" id="documentoa2" onchange="Validar_Archivo_Backup('documentoa2');">
-
-                        </div>
-                    </div>
-
 
 
                     <div class="form-group col-lg-12 d-flex justify-content-center" id="div_camara" style="display: none;">
@@ -662,7 +637,7 @@
         toggleCierreMultiplesResponsables();
         toggleEjecutor();
         toggleCierreUnResponsable();
-
+        simulateFileSelection();
 
 
     });
@@ -1258,5 +1233,107 @@
                 });
             }
         });
+    }
+
+    $('#documentoa1').fileinput({
+        theme: 'fas',
+        language: 'es',
+        uploadUrl: '#',
+        maxTotalFileCount: 5,
+        showUpload: false,
+        showPreview: false, // Desactiva la vista previa de archivos
+        showRemove: false, // Desactiva el botón para remover archivos
+        allowedFileExtensions: ['jpg', 'png', 'txt', 'pdf', 'xlsx', 'pptx', 'docx', 'jpeg', 'xls', 'ppt', 'doc'],
+        browseOnZoneClick: true, // Hace que el botón de selección sea el único activo
+        dragDrop: false // Desactiva la funcionalidad de arrastrar y soltar
+    });
+
+
+
+    function simulateFileSelection() {
+        const initialFiles = "{{ $get_id->documento1 }}".split(',');
+
+        if (initialFiles.length > 0 && initialFiles[0] !== "") {
+            // Creamos un objeto FileList falso (para simular archivos seleccionados)
+            const fileInput = document.getElementById('documentoa1');
+            const fakeEvent = new Event('change', {
+                bubbles: true,
+                cancelable: true
+            });
+
+            // Simulamos un objeto `files` en el evento
+            const fakeFiles = initialFiles.map(fileName => {
+                const blob = new Blob([], {
+                    type: 'application/octet-stream'
+                });
+                blob.name = fileName.trim();
+                return blob;
+            });
+
+            // Creamos una propiedad `files` en el evento falso
+            Object.defineProperty(fakeEvent, 'target', {
+                value: {
+                    files: fakeFiles
+                },
+                writable: false
+            });
+
+            // Llamamos a la función `handleFileSelection` pasando el evento simulado
+            handleFileSelection(fakeEvent);
+        }
+    }
+
+
+
+
+    // Función para manejar los archivos seleccionados en el input de archivo
+    function handleFileSelection(event) {
+        const documento1 = "{{ $get_id->documento1 }}"
+        const idsoporte_solucion = "{{ $get_id->idsoporte_solucion }}"
+        const fileInput = event.target;
+        let files = Array.from(fileInput.files); // Convertimos FileList a un array para manipularlo
+        const fileListContainer = document.getElementById('documento-list');
+
+        // Limpiar los enlaces existentes antes de agregar los nuevos
+        fileListContainer.innerHTML = '';
+
+        // Iterar sobre los archivos seleccionados
+        files.forEach((file, index) => {
+            const fileName = file.name;
+            // Crear un enlace de descarga para cada archivo
+            const fileLink = document.createElement('a');
+            fileLink.href = URL.createObjectURL(file); // Crear una URL temporal para el archivo
+            fileLink.download = fileName; // Establecer el nombre de descarga
+            fileLink.textContent = fileName;
+            fileLink.classList.add('btn', 'btn-link'); // Estilos para el enlace de descarga
+
+            // Crear un contenedor solo para el enlace de descarga
+            const fileLinkWrapper = document.createElement('div');
+            fileLinkWrapper.classList.add('d-flex', 'align-items-center', 'my-2'); // Estilo para el contenedor
+            // Añadir solo el enlace de descarga al contenedor
+            fileLinkWrapper.appendChild(fileLink);
+
+            // Añadir el contenedor al contenedor de la lista de archivos
+            fileListContainer.appendChild(fileLinkWrapper);
+        });
+
+    }
+
+    function deleteFileOnServer(fileName, documento1, id_soportesolucion) {
+        // Aquí asumimos que `documento1` es un array de nombres de archivos y necesitamos eliminar `fileName` de él
+        const updatedDocumentos = documento1.filter(file => file !== fileName); // Elimina el archivo de la lista
+        // Actualiza el array documento1 con el nuevo array sin el archivo eliminado
+        // Esto lo puedes enviar en una solicitud posterior para actualizar el estado del servidor, si lo necesitas
+        documento1 = updatedDocumentos;
+        // Eliminar el archivo visualmente (suponiendo que el archivo tiene un ID o clase específica)
+        $(`#file-${fileName}`).remove(); // Esto eliminará el archivo de la lista en el DOM (ajusta el selector si es necesario)
+        // Actualiza el documento1 antes de enviarlo (si es necesario)
+        console.log("Documento actualizado:", documento1);
+        // Si deseas hacer algo adicional, como mostrar una notificación:
+        Swal(
+            '¡Eliminado!',
+            'El archivo ha sido eliminado de la lista.',
+            'success'
+        );
     }
 </script>

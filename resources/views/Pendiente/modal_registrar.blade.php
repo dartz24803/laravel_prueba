@@ -1,6 +1,6 @@
-<link href="{{ asset('template/inputfiles/css/fileinput.css') }}" media="all" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('template/inputfiles/css/fileinput.css') }}" media="all" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
-<link href="{{ asset('template/inputfiles/themes/explorer-fas/theme.css') }}" media="all" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('template/inputfiles/themes/explorer-fas/theme.css') }}" media="all" rel="stylesheet" type="text/css" />
 <script src="{{ asset('template/inputfiles/js/plugins/piexif.js') }}" type="text/javascript"></script>
 <script src="{{ asset('template/inputfiles/js/plugins/sortable.js') }}" type="text/javascript"></script>
 <script src="{{ asset('template/inputfiles/js/fileinput.js') }}" type="text/javascript"></script>
@@ -8,35 +8,40 @@
 <script src="{{ asset('template/inputfiles/themes/fas/theme.js') }}" type="text/javascript"></script>
 <script src="{{ asset('template/inputfiles/themes/explorer-fas/theme.js') }}" type="text/javascript"></script>
 
-<?php 
-    $menu_gestion_pendiente=explode(",", session('usuario')->grupo_puestos);
-    $mostrar_menu=in_array( session('usuario')->id_puesto,$menu_gestion_pendiente);
+<?php
+$menu_gestion_pendiente = explode(",", session('usuario')->grupo_puestos);
+$mostrar_menu = in_array(session('usuario')->id_puesto, $menu_gestion_pendiente);
 
-    $id_nivel= session('usuario')->id_nivel;
-    $id_puesto= session('usuario')->id_puesto;
+$id_nivel = session('usuario')->id_nivel;
+$id_puesto = session('usuario')->id_puesto;
 ?>
 
 <form id="formulario_insert" method="POST" enctype="multipart/form-data" class="needs-validation">
     <div class="modal-header">
         <h5 class="modal-title">Nueva tarea</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
         </button>
     </div>
 
     <div class="modal-body" style="max-height:450px; overflow:auto;">
-        <?php if($mostrar_menu==true || $id_nivel==1 || $id_puesto==16 || 
-        $id_puesto==20 || $id_puesto==26 || $id_puesto==27 || $id_puesto==98 ||
-        $id_puesto==128){ ?>
+        <?php if (
+            $mostrar_menu == true || $id_nivel == 1 || $id_puesto == 16 ||
+            $id_puesto == 20 || $id_puesto == 26 || $id_puesto == 27 || $id_puesto == 98 ||
+            $id_puesto == 128
+        ) { ?>
             <div class="col-lg-12 row">
                 <div class="form-group col-lg-2">
                     <label class="control-label text-bold">Base: </label>
-                </div>            
+                </div>
                 <div class="form-group col-lg-4">
                     <select class="form-control" name="cod_base_i" id="cod_base_i" onchange="Base_Usuario_I(); Limpiar_Datos_I();">
                         <option value="0">Seleccionar</option>
-                        <?php foreach($list_base as $list){ ?>
-                            <option value="<?php echo $list['cod_base']; ?>"><?php echo $list['cod_base'];?></option>
+                        <?php foreach ($list_base as $list) { ?>
+                            <option value="<?php echo $list['cod_base']; ?>"><?php echo $list['cod_base']; ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -45,7 +50,7 @@
             <div class="col-lg-12 row">
                 <div class="form-group col-lg-2">
                     <label class="control-label text-bold">Usuario: </label>
-                </div>            
+                </div>
                 <div id="select_usuarios_i" class="form-group col-lg-10">
                     <select class="form-control basic_i" name="id_usuario_i" id="id_usuario_i" onchange="Limpiar_Datos_I();">
                         <option value="0">Seleccionar</option>
@@ -54,53 +59,61 @@
 
                 <input type="hidden" id="valida_base_usuario" value="1">
             </div>
-        <?php }else{ ?>
-            <input type="hidden" id="id_usuario_i" name="id_usuario_i" value="<?php echo $_SESSION['usuario'][0]['id_usuario']."-".$_SESSION['usuario'][0]['centro_labores']."-".$_SESSION['usuario'][0]['id_area']; ?>">
+        <?php } else { ?>
+            <input type="hidden" id="id_usuario_i" name="id_usuario_i" value="<?php echo $_SESSION['usuario'][0]['id_usuario'] . "-" . $_SESSION['usuario'][0]['centro_labores'] . "-" . $_SESSION['usuario'][0]['id_area']; ?>">
             <input type="hidden" id="valida_base_usuario" value="0">
         <?php } ?>
 
         <div class="col-lg-12 row">
-            <?php if($mostrar_menu==true || $id_nivel==1 || $id_puesto==29 || $id_puesto==16 || 
-                    $id_puesto==20 || $id_puesto==26 || $id_puesto==27 || $id_puesto==98 ||
-                    $id_puesto==128){ ?>
+            <?php if (
+                $mostrar_menu == true || $id_nivel == 1 || $id_puesto == 29 || $id_puesto == 16 ||
+                $id_puesto == 20 || $id_puesto == 26 || $id_puesto == 27 || $id_puesto == 98 ||
+                $id_puesto == 128
+            ) { ?>
                 <div class="form-group col-lg-2">
                     <label class="control-label text-bold">Tipo: </label>
-                </div>   
-                <div class="form-group col-lg-4">         
+                </div>
+                <div class="form-group col-lg-4">
                     <select class="form-control" name="id_tipo_i" id="id_tipo_i">
-                        <option value="0" >Seleccionar</option>
-                        <?php foreach($list_tipo_tickets as $list){ ?>
+                        <option value="0">Seleccionar</option>
+                        <?php foreach ($list_tipo_tickets as $list) { ?>
                             <option value="<?php echo $list['id_tipo_tickets']; ?>"><?php echo $list['nom_tipo_tickets']; ?></option>
                         <?php } ?>
                     </select>
                 </div>
-            <?php }else{ ?>
+            <?php } else { ?>
                 <div class="form-group col-lg-2">
                     <label class="control-label text-bold">Tipo: </label>
-                </div>            
+                </div>
                 <div class="form-group col-lg-4">
                     <select class="form-control" name="id_tipo_i" id="id_tipo_i">
                         <option value="0">Seleccionar</option>
-                        <?php foreach($list_tipo_tickets as $list){ if($list['id_tipo_tickets']!=4){ ?>
-                            <option value="<?php echo $list['id_tipo_tickets']; ?>"><?php echo $list['nom_tipo_tickets']; ?></option>
-                        <?php } } ?>
+                        <?php foreach ($list_tipo_tickets as $list) {
+                            if ($list['id_tipo_tickets'] != 4) { ?>
+                                <option value="<?php echo $list['id_tipo_tickets']; ?>"><?php echo $list['nom_tipo_tickets']; ?></option>
+                        <?php }
+                        } ?>
                     </select>
                 </div>
             <?php } ?>
 
             <div class="form-group col-lg-2">
                 <label class="control-label text-bold">Area: </label>
-            </div>            
+            </div>
             <div class="form-group col-lg-4">
                 <select class="form-control" name="id_area_i" id="id_area_i" onchange="Responsable_Pendiente_I(); Area_Infraestructura_I(); Delete_Toda_Cotizacion_Pendiente_I();">
-                    <option value="0" >Seleccionar</option>
-                    <?php if($id_puesto==31 || $id_puesto==32){ ?>
+                    <option value="0">Seleccionar</option>
+                    <?php if ($id_puesto == 31 || $id_puesto == 32) { ?>
                         <option value="15">CAJA</option>
-                    <?php }else{ foreach($list_area as $list){ ?>
-                        <?php //if ($list['id_area'] != 13): ?>
+                        <?php } else {
+                        foreach ($list_area as $list) { ?>
+                            <?php //if ($list['id_area'] != 13): 
+                            ?>
                             <option value="<?php echo $list['id_area']; ?>"><?php echo $list['nom_area']; ?></option>
-                        <?php //endif; ?>
-                    <?php } } ?>
+                            <?php //endif; 
+                            ?>
+                    <?php }
+                    } ?>
                 </select>
             </div>
         </div>
@@ -108,7 +121,7 @@
         <div class="col-lg-12 row">
             <div class="form-group col-lg-2">
                 <label class="control-label text-bold">Asignado a: </label>
-            </div>            
+            </div>
             <div class="form-group col-lg-10">
                 <select class="form-control basic_i" id="id_responsable_i" name="id_responsable_i">
                     <option value="0">Seleccionar</option>
@@ -134,7 +147,7 @@
                 </select>
             </div>
         </div>
-        
+
         <div class="col-lg-12 row ver_equipo_i">
             <div class="form-group col-lg-12">
                 <label class="control-label text-bold">Equipo: </label>
@@ -159,8 +172,8 @@
         <div class="col-lg-12 row ver_etiqueta_i">
             <div class="form-group col-lg-2">
                 <label class="control-label text-bold">Etiqueta: </label>
-            </div>   
-            <div class="form-group col-lg-10">         
+            </div>
+            <div class="form-group col-lg-10">
                 <select class="form-control basic_i" name="id_subitem_i" id="id_subitem_i">
                     <option value="0">Seleccionar</option>
                 </select>
@@ -169,9 +182,9 @@
 
         <div class="col-lg-12 row ver_cotizacion_i">
             <div class="form-group col-lg-2">
-                <button class="btn" type="button" data-toggle="modal" data-target="#ModalUpdate" 
-                app_elim="{{ url('Tareas/Modal_Cotizacion_Pendiente') }}" 
-                style="background-color:#ff2956 !important;color:white;">
+                <button class="btn" type="button" data-toggle="modal" data-target="#ModalUpdate"
+                    app_elim="{{ url('Tareas/Modal_Cotizacion_Pendiente') }}"
+                    style="background-color:#ff2956 !important;color:white;">
                     Cotizaciones
                 </button>
             </div>
@@ -198,7 +211,7 @@
         <div class="row d-flex justify-content-center text-center" id="div_canvas" style="display:none !important;">
             <canvas id="canvas" width="640" height="480" style="max-width:95%;"></canvas>
         </div>
-        
+
         <div id="imagen-container" class="d-flex justify-content-center ml-4">
         </div>
 
@@ -211,39 +224,41 @@
 </form>
 
 <script>
-    $(document).ready(function() { 
+    $(document).ready(function() {
         $('.ver_infraestructura_i').hide();
         $('.ver_etiqueta_i').hide();
         $('.ver_cotizacion_i').hide();
         $('.ver_equipo_i').hide();
         cargarImagenes();
     });
-    
+
     $('.basic_i').select2({
         dropdownParent: $('#ModalRegistro')
     });
 
-    function Base_Usuario_I(){
+    function Base_Usuario_I() {
         Cargando();
 
-        var cod_base=$('#cod_base_i').val();
-        var url="{{ url('Tareas/Traer_Usuarios_Pendiente') }}";
+        var cod_base = $('#cod_base_i').val();
+        var url = "{{ url('Tareas/Traer_Usuarios_Pendiente') }}";
         var csrfToken = $('input[name="_token"]').val();
 
-        $.ajax({    
-            type:"POST",
-            url:url,
+        $.ajax({
+            type: "POST",
+            url: url,
             headers: {
                 'X-CSRF-TOKEN': csrfToken
             },
-            data:{'cod_base':cod_base},
-            success:function (resp) {
+            data: {
+                'cod_base': cod_base
+            },
+            success: function(resp) {
                 $('#id_usuario_i').html(resp);
             }
         });
     }
 
-    function Limpiar_Datos_I(){
+    function Limpiar_Datos_I() {
         Cargando();
 
         $('#id_tipo_i').val(0);
@@ -259,47 +274,51 @@
         $(".ver_cotizacion_i").hide();
     }
 
-    function Responsable_Pendiente_I(){
+    function Responsable_Pendiente_I() {
         Cargando();
 
         var id_area = $('#id_area_i').val();
 
-        if(id_area=="0"){
+        if (id_area == "0") {
             $('#id_responsable_i').html('<option value="0">Seleccionar</option>');
-        }else{
-            var url="{{ url('Tareas/Responsable_Pendiente') }}";
+        } else {
+            var url = "{{ url('Tareas/Responsable_Pendiente') }}";
             var csrfToken = $('input[name="_token"]').val();
 
-            $.ajax({    
-                type:"POST",
-                url:url,
+            $.ajax({
+                type: "POST",
+                url: url,
                 headers: {
                     'X-CSRF-TOKEN': csrfToken
                 },
-                data:{'id_area':id_area},
-                success:function (resp) {
+                data: {
+                    'id_area': id_area
+                },
+                success: function(resp) {
                     $('#id_responsable_i').html(resp);
                 }
             });
         }
     }
 
-    function Area_Infraestructura_I(){
+    function Area_Infraestructura_I() {
         Cargando();
 
         var id_area = $('#id_area_i').val();
-        var url = "{{ url('Tareas/Area_Infraestructura') }}"; 
+        var url = "{{ url('Tareas/Area_Infraestructura') }}";
         var csrfToken = $('input[name="_token"]').val();
 
-        $.ajax({    
-            type:"POST",
-            url:url,
+        $.ajax({
+            type: "POST",
+            url: url,
             headers: {
                 'X-CSRF-TOKEN': csrfToken
             },
-            data:{'id_area':id_area},
-            success:function (resp) {
-                if(id_area=="0"){
+            data: {
+                'id_area': id_area
+            },
+            success: function(resp) {
+                if (id_area == "0") {
                     $('.ver_etiqueta_i').hide();
                     $('#id_subitem_i').html('<option value="0">Seleccionar</option>');
                     $(".ver_infraestructura_i").hide();
@@ -308,7 +327,7 @@
                     $('#titulo_tarea').html('<label class="control-label text-bold">Título:</label><input type="text" class="form-control" id="titulo_i" name="titulo_i" placeholder="Ingresar título">');
                     $(".ver_cotizacion_i").hide();
                     $('.ver_equipo_i').hide();
-                }else if(id_area=="10" || id_area=="41"){
+                } else if (id_area == "10" || id_area == "41") {
                     $('.ver_equipo_i').hide();
                     $('.ver_etiqueta_i').hide();
                     $('#id_subitem_i').html('<option value="0">Seleccionar</option>');
@@ -318,12 +337,12 @@
                     $('#titulo_tarea').html('<label class="control-label text-bold">Título:</label><select class="form-control" id="titulo_i" name="titulo_i"><option value="0">Seleccione</option></select>');
 
                     var base_usuario = $('#id_usuario_i').val().split("-")[1];
-                    if(base_usuario=="AMT" || base_usuario=="CD" || base_usuario=="OFC"){
+                    if (base_usuario == "AMT" || base_usuario == "CD" || base_usuario == "OFC") {
                         $(".ver_cotizacion_i").hide();
-                    }else{
+                    } else {
                         $(".ver_cotizacion_i").show();
                     }
-                }else if(id_area=="13"){
+                } else if (id_area == "13") {
                     $('.ver_equipo_i').show();
                     $('#id_subitem_i').html('<option value="0">Seleccionar</option>');
                     $(".ver_infraestructura_i").hide();
@@ -331,13 +350,13 @@
                     $('#id_especialidad').val(0);
                     $('#titulo_tarea').html('<label class="control-label text-bold">Título:</label><input type="text" class="form-control" id="titulo_i" name="titulo_i" placeholder="Ingresar título">');
                     $(".ver_cotizacion_i").hide();
-                }else{
+                } else {
                     var area_usuario = $('#id_usuario_i').val().split("-")[2];
 
-                    if(area_usuario=="14"){
+                    if (area_usuario == "14") {
                         $('.ver_etiqueta_i').show();
                         $('#id_subitem_i').html(resp);
-                    }else{
+                    } else {
                         $('.ver_etiqueta_i').hide();
                         $('#id_subitem_i').html('<option value="0">Seleccionar</option>');
                     }
@@ -352,57 +371,59 @@
         });
     }
 
-    function Delete_Toda_Cotizacion_Pendiente_I(){
+    function Delete_Toda_Cotizacion_Pendiente_I() {
         Cargando();
 
-        var url="{{ url('Tareas/Delete_Toda_Cotizacion_Pendiente') }}"; 
+        var url = "{{ url('Tareas/Delete_Toda_Cotizacion_Pendiente') }}";
         var csrfToken = $('input[name="_token"]').val();
 
-        $.ajax({    
-            type:"POST",
-            url:url,
+        $.ajax({
+            type: "POST",
+            url: url,
             headers: {
                 'X-CSRF-TOKEN': csrfToken
             },
-            success:function (resp) {
+            success: function(resp) {
                 console.log('Cotización Eliminada')
             }
         });
     }
 
-    function Mantenimiento_Otros_I(){
+    function Mantenimiento_Otros_I() {
         Cargando();
 
         var id_mantenimiento = $('#id_mantenimiento').val();
 
-        if(id_mantenimiento=="3"){
+        if (id_mantenimiento == "3") {
             $('.ver_especialidad_i').hide();
             $('#titulo_tarea').html('<label class="control-label text-bold">Título:</label><input type="text" class="form-control" id="titulo_i" name="titulo_i" placeholder="Ingresar título">');
             $(".ver_cotizacion_i").hide();
-        }else{
+        } else {
             $('.ver_especialidad_i').show();
             $('#titulo_tarea').html('<label class="control-label text-bold">Título:</label><select class="form-control" id="titulo_i" name="titulo_i"><option value="0">Seleccione</option></select>');
             var base_usuario = $('#id_usuario_i').val().split("-")[1];
-            if(base_usuario=="AMT" || base_usuario=="CD" || base_usuario=="OFC"){
+            if (base_usuario == "AMT" || base_usuario == "CD" || base_usuario == "OFC") {
                 $(".ver_cotizacion_i").hide();
-            }else{
+            } else {
                 $(".ver_cotizacion_i").show();
             }
         }
         $('#id_especialidad').val(0);
     }
 
-    function Titulo_Pendiente_I(){
+    function Titulo_Pendiente_I() {
         Cargando();
 
         var id_especialidad = $('#id_especialidad').val();
         var url = "{{ url('Tareas/Titulo_Pendiente') }}";
 
         $.ajax({
-            type:"POST",
-            url:url,
-            data:{'id_especialidad':id_especialidad},
-            success:function (resp){
+            type: "POST",
+            url: url,
+            data: {
+                'id_especialidad': id_especialidad
+            },
+            success: function(resp) {
                 $('#titulo_i').html(resp);
             }
         });
@@ -416,7 +437,7 @@
         showUpload: false,
         overwriteInitial: false,
         initialPreviewAsData: true,
-        allowedFileExtensions: ['jpg', 'png','txt','pdf','xlsx','pptx','docx','jpeg','xls','ppt','doc'],
+        allowedFileExtensions: ['jpg', 'png', 'txt', 'pdf', 'xlsx', 'pptx', 'docx', 'jpeg', 'xls', 'ppt', 'doc'],
     });
 
     function Insert_Pendiente() {
@@ -446,7 +467,7 @@
                             confirmButtonColor: '#3085d6',
                             confirmButtonText: 'OK',
                         });
-                    }else if (data == "emergencia") {
+                    } else if (data == "emergencia") {
                         Swal({
                             title: 'Registro Denegado',
                             text: "¡Debe ingresar 2 a más cotizaciones!",
@@ -455,7 +476,7 @@
                             confirmButtonColor: '#3085d6',
                             confirmButtonText: 'OK',
                         });
-                    }else{
+                    } else {
                         swal.fire(
                             'Registro Exitoso!',
                             'Haga clic en el botón!',
@@ -471,13 +492,13 @@
     }
 
     function Valida_Insert_Pendiente() {
-        if($('#valida_base_usuario').val() == '1'){
+        if ($('#valida_base_usuario').val() == '1') {
             if ($('#id_usuario_i').val() == '0') {
                 Swal(
                     'Ups!',
                     'Debe seleccionar usuario.',
                     'warning'
-                ).then(function() { });
+                ).then(function() {});
                 return false;
             }
         }
@@ -486,7 +507,7 @@
                 'Ups!',
                 'Debe seleccionar tipo.',
                 'warning'
-            ).then(function() { });
+            ).then(function() {});
             return false;
         }
         if ($('#id_area_i').val() == '0') {
@@ -494,7 +515,7 @@
                 'Ups!',
                 'Debe seleccionar area.',
                 'warning'
-            ).then(function() { });
+            ).then(function() {});
             return false;
         }
         if ($('#id_responsable_i').val() == '0') {
@@ -502,7 +523,7 @@
                 'Ups!',
                 'Debe seleccionar Asignado a.',
                 'warning'
-            ).then(function() { });
+            ).then(function() {});
             return false;
         }
         if (($('#id_area_i').val() == '10' || $('#id_area_i').val() == '41') && ($('#id_mantenimiento').val() == '1' || $('#id_mantenimiento').val() == '2')) {
@@ -511,7 +532,7 @@
                     'Ups!',
                     'Debe seleccionar mantenimiento.',
                     'warning'
-                ).then(function() { });
+                ).then(function() {});
                 return false;
             }
             if ($('#id_especialidad').val() == '0') {
@@ -519,7 +540,7 @@
                     'Ups!',
                     'Debe seleccionar especialidad.',
                     'warning'
-                ).then(function() { });
+                ).then(function() {});
                 return false;
             }
             if ($('#titulo_i').val() == '0') {
@@ -527,16 +548,16 @@
                     'Ups!',
                     'Debe seleccionar título.',
                     'warning'
-                ).then(function() { });
+                ).then(function() {});
                 return false;
             }
-        }else{
+        } else {
             if ($('#titulo_i').val() == '') {
                 Swal(
                     'Ups!',
                     'Debe ingresar título.',
                     'warning'
-                ).then(function() { });
+                ).then(function() {});
                 return false;
             }
         }
@@ -545,47 +566,48 @@
                 'Ups!',
                 'Debe ingresar descripción.',
                 'warning'
-            ).then(function() { });
+            ).then(function() {});
             return false;
         }
         return true;
     }
-    
+
     var video = document.getElementById('video');
     var boton = document.getElementById('boton_camara');
-    var div_tomar_foto = document.getElementById('div_tomar_foto'); 
-    var div = document.getElementById('div_camara'); 
+    var div_tomar_foto = document.getElementById('div_tomar_foto');
+    var div = document.getElementById('div_camara');
     var isCameraOn = false;
     var stream = null;
-    function Activar_Camara(){
+
+    function Activar_Camara() {
         var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-        if(screenWidth<1000){
-            if(!isCameraOn){
+        if (screenWidth < 1000) {
+            if (!isCameraOn) {
                 //Pedir permiso para acceder a la cámara
                 navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: {
-                            exact: "environment"
+                        video: {
+                            facingMode: {
+                                exact: "environment"
+                            }
                         }
-                    }
-                })
-                .then(function (newStream){
-                    stream = newStream;
-                    // Mostrar el stream de la cámara en el elemento de video
-                    video.srcObject = stream;
-                    video.play();
-                    isCameraOn = true;
-                    boton.textContent = "Desactivar cámara";
-                    div_tomar_foto.style.cssText = "display: block;";
-                    div.style.cssText = "display: block;";
-                })
-                .catch(function (error){
-                    console.error('Error al acceder a la cámara:', error);
-                });
-            }else{
+                    })
+                    .then(function(newStream) {
+                        stream = newStream;
+                        // Mostrar el stream de la cámara en el elemento de video
+                        video.srcObject = stream;
+                        video.play();
+                        isCameraOn = true;
+                        boton.textContent = "Desactivar cámara";
+                        div_tomar_foto.style.cssText = "display: block;";
+                        div.style.cssText = "display: block;";
+                    })
+                    .catch(function(error) {
+                        console.error('Error al acceder a la cámara:', error);
+                    });
+            } else {
                 //Detener la reproducción  del stream y liberar la cámara
-                if(stream){
-                    stream.getTracks().forEach(function (track){
+                if (stream) {
+                    stream.getTracks().forEach(function(track) {
                         track.stop();
                     });
                     video.srcObject = null;
@@ -595,29 +617,29 @@
                     div.style.cssText = "display: none !important;";
                 }
             }
-        }else{
-            if(!isCameraOn){
+        } else {
+            if (!isCameraOn) {
                 //Pedir permiso para acceder a la cámara
                 navigator.mediaDevices.getUserMedia({
-                    video: true
-                })
-                .then(function (newStream){
-                    stream = newStream;
-                    // Mostrar el stream de la cámara en el elemento de video
-                    video.srcObject = stream;
-                    video.play();
-                    isCameraOn = true;
-                    boton.textContent = "Desactivar cámara";
-                    div_tomar_foto.style.cssText = "display: block;";
-                    div.style.cssText = "display: block;";
-                })
-                .catch(function (error){
-                    console.error('Error al acceder a la cámara:', error);
-                });
-            }else{
+                        video: true
+                    })
+                    .then(function(newStream) {
+                        stream = newStream;
+                        // Mostrar el stream de la cámara en el elemento de video
+                        video.srcObject = stream;
+                        video.play();
+                        isCameraOn = true;
+                        boton.textContent = "Desactivar cámara";
+                        div_tomar_foto.style.cssText = "display: block;";
+                        div.style.cssText = "display: block;";
+                    })
+                    .catch(function(error) {
+                        console.error('Error al acceder a la cámara:', error);
+                    });
+            } else {
                 //Detener la reproducción  del stream y liberar la cámara
-                if(stream){
-                    stream.getTracks().forEach(function (track){
+                if (stream) {
+                    stream.getTracks().forEach(function(track) {
                         track.stop();
                     });
                     video.srcObject = null;
@@ -673,7 +695,7 @@
             });
         }, 'image/jpeg');
     }
-    
+
     function cargarImagenes() {
         $.ajax({
             url: "{{ url('Tareas/obtenerImagenes') }}",
@@ -741,7 +763,7 @@
         })
         return false;
     }
-    $(document).on("click", ".img_post", function () {
+    $(document).on("click", ".img_post", function() {
         window.open($(this).attr("src"), 'popUpWindow', "height=" + this.naturalHeight + ",width=" + this.naturalWidth + ",resizable=yes,toolbar=yes,menubar=no");
     });
 </script>

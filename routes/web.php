@@ -2173,10 +2173,9 @@ Route::controller(ContactosController::class)->group(function () {
     Route::post('Contactos/Lista_Mis_Tareas', 'Lista_Mis_Tareas');
 });
 
-
-
-
-
+Route::controller(InicioController::class)->group(function () {
+    Route::get('Inicio/Modal_Ver_Todo_Cumpleanios', 'Modal_Ver_Todo_Cumpleanios');
+});
 
 
 
