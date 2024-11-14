@@ -193,12 +193,17 @@ class Soporte extends Model
                 THEN 'AREA' 
                 ELSE se.nombre 
             END as nombre_ejecutor_responsable"),
+            // Agregar la validación para la existencia de comentarios
+            DB::raw("CASE 
+                WHEN sc.idsoporte_comentarios IS NOT NULL THEN true
+                ELSE false
+            END as comentario_existe"),
         )
             ->leftJoin('especialidad', 'soporte.id_especialidad', '=', 'especialidad.id')
             ->leftJoin('soporte_elemento', 'soporte.id_elemento', '=', 'soporte_elemento.idsoporte_elemento')
             ->leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
             ->leftJoin('soporte_solucion', 'soporte.idsoporte_solucion', '=', 'soporte_solucion.idsoporte_solucion')
-
+            ->leftJoin('soporte_comentarios as sc', 'soporte_solucion.idsoporte_solucion', '=', 'sc.idsoporte_solucion')
             ->leftJoin('soporte_ejecutor', 'soporte.idsoporte_ejecutor', '=', 'soporte_ejecutor.idsoporte_ejecutor')
             ->leftJoin('soporte_motivo_cancelacion', 'soporte.idsoporte_motivo_cancelacion', '=', 'soporte_motivo_cancelacion.idsoporte_motivo_cancelacion')
             ->leftJoin('sede_laboral', 'soporte.id_sede', '=', 'sede_laboral.id')

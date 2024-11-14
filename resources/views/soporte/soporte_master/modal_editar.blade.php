@@ -551,7 +551,7 @@
                         <button type="button" class="btn btn-secondary" id="boton_camara" onclick="Activar_Camara();">Activar cámara</button>
                     </div>
                     <div class="form-group col-md-4">
-                        <label>Documento 1:</label>
+                        <label>Documentos:</label>
                         @if ($get_id->documento1)
                         <div id="documento-list">
                             <!-- Los enlaces de descarga se agregarán aquí dinámicamente -->
@@ -1241,9 +1241,11 @@
         uploadUrl: '#',
         maxTotalFileCount: 5,
         showUpload: false,
-        overwriteInitial: false,
-        initialPreviewAsData: true,
+        showPreview: false, // Desactiva la vista previa de archivos
+        showRemove: false, // Desactiva el botón para remover archivos
         allowedFileExtensions: ['jpg', 'png', 'txt', 'pdf', 'xlsx', 'pptx', 'docx', 'jpeg', 'xls', 'ppt', 'doc'],
+        browseOnZoneClick: true, // Hace que el botón de selección sea el único activo
+        dragDrop: false // Desactiva la funcionalidad de arrastrar y soltar
     });
 
 
@@ -1282,72 +1284,15 @@
     }
 
 
-    function deleteFileOnServer(fileName) {
-        Cargando();
 
-        // Ruta de eliminación de archivo en el servidor (ajusta la URL si es necesario)
-        var url = "{{ route('soporte_delete_documents.destroy', ':id_soportesolucion', ':documento1', ':fileName') }}"
-            .replace(':id_soportesolucion', fileName)
-            .replace(':documento1', documento1)
-            .replace(':fileName', fileName);
-
-        Swal({
-            title: '¿Realmente desea eliminar este archivo?',
-            text: "El archivo será eliminado permanentemente del servidor.",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Sí',
-            cancelButtonText: 'No',
-            padding: '2em'
-        }).then((result) => {
-            if (result.value) {
-                $.ajax({
-                    type: "DELETE",
-                    url: url,
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Asegúrate de enviar el token CSRF
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            Swal(
-                                '¡Eliminado!',
-                                'El archivo ha sido eliminado satisfactoriamente.',
-                                'success'
-                            ).then(function() {
-                                // Aquí puedes actualizar la vista o hacer alguna otra acción, como eliminar el archivo visualmente
-                                updateFileList();
-                            });
-                        } else {
-                            Swal(
-                                'Error',
-                                'No se pudo eliminar el archivo en el servidor.',
-                                'error'
-                            );
-                        }
-                    },
-                    error: function() {
-                        Swal(
-                            'Error',
-                            'Hubo un problema al eliminar el archivo.',
-                            'error'
-                        );
-                    }
-                });
-            }
-        });
-    }
 
     // Función para manejar los archivos seleccionados en el input de archivo
     function handleFileSelection(event) {
         const documento1 = "{{ $get_id->documento1 }}"
-        console.log("##1111");
-        console.log(event.target);
-        console.log(documento1);
-        console.log("##########");
+        const idsoporte_solucion = "{{ $get_id->idsoporte_solucion }}"
         const fileInput = event.target;
         let files = Array.from(fileInput.files); // Convertimos FileList a un array para manipularlo
         const fileListContainer = document.getElementById('documento-list');
-        console.log("##22");
 
         // Limpiar los enlaces existentes antes de agregar los nuevos
         fileListContainer.innerHTML = '';
@@ -1355,45 +1300,40 @@
         // Iterar sobre los archivos seleccionados
         files.forEach((file, index) => {
             const fileName = file.name;
-
             // Crear un enlace de descarga para cada archivo
             const fileLink = document.createElement('a');
             fileLink.href = URL.createObjectURL(file); // Crear una URL temporal para el archivo
             fileLink.download = fileName; // Establecer el nombre de descarga
-            fileLink.textContent = 'Descargar ' + fileName;
+            fileLink.textContent = fileName;
             fileLink.classList.add('btn', 'btn-link'); // Estilos para el enlace de descarga
 
-            // Crear un botón para eliminar el archivo
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Eliminar';
-            deleteButton.classList.add('btn', 'btn-danger', 'btn-sm', 'ml-2'); // Estilos para el botón de eliminar
-
-            // Función de eliminación
-            deleteButton.onclick = function() {
-                // Eliminar el archivo visualmente
-                fileListContainer.removeChild(fileLinkWrapper);
-                // Eliminar el archivo de la lista "files"
-                files.splice(index, 1);
-                // Actualizar el fileInput con los archivos restantes
-                const newFileList = new DataTransfer(); // Usamos DataTransfer para crear una nueva lista de archivos
-                files.forEach(file => {
-                    newFileList.items.add(file); // Añadir los archivos restantes
-                });
-                fileInput.files = newFileList.files; // Asignamos la nueva lista de archivos al input
-                // Enviar solicitud AJAX para eliminar el archivo en el servidor
-                // deleteFileOnServer(fileName);
-            };
-
-            // Crear un contenedor para el enlace y el botón de eliminar
+            // Crear un contenedor solo para el enlace de descarga
             const fileLinkWrapper = document.createElement('div');
             fileLinkWrapper.classList.add('d-flex', 'align-items-center', 'my-2'); // Estilo para el contenedor
-
-            // Añadir el enlace de descarga y el botón de eliminar al contenedor
+            // Añadir solo el enlace de descarga al contenedor
             fileLinkWrapper.appendChild(fileLink);
-            fileLinkWrapper.appendChild(deleteButton);
 
             // Añadir el contenedor al contenedor de la lista de archivos
             fileListContainer.appendChild(fileLinkWrapper);
         });
+
+    }
+
+    function deleteFileOnServer(fileName, documento1, id_soportesolucion) {
+        // Aquí asumimos que `documento1` es un array de nombres de archivos y necesitamos eliminar `fileName` de él
+        const updatedDocumentos = documento1.filter(file => file !== fileName); // Elimina el archivo de la lista
+        // Actualiza el array documento1 con el nuevo array sin el archivo eliminado
+        // Esto lo puedes enviar en una solicitud posterior para actualizar el estado del servidor, si lo necesitas
+        documento1 = updatedDocumentos;
+        // Eliminar el archivo visualmente (suponiendo que el archivo tiene un ID o clase específica)
+        $(`#file-${fileName}`).remove(); // Esto eliminará el archivo de la lista en el DOM (ajusta el selector si es necesario)
+        // Actualiza el documento1 antes de enviarlo (si es necesario)
+        console.log("Documento actualizado:", documento1);
+        // Si deseas hacer algo adicional, como mostrar una notificación:
+        Swal(
+            '¡Eliminado!',
+            'El archivo ha sido eliminado de la lista.',
+            'success'
+        );
     }
 </script>
