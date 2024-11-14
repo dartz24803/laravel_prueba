@@ -208,6 +208,9 @@
                                                                                                         echo mb_convert_case($nombre[0] . " " . $list['apater_min'], MB_CASE_TITLE, "UTF-8"); ?></b></span>
                                                                     </div>
                                                                     <div class="d-flex justify-content-center">
+                                                                        <span><?php echo $list['nom_area'] ?> - <?php echo $list['centro_labores'] ?></span>
+                                                                    </div>
+                                                                    <div class="d-flex justify-content-center">
                                                                         <span><?php echo date('d', strtotime($list['cumpleanio'])) . " de " . strtolower($list['nom_mes']) ?></span>
                                                                     </div>
                                                                     </td>
@@ -219,7 +222,7 @@
 
                                                             <?php if (count($list_cumple) > 5) { ?>
                                                                 <div class="text-center mb-4">
-                                                                    <a class="boton" href="javascript:void(0)" data-toggle="modal" data-target="#ModalRegistroSlide" app_reg_slide="{{ url('Corporacion/Modal_Ver_Todo_Cumpleanios') }}"><span>Ver Todos</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right">
+                                                                    <a class="boton" href="javascript:void(0)" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ url('Inicio/Modal_Ver_Todo_Cumpleanios') }}"><span>Ver Todos</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right">
                                                                             <line x1="5" y1="12" x2="19" y2="12"></line>
                                                                             <polyline points="12 5 19 12 12 19"></polyline>
                                                                         </svg></a>
