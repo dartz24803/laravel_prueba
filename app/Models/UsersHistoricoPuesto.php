@@ -23,6 +23,7 @@ class UsersHistoricoPuesto extends Model
         'id_sub_gerencia',
         'id_area',
         'id_puesto',
+        'id_centro_labor',
         'fec_inicio',
         'con_fec_fin',
         'fec_fin',
@@ -42,7 +43,7 @@ class UsersHistoricoPuesto extends Model
         left join gerencia b on a.id_gerencia=b.id_gerencia
         left join area c on a.id_area=c.id_area
         left join puesto d on a.id_puesto=d.id_puesto
-        left join tipo_cambio_puesto e on a.id_tipo_cambio=e.id_tipo_cambio
+        left join vw_tipo_cambio_puesto e on a.id_tipo_cambio=e.id_tipo_cambio
         WHERE a.estado=1 and a.id_usuario=$id_usuario order by a.fec_reg desc";
         
         $result = DB::select($sql);

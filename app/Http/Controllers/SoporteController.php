@@ -288,13 +288,19 @@ class SoporteController extends Controller
             // Usa el valor de $cod_area en lugar de 'TI'
             $area_code = $cod_area ? $cod_area['cod_area'] : 'TI';
             $prefijo = $idsoporte_tipo->idsoporte_tipo == 1 ? 'RQ-' . $area_code . '-' : 'INC-' . $area_code . '-';
-            $contador = Soporte::where('idsoporte_tipo', $idsoporte_tipo->idsoporte_tipo)->count();
+
+            $contador = Soporte::leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
+                ->leftJoin('soporte_tipo', 'soporte_asunto.idsoporte_tipo', '=', 'soporte_tipo.idsoporte_tipo')
+                ->where('soporte_tipo.idsoporte_tipo', $idsoporte_tipo->idsoporte_tipo)
+                ->count();
             $nuevo_numero = $contador + 1;
             $numero_formateado = str_pad($nuevo_numero, 3, '0', STR_PAD_LEFT);
             $codigo_generado = $prefijo . $numero_formateado;
         } else {
             $codigo_generado = 'Código no disponible';
         }
+        // dd($codigo_generado);
+
         // GENERECIÓN DE CÓDIGO
 
         $soporte_solucion = SoporteSolucion::create([
@@ -839,16 +845,21 @@ class SoporteController extends Controller
         }
         // dd($tipo_otros);
         $get_id = Soporte::getTicketById($id);
-
+        // dd($get_id->comentario_existe);
         $rules = [
-            'descripcione_solucion' => 'required|max:150',
-            'nombre_tipo' => is_null($get_id->tipo_otros) || $get_id->tipo_otros == 0 ? 'required|gt:0' : 'nullable',
+            'descripcione_solucion' => function ($attribute, $value, $fail) use ($get_id) {
+                if ($get_id->comentario_existe == 0 && empty($value)) {
+                    $fail('Comentario de Solución es obligatorio cuando no existe un comentario.');
+                }
+            },
+            'nombre_tipo' => $get_id->activo_tipo == 1 && $get_id->tipo_otros == 0 ? 'required|gt:0' : 'nullable',
         ];
+
         $messages = [
             'descripcione_solucion.max' => 'Comentario de Solución debe tener como máximo 150 caracteres.',
             'nombre_tipo.gt' => 'Debe seleccionar tipo.',
-
         ];
+
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $cantAreasEjecut = count($list_ejecutores_responsables);
         $responsableMultiple = Soporte::getResponsableMultipleByAsunto($get_id->id_asunto);
@@ -1072,9 +1083,11 @@ class SoporteController extends Controller
                     if (empty($path)) {
                         continue; // Salta al siguiente archivo si no hay nombre
                     }
+                    $nameDoc = $_FILES["documentoa1"]["name"];
+                    // dd($nameDoc);
                     $fecha = date('Y-m-d');
                     $ext = pathinfo($path, PATHINFO_EXTENSION);
-                    $nombre_soli = "Pendiente_" . $fecha . "_" . rand(10, 999);
+                    $nombre_soli = $nameDoc[0] . "_" . $fecha . "_" . rand(10, 999);
                     $nombre = $nombre_soli . "." . $ext;
                     // Asigna propiedades del archivo actual
                     $_FILES["file"]["name"] = $nombre;
@@ -1097,7 +1110,6 @@ class SoporteController extends Controller
                         echo "Error al cargar el archivo: " . $nombre;
                     }
                 }
-
                 // Une los nombres de los archivos en una sola cadena separada por comas
                 if (!empty($uploaded_files)) {
                     $data['documento1'] = implode(",", $uploaded_files);
@@ -1132,38 +1144,24 @@ class SoporteController extends Controller
         }
     }
 
-    // En tu controlador
-    public function deleteFile($id_soportesolucion, $documento1, $fileName)
+
+
+    private function removeFileFromDocumento1($documento1, $fileName)
     {
-        // Conectar al servidor FTP (o a tu almacenamiento en la nube)
-        $ftpServer = "lanumerounocloud.com";
-        $ftpUsername = "intranet@lanumerounocloud.com";
-        $ftpPassword = "Intranet2022@";
-        $ftpConnection = ftp_connect($ftpServer);
-        if ($ftpConnection) {
-            // Autenticarse en el servidor FTP
-            $login = ftp_login($ftpConnection, $ftpUsername, $ftpPassword);
-            if ($login) {
-                // Eliminar el archivo desde el servidor FTP
-                $ftpPath = 'SOPORTE/' . $fileName;
-                if (ftp_delete($ftpConnection, $ftpPath)) {
-                    // Actualizar el registro en la base de datos
-                    DB::table('soporte_solucion')->where('idsoporte_solucion', $id_soportesolucion)
-                        ->update(['documento1' => $documento1]);
-                    return response()->json(['success' => true]);
-                } else {
-                    return response()->json(['success' => false, 'message' => 'No se pudo eliminar el archivo desde el servidor FTP.'], 500);
-                }
-            } else {
-                return response()->json(['success' => false, 'message' => 'No se pudo conectar al servidor FTP.'], 500);
-            }
-        } else {
-            return response()->json(['success' => false, 'message' => 'No se pudo conectar al servidor FTP.'], 500);
+        // Si documento1 contiene un valor, lo dividimos en un array
+        if (!empty($documento1)) {
+            $documentoArray = explode(',', $documento1);
+            // Filtrar para eliminar el fileName de la lista
+            $documentoArray = array_filter($documentoArray, function ($doc) use ($fileName) {
+                return $doc !== $fileName;
+            });
+            // Volver a unir el array en una cadena
+            $newDocumento1 = implode(',', $documentoArray);
+            return $newDocumento1;
         }
+
+        return $documento1; // Si documento1 está vacío o no contiene el archivo, devolvemos el valor tal como está
     }
-
-
-
 
     public function cancelar_tick_master(Request $request, $id)
     {

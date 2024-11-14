@@ -789,9 +789,27 @@ class ColaboradorController extends Controller
     }
 
     public function List_Datos_Laborales(Request $request){
-        $this->Model_Perfil = new Model_Perfil();
-        $id_usuario= $request->input("id_usuario");
-        $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
+        $dato['get_id'] = Usuario::from('users AS us')->select('us.id_usuario','ge.nom_gerencia',
+                        'sg.nom_sub_gerencia','ar.nom_area','pu.nom_puesto','ub.cod_ubi AS ubicacion',
+                        'ml.nom_modalidad_laboral','ho.nombre AS nom_horario','us.horas_semanales',
+                        DB::raw('(SELECT COUNT(1) FROM users_historico_puesto p 
+                        WHERE p.estado=1 AND p.id_usuario=us.id_usuario) AS cant_historico_puesto'),
+                        DB::raw('(SELECT COUNT(1) FROM users_historico_centro_labores q 
+                        WHERE q.estado=1 AND q.id_usuario=us.id_usuario) AS cant_historico_base'),
+                        DB::raw('(SELECT COUNT(1) FROM users_historico_modalidadl r 
+                        WHERE r.estado=1 AND r.id_usuario=us.id_usuario) AS cant_historico_modalidad'),
+                        DB::raw('(SELECT COUNT(1) FROM users_historico_horario s 
+                        WHERE s.estado=1 AND s.id_usuario=us.id_usuario) AS cant_historico_horario'),
+                        DB::raw('(SELECT COUNT(1) FROM users_historico_horas_semanales s
+                        WHERE s.id_usuario=us.id_usuario AND s.estado=1) AS cant_historico_horas_semanales'))
+                        ->join('puesto AS pu','pu.id_puesto','=','us.id_puesto')
+                        ->join('area AS ar','ar.id_area','=','pu.id_area')
+                        ->join('sub_gerencia AS sg','sg.id_sub_gerencia','=','ar.id_departamento')
+                        ->join('gerencia AS ge','ge.id_gerencia','=','sg.id_gerencia')
+                        ->join('ubicacion AS ub','ub.id_ubicacion','=','us.id_centro_labor')
+                        ->leftjoin('modalidad_laboral AS ml','ml.id_modalidad_laboral','=','us.id_modalidad_laboral')
+                        ->leftjoin('horario AS ho','ho.id_horario','=','us.id_horario')
+                        ->where('us.id_usuario',$request->id_usuario)->first();
         return view('rrhh.Perfil.Historico_Colaborador.datos_laborales',$dato);
     }
 
@@ -1042,180 +1060,112 @@ class ColaboradorController extends Controller
 */
 
     public function Modal_Update_Historico_Puesto($id_usuario){
-            $dato['id_usuario']=$id_usuario;
-            $dato['get_historico'] = UsersHistoricoPuesto::where('id_usuario', $id_usuario)
-                                    ->where('estado', 1)
-                                    ->orderBy('fec_reg', 'DESC')
-                                    ->limit(1)
+        $dato['id_usuario']=$id_usuario;
+        $dato['get_historico'] = UsersHistoricoPuesto::from('users_historico_puesto AS up')
+                                ->select('pu.id_puesto','ar.id_area','sg.id_sub_gerencia',
+                                'sg.id_gerencia','up.fec_inicio','up.id_tipo_cambio',
+                                'up.con_fec_fin','up.fec_fin','up.id_centro_labor')
+                                ->join('puesto AS pu','pu.id_puesto','=','up.id_puesto')
+                                ->join('area AS ar','ar.id_area','=','pu.id_area')
+                                ->join('sub_gerencia AS sg','sg.id_sub_gerencia','=','ar.id_departamento')
+                                ->where('up.id_usuario', $id_usuario)
+                                ->where('up.estado', 1)
+                                ->orderBy('up.fec_reg', 'DESC')
+                                ->first();
+        $dato['list_gerencia'] = Gerencia::where('estado', 1)
+                                ->orderby('nom_gerencia', 'ASC')
+                                ->get();
+        $dato['list_tipo_cambio'] = TipoCambioPuesto::all();
+        if($dato['get_historico']){
+            $dato['list_sub_gerencia'] = SubGerencia::where('id_gerencia', $dato['get_historico']->id_gerencia)
+                                    ->orderBy('nom_sub_gerencia', 'ASC')
                                     ->get();
-            $dato['list_gerencia'] = Gerencia::where('estado', 1)
-                                    ->orderby('nom_gerencia', 'ASC')
-                                    ->get();
-            $dato['list_tipo_cambio'] = TipoCambioPuesto::all();
-            if(count($dato['get_historico'])>0){
-                $dato['list_sub_gerencia'] = SubGerencia::where('id_gerencia', $dato['get_historico'][0]['id_gerencia'])
-                                        ->orderBy('nom_sub_gerencia', 'ASC')
-                                        ->get();
-                $dato['list_area'] = Area::where('id_departamento', $dato['get_historico'][0]['id_sub_gerencia'])
-                                    ->where('estado', 1)
-                                    ->get();
-                $dato['list_puesto'] = Puesto::where('id_area', $dato['get_historico'][0]['id_area'])
-                                    ->where('estado', 1)
-                                    ->get();
-            }
-            return view('rrhh.Perfil.Historico_Colaborador.modal_historico_puesto',$dato);
+            $dato['list_area'] = Area::where('id_departamento', $dato['get_historico']->id_sub_gerencia)
+                                ->where('estado', 1)
+                                ->get();
+            $dato['list_puesto'] = Puesto::where('id_area', $dato['get_historico']->id_area)
+                                ->where('estado', 1)
+                                ->get();
+        }else{
+            $dato['list_sub_gerencia'] = [];
+            $dato['list_area'] = [];
+            $dato['list_puesto'] = [];
+        }
+        $dato['list_ubicacion'] = Ubicacion::where('estado',1)->orderBy('cod_ubi','ASC')->get();
+        return view('rrhh.Perfil.Historico_Colaborador.modal_historico_puesto',$dato);
     }
 
-    public function Busca_Sub_Gerencia_Hp(Request $request){
-        $id_gerencia = $request->input("id_gerencia");
+    public function Update_Historico_Puesto(Request $request, $id_usuario){
+        $request->validate([
+            'id_gerencia_hp' => 'gt:0',
+            'id_sub_gerencia_hp' => 'gt:0',
+            'id_area_hp' => 'gt:0',
+            'id_puesto_hp' => 'gt:0',
+            'id_centro_labor_hp' => 'gt:0',
+            'fec_inicio_hp' => 'required',
+            'fec_fin_hp' => 'required_if:con_fec_fin_hp,1'
+        ], [
+            'id_gerencia_hp.gt' => 'Debe seleccionar gerencia.',
+            'id_sub_gerencia_hp.gt' => 'Debe seleccionar sub-gerencia.',
+            'id_area_hp.gt' => 'Debe seleccionar área.',
+            'id_puesto_hp.gt' => 'Debe seleccionar puesto.',
+            'id_centro_labor_hp.gt' => 'Debe seleccionar centro de labor.',
+            'fec_inicio_hp.required' => 'Debe ingresar fecha de inicio.',
+            'fec_fin_hp.required_if' => 'Debe ingresar fecha fin.'
+        ]);
 
-        $dato['list_sub_gerencia'] = SubGerencia::where('id_gerencia', $id_gerencia)
-            ->orderBy('nom_sub_gerencia', 'ASC')
-            ->get();
-        return view('rrhh.Perfil.Historico_Colaborador.cmb_sub_gerencia',$dato);
-    }
+        $get_id = UsersHistoricoPuesto::from('users_historico_puesto AS up')
+                ->select('up.id_historico_puesto','pu.id_puesto','ar.id_area','sg.id_sub_gerencia',
+                'sg.id_gerencia','up.fec_inicio','up.id_tipo_cambio',
+                'up.con_fec_fin','up.fec_fin','up.id_centro_labor')
+                ->join('puesto AS pu','pu.id_puesto','=','up.id_puesto')
+                ->join('area AS ar','ar.id_area','=','pu.id_area')
+                ->join('sub_gerencia AS sg','sg.id_sub_gerencia','=','ar.id_departamento')
+                ->where('up.id_usuario', $id_usuario)
+                ->where('up.estado', 1)
+                ->orderBy('up.fec_reg', 'DESC')
+                ->first();
 
-    public function Busca_Area_Hp(Request $request){
-        $id_sub_gerencia = $request->input("id_sub_gerencia");
-        $dato['list_area'] = Area::where('id_departamento', $id_sub_gerencia)
-            ->where('estado', 1)
-            ->get();
-        return view('rrhh.Perfil.Historico_Colaborador.cmb_area',$dato);
-    }
+        if($get_id){
+            if($request->id_puesto_hp!=$get_id->id_puesto && $request->id_centro_labor_hp!=$get_id->id_centro_labor){
+                UsersHistoricoPuesto::create([
+                    'id_usuario' => $id_usuario,
+                    'id_puesto' => $request->id_puesto_hp,
+                    'id_centro_labor' => $request->id_centro_labor_hp,
+                    'fec_inicio' => $request->fec_inicio_hp,
+                    'id_tipo_cambio' => $request->id_tipo_cambio_hp,
+                    'con_fec_fin' => $request->con_fec_fin_hp,
+                    'fec_fin' => $request->fec_fin_hp,
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => session('usuario')->id_usuario,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
+                Usuario::findOrFail($id_usuario)->update([
+                    'id_puesto' => $request->id_puesto_hp,
+                    'id_centro_labor' => $request->id_centro_labor_hp,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
 
-    public function Busca_Puesto_Hp(Request $request){
-        $id_area = $request->input("id_area");
-        $dato['list_puesto'] = Puesto::where('id_area', $id_area)
-            ->where('estado', 1)
-            ->get();
-        return view('rrhh.Perfil.Historico_Colaborador.cmb_puesto',$dato);
-
-    }
-
-    public function Update_Historico_Puesto(Request $request){
-            $id_historico_puesto= $request->input("id_historico_puesto");
-            $dato['id_usuario']= $request->input("id_usuario_hp");
-            $dato['id_gerencia']= $request->input("id_gerencia_hp");
-            $dato['id_sub_gerencia']= $request->input("id_sub_gerencia_hp");
-            $dato['id_area']= $request->input("id_area_hp");
-            $dato['id_puesto']= $request->input("id_puesto_hp");
-            $dato['fec_inicio']= $request->input("fec_inicio_hp");
-            $dato['fec_fin']= $request->input("fec_fin_hp");
-            $dato['id_tipo_cambio']= $request->input("id_tipo_cambio_hp");
-            $dato['con_fec_fin']= $request->input("con_fec_fin_hp");
-            $dato['id_puesto_bd']= $request->input("id_puesto_bd_hp");
-            if($request->con_fec_fin_hp){
-                $con_fec_fin_hp=$request->con_fec_fin_hp;
-            }else{
-                $con_fec_fin_hp=0;
-            }
-            if($id_historico_puesto!=""){
-                if($dato['id_puesto']!=$dato['id_puesto_bd']){
-                    UsersHistoricoPuesto::create([
-                        'id_usuario' => $request->id_usuario_hp,
-                        'id_gerencia' => $request->id_gerencia_hp,
-                        'id_sub_gerencia' => $request->id_sub_gerencia_hp,
-                        'id_area' => $request->id_area_hp,
-                        'id_puesto' => $request->id_puesto_hp,
-                        'fec_inicio' => $request->fec_inicio_hp,
-                        'fec_fin' => $request->fec_fin_hp,
-                        'con_fec_fin' => $con_fec_fin_hp,
-                        'estado' => 1,
-                        'fec_reg' => now(),
-                        'fec_act' => now(),
-                        'user_act' => session('usuario')->id_usuario,
-                        'user_reg' => session('usuario')->id_usuario,
-                    ]);
-                    Usuario::findOrFail($request->id_usuario_hp)->update([
-                        'id_puesto' => $request->id_puesto_hp,
-                        'fec_act' => now(),
-                        'user_act' => session('usuario')->id_usuario,
-                    ]);
-
-                    $get_id = Organigrama::where('id_usuario', $request->id_usuario_hp)
-                            ->get();
-                    Organigrama::where('id', $get_id[0]['id'])->update([
+                $get_org = Organigrama::where('id_usuario', $id_usuario)
+                        ->first();
+                if($get_org){
+                    Organigrama::findOrFail($get_org->id)->update([
                         'id_usuario' => 0,
                         'fecha' => now(),
                         'usuario' => session('usuario')->id_usuario,
                     ]);
-                    $get_usuario = Usuario::findOrFail($request->id_usuario_hp);
-                    $valida = Organigrama::where('id_puesto', $request->id_puesto_hp)
-                            ->where('id_centro_labor',$get_usuario->id_centro_labor)
-                            ->where('id_usuario',0)
-                            ->first();
-                    if(isset($valida->id)){
-                        Organigrama::findOrFail($valida->id)->update([
-                            'id_usuario' => $request->id_usuario_hp,
-                            'fecha' => now(),
-                            'usuario' => session('usuario')->id_usuario
-                        ]);
-                    }else{
-                        Organigrama::create([
-                            'id_puesto' => $request->id_puesto_hp,
-                            'id_centro_labor' => $get_usuario->id_centro_labor,
-                            'id_usuario' => $request->id_usuario_hp,
-                            'fecha' => now(),
-                            'usuario' => session('usuario')->id_usuario,
-                        ]);
-                    }
-                }else{
-                    UsersHistoricoPuesto::findOrfail($id_historico_puesto)->update([
-                        'id_gerencia' => $request->id_gerencia_hp,
-                        'id_sub_gerencia' => $request->id_sub_gerencia_hp,
-                        'id_area' => $request->id_area_hp,
-                        'id_puesto' => $request->id_puesto_hp,
-                        'fec_inicio' => $request->fec_inicio_hp,
-                        'id_tipo_cambio' => $request->id_tipo_cambio_hp,
-                        'con_fec_fin' => $con_fec_fin_hp,
-                        'fec_fin' => $request->fec_fin_hp,
-                        'fec_act' => now(),
-                        'user_act' => session('usuario')->id_usuario,
-                    ]);
-                    Usuario::findOrFail($request->id_usuario_hp)->update([
-                        'id_puesto' => $request->id_puesto_hp,
-                        'fec_act' => now(),
-                        'user_act' => session('usuario')->id_usuario,
-                    ]);
                 }
-            }else{
-                UsersHistoricoPuesto::create([
-                    'id_usuario' => $request->id_usuario_hp,
-                    'id_gerencia' => $request->id_gerencia_hp,
-                    'id_sub_gerencia' => $request->id_sub_gerencia_hp,
-                    'id_area' => $request->id_area_hp,
-                    'id_puesto' => $request->id_puesto_hp,
-                    'fec_inicio' => $request->fec_inicio_hp,
-                    'fec_fin' => $request->fec_fin_hp,
-                    'id_tipo_cambio' => $request->id_tipo_cambio_hp,
-                    'con_fec_fin' => $con_fec_fin_hp,
-                    'estado' => 1,
-                    'fec_reg' => now(),
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario,
-                    'user_reg' => session('usuario')->id_usuario,
-                ]);
-                Usuario::findOrFail($request->id_usuario_hp)->update([
-                    'id_puesto' => $request->id_puesto_hp,
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario,
-                ]);
-
-                $get_id = Organigrama::where('id_usuario', $request->id_usuario_hp)
-                    ->get();
-                Organigrama::findOrFail('id', $get_id[0]['id'])->update([
-                    'id_usuario' => 0,
-                    'fecha' => now(),
-                    'usuario' => session('usuario')->id_usuario,
-                ]);
-                $get_usuario = Usuario::findOrFail($request->id_usuario_hp);
+                $get_usuario = Usuario::findOrFail($id_usuario);
                 $valida = Organigrama::where('id_puesto', $request->id_puesto_hp)
                         ->where('id_centro_labor',$get_usuario->id_centro_labor)
                         ->where('id_usuario',0)
                         ->first();
                 if(isset($valida->id)){
                     Organigrama::findOrFail($valida->id)->update([
-                        'id_usuario' => $request->id_usuario_hp,
+                        'id_usuario' => $id_usuario,
                         'fecha' => now(),
                         'usuario' => session('usuario')->id_usuario
                     ]);
@@ -1223,13 +1173,75 @@ class ColaboradorController extends Controller
                     Organigrama::create([
                         'id_puesto' => $request->id_puesto_hp,
                         'id_centro_labor' => $get_usuario->id_centro_labor,
-                        'id_usuario' => $request->id_usuario_hp,
+                        'id_usuario' => $id_usuario,
                         'fecha' => now(),
-                        'usuario' => session('usuario')->id_usuario,
+                        'usuario' => session('usuario')->id_usuario
                     ]);
                 }
+            }else{
+                UsersHistoricoPuesto::findOrfail($get_id->id_historico_puesto)->update([
+                    'fec_inicio' => $request->fec_inicio_hp,
+                    'id_tipo_cambio' => $request->id_tipo_cambio_hp,
+                    'con_fec_fin' => $request->con_fec_fin_hp,
+                    'fec_fin' => $request->fec_fin_hp,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
             }
+        }else{
+            UsersHistoricoPuesto::create([
+                'id_usuario' => $id_usuario,
+                'id_puesto' => $request->id_puesto_hp,
+                'id_centro_labor' => $request->id_centro_labor_hp,
+                'fec_inicio' => $request->fec_inicio_hp,
+                'id_tipo_cambio' => $request->id_tipo_cambio_hp,
+                'con_fec_fin' => $request->con_fec_fin_hp,
+                'fec_fin' => $request->fec_fin_hp,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+            Usuario::findOrFail($id_usuario)->update([
+                'id_puesto' => $request->id_puesto_hp,
+                'id_centro_labor' => $request->id_centro_labor_hp,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+
+            $get_org = Organigrama::where('id_usuario', $id_usuario)
+                    ->first();
+            if($get_org){
+                Organigrama::findOrFail($get_org->id)->update([
+                    'id_usuario' => 0,
+                    'fecha' => now(),
+                    'usuario' => session('usuario')->id_usuario,
+                ]);
+            }
+            $get_usuario = Usuario::findOrFail($id_usuario);
+            $valida = Organigrama::where('id_puesto', $request->id_puesto_hp)
+                    ->where('id_centro_labor',$get_usuario->id_centro_labor)
+                    ->where('id_usuario',0)
+                    ->first();
+            if(isset($valida->id)){
+                Organigrama::findOrFail($valida->id)->update([
+                    'id_usuario' => $id_usuario,
+                    'fecha' => now(),
+                    'usuario' => session('usuario')->id_usuario
+                ]);
+            }else{
+                Organigrama::create([
+                    'id_puesto' => $request->id_puesto_hp,
+                    'id_centro_labor' => $get_usuario->id_centro_labor,
+                    'id_usuario' => $id_usuario,
+                    'fecha' => now(),
+                    'usuario' => session('usuario')->id_usuario
+                ]);
+            }
+        }
     }
+
     public function Modal_Detalle_Historico_Colaborador($id_usuario,$tipo){
         $dato['id_usuario']=$id_usuario;
         $dato['tipo']=$tipo;

@@ -432,9 +432,6 @@ Route::controller(SoporteController::class)->group(function () {
     Route::get('tablagenerales', 'index_tg')->name('tablagenerales');
     Route::post('soporte_tablagenerales/list_filtro', 'list_soporte_tablagenerales_filtro')->name('soporte_tablagenerales.list_filtro');
     Route::get('soporte_tg/{fec_ini}/{fec_fin}/{cpiniciar}/{cproceso}/{cstandby}/{ccompletado}/{ccancelado}/excel', 'excel_tg')->name('soporte_tg.excel');
-
-    // Carga de Documentos
-    Route::delete('soporte_delete_documents/{id_soportesolucion}/{documento1}/{fileName}', 'deleteFile')->name('soporte_delete_documents.destroy');
 });
 
 // ADMINISTRABLES - TICKETS SOPORTE
@@ -1209,10 +1206,7 @@ Route::controller(ColaboradorController::class)->group(function () {
     Route::post('ColaboradorController/Update_Historico_Horario', 'Update_Historico_Horario');
     Route::post('ColaboradorController/Update_Historico_Horas_Semanales', 'Update_Historico_Horas_Semanales');
     Route::get('ColaboradorController/Modal_Update_Historico_Puesto/{id}', 'Modal_Update_Historico_Puesto');
-    Route::post('ColaboradorController/Update_Historico_Puesto', 'Update_Historico_Puesto');
-    Route::get('ColaboradorController/Busca_Sub_Gerencia_Hp', 'Busca_Sub_Gerencia_Hp');
-    Route::get('ColaboradorController/Busca_Area_Hp', 'Busca_Area_Hp');
-    Route::get('ColaboradorController/Busca_Puesto_Hp', 'Busca_Puesto_Hp');
+    Route::post('ColaboradorController/{id_usuario}/Update_Historico_Puesto', 'Update_Historico_Puesto')->name('colaborador_perfil.update_puesto');
     Route::get('ColaboradorController/Modal_Detalle_Historico_Colaborador/{id}/{tipo}', 'Modal_Detalle_Historico_Colaborador');
     Route::post('ColaboradorController/Valida_Planilla_Activa', 'Valida_Planilla_Activa');
     Route::get('ColaboradorController/Modal_Dato_Planilla/{id}', 'Modal_Dato_Planilla');
@@ -2179,7 +2173,7 @@ Route::controller(ContactosController::class)->group(function () {
     Route::post('Contactos/Lista_Mis_Tareas', 'Lista_Mis_Tareas');
 });
 
-Route::controller(InicioController::class)->group(function (){
+Route::controller(InicioController::class)->group(function () {
     Route::get('Inicio/Modal_Ver_Todo_Cumpleanios', 'Modal_Ver_Todo_Cumpleanios');
 });
 

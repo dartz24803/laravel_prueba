@@ -7,88 +7,125 @@
     </div>
 
     <div class="modal-body" style="max-height:500px; overflow:auto;" >
-        <div class="col-md-12 row">
-            <div class="form-group col-md-6">
+        <div class="row">
+            <div class="form-group col-lg-6">
                 <label class="control-label text-bold">Gerencia: </label>
-                <div class="">
-                    <select class="form-control" name="id_gerencia_hp" id="id_gerencia_hp" onchange="Busca_Sub_Gerencia_Hp();">
-                        <option value="0">Seleccionar</option>
-                        <?php foreach($list_gerencia as $list){?> 
-                            <option <?php if(count($get_historico)>0){if($get_historico[0]['id_gerencia'] == $list->id_gerencia){echo "selected";}}?> value="<?php echo $list->id_gerencia; ?>"><?php echo $list['nom_gerencia'];?></option> 
-                        <?php } ?>
-                    </select>
-                </div>
+                <select class="form-control" name="id_gerencia_hp" id="id_gerencia_hp" 
+                onchange="Busca_Sub_Gerencia_Hp();">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_gerencia as $list)
+                        <option @if (isset($get_historico->id_puesto) && 
+                        $list->id_gerencia==$get_historico->id_gerencia) selected @endif
+                        value="{{ $list->id_gerencia }}">
+                            {{ $list->nom_gerencia }}
+                        </option> 
+                    @endforeach
+                </select>
             </div>
 
-            <div class="form-group col-md-6">
+            <div class="form-group col-lg-6">
                 <label class="control-label text-bold">Sub-Gerencia: </label>
-                <div class="">
-                    <select class="form-control" name="id_sub_gerencia_hp" id="id_sub_gerencia_hp" onchange="Busca_Area_Hp();">
-                        <option value="0">Seleccionar</option>
-                        <?php foreach($list_sub_gerencia as $list){?> 
-                            <option <?php if(count($get_historico)>0){if($get_historico[0]['id_sub_gerencia'] == $list['id_sub_gerencia']){echo "selected";}}?> value="<?php echo $list['id_sub_gerencia']; ?>"><?php echo $list['nom_sub_gerencia']; ?></option> 
-                        <?php } ?>
-                    </select>
-                </div>
+                <select class="form-control" name="id_sub_gerencia_hp" id="id_sub_gerencia_hp" 
+                onchange="Busca_Area_Hp();">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_sub_gerencia as $list)
+                        <option @php if(isset($get_historico->id_puesto) && 
+                        $list->id_sub_gerencia==$get_historico->id_sub_gerencia){ echo "selected"; } @endphp 
+                        value="{{ $list->id_sub_gerencia }}">
+                            {{ $list->nom_sub_gerencia }}
+                        </option> 
+                    @endforeach
+                </select>
             </div>
-            
-            <div class="form-group col-md-6">
+        </div>
+        
+        <div class="row">
+            <div class="form-group col-lg-6">
                 <label class="control-label text-bold">Área: </label>
-                <div class="">
-                    <select class="form-control" name="id_area_hp" id="id_area_hp" onchange="Busca_Puesto_Hp();">
-                        <option value="0">Seleccionar</option>
-                        <?php foreach($list_area as $list){?> 
-                            <option <?php if(count($get_historico)>0){if($get_historico[0]['id_area'] == $list->id_area){echo "selected";}}?> value="<?php echo $list->id_area; ?>"><?php echo $list['nom_area'];?></option> 
-                        <?php } ?>
-                    </select>
-                </div>
+                <select class="form-control" name="id_area_hp" id="id_area_hp" 
+                onchange="Busca_Puesto_Hp();">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_area as $list)
+                        <option @php if(isset($get_historico->id_puesto) && 
+                        $list->id_area==$get_historico->id_area){ echo "selected"; } @endphp 
+                        value="{{ $list->id_area }}">
+                            {{ $list->nom_area }}
+                        </option> 
+                    @endforeach
+                </select>
             </div>            
             
-            <div class="form-group col-md-6">
+            <div class="form-group col-lg-6">
                 <label class="control-label text-bold">Puesto: </label>
-                <div class="">
-                    <select class="form-control" name="id_puesto_hp" id="id_puesto_hp" onchange="Limpiar_Fechas_Historico_Puesto()">
-                        <option value="0">Seleccionar</option>
-                        <?php foreach($list_puesto as $list){?> 
-                            <option <?php if(count($get_historico)>0){if($get_historico[0]['id_puesto'] == $list->id_puesto){echo "selected";}}?> value="<?php echo $list->id_puesto; ?>"><?php echo $list['nom_puesto'];?></option> 
-                        <?php } ?>
-                    </select>
-                </div>
-            </div>            
-            
-            <div class="form-group col-md-6">
+                <select class="form-control" name="id_puesto_hp" id="id_puesto_hp" 
+                onchange="Limpiar_Fechas_Historico_Puesto();">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_puesto as $list)
+                        <option @php if(isset($get_historico->id_puesto) && 
+                        $list->id_puesto==$get_historico->id_puesto){ echo "selected"; } @endphp 
+                        value="{{ $list->id_puesto }}">
+                            {{ $list->nom_puesto }}
+                        </option> 
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="form-group col-lg-6">
+                <label class="control-label text-bold">Centro de labor: </label>
+                <select class="form-control" name="id_centro_labor_hp" id="id_centro_labor_hp">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_ubicacion as $list)
+                        <option @php if(isset($get_historico->id_puesto) && 
+                        $list->id_ubicacion==$get_historico->id_centro_labor){ echo "selected"; } @endphp 
+                        value="{{ $list->id_ubicacion }}">
+                            {{ $list->cod_ubi }}
+                        </option> 
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="form-group col-lg-6">
                 <label class="control-label text-bold">Fecha de Inicio: </label>
-                <div class="">
-                    <input type="date" name="fec_inicio_hp" id="fec_inicio_hp" value="<?php if(count($get_historico)>0){echo $get_historico[0]['fec_inicio'];} ?>" class="form-control">
-                </div>
-            </div>            
-            <div class="form-group col-md-6">
+                <input type="date" class="form-control" name="fec_inicio_hp" id="fec_inicio_hp" 
+                value="@php if(isset($get_historico->id_puesto)){ echo $get_historico->fec_inicio; } @endphp">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-6">
                 <label class="control-label text-bold">Tipo: </label>
-                <div class="">
-                    <select class="form-control" name="id_tipo_cambio_hp" id="id_tipo_cambio_hp" >
-                        <option value="0">Seleccionar</option>
-                        <?php foreach($list_tipo_cambio as $list){?>
-                        <option value="<?php echo $list->id_tipo_cambio ?>" <?php if(count($get_historico)>0){if($get_historico[0]['id_tipo_cambio']==$list->id_tipo_cambio){echo "selected";}}?>><?php echo $list->nom_tipo_cambio ?></option>    
-                        <?php }?>
-                    </select>
-                </div>
-            </div> 
-            <div class="form-group col-md-6">
-                <input type="checkbox" name="con_fec_fin_hp" id="con_fec_fin_hp" value="1" <?php if(count($get_historico)>0){if($get_historico[0]['con_fec_fin']==1){echo "checked";}}?> onclick="Mostrar_FecFin_Puesto()" >
+                <select class="form-control" name="id_tipo_cambio_hp" id="id_tipo_cambio_hp" >
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_tipo_cambio as $list)
+                        <option @php if(isset($get_historico->id_puesto) && 
+                        $list->id_tipo_cambio==$get_historico->id_tipo_cambio){ echo "selected"; } @endphp 
+                        value="{{ $list->id_tipo_cambio }}">
+                            {{ $list->nom_tipo_cambio }}
+                        </option> 
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="form-group col-lg-6">
+                <input type="checkbox" name="con_fec_fin_hp" id="con_fec_fin_hp" value="1" 
+                @php if(isset($get_historico->id_puesto) && 
+                $get_historico->con_fec_fin=="1"){ echo "checked"; } @endphp 
+                onclick="Mostrar_FecFin_Puesto();">
                 <label class="control-label text-bold" for="con_fec_fin_hp">Con fecha fin: </label>
-                <div class="">
-                    <input type="date" name="fec_fin_hp" id="fec_fin_hp" value="<?php if(count($get_historico)>0){echo $get_historico[0]['fec_fin'];}  ?>" class="form-control" style="display:<?php if(count($get_historico)>0){if($get_historico[0]['con_fec_fin']==1){echo "block";}else{echo "none";}}?>">
-                </div>
+                <input type="date" class="form-control" name="fec_fin_hp" id="fec_fin_hp"
+                value="@php if(isset($get_historico->id_puesto)){ echo $get_historico->fec_fin; } @endphp"
+                style="display:@php if(isset($get_historico->id_puesto) && 
+                $get_historico->con_fec_fin=="1"){ echo "block"; }else{ echo "none"; } @endphp">
             </div>
         </div>
     </div>
 
     <div class="modal-footer">
-        <input name="id_puesto_bd_hp" type="hidden" id="id_puesto_bd_hp" value="<?php if(count($get_historico)>0){echo $get_historico[0]['id_puesto'];} ?>">    
-        <input name="id_usuario_hp" type="hidden" id="id_usuario_hp" value="<?php echo $id_usuario; ?>">
-        <input name="id_historico_puesto" type="hidden" id="id_historico_puesto" value="<?php if(count($get_historico)>0){echo $get_historico[0]['id_historico_puesto'];} ?>">
         @csrf
-        <button class="btn btn-primary" onclick="Update_Historico_Puesto('<?php echo $id_usuario; ?>');" type="button">Guardar</button>
+        <button class="btn btn-primary" onclick="Update_Historico_Puesto();" 
+        type="button">Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
 </form>
@@ -98,21 +135,19 @@
         Cargando();
 
         var id_gerencia = $('#id_gerencia_hp').val();
-        var url = "{{ url('ColaboradorController/Busca_Sub_Gerencia_Hp') }}";
-        var csrfToken = $('input[name="_token"]').val();
+        var url = "{{ route('colaborador_conf.traer_sub_gerencia') }}";
 
         $.ajax({
-            url: url, 
-            type: 'GET',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
+            url: url,
+            type: 'POST',
             data: {'id_gerencia':id_gerencia},
-            success: function(data)
-            {
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(data){
                 $('#id_sub_gerencia_hp').html(data);
-                $('#id_area_hp').html('<option value="0">Seleccionar</option>');
-                $('#id_puesto_hp').html('<option value="0">Seleccionar</option>');
+                $('#id_area_hp').html('<option value="0">Seleccione</option>');
+                $('#id_puesto_hp').html('<option value="0">Seleccione</option>');
             }
         });
     }
@@ -121,20 +156,18 @@
         Cargando();
 
         var id_sub_gerencia = $('#id_sub_gerencia_hp').val();
-        var url = "{{ url('ColaboradorController/Busca_Area_Hp') }}";
-        var csrfToken = $('input[name="_token"]').val();
+        var url = "{{ route('colaborador_conf.traer_area') }}";
 
         $.ajax({
             url: url, 
-            type: 'GET',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
+            type: 'POST',
             data: {'id_sub_gerencia':id_sub_gerencia},
-            success: function(data)
-            {
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(data){
                 $('#id_area_hp').html(data);
-                $('#id_puesto_hp').html('<option value="0">Seleccionar</option>');      
+                $('#id_puesto_hp').html('<option value="0">Seleccione</option>');      
             }
         });
     }
@@ -143,18 +176,16 @@
         Cargando();
 
         var id_area = $('#id_area_hp').val();
-        var url = "{{ url('ColaboradorController/Busca_Puesto_Hp') }}";
-        var csrfToken = $('input[name="_token"]').val();
+        var url = "{{ route('colaborador_conf.traer_puesto') }}";
 
         $.ajax({
             url: url, 
-            type: 'GET',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
+            type: 'POST',
             data: {'id_area':id_area},
-            success: function(data)
-            {
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(data){
                 $('#id_puesto_hp').html(data);    
             }
         });
@@ -164,21 +195,27 @@
         $('#fec_inicio_hp').val('');
         $('#fec_fin_hp').val('');
     }
+
+    function Mostrar_FecFin_Puesto(){
+        var div = document.getElementById("fec_fin_hp");
+        $('#fec_fin_hp').val('');
+        if ($('#con_fec_fin_hp').is(":checked")){
+            div.style.display = "block";
+        }else{
+            div.style.display = "none";
+        }
+    }
     
-    function Update_Historico_Puesto(id_usuario) {
+    function Update_Historico_Puesto() {
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario_historico_puesto'));
-        var url = "{{ url('ColaboradorController/Update_Historico_Puesto') }}";
-        var csrfToken = $('input[name="_token"]').val();
+        var url = "{{ route('colaborador_perfil.update_puesto', $id_usuario) }}";
 
             $.ajax({
                 type: "POST",
                 url: url,
                 data: dataString,
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken
-                },
                 processData: false,
                 contentType: false,
                 success: function(data) {
@@ -187,9 +224,18 @@
                         'Haga clic en el botón!',
                         'success'
                     ).then(function() {
-                        List_Datos_Laborales(id_usuario);
+                        List_Datos_Laborales({{ $id_usuario }});
                         $("#ModalUpdate .close").click();
                     });
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
                 }
             });
     }
