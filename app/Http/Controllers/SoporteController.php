@@ -274,7 +274,7 @@ class SoporteController extends Controller
                 'area.gt' => 'Debe seleccionar Área',
             ]);
         }
-        // GENERECIÓN DE CÓDIGO
+        // GENERACIÓN DE CÓDIGO
 
         $cod_area = Soporte::getCodAreaByAsunto($request->asunto); // Obtiene el área
         $request->validate($rules, $messages);
