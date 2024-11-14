@@ -521,7 +521,7 @@ class Model_Perfil extends Model
                 a.id_area,a.nom_area,pu.nom_puesto,est.nom_estado_civil,du.id_departamento,du.id_provincia,
                 DATE_FORMAT(u.ini_funciones,'%d/%m/%Y') as inicio_funciones,e.nom_empresa,e.ruc_empresa,e.firma,e.direccion,
                 CASE WHEN (SELECT count(1) FROM area ar WHERE CONCAT(',', ar.puestos, ',') like CONCAT('%',u.id_puesto, '%'))>0 THEN 'SI' ELSE 'NO' END AS encargado_p,
-                u.centro_labores,(SELECT sl.nom_situacion_laboral FROM historico_colaborador hc
+                ubi.cod_ubi AS centro_labores,(SELECT sl.nom_situacion_laboral FROM historico_colaborador hc
                 LEFT JOIN situacion_laboral sl ON sl.id_situacion_laboral=hc.id_situacion_laboral
                 WHERE hc.id_usuario=$id_usuario AND hc.estado=1
                 ORDER BY hc.fec_inicio DESC
@@ -545,12 +545,13 @@ class Model_Perfil extends Model
                 LOWER(pu.nom_puesto) AS nom_puesto_min,sg.nom_sub_gerencia,ub.cod_ubi AS ubicacion,
                 b.id_gerencia
                 from users u
+                LEFT JOIN ubicacion ubi ON u.id_centro_labor = ubi.id_ubicacion
                 LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
                 LEFT JOIN tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
-                INNER JOIN puesto pu ON pu.id_puesto=u.id_puesto 
-                INNER JOIN area a ON a.id_area=pu.id_area
-                INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento 
-                INNER JOIN gerencia b ON b.id_gerencia=sg.id_gerencia
+                LEFT JOIN puesto pu ON pu.id_puesto=u.id_puesto 
+                LEFT JOIN area a ON a.id_area=pu.id_area
+                LEFT JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento 
+                LEFT JOIN gerencia b ON b.id_gerencia=sg.id_gerencia
                 LEFT JOIN domicilio_users du on du.id_usuario=u.id_usuario
                 LEFT JOIN estado_civil est on est.id_estado_civil =u.id_estado_civil
                 left join empresas e on e.id_empresa=u.id_empresapl
