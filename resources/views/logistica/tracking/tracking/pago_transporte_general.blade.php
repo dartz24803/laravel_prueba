@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('navbar')
-@include('logistica.navbar')
+    @include('logistica.navbar')
 @endsection
 
 @section('content')
@@ -35,8 +35,14 @@
                                 $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
                             @endphp
 
-                            <div class="form-group col-lg-12">
+                            <div class="form-group col-md-10">
                                 <label class="control-label text-bold" style="color: black;">Fecha: {{ $fecha_formateada }}</label>
+                            </div>
+
+                            <div class="form-group d-md-flex justify-content-end col-md-2">
+                                <a href="{{ route('tracking') }}" class="btn btn-primary">
+                                    Regresar
+                                </a>
                             </div>
                         </div>
 
@@ -145,7 +151,7 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             success:function (data) {
-                if(data=="no_data"){
+                if(data=="sin_data"){
                     Swal({
                         title: '¡Búsqueda Denegada!',
                         text: "¡No hay información de detalle inicial!",
@@ -154,7 +160,16 @@
                         confirmButtonColor: '#3085d6',
                         confirmButtonText: 'OK',
                     });
-                }else if(data=="repetido"){
+                }else if(data=="guia_remision"){
+                    Swal({
+                        title: '¡Búsqueda Denegada!',
+                        text: "¡No hay guía de remisión de transporte!",
+                        type: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
+                    });
+                }else if(data=="factura"){
                     Swal({
                         title: '¡Búsqueda Denegada!',
                         text: "¡Ya se registro el pago!",

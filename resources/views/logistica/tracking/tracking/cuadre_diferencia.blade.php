@@ -63,7 +63,9 @@
 
                             <div class="modal-footer mt-3">
                                 @csrf
-                                <button class="btn btn-primary" type="button" onclick="Insert_Reporte_Diferencia();">Guardar</button>
+                                @if (session('usuario')->id_puesto==74)
+                                    <button class="btn btn-primary" type="button" onclick="Insert_Reporte_Diferencia();">Guardar</button>
+                                @endif
                                 <a class="btn" href="{{ route('tracking') }}">Cancelar</a>
                             </div>
                         </form>

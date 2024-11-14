@@ -912,7 +912,21 @@ class TrackingController extends Controller
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(7);
-        $list_base = Base::get_list_bases_tienda();
+        if(session('usuario')->id_puesto==30 ||
+        session('usuario')->id_puesto==31 ||
+        session('usuario')->id_puesto==32 ||
+        session('usuario')->id_puesto==33 ||
+        session('usuario')->id_puesto==35 ||
+        session('usuario')->id_puesto==161 ||
+        session('usuario')->id_puesto==167 ||
+        session('usuario')->id_puesto==168 ||
+        session('usuario')->id_puesto==311 ||
+        session('usuario')->id_puesto==314){
+            $list_base = Base::where('cod_base',session('usuario')->centro_labores)->where('estado',1)
+                        ->get();
+        }else{
+            $list_base = Base::get_list_bases_tienda();                        
+        }
         return view('logistica.tracking.tracking.pago_transporte_general', compact(
             'list_notificacion',
             'list_subgerencia',
@@ -925,15 +939,17 @@ class TrackingController extends Controller
         $get_id = TrackingTransporte::where('id_base',$request->id_base)
                 ->where('anio',date('Y'))->where('semana',$request->semana)->first();
         if(isset($get_id->id)){
-            if($get_id->factura_transporte!=""){
-                echo "repetido";
+            if($get_id->guia_remision==""){
+                echo "guia_remision";
+            }elseif($get_id->factura_transporte!=""){
+                echo "factura";
             }else{
                 return view('logistica.tracking.tracking.detalle_pago_transporte_general', compact(
                     'get_id'
                 ));
             }
         }else{
-            echo "no_data";
+            echo "sin_data";
         }
     }
 
