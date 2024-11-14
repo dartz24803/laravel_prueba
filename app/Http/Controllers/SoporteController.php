@@ -760,19 +760,30 @@ class SoporteController extends Controller
         $get_id = Soporte::getTicketById($id_soporte);
         $comentarios_user = SoporteSolucion::getComentariosUserBySolucion($get_id->idsoporte_solucion);
         // dd($comentarios_user);
-        $area = DB::table('soporte_asunto')
-            ->leftJoin('area', 'soporte_asunto.id_area', '=', 'area.id_area')
-            ->where('soporte_asunto.idsoporte_asunto', $get_id->id_asunto)
-            ->select('soporte_asunto.*', 'area.nom_area')
-            ->first();
-        if ($area->id_area == 0) {
-            $areaResponsable = $get_id->id_area;
+        if ($get_id->id_asunto == 245) {
+            // Si el id_asunto es 245, obtenemos id_area directamente de la tabla soporte
+            $idArea = DB::table('soporte')
+                ->where('soporte.id_soporte', $get_id->id_soporte)
+                ->select('soporte.id_area')
+                ->first();
         } else {
-            $areaResponsable = $area->id_area;
+            // En otros casos, mantenemos el leftJoin con la tabla area para obtener nom_area
+            $idArea = DB::table('soporte_asunto')
+                ->leftJoin('area', 'soporte_asunto.id_area', '=', 'area.id_area')
+                ->where('soporte_asunto.idsoporte_asunto', $get_id->id_asunto)
+                ->select('soporte_asunto.id_area')
+                ->first();
         }
 
+        // dd($idArea);
+        if ($idArea && $idArea->id_area == 0) {
+            $areaResponsable = $get_id->id_area;
+        } else {
+            $areaResponsable = $idArea->id_area;  // Accedemos directamente a la propiedad id_area
+        }
         // Dividir el campo `id_area` en un array de IDs
-        $areaIds = explode(',', $areaResponsable);
+        $areaIds = is_string($areaResponsable) ? explode(',', $areaResponsable) : [$areaResponsable];
+        // dd($areaIds);
         // Crear listas basadas en los IDs obtenidos
         $list_primer_responsable = Usuario::get_list_colaborador_xarea_static(trim($areaIds[0]));
         $list_segundo_responsable = isset($areaIds[1]) ? Usuario::get_list_colaborador_xarea_static(trim($areaIds[1])) : [];
@@ -785,6 +796,7 @@ class SoporteController extends Controller
         } else {
             $list_responsable = $list_segundo_responsable;
         }
+        // dd($list_responsable);
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $cantAreasEjecut = count($list_ejecutores_responsables);
         if ($cantAreasEjecut > 3) {
@@ -811,7 +823,7 @@ class SoporteController extends Controller
             $list_ejecutores_responsables = $filtered->values();
         }
         // dd($get_id);
-        return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas', 'id_subgerencia', 'comentarios_user'));
+        return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable',  'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas', 'id_subgerencia', 'comentarios_user'));
     }
 
     public function update_tick_master(Request $request, $id)
@@ -843,11 +855,9 @@ class SoporteController extends Controller
         if ($id_subgerencia == "9" && $responsableMultiple == 1) {
             $rules = array_merge($rules, [
                 'id_responsablee_0' => 'gt:0',
-
             ]);
             $messages = array_merge($messages, [
                 'id_responsablee_0.gt' => 'Debe seleccionar Responsable',
-
             ]);
         }
         if ($id_subgerencia == "10") {
@@ -887,12 +897,10 @@ class SoporteController extends Controller
         $request->validate($rules, $messages);
 
         // GENERECIÓN DE CÓDIGO
-        // dd($get_id->id_area);
         $cod_area = Soporte::getCodAreaByIdArea($get_id->id_area); // Obtiene el área
         $request->validate($rules, $messages);
         $idsoporte_tipo = $request->nombre_tipo;
         // dd($get_id->activo_tipo);
-
         if ($get_id->activo_tipo == 1) {
             $area_code = $cod_area ? $cod_area['cod_area'] : 'TI';
             $prefijo = $idsoporte_tipo == 1 ? 'RQ-' . $area_code . '-' : 'INC-' . $area_code . '-';
