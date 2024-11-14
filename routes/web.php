@@ -831,7 +831,7 @@ Route::controller(ColaboradorConfController::class)->group(function () {
     // ----------------------------------------bryan----------------------------------*/
     /*-----------------------------------------Daniel---------------------------------*/
     Route::get('colaborador_conf_or', 'index_or')->name('colaborador_conf_or');
-    Route::get('colaborador_conf_or/list', 'list_or')->name('colaborador_conf_or.list');
+    Route::post('colaborador_conf_or/list', 'list_or')->name('colaborador_conf_or.list');
     Route::get('colaborador_conf_or/create', 'create_or')->name('colaborador_conf_or.create');
     Route::post('colaborador_conf_or', 'store_or')->name('colaborador_conf_or.store');
     Route::get('colaborador_conf_or/{id}/edit', 'edit_or')->name('colaborador_conf_or.edit');

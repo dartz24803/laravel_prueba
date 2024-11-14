@@ -4223,7 +4223,10 @@ class TrackingController extends Controller
     {
         try {
             if($request->estilo){
-                $query = MercaderiaSurtida::get_list_mercaderia_surtida(['cod_base'=>$request->cod_base,'estilo'=>$request->estilo]);
+                $query = MercaderiaSurtida::get_list_mercaderia_surtida([
+                    'cod_base' => $request->cod_base,
+                    'estilo' => $request->estilo
+                ]);
             }else{
                 $query = MercaderiaSurtida::select('estilo','tipo_usuario','descripcion')
                         ->where('tipo',1)->where('anio',date('Y'))->where('semana',date('W'))
@@ -4411,12 +4414,12 @@ class TrackingController extends Controller
             return response()->json($query, 200);
         }else if($request->tipo=="estilo"){
             try {
-                $query = MercaderiaSurtida::get_list_req_repo_vend_x_est([
+                $query = MercaderiaSurtida::get_list_req_repo_alma([
                     'cod_base'=>$request->cod_base,
                     'tipo_usuario'=>$request->tipo_usuario
                 ]);
 
-                $query_tu = MercaderiaSurtida::get_list_tusu_req_repo([
+                $query_tu = MercaderiaSurtida::get_list_tusu_req_repo_alma([
                     'cod_base'=>$request->cod_base
                 ]);
             } catch (\Throwable $th) {
@@ -4463,6 +4466,7 @@ class TrackingController extends Controller
 
     public function list_requerimiento_reposicion_app_new(Request $request)
     {
+        //YA NO SE USA EL TIPO="SKU"
         if($request->tipo=="sku"){
             try {
                 if($request->tipo_usuario=="0"){
@@ -4496,13 +4500,14 @@ class TrackingController extends Controller
             return response()->json($response, 200);
         }else if($request->tipo=="estilo"){
             try {
-                $query = MercaderiaSurtida::get_list_req_repo_vend_x_est([
+                $query = MercaderiaSurtida::get_list_req_repo_alma([
                     'cod_base' => $request->cod_base,
                     'tipo_usuario' => $request->tipo_usuario
                 ]);
 
-                $query_tu = MercaderiaSurtida::select('tipo_usuario')->where('tipo',3)->where('base',$request->cod_base)
-                            ->where('estado',0)->groupBy('tipo_usuario')->get();
+                $query_tu = MercaderiaSurtida::get_list_tusu_req_repo_alma([
+                    'cod_base'=>$request->cod_base
+                ]);
             } catch (\Throwable $th) {
                 return response()->json([
                     'message' => "Error procesando base de datos.",

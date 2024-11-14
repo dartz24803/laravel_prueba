@@ -78,16 +78,6 @@ class MercaderiaSurtida extends Model
         return $query;
     }
 
-    public static function get_list_tusu_req_repo($dato)
-    {
-        $sql = "SELECT tipo_usuario
-                FROM mercaderia_surtida 
-                WHERE tipo=3 AND base=? AND estado=0
-                GROUP BY tipo_usuario";
-        $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);
-        return $query;
-    }
-
     public static function get_list_req_repo_vend($dato=null)
     {
         if(isset($dato['id_padre'])){
@@ -139,18 +129,33 @@ class MercaderiaSurtida extends Model
         return $query;
     }
 
-    public static function get_list_req_repo_vend_x_est($dato)
+    public static function get_list_req_repo_alma($dato)
     {
         $parte = "";
         if($dato['tipo_usuario']!="0"){
-            $parte = "AND tipo_usuario=?";
+            $parte = "AND ms.tipo_usuario=?";
         }
-        $sql = "SELECT id_padre AS id,estilo,tipo_usuario
-                FROM mercaderia_surtida
-                WHERE tipo=3 AND base=? $parte AND estado=0
-                GROUP BY id_padre,estilo,tipo_usuario
-                ORDER BY id_padre DESC";
+        $sql = "SELECT ms.id_padre AS id,ms.estilo,ms.tipo_usuario,
+                TRY_CAST(mp.fecha AS DATETIME) AS fecha
+                FROM mercaderia_surtida ms
+                LEFT JOIN mercaderia_surtida_padre mp ON mp.id=ms.id_padre
+                WHERE ms.tipo=3 AND ms.base=? $parte AND ms.estado=0 AND 
+                TRY_CAST(mp.fecha AS DATETIME) >= DATEADD(WEEK, -1, GETDATE())
+                GROUP BY ms.id_padre,ms.estilo,ms.tipo_usuario,mp.fecha
+                ORDER BY ms.id_padre DESC";
         $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base'],$dato['tipo_usuario']]);
+        return $query;
+    }
+
+    public static function get_list_tusu_req_repo_alma($dato)
+    {
+        $sql = "SELECT ms.tipo_usuario
+                FROM mercaderia_surtida ms
+                LEFT JOIN mercaderia_surtida_padre mp ON mp.id=ms.id_padre
+                WHERE ms.tipo=3 AND ms.base=? AND ms.estado=0 AND 
+                TRY_CAST(mp.fecha AS DATETIME) >= DATEADD(WEEK, -1, GETDATE())
+                GROUP BY ms.tipo_usuario";
+        $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);
         return $query;
     }
 }
