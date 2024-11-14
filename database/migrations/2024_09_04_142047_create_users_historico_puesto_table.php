@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('id_sub_gerencia')->nullable();
             $table->integer('id_area')->nullable();
             $table->unsignedBigInteger('id_puesto');
-            $table->unsignedBigInteger('id_centro_labor');
+            $table->unsignedBigInteger('id_centro_labor'); //RELACIONAR A FUTURO
             $table->date('fec_inicio')->nullable();
             $table->integer('con_fec_fin')->nullable();
             $table->date('fec_fin')->nullable();
@@ -33,7 +33,7 @@ return new class extends Migration
             $table->integer('user_eli')->nullable();
             $table->foreign('id_usuario', 'uhpue_fk_id_usu')->references('id_usuario')->on('users');
             $table->foreign('id_puesto', 'uhpue_fk_id_pue')->references('id_puesto')->on('puesto');
-            $table->foreign('id_centro_labor', 'uhpue_fk_id_clab')->references('id_ubicacion')->on('ubicacion');
+            $table->foreign('id_centro_labor', 'uhpue_fk_id_clab')->references('id_ubicacion')->on('ubicacion'); //RELACIONAR A FUTURO
         });
     }
 
