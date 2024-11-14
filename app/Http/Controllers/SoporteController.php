@@ -288,13 +288,19 @@ class SoporteController extends Controller
             // Usa el valor de $cod_area en lugar de 'TI'
             $area_code = $cod_area ? $cod_area['cod_area'] : 'TI';
             $prefijo = $idsoporte_tipo->idsoporte_tipo == 1 ? 'RQ-' . $area_code . '-' : 'INC-' . $area_code . '-';
-            $contador = Soporte::where('idsoporte_tipo', $idsoporte_tipo->idsoporte_tipo)->count();
+
+            $contador = Soporte::leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
+                ->leftJoin('soporte_tipo', 'soporte_asunto.idsoporte_tipo', '=', 'soporte_tipo.idsoporte_tipo')
+                ->where('soporte_tipo.idsoporte_tipo', $idsoporte_tipo->idsoporte_tipo)
+                ->count();
             $nuevo_numero = $contador + 1;
             $numero_formateado = str_pad($nuevo_numero, 3, '0', STR_PAD_LEFT);
             $codigo_generado = $prefijo . $numero_formateado;
         } else {
             $codigo_generado = 'Código no disponible';
         }
+        // dd($codigo_generado);
+
         // GENERECIÓN DE CÓDIGO
 
         $soporte_solucion = SoporteSolucion::create([
@@ -1138,41 +1144,7 @@ class SoporteController extends Controller
         }
     }
 
-    public function deleteFile($id_soportesolucion, $documento1, $fileName)
-    {
-        // Conectar al servidor FTP (o a tu almacenamiento en la nube)
-        $ftpServer = "lanumerounocloud.com";
-        $ftpUsername = "intranet@lanumerounocloud.com";
-        $ftpPassword = "Intranet2022@";
-        $ftpConnection = ftp_connect($ftpServer);
 
-        if ($ftpConnection) {
-            // Autenticarse en el servidor FTP
-            $login = ftp_login($ftpConnection, $ftpUsername, $ftpPassword);
-            if ($login) {
-                // Eliminar el archivo desde el servidor FTP
-                $ftpPath = 'SOPORTE/' . $fileName;
-                if (ftp_delete($ftpConnection, $ftpPath)) {
-                    // Después de eliminar el archivo, actualizamos el campo documento1 en la base de datos
-                    // Aquí buscamos el registro con el id_soportesolucion y eliminamos el fileName de documento1
-                    $newDocumento1 = $this->removeFileFromDocumento1($documento1, $fileName);
-
-                    // Actualizar el registro en la base de datos
-                    DB::table('soporte_solucion')
-                        ->where('idsoporte_solucion', $id_soportesolucion)
-                        ->update(['documento1' => $newDocumento1]);
-
-                    return response()->json(['success' => true]);
-                } else {
-                    return response()->json(['success' => false, 'message' => 'No se pudo eliminar el archivo desde el servidor FTP.'], 500);
-                }
-            } else {
-                return response()->json(['success' => false, 'message' => 'No se pudo conectar al servidor FTP.'], 500);
-            }
-        } else {
-            return response()->json(['success' => false, 'message' => 'No se pudo conectar al servidor FTP.'], 500);
-        }
-    }
 
     private function removeFileFromDocumento1($documento1, $fileName)
     {
