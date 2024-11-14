@@ -22,6 +22,28 @@ class Organigrama extends Model
         'usuario'
     ];
 
+    public static function get_list_organigrama($dato)
+    {
+        $parte_puesto = "";
+        if ($dato['id_puesto'] != "0") {
+            $parte_puesto = "AND og.id_puesto=".$dato['id_puesto'];
+        }
+        $parte_centro_labor = "";
+        if ($dato['id_centro_labor'] != "0") {
+            $parte_centro_labor = "AND og.id_centro_labor=".$dato['id_centro_labor'];
+        }
+        $sql = "SELECT og.id,pu.nom_puesto,ub.cod_ubi,
+                CONCAT(us.usuario_nombres,' ',us.usuario_apater,' ',us.usuario_amater) AS nom_usuario,
+                og.id_usuario
+                FROM organigrama og
+                INNER JOIN puesto pu ON pu.id_puesto=og.id_puesto
+                INNER JOIN ubicacion ub ON ub.id_ubicacion=og.id_centro_labor
+                LEFT JOIN users us ON us.id_usuario=og.id_usuario
+                WHERE og.id>0 $parte_puesto $parte_centro_labor";
+        $query = DB::select($sql);
+        return $query;
+    }
+
     public static function get_list_colaborador($dato)
     {
         $parte_gerencia = "";
