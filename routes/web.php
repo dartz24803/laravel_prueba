@@ -147,6 +147,7 @@ Route::controller(TrackingController::class)->group(function () {
     Route::get('tracking/detalle_transporte_inicial', 'detalle_transporte_inicial')->name('tracking.detalle_transporte_inicial');
     Route::post('tracking/insert_detalle_transporte_inicial', 'insert_detalle_transporte_inicial')->name('tracking.insert_detalle_transporte_inicial');
     Route::get('tracking/modal_guia_transporte', 'modal_guia_transporte')->name('tracking.modal_guia_transporte');
+    Route::post('tracking/traer_guia_transporte', 'traer_guia_transporte')->name('tracking.traer_guia_transporte');
     Route::post('tracking/insert_guia_transporte', 'insert_guia_transporte')->name('tracking.insert_guia_transporte');
     Route::get('tracking/pago_transporte_general', 'pago_transporte_general')->name('tracking.pago_transporte_general');
     Route::post('tracking/traer_pago_general', 'traer_pago_general')->name('tracking.traer_pago_general');
@@ -427,7 +428,6 @@ Route::controller(SoporteController::class)->group(function () {
     Route::delete('soporte_delete_comentarios/{id}', 'destroy_comentarios')->name('soporte_delete_comentarios.destroy');
     // Activación de cámara
     Route::post('previsualizacion_captura_soporte', 'previsualizacionCaptura')->name('previsualizacion_captura_soporte');
-
     // Tabla Generales
     Route::get('tablagenerales', 'index_tg')->name('tablagenerales');
     Route::post('soporte_tablagenerales/list_filtro', 'list_soporte_tablagenerales_filtro')->name('soporte_tablagenerales.list_filtro');

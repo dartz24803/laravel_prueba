@@ -175,7 +175,7 @@
                                 <label class="control-label text-bold">Tipo:</label>
                             </div>
                             <div class="form-group col-md-4 mb-0">
-                                @if($get_id->tipo_otros == 0)
+                                @if($get_id->tipo_otros == 0 && $get_id->activo_tipo == 1)
                                 <select class="form-control border-0" name="nombre_tipo" required>
                                     <option value="" disabled selected>Seleccione un tipo</option>
                                     <option value="1">Requerimiento</option>
@@ -546,9 +546,47 @@
 
 
                 <div class="row" style="padding-top: 1rem;">
-                    <div class=" form-group col-lg-12">
+                    <div class="form-group col-md-4">
+                        <label>Imágenes:</label><br>
                         <button type="button" class="btn btn-secondary" id="boton_camara" onclick="Activar_Camara();">Activar cámara</button>
                     </div>
+                    <div class="form-group col-md-4">
+                        <label>Documento 1:</label>
+                        @if ($get_id->documento1)
+                        <a href="{{ 'https://lanumerounocloud.com/intranet/SOPORTE/' . $get_id->documento1 }}"
+                            title="Ver Documento" target="_blank"
+                            class="redirect-link d-inline-flex align-items-center ">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </a>
+                        @endif
+                        <div class="d-flex align-items-center">
+                            <input type="file" class="form-control-file" name="documentoa1" id="documentoa1" onchange="Validar_Archivo_Backup('documentoa1');">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Documento 2:</label>
+                        @if ($get_id->documento2)
+                        <a href="{{ 'https://lanumerounocloud.com/intranet/SOPORTE/' . $get_id->documento2 }}"
+                            title="Ver Documento" target="_blank"
+                            class="redirect-link d-inline-flex align-items-center ">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </a>
+                        @endif
+                        <div class="d-flex align-items-center">
+                            <input type="file" class="form-control-file" name="documentoa2" id="documentoa2" onchange="Validar_Archivo_Backup('documentoa2');">
+
+                        </div>
+                    </div>
+
+
 
                     <div class="form-group col-lg-12 d-flex justify-content-center" id="div_camara" style="display: none;">
                         <video id="video" autoplay style="max-width: 95%; display: none;"></video>

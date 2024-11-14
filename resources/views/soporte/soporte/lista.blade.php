@@ -33,15 +33,16 @@
                         style="display: inline-block; 
             background-color: 
             {{ ( $list->status_poriniciar == true )
-                ? '#ff786b'
+                ? '#FF786B'
                 : (( $list->status_enproceso == true)
-                    ? '#ffe881'
+                    ? '#FFE881'
                     : ( $list->status_completado == true
-                        ? '#5fb17b'
+                        ? '#5FB17B'
                         : ($list->status_standby == true
-                            ? '#ff914d'
+                            ? '#E2A03F'
                             : '#bdc0cf'))) }};
-            border-radius: 14px; padding: 1px; width: 80px; color: white; text-align: center; margin-right: 10px;">
+            border-radius: 14px; padding: 1px; width: 80px; color: 
+                   {{ $list->status_enproceso == true ? '#726f73' : 'white' }}; text-align: center; margin-right: 10px;">
                         @if ( $list->status_poriniciar == true )
                         Por Iniciar
                         @elseif ( $list->status_enproceso == true )

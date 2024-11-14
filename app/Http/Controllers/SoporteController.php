@@ -274,7 +274,7 @@ class SoporteController extends Controller
                 'area.gt' => 'Debe seleccionar Área',
             ]);
         }
-        // GENERECIÓN DE CÓDIGO
+        // GENERACIÓN DE CÓDIGO
 
         $cod_area = Soporte::getCodAreaByAsunto($request->asunto); // Obtiene el área
         $request->validate($rules, $messages);
@@ -669,7 +669,7 @@ class SoporteController extends Controller
     {
         $id_subgerencia = session('id_subgerenciam');
         $list_tickets_soporte = Soporte::listTicketsSoporteMaster($id_subgerencia);
-
+        // dd($list_tickets_soporte);
         $list_tickets_soporte = $list_tickets_soporte->map(function ($ticket) use ($id_subgerencia) {
             $ticket->status_poriniciar = false;
             $ticket->status_enproceso = false;
@@ -758,21 +758,33 @@ class SoporteController extends Controller
     {
         $id_subgerencia = session('id_subgerenciam');
         $get_id = Soporte::getTicketById($id_soporte);
+        // dd($get_id);
         $comentarios_user = SoporteSolucion::getComentariosUserBySolucion($get_id->idsoporte_solucion);
         // dd($comentarios_user);
-        $area = DB::table('soporte_asunto')
-            ->leftJoin('area', 'soporte_asunto.id_area', '=', 'area.id_area')
-            ->where('soporte_asunto.idsoporte_asunto', $get_id->id_asunto)
-            ->select('soporte_asunto.*', 'area.nom_area')
-            ->first();
-        if ($area->id_area == 0) {
-            $areaResponsable = $get_id->id_area;
+        if ($get_id->id_asunto == 245) {
+            // Si el id_asunto es 245, obtenemos id_area directamente de la tabla soporte
+            $idArea = DB::table('soporte')
+                ->where('soporte.id_soporte', $get_id->id_soporte)
+                ->select('soporte.id_area')
+                ->first();
         } else {
-            $areaResponsable = $area->id_area;
+            // En otros casos, mantenemos el leftJoin con la tabla area para obtener nom_area
+            $idArea = DB::table('soporte_asunto')
+                ->leftJoin('area', 'soporte_asunto.id_area', '=', 'area.id_area')
+                ->where('soporte_asunto.idsoporte_asunto', $get_id->id_asunto)
+                ->select('soporte_asunto.id_area')
+                ->first();
         }
 
+        // dd($idArea);
+        if ($idArea && $idArea->id_area == 0) {
+            $areaResponsable = $get_id->id_area;
+        } else {
+            $areaResponsable = $idArea->id_area;  // Accedemos directamente a la propiedad id_area
+        }
         // Dividir el campo `id_area` en un array de IDs
-        $areaIds = explode(',', $areaResponsable);
+        $areaIds = is_string($areaResponsable) ? explode(',', $areaResponsable) : [$areaResponsable];
+        // dd($areaIds);
         // Crear listas basadas en los IDs obtenidos
         $list_primer_responsable = Usuario::get_list_colaborador_xarea_static(trim($areaIds[0]));
         $list_segundo_responsable = isset($areaIds[1]) ? Usuario::get_list_colaborador_xarea_static(trim($areaIds[1])) : [];
@@ -785,6 +797,7 @@ class SoporteController extends Controller
         } else {
             $list_responsable = $list_segundo_responsable;
         }
+        // dd($list_responsable);
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $cantAreasEjecut = count($list_ejecutores_responsables);
         if ($cantAreasEjecut > 3) {
@@ -811,7 +824,7 @@ class SoporteController extends Controller
             $list_ejecutores_responsables = $filtered->values();
         }
         // dd($get_id);
-        return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable', 'area', 'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas', 'id_subgerencia', 'comentarios_user'));
+        return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable',  'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas', 'id_subgerencia', 'comentarios_user'));
     }
 
     public function update_tick_master(Request $request, $id)
@@ -843,11 +856,9 @@ class SoporteController extends Controller
         if ($id_subgerencia == "9" && $responsableMultiple == 1) {
             $rules = array_merge($rules, [
                 'id_responsablee_0' => 'gt:0',
-
             ]);
             $messages = array_merge($messages, [
                 'id_responsablee_0.gt' => 'Debe seleccionar Responsable',
-
             ]);
         }
         if ($id_subgerencia == "10") {
@@ -887,25 +898,19 @@ class SoporteController extends Controller
         $request->validate($rules, $messages);
 
         // GENERECIÓN DE CÓDIGO
-        // dd($get_id->id_area);
-        $cod_area = Soporte::getCodAreaByIdArea($get_id->asunto); // Obtiene el área
+        $cod_area = Soporte::getCodAreaByIdArea($get_id->id_area); // Obtiene el área
         $request->validate($rules, $messages);
-        $idsoporte_tipo = DB::table('soporte_asunto as sa')
-            ->leftJoin('soporte_tipo as st', 'st.idsoporte_tipo', '=', 'sa.idsoporte_tipo')
-            ->where('sa.idsoporte_asunto', $request->asunto)
-            ->select('sa.idsoporte_tipo')
-            ->first();
-
-        if ($idsoporte_tipo) {
-            // Usa el valor de $cod_area en lugar de 'TI'
+        $idsoporte_tipo = $request->nombre_tipo;
+        // dd($get_id->activo_tipo);
+        if ($get_id->activo_tipo == 1) {
             $area_code = $cod_area ? $cod_area['cod_area'] : 'TI';
-            $prefijo = $idsoporte_tipo->idsoporte_tipo == 1 ? 'RQ-' . $area_code . '-' : 'INC-' . $area_code . '-';
-            $contador = Soporte::where('idsoporte_tipo', $idsoporte_tipo->idsoporte_tipo)->count();
+            $prefijo = $idsoporte_tipo == 1 ? 'RQ-' . $area_code . '-' : 'INC-' . $area_code . '-';
+            $contador = Soporte::where('tipo_otros', $idsoporte_tipo)->count();
             $nuevo_numero = $contador + 1;
             $numero_formateado = str_pad($nuevo_numero, 3, '0', STR_PAD_LEFT);
             $codigo_generado = $prefijo . $numero_formateado;
         } else {
-            $codigo_generado = 'Código no disponible';
+            $codigo_generado = $get_id->codigo;
         }
         // GENERECIÓN DE CÓDIGO
         if ($request->responsable_indice == "0" && $cantAreasEjecut < 4) {
@@ -917,8 +922,7 @@ class SoporteController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario,
                 'tipo_otros' => $tipo_otros,
-
-
+                'codigo' => $codigo_generado
             ]);
         } else if ($request->responsable_indice == "0") {
             // RESPONSABLE PRINCIPAL
@@ -929,7 +933,7 @@ class SoporteController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario,
                 'tipo_otros' => $tipo_otros,
-
+                'codigo' => $codigo_generado
 
             ]);
         } else {
@@ -941,6 +945,7 @@ class SoporteController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario,
                 'tipo_otros' => $tipo_otros,
+                'codigo' => $codigo_generado
 
             ]);
         }
@@ -1033,7 +1038,6 @@ class SoporteController extends Controller
             // Decodificar las URLs de las imágenes desde el request
             $imagenes = json_decode($request->input('imagenes'), true);
             $resultados = [];
-            // dd($imagenes);
             // Validar que haya entre 3 y 5 imágenes
             if ($imagenes && is_array($imagenes)) {
                 $resultados = $this->uploadImages($imagenes, $con_id);
@@ -1058,6 +1062,37 @@ class SoporteController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ];
+            // CARGAR DOCUMENTOS
+            if (!empty($_FILES["documentoa1"]["name"])) {
+                $source_file_doc = $_FILES['documentoa1']['tmp_name'];
+                $nombre_doc = $_FILES["documentoa1"]["name"];
+                // Concatenar la fecha actual en Unix al nombre del archivo
+                $timestamp = time();
+                $nombre_doc_con_timestamp = $timestamp . "_" . $nombre_doc;
+                // Subir el archivo al servidor FTP con el nuevo nombre
+                $subio_doc = ftp_put($con_id, "SOPORTE/" . $nombre_doc_con_timestamp, $source_file_doc, FTP_BINARY);
+                if ($subio_doc) {
+                    $documento1 = $nombre_doc_con_timestamp;
+                    $data['documento1'] = $documento1;
+                } else {
+                    echo "Documento no subido correctamente";
+                }
+            }
+
+            if (!empty($_FILES["documentoa2"]["name"])) {
+                $source_file_doc = $_FILES['documentoa2']['tmp_name'];
+                $nombre_doc = $_FILES["documentoa2"]["name"];
+                $timestamp = time();
+                $nombre_doc_con_timestamp = $timestamp . "_" . $nombre_doc;
+                $subio_doc = ftp_put($con_id, "SOPORTE/" . $nombre_doc_con_timestamp, $source_file_doc, FTP_BINARY);
+                if ($subio_doc) {
+                    $documento2 = $nombre_doc;
+                    $data['documento2'] = $documento2;
+                } else {
+                    echo "Documento no subido correctamente";
+                }
+            }
+            // dd($documento1);
             // dd($resultados);
             if (!empty($resultados)) {
                 $data['archivo1'] = $archivo1;
@@ -1066,13 +1101,16 @@ class SoporteController extends Controller
                 $data['archivo4'] = $archivo4;
                 $data['archivo5'] = $archivo5;
             }
-
+            // dd($data);
             // Actualizar la base de datos
             SoporteSolucion::findOrFail($get_id->idsoporte_solucion)->update($data);
             // Eliminar archivos temporales en SOPORTE/TEMPORAL si se subieron imágenes
             if (!empty($resultados)) {
                 $this->deleteTempFiles($con_id, "SOPORTE/TEMPORAL/");
             }
+
+
+
             // Cerrar conexión FTP
             ftp_close($con_id);
 

@@ -117,10 +117,10 @@
                                 <select class="form-control basicm" name="id_tipo" id="id_tipo">
                                     <option value="0">Seleccione</option>
                                     @foreach ($list_tipo as $list)
-                                        <option value="{{ $list->id_tipo_portal }}"
-                                            {{ $list->id_tipo_portal == $get_id->id_tipo ? 'selected' : '' }}>
-                                            {{ $list->nom_tipo }}
-                                        </option>
+                                    <option value="{{ $list->id_tipo_portal }}"
+                                        {{ $list->id_tipo_portal == $get_id->id_tipo ? 'selected' : '' }}>
+                                        {{ $list->nom_tipo }}
+                                    </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -138,10 +138,10 @@
                                 <select class="form-control basicm" name="id_responsablee" id="id_responsablee">
                                     <option value="0">Seleccione</option>
                                     @foreach ($list_responsable as $responsable)
-                                        <option value="{{ $responsable->id_puesto }}"
-                                            {{ $responsable->id_puesto == $get_id->id_responsable ? 'selected' : '' }}>
-                                            {{ $responsable->nom_puesto }}
-                                        </option>
+                                    <option value="{{ $responsable->id_puesto }}"
+                                        {{ $responsable->id_puesto == $get_id->id_responsable ? 'selected' : '' }}>
+                                        {{ $responsable->nom_puesto }}
+                                    </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -208,26 +208,26 @@
                             <div class="form-group col-md-6">
                                 <label>Archivo 1:</label>
                                 @if ($get_id->archivo)
-                                    <a href="{{ 'https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/' . $get_id->archivo }}"
-                                        title="Ver Archivo" target="_blank"
-                                        class="redirect-link d-inline-flex align-items-center">
-                                        <svg version="1.1" id="Capa_1" style="width:20px; height:20px;"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                            viewBox="0 0 512.81 512.81"
-                                            style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve">
-                                            <rect x="260.758" y="276.339"
-                                                transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)"
-                                                style="fill:#344A5E;" width="84.266" height="54.399" />
-                                            <circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8" />
-                                            <path style="fill:#415A6B;"
-                                                d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z" />
-                                            <path style="fill:#F05540;"
-                                                d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z" />
-                                            <path style="fill:#F3705A;"
-                                                d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z" />
-                                        </svg>
-                                    </a>
+                                <a href="{{ 'https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/' . $get_id->archivo }}"
+                                    title="Ver Archivo" target="_blank"
+                                    class="redirect-link d-inline-flex align-items-center">
+                                    <svg version="1.1" id="Capa_1" style="width:20px; height:20px;"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                        viewBox="0 0 512.81 512.81"
+                                        style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve">
+                                        <rect x="260.758" y="276.339"
+                                            transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)"
+                                            style="fill:#344A5E;" width="84.266" height="54.399" />
+                                        <circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8" />
+                                        <path style="fill:#415A6B;"
+                                            d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z" />
+                                        <path style="fill:#F05540;"
+                                            d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z" />
+                                        <path style="fill:#F3705A;"
+                                            d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z" />
+                                    </svg>
+                                </a>
                                 @endif
                                 <div class="d-flex align-items-center">
                                     <input type="file" class="form-control-file" name="archivo1e" id="archivo1e"
@@ -239,26 +239,26 @@
                             <div class="form-group col-md-6">
                                 <label>Documento:</label>
                                 @if ($get_id->archivo4)
-                                    <a href="{{ 'https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/' . $get_id->archivo4 }}"
-                                        title="Ver Documento" target="_blank"
-                                        class="redirect-link d-inline-flex align-items-center ">
-                                        <svg version="1.1" id="Capa_1" style="width:20px; height:20px;"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                            viewBox="0 0 512.81 512.81"
-                                            style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve">
-                                            <rect x="260.758" y="276.339"
-                                                transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)"
-                                                style="fill:#344A5E;" width="84.266" height="54.399" />
-                                            <circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8" />
-                                            <path style="fill:#415A6B;"
-                                                d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z" />
-                                            <path style="fill:#F05540;"
-                                                d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z" />
-                                            <path style="fill:#F3705A;"
-                                                d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z" />
-                                        </svg>
-                                    </a>
+                                <a href="{{ 'https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/' . $get_id->archivo4 }}"
+                                    title="Ver Documento" target="_blank"
+                                    class="redirect-link d-inline-flex align-items-center ">
+                                    <svg version="1.1" id="Capa_1" style="width:20px; height:20px;"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                        viewBox="0 0 512.81 512.81"
+                                        style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve">
+                                        <rect x="260.758" y="276.339"
+                                            transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)"
+                                            style="fill:#344A5E;" width="84.266" height="54.399" />
+                                        <circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8" />
+                                        <path style="fill:#415A6B;"
+                                            d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z" />
+                                        <path style="fill:#F05540;"
+                                            d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z" />
+                                        <path style="fill:#F3705A;"
+                                            d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z" />
+                                    </svg>
+                                </a>
                                 @endif
                                 <div class="d-flex align-items-center">
                                     <input type="file" class="form-control-file" name="documentoae"
@@ -271,26 +271,26 @@
                             <div class="form-group col-md-6">
                                 <label>Diagrama:</label>
                                 @if ($get_id->archivo5)
-                                    <a href="{{ 'https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/' . $get_id->archivo5 }}"
-                                        title="Ver Diagrama" target="_blank"
-                                        class="redirect-link d-inline-flex align-items-center ">
-                                        <svg version="1.1" id="Capa_1" style="width:20px; height:20px;"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                            viewBox="0 0 512.81 512.81"
-                                            style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve">
-                                            <rect x="260.758" y="276.339"
-                                                transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)"
-                                                style="fill:#344A5E;" width="84.266" height="54.399" />
-                                            <circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8" />
-                                            <path style="fill:#415A6B;"
-                                                d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z" />
-                                            <path style="fill:#F05540;"
-                                                d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z" />
-                                            <path style="fill:#F3705A;"
-                                                d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z" />
-                                        </svg>
-                                    </a>
+                                <a href="{{ 'https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/' . $get_id->archivo5 }}"
+                                    title="Ver Diagrama" target="_blank"
+                                    class="redirect-link d-inline-flex align-items-center ">
+                                    <svg version="1.1" id="Capa_1" style="width:20px; height:20px;"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                        viewBox="0 0 512.81 512.81"
+                                        style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve">
+                                        <rect x="260.758" y="276.339"
+                                            transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)"
+                                            style="fill:#344A5E;" width="84.266" height="54.399" />
+                                        <circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8" />
+                                        <path style="fill:#415A6B;"
+                                            d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z" />
+                                        <path style="fill:#F05540;"
+                                            d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z" />
+                                        <path style="fill:#F3705A;"
+                                            d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z" />
+                                    </svg>
+                                </a>
                                 @endif
                                 <div class="d-flex align-items-center">
                                     <input type="file" class="form-control-file" name="diagramaae"
@@ -326,10 +326,10 @@
                             <select class="form-control multivalue" name="id_area_p[]" id="id_area_p"
                                 multiple="multiple" disabled>
                                 @foreach ($list_area as $area)
-                                    <option value="{{ $area->id_area }}"
-                                        {{ in_array($area->id_area, $selected_area_ids) ? 'selected' : '' }}>
-                                        {{ $area->nom_area }}
-                                    </option>
+                                <option value="{{ $area->id_area }}"
+                                    {{ in_array($area->id_area, $selected_area_ids) ? 'selected' : '' }}>
+                                    {{ $area->nom_area }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -338,10 +338,10 @@
                             <select class="form-control multivalue" name="tipo_acceso_p[]" id="tipo_acceso_p"
                                 multiple="multiple" disabled>
                                 @foreach ($list_responsable as $puesto)
-                                    <option value="{{ $puesto->id_puesto }}"
-                                        @if (in_array($puesto->id_puesto, $selected_puesto_ids)) selected @endif>
-                                        {{ $puesto->nom_puesto }}
-                                    </option>
+                                <option value="{{ $puesto->id_puesto }}"
+                                    @if (in_array($puesto->id_puesto, $selected_puesto_ids)) selected @endif>
+                                    {{ $puesto->nom_puesto }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -372,95 +372,95 @@
                         </thead>
                         <tbody>
                             @foreach ($list_procesos as $proceso)
-                                <tr class="text-center">
-                                    <td>{{ $proceso->codigo }}</td>
-                                    <td>{{ $proceso->version }}</td>
-                                    <td>{{ $proceso->nombre }}</td>
-                                    <td>{{ $proceso->nombre_tipo_portal }}</td>
-                                    <td
-                                        style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                        {{ $proceso->nombres_area }}
-                                    </td>
-                                    <td>{{ $proceso->nombre_responsable }}</td>
-                                    <td>{{ $proceso->fecha }}</td>
-                                    <td>
-                                        @if ($proceso->archivo)
-                                            <a href="https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/{{ $proceso->archivo }}"
-                                                title="Ver Archivo" target="_blank"
-                                                class="redirect-link d-inline-flex align-items-center">
-                                                <svg version="1.1" id="Capa_1" style="width:20px; height:20px;"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                                    viewBox="0 0 512.81 512.81"
-                                                    style="enable-background:new 0 0 512.81 512.81;"
-                                                    xml:space="preserve">
-                                                    <rect x="260.758" y="276.339"
-                                                        transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)"
-                                                        style="fill:#344A5E;" width="84.266" height="54.399" />
-                                                    <circle style="fill:#8AD7F8;" cx="174.933" cy="175.261"
-                                                        r="156.8" />
-                                                    <path style="fill:#415A6B;"
-                                                        d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z" />
-                                                    <path style="fill:#F05540;"
-                                                        d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z" />
-                                                    <path style="fill:#F3705A;"
-                                                        d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z" />
-                                                </svg>
-                                            </a>
-                                        @endif
-                                        @if ($proceso->archivo4)
-                                            <a href="https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/{{ $proceso->archivo4 }}"
-                                                title="Ver Documento" target="_blank"
-                                                class="redirect-link d-inline-flex align-items-center">
-                                                <svg version="1.1" id="Capa_1" style="width:20px; height:20px;"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                                    viewBox="0 0 512.81 512.81"
-                                                    style="enable-background:new 0 0 512.81 512.81;"
-                                                    xml:space="preserve">
-                                                    <rect x="260.758" y="276.339"
-                                                        transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)"
-                                                        style="fill:#344A5E;" width="84.266" height="54.399" />
-                                                    <circle style="fill:#8AD7F8;" cx="174.933" cy="175.261"
-                                                        r="156.8" />
-                                                    <path style="fill:#415A6B;"
-                                                        d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z" />
-                                                    <path style="fill:#F05540;"
-                                                        d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z" />
-                                                    <path style="fill:#F3705A;"
-                                                        d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z" />
-                                                </svg>
-                                            </a>
-                                        @endif
-                                        @if ($proceso->archivo5)
-                                            <a href="https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/{{ $proceso->archivo5 }}"
-                                                title="Ver Diagrama" target="_blank"
-                                                class="redirect-link d-inline-flex align-items-center">
+                            <tr class="text-center">
+                                <td>{{ $proceso->codigo }}</td>
+                                <td>{{ $proceso->version }}</td>
+                                <td>{{ $proceso->nombre }}</td>
+                                <td>{{ $proceso->nombre_tipo_portal }}</td>
+                                <td
+                                    style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ $proceso->nombres_area }}
+                                </td>
+                                <td>{{ $proceso->nombre_responsable }}</td>
+                                <td>{{ $proceso->fecha }}</td>
+                                <td>
+                                    @if ($proceso->archivo)
+                                    <a href="https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/{{ $proceso->archivo }}"
+                                        title="Ver Archivo" target="_blank"
+                                        class="redirect-link d-inline-flex align-items-center">
+                                        <svg version="1.1" id="Capa_1" style="width:20px; height:20px;"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                            viewBox="0 0 512.81 512.81"
+                                            style="enable-background:new 0 0 512.81 512.81;"
+                                            xml:space="preserve">
+                                            <rect x="260.758" y="276.339"
+                                                transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)"
+                                                style="fill:#344A5E;" width="84.266" height="54.399" />
+                                            <circle style="fill:#8AD7F8;" cx="174.933" cy="175.261"
+                                                r="156.8" />
+                                            <path style="fill:#415A6B;"
+                                                d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z" />
+                                            <path style="fill:#F05540;"
+                                                d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z" />
+                                            <path style="fill:#F3705A;"
+                                                d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z" />
+                                        </svg>
+                                    </a>
+                                    @endif
+                                    @if ($proceso->archivo4)
+                                    <a href="https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/{{ $proceso->archivo4 }}"
+                                        title="Ver Documento" target="_blank"
+                                        class="redirect-link d-inline-flex align-items-center">
+                                        <svg version="1.1" id="Capa_1" style="width:20px; height:20px;"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                            viewBox="0 0 512.81 512.81"
+                                            style="enable-background:new 0 0 512.81 512.81;"
+                                            xml:space="preserve">
+                                            <rect x="260.758" y="276.339"
+                                                transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)"
+                                                style="fill:#344A5E;" width="84.266" height="54.399" />
+                                            <circle style="fill:#8AD7F8;" cx="174.933" cy="175.261"
+                                                r="156.8" />
+                                            <path style="fill:#415A6B;"
+                                                d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z" />
+                                            <path style="fill:#F05540;"
+                                                d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z" />
+                                            <path style="fill:#F3705A;"
+                                                d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z" />
+                                        </svg>
+                                    </a>
+                                    @endif
+                                    @if ($proceso->archivo5)
+                                    <a href="https://lanumerounocloud.com/intranet/PORTAL_PROCESOS/{{ $proceso->archivo5 }}"
+                                        title="Ver Diagrama" target="_blank"
+                                        class="redirect-link d-inline-flex align-items-center">
 
-                                                <svg version="1.1" id="Capa_1" style="width:20px; height:20px;"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                                    viewBox="0 0 512.81 512.81"
-                                                    style="enable-background:new 0 0 512.81 512.81;"
-                                                    xml:space="preserve">
-                                                    <rect x="260.758" y="276.339"
-                                                        transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)"
-                                                        style="fill:#344A5E;" width="84.266" height="54.399" />
-                                                    <circle style="fill:#8AD7F8;" cx="174.933" cy="175.261"
-                                                        r="156.8" />
-                                                    <path style="fill:#415A6B;"
-                                                        d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z" />
-                                                    <path style="fill:#F05540;"
-                                                        d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z" />
-                                                    <path style="fill:#F3705A;"
-                                                        d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z" />
-                                                </svg>
+                                        <svg version="1.1" id="Capa_1" style="width:20px; height:20px;"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                            viewBox="0 0 512.81 512.81"
+                                            style="enable-background:new 0 0 512.81 512.81;"
+                                            xml:space="preserve">
+                                            <rect x="260.758" y="276.339"
+                                                transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)"
+                                                style="fill:#344A5E;" width="84.266" height="54.399" />
+                                            <circle style="fill:#8AD7F8;" cx="174.933" cy="175.261"
+                                                r="156.8" />
+                                            <path style="fill:#415A6B;"
+                                                d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z" />
+                                            <path style="fill:#F05540;"
+                                                d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z" />
+                                            <path style="fill:#F3705A;"
+                                                d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z" />
+                                        </svg>
 
 
-                                            </a>
-                                        @endif
-                                    </td>
-                                </tr>
+                                    </a>
+                                    @endif
+                                </td>
+                            </tr>
                             @endforeach
                         </tbody>
 

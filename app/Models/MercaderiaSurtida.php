@@ -99,12 +99,16 @@ class MercaderiaSurtida extends Model
                     ORDER BY fecha DESC";
             $query = DB::connection('sqlsrv')->select($sql, [$dato['id_padre']]);
         }elseif(isset($dato['estilo'])){
+            $parte = "";
+            if(isset($dato['tipo_usuario']) && $dato['tipo_usuario']!="0"){
+                $parte = "AND tipo_usuario=?";
+            }
             $sql = "SELECT id_padre AS id,estilo,tipo_usuario
                     FROM mercaderia_surtida
-                    WHERE tipo=3 AND base=?
+                    WHERE tipo=3 AND base=? $parte
                     GROUP BY id_padre,estilo,tipo_usuario
-                    ORDER BY estilo ASC";
-            $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);        
+                    ORDER BY id DESC";
+            $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base'],$dato['tipo_usuario']]);        
         }else{
             $sql = "SELECT id,sku,estilo,tipo_usuario,tipo_prenda,color,talla,descripcion,
                     cantidad,stk_almacen,stk_tienda,CASE WHEN estado=0 THEN 'Pendiente'
@@ -139,12 +143,13 @@ class MercaderiaSurtida extends Model
     {
         $parte = "";
         if($dato['tipo_usuario']!="0"){
-            $parte = "AND ms.tipo_usuario=?";
+            $parte = "AND tipo_usuario=?";
         }
-        $sql = "SELECT ms.id_padre AS id,ms.estilo 
-                FROM mercaderia_surtida ms
-                WHERE ms.tipo=3 AND ms.base=? $parte AND ms.estado=0
-                GROUP BY ms.id_padre,ms.estilo";
+        $sql = "SELECT id_padre AS id,estilo,tipo_usuario
+                FROM mercaderia_surtida
+                WHERE tipo=3 AND base=? $parte AND estado=0
+                GROUP BY id_padre,estilo,tipo_usuario
+                ORDER BY id_padre DESC";
         $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base'],$dato['tipo_usuario']]);
         return $query;
     }
