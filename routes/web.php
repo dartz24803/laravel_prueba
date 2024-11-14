@@ -1206,10 +1206,7 @@ Route::controller(ColaboradorController::class)->group(function () {
     Route::post('ColaboradorController/Update_Historico_Horario', 'Update_Historico_Horario');
     Route::post('ColaboradorController/Update_Historico_Horas_Semanales', 'Update_Historico_Horas_Semanales');
     Route::get('ColaboradorController/Modal_Update_Historico_Puesto/{id}', 'Modal_Update_Historico_Puesto');
-    Route::post('ColaboradorController/Update_Historico_Puesto', 'Update_Historico_Puesto');
-    Route::get('ColaboradorController/Busca_Sub_Gerencia_Hp', 'Busca_Sub_Gerencia_Hp');
-    Route::get('ColaboradorController/Busca_Area_Hp', 'Busca_Area_Hp');
-    Route::get('ColaboradorController/Busca_Puesto_Hp', 'Busca_Puesto_Hp');
+    Route::post('ColaboradorController/{id_usuario}/Update_Historico_Puesto', 'Update_Historico_Puesto')->name('colaborador_perfil.update_puesto');
     Route::get('ColaboradorController/Modal_Detalle_Historico_Colaborador/{id}/{tipo}', 'Modal_Detalle_Historico_Colaborador');
     Route::post('ColaboradorController/Valida_Planilla_Activa', 'Valida_Planilla_Activa');
     Route::get('ColaboradorController/Modal_Dato_Planilla/{id}', 'Modal_Dato_Planilla');
