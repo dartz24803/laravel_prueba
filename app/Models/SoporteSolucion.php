@@ -24,6 +24,8 @@ class SoporteSolucion extends Model
         'archivo3',
         'archivo4',
         'archivo5',
+        'documento1',
+        'documento2',
         'fec_reg',
         'user_reg',
         'user_act',

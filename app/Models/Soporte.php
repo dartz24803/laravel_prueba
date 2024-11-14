@@ -151,6 +151,8 @@ class Soporte extends Model
             'soporte_solucion.archivo3 as archivo3',
             'soporte_solucion.archivo4 as archivo4',
             'soporte_solucion.archivo5 as archivo5',
+            'soporte_solucion.documento1 as documento1',
+            'soporte_solucion.documento2 as documento2',
             'area.nom_area as nombre_area',
             'area_cancelacion.cod_area as cod_area',
             'users.usuario_nombres as usuario_nombre',
@@ -473,6 +475,7 @@ class Soporte extends Model
 
     public static function userExistsInAreaWithPuesto($id_area, $id_usuario)
     {
+
         $user = DB::table('users')
             ->select('users.*', 'puesto.*')
             ->leftJoin('puesto', 'puesto.id_puesto', '=', 'users.id_puesto')

@@ -24,6 +24,7 @@ class InternaInicioController extends Controller
         $acceso_pp = Soporte::userExistsInAreaWithPuesto(18, $id_usuario);
         // Guardar el valor en la sesión
         session(['acceso_pp' => $acceso_pp]);
+        // dd($acceso_pp);
         $list_notificacion = Notificacion::get_list_notificacion();
         return view('interna.index', compact('list_notificacion', 'list_subgerencia'));
 
