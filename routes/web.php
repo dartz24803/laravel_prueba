@@ -432,9 +432,6 @@ Route::controller(SoporteController::class)->group(function () {
     Route::get('tablagenerales', 'index_tg')->name('tablagenerales');
     Route::post('soporte_tablagenerales/list_filtro', 'list_soporte_tablagenerales_filtro')->name('soporte_tablagenerales.list_filtro');
     Route::get('soporte_tg/{fec_ini}/{fec_fin}/{cpiniciar}/{cproceso}/{cstandby}/{ccompletado}/{ccancelado}/excel', 'excel_tg')->name('soporte_tg.excel');
-
-    // Carga de Documentos
-    Route::delete('soporte_delete_documents/{id_soportesolucion}/{documento1}/{fileName}', 'deleteFile')->name('soporte_delete_documents.destroy');
 });
 
 // ADMINISTRABLES - TICKETS SOPORTE
@@ -2179,7 +2176,7 @@ Route::controller(ContactosController::class)->group(function () {
     Route::post('Contactos/Lista_Mis_Tareas', 'Lista_Mis_Tareas');
 });
 
-Route::controller(InicioController::class)->group(function (){
+Route::controller(InicioController::class)->group(function () {
     Route::get('Inicio/Modal_Ver_Todo_Cumpleanios', 'Modal_Ver_Todo_Cumpleanios');
 });
 
