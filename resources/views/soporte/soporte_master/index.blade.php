@@ -99,20 +99,5 @@
             }
         })
     }
-
-    function Validar_Archivo_Backup(v) {
-        var archivoInput = document.getElementById(v);
-        var archivoRuta = archivoInput.value;
-        var extPermitidas = /(.jpg|.jpeg|.png|.pdf|.mp4|.xlsx|.pptx|.docx|.bpm)$/i;
-        if (!extPermitidas.exec(archivoRuta)) {
-            swal.fire(
-                '!Archivo no permitido!',
-                'El archivo debe ser jpg, jpeg, png, pdf, mp4, pptx, docx o bpm',
-                'error'
-            )
-            archivoInput.value = '';
-            return false;
-        }
-    }
 </script>
 @endsection
