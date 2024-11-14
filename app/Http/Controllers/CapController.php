@@ -29,7 +29,17 @@ class CapController extends Controller
 
     public function index_reg()
     {
-        $list_ubicacion = Ubicacion::get_list_ubicacion_tienda();
+        if(session('usuario')->id_puesto=="30" ||
+        session('usuario')->id_puesto=="31" ||
+        session('usuario')->id_puesto=="32" ||
+        session('usuario')->id_puesto=="161" ||
+        session('usuario')->id_puesto=="311" ||
+        session('usuario')->id_puesto=="314"){
+            $list_ubicacion = Ubicacion::where('id_ubicacion',session('usuario')->id_centro_labor)
+                            ->where('estado',1)->get();
+        }else{
+            $list_ubicacion = Ubicacion::get_list_ubicacion_tienda();
+        }
         return view('rrhh.cap.registro.index', compact('list_ubicacion'));
     }
 

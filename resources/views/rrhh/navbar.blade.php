@@ -66,27 +66,21 @@
             </a>
         </li>
         @if (session('usuario')->id_nivel == 1 ||
-        session('usuario')->id_nivel == 8 ||
-        session('usuario')->id_puesto == 16 ||
-        session('usuario')->id_puesto == 20 ||
         session('usuario')->id_puesto == 21 ||
         session('usuario')->id_puesto == 22 ||
-        session('usuario')->id_puesto == 26 ||
         session('usuario')->id_puesto == 27 ||
         session('usuario')->id_puesto == 30 ||
         session('usuario')->id_puesto == 31 ||
         session('usuario')->id_puesto == 32 ||
-        session('usuario')->id_puesto == 98 ||
         session('usuario')->id_puesto == 128 ||
-        session('usuario')->id_puesto == 146 ||
         session('usuario')->id_puesto == 148 ||
         session('usuario')->id_puesto == 157 ||
         session('usuario')->id_puesto == 158 ||
         session('usuario')->id_puesto == 161 ||
         session('usuario')->id_puesto == 209 ||
         session('usuario')->id_puesto == 277 ||
-        session('usuario')->id_puesto == 279 ||
         session('usuario')->id_puesto == 310 ||
+        session('usuario')->id_puesto == 311 ||
         session('usuario')->id_puesto == 314)
             <li>
                 <a id="caps" href="{{ route('cap') }}">
