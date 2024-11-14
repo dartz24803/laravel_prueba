@@ -1,7 +1,8 @@
 <div class="row mr-1 ml-1 mt-2">
     <div class="col-lg-3 col-xl-2 mb-3">
         <label>Puesto:</label>
-        <select class="form-control" name="id_puestob" id="id_puestob" onchange="Lista_Organigrama();">
+        <select class="form-control basic" name="id_puestob" id="id_puestob" 
+        onchange="Lista_Organigrama();">
             <option value="0">Todos</option>
             @foreach ($list_puesto as $list)
                 <option value="{{ $list->id_puesto }}">{{ $list->nom_puesto }}</option>
@@ -36,6 +37,10 @@
 </div>
 
 <script>
+    $(".basic").select2({
+        tags: true
+    });
+
     Lista_Organigrama();
 
     function Lista_Organigrama(){
