@@ -4515,6 +4515,7 @@ class TrackingController extends Controller
 
     public function list_requerimiento_reposicion_vendedor_app(Request $request)
     {
+        //YA NO SE USA EL TIPO="SKU"
         if($request->tipo=="sku"){
             try {
                 $query = MercaderiaSurtida::get_list_req_repo_vend([
@@ -4546,6 +4547,7 @@ class TrackingController extends Controller
             try {
                 $query = MercaderiaSurtida::get_list_req_repo_vend([
                     'cod_base' => $request->cod_base,
+                    'tipo_usuario' => $request->tipo_usuario,
                     'estilo' => 'estilo'
                 ]);
 
