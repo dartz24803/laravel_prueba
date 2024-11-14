@@ -1048,7 +1048,7 @@ class TrackingController extends Controller
                 ->where('id',$id)->first();                
         $list_tracking = Tracking::select('id')->where('id_origen_hacia',$get_id->id_base)
                         ->where(DB::raw('YEAR(fec_reg)'),$get_id->anio)
-                        ->where('semana',$get_id->semana)->get();
+                        ->where('semana',$get_id->semana)->where('estado',1)->get();
         $list_archivo = TrackingTransporteArchivo::where('id_tracking_transporte', $id)->get();                        
 
         foreach($list_tracking as $tracking){
