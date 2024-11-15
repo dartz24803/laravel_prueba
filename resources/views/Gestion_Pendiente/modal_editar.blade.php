@@ -81,35 +81,35 @@
                     <div class="col-md-12 row">
                         <div class="form-group col-md-12">
                             <p style="color: black;font-size: 16px;"><b><?php echo $get_id[0]['titulo']; ?></b></p>
-                        </div>      
+                        </div>
 
                         <div class="form-group col-md-12 margen">
-                            <label class="control-label text-bold">Solicitante: <?php echo ucwords($get_id[0]['solicitante']); ?></label> 
-                        </div>     
-                        
+                            <label class="control-label text-bold">Solicitante: <?php echo ucwords($get_id[0]['solicitante']); ?></label>
+                        </div>
+
                         <div class="form-group col-md-12 margen">
                             <label class="control-label text-bold">Tipo: <?php echo $get_id[0]['nom_tipo_tickets']; ?></label>
-                        </div>            
+                        </div>
 
                         <div class="form-group col-md-12 margen">
                             <label class="control-label text-bold">Área: <?php echo $get_id[0]['nom_area']; ?></label>
-                        </div>        
-                        
+                        </div>
+
                         <?php if($get_id[0]['id_area']=="10" || $get_id[0]['id_area']=="41"){ ?>
                             <div class="form-group col-md-12 margen">
-                                <label class="control-label text-bold">Costos: <?php echo $get_id[0]['costo']; ?></label> 
-                            </div>   
+                                <label class="control-label text-bold">Costos: <?php echo $get_id[0]['costo']; ?></label>
+                            </div>
                         <?php } ?>
 
                         <div class="form-group col-md-12 margen">
                             <label class="control-label text-bold">Descripción: <?php echo $get_id[0]['descripcion']; ?></label>
-                        </div>   
-                
+                        </div>
+
                         <?php if($mostrar==1){ ?>
                             <div class="form-group col-md-2">
                                 <label class="control-label text-bold">Etiqueta: </label>
                             </div>
-                            <div class="form-group col-md-10">         
+                            <div class="form-group col-md-10">
                                 <select class="form-control basic_1u" name="id_subitem" id="id_subitem">
                                     <option value="0">Seleccionar</option>
                                     <?php foreach($list_subitem as $list){ ?>
@@ -123,7 +123,7 @@
 
                         <div class="form-group col-md-2">
                             <label class="control-label text-bold">Asignado a: </label>
-                        </div>            
+                        </div>
                         <div class="form-group col-md-10">
                             <select class="form-control basic_2u" id="id_responsable" name="id_responsable">
                                 <option value="0">Seleccionar</option>
@@ -137,15 +137,15 @@
 
                         <div class="form-group col-md-2">
                             <label class="control-label text-bold">Fecha de vencimiento: </label>
-                        </div>            
+                        </div>
                         <div class="form-group col-md-4">
                             <input type="date" class="form-control" id="f_inicio" name="f_inicio" value="<?php echo $get_id[0]['f_inicio'] ?>">
                         </div>
 
                         <div class="form-group col-md-2">
                             <label class="control-label text-bold">Estado: </label>
-                        </div>            
-                        <div class="form-group col-md-4"> 
+                        </div>
+                        <div class="form-group col-md-4">
                             <select class="form-control" name="estado" id="estado" onchange="Estado_Pendiente();">
                                 <option value="0">Seleccionar</option>
                                 <?php foreach($list_estado as $list){ ?>
@@ -158,27 +158,29 @@
 
                         <div class="form-group col-md-2 ocultar_termino">
                             <label class="control-label text-bold">Fecha de termino: </label>
-                        </div>             
+                        </div>
                         <div class="form-group col-md-4 ocultar_termino">
                             <input type="date" class="form-control" id="f_entrega" name="f_entrega" value="<?php echo $get_id[0]['f_entrega'] ?>">
                         </div>
 
-                        <?php if($get_id[0]['id_area']==18){ ?>
-                            <div class="form-group col-md-2">
-                                <label class="control-label text-bold">Dificultad: </label>
-                            </div>            
-                            <div class="form-group col-md-4">
-                                <select class="form-control" name="dificultad" id="dificultad">
-                                    <option value="0">Seleccionar</option>
-                                    <?php foreach($list_complejidad as $list){ ?>
-                                        <option value="<?php echo $list['id_complejidad']; ?>" <?php if($list['id_complejidad']==$get_id[0]['dificultad']){ echo "selected"; } ?>>
-                                            <?php echo $list['descripcion']; ?>
-                                        </option>
-                                    <?php } ?>
-                                </select>
-                            </div>
-                        <?php } ?>
-                        
+                        @if(!empty($list_complejidad))
+                            <?php if($get_id[0]['id_area']==18){ ?>
+                                <div class="form-group col-md-2">
+                                    <label class="control-label text-bold">Dificultad: </label>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <select class="form-control" name="dificultad" id="dificultad">
+                                        <option value="0">Seleccionar</option>
+                                        <?php foreach($list_complejidad as $list){ ?>
+                                            <option value="<?php echo $list['id_complejidad']; ?>" <?php if($list['id_complejidad']==$get_id[0]['dificultad']){ echo "selected"; } ?>>
+                                                <?php echo $list['descripcion']; ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            <?php } ?>
+                        @endif
+
                     </div>
                 </div>
                 <div class="tab-pane fade" id="tab-accesos" role="tabpanel" aria-labelledby="accesos-tab">
@@ -189,31 +191,31 @@
                         <?php foreach($list_archivo as $list) {  ?>
                             <?php if(substr($list['archivo'],-3) === "jpg" || substr($list['archivo'],-3) === "JPG"){ ?>
                                 <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] . $list['archivo'] . '"></div>'; 
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] . $list['archivo'] . '"></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
                                 </div>
                             <?php }elseif (substr($list['archivo'],-3) === "png" || substr($list['archivo'],-3) === "PNG"){ ?>
                                 <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] . $list['archivo'] . '"></div>'; 
-                                    ?> 
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] . $list['archivo'] . '"></div>';
+                                    ?>
                                     <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
                                 </div>
                             <?php }elseif (substr($list['archivo'],-4) === "jpeg" || substr($list['archivo'],-4) === "JPEG"){ ?>
                                 <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-28) .'" src="' . $url[0]['url_config'] . $list['archivo'] . '"></div>'; 
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-28) .'" src="' . $url[0]['url_config'] . $list['archivo'] . '"></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
                                 </div>
                             <?php }elseif (substr($list['archivo'],-3) === "pdf"){ ?>
                                 <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
-                                    <?php 
+                                    <?php
                                     echo'<div id="lista_escogida"><embed src="'. $url[0]['url_config'] . $list['archivo'] . '" width="100%" height="200px" /></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
@@ -221,55 +223,55 @@
                                 </div>
                             <?php }elseif (substr($list['archivo'],-4) === "xlsx"){ ?>
                                 <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-28) .'" src="' . $url[0]['url_config'] ."/assets/especiales/excel_example.png". '"></div>'; 
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-28) .'" src="' . $url[0]['url_config'] ."/assets/especiales/excel_example.png". '"></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
                                 </div>
                             <?php }elseif (substr($list['archivo'],-3) === "xls"){ ?>
                                 <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] ."/assets/especiales/excel_example.png". '"></div>'; 
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] ."/assets/especiales/excel_example.png". '"></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
                                 </div>
-                            <?php }elseif (substr($list['archivo'],-4) === "pptx"){ ?> 
+                            <?php }elseif (substr($list['archivo'],-4) === "pptx"){ ?>
                                 <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-28) .'" src="' . $url[0]['url_config'] ."/assets/especiales/ppt_example.png". '"></div>'; 
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-28) .'" src="' . $url[0]['url_config'] ."/assets/especiales/ppt_example.png". '"></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
                                 </div>
-                            <?php }elseif (substr($list['archivo'],-3) === "ppt"){ ?> 
+                            <?php }elseif (substr($list['archivo'],-3) === "ppt"){ ?>
                                 <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] ."/assets/especiales/ppt_example.png". '"></div>'; 
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] ."/assets/especiales/ppt_example.png". '"></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
                                 </div>
                             <?php }elseif (substr($list['archivo'],-4) === "docx"){ ?>
-                                <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3"> 
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-28) .'" src="' . $url[0]['url_config'] ."/assets/especiales/word_example.png". '"></div>'; 
+                                <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-28) .'" src="' . $url[0]['url_config'] ."/assets/especiales/word_example.png". '"></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
                                 </div>
                             <?php }elseif (substr($list['archivo'],-3) === "doc"){ ?>
-                                <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3"> 
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] ."/assets/especiales/word_example.png". '"></div>'; 
+                                <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] ."/assets/especiales/word_example.png". '"></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
-                                </div>                    
-                            <?php }elseif (substr($list['archivo'],-3) === "txt"){ ?> 
-                                <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3"> 
-                                    <?php 
+                                </div>
+                            <?php }elseif (substr($list['archivo'],-3) === "txt"){ ?>
+                                <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
+                                    <?php
                                     echo'<div id="lista_escogida"><embed  src="' . $url[0]['url_config'] . $list['archivo'] . '" width="100%" height="200px" /></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
@@ -284,7 +286,7 @@
 
                         <div class="form-group col-md-12">
                             <label class="control-label text-bold">Agregar archivos de sustento de la solución<a href="#" title="Puede subir máximo 5 a la vez" class="anchor-tooltip tooltiped"><div class="divdea">?</div></a> </label>
-                        </div>  
+                        </div>
 
                         <div class="form-group col-sm-12">
                             <input type="file" class="form-control" name="files_u[]" id="files_u" multiple>
@@ -300,31 +302,31 @@
                         <?php foreach($list_gestion_archivo as $list) {  ?>
                             <?php if(substr($list['archivo'],-3) === "jpg" || substr($list['archivo'],-3) === "JPG"){ ?>
                                 <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] . $list['archivo'] . '"></div>'; 
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] . $list['archivo'] . '"></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file_gestion" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file_gestion" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
                                 </div>
                             <?php }elseif (substr($list['archivo'],-3) === "png" || substr($list['archivo'],-3) === "PNG"){ ?>
                                 <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] . $list['archivo'] . '"></div>'; 
-                                    ?> 
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] . $list['archivo'] . '"></div>';
+                                    ?>
                                     <button class="download" type="button" id="download_file_gestion" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file_gestion" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
                                 </div>
                             <?php }elseif (substr($list['archivo'],-4) === "jpeg" || substr($list['archivo'],-4) === "JPEG"){ ?>
                                 <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-28) .'" src="' . $url[0]['url_config'] . $list['archivo'] . '"></div>'; 
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-28) .'" src="' . $url[0]['url_config'] . $list['archivo'] . '"></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file_gestion" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file_gestion" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
                                 </div>
                             <?php }elseif (substr($list['archivo'],-3) === "pdf"){ ?>
                                 <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
-                                    <?php 
+                                    <?php
                                     echo'<div id="lista_escogida"><embed src="'. $url[0]['url_config'] . $list['archivo'] . '" width="100%" height="200px" /></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file_gestion" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
@@ -332,55 +334,55 @@
                                 </div>
                             <?php }elseif (substr($list['archivo'],-4) === "xlsx"){ ?>
                                 <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-28) .'" src="' . $url[0]['url_config'] ."/assets/especiales/excel_example.png". '"></div>'; 
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-28) .'" src="' . $url[0]['url_config'] ."/assets/especiales/excel_example.png". '"></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file_gestion" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file_gestion" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
                                 </div>
                             <?php }elseif (substr($list['archivo'],-3) === "xls"){ ?>
                                 <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] ."/assets/especiales/excel_example.png". '"></div>'; 
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] ."/assets/especiales/excel_example.png". '"></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file_gestion" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file_gestion" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
                                 </div>
-                            <?php }elseif (substr($list['archivo'],-4) === "pptx"){ ?> 
+                            <?php }elseif (substr($list['archivo'],-4) === "pptx"){ ?>
                                 <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-28) .'" src="' . $url[0]['url_config'] ."/assets/especiales/ppt_example.png". '"></div>'; 
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-28) .'" src="' . $url[0]['url_config'] ."/assets/especiales/ppt_example.png". '"></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file_gestion" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file_gestion" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
                                 </div>
-                            <?php }elseif (substr($list['archivo'],-3) === "ppt"){ ?> 
+                            <?php }elseif (substr($list['archivo'],-3) === "ppt"){ ?>
                                 <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] ."/assets/especiales/ppt_example.png". '"></div>'; 
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] ."/assets/especiales/ppt_example.png". '"></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file_gestion" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file_gestion" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
                                 </div>
                             <?php }elseif (substr($list['archivo'],-4) === "docx"){ ?>
-                                <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3"> 
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-28) .'" src="' . $url[0]['url_config'] ."/assets/especiales/word_example.png". '"></div>'; 
+                                <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-28) .'" src="' . $url[0]['url_config'] ."/assets/especiales/word_example.png". '"></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file_gestion" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file_gestion" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
                                 </div>
                             <?php }elseif (substr($list['archivo'],-3) === "doc"){ ?>
-                                <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3"> 
-                                    <?php 
-                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] ."/assets/especiales/word_example.png". '"></div>'; 
+                                <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
+                                    <?php
+                                    echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar" alt="'.substr($list['archivo'],-27) .'" src="' . $url[0]['url_config'] ."/assets/especiales/word_example.png". '"></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file_gestion" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
                                     <button class="delete" type="button" id="delete_file_gestion" data-image_id="<?php echo  $list['id_archivo']?>"><i class="fas fa-trash"></i></button>
-                                </div>                    
-                            <?php }elseif (substr($list['archivo'],-3) === "txt"){ ?> 
-                                <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3"> 
-                                    <?php 
+                                </div>
+                            <?php }elseif (substr($list['archivo'],-3) === "txt"){ ?>
+                                <div id="i_<?php echo  $list['id_archivo']?>" class="form-group col-sm-3">
+                                    <?php
                                     echo'<div id="lista_escogida"><embed  src="' . $url[0]['url_config'] . $list['archivo'] . '" width="100%" height="200px" /></div>';
                                     ?>
                                     <button class="download" type="button" id="download_file_gestion" data-image_id="<?php echo $list['id_archivo']?>"><i class="fas fa-cloud-download-alt"></i></button>
@@ -400,7 +402,7 @@
 
                         <?php foreach($historial_comentarios as $hist){ ?>
                             <div class="form-group col-md-2 text-center">
-                                <img src="<?php if(isset($hist['foto_nombre'])){ echo $_SESSION['usuario'][0]['url_foto'].$hist['foto_nombre']; }else{ echo base_url()."template/assets/img/avatar.jpg"; } ?>" 
+                                <img src="<?php if(isset($hist['foto_nombre'])){ echo $_SESSION['usuario'][0]['url_foto'].$hist['foto_nombre']; }else{ echo base_url()."template/assets/img/avatar.jpg"; } ?>"
                                 width="55" height="55" class="img-fluid" alt="Foto">
                             </div>
                             <div class="form-group col-md-10">
@@ -422,7 +424,7 @@
             </div>
         </div>
 
-        
+
     </div>
 
     <div class="modal-footer">
@@ -477,7 +479,7 @@
     });
 
     $(".img_post").click(function () {
-        window.open($(this).attr("src"), 'popUpWindow', 
+        window.open($(this).attr("src"), 'popUpWindow',
         "height=" + this.naturalHeight + ",width=" + this.naturalWidth + ",resizable=yes,toolbar=yes,menubar=no')");
     });
 
@@ -501,7 +503,7 @@
             url: "{{ url('Tareas/Delete_Archivo_Pendiente')}}",
             data: {'image_id':image_id},
             success: function (data) {
-                file_col.remove();            
+                file_col.remove();
             }
         });
     });
@@ -526,12 +528,12 @@
             url: "{{ url('Tareas/Delete_Archivo_Gestion_Pendiente') }}",
             data: {'image_id':image_id},
             success: function (data) {
-                file_col.remove();            
+                file_col.remove();
             }
         });
     });
 
-    function Update_Gestion_Pendiente() { 
+    function Update_Gestion_Pendiente() {
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario_gpendiente_editar'));
