@@ -54,6 +54,7 @@ use App\Models\Notificacion;
 use App\Models\Organigrama;
 use App\Models\Ubicacion;
 use App\Models\Usuario;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 class ColaboradorConfController extends Controller
 {
@@ -1589,19 +1590,22 @@ class ColaboradorConfController extends Controller
     //ORGANIGRAMA
     public function index_or()
     {
-        return view('rrhh.administracion.colaborador.organigrama.index');
+        $list_puesto = Puesto::select('id_puesto','nom_puesto')->where('estado',1)
+                    ->orderBy('nom_puesto','ASC')->get();
+        $list_ubicacion = Ubicacion::select('id_ubicacion','cod_ubi')->where('estado',1)
+                        ->orderBy('cod_ubi','ASC')->get();
+        return view('rrhh.administracion.colaborador.organigrama.index', compact(
+            'list_puesto',
+            'list_ubicacion'
+        ));
     }
 
-    public function list_or()
+    public function list_or(Request $request)
     {
-        $list_organigrama = Organigrama::from('organigrama AS og')->select(
-                            'og.id','pu.nom_puesto','ub.cod_ubi',
-                            DB::raw("CONCAT(us.usuario_nombres,' ',us.usuario_apater,' ',
-                            us.usuario_amater) AS nom_usuario"),'og.id_usuario')
-                            ->join('puesto AS pu', 'pu.id_puesto', '=', 'og.id_puesto')
-                            ->join('ubicacion AS ub', 'ub.id_ubicacion', '=', 'og.id_centro_labor')
-                            ->leftjoin('users AS us','us.id_usuario','=','og.id_usuario')
-                            ->get();
+        $list_organigrama = Organigrama::get_list_organigrama([
+            'id_puesto' => $request->id_puesto,
+            'id_centro_labor' => $request->id_centro_labor
+        ]);
         return view('rrhh.administracion.colaborador.organigrama.lista', compact('list_organigrama'));
     }
 

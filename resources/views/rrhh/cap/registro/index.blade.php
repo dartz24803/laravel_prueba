@@ -4,7 +4,10 @@
         <select class="form-control" id="id_ubicacionb" name="id_ubicacionb" onchange="Lista_Registro();">
             <option value="0">Seleccione</option>
             @foreach ($list_ubicacion as $list)
-                <option value="{{ $list->id_ubicacion }}">{{ $list->cod_ubi }}</option>
+                <option value="{{ $list->id_ubicacion }}"
+                @if ($list->id_ubicacion==session('usuario')->id_centro_labor) selected @endif>
+                    {{ $list->cod_ubi }}
+                </option>
             @endforeach
         </select>
     </div>
@@ -36,6 +39,8 @@
 </form> 
 
 <script>
+    Lista_Registro();
+    
     function Lista_Registro(){
         Cargando();
 

@@ -15,9 +15,21 @@
                                 <li class="nav-item">
                                     <a id="a_reg" class="nav-link" onclick="Registro();" style="cursor: pointer;">Registro CAP</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a id="a_ges" class="nav-link" onclick="Gestion();" style="cursor: pointer;">Gestión Registro CAP</a>
-                                </li>
+                                @if (session('usuario')->id_nivel == 1 ||
+                                session('usuario')->id_puesto == 21 ||
+                                session('usuario')->id_puesto == 22 ||
+                                session('usuario')->id_puesto == 27 ||
+                                session('usuario')->id_puesto == 128 ||
+                                session('usuario')->id_puesto == 148 ||
+                                session('usuario')->id_puesto == 157 ||
+                                session('usuario')->id_puesto == 158 ||
+                                session('usuario')->id_puesto == 209 ||
+                                session('usuario')->id_puesto == 277 ||
+                                session('usuario')->id_puesto == 310)
+                                    <li class="nav-item">
+                                        <a id="a_ges" class="nav-link" onclick="Gestion();" style="cursor: pointer;">Gestión Registro CAP</a>
+                                    </li>
+                                @endif
                             </ul>
 
                             <div class="row" id="cancel-row">

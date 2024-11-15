@@ -912,7 +912,21 @@ class TrackingController extends Controller
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(7);
-        $list_base = Base::get_list_bases_tienda();
+        if(session('usuario')->id_puesto==30 ||
+        session('usuario')->id_puesto==31 ||
+        session('usuario')->id_puesto==32 ||
+        session('usuario')->id_puesto==33 ||
+        session('usuario')->id_puesto==35 ||
+        session('usuario')->id_puesto==161 ||
+        session('usuario')->id_puesto==167 ||
+        session('usuario')->id_puesto==168 ||
+        session('usuario')->id_puesto==311 ||
+        session('usuario')->id_puesto==314){
+            $list_base = Base::where('cod_base',session('usuario')->centro_labores)->where('estado',1)
+                        ->get();
+        }else{
+            $list_base = Base::get_list_bases_tienda();                        
+        }
         return view('logistica.tracking.tracking.pago_transporte_general', compact(
             'list_notificacion',
             'list_subgerencia',
@@ -925,15 +939,17 @@ class TrackingController extends Controller
         $get_id = TrackingTransporte::where('id_base',$request->id_base)
                 ->where('anio',date('Y'))->where('semana',$request->semana)->first();
         if(isset($get_id->id)){
-            if($get_id->factura_transporte!=""){
-                echo "repetido";
+            if($get_id->guia_remision==""){
+                echo "guia_remision";
+            }elseif($get_id->factura_transporte!=""){
+                echo "factura";
             }else{
                 return view('logistica.tracking.tracking.detalle_pago_transporte_general', compact(
                     'get_id'
                 ));
             }
         }else{
-            echo "no_data";
+            echo "sin_data";
         }
     }
 
@@ -1032,7 +1048,7 @@ class TrackingController extends Controller
                 ->where('id',$id)->first();                
         $list_tracking = Tracking::select('id')->where('id_origen_hacia',$get_id->id_base)
                         ->where(DB::raw('YEAR(fec_reg)'),$get_id->anio)
-                        ->where('semana',$get_id->semana)->get();
+                        ->where('semana',$get_id->semana)->where('estado',1)->get();
         $list_archivo = TrackingTransporteArchivo::where('id_tracking_transporte', $id)->get();                        
 
         foreach($list_tracking as $tracking){
@@ -4223,7 +4239,10 @@ class TrackingController extends Controller
     {
         try {
             if($request->estilo){
-                $query = MercaderiaSurtida::get_list_mercaderia_surtida(['cod_base'=>$request->cod_base,'estilo'=>$request->estilo]);
+                $query = MercaderiaSurtida::get_list_mercaderia_surtida([
+                    'cod_base' => $request->cod_base,
+                    'estilo' => $request->estilo
+                ]);
             }else{
                 $query = MercaderiaSurtida::select('estilo','tipo_usuario','descripcion')
                         ->where('tipo',1)->where('anio',date('Y'))->where('semana',date('W'))
@@ -4411,12 +4430,12 @@ class TrackingController extends Controller
             return response()->json($query, 200);
         }else if($request->tipo=="estilo"){
             try {
-                $query = MercaderiaSurtida::get_list_req_repo_vend_x_est([
+                $query = MercaderiaSurtida::get_list_req_repo_alma([
                     'cod_base'=>$request->cod_base,
                     'tipo_usuario'=>$request->tipo_usuario
                 ]);
 
-                $query_tu = MercaderiaSurtida::get_list_tusu_req_repo([
+                $query_tu = MercaderiaSurtida::get_list_tusu_req_repo_alma([
                     'cod_base'=>$request->cod_base
                 ]);
             } catch (\Throwable $th) {
@@ -4463,6 +4482,7 @@ class TrackingController extends Controller
 
     public function list_requerimiento_reposicion_app_new(Request $request)
     {
+        //YA NO SE USA EL TIPO="SKU"
         if($request->tipo=="sku"){
             try {
                 if($request->tipo_usuario=="0"){
@@ -4496,13 +4516,14 @@ class TrackingController extends Controller
             return response()->json($response, 200);
         }else if($request->tipo=="estilo"){
             try {
-                $query = MercaderiaSurtida::get_list_req_repo_vend_x_est([
+                $query = MercaderiaSurtida::get_list_req_repo_alma([
                     'cod_base' => $request->cod_base,
                     'tipo_usuario' => $request->tipo_usuario
                 ]);
 
-                $query_tu = MercaderiaSurtida::select('tipo_usuario')->where('tipo',3)->where('base',$request->cod_base)
-                            ->where('estado',0)->groupBy('tipo_usuario')->get();
+                $query_tu = MercaderiaSurtida::get_list_tusu_req_repo_alma([
+                    'cod_base'=>$request->cod_base
+                ]);
             } catch (\Throwable $th) {
                 return response()->json([
                     'message' => "Error procesando base de datos.",

@@ -106,6 +106,7 @@ class Tracking extends Model
                     LEFT JOIN base bh ON tr.id_origen_hacia=bh.id_base
                     LEFT JOIN (SELECT MAX(id) AS ultimo_id,id_tracking
                     FROM tracking_detalle_proceso
+                    WHERE id_proceso!=5
                     GROUP BY id_tracking) mp ON tr.id=mp.id_tracking
                     LEFT JOIN tracking_detalle_proceso dp ON mp.ultimo_id=dp.id
                     LEFT JOIN (SELECT MAX(id) AS ultimo_id,id_detalle
