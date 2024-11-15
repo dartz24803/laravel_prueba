@@ -80,7 +80,7 @@
             </svg>
         </button>
     </div>
-
+    <!-- k -->
     <div class="modal-body" style="max-height:450px; overflow:auto;">
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -552,15 +552,17 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label>Documentos:</label>
-                        @if ($get_id->documento1)
                         <div id="documento-list">
                             <!-- Los enlaces de descarga se agregarán aquí dinámicamente -->
+                            @if (!$get_id->documento1)
+                            <p>No hay documentos seleccionados.</p>
+                            @endif
                         </div>
-                        @endif
                         <div class="d-flex align-items-center">
                             <input type="file" class="form-control-file" name="documentoa1[]" id="documentoa1" multiple onchange="handleFileSelection(event)">
                         </div>
                     </div>
+
 
 
                     <div class="form-group col-lg-12 d-flex justify-content-center" id="div_camara" style="display: none;">
@@ -640,6 +642,14 @@
         simulateFileSelection();
 
 
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+        const fileInput = document.getElementById('documentoa1');
+        if (fileInput) {
+            fileInput.addEventListener('change', handleFileSelection);
+        }
+        // Llama a simulateFileSelection después de asegurar que el DOM está listo
+        simulateFileSelection();
     });
     $('#estado_registroe').on('change', function() {
         toggleCierreUnResponsable();
@@ -1288,36 +1298,37 @@
 
     // Función para manejar los archivos seleccionados en el input de archivo
     function handleFileSelection(event) {
-        const documento1 = "{{ $get_id->documento1 }}"
-        const idsoporte_solucion = "{{ $get_id->idsoporte_solucion }}"
+        const documento1 = "{{ $get_id->documento1 }}";
+        const idsoporte_solucion = "{{ $get_id->idsoporte_solucion }}";
         const fileInput = event.target;
-        let files = Array.from(fileInput.files); // Convertimos FileList a un array para manipularlo
         const fileListContainer = document.getElementById('documento-list');
+        // Verifica que el contenedor exista
+        if (!fileListContainer) {
+            console.error('El contenedor de la lista de documentos no se encontró en el DOM.');
+            return;
+        }
+        // Convertimos FileList a un array para manipularlo
+        let files = Array.from(fileInput.files);
+        fileListContainer.innerHTML = ''; // Limpiar enlaces existentes
 
-        // Limpiar los enlaces existentes antes de agregar los nuevos
-        fileListContainer.innerHTML = '';
-
-        // Iterar sobre los archivos seleccionados
         files.forEach((file, index) => {
             const fileName = file.name;
-            // Crear un enlace de descarga para cada archivo
             const fileLink = document.createElement('a');
-            fileLink.href = URL.createObjectURL(file); // Crear una URL temporal para el archivo
-            fileLink.download = fileName; // Establecer el nombre de descarga
+            fileLink.href = URL.createObjectURL(file);
+            fileLink.download = fileName;
             fileLink.textContent = fileName;
-            fileLink.classList.add('btn', 'btn-link'); // Estilos para el enlace de descarga
+            fileLink.classList.add('btn', 'btn-link');
 
-            // Crear un contenedor solo para el enlace de descarga
             const fileLinkWrapper = document.createElement('div');
-            fileLinkWrapper.classList.add('d-flex', 'align-items-center', 'my-2'); // Estilo para el contenedor
-            // Añadir solo el enlace de descarga al contenedor
+            fileLinkWrapper.classList.add('d-flex', 'align-items-center', 'my-2');
             fileLinkWrapper.appendChild(fileLink);
 
-            // Añadir el contenedor al contenedor de la lista de archivos
             fileListContainer.appendChild(fileLinkWrapper);
         });
-
     }
+
+
+
 
     function deleteFileOnServer(fileName, documento1, id_soportesolucion) {
         // Aquí asumimos que `documento1` es un array de nombres de archivos y necesitamos eliminar `fileName` de él
