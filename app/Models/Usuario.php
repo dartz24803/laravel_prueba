@@ -400,9 +400,10 @@ class Usuario extends Model
     {
         $sql = "SELECT u.*,  a.nom_area, g.nom_gerencia, p.nom_puesto
                     from users u
-                    LEFT JOIN gerencia g on g.id_gerencia=u.id_gerencia
-                    LEFT JOIN area a on a.id_area=u.id_area
                     LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                    LEFT JOIN area a on a.id_area=p.id_area
+                    LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                    LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
                     where u.estado=1 and u.id_nivel<>8";
 
         $result = DB::select($sql);
@@ -475,14 +476,14 @@ class Usuario extends Model
                 h.id_historial,h.estado_registro,m.nom_mes,
                 LOWER(u.usuario_nombres) AS nombres_min,LOWER(u.usuario_apater) AS apater_min,
                 ar.nom_area,u.centro_labores
-                FROM users u 
-                LEFT JOIN saludo_cumpleanio_historial h on h.id_usuario='$id_usuario' and 
+                FROM users u
+                LEFT JOIN saludo_cumpleanio_historial h on h.id_usuario='$id_usuario' and
                 h.id_cumpleaniero=u.id_usuario and year(h.fec_reg)='$anio' and h.estado=1
                 LEFT JOIN mes m on month(u.fec_nac)=m.cod_mes
                 INNER JOIN puesto pu ON pu.id_puesto=u.id_puesto
                 INNER JOIN area ar ON pu.id_area=ar.id_area
-                WHERE (DATE_FORMAT(u.fec_nac, '%m-%d') BETWEEN DATE_FORMAT(NOW(), '%m-%d') AND 
-                DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 5 DAY), '%m-%d')) AND u.usuario_nombres NOT LIKE 'Base%' AND u.estado=1 
+                WHERE (DATE_FORMAT(u.fec_nac, '%m-%d') BETWEEN DATE_FORMAT(NOW(), '%m-%d') AND
+                DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 5 DAY), '%m-%d')) AND u.usuario_nombres NOT LIKE 'Base%' AND u.estado=1
                 ORDER BY cumpleanio ASC";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
@@ -941,7 +942,7 @@ class Usuario extends Model
                     c.nom_contacto,c.celular1,c.celular2,c.fijo,ub.cod_ubi AS centro_labores
                     from users u
                     INNER JOIN ubicacion ub ON ub.id_ubicacion=u.id_centro_labor
-                    INNER JOIN puesto pu ON pu.id_puesto=u.id_puesto 
+                    INNER JOIN puesto pu ON pu.id_puesto=u.id_puesto
                     INNER JOIN area a ON a.id_area=p.id_area
                     LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
                     LEFT JOIN tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
@@ -1062,7 +1063,7 @@ class Usuario extends Model
                     WHEN YEAR(u.fec_nac) >= 2013 THEN '&alpha;' ELSE '-' END AS generacion,u.id_puesto
                     FROM users u
                     INNER JOIN ubicacion ub ON ub.id_ubicacion=u.id_centro_labor
-                    INNER JOIN puesto p ON p.id_puesto=u.id_puesto 
+                    INNER JOIN puesto p ON p.id_puesto=u.id_puesto
                     INNER JOIN area a ON a.id_area=p.id_area
                     INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento
                     INNER JOIN gerencia g ON g.id_gerencia=sg.id_gerencia
@@ -1205,7 +1206,7 @@ class Usuario extends Model
                     END AS generacion,u.id_puesto
                     from users u
                     INNER JOIN ubicacion ub ON ub.id_ubicacion=u.id_centro_labor
-                    INNER JOIN puesto p ON p.id_puesto=u.id_puesto 
+                    INNER JOIN puesto p ON p.id_puesto=u.id_puesto
                     INNER JOIN area a ON a.id_area=p.id_area
                     INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento
                     INNER JOIN gerencia g ON g.id_gerencia=sg.id_gerencia
@@ -1340,7 +1341,7 @@ class Usuario extends Model
                     END AS generacion,u.id_puesto
                     from users u
                     INNER JOIN ubicacion ub ON ub.id_ubicacion=u.id_centro_labor
-                    INNER JOIN puesto p ON p.id_puesto=u.id_puesto 
+                    INNER JOIN puesto p ON p.id_puesto=u.id_puesto
                     INNER JOIN area a ON a.id_area=p.id_area
                     INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento
                     INNER JOIN gerencia g ON g.id_gerencia=sg.id_gerencia
@@ -1619,7 +1620,7 @@ class Usuario extends Model
                     ELSE 'No se pudo determinar la generación'
                     END AS generacion,u.id_puesto
                     from users u
-                    INNER JOIN ubicacion ub ON ub.id_ubicacion=u.id_centro_labor                    
+                    INNER JOIN ubicacion ub ON ub.id_ubicacion=u.id_centro_labor
                     INNER JOIN puesto p on p.id_puesto=u.id_puesto
                     INNER JOIN area a on a.id_area=p.id_area
                     INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento
@@ -1648,8 +1649,8 @@ class Usuario extends Model
                     where u.estado in (1) and u.id_nivel<>8 and u.id_centro_labor='" . $centro_labores . "'
                     ORDER BY u.ini_funciones DESC";
         } else {
-            $sql = "SELECT u.id_usuario, u.usuario_apater, ub.cod_ubi AS centro_labores, 
-                    td.cod_tipo_documento,u.fec_baja,u.num_celp,u.num_doc, u.usuario_amater, 
+            $sql = "SELECT u.id_usuario, u.usuario_apater, ub.cod_ubi AS centro_labores,
+                    td.cod_tipo_documento,u.fec_baja,u.num_celp,u.num_doc, u.usuario_amater,
                     u.usuario_nombres, n.nom_nacionalidad,u.foto, u.verif_email,
                     EXTRACT(DAY FROM u.fec_nac) AS dia,case month(u.fec_nac)
                     WHEN 1 THEN 'Enero' WHEN 2 THEN  'Febrero' WHEN 3 THEN 'Marzo' WHEN 4 THEN 'Abril'
@@ -1753,7 +1754,7 @@ class Usuario extends Model
                     ELSE 'No se pudo determinar la generación'
                     END AS generacion,u.id_puesto
                     from users u
-                    INNER JOIN ubicacion ub ON ub.id_ubicacion=u.id_centro_labor                    
+                    INNER JOIN ubicacion ub ON ub.id_ubicacion=u.id_centro_labor
                     INNER JOIN puesto p on p.id_puesto=u.id_puesto
                     INNER JOIN area a on a.id_area=p.id_area
                     INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento
