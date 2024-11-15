@@ -402,7 +402,7 @@
 
                         <?php foreach($historial_comentarios as $hist){ ?>
                             <div class="form-group col-md-2 text-center">
-                                <img src="<?php if(isset($hist['foto_nombre'])){ echo $_SESSION['usuario'][0]['url_foto'].$hist['foto_nombre']; }else{ echo base_url()."template/assets/img/avatar.jpg"; } ?>"
+                                <img src="<?php if(isset($hist['foto_nombre'])){ echo $session('usuario')->url_foto.$hist['foto_nombre']; }else{ asset("template/assets/img/avatar.jpg"); } ?>"
                                 width="55" height="55" class="img-fluid" alt="Foto">
                             </div>
                             <div class="form-group col-md-10">

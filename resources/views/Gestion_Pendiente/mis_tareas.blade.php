@@ -164,6 +164,7 @@
         Cargando();
 
         var url="{{ url('Tareas/Delete_Pendiente') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
         Swal({
             title: '¿Realmente desea eliminar el registro',
@@ -179,6 +180,9 @@
                 $.ajax({
                     type:"POST",
                     url:url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
                     data: {'id_pendiente':id},
                     success:function () {
                         Swal(
