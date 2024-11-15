@@ -78,7 +78,7 @@
     </div>
 </div>
 @csrf
-<div class="table-responsive mb-4 mt-4" id="lista_gestion_pendiente">
+<div class="table-responsive" id="lista_gestion_pendiente">
 </div>
 
 <script>
