@@ -8,7 +8,7 @@
             <th>Hacia</th>
             <th>Proceso</th>
             <th>Estado</th>
-            <th onclick="OrdenarFechas()">Fecha</th>
+            <th class="no-sort" onclick="OrdenarFechas()">Fecha</th>
             <th>Hora</th>
         </tr>
     </thead>
@@ -32,7 +32,7 @@
 
 <script>
 // Declara la variable 'order' en el ámbito global
-let order = [0, "desc"];
+let order = [0, "asc"];
 
 $(document).ready(function() {
     // Configura la tabla y guarda una referencia a la instancia de DataTable
@@ -56,19 +56,19 @@ $(document).ready(function() {
         "stripeClasses": [],
         "lengthMenu": [10, 20, 50],
         "pageLength": 10,
-        "aoColumnDefs" : [ 
+        "aoColumnDefs" : [
             {
                 'targets' : [ 0 ],
                 'visible' : false
-            } 
-        ]
+            }
+        ],
     }).on('order.dt', function(e, settings) {
         // Actualiza 'order' cada vez que se ordene la tabla
         console.log("Orden actual:", order);
         order = settings.aaSorting[0];
     });
 });
-/*
+
 // Función externa para usar la variable 'order' y alternar el orden de la columna 0
 function OrdenarFechas() {
     console.log(order);
@@ -80,13 +80,13 @@ function OrdenarFechas() {
             // Obtén la instancia de DataTable y aplica el nuevo orden
             var tabla = $('#tabla_js').DataTable();
             tabla.order([0, 'asc']).draw();
-        }else if (order[1] === 'desc' || order[0] === 7) {
+        }else if (order[1] === 'asc' || order[0] === 7) {
             console.log('Cambiando de ascendente a descendente');
             // Obtén la instancia de DataTable y aplica el nuevo orden
             var tabla = $('#tabla_js').DataTable();
             tabla.order([0, 'desc']).draw();
         }
     }
-}*/
+}
 
 </script>

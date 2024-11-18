@@ -19,7 +19,7 @@
                                     <a id="a_btra" class="nav-link" onclick="Bd_Tracking();" style="cursor: pointer; font-size: 0.875rem;">BD Tracking</a>
                                 </li>
                             </ul>
-    
+
                             <div class="row" id="cancel-row">
                                 <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
                                     <div id="div_tracking" class="widget-content widget-content-area p-3">

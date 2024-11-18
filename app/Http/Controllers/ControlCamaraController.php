@@ -68,8 +68,13 @@ class ControlCamaraController extends Controller
             if ($con_id && $lr) {
                 foreach ($list_archivo as $list) {
                     $file_to_delete = "CONTROL_CAMARA/" . basename($list->archivo);
-                    if (ftp_delete($con_id, $file_to_delete)) {
-                        ControlCamaraArchivoTemporal::where('id', $list->id)->delete();
+                    $file_list = ftp_nlist($con_id, dirname($file_to_delete));
+                    if ($file_list && in_array($file_to_delete, $file_list)) {
+                        // Intentar eliminar el archivo
+                        if (ftp_delete($con_id, $file_to_delete)) {
+                            // Eliminar el registro en la base de datos
+                            ControlCamaraArchivoTemporal::where('id', $list->id)->delete();
+                        }
                     }
                 }
             }
@@ -90,8 +95,11 @@ class ControlCamaraController extends Controller
             if ($con_id && $lr) {
                 foreach ($list_archivo as $list) {
                     $file_to_delete = "CONTROL_CAMARA/" . basename($list->archivo);
-                    if (ftp_delete($con_id, $file_to_delete)) {
-                        ControlCamaraArchivoTemporal::where('id', $list->id)->delete();
+                    $file_list = ftp_nlist($con_id, dirname($file_to_delete));
+                    if ($file_list && in_array($file_to_delete, $file_list)) {
+                        if (ftp_delete($con_id, $file_to_delete)) {
+                            ControlCamaraArchivoTemporal::where('id', $list->id)->delete();
+                        }
                     }
                 }
             }
@@ -155,8 +163,11 @@ class ControlCamaraController extends Controller
             if ($con_id && $lr) {
                 foreach ($list_archivo as $list) {
                     $file_to_delete = "CONTROL_CAMARA/" . basename($list->archivo);
-                    if (ftp_delete($con_id, $file_to_delete)) {
-                        ControlCamaraArchivoTemporal::where('id', $list->id)->delete();
+                    $file_list = ftp_nlist($con_id, dirname($file_to_delete));
+                    if ($file_list && in_array($file_to_delete, $file_list)) {
+                        if (ftp_delete($con_id, $file_to_delete)) {
+                            ControlCamaraArchivoTemporal::where('id', $list->id)->delete();
+                        }
                     }
                 }
             }
@@ -196,8 +207,11 @@ class ControlCamaraController extends Controller
             if ($con_id && $lr) {
                 foreach ($list_archivo as $list) {
                     $file_to_delete = "CONTROL_CAMARA/" . basename($list->archivo);
-                    if (ftp_delete($con_id, $file_to_delete)) {
-                        ControlCamaraArchivoTemporal::where('id', $list->id)->delete();
+                    $file_list = ftp_nlist($con_id, dirname($file_to_delete));
+                    if ($file_list && in_array($file_to_delete, $file_list)) {
+                        if (ftp_delete($con_id, $file_to_delete)) {
+                            ControlCamaraArchivoTemporal::where('id', $list->id)->delete();
+                        }
                     }
                 }
             }
