@@ -51,55 +51,60 @@
             </a>
         </li>
         @if (session('usuario')->id_nivel == "1" ||
-        session('usuario')->id_puesto == "10" || 
+        session('usuario')->id_puesto == "10" ||
         session('usuario')->id_puesto == "102" ||
         session('usuario')->id_puesto == "1" ||
         session('usuario')->id_puesto == "138")
-            <li>
-                <a id="letras_cobrar" href="{{ route('letra_cobrar') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Letras por cobrar</p>
-                </a>
-            </li>
+        <li>
+            <a id="letras_cobrar" href="{{ route('letra_cobrar') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Letras por cobrar</p>
+            </a>
+        </li>
         @endif
         @if (session('usuario')->id_nivel == "1" ||
-        session('usuario')->id_puesto == "10" || 
+        session('usuario')->id_puesto == "10" ||
         session('usuario')->id_puesto == "102" ||
         session('usuario')->id_puesto == "93" ||
         session('usuario')->id_puesto == "1" ||
         session('usuario')->id_puesto == "138" ||
         session('usuario')->id_puesto == "3")
-            <li>
-                <a id="registros_cheques" href="{{ route('registro_cheque') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Registro de cheques</p>
-                </a>
-            </li>
+        <li>
+            <a id="registros_cheques" href="{{ route('registro_cheque') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Registro de cheques</p>
+            </a>
+        </li>
         @endif
         @if (session('usuario')->id_nivel == "1" ||
-        session('usuario')->id_puesto == "10" || 
+        session('usuario')->id_puesto == "10" ||
         session('usuario')->id_puesto == "102" ||
         session('usuario')->id_puesto == "1" ||
         session('usuario')->id_puesto == "138")
-            <li>
-                <a id="registros_letras" href="{{ route('registro_letra') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Registro de letras</p>
-                </a>
-            </li>
+        <li>
+            <a id="registros_letras" href="{{ route('registro_letra') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Registro de letras</p>
+            </a>
+        </li>
         @endif
         @if (session('usuario')->id_nivel == "1" ||
-        session('usuario')->id_puesto == "10" || 
+        session('usuario')->id_puesto == "10" ||
         session('usuario')->id_puesto == "102" ||
         session('usuario')->id_puesto == "138" ||
         session('usuario')->id_puesto == "164" ||
         session('usuario')->id_puesto == "1")
-            <li>
-                <a id="registros_servicios" href="{{ route('registro_servicio') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Registro de servicios</p>
-                </a>
-            </li>
+        <li>
+            <a id="registros_servicios" href="{{ route('registro_servicio') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Registro de servicios</p>
+            </a>
+        </li>
         @endif
         <li>
             <a id="tablas_maestras" href="{{ route('tabla_maestra_tesoreria') }}">
                 <p class="romperpalabra"><span id="icono_active2"></span> Tabla maestra</p>
+            </a>
+        </li>
+        <li>
+            <a id="tabla_facturacion" href="{{ route('facturacion') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Facturación</p>
             </a>
         </li>
     </ul>
@@ -177,15 +182,15 @@
             </a>
         </li>
         @if (session('usuario')->id_nivel == "1" ||
-        session('usuario')->id_puesto == "7" || 
+        session('usuario')->id_puesto == "7" ||
         session('usuario')->id_puesto == "10" ||
         session('usuario')->id_puesto == "102" ||
         session('usuario')->id_puesto == "138")
-            <li id="conf_registros_cheques">
-                <a href="{{ route('registro_cheque_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Registro de cheques</p>
-                </a>
-            </li>
+        <li id="conf_registros_cheques">
+            <a href="{{ route('registro_cheque_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                <p class="romperpalabra"><span id="icono_active2"></span> Registro de cheques</p>
+            </a>
+        </li>
         @endif
     </ul>
 </li>

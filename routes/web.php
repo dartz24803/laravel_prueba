@@ -39,6 +39,7 @@ use App\Http\Controllers\Cumpleanios;
 use App\Http\Controllers\DuracionTransaccionController;
 use App\Http\Controllers\ErroresPickingConfController;
 use App\Http\Controllers\ErroresPickingController;
+use App\Http\Controllers\FacturacionController;
 use App\Http\Controllers\FinanzaInicioController;
 use App\Http\Controllers\FinanzasInicioController;
 use App\Http\Controllers\InfraestructuraInicioController;
@@ -1664,6 +1665,11 @@ Route::controller(RequisicionTiendaController::class)->group(function () {
 Route::controller(TablaMaestraTesoreriaController::class)->group(function () {
     Route::get('tabla_maestra_tesoreria', 'index')->name('tabla_maestra_tesoreria');
     Route::get('tabla_maestra_tesoreria/list', 'list')->name('tabla_maestra_tesoreria.list');
+});
+//FACTURACIÓN 
+Route::controller(FacturacionController::class)->group(function () {
+    Route::get('facturacion', 'index')->name('facturacion');
+    Route::get('tabla_facturacion/list', 'list')->name('tabla_facturacion.list');
 });
 //TESORERÍA - REGISTRO LETRAS
 Route::controller(RegistroLetraController::class)->group(function () {

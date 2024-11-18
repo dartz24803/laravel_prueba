@@ -108,7 +108,8 @@ return [
 
         'sqlsrv_dbmsrt' => [
             'driver' => 'sqlsrv',
-            'host' => env('SQLSRV_DBMSTR_HOST', 'localhost'),
+            'host' => env('SQLSRV_DBMSTR_HOST', '172.16.0.132'),
+            // 'host' => env('SQLSRV_DBMSTR_HOST', 'localhost'),
             'port' => env('SQLSRV_DBMSTR_PORT', '1433'),
             'database' => env('SQLSRV_DBMSTR_DATABASE', 'forge'),
             'username' => env('SQLSRV_DBMSTR_USERNAME', 'forge'),
