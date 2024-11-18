@@ -667,7 +667,7 @@ class ColaboradorController extends Controller
             $dato['list_experiencial'] = $this->Model_Perfil->get_list_experiencial($id_usuario);
             $dato['list_regimen'] = Regimen::where('estado', 1)
                                 ->get();
-                                
+
             $dato['list_horario'] = $this->Model_Perfil->get_list_horario();
 
             //REPORTE BI CON ID
@@ -792,13 +792,13 @@ class ColaboradorController extends Controller
         $dato['get_id'] = Usuario::from('users AS us')->select('us.id_usuario','ge.nom_gerencia',
                         'sg.nom_sub_gerencia','ar.nom_area','pu.nom_puesto','ub.cod_ubi AS ubicacion',
                         'ml.nom_modalidad_laboral','ho.nombre AS nom_horario','us.horas_semanales',
-                        DB::raw('(SELECT COUNT(1) FROM users_historico_puesto p 
+                        DB::raw('(SELECT COUNT(1) FROM users_historico_puesto p
                         WHERE p.estado=1 AND p.id_usuario=us.id_usuario) AS cant_historico_puesto'),
-                        DB::raw('(SELECT COUNT(1) FROM users_historico_centro_labores q 
+                        DB::raw('(SELECT COUNT(1) FROM users_historico_centro_labores q
                         WHERE q.estado=1 AND q.id_usuario=us.id_usuario) AS cant_historico_base'),
-                        DB::raw('(SELECT COUNT(1) FROM users_historico_modalidadl r 
+                        DB::raw('(SELECT COUNT(1) FROM users_historico_modalidadl r
                         WHERE r.estado=1 AND r.id_usuario=us.id_usuario) AS cant_historico_modalidad'),
-                        DB::raw('(SELECT COUNT(1) FROM users_historico_horario s 
+                        DB::raw('(SELECT COUNT(1) FROM users_historico_horario s
                         WHERE s.estado=1 AND s.id_usuario=us.id_usuario) AS cant_historico_horario'),
                         DB::raw('(SELECT COUNT(1) FROM users_historico_horas_semanales s
                         WHERE s.id_usuario=us.id_usuario AND s.estado=1) AS cant_historico_horas_semanales'))
@@ -806,7 +806,7 @@ class ColaboradorController extends Controller
                         ->join('area AS ar','ar.id_area','=','pu.id_area')
                         ->join('sub_gerencia AS sg','sg.id_sub_gerencia','=','ar.id_departamento')
                         ->join('gerencia AS ge','ge.id_gerencia','=','sg.id_gerencia')
-                        ->join('ubicacion AS ub','ub.id_ubicacion','=','us.id_centro_labor')
+                        ->join('ubicacion AS ub','ub.id_ubicacion','=','us.id_ubicacion')
                         ->leftjoin('modalidad_laboral AS ml','ml.id_modalidad_laboral','=','us.id_modalidad_laboral')
                         ->leftjoin('horario AS ho','ho.id_horario','=','us.id_horario')
                         ->where('us.id_usuario',$request->id_usuario)->first();
@@ -1180,6 +1180,7 @@ class ColaboradorController extends Controller
                 }
             }else{
                 UsersHistoricoPuesto::findOrfail($get_id->id_historico_puesto)->update([
+                    'id_centro_labor' => $request->id_centro_labor_hp,
                     'fec_inicio' => $request->fec_inicio_hp,
                     'id_tipo_cambio' => $request->id_tipo_cambio_hp,
                     'con_fec_fin' => $request->con_fec_fin_hp,
@@ -1337,7 +1338,7 @@ class ColaboradorController extends Controller
         $valida_2 = HistoricoColaborador::where('id_usuario',$id_usuario)
                     ->where(function ($query) {
                         $query->whereNull('fec_fin')->orWhere('fec_fin', '0000-00-00');
-                    })->where('estado',1)->count();                    
+                    })->where('estado',1)->count();
 
         if($valida_1>0){
             echo "error";
@@ -1406,7 +1407,7 @@ class ColaboradorController extends Controller
                         DB::raw("CASE WHEN hc.estado=1 THEN 'Activo'
                         WHEN hc.estado=3 AND hc.flag_cesado=1 THEN 'Cesado'
                         WHEN hc.estado=3 AND hc.flag_cesado=0 THEN 'Terminado'
-                        WHEN hc.estado=4 THEN 'Renovación' 
+                        WHEN hc.estado=4 THEN 'Renovación'
                         WHEN hc.estado=5 THEN 'Reingreso' END AS nom_estado"),
                         'sl.nom_situacion_laboral',
                         DB::raw("DATE_FORMAT(fec_inicio,'%d/%m/%Y') AS fec_inicio"),
@@ -1436,7 +1437,7 @@ class ColaboradorController extends Controller
         $dato['list_motivo_cese'] = MotivoBajaRrhh::where('estado',1)->get();
         return view('rrhh.Perfil.Datos_Planilla.modal_editar',$dato);
     }
-    
+
     public function update_pl(Request $request, $id)
     {
         $request->validate([
@@ -1543,7 +1544,7 @@ class ColaboradorController extends Controller
             $valida_2 = HistoricoColaborador::where('id_usuario',$get_id->id_usuario)
                         ->where(function ($query) {
                             $query->whereNull('fec_fin')->orWhere('fec_fin', '0000-00-00');
-                        })->where('estado',1)->count();                    
+                        })->where('estado',1)->count();
 
             if($valida_1>0){
                 echo "error";
@@ -1657,7 +1658,7 @@ class ColaboradorController extends Controller
             ]);
 
             $get_id = Usuario::from('users AS us')->select(DB::raw("LOWER(CONCAT(SUBSTRING_INDEX(us.usuario_nombres,' ',1),' ',
-                    us.usuario_apater,' ',us.usuario_amater)) AS nom_usuario"),DB::raw("CASE WHEN us.id_genero=1 THEN 'el Sr.' 
+                    us.usuario_apater,' ',us.usuario_amater)) AS nom_usuario"),DB::raw("CASE WHEN us.id_genero=1 THEN 'el Sr.'
                     WHEN us.id_genero=2 THEN 'la Sra.' ELSE '' END AS genero"),DB::raw('LOWER(pu.nom_puesto) AS nom_puesto'))
                     ->join('puesto AS pu','pu.id_puesto','=','us.id_puesto')
                     ->where('us.id_usuario',$get_id->id_usuario)->first();
@@ -1687,17 +1688,17 @@ class ColaboradorController extends Controller
                 $mail->isHTML(true);
 
                 $mail->Subject =  "Término de Relaciones Laborales - ".ucwords($get_id->nom_usuario);
-            
+
                 $mail->Body = 'Estimados colaboradores.<br><br>
                                 Esperamos que este mensaje les encuentre bien.<br><br>
-                                Nos dirigimos a ustedes para informarles que '.$get_id->genero.' '.ucwords($get_id->nom_usuario).', 
-                                quien ocupaba el cargo de '. ucwords($get_id->nom_puesto).', 
-                                ha concluido su relación laboral con nuestra empresa. Con el fin de proteger nuestra información corporativa, 
+                                Nos dirigimos a ustedes para informarles que '.$get_id->genero.' '.ucwords($get_id->nom_usuario).',
+                                quien ocupaba el cargo de '. ucwords($get_id->nom_puesto).',
+                                ha concluido su relación laboral con nuestra empresa. Con el fin de proteger nuestra información corporativa,
                                 les pedimos que a partir de este momento eviten cualquier comunicación de carácter laboral con el mencionado ex colaborador.<br><br>
-                                Queremos expresar nuestro sincero agradecimiento por el tiempo y el talento que dedicó al 
+                                Queremos expresar nuestro sincero agradecimiento por el tiempo y el talento que dedicó al
                                 cumplimiento de sus funciones durante su permanencia en nuestro equipo.<br><br>
                                 Reciban un cordial saludo.<br>';
-            
+
                 $mail->CharSet = 'UTF-8';
                 $mail->send();
             }catch(Exception $e) {
@@ -3969,7 +3970,7 @@ class ColaboradorController extends Controller
             }
 
             $id_usuario = session('usuario')->id_usuario;
-        
+
             ExperienciaLaboral::where('id_experiencia_laboral', $dato['id_experiencia_laboral'])
                 ->update([
                     'id_usuario' => $dato['id_usuario'],
@@ -3996,7 +3997,7 @@ class ColaboradorController extends Controller
 
     public function MDatos_ExperenciaL(){
         $this->Model_Perfil = new Model_Perfil();
-        
+
         $dato['list_dia'] = $this->Model_Perfil->get_list_dia();
         $dato['list_mes'] = $this->Model_Perfil->get_list_mes();
         $dato['list_anio'] = $this->Model_Perfil->get_list_anio();
@@ -4026,7 +4027,7 @@ class ColaboradorController extends Controller
             $dato['id_usuario']= $request->input("id_usuario");
 
             $id_usuario = session('usuario')->id_usuario;
-        
+
             ExperienciaLaboral::where('id_experiencia_laboral', $dato['id_experiencia_laboral'])
                 ->update([
                     'estado' => 2,
@@ -4055,7 +4056,7 @@ class ColaboradorController extends Controller
                     'fec_act' => now(),
                     'user_act' => $id_usuario
                 ]);
-            
+
             // Verificación y gestión en la tabla `enfermedad_usuario`
             if ($dato['id_respuestae'] == 1) {
                 // Inserción en `enfermedad_usuario`
@@ -4108,7 +4109,7 @@ class ColaboradorController extends Controller
                     'fec_act' => now(),
                     'user_act' => $id_usuario
                 ]);
-            
+
             // Manejo de `enfermedad_usuario`
             if ($dato['id_respuestae'] == 1) {
                 // Actualización en `enfermedad_usuario`
@@ -4132,7 +4133,7 @@ class ColaboradorController extends Controller
                         'fec_act' => now(),
                         'user_act' => $id_usuario
                     ]);
-            }            
+            }
 
             $dato['list_enfermedadu'] = EnfermedadUsuario::get_list_enfermedadu($dato['id_usuario']);
 
@@ -4205,7 +4206,7 @@ class ColaboradorController extends Controller
 
             if(count($dato['tot_id_gestacion'])>0){
                 $id_usuario = session('usuario')->id_usuario;
-            
+
                 if ($dato['id_respuesta'] == 1) {
                     GestacionUsuario::where('id_usuario', $dato['id_usuario'])->update([
                         'id_usuario' => $dato['id_usuario'],
@@ -4271,7 +4272,7 @@ class ColaboradorController extends Controller
                                 ->get();
             return view('rrhh.Perfil.Gestacion', $dato);
     }
-    
+
     /******************************************************************************************/
     public function Insert_Alergia(Request $request){
             $dato['id_usuario'] = $request->input("id_usuariodp");
@@ -4286,7 +4287,7 @@ class ColaboradorController extends Controller
                 'fec_act' => now(),
                 'user_act' => $id_usuario,
             ]);
-        
+
             if ($dato['id_respuestaau'] == 1) {
                 AlergiaUsuario::create([
                     'id_usuario' => $dato['id_usuario'],
@@ -4326,7 +4327,7 @@ class ColaboradorController extends Controller
                 'fec_act' => now(),
                 'user_act' => $id_usuario,
             ]);
-        
+
             if ($dato['id_respuestaau'] == 1) {
                 // Update alergia_usuario
                 AlergiaUsuario::where('id_alergia_usuario', $dato['id_alergia_usuario'])->update([
@@ -4377,7 +4378,7 @@ class ColaboradorController extends Controller
 
 
             $dato['id_alergia_usuario']= $request->input("id_alergia_usuario");
-            
+
             $id_usuario = session('usuario')->id_usuario;
 
             // Update estado for deletion in alergia_usuario
@@ -4388,16 +4389,16 @@ class ColaboradorController extends Controller
             ]);
 
             $dato['list_alergia'] = AlergiaUsuario::get_list_alergia($dato['id_usuario']);
-            
+
             return view('rrhh.Perfil.Alergias.ldatos', $dato);
     }
-    
+
     public function Update_Otros(Request $request){
             $dato['id_usuario'] = $request->input("id_usuarioo");
             $dato['id_grupo_sanguineo']= $request->input("id_grupo_sanguineo");
             $dato['certificadootr'] = $request->input("certificadootr");
             $dato['certificadootr_vacu'] = $request->input("certificadootr_vacu");
-            
+
             $dato['total'] = OtrosUsuario::where('id_usuario', $dato['id_usuario'])
                         ->where('estado', 1)
                         ->get();
@@ -4434,11 +4435,11 @@ class ColaboradorController extends Controller
                             $nombre="certotro_".$dato['id_usuario']."_".$codigoUnico."_".rand(10,199).".".$ext;
                             $nombre_archivo = "PERFIL/DOCUMENTACION/OTROS/".$nombre;
                             $duplicado=0;
-                            
+
                         }while ($duplicado>0);
-                        
+
                         ftp_pasv($con_id, true);
-                        
+
 
                         if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
                             $dato['archivo'] = $nombre;
@@ -4451,7 +4452,7 @@ class ColaboradorController extends Controller
             }
 
             if(count($dato['total'])>0){
-                $id_usuario = session('usuario')->id_usuario; 
+                $id_usuario = session('usuario')->id_usuario;
                 if($dato['archivo'] == ""){
                     $archivo = 0;
                 }else{
@@ -4465,7 +4466,7 @@ class ColaboradorController extends Controller
                 ]);
             }else{
                 $id_usuario = session('usuario')->id_usuario;
-        
+
                 OtrosUsuario::create([
                     'id_usuario' => $dato['id_usuario'],
                     'id_grupo_sanguineo' => $dato['id_grupo_sanguineo'],
@@ -4489,7 +4490,7 @@ class ColaboradorController extends Controller
                                 ->get();
             return view('rrhh.Perfil.Otros', $dato);
     }
-    
+
     public function Update_Referencia_Convocatoria(Request $request){
             $dato['id_usuario'] = $request->input("id_usuariodp");
 
@@ -4501,7 +4502,7 @@ class ColaboradorController extends Controller
 
             if(count($dato['tot_id_referenciac'])>0){
                 $id_usuario = session('usuario')->id_usuario;
-            
+
                 // Update the record
                 ReferenciaConvocatoria::where('id_usuario', $dato['id_usuario'])
                     ->update([
@@ -4530,7 +4531,7 @@ class ColaboradorController extends Controller
                                         ->get();
             return view('rrhh.Perfil.Referencia_Convocatoria', $dato);
     }
-    
+
     /*************************** */
     public function Update_Adjuntar_Documentacion(Request $request){
            $dato['id_usuario'] = $request->input("id_usuariodp");
@@ -4620,7 +4621,7 @@ class ColaboradorController extends Controller
                             echo "Archivo no subido correctamente";
                         }
                     }
-                }   
+                }
             }
 
             $id_usuario = session('usuario')->id_usuario;
@@ -4646,7 +4647,7 @@ class ColaboradorController extends Controller
     }
 
     public function Lista_Adjuntar_Documentacion(Request $request){
-            $id_usuario= $request->input("id_usuariodp");            
+            $id_usuario= $request->input("id_usuariodp");
             $dato['url'] = Config::where('descrip_config','Documentacion_Perfil')
                                 ->where('estado', 1)
                                 ->get();
@@ -4655,7 +4656,7 @@ class ColaboradorController extends Controller
                                     ->get();
             return view('rrhh.Perfil.Documentacion', $dato);
     }
-    
+
     /********************************** */
     public function Update_Talla_Indica(Request $request){
         $this->Model_Perfil = new Model_Perfil();
@@ -4672,7 +4673,7 @@ class ColaboradorController extends Controller
 
             if(count($dato['get_id_t'])>0){
                 $id_usuario = session('usuario')->id_usuario;
-            
+
                 RopaUsuario::where('id_usuario', $dato['id_usuario'])
                     ->update([
                         'polo' => $dato['polo'],
@@ -4684,7 +4685,7 @@ class ColaboradorController extends Controller
                     ]);
             }else{
                 $id_usuario = session('usuario')->id_usuario;
-            
+
                 RopaUsuario::insert([
                     'id_usuario' => $dato['id_usuario'],
                     'polo' => $dato['polo'],
@@ -4703,7 +4704,7 @@ class ColaboradorController extends Controller
             $dato['list_accesorio_camisa'] = $this->Model_Perfil->get_list_accesorio_camisa();
             $dato['list_accesorio_pantalon'] = $this->Model_Perfil->get_list_accesorio_pantalon();
             $dato['list_accesorio_zapato'] = $this->Model_Perfil->get_list_accesorio_zapato();
-        
+
 
             $dato['get_id_t'] = RopaUsuario::where('id_usuario', $dato['id_usuario'])
                             ->get();
@@ -4747,7 +4748,7 @@ class ColaboradorController extends Controller
             $dato['list_sistema_pensionario'] = DB::table('sistema_pensionario')
                                         ->where('estado', 1)
                                         ->get();
-            
+
             $dato['list_afp'] = ComisionAFP::where('estado', 1)
                         ->get();
             $dato['get_id_sist_pensu'] = SistPensUsuario::where('id_usuario', $id_usuario)
@@ -4765,19 +4766,19 @@ class ColaboradorController extends Controller
             $dato['list_banco'] = Banco::where('estado', 1)
                                 ->get();
 
-            
+
             if($dato['cuenta_bancaria']==1){
                     for ($x = 1; $x <= count($dato['list_banco']); $x++) {
-                        if($request->input("num_cuenta_bancaria_$x") != null && $request->input("num_codigo_interbancario_$x") != null){                
+                        if($request->input("num_cuenta_bancaria_$x") != null && $request->input("num_codigo_interbancario_$x") != null){
                            $dato['num_cuenta_bancaria']= $request->input("num_cuenta_bancaria_$x");
                            $dato['num_codigo_interbancario']= $request->input("num_codigo_interbancario_$x");
                        }
-                   }               
+                   }
             }else{
                 $dato['num_cuenta_bancaria']= "";
                 $dato['num_codigo_interbancario']= "";
             }
-                    
+
             $dato['tot_id_cuentab'] = CuentaBancaria::where('id_usuario', $dato['id_usuario'])
                                 ->get();
 
@@ -4810,7 +4811,7 @@ class ColaboradorController extends Controller
                                 ->get();
             return view('rrhh.Perfil.Cuenta_Bancaria', $dato);
     }
-    
+
     public function Terminos(Request $request){
             Usuario::where('id_usuario', $request->id_usuariot)->update([
                 'terminos'=>1,
@@ -4848,7 +4849,7 @@ class ColaboradorController extends Controller
             $dato['get_enfermedades'] = $this->Model_Perfil->get_list_enfermedadu($id_usuario);
             $dato['get_gustos_pref'] = $this->Model_Perfil->get_id_gustosp($id_usuario);
 
-            
+
             $mensaje="";
             if($dato['list_usuario'][0]['usuario_nombres']=="" || $dato['list_usuario'][0]['usuario_apater']=="" || $dato['list_usuario'][0]['usuario_amater']==""
             || $dato['list_usuario'][0]['id_nacionalidad']==0 || $dato['list_usuario'][0]['id_genero']==0 || $dato['list_usuario'][0]['id_tipo_documento']==0
@@ -4895,7 +4896,7 @@ class ColaboradorController extends Controller
 
             if($mensaje!=""){
                 echo "1<p>".$mensaje."</p>";
-            }   
+            }
     }
 
     public function Update_Datos_Completos($numero){
