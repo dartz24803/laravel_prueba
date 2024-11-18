@@ -153,7 +153,7 @@ class MercaderiaSurtida extends Model
                 FROM mercaderia_surtida ms
                 LEFT JOIN mercaderia_surtida_padre mp ON mp.id=ms.id_padre
                 WHERE ms.tipo=3 AND ms.base=? AND ms.estado=0 AND
-                TRY_CAST(mp.fecha AS DATETIME) >= DATEADD(WEEK, -1, GETDATE())
+                TRY_CAST(mp.fecha AS DATE) >= DATEADD(WEEK, -1, GETDATE())
                 GROUP BY ms.tipo_usuario";
         $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);
         return $query;
