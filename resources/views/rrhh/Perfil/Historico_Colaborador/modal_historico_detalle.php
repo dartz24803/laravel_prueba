@@ -1,7 +1,7 @@
 
 <div class="modal-header">
     <h5 class="modal-title"><b>Historial de <?php if($tipo==1){?> Puestos<?php }
-    if($tipo==2){?> Centro de Labores<?php }if($tipo==3){?> Modalidad de Trabajo<?php }
+    if($tipo==2){?> Ubicaciones <?php }if($tipo==3){?> Modalidad de Trabajo<?php }
     if($tipo==4){?> Horarios<?php }if($tipo==5){ echo "Horas Semanales"; } ?></b></h5>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -10,7 +10,7 @@
 
 <div class="modal-body" style="max-height:500px; overflow:auto;" >
     <div class="col-md-12 row">
-        <?php if($tipo==1){?> 
+        <?php if($tipo==1){?>
             <table class="table table-hover" style="width:100%">
                 <thead>
                     <tr class="text-center">
@@ -24,7 +24,7 @@
                 </thead>
 
                 <tbody>
-                    <?php foreach($list_historico_puesto as $list) {  ?>                                           
+                    <?php foreach($list_historico_puesto as $list) {  ?>
                         <tr >
                             <td ><?php echo $list['nom_gerencia']; ?></td>
                             <td ><?php echo $list['nom_area']; ?></td>
@@ -35,19 +35,19 @@
                         </tr>
                     <?php } ?>
                 </tbody>
-            </table>    
-        <?php }if($tipo==2){?> 
+            </table>
+        <?php }if($tipo==2){?>
             <table class="table table-hover" style="width:100%">
                 <thead>
                     <tr class="text-center">
-                        <th><b>Centro de Labores</b></th>
+                        <th><b>Ubicaciones</b></th>
                         <th><b>F.&nbsp;Inicio</b></th>
                         <th><b>F.&nbsp;Fin</b></th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    <?php foreach($list_historico_base as $list) {  ?>                                           
+                    <?php foreach($list_historico_base as $list) {  ?>
                         <tr >
                             <td align="center"><?php echo $list['centro_labores']; ?></td>
                             <td align="center" ><?php if($list['fec_inicio']!="" && $list['fec_inicio']!="0000-00-00"){echo date('d/m/Y',strtotime($list['fec_inicio']));} ?></td>
@@ -55,8 +55,8 @@
                         </tr>
                     <?php } ?>
                 </tbody>
-            </table>    
-        <?php }if($tipo==3){?> 
+            </table>
+        <?php }if($tipo==3){?>
             <table class="table table-hover" style="width:100%">
                 <thead>
                     <tr class="text-center">
@@ -67,7 +67,7 @@
                 </thead>
 
                 <tbody>
-                    <?php foreach($list_historico_modalidad as $list) {  ?>                                           
+                    <?php foreach($list_historico_modalidad as $list) {  ?>
                         <tr >
                             <td align="center"><?php echo $list['nom_modalidad_laboral']; ?></td>
                             <td align="center" ><?php if($list['fec_inicio']!="" && $list['fec_inicio']!="0000-00-00"){echo date('d/m/Y',strtotime($list['fec_inicio']));} ?></td>
@@ -75,8 +75,8 @@
                         </tr>
                     <?php } ?>
                 </tbody>
-            </table>    
-        <?php }if($tipo==4){?> 
+            </table>
+        <?php }if($tipo==4){?>
             <table class="table table-hover" style="width:100%">
                 <thead>
                     <tr class="text-center">
@@ -87,7 +87,7 @@
                 </thead>
 
                 <tbody>
-                    <?php foreach($list_historico_horario as $list) {  ?>                                           
+                    <?php foreach($list_historico_horario as $list) {  ?>
                         <tr >
                             <td align="center"><?php echo $list['nombre']; ?></td>
                             <td align="center" ><?php if($list['fec_inicio']!="" && $list['fec_inicio']!="0000-00-00"){echo date('d/m/Y',strtotime($list['fec_inicio']));} ?></td>
@@ -95,9 +95,9 @@
                         </tr>
                     <?php } ?>
                 </tbody>
-            </table>    
+            </table>
         <?php }?>
-        <?php if($tipo==5){ ?> 
+        <?php if($tipo==5){ ?>
             <table class="table table-hover" style="width:100%">
                 <thead>
                     <tr class="text-center">
@@ -106,13 +106,13 @@
                 </thead>
 
                 <tbody>
-                    <?php foreach($list_historico_horas_semanales as $list) {  ?>                                           
+                    <?php foreach($list_historico_horas_semanales as $list) {  ?>
                         <tr class="text-center">
                             <td><?php echo $list['horas_semanales']; ?></td>
                         </tr>
                     <?php } ?>
                 </tbody>
-            </table>    
+            </table>
         <?php }?>
     </div>
 </div>

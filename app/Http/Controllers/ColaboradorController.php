@@ -1188,6 +1188,12 @@ class ColaboradorController extends Controller
                     'fec_act' => now(),
                     'user_act' => session('usuario')->id_usuario
                 ]);
+                Usuario::findOrFail($id_usuario)->update([
+                    'id_puesto' => $request->id_puesto_hp,
+                    'id_centro_labor' => $request->id_centro_labor_hp,
+                    'fec_act' => now(),
+                    'user_act' => session('usuario')->id_usuario
+                ]);
             }
         }else{
             UsersHistoricoPuesto::create([

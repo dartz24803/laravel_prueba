@@ -39,7 +39,7 @@
             $("#hlogisticas").attr('aria-expanded', 'true');
             $("#trackings").addClass('active');
 
-            Tracking();
+            Bd_Tracking();
         });
 
         function Tracking() {

@@ -31,17 +31,14 @@
 </table>
 
 <script>
-// Declara la variable 'order' en el ámbito global
-let order = [0, "asc"];
-
 $(document).ready(function() {
-    // Configura la tabla y guarda una referencia a la instancia de DataTable
+    // Inicializa la tabla y guarda la referencia en una variable
     var tabla = $('#tabla_js').DataTable({
         "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
             "<'table-responsive'tr>" +
             "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
         responsive: true,
-        order: [order], // Usa 'order' como el orden inicial
+        order: [[0, "desc"]], // Usa 'order' como el orden inicial
         "oLanguage": {
             "oPaginate": {
                 "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
@@ -56,37 +53,35 @@ $(document).ready(function() {
         "stripeClasses": [],
         "lengthMenu": [10, 20, 50],
         "pageLength": 10,
-        "aoColumnDefs" : [
+        "aoColumnDefs": [
             {
-                'targets' : [ 0 ],
-                'visible' : false
+                "bSortable": false, "aTargets": [ 7 ],
+                'targets': [0],
+                'visible': false
             }
         ],
-    }).on('order.dt', function(e, settings) {
-        // Actualiza 'order' cada vez que se ordene la tabla
-        console.log("Orden actual:", order);
-        order = settings.aaSorting[0];
+        "columnDefs": [
+            {
+                'targets': 7, // Índice de la columna donde quieres desactivar el sort
+                'orderable': false // Desactiva el sort
+            }
+        ],
+    });
+
+    // Asigna la función al botón o acción onclick
+    $('#refrescar').on('click', function() {
+        // Refresca la tabla sin reinicializarla
+        tabla.ajax.reload(null, false); // Para datos dinámicos desde un servidor
+        // tabla.draw(); // Si estás usando datos estáticos
     });
 });
 
-// Función externa para usar la variable 'order' y alternar el orden de la columna 0
+// Función externa para alternar el orden de la columna 0
 function OrdenarFechas() {
-    console.log(order);
-    // Verifica si la columna ordenada es la 0 o la 7
-    if (order[0] == 7) {
-        // Si el orden es descendente, cambia a ascendente
-        if (order[1] === 'desc' || order[0] === 7) {
-            console.log('Cambiando de descendente a ascendente');
-            // Obtén la instancia de DataTable y aplica el nuevo orden
-            var tabla = $('#tabla_js').DataTable();
-            tabla.order([0, 'asc']).draw();
-        }else if (order[1] === 'asc' || order[0] === 7) {
-            console.log('Cambiando de ascendente a descendente');
-            // Obtén la instancia de DataTable y aplica el nuevo orden
-            var tabla = $('#tabla_js').DataTable();
-            tabla.order([0, 'desc']).draw();
-        }
-    }
+    console.log('si');
+    var tabla = $('#tabla_js').DataTable();
+    tabla.order([0, 'asc']).draw(); // Cambia el orden de la columna y actualiza
 }
+
 
 </script>
