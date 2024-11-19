@@ -477,10 +477,11 @@ class Usuario extends Model
                 u.foto_nombre,CONCAT(YEAR(NOW()), '-', DATE_FORMAT(fec_nac, '%m-%d')) as cumpleanio,
                 h.id_historial,h.estado_registro,m.nom_mes,
                 LOWER(u.usuario_nombres) AS nombres_min,LOWER(u.usuario_apater) AS apater_min,
-                ar.nom_area,u.centro_labores
+                ar.nom_area,u.centro_labores,ub.cod_ubi AS centro_labores
                 FROM users u
                 LEFT JOIN saludo_cumpleanio_historial h on h.id_usuario='$id_usuario' and
                 h.id_cumpleaniero=u.id_usuario and year(h.fec_reg)='$anio' and h.estado=1
+                LEFT JOIN ubicacion ub ON u.id_centro_labor = ub.id_ubicacion
                 LEFT JOIN mes m on month(u.fec_nac)=m.cod_mes
                 INNER JOIN puesto pu ON pu.id_puesto=u.id_puesto
                 INNER JOIN area ar ON pu.id_area=ar.id_area
