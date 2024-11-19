@@ -36,7 +36,7 @@
     }
 
     .col-tipo {
-        width: 350px;
+        width: 550px;
         /* Ajusta el valor según sea necesario */
     }
 </style>
@@ -72,7 +72,7 @@
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->codigo_area }}
             </td>
-            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $reporte->nombres_puesto }}">
                 {{ $reporte->nombres_puesto }}
             </td>
             <td class="

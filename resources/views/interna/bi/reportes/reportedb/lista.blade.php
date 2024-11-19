@@ -1,43 +1,41 @@
 <style>
     #tabla_js td {
         max-width: 180px;
-        /* Controla el ancho máximo */
         white-space: nowrap;
-        /* Evita que el texto se divida en varias líneas */
         overflow: hidden;
-        /* Oculta el contenido que se desborda */
         text-overflow: ellipsis;
-        /* Añade puntos suspensivos (...) */
     }
 
     .bg-green {
         background-color: #24e17f;
-        /* Verde claro */
         color: white;
-        /* Verde oscuro para el texto */
         padding: 5px;
         border-radius: 5px;
-        /* Borde redondeado */
     }
 
     .bg-orange {
         background-color: orange;
-        /* Naranja claro */
         color: white;
-        /* Naranja oscuro para el texto */
         padding: 5px;
         border-radius: 5px;
-        /* Borde redondeado */
     }
 
     .text-primary {
         color: #007bff;
-        /* Blue color */
     }
 
     .col-tipo {
-        width: 350px;
-        /* Ajusta el valor según sea necesario */
+        width: 550px;
+    }
+
+    /* Nueva clase para permitir el ajuste dinámico de la columna */
+    .expandable-col {
+        min-width: 550px;
+        /* Establece un mínimo pero permite expansión */
+        max-width: none;
+        /* Elimina el ancho máximo */
+        width: auto;
+        /* Permite que el contenido defina el ancho */
     }
 </style>
 
@@ -56,8 +54,7 @@
             <th>Tabla</th>
             <th>Frecuencia</th>
             <th>Solicitante</th>
-            <th>Accesos</th>
-
+            <th class="col-tipo">Accesos</th>
         </tr>
     </thead>
     <tbody>
@@ -92,10 +89,10 @@
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->nombre_usuario }}
             </td>
-            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            <!-- Aplicamos la clase expandable-col -->
+            <td class="expandable-col" title="{{ $reporte->nombres_puesto }}">
                 {{ $reporte->nombres_puesto }}
             </td>
-
         </tr>
         @endforeach
     </tbody>
