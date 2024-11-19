@@ -77,7 +77,7 @@
                                         <div class="col-md-1">
                                             <div class="form-group">
                                                 <label class="control-label text-bold">C.&nbsp;Labores:</label>
-                                                <select id="cod_base" name="cod_base" class="form-control basic" onchange="Traer_Colaborador();">
+                                                <select id="cod_base" name="cod_base" class="form-control basic" onchange="Limpiar_Campos()">
                                                     <option value="0" >TODOS</option>
                                                     <?php foreach($list_base as $list){?>
                                                         <option <?php if(($id_nivel==1 || $id_nivel==2) && $list['id_ubicacion']==23){echo "selected"; }?> value="<?php echo $list['id_ubicacion']; ?>"> <?php echo $list['cod_ubi'];?> </option>
@@ -208,6 +208,14 @@
         $("#hrhumanos").attr('aria-expanded','true');
         $("#reporteasistenciap").addClass('active');
     });
+
+    function Limpiar_Campos(){
+        Cargando();
+        $('#id_area').val(0).trigger('change');
+        $('#id_puesto').val(0).trigger('change');
+        Traer_Colaborador();
+    }
+
 
     function Traer_Colaborador(){
         Cargando();
