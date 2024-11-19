@@ -31,7 +31,7 @@ class RepartoInsumo extends Model
 
     public static function get_list_reparto_insumo()
     {
-        if(session('usuario')->id_puesto=="31" || session('usuario')->id_puesto=="32"){
+        if(session('usuario')->id_puesto=="31" || session('usuario')->id_puesto=="32" || session('usuario')->id_puesto==314){
             $parte = "ri.cod_base='".session('usuario')->centro_labores."' AND";
         }else{
             $parte = "";
