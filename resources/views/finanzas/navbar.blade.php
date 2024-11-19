@@ -104,7 +104,7 @@
         </li>
         <li>
             <a id="tabla_facturacion" href="{{ route('facturacion') }}">
-                <p class="romperpalabra"><span id="icono_active2"></span> Facturación</p>
+                <p class="romperpalabra"><span id="icono_active2"></span> Informe Contabilidad</p>
             </a>
         </li>
     </ul>

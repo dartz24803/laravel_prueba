@@ -1382,7 +1382,7 @@ Route::controller(CambioPrendaConfController::class)->group(function () {
     Route::post('cambio_prenda_conf_mo', 'store_mo')->name('cambio_prenda_conf_mo.store');
     Route::get('cambio_prenda_conf_mo/{id}/edit', 'edit_mo')->name('cambio_prenda_conf_mo.edit');
     Route::put('cambio_prenda_conf_mo/{id}', 'update_mo')->name('cambio_prenda_conf_mo.update');
-    Route::delete('cambio_prenda_conf_mo/{id}', 'destroy_mo')->name('cambio_prenda_conf_mo.destroy');
+    Route::delete('cambio_prenda_conf_mo/{id}', 'destroy_mo')->name('cambio_prendfa_conf_mo.destroy');
 });
 //CAJA - DURACIÓN DE TRANSACCIONES
 Route::controller(DuracionTransaccionController::class)->group(function () {
@@ -1669,8 +1669,13 @@ Route::controller(TablaMaestraTesoreriaController::class)->group(function () {
 //FACTURACIÓN 
 Route::controller(FacturacionController::class)->group(function () {
     Route::get('facturacion', 'index')->name('facturacion');
-    Route::get('tabla_facturacion/list', 'list')->name('tabla_facturacion.list');
-    Route::get('tabla_facturacion/datatable', 'list_datatable')->name('tabla_facturacion.datatable');
+    Route::post('tabla_facturacion/list', 'list')->name('tabla_facturacion.list');
+    Route::post('tabla_facturacion/datatable', 'list_datatable')->name('tabla_facturacion.datatable');
+    Route::post('tabla_facturacion/facturar', 'facturados_list')->name('tabla_facturacion.facturar');
+
+    // Route::get('tabla_facturacion/{fecha_inicio}/{fecha_fin}/datatable', 'list_datatable')->name('tabla_facturacion.datatable');
+
+
 });
 //TESORERÍA - REGISTRO LETRAS
 Route::controller(RegistroLetraController::class)->group(function () {
