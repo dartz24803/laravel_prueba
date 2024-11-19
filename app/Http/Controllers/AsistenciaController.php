@@ -13,6 +13,7 @@ use App\Models\Anio;
 use App\Models\SubGerencia;
 use DateTime;
 use App\Models\Notificacion;
+use App\Models\Ubicacion;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -60,14 +61,18 @@ class AsistenciaController extends Controller
 
         $id_area = Session('usuario')->id_area;
         $id_puesto = Session('usuario')->id_puesto;
-        $centro_labores = Session('usuario')->centro_labores;
+        $centro_labores = Session('usuario')->id_centro_labor;
         $cod_base = 0;
         $num_doc = 0;
-        $list_base = $this->modelobase->select('cod_base')->where('estado', 1)->groupBy('cod_base')->orderBy('cod_base', 'ASC')->get();
-        if ($id_puesto == 29 || $id_puesto == 98 || $id_puesto == 26 || $id_puesto == 16 || $id_puesto == 197 || $id_puesto == 161) {
+        $list_base = Ubicacion::select('id_ubicacion', 'cod_ubi')
+                    ->where('estado', 1)
+                    ->get();
+        //print_r($list_base[0]);
+        
+        if ($id_puesto == 29 || $id_puesto == 98 || $id_puesto == 26 || $id_puesto == 16 || $id_puesto == 197 || $id_puesto == 161  || $id_puesto==314) {
             $cod_base = $centro_labores;
         } else {
-            $cod_base = "OFC";
+            $cod_base = 23;
         }
         $estado = 1;
         $list_colaborador = $this->modelousuarios->get_list_usuarios_x_baset($cod_base, $area = null, $estado);
@@ -106,7 +111,7 @@ class AsistenciaController extends Controller
             $usuarios->where('usuario_codigo', $num_doc);
         }
         if ($cod_base != 0) {
-            $usuarios->where('centro_labores', $cod_base);
+            $usuarios->where('id_centro_labor', $cod_base);
         }
         if ($area != 0) {
             $usuarios->where('id_area', $area);

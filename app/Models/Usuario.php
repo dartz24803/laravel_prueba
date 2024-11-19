@@ -323,9 +323,10 @@ class Usuario extends Model
 
     function get_list_usuarios_x_baset($cod_base = null, $area = null, $estado)
     {
+        
         $base = "";
         if ($cod_base != "0") {
-            $base = "AND u.centro_labores='$cod_base'";
+            $base = "AND u.id_centro_labor='$cod_base'";
         }
         $carea = "";
         if (isset($area) && $area > 0) {

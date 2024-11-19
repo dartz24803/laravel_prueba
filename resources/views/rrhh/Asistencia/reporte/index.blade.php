@@ -52,7 +52,7 @@
     $id_puesto=Session('usuario')->id_puesto;
     $id_cargo=Session('usuario')->id_cargo;
     $usuario_codigo=Session('usuario')->usuario_codigo;
-    $centro_labores=Session('usuario')->centro_labores;
+    $centro_labores=Session('usuario')->id_centro_labor;
     $acceso=Session('usuario')->acceso;
     $induccion=Session('usuario')->induccion;
     $nom_area=Session('usuario')->nom_area;
@@ -80,7 +80,7 @@
                                                 <select id="cod_base" name="cod_base" class="form-control basic" onchange="Traer_Colaborador();">
                                                     <option value="0" >TODOS</option>
                                                     <?php foreach($list_base as $list){?>
-                                                        <option <?php if(($id_nivel==1 || $id_nivel==2) && $list['cod_base']=="OFC"){echo "selected"; }?> value="<?php echo $list['cod_base']; ?>"> <?php echo $list['cod_base'];?> </option>
+                                                        <option <?php if(($id_nivel==1 || $id_nivel==2) && $list['id_ubicacion']==23){echo "selected"; }?> value="<?php echo $list['id_ubicacion']; ?>"> <?php echo $list['cod_ubi'];?> </option>
                                                     <?php } ?>
                                                 </select>
                                             </div>

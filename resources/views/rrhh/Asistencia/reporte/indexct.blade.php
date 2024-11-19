@@ -70,6 +70,7 @@ $nom_area=Session('usuario')->nom_area;
                                         <div class="col-md-1">
                                             <div class="form-group">
                                                 <label class="control-label text-bold">C.&nbsp;Labores: </label>
+                                                <input type="text" value="{{ Session('usuario')->id_centro_labor }}">
                                                 <input type="text" name="cod_base" id="cod_base" class="form-control" value="<?php echo $centro_labores; ?>" disabled>
                                             </div>
                                         </div>
