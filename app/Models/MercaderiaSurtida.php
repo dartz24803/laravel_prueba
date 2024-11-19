@@ -13,7 +13,7 @@ class MercaderiaSurtida extends Model
     protected $connection = 'sqlsrv';
     protected $table = 'mercaderia_surtida';
 
-    public $timestamps = false; 
+    public $timestamps = false;
 
     protected $fillable = [
         'id_padre',
@@ -98,7 +98,7 @@ class MercaderiaSurtida extends Model
                     WHERE tipo=3 AND base=? $parte
                     GROUP BY id_padre,estilo,tipo_usuario
                     ORDER BY id DESC";
-            $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base'],$dato['tipo_usuario']]);        
+            $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base'],$dato['tipo_usuario']]);
         }else{
             $sql = "SELECT id,sku,estilo,tipo_usuario,tipo_prenda,color,talla,descripcion,
                     cantidad,stk_almacen,stk_tienda,CASE WHEN estado=0 THEN 'Pendiente'
@@ -118,7 +118,7 @@ class MercaderiaSurtida extends Model
                     FROM mercaderia_surtida
                     WHERE tipo=3 AND base=?
                     GROUP BY tipo_usuario";
-            $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);        
+            $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);
         }else{
             $sql = "SELECT tipo_usuario
                     FROM mercaderia_surtida
@@ -136,11 +136,11 @@ class MercaderiaSurtida extends Model
             $parte = "AND ms.tipo_usuario=?";
         }
         $sql = "SELECT ms.id_padre AS id,ms.estilo,ms.tipo_usuario,
-                TRY_CAST(mp.fecha AS DATETIME) AS fecha
+                TRY_CAST(mp.fecha AS DATE) AS fecha
                 FROM mercaderia_surtida ms
                 LEFT JOIN mercaderia_surtida_padre mp ON mp.id=ms.id_padre
-                WHERE ms.tipo=3 AND ms.base=? $parte AND ms.estado=0 AND 
-                TRY_CAST(mp.fecha AS DATETIME) >= DATEADD(WEEK, -1, GETDATE())
+                WHERE ms.tipo=3 AND ms.base=? $parte AND ms.estado=0 AND
+                TRY_CAST(mp.fecha AS DATE) >= DATEADD(WEEK, -1, GETDATE())
                 GROUP BY ms.id_padre,ms.estilo,ms.tipo_usuario,mp.fecha
                 ORDER BY ms.id_padre DESC";
         $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base'],$dato['tipo_usuario']]);
@@ -152,8 +152,8 @@ class MercaderiaSurtida extends Model
         $sql = "SELECT ms.tipo_usuario
                 FROM mercaderia_surtida ms
                 LEFT JOIN mercaderia_surtida_padre mp ON mp.id=ms.id_padre
-                WHERE ms.tipo=3 AND ms.base=? AND ms.estado=0 AND 
-                TRY_CAST(mp.fecha AS DATETIME) >= DATEADD(WEEK, -1, GETDATE())
+                WHERE ms.tipo=3 AND ms.base=? AND ms.estado=0 AND
+                TRY_CAST(mp.fecha AS DATE) >= DATEADD(WEEK, -1, GETDATE())
                 GROUP BY ms.tipo_usuario";
         $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);
         return $query;

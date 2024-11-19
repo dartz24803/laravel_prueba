@@ -344,8 +344,8 @@ if($get_id[0]['edicion_perfil']==1){
                                                 </div>
                                                 <div class="col text-sm-right text-center">
                                                     @csrf
-                                                    <a title="Agregar Dato Planilla" 
-                                                    class="btn btn-danger" title="Registrar" 
+                                                    <a title="Agregar Dato Planilla"
+                                                    class="btn btn-danger" title="Registrar"
                                                     onclick="Valida_Planilla_Activa('{{ $get_id[0]['id_usuario'] }}')">
                                                         Agregar
                                                     </a>
@@ -355,7 +355,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                     </a>
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="row" id="parte_superior_pl">
                                             </div>
 
@@ -3378,7 +3378,7 @@ if($get_id[0]['edicion_perfil']==1){
                         ).then(function() {
                             Planilla_Parte_Superior();
                             Planilla_Parte_Inferior();
-                        });    
+                        });
                     }
                 });
             }
@@ -6563,7 +6563,7 @@ if($get_id[0]['edicion_perfil']==1){
             }
         })
     }
-    
+
     function Gestacion() {
         var dataString = new FormData(document.getElementById('formulario_gestacion'));
         var url = "{{ url('ColaboradorController/Update_Gestacion') }}";
@@ -6907,7 +6907,7 @@ if($get_id[0]['edicion_perfil']==1){
 
         return true;
     }
-    
+
     function Referencia_Convocatoria() {
         var dataString = new FormData(document.getElementById('formulario_referencia_convocatoria'));
         var url = "{{ url('ColaboradorController/Update_Referencia_Convocatoria') }}";
@@ -6970,7 +6970,7 @@ if($get_id[0]['edicion_perfil']==1){
 
         return true;
     }
-    
+
     function Adjuntar_Documentacion() {
         Cargando();
 
@@ -7036,7 +7036,7 @@ if($get_id[0]['edicion_perfil']==1){
 
         return true;
     }
-    
+
     function Talla_Indica() {
         var dataString = new FormData(document.getElementById('formulario_talla_indicar'));
         var url = "{{ url('ColaboradorController/Update_Talla_Indica') }}";
@@ -7187,7 +7187,7 @@ if($get_id[0]['edicion_perfil']==1){
             $("#id_afp").val('0');
         }
     }
-    
+
     function Numero_Cuenta(){
         let lista_banco =<?php echo count($list_banco); ?> ;
         var dataString = new FormData(document.getElementById('formulario_cuenta_bancaria'));
@@ -7295,7 +7295,7 @@ if($get_id[0]['edicion_perfil']==1){
         }
         return true;
     }
-    
+
     function Validaeb() {
         if ($('#cuenta_bancaria').val() == '1') {
             $('#id_banco').removeAttr("disabled");
@@ -7319,7 +7319,7 @@ if($get_id[0]['edicion_perfil']==1){
             $("#id_banco").val('0');
         }
     }
-    
+
     function Terminos() {
         valor = $('input:checkbox[name=termino]:checked').val();
         if (valor == 1) {
@@ -7361,7 +7361,7 @@ if($get_id[0]['edicion_perfil']==1){
     }
     function GuardarCambios(n) {
         Cargando();
-        
+
         var dataString = new FormData(document.getElementById('edatos'));
         var numero = $('#num_doc').val();
         var url = "{{ url('ColaboradorController/GuardarCambiosCI')}}/" + numero;
@@ -7408,7 +7408,7 @@ if($get_id[0]['edicion_perfil']==1){
                                 }else{
                                     window.location.reload();
                                 }
-                                
+
                             });
                         }
                     });

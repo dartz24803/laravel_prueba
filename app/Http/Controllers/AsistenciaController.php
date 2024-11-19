@@ -75,7 +75,7 @@ class AsistenciaController extends Controller
         $list_gerencia = $this->modelogerencia->get_list_gerencia();
         $list_mes = $this->modelomes->where('estado', 1)->get();
         $list_anio = $this->modeloanio->where('estado', 1)->orderBy('cod_anio', 'DESC')->get();
-        if ($id_puesto == 29 || $id_puesto == 98 || $id_puesto == 26 || $id_puesto == 16 || $id_puesto == 197 || $id_puesto == 161) {
+        if ($id_puesto == 29 || $id_puesto == 98 || $id_puesto == 26 || $id_puesto == 16 || $id_puesto == 197 || $id_puesto == 161 || $id_puesto == 314) {
             return view('rrhh.Asistencia.reporte.indexct', compact('list_base', 'list_colaborador', 'list_area', 'list_gerencia', 'list_mes', 'list_anio', 'list_notificacion', 'list_subgerencia'));
         } else {
             return view('rrhh.Asistencia.reporte.index', compact('list_base', 'list_colaborador', 'list_area', 'list_gerencia', 'list_mes', 'list_anio', 'list_notificacion', 'list_subgerencia'));
@@ -96,7 +96,7 @@ class AsistenciaController extends Controller
         $tipo = $request->input("tipo");
         $finicio = $request->input("finicio");
         $ffin = $request->input("ffin");
-        
+
         $usuarios = Usuario::select('usuario_codigo', 'id_usuario');
 
         if ($estado == 1 || $estado == 2) {
@@ -111,16 +111,16 @@ class AsistenciaController extends Controller
         if ($area != 0) {
             $usuarios->where('id_area', $area);
         }
-        
+
         $query = $usuarios->toSql(); // Obtener la consulta SQL generada
         $bindings = $usuarios->getBindings(); // Obtener los bindings (valores)
-        
+
         // echo "Consulta: $query\n";
         // print_r($bindings); // Imprimir los valores que se utilizan en la consulta
-        
+
         $usuarios = $usuarios->get();
-        // print_r($usuarios);        
-        
+        // print_r($usuarios);
+
         $year = date('Y');
         if ($tipo == 1) {
             $year = $cod_anio;
@@ -149,7 +149,7 @@ class AsistenciaController extends Controller
             return view('rrhh.Asistencia.reporte.listar', compact('fecha_inicio', 'fecha_fin', 'list_asistencia', 'list_colaborador', 'n_documento'));
         }
     }
-    
+
     public function Traer_Colaborador_Asistencia(Request $request){
             $dato['cod_base'] = $request->input('cod_base');
             $dato['id_area'] = $request->input('id_area');
@@ -157,20 +157,20 @@ class AsistenciaController extends Controller
             $dato['list_colaborador'] = $this->modelousuarios->get_list_usuarios_x_baset($dato['cod_base'],$dato['id_area'],$dato['estado']);
             return view('rrhh.Asistencia.reporte.colaborador', $dato);
     }
-    
+
     public function Excel_Reporte_Asistencia($cod_mes,$cod_anio,$cod_base,$num_doc,$area,$estado,$tipo,$finicio,$ffin){
         if($tipo==1){
             $year=$cod_anio;
             $dato['fecha_inicio']= strtotime("01-$cod_mes-$year");
-            $L = new DateTime("$year-$cod_mes-01"); 
+            $L = new DateTime("$year-$cod_mes-01");
             $fecha_fin= $L->format( 'Y-m-t' );
-            $timestamp = strtotime($fecha_fin); 
+            $timestamp = strtotime($fecha_fin);
             $dato['fecha_fin'] = strtotime(date("d-m-Y", $timestamp ));
         }else{
             $dato['fecha_inicio'] = strtotime(date("d-m-Y", strtotime($finicio)));
             $dato['fecha_fin'] = strtotime(date("d-m-Y", strtotime($ffin)));
         }
-        
+
         $usuarios = Usuario::select('usuario_codigo', 'id_usuario');
 
         if ($estado == 1 || $estado == 2) {
@@ -190,7 +190,7 @@ class AsistenciaController extends Controller
         $list_asistencia = $this->modelo->buscar_reporte_control_asistencia($cod_mes,$cod_anio,$cod_base,$num_doc,$tipo,$finicio,$ffin,$usuarios);
         $get_mes = Mes::where('cod_mes', $cod_mes)
                 ->get();
-        
+
         if($num_doc!=0){
             $dato['list_colaborador'] = $this->modelo->get_list_usuario_xnum_doc($num_doc);
         }else{
@@ -203,19 +203,19 @@ class AsistenciaController extends Controller
 
             $dato['n_documento']=$num_doc;
             $num=6;
-            
-            
+
+
             $prueba=$num_doc;
             if($tipo==1){
                 $spreadsheet->getActiveSheet()->setCellValue("C1", $get_mes[0]['nom_mes'].' '.$year);
             }else{
                 $spreadsheet->getActiveSheet()->setCellValue("C1", date("d/m/Y", strtotime($finicio)).' - '.date("d/m/Y", strtotime($ffin)));
             }
-            
+
             $spreadsheet->getActiveSheet()->setCellValue("Q1", 'CONTROL DE ASISTENCIA');
             $spreadsheet->getActiveSheet()->setCellValue("B{$num}", 'N°');
             $spreadsheet->getActiveSheet()->setCellValue("C{$num}", 'APELLIDOS Y NOMBRES');
-            
+
             $spreadsheet->getActiveSheet()->setCellValue("D3", 'ASITENCIA');
             $spreadsheet->getActiveSheet()->setCellValue("G3", '1');
             $spreadsheet->getActiveSheet()->setCellValue("J3", 'FALTAS');
@@ -224,9 +224,9 @@ class AsistenciaController extends Controller
             $spreadsheet->getActiveSheet()->setCellValue("T3", 'T');
             $spreadsheet->getActiveSheet()->setCellValue("Y3", 'FALTA JUSTIFICADA');
             $spreadsheet->getActiveSheet()->setCellValue("AC3", 'FJ');
-            
+
             $sheet->getStyle("D3:AC3")->getFont()->setBold(true);
-            
+
             for($i=$dato['fecha_inicio'],$j='D';$i<=$dato['fecha_fin'];$i+=86400,$j++){
             }
             $columna=$j;
@@ -236,7 +236,7 @@ class AsistenciaController extends Controller
             $sheet->getStyle($columna.'5:'.$columna.'6')->getAlignment()->setWrapText(true);
             $sheet->getStyle($columna.'5:'.$columna.'6')->getFont()->setBold(true);
             $sheet->getStyle($columna.'5:'.$columna.'6')->getFont()->setSize(10);
-            
+
             $fila=count($dato['list_colaborador'])+6;
             $spreadsheet->getActiveSheet()->setCellValue($columna."5", 'Asistencia (Puntual)');
             $allborder = [
@@ -248,7 +248,7 @@ class AsistenciaController extends Controller
                 ]
             ];
             $sheet->getStyle('B5:'.$columna.$fila)->applyFromArray($allborder);
-            
+
             //Le aplicamos color a la cabecera
             $spreadsheet->getActiveSheet()->getStyle("B5:".$columna."6")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('dce6f1');
             $styleArray = [
@@ -271,7 +271,7 @@ class AsistenciaController extends Controller
             //$spreadsheet->getActiveSheet()->getStyle("C1:X1")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('51b9d6');
             $sheet->getStyle('C1:X1')->applyFromArray($styleArray);
 
-            
+
             //border
             $styleThinBlackBorderOutline = [
                 'borders' => [
@@ -283,11 +283,11 @@ class AsistenciaController extends Controller
             ];
             //Font BOLD
             $sheet->getStyle("B5:AH{$num}")->getFont()->setBold(true);
-            
+
             $p = $num;
             $d=0;
             for($i=$dato['fecha_inicio'],$j='D';$i<=$dato['fecha_fin'];$i+=86400,$j++){
-                
+
 
                 $fecha = date("d-m-Y",$i);
                 $numeroDia = date('d', strtotime($fecha));
@@ -339,7 +339,7 @@ class AsistenciaController extends Controller
                     $busq_modulo = in_array($list['num_doc']."-".date("d-m-Y",$i), array_column($list_asistencia, 'validador'));
                     $posicion = array_search($list['num_doc']."-".date("d-m-Y",$i), array_column($list_asistencia, 'validador'));
                     //$cadenaConvert = str_replace(" ", "-", $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']);
-                    
+
                     $fecha = date("d-m-Y",$i);
                     $numeroDia = date('d', strtotime($fecha));
                     $dia = date('l', strtotime($fecha));
@@ -360,7 +360,7 @@ class AsistenciaController extends Controller
                                 $spreadsheet->getActiveSheet()->setCellValue($j.$orden, "0");
                             }
                         }else{
-                            if($list_asistencia[$posicion]['ingreso']!=null && $list_asistencia[$posicion]['idescanso']!=null && 
+                            if($list_asistencia[$posicion]['ingreso']!=null && $list_asistencia[$posicion]['idescanso']!=null &&
                             $list_asistencia[$posicion]['fdescanso']!=null && $list_asistencia[$posicion]['salida']!=null || $nombredia=="Domingo"){
                                 if(date("Y-m-d",$i)>=$list['fec_inicio']){
                                     $asistencia=$asistencia+1;
@@ -374,7 +374,7 @@ class AsistenciaController extends Controller
                                 }else{
                                     $spreadsheet->getActiveSheet()->setCellValue($j.$orden, "0");
                                 }*/
-                                
+
                             }else{
                                 $spreadsheet->getActiveSheet()->setCellValue($j.$orden, "0");
                             }
@@ -388,7 +388,7 @@ class AsistenciaController extends Controller
                                     ]
                                 ];
                                 $sheet->getStyle($j.$orden)->applyFromArray($borderight);
-                                
+
                             }
                         }
                     }else{
@@ -411,12 +411,12 @@ class AsistenciaController extends Controller
                                 }else{
                                     $spreadsheet->getActiveSheet()->setCellValue($j.$orden, "0");
                                 }
-                                
-                                    
+
+
                             }else{
                                 $spreadsheet->getActiveSheet()->setCellValue($j.$orden, "0");
                             }
-                            
+
                         }
                     }
                     $sheet->getStyle($j.$orden)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -449,7 +449,7 @@ class AsistenciaController extends Controller
             $spreadsheet->getActiveSheet()->setCellValue("I1", 'FIN DESCANSO');
             $spreadsheet->getActiveSheet()->setCellValue("J1", 'SALIDA');
             $spreadsheet->getActiveSheet()->setCellValue("K1", 'DIA LABORADO');
-            $spreadsheet->getActiveSheet()->setAutoFilter("B1:K1");  
+            $spreadsheet->getActiveSheet()->setAutoFilter("B1:K1");
             $spreadsheet->getActiveSheet()->getStyle("B1:K1")->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('dce6f1');
             $styleArray = [
                 'font' => [
@@ -498,7 +498,7 @@ class AsistenciaController extends Controller
                             $meses_EN = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
                             $nombreMes = str_replace($meses_EN, $meses_ES, $mes);
                     if ($busq_modulo == true) {
-                        if($nombredia=="Sábado"){ 
+                        if($nombredia=="Sábado"){
                             $spreadsheet->getActiveSheet()->setCellValue("B{$no}", $no);
                             $spreadsheet->getActiveSheet()->setCellValue("C{$no}", $list['centro_labores']);
                             $spreadsheet->getActiveSheet()->setCellValue("D{$no}", $list['num_doc']);
@@ -512,13 +512,13 @@ class AsistenciaController extends Controller
                                 $parte = explode("--", $list_asistencia[$posicion]['salidasabado']);
                                 $spreadsheet->getActiveSheet()->setCellValue("J{$no}", $parte[0]);
                             }
-                            if($list_asistencia[$posicion]['ingreso']!=null && $list_asistencia[$posicion]['salidasabado']!=null){ 
+                            if($list_asistencia[$posicion]['ingreso']!=null && $list_asistencia[$posicion]['salidasabado']!=null){
                                 //if($n_documento!=0){$d=$d+1;}
-                                $spreadsheet->getActiveSheet()->setCellValue("K{$no}", "1"); 
+                                $spreadsheet->getActiveSheet()->setCellValue("K{$no}", "1");
                             }else{
-                                $spreadsheet->getActiveSheet()->setCellValue("K{$no}", "0"); 
+                                $spreadsheet->getActiveSheet()->setCellValue("K{$no}", "0");
                             }
-                           
+
                         }else{
                             $spreadsheet->getActiveSheet()->setCellValue("B{$no}", $no);
                             $spreadsheet->getActiveSheet()->setCellValue("C{$no}", $list['centro_labores']);
@@ -541,17 +541,17 @@ class AsistenciaController extends Controller
                                 $parte = explode("--", $list_asistencia[$posicion]['salida']);
                                 $spreadsheet->getActiveSheet()->setCellValue("J{$no}", $parte[0]);
                             }
-                            if($list_asistencia[$posicion]['ingreso']!=null && $list_asistencia[$posicion]['idescanso']!=null && 
-                            $list_asistencia[$posicion]['fdescanso']!=null && $list_asistencia[$posicion]['salida']!=null || $nombredia=="Domingo"){ 
+                            if($list_asistencia[$posicion]['ingreso']!=null && $list_asistencia[$posicion]['idescanso']!=null &&
+                            $list_asistencia[$posicion]['fdescanso']!=null && $list_asistencia[$posicion]['salida']!=null || $nombredia=="Domingo"){
                                 if(date("Y-m-d",$i)>=$list['fec_inicio']){$d=$d+1;
-                                    $spreadsheet->getActiveSheet()->setCellValue("K{$no}", "1"); 
+                                    $spreadsheet->getActiveSheet()->setCellValue("K{$no}", "1");
                                 }else{
-                                    $spreadsheet->getActiveSheet()->setCellValue("K{$no}", "0"); 
-                                }   
+                                    $spreadsheet->getActiveSheet()->setCellValue("K{$no}", "0");
+                                }
                             }else{
-                                $spreadsheet->getActiveSheet()->setCellValue("K{$no}", "0"); 
+                                $spreadsheet->getActiveSheet()->setCellValue("K{$no}", "0");
                             }
-                            
+
                         }
                     }else{
                         if($nombredia=="Sábado"){
@@ -560,25 +560,25 @@ class AsistenciaController extends Controller
                             $spreadsheet->getActiveSheet()->setCellValue("D{$no}", $list['num_doc']);
                             $spreadsheet->getActiveSheet()->setCellValue("E{$no}", $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']);
                             $spreadsheet->getActiveSheet()->setCellValue("F{$no}", $nombredia." ".$numeroDia." de ".$nombreMes." de ".$anio);
-                            $spreadsheet->getActiveSheet()->setCellValue("K{$no}", "0"); 
+                            $spreadsheet->getActiveSheet()->setCellValue("K{$no}", "0");
                             }else{
                             $spreadsheet->getActiveSheet()->setCellValue("B{$no}", $no);
                             $spreadsheet->getActiveSheet()->setCellValue("C{$no}", $list['centro_labores']);
                             $spreadsheet->getActiveSheet()->setCellValue("D{$no}", $list['num_doc']);
                             $spreadsheet->getActiveSheet()->setCellValue("E{$no}", $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']);
                             $spreadsheet->getActiveSheet()->setCellValue("F{$no}", $nombredia." ".$numeroDia." de ".$nombreMes." de ".$anio);
-                            
+
                             if($nombredia=="Domingo"){
                                 if(date("Y-m-d",$i)>=$list['fec_inicio']){
-                                    $d=$d+1; 
+                                    $d=$d+1;
                                     $spreadsheet->getActiveSheet()->setCellValue("K{$no}", "1");
                                 }else{
-                                    $spreadsheet->getActiveSheet()->setCellValue("K{$no}", "0"); 
-                                }  
+                                    $spreadsheet->getActiveSheet()->setCellValue("K{$no}", "0");
+                                }
                             }else{
-                                $spreadsheet->getActiveSheet()->setCellValue("K{$no}", "0"); 
+                                $spreadsheet->getActiveSheet()->setCellValue("K{$no}", "0");
                             }
-                        } 
+                        }
                     }
                     $sheet->getStyle("B".$no.":K".$no)->applyFromArray($allborder);
                     $no=$no+1; $n=$n-1;
@@ -594,7 +594,7 @@ class AsistenciaController extends Controller
 		$filename = 'Reporte Control Asistencia '.$curdate;
 		ob_end_clean();
 		header('Content-Type: application/vnd.ms-excel');
-		header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+		header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"');
 		header('Cache-Control: max-age=0');
 		$writer->save('php://output');
     }
