@@ -178,7 +178,7 @@ class Usuario extends Model
                 and r.estado=1) else (select r.url_config from config r where r.descrip_config='Foto_colaborador'
                 and r.estado=1) end as url_foto,p.id_nivel as nivel_jerarquico,u.desvinculacion,
                 pps.registro_masivo, visualizar_amonestacion(u.id_puesto) AS visualizar_amonestacion,
-                sl.descripcion AS sede_laboral,
+                sl.descripcion AS sede_laboral, ubi.cod_ubi AS ubicacion,
                 visualizar_responsable_area(u.id_puesto) AS visualizar_responsable_area,
                 pps.estado as estadopps, pps.registro_masivo, pps.id_puesto_permitido, u.id_centro_labor,
                 visualizar_mi_equipo(u.id_puesto) AS visualizar_mi_equipo,
@@ -192,6 +192,7 @@ class Usuario extends Model
                 LEFT JOIN area a ON p.id_area=a.id_area
                 LEFT JOIN sub_gerencia sg ON a.id_departamento=sg.id_sub_gerencia
                 LEFT JOIN ubicacion ub ON u.id_centro_labor=ub.id_ubicacion
+                LEFT JOIN ubicacion ubi ON u.id_ubicacion=ubi.id_ubicacion
                 LEFT JOIN sede_laboral sl ON ub.id_sede=sl.id
                 WHERE u.usuario_codigo='$usuario' AND u.estado IN (1,4) AND u.desvinculacion IN (0)";
         $result = DB::select($query);
@@ -323,9 +324,10 @@ class Usuario extends Model
 
     function get_list_usuarios_x_baset($cod_base = null, $area = null, $estado)
     {
+        
         $base = "";
         if ($cod_base != "0") {
-            $base = "AND u.centro_labores='$cod_base'";
+            $base = "AND u.id_centro_labor='$cod_base'";
         }
         $carea = "";
         if (isset($area) && $area > 0) {
@@ -475,10 +477,11 @@ class Usuario extends Model
                 u.foto_nombre,CONCAT(YEAR(NOW()), '-', DATE_FORMAT(fec_nac, '%m-%d')) as cumpleanio,
                 h.id_historial,h.estado_registro,m.nom_mes,
                 LOWER(u.usuario_nombres) AS nombres_min,LOWER(u.usuario_apater) AS apater_min,
-                ar.nom_area,u.centro_labores
+                ar.nom_area,u.centro_labores,ub.cod_ubi AS centro_labores
                 FROM users u
                 LEFT JOIN saludo_cumpleanio_historial h on h.id_usuario='$id_usuario' and
                 h.id_cumpleaniero=u.id_usuario and year(h.fec_reg)='$anio' and h.estado=1
+                LEFT JOIN ubicacion ub ON u.id_centro_labor = ub.id_ubicacion
                 LEFT JOIN mes m on month(u.fec_nac)=m.cod_mes
                 INNER JOIN puesto pu ON pu.id_puesto=u.id_puesto
                 INNER JOIN area ar ON pu.id_area=ar.id_area

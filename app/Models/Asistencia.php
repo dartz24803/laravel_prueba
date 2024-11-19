@@ -27,7 +27,7 @@ class Asistencia extends Model
         foreach ($usuarios as $usuario) {
             $dni = $usuario->usuario_codigo;
             
-            $sql = "SELECT DISTINCT DATE(it.punch_time) AS orden, u.centro_labores,
+            $sql = "SELECT DISTINCT DATE(it.punch_time) AS orden, ub.cod_ubi AS centro_labores,
                     u.usuario_apater,u.usuario_amater,u.usuario_nombres, u.usuario_codigo as num_doc,
                     DATE_FORMAT(it.punch_time, '%d/%m/%Y') AS fecha,
                     (SELECT DATE_FORMAT(ir.punch_time, '%H:%i %p') 
@@ -52,6 +52,7 @@ class Asistencia extends Model
                     LIMIT 3,1) AS salida
                     FROM iclock_transaction it
                     join lanumerouno.users u ON it.emp_code=u.usuario_codigo
+                    join lanumerouno.ubicacion ub ON u.id_centro_labor=ub.id_ubicacion
                     WHERE it.emp_code = :dni $fecha $base_ar $doc_iclock $doc_ar
                     ORDER BY DATE(it.punch_time) DESC";
         
@@ -84,11 +85,11 @@ class Asistencia extends Model
     {
         $base = "";
         if ($cod_base != "0") {
-            $base = "AND u.centro_labores='$cod_base'";
+            $base = "AND u.id_centro_labor='$cod_base'";
         }
         $carea = "";
         if (isset($area) && $area > 0) {
-            $carea = "AND u.id_area='$area' ";
+            $carea = "AND p.id_area='$area' ";
         }
 
         $id_estado = "";
@@ -100,6 +101,7 @@ class Asistencia extends Model
         $sql = "SELECT u.*,(SELECT fec_inicio h FROM historico_colaborador h where u.id_usuario=h.id_usuario and h.estado in (1,3) ORDER BY h.fec_inicio DESC,h.fec_fin DESC limit 1)as fec_inicio,
                 (SELECT h.fec_fin h FROM historico_colaborador h where u.id_usuario=h.id_usuario and h.estado in (1,3) ORDER BY h.fec_inicio DESC,h.fec_fin DESC limit 1)as fec_fin
                 FROM users u
+                LEFT JOIN puesto p ON u.id_puesto = p.id_puesto 
                 WHERE u.id_nivel<>8 $base $carea $id_estado";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);

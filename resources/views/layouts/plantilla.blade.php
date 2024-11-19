@@ -63,7 +63,7 @@
                     <line x1="3" y1="18" x2="21" y2="18"></line>
                 </svg></a>
 
-            <a id="div_imagen_header" class="col-md-5 offset-5">
+            <a id="div_imagen_header" class="col-xl-5 offset-4">
                 <img src="{{ asset('inicio/Grupo-LN1.png') }}" class="navbar-logo ajuste1" alt="logo">
             </a>
             <ul class="navbar-item flex-row ml-auto">

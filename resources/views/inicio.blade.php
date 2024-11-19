@@ -13,7 +13,7 @@
                                 <div class="container" id="container" style="background-image: url('{{ asset('inicio/NEW.Intranet-Icono-Fondo2.jpg') }}');">
                                     <div class="row layout-top-spacing">
                                         <!-- Logo Logistica-->
-                                        <div id="logo_logistica" class="col-sm-8">
+                                        <div id="logo_logistica" class="col-sm-8 offset-3 d-flex justify-content-around">
                                             <div class="logo6" style="width: 6rem;">
                                                 <div id="logistica" class="zoom-card card text-center border-0 rounded_z d-flex justify-content-center" style="background-color: #fea701;height:6rem">
                                                     <img class="imagen_1" src="{{ asset('inicio/NEW.Intranet-Icono-Logistica.png')}}" alt="">
@@ -320,9 +320,9 @@
         background-size: 135rem auto;
     }
 
-    @media screen and (min-width: 1100px) {
+    @media screen and (min-width: 1250px) {
         #logo_logistica {
-            margin-left: 39.5rem;
+            margin-left: 19rem;
             margin-top: 6rem;
             height: 9rem;
         }
@@ -485,7 +485,7 @@
         }*/
     }
 
-    @media screen and (max-width: 1100px) {
+    @media screen and (max-width: 1250px) {
         #container {
             background-image: none !important;
         }
@@ -674,8 +674,8 @@
     function cambiarClaseSegunResolucion() {
         var ventanaAncho = $(window).width();
         console.log(ventanaAncho);
-        if (350 < ventanaAncho && ventanaAncho <= 1100) {
-            $('#logo_logistica').removeClass('col-sm-8').addClass('col-sm-4 d-flex justify-content-center');
+        if (350 < ventanaAncho && ventanaAncho <= 1250) {
+            $('#logo_logistica').removeClass('col-sm-8 offset-3').addClass('col-sm-4 d-flex justify-content-center');
             $('#logo_comercial').removeClass('justify-content-end').addClass('justify-content-center');
             $('#logo_talento_humano').removeClass('col-sm-2').addClass('col-sm-4');
             $('#logo_infraestructura').removeClass('col-sm-3').addClass('col-sm-4 d-flex justify-content-center');
@@ -687,7 +687,7 @@
             $('#logo_manufactura').removeClass('col-sm-2 align-items-start').addClass('col-sm-4 justify-content-center mt-4');
             $('#logo_tiendas').removeClass('col-sm-3 justify-content-start').addClass('col-sm-12 justify-content-center');
         } else {
-            $('#logo_logistica').removeClass('col-sm-4 d-flex justify-content-center').addClass('col-sm-8');
+            $('#logo_logistica').removeClass('col-sm-4 justify-content-center').addClass('col-sm-8');
             $('#logo_comercial').removeClass('justify-content-center').addClass('justify-content-end');
             $('#logo_talento_humano').removeClass('col-sm-4').addClass('col-sm-2');
             $('#logo_infraestructura').removeClass('col-sm-4 d-flex justify-content-center').addClass('col-sm-3');

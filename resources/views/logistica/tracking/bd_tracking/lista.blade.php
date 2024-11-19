@@ -8,7 +8,9 @@
             <th>Hacia</th>
             <th>Proceso</th>
             <th>Estado</th>
-            <th class="no-sort" onclick="OrdenarFechas()">Fecha</th>
+            <th id="ordenar-fechas" onclick="OrdenarFechas()" style="cursor: pointer;">
+                <div class=" d-flex justify-content-end orden-icono">⇅</div>Fecha
+            </th>
             <th>Hora</th>
         </tr>
     </thead>
@@ -38,7 +40,7 @@ $(document).ready(function() {
             "<'table-responsive'tr>" +
             "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
         responsive: true,
-        order: [[0, "desc"]], // Usa 'order' como el orden inicial
+        order: [[0, "desc"]],
         "oLanguage": {
             "oPaginate": {
                 "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
@@ -53,35 +55,64 @@ $(document).ready(function() {
         "stripeClasses": [],
         "lengthMenu": [10, 20, 50],
         "pageLength": 10,
-        "aoColumnDefs": [
-            {
-                "bSortable": false, "aTargets": [ 7 ],
-                'targets': [0],
-                'visible': false
-            }
-        ],
         "columnDefs": [
             {
-                'targets': 7, // Índice de la columna donde quieres desactivar el sort
-                'orderable': false // Desactiva el sort
+                'targets': 7,
+                'orderable': false
+            },
+            {
+                'targets': 0, // Índice de la columna que quieres ocultar
+                'visible': false // Oculta la columna
             }
         ],
-    });
-
-    // Asigna la función al botón o acción onclick
-    $('#refrescar').on('click', function() {
-        // Refresca la tabla sin reinicializarla
-        tabla.ajax.reload(null, false); // Para datos dinámicos desde un servidor
-        // tabla.draw(); // Si estás usando datos estáticos
     });
 });
 
-// Función externa para alternar el orden de la columna 0
 function OrdenarFechas() {
-    console.log('si');
     var tabla = $('#tabla_js').DataTable();
-    tabla.order([0, 'asc']).draw(); // Cambia el orden de la columna y actualiza
+    var currentOrder = tabla.order(); // Obtiene el orden actual
+
+    var header = $('#ordenar-fechas'); // Selecciona el encabezado
+    var icono = header.find('.orden-icono'); // Selecciona el ícono de la flecha
+
+    // Alterna entre ascendente y descendente
+    if (currentOrder[0][0] === 0) { // Si la columna 0 está ordenada
+        var newOrder = (currentOrder[0][1] === 'asc') ? 'desc' : 'asc';
+        tabla.order([0, newOrder]).draw();
+
+        // Cambia la clase del ícono según el nuevo orden
+        if (newOrder === 'asc') {
+            icono.removeClass('desc').addClass('asc').text('⇑');
+        } else {
+            icono.removeClass('asc').addClass('desc').text('⇓');
+        }
+    } else {
+        // Si no está ordenada, establece como ascendente por defecto
+        tabla.order([0, 'asc']).draw();
+        icono.removeClass('desc').addClass('asc').text('⇑');
+    }
 }
 
-
 </script>
+<style>
+#ordenar-fechas {
+    cursor: pointer; /* Cambia el cursor a pointer */
+    user-select: none; /* Evita selección del texto al hacer clic */
+}
+
+.orden-icono {
+    margin-left: 5px; /* Espacio entre texto y flecha */
+    font-size: 0.9em;
+    color: gray; /* Color inicial */
+}
+
+.orden-icono.asc {
+    content: "⇑"; /* Flecha ascendente */
+    color: gray; /* Color activo */
+}
+
+.orden-icono.desc {
+    content: "⇓"; /* Flecha descendente */
+    color: gray; /* Color activo */
+}
+</style>
