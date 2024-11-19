@@ -105,16 +105,17 @@ class AsistenciaController extends Controller
         $usuarios = Usuario::select('usuario_codigo', 'id_usuario');
 
         if ($estado == 1 || $estado == 2) {
-            $usuarios->where('estado', $estado);
+            $usuarios->where('users.estado', $estado);
         }
         if ($num_doc != 0) {
-            $usuarios->where('usuario_codigo', $num_doc);
+            $usuarios->where('users.usuario_codigo', $num_doc);
         }
         if ($cod_base != 0) {
-            $usuarios->where('id_centro_labor', $cod_base);
+            $usuarios->where('users.id_centro_labor', $cod_base);
         }
         if ($area != 0) {
-            $usuarios->where('id_area', $area);
+            $usuarios->leftJoin('puesto', 'users.id_puesto', 'puesto.id_puesto');
+            $usuarios->where('puesto.id_area', $area);
         }
 
         $query = $usuarios->toSql(); // Obtener la consulta SQL generada
