@@ -123,13 +123,12 @@
                 "type": "POST", // Cambiar a POST
                 "data": function(d) {
                     // Obtener los valores de las fechas y el estado de los filtros
-                    var fechaInicio = $('#fecha_iniciob').val(); // Asume que tienes un input con id="fecha_iniciob"
-                    var fechaFin = $('#fecha_finb').val(); // Asume que tienes un input con id="fecha_finb"
-                    var estado = $('#estadoFiltro').val(); // Obtener el estado seleccionado
-                    // Agregar las fechas y el estado como parte de los datos de la solicitud
+                    var fechaInicio = $('#fecha_iniciob').val();
+                    var fechaFin = $('#fecha_finb').val();
+                    var estado = $('#estadoFiltro').val();
                     d.fecha_inicio = fechaInicio;
                     d.fecha_fin = fechaFin;
-                    d.estado = estado; // Agregar el estado al filtro
+                    d.estado = estado;
                 },
                 "headers": {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
