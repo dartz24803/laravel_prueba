@@ -1,7 +1,7 @@
 <div class="toolbar d-md-flex align-items-md-center mt-3">
     <div class="form-group col-lg-2">
         <label>Base:</label>
-        @if (session('usuario')->id_puesto=="31" || session('usuario')->id_puesto=="32")
+        @if (session('usuario')->id_puesto=="31" || session('usuario')->id_puesto=="32" || session('usuario')->id_puesto==314)
             <input type="text" class="form-control" name="cod_baseb" id="cod_baseb" 
             value="{{ session('usuario')->centro_labores }}" readonly>
         @else
