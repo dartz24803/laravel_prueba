@@ -109,6 +109,7 @@ $id_nivel=session('usuario')->id_nivel;
 
                         <div class="row" id="cancel-row">
                             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
+                                @csrf
                                 <div id="div_papeletas" class="widget-content widget-content-area p-3">
                                 </div>
                             </div>
@@ -127,7 +128,11 @@ $id_nivel=session('usuario')->id_nivel;
         $("#rhumanos").addClass('active');
         $("#hrhumanos").attr('aria-expanded','true');
         $("#papeletas").addClass('active');
-        Buscar_Papeleta_Aprobacion();
+        if (<?= session('usuario')->id_puesto ?>==24) {
+            Buscar_Papeleta_Control();
+        } else {
+            Buscar_Papeleta_Aprobacion();
+        }
     });
 
     function Buscar_Papeleta_Registro(){
@@ -193,6 +198,7 @@ $id_nivel=session('usuario')->id_nivel;
             },
             success:function (data) {
                 $('#div_papeletas').html(data);
+                $("#control-tab").addClass('active');
             }
         });
     }
