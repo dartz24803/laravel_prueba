@@ -25,18 +25,18 @@ class DuracionTransaccionController extends Controller
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(13);
-        return view('caja.duracion_transaccion.index',compact('list_notificacion','list_subgerencia'));
+        return view('caja.duracion_transaccion.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
     public function list(Request $request)
     {
-        $list_duracion_transaccion = DuracionTransaccion::get_list_duracion_transaccion(['fecha_inicio'=>$request->fecha_inicio,'fecha_fin'=>$request->fecha_fin]);
+        $list_duracion_transaccion = DuracionTransaccion::get_list_duracion_transaccion(['fecha_inicio' => $request->fecha_inicio, 'fecha_fin' => $request->fecha_fin]);
         return view('caja.duracion_transaccion.lista', compact('list_duracion_transaccion'));
     }
 
     public function excel($fecha_inicio, $fecha_fin)
     {
-        $list_duracion_transaccion = DuracionTransaccion::get_list_duracion_transaccion(['fecha_inicio'=>$fecha_inicio,'fecha_fin'=>$fecha_fin]);
+        $list_duracion_transaccion = DuracionTransaccion::get_list_duracion_transaccion(['fecha_inicio' => $fecha_inicio, 'fecha_fin' => $fecha_fin]);
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -91,14 +91,14 @@ class DuracionTransaccionController extends Controller
             $sheet->getStyle("A{$contador}:G{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
             $sheet->getStyle("A{$contador}:G{$contador}")->applyFromArray($styleThinBlackBorderOutline);
 
-            $sheet->setCellValue("A{$contador}", $list->NombreBase); 
+            $sheet->setCellValue("A{$contador}", $list->NombreBase);
             $sheet->setCellValue("B{$contador}", $list->NomCajero);
             $sheet->setCellValue("C{$contador}", Date::PHPToExcel($list->fecha));
             $sheet->getStyle("C{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
             $sheet->setCellValue("D{$contador}", $list->Cantidad);
             $sheet->setCellValue("E{$contador}", $list->hora_inicial);
             $sheet->setCellValue("F{$contador}", $list->hora_final);
-            $sheet->setCellValue("G{$contador}", $list->diferencia." min ");
+            $sheet->setCellValue("G{$contador}", $list->diferencia . " min ");
         }
 
         $writer = new Xlsx($spreadsheet);
