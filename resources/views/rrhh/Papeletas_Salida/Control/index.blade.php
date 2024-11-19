@@ -2,6 +2,7 @@
 <?php
 $id_puesto=session('usuario')->id_puesto;
 $id_nivel=session('usuario')->id_nivel;
+$centro_labores=session('usuario')->centro_labores;
 ?>
                             <?php if($id_nivel==1 || $id_puesto==23 || $id_puesto==36 || $id_puesto==24 || $id_puesto==26 || $id_puesto==128 ||
                                 $id_puesto==21 || $id_puesto==19 || $id_puesto==279 || $id_puesto==209 || $id_puesto==307 || $id_puesto==315){ ?>
