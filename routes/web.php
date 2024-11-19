@@ -1670,6 +1670,7 @@ Route::controller(TablaMaestraTesoreriaController::class)->group(function () {
 Route::controller(FacturacionController::class)->group(function () {
     Route::get('facturacion', 'index')->name('facturacion');
     Route::get('tabla_facturacion/list', 'list')->name('tabla_facturacion.list');
+    Route::get('tabla_facturacion/datatable', 'list_datatable')->name('tabla_facturacion.datatable');
 });
 //TESORERÍA - REGISTRO LETRAS
 Route::controller(RegistroLetraController::class)->group(function () {
