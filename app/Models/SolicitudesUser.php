@@ -237,7 +237,7 @@ class SolicitudesUser extends Model
     }
 
     function insert_or_update_papeletas_salida($dato,$id_solicitudes_user){
-        $cod_base= session('usuario')->centro_labores;
+        $cod_base= session('usuario')->ubicacion;
         $id_usuario= session('usuario')->id_usuario;
         $id_gerencia =session('usuario')->id_gerencia;
         $parametro =$dato['parametro'];

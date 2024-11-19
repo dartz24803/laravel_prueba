@@ -178,7 +178,7 @@ class Usuario extends Model
                 and r.estado=1) else (select r.url_config from config r where r.descrip_config='Foto_colaborador'
                 and r.estado=1) end as url_foto,p.id_nivel as nivel_jerarquico,u.desvinculacion,
                 pps.registro_masivo, visualizar_amonestacion(u.id_puesto) AS visualizar_amonestacion,
-                sl.descripcion AS sede_laboral,
+                sl.descripcion AS sede_laboral, ubi.cod_ubi AS ubicacion,
                 visualizar_responsable_area(u.id_puesto) AS visualizar_responsable_area,
                 pps.estado as estadopps, pps.registro_masivo, pps.id_puesto_permitido, u.id_centro_labor,
                 visualizar_mi_equipo(u.id_puesto) AS visualizar_mi_equipo,
@@ -192,6 +192,7 @@ class Usuario extends Model
                 LEFT JOIN area a ON p.id_area=a.id_area
                 LEFT JOIN sub_gerencia sg ON a.id_departamento=sg.id_sub_gerencia
                 LEFT JOIN ubicacion ub ON u.id_centro_labor=ub.id_ubicacion
+                LEFT JOIN ubicacion ubi ON u.id_ubicacion=ubi.id_ubicacion
                 LEFT JOIN sede_laboral sl ON ub.id_sede=sl.id
                 WHERE u.usuario_codigo='$usuario' AND u.estado IN (1,4) AND u.desvinculacion IN (0)";
         $result = DB::select($query);
