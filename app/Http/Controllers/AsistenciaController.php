@@ -66,6 +66,7 @@ class AsistenciaController extends Controller
         $num_doc = 0;
         $list_base = Ubicacion::select('id_ubicacion', 'cod_ubi')
                     ->where('estado', 1)
+                    ->orderBy('cod_ubi', 'ASC')
                     ->get();
         //print_r($list_base[0]);
         
