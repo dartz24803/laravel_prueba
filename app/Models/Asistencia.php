@@ -27,7 +27,7 @@ class Asistencia extends Model
         foreach ($usuarios as $usuario) {
             $dni = $usuario->usuario_codigo;
             
-            $sql = "SELECT DISTINCT DATE(it.punch_time) AS orden, u.centro_labores,
+            $sql = "SELECT DISTINCT DATE(it.punch_time) AS orden, ub.cod_ubi AS centro_labores,
                     u.usuario_apater,u.usuario_amater,u.usuario_nombres, u.usuario_codigo as num_doc,
                     DATE_FORMAT(it.punch_time, '%d/%m/%Y') AS fecha,
                     (SELECT DATE_FORMAT(ir.punch_time, '%H:%i %p') 
@@ -52,6 +52,7 @@ class Asistencia extends Model
                     LIMIT 3,1) AS salida
                     FROM iclock_transaction it
                     join lanumerouno.users u ON it.emp_code=u.usuario_codigo
+                    join lanumerouno.ubicacion ub ON u.id_centro_labor=ub.id_ubicacion
                     WHERE it.emp_code = :dni $fecha $base_ar $doc_iclock $doc_ar
                     ORDER BY DATE(it.punch_time) DESC";
         
