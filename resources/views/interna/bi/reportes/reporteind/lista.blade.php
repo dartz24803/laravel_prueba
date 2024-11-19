@@ -35,9 +35,13 @@
         /* Blue color */
     }
 
-    .col-tipo {
-        width: 350px;
-        /* Ajusta el valor según sea necesario */
+    .expandable-col {
+        min-width: 550px;
+        /* Establece un mínimo pero permite expansión */
+        max-width: none;
+        /* Elimina el ancho máximo */
+        width: auto;
+        /* Permite que el contenido defina el ancho */
     }
 </style>
 
@@ -58,7 +62,7 @@
             <th>Presentación</th>
             <th>Frecuencia</th>
             <th>Solicitante</th>
-            <th>Accesos</th>
+            <th class="expandable-col">Accesos</th>
 
         </tr>
     </thead>
@@ -103,7 +107,7 @@
             <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 {{ $reporte->nombre_usuario }}
             </td>
-            <td style="width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            <td style="width: 550px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $reporte->nombres_puesto }}">
                 {{ $reporte->nombres_puesto }}
             </td>
 
