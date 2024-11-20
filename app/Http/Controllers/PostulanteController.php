@@ -1062,7 +1062,7 @@ class PostulanteController extends Controller
                         'user_act' => session('usuario')->id_usuario
                     ]);
                 }catch(Exception $e) {
-                    echo "Hubo un error al enviar el correo: Debe completar el correo del postulante!";
+                    echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
                 }
             }
         }
@@ -1426,7 +1426,7 @@ class PostulanteController extends Controller
 
                     echo "1¡Haga clic en el botón!";
                 }catch(Exception $e) {
-                    echo "3Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+                    echo "3Hubo un error al enviar el correo: Debe ingresar un correo para el postulante!";
                 }
             }
         }else{
