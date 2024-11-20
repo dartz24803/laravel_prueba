@@ -93,7 +93,7 @@
                             <?php } ?>
 
                             <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('MiEquipo/Modal_Horario_Mi_Equipo/'. $list["id_usuario"]) }}">Ver Horario</a>
-                            <?php if(session('usuario')->id_puesto!=29 /*&& session('usuario')->id_puesto!=161*/ && session('usuario')->id_puesto!=197 /*&& session('usuario')->id_puesto!=314*/){ ?>
+                            <?php if(session('usuario')->id_puesto!=29 /*&& session('usuario')->id_puesto!=161*/ && session('usuario')->id_puesto!=197 && session('usuario')->id_puesto!=30 && session('usuario')->id_puesto!=314){ ?>
                                 <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('MiEquipo/Modal_Marcacion_Mi_Equipo/'. $list['id_usuario']) }}">Ver marcaciones</a>
                             <?php } ?>
                         </div>
