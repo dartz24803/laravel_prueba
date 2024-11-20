@@ -19,7 +19,7 @@ $id_usuario = session('usuario')->id_usuario;
                 <label>Área:</label>
             </div>
             <div class="form-group col-md-4">
-                <?php if($id_puesto!=314){ ?>
+                <?php if($id_puesto!=30 && $id_puesto!=314){ ?>
                 <select name="id_area" id="id_area" class="form-control basic" onchange="Buscar_Puesto_Area('1')">
                     <option value="0">Seleccione</option>
                     <?php foreach($list_area as $list){?>

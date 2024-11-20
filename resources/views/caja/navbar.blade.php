@@ -144,7 +144,6 @@ session('usuario')->id_sede_laboral == 6 )
         @if (session('usuario')->id_nivel == 1 ||
         session('usuario')->id_puesto == 128 ||
         session('usuario')->id_puesto == 9 ||
-        session('usuario')->id_puesto == 314 ||
         session('usuario')->id_puesto == 161 ||
         session('usuario')->id_puesto == 19 ||
         session('usuario')->id_puesto == 20 ||
@@ -354,7 +353,9 @@ session('usuario')->id_puesto == 164 )
         @endif
         @if (session('usuario')->id_nivel == 1 ||
         session('usuario')->id_nivel == 7 ||
-        session('usuario')->id_puesto == 148)
+        session('usuario')->id_puesto == 148 ||
+        session('usuario')->id_puesto == 30 ||
+        session('usuario')->id_puesto == 314)
         <li id="conf_insumos">
             <a href="{{ route('insumo_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                 <p class="romperpalabra"><span id="icono_active2"></span> Insumo</p>
