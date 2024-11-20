@@ -1840,8 +1840,9 @@ Route::controller(AsistenciaController::class)->group(function () {
     Route::post('Buscar_Reporte_Control_Asistencia', 'Buscar_Reporte_Control_Asistencia');
     Route::get('Asistencia/Traer_Colaborador_Asistencia', 'Traer_Colaborador_Asistencia');
     Route::get('Asistencia/Excel_Reporte_Asistencia/{mes}/{anio}/{cl}/{num_doc}/{area}/{estado}/{tipo}/{fi}/{ff}', 'Excel_Reporte_Asistencia');
-    // Route::get('Asistencia/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
-    // Route::get('Asistencia/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
+    Route::get('Asistencia/Modal_Update_Asistencia/{nombre}/{dni}/{orden}/{time}', 'Modal_Update_Asistencia');
+    Route::post('Asistencia/Update_Asistencia_Diaria', 'Update_Asistencia_Diaria');
+    Route::get('Asistencia/Modal_Reg_Asistencia', 'Modal_Reg_Asistencia');
     // Route::get('Asistencia/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
     // Route::get('Asistencia/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
 });
