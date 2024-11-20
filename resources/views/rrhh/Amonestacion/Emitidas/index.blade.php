@@ -1,6 +1,7 @@
 <?php 
     $id_nivel = session('usuario')->id_nivel;
-?>
+    $id_puesto = session('usuario')->id_puesto;
+    ?>
 <div class="toolbar">
     <div align="right">
         <?php 

@@ -76,7 +76,7 @@ $nivel_jerarquico = session('usuario')->nivel_jerarquico;
                             </svg>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="btnDropLeft" style="padding:0;">
-                            <?php if ($list['estado_amonestacion'] == 1 || $id_nivel == 1 || $id_nivel == 2 || $id_puesto == 22 || $id_puesto == 209 || $id_puesto == 133 || $mostrar_menu == true) { ?>
+                            <?php if ($list['estado_amonestacion'] == 1 || $id_nivel == 1 || $id_nivel == 2 || $id_puesto == 22 || $id_puesto == 209 || $id_puesto == 133 /*|| $mostrar_menu == true*/) { ?>
                                 <a class="dropdown-item" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('Modal_Update_Amonestacion/' . $list['id_amonestacion']. '/1') }}" style="cursor:pointer;">Editar</a>
                             <?php } ?>
                             <a class="dropdown-item" data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('Modal_Update_Amonestacion/' . $list['id_amonestacion']. '/2') }}" style="cursor:pointer;">Detalle</a>
@@ -92,7 +92,7 @@ $nivel_jerarquico = session('usuario')->nivel_jerarquico;
                             <?php if ($list['documento'] != "") { ?>
                                 <a class="dropdown-item" data-toggle="modal" data-target="#Modal_IMG" data-imagen="<?php echo $url[0]['url_config'] . $list['documento']; ?>" data-title="Documento Adjuntado" style="cursor:pointer;">Documento Adjuntado</a>
                             <?php } ?>
-                            <?php if ($list['estado_amonestacion'] == 1 || $id_nivel == 1 || $id_nivel == 2 || $id_puesto == 22 || $id_puesto == 209 || $id_puesto == 133 || ($mostrar_menu == true && $list['estado_amonestacion'] == 1)) { ?>
+                            <?php if ($list['estado_amonestacion'] == 1 || $id_nivel == 1 || $id_nivel == 2 || $id_puesto == 22 || $id_puesto == 209 || $id_puesto == 133 || (/*$mostrar_menu == true && */$list['estado_amonestacion'] == 1)) { ?>
                                 <a class="dropdown-item" onclick="Delete_Amonestacion('<?php echo $list['id_amonestacion']; ?>')" style="cursor:pointer;">Eliminar</a>
                             <?php } ?>
                         </div>
