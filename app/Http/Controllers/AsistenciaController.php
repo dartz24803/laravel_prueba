@@ -618,6 +618,7 @@ class AsistenciaController extends Controller
         //print_r($dato['get_id']);
         return view('rrhh.Asistencia.reporte.modal_editar',$dato);
     }
+
     public function Update_Asistencia_Diaria(Request $request){
         $request->validate([
             'hora' => 'required'
@@ -639,53 +640,71 @@ class AsistenciaController extends Controller
     }
     
     public function Modal_Reg_Asistencia(Request $request) {
-        $dato = [
-            'cod_base' => $request->cod_base,
-            'id_area' => $request->id_area,
-            'estado' => $request->estado,
-            'list_colaborador' => $this->modelousuarios->get_list_usuarios_x_baset(
-                $request->cod_base,
-                $request->id_area,
-                $request->estado
-            )
-        ];
+        return view('rrhh.Asistencia.reporte.modal_reg');
+    }    
     
-        return view('rrhh.Asistencia.reporte.modal_reg', $dato);
+    public function Modal_Registro_Dia($nombres,$num_doc,$orden,$time){
+        $dato['nombres']=$nombres;
+        $dato['num_doc']=$num_doc;
+        $dato['fecha']=$orden;
+        $dato['time']=$time;
+        return view('rrhh.Asistencia.reporte.modal_reg',$dato);
     }
-    
-    
-    public function Insert_Asistencia_Diaria(){
-        if ($this->session->userdata('usuario')) {
-            $dato['hora']=$this->input->post("horar");
-            $dato['fecha']=$this->input->post("fechar");
-            $dato['num_doc']=$this->input->post("num_docr");
-            $dato['punch_time']=$dato['fecha']." ".$dato['hora'];
-            $dato['get_id']=$this->Model_Asistencia->get_id_usuario_xnum_doc($dato);
-            
 
-            $cont=count($this->Model_Asistencia->valida_reg_asistencia_diaria($dato));
+    public function Insert_Asistencia_Diaria(Request $request){
+            $dato['hora']=$request->post("horar");
+            $dato['fecha']=$request->post("fechar");
+            $dato['num_doc']=$request->post("num_docr");
+            $dato['punch_time']=$dato['fecha']." ".$dato['hora'];
+            $dato['get_id'] = Usuario::select('ubicacion.cod_ubi AS centro_labores')
+                            ->leftJoin('ubicacion', 'users.id_centro_labor' ,'=', 'ubicacion.id_ubicacion')
+                            ->where('users.num_doc',$dato['num_doc'])
+                            ->get();
             
-            if(count($dato['get_id'])==0){
+            //print_r($dato['get_id']);
+            if(empty($dato['get_id'])){
                 echo "error";
             }else{
-                $dato['base']=$dato['get_id'][0]['centro_labores'];
-                $dato['get_employee']=$this->Model_Asistencia->get_id_employee($dato);
-                $dato['emp_id']=$dato['get_employee'][0]['id'];
-                $dato['get_terminal']=$this->Model_Asistencia->get_id_terminal($dato);
+                $dato['base']=$dato['get_id'][0]->centro_labores;
+                $dato['get_employee']=DB::connection('second_mysql')
+                            ->table('personnel_employee')
+                            ->select('id')
+                            ->whereRaw("LPAD(emp_code, 8, '0') = ?", [$dato['num_doc']])
+                            ->first();
+
+                //print_r($dato['get_employee']);
+                $dato['emp_id']=$dato['get_employee']->id;
+                $dato['get_terminal']=DB::connection('second_mysql')
+                            ->table('iclock_terminal')
+                            ->select('id', 'sn', 'alias')
+                            ->where('alias', $dato['base'])
+                            ->get();
                 if(count($dato['get_terminal'])>0){
-                    $dato['terminal_id']=$dato['get_terminal'][0]['id'];
-                    $dato['terminal_sn']=$dato['get_terminal'][0]['sn'];
-                    $dato['terminal_alias']=$dato['get_terminal'][0]['alias'];
+                    $dato['terminal_id']=$dato['get_terminal'][0]->id;
+                    $dato['terminal_sn']=$dato['get_terminal'][0]->sn;
+                    $dato['terminal_alias']=$dato['get_terminal'][0]->alias;
                 }else{
                     $dato['terminal_id']="23";
                     $dato['terminal_sn']="AF6P211660021";
                     $dato['terminal_alias']=$dato['base'];//"OFC";
                 }
-                $this->Model_Asistencia->insert_asistencia_diaria($dato);
+                DB::connection('second_mysql')
+                    ->table('iclock_transaction')
+                    ->insert([
+                        'emp_code'      => $dato['num_doc'],
+                        'punch_time'    => $dato['punch_time'],
+                        'punch_state'   => 0,
+                        'verify_type'   => 1,
+                        'terminal_sn'   => $dato['terminal_sn'],
+                        'terminal_alias'=> $dato['terminal_alias'],
+                        'source'        => 1,
+                        'purpose'       => 9,
+                        'upload_time'   => $dato['punch_time'],
+                        'emp_id'        => $dato['emp_id'],
+                        'terminal_id'   => $dato['terminal_id'],
+                        'is_mask'       => '255',
+                        'temperature'   => '255.0',
+                    ]);
             }
-        }
-        else{
-            redirect('');
-        }
     }
 }
