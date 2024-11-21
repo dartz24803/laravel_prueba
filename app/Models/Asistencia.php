@@ -51,9 +51,9 @@ class Asistencia extends Model
                     ORDER BY ir.punch_time ASC
                     LIMIT 3,1) AS salida
                     FROM iclock_transaction it
-                    join lanumerouno.users u ON it.emp_code=u.usuario_codigo
+                    join lanumerouno.users u ON LPAD(it.emp_code,8,'0')=u.usuario_codigo
                     join lanumerouno.ubicacion ub ON u.id_centro_labor=ub.id_ubicacion
-                    WHERE it.emp_code = :dni $fecha $base_ar $doc_iclock $doc_ar
+                    WHERE LPAD(it.emp_code,8,'0') = :dni $fecha $base_ar $doc_iclock $doc_ar
                     ORDER BY DATE(it.punch_time) DESC";
         
             // Imprimir consulta con el valor reemplazado
