@@ -28,7 +28,6 @@ class FacturacionController extends Controller
     public function list(Request $request)
     {
         // $list_tbcontabilidad = TbContabilidad::obtenerYInsertarStock();
-
         return view('finanzas.tesoreria.facturacion.lista');
     }
 
@@ -70,5 +69,10 @@ class FacturacionController extends Controller
             'recordsFiltered' => $totalRecords,      // Total de registros después de filtrar
             'data' => $data                          // Los registros para la página actual
         ]);
+    }
+
+    public function actualizarTabla(Request $request)
+    {
+        TbContabilidad::sincronizarContabilidad();
     }
 }
