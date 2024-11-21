@@ -41,7 +41,7 @@ class TbContabilidad extends Model
     ];
 
     // Campos de timestamp automáticos
-    public $timestamps = true;
+    public $timestamps = false;
 
     // Si necesitas formatear las fechas
     protected $casts = [
@@ -49,21 +49,14 @@ class TbContabilidad extends Model
         'costo_precio' => 'decimal:2',
     ];
 
-
-    public static function obtenerRegistros()
-    {
-        return self::all(); // Esta consulta devuelve todos los registros de la tabla tb_contabilidad
-    }
-
     public static function marcarComoCerrados(array $ids)
     {
-        // Obtener los registros que coinciden con los IDs proporcionados
         $registros = self::whereIn('id', $ids)->get();
-        // Actualizar los registros en la tabla tb_contabilidad
-        $actualizados = self::whereIn('id', $ids)->update(['cerrado' => 1]);
-        // Insertar los mismos registros en la tabla tb_contabilidad_cerrado
+        if ($registros->isEmpty()) {
+            return false;
+        }
+        self::whereIn('id', $ids)->update(['cerrado' => 1]);
         foreach ($registros as $registro) {
-            // Crear una copia del registro en la tabla tb_contabilidad_cerrado con todos los campos
             DB::table('tb_contabilidad_cerrados')->insert([
                 'estilo' => $registro->estilo,
                 'color' => $registro->color,
@@ -80,19 +73,26 @@ class TbContabilidad extends Model
                 'alm_fam' => $registro->alm_fam,
                 'fecha_documento' => $registro->fecha_documento,
                 'guia_remision' => $registro->guia_remision,
-                'created_at' => $registro->created_at,
-                'updated_at' => $registro->updated_at,
                 'base' => $registro->base,
                 'enviado' => $registro->enviado,
                 'cia' => $registro->cia,
                 'estado' => $registro->estado,
                 'stock' => $registro->stock,
-                'cerrado' => 1,  // Se marca como cerrado en la tabla tb_contabilidad_cerrado
+                'cerrado' => 1,
             ]);
         }
-        return $actualizados;
+
+        // Devolver los registros procesados
+        return $registros;
     }
 
+
+
+    public static function filtrarCerrados(array $ids)
+    {
+        $registros = self::whereIn('id', $ids)->get();
+        return $registros;
+    }
 
 
     public function scopeFiltros($query, $filters)

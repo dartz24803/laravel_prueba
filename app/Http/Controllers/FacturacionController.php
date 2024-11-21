@@ -21,24 +21,46 @@ class FacturacionController extends Controller
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(8);
-        return view('finanzas.tesoreria.facturacion.index', compact('list_notificacion', 'list_subgerencia'));
+        return view('finanzas.contabilidad.facturacion.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
 
-    public function list(Request $request)
+    public function list()
     {
         // $list_tbcontabilidad = TbContabilidad::obtenerYInsertarStock();
-        return view('finanzas.tesoreria.facturacion.lista');
+        return view('finanzas.contabilidad.facturacion.lista');
     }
-
-
-    public function facturados_list(Request $request)
+    public function facturados_ver(Request $request)
     {
         $idsSeleccionados = $request->input('ids');
-        // dd($idsSeleccionados);  
-        TbContabilidad::marcarComoCerrados($idsSeleccionados);
-        return response()->json(['message' => 'Facturación exitosa']);
+        $list_previsualizacion_por_facturar = TbContabilidad::filtrarCerrados($idsSeleccionados);
+        // Devolver los registros actualizados en el JSON de respuesta
+        return response()->json([
+            'updated_records' => $list_previsualizacion_por_facturar
+        ]);
     }
+
+
+    public function facturar_cerrar(Request $request)
+    {
+        $idsSeleccionados = $request->input('ids');
+        // Llamar a la función de marcar como cerrados y obtener los registros actualizados
+        $registros = TbContabilidad::marcarComoCerrados($idsSeleccionados);
+        // Verificar si los registros fueron actualizados correctamente
+        if ($registros) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Los datos se exportaron correctamente.',
+                'data' => $registros // opcional: incluir los registros procesados si es necesario
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hubo un error al exportar los datos.'
+            ]);
+        }
+    }
+
 
     public function list_datatable(Request $request)
     {
@@ -70,6 +92,7 @@ class FacturacionController extends Controller
             'data' => $data                          // Los registros para la página actual
         ]);
     }
+
 
     public function actualizarTabla(Request $request)
     {

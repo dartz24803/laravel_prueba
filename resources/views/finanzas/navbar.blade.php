@@ -102,6 +102,28 @@
                 <p class="romperpalabra"><span id="icono_active2"></span> Tabla maestra</p>
             </a>
         </li>
+    </ul>
+</li>
+
+
+<li class="menu" id="contabilidad">
+    <a href="#rcontabilidad" id="hcontabilidad" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+        <div class="">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trello">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <rect x="7" y="7" width="3" height="9"></rect>
+                <rect x="14" y="7" width="3" height="5"></rect>
+            </svg>
+            <span>Contabilidad</span>
+        </div>
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </div>
+    </a>
+
+    <ul class="collapse submenu list-unstyled" id="rcontabilidad" data-parent="#accordionExample">
         <li>
             <a id="tabla_facturacion" href="{{ route('facturacion') }}">
                 <p class="romperpalabra"><span id="icono_active2"></span> Informe Contabilidad</p>

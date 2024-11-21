@@ -28,8 +28,8 @@
 
 <script>
     $(document).ready(function() {
-        $("#tesorerias").addClass('active');
-        $("#htesorerias").attr('aria-expanded', 'true');
+        $("#contabilidad").addClass('active');
+        $("#hcontabilidad").attr('aria-expanded', 'true');
         $("#tabla_facturacion").addClass('active');
         Redirigir_Lista_Contabilidad();
     });
