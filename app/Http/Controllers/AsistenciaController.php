@@ -173,29 +173,20 @@ class AsistenciaController extends Controller
             $dato['list_colaborador'] = $this->modelousuarios->get_list_usuarios_x_baset($dato['cod_base'],$dato['id_area'],$dato['estado']);
             return view('rrhh.Asistencia.reporte.colaborador', $dato);
     }
-
-    public function Excel_Reporte_Asistencia(Request $request,$cod_mes,$cod_anio,$cod_base,$num_doc,$area,$estado,$tipo,$finicio,$ffin){
+    
+    public function Excel_Reporte_Asistencia($cod_mes, $cod_anio, $cod_base, $num_doc, $area, $estado, $tipo, $finicio, $ffin, Request $request){
+        // Crear una nueva instancia de Spreadsheet
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $spreadsheet->getActiveSheet()->setTitle('Reporte Control Asistencia');
-
+    
         // Encabezados
         $headers = ['Fecha', 'Nombres', 'Apellido Paterno', 'Apellido Materno', 'Código', 'Total Marcaciones', 'Estado Marcación'];
         $sheet->fromArray($headers, NULL, 'A1');
-        /*traer data */
-        $id_puesto = Session('usuario')->id_puesto;
-        $cod_mes = $request->input("cod_mes");
-        $cod_anio = $request->input("cod_anio");
-        $cod_base = $request->input("cod_base");
-        $num_doc = $request->input("num_doc");
-        $area = $request->input("area");
-        $estado = $request->input("estado");
-        $tipo = $request->input("tipo");
-        $finicio = $request->input("finicio");
-        $ffin = $request->input("ffin");
-
+    
+        // Obtener usuarios según los parámetros
         $usuarios = Usuario::select('usuario_codigo', 'id_usuario');
-
+    
         if ($estado == 1 || $estado == 2) {
             $usuarios->where('users.estado', $estado);
         }
@@ -203,11 +194,11 @@ class AsistenciaController extends Controller
             $usuarios->where('users.usuario_codigo', $num_doc);
         }
         if ($cod_base != 0) {
-            if($cod_base === "t" ){
+            if ($cod_base === "t") {
                 $usuarios->leftJoin('ubicacion', 'users.id_centro_labor', 'ubicacion.id_ubicacion');
                 $usuarios->where('ubicacion.estado', 1);
                 $usuarios->where('ubicacion.id_sede', 6);
-            }else{
+            } else {
                 $usuarios->where('users.id_centro_labor', $cod_base);
             }
         }
@@ -215,16 +206,11 @@ class AsistenciaController extends Controller
             $usuarios->leftJoin('puesto', 'users.id_puesto', 'puesto.id_puesto');
             $usuarios->where('puesto.id_area', $area);
         }
-
-        $query = $usuarios->toSql(); // Obtener la consulta SQL generada
-        $bindings = $usuarios->getBindings(); // Obtener los bindings (valores)
-
-        echo "Consulta: $query\n";
-        // print_r($bindings); // Imprimir los valores que se utilizan en la consulta
-
+    
+        // Obtener los usuarios
         $usuarios = $usuarios->get();
-        print_r($usuarios);
-
+    
+        // Establecer fechas de inicio y fin
         $year = date('Y');
         if ($tipo == 1) {
             $year = $cod_anio;
@@ -234,47 +220,42 @@ class AsistenciaController extends Controller
             $timestamp = strtotime($fecha_fin);
             $fecha_fin = strtotime(date("d-m-Y", $timestamp));
         } else {
-            $fecha_inicio = strtotime(date("d-m-Y", strtotime($request->input("finicio"))));
-            $fecha_fin = strtotime(date("d-m-Y", strtotime($request->input("ffin"))));
+            $fecha_inicio = strtotime(date("d-m-Y", strtotime($finicio)));
+            $fecha_fin = strtotime(date("d-m-Y", strtotime($ffin)));
         }
-/*
-        $data = $this->modelo->buscar_reporte_control_asistencia_excel($cod_mes, $cod_anio, $cod_base, $num_doc, $tipo, $finicio, $ffin, $usuarios);
-
-        print_r($data);
-        // Agregar los datos
-        $row = 2; // Comenzamos en la fila 2
-        foreach ($data as $item) {
-            $sheet->setCellValue('A' . $row, $item['fecha']);
-            $sheet->setCellValue('B' . $row, $item['usuario_nombres']);
-            $sheet->setCellValue('C' . $row, $item['usuario_apater']);
-            $sheet->setCellValue('D' . $row, $item['usuario_amater']);
-            $sheet->setCellValue('E' . $row, $item['emp_code']);
-            $sheet->setCellValue('F' . $row, $item['total_marcaciones']);
-            $sheet->setCellValue('G' . $row, $item['estado_marcacion']);
-            $row++;
-        }
-
-        //final part
-		$curdate = date('d-m-Y');
-		$writer = new Xlsx($spreadsheet);
-		$filename = 'Reporte Control Asistencia '.$curdate;
-		ob_end_clean();
-		header('Content-Type: application/vnd.ms-excel');
-		header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"');
-		header('Cache-Control: max-age=0');
-		$writer->save('php://output');*/
-    }
     
-    public function Modal_Update_Asistencia($nombres,$dni,$orden,$time){
-        $dato['nombres']=$nombres;
-        $dato['get_id'] = DB::connection('second_mysql')
-                        ->table('iclock_transaction')
-                        ->whereDate('punch_time',$orden)
-                        ->where('punch_time', 'LIKE', '%' .$time .'%')
-                        ->where('emp_code',$dni)
-                        ->get();
-        //print_r($dato['get_id']);
-        return view('rrhh.Asistencia.reporte.modal_editar',$dato);
+        // Llamada a la función para obtener los datos
+        $data = $this->modelo->buscar_reporte_control_asistencia_excel($cod_mes, $cod_anio, $cod_base, $num_doc, $tipo, $finicio, $ffin, $usuarios);
+    
+        // Agregar los datos al archivo Excel
+        $row = 2; // Comenzamos en la fila 2
+        foreach ($data as $num_doc => $registros) {
+            foreach ($registros as $item) {
+                // Agregar los datos en las celdas correspondientes
+                $sheet->setCellValue('A' . $row, $item['fecha']);
+                $sheet->setCellValue('B' . $row, $item['usuario_nombres']);
+                $sheet->setCellValue('C' . $row, $item['usuario_apater']);
+                $sheet->setCellValue('D' . $row, $item['usuario_amater']);
+                $sheet->setCellValue('E' . $row, $item['emp_code']);
+                $sheet->setCellValue('F' . $row, $item['total_marcaciones']);
+                $sheet->setCellValue('G' . $row, $item['estado_marcacion']);
+                $row++;
+            }
+        }
+    
+        // Parte final: crear y descargar el archivo Excel
+        $curdate = date('d-m-Y');
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Reporte Control Asistencia ' . $curdate;
+    
+        // Configuración de cabeceras para la descarga
+        ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+        
+        // Guardar y enviar el archivo al navegador
+        $writer->save('php://output');
     }
 
     public function Update_Asistencia_Diaria(Request $request){
