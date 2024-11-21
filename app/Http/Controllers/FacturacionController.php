@@ -28,17 +28,15 @@ class FacturacionController extends Controller
     public function list(Request $request)
     {
         // $list_tbcontabilidad = TbContabilidad::obtenerYInsertarStock();
-
         return view('finanzas.tesoreria.facturacion.lista');
     }
 
-    // FacturaController.php
+
     public function facturados_list(Request $request)
     {
         $idsSeleccionados = $request->input('ids');
         // dd($idsSeleccionados);  
-        $resultado = TbContabilidad::marcarComoCerrados($idsSeleccionados);
-
+        TbContabilidad::marcarComoCerrados($idsSeleccionados);
         return response()->json(['message' => 'Facturación exitosa']);
     }
 
@@ -51,8 +49,7 @@ class FacturacionController extends Controller
         $search = $request->input('search')['value'] ?? ''; // Valor de búsqueda
         $fechaInicio = $request->input('fecha_inicio');
         $fechaFin = $request->input('fecha_fin');
-        $estado = $request->input('estado'); // Obtener el valor del filtro 'estado'
-        // Preparar el array de filtros
+        $estado = $request->input('estado');
         $filters = [
             'fecha_inicio' => $fechaInicio,
             'fecha_fin' => $fechaFin,
@@ -72,5 +69,10 @@ class FacturacionController extends Controller
             'recordsFiltered' => $totalRecords,      // Total de registros después de filtrar
             'data' => $data                          // Los registros para la página actual
         ]);
+    }
+
+    public function actualizarTabla(Request $request)
+    {
+        TbContabilidad::sincronizarContabilidad();
     }
 }

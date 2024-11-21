@@ -1670,6 +1670,7 @@ Route::controller(TablaMaestraTesoreriaController::class)->group(function () {
 Route::controller(FacturacionController::class)->group(function () {
     Route::get('facturacion', 'index')->name('facturacion');
     Route::post('tabla_facturacion/list', 'list')->name('tabla_facturacion.list');
+    Route::post('tabla_facturacion/update', 'actualizarTabla')->name('tabla_facturacion.update');
     Route::post('tabla_facturacion/datatable', 'list_datatable')->name('tabla_facturacion.datatable');
     Route::post('tabla_facturacion/facturar', 'facturados_list')->name('tabla_facturacion.facturar');
 

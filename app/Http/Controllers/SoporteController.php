@@ -1441,7 +1441,6 @@ class SoporteController extends Controller
         $dato['ccompletado'] =  $request->input("ccompletado");
         $dato['cstandby'] =  $request->input("cstandby");
         $dato['ccancelado'] =  $request->input("ccancelado");
-
         // dd($dato);
         $list_tablageneral_soporte = Soporte::listTablaGeneralSoporteFiltro($dato);
         // dd($list_tablageneral_soporte);

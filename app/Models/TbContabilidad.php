@@ -49,121 +49,6 @@ class TbContabilidad extends Model
         'costo_precio' => 'decimal:2',
     ];
 
-    // Conexión a la base de datos de SQL Server
-
-    // Función estática para obtener y insertar datos
-    public static function obtenerYInsertarStock()
-    {
-        // Obtener el primer día del mes y año actual
-        $fechaInicioMes = now()->startOfMonth()->toDateString();  // Ejemplo: 2024-11-01
-        // dd($fechaInicioMes);
-        // Conectar a SQL Server con la conexión 'sqlsrv_dbmsrt' y hacer la consulta
-        $data_sql = DB::connection('sqlsrv_dbmsrt')->select("
-            SELECT 
-                s.Estilo,
-                s.Descripcion,
-                s.SKU,
-                s.Color,
-                s.Talla,
-                ISNULL(alm_discotela.STK, 0) AS ALM_DISCOTELA,
-                ISNULL(alm_dsc.STK, 0) AS ALM_DSC,
-                ISNULL(alm_ln1.STK, 0) AS ALM_LN1,
-                ISNULL(alm_pb.STK, 0) AS ALM_PB,
-                egr.CIA,
-                CASE 
-                    WHEN CHARINDEX(' \\ ', egr.Origen_Destino) > 0 THEN 
-                        SUBSTRING(egr.Origen_Destino, 1, CHARINDEX(' \\ ', egr.Origen_Destino) - 1)
-                    ELSE 'Valor inválido'
-                END AS Empresa,
-                CASE 
-                    WHEN CHARINDEX(' \\ ', egr.Origen_Destino) > 0 THEN 
-                        SUBSTRING(egr.Origen_Destino, CHARINDEX(' \\ ', egr.Origen_Destino) + 2, LEN(egr.Origen_Destino))
-                    ELSE 'Valor inválido'
-                END AS Base,
-                egr.Fecha_Documento,
-                egr.Referencia_1 AS Guía_de_Remisión,
-                ISNULL(egr.Enviado, 0) AS Enviado,
-                ISNULL(c.Costo_Prom, 0) AS Costo_Prom,
-                CASE 
-                    WHEN ISNULL(alm_discotela.STK, 0) = 0 
-                            AND ISNULL(alm_dsc.STK, 0) = 0 
-                            AND ISNULL(alm_ln1.STK, 0) = 0 
-                            AND ISNULL(alm_pb.STK, 0) = 0 
-                    THEN 'sin Stock'
-                    ELSE 'con Stock'
-                END AS Estado
-            FROM 
-                (SELECT Estilo, Descripcion, Articulo AS SKU, Color, Talla 
-                 FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local LIKE 'ALM%') s
-            LEFT JOIN 
-                (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
-                 FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM DISCOTELA' GROUP BY Articulo) alm_discotela ON s.SKU = alm_discotela.SKU
-            LEFT JOIN 
-                (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
-                 FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM DSC' GROUP BY Articulo) alm_dsc ON s.SKU = alm_dsc.SKU
-            LEFT JOIN 
-                (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
-                 FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM LN1' GROUP BY Articulo) alm_ln1 ON s.SKU = alm_ln1.SKU
-            LEFT JOIN 
-                (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
-                 FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM PB' GROUP BY Articulo) alm_pb ON s.SKU = alm_pb.SKU
-            LEFT JOIN 
-                (SELECT Estilo, Costo_Prom FROM DBMSTR.dbo.TABLA_PREC) c ON s.Estilo = c.Estilo
-            LEFT JOIN 
-                (SELECT 
-                    CIA,
-                    Barra AS SKU,
-                    Origen_Destino,
-                    Fecha_Documento,
-                    Referencia_1,
-                    CASE 
-                        WHEN CIA = 'LN1' THEN SUM(Salidas) 
-                        ELSE 0 
-                    END AS Enviado
-                 FROM 
-                    DBMSTR.dbo.A1KARDEX_TOTAL 
-                 WHERE 
-                    Fecha_Documento >= ? 
-                    AND motivo = '(24) -VENTAS ALMACEN'
-                 GROUP BY 
-                    CIA, Barra, Origen_Destino, Fecha_Documento, Referencia_1) egr ON s.SKU = egr.SKU
-            WHERE 
-                egr.Referencia_1 IS NOT NULL  
-            ORDER BY s.SKU
-        ", [$fechaInicioMes]);
-        dd($data_sql);
-        // Comparar e insertar datos en MySQL si no existen
-        foreach ($data_sql as $row) {
-            // Comprobar si ya existe un registro con el SKU y la Fecha_Documento
-            $existe = self::where('sku', $row->SKU)
-                ->where('fecha_documento', $row->Fecha_Documento)
-                ->exists();
-
-            if (!$existe) {
-                // Insertar el registro en la tabla tb_contabilidad
-                self::create([
-                    'estilo' => $row->Estilo,
-                    'descripcion' => $row->Descripcion,
-                    'sku' => $row->SKU,
-                    'color' => $row->Color,
-                    'talla' => $row->Talla,
-                    'alm_discotela' => $row->ALM_DISCOTELA,
-                    'alm_dsc' => $row->ALM_DSC,
-                    'alm_ln1' => $row->ALM_LN1,
-                    'alm_pb' => $row->ALM_PB,
-                    'cia' => $row->CIA,
-                    'empresa' => $row->Empresa,
-                    'base' => $row->Base,
-                    'fecha_documento' => $row->Fecha_Documento,
-                    'guia_remision' => $row->Guía_de_Remisión,
-                    'enviado' => $row->Enviado,
-                    'costo_prom' => $row->Costo_Prom,
-                    'estado' => $row->Estado,
-                ]);
-            }
-        }
-    }
-
 
     public static function obtenerRegistros()
     {
@@ -230,13 +115,147 @@ class TbContabilidad extends Model
         // Filtrar por búsqueda de texto
         if (isset($filters['search']) && $filters['search'] !== '') {
             $query->where(function ($q) use ($filters) {
-                $q->where('estilo', 'like', "%{$filters['search']}%")
-                    ->orWhere('color', 'like', "%{$filters['search']}%")
-                    ->orWhere('descripcion', 'like', "%{$filters['search']}%")
-                    ->orWhere('sku', 'like', "%{$filters['search']}%");
+                $search = $filters['search'];
+                if (strlen($search) > 3) {
+                    $q->where('sku', 'like', "$search%")
+                        ->orWhere('estilo', 'like', "$search%")
+                        ->orWhere('color', 'like', "$search%")
+                        ->orWhere('descripcion', 'like', "%$search%");
+                }
             });
         }
 
         return $query;
+    }
+    public static function sincronizarContabilidad()
+    {
+        try {
+            set_time_limit(300); // Aumentar el tiempo de ejecución
+            // Obtener el primer día del AÑO actual
+            $fechaInicioAno = Carbon::now()->startOfYear()->toDateString();
+            // Paso 1: Obtener los registros existentes en MySQL con claves compuestas
+            $mysqlRecords = DB::table('tb_contabilidad')
+                ->where('fecha_documento', '>=', $fechaInicioAno)
+                ->select('guia_remision', 'sku') // Seleccionar sólo los campos necesarios
+                ->get()
+                ->map(function ($record) {
+                    return $record->guia_remision . '|' . $record->sku; // Crear clave compuesta
+                })
+                ->toArray(); // Convertir a un arreglo para búsqueda eficiente
+            $mysqlRecordsSet = array_flip($mysqlRecords); // Convertir en un conjunto para búsqueda rápida
+            // Paso 2: Obtener datos de SQL Server
+            $data_sql = DB::connection('sqlsrv_dbmsrt')->select("
+                SELECT 
+                    s.Estilo,
+                    s.Descripcion,
+                    s.SKU,
+                    s.Color,
+                    s.Talla,
+                    ISNULL(alm_discotela.STK, 0) AS ALM_DISCOTELA,
+                    ISNULL(alm_dsc.STK, 0) AS ALM_DSC,
+                    ISNULL(alm_ln1.STK, 0) AS ALM_LN1,
+                    ISNULL(alm_pb.STK, 0) AS ALM_PB,
+                    egr.CIA,
+                    CASE 
+                        WHEN CHARINDEX(' \\ ', egr.Origen_Destino) > 0 THEN 
+                            SUBSTRING(egr.Origen_Destino, 1, CHARINDEX(' \\ ', egr.Origen_Destino) - 1)
+                        ELSE 'Valor inválido'
+                    END AS Empresa,
+                    CASE 
+                        WHEN CHARINDEX(' \\ ', egr.Origen_Destino) > 0 THEN 
+                            SUBSTRING(egr.Origen_Destino, CHARINDEX(' \\ ', egr.Origen_Destino) + 2, LEN(egr.Origen_Destino))
+                        ELSE 'Valor inválido'
+                    END AS Base,
+                    egr.Fecha_Documento,
+                    egr.Referencia_1 AS Guía_de_Remisión,
+                    ISNULL(egr.Enviado, 0) AS Enviado,
+                    ISNULL(c.Costo_Prom, 0) AS Costo_Prom,
+                    CASE 
+                        WHEN ISNULL(alm_discotela.STK, 0) = 0 
+                            AND ISNULL(alm_dsc.STK, 0) = 0 
+                            AND ISNULL(alm_ln1.STK, 0) = 0 
+                            AND ISNULL(alm_pb.STK, 0) = 0 
+                        THEN 'sin Stock'
+                        ELSE 'con Stock'
+                    END AS Estado
+                FROM 
+                    (SELECT Estilo, Descripcion, Articulo AS SKU, Color, Talla 
+                    FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local LIKE 'ALM%') s
+                LEFT JOIN 
+                    (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
+                    FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM DISCOTELA' GROUP BY Articulo) alm_discotela ON s.SKU = alm_discotela.SKU
+                LEFT JOIN 
+                    (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
+                    FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM DSC' GROUP BY Articulo) alm_dsc ON s.SKU = alm_dsc.SKU
+                LEFT JOIN 
+                    (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
+                    FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM LN1' GROUP BY Articulo) alm_ln1 ON s.SKU = alm_ln1.SKU
+                LEFT JOIN 
+                    (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
+                    FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM PB' GROUP BY Articulo) alm_pb ON s.SKU = alm_pb.SKU
+                LEFT JOIN 
+                    (SELECT Estilo, Costo_Prom FROM DBMSTR.dbo.TABLA_PREC) c ON s.Estilo = c.Estilo
+                LEFT JOIN 
+                    (SELECT 
+                        CIA,
+                        Barra AS SKU,
+                        Origen_Destino,
+                        Fecha_Documento,
+                        Referencia_1,
+                        CASE 
+                            WHEN CIA = 'LN1' THEN SUM(Salidas) 
+                            ELSE 0 
+                        END AS Enviado
+                    FROM 
+                        DBMSTR.dbo.A1KARDEX_TOTAL 
+                    WHERE 
+                        Fecha_Documento >= ? 
+                        AND motivo = '(24) -VENTAS ALMACEN'
+                    GROUP BY 
+                        CIA, Barra, Origen_Destino, Fecha_Documento, Referencia_1) egr ON s.SKU = egr.SKU
+                WHERE 
+                    egr.Referencia_1 IS NOT NULL
+                ORDER BY s.SKU
+            ", [$fechaInicioAno]);
+            // Paso 3: Filtrar registros que no están en MySQL
+            $datosAInsertar = [];
+            foreach ($data_sql as $row) {
+                // dd($row);
+                $compositeKey = $row->Guía_de_Remisión . '|' . $row->SKU; // Crear clave compuesta
+                if (!isset($mysqlRecordsSet[$compositeKey])) {
+                    $datosAInsertar[] = [
+                        'estilo' => $row->Estilo,
+                        'descripcion' => $row->Descripcion,
+                        'sku' => $row->SKU,
+                        'color' => $row->Color,
+                        'talla' => $row->Talla,
+                        'alm_discotela' => $row->ALM_DISCOTELA,
+                        'alm_dsc' => $row->ALM_DSC,
+                        'alm_ln1' => $row->ALM_LN1,
+                        'alm_pb' => $row->ALM_PB,
+                        'cia' => $row->CIA,
+                        'empresa' => $row->Empresa,
+                        'base' => $row->Base,
+                        'fecha_documento' => $row->Fecha_Documento,
+                        'guia_remision' => $row->Guía_de_Remisión,
+                        'enviado' => $row->Enviado,
+                        'costo_precio' => $row->Costo_Prom,
+                        'estado' => $row->Estado,
+                    ];
+                }
+            }
+            // dd(count($datosAInsertar));
+            // Paso 4: Insertar en lotes
+            if (!empty($datosAInsertar)) {
+                try {
+                    DB::table('tb_contabilidad')->insert($datosAInsertar);
+                } catch (\Exception $e) {
+                    return response()->json(['error' => $e->getMessage()], 500);
+                }
+            }
+            return response()->json(['message' => 'Sincronización completada', 'insertados' => count($datosAInsertar)]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

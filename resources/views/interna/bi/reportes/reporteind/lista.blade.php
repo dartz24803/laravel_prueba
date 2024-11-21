@@ -63,7 +63,6 @@
             <th>Frecuencia</th>
             <th>Solicitante</th>
             <th class="expandable-col">Accesos</th>
-
         </tr>
     </thead>
     <tbody>

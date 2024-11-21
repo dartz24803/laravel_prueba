@@ -63,7 +63,7 @@
 
     <div class="form-group col-lg-1">
         <button type="button"
-            class="btn btn-primary mb-2 mb-sm-0 mb-md-2 mb-lg-0" title="Buscar"
+            class="btn btn-primary mx-1 mb-2 mb-sm-0 mb-md-2 mb-lg-0" title="Buscar"
             id="btnBuscar">
             Buscar
         </button>
@@ -71,9 +71,16 @@
 
     <div class="form-group col-lg-1">
         <button type="button"
-            class="btn btn-primary mb-2 mx-2 mb-sm-0 mb-md-2 mb-lg-0" title="Facturar"
+            class="btn btn-primary mb-2 mx-1 mb-sm-0 mb-md-2 mb-lg-0" title="Facturar"
             id="btnFacturar" disabled>
             Facturar
+        </button>
+    </div>
+    <div class="form-group col-lg-1">
+        <button type="button"
+            class="btn btn-secondary mb-2 mx-1 mb-sm-0 mb-md-2 mb-lg-0" title="Facturar"
+            id="btnActualizar">
+            Actualizar
         </button>
     </div>
 
@@ -123,13 +130,12 @@
                 "type": "POST", // Cambiar a POST
                 "data": function(d) {
                     // Obtener los valores de las fechas y el estado de los filtros
-                    var fechaInicio = $('#fecha_iniciob').val(); // Asume que tienes un input con id="fecha_iniciob"
-                    var fechaFin = $('#fecha_finb').val(); // Asume que tienes un input con id="fecha_finb"
-                    var estado = $('#estadoFiltro').val(); // Obtener el estado seleccionado
-                    // Agregar las fechas y el estado como parte de los datos de la solicitud
+                    var fechaInicio = $('#fecha_iniciob').val();
+                    var fechaFin = $('#fecha_finb').val();
+                    var estado = $('#estadoFiltro').val();
                     d.fecha_inicio = fechaInicio;
                     d.fecha_fin = fechaFin;
-                    d.estado = estado; // Agregar el estado al filtro
+                    d.estado = estado;
                 },
                 "headers": {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -284,6 +290,48 @@
             } else {
                 alert('No has seleccionado ninguna fila para facturar');
             }
+        });
+        $('#btnActualizar').on('click', function() {
+            // Enviar los IDs seleccionados a través de una solicitud POST
+            $.ajax({
+                url: "{{ route('tabla_facturacion.update') }}", // Ruta donde se procesarán los IDs
+                type: "POST",
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content') // Agrega el token CSRF para seguridad
+                },
+                success: function(data) {
+                    if (data == "error") {
+                        Swal.fire({
+                            title: '¡Error al Actualizar!',
+                            text: "¡El registro ya existe o hay un problema con los datos!",
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        });
+                    } else {
+                        Swal.fire(
+                            '¡Actualización Exitosa!',
+                            '¡Los Registros han sido actualizadas correctamente!',
+                            'success'
+                        ).then(function() {
+
+                            table.ajax.reload();
+
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Maneja los errores
+                    Swal.fire({
+                        title: '¡Error!',
+                        text: "Ocurrió un error al procesar la facturación.",
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+
         });
     });
 </script>
