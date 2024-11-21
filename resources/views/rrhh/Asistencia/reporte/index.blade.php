@@ -283,7 +283,6 @@
                                                     <input type="date" class="form-control formcontrolarlimpiar" id="finicio_nm"  name="finicio_nm" value="<?php echo date('Y-m-d') ?>">
                                             </div>
                                         </div>
-
                                         <div class="col-md-2" id="cmb_ffin_nm" style="display:none">
                                             <div class="form-group">
                                                 <label class="control-label text-bold">F fin:</label>
