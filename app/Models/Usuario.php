@@ -324,10 +324,13 @@ class Usuario extends Model
 
     function get_list_usuarios_x_baset($cod_base = null, $area = null, $estado)
     {
-        
         $base = "";
         if ($cod_base != "0") {
-            $base = "AND u.id_centro_labor='$cod_base'";
+            if($cod_base == "t"){
+                $base = "AND ub.estado = 1 AND ub.id_sede=6";
+            }else{
+                $base = "AND u.id_centro_labor='$cod_base'";
+            }
         }
         $carea = "";
         if (isset($area) && $area > 0) {
@@ -344,6 +347,7 @@ class Usuario extends Model
                 (SELECT h.fec_fin h FROM historico_colaborador h where u.id_usuario=h.id_usuario and h.estado in (1,3) ORDER BY h.fec_inicio DESC,h.fec_fin DESC limit 1)as fec_fin
                 FROM users u
                 LEFT JOIN puesto p ON u.id_puesto = p.id_puesto
+                LEFT JOIN ubicacion ub ON u.id_centro_labor=ub.id_ubicacion
                 WHERE u.id_nivel<>8 $base $carea $id_estado";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);

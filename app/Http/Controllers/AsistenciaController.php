@@ -113,21 +113,27 @@ class AsistenciaController extends Controller
             $usuarios->where('users.usuario_codigo', $num_doc);
         }
         if ($cod_base != 0) {
-            $usuarios->where('users.id_centro_labor', $cod_base);
+            if($cod_base === "t" ){
+                $usuarios->leftJoin('ubicacion', 'users.id_centro_labor', 'ubicacion.id_ubicacion');
+                $usuarios->where('ubicacion.estado', 1);
+                $usuarios->where('ubicacion.id_sede', 6);
+            }else{
+                $usuarios->where('users.id_centro_labor', $cod_base);
+            }
         }
         if ($area != 0) {
             $usuarios->leftJoin('puesto', 'users.id_puesto', 'puesto.id_puesto');
             $usuarios->where('puesto.id_area', $area);
         }
 
-        $query = $usuarios->toSql(); // Obtener la consulta SQL generada
-        $bindings = $usuarios->getBindings(); // Obtener los bindings (valores)
+        // $query = $usuarios->toSql(); // Obtener la consulta SQL generada
+        // $bindings = $usuarios->getBindings(); // Obtener los bindings (valores)
 
         // echo "Consulta: $query\n";
         // print_r($bindings); // Imprimir los valores que se utilizan en la consulta
 
         $usuarios = $usuarios->get();
-        // print_r($usuarios);
+        // print_r($cod_base);
 
         $year = date('Y');
         if ($tipo == 1) {

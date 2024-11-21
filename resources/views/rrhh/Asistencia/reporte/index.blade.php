@@ -79,6 +79,7 @@
                                                 <label class="control-label text-bold">C.&nbsp;Labores:</label>
                                                 <select id="cod_base" name="cod_base" class="form-control basic" onchange="Limpiar_Campos()">
                                                     <option value="0" >TODOS</option>
+                                                    <option value="t" >TIENDAS</option>
                                                     <?php foreach($list_base as $list){?>
                                                         <option <?php if(($id_nivel==1 || $id_nivel==2) && $list['id_ubicacion']==23){echo "selected"; }?> value="<?php echo $list['id_ubicacion']; ?>"> <?php echo $list['cod_ubi'];?> </option>
                                                     <?php } ?>
