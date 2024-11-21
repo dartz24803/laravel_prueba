@@ -50,6 +50,7 @@
                 ).then(function() {
                         $('#ModalUpdate').modal('hide');
                         Buscar_Reporte_Asistencia();
+                        Buscar_No_Marcados();
                 });
             },
             error:function(xhr) {

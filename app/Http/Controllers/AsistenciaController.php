@@ -52,7 +52,6 @@ class AsistenciaController extends Controller
     //parte superior de pestañas
     public function index()
     {
-
         //REPORTE BI CON ID
         $list_subgerencia = SubGerencia::list_subgerencia(5);
         //NOTIFICACIONES
@@ -712,5 +711,77 @@ class AsistenciaController extends Controller
                         'temperature'   => '255.0',
                     ]);
             }
+    }
+    
+    public function Buscar_No_Marcados(Request $request){
+        $id_puesto = Session('usuario')->id_puesto;
+        $cod_mes = $request->input("cod_mes");
+        $cod_anio = $request->input("cod_anio");
+        $cod_base = $request->input("cod_base");
+        $num_doc = $request->input("num_doc");
+        $area = $request->input("area");
+        $estado = $request->input("estado");
+        $tipo = $request->input("tipo");
+        $finicio = $request->input("finicio");
+        $ffin = $request->input("ffin");
+
+        $usuarios = Usuario::select('usuario_codigo', 'id_usuario');
+
+        if ($estado == 1 || $estado == 2) {
+            $usuarios->where('users.estado', $estado);
+        }
+        if ($num_doc != 0) {
+            $usuarios->where('users.usuario_codigo', $num_doc);
+        }
+        if ($cod_base != 0) {
+            if($cod_base === "t" ){
+                $usuarios->leftJoin('ubicacion', 'users.id_centro_labor', 'ubicacion.id_ubicacion');
+                $usuarios->where('ubicacion.estado', 1);
+                $usuarios->where('ubicacion.id_sede', 6);
+            }else{
+                $usuarios->where('users.id_centro_labor', $cod_base);
+            }
+        }
+        if ($area != 0) {
+            $usuarios->leftJoin('puesto', 'users.id_puesto', 'puesto.id_puesto');
+            $usuarios->where('puesto.id_area', $area);
+        }
+
+        // $query = $usuarios->toSql(); // Obtener la consulta SQL generada
+        // $bindings = $usuarios->getBindings(); // Obtener los bindings (valores)
+
+        // echo "Consulta: $query\n";
+        // print_r($bindings); // Imprimir los valores que se utilizan en la consulta
+
+        $usuarios = $usuarios->get();
+        // print_r($cod_base);
+
+        $year = date('Y');
+        if ($tipo == 1) {
+            $year = $cod_anio;
+            $fecha_inicio = strtotime("01-$cod_mes-$year");
+            $L = new DateTime("$year-$cod_mes-01");
+            $fecha_fin = $L->format('Y-m-t');
+            $timestamp = strtotime($fecha_fin);
+            $fecha_fin = strtotime(date("d-m-Y", $timestamp));
+        } else {
+            $fecha_inicio = strtotime(date("d-m-Y", strtotime($request->input("finicio"))));
+            $fecha_fin = strtotime(date("d-m-Y", strtotime($request->input("ffin"))));
+        }
+
+        $list_asistencia = $this->modelo->buscar_reporte_control_asistencia_nm($cod_mes, $cod_anio, $cod_base, $num_doc, $tipo, $finicio, $ffin, $usuarios);
+        // print_r($list_asistencia);
+        if ($num_doc != 0) {
+            $list_colaborador = $this->modelo->get_list_usuario_xnum_doc($num_doc);
+        } else {
+            $list_colaborador = $this->modelo->get_list_usuarios_x_baset($cod_base, $area, $estado);
+        }
+        $n_documento = $num_doc;
+
+        if ($id_puesto == 29 || $id_puesto == 161 || $id_puesto == 197) {
+            return view('rrhh.Asistencia.NoMarcados.listarct_nm', compact('fecha_inicio', 'fecha_fin', 'list_asistencia', 'list_colaborador', 'n_documento'));
+        } else {
+            return view('rrhh.Asistencia.NoMarcados.listar_nm', compact('fecha_inicio', 'fecha_fin', 'list_asistencia', 'list_colaborador', 'n_documento'));
+        }
     }
 }

@@ -1846,7 +1846,8 @@ Route::controller(AsistenciaController::class)->group(function () {
     Route::get('Asistencia/Modal_Reg_Asistencia', 'Modal_Reg_Asistencia');
     Route::get('Asistencia/Modal_Registro_Dia/{nombre}/{dni}/{orden}/{time}', 'Modal_Registro_Dia');
     Route::post('Asistencia/Insert_Asistencia_Diaria', 'Insert_Asistencia_Diaria');
-    // Route::get('Asistencia/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
+    Route::get('Asistencia/ReporteControlAsistencia', 'ReporteControlAsistencia');
+    Route::post('Asistencia/Buscar_No_Marcados','Buscar_No_Marcados');
 });
 //AMONESTACION
 Route::controller(AmonestacionController::class)->group(function () {

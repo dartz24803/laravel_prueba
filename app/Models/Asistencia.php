@@ -70,8 +70,7 @@ class Asistencia extends Model
         
     }
 
-    function get_list_usuario_xnum_doc($num_doc)
-    {
+    function get_list_usuario_xnum_doc($num_doc){
         $sql = "SELECT u.*,
         (SELECT fec_inicio h FROM historico_colaborador h where u.id_usuario=h.id_usuario and h.estado in (1,3) ORDER BY h.fec_inicio DESC,h.fec_fin DESC limit 1)as fec_inicio,
         (SELECT h.fec_fin h FROM historico_colaborador h where u.id_usuario=h.id_usuario and h.estado in (1,3) ORDER BY h.fec_inicio DESC,h.fec_fin DESC limit 1)as fec_fin
@@ -81,8 +80,7 @@ class Asistencia extends Model
         return json_decode(json_encode($result), true);
     }
 
-    function get_list_usuarios_x_baset($cod_base = null, $area = null, $estado)
-    {
+    function get_list_usuarios_x_baset($cod_base = null, $area = null, $estado){
         $base = "";
         if ($cod_base != "0") {
             $base = "AND u.id_centro_labor='$cod_base'";
@@ -105,5 +103,49 @@ class Asistencia extends Model
                 WHERE u.id_nivel<>8 $base $carea $id_estado";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
+    }
+
+    
+    public function buscar_reporte_control_asistencia_nm($cod_mes, $cod_anio, $cod_base, $num_doc, $tipo, $finicio, $ffin, $usuarios){
+        if($tipo==1){
+            $fecha=" AND DATE_FORMAT(c.fecha,'%m') = '".$cod_mes."' AND DATE_FORMAT(c.fecha,'%Y') = '".$cod_anio."'";
+        }else{
+            $fecha=" AND DATE_FORMAT(c.fecha,'%Y-%m-%d') BETWEEN '".$finicio."' and '".$ffin."'";
+        }
+
+        $doc_iclock="";
+        $doc_ar="";
+        $base_ar="";
+
+        $resultados = [];
+        //print_r($usuarios);
+        foreach ($usuarios as $usuario) {
+            $dni = $usuario->usuario_codigo;
+            
+            $sql = "SELECT u.usuario_codigo AS emp_code, 
+                        c.fecha AS orden, c.fecha,
+                        ub.cod_ubi AS centro_labores,
+                        u.usuario_apater,u.usuario_amater,u.usuario_nombres, u.usuario_codigo as num_doc
+                    FROM calendario c
+                    JOIN lanumerouno.users u
+                    join lanumerouno.ubicacion ub ON u.id_centro_labor=ub.id_ubicacion
+                    LEFT JOIN iclock_transaction it 
+                        ON c.fecha = DATE(it.punch_time) 
+                        AND it.emp_code = u.usuario_codigo
+                    WHERE it.punch_time IS NULL
+                    AND u.usuario_codigo = :dni $fecha $base_ar $doc_iclock $doc_ar
+                    ORDER BY c.fecha ASC;";
+        
+            // Imprimir consulta con el valor reemplazado
+            // $sql_with_dni = str_replace(':dni', "'$dni'", $sql);
+            // print_r($sql_with_dni);
+            
+            // Ejecutar la consulta
+            $result = DB::connection('second_mysql')->select($sql, [$dni]);
+            
+            // Convertir el resultado a un array y añadirlo al array de resultados
+            $resultados[$dni] = json_decode(json_encode($result), true);
+        }
+        return $resultados;
     }
 }

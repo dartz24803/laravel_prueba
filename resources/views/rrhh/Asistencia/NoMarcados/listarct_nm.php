@@ -4,7 +4,7 @@ $sesion =  Session('usuario');
 $id_nivel = Session('usuario')->id_nivel;
 $id_puesto = Session('usuario')->id_puesto;
 ?>
-<table id="multi-column-orderingg" class="table table-hover" style="width:100%">
+<table id="table-z" class="table table-hover" style="width:100%">
     <thead>
         <tr>
             <th>#</th>
@@ -16,7 +16,9 @@ $id_puesto = Session('usuario')->id_puesto;
             <th>Inicio Descanso</th>
             <th>Fin Descanso</th>
             <th>Salida</th>
+            
             <th>Día Laborado</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -31,7 +33,7 @@ $id_puesto = Session('usuario')->id_puesto;
                         <td class="text-center"> <?php echo $list['num_doc']; ?> </td>
                         <td class="text-center"> <?php echo $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']; ?></td>
                         <td class="text-center"> <?php echo $list['fecha'];?> </td>
-                        <td class="text-center">
+                        <td class="text-center"> 
                             <?php if($list['ingreso']!==null){ ?>
                                 <?php echo Carbon::parse($list['ingreso'])->format('H:i A'); ?>
                                 <?php $ingreso = Carbon::parse($list['ingreso'])->format('H:i:s'); ?>
@@ -111,6 +113,7 @@ $id_puesto = Session('usuario')->id_puesto;
                                 echo "0"; 
                             } ?>
                         </td>
+                        <td class="text-center"></td>
                     </tr>
                 <?php }
             }
@@ -119,7 +122,7 @@ $id_puesto = Session('usuario')->id_puesto;
 </table>
 
 <script>
-$('#multi-column-orderingg').DataTable({
+$('#table-z').DataTable({
     "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
     "<'table-responsive'tr>" +
     "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
@@ -145,5 +148,4 @@ $('#multi-column-orderingg').DataTable({
         }
     ]
 });
-
 </script>

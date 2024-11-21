@@ -57,6 +57,7 @@
                     ).then(function() {
                         $('#ModalRegistro').modal('hide');
                         Buscar_Reporte_Asistencia();
+                        Buscar_No_Marcados();
                     });
                 }
             }
