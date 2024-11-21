@@ -1,9 +1,10 @@
 <?php
-    $sesion =  Session('usuario');
-    $id_nivel = Session('usuario')->id_nivel;
-    $id_puesto = Session('usuario')->id_puesto;
+use Carbon\Carbon;
+$sesion =  Session('usuario');
+$id_nivel = Session('usuario')->id_nivel;
+$id_puesto = Session('usuario')->id_puesto;
 ?>
-<table id="multi-column-orderingg" class="table table-hover" style="width:100%">
+<table id="table-z" class="table table-hover" style="width:100%">
     <thead>
         <tr>
             <th>#</th>
@@ -15,43 +16,45 @@
             <th>Inicio Descanso</th>
             <th>Fin Descanso</th>
             <th>Salida</th>
-            
             <th>Día Laborado</th>
-            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-        <?php
-                foreach($list_asistencia as $num_doc=>$registros){
-                    foreach($registros as $list) { ?>
-                        <tr>
-                            <td class="text-center"><?php echo $list['orden']; ?></td>
-                            <td class="text-center"> <?php echo $list['centro_labores']; ?> </td>
-                            <td class="text-center"> <?php echo $list['num_doc']; ?> </td>
-                            <td class="text-center"> <?php echo $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']; ?></td>
-                            <td class="text-center"> <?php echo $list['fecha'];?> </td>
-                            <td class="text-center"> <?php echo $list['ingreso']; ?></td>
-                            <td class="text-center"> <?php echo $list['inicio_refrigerio']; ?></td>
-                            <td class="text-center"> <?php echo $list['fin_refrigerio']; ?></td>
-                            <td class="text-center"> <?php echo $list['salida']; ?></td>
-                            <td class="text-center">
-                                <?php
-                                if($list['salida']!=""){
-                                    echo "1"; 
-                                }else{
-                                    echo "0"; 
-                                } ?>
-                            </td>
-                            <td class="text-center"></td>
-                        </tr>
-                    <?php }
-                }
+        <?php 
+            foreach($list_asistencia as $num_doc=>$registros){
+                foreach($registros as $list) { 
+                    $cadenaConvert = str_replace(" ", "-", $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']);
+                    ?>
+                    <tr>
+                        <td class="text-center"><?php echo $list['orden']; ?></td>
+                        <td class="text-center"> <?php echo $list['centro_labores']; ?> </td>
+                        <td class="text-center"> <?php echo $list['num_doc']; ?> </td>
+                        <td class="text-center"> <?php echo $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']; ?></td>
+                        <td class="text-center"> <?php echo $list['fecha'];?> </td>
+                        <td class="text-center">
+                            <?php $ingreso = 0; ?>
+                            <a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ url('Asistencia/Modal_Registro_Dia/'. $cadenaConvert . "/" .$list['num_doc'] ."/". $list['orden'] . "/". $ingreso) }}" >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
+                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                </svg>
+                            </a>
+                        </td>
+                        <td class="text-center">
+                        </td>
+                        <td class="text-center">
+                        </td>
+                        <td class="text-center">
+                        </td>
+                        <td class="text-center">0</td>
+                    </tr>
+                <?php }
+            }
         ?>
     </tbody>
 </table>
 
 <script>
-$('#multi-column-orderingg').DataTable({
+$('#table-z').DataTable({
     "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
     "<'table-responsive'tr>" +
     "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",

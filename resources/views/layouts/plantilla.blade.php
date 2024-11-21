@@ -680,6 +680,9 @@
         .dkuywW {
             display: none !important;
         }
+        .iLsXYi{
+            height: 0% !important;
+        }
 
         @media (max-width: 900px) {
             #div_imagen_header {

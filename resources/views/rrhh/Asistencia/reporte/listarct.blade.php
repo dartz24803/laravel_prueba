@@ -16,7 +16,9 @@ $id_puesto = Session('usuario')->id_puesto;
             <th>Inicio Descanso</th>
             <th>Fin Descanso</th>
             <th>Salida</th>
+            
             <th>Día Laborado</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -31,7 +33,7 @@ $id_puesto = Session('usuario')->id_puesto;
                         <td class="text-center"> <?php echo $list['num_doc']; ?> </td>
                         <td class="text-center"> <?php echo $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']; ?></td>
                         <td class="text-center"> <?php echo $list['fecha'];?> </td>
-                        <td class="text-center">
+                        <td class="text-center"> 
                             <?php if($list['ingreso']!==null){ ?>
                                 <?php echo Carbon::parse($list['ingreso'])->format('H:i A'); ?>
                                 <?php $ingreso = Carbon::parse($list['ingreso'])->format('H:i:s'); ?>
@@ -111,6 +113,7 @@ $id_puesto = Session('usuario')->id_puesto;
                                 echo "0"; 
                             } ?>
                         </td>
+                        <td class="text-center"></td>
                     </tr>
                 <?php }
             }
@@ -145,5 +148,4 @@ $('#multi-column-orderingg').DataTable({
         }
     ]
 });
-
 </script>
