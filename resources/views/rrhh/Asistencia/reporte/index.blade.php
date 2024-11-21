@@ -226,7 +226,7 @@
                                                 <label class="control-label text-bold">Estado:</label><br>
                                                 <input type="radio" name="estado_nm" id="estadosi_nm" value="1" checked="checked" onclick="Traer_Colaborador_nm();">
                                                 <label class="form-check-label" for="estadosi_nm">Activos</label><br>
-                                                <input type="radio" name="estado_nm" id="estadono_nm" value="2" onclick="Traer_Colaborador();">
+                                                <input type="radio" name="estado_nm" id="estadono_nm" value="2" onclick="Traer_Colaborador_nm();">
                                                 <label class="form-check-label" for="estadono_nm">Inactivos</label>
                                             </div>
                                         </div>
