@@ -223,7 +223,7 @@ class AsistenciaController extends Controller
         // print_r($bindings); // Imprimir los valores que se utilizan en la consulta
 
         $usuarios = $usuarios->get();
-        // print_r($usuarios);
+        print_r($usuarios);
 
         $year = date('Y');
         if ($tipo == 1) {
