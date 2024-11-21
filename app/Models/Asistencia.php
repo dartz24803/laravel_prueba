@@ -148,4 +148,53 @@ class Asistencia extends Model
         }
         return $resultados;
     }
+    
+    public function buscar_reporte_control_asistencia_excel($cod_mes, $cod_anio, $cod_base, $num_doc, $tipo, $finicio, $ffin, $usuarios){
+        if($tipo==1){
+            $fecha=" AND DATE_FORMAT(c.fecha,'%m') = '".$cod_mes."' AND DATE_FORMAT(c.fecha,'%Y') = '".$cod_anio."'";
+        }else{
+            $fecha=" AND DATE_FORMAT(c.fecha,'%Y-%m-%d') BETWEEN '".$finicio."' and '".$ffin."'";
+        }
+
+        $doc_iclock="";
+        $doc_ar="";
+        $base_ar="";
+
+        $resultados = [];
+        // print_r($usuarios);
+        foreach ($usuarios as $usuario) {
+            $dni = $usuario->usuario_codigo;
+            
+            $sql = "SELECT c.fecha,u.usuario_nombres,u.usuario_apater,u.usuario_amater,
+                        u.usuario_codigo AS emp_code,
+                        IFNULL(m.marcaciones, 0) AS total_marcaciones,
+                        CASE 
+                            WHEN IFNULL(m.marcaciones, 0) = 4 THEN 1 -- Tiene las 4 marcaciones
+                            ELSE 0 -- No tiene 4 marcaciones
+                        END AS estado_marcacion
+                    FROM calendario c
+                    JOIN lanumerouno.users u
+                    LEFT JOIN (
+                        SELECT DATE(it.punch_time) AS fecha,
+                            it.emp_code,
+                            COUNT(*) AS marcaciones
+                        FROM iclock_transaction it
+                        WHERE it.emp_code = '71722048' -- Ajusta para múltiples usuarios si es necesario
+                        GROUP BY DATE(it.punch_time), it.emp_code
+                    ) m ON c.fecha = m.fecha AND u.usuario_codigo = m.emp_code
+                    WHERE u.usuario_codigo = :dni $fecha $base_ar $doc_iclock $doc_ar
+                    ORDER BY c.fecha ASC;";
+        
+            // Imprimir consulta con el valor reemplazado
+            $sql_with_dni = str_replace(':dni', "'$dni'", $sql);
+            print_r($sql_with_dni);
+            
+            // Ejecutar la consulta
+            $result = DB::connection('second_mysql')->select($sql, [$dni]);
+            
+            // Convertir el resultado a un array y añadirlo al array de resultados
+            $resultados[$dni] = json_decode(json_encode($result), true);
+        }
+        return $resultados;
+    }
 }

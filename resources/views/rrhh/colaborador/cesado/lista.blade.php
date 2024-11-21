@@ -125,8 +125,12 @@
             <td class="text-left">{{ $list->nom_area }}</td>
             <td>{{ $list->dias_laborados }}</td>
             <td class="text-center">
-                @if (session('usuario')->id_puesto=="27")
-                {{-- Aquí va el ojo --}}
+                @if (session('usuario')->id_puesto=="27" && $list->id_usuario>0)
+                    <a class="efectob" title="Ver Perfil" href="{{ url('ColaboradorController/Mi_Perfil/' .$list->id_usuario) }}>">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye text-success">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle></svg>
+                    </a>
                 @else
                 @if ($list->verif_email=="2")
                 <a href="javascript:void(0);" title="Mail">
@@ -174,7 +178,11 @@
                 </a>
                 @endif
 
-                {{-- Aquí va el ojo --}}
+                <a class="efectob" title="Ver Perfil" href="{{ url('ColaboradorController/Mi_Perfil/' .$list->id_usuario) }}>">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye text-success">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle></svg>
+                </a>
 
                 @if ($list->foto!="")
                 <a href="{{ route('colaborador_ce.download', $list->id_usuario) }}" title="Descargar Foto">
