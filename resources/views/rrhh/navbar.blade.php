@@ -1,3 +1,6 @@
+@if(session('usuario')->id_puesto !== 9  &&
+    session('usuario')->id_puesto !== 32 &&
+    session('usuario')->id_puesto !== 128)
 <li class="menu menu-heading">
     <div class="heading">
         <span>INICIO Talento Humano</span>
@@ -329,3 +332,5 @@
         </li>
     </ul>
 </li>
+
+@endif
